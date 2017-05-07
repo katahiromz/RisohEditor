@@ -3075,9 +3075,27 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     if (pnmhdr->code == NM_DBLCLK)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
+        ID_OR_STRING id = g_Entries[LOWORD(lParam)].type;
         switch (HIWORD(lParam))
         {
-        case I_LANG: case I_STRING: case I_MESSAGE:
+        case I_LANG:
+            if (id == RT_ACCELERATOR ||
+                id == RT_DIALOG ||
+                id == RT_HTML ||
+                id == RT_MANIFEST ||
+                id == RT_MENU ||
+                //id == RT_MESSAGETABLE ||
+                id == RT_STRING ||
+                id == RT_VERSION)
+            {
+                ;
+            }
+            else
+            {
+                return 0;
+            }
+            break;
+        case I_STRING: case I_MESSAGE:
             break;
         default:
             return 0;
