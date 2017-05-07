@@ -3831,10 +3831,10 @@ BOOL CheckDataFolder(VOID)
             lstrcpyW(pch, L"\\..\\..\\data");
             if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"\\..\\..\\data");
+                lstrcpyW(pch, L"\\..\\..\\..\\data");
                 if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpyW(pch, L"\\..\\..\\..\\data");
+                    lstrcpyW(pch, L"\\..\\..\\..\\..\\data");
                     if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
