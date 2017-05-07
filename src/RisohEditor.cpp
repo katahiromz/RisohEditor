@@ -225,6 +225,7 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
 
     TV_RefreshInfo(g_hTreeView, g_Entries);
     DoSetFile(hwnd, Path);
+    g_bInEdit = FALSE;
 
     return TRUE;
 }
@@ -312,6 +313,9 @@ BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
 
 BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
 {
+    if (g_bInEdit)
+        return TRUE;
+
     DWORD dwBinType;
     LPCWSTR pch = wcsrchr(ExeFile, L'.');
     if ((pch && lstrcmpiW(pch, L".res") == 0) ||
@@ -616,6 +620,9 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 void MainWnd_OnDeleteRes(HWND hwnd)
 {
+    if (g_bInEdit)
+        return;
+
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
     if (hItem == NULL)
         return;
@@ -1040,6 +1047,9 @@ void MainWnd_OnReplaceBin(HWND hwnd)
 
 void MainWnd_OnSaveAs(HWND hwnd)
 {
+    if (g_bInEdit)
+        return;
+
     WCHAR File[MAX_PATH];
 
     lstrcpynW(File, g_szFile, _countof(File));
@@ -1600,6 +1610,9 @@ void MainWnd_OnReplaceCursor(HWND hwnd)
 
 void MainWnd_OnOpen(HWND hwnd)
 {
+    if (g_bInEdit)
+        return;
+
     WCHAR File[MAX_PATH];
     lstrcpynW(File, g_szFile, _countof(File));
 
@@ -2223,6 +2236,9 @@ void MainWnd_OnAbout(HWND hwnd)
 
 void MainWnd_OnImport(HWND hwnd)
 {
+    if (g_bInEdit)
+        return;
+
     WCHAR File[MAX_PATH] = TEXT("");
 
     OPENFILENAMEW ofn;
@@ -2284,11 +2300,13 @@ VOID MainWnd_HidePreview(HWND hwnd)
     }
 
     SetWindowTextW(g_hBinEdit, NULL);
+    ShowWindow(g_hBinEdit, SW_HIDE);
     Edit_SetModify(g_hBinEdit, FALSE);
 
+    SetWindowTextW(g_hSrcEdit, NULL);
     ShowWindow(g_hSrcEdit, SW_HIDE);
     Edit_SetModify(g_hSrcEdit, FALSE);
-    
+
     ShowWindow(g_hBmpView, SW_HIDE);
     ShowWindow(g_hToolBar, SW_HIDE);
 
@@ -2961,6 +2979,7 @@ void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
 
     std::wstring str = DumpDataAsString(Entry.data);
     SetWindowTextW(g_hBinEdit, str.c_str());
+    ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
     if (Entry.type == RT_ICON)
     {
@@ -3036,6 +3055,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
         std::wstring str = DumpDataAsString(g_Entries[i].data);
         SetWindowTextW(g_hBinEdit, str.c_str());
+        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
         MainWnd_PreviewStringTable(hwnd, g_Entries[i]);
     }
@@ -3045,6 +3065,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
         std::wstring str = DumpDataAsString(g_Entries[i].data);
         SetWindowTextW(g_hBinEdit, str.c_str());
+        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
         MainWnd_PreviewMessageTable(hwnd, g_Entries[i]);
     }
@@ -3073,10 +3094,11 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         SetMenu(hwnd, g_hMenu);
         g_bInEdit = FALSE;
     }
+
     PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
-void MainWnd_DoubleClickTV(HWND hwnd)
+BOOL MainWnd_IsEditable(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     ID_OR_STRING id = g_Entries[LOWORD(lParam)].type;
@@ -3084,21 +3106,29 @@ void MainWnd_DoubleClickTV(HWND hwnd)
     {
     case I_LANG:
         if (id == RT_ACCELERATOR || id == RT_DIALOG || id == RT_HTML ||
-            id == RT_MANIFEST || id == RT_MENU || //id == RT_MESSAGETABLE ||
-            id == RT_STRING || id == RT_VERSION)
+            id == RT_MANIFEST || id == RT_MENU || id == RT_VERSION)
         {
             ;
         }
         else
         {
-            return;
+            return FALSE;
         }
         break;
     case I_STRING: case I_MESSAGE:
         break;
     default:
-        return;
+        return FALSE;
     }
+    return TRUE;
+}
+
+void MainWnd_DoubleClickTV(HWND hwnd)
+{
+    if (!MainWnd_IsEditable(hwnd))
+        return;
+
+    LPARAM lParam = TV_GetParam(g_hTreeView);
     MainWnd_SelectTV(hwnd, lParam, TRUE);
 }
 
@@ -3154,14 +3184,22 @@ void MainWnd_OnHideDialog(HWND hwnd)
     // FIXME
 }
 
+void MainWnd_OnNew(HWND hwnd)
+{
+    if (g_bInEdit)
+        return;
+
+    DoSetFile(hwnd, NULL);
+    g_Entries.clear();
+    TV_RefreshInfo(g_hTreeView, g_Entries);
+}
+
 void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     switch (id)
     {
     case ID_NEW:
-        DoSetFile(hwnd, NULL);
-        g_Entries.clear();
-        TV_RefreshInfo(g_hTreeView, g_Entries);
+        MainWnd_OnNew(hwnd);
         break;
     case ID_OPEN:
         MainWnd_OnOpen(hwnd);
