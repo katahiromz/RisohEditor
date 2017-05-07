@@ -3096,6 +3096,21 @@ void MainWnd_OnCancelEdit(HWND hwnd)
     MainWnd_SelectTV(hwnd, lParam, FALSE);
 }
 
+void MainWnd_OnCompile(HWND hwnd)
+{
+    // FIXME
+}
+
+void MainWnd_OnShowDialog(HWND hwnd)
+{
+    // FIXME
+}
+
+void MainWnd_OnHideDialog(HWND hwnd)
+{
+    // FIXME
+}
+
 void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     switch (id)
@@ -3168,6 +3183,15 @@ void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_CANCELEDIT:
         MainWnd_OnCancelEdit(hwnd);
+        break;
+    case ID_COMPILE:
+        MainWnd_OnCompile(hwnd);
+        break;
+    case ID_SHOWDIALOG:
+        MainWnd_OnShowDialog(hwnd);
+        break;
+    case ID_HIDEDIALOG:
+        MainWnd_OnHideDialog(hwnd);
         break;
     }
 }
