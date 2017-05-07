@@ -3857,7 +3857,7 @@ INT CheckData(VOID)
     {
         MessageBoxA(NULL, "ERROR: data folder was not found!",
                     NULL, MB_ICONERROR);
-        return -1;
+        return -1;  // failure
     }
 
     // Constants.txt
@@ -3867,7 +3867,7 @@ INT CheckData(VOID)
     {
         MessageBoxA(NULL, "ERROR: Unable to load Constants.txt file.",
                     NULL, MB_ICONERROR);
-        return -2;
+        return -2;  // failure
     }
 
     // cpp.exe
@@ -3876,7 +3876,7 @@ INT CheckData(VOID)
     if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
     {
         MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
-        return -3;
+        return -3;  // failure
     }
 
     // windres.exe
@@ -3885,7 +3885,7 @@ INT CheckData(VOID)
     if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
     {
         MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
-        return -4;
+        return -4;  // failure
     }
 
     // include
@@ -3894,7 +3894,7 @@ INT CheckData(VOID)
     if (::GetFileAttributesW(g_szIncludeDir) == INVALID_FILE_ATTRIBUTES)
     {
         MessageBoxA(NULL, "ERROR: No include folder found.", NULL, MB_ICONERROR);
-        return -5;
+        return -5;  // failure
     }
 
     return 0;   // success
