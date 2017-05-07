@@ -3847,25 +3847,12 @@ BOOL CheckDataFolder(VOID)
     return TRUE;
 }
 
-INT WINAPI
-WinMain(HINSTANCE   hInstance,
-        HINSTANCE   hPrevInstance,
-        LPSTR       lpCmdLine,
-        INT         nCmdShow)
-{
-    g_hInstance = hInstance;
-    InitCommonControls();
-    g_wargv = CommandLineToArgvW(GetCommandLineW(), &g_argc);
-
-    LoadStringW(hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
-    g_hAccel = LoadAcceleratorsW(hInstance, MAKEINTRESOURCEW(1));
-
-    HRESULT hRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
 #ifndef INVALID_FILE_ATTRIBUTES
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
+INT CheckData(VOID)
+{
     if (!CheckDataFolder())
     {
         MessageBoxA(NULL, "ERROR: data folder was not found!",
@@ -3910,6 +3897,11 @@ WinMain(HINSTANCE   hInstance,
         return -5;
     }
 
+    return 0;   // success
+}
+
+void LoadLangs(VOID)
+{
     // get languages
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
     {
@@ -3919,6 +3911,30 @@ WinMain(HINSTANCE   hInstance,
         g_Langs.push_back(entry);
     }
     std::sort(g_Langs.begin(), g_Langs.end());
+}
+
+INT WINAPI
+WinMain(HINSTANCE   hInstance,
+        HINSTANCE   hPrevInstance,
+        LPSTR       lpCmdLine,
+        INT         nCmdShow)
+{
+    g_hInstance = hInstance;
+    InitCommonControls();
+    g_wargv = CommandLineToArgvW(GetCommandLineW(), &g_argc);
+
+    LoadStringW(hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
+    g_hAccel = LoadAcceleratorsW(hInstance, MAKEINTRESOURCEW(1));
+
+    HRESULT hRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+    INT nRet = CheckData();
+    if (nRet)
+    {
+        return nRet;    // failure
+    }
+
+    LoadLangs();
 
     WNDCLASSW wc;
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
