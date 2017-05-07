@@ -4,42 +4,42 @@ DOTEXE = .exe
 CXXFLAGS = -W -w-8057 -v -y -D_DEBUG
 
 HEADERS = \
-	AccelRes.hpp \
-	ByteStream.hpp \
-	ConstantsDB.hpp \
-	DialogRes.hpp \
-	IconRes.hpp \
-	MenuRes.hpp \
-	MessageRes.hpp \
-	PackedDIB.hpp \
-	Png.hpp \
-	Res.hpp \
-	StringRes.hpp \
-	Text.hpp \
-	id_string.hpp \
-	resource.h \
-	stdafx.hpp \
+	src\AccelRes.hpp \
+	src\ByteStream.hpp \
+	src\ConstantsDB.hpp \
+	src\DialogRes.hpp \
+	src\IconRes.hpp \
+	src\MenuRes.hpp \
+	src\MessageRes.hpp \
+	src\PackedDIB.hpp \
+	src\Png.hpp \
+	src\Res.hpp \
+	src\StringRes.hpp \
+	src\Text.hpp \
+	src\id_string.hpp \
+	src\resource.h \
+	src\stdafx.hpp \
 
 OBJS = \
-	RisohEditor$(DOTOBJ) \
-	Png$(DOTOBJ) \
-	PackedDIB$(DOTOBJ) \
+	src\RisohEditor$(DOTOBJ) \
+	src\Png$(DOTOBJ) \
+	src\PackedDIB$(DOTOBJ) \
 
 all: RisohEditor$(DOTEXE)
 
-RisohEditor$(DOTEXE): $(OBJS) EditRes_res.res
-	bcc32 $(CXXFLAGS) -eEditRes$(DOTEXE) $(OBJS)
-	brc32 EditRes_res.res RisohEditor$(DOTEXE)
+RisohEditor$(DOTEXE): $(OBJS) src\RisohEditor_res.res
+	bcc32 $(CXXFLAGS) -eRisohEditor$(DOTEXE) $(OBJS)
+	brc32 src\RisohEditor_res.res RisohEditor$(DOTEXE)
 
-RisohEditor$(DOTOBJ): RisohEditor.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -c RisohEditor.cpp
-Png$(DOTOBJ): Png.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -c Png.cpp
-PackedDIB$(DOTOBJ): PackedDIB.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -c PackedDIB.cpp
+src\RisohEditor$(DOTOBJ): src\RisohEditor.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -osrc\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
+src\Png$(DOTOBJ): src\Png.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -osrc\Png$(DOTOBJ) -c src\Png.cpp
+src\PackedDIB$(DOTOBJ): src\PackedDIB.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -osrc\PackedDIB$(DOTOBJ) -c src\PackedDIB.cpp
 
-EditRes_res.res: EditRes_res.rc resource.h
-	brc32 -r -foEditRes_res.res EditRes_res.rc
+src\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
+	brc32 -r -fosrc\RisohEditor_res.res src\RisohEditor_res.rc
 
 clean:
 	if exist *.obj del *.obj

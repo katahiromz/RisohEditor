@@ -57,7 +57,7 @@ include_directories(${PNG_INCLUDE_DIRS})
 ENABLE_LANGUAGE(RC)
 
 # Win32
-add_executable(RisohEditor WIN32 RisohEditor.cpp Png.cpp PackedDIB.cpp EditRes_res.rc)
+add_executable(RisohEditor WIN32 src/RisohEditor.cpp src/Png.cpp src/PackedDIB.cpp src/RisohEditor_res.rc)
 target_link_libraries(RisohEditor comctl32 msimg32 ${PNG_LIBRARIES})
 
 # do statically link

@@ -1,7 +1,8 @@
 a.txt
+a.exe
 *.o
 *.obj
-./*.exe
+RisohEditor.exe
 *.res
 *.tds
 Debug

@@ -5,9 +5,9 @@
 // UTF-8
 #pragma code_page(65001)
 
-1 ICON "res\\RisohEditor.ico"
-100 ICON "res\\file.ico"
-101 ICON "res\\folder.ico"
+1 ICON "..\\res\\RisohEditor.ico"
+100 ICON "..\\res\\file.ico"
+101 ICON "..\\res\\folder.ico"
 
 1 ACCELERATORS
 {

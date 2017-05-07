@@ -280,6 +280,9 @@ struct DialogItem
 
         if (lstrcmpiW(cls.c_str(), L"BUTTON") == 0)
         {
+#ifndef BS_TYPEMASK
+    #define BS_TYPEMASK     0x0000000F
+#endif
             if ((Style & BS_TYPEMASK) == BS_AUTO3STATE)
                 return _do_AUTO3STATE(db);
             if ((Style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
