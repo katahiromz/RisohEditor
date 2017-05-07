@@ -1,0 +1,72 @@
+#include <windows.h>
+#include <dlgs.h>
+#include "resource.h"
+
+// UTF-8
+#pragma code_page(65001)
+
+1 ICON "res\\RisohEditor.ico"
+100 ICON "res\\file.ico"
+101 ICON "res\\folder.ico"
+
+1 ACCELERATORS
+{
+    "N", ID_NEW, VIRTKEY, CONTROL
+    "O", ID_OPEN, VIRTKEY, CONTROL
+    "S", ID_SAVEAS, VIRTKEY, CONTROL
+    "D", ID_DELETERES, VIRTKEY, CONTROL
+    "I", ID_IMPORT, VIRTKEY, CONTROL
+}
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0, 0, 0, 0
+PRODUCTVERSION  0, 0, 0, 0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+{
+    // Japanese
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "041103A4"
+        {
+            VALUE "CompanyName", "片山博文MZ\0"
+            VALUE "FileDescription", "理想エディタ\0"
+            VALUE "FileVersion", "0.0\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 片山博文MZ. All rights reserved.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "0.0\0"
+        }
+    }
+    // English (U.S.)
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        {
+            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
+            VALUE "FileDescription", "Risou Editor\0"
+            VALUE "FileVersion", "0.0\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "0.0\0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0411, 0x03A4
+    }
+}
+
+#include "lang\\en-US.rc"
+#include "lang\\ja-JP.rc"
+
+3 MENU
+{
+    MENUITEM "TEST1", 1
+    MENUITEM "TEST2", 2
+    POPUP "TEST3"
+    {
+        MENUITEM "TEST4", 4
+        MENUITEM SEPARATOR
+        MENUITEM "TEST5", 5
+    }
+}

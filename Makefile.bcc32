@@ -1,0 +1,47 @@
+DOTOBJ = .obj
+DOTEXE = .exe
+
+CXXFLAGS = -W -w-8057 -v -y -D_DEBUG
+
+HEADERS = \
+	AccelRes.hpp \
+	ByteStream.hpp \
+	ConstantsDB.hpp \
+	DialogRes.hpp \
+	IconRes.hpp \
+	MenuRes.hpp \
+	MessageRes.hpp \
+	PackedDIB.hpp \
+	Png.hpp \
+	Res.hpp \
+	StringRes.hpp \
+	Text.hpp \
+	id_string.hpp \
+	resource.h \
+	stdafx.hpp \
+
+OBJS = \
+	RisohEditor$(DOTOBJ) \
+	Png$(DOTOBJ) \
+	PackedDIB$(DOTOBJ) \
+
+all: RisohEditor$(DOTEXE)
+
+RisohEditor$(DOTEXE): $(OBJS) EditRes_res.res
+	bcc32 $(CXXFLAGS) -eEditRes$(DOTEXE) $(OBJS)
+	brc32 EditRes_res.res RisohEditor$(DOTEXE)
+
+RisohEditor$(DOTOBJ): RisohEditor.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -c RisohEditor.cpp
+Png$(DOTOBJ): Png.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -c Png.cpp
+PackedDIB$(DOTOBJ): PackedDIB.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -c PackedDIB.cpp
+
+EditRes_res.res: EditRes_res.rc resource.h
+	brc32 -r -foEditRes_res.res EditRes_res.rc
+
+clean:
+	if exist *.obj del *.obj
+	if exist *.res del *.res
+	if exist *.tds del *.tds
