@@ -21,22 +21,25 @@ HEADERS = \
 	src\stdafx.hpp \
 
 OBJS = \
-	src\RisohEditor$(DOTOBJ) \
-	src\Png$(DOTOBJ) \
-	src\PackedDIB$(DOTOBJ) \
+	build\RisohEditor$(DOTOBJ) \
+	build\Png$(DOTOBJ) \
+	build\PackedDIB$(DOTOBJ) \
 
-all: RisohEditor$(DOTEXE)
+all: build\RisohEditor$(DOTEXE)
 
-RisohEditor$(DOTEXE): $(OBJS) src\RisohEditor_res.res
-	bcc32 $(CXXFLAGS) -eRisohEditor$(DOTEXE) $(OBJS)
-	brc32 src\RisohEditor_res.res RisohEditor$(DOTEXE)
+build:
+	if not exist build mkdir build
 
-src\RisohEditor$(DOTOBJ): src\RisohEditor.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -osrc\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
-src\Png$(DOTOBJ): src\Png.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -osrc\Png$(DOTOBJ) -c src\Png.cpp
-src\PackedDIB$(DOTOBJ): src\PackedDIB.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -osrc\PackedDIB$(DOTOBJ) -c src\PackedDIB.cpp
+build\RisohEditor$(DOTEXE): build $(OBJS) src\RisohEditor_res.res
+	bcc32 $(CXXFLAGS) -ebuild\RisohEditor$(DOTEXE) $(OBJS)
+	brc32 src\RisohEditor_res.res build\RisohEditor$(DOTEXE)
+
+build\RisohEditor$(DOTOBJ): build src\RisohEditor.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
+build\Png$(DOTOBJ): build src\Png.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\Png$(DOTOBJ) -c src\Png.cpp
+build\PackedDIB$(DOTOBJ): build src\PackedDIB.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\PackedDIB$(DOTOBJ) -c src\PackedDIB.cpp
 
 src\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
 	brc32 -r -fosrc\RisohEditor_res.res src\RisohEditor_res.rc
