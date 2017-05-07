@@ -3669,7 +3669,15 @@ WinMain(HINSTANCE   hInstance,
         if (!g_ConstantsDB.LoadFromFile(szPath))
         {
             lstrcpyW(pch, L"\\..\\..\\Constants.txt");
-            g_ConstantsDB.LoadFromFile(szPath);
+            if (!g_ConstantsDB.LoadFromFile(szPath))
+            {
+                lstrcpyW(pch, L"\\..\\..\\Constants.txt");
+                if (!g_ConstantsDB.LoadFromFile(szPath))
+                {
+                    MessageBoxA(NULL, "File Constants.txt was not found!", NULL,
+                                MB_ICONERROR);
+                }
+            }
         }
     }
 
