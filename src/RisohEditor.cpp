@@ -522,7 +522,7 @@ HWND ToolBar_Create(HWND hwndParent)
 {
     HWND hwndTB;
     hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | /*WS_VISIBLE | */ WS_BORDER | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        WS_CHILD | /*WS_VISIBLE | */ CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
         0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
     if (hwndTB == NULL)
         return hwndTB;
@@ -611,7 +611,7 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
-void MainDlg_OnDeleteRes(HWND hwnd)
+void MainWnd_OnDeleteRes(HWND hwnd)
 {
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
     if (hItem == NULL)
@@ -620,7 +620,7 @@ void MainDlg_OnDeleteRes(HWND hwnd)
     TV_Delete(g_hTreeView, hItem, g_Entries);
 }
 
-void MainDlg_OnExtractBin(HWND hwnd)
+void MainWnd_OnExtractBin(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (HIWORD(lParam) == I_NONE)
@@ -668,7 +668,7 @@ void MainDlg_OnExtractBin(HWND hwnd)
     }
 }
 
-void MainDlg_OnExtractIcon(HWND hwnd)
+void MainWnd_OnExtractIcon(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (HIWORD(lParam) != I_NAME)
@@ -698,7 +698,7 @@ void MainDlg_OnExtractIcon(HWND hwnd)
     }
 }
 
-void MainDlg_OnExtractCursor(HWND hwnd)
+void MainWnd_OnExtractCursor(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (HIWORD(lParam) != I_NAME)
@@ -728,7 +728,7 @@ void MainDlg_OnExtractCursor(HWND hwnd)
     }
 }
 
-void MainDlg_OnExtractBitmap(HWND hwnd)
+void MainWnd_OnExtractBitmap(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (HIWORD(lParam) != I_NAME)
@@ -1024,7 +1024,7 @@ ReplaceBinDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void MainDlg_OnReplaceBin(HWND hwnd)
+void MainWnd_OnReplaceBin(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (HIWORD(lParam) != I_NAME)
@@ -1130,7 +1130,7 @@ TestMenuDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
-void MainDlg_OnTest(HWND hwnd)
+void MainWnd_OnTest(HWND hwnd)
 {
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
     if (hItem == NULL)
@@ -2203,7 +2203,7 @@ void MainWnd_OnAddDialog(HWND hwnd)
 {
 }
 
-void MainDlg_OnAbout(HWND hwnd)
+void MainWnd_OnAbout(HWND hwnd)
 {
     MSGBOXPARAMSW Params;
     ZeroMemory(&Params, sizeof(Params));
@@ -2272,388 +2272,24 @@ void MainWnd_OnImport(HWND hwnd)
     }
 }
 
-void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+VOID MainWnd_HidePreview(HWND hwnd)
 {
-    switch (id)
+    if (g_hBitmap)
     {
-    case ID_NEW:
-        DoSetFile(hwnd, NULL);
-        g_Entries.clear();
-        TV_RefreshInfo(g_hTreeView, g_Entries);
-        break;
-    case ID_OPEN:
-        MainWnd_OnOpen(hwnd);
-        break;
-    case ID_SAVEAS:
-        MainWnd_OnSaveAs(hwnd);
-        break;
-    case ID_IMPORT:
-        MainWnd_OnImport(hwnd);
-        break;
-    case ID_EXIT:
-        DestroyWindow(hwnd);
-        break;
-    case ID_ADDICON:
-        MainWnd_OnAddIcon(hwnd);
-        break;
-    case ID_ADDCURSOR:
-        MainWnd_OnAddCursor(hwnd);
-        break;
-    case ID_ADDBITMAP:
-        MainWnd_OnAddBitmap(hwnd);
-        break;
-    case ID_ADDDIALOG:
-        MainWnd_OnAddDialog(hwnd);
-        break;
-    case ID_ADDBIN:
-        MainWnd_OnAddBin(hwnd);
-        break;
-    case ID_REPLACEICON:
-        MainWnd_OnReplaceIcon(hwnd);
-        break;
-    case ID_REPLACECURSOR:
-        break;
-    case ID_REPLACEBITMAP:
-        MainWnd_OnReplaceBitmap(hwnd);
-        break;
-    case ID_REPLACEBIN:
-        MainDlg_OnReplaceBin(hwnd);
-        break;
-    case ID_DELETERES:
-        MainDlg_OnDeleteRes(hwnd);
-        break;
-    case ID_EDITDIALOG:
-        break;
-    case ID_EXTRACTICON:
-        MainDlg_OnExtractIcon(hwnd);
-        break;
-    case ID_EXTRACTCURSOR:
-        MainDlg_OnExtractCursor(hwnd);
-        break;
-    case ID_EXTRACTBITMAP:
-        MainDlg_OnExtractBitmap(hwnd);
-        break;
-    case ID_EXTRACTBIN:
-        MainDlg_OnExtractBin(hwnd);
-        break;
-    case ID_ABOUT:
-        MainDlg_OnAbout(hwnd);
-        break;
-    case ID_TEST:
-        MainDlg_OnTest(hwnd);
-        break;
-    }
-}
-
-void MainWnd_OnDestroy(HWND hwnd)
-{
-    DeleteObject(g_hBitmap);
-    DeleteObject(g_hNormalFont);
-    DeleteObject(g_hSmallFont);
-    ImageList_Destroy(g_hImageList);
-    DestroyIcon(g_hFileIcon);
-    DestroyIcon(g_hFolderIcon);
-    PostQuitMessage(0);
-}
-
-void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
-{
-    WCHAR File[MAX_PATH], *pch;
-
-    DragQueryFileW(hdrop, 0, File, _countof(File));
-    DragFinish(hdrop);
-
-    pch = wcsrchr(File, L'.');
-    if (pch)
-    {
-        if (lstrcmpiW(pch, L".ico") == 0)
-        {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDICON), hwnd,
-                            AddIconDialogProc, (LPARAM)File);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".cur") == 0)
-        {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDCURSOR), hwnd,
-                            AddCursorDialogProc, (LPARAM)File);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".bmp") == 0)
-        {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
-                            AddBitmapDialogProc, (LPARAM)File);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".png") == 0)
-        {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
-                            AddBitmapDialogProc, (LPARAM)File);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".res") == 0)
-        {
-            DoLoad(hwnd, File);
-            return;
-        }
+        DeleteObject(g_hBitmap);
+        g_hBitmap = NULL;
     }
 
-    DoLoad(hwnd, File);
-}
+    SetWindowTextW(g_hBinEdit, NULL);
+    Edit_SetModify(g_hBinEdit, FALSE);
 
-void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
-{
-    SendMessageW(g_hToolBar, TB_AUTOSIZE, 0, 0);
+    ShowWindow(g_hSrcEdit, SW_HIDE);
+    Edit_SetModify(g_hSrcEdit, FALSE);
+    
+    ShowWindow(g_hBmpView, SW_HIDE);
+    ShowWindow(g_hToolBar, SW_HIDE);
 
-    RECT ToolRect, ClientRect;
-
-    GetClientRect(hwnd, &ClientRect);
-    cx = ClientRect.right - ClientRect.left;
-    cy = ClientRect.bottom - ClientRect.top ;
-
-    INT x = 0, y = 0;
-    if (::IsWindowVisible(g_hToolBar))
-    {
-        GetWindowRect(g_hToolBar, &ToolRect);
-        y += ToolRect.bottom - ToolRect.top;
-        cy -= ToolRect.bottom - ToolRect.top;
-    }
-
-#define TV_WIDTH 250
-#define SE_WIDTH 256
-#define BE_HEIGHT 100
-
-    if (::IsWindowVisible(g_hTreeView))
-    {
-        MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
-        x += TV_WIDTH;
-        cx -= TV_WIDTH;
-    }
-
-    if (IsWindowVisible(g_hSrcEdit))
-    {
-        if (::IsWindowVisible(g_hToolBar))
-        {
-            MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
-        }
-        else if (IsWindowVisible(g_hBmpView))
-        {
-            MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-        }
-        else
-        {
-            MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-        }
-    }
-    else
-    {
-        MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
-    }
-}
-
-std::wstring
-DumpDataAsString(const std::vector<BYTE>& data)
-{
-    std::wstring ret;
-    WCHAR sz[64];
-    DWORD addr, size = DWORD(data.size());
-
-    if (data.empty())
-    {
-        ret = L"(Empty)";
-        return ret;
-    }
-
-    ret.reserve(data.size() * 3);   // for speed
-
-    ret +=
-        L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
-        L"--------  -----------------------  -----------------------  ----------------\r\n";
-
-    for (addr = 0; ; ++addr)
-    {
-        if ((addr & 0xF) == 0)
-        {
-            wsprintfW(sz, L"%08lX  ", addr);
-            ret += sz;
-
-            bool flag = false;
-            for (DWORD i = 0; i < 16; ++i)
-            {
-                if (i == 8)
-                    ret += L' ';
-                DWORD offset = addr + i;
-                if (offset < size)
-                {
-                    wsprintfW(sz, L"%02X ", data[offset]);
-                    ret += sz;
-                }
-                else
-                {
-                    ret += L"   ";
-                    flag = true;
-                }
-            }
-
-            ret += L' ';
-
-            for (DWORD i = 0; i < 16; ++i)
-            {
-                DWORD offset = addr + i;
-                if (offset < size)
-                {
-                    if (data[offset] == 0)
-                        ret += L' ';
-                    else if (data[offset] < 0x20 || data[offset] > 0x7F)
-                        ret += L'.';
-                    else
-                        ret += WCHAR(data[offset]);
-                }
-                else
-                {
-                    ret += L' ';
-                    flag = true;
-                }
-            }
-
-            ret += L"\r\n";
-
-            if (flag)
-                break;
-        }
-    }
-
-    return ret;
-}
-
-std::wstring DumpCursorInfo(const BITMAP& bm)
-{
-    std::wstring ret;
-
-    using namespace std;
-    WCHAR sz[128];
-    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
-              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
-    ret = sz;
-
-    return ret;
-}
-
-std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
-{
-    std::wstring ret;
-    WCHAR sz[128];
-
-    ICONDIR dir;
-    if (data.size() < sizeof(dir))
-        return ret;
-
-    memcpy(&dir, &data[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != 1 || dir.idCount == 0)
-    {
-        return ret;
-    }
-
-    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
-    ret += sz;
-    ret += L"-------\r\n";
-
-    const GRPICONDIRENTRY *pEntries;
-    pEntries = (const GRPICONDIRENTRY *)&data[sizeof(dir)];
-
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        WORD Width = pEntries[i].bWidth;
-        WORD Height = pEntries[i].bHeight;
-        WORD nID = pEntries[i].nID;
-
-        if (Width == 0)
-            Width = 256;
-        if (Height == 0)
-            Height = 256;
-
-        wsprintfW(sz, L"Image #%u: Width %u, Height %u, BitCount %u, ID %u\r\n",
-                      i, Width, Height, pEntries[i].wBitCount, nID);
-        ret += sz;
-    }
-
-    return ret;
-}
-
-std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
-{
-    std::wstring ret;
-    WCHAR sz[128];
-
-    ICONDIR dir;
-    if (data.size() < sizeof(dir))
-        return ret;
-
-    memcpy(&dir, &data[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
-    {
-        return ret;
-    }
-
-    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
-    ret += sz;
-    ret += L"-------\r\n";
-
-    const GRPCURSORDIRENTRY *pEntries;
-    pEntries = (const GRPCURSORDIRENTRY *)&data[sizeof(dir)];
-
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        WORD Width = pEntries[i].wWidth;
-        WORD Height = pEntries[i].wHeight / 2;
-        WORD BitCount = pEntries[i].wBitCount;
-        WORD nID = pEntries[i].nID;
-        WORD xHotSpot = 0;
-        WORD yHotSpot = 0;
-
-        INT k = Res_Find(g_Entries, RT_CURSOR, nID, 0xFFFF);
-        if (k != -1)
-        {
-            const ResEntry& CursorEntry = g_Entries[k];
-            LOCALHEADER header;
-            if (CursorEntry.size() >= sizeof(header))
-            {
-                memcpy(&header, &CursorEntry[0], sizeof(header));
-                xHotSpot = header.xHotSpot;
-                yHotSpot = header.yHotSpot;
-            }
-        }
-
-        if (Width == 0)
-            Width = 256;
-        if (Height == 0)
-            Height = 256;
-
-        wsprintfW(sz,
-                      L"Image #%u: Width %u, Height %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n",
-                      i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
-        ret += sz;
-    }
-
-    return ret;
-}
-
-std::wstring DumpBitmapInfo(HBITMAP hbm)
-{
-    std::wstring ret;
-    BITMAP bm;
-    if (!GetObjectW(hbm, sizeof(bm), &bm))
-        return ret;
-
-    WCHAR sz[64];
-    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
-              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
-    ret = sz;
-    return ret;
+    PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
 HBITMAP Create24BppBitmapDx(INT width, INT height)
@@ -2732,20 +2368,59 @@ CreateBitmapFromIconOrPng(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     return hbmIcon;
 }
 
-HBITMAP
-CreateBitmapFromCursor(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+std::wstring DumpBitmapInfo(HBITMAP hbm)
 {
-    HBITMAP hbmCursor;
+    std::wstring ret;
+    BITMAP bm;
+    if (!GetObjectW(hbm, sizeof(bm), &bm))
+        return ret;
 
-    HICON hCursor;
-    hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-    assert(hCursor);
-    hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+    WCHAR sz[64];
+    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
+              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
+    ret = sz;
+    return ret;
+}
+
+void MainWnd_PreviewIcon(HWND hwnd, const ResEntry& Entry)
+{
+    BITMAP bm;
+    g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
+
+    std::wstring str = DumpBitmapInfo(g_hBitmap);
+    SetWindowTextW(g_hSrcEdit, str.c_str());
+    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+}
+
+std::wstring DumpCursorInfo(const BITMAP& bm)
+{
+    std::wstring ret;
+
+    using namespace std;
+    WCHAR sz[128];
+    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
+              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
+    ret = sz;
+
+    return ret;
+}
+
+void MainWnd_PreviewCursor(HWND hwnd, const ResEntry& Entry)
+{
+    BITMAP bm;
+    HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+    g_hBitmap = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+    std::wstring str = DumpCursorInfo(bm);
     DestroyCursor(hCursor);
 
-    GetObject(hbmCursor, sizeof(bm), &bm);
-    assert(hbmCursor);
-    return hbmCursor;
+    SetWindowTextW(g_hSrcEdit, str.c_str());
+    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
 }
 
 HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
@@ -2822,6 +2497,76 @@ HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
     }
 
     return hbm;
+}
+
+std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
+{
+    std::wstring ret;
+    WCHAR sz[128];
+
+    ICONDIR dir;
+    if (data.size() < sizeof(dir))
+        return ret;
+
+    memcpy(&dir, &data[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != 1 || dir.idCount == 0)
+    {
+        return ret;
+    }
+
+    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
+    ret += sz;
+    ret += L"-------\r\n";
+
+    const GRPICONDIRENTRY *pEntries;
+    pEntries = (const GRPICONDIRENTRY *)&data[sizeof(dir)];
+
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        WORD Width = pEntries[i].bWidth;
+        WORD Height = pEntries[i].bHeight;
+        WORD nID = pEntries[i].nID;
+
+        if (Width == 0)
+            Width = 256;
+        if (Height == 0)
+            Height = 256;
+
+        wsprintfW(sz, L"Image #%u: Width %u, Height %u, BitCount %u, ID %u\r\n",
+                      i, Width, Height, pEntries[i].wBitCount, nID);
+        ret += sz;
+    }
+
+    return ret;
+}
+
+void MainWnd_PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
+{
+    g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
+
+    std::wstring str = DumpGroupIconInfo(Entry.data);
+    SetWindowTextW(g_hSrcEdit, str.c_str());
+    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+}
+
+HBITMAP
+CreateBitmapFromCursor(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+{
+    HBITMAP hbmCursor;
+
+    HICON hCursor;
+    hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+    assert(hCursor);
+    hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+    DestroyCursor(hCursor);
+
+    GetObject(hbmCursor, sizeof(bm), &bm);
+    assert(hbmCursor);
+    return hbmCursor;
 }
 
 HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
@@ -2918,64 +2663,63 @@ HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
     return hbm;
 }
 
-VOID MainWnd_HidePreview(HWND hwnd)
+std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
 {
-    if (g_hBitmap)
+    std::wstring ret;
+    WCHAR sz[128];
+
+    ICONDIR dir;
+    if (data.size() < sizeof(dir))
+        return ret;
+
+    memcpy(&dir, &data[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
     {
-        DeleteObject(g_hBitmap);
-        g_hBitmap = NULL;
+        return ret;
     }
 
-    SetWindowTextW(g_hBinEdit, NULL);
-    Edit_SetModify(g_hBinEdit, FALSE);
+    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
+    ret += sz;
+    ret += L"-------\r\n";
 
-    ShowWindow(g_hSrcEdit, SW_HIDE);
-    Edit_SetModify(g_hSrcEdit, FALSE);
-    
-    ShowWindow(g_hBmpView, SW_HIDE);
-    ShowWindow(g_hToolBar, SW_HIDE);
+    const GRPCURSORDIRENTRY *pEntries;
+    pEntries = (const GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
-    PostMessage(hwnd, WM_SIZE, 0, 0);
-}
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        WORD Width = pEntries[i].wWidth;
+        WORD Height = pEntries[i].wHeight / 2;
+        WORD BitCount = pEntries[i].wBitCount;
+        WORD nID = pEntries[i].nID;
+        WORD xHotSpot = 0;
+        WORD yHotSpot = 0;
 
-void MainWnd_PreviewIcon(HWND hwnd, const ResEntry& Entry)
-{
-    BITMAP bm;
-    g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
+        INT k = Res_Find(g_Entries, RT_CURSOR, nID, 0xFFFF);
+        if (k != -1)
+        {
+            const ResEntry& CursorEntry = g_Entries[k];
+            LOCALHEADER header;
+            if (CursorEntry.size() >= sizeof(header))
+            {
+                memcpy(&header, &CursorEntry[0], sizeof(header));
+                xHotSpot = header.xHotSpot;
+                yHotSpot = header.yHotSpot;
+            }
+        }
 
-    std::wstring str = DumpBitmapInfo(g_hBitmap);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        if (Width == 0)
+            Width = 256;
+        if (Height == 0)
+            Height = 256;
 
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
+        wsprintfW(sz,
+                      L"Image #%u: Width %u, Height %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n",
+                      i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
+        ret += sz;
+    }
 
-void MainWnd_PreviewCursor(HWND hwnd, const ResEntry& Entry)
-{
-    BITMAP bm;
-    HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-    g_hBitmap = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
-    std::wstring str = DumpCursorInfo(bm);
-    DestroyCursor(hCursor);
-
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
-
-void MainWnd_PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
-{
-    g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
-
-    std::wstring str = DumpGroupIconInfo(Entry.data);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    return ret;
 }
 
 void MainWnd_PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
@@ -3131,6 +2875,81 @@ void MainWnd_PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
 {
 }
 
+std::wstring
+DumpDataAsString(const std::vector<BYTE>& data)
+{
+    std::wstring ret;
+    WCHAR sz[64];
+    DWORD addr, size = DWORD(data.size());
+
+    if (data.empty())
+    {
+        ret = L"(Empty)";
+        return ret;
+    }
+
+    ret.reserve(data.size() * 3);   // for speed
+
+    ret +=
+        L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
+        L"--------  -----------------------  -----------------------  ----------------\r\n";
+
+    for (addr = 0; ; ++addr)
+    {
+        if ((addr & 0xF) == 0)
+        {
+            wsprintfW(sz, L"%08lX  ", addr);
+            ret += sz;
+
+            bool flag = false;
+            for (DWORD i = 0; i < 16; ++i)
+            {
+                if (i == 8)
+                    ret += L' ';
+                DWORD offset = addr + i;
+                if (offset < size)
+                {
+                    wsprintfW(sz, L"%02X ", data[offset]);
+                    ret += sz;
+                }
+                else
+                {
+                    ret += L"   ";
+                    flag = true;
+                }
+            }
+
+            ret += L' ';
+
+            for (DWORD i = 0; i < 16; ++i)
+            {
+                DWORD offset = addr + i;
+                if (offset < size)
+                {
+                    if (data[offset] == 0)
+                        ret += L' ';
+                    else if (data[offset] < 0x20 || data[offset] > 0x7F)
+                        ret += L'.';
+                    else
+                        ret += WCHAR(data[offset]);
+                }
+                else
+                {
+                    ret += L' ';
+                    flag = true;
+                }
+            }
+
+            ret += L"\r\n";
+
+            if (flag)
+                break;
+        }
+    }
+
+    return ret;
+}
+
 void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
 {
     MainWnd_HidePreview(hwnd);
@@ -3197,6 +3016,54 @@ void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
     PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
+void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
+{
+    MainWnd_HidePreview(hwnd);
+
+    if (HIWORD(lParam) == I_LANG)
+    {
+        WORD i = LOWORD(lParam);
+        MainWnd_Preview(hwnd, g_Entries[i]);
+    }
+    else if (HIWORD(lParam) == I_STRING)
+    {
+        WORD i = LOWORD(lParam);
+
+        std::wstring str = DumpDataAsString(g_Entries[i].data);
+        SetWindowTextW(g_hBinEdit, str.c_str());
+
+        MainWnd_PreviewStringTable(hwnd, g_Entries[i]);
+    }
+    else if (HIWORD(lParam) == I_MESSAGE)
+    {
+        WORD i = LOWORD(lParam);
+
+        std::wstring str = DumpDataAsString(g_Entries[i].data);
+        SetWindowTextW(g_hBinEdit, str.c_str());
+
+        MainWnd_PreviewMessageTable(hwnd, g_Entries[i]);
+    }
+
+    if (DoubleClick)
+    {
+        SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
+        Edit_SetReadOnly(g_hSrcEdit, FALSE);
+
+        ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
+        ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+        ShowWindow(g_hTreeView, SW_HIDE);
+    }
+    else
+    {
+        SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
+        Edit_SetReadOnly(g_hSrcEdit, TRUE);
+
+        ShowWindow(g_hToolBar, SW_HIDE);
+        ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+        ShowWindow(g_hTreeView, SW_SHOW);
+    }
+}
+
 LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     if (pnmhdr->code == TVN_SELCHANGED || pnmhdr->code == NM_DBLCLK)
@@ -3204,54 +3071,11 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
         LPARAM lParam = pTV->itemNew.lParam;
 
-        MainWnd_HidePreview(hwnd);
-
-        if (HIWORD(lParam) == I_LANG)
-        {
-            WORD i = LOWORD(lParam);
-            MainWnd_Preview(hwnd, g_Entries[i]);
-        }
-        else if (HIWORD(lParam) == I_STRING)
-        {
-            WORD i = LOWORD(lParam);
-
-            std::wstring str = DumpDataAsString(g_Entries[i].data);
-            SetWindowTextW(g_hBinEdit, str.c_str());
-
-            MainWnd_PreviewStringTable(hwnd, g_Entries[i]);
-        }
-        else if (HIWORD(lParam) == I_MESSAGE)
-        {
-            WORD i = LOWORD(lParam);
-
-            std::wstring str = DumpDataAsString(g_Entries[i].data);
-            SetWindowTextW(g_hBinEdit, str.c_str());
-
-            MainWnd_PreviewMessageTable(hwnd, g_Entries[i]);
-        }
-
-        if (pnmhdr->code == NM_DBLCLK)
-        {
-            SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
-            Edit_SetReadOnly(g_hSrcEdit, FALSE);
-
-            ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
-            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
-            ShowWindow(g_hTreeView, SW_HIDE);
-        }
-        else
-        {
-            SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
-            Edit_SetReadOnly(g_hSrcEdit, TRUE);
-
-            ShowWindow(g_hToolBar, SW_HIDE);
-            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
-            ShowWindow(g_hTreeView, SW_SHOW);
-        }
+        MainWnd_SelectTV(hwnd, lParam, pnmhdr->code == NM_DBLCLK);
 
         PostMessage(hwnd, WM_SIZE, 0, 0);
     }
-    if (pnmhdr->code == TVN_KEYDOWN)
+    else if (pnmhdr->code == TVN_KEYDOWN)
     {
         TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
         if (pTVKD->wVKey == VK_DELETE)
@@ -3260,6 +3084,196 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         }
     }
     return 0;
+}
+
+void MainWnd_OnCancelEdit(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    MainWnd_SelectTV(hwnd, lParam, FALSE);
+}
+
+void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    switch (id)
+    {
+    case ID_NEW:
+        DoSetFile(hwnd, NULL);
+        g_Entries.clear();
+        TV_RefreshInfo(g_hTreeView, g_Entries);
+        break;
+    case ID_OPEN:
+        MainWnd_OnOpen(hwnd);
+        break;
+    case ID_SAVEAS:
+        MainWnd_OnSaveAs(hwnd);
+        break;
+    case ID_IMPORT:
+        MainWnd_OnImport(hwnd);
+        break;
+    case ID_EXIT:
+        DestroyWindow(hwnd);
+        break;
+    case ID_ADDICON:
+        MainWnd_OnAddIcon(hwnd);
+        break;
+    case ID_ADDCURSOR:
+        MainWnd_OnAddCursor(hwnd);
+        break;
+    case ID_ADDBITMAP:
+        MainWnd_OnAddBitmap(hwnd);
+        break;
+    case ID_ADDDIALOG:
+        MainWnd_OnAddDialog(hwnd);
+        break;
+    case ID_ADDBIN:
+        MainWnd_OnAddBin(hwnd);
+        break;
+    case ID_REPLACEICON:
+        MainWnd_OnReplaceIcon(hwnd);
+        break;
+    case ID_REPLACECURSOR:
+        break;
+    case ID_REPLACEBITMAP:
+        MainWnd_OnReplaceBitmap(hwnd);
+        break;
+    case ID_REPLACEBIN:
+        MainWnd_OnReplaceBin(hwnd);
+        break;
+    case ID_DELETERES:
+        MainWnd_OnDeleteRes(hwnd);
+        break;
+    case ID_EDITDIALOG:
+        break;
+    case ID_EXTRACTICON:
+        MainWnd_OnExtractIcon(hwnd);
+        break;
+    case ID_EXTRACTCURSOR:
+        MainWnd_OnExtractCursor(hwnd);
+        break;
+    case ID_EXTRACTBITMAP:
+        MainWnd_OnExtractBitmap(hwnd);
+        break;
+    case ID_EXTRACTBIN:
+        MainWnd_OnExtractBin(hwnd);
+        break;
+    case ID_ABOUT:
+        MainWnd_OnAbout(hwnd);
+        break;
+    case ID_TEST:
+        MainWnd_OnTest(hwnd);
+        break;
+    case ID_CANCELEDIT:
+        MainWnd_OnCancelEdit(hwnd);
+        break;
+    }
+}
+
+void MainWnd_OnDestroy(HWND hwnd)
+{
+    DeleteObject(g_hBitmap);
+    DeleteObject(g_hNormalFont);
+    DeleteObject(g_hSmallFont);
+    ImageList_Destroy(g_hImageList);
+    DestroyIcon(g_hFileIcon);
+    DestroyIcon(g_hFolderIcon);
+    PostQuitMessage(0);
+}
+
+void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
+{
+    WCHAR File[MAX_PATH], *pch;
+
+    DragQueryFileW(hdrop, 0, File, _countof(File));
+    DragFinish(hdrop);
+
+    pch = wcsrchr(File, L'.');
+    if (pch)
+    {
+        if (lstrcmpiW(pch, L".ico") == 0)
+        {
+            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDICON), hwnd,
+                            AddIconDialogProc, (LPARAM)File);
+            return;
+        }
+        else if (lstrcmpiW(pch, L".cur") == 0)
+        {
+            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDCURSOR), hwnd,
+                            AddCursorDialogProc, (LPARAM)File);
+            return;
+        }
+        else if (lstrcmpiW(pch, L".bmp") == 0)
+        {
+            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
+                            AddBitmapDialogProc, (LPARAM)File);
+            return;
+        }
+        else if (lstrcmpiW(pch, L".png") == 0)
+        {
+            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
+                            AddBitmapDialogProc, (LPARAM)File);
+            return;
+        }
+        else if (lstrcmpiW(pch, L".res") == 0)
+        {
+            DoLoad(hwnd, File);
+            return;
+        }
+    }
+
+    DoLoad(hwnd, File);
+}
+
+void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
+{
+    SendMessageW(g_hToolBar, TB_AUTOSIZE, 0, 0);
+
+    RECT ToolRect, ClientRect;
+
+    GetClientRect(hwnd, &ClientRect);
+    cx = ClientRect.right - ClientRect.left;
+    cy = ClientRect.bottom - ClientRect.top ;
+
+    INT x = 0, y = 0;
+    if (::IsWindowVisible(g_hToolBar))
+    {
+        GetWindowRect(g_hToolBar, &ToolRect);
+        y += ToolRect.bottom - ToolRect.top;
+        cy -= ToolRect.bottom - ToolRect.top;
+    }
+
+#define TV_WIDTH 250
+#define SE_WIDTH 256
+#define BE_HEIGHT 100
+
+    if (::IsWindowVisible(g_hTreeView))
+    {
+        MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
+        x += TV_WIDTH;
+        cx -= TV_WIDTH;
+    }
+
+    if (IsWindowVisible(g_hSrcEdit))
+    {
+        if (::IsWindowVisible(g_hToolBar))
+        {
+            MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+        }
+        else if (IsWindowVisible(g_hBmpView))
+        {
+            MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+        }
+        else
+        {
+            MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+        }
+    }
+    else
+    {
+        MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
+    }
 }
 
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
