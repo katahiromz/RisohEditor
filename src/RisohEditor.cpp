@@ -3817,6 +3817,10 @@ Res_GetLangName(WORD Lang)
     return std::wstring(sz);
 }
 
+#ifndef INVALID_FILE_ATTRIBUTES
+    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
+#endif
+
 BOOL CheckDataFolder(VOID)
 {
     WCHAR szPath[MAX_PATH], *pch;
@@ -3846,10 +3850,6 @@ BOOL CheckDataFolder(VOID)
     lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
     return TRUE;
 }
-
-#ifndef INVALID_FILE_ATTRIBUTES
-    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
-#endif
 
 INT CheckData(VOID)
 {
