@@ -4,6 +4,7 @@
 
 HINSTANCE   g_hInstance = NULL;
 HWND        g_hMainWnd = NULL;
+HMENU       g_hMenu = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"Resource Editor by katahiromz";
 WCHAR       g_szBmpView[] = L"RisohEditor BmpView Class";
 INT         g_argc = 0;
@@ -605,6 +606,8 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         DoLoad(hwnd, g_wargv[1]);
     }
+
+    g_hMenu = GetMenu(hwnd);
 
     DragAcceptFiles(hwnd, TRUE);
     SetFocus(g_hTreeView);
@@ -3052,6 +3055,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_HIDE);
+        SetMenu(hwnd, NULL);
     }
     else
     {
@@ -3061,6 +3065,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hToolBar, SW_HIDE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_SHOW);
+        SetMenu(hwnd, g_hMenu);
     }
 }
 
