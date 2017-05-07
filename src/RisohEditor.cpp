@@ -30,6 +30,7 @@ HICON       g_hIcon = NULL;
 HCURSOR     g_hCursor = NULL;
 
 HFONT       g_hNormalFont = NULL;
+HFONT       g_hLargeFont = NULL;
 HFONT       g_hSmallFont = NULL;
 
 HACCEL      g_hAccel = NULL;
@@ -475,20 +476,16 @@ HICON LoadSmallIconDx(UINT id)
 
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_DELETE },
-    { -1, ID_REPLACERES, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_REPLACE },
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_HIDEDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_HIDEDIALOG },
 };
 
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_DELETE },
-    { -1, ID_EDITRES, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_EDIT },
-};
-
-TBBUTTON g_buttons2[] =
-{
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_SHOWDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_SHOWDIALOG },
 };
 
 void ToolBar_Update(HWND hwnd, INT iType)
@@ -503,9 +500,6 @@ void ToolBar_Update(HWND hwnd, INT iType)
         break;
     case 1:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
-        break;
-    case 2:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
         break;
     }
 }
@@ -528,7 +522,7 @@ HWND ToolBar_Create(HWND hwndParent)
 {
     HWND hwndTB;
     hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | WS_VISIBLE | WS_BORDER | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        WS_CHILD | /*WS_VISIBLE | */ WS_BORDER | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
         0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
     if (hwndTB == NULL)
         return hwndTB;
@@ -538,7 +532,6 @@ HWND ToolBar_Create(HWND hwndParent)
 
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
 
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
@@ -577,29 +570,35 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (g_hToolBar == NULL)
         return FALSE;
 
-    g_hNormalFont = GetStockFont(DEFAULT_GUI_FONT);
     g_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
         L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
         (HMENU)3, g_hInstance, NULL);
-    SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
     ShowWindow(g_hSrcEdit, FALSE);
 
     LOGFONTW lf;
-    ZeroMemory(&lf, sizeof(lf));
-    lf.lfHeight = 10;
-    lf.lfWeight = 0;
-    lf.lfCharSet = DEFAULT_CHARSET;
-    lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+    lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
     lf.lfFaceName[0] = UNICODE_NULL;
+
+    lf.lfHeight = 11;
     g_hSmallFont = CreateFontIndirectW(&lf);
     assert(g_hSmallFont);
+
+    lf.lfHeight = 13;
+    g_hNormalFont = ::CreateFontIndirectW(&lf);
+    assert(g_hNormalFont);
+
+    lf.lfHeight = 15;
+    g_hLargeFont = ::CreateFontIndirectW(&lf);
+    assert(g_hLargeFont);
+
+    SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
     SetWindowFont(g_hBinEdit, g_hSmallFont, TRUE);
 
     dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
     g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
         g_szBmpView, NULL, dwStyle, 0, 0, 0, 0, hwnd,
         (HMENU)4, g_hInstance, NULL);
-    
     ShowWindow(g_hBmpView, FALSE);
 
     if (g_argc >= 2)
@@ -2407,34 +2406,50 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
     RECT ToolRect, ClientRect;
 
-    GetWindowRect(g_hToolBar, &ToolRect);
-
     GetClientRect(hwnd, &ClientRect);
     cx = ClientRect.right - ClientRect.left;
-    cy = ClientRect.bottom - ClientRect.top - (ToolRect.bottom - ToolRect.top);
+    cy = ClientRect.bottom - ClientRect.top ;
+
+    INT x = 0, y = 0;
+    if (::IsWindowVisible(g_hToolBar))
+    {
+        GetWindowRect(g_hToolBar, &ToolRect);
+        y += ToolRect.bottom - ToolRect.top;
+        cy -= ToolRect.bottom - ToolRect.top;
+    }
 
 #define TV_WIDTH 250
-    MoveWindow(g_hTreeView, 0, 0, TV_WIDTH, cy, TRUE);
+#define SE_WIDTH 256
+#define BE_HEIGHT 100
+
+    if (::IsWindowVisible(g_hTreeView))
+    {
+        MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
+        x += TV_WIDTH;
+        cx -= TV_WIDTH;
+    }
 
     if (IsWindowVisible(g_hSrcEdit))
     {
-#define SE_WIDTH 256
-#define BE_HEIGHT 100
-        if (IsWindowVisible(g_hBmpView))
+        if (::IsWindowVisible(g_hToolBar))
         {
-            MoveWindow(g_hSrcEdit, TV_WIDTH, ToolRect.top, SE_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBmpView, TV_WIDTH + SE_WIDTH, ToolRect.top, cx - (TV_WIDTH + SE_WIDTH), cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, TV_WIDTH, ToolRect.top + cy - BE_HEIGHT, cx - TV_WIDTH, BE_HEIGHT, TRUE);
+            MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+        }
+        else if (IsWindowVisible(g_hBmpView))
+        {
+            MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
         }
         else
         {
-            MoveWindow(g_hSrcEdit, TV_WIDTH, ToolRect.top, cx - TV_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, TV_WIDTH, ToolRect.top + cy - BE_HEIGHT, cx - TV_WIDTH, BE_HEIGHT, TRUE);
+            MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
         }
     }
     else
     {
-        MoveWindow(g_hBinEdit, TV_WIDTH, ToolRect.top, cx - TV_WIDTH, cy, TRUE);
+        MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
     }
 }
 
@@ -2918,6 +2933,8 @@ VOID MainWnd_HidePreview(HWND hwnd)
     Edit_SetModify(g_hSrcEdit, FALSE);
     
     ShowWindow(g_hBmpView, SW_HIDE);
+    ShowWindow(g_hToolBar, SW_HIDE);
+
     PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
@@ -3182,7 +3199,7 @@ void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
 
 LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
-    if (pnmhdr->code == TVN_SELCHANGED)
+    if (pnmhdr->code == TVN_SELCHANGED || pnmhdr->code == NM_DBLCLK)
     {
         NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
         LPARAM lParam = pTV->itemNew.lParam;
@@ -3197,13 +3214,41 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         else if (HIWORD(lParam) == I_STRING)
         {
             WORD i = LOWORD(lParam);
+
+            std::wstring str = DumpDataAsString(g_Entries[i].data);
+            SetWindowTextW(g_hBinEdit, str.c_str());
+
             MainWnd_PreviewStringTable(hwnd, g_Entries[i]);
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
             WORD i = LOWORD(lParam);
+
+            std::wstring str = DumpDataAsString(g_Entries[i].data);
+            SetWindowTextW(g_hBinEdit, str.c_str());
+
             MainWnd_PreviewMessageTable(hwnd, g_Entries[i]);
         }
+
+        if (pnmhdr->code == NM_DBLCLK)
+        {
+            SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
+            Edit_SetReadOnly(g_hSrcEdit, FALSE);
+
+            ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
+            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(g_hTreeView, SW_HIDE);
+        }
+        else
+        {
+            SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
+            Edit_SetReadOnly(g_hSrcEdit, TRUE);
+
+            ShowWindow(g_hToolBar, SW_HIDE);
+            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(g_hTreeView, SW_SHOW);
+        }
+
         PostMessage(hwnd, WM_SIZE, 0, 0);
     }
     if (pnmhdr->code == TVN_KEYDOWN)
@@ -3724,7 +3769,7 @@ WinMain(HINSTANCE   hInstance,
     }
 
     g_hMainWnd = CreateWindowW(s_pszClassName, g_szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 720, 480,
+        CW_USEDEFAULT, CW_USEDEFAULT, 760, 480,
         NULL, NULL, hInstance, NULL);
     if (g_hMainWnd == NULL)
     {

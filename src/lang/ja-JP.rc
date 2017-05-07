@@ -121,11 +121,10 @@ STRINGTABLE
     IDS_NEUTRAL, "ニュートラル"
     IDS_IMPORTRES, "リソースのインポート"
     IDS_CANNOTIMPORT, "インポートできませんでした。"
-    IDS_DELETE, "削除"
-    IDS_EDIT, "編集"
-    IDS_CANCELEDIT, "編集をキャンセル"
     IDS_COMPILE, "コンパイル"
-    IDS_REPLACE, "置き換え"
+    IDS_CANCELEDIT, "編集をキャンセルする"
+    IDS_SHOWDIALOG, "ダイアログを表示"
+    IDS_HIDEDIALOG, "ダイアログを隠す"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

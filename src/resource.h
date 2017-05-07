@@ -22,8 +22,8 @@
 #define ID_IMPORT           121
 #define ID_COMPILE          122
 #define ID_CANCELEDIT       123
-#define ID_REPLACERES       124
-#define ID_EDITRES          125
+#define ID_SHOWDIALOG       124
+#define ID_HIDEDIALOG       125
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -81,9 +81,7 @@
 #define IDS_NEUTRAL         44
 #define IDS_IMPORTRES       45
 #define IDS_CANNOTIMPORT    46
-
-#define IDS_DELETE          47
-#define IDS_EDIT            48
-#define IDS_CANCELEDIT      49
-#define IDS_COMPILE         50
-#define IDS_REPLACE         51
+#define IDS_COMPILE         47
+#define IDS_CANCELEDIT      48
+#define IDS_SHOWDIALOG      49
+#define IDS_HIDEDIALOG      50
