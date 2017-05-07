@@ -3900,9 +3900,8 @@ INT CheckData(VOID)
     return 0;   // success
 }
 
-void LoadLangs(VOID)
+void LoadLangInfo(VOID)
 {
-    // get languages
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
     {
         LangEntry entry;
@@ -3913,11 +3912,7 @@ void LoadLangs(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-INT WINAPI
-WinMain(HINSTANCE   hInstance,
-        HINSTANCE   hPrevInstance,
-        LPSTR       lpCmdLine,
-        INT         nCmdShow)
+INT InitInstance(HINSTANCE hInstance)
 {
     g_hInstance = hInstance;
     InitCommonControls();
@@ -3926,15 +3921,13 @@ WinMain(HINSTANCE   hInstance,
     LoadStringW(hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
     g_hAccel = LoadAcceleratorsW(hInstance, MAKEINTRESOURCEW(1));
 
-    HRESULT hRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    LoadLangInfo();
 
     INT nRet = CheckData();
     if (nRet)
     {
         return nRet;    // failure
     }
-
-    LoadLangs();
 
     WNDCLASSW wc;
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
@@ -3952,6 +3945,7 @@ WinMain(HINSTANCE   hInstance,
         MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
         return 2;
     }
+
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wc.lpfnWndProc = BmpViewWndProc;
     wc.cbClsExtra = 0;
@@ -3967,6 +3961,23 @@ WinMain(HINSTANCE   hInstance,
         MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
         return 3;
     }
+
+    return 0;   // success
+}
+
+INT WINAPI
+WinMain(HINSTANCE   hInstance,
+        HINSTANCE   hPrevInstance,
+        LPSTR       lpCmdLine,
+        INT         nCmdShow)
+{
+    INT nRet = InitInstance(hInstance);
+    if (nRet)
+    {
+        return nRet;    // failure
+    }
+
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
     g_hMainWnd = CreateWindowW(s_pszClassName, g_szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 760, 480,
@@ -3989,10 +4000,7 @@ WinMain(HINSTANCE   hInstance,
         DispatchMessageW(&msg);
     }
 
-    if (SUCCEEDED(hRes))
-    {
-        CoUninitialize();
-    }
+    CoUninitialize();
 
     return INT(msg.wParam);
 }
