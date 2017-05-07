@@ -3985,7 +3985,7 @@ WinMain(HINSTANCE   hInstance,
     if (g_hMainWnd == NULL)
     {
         MessageBoxA(NULL, "CreateWindow failed", NULL, MB_ICONERROR);
-        return 1;
+        return 1;       // failure
     }
 
     ShowWindow(g_hMainWnd, nCmdShow);
