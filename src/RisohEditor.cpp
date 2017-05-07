@@ -3067,6 +3067,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hTreeView, SW_SHOW);
         SetMenu(hwnd, g_hMenu);
     }
+    PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
 LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
@@ -3077,8 +3078,6 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         LPARAM lParam = pTV->itemNew.lParam;
 
         MainWnd_SelectTV(hwnd, lParam, pnmhdr->code == NM_DBLCLK);
-
-        PostMessage(hwnd, WM_SIZE, 0, 0);
     }
     else if (pnmhdr->code == TVN_KEYDOWN)
     {
