@@ -241,7 +241,7 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
     static WCHAR TempFile[MAX_PATH];
     WCHAR szPath[MAX_PATH];
     ::GetTempPathW(_countof(szPath), szPath);
-    ::GetTempFileNameW(szPath, L"ERE", 0, TempFile);
+    ::GetTempFileNameW(szPath, L"KRE", 0, TempFile);
     return TempFile;
 }
 
@@ -2316,7 +2316,7 @@ VOID MainWnd_HidePreview(HWND hwnd)
     ShowWindow(g_hBmpView, SW_HIDE);
     ShowWindow(g_hToolBar, SW_HIDE);
 
-    PostMessage(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 
     g_bInEdit = FALSE;
 }
@@ -3043,7 +3043,7 @@ void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
         MainWnd_PreviewPNG(hwnd, Entry);
     }
 
-    PostMessage(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
@@ -3101,7 +3101,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         g_bInEdit = FALSE;
     }
 
-    PostMessage(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 BOOL MainWnd_IsEditable(HWND hwnd)
@@ -3159,7 +3159,7 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             MainWnd_DoubleClickTV(hwnd);
             break;
         case VK_DELETE:
-            PostMessage(hwnd, WM_COMMAND, ID_DELETERES, 0);
+            PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
             break;
         }
     }
@@ -3175,9 +3175,206 @@ void MainWnd_OnCancelEdit(HWND hwnd)
     MainWnd_SelectTV(hwnd, lParam, FALSE);
 }
 
+BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
+{
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+
+    if (HIWORD(lParam) == I_LANG)
+    {
+        WORD i = LOWORD(lParam);
+        ResEntry& entry = g_Entries[i];
+        entry.clear_data();
+
+        if (entries.size() != 1)
+        {
+            WCHAR sz[32];
+            wsprintfW(sz, L"%d", (INT)entries.size());
+            MessageBoxW(hwnd, sz, NULL, 0);
+            return FALSE;
+        }
+        if (entries[0].lang != entry.lang)
+        {
+            WCHAR sz[32];
+            wsprintfW(sz, L"%d, %d", entries[0].lang, entry.lang);
+            MessageBoxW(hwnd, sz, NULL, 0);
+            return FALSE;
+        }
+        if (!Res_AddEntry(g_Entries, entries[0], TRUE))
+        {
+            MessageBoxA(NULL, "NG", NULL, 0);
+            return FALSE;
+        }
+        MessageBoxA(NULL, "OK5", NULL, 0);
+        return TRUE;
+    }
+    else if (HIWORD(lParam) == I_STRING)
+    {
+        WORD i = LOWORD(lParam);
+        ResEntry& entry = g_Entries[i];
+
+        INT k;
+        for (;;)
+        {
+            k = Res_Find(g_Entries, RT_STRING, (WORD)0, entry.lang);
+            if (k == -1)
+                break;
+
+            ResEntry& entry = g_Entries[k];
+            entry.clear_data();
+        }
+
+        for (size_t m = 0; m < entries.size(); ++m)
+        {
+            if (!Res_AddEntry(g_Entries, entries[m], TRUE))
+                return FALSE;
+        }
+        MessageBoxA(NULL, "OK4", NULL, 0);
+        return TRUE;
+    }
+    else if (HIWORD(lParam) == I_MESSAGE)
+    {
+        MessageBoxA(NULL, "OK2", NULL, 0);
+        // FIXME
+        return TRUE;
+    }
+    else
+    {
+        MessageBoxA(NULL, "OK3", NULL, 0);
+        // FIXME
+        return TRUE;
+    }
+}
+
+void ReplaceBackslash(LPWSTR szPath)
+{
+    for (WCHAR *pch = szPath; *pch; ++pch)
+    {
+        if (*pch == L'\\')
+            *pch = L'/';
+    }
+}
+
 void MainWnd_OnCompile(HWND hwnd)
 {
-    // FIXME
+    if (!Edit_GetModify(g_hSrcEdit))
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
+        return;
+    }
+
+    INT cchText = GetWindowTextLength(g_hSrcEdit);
+    std::wstring Text;
+    Text.resize(cchText);
+    GetWindowTextW(g_hSrcEdit, &Text[0], cchText + 1);
+
+    WCHAR szTempPath[MAX_PATH];
+    ::GetTempPathW(_countof(szTempPath), szTempPath);
+
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+
+    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    ReplaceBackslash(szPath1);
+    MFile r1(szPath1, TRUE);
+
+    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    ReplaceBackslash(szPath2);
+    MFile r2(szPath2, TRUE);
+
+    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    ReplaceBackslash(szPath3);
+    MFile r3(szPath3, TRUE);
+    r3.CloseHandle();
+
+    r1.WriteFormat(L"#include <windows.h>\r\n");
+    r1.WriteFormat(L"#include <commctrl.h>\r\n");
+    r1.WriteFormat(L"#include <prsht.h>\r\n");
+    r1.WriteFormat(L"#include <dlgs.h>\r\n");
+    r1.WriteFormat(L"\r\n");
+    r1.WriteFormat(L"#include \"%s\"\r\n", szPath2);
+    r1.CloseHandle();
+
+    DWORD cbWritten;
+    r2.WriteFile(Text.c_str(), Text.size() * sizeof(WCHAR), &cbWritten);
+    r2.CloseHandle();
+    Text.clear();
+
+    WCHAR CmdLine[512];
+    wsprintfW(CmdLine,
+        L"\"%s\" -o \"%s\" -I\"%s\" -J rc -O res "
+        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=-v \"%s\"",
+        g_szWindresExe, szPath3, g_szIncludeDir, g_szCppExe, szPath1);
+
+    MessageBoxW(hwnd, CmdLine, NULL, 0);
+
+    WCHAR CurDir[MAX_PATH];
+    GetCurrentDirectoryW(MAX_PATH, CurDir);
+    SetCurrentDirectoryW(g_szDataFolder);
+
+    std::vector<BYTE> output;
+    ByteStream stream;
+    MProcessMaker pmaker;
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcess(NULL, CmdLine))
+    {
+        DWORD cbAvail;
+        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+        {
+            if (cbAvail == 0)
+            {
+                if (!pmaker.IsRunning())
+                    break;
+
+                pmaker.WaitForSingleObject(500);
+                continue;
+            }
+
+            CHAR szBuf[256];
+            DWORD cbRead;
+            if (cbAvail > sizeof(szBuf))
+                cbAvail = sizeof(szBuf);
+            else  if (cbAvail == 0)
+                continue;
+
+            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+            {
+                if (cbRead == 0)
+                    continue;
+
+                stream.WriteData(szBuf, cbRead);
+            }
+        }
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            ResEntries entries;
+            if (DoImport(hwnd, szPath3, entries))
+            {
+                DoWindresResult(hwnd, entries);
+            }
+        }
+
+        output = stream.data();
+    }
+    else
+    {
+        MessageBoxA(NULL, "Cannot start up", NULL, MB_ICONERROR);
+    }
+
+    SetCurrentDirectoryW(CurDir);
+
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    MainWnd_SelectTV(hwnd, lParam, FALSE);
+
+    output.insert(output.end(), 0);
+    if (output.size())
+    {
+        SetWindowTextA(g_hBinEdit, (char *)&output[0]);
+        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+    }
+
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 void MainWnd_OnShowDialog(HWND hwnd)
@@ -3585,7 +3782,7 @@ void MainWnd_OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
     id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
                         hwndContext, NULL);
-    PostMessage(hwndContext, WM_NULL, 0, 0);
+    PostMessageW(hwndContext, WM_NULL, 0, 0);
     DestroyMenu(hMenu);
 
     if (id)
@@ -3869,24 +4066,27 @@ INT CheckData(VOID)
                     NULL, MB_ICONERROR);
         return -2;  // failure
     }
+    ReplaceBackslash(g_szConstantsFile);
 
     // cpp.exe
     lstrcpyW(g_szCppExe, g_szDataFolder);
-    lstrcatW(g_szCppExe, L"\\cpp.exe");
+    lstrcatW(g_szCppExe, L"\\bin\\cpp.exe");
     if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
     {
         MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
         return -3;  // failure
     }
+    ReplaceBackslash(g_szCppExe);
 
     // windres.exe
     lstrcpyW(g_szWindresExe, g_szDataFolder);
-    lstrcatW(g_szWindresExe, L"\\windres.exe");
+    lstrcatW(g_szWindresExe, L"\\bin\\windres.exe");
     if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
     {
         MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
         return -4;  // failure
     }
+    ReplaceBackslash(g_szWindresExe);
 
     // include
     lstrcpyW(g_szIncludeDir, g_szDataFolder);
@@ -3896,6 +4096,7 @@ INT CheckData(VOID)
         MessageBoxA(NULL, "ERROR: No include folder found.", NULL, MB_ICONERROR);
         return -5;  // failure
     }
+    ReplaceBackslash(g_szIncludeDir);
 
     return 0;   // success
 }
