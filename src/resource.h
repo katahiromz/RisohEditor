@@ -86,3 +86,4 @@
 #define IDS_SHOWDIALOG      49
 #define IDS_HIDEDIALOG      50
 #define IDS_CANNOTSTARTUP   51
+#define IDS_RESMISMATCH     52

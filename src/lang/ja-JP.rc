@@ -126,6 +126,7 @@ STRINGTABLE
     IDS_SHOWDIALOG, "ダイアログを表示"
     IDS_HIDEDIALOG, "ダイアログを隠す"
     IDS_CANNOTSTARTUP, "リソースコンパイラが起動できませんでした。"
+    IDS_RESMISMATCH, "リソースが一致しません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

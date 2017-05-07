@@ -17,7 +17,6 @@ WCHAR       g_szDataFolder[MAX_PATH] = L"";
 WCHAR       g_szConstantsFile[MAX_PATH] = L"";
 WCHAR       g_szCppExe[MAX_PATH] = L"";
 WCHAR       g_szWindresExe[MAX_PATH] = L"";
-WCHAR       g_szIncludeDir[MAX_PATH] = L"";
 
 HWND        g_hTreeView = NULL;
 HWND        g_hBinEdit = NULL;
@@ -3085,6 +3084,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_HIDE);
+        ShowWindow(g_hBinEdit, SW_HIDE);
         SetMenu(hwnd, NULL);
         g_bInEdit = TRUE;
     }
@@ -3096,7 +3096,8 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
         ShowWindow(g_hToolBar, SW_HIDE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
-        ShowWindow(g_hTreeView, SW_SHOW);
+        ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
+        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
         SetMenu(hwnd, g_hMenu);
         g_bInEdit = FALSE;
     }
@@ -3175,7 +3176,7 @@ void MainWnd_OnCancelEdit(HWND hwnd)
     MainWnd_SelectTV(hwnd, lParam, FALSE);
 }
 
-BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
+BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
 
@@ -3185,14 +3186,11 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
         ResEntry& entry = g_Entries[i];
         entry.clear_data();
 
-        if (entries.size() != 1)
+        if (entries.size() != 1 ||
+            entries[0].name != entry.name ||
+            entries[0].lang != entry.lang)
         {
-            MessageBoxA(NULL, "NG", NULL, 0);
-            return FALSE;
-        }
-        if (entries[0].lang != entry.lang)
-        {
-            MessageBoxA(NULL, "NG2", NULL, 0);
+            msg += WideToAnsi(LoadStringDx(IDS_RESMISMATCH));
             return FALSE;
         }
         entry = entries[0];
@@ -3217,7 +3215,10 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
         for (size_t m = 0; m < entries.size(); ++m)
         {
             if (!Res_AddEntry(g_Entries, entries[m], TRUE))
+            {
+                msg += WideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
                 return FALSE;
+            }
         }
         return TRUE;
     }
@@ -3297,16 +3298,16 @@ void MainWnd_OnCompile(HWND hwnd)
     r2.CloseHandle();
 
     WCHAR CmdLine[512];
-#if 0
+#if 1
     wsprintfW(CmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -I\"%s\" -J rc -O res "
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
         L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
-        g_szWindresExe, szPath3, g_szIncludeDir, g_szCppExe, szPath1);
+        g_szWindresExe, szPath3, g_szCppExe, szPath1);
 #else
     wsprintfW(CmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -I\"%s\" -J rc -O res "
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
         L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
-        g_szWindresExe, szPath3, g_szIncludeDir, g_szCppExe, szPath1);
+        g_szWindresExe, szPath3, g_szCppExe, szPath1);
 #endif
 
     // MessageBoxW(hwnd, CmdLine, NULL, 0);
@@ -3315,6 +3316,7 @@ void MainWnd_OnCompile(HWND hwnd)
     std::string msg = WideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
     output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
+    BOOL Success = FALSE;
     ByteStream stream;
     MProcessMaker pmaker;
     MFile hInputWrite, hOutputRead;
@@ -3349,26 +3351,36 @@ void MainWnd_OnCompile(HWND hwnd)
             }
         }
 
+        output = stream.data();
+
         if (pmaker.GetExitCode() == 0)
         {
             ResEntries entries;
             if (DoImport(hwnd, szPath3, entries))
             {
-                DoWindresResult(hwnd, entries);
+                std::string msg;
+                Success = DoWindresResult(hwnd, entries, msg);
+                if (msg.size())
+                {
+                    output.insert(output.end(), msg.begin(), msg.end());
+                }
             }
         }
-
-        output = stream.data();
     }
 
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    MainWnd_SelectTV(hwnd, lParam, FALSE);
-
-    output.insert(output.end(), 0);
-    if (output.size())
+    if (Success)
     {
-        SetWindowTextA(g_hBinEdit, (char *)&output[0]);
-        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
+    }
+    else
+    {
+        output.insert(output.end(), 0);
+        if (output.size())
+        {
+            SetWindowTextA(g_hBinEdit, (char *)&output[0]);
+            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+        }
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -3569,7 +3581,15 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         if (::IsWindowVisible(g_hToolBar))
         {
-            MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+            if (::IsWindowVisible(g_hBinEdit))
+            {
+                MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+            }
+            else
+            {
+                MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+            }
         }
         else if (IsWindowVisible(g_hBmpView))
         {
@@ -4088,16 +4108,6 @@ INT CheckData(VOID)
         return -4;  // failure
     }
     ReplaceBackslash(g_szWindresExe);
-
-    // include
-    lstrcpyW(g_szIncludeDir, g_szDataFolder);
-    lstrcatW(g_szIncludeDir, L"\\include");
-    if (::GetFileAttributesW(g_szIncludeDir) == INVALID_FILE_ATTRIBUTES)
-    {
-        MessageBoxA(NULL, "ERROR: No include folder found.", NULL, MB_ICONERROR);
-        return -5;  // failure
-    }
-    ReplaceBackslash(g_szIncludeDir);
 
     return 0;   // success
 }
