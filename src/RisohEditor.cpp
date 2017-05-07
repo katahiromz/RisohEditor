@@ -3187,24 +3187,15 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
 
         if (entries.size() != 1)
         {
-            WCHAR sz[32];
-            wsprintfW(sz, L"%d", (INT)entries.size());
-            MessageBoxW(hwnd, sz, NULL, 0);
+            MessageBoxA(NULL, "NG", NULL, 0);
             return FALSE;
         }
         if (entries[0].lang != entry.lang)
         {
-            WCHAR sz[32];
-            wsprintfW(sz, L"%d, %d", entries[0].lang, entry.lang);
-            MessageBoxW(hwnd, sz, NULL, 0);
+            MessageBoxA(NULL, "NG2", NULL, 0);
             return FALSE;
         }
-        if (!Res_AddEntry(g_Entries, entries[0], TRUE))
-        {
-            MessageBoxA(NULL, "NG", NULL, 0);
-            return FALSE;
-        }
-        MessageBoxA(NULL, "OK5", NULL, 0);
+        entry = entries[0];
         return TRUE;
     }
     else if (HIWORD(lParam) == I_STRING)
@@ -3228,18 +3219,15 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries)
             if (!Res_AddEntry(g_Entries, entries[m], TRUE))
                 return FALSE;
         }
-        MessageBoxA(NULL, "OK4", NULL, 0);
         return TRUE;
     }
     else if (HIWORD(lParam) == I_MESSAGE)
     {
-        MessageBoxA(NULL, "OK2", NULL, 0);
         // FIXME
         return TRUE;
     }
     else
     {
-        MessageBoxA(NULL, "OK3", NULL, 0);
         // FIXME
         return TRUE;
     }
@@ -3263,11 +3251,6 @@ void MainWnd_OnCompile(HWND hwnd)
         return;
     }
 
-    INT cchText = GetWindowTextLength(g_hSrcEdit);
-    std::wstring Text;
-    Text.resize(cchText);
-    GetWindowTextW(g_hSrcEdit, &Text[0], cchText + 1);
-
     WCHAR szTempPath[MAX_PATH];
     ::GetTempPathW(_countof(szTempPath), szTempPath);
 
@@ -3286,32 +3269,52 @@ void MainWnd_OnCompile(HWND hwnd)
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
-    r1.WriteFormat(L"#include <windows.h>\r\n");
-    r1.WriteFormat(L"#include <commctrl.h>\r\n");
-    r1.WriteFormat(L"#include <prsht.h>\r\n");
-    r1.WriteFormat(L"#include <dlgs.h>\r\n");
-    r1.WriteFormat(L"\r\n");
-    r1.WriteFormat(L"#include \"%s\"\r\n", szPath2);
+    r1.WriteFormatA("#include <windows.h>\r\n");
+    r1.WriteFormatA("#include <commctrl.h>\r\n");
+    r1.WriteFormatA("#include <prsht.h>\r\n");
+    r1.WriteFormatA("#include <dlgs.h>\r\n");
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        WORD i = LOWORD(lParam);
+        ResEntry& entry = g_Entries[i];
+        r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+                        PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
+    }
+    r1.WriteFormatA("#pragma code_page(65001)\r\n");
+    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
+    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+    std::wstring WideText;
+    WideText.resize(cchText);
+    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+    std::string TextUtf8 = WideToUtf8(WideText);
+    WideText.clear();
+
     DWORD cbWritten;
-    r2.WriteFile(Text.c_str(), Text.size() * sizeof(WCHAR), &cbWritten);
+    r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
     r2.CloseHandle();
-    Text.clear();
 
     WCHAR CmdLine[512];
+#if 0
     wsprintfW(CmdLine,
-        L"\"%s\" -o \"%s\" -I\"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=-v \"%s\"",
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -I\"%s\" -J rc -O res "
+        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
         g_szWindresExe, szPath3, g_szIncludeDir, g_szCppExe, szPath1);
+#else
+    wsprintfW(CmdLine,
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -I\"%s\" -J rc -O res "
+        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
+        g_szWindresExe, szPath3, g_szIncludeDir, g_szCppExe, szPath1);
+#endif
 
-    MessageBoxW(hwnd, CmdLine, NULL, 0);
-
-    WCHAR CurDir[MAX_PATH];
-    GetCurrentDirectoryW(MAX_PATH, CurDir);
-    SetCurrentDirectoryW(g_szDataFolder);
+    // MessageBoxW(hwnd, CmdLine, NULL, 0);
 
     std::vector<BYTE> output;
+    std::string msg = WideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
+    output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
+
     ByteStream stream;
     MProcessMaker pmaker;
     MFile hInputWrite, hOutputRead;
@@ -3357,12 +3360,6 @@ void MainWnd_OnCompile(HWND hwnd)
 
         output = stream.data();
     }
-    else
-    {
-        MessageBoxA(NULL, "Cannot start up", NULL, MB_ICONERROR);
-    }
-
-    SetCurrentDirectoryW(CurDir);
 
     LPARAM lParam = TV_GetParam(g_hTreeView);
     MainWnd_SelectTV(hwnd, lParam, FALSE);
@@ -3375,6 +3372,10 @@ void MainWnd_OnCompile(HWND hwnd)
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+    ::DeleteFileW(szPath1);
+    ::DeleteFileW(szPath2);
+    ::DeleteFileW(szPath3);
 }
 
 void MainWnd_OnShowDialog(HWND hwnd)
