@@ -18,6 +18,7 @@
 #include <tchar.h>
 #include <commctrl.h>
 #include <commdlg.h>
+#include <mbstring.h>
 
 #include <algorithm>    // for std::sort
 #include <cassert>      // for assert macro
@@ -43,6 +44,10 @@
 #include "PackedDIB.hpp"
 #include "Png.hpp"
 #include "Res.hpp"
+
+#include "File.hpp"
+#include "ProcessMaker.hpp"
+
 #include "resource.h"
 
 #pragma comment(lib, "comctl32.lib")

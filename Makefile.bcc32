@@ -8,11 +8,15 @@ HEADERS = \
 	src\ByteStream.hpp \
 	src\ConstantsDB.hpp \
 	src\DialogRes.hpp \
+	src\File.hpp \
+	src\File_inl.hpp \
 	src\IconRes.hpp \
 	src\MenuRes.hpp \
 	src\MessageRes.hpp \
 	src\PackedDIB.hpp \
 	src\Png.hpp \
+	src\ProcessMaker.hpp \
+	src\ProcessMaker_inl.hpp \
 	src\Res.hpp \
 	src\StringRes.hpp \
 	src\Text.hpp \
@@ -21,9 +25,11 @@ HEADERS = \
 	src\stdafx.hpp \
 
 OBJS = \
-	build\RisohEditor$(DOTOBJ) \
-	build\Png$(DOTOBJ) \
+	build\File$(DOTOBJ) \
 	build\PackedDIB$(DOTOBJ) \
+	build\Png$(DOTOBJ) \
+	build\ProcessMaker$(DOTOBJ) \
+	build\RisohEditor$(DOTOBJ) \
 
 all: build\RisohEditor$(DOTEXE)
 
@@ -34,12 +40,16 @@ build\RisohEditor$(DOTEXE): build $(OBJS) src\RisohEditor_res.res
 	bcc32 $(CXXFLAGS) -ebuild\RisohEditor$(DOTEXE) $(OBJS)
 	brc32 src\RisohEditor_res.res build\RisohEditor$(DOTEXE)
 
-build\RisohEditor$(DOTOBJ): build src\RisohEditor.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -obuild\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
-build\Png$(DOTOBJ): build src\Png.cpp $(HEADERS)
-	bcc32 $(CXXFLAGS) -obuild\Png$(DOTOBJ) -c src\Png.cpp
+build\File$(DOTOBJ): build src\File.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\File$(DOTOBJ) -c src\File.cpp
 build\PackedDIB$(DOTOBJ): build src\PackedDIB.cpp $(HEADERS)
 	bcc32 $(CXXFLAGS) -obuild\PackedDIB$(DOTOBJ) -c src\PackedDIB.cpp
+build\Png$(DOTOBJ): build src\Png.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\Png$(DOTOBJ) -c src\Png.cpp
+build\ProcessMaker$(DOTOBJ): build src\ProcessMaker.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\ProcessMaker$(DOTOBJ) -c src\ProcessMaker.cpp
+build\RisohEditor$(DOTOBJ): build src\RisohEditor.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
 
 src\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
 	brc32 -r -fosrc\RisohEditor_res.res src\RisohEditor_res.rc
