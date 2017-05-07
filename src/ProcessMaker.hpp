@@ -45,7 +45,8 @@ public:
     BOOL PrepareForRedirect(PHANDLE phInputWrite, PHANDLE phOutputRead,
                             PSECURITY_ATTRIBUTES psa = NULL);
     BOOL PrepareForRedirect(PHANDLE phInputWrite, PHANDLE phOutputRead,
-                            PHANDLE phErrorRead, PSECURITY_ATTRIBUTES psa = NULL);
+                            PHANDLE phErrorRead,
+                            PSECURITY_ATTRIBUTES psa = NULL);
 
     BOOL CreateProcess(LPCTSTR pszAppName, LPCTSTR pszCommandLine = NULL,
                        LPCTSTR pszzEnvironment = NULL, BOOL bInherit = TRUE,
