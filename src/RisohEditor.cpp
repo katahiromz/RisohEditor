@@ -3072,12 +3072,23 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
 LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
-    if (pnmhdr->code == TVN_SELCHANGED || pnmhdr->code == NM_DBLCLK)
+    if (pnmhdr->code == NM_DBLCLK)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        switch (HIWORD(lParam))
+        {
+        case I_LANG: case I_STRING: case I_MESSAGE:
+            break;
+        default:
+            return 0;
+        }
+        MainWnd_SelectTV(hwnd, lParam, TRUE);
+    }
+    else if (pnmhdr->code == TVN_SELCHANGED)
     {
         NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
         LPARAM lParam = pTV->itemNew.lParam;
-
-        MainWnd_SelectTV(hwnd, lParam, pnmhdr->code == NM_DBLCLK);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
     else if (pnmhdr->code == TVN_KEYDOWN)
     {
