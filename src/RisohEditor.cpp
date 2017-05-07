@@ -3079,14 +3079,9 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         switch (HIWORD(lParam))
         {
         case I_LANG:
-            if (id == RT_ACCELERATOR ||
-                id == RT_DIALOG ||
-                id == RT_HTML ||
-                id == RT_MANIFEST ||
-                id == RT_MENU ||
-                //id == RT_MESSAGETABLE ||
-                id == RT_STRING ||
-                id == RT_VERSION)
+            if (id == RT_ACCELERATOR || id == RT_DIALOG || id == RT_HTML ||
+                id == RT_MANIFEST || id == RT_MENU || //id == RT_MESSAGETABLE ||
+                id == RT_STRING || id == RT_VERSION)
             {
                 ;
             }
