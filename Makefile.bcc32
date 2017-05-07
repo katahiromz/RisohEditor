@@ -36,9 +36,9 @@ all: build\RisohEditor$(DOTEXE)
 build:
 	if not exist build mkdir build
 
-build\RisohEditor$(DOTEXE): build $(OBJS) src\RisohEditor_res.res
+build\RisohEditor$(DOTEXE): build $(OBJS) build\RisohEditor_res.res
 	bcc32 $(CXXFLAGS) -ebuild\RisohEditor$(DOTEXE) $(OBJS)
-	brc32 src\RisohEditor_res.res build\RisohEditor$(DOTEXE)
+	brc32 build\RisohEditor_res.res build\RisohEditor$(DOTEXE)
 
 build\File$(DOTOBJ): build src\File.cpp $(HEADERS)
 	bcc32 $(CXXFLAGS) -obuild\File$(DOTOBJ) -c src\File.cpp
@@ -51,8 +51,8 @@ build\ProcessMaker$(DOTOBJ): build src\ProcessMaker.cpp $(HEADERS)
 build\RisohEditor$(DOTOBJ): build src\RisohEditor.cpp $(HEADERS)
 	bcc32 $(CXXFLAGS) -obuild\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
 
-src\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
-	brc32 -r -fosrc\RisohEditor_res.res src\RisohEditor_res.rc
+build\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
+	brc32 -r -fobuild\RisohEditor_res.res src\RisohEditor_res.rc
 
 clean:
 	if exist build\*.obj del build\*.obj
