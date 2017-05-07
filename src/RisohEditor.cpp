@@ -3817,6 +3817,36 @@ Res_GetLangName(WORD Lang)
     return std::wstring(sz);
 }
 
+BOOL CheckDataFolder(VOID)
+{
+    WCHAR szPath[MAX_PATH], *pch;
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    pch = wcsrchr(szPath, L'\\');
+    lstrcpyW(pch, L"\\data");
+    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpyW(pch, L"\\..\\data");
+        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"\\..\\..\\data");
+            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"\\..\\..\\data");
+                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"\\..\\..\\..\\data");
+                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+    }
+    lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
+    return TRUE;
+}
+
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
@@ -3836,34 +3866,12 @@ WinMain(HINSTANCE   hInstance,
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
-    WCHAR szPath[MAX_PATH], *pch;
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\files");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!CheckDataFolder())
     {
-        lstrcpyW(pch, L"\\..\\files");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-        {
-            lstrcpyW(pch, L"\\..\\..\\files");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-            {
-                lstrcpyW(pch, L"\\..\\..\\files");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                {
-                    lstrcpyW(pch, L"\\..\\..\\..\\files");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                    {
-                        MessageBoxA(NULL, "ERROR: data folder was not found!",
-                                    NULL, MB_ICONERROR);
-                        return -1;
-                    }
-                }
-            }
-        }
+        MessageBoxA(NULL, "ERROR: data folder was not found!",
+                    NULL, MB_ICONERROR);
+        return -1;
     }
-    lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
-
 
     // Constants.txt
     lstrcpyW(g_szConstantsFile, g_szDataFolder);
@@ -3878,14 +3886,29 @@ WinMain(HINSTANCE   hInstance,
     // cpp.exe
     lstrcpyW(g_szCppExe, g_szDataFolder);
     lstrcatW(g_szCppExe, L"\\cpp.exe");
+    if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
+    {
+        MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
+        return -3;
+    }
 
     // windres.exe
     lstrcpyW(g_szWindresExe, g_szDataFolder);
     lstrcatW(g_szWindresExe, L"\\windres.exe");
+    if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
+    {
+        MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
+        return -4;
+    }
 
     // include
     lstrcpyW(g_szIncludeDir, g_szDataFolder);
     lstrcatW(g_szIncludeDir, L"\\include");
+    if (::GetFileAttributesW(g_szIncludeDir) == INVALID_FILE_ATTRIBUTES)
+    {
+        MessageBoxA(NULL, "ERROR: No include folder found.", NULL, MB_ICONERROR);
+        return -5;
+    }
 
     // get languages
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
