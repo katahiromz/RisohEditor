@@ -13,6 +13,12 @@ WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
 ResEntries  g_Entries;
 
+WCHAR       g_szDataFolder[MAX_PATH] = L"";
+WCHAR       g_szConstantsFile[MAX_PATH] = L"";
+WCHAR       g_szCppExe[MAX_PATH] = L"";
+WCHAR       g_szWindresExe[MAX_PATH] = L"";
+WCHAR       g_szIncludeDir[MAX_PATH] = L"";
+
 HWND        g_hTreeView = NULL;
 HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
@@ -3826,28 +3832,60 @@ WinMain(HINSTANCE   hInstance,
 
     HRESULT hRes = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-    // load constants
+#ifndef INVALID_FILE_ATTRIBUTES
+    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
+#endif
+
     WCHAR szPath[MAX_PATH], *pch;
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
     pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\Constants.txt");
-    if (!g_ConstantsDB.LoadFromFile(szPath))
+    lstrcpyW(pch, L"\\files");
+    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"\\..\\Constants.txt");
-        if (!g_ConstantsDB.LoadFromFile(szPath))
+        lstrcpyW(pch, L"\\..\\files");
+        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"\\..\\..\\Constants.txt");
-            if (!g_ConstantsDB.LoadFromFile(szPath))
+            lstrcpyW(pch, L"\\..\\..\\files");
+            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"\\..\\..\\Constants.txt");
-                if (!g_ConstantsDB.LoadFromFile(szPath))
+                lstrcpyW(pch, L"\\..\\..\\files");
+                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    MessageBoxA(NULL, "File Constants.txt was not found!", NULL,
-                                MB_ICONERROR);
+                    lstrcpyW(pch, L"\\..\\..\\..\\files");
+                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        MessageBoxA(NULL, "ERROR: data folder was not found!",
+                                    NULL, MB_ICONERROR);
+                        return -1;
+                    }
                 }
             }
         }
     }
+    lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
+
+
+    // Constants.txt
+    lstrcpyW(g_szConstantsFile, g_szDataFolder);
+    lstrcatW(g_szConstantsFile, L"\\Constants.txt");
+    if (!g_ConstantsDB.LoadFromFile(g_szConstantsFile))
+    {
+        MessageBoxA(NULL, "ERROR: Unable to load Constants.txt file.",
+                    NULL, MB_ICONERROR);
+        return -2;
+    }
+
+    // cpp.exe
+    lstrcpyW(g_szCppExe, g_szDataFolder);
+    lstrcatW(g_szCppExe, L"\\cpp.exe");
+
+    // windres.exe
+    lstrcpyW(g_szWindresExe, g_szDataFolder);
+    lstrcatW(g_szWindresExe, L"\\windres.exe");
+
+    // include
+    lstrcpyW(g_szIncludeDir, g_szDataFolder);
+    lstrcatW(g_szIncludeDir, L"\\include");
 
     // get languages
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
