@@ -2293,6 +2293,8 @@ VOID MainWnd_HidePreview(HWND hwnd)
     ShowWindow(g_hToolBar, SW_HIDE);
 
     PostMessage(hwnd, WM_SIZE, 0, 0);
+
+    g_bInEdit = FALSE;
 }
 
 HBITMAP Create24BppBitmapDx(INT width, INT height)
@@ -3051,51 +3053,60 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     {
         SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
         Edit_SetReadOnly(g_hSrcEdit, FALSE);
+        SetFocus(g_hSrcEdit);
 
         ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_HIDE);
         SetMenu(hwnd, NULL);
+        g_bInEdit = TRUE;
     }
     else
     {
         SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
         Edit_SetReadOnly(g_hSrcEdit, TRUE);
+        SetFocus(g_hTreeView);
 
         ShowWindow(g_hToolBar, SW_HIDE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_SHOW);
         SetMenu(hwnd, g_hMenu);
+        g_bInEdit = FALSE;
     }
     PostMessage(hwnd, WM_SIZE, 0, 0);
+}
+
+void MainWnd_DoubleClickTV(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    ID_OR_STRING id = g_Entries[LOWORD(lParam)].type;
+    switch (HIWORD(lParam))
+    {
+    case I_LANG:
+        if (id == RT_ACCELERATOR || id == RT_DIALOG || id == RT_HTML ||
+            id == RT_MANIFEST || id == RT_MENU || //id == RT_MESSAGETABLE ||
+            id == RT_STRING || id == RT_VERSION)
+        {
+            ;
+        }
+        else
+        {
+            return;
+        }
+        break;
+    case I_STRING: case I_MESSAGE:
+        break;
+    default:
+        return;
+    }
+    MainWnd_SelectTV(hwnd, lParam, TRUE);
 }
 
 LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     if (pnmhdr->code == NM_DBLCLK)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
-        ID_OR_STRING id = g_Entries[LOWORD(lParam)].type;
-        switch (HIWORD(lParam))
-        {
-        case I_LANG:
-            if (id == RT_ACCELERATOR || id == RT_DIALOG || id == RT_HTML ||
-                id == RT_MANIFEST || id == RT_MENU || //id == RT_MESSAGETABLE ||
-                id == RT_STRING || id == RT_VERSION)
-            {
-                ;
-            }
-            else
-            {
-                return 0;
-            }
-            break;
-        case I_STRING: case I_MESSAGE:
-            break;
-        default:
-            return 0;
-        }
-        MainWnd_SelectTV(hwnd, lParam, TRUE);
+        MainWnd_DoubleClickTV(hwnd);
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
@@ -3106,9 +3117,14 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == TVN_KEYDOWN)
     {
         TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
-        if (pTVKD->wVKey == VK_DELETE)
+        switch (pTVKD->wVKey)
         {
+        case VK_RETURN:
+            MainWnd_DoubleClickTV(hwnd);
+            break;
+        case VK_DELETE:
             PostMessage(hwnd, WM_COMMAND, ID_DELETERES, 0);
+            break;
         }
     }
     return 0;
@@ -3116,6 +3132,9 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 void MainWnd_OnCancelEdit(HWND hwnd)
 {
+    if (!g_bInEdit)
+        return;
+
     LPARAM lParam = TV_GetParam(g_hTreeView);
     MainWnd_SelectTV(hwnd, lParam, FALSE);
 }
@@ -3286,7 +3305,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     cy = ClientRect.bottom - ClientRect.top ;
 
     INT x = 0, y = 0;
-    if (::IsWindowVisible(g_hToolBar))
+    if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
     {
         GetWindowRect(g_hToolBar, &ToolRect);
         y += ToolRect.bottom - ToolRect.top;

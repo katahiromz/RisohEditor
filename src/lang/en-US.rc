@@ -121,8 +121,8 @@ STRINGTABLE
     IDS_NEUTRAL, "Neutral"
     IDS_IMPORTRES, "Import Resource"
     IDS_CANNOTIMPORT, "Cannot import resource."
-    IDS_COMPILE, "Compile"
-    IDS_CANCELEDIT, "Cancel Edit"
+    IDS_COMPILE, "Compile (F8)"
+    IDS_CANCELEDIT, "Cancel Edit (Ctrl+E)"
     IDS_SHOWDIALOG, "Show Dialog"
     IDS_HIDEDIALOG, "Hide Dialog"
 }
