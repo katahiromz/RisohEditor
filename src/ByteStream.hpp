@@ -18,6 +18,11 @@ public:
     {
     }
 
+    ByteStream(const void *ptr, size_t size) :
+        m_pos(0), m_data((const BYTE *)ptr, (const BYTE *)ptr + size)
+    {
+    }
+
     virtual ~ByteStream()
     {
     }
