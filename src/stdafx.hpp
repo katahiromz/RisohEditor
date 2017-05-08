@@ -28,6 +28,10 @@
     #define _countof(x)     (sizeof(x) / sizeof(x[0]))
 #endif
 
+#include "resource.h"
+
+LPWSTR LoadStringDx(UINT id);
+
 #include "id_string.hpp"
 #include "Text.hpp"
 #include "ByteStream.hpp"
@@ -47,8 +51,6 @@
 
 #include "File.hpp"
 #include "ProcessMaker.hpp"
-
-#include "resource.h"
 
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "ole32.lib")

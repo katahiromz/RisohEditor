@@ -50,7 +50,7 @@ public:
         static const entry_type entries[] =
         {
             { FVIRTKEY | FCONTROL, 'C', 1 },
-            { FVIRTKEY | FCONTROL, 'V', 2 },
+            { FVIRTKEY | FCONTROL | 0x80, 'V', 2 },
         };
         ByteStream stream(entries, sizeof(entries));
         return LoadFromStream(stream);

@@ -123,6 +123,12 @@ public:
             m_data.resize(m_data.size() + 1);
     }
 
+    BOOL WriteDword(DWORD value)
+    {
+        DWORD dw = value;
+        return WriteData(&dw, sizeof(dw));
+    }
+
     void WriteDwordAlignment()
     {
         size_t n = (m_data.size() & 3);
@@ -170,6 +176,16 @@ public:
     BOOL ReadWord(short& w) const
     {
         return ReadData(&w, sizeof(w));
+    }
+
+    BOOL ReadDword(DWORD& dw) const
+    {
+        return ReadData(&dw, sizeof(dw));
+    }
+
+    BOOL ReadDword(LONG& n) const
+    {
+        return ReadData(&n, sizeof(n));
     }
 
     BOOL PeekWord(WORD& w) const

@@ -87,3 +87,4 @@
 #define IDS_HIDEDIALOG      50
 #define IDS_CANNOTSTARTUP   51
 #define IDS_RESMISMATCH     52
+#define IDS_SAMPLETEXT      53

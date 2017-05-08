@@ -127,6 +127,7 @@ STRINGTABLE
     IDS_HIDEDIALOG, "Hide Dialog"
     IDS_CANNOTSTARTUP, "Unable to start up the resource compiler."
     IDS_RESMISMATCH, "Resource was mismatched."
+    IDS_SAMPLETEXT, "This is a sample."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
