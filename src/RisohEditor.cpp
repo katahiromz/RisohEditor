@@ -498,6 +498,12 @@ TBBUTTON g_buttons1[] =
     { -1, ID_SHOWDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_SHOWDIALOG },
 };
 
+TBBUTTON g_buttons2[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+};
+
 void ToolBar_Update(HWND hwnd, INT iType)
 {
     while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
@@ -510,6 +516,9 @@ void ToolBar_Update(HWND hwnd, INT iType)
         break;
     case 1:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
+        break;
+    case 2:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
         break;
     }
 }
@@ -542,6 +551,7 @@ HWND ToolBar_Create(HWND hwndParent)
 
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
 
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
@@ -3049,30 +3059,28 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 {
     MainWnd_HidePreview(hwnd);
 
+    WORD i = LOWORD(lParam);
+    ResEntry& Entry = g_Entries[i];
+
     if (HIWORD(lParam) == I_LANG)
     {
-        WORD i = LOWORD(lParam);
-        MainWnd_Preview(hwnd, g_Entries[i]);
+        MainWnd_Preview(hwnd, Entry);
     }
     else if (HIWORD(lParam) == I_STRING)
     {
-        WORD i = LOWORD(lParam);
-
-        std::wstring str = DumpDataAsString(g_Entries[i].data);
+        std::wstring str = DumpDataAsString(Entry.data);
         SetWindowTextW(g_hBinEdit, str.c_str());
         ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
-        MainWnd_PreviewStringTable(hwnd, g_Entries[i]);
+        MainWnd_PreviewStringTable(hwnd, Entry);
     }
     else if (HIWORD(lParam) == I_MESSAGE)
     {
-        WORD i = LOWORD(lParam);
-
-        std::wstring str = DumpDataAsString(g_Entries[i].data);
+        std::wstring str = DumpDataAsString(Entry.data);
         SetWindowTextW(g_hBinEdit, str.c_str());
         ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
-        MainWnd_PreviewMessageTable(hwnd, g_Entries[i]);
+        MainWnd_PreviewMessageTable(hwnd, Entry);
     }
 
     if (DoubleClick)
@@ -3081,11 +3089,21 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         Edit_SetReadOnly(g_hSrcEdit, FALSE);
         SetFocus(g_hSrcEdit);
 
+        if (Res_NeedsDialog(Entry))
+        {
+            ToolBar_Update(g_hToolBar, 0);
+        }
+        else
+        {
+            ToolBar_Update(g_hToolBar, 2);
+        }
         ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
+
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_HIDE);
         ShowWindow(g_hBinEdit, SW_HIDE);
         SetMenu(hwnd, NULL);
+
         g_bInEdit = TRUE;
     }
     else
@@ -3099,21 +3117,23 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
         ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
         SetMenu(hwnd, g_hMenu);
+
         g_bInEdit = FALSE;
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
-BOOL MainWnd_IsEditable(HWND hwnd)
+BOOL MainWnd_IsEditableEntry(HWND hwnd, LPARAM lParam)
 {
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    ID_OR_STRING id = g_Entries[LOWORD(lParam)].type;
+    const WORD i = LOWORD(lParam);
+    const ResEntry& Entry = g_Entries[i];
+    const ID_OR_STRING& type = Entry.type;
     switch (HIWORD(lParam))
     {
     case I_LANG:
-        if (id == RT_ACCELERATOR || id == RT_DIALOG || id == RT_HTML ||
-            id == RT_MANIFEST || id == RT_MENU || id == RT_VERSION)
+        if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
+            type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION)
         {
             ;
         }
@@ -3132,10 +3152,10 @@ BOOL MainWnd_IsEditable(HWND hwnd)
 
 void MainWnd_DoubleClickTV(HWND hwnd)
 {
-    if (!MainWnd_IsEditable(hwnd))
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    if (!MainWnd_IsEditableEntry(hwnd, lParam))
         return;
 
-    LPARAM lParam = TV_GetParam(g_hTreeView);
     MainWnd_SelectTV(hwnd, lParam, TRUE);
 }
 
@@ -3252,6 +3272,39 @@ void MainWnd_OnCompile(HWND hwnd)
         return;
     }
 
+    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+    std::wstring WideText;
+    WideText.resize(cchText);
+    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+    std::string TextUtf8 = WideToUtf8(WideText);
+    std::string TextAnsi = WideToAnsi(WideText);
+
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    WORD i = LOWORD(lParam);
+    ResEntry& entry = g_Entries[i];
+
+    if (HIWORD(lParam) == I_LANG)
+    {
+        if (Res_IsPlainText(entry))
+        {
+            if (WideText.find(L"UTF-8") != std::wstring::npos)
+            {
+                entry.data.assign(TextUtf8.begin(), TextUtf8.end());
+
+                static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
+                entry.data.insert(entry.data.begin(), &bom[0], &bom[3]);
+            }
+            else
+            {
+                entry.data.assign(TextAnsi.begin(), TextAnsi.end());
+            }
+            MainWnd_SelectTV(hwnd, lParam, FALSE);
+            return;
+        }
+    }
+    WideText.clear();
+
     WCHAR szTempPath[MAX_PATH];
     ::GetTempPathW(_countof(szTempPath), szTempPath);
 
@@ -3274,24 +3327,11 @@ void MainWnd_OnCompile(HWND hwnd)
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#include <prsht.h>\r\n");
     r1.WriteFormatA("#include <dlgs.h>\r\n");
-    {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
-        WORD i = LOWORD(lParam);
-        ResEntry& entry = g_Entries[i];
-        r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
-                        PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
-    }
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+                    PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001)\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
-
-    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
-    std::wstring WideText;
-    WideText.resize(cchText);
-    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
-
-    std::string TextUtf8 = WideToUtf8(WideText);
-    WideText.clear();
 
     DWORD cbWritten;
     r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
@@ -3370,7 +3410,7 @@ void MainWnd_OnCompile(HWND hwnd)
 
     if (Success)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        TV_RefreshInfo(g_hTreeView, g_Entries);
         MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
     else
