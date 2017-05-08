@@ -67,56 +67,6 @@ public:
         return TRUE;
     }
 
-    BOOL Parse(const WCHAR *pch)
-    {
-        using namespace std;
-        m_entries.clear();
-
-        pch = skip_space(pch);
-        while (iswdigit(*pch) || iswalpha(*pch))
-        {
-            ++pch;
-        }
-        pch = skip_space(pch);
-        if (memcmp(pch, "ACCELERATORS", 12) != 0)
-            return FALSE;
-
-        pch += 12;
-        pch = skip_space(pch);
-
-        if (*pch == L'{')
-        {
-            ++pch;
-        }
-        else
-        {
-            if (memcmp(pch, "BEGIN", 5) != 0)
-                return FALSE;
-            pch += 5;
-        }
-        pch = skip_space(pch);
-
-        do
-        {
-            if (!ParseLine(pch))
-                break;
-        } while (pch && *pch);
-
-        if (*pch == L'}')
-        {
-            ++pch;
-        }
-        else if (memcmp(pch, "END", 3) != 0)
-        {
-            pch += 3;
-        }
-        else
-        {
-            return FALSE;
-        }
-        return TRUE;
-    }
-
     std::wstring Dump(const ID_OR_STRING &id_or_str) const
     {
         std::wstring ret;
@@ -160,11 +110,6 @@ public:
 
 protected:
     entries_type    m_entries;
-
-    bool ParseLine(const wchar_t *pch)
-    {
-        return false;
-    }
 };
 
 #endif  // ndef ACCEL_RES_HPP_

@@ -161,49 +161,6 @@ public:
         return TRUE;
     }
 
-    BOOL Parse(const WCHAR *pch)
-    {
-        m_map.clear();
-
-        pch = skip_space(pch);
-        if (memcmp(pch, "MESSAGETABLE", 12) != 0)
-            return FALSE;
-        pch = skip_space(pch);
-        if (*pch == L'{')
-        {
-            ++pch;
-        }
-        else if (memcmp(pch, "BEGIN", 5) != 0)
-        {
-            pch += 5;
-        }
-        else
-        {
-            return FALSE;
-        }
-
-        do
-        {
-            if (!ParseLine(pch))
-                break;
-        } while (pch && *pch);
-
-        if (*pch == L'}')
-        {
-            ++pch;
-        }
-        else if (memcmp(pch, "END", 3) != 0)
-        {
-            pch += 3;
-        }
-        else
-        {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
     std::wstring Dump() const
     {
         std::wstring ret;
@@ -279,33 +236,6 @@ protected:
                 offset += m_map[k].size() * sizeof(WCHAR);
             }
         }
-        return TRUE;
-    }
-
-    BOOL ParseLine(const WCHAR*& pch)
-    {
-        pch = skip_space(pch);
-        // L'{'
-        if (*pch == L'}' || memcmp(pch, "END", 3) == 0)
-            return FALSE;
-
-        if (!iswdigit(*pch))
-            return FALSE;
-
-        ULONG num = _wtoi(pch);
-        while (*pch && iswdigit(*pch))
-        {
-            ++pch;
-        }
-
-        if (*pch == L',')
-            ++pch;
-
-        std::wstring str;
-        if (!guts_quote(str, pch))
-            return FALSE;
-
-        m_map[num] = str;
         return TRUE;
     }
 };
