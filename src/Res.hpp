@@ -843,6 +843,71 @@ _tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
                        MAKELPARAM(iEntry, I_TYPE), Expand);
 }
 
+inline void
+TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
+{
+    HTREEITEM hParent = NULL;
+
+    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
+         hItem != NULL;
+         hItem = TreeView_GetNextSibling(hwnd, hItem))
+    {
+        LPARAM lParam = TV_GetParam(hwnd, hItem);
+        if (HIWORD(lParam) == I_TYPE)
+        {
+            if (Entries[LOWORD(lParam)].type == entry.type)
+            {
+                hParent = hItem;
+                break;
+            }
+        }
+    }
+
+    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
+         hItem != NULL;
+         hItem = TreeView_GetNextSibling(hwnd, hItem))
+    {
+        LPARAM lParam = TV_GetParam(hwnd, hItem);
+        if (HIWORD(lParam) == I_NAME)
+        {
+            if (Entries[LOWORD(lParam)].type == entry.type &&
+                Entries[LOWORD(lParam)].name == entry.name)
+            {
+                hParent = hItem;
+                break;
+            }
+        }
+        else if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+        {
+            if (Entries[LOWORD(lParam)].lang == entry.lang)
+            {
+                hParent = hItem;
+                TreeView_SelectItem(hwnd, hParent);
+                return;
+            }
+        }
+    }
+
+    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
+         hItem != NULL;
+         hItem = TreeView_GetNextSibling(hwnd, hItem))
+    {
+        LPARAM lParam = TV_GetParam(hwnd, hItem);
+        if (HIWORD(lParam) == I_LANG)
+        {
+            if (Entries[LOWORD(lParam)].type == entry.type &&
+                Entries[LOWORD(lParam)].name == entry.name &&
+                Entries[LOWORD(lParam)].lang == entry.lang)
+            {
+                hParent = hItem;
+                break;
+            }
+        }
+    }
+
+    TreeView_SelectItem(hwnd, hParent);
+}
+
 inline HTREEITEM
 _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
                        const ResEntries& Entries, INT iEntry, BOOL Expand)
@@ -886,13 +951,25 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, const ResEntries& Entries)
+TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE)
 {
+    ResEntry entry;
+    LPARAM lParam = TV_GetParam(hwnd, NULL);
+    if (lParam)
+    {
+        WORD k = LOWORD(lParam);
+        entry = Entries[k];
+    }
+
     TreeView_DeleteAllItems(hwnd);
 
-    BOOL Expand = TRUE;
-    if (Entries.size() >= 24)
-        Expand = FALSE;
+    BOOL Expand = FALSE;
+    if (bNewlyOpen)
+    {
+        Expand = TRUE;
+        if (Entries.size() >= 24)
+            Expand = FALSE;
+    }
 
     for (INT i = 0; i < INT(Entries.size()); ++i)
     {
@@ -923,6 +1000,8 @@ TV_RefreshInfo(HWND hwnd, const ResEntries& Entries)
         hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, Expand);
         hItem = hItem;
     }
+
+    TV_SelectEntry(hwnd, Entries, entry);
 }
 
 inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& Entries)

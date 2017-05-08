@@ -601,7 +601,7 @@ inline std::wstring virtkey(WORD w)
         {
             using namespace std;
             wchar_t sz[8];
-            wsprintfW(sz, L"'%c'", w);
+            wsprintfW(sz, L"\"%c\"", w);
             ret = sz;
             break;
         }

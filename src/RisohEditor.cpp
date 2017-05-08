@@ -393,7 +393,7 @@ BOOL DoAddBin(HWND hwnd,
         return FALSE;
 
     Res_AddEntry(g_Entries, Type, Name, Lang, bs.data(), FALSE);
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -408,7 +408,7 @@ BOOL DoReplaceBin(HWND hwnd,
         return FALSE;
 
     Res_AddEntry(g_Entries, Type, Name, Lang, bs.data(), TRUE);
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -419,7 +419,7 @@ BOOL DoAddIcon(HWND hwnd,
 {
     if (!Res_AddGroupIcon(g_Entries, Name, Lang, IconFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -430,7 +430,7 @@ BOOL DoReplaceIcon(HWND hwnd,
 {
     if (!Res_AddGroupIcon(g_Entries, Name, Lang, IconFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -441,7 +441,7 @@ BOOL DoAddCursor(HWND hwnd,
 {
     if (!Res_AddGroupCursor(g_Entries, Name, Lang, CurFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -452,7 +452,7 @@ BOOL DoReplaceCursor(HWND hwnd,
 {
     if (!Res_AddGroupCursor(g_Entries, Name, Lang, CurFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -463,7 +463,7 @@ BOOL DoAddBitmap(HWND hwnd,
 {
     if (!Res_AddBitmap(g_Entries, Name, Lang, BitmapFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -474,7 +474,7 @@ BOOL DoReplaceBitmap(HWND hwnd,
 {
     if (!Res_AddBitmap(g_Entries, Name, Lang, BitmapFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
 
@@ -3358,7 +3358,9 @@ void MainWnd_OnCompile(HWND hwnd)
 
     BOOL Success = FALSE;
     ByteStream stream;
+
     MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcess(NULL, CmdLine))
@@ -3410,7 +3412,7 @@ void MainWnd_OnCompile(HWND hwnd)
 
     if (Success)
     {
-        TV_RefreshInfo(g_hTreeView, g_Entries);
+        TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
         MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
     else
