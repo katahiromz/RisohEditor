@@ -3204,7 +3204,6 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
     {
         WORD i = LOWORD(lParam);
         ResEntry& entry = g_Entries[i];
-        entry.clear_data();
 
         if (entries.size() != 1 ||
             entries[0].name != entry.name ||
