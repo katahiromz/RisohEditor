@@ -8,5 +8,7 @@ const BYTE *GetDialogSample(DWORD& Size);
 const BYTE *GetMenuSample(DWORD& Size);
 const BYTE *GetStringSample(DWORD& Size);
 const BYTE *GetVersionSample(DWORD& Size);
+const BYTE *GetHtmlSample(DWORD& Size);
+const BYTE *GetManifestSample(DWORD& Size);
 
 #endif  // ndef SAMPLES_HPP_

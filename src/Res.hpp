@@ -8,6 +8,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef RT_HTML
+    #define RT_HTML         MAKEINTRESOURCE(23)
+#endif
+#ifndef RT_MANIFEST
+    #define RT_MANIFEST     MAKEINTRESOURCE(24)
+#endif
+
 #define I_NONE      0
 #define I_TYPE      1
 #define I_NAME      2
@@ -1380,7 +1387,8 @@ inline BOOL
 Res_HasSample(const ID_OR_STRING& type)
 {
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
-           type == RT_MENU || type == RT_STRING || type == RT_VERSION;
+           type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
+           type == RT_HTML || type == RT_MANIFEST;
 }
 
 inline BOOL

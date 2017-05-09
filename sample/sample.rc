@@ -29,6 +29,16 @@ FONT 9, "MS Shell Dlg"
     CONTROL "Cancel", IDCANCEL, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 115, 115, 60, 14
 }
 
+#ifndef HTML
+    #define HTML 23
+#endif
+1 HTML "html.txt"
+
+#ifndef MANIFEST
+    #define MANIFEST 24
+#endif
+1 MANIFEST "manifest.txt"
+
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION     0, 0, 0, 0
 PRODUCTVERSION  0, 0, 0, 0

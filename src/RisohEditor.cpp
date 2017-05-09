@@ -2177,6 +2177,18 @@ void AddResDlg_OnOK(HWND hwnd)
             const BYTE *pb = GetVersionSample(Size);
             stream.assign(pb, Size);
         }
+        else if (Type == RT_HTML)
+        {
+            DWORD Size;
+            const BYTE *pb = GetHtmlSample(Size);
+            stream.assign(pb, Size);
+        }
+        else if (Type == RT_MANIFEST)
+        {
+            DWORD Size;
+            const BYTE *pb = GetManifestSample(Size);
+            stream.assign(pb, Size);
+        }
         else
         {
             bOK = FALSE;

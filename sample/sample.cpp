@@ -36,5 +36,14 @@ int main(void)
     DumpResource(hInst, RT_STRING, MAKEINTRESOURCE(1), "abString");
     DumpResource(hInst, RT_VERSION, MAKEINTRESOURCE(1), "abVersion");
 
+#ifndef RT_HTML
+    #define RT_HTML         MAKEINTRESOURCE(23)
+#endif
+#ifndef RT_MANIFEST
+    #define RT_MANIFEST     MAKEINTRESOURCE(24)
+#endif
+    DumpResource(hInst, RT_HTML, MAKEINTRESOURCE(1), "abHtml");
+    DumpResource(hInst, RT_MANIFEST, MAKEINTRESOURCE(1), "abManifest");
+
     return 0;
 }
