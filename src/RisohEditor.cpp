@@ -3702,17 +3702,6 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 {
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
-    if (bEditable)
-    {
-        EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
-    }
-    else
-    {
-        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
-    }
-
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
     if (hItem == NULL || g_bInEdit)
     {
@@ -3726,6 +3715,8 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
         return;
     }
 
@@ -3737,6 +3728,26 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 
     UINT i = LOWORD(Item.lParam);
     const ResEntry& Entry = g_Entries[i];
+
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
+    if (bEditable)
+    {
+        EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
+        if (Res_CanGuiEdit(Entry.type))
+        {
+            EnableMenuItem(hMenu, ID_GUIEDIT, MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+        }
+    }
+    else
+    {
+        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+    }
 
     switch (HIWORD(Item.lParam))
     {

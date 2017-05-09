@@ -19,6 +19,9 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
     POPUP "編集(&E)"
     {
+        MENUITEM "テキスト編集...\tEnter", ID_EDIT
+        MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
@@ -27,7 +30,6 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "編集...\tEnter", ID_EDIT
         MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON
@@ -49,6 +51,9 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ポップアップ"
     {
+        MENUITEM "テキスト編集...\tEnter", ID_EDIT
+        MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
@@ -57,7 +62,6 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "編集...\tEnter", ID_EDIT
         MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON

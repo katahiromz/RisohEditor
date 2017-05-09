@@ -19,6 +19,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     }
     POPUP "&Edit"
     {
+        MENUITEM "Text Edit...\tEnter", ID_EDIT
+        MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
+        MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
@@ -27,7 +30,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Edit...\tEnter", ID_EDIT
         MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON
@@ -49,6 +51,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "Popup"
     {
+        MENUITEM "Text Edit...\tEnter", ID_EDIT
+        MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
+        MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
@@ -57,7 +62,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Edit...\tEnter", ID_EDIT
         MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON
