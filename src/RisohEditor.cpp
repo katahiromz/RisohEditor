@@ -488,20 +488,13 @@ TBBUTTON g_buttons0[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-    { -1, ID_HIDEDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_HIDEDIALOG },
 };
 
 TBBUTTON g_buttons1[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-    { -1, ID_SHOWDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_SHOWDIALOG },
-};
-
-TBBUTTON g_buttons2[] =
-{
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
 };
 
 void ToolBar_Update(HWND hwnd, INT iType)
@@ -516,9 +509,6 @@ void ToolBar_Update(HWND hwnd, INT iType)
         break;
     case 1:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
-        break;
-    case 2:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
         break;
     }
 }
@@ -551,7 +541,6 @@ HWND ToolBar_Create(HWND hwndParent)
 
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
 
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
@@ -3089,13 +3078,13 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         Edit_SetReadOnly(g_hSrcEdit, FALSE);
         SetFocus(g_hSrcEdit);
 
-        if (Res_NeedsDialog(Entry))
+        if (Res_CanGuiEdit(Entry))
         {
-            ToolBar_Update(g_hToolBar, 0);
+            ToolBar_Update(g_hToolBar, 1);
         }
         else
         {
-            ToolBar_Update(g_hToolBar, 2);
+            ToolBar_Update(g_hToolBar, 0);
         }
         ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
 
@@ -3422,12 +3411,7 @@ void MainWnd_OnCompile(HWND hwnd)
     ::DeleteFileW(szPath3);
 }
 
-void MainWnd_OnShowDialog(HWND hwnd)
-{
-    // FIXME
-}
-
-void MainWnd_OnHideDialog(HWND hwnd)
+void MainWnd_OnGuiEdit(HWND hwnd)
 {
     // FIXME
 }
@@ -3516,11 +3500,8 @@ void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_COMPILE:
         MainWnd_OnCompile(hwnd);
         break;
-    case ID_SHOWDIALOG:
-        MainWnd_OnShowDialog(hwnd);
-        break;
-    case ID_HIDEDIALOG:
-        MainWnd_OnHideDialog(hwnd);
+    case ID_GUIEDIT:
+        MainWnd_OnGuiEdit(hwnd);
         break;
     }
 }

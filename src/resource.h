@@ -23,7 +23,7 @@
 #define ID_COMPILE          122
 #define ID_CANCELEDIT       123
 #define ID_SHOWDIALOG       124
-#define ID_HIDEDIALOG       125
+#define ID_GUIEDIT          125
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -83,8 +83,7 @@
 #define IDS_CANNOTIMPORT    46
 #define IDS_COMPILE         47
 #define IDS_CANCELEDIT      48
-#define IDS_SHOWDIALOG      49
-#define IDS_HIDEDIALOG      50
+#define IDS_GUIEDIT         49
 #define IDS_CANNOTSTARTUP   51
 #define IDS_RESMISMATCH     52
 #define IDS_SAMPLETEXT      53

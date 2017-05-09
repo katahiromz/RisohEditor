@@ -123,11 +123,10 @@ STRINGTABLE
     IDS_CANNOTIMPORT, "Unable to import the resource."
     IDS_COMPILE, "Compile (F8)"
     IDS_CANCELEDIT, "Cancel Edit (Ctrl+E)"
-    IDS_SHOWDIALOG, "Show Dialog"
-    IDS_HIDEDIALOG, "Hide Dialog"
     IDS_CANNOTSTARTUP, "Unable to start up the resource compiler."
     IDS_RESMISMATCH, "Resource was mismatched."
     IDS_SAMPLETEXT, "This is a sample."
+    IDS_GUIEDIT, "GUI Edit (Ctrl+G)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

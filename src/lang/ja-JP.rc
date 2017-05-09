@@ -123,11 +123,10 @@ STRINGTABLE
     IDS_CANNOTIMPORT, "インポートできませんでした。"
     IDS_COMPILE, "コンパイル (F8)"
     IDS_CANCELEDIT, "編集をキャンセル (Ctrl+E)"
-    IDS_SHOWDIALOG, "ダイアログを表示"
-    IDS_HIDEDIALOG, "ダイアログを隠す"
     IDS_CANNOTSTARTUP, "リソースコンパイラが起動できませんでした。"
     IDS_RESMISMATCH, "リソースが一致しません。"
     IDS_SAMPLETEXT, "これはサンプルです。"
+    IDS_GUIEDIT, "GUI編集 (Ctrl+G)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

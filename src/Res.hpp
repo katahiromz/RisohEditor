@@ -1368,7 +1368,7 @@ Res_IsPlainText(const ResEntry& Entry)
 }
 
 inline INT
-Res_NeedsDialog(const ResEntry& Entry)
+Res_CanGuiEdit(const ResEntry& Entry)
 {
     const ID_OR_STRING& type = Entry.type;
     return type == RT_DIALOG || type == RT_MENU ||
