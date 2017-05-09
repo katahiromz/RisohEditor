@@ -35,6 +35,7 @@
 #define IDD_MENUTEST        108
 #define IDD_ADDKEY          109
 #define IDD_MODIFYKEY       110
+#define IDD_EDITACCEL       111
 
 #define IDS_TITLE           1
 #define IDS_TITLEWITHFILE   2
