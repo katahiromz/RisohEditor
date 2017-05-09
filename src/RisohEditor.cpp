@@ -3626,15 +3626,15 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     return TRUE;
 }
 
-#define MAX0 128
-#define MAX1 16
-#define MAX2 128
+#define MAX_SZ0 128
+#define MAX_SZ1 16
+#define MAX_SZ2 128
 
 struct ACCEL_ENTRY
 {
-    WCHAR sz0[MAX0];
-    WCHAR sz1[MAX1];
-    WCHAR sz2[MAX2];
+    WCHAR sz0[MAX_SZ0];
+    WCHAR sz1[MAX_SZ1];
+    WCHAR sz2[MAX_SZ2];
 };
 
 void EditAccelDlg_OnUp(HWND hwnd)
@@ -3645,8 +3645,8 @@ void EditAccelDlg_OnUp(HWND hwnd)
     if (iItem == 0)
         return;
 
-    WCHAR sz0_0[MAX0], sz0_1[MAX1], sz0_2[MAX2];
-    WCHAR sz1_0[MAX0], sz1_1[MAX1], sz1_2[MAX2];
+    WCHAR sz0_0[MAX_SZ0], sz0_1[MAX_SZ1], sz0_2[MAX_SZ2];
+    WCHAR sz1_0[MAX_SZ0], sz1_1[MAX_SZ1], sz1_2[MAX_SZ2];
     ListView_GetItemText(hCtl1, iItem - 1, 0, sz0_0, _countof(sz0_0));
     ListView_GetItemText(hCtl1, iItem - 1, 1, sz0_1, _countof(sz0_1));
     ListView_GetItemText(hCtl1, iItem - 1, 2, sz0_2, _countof(sz0_2));
@@ -3673,8 +3673,8 @@ void EditAccelDlg_OnDown(HWND hwnd)
     if (iItem + 1 == ListView_GetItemCount(hCtl1))
         return;
 
-    WCHAR sz0_0[MAX0], sz0_1[MAX1], sz0_2[MAX2];
-    WCHAR sz1_0[MAX0], sz1_1[MAX1], sz1_2[MAX2];
+    WCHAR sz0_0[MAX_SZ0], sz0_1[MAX_SZ1], sz0_2[MAX_SZ2];
+    WCHAR sz1_0[MAX_SZ0], sz1_1[MAX_SZ1], sz1_2[MAX_SZ2];
     ListView_GetItemText(hCtl1, iItem, 0, sz0_0, _countof(sz0_0));
     ListView_GetItemText(hCtl1, iItem, 1, sz0_1, _countof(sz0_1));
     ListView_GetItemText(hCtl1, iItem, 2, sz0_2, _countof(sz0_2));
