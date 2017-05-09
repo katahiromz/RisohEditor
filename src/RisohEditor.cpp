@@ -3634,17 +3634,21 @@ void EditAccelDlg_OnUp(HWND hwnd)
     if (iItem == 0)
         return;
 
-    WCHAR sz0_0[32], sz0_1[32];
-    WCHAR sz1_0[32], sz1_1[32];
+    WCHAR sz0_0[32], sz0_1[32], sz0_2[32];
+    WCHAR sz1_0[32], sz1_1[32], sz1_2[32];
     ListView_GetItemText(hCtl1, iItem - 1, 0, sz0_0, 32);
     ListView_GetItemText(hCtl1, iItem - 1, 1, sz0_1, 32);
+    ListView_GetItemText(hCtl1, iItem - 1, 2, sz0_2, 32);
     ListView_GetItemText(hCtl1, iItem, 0, sz1_0, 32);
     ListView_GetItemText(hCtl1, iItem, 1, sz1_1, 32);
+    ListView_GetItemText(hCtl1, iItem, 2, sz1_2, 32);
 
     ListView_SetItemText(hCtl1, iItem - 1, 0, sz1_0);
     ListView_SetItemText(hCtl1, iItem - 1, 1, sz1_1);
+    ListView_SetItemText(hCtl1, iItem - 1, 2, sz1_2);
     ListView_SetItemText(hCtl1, iItem, 0, sz0_0);
     ListView_SetItemText(hCtl1, iItem, 1, sz0_1);
+    ListView_SetItemText(hCtl1, iItem, 2, sz0_2);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
     ListView_SetItemState(hCtl1, iItem - 1, state, state);
@@ -3658,17 +3662,21 @@ void EditAccelDlg_OnDown(HWND hwnd)
     if (iItem + 1 == ListView_GetItemCount(hCtl1))
         return;
 
-    WCHAR sz0_0[32], sz0_1[32];
-    WCHAR sz1_0[32], sz1_1[32];
+    WCHAR sz0_0[32], sz0_1[32], sz0_2[32];
+    WCHAR sz1_0[32], sz1_1[32], sz1_2[32];
     ListView_GetItemText(hCtl1, iItem, 0, sz0_0, 32);
     ListView_GetItemText(hCtl1, iItem, 1, sz0_1, 32);
+    ListView_GetItemText(hCtl1, iItem, 2, sz0_2, 32);
     ListView_GetItemText(hCtl1, iItem + 1, 0, sz1_0, 32);
     ListView_GetItemText(hCtl1, iItem + 1, 1, sz1_1, 32);
+    ListView_GetItemText(hCtl1, iItem + 1, 2, sz1_2, 32);
 
     ListView_SetItemText(hCtl1, iItem, 0, sz1_0);
     ListView_SetItemText(hCtl1, iItem, 1, sz1_1);
+    ListView_SetItemText(hCtl1, iItem, 2, sz1_2);
     ListView_SetItemText(hCtl1, iItem + 1, 0, sz0_0);
     ListView_SetItemText(hCtl1, iItem + 1, 1, sz0_1);
+    ListView_SetItemText(hCtl1, iItem + 1, 2, sz0_2);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
     ListView_SetItemState(hCtl1, iItem + 1, state, state);
