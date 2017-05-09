@@ -120,6 +120,15 @@ public:
         return ret;
     }
 
+    entries_type& Entries()
+    {
+        return m_entries;
+    }
+    const entries_type& Entries() const
+    {
+        return m_entries;
+    }
+
 protected:
     entries_type    m_entries;
 };

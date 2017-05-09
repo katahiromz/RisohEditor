@@ -33,6 +33,7 @@
 #define IDD_ADDCURSOR       106
 #define IDD_REPLACECUR      107
 #define IDD_MENUTEST        108
+#define IDD_ADDKEY          109
 
 #define IDS_TITLE           1
 #define IDS_TITLEWITHFILE   2
