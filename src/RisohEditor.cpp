@@ -3491,6 +3491,223 @@ void MainWnd_OnCompile(HWND hwnd)
     ::DeleteFileW(szPath3);
 }
 
+std::wstring GetKeyFlags(DWORD fFlags)
+{
+    std::wstring str;
+
+    if (fFlags & FVIRTKEY)
+        str += L"V";
+    else
+        str += L" ";
+
+    if (fFlags & FNOINVERT)
+        str += L"N";
+    else
+        str += L" ";
+
+    if (fFlags & FCONTROL)
+        str += L"C";
+    else
+        str += L" ";
+
+    if (fFlags & FSHIFT)
+        str += L"S";
+    else
+        str += L" ";
+
+    if (fFlags & FALT)
+        str += L"A";
+    else
+        str += L" ";
+
+    return str;
+}
+
+BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    const AccelRes& accel_res = *(const AccelRes *)lParam;
+
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+    ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
+
+    LV_COLUMN column;
+    ZeroMemory(&column, sizeof(column));
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 80;
+    column.pszText = LoadStringDx(IDS_KEY);
+    column.iSubItem = 0;
+    ListView_InsertColumn(hCtl1, 0, &column);
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 80;
+    column.pszText = LoadStringDx(IDS_FLAGS);
+    column.iSubItem = 1;
+    ListView_InsertColumn(hCtl1, 1, &column);
+
+    typedef AccelRes::entries_type entries_type;
+    const entries_type& entries = accel_res.Entries();
+
+    INT i = 0;
+    entries_type::const_iterator it, end = entries.end();
+    for (it = entries.begin(); it != end; ++it, ++i)
+    {
+        std::wstring str;
+        if (it->fFlags & FVIRTKEY)
+        {
+            str = g_ConstantsDB.GetName(L"VIRTUALKEYS", it->wAscii);
+        }
+        else
+        {
+            str += (WCHAR)it->wAscii;
+            str = quote(str);
+        }
+
+        LV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = i;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = &str[0];
+        ListView_InsertItem(hCtl1, &item);
+
+        str = GetKeyFlags(it->fFlags);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = i;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = &str[0];
+        ListView_SetItem(hCtl1, &item);
+    }
+
+    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    SetFocus(hCtl1);
+
+    return TRUE;
+}
+
+void EditAccelDlg_OnUp(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem == 0)
+        return;
+
+    WCHAR sz0_0[32], sz0_1[32];
+    WCHAR sz1_0[32], sz1_1[32];
+    ListView_GetItemText(hCtl1, iItem - 1, 0, sz0_0, 32);
+    ListView_GetItemText(hCtl1, iItem - 1, 1, sz0_1, 32);
+    ListView_GetItemText(hCtl1, iItem, 0, sz1_0, 32);
+    ListView_GetItemText(hCtl1, iItem, 1, sz1_1, 32);
+
+    ListView_SetItemText(hCtl1, iItem - 1, 0, sz1_0);
+    ListView_SetItemText(hCtl1, iItem - 1, 1, sz1_1);
+    ListView_SetItemText(hCtl1, iItem, 0, sz0_0);
+    ListView_SetItemText(hCtl1, iItem, 1, sz0_1);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem - 1, state, state);
+}
+
+void EditAccelDlg_OnDown(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem + 1 == ListView_GetItemCount(hCtl1))
+        return;
+
+    WCHAR sz0_0[32], sz0_1[32];
+    WCHAR sz1_0[32], sz1_1[32];
+    ListView_GetItemText(hCtl1, iItem, 0, sz0_0, 32);
+    ListView_GetItemText(hCtl1, iItem, 1, sz0_1, 32);
+    ListView_GetItemText(hCtl1, iItem + 1, 0, sz1_0, 32);
+    ListView_GetItemText(hCtl1, iItem + 1, 1, sz1_1, 32);
+
+    ListView_SetItemText(hCtl1, iItem, 0, sz1_0);
+    ListView_SetItemText(hCtl1, iItem, 1, sz1_1);
+    ListView_SetItemText(hCtl1, iItem + 1, 0, sz0_0);
+    ListView_SetItemText(hCtl1, iItem + 1, 1, sz0_1);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem + 1, state, state);
+}
+
+void EditAccelDlg_OnDelete(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem >= 0)
+    {
+        ListView_DeleteItem(hCtl1, iItem);
+    }
+}
+
+void EditAccelDlg_OnAdd(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    //FIXME
+}
+
+void EditAccelDlg_OnModify(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    //FIXME
+}
+
+void EditAccelDlg_OnOK(HWND hwnd)
+{
+    //FIXME
+    EndDialog(hwnd, IDOK);
+}
+
+void EditAccelDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    switch (id)
+    {
+    case psh1:
+        EditAccelDlg_OnAdd(hwnd);
+        break;
+    case psh2:
+        EditAccelDlg_OnModify(hwnd);
+        break;
+    case psh3:
+        EditAccelDlg_OnDelete(hwnd);
+        break;
+    case psh4:
+        EditAccelDlg_OnUp(hwnd);
+        break;
+    case psh5:
+        EditAccelDlg_OnDown(hwnd);
+        break;
+    case IDOK:
+        EditAccelDlg_OnOK(hwnd);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+INT_PTR CALLBACK
+EditAccelDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, EditAccelDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, EditAccelDlg_OnCommand);
+    }
+    return 0;
+}
+
 void MainWnd_OnGuiEdit(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -3502,6 +3719,28 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     if (!Res_CanGuiEdit(Entry.type))
     {
         return;
+    }
+
+    if (Entry.type == RT_ACCELERATOR)
+    {
+        const ResEntry::DataType& data = Entry.data;
+        ByteStream stream(data);
+
+        AccelRes accel_res;
+        if (accel_res.LoadFromStream(stream))
+        {
+            INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_EDITACCEL),
+                                      hwnd, EditAccelDlgProc, (LPARAM)&accel_res);
+            if (nID == IDOK)
+            {
+                stream.clear();
+                if (accel_res.SaveToStream(stream))
+                {
+                    Entry.data = stream.data();
+                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                }
+            }
+        }
     }
 
     // FIXME
