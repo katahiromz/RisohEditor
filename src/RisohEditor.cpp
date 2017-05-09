@@ -1230,7 +1230,7 @@ void AddIconDlg_OnOK(HWND hwnd)
     INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
     if (iEntry != -1)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
+        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
                              MB_ICONINFORMATION | MB_YESNOCANCEL);
         switch (id)
         {
@@ -1698,7 +1698,7 @@ void AddBitmapDlg_OnOK(HWND hwnd)
     INT iEntry = Res_Find(g_Entries, RT_BITMAP, Name, Lang);
     if (iEntry != -1)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
+        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
                              MB_ICONINFORMATION | MB_YESNOCANCEL);
         switch (id)
         {
@@ -1950,7 +1950,7 @@ void AddCursorDlg_OnOK(HWND hwnd)
     INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
     if (iEntry != -1)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
+        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
                              MB_ICONINFORMATION | MB_YESNOCANCEL);
         switch (id)
         {
@@ -2117,7 +2117,14 @@ void AddResDlg_OnOK(HWND hwnd)
     INT iEntry = Res_Find(g_Entries, Type, Name, Lang);
     if (iEntry != -1)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
+        if (File.empty() && Res_HasSample(Type))
+        {
+            MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
+                        MB_ICONERROR);
+            return;
+        }
+
+        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
                              MB_ICONINFORMATION | MB_YESNOCANCEL);
         switch (id)
         {
@@ -2325,7 +2332,7 @@ void MainWnd_OnImport(HWND hwnd)
             BOOL Overwrite = TRUE;
             if (Res_Intersect(g_Entries, entries))
             {
-                INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS),
+                INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE),
                                       g_szTitle,
                                       MB_ICONINFORMATION | MB_YESNOCANCEL);
                 switch (nID)

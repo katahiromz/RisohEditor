@@ -92,7 +92,7 @@ STRINGTABLE
     IDS_ICOFILTER, "Icon Files (*.ico)|*.ico|All Files (*.*)|*.*|"
     IDS_REPLACEICO, "Replace Icon"
     IDS_CANTREPLACEICO, "Unable to replace icon."
-    IDS_ALREADYEXISTS, "The item already exists. Overwrite?"
+    IDS_EXISTSOVERWRITE, "The item already exists. Overwrite?"
     IDS_OPEN, "Open"
     IDS_CANNOTOPEN, "Unable to open the file."
     IDS_ADDBMP, "Add Bitmap"
@@ -125,6 +125,7 @@ STRINGTABLE
     IDS_RESMISMATCH, "Resource was mismatched."
     IDS_SAMPLETEXT, "This is a sample."
     IDS_GUIEDIT, "GUI Edit (Ctrl+G)"
+    IDS_ALREADYEXISTS, "Already exists."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

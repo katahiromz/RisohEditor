@@ -53,7 +53,7 @@
 #define IDS_ICOFILTER       17
 #define IDS_REPLACEICO      18
 #define IDS_CANTREPLACEICO  19
-#define IDS_ALREADYEXISTS   20
+#define IDS_EXISTSOVERWRITE 20
 #define IDS_OPEN            21
 #define IDS_CANNOTOPEN      22
 #define IDS_ADDBMP          23
@@ -86,3 +86,4 @@
 #define IDS_CANNOTSTARTUP   51
 #define IDS_RESMISMATCH     52
 #define IDS_SAMPLETEXT      53
+#define IDS_ALREADYEXISTS   54

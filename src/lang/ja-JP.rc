@@ -92,7 +92,7 @@ STRINGTABLE
     IDS_ICOFILTER, "アイコン ファイル (*.ico)|*.ico|すべてのファイル (*.*)|*.*|"
     IDS_REPLACEICO, "アイコンの置き換え"
     IDS_CANTREPLACEICO, "アイコンの置き換えができませんでした。"
-    IDS_ALREADYEXISTS, "項目はすでに存在します。上書きしますか？"
+    IDS_EXISTSOVERWRITE, "項目はすでに存在します。上書きしますか？"
     IDS_OPEN, "開く"
     IDS_CANNOTOPEN, "ファイルが開けません。"
     IDS_ADDBMP, "ビットマップの追加"
@@ -125,6 +125,7 @@ STRINGTABLE
     IDS_RESMISMATCH, "リソースが一致しません。"
     IDS_SAMPLETEXT, "これはサンプルです。"
     IDS_GUIEDIT, "GUI編集 (Ctrl+G)"
+    IDS_ALREADYEXISTS, "すでに存在します。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
