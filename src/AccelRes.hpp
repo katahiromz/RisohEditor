@@ -45,26 +45,25 @@ public:
         return TRUE;
     }
 
-    BOOL SaveToStream(ByteStream& stream) const
+    void Update()
     {
-        if (m_entries.empty())
-            return TRUE;
-
         size_t i, count = m_entries.size();
         for (i = 0; i < count; ++i)
         {
-            entry_type entry = m_entries[i];
+            entry_type& entry = m_entries[i];
 
             if (i + 1 == count)
                 entry.fFlags |= 0x80;
             else
                 entry.fFlags &= ~0x80;
-
-            if (!stream.WriteRaw(entry))
-                return FALSE;
         }
+    }
 
-        return TRUE;
+    std::vector<BYTE> data() const
+    {
+        DWORD size = m_entries.size() * sizeof(entry_type);
+        const BYTE *pb = (const BYTE *)&m_entries[0];
+        return std::vector<BYTE>(pb, pb + size);
     }
 
     std::wstring Dump(const ID_OR_STRING &id_or_str) const

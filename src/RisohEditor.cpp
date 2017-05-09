@@ -3491,7 +3491,7 @@ void MainWnd_OnCompile(HWND hwnd)
     ::DeleteFileW(szPath3);
 }
 
-std::wstring GetKeyFlags(DWORD fFlags)
+std::wstring GetKeyFlags(WORD fFlags)
 {
     std::wstring str;
 
@@ -3523,7 +3523,7 @@ std::wstring GetKeyFlags(DWORD fFlags)
     return str;
 }
 
-void SetKeyFlags(DWORD& fFlags, const std::wstring& str)
+void SetKeyFlags(WORD& fFlags, const std::wstring& str)
 {
     fFlags = 0;
     if (str.find(L"V") != std::wstring::npos)
@@ -3546,7 +3546,7 @@ std::wstring GetKeyID(UINT wId)
 BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    const AccelRes& accel_res = *(const AccelRes *)lParam;
+    AccelRes& accel_res = *(AccelRes *)lParam;
 
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
     ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
@@ -3751,11 +3751,12 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
         if (!bOK)
         {
             LPCWSTR pch = str.c_str();
-            if (!guts_quote(str, pch) || str.size() != 1)
+            std::wstring str2;
+            if (!guts_quote(str2, pch) || str2.size() != 1)
             {
                 return FALSE;
             }
-            str = quote(str);
+            str = quote(str2);
         }
         else
         {
@@ -3832,37 +3833,39 @@ void EditAccelDlg_OnAdd(HWND hwnd)
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
     ACCELKEY key;
-    if (IDOK == DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDKEY),
+    if (IDOK != DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDKEY),
                                 hwnd, AddKeyDlgProc, (LPARAM)&key))
     {
-        INT iItem = ListView_GetItemCount(hCtl1);
-
-        LV_ITEM item;
-
-        ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
-        item.iSubItem = 0;
-        item.pszText = key.sz0;
-        ListView_InsertItem(hCtl1, &item);
-
-        ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
-        item.iSubItem = 1;
-        item.pszText = key.sz1;
-        ListView_SetItem(hCtl1, &item);
-
-        ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
-        item.iSubItem = 2;
-        item.pszText = key.sz2;
-        ListView_SetItem(hCtl1, &item);
-
-        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hCtl1, iItem, state, state);
+        return;
     }
+
+    INT iItem = ListView_GetItemCount(hCtl1);
+
+    LV_ITEM item;
+
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 0;
+    item.pszText = key.sz0;
+    ListView_InsertItem(hCtl1, &item);
+
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 1;
+    item.pszText = key.sz1;
+    ListView_SetItem(hCtl1, &item);
+
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 2;
+    item.pszText = key.sz2;
+    ListView_SetItem(hCtl1, &item);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem, state, state);
 }
 
 BOOL ModifyKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -3873,7 +3876,7 @@ BOOL ModifyKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     SetDlgItemTextW(hwnd, cmb1, key.sz0);
     SetDlgItemTextW(hwnd, cmb2, key.sz2);
 
-    DWORD Flags;
+    WORD Flags;
     SetKeyFlags(Flags, key.sz1);
     if (Flags & FVIRTKEY)
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
@@ -3999,7 +4002,46 @@ void EditAccelDlg_OnModify(HWND hwnd)
 void EditAccelDlg_OnOK(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-    //FIXME
+
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    AccelRes& accel_res = *(AccelRes *)lParam;
+    accel_res.Entries().clear();
+
+    INT i, Count = ListView_GetItemCount(hCtl1);
+    for (i = 0; i < Count; ++i)
+    {
+        ACCELKEY key;
+        ListView_GetItemText(hCtl1, i, 0, key.sz0, 32);
+        ListView_GetItemText(hCtl1, i, 1, key.sz1, 32);
+        ListView_GetItemText(hCtl1, i, 2, key.sz2, 32);
+
+        WORD Flags;
+        SetKeyFlags(Flags, key.sz1);
+
+        AccelTableEntry entry;
+        entry.fFlags = Flags;
+        if (Flags & FVIRTKEY)
+        {
+            entry.wAscii = g_ConstantsDB.GetValue(L"VIRTUALKEYS", key.sz0);
+        }
+        else
+        {
+            std::wstring str, str2 = key.sz0;
+            LPCWSTR pch = str2.c_str();
+            if (guts_quote(str, pch))
+            {
+                entry.wAscii = str[0];
+            }
+            else
+            {
+                entry.wAscii = _wtoi(key.sz0);
+            }
+        }
+        entry.wId = _wtoi(key.sz2);
+
+        accel_res.Entries().push_back(entry);
+    }
+
     EndDialog(hwnd, IDOK);
 }
 
@@ -4078,9 +4120,9 @@ void MainWnd_OnGuiEdit(HWND hwnd)
         return;
     }
 
+    const ResEntry::DataType& data = Entry.data;
     if (Entry.type == RT_ACCELERATOR)
     {
-        const ResEntry::DataType& data = Entry.data;
         ByteStream stream(data);
 
         AccelRes accel_res;
@@ -4090,17 +4132,13 @@ void MainWnd_OnGuiEdit(HWND hwnd)
                                       hwnd, EditAccelDlgProc, (LPARAM)&accel_res);
             if (nID == IDOK)
             {
-                stream.clear();
-                if (accel_res.SaveToStream(stream))
-                {
-                    Entry.data = stream.data();
-                    MainWnd_SelectTV(hwnd, lParam, FALSE);
-                }
+                accel_res.Update();
+                Entry.data = accel_res.data();
+                MainWnd_SelectTV(hwnd, lParam, FALSE);
+                return;
             }
         }
     }
-
-    // FIXME
 }
 
 void MainWnd_OnNew(HWND hwnd)
