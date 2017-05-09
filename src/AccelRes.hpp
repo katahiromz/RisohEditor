@@ -45,17 +45,6 @@ public:
         return TRUE;
     }
 
-    BOOL CreateSample()
-    {
-        static const entry_type entries[] =
-        {
-            { FVIRTKEY | FCONTROL, 'C', 1 },
-            { FVIRTKEY | FCONTROL | 0x80, 'V', 2 },
-        };
-        ByteStream stream(entries, sizeof(entries));
-        return LoadFromStream(stream);
-    }
-
     BOOL SaveToStream(ByteStream& stream) const
     {
         if (m_entries.empty())

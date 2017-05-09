@@ -406,31 +406,6 @@ public:
         return ret;
     }
 
-    BOOL CreateSample()
-    {
-        MENUEX_TEMPLATE_HEADER header;
-        header.wVersion = 1;
-        header.wOffset = 4;
-        header.dwHelpId = 0;
-
-        ByteStream stream(&header, sizeof(header));
-        stream.WriteDwordAlignment();
-
-        MENUEX_TEMPLATE_ITEM_HEADER item_header;
-        item_header.dwType = MFT_STRING;
-        item_header.dwState = MFS_ENABLED;
-        item_header.menuId = 1;
-        item_header.bResInfo = 0x80;
-
-        if (stream.WriteSz(LoadStringDx(IDS_SAMPLETEXT)))
-        {
-            stream.WriteDwordAlignment();
-            stream.WriteDword(0);
-            return LoadFromStreamEx(stream);
-        }
-        return FALSE;
-    }
-
 protected:
     MENUEX_TEMPLATE_HEADER  m_header;
     MenuItemsType           m_items;

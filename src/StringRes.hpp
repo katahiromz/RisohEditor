@@ -42,16 +42,6 @@ public:
         return TRUE;
     }
 
-    BOOL CreateSample()
-    {
-        WORD first, last, wName = 1;
-        GetRange(wName, first, last);
-
-        m_wName = wName;
-        m_map[wName] = LoadStringDx(IDS_SAMPLETEXT);
-        return TRUE;
-    }
-
     BOOL SaveToStream(ByteStream& stream, WORD wName)
     {
         WORD first, last;
