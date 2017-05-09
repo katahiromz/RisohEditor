@@ -1376,4 +1376,19 @@ Res_NeedsDialog(const ResEntry& Entry)
            type == RT_ACCELERATOR || type == RT_VERSION;
 }
 
+inline void
+Res_DeleteStrings(ResEntries& entries, WORD lang)
+{
+    INT k;
+    for (;;)
+    {
+        k = Res_Find(entries, RT_STRING, (WORD)0, lang);
+        if (k == -1)
+            break;
+
+        ResEntry& entry = entries[k];
+        entry.clear_data();
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////

@@ -3220,16 +3220,7 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
         WORD i = LOWORD(lParam);
         ResEntry& entry = g_Entries[i];
 
-        INT k;
-        for (;;)
-        {
-            k = Res_Find(g_Entries, RT_STRING, (WORD)0, entry.lang);
-            if (k == -1)
-                break;
-
-            ResEntry& entry = g_Entries[k];
-            entry.clear_data();
-        }
+        Res_DeleteStrings(g_Entries, entry.lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
