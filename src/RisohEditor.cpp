@@ -3347,7 +3347,7 @@ void MainWnd_OnCompile(HWND hwnd)
     {
         if (Res_IsPlainText(entry.type))
         {
-            if (WideText.find(L"UTF-8") != std::wstring::npos)
+            if (WideText.find(L"\"UTF-8\"") != std::wstring::npos)
             {
                 entry.data.assign(TextUtf8.begin(), TextUtf8.end());
 
