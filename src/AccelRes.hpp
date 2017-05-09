@@ -86,7 +86,16 @@ public:
             BOOL ALT = (it->fFlags & FALT);
 
             ret += L"    ";
-            ret += virtkey(it->wAscii);
+            if (VIRTKEY)
+            {
+                ret += virtkey(it->wAscii);
+            }
+            else
+            {
+                std::string str;
+                str += (char)it->wAscii;
+                ret += AnsiToWide(quote(str));
+            }
             ret += L", ";
             ret += deci(it->wId);
 
@@ -98,8 +107,11 @@ public:
                 ret += L", CONTROL";
             if (SHIFT)
                 ret += L", SHIFT";
+
             if (VIRTKEY)
                 ret += L", VIRTKEY";
+            else
+                ret += L", ASCII";
 
             ret += L"\r\n";
         }

@@ -154,6 +154,7 @@ inline std::string escape(const std::string& str)
         switch (ch)
         {
         case '\"': ret += "\"\""; break;
+        case '\\': ret += "\\\\"; break;
         case '\0': ret += "\\0"; break;
         case '\a': ret += "\\a"; break;
         case '\b': ret += "\\b"; break;
@@ -190,6 +191,7 @@ inline std::wstring escape(const std::wstring& str)
         switch (ch)
         {
         case L'\"': ret += L"\"\""; break;
+        case L'\\': ret += L"\\\\"; break;
         case L'\0': ret += L"\\0"; break;
         case L'\a': ret += L"\\a"; break;
         case L'\b': ret += L"\\b"; break;
@@ -221,6 +223,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
     using namespace std;
     switch (*pch)
     {
+    case '\\': str += '\\'; ++pch; break;
     case '"': str += '\"'; ++pch; break;
     case 'a': str += '\a'; ++pch; break;
     case 'b': str += '\b'; ++pch; break;
@@ -281,6 +284,7 @@ inline bool guts_escape(std::wstring& str, const wchar_t*& pch)
     using namespace std;
     switch (*pch)
     {
+    case L'\\': str += L'\\'; ++pch; break;
     case L'"': str += L'\"'; ++pch; break;
     case L'a': str += L'\a'; ++pch; break;
     case L'b': str += L'\b'; ++pch; break;
