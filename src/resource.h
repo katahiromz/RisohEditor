@@ -36,6 +36,8 @@
 #define IDD_ADDKEY          109
 #define IDD_MODIFYKEY       110
 #define IDD_EDITACCEL       111
+#define IDD_ADDSTR          112
+#define IDD_MODIFYSTR       113
 
 #define IDS_TITLE           1
 #define IDS_TITLEWITHFILE   2
