@@ -1361,25 +1361,22 @@ Res_ExtractCursor(const ResEntries& Entries,
 }
 
 inline INT
-Res_IsPlainText(const ResEntry& Entry)
+Res_IsPlainText(const ID_OR_STRING& type)
 {
-    const ID_OR_STRING& type = Entry.type;
     return type == RT_HTML || type == RT_MANIFEST || type == RT_DLGINCLUDE;
 }
 
 inline BOOL
-Res_CanGuiEdit(const ResEntry& Entry)
+Res_CanGuiEdit(const ID_OR_STRING& type)
 {
-    const ID_OR_STRING& type = Entry.type;
     return type == RT_DIALOG || type == RT_MENU ||
            type == RT_STRING || type == RT_MESSAGETABLE ||
            type == RT_ACCELERATOR || type == RT_VERSION;
 }
 
 inline BOOL
-Res_HasSample(const ResEntry& Entry)
+Res_HasSample(const ID_OR_STRING& type)
 {
-    const ID_OR_STRING& type = Entry.type;
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
            type == RT_MENU || type == RT_STRING || type == RT_VERSION;
 }

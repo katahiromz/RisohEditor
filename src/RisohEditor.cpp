@@ -3078,7 +3078,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         Edit_SetReadOnly(g_hSrcEdit, FALSE);
         SetFocus(g_hSrcEdit);
 
-        if (Res_CanGuiEdit(Entry))
+        if (Res_CanGuiEdit(Entry.type))
         {
             ToolBar_Update(g_hToolBar, 1);
         }
@@ -3265,7 +3265,7 @@ void MainWnd_OnCompile(HWND hwnd)
 
     if (HIWORD(lParam) == I_LANG)
     {
-        if (Res_IsPlainText(entry))
+        if (Res_IsPlainText(entry.type))
         {
             if (WideText.find(L"UTF-8") != std::wstring::npos)
             {
