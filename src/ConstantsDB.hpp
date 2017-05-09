@@ -80,8 +80,6 @@ public:
 
     ValueType GetValue(CategoryType category, NameType name) const
     {
-        ::CharUpperW(&name[0]);
-
         const TableType& Table = GetTable(category);
         TableType::const_iterator it, end = Table.end();
         for (it = Table.begin(); it != end; ++it)
