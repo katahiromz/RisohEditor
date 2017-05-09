@@ -3626,6 +3626,17 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     return TRUE;
 }
 
+#define MAX0 128
+#define MAX1 16
+#define MAX2 128
+
+struct ACCEL_ENTRY
+{
+    WCHAR sz0[MAX0];
+    WCHAR sz1[MAX1];
+    WCHAR sz2[MAX2];
+};
+
 void EditAccelDlg_OnUp(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
@@ -3634,14 +3645,14 @@ void EditAccelDlg_OnUp(HWND hwnd)
     if (iItem == 0)
         return;
 
-    WCHAR sz0_0[32], sz0_1[32], sz0_2[32];
-    WCHAR sz1_0[32], sz1_1[32], sz1_2[32];
-    ListView_GetItemText(hCtl1, iItem - 1, 0, sz0_0, 32);
-    ListView_GetItemText(hCtl1, iItem - 1, 1, sz0_1, 32);
-    ListView_GetItemText(hCtl1, iItem - 1, 2, sz0_2, 32);
-    ListView_GetItemText(hCtl1, iItem, 0, sz1_0, 32);
-    ListView_GetItemText(hCtl1, iItem, 1, sz1_1, 32);
-    ListView_GetItemText(hCtl1, iItem, 2, sz1_2, 32);
+    WCHAR sz0_0[MAX0], sz0_1[MAX1], sz0_2[MAX2];
+    WCHAR sz1_0[MAX0], sz1_1[MAX1], sz1_2[MAX2];
+    ListView_GetItemText(hCtl1, iItem - 1, 0, sz0_0, _countof(sz0_0));
+    ListView_GetItemText(hCtl1, iItem - 1, 1, sz0_1, _countof(sz0_1));
+    ListView_GetItemText(hCtl1, iItem - 1, 2, sz0_2, _countof(sz0_2));
+    ListView_GetItemText(hCtl1, iItem, 0, sz1_0, _countof(sz0_0));
+    ListView_GetItemText(hCtl1, iItem, 1, sz1_1, _countof(sz0_1));
+    ListView_GetItemText(hCtl1, iItem, 2, sz1_2, _countof(sz0_2));
 
     ListView_SetItemText(hCtl1, iItem - 1, 0, sz1_0);
     ListView_SetItemText(hCtl1, iItem - 1, 1, sz1_1);
@@ -3662,14 +3673,14 @@ void EditAccelDlg_OnDown(HWND hwnd)
     if (iItem + 1 == ListView_GetItemCount(hCtl1))
         return;
 
-    WCHAR sz0_0[32], sz0_1[32], sz0_2[32];
-    WCHAR sz1_0[32], sz1_1[32], sz1_2[32];
-    ListView_GetItemText(hCtl1, iItem, 0, sz0_0, 32);
-    ListView_GetItemText(hCtl1, iItem, 1, sz0_1, 32);
-    ListView_GetItemText(hCtl1, iItem, 2, sz0_2, 32);
-    ListView_GetItemText(hCtl1, iItem + 1, 0, sz1_0, 32);
-    ListView_GetItemText(hCtl1, iItem + 1, 1, sz1_1, 32);
-    ListView_GetItemText(hCtl1, iItem + 1, 2, sz1_2, 32);
+    WCHAR sz0_0[MAX0], sz0_1[MAX1], sz0_2[MAX2];
+    WCHAR sz1_0[MAX0], sz1_1[MAX1], sz1_2[MAX2];
+    ListView_GetItemText(hCtl1, iItem, 0, sz0_0, _countof(sz0_0));
+    ListView_GetItemText(hCtl1, iItem, 1, sz0_1, _countof(sz0_1));
+    ListView_GetItemText(hCtl1, iItem, 2, sz0_2, _countof(sz0_2));
+    ListView_GetItemText(hCtl1, iItem + 1, 0, sz1_0, _countof(sz1_0));
+    ListView_GetItemText(hCtl1, iItem + 1, 1, sz1_1, _countof(sz1_1));
+    ListView_GetItemText(hCtl1, iItem + 1, 2, sz1_2, _countof(sz1_2));
 
     ListView_SetItemText(hCtl1, iItem, 0, sz1_0);
     ListView_SetItemText(hCtl1, iItem, 1, sz1_1);
@@ -3693,13 +3704,6 @@ void EditAccelDlg_OnDelete(HWND hwnd)
     }
 }
 
-struct ACCELKEY
-{
-    WCHAR sz0[32];
-    WCHAR sz1[32];
-    WCHAR sz2[32];
-};
-
 void Cmb1_InitVirtualKeys(HWND hCmb1)
 {
     ComboBox_ResetContent(hCmb1);
@@ -3718,7 +3722,7 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
 BOOL AddKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    ACCELKEY& key = *(ACCELKEY *)lParam;
+    ACCEL_ENTRY& a_entry = *(ACCEL_ENTRY *)lParam;
 
     CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
@@ -3770,19 +3774,19 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 void AddKeyDlg_OnOK(HWND hwnd)
 {
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    ACCELKEY& key = *(ACCELKEY *)lParam;
+    ACCEL_ENTRY& a_entry = *(ACCEL_ENTRY *)lParam;
 
     HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-    GetWindowTextW(hCmb1, key.sz0, _countof(key.sz0));
+    GetWindowTextW(hCmb1, a_entry.sz0, _countof(a_entry.sz0));
 
-    std::wstring str = key.sz0;
+    std::wstring str = a_entry.sz0;
     BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
     if (!Cmb1_CheckKey(hwnd, hCmb1, bVirtKey, str))
     {
         MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
         return;
     }
-    lstrcpynW(key.sz0, str.c_str(), _countof(key.sz0));
+    lstrcpynW(a_entry.sz0, str.c_str(), _countof(a_entry.sz0));
 
     DWORD dwFlags = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -3797,9 +3801,9 @@ void AddKeyDlg_OnOK(HWND hwnd)
         dwFlags |= FALT;
 
     str = GetKeyFlags(dwFlags);
-    lstrcpynW(key.sz1, str.c_str(), _countof(key.sz1));
+    lstrcpynW(a_entry.sz1, str.c_str(), _countof(a_entry.sz1));
 
-    GetDlgItemTextW(hwnd, cmb2, key.sz2, _countof(key.sz2));
+    GetDlgItemTextW(hwnd, cmb2, a_entry.sz2, _countof(a_entry.sz2));
 
     EndDialog(hwnd, IDOK);
 }
@@ -3832,9 +3836,9 @@ void EditAccelDlg_OnAdd(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
-    ACCELKEY key;
+    ACCEL_ENTRY a_entry;
     if (IDOK != DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDKEY),
-                                hwnd, AddKeyDlgProc, (LPARAM)&key))
+                                hwnd, AddKeyDlgProc, (LPARAM)&a_entry))
     {
         return;
     }
@@ -3847,21 +3851,21 @@ void EditAccelDlg_OnAdd(HWND hwnd)
     item.iItem = iItem;
     item.mask = LVIF_TEXT;
     item.iSubItem = 0;
-    item.pszText = key.sz0;
+    item.pszText = a_entry.sz0;
     ListView_InsertItem(hCtl1, &item);
 
     ZeroMemory(&item, sizeof(item));
     item.iItem = iItem;
     item.mask = LVIF_TEXT;
     item.iSubItem = 1;
-    item.pszText = key.sz1;
+    item.pszText = a_entry.sz1;
     ListView_SetItem(hCtl1, &item);
 
     ZeroMemory(&item, sizeof(item));
     item.iItem = iItem;
     item.mask = LVIF_TEXT;
     item.iSubItem = 2;
-    item.pszText = key.sz2;
+    item.pszText = a_entry.sz2;
     ListView_SetItem(hCtl1, &item);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -3871,13 +3875,13 @@ void EditAccelDlg_OnAdd(HWND hwnd)
 BOOL ModifyKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    const ACCELKEY& key = *(const ACCELKEY *)lParam;
+    const ACCEL_ENTRY& a_entry = *(const ACCEL_ENTRY *)lParam;
 
-    SetDlgItemTextW(hwnd, cmb1, key.sz0);
-    SetDlgItemTextW(hwnd, cmb2, key.sz2);
+    SetDlgItemTextW(hwnd, cmb1, a_entry.sz0);
+    SetDlgItemTextW(hwnd, cmb2, a_entry.sz2);
 
     WORD Flags;
-    SetKeyFlags(Flags, key.sz1);
+    SetKeyFlags(Flags, a_entry.sz1);
     if (Flags & FVIRTKEY)
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
     if (Flags & FNOINVERT)
@@ -3894,7 +3898,7 @@ BOOL ModifyKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1);
 
-        INT i = ComboBox_FindStringExact(hCmb1, -1, key.sz0);
+        INT i = ComboBox_FindStringExact(hCmb1, -1, a_entry.sz0);
         if (i != CB_ERR)
         {
             ComboBox_SetCurSel(hCmb1, i);
@@ -3907,19 +3911,19 @@ BOOL ModifyKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 void ModifyKeyDlg_OnOK(HWND hwnd)
 {
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    ACCELKEY& key = *(ACCELKEY *)lParam;
+    ACCEL_ENTRY& a_entry = *(ACCEL_ENTRY *)lParam;
 
     HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-    GetWindowTextW(hCmb1, key.sz0, _countof(key.sz0));
+    GetWindowTextW(hCmb1, a_entry.sz0, _countof(a_entry.sz0));
 
-    std::wstring str = key.sz0;
+    std::wstring str = a_entry.sz0;
     BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
     if (!Cmb1_CheckKey(hwnd, hCmb1, bVirtKey, str))
     {
         MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
         return;
     }
-    lstrcpynW(key.sz0, str.c_str(), _countof(key.sz0));
+    lstrcpynW(a_entry.sz0, str.c_str(), _countof(a_entry.sz0));
 
     DWORD dwFlags = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -3934,9 +3938,9 @@ void ModifyKeyDlg_OnOK(HWND hwnd)
         dwFlags |= FALT;
 
     str = GetKeyFlags(dwFlags);
-    lstrcpynW(key.sz1, str.c_str(), _countof(key.sz1));
+    lstrcpynW(a_entry.sz1, str.c_str(), _countof(a_entry.sz1));
 
-    GetDlgItemTextW(hwnd, cmb2, key.sz2, _countof(key.sz2));
+    GetDlgItemTextW(hwnd, cmb2, a_entry.sz2, _countof(a_entry.sz2));
 
     EndDialog(hwnd, IDOK);
 }
@@ -3985,17 +3989,17 @@ void EditAccelDlg_OnModify(HWND hwnd)
         return;
     }
 
-    ACCELKEY key;
-    ListView_GetItemText(hCtl1, iItem, 0, key.sz0, 32);
-    ListView_GetItemText(hCtl1, iItem, 1, key.sz1, 32);
-    ListView_GetItemText(hCtl1, iItem, 2, key.sz2, 32);
+    ACCEL_ENTRY a_entry;
+    ListView_GetItemText(hCtl1, iItem, 0, a_entry.sz0, _countof(a_entry.sz0));
+    ListView_GetItemText(hCtl1, iItem, 1, a_entry.sz1, _countof(a_entry.sz1));
+    ListView_GetItemText(hCtl1, iItem, 2, a_entry.sz2, _countof(a_entry.sz2));
 
     if (IDOK == DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYKEY),
-                                hwnd, ModifyKeyDlgProc, (LPARAM)&key))
+                                hwnd, ModifyKeyDlgProc, (LPARAM)&a_entry))
     {
-        ListView_SetItemText(hCtl1, iItem, 0, key.sz0);
-        ListView_SetItemText(hCtl1, iItem, 1, key.sz1);
-        ListView_SetItemText(hCtl1, iItem, 2, key.sz2);
+        ListView_SetItemText(hCtl1, iItem, 0, a_entry.sz0);
+        ListView_SetItemText(hCtl1, iItem, 1, a_entry.sz1);
+        ListView_SetItemText(hCtl1, iItem, 2, a_entry.sz2);
     }
 }
 
@@ -4010,23 +4014,23 @@ void EditAccelDlg_OnOK(HWND hwnd)
     INT i, Count = ListView_GetItemCount(hCtl1);
     for (i = 0; i < Count; ++i)
     {
-        ACCELKEY key;
-        ListView_GetItemText(hCtl1, i, 0, key.sz0, 32);
-        ListView_GetItemText(hCtl1, i, 1, key.sz1, 32);
-        ListView_GetItemText(hCtl1, i, 2, key.sz2, 32);
+        ACCEL_ENTRY a_entry;
+        ListView_GetItemText(hCtl1, i, 0, a_entry.sz0, _countof(a_entry.sz0));
+        ListView_GetItemText(hCtl1, i, 1, a_entry.sz1, _countof(a_entry.sz1));
+        ListView_GetItemText(hCtl1, i, 2, a_entry.sz2, _countof(a_entry.sz2));
 
         WORD Flags;
-        SetKeyFlags(Flags, key.sz1);
+        SetKeyFlags(Flags, a_entry.sz1);
 
         AccelTableEntry entry;
         entry.fFlags = Flags;
         if (Flags & FVIRTKEY)
         {
-            entry.wAscii = g_ConstantsDB.GetValue(L"VIRTUALKEYS", key.sz0);
+            entry.wAscii = g_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
         }
         else
         {
-            std::wstring str, str2 = key.sz0;
+            std::wstring str, str2 = a_entry.sz0;
             LPCWSTR pch = str2.c_str();
             if (guts_quote(str, pch))
             {
@@ -4034,10 +4038,10 @@ void EditAccelDlg_OnOK(HWND hwnd)
             }
             else
             {
-                entry.wAscii = _wtoi(key.sz0);
+                entry.wAscii = _wtoi(a_entry.sz0);
             }
         }
-        entry.wId = _wtoi(key.sz2);
+        entry.wId = _wtoi(a_entry.sz2);
 
         accel_res.Entries().push_back(entry);
     }
