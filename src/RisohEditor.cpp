@@ -3556,14 +3556,14 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 55;
+    column.cx = 120;
     column.pszText = LoadStringDx(IDS_KEY);
     column.iSubItem = 0;
     ListView_InsertColumn(hCtl1, 0, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 75;
+    column.cx = 65;
     column.pszText = LoadStringDx(IDS_FLAGS);
     column.iSubItem = 1;
     ListView_InsertColumn(hCtl1, 1, &column);
@@ -3710,12 +3710,81 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
 BOOL AddKeyDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    const ACCELKEY& key = *(const ACCELKEY *)lParam;
+    ACCELKEY& key = *(ACCELKEY *)lParam;
 
     CheckDlgButton(hwnd, chx1, BST_CHECKED);
-    Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1));
+
+    HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+    Cmb1_InitVirtualKeys(hCmb1);
 
     return TRUE;
+}
+
+void AddKeyDlg_OnOK(HWND hwnd)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    ACCELKEY& key = *(ACCELKEY *)lParam;
+
+    HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+    GetWindowTextW(hCmb1, key.sz0, _countof(key.sz0));
+
+    std::wstring str;
+    if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+    {
+        INT i = ComboBox_FindStringExact(hCmb1, -1, key.sz0);
+        if (i == CB_ERR)
+        {
+            BOOL bOK;
+            i = GetDlgItemInt(hwnd, cmb1, &bOK, TRUE);
+            if (!bOK)
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
+                return;
+            }
+
+            std::wstring str = deci(i);
+            lstrcpynW(key.sz0, str.c_str(), _countof(key.sz0));
+        }
+    }
+    else
+    {
+        BOOL bOK;
+        INT i = GetDlgItemInt(hwnd, cmb1, &bOK, TRUE);
+        if (!bOK)
+        {
+            LPCWSTR pch = key.sz0;
+            if (!guts_quote(str, pch) || str.size() != 1)
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
+                return;
+            }
+            str = quote(str);
+        }
+        else
+        {
+            str = deci(i);
+        }
+        lstrcpynW(key.sz0, str.c_str(), _countof(key.sz0));
+    }
+
+    DWORD dwFlags = 0;
+    if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        dwFlags |= FVIRTKEY;
+    if (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED)
+        dwFlags |= FNOINVERT;
+    if (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED)
+        dwFlags |= FCONTROL;
+    if (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED)
+        dwFlags |= FSHIFT;
+    if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
+        dwFlags |= FALT;
+
+    str = GetKeyFlags(dwFlags);
+    lstrcpynW(key.sz1, str.c_str(), _countof(key.sz1));
+
+    GetDlgItemTextW(hwnd, cmb2, key.sz2, _countof(key.sz2));
+
+    EndDialog(hwnd, IDOK);
 }
 
 void AddKeyDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -3723,7 +3792,7 @@ void AddKeyDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     switch (id)
     {
     case IDOK:
-        EndDialog(hwnd, IDOK);
+        AddKeyDlg_OnOK(hwnd);
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
@@ -3910,6 +3979,28 @@ void EditAccelDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
 }
 
+LRESULT EditAccelDlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+{
+    if (idFrom == ctl1)
+    {
+        if (pnmhdr->code == LVN_KEYDOWN)
+        {
+            LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+            if (KeyDown->wVKey == VK_DELETE)
+            {
+                EditAccelDlg_OnDelete(hwnd);
+                return 0;
+            }
+        }
+        if (pnmhdr->code == NM_DBLCLK)
+        {
+            EditAccelDlg_OnModify(hwnd);
+            return 0;
+        }
+    }
+    return 0;
+}
+
 INT_PTR CALLBACK
 EditAccelDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -3917,6 +4008,7 @@ EditAccelDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HANDLE_MSG(hwnd, WM_INITDIALOG, EditAccelDlg_OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, EditAccelDlg_OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, EditAccelDlg_OnNotify);
     }
     return 0;
 }
