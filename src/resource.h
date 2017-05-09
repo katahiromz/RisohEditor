@@ -38,6 +38,7 @@
 #define IDD_EDITACCEL       111
 #define IDD_ADDSTR          112
 #define IDD_MODIFYSTR       113
+#define IDD_STRINGS         114
 
 #define IDS_TITLE           1
 #define IDS_TITLEWITHFILE   2
