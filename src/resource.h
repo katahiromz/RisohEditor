@@ -92,3 +92,4 @@
 #define IDS_ALREADYEXISTS   54
 #define IDS_KEY             55
 #define IDS_FLAGS           56
+#define IDS_COMMANDID       57
