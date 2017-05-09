@@ -3493,6 +3493,17 @@ void MainWnd_OnCompile(HWND hwnd)
 
 void MainWnd_OnGuiEdit(HWND hwnd)
 {
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    if (!MainWnd_IsEditableEntry(hwnd, lParam))
+        return;
+
+    WORD i = LOWORD(lParam);
+    ResEntry& Entry = g_Entries[i];
+    if (!Res_CanGuiEdit(Entry.type))
+    {
+        return;
+    }
+
     // FIXME
 }
 
