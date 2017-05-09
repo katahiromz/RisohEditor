@@ -5,14 +5,13 @@
 #define ID_ADDICON          104
 #define ID_ADDCURSOR        105
 #define ID_ADDBITMAP        106
-#define ID_ADDDIALOG        107
-#define ID_ADDBIN           108
+#define ID_ADDRES           108
 #define ID_REPLACEICON      109
 #define ID_REPLACECURSOR    110
 #define ID_REPLACEBITMAP    111
 #define ID_REPLACEBIN       112
 #define ID_DELETERES        113
-#define ID_EDITDIALOG       114
+#define ID_EDIT             114
 #define ID_EXTRACTICON      115
 #define ID_EXTRACTCURSOR    116
 #define ID_EXTRACTBITMAP    117

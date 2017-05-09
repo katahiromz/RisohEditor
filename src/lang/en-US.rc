@@ -22,13 +22,12 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Dialog...", ID_ADDDIALOG
-        MENUITEM "Add Binary Resource...", ID_ADDBIN
+        MENUITEM "Add Resource...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Edit Dialog...", ID_EDITDIALOG
+        MENUITEM "Edit...\tEnter", ID_EDIT
         MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON
@@ -53,13 +52,12 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Dialog...", ID_ADDDIALOG
-        MENUITEM "Add Binary Resource...", ID_ADDBIN
+        MENUITEM "Add Resource...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Edit Dialog...", ID_EDITDIALOG
+        MENUITEM "Edit...\tEnter", ID_EDIT
         MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON

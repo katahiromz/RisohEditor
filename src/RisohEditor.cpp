@@ -2061,7 +2061,7 @@ void MainWnd_OnAddCursor(HWND hwnd)
                     AddCursorDialogProc, 0);
 }
 
-BOOL AddBinDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+BOOL AddResDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     DragAcceptFiles(hwnd, TRUE);
 
@@ -2082,7 +2082,7 @@ BOOL AddBinDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     return TRUE;
 }
 
-void AddBinDlg_OnOK(HWND hwnd)
+void AddResDlg_OnOK(HWND hwnd)
 {
     ID_OR_STRING Type;
     HWND hCmb1 = GetDlgItem(hwnd, cmb1);
@@ -2100,7 +2100,7 @@ void AddBinDlg_OnOK(HWND hwnd)
 
     HWND hCmb2 = GetDlgItem(hwnd, cmb2);
     ID_OR_STRING Name;
-    if (!Cmb2_CheckName(hCmb2, Name))
+    if (!Res_HasNoName(Type) && !Cmb2_CheckName(hCmb2, Name))
         return;
 
     HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -2110,7 +2110,7 @@ void AddBinDlg_OnOK(HWND hwnd)
 
     std::wstring File;
     HWND hEdt1 = GetDlgItem(hwnd, edt1);
-    if (!Edt1_CheckFile(hEdt1, File))
+    if (!Res_HasSample(Type) && !Edt1_CheckFile(hEdt1, File))
         return;
 
     BOOL Overwrite = FALSE;
@@ -2130,29 +2130,88 @@ void AddBinDlg_OnOK(HWND hwnd)
         }
     }
 
-    if (Overwrite)
+    BOOL bOK = TRUE;
+    if (File.empty() && Res_HasSample(Type))
     {
-        if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
+        if (Res_HasNoName(Type))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTREPLACE),
-                        NULL, MB_ICONERROR);
-            return;
+            Res_DeleteNames(g_Entries, Type, Lang);
+        }
+
+        ByteStream stream;
+        if (Type == RT_ACCELERATOR)
+        {
+            DWORD Size;
+            const BYTE *pb = GetAccelSample(Size);
+            stream.assign(pb, Size);
+        }
+        else if (Type == RT_DIALOG)
+        {
+            DWORD Size;
+            const BYTE *pb = GetDialogSample(Size);
+            stream.assign(pb, Size);
+        }
+        else if (Type == RT_MENU)
+        {
+            DWORD Size;
+            const BYTE *pb = GetMenuSample(Size);
+            stream.assign(pb, Size);
+        }
+        else if (Type == RT_STRING)
+        {
+            DWORD Size;
+            const BYTE *pb = GetStringSample(Size);
+            stream.assign(pb, Size);
+            Name = 1;
+        }
+        else if (Type == RT_VERSION)
+        {
+            DWORD Size;
+            const BYTE *pb = GetVersionSample(Size);
+            stream.assign(pb, Size);
+        }
+        else
+        {
+            bOK = FALSE;
+        }
+
+        if (bOK)
+        {
+            Res_AddEntry(g_Entries, Type, Name, Lang, stream.data(), FALSE);
+
+            TV_RefreshInfo(g_hTreeView, g_Entries, FALSE, FALSE);
+
+            ResEntry entry(Type, Name, Lang);
+            TV_SelectEntry(g_hTreeView, g_Entries, entry);
         }
     }
-    else
+
+    if (!bOK)
     {
-        if (!DoAddBin(hwnd, Type, Name, Lang, File))
+        if (Overwrite)
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDRES), NULL,
-                        MB_ICONERROR);
-            return;
+            if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTREPLACE),
+                            NULL, MB_ICONERROR);
+                return;
+            }
+        }
+        else
+        {
+            if (!DoAddBin(hwnd, Type, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDRES), NULL,
+                            MB_ICONERROR);
+                return;
+            }
         }
     }
 
     EndDialog(hwnd, IDOK);
 }
 
-void AddBinDlg_OnPsh1(HWND hwnd)
+void AddResDlg_OnPsh1(HWND hwnd)
 {
     WCHAR File[MAX_PATH];
     GetDlgItemText(hwnd, edt1, File, _countof(File));
@@ -2178,23 +2237,29 @@ void AddBinDlg_OnPsh1(HWND hwnd)
     }
 }
 
-void AddBinDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+void AddResDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     switch (id)
     {
     case IDOK:
-        AddBinDlg_OnOK(hwnd);
+        AddResDlg_OnOK(hwnd);
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
         break;
     case psh1:
-        AddBinDlg_OnPsh1(hwnd);
+        AddResDlg_OnPsh1(hwnd);
+        break;
+    case cmb1:
+        if (codeNotify == CBN_SELCHANGE)
+        {
+            
+        }
         break;
     }
 }
 
-void AddBinDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
+void AddResDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     WCHAR File[MAX_PATH];
     DragQueryFileW(hdrop, 0, File, _countof(File));
@@ -2202,25 +2267,21 @@ void AddBinDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
 }
 
 INT_PTR CALLBACK
-AddBinDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+AddResDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, AddBinDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_DROPFILES, AddBinDlg_OnDropFiles);
-        HANDLE_MSG(hwnd, WM_COMMAND, AddBinDlg_OnCommand);
+        HANDLE_MSG(hwnd, WM_INITDIALOG, AddResDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_DROPFILES, AddResDlg_OnDropFiles);
+        HANDLE_MSG(hwnd, WM_COMMAND, AddResDlg_OnCommand);
     }
     return 0;
 }
 
-void MainWnd_OnAddBin(HWND hwnd)
+void MainWnd_OnAddRes(HWND hwnd)
 {
     DialogBoxW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDRES), hwnd,
-               AddBinDlgProc);
-}
-
-void MainWnd_OnAddDialog(HWND hwnd)
-{
+               AddResDlgProc);
 }
 
 void MainWnd_OnAbout(HWND hwnd)
@@ -3139,7 +3200,7 @@ BOOL MainWnd_IsEditableEntry(HWND hwnd, LPARAM lParam)
     return TRUE;
 }
 
-void MainWnd_DoubleClickTV(HWND hwnd)
+void MainWnd_OnEdit(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     if (!MainWnd_IsEditableEntry(hwnd, lParam))
@@ -3152,7 +3213,7 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     if (pnmhdr->code == NM_DBLCLK)
     {
-        MainWnd_DoubleClickTV(hwnd);
+        MainWnd_OnEdit(hwnd);
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
@@ -3166,7 +3227,7 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         switch (pTVKD->wVKey)
         {
         case VK_RETURN:
-            MainWnd_DoubleClickTV(hwnd);
+            MainWnd_OnEdit(hwnd);
             break;
         case VK_DELETE:
             PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
@@ -3209,7 +3270,7 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
         WORD i = LOWORD(lParam);
         ResEntry& entry = g_Entries[i];
 
-        Res_DeleteStrings(g_Entries, entry.lang);
+        Res_DeleteNames(g_Entries, RT_STRING, entry.lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
@@ -3454,11 +3515,8 @@ void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ADDBITMAP:
         MainWnd_OnAddBitmap(hwnd);
         break;
-    case ID_ADDDIALOG:
-        MainWnd_OnAddDialog(hwnd);
-        break;
-    case ID_ADDBIN:
-        MainWnd_OnAddBin(hwnd);
+    case ID_ADDRES:
+        MainWnd_OnAddRes(hwnd);
         break;
     case ID_REPLACEICON:
         MainWnd_OnReplaceIcon(hwnd);
@@ -3474,7 +3532,8 @@ void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_DELETERES:
         MainWnd_OnDeleteRes(hwnd);
         break;
-    case ID_EDITDIALOG:
+    case ID_EDIT:
+        MainWnd_OnEdit(hwnd);
         break;
     case ID_EXTRACTICON:
         MainWnd_OnExtractIcon(hwnd);
@@ -3624,13 +3683,23 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
+    if (bEditable)
+    {
+        EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
+    }
+    else
+    {
+        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
+    }
+
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
     if (hItem == NULL || g_bInEdit)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
@@ -3656,7 +3725,6 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
@@ -3669,7 +3737,6 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
@@ -3724,14 +3791,6 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         }
 
-        if (Entry.type == RT_DIALOG)
-        {
-            EnableMenuItem(hMenu, ID_EDITDIALOG, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
-        }
         if (Entry.type == RT_DIALOG || Entry.type == RT_MENU)
         {
             EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
@@ -3749,7 +3808,6 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
@@ -3762,7 +3820,6 @@ void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDITDIALOG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);

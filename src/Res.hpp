@@ -951,7 +951,8 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE)
+TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE,
+               BOOL bSelect = TRUE)
 {
     ResEntry entry;
     LPARAM lParam = TV_GetParam(hwnd, NULL);
@@ -1001,7 +1002,8 @@ TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE)
         hItem = hItem;
     }
 
-    TV_SelectEntry(hwnd, Entries, entry);
+    if (bSelect)
+        TV_SelectEntry(hwnd, Entries, entry);
 }
 
 inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& Entries)
@@ -1381,13 +1383,19 @@ Res_HasSample(const ID_OR_STRING& type)
            type == RT_MENU || type == RT_STRING || type == RT_VERSION;
 }
 
+inline BOOL
+Res_HasNoName(const ID_OR_STRING& type)
+{
+    return type == RT_STRING || type == RT_MESSAGETABLE;
+}
+
 inline void
-Res_DeleteStrings(ResEntries& entries, WORD lang)
+Res_DeleteNames(ResEntries& entries, const ID_OR_STRING& type, WORD lang)
 {
     INT k;
     for (;;)
     {
-        k = Res_Find(entries, RT_STRING, (WORD)0, lang);
+        k = Res_Find(entries, type, (WORD)0, lang);
         if (k == -1)
             break;
 

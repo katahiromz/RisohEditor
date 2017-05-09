@@ -22,13 +22,12 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "ダイアログを追加...", ID_ADDDIALOG
-        MENUITEM "バイナリ リソースを追加...", ID_ADDBIN
+        MENUITEM "リソースを追加...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "ダイアログを編集...", ID_EDITDIALOG
+        MENUITEM "編集...\tEnter", ID_EDIT
         MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON
@@ -53,13 +52,12 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "ダイアログを追加...", ID_ADDDIALOG
-        MENUITEM "バイナリ リソースを追加...", ID_ADDBIN
+        MENUITEM "リソースを追加...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "ダイアログを編集...", ID_EDITDIALOG
+        MENUITEM "編集...\tEnter", ID_EDIT
         MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON

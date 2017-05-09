@@ -27,6 +27,11 @@ public:
     {
     }
 
+    void assign(const void *ptr, size_t size)
+    {
+        m_data.assign((const BYTE *)ptr, (const BYTE *)ptr + size);
+    }
+
     void clear()
     {
         m_pos = 0;
