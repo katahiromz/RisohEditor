@@ -1,0 +1,55 @@
+#include <windows.h>
+#include <dlgs.h>
+
+1 ACCELERATORS
+{
+    "N", 1, VIRTKEY, CONTROL
+    "O", 2, VIRTKEY, CONTROL
+}
+
+STRINGTABLE
+{
+    1, "This is a sample text."
+}
+
+1 MENU
+{
+    POPUP "&File"
+    {
+        MENUITEM "E&xit", 1
+    }
+}
+
+1 DIALOG 0, 0, 215, 135
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sample Dialog"
+FONT 9, "MS Shell Dlg"
+{
+    CONTROL "OK", IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 35, 115, 60, 14
+    CONTROL "Cancel", IDCANCEL, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 115, 115, 60, 14
+}
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0, 0, 0, 0
+PRODUCTVERSION  0, 0, 0, 0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+{
+    // English (U.S.)
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        {
+            VALUE "CompanyName", "Your Company\0"
+            VALUE "FileDescription", "Your Application\0"
+            VALUE "FileVersion", "0.0\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
+            VALUE "ProductName", "Your Product\0"
+            VALUE "ProductVersion", "0.0\0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 0x04E4
+    }
+}

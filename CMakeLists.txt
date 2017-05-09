@@ -63,6 +63,7 @@ add_executable(RisohEditor WIN32
     src/Png.cpp
     src/ProcessMaker.cpp
     src/RisohEditor.cpp
+    src/Samples.cpp
     src/RisohEditor_res.rc)
 target_link_libraries(RisohEditor comctl32 msimg32 ${PNG_LIBRARIES})
 

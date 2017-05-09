@@ -36,6 +36,8 @@ LPWSTR LoadStringDx(UINT id);
 #include "Text.hpp"
 #include "ByteStream.hpp"
 
+#include "Samples.hpp"
+
 #include "AccelRes.hpp"
 #include "IconRes.hpp"
 #include "MenuRes.hpp"

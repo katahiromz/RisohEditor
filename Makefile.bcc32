@@ -18,6 +18,7 @@ HEADERS = \
 	src\ProcessMaker.hpp \
 	src\ProcessMaker_inl.hpp \
 	src\Res.hpp \
+	src\Samples.hpp \
 	src\StringRes.hpp \
 	src\Text.hpp \
 	src\id_string.hpp \
@@ -30,6 +31,7 @@ OBJS = \
 	build\Png$(DOTOBJ) \
 	build\ProcessMaker$(DOTOBJ) \
 	build\RisohEditor$(DOTOBJ) \
+	build\Samples$(DOTOBJ) \
 
 all: build\RisohEditor$(DOTEXE)
 
@@ -50,6 +52,8 @@ build\ProcessMaker$(DOTOBJ): build src\ProcessMaker.cpp $(HEADERS)
 	bcc32 $(CXXFLAGS) -obuild\ProcessMaker$(DOTOBJ) -c src\ProcessMaker.cpp
 build\RisohEditor$(DOTOBJ): build src\RisohEditor.cpp $(HEADERS)
 	bcc32 $(CXXFLAGS) -obuild\RisohEditor$(DOTOBJ) -c src\RisohEditor.cpp
+build\Samples$(DOTOBJ): build src\Samples.cpp $(HEADERS)
+	bcc32 $(CXXFLAGS) -obuild\Samples$(DOTOBJ) -c src\Samples.cpp
 
 build\RisohEditor_res.res: src\RisohEditor_res.rc src\resource.h
 	brc32 -r -fobuild\RisohEditor_res.res src\RisohEditor_res.rc
