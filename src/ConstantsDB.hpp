@@ -66,6 +66,18 @@ public:
         return Table;
     }
 
+    NameType GetName(CategoryType category, ValueType value) const
+    {
+        const TableType& Table = GetTable(category);
+        TableType::const_iterator it, end = Table.end();
+        for (it = Table.begin(); it != end; ++it)
+        {
+            if (it->value == value)
+                return it->name;
+        }
+        return 0;
+    }
+
     ValueType GetValue(CategoryType category, NameType name) const
     {
         ::CharUpperW(&name[0]);
