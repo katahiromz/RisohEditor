@@ -4221,6 +4221,7 @@ WinMain(HINSTANCE   hInstance,
     {
         if (TranslateAccelerator(g_hMainWnd, g_hAccel, &msg))
             continue;
+
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
