@@ -159,6 +159,26 @@ inline const wchar_t *skip_word(const wchar_t *pch)
     return pch;
 }
 
+inline std::string str_repeat(const std::string& str, int count)
+{
+    std::string ret;
+    for (int i = 0; i < count; ++i)
+    {
+        ret += str;
+    }
+    return ret;
+}
+
+inline std::wstring str_repeat(const std::wstring& str, int count)
+{
+    std::wstring ret;
+    for (int i = 0; i < count; ++i)
+    {
+        ret += str;
+    }
+    return ret;
+}
+
 inline std::string str_escape(const std::string& str)
 {
     std::string ret;
