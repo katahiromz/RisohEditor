@@ -652,25 +652,25 @@ inline std::wstring GetMenuFlags(WORD fItemFlags)
 {
     std::wstring str;
 
-    if (fItemFlags & MF_GRAYED)
+    if ((fItemFlags & MF_GRAYED) == MF_GRAYED)
         str += L"G ";
 
-    if (fItemFlags & MF_INACTIVE)
+    if ((fItemFlags & MF_INACTIVE) == MF_INACTIVE)
         str += L"I ";
 
-    if (fItemFlags & MF_BITMAP)
+    if ((fItemFlags & MF_BITMAP) == MF_BITMAP)
         str += L"B ";
 
-    if (fItemFlags & MF_OWNERDRAW)
+    if ((fItemFlags & MF_OWNERDRAW) == MF_OWNERDRAW)
         str += L"OD ";
 
-    if (fItemFlags & MF_CHECKED)
+    if ((fItemFlags & MF_CHECKED) == MF_CHECKED)
         str += L"C ";
 
-    if (fItemFlags & MF_MENUBARBREAK)
+    if ((fItemFlags & MF_MENUBARBREAK) == MF_MENUBARBREAK)
         str += L"MBB ";
 
-    if (fItemFlags & MF_MENUBREAK)
+    if ((fItemFlags & MF_MENUBREAK) == MF_MENUBREAK)
         str += L"MB ";
 
     return str;
@@ -680,26 +680,110 @@ inline void SetMenuFlags(WORD& fItemFlags, const std::wstring& str)
 {
     fItemFlags = 0;
 
-    if (str.find("G") != std::wstring::npos)
+    if (str.find(L"G") != std::wstring::npos)
         fItemFlags |= MF_GRAYED;
 
-    if (str.find("I") != std::wstring::npos)
+    if (str.find(L"I") != std::wstring::npos)
         fItemFlags |= MF_INACTIVE;
 
-    if (str.find("B") != std::wstring::npos)
+    if (str.find(L"B") != std::wstring::npos)
         fItemFlags |= MF_BITMAP;
 
-    if (str.find("OD") != std::wstring::npos)
+    if (str.find(L"OD") != std::wstring::npos)
         fItemFlags |= MF_OWNERDRAW;
 
-    if (str.find("C") != std::wstring::npos)
+    if (str.find(L"C") != std::wstring::npos)
         fItemFlags |= MF_CHECKED;
 
-    if (str.find("MBB") != std::wstring::npos)
+    if (str.find(L"MBB") != std::wstring::npos)
         fItemFlags |= MF_MENUBARBREAK;
 
-    if (str.find("MB ") != std::wstring::npos)
+    if (str.find(L"MB ") != std::wstring::npos)
         fItemFlags |= MF_MENUBREAK;
+}
+
+inline std::wstring GetMenuType(DWORD dwType, DWORD dwState)
+{
+    std::wstring str;
+
+    if ((dwState & MFS_GRAYED) == MFS_GRAYED)
+        str += L"G ";
+
+    if ((dwType & MFT_BITMAP) == MFT_BITMAP)
+        str += L"B ";
+
+    if ((dwType & MFT_OWNERDRAW) == MFT_OWNERDRAW)
+        str += L"OD ";
+
+    if ((dwState & MFS_CHECKED) == MFS_CHECKED)
+        str += L"C ";
+
+    if ((dwType & MFT_SEPARATOR) == MFT_SEPARATOR)
+        str += L"S ";
+
+    if ((dwType & MFT_MENUBARBREAK) == MFT_MENUBARBREAK)
+        str += L"MBB ";
+
+    if ((dwType & MFT_MENUBREAK) == MFT_MENUBREAK)
+        str += L"MB ";
+
+    if ((dwState & MFS_DEFAULT) == MFS_DEFAULT)
+        str += L"D ";
+
+    if ((dwState & MFS_HILITE) == MFS_HILITE)
+        str += L"H ";
+
+    if ((dwType & MFT_RADIOCHECK) == MFT_RADIOCHECK)
+        str += L"RC ";
+
+    if ((dwType & MFT_RIGHTORDER) == MFT_RIGHTORDER)
+        str += L"RO ";
+
+    if ((dwType & MFT_RIGHTJUSTIFY) == MFT_RIGHTJUSTIFY)
+        str += L"RJ ";
+
+    return str;
+}
+
+inline void SetMenuFlags(DWORD& dwType, DWORD& dwState, const std::wstring& str)
+{
+    dwType = dwState = 0;
+
+    if (str.find(L"G") != std::wstring::npos)
+        dwState |= MFS_GRAYED;
+
+    if (str.find(L"B") == 0 || str.find(L" B") != std::wstring::npos)
+        dwType |= MFT_BITMAP;
+
+    if (str.find(L"OD") != std::wstring::npos)
+        dwType |= MFT_OWNERDRAW;
+
+    if (str.find(L"C") == 0 || str.find(L" C") != std::wstring::npos)
+        dwType |= MFS_CHECKED;
+
+    if (str.find(L"S") != std::wstring::npos)
+        dwType |= MFT_SEPARATOR;
+
+    if (str.find(L"MBB") != std::wstring::npos)
+        dwType |= MFT_MENUBARBREAK;
+
+    if (str.find(L"MB ") != std::wstring::npos)
+        dwType |= MFT_MENUBREAK;
+
+    if (str.find(L"D") == 0 || str.find(L" D") != std::wstring::npos)
+        dwState |= MFS_DEFAULT;
+
+    if (str.find(L"H") != std::wstring::npos)
+        dwState |= MFS_HILITE;
+
+    if (str.find(L"RC") != std::wstring::npos)
+        dwType |= MFT_RADIOCHECK;
+
+    if (str.find(L"RO") != std::wstring::npos)
+        dwType |= MFT_RIGHTORDER;
+
+    if (str.find(L"RJ") != std::wstring::npos)
+        dwType |= MFT_RIGHTJUSTIFY;
 }
 
 #endif  // ndef MENU_RES_HPP_
