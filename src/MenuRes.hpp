@@ -17,14 +17,14 @@ typedef struct MENUHEADER
 
 typedef struct NORMALMENUITEMHEAD
 {
-    WORD   fItemFlags;
+    WORD   fItemFlags;      // MF_
     WORD   wMenuID;
     //WCHAR  szItemText[];
 } NORMALMENUITEMHEAD;
 
 typedef struct POPUPMENUITEMHEAD
 {
-    WORD    fItemFlags;
+    WORD    fItemFlags;     // MF_
     //WCHAR  szItemText[];
 } POPUPMENUITEMHEAD;
 
