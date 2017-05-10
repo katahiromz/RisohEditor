@@ -179,6 +179,32 @@ inline std::wstring str_repeat(const std::wstring& str, int count)
     return ret;
 }
 
+inline int str_repeat_count(const std::string& str1, const std::string& str2)
+{
+    int count = 0;
+    for (size_t i = 0; i < str1.size(); i += str2.size())
+    {
+        if (str1.find(str2, i) != i)
+            break;
+
+        ++count;
+    }
+    return count;
+}
+
+inline int str_repeat_count(const std::wstring& str1, const std::wstring& str2)
+{
+    int count = 0;
+    for (size_t i = 0; i < str1.size(); i += str2.size())
+    {
+        if (str1.find(str2, i) != i)
+            break;
+
+        ++count;
+    }
+    return count;
+}
+
 inline std::string str_escape(const std::string& str)
 {
     std::string ret;
