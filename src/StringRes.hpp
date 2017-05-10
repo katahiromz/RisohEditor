@@ -111,6 +111,15 @@ public:
         return ret;
     }
 
+    map_type& map()
+    {
+        return m_map;
+    }
+    const map_type& map() const
+    {
+        return m_map;
+    }
+
 protected:
     WORD        m_wName;
     map_type    m_map;

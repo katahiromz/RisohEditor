@@ -97,3 +97,6 @@
 #define IDS_FLAGS           56
 #define IDS_COMMANDID       57
 #define IDS_INVALIDKEY      58
+#define IDS_COMPILEERROR    59
+#define IDS_STRINGID        60
+#define IDS_STRINGVALUE     61

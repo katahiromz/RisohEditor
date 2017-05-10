@@ -3299,6 +3299,7 @@ BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
                 return FALSE;
             }
         }
+
         return TRUE;
     }
     else if (HIWORD(lParam) == I_MESSAGE)
@@ -3322,27 +3323,13 @@ void ReplaceBackslash(LPWSTR szPath)
     }
 }
 
-void MainWnd_OnCompile(HWND hwnd)
+BOOL DoCompile(HWND hwnd, const std::wstring& WideText)
 {
-    if (!Edit_GetModify(g_hSrcEdit))
-    {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
-        return;
-    }
-
-    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
-    std::wstring WideText;
-    WideText.resize(cchText);
-    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
-
-    std::string TextUtf8 = WideToUtf8(WideText);
-    std::string TextAnsi = WideToAnsi(WideText);
-
     LPARAM lParam = TV_GetParam(g_hTreeView);
     WORD i = LOWORD(lParam);
     ResEntry& entry = g_Entries[i];
 
+    std::string TextUtf8 = WideToUtf8(WideText);
     if (HIWORD(lParam) == I_LANG)
     {
         if (Res_IsPlainText(entry.type))
@@ -3356,13 +3343,14 @@ void MainWnd_OnCompile(HWND hwnd)
             }
             else
             {
+                std::string TextAnsi = WideToAnsi(WideText);
                 entry.data.assign(TextAnsi.begin(), TextAnsi.end());
             }
             MainWnd_SelectTV(hwnd, lParam, FALSE);
-            return;
+
+            return TRUE;    // success
         }
     }
-    WideText.clear();
 
     WCHAR szTempPath[MAX_PATH];
     ::GetTempPathW(_countof(szTempPath), szTempPath);
@@ -3469,26 +3457,50 @@ void MainWnd_OnCompile(HWND hwnd)
         }
     }
 
-    if (Success)
+    ::DeleteFileW(szPath1);
+    ::DeleteFileW(szPath2);
+    ::DeleteFileW(szPath3);
+
+    if (!Success)
     {
-        TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
-    }
-    else
-    {
-        output.insert(output.end(), 0);
-        if (output.size())
+        if (output.empty())
         {
+            SetWindowTextW(g_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+        }
+        else
+        {
+            output.insert(output.end(), 0);
             SetWindowTextA(g_hBinEdit, (char *)&output[0]);
             ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
         }
     }
 
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+    return Success;
+}
 
-    ::DeleteFileW(szPath1);
-    ::DeleteFileW(szPath2);
-    ::DeleteFileW(szPath3);
+void MainWnd_OnCompile(HWND hwnd)
+{
+    if (!Edit_GetModify(g_hSrcEdit))
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
+        return;
+    }
+
+    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+    std::wstring WideText;
+    WideText.resize(cchText);
+    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+    if (DoCompile(hwnd, WideText))
+    {
+        TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
+    }
+
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 std::wstring GetKeyFlags(WORD fFlags)
@@ -4105,6 +4117,283 @@ EditAccelDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    StringRes& str_res = *(StringRes *)lParam;
+
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+    ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
+
+    LV_COLUMN column;
+    ZeroMemory(&column, sizeof(column));
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 140;
+    column.pszText = LoadStringDx(IDS_STRINGID);
+    column.iSubItem = 0;
+    ListView_InsertColumn(hCtl1, 0, &column);
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 500;
+    column.pszText = LoadStringDx(IDS_STRINGVALUE);
+    column.iSubItem = 1;
+    ListView_InsertColumn(hCtl1, 1, &column);
+
+    typedef StringRes::map_type map_type;
+    const map_type& map = str_res.map();
+
+    INT i = 0;
+    map_type::const_iterator it, end = map.end();
+    for (it = map.begin(); it != end; ++it)
+    {
+        if (it->second.empty())
+            continue;
+
+        std::wstring str;
+        str = deci(it->first);
+
+        LV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = i;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = &str[0];
+        ListView_InsertItem(hCtl1, &item);
+
+        str = quote(it->second);
+        str = str.substr(1, str.size() - 2);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = i;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = &str[0];
+        ListView_SetItem(hCtl1, &item);
+
+        ++i;
+    }
+
+    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    SetFocus(hCtl1);
+
+    return TRUE;
+}
+
+struct STRING_ENTRY
+{
+    WCHAR StringID[128];
+    WCHAR StringValue[512];
+};
+
+BOOL AddStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
+
+    return TRUE;
+}
+
+void AddStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    WCHAR Buffer[512];
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
+    switch (id)
+    {
+    case IDOK:
+        GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
+        lstrcpynW(s_entry.StringID, Buffer, _countof(s_entry.StringID));
+        GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
+        lstrcpynW(s_entry.StringValue, Buffer, _countof(s_entry.StringValue));
+        EndDialog(hwnd, IDOK);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+INT_PTR CALLBACK
+AddStrDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, AddStrDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, AddStrDlg_OnCommand);
+    }
+    return 0;
+}
+
+void StringsDlg_OnAdd(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    STRING_ENTRY s_entry;
+    ZeroMemory(&s_entry, sizeof(s_entry));
+    INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDSTR),
+                              hwnd, AddStrDlgProc, (LPARAM)&s_entry);
+    if (IDOK != nID)
+    {
+        return;
+    }
+
+    INT iItem = ListView_GetItemCount(hCtl1);
+
+    LV_ITEM item;
+
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 0;
+    item.pszText = s_entry.StringID;
+    ListView_InsertItem(hCtl1, &item);
+
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 1;
+    item.pszText = s_entry.StringValue;
+    ListView_SetItem(hCtl1, &item);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem, state, state);
+}
+
+void StringsDlg_OnDelete(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem >= 0)
+    {
+        ListView_DeleteItem(hCtl1, iItem);
+    }
+}
+
+BOOL ModifyStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
+
+    SetDlgItemTextW(hwnd, cmb1, s_entry.StringID);
+    SetDlgItemTextW(hwnd, edt1, s_entry.StringValue);
+
+    return TRUE;
+}
+
+void ModifyStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    WCHAR Buffer[512];
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
+    switch (id)
+    {
+    case IDOK:
+        GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
+        lstrcpynW(s_entry.StringID, Buffer, _countof(s_entry.StringID));
+        GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
+        lstrcpynW(s_entry.StringValue, Buffer, _countof(s_entry.StringValue));
+        EndDialog(hwnd, IDOK);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+INT_PTR CALLBACK
+ModifyStrDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, ModifyStrDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, ModifyStrDlg_OnCommand);
+    }
+    return 0;
+}
+
+void StringsDlg_OnModify(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem < 0)
+    {
+        return;
+    }
+
+    STRING_ENTRY s_entry;
+    ListView_GetItemText(hCtl1, iItem, 0, s_entry.StringID, _countof(s_entry.StringID));
+    ListView_GetItemText(hCtl1, iItem, 1, s_entry.StringValue, _countof(s_entry.StringValue));
+
+    INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYSTR),
+                              hwnd, ModifyStrDlgProc, (LPARAM)&s_entry);
+    if (IDOK == nID)
+    {
+        ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
+        ListView_SetItemText(hCtl1, iItem, 1, s_entry.StringValue);
+    }
+}
+
+void StringsDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    switch (id)
+    {
+    case psh1:
+        StringsDlg_OnAdd(hwnd);
+        break;
+    case psh2:
+        StringsDlg_OnModify(hwnd);
+        break;
+    case psh3:
+        StringsDlg_OnDelete(hwnd);
+        break;
+    case IDOK:
+        EndDialog(hwnd, IDOK);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+LRESULT StringsDlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+{
+    if (idFrom == ctl1)
+    {
+        if (pnmhdr->code == LVN_KEYDOWN)
+        {
+            LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+            if (KeyDown->wVKey == VK_DELETE)
+            {
+                StringsDlg_OnDelete(hwnd);
+                return 0;
+            }
+        }
+        if (pnmhdr->code == NM_DBLCLK)
+        {
+            StringsDlg_OnModify(hwnd);
+            return 0;
+        }
+    }
+    return 0;
+}
+
+INT_PTR CALLBACK
+StringsDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, StringsDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, StringsDlg_OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, StringsDlg_OnNotify);
+    }
+    return 0;
+}
+
 void MainWnd_OnGuiEdit(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -4119,10 +4408,9 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     }
 
     const ResEntry::DataType& data = Entry.data;
+    ByteStream stream(data);
     if (Entry.type == RT_ACCELERATOR)
     {
-        ByteStream stream(data);
-
         AccelRes accel_res;
         if (accel_res.LoadFromStream(stream))
         {
@@ -4135,6 +4423,36 @@ void MainWnd_OnGuiEdit(HWND hwnd)
                 MainWnd_SelectTV(hwnd, lParam, FALSE);
                 return;
             }
+        }
+    }
+    else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
+    {
+        ResEntries found;
+        Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
+
+        StringRes str_res;
+        ResEntries::iterator it, end = found.end();
+        for (it = found.begin(); it != end; ++it)
+        {
+            ByteStream stream(it->data);
+            if (!str_res.LoadFromStream(stream, it->name.m_ID))
+                return;
+        }
+
+        INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_STRINGS),
+                                  hwnd, StringsDlgProc, (LPARAM)&str_res);
+        if (nID == IDOK)
+        {
+            std::wstring WideText = str_res.Dump();
+            SetWindowTextW(g_hSrcEdit, WideText.c_str());
+
+            if (DoCompile(hwnd, WideText))
+            {
+                TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+                MainWnd_SelectTV(hwnd, lParam, FALSE);
+            }
+
+            PostMessageW(hwnd, WM_SIZE, 0, 0);
         }
     }
 }
