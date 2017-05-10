@@ -76,7 +76,7 @@ swap_endian(void *ptr, DWORD len)
     }
 }
 
-inline void trim(std::string& str, const char *spaces = " \t\r\n")
+inline void str_trim(std::string& str, const char *spaces = " \t\r\n")
 {
     size_t i = str.find_first_not_of(spaces);
     size_t j = str.find_last_not_of(spaces);
@@ -90,7 +90,7 @@ inline void trim(std::string& str, const char *spaces = " \t\r\n")
     }
 }
 
-inline void trim(std::wstring& str, const wchar_t *spaces = L" \t\r\n")
+inline void str_trim(std::wstring& str, const wchar_t *spaces = L" \t\r\n")
 {
     size_t i = str.find_first_not_of(spaces);
     size_t j = str.find_last_not_of(spaces);
@@ -102,6 +102,22 @@ inline void trim(std::wstring& str, const wchar_t *spaces = L" \t\r\n")
     {
         str = str.substr(i, j - i + 1);
     }
+}
+
+inline void str_trim(char *str, const char *spaces = " \t\r\n")
+{
+    using namespace std;
+    std::string s = str;
+    str_trim(s, spaces);
+    strcpy(str, s.c_str());
+}
+
+inline void str_trim(wchar_t *str, const wchar_t *spaces = L" \t\r\n")
+{
+    using namespace std;
+    std::wstring s = str;
+    str_trim(s, spaces);
+    wcscpy(str, s.c_str());
 }
 
 inline const char *skip_space(const char *pch)
@@ -144,7 +160,7 @@ inline const wchar_t *skip_word(const wchar_t *pch)
     return pch;
 }
 
-inline std::string escape(const std::string& str)
+inline std::string str_escape(const std::string& str)
 {
     std::string ret;
 
@@ -181,7 +197,7 @@ inline std::string escape(const std::string& str)
     return ret;
 }
 
-inline std::wstring escape(const std::wstring& str)
+inline std::wstring str_escape(const std::wstring& str)
 {
     std::wstring ret;
 
@@ -443,7 +459,7 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring deci(UINT nID)
+inline std::wstring str_deci(UINT nID)
 {
     using namespace std;
     wchar_t sz[32];
@@ -452,7 +468,7 @@ inline std::wstring deci(UINT nID)
     return ret;
 }
 
-inline std::wstring hexi(UINT nID)
+inline std::wstring str_hexi(UINT nID)
 {
     std::wstring ret;
     if (nID == 0)
@@ -480,7 +496,7 @@ inline std::wstring virtkey(WORD w)
 
 template <typename T_STR>
 inline void
-replace_all(T_STR& str, const T_STR& from, const T_STR& to)
+str_replace_all(T_STR& str, const T_STR& from, const T_STR& to)
 {
     size_t i = 0;
     for (;;) {
@@ -493,11 +509,11 @@ replace_all(T_STR& str, const T_STR& from, const T_STR& to)
 }
 template <typename T_STR>
 inline void
-replace_all(T_STR& str,
-            const typename T_STR::value_type *from,
-            const typename T_STR::value_type *to)
+str_replace_all(T_STR& str,
+                const typename T_STR::value_type *from,
+                const typename T_STR::value_type *to)
 {
-    replace_all(str, T_STR(from), T_STR(to));
+    str_replace_all(str, T_STR(from), T_STR(to));
 }
 
 template <typename T_STR>
@@ -540,26 +556,26 @@ BinaryToText(const std::vector<BYTE>& Data)
         std::string str((const char *)&Data[0], Data.size());
         ret = AnsiToWide(str);
     }
-    replace_all(ret, L"\r\n", L"\n");
-    replace_all(ret, L"\r", L"\n");
-    replace_all(ret, L"\n", L"\r\n");
+    str_replace_all(ret, L"\r\n", L"\n");
+    str_replace_all(ret, L"\r", L"\n");
+    str_replace_all(ret, L"\n", L"\r\n");
     return ret;
 }
 
-inline std::string quote(const std::string& str)
+inline std::string str_quote(const std::string& str)
 {
     std::string ret;
     ret += "\"";
-    ret += escape(str);
+    ret += str_escape(str);
     ret += "\"";
     return ret;
 }
 
-inline std::wstring quote(const std::wstring& str)
+inline std::wstring str_quote(const std::wstring& str)
 {
     std::wstring ret;
     ret += L"\"";
-    ret += escape(str);
+    ret += str_escape(str);
     ret += L"\"";
     return ret;
 }

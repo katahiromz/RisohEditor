@@ -74,10 +74,10 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += deci(i);
+            ret += str_deci(i);
 
             ret += L", \"";
-            ret += escape(m_map[i]);
+            ret += str_escape(m_map[i]);
             ret += L"\"\r\n";
         }
         ret += L"}\r\n";
@@ -99,10 +99,10 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += deci(it->first);
+            ret += str_deci(it->first);
 
             ret += L", \"";
-            ret += escape(it->second);
+            ret += str_escape(it->second);
             ret += L"\"\r\n";
         }
 

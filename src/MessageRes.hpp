@@ -176,7 +176,7 @@ public:
             ret += L"    ";
             ret += sz;
             ret += L", \"";
-            ret += escape(it->second);
+            ret += str_escape(it->second);
             ret += L"\"\r\n";
         }
 

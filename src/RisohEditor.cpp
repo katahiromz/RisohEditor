@@ -831,7 +831,7 @@ void ReplaceBinDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -856,7 +856,7 @@ BOOL Cmb1_CheckType(HWND hCmb1, ID_OR_STRING& Type)
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
     std::wstring Str = szType;
-    trim(Str);
+    str_trim(Str);
     lstrcpynW(szType, Str.c_str(), _countof(szType));
 
     if (szType[0] == UNICODE_NULL)
@@ -884,7 +884,7 @@ BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name)
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
     std::wstring Str = szName;
-    trim(Str);
+    str_trim(Str);
     lstrcpynW(szName, Str.c_str(), _countof(szName));
     if (szName[0] == UNICODE_NULL)
     {
@@ -911,7 +911,7 @@ BOOL Cmb3_CheckLang(HWND hCmb3, WORD& Lang)
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
     std::wstring Str = szLang;
-    trim(Str);
+    str_trim(Str);
     lstrcpynW(szLang, Str.c_str(), _countof(szLang));
 
     if (szLang[0] == UNICODE_NULL)
@@ -948,7 +948,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
     WCHAR szFile[MAX_PATH];
     GetWindowTextW(hEdt1, szFile, _countof(szFile));
     std::wstring Str = szFile;
-    trim(Str);
+    str_trim(Str);
     lstrcpynW(szFile, Str.c_str(), _countof(szFile));
     if (::GetFileAttributesW(szFile) == 0xFFFFFFFF)
     {
@@ -1271,7 +1271,7 @@ void AddIconDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -1401,7 +1401,7 @@ void ReplaceIconDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -1537,7 +1537,7 @@ void ReplaceCursorDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -1660,7 +1660,7 @@ void AddBitmapDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -1840,7 +1840,7 @@ void ReplaceBitmapDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -1991,7 +1991,7 @@ void AddCursorDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -2236,7 +2236,7 @@ void AddResDlg_OnPsh1(HWND hwnd)
     GetDlgItemText(hwnd, edt1, File, _countof(File));
 
     std::wstring strFile = File;
-    trim(strFile);
+    str_trim(strFile);
     lstrcpynW(File, strFile.c_str(), _countof(File));
 
     OPENFILENAMEW ofn;
@@ -3552,7 +3552,7 @@ void SetKeyFlags(WORD& fFlags, const std::wstring& str)
 
 std::wstring GetKeyID(UINT wId)
 {
-    return deci(wId);
+    return str_deci(wId);
 }
 
 BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -3602,7 +3602,7 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         else
         {
             str += (WCHAR)it->wAscii;
-            str = quote(str);
+            str = str_quote(str);
         }
 
         LV_ITEM item;
@@ -3751,7 +3751,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
             {
                 return FALSE;
             }
-            str = deci(i);
+            str = str_deci(i);
         }
     }
     else
@@ -3766,11 +3766,11 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
             {
                 return FALSE;
             }
-            str = quote(str2);
+            str = str_quote(str2);
         }
         else
         {
-            str = deci(i);
+            str = str_deci(i);
         }
     }
 
@@ -4153,7 +4153,7 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
             continue;
 
         std::wstring str;
-        str = deci(it->first);
+        str = str_deci(it->first);
 
         LV_ITEM item;
         ZeroMemory(&item, sizeof(item));
@@ -4163,7 +4163,7 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         item.pszText = &str[0];
         ListView_InsertItem(hCtl1, &item);
 
-        str = quote(it->second);
+        str = str_quote(it->second);
         str = str.substr(1, str.size() - 2);
 
         ZeroMemory(&item, sizeof(item));

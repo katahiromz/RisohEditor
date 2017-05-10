@@ -121,7 +121,7 @@ public:
         while (fgets(buf, MAX_PATH, fp))
         {
             std::wstring line = AnsiToWide(buf);
-            trim(line);
+            str_trim(line);
             if (line.empty())
                 continue;
 
@@ -148,12 +148,12 @@ public:
             WCHAR *pch2 = wcstok(NULL, s_delim);
 
             NameType name = pch0;
-            trim(name);
+            str_trim(name);
             if (name.empty())
                 continue;
 
             StringType value_str = pch1;
-            trim(value_str);
+            str_trim(value_str);
             if (value_str.empty())
                 continue;
 
@@ -166,7 +166,7 @@ public:
             {
                 mask_str = pch2;
             }
-            trim(mask_str);
+            str_trim(mask_str);
 
             ValueType value;
             if (iswdigit(value_str[0]))
@@ -229,7 +229,7 @@ public:
             if (!ret.empty())
                 ret += L" | ";
 
-            ret += hexi(value);
+            ret += str_hexi(value);
         }
 
         if (default_value)
@@ -262,7 +262,7 @@ public:
             }
         }
 
-        return hexi(value);
+        return str_hexi(value);
     }
 
     ValueType
@@ -278,7 +278,7 @@ public:
         std::vector<StringType>::iterator it, end = values.end();
         for (it = values.begin(); it != end; ++it)
         {
-            trim(*it);
+            str_trim(*it);
             if ((*it).empty())
                 continue;
 
@@ -291,7 +291,7 @@ public:
                 if ((*it).find(L"NOT ") != StringType::npos)
                 {
                     (*it) = (*it).substr(4);
-                    trim(*it);
+                    str_trim(*it);
                     value &= ~GetValue(category, *it);
                 }
                 else

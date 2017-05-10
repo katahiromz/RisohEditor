@@ -150,7 +150,7 @@ struct ID_OR_STRING
             if (m_Str.size())
                 return m_Str;
         }
-        return deci(m_ID);
+        return str_deci(m_ID);
     }
 
     std::wstring quoted_wstr() const
@@ -161,7 +161,7 @@ struct ID_OR_STRING
             if (m_Str.size())
             {
                 ret += L"\"";
-                ret += escape(m_Str);
+                ret += str_escape(m_Str);
                 ret += L"\"";
             }
             else
@@ -171,7 +171,7 @@ struct ID_OR_STRING
         }
         else
         {
-            ret = deci(m_ID);
+            ret = str_deci(m_ID);
         }
         return ret;
     }

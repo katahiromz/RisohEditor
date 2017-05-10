@@ -94,7 +94,7 @@ public:
     {
         std::wstring ret = std::wstring(depth * 4, L' ');
         ret += L"VALUE ";
-        ret += quote(value.key);
+        ret += str_quote(value.key);
 
         if (value.value.size() >= 2)
         {
@@ -113,7 +113,7 @@ public:
                 WCHAR *pch = (WCHAR *)(&value.value[0]);
                 std::wstring str(pch, value.value.size() / 2);
                 ret += L", ";
-                ret += quote(str);
+                ret += str_quote(str);
             }
         }
         else

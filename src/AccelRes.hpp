@@ -93,10 +93,10 @@ public:
             {
                 std::string str;
                 str += (char)it->wAscii;
-                ret += AnsiToWide(quote(str));
+                ret += AnsiToWide(str_quote(str));
             }
             ret += L", ";
-            ret += deci(it->wId);
+            ret += str_deci(it->wId);
 
             if (NOINVERT)
                 ret += L", NOINVERT";
