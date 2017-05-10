@@ -4372,21 +4372,21 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 140;
+    column.cx = 245;
     column.pszText = LoadStringDx(IDS_CAPTION);
     column.iSubItem = 0;
     ListView_InsertColumn(hCtl1, 0, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 85;
+    column.cx = 110;
     column.pszText = LoadStringDx(IDS_FLAGS);
     column.iSubItem = 1;
     ListView_InsertColumn(hCtl1, 1, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 120;
+    column.cx = 180;
     column.pszText = LoadStringDx(IDS_COMMANDID);
     column.iSubItem = 2;
     ListView_InsertColumn(hCtl1, 2, &column);
