@@ -3508,43 +3508,6 @@ void MainWnd_OnCompile(HWND hwnd)
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
-std::wstring GetKeyFlags(WORD fFlags)
-{
-    std::wstring str;
-
-    if (fFlags & FVIRTKEY)
-        str += L"V ";
-
-    if (fFlags & FNOINVERT)
-        str += L"N ";
-
-    if (fFlags & FCONTROL)
-        str += L"C ";
-
-    if (fFlags & FSHIFT)
-        str += L"S ";
-
-    if (fFlags & FALT)
-        str += L"A ";
-
-    return str;
-}
-
-void SetKeyFlags(WORD& fFlags, const std::wstring& str)
-{
-    fFlags = 0;
-    if (str.find(L"V") != std::wstring::npos)
-        fFlags |= FVIRTKEY;
-    if (str.find(L"N") != std::wstring::npos)
-        fFlags |= FNOINVERT;
-    if (str.find(L"C") != std::wstring::npos)
-        fFlags |= FCONTROL;
-    if (str.find(L"S") != std::wstring::npos)
-        fFlags |= FSHIFT;
-    if (str.find(L"A") != std::wstring::npos)
-        fFlags |= FALT;
-}
-
 std::wstring GetKeyID(UINT wId)
 {
     return str_dec(wId);
