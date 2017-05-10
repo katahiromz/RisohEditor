@@ -262,6 +262,85 @@ public:
         return ret;
     }
 
+    BOOL SaveToStream(ByteStream& stream) const
+    {
+        if (IsExtended())
+            return SaveToStreamEx(stream);
+
+        MENUHEADER header;
+        header.wVersion = 0;
+        header.cbHeaderSize = 0;
+        if (!stream.WriteRaw(header))
+            return FALSE;
+
+        for (size_t i = 0; i < m_items.size(); ++i)
+        {
+            const MenuItem& item = m_items[i];
+            WORD fItemFlags = item.fItemFlags;
+            if (fItemFlags & MF_POPUP)
+            {
+                POPUPMENUITEMHEAD head;
+                head.fItemFlags = fItemFlags;
+                if (!stream.WriteRaw(head) || !stream.WriteSz(item.text))
+                    return FALSE;
+            }
+            else
+            {
+                NORMALMENUITEMHEAD head;
+                head.fItemFlags = item.fItemFlags;
+                head.wMenuID = item.wMenuID;
+                if (!stream.WriteRaw(head) || !stream.WriteSz(item.text))
+                    return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
+
+    BOOL SaveToStreamEx(ByteStream& stream) const
+    {
+        if (!IsExtended())
+            return FALSE;
+
+        MENUEX_TEMPLATE_HEADER header;
+        header.wVersion = 1;
+        header.wOffset = 4;
+        header.dwHelpId = m_header.dwHelpId;
+        if (!stream.WriteRaw(header))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        for (size_t i = 0; i < m_exitems.size(); ++i)
+        {
+            stream.WriteDwordAlignment();
+
+            const ExMenuItem& exitem = m_exitems[i];
+
+            MENUEX_TEMPLATE_ITEM_HEADER item_header;
+            item_header.dwType = exitem.dwType;
+            item_header.dwState = exitem.dwState;
+            item_header.menuId = exitem.menuId;
+            item_header.bResInfo = exitem.bResInfo;
+            if (!stream.WriteRaw(item_header) ||
+                !stream.WriteSz(exitem.text))
+            {
+                assert(0);
+                return FALSE;
+            }
+
+            if (item_header.bResInfo & 0x01)
+            {
+                stream.WriteDwordAlignment();
+                if (!stream.WriteRaw(exitem.dwHelpId))
+                    return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
+
     string_type Dump(ID_OR_STRING name, const ConstantsDB& db)
     {
         if (IsExtended())
@@ -468,6 +547,15 @@ public:
                 }
             }
         }
+    }
+
+    MENUEX_TEMPLATE_HEADER& Header()
+    {
+        return m_header;
+    }
+    const MENUEX_TEMPLATE_HEADER& Header() const
+    {
+        return m_header;
     }
 
 protected:
