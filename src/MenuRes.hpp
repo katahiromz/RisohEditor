@@ -648,4 +648,58 @@ protected:
     }
 };
 
+inline std::wstring GetMenuFlags(WORD fItemFlags)
+{
+    std::wstring str;
+
+    if (fItemFlags & MF_GRAYED)
+        str += L"G ";
+
+    if (fItemFlags & MF_INACTIVE)
+        str += L"I ";
+
+    if (fItemFlags & MF_BITMAP)
+        str += L"B ";
+
+    if (fItemFlags & MF_OWNERDRAW)
+        str += L"OD ";
+
+    if (fItemFlags & MF_CHECKED)
+        str += L"C ";
+
+    if (fItemFlags & MF_MENUBARBREAK)
+        str += L"MBB ";
+
+    if (fItemFlags & MF_MENUBREAK)
+        str += L"MB ";
+
+    return str;
+}
+
+inline void SetMenuFlags(WORD& fItemFlags, const std::wstring& str)
+{
+    fItemFlags = 0;
+
+    if (str.find("G") != std::wstring::npos)
+        fItemFlags |= MF_GRAYED;
+
+    if (str.find("I") != std::wstring::npos)
+        fItemFlags |= MF_INACTIVE;
+
+    if (str.find("B") != std::wstring::npos)
+        fItemFlags |= MF_BITMAP;
+
+    if (str.find("OD") != std::wstring::npos)
+        fItemFlags |= MF_OWNERDRAW;
+
+    if (str.find("C") != std::wstring::npos)
+        fItemFlags |= MF_CHECKED;
+
+    if (str.find("MBB") != std::wstring::npos)
+        fItemFlags |= MF_MENUBARBREAK;
+
+    if (str.find("MB ") != std::wstring::npos)
+        fItemFlags |= MF_MENUBREAK;
+}
+
 #endif  // ndef MENU_RES_HPP_
