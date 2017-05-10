@@ -3513,19 +3513,19 @@ std::wstring GetKeyFlags(WORD fFlags)
     std::wstring str;
 
     if (fFlags & FVIRTKEY)
-        str += L"V";
+        str += L"V ";
 
     if (fFlags & FNOINVERT)
-        str += L"N";
+        str += L"N ";
 
     if (fFlags & FCONTROL)
-        str += L"C";
+        str += L"C ";
 
     if (fFlags & FSHIFT)
-        str += L"S";
+        str += L"S ";
 
     if (fFlags & FALT)
-        str += L"A";
+        str += L"A ";
 
     return str;
 }
@@ -3570,7 +3570,7 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 65;
+    column.cx = 70;
     column.pszText = LoadStringDx(IDS_FLAGS);
     column.iSubItem = 1;
     ListView_InsertColumn(hCtl1, 1, &column);
