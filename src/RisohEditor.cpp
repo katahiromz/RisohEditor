@@ -3514,28 +3514,18 @@ std::wstring GetKeyFlags(WORD fFlags)
 
     if (fFlags & FVIRTKEY)
         str += L"V";
-    else
-        str += L" ";
 
     if (fFlags & FNOINVERT)
         str += L"N";
-    else
-        str += L" ";
 
     if (fFlags & FCONTROL)
         str += L"C";
-    else
-        str += L" ";
 
     if (fFlags & FSHIFT)
         str += L"S";
-    else
-        str += L" ";
 
     if (fFlags & FALT)
         str += L"A";
-    else
-        str += L" ";
 
     return str;
 }
