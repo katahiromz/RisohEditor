@@ -3552,7 +3552,7 @@ void SetKeyFlags(WORD& fFlags, const std::wstring& str)
 
 std::wstring GetKeyID(UINT wId)
 {
-    return str_deci(wId);
+    return str_dec(wId);
 }
 
 BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -3751,7 +3751,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
             {
                 return FALSE;
             }
-            str = str_deci(i);
+            str = str_dec(i);
         }
     }
     else
@@ -3770,7 +3770,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
         }
         else
         {
-            str = str_deci(i);
+            str = str_dec(i);
         }
     }
 
@@ -4153,7 +4153,7 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
             continue;
 
         std::wstring str;
-        str = str_deci(it->first);
+        str = str_dec(it->first);
 
         LV_ITEM item;
         ZeroMemory(&item, sizeof(item));

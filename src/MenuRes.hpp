@@ -280,7 +280,7 @@ public:
                     ret += L"MENUITEM \"";
                     ret += str_escape(it->text);
                     ret += L"\", ";
-                    ret += str_deci(it->wMenuID);
+                    ret += str_dec(it->wMenuID);
                     if (it->fItemFlags & MF_GRAYED)
                         ret += L", GRAYED";
                     if (it->fItemFlags & MF_INACTIVE)
@@ -339,7 +339,7 @@ public:
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += str_deci(it->menuId);
+                    ret += str_dec(it->menuId);
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {
@@ -356,7 +356,7 @@ public:
                 if (it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += str_hexi(it->dwHelpId);
+                    ret += str_hex(it->dwHelpId);
                 }
                 ret += L"\r\n";
                 ret += string_type((it->wDepth + 1) * 4, L' ');
@@ -376,7 +376,7 @@ public:
                     if (it->menuId || it->dwType || it->dwState)
                     {
                         ret += L", ";
-                        ret += str_deci(it->menuId);
+                        ret += str_dec(it->menuId);
                     }
                     if (it->dwType || it->dwState)
                     {

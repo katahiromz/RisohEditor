@@ -74,7 +74,7 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += str_deci(i);
+            ret += str_dec(i);
 
             ret += L", \"";
             ret += str_escape(m_map[i]);
@@ -99,7 +99,7 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += str_deci(it->first);
+            ret += str_dec(it->first);
 
             ret += L", \"";
             ret += str_escape(it->second);

@@ -229,7 +229,7 @@ public:
             if (!ret.empty())
                 ret += L" | ";
 
-            ret += str_hexi(value);
+            ret += str_hex(value);
         }
 
         if (default_value)
@@ -262,7 +262,7 @@ public:
             }
         }
 
-        return str_hexi(value);
+        return str_hex(value);
     }
 
     ValueType

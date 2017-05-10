@@ -96,7 +96,7 @@ public:
                 ret += AnsiToWide(str_quote(str));
             }
             ret += L", ";
-            ret += str_deci(it->wId);
+            ret += str_dec(it->wId);
 
             if (NOINVERT)
                 ret += L", NOINVERT";

@@ -457,7 +457,7 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring str_deci(UINT nID)
+inline std::wstring str_dec(UINT nID)
 {
     using namespace std;
     wchar_t sz[32];
@@ -466,7 +466,7 @@ inline std::wstring str_deci(UINT nID)
     return ret;
 }
 
-inline std::wstring str_hexi(UINT nID)
+inline std::wstring str_hex(UINT nID)
 {
     std::wstring ret;
     if (nID == 0)
