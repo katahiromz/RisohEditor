@@ -420,10 +420,119 @@ public:
         return ret;
     }
 
+    void Update()
+    {
+        if (IsExtended())
+        {
+            for (size_t i = 0; i < m_exitems.size(); ++i)
+            {
+                if (IsLastItem(i))
+                {
+                    m_exitems[i].bResInfo |= 0x80;
+                }
+                else
+                {
+                    m_exitems[i].bResInfo &= ~0x80;
+                }
+
+                if (IsParent(i))
+                {
+                    m_exitems[i].bResInfo |= 0x01;
+                }
+                else
+                {
+                    m_exitems[i].bResInfo &= ~0x01;
+                }
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < m_items.size(); ++i)
+            {
+                if (IsLastItem(i))
+                {
+                    m_items[i].fItemFlags |= MF_ENDMENU;
+                }
+                else
+                {
+                    m_items[i].fItemFlags &= ~MF_ENDMENU;
+                }
+
+                if (IsParent(i))
+                {
+                    m_items[i].fItemFlags |= MF_POPUP;
+                }
+                else
+                {
+                    m_items[i].fItemFlags &= ~MF_POPUP;
+                }
+            }
+        }
+    }
+
 protected:
     MENUEX_TEMPLATE_HEADER  m_header;
     MenuItemsType           m_items;
     ExMenuItemsType         m_exitems;
+
+    BOOL IsParent(size_t iItem) const
+    {
+        if (IsExtended())
+        {
+            WORD wDepth = m_exitems[iItem].wDepth;
+            if (iItem + 1 < m_exitems.size() &&
+                wDepth < m_exitems[iItem + 1].wDepth)
+            {
+                return TRUE;
+            }
+        }
+        else
+        {
+            WORD wDepth = m_items[iItem].wDepth;
+            if (iItem + 1 < m_items.size() &&
+                wDepth < m_items[iItem + 1].wDepth)
+            {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    BOOL IsLastItem(size_t iItem) const
+    {
+        BOOL Found = FALSE;
+        if (IsExtended())
+        {
+            WORD wDepth = m_exitems[iItem].wDepth;
+            for (size_t i = iItem + 1; i < m_exitems.size(); ++i)
+            {
+                if (m_exitems[i].wDepth == wDepth)
+                {
+                    Found = TRUE;
+                }
+                if (m_exitems[i].wDepth < wDepth)
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            WORD wDepth = m_items[iItem].wDepth;
+            for (size_t i = iItem + 1; i < m_items.size(); ++i)
+            {
+                if (m_items[i].wDepth == wDepth)
+                {
+                    Found = TRUE;
+                }
+                if (m_items[i].wDepth < wDepth)
+                {
+                    break;
+                }
+            }
+        }
+        return !Found;
+    }
 };
 
 #endif  // ndef MENU_RES_HPP_
