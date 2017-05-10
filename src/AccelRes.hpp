@@ -87,7 +87,7 @@ public:
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += virtkey(it->wAscii);
+                ret += str_vkey(it->wAscii);
             }
             else
             {

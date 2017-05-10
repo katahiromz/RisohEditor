@@ -21,6 +21,7 @@
 #include <mbstring.h>
 
 #include <algorithm>    // for std::sort
+#include <string>       // for std::string, std::wstring
 #include <cassert>      // for assert macro
 #include <cstdio>
 
@@ -31,6 +32,7 @@
 #include "resource.h"
 
 LPWSTR LoadStringDx(UINT id);
+std::wstring str_vkey(WORD w);
 
 #include "id_string.hpp"
 #include "Text.hpp"

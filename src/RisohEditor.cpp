@@ -116,6 +116,11 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
     return bRes;
 }
 
+std::wstring str_vkey(WORD w)
+{
+    return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
+}
+
 void DoIt(HWND hwnd)
 {
     #if 0

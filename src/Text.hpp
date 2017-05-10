@@ -484,15 +484,6 @@ inline std::wstring str_hex(UINT nID)
     return ret;
 }
 
-#include "ConstantsDB.hpp"
-
-inline std::wstring virtkey(WORD w)
-{
-    extern ConstantsDB g_ConstantsDB;
-    std::wstring name = g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
-    return name;
-}
-
 template <typename T_STR>
 inline void
 str_replace_all(T_STR& str, const T_STR& from, const T_STR& to)
