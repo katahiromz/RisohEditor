@@ -81,8 +81,8 @@ public:
     typedef std::vector<MenuItem>  MenuItemsType;
     struct ExMenuItem
     {
-        DWORD           dwType;
-        DWORD           dwState;
+        DWORD           dwType;     // MFT_
+        DWORD           dwState;    // MFS_
         UINT            menuId;
         DWORD           bResInfo;
         string_type     text;
@@ -260,6 +260,13 @@ public:
         if (fItemFlags & MF_MENUBREAK)
             ret += L", MENUBREAK";
         return ret;
+    }
+
+    std::vector<BYTE> data() const
+    {
+        ByteStream stream;
+        SaveToStream(stream);
+        return stream.data();
     }
 
     BOOL SaveToStream(ByteStream& stream) const
@@ -556,6 +563,24 @@ public:
     const MENUEX_TEMPLATE_HEADER& Header() const
     {
         return m_header;
+    }
+
+    MenuItemsType& items()
+    {
+        return m_items;
+    }
+    const MenuItemsType& items() const
+    {
+        return m_items;
+    }
+
+    ExMenuItemsType& exitems()
+    {
+        return m_exitems;
+    }
+    const ExMenuItemsType& exitems() const
+    {
+        return m_exitems;
     }
 
 protected:

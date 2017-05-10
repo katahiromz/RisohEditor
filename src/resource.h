@@ -103,3 +103,4 @@
 #define IDS_COMPILEERROR    59
 #define IDS_STRINGID        60
 #define IDS_STRINGVALUE     61
+#define IDS_CAPTION         62

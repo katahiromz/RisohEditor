@@ -3328,7 +3328,7 @@ void ReplaceBackslash(LPWSTR szPath)
     }
 }
 
-BOOL DoCompile(HWND hwnd, const std::wstring& WideText)
+BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3498,7 +3498,7 @@ void MainWnd_OnCompile(HWND hwnd)
     WideText.resize(cchText);
     GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
 
-    if (DoCompile(hwnd, WideText))
+    if (DoCompileParts(hwnd, WideText))
     {
         TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
         LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -4352,6 +4352,104 @@ StringsDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+struct MENU_ENTRY
+{
+    WCHAR Caption[128];
+    WCHAR Flags[32];
+    WCHAR CommandID[64];
+};
+
+BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    MenuRes& menu_res = *(MenuRes *)lParam;
+
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+    ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
+
+    LV_COLUMN column;
+    ZeroMemory(&column, sizeof(column));
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 140;
+    column.pszText = LoadStringDx(IDS_CAPTION);
+    column.iSubItem = 0;
+    ListView_InsertColumn(hCtl1, 0, &column);
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 85;
+    column.pszText = LoadStringDx(IDS_FLAGS);
+    column.iSubItem = 1;
+    ListView_InsertColumn(hCtl1, 1, &column);
+
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 120;
+    column.pszText = LoadStringDx(IDS_COMMANDID);
+    column.iSubItem = 2;
+    ListView_InsertColumn(hCtl1, 2, &column);
+
+    if (menu_res.IsExtended())
+    {
+        typedef MenuRes::ExMenuItemsType exitems_type;
+        exitems_type& exitems = menu_res.exitems();
+        exitems_type::iterator it, end = exitems.end();
+        for (it = exitems.begin(); it != end; ++it)
+        {
+            // FIXME
+        }
+    }
+    else
+    {
+        typedef MenuRes::MenuItemsType items_type;
+        items_type& items = menu_res.items();
+        items_type::iterator it, end = items.end();
+        for (it = items.begin(); it != end; ++it)
+        {
+            // FIXME
+        }
+    }
+
+    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    SetFocus(hCtl1);
+
+    return TRUE;
+}
+
+void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    // FIXME
+    switch (id)
+    {
+    case IDOK:
+        EndDialog(hwnd, IDOK);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+LRESULT EditMenuDlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+{
+    // FIXME
+    return 0;
+}
+
+INT_PTR CALLBACK
+EditMenuDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, EditMenuDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, EditMenuDlg_OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, EditMenuDlg_OnNotify);
+    }
+    return 0;
+}
+
 void MainWnd_OnGuiEdit(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -4383,6 +4481,22 @@ void MainWnd_OnGuiEdit(HWND hwnd)
             }
         }
     }
+    else if (Entry.type == RT_MENU)
+    {
+        MenuRes menu_res;
+        if (menu_res.LoadFromStream(stream))
+        {
+            INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_EDITMENU),
+                                      hwnd, EditMenuDlgProc, (LPARAM)&menu_res);
+            if (nID == IDOK)
+            {
+                menu_res.Update();
+                Entry.data = menu_res.data();
+                MainWnd_SelectTV(hwnd, lParam, FALSE);
+                return;
+            }
+        }
+    }
     else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
         ResEntries found;
@@ -4404,7 +4518,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
             std::wstring WideText = str_res.Dump();
             SetWindowTextW(g_hSrcEdit, WideText.c_str());
 
-            if (DoCompile(hwnd, WideText))
+            if (DoCompileParts(hwnd, WideText))
             {
                 TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
                 MainWnd_SelectTV(hwnd, lParam, FALSE);
