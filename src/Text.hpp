@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <cstring>
 
 inline std::wstring AnsiToWide(const std::string str)
 {

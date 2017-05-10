@@ -96,6 +96,11 @@ public:
         ZeroMemory(&m_header, sizeof(m_header));
     }
 
+    BOOL IsExtended() const
+    {
+        return (m_header.wVersion == 1);
+    }
+
     BOOL LoadFromStream(const ByteStream& stream)
     {
         if (!stream.PeekWord(m_header.wVersion))
@@ -237,9 +242,29 @@ public:
         return TRUE;
     }
 
+    string_type DumpFlags(WORD fItemFlags) const
+    {
+        string_type ret;
+        if (fItemFlags & MF_GRAYED)
+            ret += L", GRAYED";
+        if (fItemFlags & MF_INACTIVE)
+            ret += L", INACTIVE";
+        if (fItemFlags & MF_BITMAP)
+            ret += L", BITMAP";
+        if (fItemFlags & MF_OWNERDRAW)
+            ret += L", OWNERDRAW";
+        if (fItemFlags & MF_CHECKED)
+            ret += L", CHECKED";
+        if (fItemFlags & MF_MENUBARBREAK)
+            ret += L", MENUBARBREAK";
+        if (fItemFlags & MF_MENUBREAK)
+            ret += L", MENUBREAK";
+        return ret;
+    }
+
     string_type Dump(ID_OR_STRING name, const ConstantsDB& db)
     {
-        if (m_header.wVersion == 1)
+        if (IsExtended())
             return DumpEx(name, db);
 
         string_type ret;
@@ -264,7 +289,9 @@ public:
                 ret += string_type((it->wDepth + 1) * 4, L' ');
                 ret += L"POPUP \"";
                 ret += str_escape(it->text);
-                ret += L"\"\r\n";
+                ret += L"\"";
+                ret += DumpFlags(it->fItemFlags);
+                ret += L"\r\n";
                 ret += string_type((it->wDepth + 1) * 4, L' ');
                 ret += L"{\r\n";
             }
@@ -281,20 +308,7 @@ public:
                     ret += str_escape(it->text);
                     ret += L"\", ";
                     ret += str_dec(it->wMenuID);
-                    if (it->fItemFlags & MF_GRAYED)
-                        ret += L", GRAYED";
-                    if (it->fItemFlags & MF_INACTIVE)
-                        ret += L", INACTIVE";
-                    if (it->fItemFlags & MF_BITMAP)
-                        ret += L", BITMAP";
-                    if (it->fItemFlags & MF_OWNERDRAW)
-                        ret += L", OWNERDRAW";
-                    if (it->fItemFlags & MF_CHECKED)
-                        ret += L", CHECKED";
-                    if (it->fItemFlags & MF_MENUBARBREAK)
-                        ret += L", MENUBARBREAK";
-                    if (it->fItemFlags & MF_MENUBREAK)
-                        ret += L", MENUBREAK";
+                    ret += DumpFlags(it->fItemFlags);
                     ret += L"\r\n";
                 }
             }
