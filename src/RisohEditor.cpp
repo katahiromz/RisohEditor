@@ -3563,21 +3563,21 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 120;
+    column.cx = 105;
     column.pszText = LoadStringDx(IDS_KEY);
     column.iSubItem = 0;
     ListView_InsertColumn(hCtl1, 0, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 70;
+    column.cx = 75;
     column.pszText = LoadStringDx(IDS_FLAGS);
     column.iSubItem = 1;
     ListView_InsertColumn(hCtl1, 1, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 180;
+    column.cx = 185;
     column.pszText = LoadStringDx(IDS_COMMANDID);
     column.iSubItem = 2;
     ListView_InsertColumn(hCtl1, 2, &column);
