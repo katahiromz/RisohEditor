@@ -106,18 +106,16 @@ inline void str_trim(std::wstring& str, const wchar_t *spaces = L" \t\r\n")
 
 inline void str_trim(char *str, const char *spaces = " \t\r\n")
 {
-    using namespace std;
     std::string s = str;
     str_trim(s, spaces);
-    strcpy(str, s.c_str());
+    std::strcpy(str, s.c_str());
 }
 
 inline void str_trim(wchar_t *str, const wchar_t *spaces = L" \t\r\n")
 {
-    using namespace std;
     std::wstring s = str;
     str_trim(s, spaces);
-    wcscpy(str, s.c_str());
+    std::wcscpy(str, s.c_str());
 }
 
 inline const char *skip_space(const char *pch)
