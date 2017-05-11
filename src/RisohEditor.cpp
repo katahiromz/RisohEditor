@@ -4511,6 +4511,13 @@ void EditMenuDlg_OnModify(HWND hwnd)
 
 void EditMenuDlg_OnDelete(HWND hwnd)
 {
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem >= 0)
+    {
+        ListView_DeleteItem(hCtl1, iItem);
+    }
 }
 
 void EditMenuDlg_OnUp(HWND hwnd)
