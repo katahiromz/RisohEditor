@@ -4360,6 +4360,7 @@ struct MENU_ENTRY
     WCHAR Flags[64];
     WCHAR CommandID[64];
     WCHAR HelpID[64];
+    WORD wDepth;
 };
 
 BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -4594,13 +4595,16 @@ void EditMenuDlg_OnAdd(HWND hwnd)
 
     INT iItem = ListView_GetItemCount(hCtl1);
 
+    std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
+    str = str_repeat(strIndent, m_entry.wDepth) + m_entry.Caption;
+
     LV_ITEM item;
 
     ZeroMemory(&item, sizeof(item));
     item.iItem = iItem;
     item.mask = LVIF_TEXT;
     item.iSubItem = 0;
-    item.pszText = m_entry.Caption;
+    item.pszText = &str[0];
     ListView_InsertItem(hCtl1, &item);
 
     ZeroMemory(&item, sizeof(item));
@@ -4738,22 +4742,32 @@ void EditMenuDlg_OnModify(HWND hwnd)
         return;
     }
 
-    WCHAR Caption[128];
-    WCHAR Flags[64];
-    WCHAR CommandID[64];
-    WCHAR HelpID[64];
+    WCHAR Caption[256];
+    ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+
+    WORD wDepth = 0;
+    std::wstring str = Caption, strIndent = LoadStringDx(IDS_INDENT);
+    while (str.find(strIndent) == 0)
+    {
+        str = str.substr(strIndent.size());
+        ++wDepth;
+    }
 
     MENU_ENTRY m_entry;
-    ListView_GetItemText(hCtl1, iItem, 0, m_entry.Caption, _countof(m_entry.Caption));
+    lstrcpynW(m_entry.Caption, str.c_str(), _countof(m_entry.Caption));
     ListView_GetItemText(hCtl1, iItem, 1, m_entry.Flags, _countof(m_entry.Flags));
     ListView_GetItemText(hCtl1, iItem, 2, m_entry.CommandID, _countof(m_entry.CommandID));
     ListView_GetItemText(hCtl1, iItem, 3, m_entry.HelpID, _countof(m_entry.HelpID));
+    m_entry.wDepth = wDepth;
 
     INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYMITEM),
                               hwnd, ModifyMItemDlgProc, (LPARAM)&m_entry);
     if (IDOK == nID)
     {
-        ListView_SetItemText(hCtl1, iItem, 0, m_entry.Caption);
+        std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
+        str = str_repeat(strIndent, m_entry.wDepth) + m_entry.Caption;
+
+        ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
         ListView_SetItemText(hCtl1, iItem, 1, m_entry.Flags);
         ListView_SetItemText(hCtl1, iItem, 2, m_entry.CommandID);
         ListView_SetItemText(hCtl1, iItem, 3, m_entry.HelpID);
@@ -4854,7 +4868,7 @@ void EditMenuDlg_OnLeft(HWND hwnd)
         str = str.substr(strIndent.size());
     }
 
-    ListView_SetItemText(hCtl1, iItem, 0, const_cast<WCHAR *>(str.c_str()));
+    ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
 }
 
 void EditMenuDlg_OnRight(HWND hwnd)
@@ -4881,7 +4895,7 @@ void EditMenuDlg_OnRight(HWND hwnd)
         return;
 
     std::wstring str = strIndent + Caption;
-    ListView_SetItemText(hCtl1, iItem, 0, const_cast<WCHAR *>(str.c_str()));
+    ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
 }
 
 void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
