@@ -4372,7 +4372,7 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 245;
+    column.cx = 190;
     column.pszText = LoadStringDx(IDS_CAPTION);
     column.iSubItem = 0;
     ListView_InsertColumn(hCtl1, 0, &column);
@@ -4391,14 +4391,59 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     column.iSubItem = 2;
     ListView_InsertColumn(hCtl1, 2, &column);
 
+    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+    column.fmt = LVCFMT_LEFT;
+    column.cx = 70;
+    column.pszText = LoadStringDx(IDS_HELPID);
+    column.iSubItem = 3;
+    ListView_InsertColumn(hCtl1, 3, &column);
+
+    INT i = 0;
+    std::wstring str;
+    LV_ITEM item;
     if (menu_res.IsExtended())
     {
         typedef MenuRes::ExMenuItemsType exitems_type;
         exitems_type& exitems = menu_res.exitems();
         exitems_type::iterator it, end = exitems.end();
-        for (it = exitems.begin(); it != end; ++it)
+        for (it = exitems.begin(); it != end; ++it, ++i)
         {
-            // FIXME
+            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+            str += str_quote(it->text);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = &str[0];
+            ListView_InsertItem(hCtl1, &item);
+
+            str = GetMenuTypeAndState(it->dwType, it->dwState);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            str = str_dec(it->menuId);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 2;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            str = str_dec(it->dwHelpId);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 3;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
         }
     }
     else
@@ -4406,9 +4451,44 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         typedef MenuRes::MenuItemsType items_type;
         items_type& items = menu_res.items();
         items_type::iterator it, end = items.end();
-        for (it = items.begin(); it != end; ++it)
+        for (it = items.begin(); it != end; ++it, ++i)
         {
-            // FIXME
+            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+            str += str_quote(it->text);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = &str[0];
+            ListView_InsertItem(hCtl1, &item);
+
+            str = GetMenuFlags(it->fItemFlags);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            str = str_dec(it->wMenuID);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 2;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            str = str_dec(0);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 3;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
         }
     }
 
@@ -4418,11 +4498,101 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     return TRUE;
 }
 
+void EditMenuDlg_OnAdd(HWND hwnd)
+{
+}
+
+void EditMenuDlg_OnModify(HWND hwnd)
+{
+}
+
+void EditMenuDlg_OnDelete(HWND hwnd)
+{
+}
+
+void EditMenuDlg_OnUp(HWND hwnd)
+{
+}
+
+void EditMenuDlg_OnDown(HWND hwnd)
+{
+}
+
+void EditMenuDlg_OnLeft(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem < 0)
+        return;
+
+    WCHAR Caption[128];
+    ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+
+    std::wstring strIndent = LoadStringDx(IDS_INDENT);
+
+    std::wstring str = Caption;
+    if (str.find(strIndent) == 0)
+    {
+        str = str.substr(strIndent.size());
+    }
+
+    ListView_SetItemText(hCtl1, iItem, 0, const_cast<WCHAR *>(str.c_str()));
+}
+
+void EditMenuDlg_OnRight(HWND hwnd)
+{
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem < 0)
+        return;
+
+    if (iItem == 0)
+        return;
+
+    WCHAR CaptionUp[128];
+    ListView_GetItemText(hCtl1, iItem - 1, 0, CaptionUp, _countof(CaptionUp));
+    WCHAR Caption[128];
+    ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+
+    std::wstring strIndent = LoadStringDx(IDS_INDENT);
+    INT depth_up = str_repeat_count(CaptionUp, strIndent);
+    INT depth = str_repeat_count(Caption, strIndent);
+
+    if (depth_up < depth)
+        return;
+
+    std::wstring str = strIndent + Caption;
+    ListView_SetItemText(hCtl1, iItem, 0, const_cast<WCHAR *>(str.c_str()));
+}
+
 void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     // FIXME
     switch (id)
     {
+    case psh1:
+        EditMenuDlg_OnAdd(hwnd);
+        break;
+    case psh2:
+        EditMenuDlg_OnModify(hwnd);
+        break;
+    case psh3:
+        EditMenuDlg_OnDelete(hwnd);
+        break;
+    case psh4:
+        EditMenuDlg_OnUp(hwnd);
+        break;
+    case psh5:
+        EditMenuDlg_OnDown(hwnd);
+        break;
+    case psh6:
+        EditMenuDlg_OnLeft(hwnd);
+        break;
+    case psh7:
+        EditMenuDlg_OnRight(hwnd);
+        break;
     case IDOK:
         EndDialog(hwnd, IDOK);
         break;

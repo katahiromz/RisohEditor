@@ -702,7 +702,7 @@ inline void SetMenuFlags(WORD& fItemFlags, const std::wstring& str)
         fItemFlags |= MF_MENUBREAK;
 }
 
-inline std::wstring GetMenuType(DWORD dwType, DWORD dwState)
+inline std::wstring GetMenuTypeAndState(DWORD dwType, DWORD dwState)
 {
     std::wstring str;
 
@@ -745,7 +745,7 @@ inline std::wstring GetMenuType(DWORD dwType, DWORD dwState)
     return str;
 }
 
-inline void SetMenuFlags(DWORD& dwType, DWORD& dwState, const std::wstring& str)
+inline void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const std::wstring& str)
 {
     dwType = dwState = 0;
 

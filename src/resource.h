@@ -104,3 +104,5 @@
 #define IDS_STRINGID        60
 #define IDS_STRINGVALUE     61
 #define IDS_CAPTION         62
+#define IDS_HELPID          63
+#define IDS_INDENT          64

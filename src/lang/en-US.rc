@@ -138,6 +138,8 @@ STRINGTABLE
     IDS_STRINGID, "String ID"
     IDS_STRINGVALUE, "String Value"
     IDS_CAPTION, "Caption"
+    IDS_HELPID, "Help ID"
+    IDS_INDENT, "-> "
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

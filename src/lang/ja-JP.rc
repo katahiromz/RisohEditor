@@ -138,6 +138,8 @@ STRINGTABLE
     IDS_STRINGID, "文字列ID"
     IDS_STRINGVALUE, "文字列の値"
     IDS_CAPTION, "キャプション"
+    IDS_HELPID, "ヘルプID"
+    IDS_INDENT, "→ "
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
