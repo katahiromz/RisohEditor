@@ -3590,7 +3590,8 @@ BOOL EditAccelDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         ListView_SetItem(hCtl1, &item);
     }
 
-    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, 0, state, state);
     SetFocus(hCtl1);
 
     return TRUE;
@@ -4134,7 +4135,8 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         ++i;
     }
 
-    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, 0, state, state);
     SetFocus(hCtl1);
 
     return TRUE;
@@ -4492,7 +4494,8 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         }
     }
 
-    ListView_SetItemState(hCtl1, 0, LVIS_SELECTED, LVIS_SELECTED);
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, 0, state, state);
     SetFocus(hCtl1);
 
     return TRUE;
@@ -4512,10 +4515,66 @@ void EditMenuDlg_OnDelete(HWND hwnd)
 
 void EditMenuDlg_OnUp(HWND hwnd)
 {
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem <= 0)
+        return;
+
+    MENU_ENTRY entry0, entry1;
+
+    ListView_GetItemText(hCtl1, iItem - 1, 0, entry0.Caption, _countof(entry0.Caption));
+    ListView_GetItemText(hCtl1, iItem - 1, 1, entry0.Flags, _countof(entry0.Flags));
+    ListView_GetItemText(hCtl1, iItem - 1, 2, entry0.CommandID, _countof(entry0.CommandID));
+
+    ListView_GetItemText(hCtl1, iItem, 0, entry1.Caption, _countof(entry1.Caption));
+    ListView_GetItemText(hCtl1, iItem, 1, entry1.Flags, _countof(entry1.Flags));
+    ListView_GetItemText(hCtl1, iItem, 2, entry1.CommandID, _countof(entry1.CommandID));
+
+    ListView_SetItemText(hCtl1, iItem - 1, 0, entry1.Caption);
+    ListView_SetItemText(hCtl1, iItem - 1, 1, entry1.Flags);
+    ListView_SetItemText(hCtl1, iItem - 1, 2, entry1.CommandID);
+
+    ListView_SetItemText(hCtl1, iItem, 0, entry0.Caption);
+    ListView_SetItemText(hCtl1, iItem, 1, entry0.Flags);
+    ListView_SetItemText(hCtl1, iItem, 2, entry0.CommandID);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem - 1, state, state);
 }
 
 void EditMenuDlg_OnDown(HWND hwnd)
 {
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem < 0)
+        return;
+
+    INT Count = ListView_GetItemCount(hCtl1);
+    if (iItem + 1 >= Count)
+        return;
+
+    MENU_ENTRY entry0, entry1;
+
+    ListView_GetItemText(hCtl1, iItem, 0, entry0.Caption, _countof(entry0.Caption));
+    ListView_GetItemText(hCtl1, iItem, 1, entry0.Flags, _countof(entry0.Flags));
+    ListView_GetItemText(hCtl1, iItem, 2, entry0.CommandID, _countof(entry0.CommandID));
+
+    ListView_GetItemText(hCtl1, iItem + 1, 0, entry1.Caption, _countof(entry1.Caption));
+    ListView_GetItemText(hCtl1, iItem + 1, 1, entry1.Flags, _countof(entry1.Flags));
+    ListView_GetItemText(hCtl1, iItem + 1, 2, entry1.CommandID, _countof(entry1.CommandID));
+
+    ListView_SetItemText(hCtl1, iItem, 0, entry1.Caption);
+    ListView_SetItemText(hCtl1, iItem, 1, entry1.Flags);
+    ListView_SetItemText(hCtl1, iItem, 2, entry1.CommandID);
+
+    ListView_SetItemText(hCtl1, iItem + 1, 0, entry0.Caption);
+    ListView_SetItemText(hCtl1, iItem + 1, 1, entry0.Flags);
+    ListView_SetItemText(hCtl1, iItem + 1, 2, entry0.CommandID);
+
+    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+    ListView_SetItemState(hCtl1, iItem + 1, state, state);
 }
 
 void EditMenuDlg_OnLeft(HWND hwnd)
