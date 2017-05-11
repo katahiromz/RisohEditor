@@ -4621,8 +4621,143 @@ void EditMenuDlg_OnAdd(HWND hwnd)
     ListView_SetItemState(hCtl1, iItem, state, state);
 }
 
+BOOL ModifyMItemDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    MENU_ENTRY& m_entry = *(MENU_ENTRY *)lParam;
+
+    SetDlgItemTextW(hwnd, cmb1, m_entry.Caption);
+    SetDlgItemTextW(hwnd, cmb2, m_entry.CommandID);
+    SetDlgItemTextW(hwnd, edt1, m_entry.HelpID);
+
+    DWORD dwType, dwState;
+    dwType = dwState = 0;
+    SetMenuTypeAndState(dwType, dwState, m_entry.Flags);
+
+    if ((dwState & MFS_GRAYED) == MFS_GRAYED)
+        CheckDlgButton(hwnd, chx1, BST_CHECKED);
+    if ((dwType & MFT_BITMAP) == MFT_BITMAP)
+        CheckDlgButton(hwnd, chx3, BST_CHECKED);
+    if ((dwType & MFT_OWNERDRAW) == MFT_OWNERDRAW)
+        CheckDlgButton(hwnd, chx4, BST_CHECKED);
+    if ((dwState & MFS_CHECKED) == MFS_CHECKED)
+        CheckDlgButton(hwnd, chx5, BST_CHECKED);
+    if ((dwType & MFT_SEPARATOR) == MFT_SEPARATOR)
+        CheckDlgButton(hwnd, chx6, BST_CHECKED);
+    if ((dwType & MFT_MENUBARBREAK) == MFT_MENUBARBREAK)
+        CheckDlgButton(hwnd, chx7, BST_CHECKED);
+    if ((dwType & MFT_MENUBREAK) == MFT_MENUBREAK)
+        CheckDlgButton(hwnd, chx8, BST_CHECKED);
+    if ((dwState & MFS_DEFAULT) == MFS_DEFAULT)
+        CheckDlgButton(hwnd, chx9, BST_CHECKED);
+    if ((dwState & MFS_HILITE) == MFS_HILITE)
+        CheckDlgButton(hwnd, chx10, BST_CHECKED);
+    if ((dwType & MFT_RADIOCHECK) == MFT_RADIOCHECK)
+        CheckDlgButton(hwnd, chx11, BST_CHECKED);
+    if ((dwType & MFT_RIGHTORDER) == MFT_RIGHTORDER)
+        CheckDlgButton(hwnd, chx12, BST_CHECKED);
+    if ((dwType & MFT_RIGHTJUSTIFY) == MFT_RIGHTJUSTIFY)
+        CheckDlgButton(hwnd, chx13, BST_CHECKED);
+
+    return TRUE;
+}
+
+void ModifyMItemDlg_OnOK(HWND hwnd)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    MENU_ENTRY& m_entry = *(MENU_ENTRY *)lParam;
+
+    GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
+    GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
+
+    DWORD dwType = 0, dwState = 0;
+    if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        dwState |= MFS_GRAYED;
+    if (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED)
+        dwType |= MFT_BITMAP;
+    if (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED)
+        dwType |= MFT_OWNERDRAW;
+    if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
+        dwState |= MFS_CHECKED;
+    if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
+        dwType |= MFT_SEPARATOR;
+    if (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED)
+        dwType |= MFT_MENUBARBREAK;
+    if (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED)
+        dwType |= MFT_MENUBREAK;
+    if (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED)
+        dwState |= MFS_DEFAULT;
+    if (IsDlgButtonChecked(hwnd, chx10) == BST_CHECKED)
+        dwState |= MFS_HILITE;
+    if (IsDlgButtonChecked(hwnd, chx11) == BST_CHECKED)
+        dwType |= MFT_RADIOCHECK;
+    if (IsDlgButtonChecked(hwnd, chx12) == BST_CHECKED)
+        dwType |= MFT_RIGHTORDER;
+    if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
+        dwType |= MFT_RIGHTJUSTIFY;
+
+    std::wstring str = GetMenuTypeAndState(dwType, dwState);
+    lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
+
+    ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
+
+    EndDialog(hwnd, IDOK);
+}
+
+void ModifyMItemDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    switch (id)
+    {
+    case IDOK:
+        ModifyMItemDlg_OnOK(hwnd);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+INT_PTR CALLBACK
+ModifyMItemDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, ModifyMItemDlg_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, ModifyMItemDlg_OnCommand);
+    }
+    return 0;
+}
+
 void EditMenuDlg_OnModify(HWND hwnd)
 {
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+    if (iItem < 0)
+    {
+        return;
+    }
+
+    WCHAR Caption[128];
+    WCHAR Flags[64];
+    WCHAR CommandID[64];
+    WCHAR HelpID[64];
+
+    MENU_ENTRY m_entry;
+    ListView_GetItemText(hCtl1, iItem, 0, m_entry.Caption, _countof(m_entry.Caption));
+    ListView_GetItemText(hCtl1, iItem, 1, m_entry.Flags, _countof(m_entry.Flags));
+    ListView_GetItemText(hCtl1, iItem, 2, m_entry.CommandID, _countof(m_entry.CommandID));
+    ListView_GetItemText(hCtl1, iItem, 3, m_entry.HelpID, _countof(m_entry.HelpID));
+
+    INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYMITEM),
+                              hwnd, ModifyMItemDlgProc, (LPARAM)&m_entry);
+    if (IDOK == nID)
+    {
+        ListView_SetItemText(hCtl1, iItem, 0, m_entry.Caption);
+        ListView_SetItemText(hCtl1, iItem, 1, m_entry.Flags);
+        ListView_SetItemText(hCtl1, iItem, 2, m_entry.CommandID);
+        ListView_SetItemText(hCtl1, iItem, 3, m_entry.HelpID);
+    }
 }
 
 void EditMenuDlg_OnDelete(HWND hwnd)
@@ -4786,7 +4921,23 @@ void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 LRESULT EditMenuDlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
-    // FIXME
+    if (idFrom == ctl1)
+    {
+        if (pnmhdr->code == LVN_KEYDOWN)
+        {
+            LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+            if (KeyDown->wVKey == VK_DELETE)
+            {
+                EditMenuDlg_OnDelete(hwnd);
+                return 0;
+            }
+        }
+        if (pnmhdr->code == NM_DBLCLK)
+        {
+            EditMenuDlg_OnModify(hwnd);
+            return 0;
+        }
+    }
     return 0;
 }
 
