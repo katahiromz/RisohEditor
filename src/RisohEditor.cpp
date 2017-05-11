@@ -4732,6 +4732,41 @@ ModifyMItemDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
+{
+    ListView_SetItemText(hCtl1, iItem, 0, entry1.Caption);
+    ListView_SetItemText(hCtl1, iItem, 1, entry1.Flags);
+    ListView_SetItemText(hCtl1, iItem, 2, entry1.CommandID);
+
+    WCHAR Caption[256];
+    ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+
+    entry.wDepth = 0;
+    std::wstring str = Caption, strIndent = LoadStringDx(IDS_INDENT);
+    while (str.find(strIndent) == 0)
+    {
+        str = str.substr(strIndent.size());
+        ++entry.wDepth;
+    }
+    lstrcpynW(entry.Caption, str.c_str(), _countof(entry.Caption));
+
+    ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
+    ListView_GetItemText(hCtl1, iItem, 2, entry.CommandID, _countof(entry.CommandID));
+    ListView_GetItemText(hCtl1, iItem, 3, entry.HelpID, _countof(entry.HelpID));
+}
+
+BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, const MENU_ENTRY& entry, INT iItem)
+{
+    std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
+    str = str_repeat(strIndent, entry.wDepth);
+    str += entry.Caption;
+
+    ListView_SetItemText(hCtl1, iItem, 0, str.c_str());
+    ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
+    ListView_SetItemText(hCtl1, iItem, 2, entry.CommandID);
+    ListView_SetItemText(hCtl1, iItem, 3, entry.HelpID);
+}
+
 void EditMenuDlg_OnModify(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
@@ -4742,35 +4777,14 @@ void EditMenuDlg_OnModify(HWND hwnd)
         return;
     }
 
-    WCHAR Caption[256];
-    ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
-
-    WORD wDepth = 0;
-    std::wstring str = Caption, strIndent = LoadStringDx(IDS_INDENT);
-    while (str.find(strIndent) == 0)
-    {
-        str = str.substr(strIndent.size());
-        ++wDepth;
-    }
-
     MENU_ENTRY m_entry;
-    lstrcpynW(m_entry.Caption, str.c_str(), _countof(m_entry.Caption));
-    ListView_GetItemText(hCtl1, iItem, 1, m_entry.Flags, _countof(m_entry.Flags));
-    ListView_GetItemText(hCtl1, iItem, 2, m_entry.CommandID, _countof(m_entry.CommandID));
-    ListView_GetItemText(hCtl1, iItem, 3, m_entry.HelpID, _countof(m_entry.HelpID));
-    m_entry.wDepth = wDepth;
+    EditMenuDlg_GetEntry(hwnd, hCtl1, m_entry, iItem);
 
     INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYMITEM),
                               hwnd, ModifyMItemDlgProc, (LPARAM)&m_entry);
     if (IDOK == nID)
     {
-        std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
-        str = str_repeat(strIndent, m_entry.wDepth) + m_entry.Caption;
-
-        ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
-        ListView_SetItemText(hCtl1, iItem, 1, m_entry.Flags);
-        ListView_SetItemText(hCtl1, iItem, 2, m_entry.CommandID);
-        ListView_SetItemText(hCtl1, iItem, 3, m_entry.HelpID);
+        EditMenuDlg_SetEntry(hwnd, hCtl1, m_entry, iItem);
     }
 }
 
@@ -4795,21 +4809,11 @@ void EditMenuDlg_OnUp(HWND hwnd)
 
     MENU_ENTRY entry0, entry1;
 
-    ListView_GetItemText(hCtl1, iItem - 1, 0, entry0.Caption, _countof(entry0.Caption));
-    ListView_GetItemText(hCtl1, iItem - 1, 1, entry0.Flags, _countof(entry0.Flags));
-    ListView_GetItemText(hCtl1, iItem - 1, 2, entry0.CommandID, _countof(entry0.CommandID));
+    EditMenuDlg_GetEntry(hwnd, hCtl1, entry0, iItem - 1);
+    EditMenuDlg_GetEntry(hwnd, hCtl1, entry1, iItem);
 
-    ListView_GetItemText(hCtl1, iItem, 0, entry1.Caption, _countof(entry1.Caption));
-    ListView_GetItemText(hCtl1, iItem, 1, entry1.Flags, _countof(entry1.Flags));
-    ListView_GetItemText(hCtl1, iItem, 2, entry1.CommandID, _countof(entry1.CommandID));
-
-    ListView_SetItemText(hCtl1, iItem - 1, 0, entry1.Caption);
-    ListView_SetItemText(hCtl1, iItem - 1, 1, entry1.Flags);
-    ListView_SetItemText(hCtl1, iItem - 1, 2, entry1.CommandID);
-
-    ListView_SetItemText(hCtl1, iItem, 0, entry0.Caption);
-    ListView_SetItemText(hCtl1, iItem, 1, entry0.Flags);
-    ListView_SetItemText(hCtl1, iItem, 2, entry0.CommandID);
+    EditMenuDlg_SetEntry(hwnd, hCtl1, entry1, iItem - 1);
+    EditMenuDlg_SetEntry(hwnd, hCtl1, entry0, iItem);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
     ListView_SetItemState(hCtl1, iItem - 1, state, state);
@@ -4829,21 +4833,11 @@ void EditMenuDlg_OnDown(HWND hwnd)
 
     MENU_ENTRY entry0, entry1;
 
-    ListView_GetItemText(hCtl1, iItem, 0, entry0.Caption, _countof(entry0.Caption));
-    ListView_GetItemText(hCtl1, iItem, 1, entry0.Flags, _countof(entry0.Flags));
-    ListView_GetItemText(hCtl1, iItem, 2, entry0.CommandID, _countof(entry0.CommandID));
+    EditMenuDlg_GetEntry(hwnd, hCtl1, entry0, iItem);
+    EditMenuDlg_GetEntry(hwnd, hCtl1, entry1, iItem + 1);
 
-    ListView_GetItemText(hCtl1, iItem + 1, 0, entry1.Caption, _countof(entry1.Caption));
-    ListView_GetItemText(hCtl1, iItem + 1, 1, entry1.Flags, _countof(entry1.Flags));
-    ListView_GetItemText(hCtl1, iItem + 1, 2, entry1.CommandID, _countof(entry1.CommandID));
-
-    ListView_SetItemText(hCtl1, iItem, 0, entry1.Caption);
-    ListView_SetItemText(hCtl1, iItem, 1, entry1.Flags);
-    ListView_SetItemText(hCtl1, iItem, 2, entry1.CommandID);
-
-    ListView_SetItemText(hCtl1, iItem + 1, 0, entry0.Caption);
-    ListView_SetItemText(hCtl1, iItem + 1, 1, entry0.Flags);
-    ListView_SetItemText(hCtl1, iItem + 1, 2, entry0.CommandID);
+    EditMenuDlg_SetEntry(hwnd, hCtl1, entry1, iItem);
+    EditMenuDlg_SetEntry(hwnd, hCtl1, entry0, iItem + 1);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
     ListView_SetItemState(hCtl1, iItem + 1, state, state);
@@ -4898,9 +4892,38 @@ void EditMenuDlg_OnRight(HWND hwnd)
     ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
 }
 
+void EditMenuDlg_OnOK(HWND hwnd)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    MenuRes& menu_res = *(MenuRes *)lParam;
+
+    BOOL Extended = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+
+    MENU_ENTRY entry;
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+    INT iItem, Count = ListView_GetItemCount(hCtl1);
+    if (Extended)
+    {
+        for (iItem = 0; iItem < Count; ++iItem)
+        {
+            EditMenuDlg_GetEntry(hwnd, hCtl1, entry, iItem);
+            // FIXME
+        }
+    }
+    else
+    {
+        for (i = 0; i < Count; ++i)
+        {
+            EditMenuDlg_GetEntry(hwnd, hCtl1, entry, iItem);
+            // FIXME
+        }
+    }
+
+    EndDialog(hwnd, IDOK);
+}
+
 void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    // FIXME
     switch (id)
     {
     case psh1:
@@ -4925,7 +4948,7 @@ void EditMenuDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         EditMenuDlg_OnRight(hwnd);
         break;
     case IDOK:
-        EndDialog(hwnd, IDOK);
+        EditMenuDlg_OnOK(hwnd);
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
