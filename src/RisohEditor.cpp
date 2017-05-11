@@ -4734,10 +4734,6 @@ ModifyMItemDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
 {
-    ListView_SetItemText(hCtl1, iItem, 0, entry1.Caption);
-    ListView_SetItemText(hCtl1, iItem, 1, entry1.Flags);
-    ListView_SetItemText(hCtl1, iItem, 2, entry1.CommandID);
-
     WCHAR Caption[256];
     ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
 
@@ -4755,13 +4751,13 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     ListView_GetItemText(hCtl1, iItem, 3, entry.HelpID, _countof(entry.HelpID));
 }
 
-BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, const MENU_ENTRY& entry, INT iItem)
+BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
 {
     std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
     str = str_repeat(strIndent, entry.wDepth);
     str += entry.Caption;
 
-    ListView_SetItemText(hCtl1, iItem, 0, str.c_str());
+    ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
     ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
     ListView_SetItemText(hCtl1, iItem, 2, entry.CommandID);
     ListView_SetItemText(hCtl1, iItem, 3, entry.HelpID);
@@ -4912,7 +4908,7 @@ void EditMenuDlg_OnOK(HWND hwnd)
     }
     else
     {
-        for (i = 0; i < Count; ++i)
+        for (iItem = 0; iItem < Count; ++iItem)
         {
             EditMenuDlg_GetEntry(hwnd, hCtl1, entry, iItem);
             // FIXME
