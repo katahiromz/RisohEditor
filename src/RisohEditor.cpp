@@ -4507,8 +4507,15 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         exitems_type::iterator it, end = exitems.end();
         for (it = exitems.begin(); it != end; ++it, ++i)
         {
-            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
-            str += str_quote(it->text);
+            if (it->text.empty() && it->menuId == 0)
+            {
+                str = LoadStringDx(IDS_SEP);
+            }
+            else
+            {
+                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+                str += str_quote(it->text);
+            }
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -4552,8 +4559,15 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         items_type::iterator it, end = items.end();
         for (it = items.begin(); it != end; ++it, ++i)
         {
-            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
-            str += str_quote(it->text);
+            if (it->text.empty() && it->wMenuID == 0)
+            {
+                str = LoadStringDx(IDS_SEP);
+            }
+            else
+            {
+                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+                str += str_quote(it->text);
+            }
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -4651,6 +4665,13 @@ void AddMItemDlg_OnOK(HWND hwnd)
         dwType |= MFT_RIGHTJUSTIFY;
 
     std::wstring str = GetMenuTypeAndState(dwType, dwState);
+    if (m_entry.Caption[0] == 0 ||
+        lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0)
+    {
+        m_entry.Caption[0] = 0;
+        dwType |= MFT_SEPARATOR;
+        str = GetMenuTypeAndState(dwType, dwState);
+    }
     lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
 
     ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
@@ -4667,6 +4688,10 @@ void AddMItemDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
+        break;
+    case chx6:
+        if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
+            SetDlgItemTextW(hwnd, cmb1, NULL);
         break;
     }
 }
@@ -4698,7 +4723,10 @@ void EditMenuDlg_OnAdd(HWND hwnd)
     INT iItem = ListView_GetItemCount(hCtl1);
 
     std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
-    str = str_repeat(strIndent, m_entry.wDepth) + m_entry.Caption;
+    str = m_entry.Caption;
+    if (str.empty() || wcsstr(m_entry.Flags, L"S ") != NULL)
+        str = LoadStringDx(IDS_SEP);
+    str = str_repeat(strIndent, m_entry.wDepth) + str;
 
     LV_ITEM item;
 
@@ -4723,6 +4751,13 @@ void EditMenuDlg_OnAdd(HWND hwnd)
     item.pszText = m_entry.CommandID;
     ListView_SetItem(hCtl1, &item);
 
+    ZeroMemory(&item, sizeof(item));
+    item.iItem = iItem;
+    item.mask = LVIF_TEXT;
+    item.iSubItem = 3;
+    item.pszText = m_entry.HelpID;
+    ListView_SetItem(hCtl1, &item);
+
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
     ListView_SetItemState(hCtl1, iItem, state, state);
 }
@@ -4739,6 +4774,13 @@ BOOL ModifyMItemDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     DWORD dwType, dwState;
     dwType = dwState = 0;
     SetMenuTypeAndState(dwType, dwState, m_entry.Flags);
+
+    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0 ||
+        m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
+    {
+        SetDlgItemTextW(hwnd, cmb1, LoadStringDx(IDS_SEP));
+        CheckDlgButton(hwnd, chx6, BST_CHECKED);
+    }
 
     if ((dwState & MFS_GRAYED) == MFS_GRAYED)
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
@@ -4809,6 +4851,13 @@ void ModifyMItemDlg_OnOK(HWND hwnd)
     if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
         dwType |= MFT_RIGHTJUSTIFY;
 
+    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0 ||
+        m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
+    {
+        m_entry.Caption[0] = 0;
+        dwType |= MFT_SEPARATOR;
+    }
+
     std::wstring str = GetMenuTypeAndState(dwType, dwState);
     lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
 
@@ -4826,6 +4875,10 @@ void ModifyMItemDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
+        break;
+    case chx6:
+        if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
+            SetDlgItemTextW(hwnd, cmb1, NULL);
         break;
     }
 }
@@ -4858,6 +4911,11 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     {
         str_unquote(str);
     }
+    if (str.empty() || str == LoadStringDx(IDS_SEP))
+    {
+        str.clear();
+    }
+
     lstrcpynW(entry.Caption, str.c_str(), _countof(entry.Caption));
 
     ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
@@ -4869,7 +4927,11 @@ BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
 {
     std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
     str = str_repeat(strIndent, entry.wDepth);
-    str += str_quote(entry.Caption);
+
+    if (entry.Caption[0] == 0 || wcsstr(entry.Flags, L"S ") != NULL)
+        str += LoadStringDx(IDS_SEP);
+    else
+        str += str_quote(entry.Caption);
 
     ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
     ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
