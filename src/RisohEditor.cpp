@@ -4471,21 +4471,21 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 190;
+    column.cx = 225;
     column.pszText = LoadStringDx(IDS_CAPTION);
     column.iSubItem = 0;
     ListView_InsertColumn(hCtl1, 0, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 110;
+    column.cx = 95;
     column.pszText = LoadStringDx(IDS_FLAGS);
     column.iSubItem = 1;
     ListView_InsertColumn(hCtl1, 1, &column);
 
     column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
     column.fmt = LVCFMT_LEFT;
-    column.cx = 180;
+    column.cx = 150;
     column.pszText = LoadStringDx(IDS_COMMANDID);
     column.iSubItem = 2;
     ListView_InsertColumn(hCtl1, 2, &column);
@@ -4694,7 +4694,11 @@ void AddMItemDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case chx6:
         if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
+        {
             SetDlgItemTextW(hwnd, cmb1, NULL);
+            SetDlgItemInt(hwnd, cmb2, 0, FALSE);
+            SetDlgItemInt(hwnd, edt1, 0, FALSE);
+        }
         break;
     }
 }
@@ -4881,7 +4885,11 @@ void ModifyMItemDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case chx6:
         if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
+        {
             SetDlgItemTextW(hwnd, cmb1, NULL);
+            SetDlgItemInt(hwnd, cmb2, 0, FALSE);
+            SetDlgItemInt(hwnd, edt1, 0, FALSE);
+        }
         break;
     }
 }

@@ -445,13 +445,13 @@ public:
                 {
                     ret += L", ";
                     DWORD value = it->dwType;
-                    ret += db.DumpBitField(L"MFT_", L"", value);
+                    ret += db.DumpBitField(L"MFT_", value);
                 }
                 if (it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
                     DWORD value = it->dwState;
-                    ret += db.DumpBitField(L"MFS_", L"", value);
+                    ret += db.DumpBitField(L"MFS_", value);
                 }
                 if (it->dwHelpId)
                 {
@@ -755,7 +755,7 @@ inline void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const std::wstrin
         dwType |= MFT_OWNERDRAW;
 
     if (str2.find(L" C ") != std::wstring::npos)
-        dwType |= MFS_CHECKED;
+        dwState |= MFS_CHECKED;
 
     if (str2.find(L" S ") != std::wstring::npos)
         dwType |= MFT_SEPARATOR;

@@ -196,6 +196,44 @@ public:
         return TRUE;
     }
 
+    StringType DumpBitField(CategoryType cat1, ValueType& value,
+                            ValueType default_value = 0) const
+    {
+        StringType ret, str1, str3;
+
+        ValueType def = default_value;
+        default_value &= ~value;
+        value &= ~def;
+
+        str1 = _dumpBitField(cat1, value);
+
+        if (!str1.empty())
+        {
+            ret = str1;
+        }
+        else
+        {
+            ret = L"0";
+        }
+
+        if (value)
+        {
+            if (!ret.empty())
+                ret += L" | ";
+
+            ret += str_hex(value);
+        }
+
+        if (default_value)
+        {
+            str3 = _dumpBitField(cat1, default_value, TRUE);
+            if (!ret.empty())
+                ret += L" | ";
+            ret += str3;
+        }
+        return ret;
+    }
+
     StringType DumpBitField(CategoryType cat1, CategoryType cat2,
                             ValueType& value, ValueType default_value = 0) const
     {
