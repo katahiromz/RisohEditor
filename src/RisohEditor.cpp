@@ -3972,11 +3972,17 @@ void EditAccelDlg_OnOK(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
+    INT i, Count = ListView_GetItemCount(hCtl1);
+
+    if (Count == 0)
+    {
+        MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+        return;
+    }
+
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     AccelRes& accel_res = *(AccelRes *)lParam;
     accel_res.Entries().clear();
-
-    INT i, Count = ListView_GetItemCount(hCtl1);
     for (i = 0; i < Count; ++i)
     {
         ACCEL_ENTRY a_entry;
