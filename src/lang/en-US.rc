@@ -140,6 +140,7 @@ STRINGTABLE
     IDS_CAPTION, "Caption"
     IDS_HELPID, "Help ID"
     IDS_INDENT, "-> "
+    IDS_DATAISEMPTY, "Data is empty."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -4344,7 +4344,8 @@ void StringsDlg_OnOK(HWND hwnd)
     INT iItem, Count = ListView_GetItemCount(hCtl1);
     if (Count == 0)
     {
-        // FIXME
+        MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+        return;
     }
 
     str_res.map().clear();
@@ -4980,11 +4981,17 @@ void EditMenuDlg_OnOK(HWND hwnd)
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     MenuRes& menu_res = *(MenuRes *)lParam;
 
-    BOOL Extended = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
-
     MENU_ENTRY entry;
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
     INT iItem, Count = ListView_GetItemCount(hCtl1);
+
+    if (Count == 0)
+    {
+        MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+        return;
+    }
+
+    BOOL Extended = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
     if (Extended)
     {
         menu_res.header().wVersion = 1;

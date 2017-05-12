@@ -140,6 +140,7 @@ STRINGTABLE
     IDS_CAPTION, "キャプション"
     IDS_HELPID, "ヘルプID"
     IDS_INDENT, "→ "
+    IDS_DATAISEMPTY, "データが空です。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

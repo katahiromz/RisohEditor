@@ -106,3 +106,4 @@
 #define IDS_CAPTION         62
 #define IDS_HELPID          63
 #define IDS_INDENT          64
+#define IDS_DATAISEMPTY     65
