@@ -4076,6 +4076,39 @@ EditAccelDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+struct STRING_ENTRY
+{
+    WCHAR StringID[128];
+    WCHAR StringValue[512];
+};
+
+void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
+{
+    WCHAR Buffer[512];
+
+    GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
+    str_trim(Buffer);
+    lstrcpynW(entry.StringID, Buffer, _countof(entry.StringID));
+
+    GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
+    str_trim(Buffer);
+    if (Buffer[0] == L'"')
+    {
+        str_unquote(Buffer);
+    }
+    lstrcpynW(entry.StringValue, Buffer, _countof(entry.StringValue));
+}
+
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
+{
+    SetDlgItemTextW(hwnd, cmb1, entry.StringID);
+
+    std::wstring str = entry.StringValue;
+    str = str_quote(str);
+
+    SetDlgItemTextW(hwnd, edt1, str.c_str());
+}
+
 BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
@@ -4123,7 +4156,6 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         ListView_InsertItem(hCtl1, &item);
 
         str = str_quote(it->second);
-        str = str.substr(1, str.size() - 2);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = i;
@@ -4142,12 +4174,6 @@ BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     return TRUE;
 }
 
-struct STRING_ENTRY
-{
-    WCHAR StringID[128];
-    WCHAR StringValue[512];
-};
-
 BOOL AddStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
@@ -4164,10 +4190,7 @@ void AddStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     switch (id)
     {
     case IDOK:
-        GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
-        lstrcpynW(s_entry.StringID, Buffer, _countof(s_entry.StringID));
-        GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
-        lstrcpynW(s_entry.StringValue, Buffer, _countof(s_entry.StringValue));
+        StrDlg_GetEntry(hwnd, s_entry);
         EndDialog(hwnd, IDOK);
         break;
     case IDCANCEL:
@@ -4211,11 +4234,14 @@ void StringsDlg_OnAdd(HWND hwnd)
     item.pszText = s_entry.StringID;
     ListView_InsertItem(hCtl1, &item);
 
+    std::wstring str = s_entry.StringValue;
+    str = str_quote(str);
+
     ZeroMemory(&item, sizeof(item));
     item.iItem = iItem;
     item.mask = LVIF_TEXT;
     item.iSubItem = 1;
-    item.pszText = s_entry.StringValue;
+    item.pszText = &str[0];
     ListView_SetItem(hCtl1, &item);
 
     UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -4238,8 +4264,7 @@ BOOL ModifyStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
 
-    SetDlgItemTextW(hwnd, cmb1, s_entry.StringID);
-    SetDlgItemTextW(hwnd, edt1, s_entry.StringValue);
+    StrDlg_SetEntry(hwnd, s_entry);
 
     return TRUE;
 }
@@ -4252,10 +4277,7 @@ void ModifyStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     switch (id)
     {
     case IDOK:
-        GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
-        lstrcpynW(s_entry.StringID, Buffer, _countof(s_entry.StringID));
-        GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
-        lstrcpynW(s_entry.StringValue, Buffer, _countof(s_entry.StringValue));
+        StrDlg_GetEntry(hwnd, s_entry);
         EndDialog(hwnd, IDOK);
         break;
     case IDCANCEL:
@@ -4275,6 +4297,19 @@ ModifyStrDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+void StringsDlg_GetEntry(HWND hwnd, HWND hCtl1, INT iItem, STRING_ENTRY& entry)
+{
+    ListView_GetItemText(hCtl1, iItem, 0, entry.StringID, _countof(entry.StringID));
+    str_trim(entry.StringID);
+
+    ListView_GetItemText(hCtl1, iItem, 1, entry.StringValue, _countof(entry.StringValue));
+    str_trim(entry.StringValue);
+    if (entry.StringValue[0] == L'"')
+    {
+        str_unquote(entry.StringValue);
+    }
+}
+
 void StringsDlg_OnModify(HWND hwnd)
 {
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
@@ -4286,16 +4321,46 @@ void StringsDlg_OnModify(HWND hwnd)
     }
 
     STRING_ENTRY s_entry;
-    ListView_GetItemText(hCtl1, iItem, 0, s_entry.StringID, _countof(s_entry.StringID));
-    ListView_GetItemText(hCtl1, iItem, 1, s_entry.StringValue, _countof(s_entry.StringValue));
+    StringsDlg_GetEntry(hwnd, hCtl1, iItem, s_entry);
 
     INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYSTR),
                               hwnd, ModifyStrDlgProc, (LPARAM)&s_entry);
     if (IDOK == nID)
     {
         ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
-        ListView_SetItemText(hCtl1, iItem, 1, s_entry.StringValue);
+
+        std::wstring str = str_quote(s_entry.StringValue);
+        ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
     }
+}
+
+void StringsDlg_OnOK(HWND hwnd)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    StringRes& str_res = *(StringRes *)lParam;
+
+    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+    INT iItem, Count = ListView_GetItemCount(hCtl1);
+    if (Count == 0)
+    {
+        // FIXME
+    }
+
+    str_res.map().clear();
+
+    STRING_ENTRY s_entry;
+    for (iItem = 0; iItem < Count; ++iItem)
+    {
+        StringsDlg_GetEntry(hwnd, hCtl1, iItem, s_entry);
+
+        WORD wID = (WORD)_wtoi(s_entry.StringID);
+        std::wstring str = s_entry.StringValue;
+
+        str_res.map().insert(std::make_pair(wID, str));
+    }
+
+    EndDialog(hwnd, IDOK);
 }
 
 void StringsDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -4312,7 +4377,7 @@ void StringsDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         StringsDlg_OnDelete(hwnd);
         break;
     case IDOK:
-        EndDialog(hwnd, IDOK);
+        StringsDlg_OnOK(hwnd);
         break;
     case IDCANCEL:
         EndDialog(hwnd, IDCANCEL);
