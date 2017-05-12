@@ -433,9 +433,8 @@ public:
             if (it->bResInfo & 0x01)
             {
                 ret += string_type((it->wDepth + 1) * 4, L' ');
-                ret += L"POPUP \"";
-                ret += str_escape(it->text);
-                ret += L"\"";
+                ret += L"POPUP ";
+                ret += str_quote(it->text);
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
@@ -471,8 +470,8 @@ public:
                 }
                 else
                 {
-                    ret += L"MENUITEM \"";
-                    ret += str_escape(it->text);
+                    ret += L"MENUITEM ";
+                    ret += str_quote(it->text);
                     if (it->menuId || it->dwType || it->dwState)
                     {
                         ret += L", ";
