@@ -1375,6 +1375,12 @@ Res_IsPlainText(const ID_OR_STRING& type)
     return type == RT_HTML || type == RT_MANIFEST || type == RT_DLGINCLUDE;
 }
 
+inline INT
+Res_IsTestable(const ID_OR_STRING& type)
+{
+    return type == RT_DIALOG || type == RT_MENU;
+}
+
 inline BOOL
 Res_CanGuiEdit(const ID_OR_STRING& type)
 {

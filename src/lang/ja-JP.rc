@@ -141,6 +141,7 @@ STRINGTABLE
     IDS_HELPID, "ヘルプID"
     IDS_INDENT, "→ "
     IDS_DATAISEMPTY, "データが空です。"
+    IDS_TEST, "テスト"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

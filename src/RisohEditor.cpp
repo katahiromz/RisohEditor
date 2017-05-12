@@ -502,6 +502,14 @@ TBBUTTON g_buttons1[] =
     { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
 };
 
+TBBUTTON g_buttons2[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+};
+
 void ToolBar_Update(HWND hwnd, INT iType)
 {
     while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
@@ -514,6 +522,9 @@ void ToolBar_Update(HWND hwnd, INT iType)
         break;
     case 1:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
+        break;
+    case 2:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
         break;
     }
 }
@@ -546,6 +557,7 @@ HWND ToolBar_Create(HWND hwndParent)
 
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
 
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
@@ -3165,7 +3177,14 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
         if (Res_CanGuiEdit(Entry.type))
         {
-            ToolBar_Update(g_hToolBar, 1);
+            if (Res_IsTestable(Entry.type))
+            {
+                ToolBar_Update(g_hToolBar, 2);
+            }
+            else
+            {
+                ToolBar_Update(g_hToolBar, 1);
+            }
         }
         else
         {
