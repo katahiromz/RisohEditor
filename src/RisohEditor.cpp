@@ -4511,6 +4511,7 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
             if (it->text.empty() && it->menuId == 0)
             {
                 str += LoadStringDx(IDS_SEPARATOR);
+                it->dwType |= MFT_SEPARATOR;
             }
             else
             {
@@ -4577,6 +4578,8 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
             ListView_InsertItem(hCtl1, &item);
 
             str = GetMenuFlags(it->fItemFlags);
+            if (it->text.empty() && it->wMenuID == 0)
+                str += L"S ";
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -4767,7 +4770,7 @@ BOOL ModifyMItemDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     MENU_ENTRY& m_entry = *(MENU_ENTRY *)lParam;
 
-    SetDlgItemTextW(hwnd, cmb1, m_entry.Caption);
+    SetDlgItemTextW(hwnd, cmb1, str_quote(m_entry.Caption).c_str());
     SetDlgItemTextW(hwnd, cmb2, m_entry.CommandID);
     SetDlgItemTextW(hwnd, edt1, m_entry.HelpID);
 
