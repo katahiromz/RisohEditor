@@ -4507,13 +4507,13 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         exitems_type::iterator it, end = exitems.end();
         for (it = exitems.begin(); it != end; ++it, ++i)
         {
+            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
             if (it->text.empty() && it->menuId == 0)
             {
-                str = LoadStringDx(IDS_SEPARATOR);
+                str += LoadStringDx(IDS_SEPARATOR);
             }
             else
             {
-                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
                 str += str_quote(it->text);
             }
 
@@ -4559,13 +4559,13 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         items_type::iterator it, end = items.end();
         for (it = items.begin(); it != end; ++it, ++i)
         {
+            str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
             if (it->text.empty() && it->wMenuID == 0)
             {
-                str = LoadStringDx(IDS_SEPARATOR);
+                str += LoadStringDx(IDS_SEPARATOR);
             }
             else
             {
-                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
                 str += str_quote(it->text);
             }
 
