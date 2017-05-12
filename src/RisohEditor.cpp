@@ -642,6 +642,30 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+VOID MainWnd_HidePreview(HWND hwnd)
+{
+    if (g_hBitmap)
+    {
+        DeleteObject(g_hBitmap);
+        g_hBitmap = NULL;
+    }
+
+    SetWindowTextW(g_hBinEdit, NULL);
+    ShowWindow(g_hBinEdit, SW_HIDE);
+    Edit_SetModify(g_hBinEdit, FALSE);
+
+    SetWindowTextW(g_hSrcEdit, NULL);
+    ShowWindow(g_hSrcEdit, SW_HIDE);
+    Edit_SetModify(g_hSrcEdit, FALSE);
+
+    ShowWindow(g_hBmpView, SW_HIDE);
+    ShowWindow(g_hToolBar, SW_HIDE);
+
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+    g_bInEdit = FALSE;
+}
+
 void MainWnd_OnDeleteRes(HWND hwnd)
 {
     if (g_bInEdit)
@@ -652,6 +676,7 @@ void MainWnd_OnDeleteRes(HWND hwnd)
         return;
 
     TV_Delete(g_hTreeView, hItem, g_Entries);
+    MainWnd_HidePreview(hwnd);
 }
 
 void MainWnd_OnExtractBin(HWND hwnd)
@@ -2393,30 +2418,6 @@ void MainWnd_OnImport(HWND hwnd)
                         MB_ICONERROR);
         }
     }
-}
-
-VOID MainWnd_HidePreview(HWND hwnd)
-{
-    if (g_hBitmap)
-    {
-        DeleteObject(g_hBitmap);
-        g_hBitmap = NULL;
-    }
-
-    SetWindowTextW(g_hBinEdit, NULL);
-    ShowWindow(g_hBinEdit, SW_HIDE);
-    Edit_SetModify(g_hBinEdit, FALSE);
-
-    SetWindowTextW(g_hSrcEdit, NULL);
-    ShowWindow(g_hSrcEdit, SW_HIDE);
-    Edit_SetModify(g_hSrcEdit, FALSE);
-
-    ShowWindow(g_hBmpView, SW_HIDE);
-    ShowWindow(g_hToolBar, SW_HIDE);
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
-
-    g_bInEdit = FALSE;
 }
 
 HBITMAP Create24BppBitmapDx(INT width, INT height)
@@ -5425,7 +5426,10 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     }
     else
     {
-        MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
+        if (::IsWindowVisible(g_hBinEdit))
+        {
+            MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
+        }
     }
 }
 
