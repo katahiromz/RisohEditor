@@ -4509,7 +4509,7 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         {
             if (it->text.empty() && it->menuId == 0)
             {
-                str = LoadStringDx(IDS_SEP);
+                str = LoadStringDx(IDS_SEPARATOR);
             }
             else
             {
@@ -4561,7 +4561,7 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
         {
             if (it->text.empty() && it->wMenuID == 0)
             {
-                str = LoadStringDx(IDS_SEP);
+                str = LoadStringDx(IDS_SEPARATOR);
             }
             else
             {
@@ -4666,7 +4666,7 @@ void AddMItemDlg_OnOK(HWND hwnd)
 
     std::wstring str = GetMenuTypeAndState(dwType, dwState);
     if (m_entry.Caption[0] == 0 ||
-        lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0)
+        lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0)
     {
         m_entry.Caption[0] = 0;
         dwType |= MFT_SEPARATOR;
@@ -4725,7 +4725,7 @@ void EditMenuDlg_OnAdd(HWND hwnd)
     std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
     str = m_entry.Caption;
     if (str.empty() || wcsstr(m_entry.Flags, L"S ") != NULL)
-        str = LoadStringDx(IDS_SEP);
+        str = LoadStringDx(IDS_SEPARATOR);
     str = str_repeat(strIndent, m_entry.wDepth) + str;
 
     LV_ITEM item;
@@ -4775,11 +4775,11 @@ BOOL ModifyMItemDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     dwType = dwState = 0;
     SetMenuTypeAndState(dwType, dwState, m_entry.Flags);
 
-    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0 ||
+    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
         m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
     {
-        SetDlgItemTextW(hwnd, cmb1, LoadStringDx(IDS_SEP));
-        CheckDlgButton(hwnd, chx6, BST_CHECKED);
+        dwType |= MFT_SEPARATOR;
+        SetDlgItemTextW(hwnd, cmb1, NULL);
     }
 
     if ((dwState & MFS_GRAYED) == MFS_GRAYED)
@@ -4851,7 +4851,7 @@ void ModifyMItemDlg_OnOK(HWND hwnd)
     if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
         dwType |= MFT_RIGHTJUSTIFY;
 
-    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEP)) == 0 ||
+    if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
         m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
     {
         m_entry.Caption[0] = 0;
@@ -4911,7 +4911,7 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     {
         str_unquote(str);
     }
-    if (str.empty() || str == LoadStringDx(IDS_SEP))
+    if (str.empty() || str == LoadStringDx(IDS_SEPARATOR))
     {
         str.clear();
     }
@@ -4929,7 +4929,7 @@ BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     str = str_repeat(strIndent, entry.wDepth);
 
     if (entry.Caption[0] == 0 || wcsstr(entry.Flags, L"S ") != NULL)
-        str += LoadStringDx(IDS_SEP);
+        str += LoadStringDx(IDS_SEPARATOR);
     else
         str += str_quote(entry.Caption);
 

@@ -108,4 +108,4 @@
 #define IDS_INDENT          64
 #define IDS_DATAISEMPTY     65
 #define IDS_TEST            66
-#define IDS_SEP             67
+#define IDS_SEPARATOR       67
