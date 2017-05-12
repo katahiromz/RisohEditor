@@ -556,11 +556,11 @@ public:
         }
     }
 
-    MENUEX_TEMPLATE_HEADER& Header()
+    MENUEX_TEMPLATE_HEADER& header()
     {
         return m_header;
     }
-    const MENUEX_TEMPLATE_HEADER& Header() const
+    const MENUEX_TEMPLATE_HEADER& header() const
     {
         return m_header;
     }
@@ -655,9 +655,6 @@ inline std::wstring GetMenuFlags(WORD fItemFlags)
     if ((fItemFlags & MF_GRAYED) == MF_GRAYED)
         str += L"G ";
 
-    if ((fItemFlags & MF_INACTIVE) == MF_INACTIVE)
-        str += L"I ";
-
     if ((fItemFlags & MF_BITMAP) == MF_BITMAP)
         str += L"B ";
 
@@ -679,26 +676,24 @@ inline std::wstring GetMenuFlags(WORD fItemFlags)
 inline void SetMenuFlags(WORD& fItemFlags, const std::wstring& str)
 {
     fItemFlags = 0;
+    std::wstring str2 = L" " + str;
 
-    if (str.find(L"G") != std::wstring::npos)
+    if (str2.find(L" G ") != std::wstring::npos)
         fItemFlags |= MF_GRAYED;
 
-    if (str.find(L"I") != std::wstring::npos)
-        fItemFlags |= MF_INACTIVE;
-
-    if (str.find(L"B") != std::wstring::npos)
+    if (str2.find(L" B ") != std::wstring::npos)
         fItemFlags |= MF_BITMAP;
 
-    if (str.find(L"OD") != std::wstring::npos)
+    if (str2.find(L" OD ") != std::wstring::npos)
         fItemFlags |= MF_OWNERDRAW;
 
-    if (str.find(L"C") != std::wstring::npos)
+    if (str2.find(L" C ") != std::wstring::npos)
         fItemFlags |= MF_CHECKED;
 
-    if (str.find(L"MBB") != std::wstring::npos)
+    if (str2.find(L" MBB ") != std::wstring::npos)
         fItemFlags |= MF_MENUBARBREAK;
 
-    if (str.find(L"MB ") != std::wstring::npos)
+    if (str2.find(L" MB ") != std::wstring::npos)
         fItemFlags |= MF_MENUBREAK;
 }
 
@@ -748,41 +743,42 @@ inline std::wstring GetMenuTypeAndState(DWORD dwType, DWORD dwState)
 inline void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const std::wstring& str)
 {
     dwType = dwState = 0;
+    std::wstring str2 = L" " + str;
 
-    if (str.find(L"G") != std::wstring::npos)
+    if (str2.find(L" G ") != std::wstring::npos)
         dwState |= MFS_GRAYED;
 
-    if (str.find(L"B") == 0 || str.find(L" B") != std::wstring::npos)
+    if (str2.find(L" B ") != std::wstring::npos)
         dwType |= MFT_BITMAP;
 
-    if (str.find(L"OD") != std::wstring::npos)
+    if (str2.find(L" OD ") != std::wstring::npos)
         dwType |= MFT_OWNERDRAW;
 
-    if (str.find(L"C") == 0 || str.find(L" C") != std::wstring::npos)
+    if (str2.find(L" C ") != std::wstring::npos)
         dwType |= MFS_CHECKED;
 
-    if (str.find(L"S") != std::wstring::npos)
+    if (str2.find(L" S ") != std::wstring::npos)
         dwType |= MFT_SEPARATOR;
 
-    if (str.find(L"MBB") != std::wstring::npos)
+    if (str2.find(L" MBB ") != std::wstring::npos)
         dwType |= MFT_MENUBARBREAK;
 
-    if (str.find(L"MB ") != std::wstring::npos)
+    if (str2.find(L" MB ") != std::wstring::npos)
         dwType |= MFT_MENUBREAK;
 
-    if (str.find(L"D") == 0 || str.find(L" D") != std::wstring::npos)
+    if (str2.find(L" D ") != std::wstring::npos)
         dwState |= MFS_DEFAULT;
 
-    if (str.find(L"H") != std::wstring::npos)
+    if (str2.find(L" H ") != std::wstring::npos)
         dwState |= MFS_HILITE;
 
-    if (str.find(L"RC") != std::wstring::npos)
+    if (str2.find(L" RC ") != std::wstring::npos)
         dwType |= MFT_RADIOCHECK;
 
-    if (str.find(L"RO") != std::wstring::npos)
+    if (str2.find(L" RO ") != std::wstring::npos)
         dwType |= MFT_RIGHTORDER;
 
-    if (str.find(L"RJ") != std::wstring::npos)
+    if (str2.find(L" RJ ") != std::wstring::npos)
         dwType |= MFT_RIGHTJUSTIFY;
 }
 

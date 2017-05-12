@@ -616,4 +616,34 @@ inline std::wstring str_quote(const std::wstring& str)
     return ret;
 }
 
+inline bool str_unquote(std::string& str)
+{
+    std::string str2 = str;
+    const char *pch = str2.c_str();
+    return guts_quote(str, pch);
+}
+
+inline bool str_unquote(std::wstring& str)
+{
+    std::wstring str2 = str;
+    const wchar_t *pch = str2.c_str();
+    return guts_quote(str, pch);
+}
+
+inline bool str_unquote(char *str)
+{
+    std::string s = str;
+    bool ret = str_unquote(s);
+    std::strcpy(str, s.c_str());
+    return ret;
+}
+
+inline bool str_unquote(wchar_t *str)
+{
+    std::wstring s = str;
+    bool ret = str_unquote(s);
+    std::wcscpy(str, s.c_str());
+    return ret;
+}
+
 #endif  // ndef TEXT_HPP_

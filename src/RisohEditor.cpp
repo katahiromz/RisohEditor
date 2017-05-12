@@ -4520,7 +4520,14 @@ void AddMItemDlg_OnOK(HWND hwnd)
     MENU_ENTRY& m_entry = *(MENU_ENTRY *)lParam;
 
     GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
+    str_trim(m_entry.Caption);
+    if (m_entry.Caption[0] == L'"')
+    {
+        str_unquote(m_entry.Caption);
+    }
+
     GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
+    str_trim(m_entry.CommandID);
 
     DWORD dwType = 0, dwState = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -4672,7 +4679,14 @@ void ModifyMItemDlg_OnOK(HWND hwnd)
     MENU_ENTRY& m_entry = *(MENU_ENTRY *)lParam;
 
     GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
+    str_trim(m_entry.Caption);
+    if (m_entry.Caption[0] == L'"')
+    {
+        str_unquote(m_entry.Caption);
+    }
+
     GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
+    str_trim(m_entry.CommandID);
 
     DWORD dwType = 0, dwState = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -4744,6 +4758,11 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
         str = str.substr(strIndent.size());
         ++entry.wDepth;
     }
+    str_trim(str);
+    if (str[0] == L'"')
+    {
+        str_unquote(str);
+    }
     lstrcpynW(entry.Caption, str.c_str(), _countof(entry.Caption));
 
     ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
@@ -4755,7 +4774,7 @@ BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
 {
     std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
     str = str_repeat(strIndent, entry.wDepth);
-    str += entry.Caption;
+    str += str_quote(entry.Caption);
 
     ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
     ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
@@ -4900,18 +4919,44 @@ void EditMenuDlg_OnOK(HWND hwnd)
     INT iItem, Count = ListView_GetItemCount(hCtl1);
     if (Extended)
     {
+        menu_res.header().wVersion = 1;
+        menu_res.header().wOffset = 4;
+        menu_res.header().dwHelpId = 0;
+        menu_res.exitems().clear();
         for (iItem = 0; iItem < Count; ++iItem)
         {
             EditMenuDlg_GetEntry(hwnd, hCtl1, entry, iItem);
-            // FIXME
+
+            MenuRes::ExMenuItem exitem;
+
+            SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.Flags);
+            exitem.menuId = _wtoi(entry.CommandID);
+            exitem.bResInfo = 0;
+            exitem.text = entry.Caption;
+            exitem.dwHelpId = _wtoi(entry.HelpID);
+            exitem.wDepth = entry.wDepth;
+
+            menu_res.exitems().push_back(exitem);
         }
     }
     else
     {
+        menu_res.header().wVersion = 0;
+        menu_res.header().wOffset = 4;
+        menu_res.header().dwHelpId = 0;
+        menu_res.items().clear();
         for (iItem = 0; iItem < Count; ++iItem)
         {
             EditMenuDlg_GetEntry(hwnd, hCtl1, entry, iItem);
-            // FIXME
+
+            MenuRes::MenuItem item;
+
+            SetMenuFlags(item.fItemFlags, entry.Flags);
+            item.wMenuID = _wtoi(entry.CommandID);
+            item.wDepth = entry.wDepth;
+            item.text = entry.Caption;
+
+            menu_res.items().push_back(item);
         }
     }
 
