@@ -4368,6 +4368,9 @@ BOOL EditMenuDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     MenuRes& menu_res = *(MenuRes *)lParam;
 
+    if (menu_res.IsExtended())
+        CheckDlgButton(hwnd, chx1, BST_CHECKED);
+
     HWND hCtl1 = GetDlgItem(hwnd, ctl1);
     ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
 
