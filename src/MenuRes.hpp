@@ -265,7 +265,10 @@ public:
     std::vector<BYTE> data() const
     {
         ByteStream stream;
-        SaveToStream(stream);
+        if (IsExtended())
+            SaveToStreamEx(stream);
+        else
+            SaveToStream(stream);
         return stream.data();
     }
 
@@ -481,13 +484,13 @@ public:
                     {
                         ret += L", ";
                         DWORD value = it->dwType;
-                        ret += db.DumpBitField(L"MFT_", L"", value);
+                        ret += db.DumpBitField(L"MFT_", value);
                     }
                     if (it->dwState)
                     {
                         ret += L", ";
                         DWORD value = it->dwState;
-                        ret += db.DumpBitField(L"MFS_", L"", value);
+                        ret += db.DumpBitField(L"MFS_", value);
                     }
                     ret += L"\r\n";
                 }
