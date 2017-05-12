@@ -499,6 +499,7 @@ TBBUTTON g_buttons1[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
     { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
 };
 
@@ -506,7 +507,9 @@ TBBUTTON g_buttons2[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
     { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
     { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
@@ -533,7 +536,7 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
 {
     for (INT i = 0; i < nCount; ++i)
     {
-        if (pButtons[i].idCommand == 0)
+        if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
             continue;
 
         INT_PTR id = pButtons[i].iString;
@@ -3008,7 +3011,6 @@ DumpDataAsString(const std::vector<BYTE>& data)
 
     if (data.empty())
     {
-        ret = L"(Empty)";
         return ret;
     }
 
@@ -3080,7 +3082,10 @@ void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
 
     std::wstring str = DumpDataAsString(Entry.data);
     SetWindowTextW(g_hBinEdit, str.c_str());
-    ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+    if (str.empty())
+        ShowWindow(g_hBinEdit, SW_HIDE);
+    else
+        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
 
     if (Entry.type == RT_ICON)
     {
@@ -3154,18 +3159,14 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     }
     else if (HIWORD(lParam) == I_STRING)
     {
-        std::wstring str = DumpDataAsString(Entry.data);
-        SetWindowTextW(g_hBinEdit, str.c_str());
-        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
-
+        SetWindowTextW(g_hBinEdit, NULL);
+        ShowWindow(g_hBinEdit, SW_HIDE);
         MainWnd_PreviewStringTable(hwnd, Entry);
     }
     else if (HIWORD(lParam) == I_MESSAGE)
     {
-        std::wstring str = DumpDataAsString(Entry.data);
-        SetWindowTextW(g_hBinEdit, str.c_str());
-        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
-
+        SetWindowTextW(g_hBinEdit, NULL);
+        ShowWindow(g_hBinEdit, SW_HIDE);
         MainWnd_PreviewMessageTable(hwnd, Entry);
     }
 
@@ -3208,7 +3209,6 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hToolBar, SW_HIDE);
         ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
         ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
-        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
         SetMenu(hwnd, g_hMenu);
 
         g_bInEdit = FALSE;
@@ -5398,14 +5398,29 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
         }
         else if (IsWindowVisible(g_hBmpView))
         {
-            MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+            if (::IsWindowVisible(g_hBinEdit))
+            {
+                MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
+                MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
+                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+            }
+            else
+            {
+                MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
+                MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy, TRUE);
+            }
         }
         else
         {
-            MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-            MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+            if (::IsWindowVisible(g_hBinEdit))
+            {
+                MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+            }
+            else
+            {
+                MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+            }
         }
     }
     else

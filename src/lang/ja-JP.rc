@@ -37,7 +37,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "ビットマップを抽出...", ID_EXTRACTBITMAP
         MENUITEM "バイナリ リソースを抽出...", ID_EXTRACTBIN
         MENUITEM SEPARATOR
-        MENUITEM "テストする(&T)", ID_TEST
+        MENUITEM "テストする(&T)\tCtrl+T", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "リソースを削除(&D)\tDel", ID_DELETERES
     }
@@ -141,7 +141,7 @@ STRINGTABLE
     IDS_HELPID, "ヘルプID"
     IDS_INDENT, "→ "
     IDS_DATAISEMPTY, "データが空です。"
-    IDS_TEST, "テスト"
+    IDS_TEST, "テストする (Ctrl+T)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
