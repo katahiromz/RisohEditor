@@ -109,3 +109,4 @@
 #define IDS_DATAISEMPTY     65
 #define IDS_TEST            66
 #define IDS_SEPARATOR       67
+#define IDS_COMPILENOW      68

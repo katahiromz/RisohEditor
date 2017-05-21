@@ -143,6 +143,7 @@ STRINGTABLE
     IDS_DATAISEMPTY, "Data is empty."
     IDS_TEST, "Do Test (Ctrl+T)"
     IDS_SEPARATOR, "---"
+    IDS_COMPILENOW, "Data has been changed. Compile now?"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

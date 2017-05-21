@@ -3501,6 +3501,8 @@ BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
         }
     }
 
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
+
     return Success;
 }
 
@@ -3524,8 +3526,6 @@ void MainWnd_OnCompile(HWND hwnd)
         LPARAM lParam = TV_GetParam(g_hTreeView);
         MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 std::wstring GetKeyID(UINT wId)
@@ -5218,6 +5218,32 @@ void MainWnd_OnGuiEdit(HWND hwnd)
         return;
     }
 
+    if (Edit_GetModify(g_hSrcEdit))
+    {
+        INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
+                            MB_ICONINFORMATION | MB_YESNOCANCEL);
+        switch (id)
+        {
+        case IDYES:
+            {
+                INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+                std::wstring WideText;
+                WideText.resize(cchText);
+                GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+                if (!DoCompileParts(hwnd, WideText))
+                    return;
+
+                Edit_SetModify(g_hSrcEdit, FALSE);
+            }
+            break;
+        case IDNO:
+            break;
+        case IDCANCEL:
+            return;
+        }
+    }
+
     const ResEntry::DataType& data = Entry.data;
     ByteStream stream(data);
     if (Entry.type == RT_ACCELERATOR)
@@ -5278,8 +5304,6 @@ void MainWnd_OnGuiEdit(HWND hwnd)
                 TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
                 MainWnd_SelectTV(hwnd, lParam, FALSE);
             }
-
-            PostMessageW(hwnd, WM_SIZE, 0, 0);
         }
     }
 }
