@@ -5255,6 +5255,16 @@ void EditDialog_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     }
 }
 
+HBRUSH EditDialog_OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
+{
+    switch (type)
+    {
+    case CTLCOLOR_DLG:
+        return (HBRUSH)GetStockObject(DKGRAY_BRUSH);
+    }
+    return NULL;
+}
+
 INT_PTR CALLBACK
 EditDialogDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -5262,6 +5272,7 @@ EditDialogDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HANDLE_MSG(hwnd, WM_INITDIALOG, EditDialog_OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, EditDialog_OnCommand);
+        HANDLE_MSG(hwnd, WM_CTLCOLORDLG, EditDialog_OnCtlColor);
     }
     return 0;
 }
