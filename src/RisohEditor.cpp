@@ -116,6 +116,15 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
     return bRes;
 }
 
+BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
+{
+	using namespace std;
+	FILE *fp = _tfopen(filename, _T("wb"));
+	int n = fwrite(pv, size, 1, fp);
+	fclose(fp);
+	return n == 1;
+}
+
 std::wstring str_vkey(WORD w)
 {
     return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
@@ -4018,7 +4027,7 @@ void EditAccelDlg_OnOK(HWND hwnd)
         if (Flags & FVIRTKEY)
         {
             entry.wAscii = 
-				(WORD)g_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+                (WORD)g_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
         }
         else
         {
@@ -4931,7 +4940,7 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
     ListView_GetItemText(hCtl1, iItem, 2, entry.CommandID, _countof(entry.CommandID));
     ListView_GetItemText(hCtl1, iItem, 3, entry.HelpID, _countof(entry.HelpID));
-	return TRUE;
+    return TRUE;
 }
 
 BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
@@ -4948,7 +4957,7 @@ BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
     ListView_SetItemText(hCtl1, iItem, 2, entry.CommandID);
     ListView_SetItemText(hCtl1, iItem, 3, entry.HelpID);
-	return TRUE;
+    return TRUE;
 }
 
 void EditMenuDlg_OnModify(HWND hwnd)
@@ -5240,7 +5249,7 @@ BOOL CadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     HWND hwndParent = (HWND)lParam;
-	SetParent(hwnd, hwndParent);
+    SetParent(hwnd, hwndParent);
 
     return TRUE;
 }
@@ -5261,9 +5270,12 @@ BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     DialogRes& dialog_res = *(DialogRes *)lParam;
 
     std::vector<BYTE> data = dialog_res.data();
-    g_hCadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
+
+	DumpBinaryFileDx(L"b.bin", &data[0], data.size());
+
+	g_hCadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
                                              hwnd, CadDialogProc, (LPARAM)hwnd);
-	DWORD err = GetLastError();
+    DWORD err = GetLastError();
     assert(g_hCadDialog);   // FIXME
     if (g_hCadDialog)
     {
@@ -5365,6 +5377,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_DIALOG)
     {
+		DumpBinaryFileDx(L"a.bin", &data[0], data.size());
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {

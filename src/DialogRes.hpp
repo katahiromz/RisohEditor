@@ -7,14 +7,16 @@
 #include "ByteStream.hpp"
 #include "ConstantsDB.hpp"
 
+#include <pshpack2.h>
+
 // the header of RT_DIALOG (DIALOGEX)
 typedef struct DLGTEMPLATEEXHEAD
 {
     WORD    dlgVer;
     WORD    signature;
-    DWORD   helpID; 
-    DWORD   exStyle; 
-    DWORD   style; 
+    DWORD   helpID;
+    DWORD   exStyle;
+    DWORD   style;
     WORD    cDlgItems;
     short   x;
     short   y;
@@ -34,6 +36,8 @@ typedef struct DLGITEMTEMPLATEEXHEAD
     short   cy;
     WORD    id;
 } DLGITEMTEMPLATEEXHEAD, *PDLGITEMTEMPLATEEXHEAD, *LPDLGITEMTEMPLATEEXHEAD;
+
+#include <poppack.h>
 
 inline BOOL PredefClassToID(std::wstring name, WORD& w)
 {
@@ -138,7 +142,6 @@ struct DialogItem
         if (b && !stream.ReadData(&Extra[0], b))
             return FALSE;
 
-        stream.ReadDwordAlignment();
         return TRUE;
     }
 
@@ -148,7 +151,9 @@ struct DialogItem
 
         DLGITEMTEMPLATEEXHEAD Item;
         if (!stream.ReadRaw(Item))
+        {
             return FALSE;
+        }
 
         HelpID = Item.helpID;
         Style = Item.style;
@@ -159,8 +164,7 @@ struct DialogItem
         siz.cy = Item.cy;
         ID = Item.id;
 
-        if (!stream.ReadString(Class) ||
-            !stream.ReadString(Title))
+        if (!stream.ReadString(Class) || !stream.ReadString(Title))
         {
             return FALSE;
         }
@@ -169,11 +173,14 @@ struct DialogItem
         if (!stream.ReadWord(extraCount))
             return FALSE;
 
-        Extra.resize(extraCount);
-        if (extraCount && !stream.ReadData(&Extra[0], extraCount))
-            return FALSE;
+        if (extraCount)
+        {
+            stream.ReadDwordAlignment();
+            Extra.resize(extraCount);
+            if (extraCount && !stream.ReadData(&Extra[0], extraCount))
+                return FALSE;
+        }
 
-        stream.ReadDwordAlignment();
         return TRUE;
     }
 
@@ -213,12 +220,16 @@ struct DialogItem
         if (!stream.WriteString(Title.Ptr()))
             return FALSE;
 
-        stream.WriteDwordAlignment();
         BYTE b = BYTE(Extra.size());
         if (!stream.WriteRaw(b))
             return FALSE;
-        if (b && !stream.WriteData(&Extra[0], b))
-            return FALSE;
+
+        if (b)
+        {
+            stream.WriteDwordAlignment();
+            if (!stream.WriteData(&Extra[0], b))
+                return FALSE;
+        }
 
         return TRUE;
     }
@@ -559,7 +570,7 @@ struct DialogRes
             *(WORD *)stream.ptr(2) == 0xFFFF)
         {
             // extended dialog
-            if (_headerExFromStream(stream))
+            if (_headerFromStreamEx(stream))
             {
                 for (WORD i = 0; i < cItems; ++i)
                 {
@@ -776,13 +787,15 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerExFromStream(const ByteStream& stream)
+    BOOL _headerFromStreamEx(const ByteStream& stream)
     {
         stream.ReadDwordAlignment();
 
         DLGTEMPLATEEXHEAD TemplateEx;
         if (!stream.ReadRaw(TemplateEx))
             return FALSE;
+
+        stream.ReadDwordAlignment();
 
         if (TemplateEx.dlgVer != 1 || TemplateEx.signature != 0xFFFF)
             return FALSE;
@@ -867,8 +880,11 @@ protected:
         TemplateEx.y = (short)pt.y;
         TemplateEx.cx = (short)siz.cx;
         TemplateEx.cy = (short)siz.cy;
-        if (!stream.WriteRaw(TemplateEx) ||
-            !stream.WriteString(Menu.Ptr()) ||
+        if (!stream.WriteRaw(TemplateEx))
+        {
+            return FALSE;
+        }
+        if (!stream.WriteString(Menu.Ptr()) ||
             !stream.WriteString(Class.Ptr()) ||
             !stream.WriteString(Title.Ptr()))
         {
