@@ -5,8 +5,8 @@
 HINSTANCE   g_hInstance = NULL;
 HWND        g_hMainWnd = NULL;
 HMENU       g_hMenu = NULL;
-WCHAR       g_szTitle[MAX_PATH] = L"Resource Editor by katahiromz";
-WCHAR       g_szBmpView[] = L"RisohEditor BmpView Class";
+WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
+WCHAR       g_szBmpView[]       = L"RisohEditor BmpView Class";
 INT         g_argc = 0;
 LPWSTR *    g_wargv = NULL;
 WCHAR       g_szFile[MAX_PATH] = L"";
@@ -28,7 +28,6 @@ BOOL        g_bInEdit = FALSE;
 HIMAGELIST  g_hImageList = NULL;
 HICON       g_hFileIcon = NULL;
 HICON       g_hFolderIcon = NULL;
-
 
 BITMAP      g_bm = { 0 };
 HBITMAP     g_hBitmap = NULL;
@@ -5205,19 +5204,8 @@ EditMenuDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void MainWnd_OnGuiEdit(HWND hwnd)
+BOOL MainWnd_CompileIfNecessary(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (!MainWnd_IsEditableEntry(hwnd, lParam))
-        return;
-
-    WORD i = LOWORD(lParam);
-    ResEntry& Entry = g_Entries[i];
-    if (!Res_CanGuiEdit(Entry.type))
-    {
-        return;
-    }
-
     if (Edit_GetModify(g_hSrcEdit))
     {
         INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
@@ -5232,7 +5220,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
                 GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
 
                 if (!DoCompileParts(hwnd, WideText))
-                    return;
+                    return FALSE;
 
                 Edit_SetModify(g_hSrcEdit, FALSE);
             }
@@ -5240,8 +5228,60 @@ void MainWnd_OnGuiEdit(HWND hwnd)
         case IDNO:
             break;
         case IDCANCEL:
-            return;
+            return FALSE;
         }
+    }
+    return TRUE;
+}
+
+BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+{
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+    DialogRes& dialog_res = *(DialogRes *)lParam;
+
+    return TRUE;
+}
+
+void EditDialog_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+{
+    switch (id)
+    {
+    case IDOK:
+        EndDialog(hwnd, IDOK);
+        break;
+    case IDCANCEL:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+}
+
+INT_PTR CALLBACK
+EditDialogDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, EditDialog_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, EditDialog_OnCommand);
+    }
+    return 0;
+}
+
+void MainWnd_OnGuiEdit(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(g_hTreeView);
+    if (!MainWnd_IsEditableEntry(hwnd, lParam))
+        return;
+
+    WORD i = LOWORD(lParam);
+    ResEntry& Entry = g_Entries[i];
+    if (!Res_CanGuiEdit(Entry.type))
+    {
+        return;
+    }
+
+    if (!MainWnd_CompileIfNecessary(hwnd))
+    {
+        return;
     }
 
     const ResEntry::DataType& data = Entry.data;
@@ -5273,6 +5313,22 @@ void MainWnd_OnGuiEdit(HWND hwnd)
             {
                 menu_res.Update();
                 Entry.data = menu_res.data();
+                MainWnd_SelectTV(hwnd, lParam, FALSE);
+                return;
+            }
+        }
+    }
+    else if (Entry.type == RT_DIALOG)
+    {
+        DialogRes dialog_res;
+        if (dialog_res.LoadFromStream(stream))
+        {
+            INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_EDITDIALOG),
+                                      hwnd, EditDialogDlgProc, (LPARAM)&dialog_res);
+            if (nID == IDOK)
+            {
+                dialog_res.Update();
+                Entry.data = dialog_res.data();
                 MainWnd_SelectTV(hwnd, lParam, FALSE);
                 return;
             }

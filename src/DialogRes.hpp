@@ -177,7 +177,7 @@ struct DialogItem
         return TRUE;
     }
 
-    BOOL SaveToStream(ByteStream& stream, BOOL Extended = FALSE)
+    BOOL SaveToStream(ByteStream& stream, BOOL Extended = FALSE) const
     {
         if (Extended)
         {
@@ -221,7 +221,7 @@ struct DialogItem
         return TRUE;
     }
 
-    BOOL SaveToStreamEx(ByteStream& stream)
+    BOOL SaveToStreamEx(ByteStream& stream) const
     {
         DLGITEMTEMPLATEEXHEAD ItemEx;
         ItemEx.helpID = HelpID;
@@ -585,7 +585,7 @@ struct DialogRes
         return FALSE;
     }
 
-    BOOL SaveToStream(ByteStream& stream)
+    BOOL SaveToStream(ByteStream& stream) const
     {
         if (IsExtended())
         {
@@ -614,6 +614,18 @@ struct DialogRes
             }
         }
         return FALSE;
+    }
+
+    void Update()
+    {
+        ;
+    }
+
+    std::vector<BYTE> data() const
+    {
+        ByteStream stream;
+        SaveToStream(stream);
+        return stream.data();
     }
 
     std::wstring Dump(const ID_OR_STRING& id_or_str, const ConstantsDB& db)
@@ -803,7 +815,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerToStream(ByteStream& stream)
+    BOOL _headerToStream(ByteStream& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -836,7 +848,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerExToStream(ByteStream& stream)
+    BOOL _headerExToStream(ByteStream& stream) const
     {
         stream.WriteDwordAlignment();
 
