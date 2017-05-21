@@ -84,7 +84,7 @@ public:
         DWORD           dwType;     // MFT_
         DWORD           dwState;    // MFS_
         UINT            menuId;
-        DWORD           bResInfo;
+        WORD            bResInfo;
         string_type     text;
         DWORD           dwHelpId;
         WORD            wDepth;

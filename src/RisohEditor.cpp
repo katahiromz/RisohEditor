@@ -3773,19 +3773,19 @@ void AddKeyDlg_OnOK(HWND hwnd)
     }
     lstrcpynW(a_entry.sz0, str.c_str(), _countof(a_entry.sz0));
 
-    DWORD dwFlags = 0;
+    WORD wFlags = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-        dwFlags |= FVIRTKEY;
+        wFlags |= FVIRTKEY;
     if (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED)
-        dwFlags |= FNOINVERT;
+        wFlags |= FNOINVERT;
     if (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED)
-        dwFlags |= FCONTROL;
+        wFlags |= FCONTROL;
     if (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED)
-        dwFlags |= FSHIFT;
+        wFlags |= FSHIFT;
     if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
-        dwFlags |= FALT;
+        wFlags |= FALT;
 
-    str = GetKeyFlags(dwFlags);
+    str = GetKeyFlags(wFlags);
     lstrcpynW(a_entry.sz1, str.c_str(), _countof(a_entry.sz1));
 
     GetDlgItemTextW(hwnd, cmb2, a_entry.sz2, _countof(a_entry.sz2));
@@ -3910,19 +3910,19 @@ void ModifyKeyDlg_OnOK(HWND hwnd)
     }
     lstrcpynW(a_entry.sz0, str.c_str(), _countof(a_entry.sz0));
 
-    DWORD dwFlags = 0;
+    WORD wFlags = 0;
     if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-        dwFlags |= FVIRTKEY;
+        wFlags |= FVIRTKEY;
     if (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED)
-        dwFlags |= FNOINVERT;
+        wFlags |= FNOINVERT;
     if (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED)
-        dwFlags |= FCONTROL;
+        wFlags |= FCONTROL;
     if (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED)
-        dwFlags |= FSHIFT;
+        wFlags |= FSHIFT;
     if (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED)
-        dwFlags |= FALT;
+        wFlags |= FALT;
 
-    str = GetKeyFlags(dwFlags);
+    str = GetKeyFlags(wFlags);
     lstrcpynW(a_entry.sz1, str.c_str(), _countof(a_entry.sz1));
 
     GetDlgItemTextW(hwnd, cmb2, a_entry.sz2, _countof(a_entry.sz2));
@@ -4017,7 +4017,8 @@ void EditAccelDlg_OnOK(HWND hwnd)
         entry.fFlags = Flags;
         if (Flags & FVIRTKEY)
         {
-            entry.wAscii = g_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+            entry.wAscii = 
+				(WORD)g_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
         }
         else
         {
@@ -4210,7 +4211,6 @@ BOOL AddStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
 void AddStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    WCHAR Buffer[512];
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
     switch (id)
@@ -4297,7 +4297,6 @@ BOOL ModifyStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
 void ModifyStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    WCHAR Buffer[512];
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
     switch (id)
@@ -4932,6 +4931,7 @@ BOOL EditMenuDlg_GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
     ListView_GetItemText(hCtl1, iItem, 2, entry.CommandID, _countof(entry.CommandID));
     ListView_GetItemText(hCtl1, iItem, 3, entry.HelpID, _countof(entry.HelpID));
+	return TRUE;
 }
 
 BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
@@ -4948,6 +4948,7 @@ BOOL EditMenuDlg_SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
     ListView_SetItemText(hCtl1, iItem, 2, entry.CommandID);
     ListView_SetItemText(hCtl1, iItem, 3, entry.HelpID);
+	return TRUE;
 }
 
 void EditMenuDlg_OnModify(HWND hwnd)
