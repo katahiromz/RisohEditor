@@ -183,6 +183,9 @@ struct DialogItem
         {
             return SaveToStreamEx(stream);
         }
+
+        stream.WriteDwordAlignment();
+
         DLGITEMTEMPLATE Item;
         Item.style = Style;
         Item.dwExtendedStyle = ExStyle;
@@ -212,17 +215,18 @@ struct DialogItem
 
         stream.WriteDwordAlignment();
         BYTE b = BYTE(Extra.size());
-        if (!stream.WriteRaw(b) ||
-            !stream.WriteData(&Extra[0], b))
-        {
+        if (!stream.WriteRaw(b))
             return FALSE;
-        }
+        if (b && !stream.WriteData(&Extra[0], b))
+            return FALSE;
 
         return TRUE;
     }
 
     BOOL SaveToStreamEx(ByteStream& stream) const
     {
+        stream.WriteDwordAlignment();
+
         DLGITEMTEMPLATEEXHEAD ItemEx;
         ItemEx.helpID = HelpID;
         ItemEx.exStyle = ExStyle;
@@ -589,12 +593,12 @@ struct DialogRes
     {
         if (IsExtended())
         {
-            if (_headerToStream(stream))
+            if (_headerExToStream(stream))
             {
                 size_t i, count = Items.size();
                 for (i = 0; i < count; ++i)
                 {
-                    if (!Items[i].SaveToStream(stream))
+                    if (!Items[i].SaveToStreamEx(stream))
                         return FALSE;
                 }
                 return TRUE;
@@ -602,12 +606,12 @@ struct DialogRes
         }
         else
         {
-            if (_headerExToStream(stream))
+            if (_headerToStream(stream))
             {
                 size_t i, count = Items.size();
                 for (i = 0; i < count; ++i)
                 {
-                    if (!Items[i].SaveToStreamEx(stream))
+                    if (!Items[i].SaveToStream(stream))
                         return FALSE;
                 }
                 return TRUE;

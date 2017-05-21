@@ -5240,6 +5240,7 @@ BOOL CadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     HWND hwndParent = (HWND)lParam;
+	SetParent(hwnd, hwndParent);
 
     return TRUE;
 }
@@ -5259,12 +5260,10 @@ BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     DialogRes& dialog_res = *(DialogRes *)lParam;
 
-    dialog_res.Style &= ~(WS_POPUP | WS_DLGFRAME | DS_MODALFRAME);
-    dialog_res.Style |= WS_CHILD;
-
     std::vector<BYTE> data = dialog_res.data();
-    g_hCadDialog = CreateDialogIndirectParam(g_hInstance, (LPDLGTEMPLATE)&data[0],
+    g_hCadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
                                              hwnd, CadDialogProc, (LPARAM)hwnd);
+	DWORD err = GetLastError();
     assert(g_hCadDialog);   // FIXME
     if (g_hCadDialog)
     {
