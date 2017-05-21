@@ -23,7 +23,7 @@ HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
 HWND        g_hToolBar = NULL;
-BOOL        g_bInEdit = FALSE;
+BOOL        g_bInTextEdit = FALSE;
 HWND        g_hCadDialog = NULL;
 
 HIMAGELIST  g_hImageList = NULL;
@@ -235,7 +235,7 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
 
     TV_RefreshInfo(g_hTreeView, g_Entries);
     DoSetFile(hwnd, Path);
-    g_bInEdit = FALSE;
+    g_bInTextEdit = FALSE;
 
     return TRUE;
 }
@@ -323,7 +323,7 @@ BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
 
 BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return TRUE;
 
     DWORD dwBinType;
@@ -663,12 +663,12 @@ VOID MainWnd_HidePreview(HWND hwnd)
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
-    g_bInEdit = FALSE;
+    g_bInTextEdit = FALSE;
 }
 
 void MainWnd_OnDeleteRes(HWND hwnd)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return;
 
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
@@ -1096,7 +1096,7 @@ void MainWnd_OnReplaceBin(HWND hwnd)
 
 void MainWnd_OnSaveAs(HWND hwnd)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return;
 
     WCHAR File[MAX_PATH];
@@ -1659,7 +1659,7 @@ void MainWnd_OnReplaceCursor(HWND hwnd)
 
 void MainWnd_OnOpen(HWND hwnd)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return;
 
     WCHAR File[MAX_PATH];
@@ -2365,7 +2365,7 @@ void MainWnd_OnAbout(HWND hwnd)
 
 void MainWnd_OnImport(HWND hwnd)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return;
 
     WCHAR File[MAX_PATH] = TEXT("");
@@ -3199,7 +3199,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hBinEdit, SW_HIDE);
         SetMenu(hwnd, NULL);
 
-        g_bInEdit = TRUE;
+        g_bInTextEdit = TRUE;
     }
     else
     {
@@ -3212,7 +3212,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
         SetMenu(hwnd, g_hMenu);
 
-        g_bInEdit = FALSE;
+        g_bInTextEdit = FALSE;
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -3283,7 +3283,7 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 void MainWnd_OnCancelEdit(HWND hwnd)
 {
-    if (!g_bInEdit)
+    if (!g_bInTextEdit)
         return;
 
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -5411,7 +5411,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
 
 void MainWnd_OnNew(HWND hwnd)
 {
-    if (g_bInEdit)
+    if (g_bInTextEdit)
         return;
 
     DoSetFile(hwnd, NULL);
@@ -5563,7 +5563,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     cy = ClientRect.bottom - ClientRect.top ;
 
     INT x = 0, y = 0;
-    if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
+    if (g_bInTextEdit && ::IsWindowVisible(g_hToolBar))
     {
         GetWindowRect(g_hToolBar, &ToolRect);
         y += ToolRect.bottom - ToolRect.top;
@@ -5634,7 +5634,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL || g_bInEdit)
+    if (hItem == NULL || g_bInTextEdit)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
