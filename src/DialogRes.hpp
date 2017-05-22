@@ -164,6 +164,8 @@ struct DialogItem
         siz.cy = Item.cy;
         ID = Item.id;
 
+        stream.ReadDwordAlignment();
+
         if (!stream.ReadString(Class) || !stream.ReadString(Title))
         {
             return FALSE;
@@ -249,6 +251,8 @@ struct DialogItem
         ItemEx.id = ID;
         if (!stream.WriteRaw(ItemEx))
             return FALSE;
+
+        stream.WriteDwordAlignment();
 
         WORD w;
         if (!IS_INTRESOURCE(Class.Ptr()) && 
@@ -895,7 +899,8 @@ protected:
         {
             if (!stream.WriteWord(PointSize) ||
                 !stream.WriteWord(Weight) ||
-                !stream.WriteWord(Italic) ||
+                !stream.WriteByte(Italic) ||
+                !stream.WriteByte(CharSet) ||
                 !stream.WriteString(TypeFace.Ptr()))
             {
                 return FALSE;

@@ -118,11 +118,11 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
-	using namespace std;
-	FILE *fp = _tfopen(filename, _T("wb"));
-	int n = fwrite(pv, size, 1, fp);
-	fclose(fp);
-	return n == 1;
+    using namespace std;
+    FILE *fp = _tfopen(filename, _T("wb"));
+    int n = fwrite(pv, size, 1, fp);
+    fclose(fp);
+    return n == 1;
 }
 
 std::wstring str_vkey(WORD w)
@@ -2979,6 +2979,9 @@ void MainWnd_PreviewVersion(HWND hwnd, const ResEntry& Entry)
 
 void MainWnd_PreviewDialog(HWND hwnd, const ResEntry& Entry)
 {
+    // ...
+    DumpBinaryFileDx(L"k.bin", &Entry.data[0], Entry.data.size());
+
     ByteStream stream(Entry.data);
     DialogRes dialog_res;
     if (dialog_res.LoadFromStream(stream))
@@ -5271,8 +5274,6 @@ BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     std::vector<BYTE> data = dialog_res.data();
 
-	DumpBinaryFileDx(L"b.bin", &data[0], data.size());
-
 	g_hCadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
                                              hwnd, CadDialogProc, (LPARAM)hwnd);
     DWORD err = GetLastError();
@@ -5377,7 +5378,6 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_DIALOG)
     {
-		DumpBinaryFileDx(L"a.bin", &data[0], data.size());
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {

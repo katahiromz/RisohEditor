@@ -116,6 +116,12 @@ public:
         return TRUE;
     }
 
+    BOOL WriteByte(BYTE value)
+    {
+        BYTE b = value;
+        return WriteData(&b, sizeof(b));
+    }
+
     BOOL WriteWord(WORD value)
     {
         WORD w = value;
