@@ -637,7 +637,10 @@ struct DialogRes
 
     void Update()
     {
-        ;
+        if (TypeFace.empty())
+            Style &= ~DS_SETFONT;
+        else
+            Style |= DS_SETFONT;
     }
 
     std::vector<BYTE> data() const
