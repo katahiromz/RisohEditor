@@ -2979,9 +2979,6 @@ void MainWnd_PreviewVersion(HWND hwnd, const ResEntry& Entry)
 
 void MainWnd_PreviewDialog(HWND hwnd, const ResEntry& Entry)
 {
-    // ...
-    DumpBinaryFileDx(L"k.bin", &Entry.data[0], Entry.data.size());
-
     ByteStream stream(Entry.data);
     DialogRes dialog_res;
     if (dialog_res.LoadFromStream(stream))
