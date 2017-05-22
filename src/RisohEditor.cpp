@@ -5244,15 +5244,24 @@ BOOL MainWnd_CompileIfNecessary(HWND hwnd)
     return TRUE;
 }
 
-struct RAD
+struct RadHelper
 {
     HBITMAP hbmImage, hbmOld;
     RECT rcOuter, rcInner;
     LONG DialogBaseUnits;
     HDC hDC;
+
+    // // PrintWindow
+    // HINSTANCE hUser32;
+    // typedef BOOL (WINAPI *PRINTWINDOW)(HWND, HDC, UINT);
+    // PRINTWINDOW pPrintWindow;
+#ifndef PW_CLIENTONLY
+    #define PW_CLIENTONLY   1
+#endif
+
     DialogRes dialog_res;
 
-    RAD()
+    RadHelper()
     {
         hbmImage = hbmOld = NULL;
         SetRectEmpty(&rcOuter);
@@ -5261,80 +5270,96 @@ struct RAD
         hDC = NULL;
     }
 
-    ~RAD()
+    ~RadHelper()
     {
         DeleteObject(hbmImage);
         DeleteDC(hDC);
     }
+
+    BOOL Print(HWND hwnd, HDC hDC)
+    {
+        UINT uFlags = PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND |
+                      PRF_NONCLIENT | PRF_OWNED;
+        PostMessage(hwnd, WM_PRINT, (WPARAM)hDC, uFlags);
+        return TRUE;
+    }
+
+    INT_PTR CALLBACK
+    DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return 0;
+    }
+
+    static INT_PTR CALLBACK
+    DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        RadHelper *pRad;
+        if (uMsg == WM_INITDIALOG)
+        {
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+            pRad = (RadHelper *)lParam;
+        }
+        else
+        {
+            LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+            pRad = (RadHelper *)lParam;
+        }
+
+        return pRad->DlgProc(hwnd, uMsg, wParam, lParam);
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        GetWindowRect(hwnd, &rcOuter);
+        GetClientRect(hwnd, &rcInner);
+        MapWindowPoints(hwnd, NULL, (LPPOINT)&rcInner, 2);
+        DialogBaseUnits = GetDialogBaseUnits();
+
+        SIZE siz;
+        siz.cx = rcOuter.right - rcOuter.left;
+        siz.cy = rcOuter.bottom - rcOuter.top;
+
+        hDC = CreateCompatibleDC(NULL);
+        hbmImage = Create24BppBitmapDx(siz.cx, siz.cy);
+        hbmOld = (HBITMAP)SelectObject(hDC, hbmImage);
+
+        Print(hwnd, hDC);
+        PostMessage(hwnd, WM_COMMAND, 999, 0);
+
+        return TRUE;
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        if (id == 999)
+        {
+            SelectObject(hDC, hbmOld);
+            hbmOld = NULL;
+
+            EndDialog(hwnd, IDOK);
+        }
+    }
+
+    void UpdateImage(HWND hwndOwner)
+    {
+        std::vector<BYTE> data = dialog_res.data();
+
+        DialogBoxIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
+                               hwndOwner, RadHelper::DialogProc, (LPARAM)this);
+    }
 };
-
-BOOL RadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-{
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    RAD& rad = *(RAD *)lParam;
-
-    GetWindowRect(hwnd, &rad.rcOuter);
-    GetClientRect(hwnd, &rad.rcInner);
-    MapWindowPoints(hwnd, NULL, (LPPOINT)&rad.rcInner, 2);
-    rad.DialogBaseUnits = GetDialogBaseUnits();
-
-    SIZE siz;
-    siz.cx = rad.rcOuter.right - rad.rcOuter.left;
-    siz.cy = rad.rcOuter.bottom - rad.rcOuter.top;
-
-    rad.hDC = CreateCompatibleDC(NULL);
-    rad.hbmImage = Create24BppBitmapDx(siz.cx, siz.cy);
-    rad.hbmOld = (HBITMAP)SelectObject(rad.hDC, rad.hbmImage);
-
-    UINT uFlags = PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT;
-    PostMessage(hwnd, WM_PRINT, (WPARAM)rad.hDC, uFlags);
-    PostMessage(hwnd, WM_COMMAND, 999, 0);
-
-    return TRUE;
-}
-
-void RadDialog_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    if (id == 999)
-    {
-        LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        RAD& rad = *(RAD *)lParam;
-
-        SelectObject(rad.hDC, rad.hbmOld);
-        rad.hbmOld = NULL;
-
-        EndDialog(hwnd, IDOK);
-    }
-}
-
-INT_PTR CALLBACK
-RadDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, RadDialog_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, RadDialog_OnCommand);
-    }
-    return 0;
-}
-
-void EditDialog_UpdateImage(HWND hwnd)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    RAD& rad = *(RAD *)lParam;
-
-    std::vector<BYTE> data = rad.dialog_res.data();
-
-	DialogBoxIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
-	                       hwnd, RadDialogProc, (LPARAM)&rad);
-}
 
 BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    RAD& rad = *(RAD *)lParam;
+    RadHelper& rad = *(RadHelper *)lParam;
 
-    EditDialog_UpdateImage(hwnd);
+    rad.UpdateImage(hwnd);
 
     return TRUE;
 }
@@ -5367,7 +5392,7 @@ void EditDialog_OnPaint(HWND hwnd)
     if (hDC)
     {
         LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        RAD& rad = *(RAD *)lParam;
+        RadHelper& rad = *(RadHelper *)lParam;
 
         BITMAP bm;
         if (GetObject(rad.hbmImage, sizeof(BITMAP), &bm))
@@ -5453,7 +5478,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_DIALOG)
     {
-        RAD rad;
+        RadHelper rad;
         if (rad.dialog_res.LoadFromStream(stream))
         {
             INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_EDITDIALOG),
