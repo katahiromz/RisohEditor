@@ -24,7 +24,7 @@ HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
 HWND        g_hToolBar = NULL;
 BOOL        g_bInTextEdit = FALSE;
-HWND        g_hCadDialog = NULL;
+HWND        g_hRadDialog = NULL;
 
 HIMAGELIST  g_hImageList = NULL;
 HICON       g_hFileIcon = NULL;
@@ -5245,7 +5245,7 @@ BOOL MainWnd_CompileIfNecessary(HWND hwnd)
     return TRUE;
 }
 
-BOOL CadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+BOOL RadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
     SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
     HWND hwndParent = (HWND)lParam;
@@ -5255,11 +5255,11 @@ BOOL CadDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 }
 
 INT_PTR CALLBACK
-CadDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+RadDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, CadDialog_OnInitDialog);
+        HANDLE_MSG(hwnd, WM_INITDIALOG, RadDialog_OnInitDialog);
     }
     return 0;
 }
@@ -5271,14 +5271,14 @@ BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
     std::vector<BYTE> data = dialog_res.data();
 
-	g_hCadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
-                                             hwnd, CadDialogProc, (LPARAM)hwnd);
+	g_hRadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
+                                             hwnd, RadDialogProc, (LPARAM)hwnd);
     DWORD err = GetLastError();
-    assert(g_hCadDialog);   // FIXME
-    if (g_hCadDialog)
+    assert(g_hRadDialog);   // FIXME
+    if (g_hRadDialog)
     {
-        ShowWindow(g_hCadDialog, SW_SHOWNORMAL);
-        UpdateWindow(g_hCadDialog);
+        ShowWindow(g_hRadDialog, SW_SHOWNORMAL);
+        UpdateWindow(g_hRadDialog);
     }
 
     return TRUE;
@@ -5289,11 +5289,11 @@ void EditDialog_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     switch (id)
     {
     case IDOK:
-        DestroyWindow(g_hCadDialog);
+        DestroyWindow(g_hRadDialog);
         EndDialog(hwnd, IDOK);
         break;
     case IDCANCEL:
-        DestroyWindow(g_hCadDialog);
+        DestroyWindow(g_hRadDialog);
         EndDialog(hwnd, IDCANCEL);
         break;
     }
@@ -6249,7 +6249,7 @@ WinMain(HINSTANCE   hInstance,
     {
         if (TranslateAccelerator(g_hMainWnd, g_hAccel, &msg))
             continue;
-        if (g_hCadDialog && IsDialogMessage(g_hCadDialog, &msg))
+        if (g_hRadDialog && IsDialogMessage(g_hRadDialog, &msg))
             continue;
 
         TranslateMessage(&msg);
