@@ -6,7 +6,8 @@ HINSTANCE   g_hInstance = NULL;
 HWND        g_hMainWnd = NULL;
 HMENU       g_hMenu = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
-WCHAR       g_szBmpView[]       = L"RisohEditor BmpView Class";
+WCHAR       g_szBmpViewClass[]  = L"RisohEditor BmpView Class";
+WCHAR       g_szRadBaseClass[]  = L"RisohEditor RAD Base Class";
 INT         g_argc = 0;
 LPWSTR *    g_wargv = NULL;
 WCHAR       g_szFile[MAX_PATH] = L"";
@@ -23,7 +24,9 @@ HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
 HWND        g_hToolBar = NULL;
-BOOL        g_bInTextEdit = FALSE;
+HWND        g_hRadBase = NULL;
+HWND        g_hRadDialog = NULL;
+BOOL        g_bInEdit = FALSE;
 
 HIMAGELIST  g_hImageList = NULL;
 HICON       g_hFileIcon = NULL;
@@ -243,7 +246,7 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
 
     TV_RefreshInfo(g_hTreeView, g_Entries);
     DoSetFile(hwnd, Path);
-    g_bInTextEdit = FALSE;
+    g_bInEdit = FALSE;
 
     return TRUE;
 }
@@ -331,7 +334,7 @@ BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
 
 BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return TRUE;
 
     DWORD dwBinType;
@@ -634,7 +637,7 @@ BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
     g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
-        g_szBmpView, NULL, dwStyle, 0, 0, 0, 0, hwnd,
+        g_szBmpViewClass, NULL, dwStyle, 0, 0, 0, 0, hwnd,
         (HMENU)4, g_hInstance, NULL);
     ShowWindow(g_hBmpView, FALSE);
 
@@ -671,12 +674,12 @@ VOID MainWnd_HidePreview(HWND hwnd)
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
-    g_bInTextEdit = FALSE;
+    g_bInEdit = FALSE;
 }
 
 void MainWnd_OnDeleteRes(HWND hwnd)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return;
 
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
@@ -1104,7 +1107,7 @@ void MainWnd_OnReplaceBin(HWND hwnd)
 
 void MainWnd_OnSaveAs(HWND hwnd)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return;
 
     WCHAR File[MAX_PATH];
@@ -1667,7 +1670,7 @@ void MainWnd_OnReplaceCursor(HWND hwnd)
 
 void MainWnd_OnOpen(HWND hwnd)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return;
 
     WCHAR File[MAX_PATH];
@@ -2373,7 +2376,7 @@ void MainWnd_OnAbout(HWND hwnd)
 
 void MainWnd_OnImport(HWND hwnd)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return;
 
     WCHAR File[MAX_PATH] = TEXT("");
@@ -3207,7 +3210,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hBinEdit, SW_HIDE);
         SetMenu(hwnd, NULL);
 
-        g_bInTextEdit = TRUE;
+        g_bInEdit = TRUE;
     }
     else
     {
@@ -3220,7 +3223,7 @@ void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
         SetMenu(hwnd, g_hMenu);
 
-        g_bInTextEdit = FALSE;
+        g_bInEdit = FALSE;
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -3291,7 +3294,7 @@ LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 void MainWnd_OnCancelEdit(HWND hwnd)
 {
-    if (!g_bInTextEdit)
+    if (!g_bInEdit)
         return;
 
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -5246,10 +5249,12 @@ BOOL MainWnd_CompileIfNecessary(HWND hwnd)
 
 struct RadHelper
 {
+    HWND hwndOwner;
     HBITMAP hbmImage, hbmOld;
     RECT rcOuter, rcInner;
     LONG DialogBaseUnits;
     HDC hDC;
+    WNDPROC OldWndProc;
 
     // // PrintWindow
     // HINSTANCE hUser32;
@@ -5258,30 +5263,31 @@ struct RadHelper
 #ifndef PW_CLIENTONLY
     #define PW_CLIENTONLY   1
 #endif
+    //BOOL Print(HWND hwnd, HDC hDC)
+    //{
+    //    UINT uFlags = PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND |
+    //                  PRF_NONCLIENT | PRF_OWNED;
+    //    PostMessage(hwnd, WM_PRINT, (WPARAM)hDC, uFlags);
+    //    return TRUE;
+    //}
 
     DialogRes dialog_res;
 
     RadHelper()
     {
+        hwndOwner = NULL;
         hbmImage = hbmOld = NULL;
         SetRectEmpty(&rcOuter);
         SetRectEmpty(&rcInner);
         DialogBaseUnits = 0;
         hDC = NULL;
+        OldWndProc = NULL;
     }
 
     ~RadHelper()
     {
         DeleteObject(hbmImage);
         DeleteDC(hDC);
-    }
-
-    BOOL Print(HWND hwnd, HDC hDC)
-    {
-        UINT uFlags = PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND |
-                      PRF_NONCLIENT | PRF_OWNED;
-        PostMessage(hwnd, WM_PRINT, (WPARAM)hDC, uFlags);
-        return TRUE;
     }
 
     INT_PTR CALLBACK
@@ -5315,111 +5321,86 @@ struct RadHelper
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        GetWindowRect(hwnd, &rcOuter);
-        GetClientRect(hwnd, &rcInner);
-        MapWindowPoints(hwnd, NULL, (LPPOINT)&rcInner, 2);
-        DialogBaseUnits = GetDialogBaseUnits();
+        SetParent(hwnd, hwndOwner);
 
-        SIZE siz;
-        siz.cx = rcOuter.right - rcOuter.left;
-        siz.cy = rcOuter.bottom - rcOuter.top;
+        RECT Rect;
+        GetWindowRect(hwnd, &Rect);
+        SIZE Size;
+        Size.cx = Rect.right - Rect.left;
+        Size.cy = Rect.bottom - Rect.top;
+        MoveWindow(hwnd, 0, 0, Size.cx, Size.cy, TRUE);
 
-        hDC = CreateCompatibleDC(NULL);
-        hbmImage = Create24BppBitmapDx(siz.cx, siz.cy);
-        hbmOld = (HBITMAP)SelectObject(hDC, hbmImage);
-
-        Print(hwnd, hDC);
-        PostMessage(hwnd, WM_COMMAND, 999, 0);
+        DWORD style = GetWindowLong(hwndOwner, GWL_STYLE);
+        DWORD exstyle = GetWindowLong(hwndOwner, GWL_EXSTYLE);
+        SetRect(&Rect, 0, 0, Size.cx, Size.cy);
+        AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
+        OffsetRect(&Rect, -Rect.left, -Rect.top);
+        MoveWindow(hwndOwner, 0, 0, Rect.right, Rect.bottom, TRUE);
 
         return TRUE;
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        if (id == 999)
+        switch (id)
         {
-            SelectObject(hDC, hbmOld);
-            hbmOld = NULL;
-
-            EndDialog(hwnd, IDOK);
+        case IDOK:
+        case IDCANCEL:
+            DestroyWindow(hwnd);
+            break;
         }
     }
 
     void UpdateImage(HWND hwndOwner)
     {
-        std::vector<BYTE> data = dialog_res.data();
+        if (g_hRadDialog)
+        {
+            DestroyWindow(g_hRadDialog);
+            g_hRadDialog = NULL;
+        }
 
-        DialogBoxIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
-                               hwndOwner, RadHelper::DialogProc, (LPARAM)this);
+        std::vector<BYTE> data = dialog_res.data();
+        g_hRadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
+            hwndOwner, RadHelper::DialogProc, (LPARAM)this);
+
+        ShowWindow(g_hRadDialog, SW_SHOWNORMAL);
+        UpdateWindow(g_hRadDialog);
     }
 };
 
-BOOL EditDialog_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+BOOL RadBase_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    RadHelper& rad = *(RadHelper *)lParam;
+    RadHelper& rad = *(RadHelper *)lpCreateStruct->lpCreateParams;
+    rad.hwndOwner = hwnd;
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)&rad);
 
     rad.UpdateImage(hwnd);
 
     return TRUE;
 }
 
-void EditDialog_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+void RadBase_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
-    switch (id)
-    {
-    case IDOK:
-    case IDCANCEL:
-        EndDialog(hwnd, IDOK);
-        break;
-    }
+    // FIXME
 }
 
-HBRUSH EditDialog_OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
+void RadBase_OnDestroy(HWND hwnd)
 {
-    switch (type)
-    {
-    case CTLCOLOR_DLG:
-        return (HBRUSH)GetStockObject(DKGRAY_BRUSH);
-    }
-    return NULL;
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    delete (RadHelper *)lParam;
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
 }
 
-void EditDialog_OnPaint(HWND hwnd)
-{
-    PAINTSTRUCT ps;
-    HDC hDC = BeginPaint(hwnd, &ps);
-    if (hDC)
-    {
-        LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        RadHelper& rad = *(RadHelper *)lParam;
-
-        BITMAP bm;
-        if (GetObject(rad.hbmImage, sizeof(BITMAP), &bm))
-        {
-            HDC hdcMem = CreateCompatibleDC(hDC);
-            if (hdcMem)
-            {
-                HGDIOBJ hbmOld = SelectObject(hdcMem, rad.hbmImage);
-                BitBlt(hDC, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
-                SelectObject(hdcMem, hbmOld);
-
-                DeleteDC(hdcMem);
-            }
-        }
-        EndPaint(hwnd, &ps);
-    }
-}
-
-INT_PTR CALLBACK
-EditDialogDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK
+RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, EditDialog_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, EditDialog_OnCommand);
-        HANDLE_MSG(hwnd, WM_CTLCOLORDLG, EditDialog_OnCtlColor);
-        HANDLE_MSG(hwnd, WM_PAINT, EditDialog_OnPaint);
+        HANDLE_MSG(hwnd, WM_CREATE, RadBase_OnCreate);
+        HANDLE_MSG(hwnd, WM_COMMAND, RadBase_OnCommand);
+        HANDLE_MSG(hwnd, WM_DESTROY, RadBase_OnDestroy);
+        default:
+            return DefWindowProcW(hwnd, uMsg, wParam, lParam);
     }
     return 0;
 }
@@ -5478,17 +5459,21 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_DIALOG)
     {
-        RadHelper rad;
-        if (rad.dialog_res.LoadFromStream(stream))
+        if (IsWindow(g_hRadBase))
         {
-            INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_EDITDIALOG),
-                                      hwnd, EditDialogDlgProc, (LPARAM)&rad);
-            if (nID == IDOK)
+            SetForegroundWindow(g_hRadBase);
+        }
+        else
+        {
+            RadHelper *rad = new RadHelper;
+            if (rad->dialog_res.LoadFromStream(stream))
             {
-                rad.dialog_res.Update();
-                Entry.data = rad.dialog_res.data();
-                MainWnd_SelectTV(hwnd, lParam, FALSE);
-                return;
+                g_hRadBase = CreateWindow(g_szRadBaseClass, 
+					LoadStringDx(IDS_RADWINDOW),
+                    WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
+                    hwnd, NULL, g_hInstance, rad);
+				ShowWindow(g_hRadBase, SW_SHOWNORMAL);
+				UpdateWindow(g_hRadBase);
             }
         }
     }
@@ -5524,7 +5509,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
 
 void MainWnd_OnNew(HWND hwnd)
 {
-    if (g_bInTextEdit)
+    if (g_bInEdit)
         return;
 
     DoSetFile(hwnd, NULL);
@@ -5676,7 +5661,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     cy = ClientRect.bottom - ClientRect.top ;
 
     INT x = 0, y = 0;
-    if (g_bInTextEdit && ::IsWindowVisible(g_hToolBar))
+    if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
     {
         GetWindowRect(g_hToolBar, &ToolRect);
         y += ToolRect.bottom - ToolRect.top;
@@ -5747,7 +5732,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL || g_bInTextEdit)
+    if (hItem == NULL || g_bInEdit)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -6311,7 +6296,23 @@ INT InitInstance(HINSTANCE hInstance)
     wc.hCursor = LoadCursor(NULL, IDC_CROSS);
     wc.hbrBackground = GetStockBrush(LTGRAY_BRUSH);
     wc.lpszMenuName = NULL;
-    wc.lpszClassName = g_szBmpView;
+    wc.lpszClassName = g_szBmpViewClass;
+    if (!RegisterClassW(&wc))
+    {
+        MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
+        return 3;
+    }
+
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    wc.lpfnWndProc = RadBaseWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = GetStockBrush(GRAY_BRUSH);
+    wc.lpszMenuName = NULL;
+    wc.lpszClassName = g_szRadBaseClass;
     if (!RegisterClassW(&wc))
     {
         MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
@@ -6351,6 +6352,8 @@ WinMain(HINSTANCE   hInstance,
     while (GetMessageW(&msg, NULL, 0, 0))
     {
         if (TranslateAccelerator(g_hMainWnd, g_hAccel, &msg))
+            continue;
+        if (IsDialogMessage(g_hRadDialog, &msg))
             continue;
 
         TranslateMessage(&msg);

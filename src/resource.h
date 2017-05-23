@@ -42,7 +42,6 @@
 #define IDD_ADDMITEM        115
 #define IDD_MODIFYMITEM     116
 #define IDD_EDITMENU        117
-#define IDD_EDITDIALOG      118
 
 #define IDS_TITLE           1
 #define IDS_TITLEWITHFILE   2
@@ -111,3 +110,4 @@
 #define IDS_TEST            66
 #define IDS_SEPARATOR       67
 #define IDS_COMPILENOW      68
+#define IDS_RADWINDOW       69
