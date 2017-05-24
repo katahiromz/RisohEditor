@@ -5273,6 +5273,7 @@ struct RadHelper
 {
     HWND m_hwndOwner;
     HWND m_hwnd;
+    HWND m_hwndSelected;
     INT m_xDialogBaseUnit;
     INT m_yDialogBaseUnit;
     WNDPROC m_OldWndProc;
@@ -5296,7 +5297,7 @@ struct RadHelper
 
     RadHelper()
     {
-        m_hwnd = m_hwndOwner = NULL;
+        m_hwndSelected = m_hwnd = m_hwndOwner = NULL;
         m_xDialogBaseUnit = 0;
         m_yDialogBaseUnit = 0;
         m_OldWndProc = NULL;
@@ -5310,6 +5311,8 @@ struct RadHelper
     static LRESULT CALLBACK 
     ControlWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+        if (uMsg == WM_LBUTTONDOWN)
+            MessageBoxA(NULL, "OK2", NULL, 0);
         switch (uMsg)
         {
         case WM_NCLBUTTONDOWN:
@@ -5358,9 +5361,7 @@ struct RadHelper
 
     void SubclassChild(HWND hCtrl)
     {
-        WNDPROC OldProc = (WNDPROC)
-            SetWindowLongPtr(hCtrl, GWLP_WNDPROC,
-                             (LONG_PTR)RadHelper::ControlWindowProc);
+        WNDPROC OldProc = SubclassWindow(hCtrl, RadHelper::ControlWindowProc);
         SetWindowLongPtr(hCtrl, GWLP_USERDATA, (LONG_PTR)OldProc);
 
         SubclassAllChildren(hCtrl);
@@ -5384,9 +5385,7 @@ struct RadHelper
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        m_OldWndProc = (WNDPROC)
-            SetWindowLongPtr(hwnd, GWLP_WNDPROC, 
-                             (LONG_PTR)RadHelper::WindowProc);
+        m_OldWndProc = SubclassWindow(hwnd, RadHelper::WindowProc);
 
         SetParent(hwnd, m_hwndOwner);
 
@@ -5409,6 +5408,7 @@ struct RadHelper
         HWND Parent = GetParent(hwnd);
         if (Parent == NULL)
             Parent = GetWindow(hwnd, GW_OWNER);
+
         POINT pt;
         pt.x = GET_X_LPARAM(lParam);
         pt.y = GET_Y_LPARAM(lParam);
@@ -5417,6 +5417,11 @@ struct RadHelper
             MapWindowPoints(hwnd, Parent, &pt, 1);
             lParam = MAKELPARAM(pt.x, pt.y);
         }
+        if (uMsg == WM_LBUTTONDOWN)
+        {
+            uMsg = uMsg;
+        }
+
         SendMessage(Parent, uMsg, wParam, lParam);
     }
 
@@ -5426,7 +5431,41 @@ struct RadHelper
         HWND Parent = GetParent(hwnd);
         if (Parent == NULL)
             Parent = GetWindow(hwnd, GW_OWNER);
+
         SendMessage(Parent, uMsg, wParam, lParam);
+    }
+
+    LRESULT CallWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
+    }
+
+    void DrawSelected(HDC hDC)
+    {
+        RECT rc;
+        GetWindowRect(m_hwndSelected, &rc);
+        MapWindowRect(NULL, m_hwndOwner, &rc);
+
+        FillRect(hDC, &rc, GetStockBrush(BLACK_BRUSH));
+    }
+
+    void OnPaint(HWND hwnd)
+    {
+        FORWARD_WM_PAINT(hwnd, CallWndProc);
+
+        HWND hCtrl = GetTopWindow(hwnd);
+        while (hCtrl)
+        {
+            SendMessageW(hCtrl, WM_PAINT, 0, 0);
+
+            hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+        }
+
+        DWORD flags = DCX_WINDOW | DCX_CACHE | 
+                      DCX_NORESETATTRS | DCX_EXCLUDEUPDATE;
+        HDC hDC = GetDCEx(m_hwnd, NULL, flags);
+        DrawSelected(hDC);
+        ReleaseDC(hwnd, hDC);
     }
 
     LRESULT CALLBACK
@@ -5434,6 +5473,7 @@ struct RadHelper
     {
         switch (uMsg)
         {
+        HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
         case WM_NCLBUTTONDOWN:
         case WM_NCLBUTTONUP:
         case WM_NCLBUTTONDBLCLK:
@@ -5470,8 +5510,6 @@ struct RadHelper
             break;
         case WM_NCHITTEST:
             return HTCLIENT;
-        case WM_GETDLGCODE:
-            return DLGC_WANTALLKEYS | DLGC_WANTMESSAGE;
         case WM_NCDESTROY:
             m_hwnd = NULL;
             return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
@@ -5611,9 +5649,39 @@ void RadBase_OnNCDestroy(HWND hwnd)
     }
 }
 
-void RadBase_OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
+void RadBase_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-    MessageBoxA(NULL, "OK", NULL, 0);
+    MessageBoxA(NULL, "NN", NULL, 0);
+}
+
+void RadBase_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    RadHelper& rad = *(RadHelper *)lParam;
+
+    POINT pt;
+    pt.x = x;
+    pt.y = y;
+    MapWindowPoints(hwnd, NULL, &pt, 1);
+
+    HWND hCtrl = GetTopWindow(rad.m_hwnd);
+    while (hCtrl)
+    {
+        RECT rc;
+        GetWindowRect(hCtrl, &rc);
+        if (PtInRect(&rc, pt))
+            break;
+
+        hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+    }
+
+    if (hCtrl)
+    {
+        MessageBoxA(NULL, "OK", NULL, 0);
+    }
+
+    rad.m_hwndSelected = hCtrl;
+    InvalidateRect(rad.m_hwnd, NULL, TRUE);
 }
 
 void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -5674,6 +5742,11 @@ void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
     RadBase_Update(hwnd);
 }
 
+void RadBase_OnPaint(HWND hwnd)
+{
+    FORWARD_WM_PAINT(hwnd, DefWindowProcW);
+}
+
 LRESULT CALLBACK
 RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -5681,9 +5754,11 @@ RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HANDLE_MSG(hwnd, WM_CREATE, RadBase_OnCreate);
         HANDLE_MSG(hwnd, WM_COMMAND, RadBase_OnCommand);
-        HANDLE_MSG(hwnd, WM_RBUTTONUP, RadBase_OnRButtonUp);
-        HANDLE_MSG(hwnd, WM_NCDESTROY, RadBase_OnNCDestroy);
+        HANDLE_MSG(hwnd, WM_LBUTTONDOWN, RadBase_OnLButtonDown);
+        HANDLE_MSG(hwnd, WM_RBUTTONDOWN, RadBase_OnRButtonDown);
         HANDLE_MSG(hwnd, WM_SIZE, RadBase_OnSize);
+        HANDLE_MSG(hwnd, WM_PAINT, RadBase_OnPaint);
+        HANDLE_MSG(hwnd, WM_NCDESTROY, RadBase_OnNCDestroy);
         default:
             return DefWindowProcW(hwnd, uMsg, wParam, lParam);
     }
