@@ -5645,20 +5645,34 @@ void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
     RECT Rect1;
     GetClientRect(hwnd, &Rect1);
 
-    SIZE Size;
-    Size.cx = Rect1.right - Rect1.left;
-    Size.cy = Rect1.bottom - Rect1.top;
-
-    MoveWindow(rad.m_hwnd, 0, 0, Size.cx, Size.cy, TRUE);
+    INT cxPixels = Rect1.right - Rect1.left;
+    INT cyPixels = Rect1.bottom - Rect1.top;
+    MoveWindow(rad.m_hwnd, 0, 0, cxPixels, cyPixels, TRUE);
 
     RECT Rect2;
     GetClientRect(rad.m_hwnd, &Rect2);
 
-    Size.cx = MulDiv((Rect2.right - Rect2.left), 4, xDialogBaseUnit);
-    Size.cy = MulDiv((Rect2.bottom - Rect2.top), 8, yDialogBaseUnit);
+    INT cxDialog = MulDiv((Rect2.right - Rect2.left), 4, xDialogBaseUnit);
+    INT cyDialog = MulDiv((Rect2.bottom - Rect2.top), 8, yDialogBaseUnit);
 
-    rad.m_dialog_res.m_siz.cx = Size.cx;
-    rad.m_dialog_res.m_siz.cy = Size.cy;
+    rad.m_dialog_res.m_siz.cx = cxDialog;
+    rad.m_dialog_res.m_siz.cy = cyDialog;
+
+    cxPixels = MulDiv(cxDialog, xDialogBaseUnit, 4);
+    cyPixels = MulDiv(cyDialog, yDialogBaseUnit, 8);
+
+    Rect2.left = 0;
+    Rect2.top = 0;
+    Rect2.right = cxPixels;
+    Rect2.bottom = cyPixels;
+    DWORD style = GetWindowStyle(rad.m_hwnd);
+    DWORD exstyle = GetWindowExStyle(rad.m_hwnd);
+    AdjustWindowRectEx(&Rect2, style, FALSE, exstyle);
+    OffsetRect(&Rect2, -Rect2.left, -Rect2.top);
+    cxPixels = Rect2.right;
+    cyPixels = Rect2.bottom;
+
+    MoveWindow(rad.m_hwnd, 0, 0, cxPixels, cyPixels, TRUE);
 
     RadBase_Update(hwnd);
 }
