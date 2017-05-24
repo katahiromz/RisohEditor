@@ -5324,6 +5324,8 @@ struct RadHelper
         case WM_MOUSEWHEEL:
             SendMouseMesssageToParent(hwnd, uMsg, wParam, lParam);
             return 0;
+        case WM_MOUSEACTIVATE:
+            return MA_NOACTIVATEANDEAT;
         case WM_SYSKEYDOWN:
         case WM_SYSKEYUP:
         case WM_KEYDOWN:
