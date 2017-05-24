@@ -5392,6 +5392,8 @@ struct RadHelper
     SendMouseMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HWND Parent = GetParent(hwnd);
+        if (Parent == NULL)
+            Parent = GetWindow(hwnd, GW_OWNER);
         POINT pt;
         pt.x = GET_X_LPARAM(lParam);
         pt.y = GET_Y_LPARAM(lParam);
@@ -5407,6 +5409,8 @@ struct RadHelper
     SendKeyMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HWND Parent = GetParent(hwnd);
+        if (Parent == NULL)
+            Parent = GetWindow(hwnd, GW_OWNER);
         SendMessage(Parent, uMsg, wParam, lParam);
     }
 
@@ -5451,6 +5455,8 @@ struct RadHelper
             break;
         case WM_NCHITTEST:
             return HTCLIENT;
+        case WM_GETDLGCODE:
+            return DLGC_WANTALLKEYS | DLGC_WANTMESSAGE;
         default:
             return CallWindowProc(OldWndProc, hwnd, uMsg, wParam, lParam);
         }
