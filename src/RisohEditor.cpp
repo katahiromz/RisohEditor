@@ -58,6 +58,16 @@ std::vector<LangEntry> g_Langs;
 
 static LPCWSTR s_pszClassName = L"katahiromz's RisohEditor";
 
+void DebugPrint(LPCWSTR pszFormat, ...)
+{
+    WCHAR Buffer[512];
+    va_list va;
+    va_start(va, pszFormat);
+    wvsprintfW(Buffer, pszFormat, va);
+    va_end(va);
+    OutputDebugStringW(Buffer);
+}
+
 LPWSTR LoadStringDx(UINT id)
 {
     static WCHAR s_sz[MAX_PATH];
@@ -5252,8 +5262,10 @@ struct RadHelper
 {
     HWND m_hwndOwner;
     HWND m_hwnd;
-    LONG m_DialogBaseUnits;
+    INT m_xDialogBaseUnit;
+    INT m_yDialogBaseUnit;
     WNDPROC m_OldWndProc;
+    BOOL m_Moving;
     DialogRes m_dialog_res;
 
     // // PrintWindow
@@ -5274,8 +5286,10 @@ struct RadHelper
     RadHelper()
     {
         m_hwnd = m_hwndOwner = NULL;
-        m_DialogBaseUnits = 0;
+        m_xDialogBaseUnit = 0;
+        m_yDialogBaseUnit = 0;
         m_OldWndProc = NULL;
+        m_Moving = FALSE;
     }
 
     ~RadHelper()
@@ -5352,10 +5366,13 @@ struct RadHelper
         }
     }
 
+    INT GetBaseUnits(INT& yUnit)
+    {
+        return m_dialog_res.GetBaseUnits(yUnit);
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        m_DialogBaseUnits = GetDialogBaseUnits();
-
         m_OldWndProc = (WNDPROC)
             SetWindowLongPtr(hwnd, GWLP_WNDPROC, 
                              (LONG_PTR)RadHelper::WindowProc);
@@ -5368,13 +5385,6 @@ struct RadHelper
         Size.cx = Rect.right - Rect.left;
         Size.cy = Rect.bottom - Rect.top;
         MoveWindow(hwnd, 0, 0, Size.cx, Size.cy, TRUE);
-
-        DWORD style = GetWindowLong(m_hwndOwner, GWL_STYLE);
-        DWORD exstyle = GetWindowLong(m_hwndOwner, GWL_EXSTYLE);
-        SetRect(&Rect, 0, 0, Size.cx, Size.cy);
-        AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
-        OffsetRect(&Rect, -Rect.left, -Rect.top);
-        MoveWindow(m_hwndOwner, 0, 0, Rect.right, Rect.bottom, TRUE);
 
         SubclassAllChildren(hwnd);
 
@@ -5535,7 +5545,42 @@ BOOL RadBase_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     rad.Create();
 
+    RECT Rect;
+    GetWindowRect(rad.m_hwnd, &Rect);
+    SIZE Size;
+    Size.cx = Rect.right - Rect.left;
+    Size.cy = Rect.bottom - Rect.top;
+
+    DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+    DWORD exstyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+    SetRect(&Rect, 0, 0, Size.cx, Size.cy);
+    AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
+    OffsetRect(&Rect, -Rect.left, -Rect.top);
+
+    rad.m_Moving = TRUE;
+    MoveWindow(hwnd, 0, 0, Rect.right, Rect.bottom, TRUE);
+    rad.m_Moving = FALSE;
+
     return TRUE;
+}
+
+void RadBase_Update(HWND hwnd)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    if (lParam == 0)
+    {
+        return;
+    }
+
+    RadHelper& rad = *(RadHelper *)lParam;
+
+    lParam = TV_GetParam(g_hTreeView);
+    WORD i = LOWORD(lParam);
+    ResEntry& Entry = g_Entries[i];
+
+    Entry.data = rad.m_dialog_res.data();
+
+    MainWnd_PreviewDialog(hwnd, Entry);
 }
 
 void RadBase_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -5565,33 +5610,43 @@ void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
     }
 
     RadHelper& rad = *(RadHelper *)lParam;
-    if (rad.m_hwnd == NULL)
+    if (rad.m_hwnd == NULL || rad.m_Moving)
     {
         FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
         return;
     }
 
-    LONG Units = rad.m_DialogBaseUnits;
-    if (Units == 0)
+    rad.m_dialog_res.Update();
+
+    INT xDialogBaseUnit, yDialogBaseUnit;
+    xDialogBaseUnit = rad.m_dialog_res.GetBaseUnits(yDialogBaseUnit);
+    if (xDialogBaseUnit == 0)
     {
         FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
         return;
     }
 
-    RECT Rect;
-    GetClientRect(hwnd, &Rect);
+    RECT Rect1;
+    GetClientRect(hwnd, &Rect1);
 
     SIZE Size;
-    Size.cx = Rect.right - Rect.left;
-    Size.cy = Rect.bottom - Rect.top;
-
-    cx = (Size.cx * 4) / Units;
-    cy = (Size.cy * 8) / Units;
-
-    rad.m_dialog_res.m_siz.cx = cx;
-    rad.m_dialog_res.m_siz.cy = cy;
+    Size.cx = Rect1.right - Rect1.left;
+    Size.cy = Rect1.bottom - Rect1.top;
 
     MoveWindow(rad.m_hwnd, 0, 0, Size.cx, Size.cy, TRUE);
+
+    RECT Rect2;
+    GetClientRect(rad.m_hwnd, &Rect2);
+
+    Size.cx = MulDiv((Rect2.right - Rect2.left), 4, xDialogBaseUnit);
+    Size.cy = MulDiv((Rect2.bottom - Rect2.top), 8, yDialogBaseUnit);
+    DebugPrint(L"%d, %d, %d, %d\n", xDialogBaseUnit, yDialogBaseUnit,
+               Size.cx, Size.cy);
+
+    rad.m_dialog_res.m_siz.cx = Size.cx;
+    rad.m_dialog_res.m_siz.cy = Size.cy;
+
+    RadBase_Update(hwnd);
 }
 
 LRESULT CALLBACK

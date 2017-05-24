@@ -798,6 +798,85 @@ struct DialogRes
         }
     }
 
+    LONG GetCharDimensions(HDC hdc, LONG *height) const
+    {
+        SIZE sz;
+        TEXTMETRICW tm;
+
+        static const WCHAR alphabet[] =
+            L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        if (!GetTextMetricsW(hdc, &tm))
+            return 0;
+
+        if (!GetTextExtentPointW(hdc, alphabet, 52, &sz))
+            return 0;
+
+        if (height)
+            *height = tm.tmHeight;
+
+        return (sz.cx / 26 + 1) / 2;
+    }
+
+    INT GetBaseUnits(INT& y) const
+    {
+        INT xBaseUnit, yBaseUnit;
+        INT Units = GetDialogBaseUnits();
+        xBaseUnit = LOWORD(Units);
+        yBaseUnit = HIWORD(Units);
+
+        HDC hDC = CreateCompatibleDC(NULL);
+        HFONT hFont = NULL;
+        if (m_Style & DS_SETFONT)
+        {
+            if (m_PointSize == 0x7FFF)
+            {
+                NONCLIENTMETRICSW ncm;
+                ncm.cbSize = sizeof(ncm);
+                if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0))
+                {
+                    hFont = CreateFontIndirectW(&ncm.lfMessageFont);
+                }
+            }
+            else
+            {
+                int pixels = MulDiv(m_PointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+
+                LOGFONTW lf;
+				ZeroMemory(&lf, sizeof(lf));
+                lf.lfHeight = -pixels;
+                lf.lfWeight = m_Weight;
+                lf.lfItalic = m_Italic;
+                lf.lfCharSet = DEFAULT_CHARSET;
+                if (m_TypeFace.empty())
+                    lf.lfFaceName[0] = UNICODE_NULL;
+                else
+                    lstrcpyW(lf.lfFaceName, m_TypeFace.m_Str.c_str());
+
+                hFont = CreateFontIndirectW(&lf);
+            }
+        }
+
+        if (hFont)
+        {
+            SIZE charSize;
+            HGDIOBJ hOldFont = SelectObject(hDC, hFont);
+            charSize.cx = GetCharDimensions(hDC, &charSize.cy);
+            SelectObject(hDC, hOldFont);
+            DeleteObject(hFont);
+
+            if (charSize.cx)
+            {
+                xBaseUnit = charSize.cx;
+                yBaseUnit = charSize.cy;
+            }
+        }
+        DeleteDC(hDC);
+
+        y = yBaseUnit;
+        return xBaseUnit;
+    }
+
 protected:
     BOOL _headerFromStream(const ByteStream& stream)
     {
