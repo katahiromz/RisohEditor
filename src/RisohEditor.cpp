@@ -5660,11 +5660,8 @@ void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
     cxPixels = MulDiv(cxDialog, xDialogBaseUnit, 4);
     cyPixels = MulDiv(cyDialog, yDialogBaseUnit, 8);
+    SetRect(&Rect2, 0, 0, cxPixels, cyPixels);
 
-    Rect2.left = 0;
-    Rect2.top = 0;
-    Rect2.right = cxPixels;
-    Rect2.bottom = cyPixels;
     DWORD style = GetWindowStyle(rad.m_hwnd);
     DWORD exstyle = GetWindowExStyle(rad.m_hwnd);
     AdjustWindowRectEx(&Rect2, style, FALSE, exstyle);
