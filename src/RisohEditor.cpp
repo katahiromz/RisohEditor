@@ -5291,6 +5291,74 @@ struct RadHelper
         DeleteDC(hDC);
     }
 
+    static LRESULT CALLBACK 
+    ControlWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+        case WM_NCLBUTTONDOWN:
+        case WM_NCLBUTTONUP:
+        case WM_NCLBUTTONDBLCLK:
+        case WM_NCMBUTTONDOWN:
+        case WM_NCMBUTTONUP:
+        case WM_NCMBUTTONDBLCLK:
+        case WM_NCRBUTTONDOWN:
+        case WM_NCRBUTTONUP:
+        case WM_NCRBUTTONDBLCLK:
+        case WM_NCXBUTTONDOWN:
+        case WM_NCXBUTTONUP:
+        case WM_NCXBUTTONDBLCLK:
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_LBUTTONDBLCLK:
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+        case WM_MBUTTONDBLCLK:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_RBUTTONDBLCLK:
+        case WM_XBUTTONDOWN:
+        case WM_XBUTTONUP:
+        case WM_XBUTTONDBLCLK:
+        case WM_MOUSEMOVE:
+        case WM_MOUSEWHEEL:
+            SendMouseMesssageToParent(hwnd, uMsg, wParam, lParam);
+            return 0;
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+            SendKeyMesssageToParent(hwnd, uMsg, wParam, lParam);
+            return 0;
+        case WM_SETFOCUS:
+        case WM_SETCURSOR:
+            return 0;
+        }
+        WNDPROC OldProc = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        return CallWindowProc(OldProc, hwnd, uMsg, wParam, lParam);
+    }
+
+    void SubclassChild(HWND hCtrl)
+    {
+        WNDPROC OldProc = (WNDPROC)
+            SetWindowLongPtr(hCtrl, GWLP_WNDPROC,
+                             (LONG_PTR)RadHelper::ControlWindowProc);
+        SetWindowLongPtr(hCtrl, GWLP_USERDATA, (LONG_PTR)OldProc);
+
+        SubclassAllChildren(hCtrl);
+    }
+
+    void SubclassAllChildren(HWND hwnd)
+    {
+        HWND hCtrl = GetTopWindow(hwnd);
+        while (hCtrl)
+        {
+            SubclassChild(hCtrl);
+
+            hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+        }
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         OldWndProc = (WNDPROC)
@@ -5313,10 +5381,13 @@ struct RadHelper
         OffsetRect(&Rect, -Rect.left, -Rect.top);
         MoveWindow(hwndOwner, 0, 0, Rect.right, Rect.bottom, TRUE);
 
-        return TRUE;
+        SubclassAllChildren(hwnd);
+
+        return FALSE;
     }
 
-    void SendMouseMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    static void
+    SendMouseMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HWND Parent = GetParent(hwnd);
         POINT pt;
@@ -5330,7 +5401,8 @@ struct RadHelper
         SendMessage(Parent, uMsg, wParam, lParam);
     }
 
-    void SendKeyMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    static void
+    SendKeyMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HWND Parent = GetParent(hwnd);
         SendMessage(Parent, uMsg, wParam, lParam);
@@ -5404,8 +5476,6 @@ struct RadHelper
         switch (uMsg)
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            //case WM_GETDLGCODE:
-                //return DLGC_WANTMESSAGE;
         }
         return 0;
     }
