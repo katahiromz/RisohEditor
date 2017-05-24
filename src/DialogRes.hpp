@@ -785,10 +785,10 @@ struct DialogRes
             m_OldExStyle = m_ExStyle;
 
             m_Style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
-            m_Style |= WS_VISIBLE | DS_NOIDLEMSG;
+            m_Style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG;
             m_ExStyle &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                          WS_EX_LAYERED | WS_EX_TRANSPARENT);
-            m_ExStyle |= WS_EX_NOACTIVATE;
+            m_ExStyle |= WS_EX_NOACTIVATE | WS_EX_MDICHILD;
         }
 
         DialogItems::iterator it, end = Items.end();
