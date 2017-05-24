@@ -685,6 +685,17 @@ VOID MainWnd_HidePreview(HWND hwnd)
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
+    if (IsWindow(g_hRadDialog))
+    {
+        DestroyWindow(g_hRadDialog);
+        g_hRadDialog = NULL;
+    }
+    if (IsWindow(g_hRadBase))
+    {
+        DestroyWindow(g_hRadBase);
+        g_hRadBase = NULL;
+    }
+
     g_bInEdit = FALSE;
 }
 
@@ -5593,6 +5604,11 @@ void RadBase_OnNCDestroy(HWND hwnd)
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     delete (RadHelper *)lParam;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
+
+    if (g_bInEdit)
+    {
+        Edit_SetReadOnly(g_hSrcEdit, FALSE);
+    }
 }
 
 void RadBase_OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
@@ -5640,8 +5656,6 @@ void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
     Size.cx = MulDiv((Rect2.right - Rect2.left), 4, xDialogBaseUnit);
     Size.cy = MulDiv((Rect2.bottom - Rect2.top), 8, yDialogBaseUnit);
-    DebugPrint(L"%d, %d, %d, %d\n", xDialogBaseUnit, yDialogBaseUnit,
-               Size.cx, Size.cy);
 
     rad.m_dialog_res.m_siz.cx = Size.cx;
     rad.m_dialog_res.m_siz.cy = Size.cy;
@@ -5728,6 +5742,10 @@ void MainWnd_OnGuiEdit(HWND hwnd)
             RadHelper *rad = new RadHelper;
             if (rad->m_dialog_res.LoadFromStream(stream))
             {
+                if (g_bInEdit)
+                {
+                    Edit_SetReadOnly(g_hSrcEdit, TRUE);
+                }
                 g_hRadBase = CreateWindow(g_szRadBaseClass, 
                     LoadStringDx(IDS_RADWINDOW),
                     WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
@@ -5992,7 +6010,7 @@ void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL || g_bInEdit)
+    if (hItem == NULL || g_bInEdit || IsWindow(g_hRadBase))
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
