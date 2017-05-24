@@ -5250,12 +5250,11 @@ BOOL MainWnd_CompileIfNecessary(HWND hwnd)
 
 struct RadHelper
 {
-    HWND hwndOwner;
-    HBITMAP hbmImage, hbmOld;
-    RECT rcOuter, rcInner;
-    LONG DialogBaseUnits;
-    HDC hDC;
-    WNDPROC OldWndProc;
+    HWND m_hwndOwner;
+    HWND m_hwnd;
+    LONG m_DialogBaseUnits;
+    WNDPROC m_OldWndProc;
+    DialogRes m_dialog_res;
 
     // // PrintWindow
     // HINSTANCE hUser32;
@@ -5272,23 +5271,15 @@ struct RadHelper
     //    return TRUE;
     //}
 
-    DialogRes dialog_res;
-
     RadHelper()
     {
-        hwndOwner = NULL;
-        hbmImage = hbmOld = NULL;
-        SetRectEmpty(&rcOuter);
-        SetRectEmpty(&rcInner);
-        DialogBaseUnits = 0;
-        hDC = NULL;
-        OldWndProc = NULL;
+        m_hwnd = m_hwndOwner = NULL;
+        m_DialogBaseUnits = 0;
+        m_OldWndProc = NULL;
     }
 
     ~RadHelper()
     {
-        DeleteObject(hbmImage);
-        DeleteDC(hDC);
     }
 
     static LRESULT CALLBACK 
@@ -5363,11 +5354,13 @@ struct RadHelper
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        OldWndProc = (WNDPROC)
+        m_DialogBaseUnits = GetDialogBaseUnits();
+
+        m_OldWndProc = (WNDPROC)
             SetWindowLongPtr(hwnd, GWLP_WNDPROC, 
                              (LONG_PTR)RadHelper::WindowProc);
 
-        SetParent(hwnd, hwndOwner);
+        SetParent(hwnd, m_hwndOwner);
 
         RECT Rect;
         GetWindowRect(hwnd, &Rect);
@@ -5376,15 +5369,16 @@ struct RadHelper
         Size.cy = Rect.bottom - Rect.top;
         MoveWindow(hwnd, 0, 0, Size.cx, Size.cy, TRUE);
 
-        DWORD style = GetWindowLong(hwndOwner, GWL_STYLE);
-        DWORD exstyle = GetWindowLong(hwndOwner, GWL_EXSTYLE);
+        DWORD style = GetWindowLong(m_hwndOwner, GWL_STYLE);
+        DWORD exstyle = GetWindowLong(m_hwndOwner, GWL_EXSTYLE);
         SetRect(&Rect, 0, 0, Size.cx, Size.cy);
         AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
         OffsetRect(&Rect, -Rect.left, -Rect.top);
-        MoveWindow(hwndOwner, 0, 0, Rect.right, Rect.bottom, TRUE);
+        MoveWindow(m_hwndOwner, 0, 0, Rect.right, Rect.bottom, TRUE);
 
         SubclassAllChildren(hwnd);
 
+        m_hwnd = hwnd;
         return FALSE;
     }
 
@@ -5457,8 +5451,11 @@ struct RadHelper
             return HTCLIENT;
         case WM_GETDLGCODE:
             return DLGC_WANTALLKEYS | DLGC_WANTMESSAGE;
+        case WM_NCDESTROY:
+            m_hwnd = NULL;
+            return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
         default:
-            return CallWindowProc(OldWndProc, hwnd, uMsg, wParam, lParam);
+            return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
         }
         return 0;
     }
@@ -5511,20 +5508,14 @@ struct RadHelper
         return 0;
     }
 
-    void UpdateImage()
+    void Create()
     {
-        if (g_hRadDialog)
-        {
-            DestroyWindow(g_hRadDialog);
-            g_hRadDialog = NULL;
-        }
-
-        dialog_res.Fixup(FALSE);
-        std::vector<BYTE> data = dialog_res.data();
-        dialog_res.Fixup(TRUE);
+        m_dialog_res.Fixup(FALSE);
+        std::vector<BYTE> data = m_dialog_res.data();
+        m_dialog_res.Fixup(TRUE);
 
         g_hRadDialog = CreateDialogIndirectParam(
-            g_hInstance, (LPDLGTEMPLATE)&data[0], hwndOwner, 
+            g_hInstance, (LPDLGTEMPLATE)&data[0], m_hwndOwner, 
             RadHelper::DialogProc, (LPARAM)this);
         if (g_hRadDialog == NULL)
         {
@@ -5539,10 +5530,10 @@ struct RadHelper
 BOOL RadBase_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     RadHelper& rad = *(RadHelper *)lpCreateStruct->lpCreateParams;
-    rad.hwndOwner = hwnd;
+    rad.m_hwndOwner = hwnd;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)&rad);
 
-    rad.UpdateImage();
+    rad.Create();
 
     return TRUE;
 }
@@ -5564,6 +5555,45 @@ void RadBase_OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
     MessageBoxA(NULL, "OK", NULL, 0);
 }
 
+void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
+{
+    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    if (g_hRadDialog == NULL || lParam == 0)
+    {
+        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
+        return;
+    }
+
+    RadHelper& rad = *(RadHelper *)lParam;
+    if (rad.m_hwnd == NULL)
+    {
+        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
+        return;
+    }
+
+    LONG Units = rad.m_DialogBaseUnits;
+    if (Units == 0)
+    {
+        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
+        return;
+    }
+
+    RECT Rect;
+    GetClientRect(hwnd, &Rect);
+
+    SIZE Size;
+    Size.cx = Rect.right - Rect.left;
+    Size.cy = Rect.bottom - Rect.top;
+
+    cx = (Size.cx * 4) / Units;
+    cy = (Size.cy * 8) / Units;
+
+    rad.m_dialog_res.m_siz.cx = cx;
+    rad.m_dialog_res.m_siz.cy = cy;
+
+    MoveWindow(rad.m_hwnd, 0, 0, Size.cx, Size.cy, TRUE);
+}
+
 LRESULT CALLBACK
 RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -5573,6 +5603,7 @@ RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HANDLE_MSG(hwnd, WM_COMMAND, RadBase_OnCommand);
         HANDLE_MSG(hwnd, WM_RBUTTONUP, RadBase_OnRButtonUp);
         HANDLE_MSG(hwnd, WM_NCDESTROY, RadBase_OnNCDestroy);
+        HANDLE_MSG(hwnd, WM_SIZE, RadBase_OnSize);
         default:
             return DefWindowProcW(hwnd, uMsg, wParam, lParam);
     }
@@ -5640,7 +5671,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
         else
         {
             RadHelper *rad = new RadHelper;
-            if (rad->dialog_res.LoadFromStream(stream))
+            if (rad->m_dialog_res.LoadFromStream(stream))
             {
                 g_hRadBase = CreateWindow(g_szRadBaseClass, 
                     LoadStringDx(IDS_RADWINDOW),
