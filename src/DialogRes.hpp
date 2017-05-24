@@ -86,25 +86,26 @@ inline BOOL IDToPredefClass(WORD w, std::wstring& name)
 
 struct DialogItem
 {
-    DWORD               HelpID;
-    DWORD               Style;
-    DWORD               ExStyle;
-    POINT               pt;
-    SIZE                siz;
+    DWORD               m_HelpID;
+    DWORD               m_Style;
+    DWORD               m_ExStyle;
+    POINT               m_pt;
+    SIZE                m_siz;
     WORD                ID;
-    ID_OR_STRING        Class;
-    ID_OR_STRING        Title;
+    ID_OR_STRING        m_Class;
+    ID_OR_STRING        m_Title;
     std::vector<BYTE>   Extra;
+    DWORD               m_OldStyle, m_OldExStyle;
 
     DialogItem()
     {
-        HelpID = 0;
-        Style = 0;
-        ExStyle = 0;
-        pt.x = 0;
-        pt.y = 0;
-        siz.cx = 0;
-        siz.cy = 0;
+        m_HelpID = 0;
+        m_Style = 0;
+        m_ExStyle = 0;
+        m_pt.x = 0;
+        m_pt.y = 0;
+        m_siz.cx = 0;
+        m_siz.cy = 0;
         ID = 0;
     }
 
@@ -119,17 +120,17 @@ struct DialogItem
         if (!stream.ReadRaw(Item))
             return FALSE;
 
-        HelpID = 0;
-        Style = Item.style;
-        ExStyle = Item.dwExtendedStyle;
-        pt.x = Item.x;
-        pt.y = Item.y;
-        siz.cx = Item.cx;
-        siz.cy = Item.cy;
+        m_HelpID = 0;
+        m_Style = Item.style;
+        m_ExStyle = Item.dwExtendedStyle;
+        m_pt.x = Item.x;
+        m_pt.y = Item.y;
+        m_siz.cx = Item.cx;
+        m_siz.cy = Item.cy;
         ID = Item.id;
 
-        if (!stream.ReadString(Class) ||
-            !stream.ReadString(Title))
+        if (!stream.ReadString(m_Class) ||
+            !stream.ReadString(m_Title))
         {
             return FALSE;
         }
@@ -155,18 +156,18 @@ struct DialogItem
             return FALSE;
         }
 
-        HelpID = Item.helpID;
-        Style = Item.style;
-        ExStyle = Item.exStyle;
-        pt.x = Item.x;
-        pt.y = Item.y;
-        siz.cx = Item.cx;
-        siz.cy = Item.cy;
+        m_HelpID = Item.helpID;
+        m_Style = Item.style;
+        m_ExStyle = Item.exStyle;
+        m_pt.x = Item.x;
+        m_pt.y = Item.y;
+        m_siz.cx = Item.cx;
+        m_siz.cy = Item.cy;
         ID = Item.id;
 
         stream.ReadDwordAlignment();
 
-        if (!stream.ReadString(Class) || !stream.ReadString(Title))
+        if (!stream.ReadString(m_Class) || !stream.ReadString(m_Title))
         {
             return FALSE;
         }
@@ -196,30 +197,30 @@ struct DialogItem
         stream.WriteDwordAlignment();
 
         DLGITEMTEMPLATE Item;
-        Item.style = Style;
-        Item.dwExtendedStyle = ExStyle;
-        Item.x = (SHORT)pt.x;
-        Item.y = (SHORT)pt.y;
-        Item.cx = (SHORT)siz.cx;
-        Item.cy = (SHORT)siz.cy;
+        Item.style = m_Style;
+        Item.dwExtendedStyle = m_ExStyle;
+        Item.x = (SHORT)m_pt.x;
+        Item.y = (SHORT)m_pt.y;
+        Item.cx = (SHORT)m_siz.cx;
+        Item.cy = (SHORT)m_siz.cy;
         Item.id = ID;
         if (!stream.WriteData(&Item, sizeof(Item)))
             return FALSE;
 
         WORD w;
-        if (!IS_INTRESOURCE(Class.Ptr()) && 
-            PredefClassToID(Class.Ptr(), w))
+        if (!IS_INTRESOURCE(m_Class.Ptr()) && 
+            PredefClassToID(m_Class.Ptr(), w))
         {
             if (!stream.WriteString(MAKEINTRESOURCEW(w)))
                 return FALSE;
         }
         else
         {
-            if (!stream.WriteString(Class.Ptr()))
+            if (!stream.WriteString(m_Class.Ptr()))
                 return FALSE;
         }
 
-        if (!stream.WriteString(Title.Ptr()))
+        if (!stream.WriteString(m_Title.Ptr()))
             return FALSE;
 
         BYTE b = BYTE(Extra.size());
@@ -241,13 +242,13 @@ struct DialogItem
         stream.WriteDwordAlignment();
 
         DLGITEMTEMPLATEEXHEAD ItemEx;
-        ItemEx.helpID = HelpID;
-        ItemEx.exStyle = ExStyle;
-        ItemEx.style = Style;
-        ItemEx.x = (short)pt.x;
-        ItemEx.y = (short)pt.y;
-        ItemEx.cx = (short)siz.cx;
-        ItemEx.cy = (short)siz.cy;
+        ItemEx.helpID = m_HelpID;
+        ItemEx.exStyle = m_ExStyle;
+        ItemEx.style = m_Style;
+        ItemEx.x = (short)m_pt.x;
+        ItemEx.y = (short)m_pt.y;
+        ItemEx.cx = (short)m_siz.cx;
+        ItemEx.cy = (short)m_siz.cy;
         ItemEx.id = ID;
         if (!stream.WriteRaw(ItemEx))
             return FALSE;
@@ -255,19 +256,19 @@ struct DialogItem
         stream.WriteDwordAlignment();
 
         WORD w;
-        if (!IS_INTRESOURCE(Class.Ptr()) && 
-            PredefClassToID(Class.Ptr(), w))
+        if (!IS_INTRESOURCE(m_Class.Ptr()) && 
+            PredefClassToID(m_Class.Ptr(), w))
         {
             if (!stream.WriteString(MAKEINTRESOURCEW(w)))
                 return FALSE;
         }
         else
         {
-            if (!stream.WriteString(Class.Ptr()))
+            if (!stream.WriteString(m_Class.Ptr()))
                 return FALSE;
         }
 
-        if (!stream.WriteString(Title.Ptr()) ||
+        if (!stream.WriteString(m_Title.Ptr()) ||
             !stream.WriteWord(WORD(Extra.size())))
         {
             return FALSE;
@@ -287,14 +288,14 @@ struct DialogItem
     {
         std::wstring ret, cls;
 
-        if (Class.is_int())
+        if (m_Class.is_int())
         {
-            if (!IDToPredefClass(Class.m_ID, cls))
-                cls = str_hex(Class.m_ID);
+            if (!IDToPredefClass(m_Class.m_ID, cls))
+                cls = str_hex(m_Class.m_ID);
         }
         else
         {
-            cls = Class.wstr();
+            cls = m_Class.wstr();
         }
 
         if (lstrcmpiW(cls.c_str(), L"BUTTON") == 0)
@@ -302,34 +303,34 @@ struct DialogItem
 #ifndef BS_TYPEMASK
     #define BS_TYPEMASK     0x0000000F
 #endif
-            if ((Style & BS_TYPEMASK) == BS_AUTO3STATE)
+            if ((m_Style & BS_TYPEMASK) == BS_AUTO3STATE)
                 return _do_AUTO3STATE(db);
-            if ((Style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
+            if ((m_Style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
                 return _do_AUTOCHECKBOX(db);
-            if ((Style & BS_TYPEMASK) == BS_AUTORADIOBUTTON)
+            if ((m_Style & BS_TYPEMASK) == BS_AUTORADIOBUTTON)
                 return _do_AUTORADIOBUTTON(db);
-            if ((Style & BS_TYPEMASK) == BS_CHECKBOX)
+            if ((m_Style & BS_TYPEMASK) == BS_CHECKBOX)
                 return _do_CHECKBOX(db);
-            if ((Style & BS_TYPEMASK) == BS_DEFPUSHBUTTON)
+            if ((m_Style & BS_TYPEMASK) == BS_DEFPUSHBUTTON)
                 return _do_DEFPUSHBUTTON(db);
-            if ((Style & BS_TYPEMASK) == BS_GROUPBOX)
+            if ((m_Style & BS_TYPEMASK) == BS_GROUPBOX)
                 return _do_GROUPBOX(db);
-            if ((Style & BS_TYPEMASK) == BS_PUSHBUTTON)
+            if ((m_Style & BS_TYPEMASK) == BS_PUSHBUTTON)
                 return _do_PUSHBUTTON(db);
-            if ((Style & BS_TYPEMASK) == BS_RADIOBUTTON)
+            if ((m_Style & BS_TYPEMASK) == BS_RADIOBUTTON)
                 return _do_RADIOBUTTON(db);
-            if ((Style & BS_TYPEMASK) == BS_3STATE)
+            if ((m_Style & BS_TYPEMASK) == BS_3STATE)
                 return _do_STATE3(db);
         }
         if (lstrcmpiW(cls.c_str(), L"STATIC") == 0)
         {
-            if ((Style & SS_TYPEMASK) == SS_LEFT)
+            if ((m_Style & SS_TYPEMASK) == SS_LEFT)
                 return _do_LTEXT(db);
-            if ((Style & SS_TYPEMASK) == SS_CENTER)
+            if ((m_Style & SS_TYPEMASK) == SS_CENTER)
                 return _do_CTEXT(db);
-            if ((Style & SS_TYPEMASK) == SS_RIGHT)
+            if ((m_Style & SS_TYPEMASK) == SS_RIGHT)
                 return _do_RTEXT(db);
-            if ((Style & SS_TYPEMASK) == SS_ICON)
+            if ((m_Style & SS_TYPEMASK) == SS_ICON)
                 return _do_ICON(db);
         }
         if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
@@ -344,51 +345,51 @@ struct DialogItem
             return _do_SCROLLBAR(db);
 
         ret += L"CONTROL ";
-        if (!Title.empty())
+        if (!m_Title.empty())
         {
-            ret += Title.quoted_wstr();
+            ret += m_Title.quoted_wstr();
             ret += L", ";
         }
         ret += db.GetCtrlID(ID);
         ret += L", ";
-        if (Class.is_int())
+        if (m_Class.is_int())
         {
-            if (IDToPredefClass(Class.m_ID, cls))
+            if (IDToPredefClass(m_Class.m_ID, cls))
                 ret += str_quote(cls);
             else
-                ret += str_hex(Class.m_ID);
+                ret += str_hex(m_Class.m_ID);
         }
         else
         {
-            cls = Class.wstr();
-            ret += Class.quoted_wstr();
+            cls = m_Class.wstr();
+            ret += m_Class.quoted_wstr();
         }
 
         ret += L", ";
         {
-            DWORD value = Style;
+            DWORD value = m_Style;
             DWORD def_value = WS_CHILD | WS_VISIBLE;
             ret += db.DumpBitField(cls.c_str(), L"STYLE", value, def_value);
         }
 
         ret += L", ";
-        ret += str_dec(pt.x);
+        ret += str_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(pt.y);
+        ret += str_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(siz.cx);
+        ret += str_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(siz.cy);
-        if (ExStyle || HelpID)
+        ret += str_dec(m_siz.cy);
+        if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
-            DWORD value = ExStyle;
+            DWORD value = m_ExStyle;
             ret += db.DumpBitField(L"EXSTYLE", L"", value);
         }
-        if (HelpID)
+        if (m_HelpID)
         {
             ret += L", ";
-            ret += str_hex(HelpID);
+            ret += str_hex(m_HelpID);
         }
 
         return ret;
@@ -402,36 +403,36 @@ struct DialogItem
         std::wstring ret;
         ret += ctrl;
         ret += L" ";
-        if (!Title.empty())
+        if (!m_Title.empty())
         {
-            ret += Title.quoted_wstr();
+            ret += m_Title.quoted_wstr();
             ret += L", ";
         }
         ret += db.GetCtrlID(ID);
         ret += L", ";
-        ret += str_dec(pt.x);
+        ret += str_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(pt.y);
+        ret += str_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(siz.cx);
+        ret += str_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(siz.cy);
-        if (Style != DefStyle || ExStyle)
+        ret += str_dec(m_siz.cy);
+        if (m_Style != DefStyle || m_ExStyle)
         {
             ret += L", ";
-            DWORD value = Style;
+            DWORD value = m_Style;
             ret += db.DumpBitField(cls.c_str(), L"STYLE", value, DefStyle);
         }
-        if (ExStyle || HelpID)
+        if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
-            DWORD value = ExStyle;
+            DWORD value = m_ExStyle;
             ret += db.DumpBitField(L"EXSTYLE", L"", value);
         }
-        if (HelpID)
+        if (m_HelpID)
         {
             ret += L", ";
-            ret += str_hex(HelpID);
+            ret += str_hex(m_HelpID);
         }
         return ret;
     }
@@ -519,50 +520,72 @@ struct DialogItem
     {
         return _do_CONTROL(db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
+
+    void Fixup(BOOL bRevert = FALSE)
+    {
+        if (bRevert)
+        {
+            m_Style = m_OldStyle;
+            m_ExStyle = m_OldExStyle;
+        }
+        else
+        {
+            m_OldStyle = m_Style;
+            m_OldExStyle = m_ExStyle;
+
+            m_Style &= ~WS_DISABLED;
+            m_Style |= WS_CHILD | WS_VISIBLE;
+
+            m_ExStyle &= ~(WS_EX_ACCEPTFILES | WS_EX_LAYERED | WS_EX_TRANSPARENT |
+                         WS_EX_TOPMOST);
+            m_ExStyle |= WS_EX_NOACTIVATE;
+        }
+    }
 };
 typedef std::vector<DialogItem> DialogItems;
 
 struct DialogRes
 {
-    WORD                        Version;
-    WORD                        Signature;
-    DWORD                       HelpID;
-    DWORD                       Style;
-    DWORD                       ExStyle;
-    WORD                        cItems;
-    POINT                       pt;
-    SIZE                        siz;
-    ID_OR_STRING                Menu;
-    ID_OR_STRING                Class;
-    ID_OR_STRING                Title;
-    short                       PointSize;
-    short                       Weight;
-    BYTE                        Italic;
-    BYTE                        CharSet;
-    ID_OR_STRING                TypeFace;
+    WORD                        m_Version;
+    WORD                        m_Signature;
+    DWORD                       m_HelpID;
+    DWORD                       m_Style;
+    DWORD                       m_ExStyle;
+    WORD                        m_cItems;
+    POINT                       m_pt;
+    SIZE                        m_siz;
+    ID_OR_STRING                m_Menu;
+    ID_OR_STRING                m_Class;
+    ID_OR_STRING                m_Title;
+    short                       m_PointSize;
+    short                       m_Weight;
+    BYTE                        m_Italic;
+    BYTE                        m_CharSet;
+    ID_OR_STRING                m_TypeFace;
     DialogItems                 Items;
+    DWORD                       m_OldStyle, m_OldExStyle;
 
     DialogRes()
     {
-        Version = 0;
-        Signature = 0;
-        HelpID = 0;
-        Style = 0;
-        ExStyle = 0;
-        cItems = 0;
-        pt.x = 0;
-        pt.y = 0;
-        siz.cx = 0;
-        siz.cy = 0;
-        PointSize = 0;
-        Weight = FW_NORMAL;
-        Italic = FALSE;
-        CharSet = DEFAULT_CHARSET;
+        m_Version = 0;
+        m_Signature = 0;
+        m_HelpID = 0;
+        m_Style = 0;
+        m_ExStyle = 0;
+        m_cItems = 0;
+        m_pt.x = 0;
+        m_pt.y = 0;
+        m_siz.cx = 0;
+        m_siz.cy = 0;
+        m_PointSize = 0;
+        m_Weight = FW_NORMAL;
+        m_Italic = FALSE;
+        m_CharSet = DEFAULT_CHARSET;
     }
 
     BOOL IsExtended() const
     {
-        return Signature == 0xFFFF;
+        return m_Signature == 0xFFFF;
     }
 
     BOOL LoadFromStream(const ByteStream& stream)
@@ -576,7 +599,7 @@ struct DialogRes
             // extended dialog
             if (_headerFromStreamEx(stream))
             {
-                for (WORD i = 0; i < cItems; ++i)
+                for (WORD i = 0; i < m_cItems; ++i)
                 {
                     DialogItem Item;
                     if (!Item.LoadFromStreamEx(stream))
@@ -591,7 +614,7 @@ struct DialogRes
             // normal dialog
             if (_headerFromStream(stream))
             {
-                for (WORD i = 0; i < cItems; ++i)
+                for (WORD i = 0; i < m_cItems; ++i)
                 {
                     DialogItem Item;
                     if (!Item.LoadFromStream(stream))
@@ -637,10 +660,10 @@ struct DialogRes
 
     void Update()
     {
-        if (TypeFace.empty())
-            Style &= ~DS_SETFONT;
+        if (m_TypeFace.empty())
+            m_Style &= ~DS_SETFONT;
         else
-            Style |= DS_SETFONT;
+            m_Style |= DS_SETFONT;
     }
 
     std::vector<BYTE> data() const
@@ -664,30 +687,30 @@ struct DialogRes
             ret += L" DIALOG ";
         }
 
-        ret += str_dec(pt.x);
+        ret += str_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(pt.y);
+        ret += str_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(siz.cx);
+        ret += str_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(siz.cy);
+        ret += str_dec(m_siz.cy);
         ret += L"\r\n";
 
-        if (!Title.empty())
+        if (!m_Title.empty())
         {
             ret += L"CAPTION ";
-            ret += Title.quoted_wstr();
+            ret += m_Title.quoted_wstr();
             ret += L"\r\n";
         }
-        if (!Class.empty())
+        if (!m_Class.empty())
         {
             ret += L"CLASS ";
-            ret += Class.quoted_wstr();
+            ret += m_Class.quoted_wstr();
             ret += L"\r\n";
         }
 
         {
-            DWORD value = (Style & ~DS_SETFONT);
+            DWORD value = (m_Style & ~DS_SETFONT);
             std::wstring str = db.DumpBitField(L"DIALOG", L"STYLE", value);
             if (value)
             {
@@ -701,9 +724,9 @@ struct DialogRes
             ret += L"\r\n";
         }
 
-        if (ExStyle)
+        if (m_ExStyle)
         {
-            DWORD value = ExStyle;
+            DWORD value = m_ExStyle;
             std::wstring str = db.DumpBitField(L"EXSTYLE", L"", value);
             if (value)
             {
@@ -717,27 +740,27 @@ struct DialogRes
             ret += L"\r\n";
         }
 
-        if (Style & (DS_SETFONT | DS_SHELLFONT))
+        if (m_Style & (DS_SETFONT | DS_SHELLFONT))
         {
             ret += L"FONT ";
-            ret += str_dec(PointSize);
+            ret += str_dec(m_PointSize);
             ret += L", ";
-            ret += TypeFace.quoted_wstr();
+            ret += m_TypeFace.quoted_wstr();
             if (IsExtended())
             {
                 ret += L", ";
-                ret += str_dec(Weight);
+                ret += str_dec(m_Weight);
                 ret += L", ";
-                ret += str_dec(!!Italic);
+                ret += str_dec(!!m_Italic);
                 ret += L", ";
-                ret += str_dec(CharSet);
+                ret += str_dec(m_CharSet);
             }
             ret += L"\r\n";
         }
 
         ret += L"{\r\n";
 
-        for (WORD i = 0; i < cItems; ++i)
+        for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
             ret += Items[i].Dump(db);
@@ -749,6 +772,32 @@ struct DialogRes
         return ret;
     }
 
+    void Fixup(BOOL bRevert = FALSE)
+    {
+        if (bRevert)
+        {
+            m_Style = m_OldStyle;
+            m_ExStyle = m_OldExStyle;
+        }
+        else
+        {
+            m_OldStyle = m_Style;
+            m_OldExStyle = m_ExStyle;
+
+            m_Style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
+            m_Style |= WS_VISIBLE | DS_NOIDLEMSG;
+            m_ExStyle &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
+                         WS_EX_LAYERED | WS_EX_TRANSPARENT);
+            m_ExStyle |= WS_EX_NOACTIVATE;
+        }
+
+        DialogItems::iterator it, end = Items.end();
+        for (it = Items.begin(); it != end; ++it)
+        {
+            it->Fixup(bRevert);
+        }
+    }
+
 protected:
     BOOL _headerFromStream(const ByteStream& stream)
     {
@@ -758,34 +807,34 @@ protected:
         if (!stream.ReadRaw(Template))
             return FALSE;
 
-        Version = 0;
-        Signature = 0;
-        HelpID = 0;
-        Style = Template.style;
-        ExStyle = Template.dwExtendedStyle;
-        cItems = Template.cdit;
-        pt.x = Template.x;
-        pt.y = Template.y;
-        siz.cx = Template.cx;
-        siz.cy = Template.cy;
+        m_Version = 0;
+        m_Signature = 0;
+        m_HelpID = 0;
+        m_Style = Template.style;
+        m_ExStyle = Template.dwExtendedStyle;
+        m_cItems = Template.cdit;
+        m_pt.x = Template.x;
+        m_pt.y = Template.y;
+        m_siz.cx = Template.cx;
+        m_siz.cy = Template.cy;
 
-        if (!stream.ReadString(Menu) ||
-            !stream.ReadString(Class) || 
-            !stream.ReadString(Title))
+        if (!stream.ReadString(m_Menu) ||
+            !stream.ReadString(m_Class) || 
+            !stream.ReadString(m_Title))
         {
             return FALSE;
         }
 
-        PointSize = 0;
-        Weight = FW_NORMAL;
-        Italic = 0;
-        TypeFace.clear();
+        m_PointSize = 0;
+        m_Weight = FW_NORMAL;
+        m_Italic = 0;
+        m_TypeFace.clear();
         Items.clear();
 
-        if (Style & (DS_SETFONT | DS_SHELLFONT))
+        if (m_Style & (DS_SETFONT | DS_SHELLFONT))
         {
-            if (!stream.ReadWord(PointSize) ||
-                !stream.ReadString(TypeFace))
+            if (!stream.ReadWord(m_PointSize) ||
+                !stream.ReadString(m_TypeFace))
             {
                 return FALSE;
             }
@@ -807,29 +856,29 @@ protected:
         if (TemplateEx.dlgVer != 1 || TemplateEx.signature != 0xFFFF)
             return FALSE;
 
-        Version = TemplateEx.dlgVer;
-        Signature = TemplateEx.signature;
-        HelpID = TemplateEx.helpID;
-        Style = TemplateEx.style;
-        ExStyle = TemplateEx.exStyle;
-        cItems = TemplateEx.cDlgItems;
-        pt.x = TemplateEx.x;
-        pt.y = TemplateEx.y;
-        siz.cx = TemplateEx.cx;
-        siz.cy = TemplateEx.cy;
+        m_Version = TemplateEx.dlgVer;
+        m_Signature = TemplateEx.signature;
+        m_HelpID = TemplateEx.helpID;
+        m_Style = TemplateEx.style;
+        m_ExStyle = TemplateEx.exStyle;
+        m_cItems = TemplateEx.cDlgItems;
+        m_pt.x = TemplateEx.x;
+        m_pt.y = TemplateEx.y;
+        m_siz.cx = TemplateEx.cx;
+        m_siz.cy = TemplateEx.cy;
 
-        if (!stream.ReadString(Menu) || !stream.ReadString(Title))
+        if (!stream.ReadString(m_Menu) || !stream.ReadString(m_Title))
         {
             return FALSE;
         }
 
         if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
         {
-            if (!stream.ReadWord(PointSize) ||
-                !stream.ReadWord(Weight) || 
-                !stream.ReadByte(Italic) ||
-                !stream.ReadByte(CharSet) ||
-                !stream.ReadString(TypeFace))
+            if (!stream.ReadWord(m_PointSize) ||
+                !stream.ReadWord(m_Weight) || 
+                !stream.ReadByte(m_Italic) ||
+                !stream.ReadByte(m_CharSet) ||
+                !stream.ReadString(m_TypeFace))
             {
                 return FALSE;
             }
@@ -845,25 +894,25 @@ protected:
 
         DLGTEMPLATE Template;
 
-        Template.style = Style;
-        Template.dwExtendedStyle = ExStyle;
-        Template.cdit = cItems;
-        Template.x = (SHORT)pt.x;
-        Template.y = (SHORT)pt.y;
-        Template.cx = (SHORT)siz.cx;
-        Template.cy = (SHORT)siz.cy;
+        Template.style = m_Style;
+        Template.dwExtendedStyle = m_ExStyle;
+        Template.cdit = m_cItems;
+        Template.x = (SHORT)m_pt.x;
+        Template.y = (SHORT)m_pt.y;
+        Template.cx = (SHORT)m_siz.cx;
+        Template.cy = (SHORT)m_siz.cy;
         if (!stream.WriteRaw(Template) ||
-            !stream.WriteString(Menu.Ptr()) ||
-            !stream.WriteString(Class.Ptr()) ||
-            !stream.WriteString(Title.Ptr()))
+            !stream.WriteString(m_Menu.Ptr()) ||
+            !stream.WriteString(m_Class.Ptr()) ||
+            !stream.WriteString(m_Title.Ptr()))
         {
             return FALSE;
         }
 
         if (Template.style & (DS_SETFONT | DS_SHELLFONT))
         {
-            if (!stream.WriteWord(PointSize) ||
-                !stream.WriteString(TypeFace.Ptr()))
+            if (!stream.WriteWord(m_PointSize) ||
+                !stream.WriteString(m_TypeFace.Ptr()))
             {
                 return FALSE;
             }
@@ -879,32 +928,32 @@ protected:
         DLGTEMPLATEEXHEAD TemplateEx;
         TemplateEx.dlgVer = 1;
         TemplateEx.signature = 0xFFFF;
-        TemplateEx.helpID = HelpID;
-        TemplateEx.exStyle = ExStyle;
-        TemplateEx.style = Style;
-        TemplateEx.cDlgItems = cItems;
-        TemplateEx.x = (short)pt.x;
-        TemplateEx.y = (short)pt.y;
-        TemplateEx.cx = (short)siz.cx;
-        TemplateEx.cy = (short)siz.cy;
+        TemplateEx.helpID = m_HelpID;
+        TemplateEx.exStyle = m_ExStyle;
+        TemplateEx.style = m_Style;
+        TemplateEx.cDlgItems = m_cItems;
+        TemplateEx.x = (short)m_pt.x;
+        TemplateEx.y = (short)m_pt.y;
+        TemplateEx.cx = (short)m_siz.cx;
+        TemplateEx.cy = (short)m_siz.cy;
         if (!stream.WriteRaw(TemplateEx))
         {
             return FALSE;
         }
-        if (!stream.WriteString(Menu.Ptr()) ||
-            !stream.WriteString(Class.Ptr()) ||
-            !stream.WriteString(Title.Ptr()))
+        if (!stream.WriteString(m_Menu.Ptr()) ||
+            !stream.WriteString(m_Class.Ptr()) ||
+            !stream.WriteString(m_Title.Ptr()))
         {
             return FALSE;
         }
 
         if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
         {
-            if (!stream.WriteWord(PointSize) ||
-                !stream.WriteWord(Weight) ||
-                !stream.WriteByte(Italic) ||
-                !stream.WriteByte(CharSet) ||
-                !stream.WriteString(TypeFace.Ptr()))
+            if (!stream.WriteWord(m_PointSize) ||
+                !stream.WriteWord(m_Weight) ||
+                !stream.WriteByte(m_Italic) ||
+                !stream.WriteByte(m_CharSet) ||
+                !stream.WriteString(m_TypeFace.Ptr()))
             {
                 return FALSE;
             }

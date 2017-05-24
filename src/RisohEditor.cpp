@@ -8,6 +8,7 @@ HMENU       g_hMenu = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 WCHAR       g_szBmpViewClass[]  = L"RisohEditor BmpView Class";
 WCHAR       g_szRadBaseClass[]  = L"RisohEditor RAD Base Class";
+
 INT         g_argc = 0;
 LPWSTR *    g_wargv = NULL;
 WCHAR       g_szFile[MAX_PATH] = L"";
@@ -5290,37 +5291,12 @@ struct RadHelper
         DeleteDC(hDC);
     }
 
-    INT_PTR CALLBACK
-    DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        }
-        return 0;
-    }
-
-    static INT_PTR CALLBACK
-    DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        RadHelper *pRad;
-        if (uMsg == WM_INITDIALOG)
-        {
-            SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-            pRad = (RadHelper *)lParam;
-        }
-        else
-        {
-            LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-            pRad = (RadHelper *)lParam;
-        }
-
-        return pRad->DlgProc(hwnd, uMsg, wParam, lParam);
-    }
-
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        OldWndProc = (WNDPROC)
+            SetWindowLongPtr(hwnd, GWLP_WNDPROC, 
+                             (LONG_PTR)RadHelper::WindowProc);
+
         SetParent(hwnd, hwndOwner);
 
         RECT Rect;
@@ -5340,18 +5316,124 @@ struct RadHelper
         return TRUE;
     }
 
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    void SendMouseMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        switch (id)
+        HWND Parent = GetParent(hwnd);
+        POINT pt;
+        pt.x = GET_X_LPARAM(lParam);
+        pt.y = GET_Y_LPARAM(lParam);
+        if (uMsg != WM_MOUSEWHEEL)
         {
-        case IDOK:
-        case IDCANCEL:
-            DestroyWindow(hwnd);
-            break;
+            MapWindowPoints(hwnd, Parent, &pt, 1);
+            lParam = MAKELPARAM(pt.x, pt.y);
         }
+        SendMessage(Parent, uMsg, wParam, lParam);
     }
 
-    void UpdateImage(HWND hwndOwner)
+    void SendKeyMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        HWND Parent = GetParent(hwnd);
+        SendMessage(Parent, uMsg, wParam, lParam);
+    }
+
+    LRESULT CALLBACK
+    WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+        case WM_NCLBUTTONDOWN:
+        case WM_NCLBUTTONUP:
+        case WM_NCLBUTTONDBLCLK:
+        case WM_NCMBUTTONDOWN:
+        case WM_NCMBUTTONUP:
+        case WM_NCMBUTTONDBLCLK:
+        case WM_NCRBUTTONDOWN:
+        case WM_NCRBUTTONUP:
+        case WM_NCRBUTTONDBLCLK:
+        case WM_NCXBUTTONDOWN:
+        case WM_NCXBUTTONUP:
+        case WM_NCXBUTTONDBLCLK:
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_LBUTTONDBLCLK:
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+        case WM_MBUTTONDBLCLK:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_RBUTTONDBLCLK:
+        case WM_XBUTTONDOWN:
+        case WM_XBUTTONUP:
+        case WM_XBUTTONDBLCLK:
+        case WM_MOUSEMOVE:
+        case WM_MOUSEWHEEL:
+            SendMouseMesssageToParent(hwnd, uMsg, wParam, lParam);
+            break;
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+            SendKeyMesssageToParent(hwnd, uMsg, wParam, lParam);
+            break;
+        case WM_NCHITTEST:
+            return HTCLIENT;
+        default:
+            return CallWindowProc(OldWndProc, hwnd, uMsg, wParam, lParam);
+        }
+        return 0;
+    }
+
+    static LRESULT CALLBACK 
+    WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        RadHelper *pRad;
+        LPARAM nData = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        pRad = (RadHelper *)nData;
+
+        if (pRad)
+        {
+            return pRad->WndProc(hwnd, uMsg, wParam, lParam);
+        }
+
+        return 0;
+    }
+
+    INT_PTR CALLBACK
+    DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            //case WM_GETDLGCODE:
+                //return DLGC_WANTMESSAGE;
+        }
+        return 0;
+    }
+
+    static INT_PTR CALLBACK 
+    DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        RadHelper *pRad;
+        if (uMsg == WM_INITDIALOG)
+        {
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
+            pRad = (RadHelper *)lParam;
+        }
+        else
+        {
+            LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+            pRad = (RadHelper *)lParam;
+        }
+
+        if (pRad)
+        {
+            return pRad->DlgProc(hwnd, uMsg, wParam, lParam);
+        }
+
+        return 0;
+    }
+
+    void UpdateImage()
     {
         if (g_hRadDialog)
         {
@@ -5359,9 +5441,17 @@ struct RadHelper
             g_hRadDialog = NULL;
         }
 
+        dialog_res.Fixup(FALSE);
         std::vector<BYTE> data = dialog_res.data();
-        g_hRadDialog = CreateDialogIndirectParam(NULL, (LPDLGTEMPLATE)&data[0],
-            hwndOwner, RadHelper::DialogProc, (LPARAM)this);
+        dialog_res.Fixup(TRUE);
+
+        g_hRadDialog = CreateDialogIndirectParam(
+            g_hInstance, (LPDLGTEMPLATE)&data[0], hwndOwner, 
+            RadHelper::DialogProc, (LPARAM)this);
+        if (g_hRadDialog == NULL)
+        {
+            DWORD err = GetLastError();
+        }
 
         ShowWindow(g_hRadDialog, SW_SHOWNORMAL);
         UpdateWindow(g_hRadDialog);
@@ -5374,7 +5464,7 @@ BOOL RadBase_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     rad.hwndOwner = hwnd;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)&rad);
 
-    rad.UpdateImage(hwnd);
+    rad.UpdateImage();
 
     return TRUE;
 }
@@ -5384,11 +5474,16 @@ void RadBase_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     // FIXME
 }
 
-void RadBase_OnDestroy(HWND hwnd)
+void RadBase_OnNCDestroy(HWND hwnd)
 {
     LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     delete (RadHelper *)lParam;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
+}
+
+void RadBase_OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
+{
+    MessageBoxA(NULL, "OK", NULL, 0);
 }
 
 LRESULT CALLBACK
@@ -5398,7 +5493,8 @@ RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HANDLE_MSG(hwnd, WM_CREATE, RadBase_OnCreate);
         HANDLE_MSG(hwnd, WM_COMMAND, RadBase_OnCommand);
-        HANDLE_MSG(hwnd, WM_DESTROY, RadBase_OnDestroy);
+        HANDLE_MSG(hwnd, WM_RBUTTONUP, RadBase_OnRButtonUp);
+        HANDLE_MSG(hwnd, WM_NCDESTROY, RadBase_OnNCDestroy);
         default:
             return DefWindowProcW(hwnd, uMsg, wParam, lParam);
     }
@@ -5469,11 +5565,11 @@ void MainWnd_OnGuiEdit(HWND hwnd)
             if (rad->dialog_res.LoadFromStream(stream))
             {
                 g_hRadBase = CreateWindow(g_szRadBaseClass, 
-					LoadStringDx(IDS_RADWINDOW),
+                    LoadStringDx(IDS_RADWINDOW),
                     WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
                     hwnd, NULL, g_hInstance, rad);
-				ShowWindow(g_hRadBase, SW_SHOWNORMAL);
-				UpdateWindow(g_hRadBase);
+                ShowWindow(g_hRadBase, SW_SHOWNORMAL);
+                UpdateWindow(g_hRadBase);
             }
         }
     }
@@ -6316,7 +6412,7 @@ INT InitInstance(HINSTANCE hInstance)
     if (!RegisterClassW(&wc))
     {
         MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
-        return 3;
+        return 4;
     }
 
     return 0;   // success
