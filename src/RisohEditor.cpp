@@ -1441,129 +1441,135 @@ void MainWnd_OnAddIcon(HWND hwnd)
     dialog.DialogBoxDx(hwnd, IDD_ADDICON);
 }
 
-BOOL ReplaceIconDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+struct ReplaceIconDlg : DialogBase
 {
-    DragAcceptFiles(hwnd, TRUE);
-
-    ResEntry& Entry = *(ResEntry *)lParam;
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-
-    // for Name
-    HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-    if (Entry.name.is_str())
+    ResEntry& m_Entry;
+    ReplaceIconDlg(ResEntry& Entry) : m_Entry(Entry)
     {
-        SetWindowTextW(hCmb2, Entry.name.m_Str.c_str());
-    }
-    else
-    {
-        SetDlgItemInt(hwnd, cmb2, Entry.name.m_ID, FALSE);
-    }
-    EnableWindow(hCmb2, FALSE);
-
-    // for Langs
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
-
-    return TRUE;
-}
-
-void ReplaceIconDlg_OnOK(HWND hwnd)
-{
-    ID_OR_STRING Type = RT_GROUP_ICON;
-
-    ID_OR_STRING Name;
-    HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-    if (!Cmb2_CheckName(hCmb2, Name))
-        return;
-
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    WORD Lang;
-    if (!Cmb3_CheckLang(hCmb3, Lang))
-        return;
-
-    std::wstring File;
-    HWND hEdt1 = GetDlgItem(hwnd, edt1);
-    if (!Edt1_CheckFile(hEdt1, File))
-        return;
-
-    if (!DoReplaceIcon(hwnd, Name, Lang, File))
-    {
-        MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEICO), NULL, MB_ICONERROR);
-        return;
     }
 
-    EndDialog(hwnd, IDOK);
-}
-
-void ReplaceIconDlg_OnPsh1(HWND hwnd)
-{
-    WCHAR File[MAX_PATH];
-    GetDlgItemText(hwnd, edt1, File, _countof(File));
-
-    std::wstring strFile = File;
-    str_trim(strFile);
-    lstrcpynW(File, strFile.c_str(), _countof(File));
-
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_REPLACEICO);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"ico";
-    if (GetOpenFileNameW(&ofn))
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        DragAcceptFiles(hwnd, TRUE);
+
+        // for Name
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        if (m_Entry.name.is_str())
+        {
+            SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
+        }
+        else
+        {
+            SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
+        }
+        EnableWindow(hCmb2, FALSE);
+
+        // for Langs
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
+
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        ID_OR_STRING Type = RT_GROUP_ICON;
+
+        ID_OR_STRING Name;
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        if (!Cmb2_CheckName(hCmb2, Name))
+            return;
+
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        WORD Lang;
+        if (!Cmb3_CheckLang(hCmb3, Lang))
+            return;
+
+        std::wstring File;
+        HWND hEdt1 = GetDlgItem(hwnd, edt1);
+        if (!Edt1_CheckFile(hEdt1, File))
+            return;
+
+        if (!DoReplaceIcon(hwnd, Name, Lang, File))
+        {
+            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEICO), NULL, MB_ICONERROR);
+            return;
+        }
+
+        EndDialog(hwnd, IDOK);
+    }
+
+    void OnPsh1(HWND hwnd)
+    {
+        WCHAR File[MAX_PATH];
+        GetDlgItemText(hwnd, edt1, File, _countof(File));
+
+        std::wstring strFile = File;
+        str_trim(strFile);
+        lstrcpynW(File, strFile.c_str(), _countof(File));
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_REPLACEICO);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"ico";
+        if (GetOpenFileNameW(&ofn))
+        {
+            SetDlgItemTextW(hwnd, edt1, File);
+            if (g_hIcon)
+                DestroyIcon(g_hIcon);
+            g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+            Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+        }
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
+            break;
+        }
+    }
+
+    void OnDropFiles(HWND hwnd, HDROP hdrop)
+    {
+        WCHAR File[MAX_PATH];
+        DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
+
         if (g_hIcon)
             DestroyIcon(g_hIcon);
         g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
         Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
     }
-}
 
-void ReplaceIconDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    switch (id)
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-    case IDOK:
-        ReplaceIconDlg_OnOK(hwnd);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    case psh1:
-        ReplaceIconDlg_OnPsh1(hwnd);
-        break;
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
     }
-}
+};
 
-void ReplaceIconDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
-{
-    WCHAR File[MAX_PATH];
-    DragQueryFileW(hdrop, 0, File, _countof(File));
-    SetDlgItemTextW(hwnd, edt1, File);
-
-    if (g_hIcon)
-        DestroyIcon(g_hIcon);
-    g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-    Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
-}
-
-INT_PTR CALLBACK
-ReplaceIconDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, ReplaceIconDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_DROPFILES, ReplaceIconDlg_OnDropFiles);
-        HANDLE_MSG(hwnd, WM_COMMAND, ReplaceIconDlg_OnCommand);
-    }
-    return 0;
-}
 
 void MainWnd_OnReplaceIcon(HWND hwnd)
 {
@@ -1572,8 +1578,8 @@ void MainWnd_OnReplaceIcon(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_REPLACEICON), hwnd,
-                    ReplaceIconDialogProc, (LPARAM)&g_Entries[i]);
+    ReplaceIconDlg dialog(g_Entries[i]);
+    dialog.DialogBoxDx(hwnd, IDD_REPLACEICON);
 }
 
 BOOL ReplaceCursorDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
