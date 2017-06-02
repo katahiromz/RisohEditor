@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_WINDOW_BASE_HPP_
-#define MZC4_WINDOW_BASE_HPP_    17   /* Version 17 */
+#define MZC4_WINDOW_BASE_HPP_    18   /* Version 18 */
 
 #if _MSC_VER > 1000
     #pragma once
@@ -563,6 +563,29 @@ struct DialogBase : public WindowBase
         m_bModal = TRUE;
         INT_PTR nID = ::DialogBoxParam(::GetModuleHandle(NULL),
             MAKEINTRESOURCE(nDialogID), hwndParent,
+            DialogBase::DialogProc, (LPARAM)this);
+        return nID;
+    }
+
+    BOOL CreateDialogIndirectDx(HWND hwndParent, const void *ptr)
+    {
+        m_bModal = FALSE;
+        m_hwnd = ::CreateDialogIndirectParam(
+            ::GetModuleHandle(NULL),
+            (const DLGTEMPLATE *)ptr,
+            hwndParent, DialogBase::DialogProc, (LPARAM)this);
+        if (m_hwnd)
+        {
+            SetUserData(m_hwnd, this);
+        }
+        return (m_hwnd != NULL);
+    }
+
+    INT_PTR DialogBoxIndirectDx(HWND hwndParent, const void *ptr)
+    {
+        m_bModal = TRUE;
+        INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL),
+            (const DLGTEMPLATE *)ptr, hwndParent,
             DialogBase::DialogProc, (LPARAM)this);
         return nID;
     }
