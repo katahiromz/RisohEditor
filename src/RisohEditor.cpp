@@ -1210,32 +1210,41 @@ struct TestDialog : DialogBase
             }
             break;
         }
-        return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+        return DefaultProcDx();
     }
 };
 
-INT_PTR CALLBACK
-TestMenuDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+struct TestMenuDlg : DialogBase
 {
-    static HMENU s_hMenu = NULL;
-    switch (uMsg)
-    {
-    case WM_INITDIALOG:
-        s_hMenu = (HMENU)lParam;
-        SetMenu(hwnd, s_hMenu);
-        return TRUE;
+    HMENU m_hMenu;
 
-    case WM_COMMAND:
-        switch (LOWORD(wParam))
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        SetMenu(hwnd, m_hMenu);
+        return TRUE;
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
         {
         case IDOK: case IDCANCEL:
-            EndDialog(hwnd, LOWORD(wParam));
+            EndDialog(hwnd, id);
             break;
         }
-        break;
     }
-    return FALSE;
-}
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
+};
 
 void MainWnd_OnTest(HWND hwnd)
 {
@@ -1256,19 +1265,17 @@ void MainWnd_OnTest(HWND hwnd)
     const ResEntry& Entry = g_Entries[i];
     if (Entry.type == RT_DIALOG)
     {
-		TestDialog dialog;
-		dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
+        TestDialog dialog;
+        dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
     }
     else if (Entry.type == RT_MENU)
     {
         HMENU hMenu = LoadMenuIndirect(&Entry[0]);
         if (hMenu)
         {
-            DialogBoxParamW(g_hInstance,
-                            MAKEINTRESOURCEW(IDD_MENUTEST),
-                            hwnd,
-                            TestMenuDlgProc,
-                            (LPARAM)hMenu);
+            TestMenuDlg dialog;
+            dialog.m_hMenu = hMenu;
+            dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
             DestroyMenu(hMenu);
         }
     }

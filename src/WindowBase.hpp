@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_WINDOW_BASE_HPP_
-#define MZC4_WINDOW_BASE_HPP_    18   /* Version 18 */
+#define MZC4_WINDOW_BASE_HPP_    19   /* Version 19 */
 
 #if _MSC_VER > 1000
     #pragma once
@@ -94,6 +94,7 @@ struct WindowBase
 {
     HWND m_hwnd;
     WNDPROC m_fnOldProc;
+    MSG m_msg;
 
     WindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
     {
@@ -146,6 +147,23 @@ struct WindowBase
         return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
+    LRESULT MZCAPI DefaultProcDx()
+    {
+        return DefaultProcDx(m_msg.hwnd, m_msg.message, m_msg.wParam, m_msg.lParam);
+    }
+
+    void SaveMessageDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        m_msg.hwnd = hwnd;
+        m_msg.message = uMsg;
+        m_msg.wParam = wParam;
+        m_msg.lParam = lParam;
+        m_msg.time = GetMessageTime();
+        LONG nPos = GetMessagePos();
+        m_msg.pt.x = GET_X_LPARAM(nPos);
+        m_msg.pt.y = GET_Y_LPARAM(nPos);
+    }
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -171,6 +189,7 @@ struct WindowBase
         LRESULT ret = 0;
         if (base)
         {
+            base->SaveMessageDx(hwnd, uMsg, wParam, lParam);
             ret = base->WindowProcDx(hwnd, uMsg, wParam, lParam);
 
             if (uMsg == WM_NCDESTROY)
@@ -498,6 +517,11 @@ struct DialogBase : public WindowBase
         return 0;
     }
 
+    LRESULT MZCAPI DefaultProcDx()
+    {
+        return DefaultProcDx(m_msg.hwnd, m_msg.message, m_msg.wParam, m_msg.lParam);
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -526,6 +550,7 @@ struct DialogBase : public WindowBase
         INT_PTR ret = 0;
         if (base)
         {
+            base->SaveMessageDx(hwnd, uMsg, wParam, lParam);
             ret = base->DialogProcDx(hwnd, uMsg, wParam, lParam);
             if (uMsg == WM_NCDESTROY)
             {
