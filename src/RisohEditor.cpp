@@ -2028,159 +2028,164 @@ void MainWnd_OnReplaceBitmap(HWND hwnd)
     dialog.DialogBoxDx(hwnd, IDD_REPLACEBMP);
 }
 
-BOOL AddCursorDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+struct AddCursorDlg : DialogBase
 {
-    if (lParam)
+    LPCWSTR File;
+
+    AddCursorDlg() : File(NULL)
+	{
+	}
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        LPCWSTR File = (LPCWSTR)lParam;
         SetDlgItemTextW(hwnd, edt1, File);
         if (g_hCursor)
             DestroyCursor(g_hCursor);
         g_hCursor = LoadCursorFromFile(File);
         SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+
+        DragAcceptFiles(hwnd, TRUE);
+
+        // for Langs
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
+
+        return TRUE;
     }
 
-    DragAcceptFiles(hwnd, TRUE);
-
-    // for Langs
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
-
-    return TRUE;
-}
-
-void AddCursorDlg_OnOK(HWND hwnd)
-{
-    ID_OR_STRING Type = RT_GROUP_CURSOR;
-
-    ID_OR_STRING Name;
-    HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-    if (!Cmb2_CheckName(hCmb2, Name))
-        return;
-
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    WORD Lang;
-    if (!Cmb3_CheckLang(hCmb3, Lang))
-        return;
-
-    std::wstring File;
-    HWND hEdt1 = GetDlgItem(hwnd, edt1);
-    if (!Edt1_CheckFile(hEdt1, File))
-        return;
-
-    BOOL Overwrite = FALSE;
-    INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
-    if (iEntry != -1)
+    void OnOK(HWND hwnd)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                             MB_ICONINFORMATION | MB_YESNOCANCEL);
+        ID_OR_STRING Type = RT_GROUP_CURSOR;
+
+        ID_OR_STRING Name;
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        if (!Cmb2_CheckName(hCmb2, Name))
+            return;
+
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        WORD Lang;
+        if (!Cmb3_CheckLang(hCmb3, Lang))
+            return;
+
+        std::wstring File;
+        HWND hEdt1 = GetDlgItem(hwnd, edt1);
+        if (!Edt1_CheckFile(hEdt1, File))
+            return;
+
+        BOOL Overwrite = FALSE;
+        INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
+        if (iEntry != -1)
+        {
+            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
+                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            switch (id)
+            {
+            case IDYES:
+                Overwrite = TRUE;
+                break;
+            case IDNO:
+            case IDCANCEL:
+                return;
+            }
+        }
+
+        if (Overwrite)
+        {
+            if (!DoReplaceCursor(hwnd, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACECUR),
+                            NULL, MB_ICONERROR);
+                return;
+            }
+        }
+        else
+        {
+            if (!DoAddCursor(hwnd, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDCUR), NULL,
+                            MB_ICONERROR);
+                return;
+            }
+        }
+
+        EndDialog(hwnd, IDOK);
+    }
+
+    void OnPsh1(HWND hwnd)
+    {
+        WCHAR File[MAX_PATH];
+        GetDlgItemText(hwnd, edt1, File, _countof(File));
+
+        std::wstring strFile = File;
+        str_trim(strFile);
+        lstrcpynW(File, strFile.c_str(), _countof(File));
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_ADDCUR);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"cur";
+        if (GetOpenFileNameW(&ofn))
+        {
+            SetDlgItemTextW(hwnd, edt1, File);
+            if (g_hCursor)
+                DestroyCursor(g_hCursor);
+            g_hCursor = LoadCursorFromFile(File);
+            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+        }
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
         switch (id)
         {
-        case IDYES:
-            Overwrite = TRUE;
+        case IDOK:
+            OnOK(hwnd);
             break;
-        case IDNO:
         case IDCANCEL:
-            return;
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
+            break;
         }
     }
 
-    if (Overwrite)
+    void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        if (!DoReplaceCursor(hwnd, Name, Lang, File))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACECUR),
-                        NULL, MB_ICONERROR);
-            return;
-        }
-    }
-    else
-    {
-        if (!DoAddCursor(hwnd, Name, Lang, File))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDCUR), NULL,
-                        MB_ICONERROR);
-            return;
-        }
-    }
-
-    EndDialog(hwnd, IDOK);
-}
-
-void AddCursorDlg_OnPsh1(HWND hwnd)
-{
-    WCHAR File[MAX_PATH];
-    GetDlgItemText(hwnd, edt1, File, _countof(File));
-
-    std::wstring strFile = File;
-    str_trim(strFile);
-    lstrcpynW(File, strFile.c_str(), _countof(File));
-
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_ADDCUR);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"cur";
-    if (GetOpenFileNameW(&ofn))
-    {
+        WCHAR File[MAX_PATH];
+        DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
+
         if (g_hCursor)
             DestroyCursor(g_hCursor);
         g_hCursor = LoadCursorFromFile(File);
         SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
     }
-}
 
-void AddCursorDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    switch (id)
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-    case IDOK:
-        AddCursorDlg_OnOK(hwnd);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    case psh1:
-        AddCursorDlg_OnPsh1(hwnd);
-        break;
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return 0;
     }
-}
-
-void AddCursorDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
-{
-    WCHAR File[MAX_PATH];
-    DragQueryFileW(hdrop, 0, File, _countof(File));
-    SetDlgItemTextW(hwnd, edt1, File);
-
-    if (g_hCursor)
-        DestroyCursor(g_hCursor);
-    g_hCursor = LoadCursorFromFile(File);
-    SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
-}
-
-INT_PTR CALLBACK
-AddCursorDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, AddCursorDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_DROPFILES, AddCursorDlg_OnDropFiles);
-        HANDLE_MSG(hwnd, WM_COMMAND, AddCursorDlg_OnCommand);
-    }
-    return 0;
-}
+};
 
 void MainWnd_OnAddCursor(HWND hwnd)
 {
-    DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDCURSOR), hwnd,
-                    AddCursorDialogProc, 0);
+    AddCursorDlg dialog;
+    dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
 }
 
 BOOL AddResDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -6037,8 +6042,9 @@ void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".cur") == 0)
         {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDCURSOR), hwnd,
-                            AddCursorDialogProc, (LPARAM)File);
+			AddCursorDlg dialog;
+			dialog.File = File;
+			dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
             return;
         }
         else if (lstrcmpiW(pch, L".bmp") == 0 ||
