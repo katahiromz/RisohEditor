@@ -1713,7 +1713,6 @@ struct ReplaceCursorDlg : DialogBase
     }
 };
 
-
 void MainWnd_OnReplaceCursor(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -1750,146 +1749,150 @@ void MainWnd_OnOpen(HWND hwnd)
     }
 }
 
-BOOL AddBitmapDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+struct AddBitmapDlg : DialogBase
 {
-    if (lParam)
+    LPCWSTR File;
+    AddBitmapDlg() : File(NULL)
     {
-        LPCWSTR File = (LPCWSTR)lParam;
-        SetDlgItemTextW(hwnd, edt1, File);
     }
 
-    DragAcceptFiles(hwnd, TRUE);
-
-    // for Langs
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
-
-    return TRUE;
-}
-
-void AddBitmapDlg_OnPsh1(HWND hwnd)
-{
-    WCHAR File[MAX_PATH];
-    GetDlgItemText(hwnd, edt1, File, _countof(File));
-
-    std::wstring strFile = File;
-    str_trim(strFile);
-    lstrcpynW(File, strFile.c_str(), _countof(File));
-
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_ADDBMP);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"bmp";
-    if (GetOpenFileNameW(&ofn))
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemTextW(hwnd, edt1, File);
+
+        DragAcceptFiles(hwnd, TRUE);
+
+        // for Langs
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
+
+        return TRUE;
     }
-}
 
-void AddBitmapDlg_OnOK(HWND hwnd)
-{
-    ID_OR_STRING Type = RT_GROUP_ICON;
-
-    ID_OR_STRING Name;
-    HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-    if (!Cmb2_CheckName(hCmb2, Name))
-        return;
-
-    HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-    WORD Lang;
-    if (!Cmb3_CheckLang(hCmb3, Lang))
-        return;
-
-    BOOL Overwrite = FALSE;
-    INT iEntry = Res_Find(g_Entries, RT_BITMAP, Name, Lang);
-    if (iEntry != -1)
+    void OnPsh1(HWND hwnd)
     {
-        INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                             MB_ICONINFORMATION | MB_YESNOCANCEL);
+        WCHAR File[MAX_PATH];
+        GetDlgItemText(hwnd, edt1, File, _countof(File));
+
+        std::wstring strFile = File;
+        str_trim(strFile);
+        lstrcpynW(File, strFile.c_str(), _countof(File));
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_ADDBMP);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"bmp";
+        if (GetOpenFileNameW(&ofn))
+        {
+            SetDlgItemTextW(hwnd, edt1, File);
+        }
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        ID_OR_STRING Type = RT_GROUP_ICON;
+
+        ID_OR_STRING Name;
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        if (!Cmb2_CheckName(hCmb2, Name))
+            return;
+
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        WORD Lang;
+        if (!Cmb3_CheckLang(hCmb3, Lang))
+            return;
+
+        BOOL Overwrite = FALSE;
+        INT iEntry = Res_Find(g_Entries, RT_BITMAP, Name, Lang);
+        if (iEntry != -1)
+        {
+            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
+                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            switch (id)
+            {
+            case IDYES:
+                Overwrite = TRUE;
+                break;
+            case IDNO:
+            case IDCANCEL:
+                return;
+            }
+        }
+
+        std::wstring File;
+        HWND hEdt1 = GetDlgItem(hwnd, edt1);
+        if (!Edt1_CheckFile(hEdt1, File))
+            return;
+
+        if (Overwrite)
+        {
+            if (!DoReplaceBitmap(hwnd, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEBMP),
+                            NULL, MB_ICONERROR);
+                return;
+            }
+        }
+        else
+        {
+            if (!DoAddBitmap(hwnd, Name, Lang, File))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTADDBMP),
+                            NULL, MB_ICONERROR);
+                return;
+            }
+        }
+
+        EndDialog(hwnd, IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
         switch (id)
         {
-        case IDYES:
-            Overwrite = TRUE;
+        case IDOK:
+            OnOK(hwnd);
             break;
-        case IDNO:
         case IDCANCEL:
-            return;
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
+            break;
         }
     }
 
-    std::wstring File;
-    HWND hEdt1 = GetDlgItem(hwnd, edt1);
-    if (!Edt1_CheckFile(hEdt1, File))
-        return;
-
-    if (Overwrite)
+    void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        if (!DoReplaceBitmap(hwnd, Name, Lang, File))
+        WCHAR File[MAX_PATH];
+        DragQueryFileW(hdrop, 0, File, _countof(File));
+        SetDlgItemTextW(hwnd, edt1, File);
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEBMP),
-                        NULL, MB_ICONERROR);
-            return;
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         }
+        return DefaultProcDx();
     }
-    else
-    {
-        if (!DoAddBitmap(hwnd, Name, Lang, File))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTADDBMP),
-                        NULL, MB_ICONERROR);
-            return;
-        }
-    }
-
-    EndDialog(hwnd, IDOK);
-}
-
-void AddBitmapDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    switch (id)
-    {
-    case IDOK:
-        AddBitmapDlg_OnOK(hwnd);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    case psh1:
-        AddBitmapDlg_OnPsh1(hwnd);
-        break;
-    }
-}
-
-void AddBitmapDlg_OnDropFiles(HWND hwnd, HDROP hdrop)
-{
-    WCHAR File[MAX_PATH];
-    DragQueryFileW(hdrop, 0, File, _countof(File));
-    SetDlgItemTextW(hwnd, edt1, File);
-}
-
-INT_PTR CALLBACK
-AddBitmapDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, AddBitmapDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_DROPFILES, AddBitmapDlg_OnDropFiles);
-        HANDLE_MSG(hwnd, WM_COMMAND, AddBitmapDlg_OnCommand);
-    }
-    return 0;
-}
+};
 
 void MainWnd_OnAddBitmap(HWND hwnd)
 {
-    DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
-                    AddBitmapDialogProc, 0);
+    AddBitmapDlg dialog;
+    dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
 }
 
 BOOL ReplaceBitmapDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -6032,16 +6035,12 @@ void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
                             AddCursorDialogProc, (LPARAM)File);
             return;
         }
-        else if (lstrcmpiW(pch, L".bmp") == 0)
+        else if (lstrcmpiW(pch, L".bmp") == 0 ||
+				 lstrcmpiW(pch, L".png") == 0)
         {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
-                            AddBitmapDialogProc, (LPARAM)File);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".png") == 0)
-        {
-            DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDBITMAP), hwnd,
-                            AddBitmapDialogProc, (LPARAM)File);
+			AddBitmapDlg dialog;
+			dialog.File = File;
+            dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
             return;
         }
         else if (lstrcmpiW(pch, L".res") == 0)
