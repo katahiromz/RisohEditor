@@ -30,6 +30,7 @@
 #endif
 
 #include "resource.h"
+#include "WindowBase.hpp"
 
 LPWSTR LoadStringDx(UINT id);
 std::wstring str_vkey(WORD w);
