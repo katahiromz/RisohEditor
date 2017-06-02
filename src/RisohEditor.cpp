@@ -1183,33 +1183,36 @@ void MainWnd_OnSaveAs(HWND hwnd)
     }
 }
 
-INT_PTR CALLBACK
-TestDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+struct TestDialog : DialogBase
 {
-    DWORD dwStyle;
-    switch (uMsg)
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-    case WM_LBUTTONDOWN:
-        dwStyle = GetWindowStyle(hwnd);
-        if (!(dwStyle & WS_SYSMENU))
+        DWORD dwStyle;
+        switch (uMsg)
         {
+        case WM_LBUTTONDOWN:
+            dwStyle = GetWindowStyle(hwnd);
+            if (!(dwStyle & WS_SYSMENU))
+            {
+                EndDialog(hwnd, IDOK);
+            }
+            break;
+        case WM_LBUTTONDBLCLK:
             EndDialog(hwnd, IDOK);
-        }
-        break;
-    case WM_LBUTTONDBLCLK:
-        EndDialog(hwnd, IDOK);
-        break;
-    case WM_COMMAND:
-        switch (LOWORD(wParam))
-        {
-        case IDOK: case IDCANCEL:
-            EndDialog(hwnd, LOWORD(wParam));
+            break;
+        case WM_COMMAND:
+            switch (LOWORD(wParam))
+            {
+            case IDOK: case IDCANCEL:
+                EndDialog(hwnd, LOWORD(wParam));
+                break;
+            }
             break;
         }
-        break;
+        return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
-    return 0;
-}
+};
 
 INT_PTR CALLBACK
 TestMenuDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1253,10 +1256,8 @@ void MainWnd_OnTest(HWND hwnd)
     const ResEntry& Entry = g_Entries[i];
     if (Entry.type == RT_DIALOG)
     {
-        DialogBoxIndirectW(g_hInstance,
-                           (LPDLGTEMPLATE)Entry.ptr(),
-                           hwnd,
-                           TestDialogProc);
+		TestDialog dialog;
+		dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
     }
     else if (Entry.type == RT_MENU)
     {
