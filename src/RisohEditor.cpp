@@ -5269,6 +5269,8 @@ BOOL MainWnd_CompileIfNecessary(HWND hwnd)
     return TRUE;
 }
 
+std::map<HWND, WNDPROC> g_map;
+
 struct RadHelper
 {
     HWND m_hwndOwner;
@@ -5355,14 +5357,16 @@ struct RadHelper
         case WM_SETCURSOR:
             return 0;
         }
-        WNDPROC OldProc = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        return CallWindowProc(OldProc, hwnd, uMsg, wParam, lParam);
+        WNDPROC OldProc = g_map[hwnd];
+        if (OldProc)
+            return CallWindowProc(OldProc, hwnd, uMsg, wParam, lParam);
+        return 0;
     }
 
     void SubclassChild(HWND hCtrl)
     {
         WNDPROC OldProc = SubclassWindow(hCtrl, RadHelper::ControlWindowProc);
-        SetWindowLongPtr(hCtrl, GWLP_USERDATA, (LONG_PTR)OldProc);
+        g_map[hCtrl] = OldProc;
 
         SubclassAllChildren(hCtrl);
     }
