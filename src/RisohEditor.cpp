@@ -199,7 +199,8 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     return hbmIcon;
 }
 
-HBITMAP CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
+HBITMAP
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 {
     ICONDIR dir;
     if (Entry.size() < sizeof(dir))
@@ -291,7 +292,8 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     return hbmCursor;
 }
 
-HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
+HBITMAP
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 {
     ICONDIR dir;
     if (Entry.size() < sizeof(dir))
