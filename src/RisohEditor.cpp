@@ -1031,9 +1031,9 @@ Res_GetLangName(WORD Lang)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// MainWnd
+// MMainWnd
 
-struct MainWnd : MWindowBase
+struct MMainWnd : MWindowBase
 {
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
@@ -1061,7 +1061,7 @@ struct MainWnd : MWindowBase
     WCHAR       m_szFile[MAX_PATH];
     ResEntries  m_Entries;
 
-    MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
+    MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc),
         m_targv(targv),
         m_hInst(hInst),
@@ -3161,7 +3161,7 @@ WinMain(HINSTANCE   hInstance,
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     {
-        MainWnd app(argc, targv, hInstance);
+        MMainWnd app(argc, targv, hInstance);
 
         if (app.StartDx(nCmdShow))
         {
