@@ -1473,9 +1473,11 @@ struct MAddBitmapDlg : MDialogBase
 
 struct MReplaceBitmapDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     ResEntry& m_Entry;
 
-    MReplaceBitmapDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEBMP), m_Entry(Entry)
+    MReplaceBitmapDlg(ResEntries& Entries, ResEntry& Entry)
+        : MDialogBase(IDD_REPLACEBMP), m_Entries(Entries), m_Entry(Entry)
     {
     }
 
@@ -1521,7 +1523,7 @@ struct MReplaceBitmapDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBitmap(hwnd, g_Entries, Name, Lang, File))
+        if (!DoReplaceBitmap(hwnd, m_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;
@@ -4712,7 +4714,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceBitmapDlg dialog(g_Entries[i]);
+        MReplaceBitmapDlg dialog(g_Entries, g_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
