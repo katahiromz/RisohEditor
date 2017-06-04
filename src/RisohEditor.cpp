@@ -596,39 +596,6 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
 //////////////////////////////////////////////////////////////////////////////
 // actions
 
-BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
-{
-    ByteStream stream;
-    if (!stream.LoadFromFile(ResFile))
-        return FALSE;
-
-    ResourceHeader header;
-    while (header.ReadFrom(stream))
-    {
-        if (header.DataSize == 0)
-        {
-            stream.ReadDwordAlignment();
-            continue;
-        }
-
-        ResEntry entry;
-        entry.data.resize(header.DataSize);
-        if (!stream.ReadData(&entry.data[0], header.DataSize))
-        {
-            break;
-        }
-
-        entry.lang = header.LanguageId;
-        entry.updated = TRUE;
-        entry.type = header.Type;
-        entry.name = header.Name;
-        entries.push_back(entry);
-
-        stream.ReadDwordAlignment();
-    }
-    return TRUE;
-}
-
 BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
 {
     if (FileName == 0 || FileName[0] == UNICODE_NULL)
@@ -652,52 +619,6 @@ BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
     {
         SetWindowTextW(hwnd, g_szTitle);
     }
-    return TRUE;
-}
-
-BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
-{
-    WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
-
-    if (GetPathOfShortcutDx(hwnd, FileName, ResolvedPath))
-    {
-        GetFullPathNameW(ResolvedPath, _countof(Path), Path, &pchPart);
-    }
-    else
-    {
-        GetFullPathNameW(FileName, _countof(Path), Path, &pchPart);
-    }
-
-    LPWSTR pch = wcsrchr(Path, L'.');
-    if (pch && lstrcmpiW(pch, L".res") == 0)
-    {
-        // .res files
-        ResEntries entries;
-        if (!DoImport(hwnd, Path, entries))
-            return FALSE;
-
-        Entries = entries;
-        TV_RefreshInfo(g_hTreeView, Entries);
-        DoSetFile(hwnd, Path);
-        return TRUE;
-    }
-
-    // executable files
-    HMODULE hMod = LoadLibraryExW(Path, NULL, LOAD_LIBRARY_AS_DATAFILE);
-    if (hMod == NULL)
-    {
-        MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTOPEN), NULL, MB_ICONERROR);
-        return FALSE;
-    }
-
-    Entries.clear();
-    Res_GetListFromRes(hMod, (LPARAM)&Entries);
-    FreeLibrary(hMod);
-
-    TV_RefreshInfo(g_hTreeView, Entries);
-    DoSetFile(hwnd, Path);
-    g_bInEdit = FALSE;
-
     return TRUE;
 }
 
@@ -6255,6 +6176,85 @@ struct MainWnd : MWindowBase
             g_Langs.push_back(entry);
         }
         std::sort(g_Langs.begin(), g_Langs.end());
+    }
+
+    BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
+    {
+        WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
+
+        if (GetPathOfShortcutDx(hwnd, FileName, ResolvedPath))
+        {
+            GetFullPathNameW(ResolvedPath, _countof(Path), Path, &pchPart);
+        }
+        else
+        {
+            GetFullPathNameW(FileName, _countof(Path), Path, &pchPart);
+        }
+
+        LPWSTR pch = wcsrchr(Path, L'.');
+        if (pch && lstrcmpiW(pch, L".res") == 0)
+        {
+            // .res files
+            ResEntries entries;
+            if (!DoImport(hwnd, Path, entries))
+                return FALSE;
+
+            Entries = entries;
+            TV_RefreshInfo(g_hTreeView, Entries);
+            DoSetFile(hwnd, Path);
+            return TRUE;
+        }
+
+        // executable files
+        HMODULE hMod = LoadLibraryExW(Path, NULL, LOAD_LIBRARY_AS_DATAFILE);
+        if (hMod == NULL)
+        {
+            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTOPEN), NULL, MB_ICONERROR);
+            return FALSE;
+        }
+
+        Entries.clear();
+        Res_GetListFromRes(hMod, (LPARAM)&Entries);
+        FreeLibrary(hMod);
+
+        TV_RefreshInfo(g_hTreeView, Entries);
+        DoSetFile(hwnd, Path);
+        g_bInEdit = FALSE;
+
+        return TRUE;
+    }
+
+    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
+    {
+        ByteStream stream;
+        if (!stream.LoadFromFile(ResFile))
+            return FALSE;
+
+        ResourceHeader header;
+        while (header.ReadFrom(stream))
+        {
+            if (header.DataSize == 0)
+            {
+                stream.ReadDwordAlignment();
+                continue;
+            }
+
+            ResEntry entry;
+            entry.data.resize(header.DataSize);
+            if (!stream.ReadData(&entry.data[0], header.DataSize))
+            {
+                break;
+            }
+
+            entry.lang = header.LanguageId;
+            entry.updated = TRUE;
+            entry.type = header.Type;
+            entry.name = header.Name;
+            entries.push_back(entry);
+
+            stream.ReadDwordAlignment();
+        }
+        return TRUE;
     }
 };
 
