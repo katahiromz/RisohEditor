@@ -1,9 +1,14 @@
+// IconRes --- Icon Resources
+//////////////////////////////////////////////////////////////////////////////
+
 #ifndef ICON_RES_HPP_
 #define ICON_RES_HPP_
 
 #include <windows.h>
 #include <cassert>
 #include "ByteStream.hpp"
+
+//////////////////////////////////////////////////////////////////////////////
 
 // the common header of RT_CURSOR, RT_ICON, icon/cursor files
 typedef struct ICONDIR
@@ -67,6 +72,8 @@ typedef struct GRPCURSORDIRENTRY
     WORD    nID;                // the ID
 } GRPCURSORDIRENTRY, *LPGRPCURSORDIRENTRY;
 #include <poppack.h>
+
+//////////////////////////////////////////////////////////////////////////////
 
 class IconFile
 {
@@ -278,6 +285,8 @@ protected:
     EntryListType               m_entries;
     DataListType                m_images;
 }; // class IconFile
+
+//////////////////////////////////////////////////////////////////////////////
 
 class CursorFile
 {
@@ -506,4 +515,8 @@ protected:
     DataListType                m_images;
 }; // class CursorFile
 
+//////////////////////////////////////////////////////////////////////////////
+
 #endif  // ndef ICON_RES_HPP_
+
+//////////////////////////////////////////////////////////////////////////////

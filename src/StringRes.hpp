@@ -4,9 +4,8 @@
 #ifndef STRING_RES_HPP_
 #define STRING_RES_HPP_
 
-#include "RisohEditor.hpp"
+#include "ByteStream.hpp"
 #include "Text.hpp"
-
 #include <map>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -25,7 +24,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 class StringRes
 {
 public:
-    typedef std::wstring    string_type;
+    typedef std::wstring string_type;
     typedef std::map<WORD, string_type> map_type;
 
     StringRes()
