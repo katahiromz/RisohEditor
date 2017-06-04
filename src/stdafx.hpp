@@ -57,6 +57,9 @@ std::wstring str_vkey(WORD w);
 #include "File.hpp"
 #include "ProcessMaker.hpp"
 
+#include "TestMenuDlg.hpp"
+#include "TestDialog.hpp"
+
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "ole32.lib")
 #pragma comment(lib, "shell32.lib")
