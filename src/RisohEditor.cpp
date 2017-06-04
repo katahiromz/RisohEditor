@@ -386,6 +386,86 @@ HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry
     return hbm;
 }
 
+BOOL DoAddCursor(HWND hwnd,
+                 ResEntries& Entries,
+                 const ID_OR_STRING& Name,
+                 WORD Lang,
+                 const std::wstring& CurFile)
+{
+    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, FALSE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoReplaceCursor(HWND hwnd,
+                     ResEntries& Entries,
+                     const ID_OR_STRING& Name,
+                     WORD Lang,
+                     const std::wstring& CurFile)
+{
+    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, TRUE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoAddIcon(HWND hwnd,
+               ResEntries& Entries,
+               const ID_OR_STRING& Name,
+               WORD Lang,
+               const std::wstring& IconFile)
+{
+    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, FALSE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoReplaceIcon(HWND hwnd,
+                   ResEntries& Entries,
+                   const ID_OR_STRING& Name,
+                   WORD Lang,
+                   const std::wstring& IconFile)
+{
+    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, TRUE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoAddBin(HWND hwnd,
+              ResEntries& Entries,
+              const ID_OR_STRING& Type,
+              const ID_OR_STRING& Name,
+              WORD Lang,
+              const std::wstring& File)
+{
+    ByteStream bs;
+    if (!bs.LoadFromFile(File.c_str()))
+        return FALSE;
+
+    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoReplaceBin(HWND hwnd,
+                  ResEntries& Entries,
+                  const ID_OR_STRING& Type,
+                  const ID_OR_STRING& Name,
+                  WORD Lang,
+                  const std::wstring& File)
+{
+    ByteStream bs;
+    if (!bs.LoadFromFile(File.c_str()))
+        return FALSE;
+
+    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), TRUE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // specialized tool bar
 
@@ -619,186 +699,6 @@ BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
     {
         SetWindowTextW(hwnd, g_szTitle);
     }
-    return TRUE;
-}
-
-BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
-{
-    ByteStream bs(Entry.data);
-    return bs.SaveToFile(FileName);
-}
-
-BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
-{
-    LPWSTR TempFile = GetTempFileNameDx(L"ERE");
-
-    BOOL b1 = ::CopyFileW(g_szFile, TempFile, FALSE);
-    BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, Entries);
-    BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
-    if (b3)
-    {
-        DeleteFileW(TempFile);
-        Res_Optimize(Entries);
-        DoSetFile(hwnd, ExeFile);
-
-        return TRUE;
-    }
-
-    DeleteFileW(TempFile);
-    return FALSE;
-}
-
-BOOL DoExtractIcon(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
-{
-    if (Entry.type == RT_GROUP_ICON)
-        return Res_ExtractGroupIcon(Entries, Entry, FileName);
-    else if (Entry.type == RT_ICON)
-        return Res_ExtractIcon(Entries, Entry, FileName);
-    else
-        return FALSE;
-}
-
-BOOL DoExtractCursor(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
-{
-    if (Entry.type == RT_GROUP_CURSOR)
-        return Res_ExtractGroupCursor(Entries, Entry, FileName);
-    else if (Entry.type == RT_CURSOR)
-        return Res_ExtractCursor(Entries, Entry, FileName);
-    else
-        return FALSE;
-}
-
-BOOL DoExtractBitmap(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry, BOOL WritePNG)
-{
-    BITMAPFILEHEADER FileHeader;
-
-    if (WritePNG)
-    {
-        HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
-        BOOL ret = !!ii_png_save_w(FileName, hbm, 0);
-        DeleteObject(hbm);
-        return ret;
-    }
-
-    FileHeader.bfType = 0x4d42;
-    FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + Entry.size());
-    FileHeader.bfReserved1 = 0;
-    FileHeader.bfReserved2 = 0;
-
-    DWORD Offset = PackedDIB_GetBitsOffset(&Entry[0], Entry.size());
-    if (Offset == 0)
-        return FALSE;
-
-    FileHeader.bfOffBits = sizeof(FileHeader) + Offset;
-
-    ByteStream bs;
-    if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&Entry[0], Entry.size()))
-        return FALSE;
-
-    return bs.SaveToFile(FileName);
-}
-
-BOOL DoAddBin(HWND hwnd,
-              ResEntries& Entries,
-              const ID_OR_STRING& Type,
-              const ID_OR_STRING& Name,
-              WORD Lang,
-              const std::wstring& File)
-{
-    ByteStream bs;
-    if (!bs.LoadFromFile(File.c_str()))
-        return FALSE;
-
-    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), FALSE);
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceBin(HWND hwnd,
-                  ResEntries& Entries,
-                  const ID_OR_STRING& Type,
-                  const ID_OR_STRING& Name,
-                  WORD Lang,
-                  const std::wstring& File)
-{
-    ByteStream bs;
-    if (!bs.LoadFromFile(File.c_str()))
-        return FALSE;
-
-    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), TRUE);
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddIcon(HWND hwnd,
-               ResEntries& Entries,
-               const ID_OR_STRING& Name,
-               WORD Lang,
-               const std::wstring& IconFile)
-{
-    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceIcon(HWND hwnd,
-                   ResEntries& Entries,
-                   const ID_OR_STRING& Name,
-                   WORD Lang,
-                   const std::wstring& IconFile)
-{
-    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddCursor(HWND hwnd,
-                 ResEntries& Entries,
-                 const ID_OR_STRING& Name,
-                 WORD Lang,
-                 const std::wstring& CurFile)
-{
-    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceCursor(HWND hwnd,
-                     ResEntries& Entries,
-                     const ID_OR_STRING& Name,
-                     WORD Lang,
-                     const std::wstring& CurFile)
-{
-    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddBitmap(HWND hwnd,
-                 ResEntries& Entries,
-                 const ID_OR_STRING& Name,
-                 WORD Lang,
-                 const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceBitmap(HWND hwnd,
-                     ResEntries& Entries,
-                     const ID_OR_STRING& Name,
-                     WORD Lang,
-                     const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
@@ -1395,6 +1295,30 @@ struct ReplaceCursorDlg : MDialogBase
 //////////////////////////////////////////////////////////////////////////////
 // AddBitmapDlg
 
+BOOL DoAddBitmap(HWND hwnd,
+                 ResEntries& Entries,
+                 const ID_OR_STRING& Name,
+                 WORD Lang,
+                 const std::wstring& BitmapFile)
+{
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoReplaceBitmap(HWND hwnd,
+                     ResEntries& Entries,
+                     const ID_OR_STRING& Name,
+                     WORD Lang,
+                     const std::wstring& BitmapFile)
+{
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
 struct AddBitmapDlg : MDialogBase
 {
     LPCWSTR File;
@@ -1662,7 +1586,7 @@ struct ReplaceBitmapDlg : MDialogBase
 
 struct AddCursorDlg : MDialogBase
 {
-    LPCWSTR File;
+    LPCWSTR   File;
     HCURSOR   m_hCursor;
 
     AddCursorDlg() : File(NULL)
@@ -1824,6 +1748,12 @@ struct AddCursorDlg : MDialogBase
 
 struct AddResDlg : MDialogBase
 {
+    ResEntries& m_Entries;
+
+    AddResDlg(ResEntries& Entries) : m_Entries(Entries)
+    {
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         DragAcceptFiles(hwnd, TRUE);
@@ -4783,7 +4713,7 @@ struct MainWnd : MWindowBase
 
     void OnAddRes(HWND hwnd)
     {
-        AddResDlg dialog;
+        AddResDlg dialog(g_Entries);
         dialog.DialogBoxDx(hwnd, IDD_ADDRES);
     }
 
@@ -6162,6 +6092,12 @@ struct MainWnd : MWindowBase
         return TRUE;
     }
 
+    BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
+    {
+        ByteStream bs(Entry.data);
+        return bs.SaveToFile(FileName);
+    }
+
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
     {
         ByteStream stream;
@@ -6255,6 +6191,76 @@ struct MainWnd : MWindowBase
         }
 
         return DoSaveExeAs(hwnd, Entries, ExeFile);
+    }
+
+    BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    {
+        LPWSTR TempFile = GetTempFileNameDx(L"ERE");
+
+        BOOL b1 = ::CopyFileW(g_szFile, TempFile, FALSE);
+        BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, Entries);
+        BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
+        if (b3)
+        {
+            DeleteFileW(TempFile);
+            Res_Optimize(Entries);
+            DoSetFile(hwnd, ExeFile);
+
+            return TRUE;
+        }
+
+        DeleteFileW(TempFile);
+        return FALSE;
+    }
+
+    BOOL DoExtractIcon(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
+    {
+        if (Entry.type == RT_GROUP_ICON)
+            return Res_ExtractGroupIcon(Entries, Entry, FileName);
+        else if (Entry.type == RT_ICON)
+            return Res_ExtractIcon(Entries, Entry, FileName);
+        else
+            return FALSE;
+    }
+
+    BOOL DoExtractCursor(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
+    {
+        if (Entry.type == RT_GROUP_CURSOR)
+            return Res_ExtractGroupCursor(Entries, Entry, FileName);
+        else if (Entry.type == RT_CURSOR)
+            return Res_ExtractCursor(Entries, Entry, FileName);
+        else
+            return FALSE;
+    }
+
+    BOOL DoExtractBitmap(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry, BOOL WritePNG)
+    {
+        BITMAPFILEHEADER FileHeader;
+
+        if (WritePNG)
+        {
+            HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+            BOOL ret = !!ii_png_save_w(FileName, hbm, 0);
+            DeleteObject(hbm);
+            return ret;
+        }
+
+        FileHeader.bfType = 0x4d42;
+        FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + Entry.size());
+        FileHeader.bfReserved1 = 0;
+        FileHeader.bfReserved2 = 0;
+
+        DWORD Offset = PackedDIB_GetBitsOffset(&Entry[0], Entry.size());
+        if (Offset == 0)
+            return FALSE;
+
+        FileHeader.bfOffBits = sizeof(FileHeader) + Offset;
+
+        ByteStream bs;
+        if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&Entry[0], Entry.size()))
+            return FALSE;
+
+        return bs.SaveToFile(FileName);
     }
 };
 
