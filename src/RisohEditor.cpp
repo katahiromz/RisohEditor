@@ -4405,8 +4405,6 @@ struct MainWnd : public WindowBase
         wcx.hIconSm = m_hIcon;
     }
 
-    BOOL RegisterClassesDx();
-
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("katahiromz's RisohEditor");
@@ -6231,11 +6229,6 @@ struct MainWnd : public WindowBase
     }
 };
 
-BOOL MainWnd::RegisterClassesDx()
-{
-    return TRUE;
-}
-
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
@@ -6251,20 +6244,13 @@ WinMain(HINSTANCE   hInstance,
     {
         MainWnd app(argc, targv, hInstance);
 
-        if (app.RegisterClassesDx())
+        if (app.StartDx(nCmdShow))
         {
-            if (app.StartDx(nCmdShow))
-            {
-                ret = INT(app.RunDx());
-            }
-            else
-            {
-                ret = 2;
-            }
+            ret = INT(app.RunDx());
         }
         else
         {
-            ret = 1;
+            ret = 2;
         }
     }
     CoUninitialize();
