@@ -35,6 +35,9 @@ BOOL        g_bInEdit = FALSE;
 
 HBITMAP     g_hBitmap = NULL;
 
+//////////////////////////////////////////////////////////////////////////////
+// languages
+
 struct LangEntry
 {
     WORD LangID;
@@ -2494,6 +2497,8 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 struct ACCEL_ENTRY
 {
     WCHAR sz0[128];
@@ -2539,6 +2544,9 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 
     return TRUE;
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// AddKeyDlg
 
 struct AddKeyDlg : DialogBase
 {
@@ -2612,6 +2620,9 @@ struct AddKeyDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// ModifyKeyDlg
 
 struct ModifyKeyDlg : DialogBase
 {
@@ -2722,6 +2733,9 @@ struct ModifyKeyDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// EditAccelDlg
 
 struct EditAccelDlg : DialogBase
 {
@@ -3050,6 +3064,9 @@ struct EditAccelDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// STRING_ENTRY
+
 struct STRING_ENTRY
 {
     WCHAR StringID[128];
@@ -3082,6 +3099,9 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// AddStrDlg
 
 struct AddStrDlg : DialogBase
 {
@@ -3122,6 +3142,9 @@ struct AddStrDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// ModifyStrDlg
+
 struct ModifyStrDlg : DialogBase
 {
     STRING_ENTRY& m_entry;
@@ -3160,6 +3183,9 @@ struct ModifyStrDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// StringsDlg
 
 struct StringsDlg : DialogBase
 {
@@ -3401,6 +3427,9 @@ struct StringsDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// MENU_ENTRY
+
 struct MENU_ENTRY
 {
     WCHAR Caption[128];
@@ -3409,6 +3438,9 @@ struct MENU_ENTRY
     WCHAR HelpID[64];
     WORD wDepth;
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// AddMItemDlg
 
 struct AddMItemDlg : DialogBase
 {
@@ -3510,6 +3542,9 @@ struct AddMItemDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// ModifyMItemDlg
 
 struct ModifyMItemDlg : DialogBase
 {
@@ -3649,6 +3684,9 @@ struct ModifyMItemDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// EditMenuDlg
 
 struct EditMenuDlg : DialogBase
 {
@@ -4188,6 +4226,9 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     return TRUE;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// BmpView
+
 struct BmpView : WindowBase
 {
     BITMAP      m_bm;
@@ -4404,6 +4445,9 @@ Res_GetLangName(WORD Lang)
     }
     return std::wstring(sz);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// MainWnd
 
 struct MainWnd : WindowBase
 {
