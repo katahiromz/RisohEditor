@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////
-// File.cpp -- Win32 file or pipe wrapper
+// MFile.cpp -- Win32 file or pipe wrapper
 // This file is part of MZC3.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
@@ -8,7 +8,7 @@
 #ifdef MZC_NO_INLINING
     #undef MZC_INLINE
     #define MZC_INLINE  /*empty*/
-    #include "File_inl.hpp"
+    #include "MFile_inl.hpp"
 #endif
 
 using namespace std;

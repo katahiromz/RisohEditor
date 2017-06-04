@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
-// File_inl.hpp -- Win32 file or pipe wrapper
-// This file is part of MZC3.  See file "ReadMe.txt" and "License.txt".
+// MFile_inl.hpp -- Win32 file or pipe wrapper
+// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
 MZC_INLINE MFile::MFile() : m_hFile(INVALID_HANDLE_VALUE)

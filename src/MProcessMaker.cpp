@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
-// ProcessMaker.cpp -- Win32 process maker
-// This file is part of MZC3.  See file "ReadMe.txt" and "License.txt".
+// MProcessMaker.cpp -- Win32 process maker
+// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.hpp"
@@ -8,7 +8,7 @@
 #ifdef MZC_NO_INLINING
     #undef MZC_INLINE
     #define MZC_INLINE  /*empty*/
-    #include "ProcessMaker_inl.hpp"
+    #include "MProcessMaker_inl.hpp"
 #endif
 
 using namespace std;

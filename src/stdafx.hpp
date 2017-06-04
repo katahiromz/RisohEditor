@@ -48,8 +48,8 @@ std::wstring str_vkey(WORD w);
 #include "Png.hpp"
 #include "Res.hpp"
 
-#include "File.hpp"
-#include "ProcessMaker.hpp"
+#include "MFile.hpp"
+#include "MProcessMaker.hpp"
 
 #include "MTestMenuDlg.hpp"
 #include "MTestDialog.hpp"

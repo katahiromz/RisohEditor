@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
-// ProcessMaker_inl.hpp -- Win32 process maker
-// This file is part of MZC3.  See file "ReadMe.txt" and "License.txt".
+// MProcessMaker_inl.hpp -- Win32 process maker
+// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
 MZC_INLINE MProcessMaker::MProcessMaker()

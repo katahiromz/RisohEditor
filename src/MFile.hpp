@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////
-// File.hpp -- Win32 file or pipe wrapper
-// This file is part of MZC3.  See file "ReadMe.txt" and "License.txt".
+// MFile.hpp -- Win32 file or pipe wrapper
+// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef __MZC3_FILE__
-#define __MZC3_FILE__
+#ifndef MZC4_MFILE_HPP_
+#define MZC4_MFILE_HPP_
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -246,7 +246,7 @@ LPWSTR MzcSetDotExtW(LPWSTR pszPath, LPCWSTR pszDotExt);
 #ifndef MZC_NO_INLINING
     #undef MZC_INLINE
     #define MZC_INLINE inline
-    #include "File_inl.hpp"
+    #include "MFile_inl.hpp"
 #endif
 
-#endif  // ndef __MZC3_FILE__
+#endif  // ndef MZC4_MFILE_HPP_
