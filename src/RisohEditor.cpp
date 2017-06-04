@@ -850,6 +850,10 @@ struct TestMenuDlg : DialogBase
 {
     HMENU m_hMenu;
 
+    TestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)
+    {
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetMenu(hwnd, m_hMenu);
@@ -4864,8 +4868,7 @@ struct MainWnd : public WindowBase
             HMENU hMenu = LoadMenuIndirect(&Entry[0]);
             if (hMenu)
             {
-                TestMenuDlg dialog;
-                dialog.m_hMenu = hMenu;
+                TestMenuDlg dialog(hMenu);
                 dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
                 DestroyMenu(hMenu);
             }
