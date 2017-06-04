@@ -3,7 +3,6 @@
 #pragma comment(lib, "msimg32.lib")
 
 HINSTANCE   g_hInstance = NULL;
-HWND        g_hMainWnd = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 WCHAR       g_szBmpViewClass[]  = L"RisohEditor BmpView Class";
 
@@ -98,43 +97,220 @@ std::wstring str_vkey(WORD w)
     return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
 }
 
-void DoIt(HWND hwnd)
+LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 {
-    #if 0
-        DialogTemplate Template;
-
-        DWORD dwStyle = DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU;
-        DWORD dwExStyle = 0;
-        POINT pt = {0, 0};
-        SIZE siz = {100, 100};
-        Template.WriteHeader(dwStyle, dwExStyle, 0, pt, siz);
-        Template.DoModal(hwnd);
-    #endif
+    static WCHAR TempFile[MAX_PATH];
+    WCHAR szPath[MAX_PATH];
+    ::GetTempPathW(_countof(szPath), szPath);
+    ::GetTempFileNameW(szPath, L"KRE", 0, TempFile);
+    return TempFile;
 }
 
-BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
+HICON LoadSmallIconDx(UINT id)
 {
-    if (FileName == 0 || FileName[0] == UNICODE_NULL)
+    return HICON(LoadImageW(g_hInstance, MAKEINTRESOURCEW(id),
+                            IMAGE_ICON, 16, 16, 0));
+}
+
+TBBUTTON g_buttons0[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+};
+
+TBBUTTON g_buttons1[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+};
+
+TBBUTTON g_buttons2[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+};
+
+void ToolBar_Update(HWND hwnd, INT iType)
+{
+    while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
+        ;
+
+    switch (iType)
     {
-        SetWindowTextW(hwnd, g_szTitle);
-        return TRUE;
+    case 0:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
+        break;
+    case 1:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
+        break;
+    case 2:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
+        break;
     }
+}
 
-    WCHAR Path[MAX_PATH], *pch;
-    GetFullPathNameW(FileName, _countof(Path), Path, &pch);
-    lstrcpynW(g_szFile, Path, _countof(g_szFile));
-
-    WCHAR sz[MAX_PATH];
-    pch = wcsrchr(Path, L'\\');
-    if (pch)
+VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
+{
+    for (INT i = 0; i < nCount; ++i)
     {
-        wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-        SetWindowTextW(hwnd, sz);
+        if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
+            continue;
+
+        INT_PTR id = pButtons[i].iString;
+        LPWSTR psz = LoadStringDx(id);
+        id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
+        pButtons[i].iString = id;
+    }
+}
+
+HWND ToolBar_Create(HWND hwndParent)
+{
+    HWND hwndTB;
+    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
+        WS_CHILD | /*WS_VISIBLE | */ CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
+    if (hwndTB == NULL)
+        return hwndTB;
+
+    SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
+    SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
+
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
+
+    ToolBar_Update(hwndTB, 0);
+    return hwndTB;
+}
+
+void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
+{
+    for (size_t i = 0; i < g_Langs.size(); ++i)
+    {
+        WCHAR sz[MAX_PATH];
+        wsprintfW(sz, L"%s (%u)", g_Langs[i].Str.c_str(), g_Langs[i].LangID);
+        INT k = ComboBox_AddString(hCmb3, sz);
+        if (langid == g_Langs[i].LangID)
+        {
+            ComboBox_SetCurSel(hCmb3, k);
+        }
+    }
+}
+
+BOOL Cmb1_CheckType(HWND hCmb1, ID_OR_STRING& Type)
+{
+    WCHAR szType[MAX_PATH];
+    GetWindowTextW(hCmb1, szType, _countof(szType));
+    std::wstring Str = szType;
+    str_trim(Str);
+    lstrcpynW(szType, Str.c_str(), _countof(szType));
+
+    if (szType[0] == UNICODE_NULL)
+    {
+        ComboBox_SetEditSel(hCmb1, 0, -1);
+        SetFocus(hCmb1);
+        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    else if (iswdigit(szType[0]))
+    {
+        Type = WORD(wcstoul(szType, NULL, 0));
     }
     else
     {
-        SetWindowTextW(hwnd, g_szTitle);
+        Type = szType;
     }
+
+    return TRUE;
+}
+
+BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name)
+{
+    WCHAR szName[MAX_PATH];
+    GetWindowTextW(hCmb2, szName, _countof(szName));
+    std::wstring Str = szName;
+    str_trim(Str);
+    lstrcpynW(szName, Str.c_str(), _countof(szName));
+    if (szName[0] == UNICODE_NULL)
+    {
+        ComboBox_SetEditSel(hCmb2, 0, -1);
+        SetFocus(hCmb2);
+        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    else if (iswdigit(szName[0]))
+    {
+        Name = WORD(wcstoul(szName, NULL, 0));
+    }
+    else
+    {
+        Name = szName;
+    }
+
+    return TRUE;
+}
+
+BOOL Cmb3_CheckLang(HWND hCmb3, WORD& Lang)
+{
+    WCHAR szLang[MAX_PATH];
+    GetWindowTextW(hCmb3, szLang, _countof(szLang));
+    std::wstring Str = szLang;
+    str_trim(Str);
+    lstrcpynW(szLang, Str.c_str(), _countof(szLang));
+
+    if (szLang[0] == UNICODE_NULL)
+    {
+        ComboBox_SetEditSel(hCmb3, 0, -1);
+        SetFocus(hCmb3);
+        MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    else if (iswdigit(szLang[0]))
+    {
+        Lang = WORD(wcstoul(szLang, NULL, 0));
+    }
+    else
+    {
+        INT i = ComboBox_GetCurSel(hCmb3);
+        if (i == CB_ERR || i >= INT(g_Langs.size()))
+        {
+            ComboBox_SetEditSel(hCmb3, 0, -1);
+            SetFocus(hCmb3);
+            MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                        NULL, MB_ICONERROR);
+            return FALSE;
+        }
+        Lang = g_Langs[i].LangID;
+    }
+
+    return TRUE;
+}
+
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
+{
+    WCHAR szFile[MAX_PATH];
+    GetWindowTextW(hEdt1, szFile, _countof(szFile));
+    std::wstring Str = szFile;
+    str_trim(Str);
+    lstrcpynW(szFile, Str.c_str(), _countof(szFile));
+    if (::GetFileAttributesW(szFile) == 0xFFFFFFFF)
+    {
+        Edit_SetSel(hEdt1, 0, -1);
+        SetFocus(hEdt1);
+        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND),
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    File = szFile;
     return TRUE;
 }
 
@@ -167,6 +343,32 @@ BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
         entries.push_back(entry);
 
         stream.ReadDwordAlignment();
+    }
+    return TRUE;
+}
+
+BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
+{
+    if (FileName == 0 || FileName[0] == UNICODE_NULL)
+    {
+        SetWindowTextW(hwnd, g_szTitle);
+        return TRUE;
+    }
+
+    WCHAR Path[MAX_PATH], *pch;
+    GetFullPathNameW(FileName, _countof(Path), Path, &pch);
+    lstrcpynW(g_szFile, Path, _countof(g_szFile));
+
+    WCHAR sz[MAX_PATH];
+    pch = wcsrchr(Path, L'\\');
+    if (pch)
+    {
+        wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
+        SetWindowTextW(hwnd, sz);
+    }
+    else
+    {
+        SetWindowTextW(hwnd, g_szTitle);
     }
     return TRUE;
 }
@@ -215,15 +417,6 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
     g_bInEdit = FALSE;
 
     return TRUE;
-}
-
-LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
-{
-    static WCHAR TempFile[MAX_PATH];
-    WCHAR szPath[MAX_PATH];
-    ::GetTempPathW(_countof(szPath), szPath);
-    ::GetTempFileNameW(szPath, L"KRE", 0, TempFile);
-    return TempFile;
 }
 
 BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
@@ -459,215 +652,6 @@ BOOL DoReplaceBitmap(HWND hwnd,
     TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
     return TRUE;
 }
-
-HICON LoadSmallIconDx(UINT id)
-{
-    return HICON(LoadImageW(g_hInstance, MAKEINTRESOURCEW(id),
-                            IMAGE_ICON, 16, 16, 0));
-}
-
-TBBUTTON g_buttons0[] =
-{
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-};
-
-TBBUTTON g_buttons1[] =
-{
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-};
-
-TBBUTTON g_buttons2[] =
-{
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
-};
-
-void ToolBar_Update(HWND hwnd, INT iType)
-{
-    while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
-        ;
-
-    switch (iType)
-    {
-    case 0:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
-        break;
-    case 1:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
-        break;
-    case 2:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
-        break;
-    }
-}
-
-VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
-{
-    for (INT i = 0; i < nCount; ++i)
-    {
-        if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
-            continue;
-
-        INT_PTR id = pButtons[i].iString;
-        LPWSTR psz = LoadStringDx(id);
-        id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
-        pButtons[i].iString = id;
-    }
-}
-
-HWND ToolBar_Create(HWND hwndParent)
-{
-    HWND hwndTB;
-    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | /*WS_VISIBLE | */ CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
-        0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
-    if (hwndTB == NULL)
-        return hwndTB;
-
-    SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
-    SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
-
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
-
-    ToolBar_Update(hwndTB, 0);
-    return hwndTB;
-}
-
-void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
-{
-    for (size_t i = 0; i < g_Langs.size(); ++i)
-    {
-        WCHAR sz[MAX_PATH];
-        wsprintfW(sz, L"%s (%u)", g_Langs[i].Str.c_str(), g_Langs[i].LangID);
-        INT k = ComboBox_AddString(hCmb3, sz);
-        if (langid == g_Langs[i].LangID)
-        {
-            ComboBox_SetCurSel(hCmb3, k);
-        }
-    }
-}
-
-BOOL Cmb1_CheckType(HWND hCmb1, ID_OR_STRING& Type)
-{
-    WCHAR szType[MAX_PATH];
-    GetWindowTextW(hCmb1, szType, _countof(szType));
-    std::wstring Str = szType;
-    str_trim(Str);
-    lstrcpynW(szType, Str.c_str(), _countof(szType));
-
-    if (szType[0] == UNICODE_NULL)
-    {
-        ComboBox_SetEditSel(hCmb1, 0, -1);
-        SetFocus(hCmb1);
-        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (iswdigit(szType[0]))
-    {
-        Type = WORD(wcstoul(szType, NULL, 0));
-    }
-    else
-    {
-        Type = szType;
-    }
-
-    return TRUE;
-}
-
-BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name)
-{
-    WCHAR szName[MAX_PATH];
-    GetWindowTextW(hCmb2, szName, _countof(szName));
-    std::wstring Str = szName;
-    str_trim(Str);
-    lstrcpynW(szName, Str.c_str(), _countof(szName));
-    if (szName[0] == UNICODE_NULL)
-    {
-        ComboBox_SetEditSel(hCmb2, 0, -1);
-        SetFocus(hCmb2);
-        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (iswdigit(szName[0]))
-    {
-        Name = WORD(wcstoul(szName, NULL, 0));
-    }
-    else
-    {
-        Name = szName;
-    }
-
-    return TRUE;
-}
-
-BOOL Cmb3_CheckLang(HWND hCmb3, WORD& Lang)
-{
-    WCHAR szLang[MAX_PATH];
-    GetWindowTextW(hCmb3, szLang, _countof(szLang));
-    std::wstring Str = szLang;
-    str_trim(Str);
-    lstrcpynW(szLang, Str.c_str(), _countof(szLang));
-
-    if (szLang[0] == UNICODE_NULL)
-    {
-        ComboBox_SetEditSel(hCmb3, 0, -1);
-        SetFocus(hCmb3);
-        MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (iswdigit(szLang[0]))
-    {
-        Lang = WORD(wcstoul(szLang, NULL, 0));
-    }
-    else
-    {
-        INT i = ComboBox_GetCurSel(hCmb3);
-        if (i == CB_ERR || i >= INT(g_Langs.size()))
-        {
-            ComboBox_SetEditSel(hCmb3, 0, -1);
-            SetFocus(hCmb3);
-            MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
-                        NULL, MB_ICONERROR);
-            return FALSE;
-        }
-        Lang = g_Langs[i].LangID;
-    }
-
-    return TRUE;
-}
-
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
-{
-    WCHAR szFile[MAX_PATH];
-    GetWindowTextW(hEdt1, szFile, _countof(szFile));
-    std::wstring Str = szFile;
-    str_trim(Str);
-    lstrcpynW(szFile, Str.c_str(), _countof(szFile));
-    if (::GetFileAttributesW(szFile) == 0xFFFFFFFF)
-    {
-        Edit_SetSel(hEdt1, 0, -1);
-        SetFocus(hEdt1);
-        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND),
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    File = szFile;
-    return TRUE;
-}
-
 
 struct ReplaceBinDlg : DialogBase
 {
@@ -942,8 +926,8 @@ struct AddIconDlg : DialogBase
         INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
         if (iEntry != -1)
         {
-            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
+                              MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
@@ -4329,91 +4313,6 @@ Res_GetLangName(WORD Lang)
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
-BOOL CheckDataFolder(VOID)
-{
-    WCHAR szPath[MAX_PATH], *pch;
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\data");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-    {
-        lstrcpyW(pch, L"\\..\\data");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-        {
-            lstrcpyW(pch, L"\\..\\..\\data");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-            {
-                lstrcpyW(pch, L"\\..\\..\\..\\data");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                {
-                    lstrcpyW(pch, L"\\..\\..\\..\\..\\data");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                    {
-                        return FALSE;
-                    }
-                }
-            }
-        }
-    }
-    lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
-    return TRUE;
-}
-
-INT CheckData(VOID)
-{
-    if (!CheckDataFolder())
-    {
-        MessageBoxA(NULL, "ERROR: data folder was not found!",
-                    NULL, MB_ICONERROR);
-        return -1;  // failure
-    }
-
-    // Constants.txt
-    lstrcpyW(g_szConstantsFile, g_szDataFolder);
-    lstrcatW(g_szConstantsFile, L"\\Constants.txt");
-    if (!g_ConstantsDB.LoadFromFile(g_szConstantsFile))
-    {
-        MessageBoxA(NULL, "ERROR: Unable to load Constants.txt file.",
-                    NULL, MB_ICONERROR);
-        return -2;  // failure
-    }
-    ReplaceBackslash(g_szConstantsFile);
-
-    // cpp.exe
-    lstrcpyW(g_szCppExe, g_szDataFolder);
-    lstrcatW(g_szCppExe, L"\\bin\\cpp.exe");
-    if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
-    {
-        MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
-        return -3;  // failure
-    }
-    ReplaceBackslash(g_szCppExe);
-
-    // windres.exe
-    lstrcpyW(g_szWindresExe, g_szDataFolder);
-    lstrcatW(g_szWindresExe, L"\\bin\\windres.exe");
-    if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
-    {
-        MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
-        return -4;  // failure
-    }
-    ReplaceBackslash(g_szWindresExe);
-
-    return 0;   // success
-}
-
-void LoadLangInfo(VOID)
-{
-    EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
-    {
-        LangEntry entry;
-        entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
-        entry.Str = LoadStringDx(IDS_NEUTRAL);
-        g_Langs.push_back(entry);
-    }
-    std::sort(g_Langs.begin(), g_Langs.end());
-}
-
 struct MainWnd : public WindowBase
 {
     INT         m_argc;         // number of command line parameters
@@ -4468,18 +4367,15 @@ struct MainWnd : public WindowBase
         m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
         m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
 
-        CreateWindowDx(NULL, g_szTitle, WS_OVERLAPPEDWINDOW, 0,
-            CW_USEDEFAULT, CW_USEDEFAULT, 760, 480);
-
-        g_hMainWnd = m_hwnd;
-        if (g_hMainWnd == NULL)
+        if (!CreateWindowDx(NULL, g_szTitle, WS_OVERLAPPEDWINDOW, 0,
+            CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
         {
             MsgBoxDx(TEXT("failure of CreateWindow"), NULL, MB_ICONERROR);
             return FALSE;
         }
 
-        ShowWindow(g_hMainWnd, SW_SHOWDEFAULT);
-        UpdateWindow(g_hMainWnd);
+        ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+        UpdateWindow(m_hwnd);
 
         return TRUE;
     }
@@ -6211,6 +6107,90 @@ struct MainWnd : public WindowBase
         return TRUE;
     }
 
+    BOOL CheckDataFolder(VOID)
+    {
+        WCHAR szPath[MAX_PATH], *pch;
+        GetModuleFileNameW(NULL, szPath, _countof(szPath));
+        pch = wcsrchr(szPath, L'\\');
+        lstrcpyW(pch, L"\\data");
+        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"\\..\\data");
+            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"\\..\\..\\data");
+                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"\\..\\..\\..\\data");
+                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        lstrcpyW(pch, L"\\..\\..\\..\\..\\data");
+                        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                        {
+                            return FALSE;
+                        }
+                    }
+                }
+            }
+        }
+        lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
+        return TRUE;
+    }
+
+    INT CheckData(VOID)
+    {
+        if (!CheckDataFolder())
+        {
+            MessageBoxA(NULL, "ERROR: data folder was not found!",
+                        NULL, MB_ICONERROR);
+            return -1;  // failure
+        }
+
+        // Constants.txt
+        lstrcpyW(g_szConstantsFile, g_szDataFolder);
+        lstrcatW(g_szConstantsFile, L"\\Constants.txt");
+        if (!g_ConstantsDB.LoadFromFile(g_szConstantsFile))
+        {
+            MessageBoxA(NULL, "ERROR: Unable to load Constants.txt file.",
+                        NULL, MB_ICONERROR);
+            return -2;  // failure
+        }
+        ReplaceBackslash(g_szConstantsFile);
+
+        // cpp.exe
+        lstrcpyW(g_szCppExe, g_szDataFolder);
+        lstrcatW(g_szCppExe, L"\\bin\\cpp.exe");
+        if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
+        {
+            MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
+            return -3;  // failure
+        }
+        ReplaceBackslash(g_szCppExe);
+
+        // windres.exe
+        lstrcpyW(g_szWindresExe, g_szDataFolder);
+        lstrcatW(g_szWindresExe, L"\\bin\\windres.exe");
+        if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
+        {
+            MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
+            return -4;  // failure
+        }
+        ReplaceBackslash(g_szWindresExe);
+
+        return 0;   // success
+    }
+
+    void LoadLangInfo(VOID)
+    {
+        EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
+        {
+            LangEntry entry;
+            entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
+            entry.Str = LoadStringDx(IDS_NEUTRAL);
+            g_Langs.push_back(entry);
+        }
+        std::sort(g_Langs.begin(), g_Langs.end());
+    }
 };
 
 BOOL MainWnd::RegisterClassesDx()
@@ -6285,27 +6265,3 @@ WinMain(HINSTANCE   hInstance,
 
     return ret;
 }
-
-/*
-    g_hMainWnd = CreateWindowW(s_pszClassName, g_szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 760, 480,
-        NULL, NULL, hInstance, NULL);
-    if (g_hMainWnd == NULL)
-    {
-        MessageBoxA(NULL, "CreateWindow failed", NULL, MB_ICONERROR);
-        return 1;       // failure
-    }
-
-    ShowWindow(g_hMainWnd, nCmdShow);
-    UpdateWindow(g_hMainWnd);
-
-    MSG msg;
-    while (GetMessageW(&msg, NULL, 0, 0))
-    {
-        if (TranslateAccelerator(g_hMainWnd, g_hAccel, &msg))
-            continue;
-
-        TranslateMessage(&msg);
-        DispatchMessageW(&msg);
-    }
-*/
