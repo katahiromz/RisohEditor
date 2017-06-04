@@ -628,52 +628,6 @@ BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
     return bs.SaveToFile(FileName);
 }
 
-BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries)
-{
-    ByteStream bs;
-    ResourceHeader header;
-    if (!header.WriteTo(bs))
-        return FALSE;
-
-    ResEntries::const_iterator it, end = Entries.end();
-    for (it = Entries.begin(); it != end; ++it)
-    {
-        const ResEntry& Entry = *it;
-
-        header.DataSize = Entry.size();
-        header.HeaderSize = header.GetHeaderSize(Entry.type, Entry.name);
-        header.Type = Entry.type;
-        header.Name = Entry.name;
-        header.DataVersion = 0;
-        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
-                             MEMORYFLAG_MOVEABLE;
-        header.LanguageId = Entry.lang;
-        header.Version = 0;
-        header.Characteristics = 0;
-
-        if (!header.WriteTo(bs))
-            return FALSE;
-
-        if (!bs.WriteData(&Entry[0], Entry.size()))
-            return FALSE;
-
-        bs.WriteDwordAlignment();
-    }
-
-    return bs.SaveToFile(FileName);
-}
-
-BOOL DoSaveResAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
-{
-    if (DoExtractRes(hwnd, ExeFile, Entries))
-    {
-        Res_Optimize(Entries);
-        DoSetFile(hwnd, ExeFile);
-        return TRUE;
-    }
-    return FALSE;
-}
-
 BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
 {
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
@@ -692,22 +646,6 @@ BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
 
     DeleteFileW(TempFile);
     return FALSE;
-}
-
-BOOL DoSaveAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
-{
-    if (g_bInEdit)
-        return TRUE;
-
-    DWORD dwBinType;
-    LPCWSTR pch = wcsrchr(ExeFile, L'.');
-    if ((pch && lstrcmpiW(pch, L".res") == 0) ||
-        !GetBinaryType(g_szFile, &dwBinType))
-    {
-        return DoSaveResAs(hwnd, g_Entries, ExeFile);
-    }
-
-    return DoSaveExeAs(hwnd, Entries, ExeFile);
 }
 
 BOOL DoExtractIcon(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
@@ -6255,6 +6193,68 @@ struct MainWnd : MWindowBase
             stream.ReadDwordAlignment();
         }
         return TRUE;
+    }
+
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries)
+    {
+        ByteStream bs;
+        ResourceHeader header;
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        ResEntries::const_iterator it, end = Entries.end();
+        for (it = Entries.begin(); it != end; ++it)
+        {
+            const ResEntry& Entry = *it;
+
+            header.DataSize = Entry.size();
+            header.HeaderSize = header.GetHeaderSize(Entry.type, Entry.name);
+            header.Type = Entry.type;
+            header.Name = Entry.name;
+            header.DataVersion = 0;
+            header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
+                                 MEMORYFLAG_MOVEABLE;
+            header.LanguageId = Entry.lang;
+            header.Version = 0;
+            header.Characteristics = 0;
+
+            if (!header.WriteTo(bs))
+                return FALSE;
+
+            if (!bs.WriteData(&Entry[0], Entry.size()))
+                return FALSE;
+
+            bs.WriteDwordAlignment();
+        }
+
+        return bs.SaveToFile(FileName);
+    }
+
+    BOOL DoSaveResAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    {
+        if (DoExtractRes(hwnd, ExeFile, Entries))
+        {
+            Res_Optimize(Entries);
+            DoSetFile(hwnd, ExeFile);
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    BOOL DoSaveAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    {
+        if (g_bInEdit)
+            return TRUE;
+
+        DWORD dwBinType;
+        LPCWSTR pch = wcsrchr(ExeFile, L'.');
+        if ((pch && lstrcmpiW(pch, L".res") == 0) ||
+            !GetBinaryType(g_szFile, &dwBinType))
+        {
+            return DoSaveResAs(hwnd, g_Entries, ExeFile);
+        }
+
+        return DoSaveExeAs(hwnd, Entries, ExeFile);
     }
 };
 
