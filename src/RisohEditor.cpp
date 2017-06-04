@@ -4500,20 +4500,20 @@ struct MainWnd : public WindowBase
     {
         switch (uMsg)
         {
-            HANDLE_MSG(hwnd, WM_CREATE, MainWnd_OnCreate);
-            HANDLE_MSG(hwnd, WM_COMMAND, MainWnd_OnCommand);
-            HANDLE_MSG(hwnd, WM_DESTROY, MainWnd_OnDestroy);
-            HANDLE_MSG(hwnd, WM_DROPFILES, MainWnd_OnDropFiles);
-            HANDLE_MSG(hwnd, WM_SIZE, MainWnd_OnSize);
-            HANDLE_MSG(hwnd, WM_NOTIFY, MainWnd_OnNotify);
-            HANDLE_MSG(hwnd, WM_CONTEXTMENU, MainWnd_OnContextMenu);
-            HANDLE_MSG(hwnd, WM_INITMENU, MainWnd_OnInitMenu);
+            HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
+            HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENU, OnInitMenu);
         default:
             return DefaultProcDx();
         }
     }
 
-    BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         g_hInstance = m_hInst;
         InitCommonControls();
@@ -4625,7 +4625,7 @@ struct MainWnd : public WindowBase
         g_bInEdit = FALSE;
     }
 
-    void MainWnd_OnDeleteRes(HWND hwnd)
+    void OnDeleteRes(HWND hwnd)
     {
         if (g_bInEdit)
             return;
@@ -4638,7 +4638,7 @@ struct MainWnd : public WindowBase
         MainWnd_HidePreview(hwnd);
     }
 
-    void MainWnd_OnExtractBin(HWND hwnd)
+    void OnExtractBin(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) == I_NONE)
@@ -4686,7 +4686,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnExtractIcon(HWND hwnd)
+    void OnExtractIcon(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4716,7 +4716,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnExtractCursor(HWND hwnd)
+    void OnExtractCursor(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4746,7 +4746,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnExtractBitmap(HWND hwnd)
+    void OnExtractBitmap(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4778,7 +4778,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnReplaceBin(HWND hwnd)
+    void OnReplaceBin(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4789,7 +4789,7 @@ struct MainWnd : public WindowBase
         dialog.DialogBoxDx(hwnd, IDD_REPLACERES);
     }
 
-    void MainWnd_OnSaveAs(HWND hwnd)
+    void OnSaveAs(HWND hwnd)
     {
         if (g_bInEdit)
             return;
@@ -4837,7 +4837,7 @@ struct MainWnd : public WindowBase
     }
 
 
-    void MainWnd_OnTest(HWND hwnd)
+    void OnTest(HWND hwnd)
     {
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
         if (hItem == NULL)
@@ -4872,13 +4872,13 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnAddIcon(HWND hwnd)
+    void OnAddIcon(HWND hwnd)
     {
         AddIconDlg dialog;
         dialog.DialogBoxDx(hwnd, IDD_ADDICON);
     }
 
-    void MainWnd_OnReplaceIcon(HWND hwnd)
+    void OnReplaceIcon(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4889,7 +4889,7 @@ struct MainWnd : public WindowBase
         dialog.DialogBoxDx(hwnd, IDD_REPLACEICON);
     }
 
-    void MainWnd_OnReplaceCursor(HWND hwnd)
+    void OnReplaceCursor(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4900,7 +4900,7 @@ struct MainWnd : public WindowBase
         dialog.DialogBoxDx(hwnd, IDD_REPLACECUR);
     }
 
-    void MainWnd_OnOpen(HWND hwnd)
+    void OnOpen(HWND hwnd)
     {
         if (g_bInEdit)
             return;
@@ -4925,13 +4925,13 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnAddBitmap(HWND hwnd)
+    void OnAddBitmap(HWND hwnd)
     {
         AddBitmapDlg dialog;
         dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
     }
 
-    void MainWnd_OnReplaceBitmap(HWND hwnd)
+    void OnReplaceBitmap(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (HIWORD(lParam) != I_NAME)
@@ -4942,19 +4942,19 @@ struct MainWnd : public WindowBase
         dialog.DialogBoxDx(hwnd, IDD_REPLACEBMP);
     }
 
-    void MainWnd_OnAddCursor(HWND hwnd)
+    void OnAddCursor(HWND hwnd)
     {
         AddCursorDlg dialog;
         dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
     }
 
-    void MainWnd_OnAddRes(HWND hwnd)
+    void OnAddRes(HWND hwnd)
     {
         AddResDlg dialog;
         dialog.DialogBoxDx(hwnd, IDD_ADDRES);
     }
 
-    void MainWnd_OnAbout(HWND hwnd)
+    void OnAbout(HWND hwnd)
     {
         MSGBOXPARAMSW Params;
         ZeroMemory(&Params, sizeof(Params));
@@ -4969,7 +4969,7 @@ struct MainWnd : public WindowBase
         MessageBoxIndirectW(&Params);
     }
 
-    void MainWnd_OnImport(HWND hwnd)
+    void OnImport(HWND hwnd)
     {
         if (g_bInEdit)
             return;
@@ -5026,7 +5026,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnEdit(HWND hwnd)
+    void OnEdit(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (!MainWnd_IsEditableEntry(hwnd, lParam))
@@ -5035,11 +5035,11 @@ struct MainWnd : public WindowBase
         MainWnd_SelectTV(hwnd, lParam, TRUE);
     }
 
-    LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (pnmhdr->code == NM_DBLCLK)
         {
-            MainWnd_OnEdit(hwnd);
+            OnEdit(hwnd);
         }
         else if (pnmhdr->code == TVN_SELCHANGED)
         {
@@ -5053,7 +5053,7 @@ struct MainWnd : public WindowBase
             switch (pTVKD->wVKey)
             {
             case VK_RETURN:
-                MainWnd_OnEdit(hwnd);
+                OnEdit(hwnd);
                 break;
             case VK_DELETE:
                 PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
@@ -5063,7 +5063,7 @@ struct MainWnd : public WindowBase
         return 0;
     }
 
-    void MainWnd_OnCancelEdit(HWND hwnd)
+    void OnCancelEdit(HWND hwnd)
     {
         if (!g_bInEdit)
             return;
@@ -5072,7 +5072,7 @@ struct MainWnd : public WindowBase
         MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
 
-    void MainWnd_OnCompile(HWND hwnd)
+    void OnCompile(HWND hwnd)
     {
         if (!Edit_GetModify(g_hSrcEdit))
         {
@@ -5094,7 +5094,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnGuiEdit(HWND hwnd)
+    void OnGuiEdit(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         if (!MainWnd_IsEditableEntry(hwnd, lParam))
@@ -5179,7 +5179,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnNew(HWND hwnd)
+    void OnNew(HWND hwnd)
     {
         if (g_bInEdit)
             return;
@@ -5189,85 +5189,85 @@ struct MainWnd : public WindowBase
         TV_RefreshInfo(g_hTreeView, g_Entries);
     }
 
-    void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case ID_NEW:
-            MainWnd_OnNew(hwnd);
+            OnNew(hwnd);
             break;
         case ID_OPEN:
-            MainWnd_OnOpen(hwnd);
+            OnOpen(hwnd);
             break;
         case ID_SAVEAS:
-            MainWnd_OnSaveAs(hwnd);
+            OnSaveAs(hwnd);
             break;
         case ID_IMPORT:
-            MainWnd_OnImport(hwnd);
+            OnImport(hwnd);
             break;
         case ID_EXIT:
             DestroyWindow(hwnd);
             break;
         case ID_ADDICON:
-            MainWnd_OnAddIcon(hwnd);
+            OnAddIcon(hwnd);
             break;
         case ID_ADDCURSOR:
-            MainWnd_OnAddCursor(hwnd);
+            OnAddCursor(hwnd);
             break;
         case ID_ADDBITMAP:
-            MainWnd_OnAddBitmap(hwnd);
+            OnAddBitmap(hwnd);
             break;
         case ID_ADDRES:
-            MainWnd_OnAddRes(hwnd);
+            OnAddRes(hwnd);
             break;
         case ID_REPLACEICON:
-            MainWnd_OnReplaceIcon(hwnd);
+            OnReplaceIcon(hwnd);
             break;
         case ID_REPLACECURSOR:
             break;
         case ID_REPLACEBITMAP:
-            MainWnd_OnReplaceBitmap(hwnd);
+            OnReplaceBitmap(hwnd);
             break;
         case ID_REPLACEBIN:
-            MainWnd_OnReplaceBin(hwnd);
+            OnReplaceBin(hwnd);
             break;
         case ID_DELETERES:
-            MainWnd_OnDeleteRes(hwnd);
+            OnDeleteRes(hwnd);
             break;
         case ID_EDIT:
-            MainWnd_OnEdit(hwnd);
+            OnEdit(hwnd);
             break;
         case ID_EXTRACTICON:
-            MainWnd_OnExtractIcon(hwnd);
+            OnExtractIcon(hwnd);
             break;
         case ID_EXTRACTCURSOR:
-            MainWnd_OnExtractCursor(hwnd);
+            OnExtractCursor(hwnd);
             break;
         case ID_EXTRACTBITMAP:
-            MainWnd_OnExtractBitmap(hwnd);
+            OnExtractBitmap(hwnd);
             break;
         case ID_EXTRACTBIN:
-            MainWnd_OnExtractBin(hwnd);
+            OnExtractBin(hwnd);
             break;
         case ID_ABOUT:
-            MainWnd_OnAbout(hwnd);
+            OnAbout(hwnd);
             break;
         case ID_TEST:
-            MainWnd_OnTest(hwnd);
+            OnTest(hwnd);
             break;
         case ID_CANCELEDIT:
-            MainWnd_OnCancelEdit(hwnd);
+            OnCancelEdit(hwnd);
             break;
         case ID_COMPILE:
-            MainWnd_OnCompile(hwnd);
+            OnCompile(hwnd);
             break;
         case ID_GUIEDIT:
-            MainWnd_OnGuiEdit(hwnd);
+            OnGuiEdit(hwnd);
             break;
         }
     }
 
-    void MainWnd_OnDestroy(HWND hwnd)
+    void OnDestroy(HWND hwnd)
     {
         DeleteObject(g_hBitmap);
         DeleteObject(m_hNormalFont);
@@ -5278,7 +5278,7 @@ struct MainWnd : public WindowBase
         PostQuitMessage(0);
     }
 
-    void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
+    void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
         WCHAR File[MAX_PATH], *pch;
 
@@ -5320,7 +5320,7 @@ struct MainWnd : public WindowBase
         DoLoad(hwnd, File);
     }
 
-    void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
 
@@ -5399,7 +5399,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
+    void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
         if (hItem == NULL || g_bInEdit)
@@ -5559,7 +5559,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
         if (hwndContext != g_hTreeView)
             return;
@@ -5590,7 +5590,7 @@ struct MainWnd : public WindowBase
         TreeView_SelectItem(hwndContext, hItem);
 
         HMENU hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(2));
-        MainWnd_OnInitMenu(hwnd, hMenu);
+        OnInitMenu(hwnd, hMenu);
         HMENU hSubMenu = GetSubMenu(hMenu, 0);
         if (hMenu == NULL || hSubMenu == NULL)
             return;
