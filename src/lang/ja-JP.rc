@@ -77,7 +77,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
 STRINGTABLE
 {
-    IDS_TITLE, "理想エディター by 片山博文MZ"
+    IDS_APPNAME, "理想エディター by 片山博文MZ"
     IDS_TITLEWITHFILE, "%s - 理想エディター by 片山博文MZ"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"

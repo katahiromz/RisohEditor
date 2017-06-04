@@ -77,7 +77,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 STRINGTABLE
 {
-    IDS_TITLE, "RisohEditor by Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor by Katayama Hirofumi MZ"
     IDS_TITLEWITHFILE, "%s - RisohEditor by Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Extract Resource"
     IDS_RESBINFILTER, "Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"

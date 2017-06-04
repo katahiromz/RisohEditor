@@ -24,9 +24,7 @@
 // global variables
 
 HINSTANCE   g_hInstance = NULL;
-WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 
-WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
 
 HWND        g_hTreeView = NULL;
@@ -696,35 +694,6 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// actions
-
-BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
-{
-    if (FileName == 0 || FileName[0] == UNICODE_NULL)
-    {
-        SetWindowTextW(hwnd, g_szTitle);
-        return TRUE;
-    }
-
-    WCHAR Path[MAX_PATH], *pch;
-    GetFullPathNameW(FileName, _countof(Path), Path, &pch);
-    lstrcpynW(g_szFile, Path, _countof(g_szFile));
-
-    WCHAR sz[MAX_PATH];
-    pch = wcsrchr(Path, L'\\');
-    if (pch)
-    {
-        wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-        SetWindowTextW(hwnd, sz);
-    }
-    else
-    {
-        SetWindowTextW(hwnd, g_szTitle);
-    }
-    return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////////
 
 std::wstring DumpBitmapInfo(HBITMAP hbm)
 {
@@ -1089,6 +1058,7 @@ struct MainWnd : MWindowBase
     WCHAR       m_szConstantsFile[MAX_PATH];
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
+    WCHAR       m_szFile[MAX_PATH];
     ResEntries  m_Entries;
 
     MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
@@ -1114,6 +1084,7 @@ struct MainWnd : MWindowBase
         m_szConstantsFile[0] = 0;
         m_szCppExe[0] = 0;
         m_szWindresExe[0] = 0;
+        m_szFile[0] = 0;
     }
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
@@ -1134,8 +1105,8 @@ struct MainWnd : MWindowBase
         m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
         m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
 
-        if (!CreateWindowDx(NULL, g_szTitle, WS_OVERLAPPEDWINDOW, 0,
-            CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
+        if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
+            WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
         {
             ErrorBoxDx(TEXT("failure of CreateWindow"));
             return FALSE;
@@ -1185,7 +1156,6 @@ struct MainWnd : MWindowBase
         g_hInstance = m_hInst;
         InitCommonControls();
 
-        LoadStringW(g_hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
         LoadLangInfo();
 
         INT nRet = CheckData();
@@ -1282,6 +1252,32 @@ struct MainWnd : MWindowBase
         PostMessageW(hwnd, WM_SIZE, 0, 0);
 
         m_bInEdit = FALSE;
+    }
+
+    BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
+    {
+        if (FileName == 0 || FileName[0] == UNICODE_NULL)
+        {
+            SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+            return TRUE;
+        }
+
+        WCHAR Path[MAX_PATH], *pch;
+        GetFullPathNameW(FileName, _countof(Path), Path, &pch);
+        lstrcpynW(m_szFile, Path, _countof(m_szFile));
+
+        WCHAR sz[MAX_PATH];
+        pch = wcsrchr(Path, L'\\');
+        if (pch)
+        {
+            wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
+            SetWindowTextW(hwnd, sz);
+        }
+        else
+        {
+            SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        }
+        return TRUE;
     }
 
     void OnDeleteRes(HWND hwnd)
@@ -1450,13 +1446,13 @@ struct MainWnd : MWindowBase
 
         WCHAR File[MAX_PATH];
 
-        lstrcpynW(File, g_szFile, _countof(File));
+        lstrcpynW(File, m_szFile, _countof(File));
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
         ofn.hwndOwner = hwnd;
         DWORD dwBinType;
-        if (g_szFile[0] == UNICODE_NULL || !GetBinaryType(g_szFile, &dwBinType))
+        if (m_szFile[0] == UNICODE_NULL || !GetBinaryType(m_szFile, &dwBinType))
         {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
             ofn.lpstrDefExt = L"res";
@@ -1558,7 +1554,7 @@ struct MainWnd : MWindowBase
             return;
 
         WCHAR File[MAX_PATH];
-        lstrcpynW(File, g_szFile, _countof(File));
+        lstrcpynW(File, m_szFile, _countof(File));
 
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
@@ -1614,7 +1610,7 @@ struct MainWnd : MWindowBase
         Params.hwndOwner = hwnd;
         Params.hInstance = g_hInstance;
         Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
-        Params.lpszCaption = g_szTitle;
+        Params.lpszCaption = LoadStringDx2(IDS_APPNAME);
         Params.dwStyle = MB_OK | MB_USERICON;
         Params.lpszIcon = MAKEINTRESOURCEW(1);
         Params.dwLanguageId = LANG_USER_DEFAULT;
@@ -1647,9 +1643,8 @@ struct MainWnd : MWindowBase
                 BOOL Overwrite = TRUE;
                 if (Res_Intersect(m_Entries, entries))
                 {
-                    INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE),
-                                          g_szTitle,
-                                          MB_ICONINFORMATION | MB_YESNOCANCEL);
+                    INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE,
+                                       MB_ICONINFORMATION | MB_YESNOCANCEL);
                     switch (nID)
                     {
                     case IDYES:
@@ -2827,8 +2822,7 @@ struct MainWnd : MWindowBase
     {
         if (Edit_GetModify(m_hSrcEdit))
         {
-            INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
-                                MB_ICONINFORMATION | MB_YESNOCANCEL);
+            INT id = MsgBoxDx(IDS_COMPILENOW, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
@@ -3075,7 +3069,7 @@ struct MainWnd : MWindowBase
         DWORD dwBinType;
         LPCWSTR pch = wcsrchr(ExeFile, L'.');
         if ((pch && lstrcmpiW(pch, L".res") == 0) ||
-            !GetBinaryType(g_szFile, &dwBinType))
+            !GetBinaryType(m_szFile, &dwBinType))
         {
             return DoSaveResAs(hwnd, ExeFile);
         }
@@ -3087,7 +3081,7 @@ struct MainWnd : MWindowBase
     {
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
-        BOOL b1 = ::CopyFileW(g_szFile, TempFile, FALSE);
+        BOOL b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
         BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_Entries);
         BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
         if (b3)

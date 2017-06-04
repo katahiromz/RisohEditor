@@ -43,7 +43,7 @@
 #define IDD_MODIFYMITEM     116
 #define IDD_EDITMENU        117
 
-#define IDS_TITLE           1
+#define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
 #define IDS_EXTRACTRES      3
 #define IDS_RESBINFILTER    4
