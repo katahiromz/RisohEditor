@@ -11,8 +11,6 @@ ConstantsDB g_ConstantsDB;
 ResEntries  g_Entries;
 
 HWND        g_hTreeView = NULL;
-HWND        g_hBinEdit = NULL;
-HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
 BOOL        g_bInEdit = FALSE;
 
@@ -4309,6 +4307,9 @@ struct MainWnd : public WindowBase
     HICON       m_hFileIcon;
     HICON       m_hFolderIcon;
     HWND        m_hToolBar;
+    HWND        m_hBinEdit;
+    HWND        m_hSrcEdit;
+
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
     HFONT       m_hSmallFont;
@@ -4329,6 +4330,9 @@ struct MainWnd : public WindowBase
         m_hFileIcon = NULL;
         m_hFolderIcon = NULL;
         m_hToolBar = NULL;
+        m_hBinEdit = NULL;
+        m_hSrcEdit = NULL;
+
         m_hNormalFont = NULL;
         m_hLargeFont = NULL;
         m_hSmallFont = NULL;
@@ -4439,20 +4443,20 @@ struct MainWnd : public WindowBase
         dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
             ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
             ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-        g_hBinEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
+        m_hBinEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
             L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
             (HMENU)2, g_hInstance, NULL);
-        if (g_hBinEdit == NULL)
+        if (m_hBinEdit == NULL)
             return FALSE;
 
         m_hToolBar = ToolBar_Create(hwnd);
         if (m_hToolBar == NULL)
             return FALSE;
 
-        g_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
+        m_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
             L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
             (HMENU)3, g_hInstance, NULL);
-        ShowWindow(g_hSrcEdit, FALSE);
+        ShowWindow(m_hSrcEdit, FALSE);
 
         LOGFONTW lf;
         GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
@@ -4471,8 +4475,8 @@ struct MainWnd : public WindowBase
         m_hLargeFont = ::CreateFontIndirectW(&lf);
         assert(m_hLargeFont);
 
-        SetWindowFont(g_hSrcEdit, m_hNormalFont, TRUE);
-        SetWindowFont(g_hBinEdit, m_hSmallFont, TRUE);
+        SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
+        SetWindowFont(m_hBinEdit, m_hSmallFont, TRUE);
 
         dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
         g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
@@ -4500,13 +4504,13 @@ struct MainWnd : public WindowBase
             g_hBitmap = NULL;
         }
 
-        SetWindowTextW(g_hBinEdit, NULL);
-        ShowWindow(g_hBinEdit, SW_HIDE);
-        Edit_SetModify(g_hBinEdit, FALSE);
+        SetWindowTextW(m_hBinEdit, NULL);
+        ShowWindow(m_hBinEdit, SW_HIDE);
+        Edit_SetModify(m_hBinEdit, FALSE);
 
-        SetWindowTextW(g_hSrcEdit, NULL);
-        ShowWindow(g_hSrcEdit, SW_HIDE);
-        Edit_SetModify(g_hSrcEdit, FALSE);
+        SetWindowTextW(m_hSrcEdit, NULL);
+        ShowWindow(m_hSrcEdit, SW_HIDE);
+        Edit_SetModify(m_hSrcEdit, FALSE);
 
         ShowWindow(g_hBmpView, SW_HIDE);
         ShowWindow(m_hToolBar, SW_HIDE);
@@ -4958,17 +4962,17 @@ struct MainWnd : public WindowBase
 
     void OnCompile(HWND hwnd)
     {
-        if (!Edit_GetModify(g_hSrcEdit))
+        if (!Edit_GetModify(m_hSrcEdit))
         {
             LPARAM lParam = TV_GetParam(g_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
             return;
         }
 
-        INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+        INT cchText = GetWindowTextLengthW(m_hSrcEdit);
         std::wstring WideText;
         WideText.resize(cchText);
-        GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+        GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
         if (DoCompileParts(hwnd, WideText))
         {
@@ -5052,7 +5056,7 @@ struct MainWnd : public WindowBase
             if (nID == IDOK)
             {
                 std::wstring WideText = str_res.Dump();
-                SetWindowTextW(g_hSrcEdit, WideText.c_str());
+                SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
                 if (DoCompileParts(hwnd, WideText))
                 {
@@ -5233,52 +5237,52 @@ struct MainWnd : public WindowBase
             cx -= TV_WIDTH;
         }
 
-        if (IsWindowVisible(g_hSrcEdit))
+        if (IsWindowVisible(m_hSrcEdit))
         {
             if (::IsWindowVisible(m_hToolBar))
             {
-                if (::IsWindowVisible(g_hBinEdit))
+                if (::IsWindowVisible(m_hBinEdit))
                 {
-                    MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
                 }
                 else
                 {
-                    MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, cx, cy, TRUE);
                 }
             }
             else if (IsWindowVisible(g_hBmpView))
             {
-                if (::IsWindowVisible(g_hBinEdit))
+                if (::IsWindowVisible(m_hBinEdit))
                 {
-                    MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
                     MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
                 }
                 else
                 {
-                    MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
                     MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy, TRUE);
                 }
             }
             else
             {
-                if (::IsWindowVisible(g_hBinEdit))
+                if (::IsWindowVisible(m_hBinEdit))
                 {
-                    MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
                 }
                 else
                 {
-                    MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+                    MoveWindow(m_hSrcEdit, x, y, cx, cy, TRUE);
                 }
             }
         }
         else
         {
-            if (::IsWindowVisible(g_hBinEdit))
+            if (::IsWindowVisible(m_hBinEdit))
             {
-                MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
+                MoveWindow(m_hBinEdit, x, y, cx, cy, TRUE);
             }
         }
     }
@@ -5501,8 +5505,8 @@ struct MainWnd : public WindowBase
         g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
 
         std::wstring str = DumpBitmapInfo(g_hBitmap);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5516,8 +5520,8 @@ struct MainWnd : public WindowBase
         std::wstring str = DumpCursorInfo(bm);
         DestroyCursor(hCursor);
 
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5528,8 +5532,8 @@ struct MainWnd : public WindowBase
         g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5542,8 +5546,8 @@ struct MainWnd : public WindowBase
 
         std::wstring str = DumpGroupCursorInfo(Entry.data);
         assert(str.size());
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5554,8 +5558,8 @@ struct MainWnd : public WindowBase
         g_hBitmap = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
 
         std::wstring str = DumpBitmapInfo(g_hBitmap);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5578,8 +5582,8 @@ struct MainWnd : public WindowBase
         }
 
         std::wstring str = DumpBitmapInfo(g_hBitmap);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
         SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
@@ -5593,8 +5597,8 @@ struct MainWnd : public WindowBase
         if (accel.LoadFromStream(stream))
         {
             std::wstring str = accel.Dump(Entry.name);
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -5605,8 +5609,8 @@ struct MainWnd : public WindowBase
         if (mes.LoadFromStream(stream))
         {
             std::wstring str = mes.Dump();
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -5618,16 +5622,16 @@ struct MainWnd : public WindowBase
         if (str_res.LoadFromStream(stream, nTableID))
         {
             std::wstring str = str_res.Dump(nTableID);
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
     void PreviewHtml(HWND hwnd, const ResEntry& Entry)
     {
         std::wstring str = BinaryToText(Entry.data);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMenu(HWND hwnd, const ResEntry& Entry)
@@ -5637,8 +5641,8 @@ struct MainWnd : public WindowBase
         if (menu_res.LoadFromStream(stream))
         {
             std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -5648,8 +5652,8 @@ struct MainWnd : public WindowBase
         if (ver_res.LoadFromData(Entry.data))
         {
             std::wstring str = ver_res.Dump(Entry.name);
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -5660,8 +5664,8 @@ struct MainWnd : public WindowBase
         if (dialog_res.LoadFromStream(stream))
         {
             std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
-            SetWindowTextW(g_hSrcEdit, str.c_str());
-            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            SetWindowTextW(m_hSrcEdit, str.c_str());
+            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -5680,8 +5684,8 @@ struct MainWnd : public WindowBase
         }
 
         std::wstring str = str_res.Dump();
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        SetWindowTextW(m_hSrcEdit, str.c_str());
+        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
@@ -5693,11 +5697,11 @@ struct MainWnd : public WindowBase
         HidePreview(hwnd);
 
         std::wstring str = DumpDataAsString(Entry.data);
-        SetWindowTextW(g_hBinEdit, str.c_str());
+        SetWindowTextW(m_hBinEdit, str.c_str());
         if (str.empty())
-            ShowWindow(g_hBinEdit, SW_HIDE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
         else
-            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
 
         if (Entry.type == RT_ICON)
         {
@@ -5771,22 +5775,22 @@ struct MainWnd : public WindowBase
         }
         else if (HIWORD(lParam) == I_STRING)
         {
-            SetWindowTextW(g_hBinEdit, NULL);
-            ShowWindow(g_hBinEdit, SW_HIDE);
+            SetWindowTextW(m_hBinEdit, NULL);
+            ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewStringTable(hwnd, Entry);
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
-            SetWindowTextW(g_hBinEdit, NULL);
-            ShowWindow(g_hBinEdit, SW_HIDE);
+            SetWindowTextW(m_hBinEdit, NULL);
+            ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewMessageTable(hwnd, Entry);
         }
 
         if (DoubleClick)
         {
-            SetWindowFont(g_hSrcEdit, m_hLargeFont, TRUE);
-            Edit_SetReadOnly(g_hSrcEdit, FALSE);
-            SetFocus(g_hSrcEdit);
+            SetWindowFont(m_hSrcEdit, m_hLargeFont, TRUE);
+            Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            SetFocus(m_hSrcEdit);
 
             if (Res_CanGuiEdit(Entry.type))
             {
@@ -5805,21 +5809,21 @@ struct MainWnd : public WindowBase
             }
             ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
-            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
             ShowWindow(g_hTreeView, SW_HIDE);
-            ShowWindow(g_hBinEdit, SW_HIDE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
             SetMenu(hwnd, NULL);
 
             g_bInEdit = TRUE;
         }
         else
         {
-            SetWindowFont(g_hSrcEdit, m_hNormalFont, TRUE);
-            Edit_SetReadOnly(g_hSrcEdit, TRUE);
+            SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
+            Edit_SetReadOnly(m_hSrcEdit, TRUE);
             SetFocus(g_hTreeView);
 
             ShowWindow(m_hToolBar, SW_HIDE);
-            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
             ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
             SetMenu(hwnd, m_hMenu);
 
@@ -6046,14 +6050,14 @@ struct MainWnd : public WindowBase
         {
             if (output.empty())
             {
-                SetWindowTextW(g_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-                ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+                SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+                ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             }
             else
             {
                 output.insert(output.end(), 0);
-                SetWindowTextA(g_hBinEdit, (char *)&output[0]);
-                ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+                SetWindowTextA(m_hBinEdit, (char *)&output[0]);
+                ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             }
         }
 
@@ -6064,7 +6068,7 @@ struct MainWnd : public WindowBase
 
     BOOL CompileIfNecessary(HWND hwnd)
     {
-        if (Edit_GetModify(g_hSrcEdit))
+        if (Edit_GetModify(m_hSrcEdit))
         {
             INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -6072,15 +6076,15 @@ struct MainWnd : public WindowBase
             {
             case IDYES:
                 {
-                    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+                    INT cchText = GetWindowTextLengthW(m_hSrcEdit);
                     std::wstring WideText;
                     WideText.resize(cchText);
-                    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+                    GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
                     if (!DoCompileParts(hwnd, WideText))
                         return FALSE;
 
-                    Edit_SetModify(g_hSrcEdit, FALSE);
+                    Edit_SetModify(m_hSrcEdit, FALSE);
                 }
                 break;
             case IDNO:
