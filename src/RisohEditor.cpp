@@ -4605,7 +4605,7 @@ struct MainWnd : public WindowBase
         return TRUE;
     }
 
-    VOID MainWnd_HidePreview(HWND hwnd)
+    VOID HidePreview(HWND hwnd)
     {
         if (g_hBitmap)
         {
@@ -4639,7 +4639,7 @@ struct MainWnd : public WindowBase
             return;
 
         TV_Delete(g_hTreeView, hItem, g_Entries);
-        MainWnd_HidePreview(hwnd);
+        HidePreview(hwnd);
     }
 
     void OnExtractBin(HWND hwnd)
@@ -5032,10 +5032,10 @@ struct MainWnd : public WindowBase
     void OnEdit(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (!MainWnd_IsEditableEntry(hwnd, lParam))
+        if (!IsEditableEntry(hwnd, lParam))
             return;
 
-        MainWnd_SelectTV(hwnd, lParam, TRUE);
+        SelectTV(hwnd, lParam, TRUE);
     }
 
     LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
@@ -5048,7 +5048,7 @@ struct MainWnd : public WindowBase
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
             LPARAM lParam = pTV->itemNew.lParam;
-            MainWnd_SelectTV(hwnd, lParam, FALSE);
+            SelectTV(hwnd, lParam, FALSE);
         }
         else if (pnmhdr->code == TVN_KEYDOWN)
         {
@@ -5072,7 +5072,7 @@ struct MainWnd : public WindowBase
             return;
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
+        SelectTV(hwnd, lParam, FALSE);
     }
 
     void OnCompile(HWND hwnd)
@@ -5080,7 +5080,7 @@ struct MainWnd : public WindowBase
         if (!Edit_GetModify(g_hSrcEdit))
         {
             LPARAM lParam = TV_GetParam(g_hTreeView);
-            MainWnd_SelectTV(hwnd, lParam, FALSE);
+            SelectTV(hwnd, lParam, FALSE);
             return;
         }
 
@@ -5093,14 +5093,14 @@ struct MainWnd : public WindowBase
         {
             TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
             LPARAM lParam = TV_GetParam(g_hTreeView);
-            MainWnd_SelectTV(hwnd, lParam, FALSE);
+            SelectTV(hwnd, lParam, FALSE);
         }
     }
 
     void OnGuiEdit(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (!MainWnd_IsEditableEntry(hwnd, lParam))
+        if (!IsEditableEntry(hwnd, lParam))
             return;
 
         WORD i = LOWORD(lParam);
@@ -5110,7 +5110,7 @@ struct MainWnd : public WindowBase
             return;
         }
 
-        if (!MainWnd_CompileIfNecessary(hwnd))
+        if (!CompileIfNecessary(hwnd))
         {
             return;
         }
@@ -5127,7 +5127,7 @@ struct MainWnd : public WindowBase
                 {
                     dialog.m_accel_res.Update();
                     Entry.data = dialog.m_accel_res.data();
-                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                    SelectTV(hwnd, lParam, FALSE);
                     return;
                 }
             }
@@ -5143,7 +5143,7 @@ struct MainWnd : public WindowBase
                 {
                     menu_res.Update();
                     Entry.data = menu_res.data();
-                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                    SelectTV(hwnd, lParam, FALSE);
                     return;
                 }
             }
@@ -5176,7 +5176,7 @@ struct MainWnd : public WindowBase
                 if (DoCompileParts(hwnd, WideText))
                 {
                     TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
-                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                    SelectTV(hwnd, lParam, FALSE);
                 }
             }
         }
@@ -5432,7 +5432,7 @@ struct MainWnd : public WindowBase
         const ResEntry& Entry = g_Entries[i];
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
+        BOOL bEditable = IsEditableEntry(hwnd, lParam);
         if (bEditable)
         {
             EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
@@ -5614,7 +5614,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewIcon(HWND hwnd, const ResEntry& Entry)
+    void PreviewIcon(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
         g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
@@ -5627,7 +5627,7 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
     }
 
-    void MainWnd_PreviewCursor(HWND hwnd, const ResEntry& Entry)
+    void PreviewCursor(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
         HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
@@ -5642,7 +5642,7 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
     }
 
-    void MainWnd_PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
+    void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
         g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
 
@@ -5654,7 +5654,7 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
     }
 
-    void MainWnd_PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
+    void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
         g_hBitmap = CreateBitmapFromCursorsDx(hwnd, Entry);
         assert(g_hBitmap);
@@ -5668,7 +5668,7 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
     }
 
-    void MainWnd_PreviewBitmap(HWND hwnd, const ResEntry& Entry)
+    void PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     {
         g_hBitmap = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
 
@@ -5680,7 +5680,7 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
     }
 
-    void MainWnd_PreviewPNG(HWND hwnd, const ResEntry& Entry)
+    void PreviewPNG(HWND hwnd, const ResEntry& Entry)
     {
         HBITMAP hbm = ii_png_load_mem(&Entry[0], Entry.size());
         if (hbm)
@@ -5705,7 +5705,7 @@ struct MainWnd : public WindowBase
     }
 
 
-    void MainWnd_PreviewAccel(HWND hwnd, const ResEntry& Entry)
+    void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
         ByteStream stream(Entry.data);
         AccelRes accel;
@@ -5717,7 +5717,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewMessage(HWND hwnd, const ResEntry& Entry)
+    void PreviewMessage(HWND hwnd, const ResEntry& Entry)
     {
         ByteStream stream(Entry.data);
         MessageRes mes;
@@ -5729,7 +5729,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewString(HWND hwnd, const ResEntry& Entry)
+    void PreviewString(HWND hwnd, const ResEntry& Entry)
     {
         ByteStream stream(Entry.data);
         StringRes str_res;
@@ -5742,14 +5742,14 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewHtml(HWND hwnd, const ResEntry& Entry)
+    void PreviewHtml(HWND hwnd, const ResEntry& Entry)
     {
         std::wstring str = BinaryToText(Entry.data);
         SetWindowTextW(g_hSrcEdit, str.c_str());
         ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
-    void MainWnd_PreviewMenu(HWND hwnd, const ResEntry& Entry)
+    void PreviewMenu(HWND hwnd, const ResEntry& Entry)
     {
         ByteStream stream(Entry.data);
         MenuRes menu_res;
@@ -5761,7 +5761,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewVersion(HWND hwnd, const ResEntry& Entry)
+    void PreviewVersion(HWND hwnd, const ResEntry& Entry)
     {
         VersionRes ver_res;
         if (ver_res.LoadFromData(Entry.data))
@@ -5772,7 +5772,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewDialog(HWND hwnd, const ResEntry& Entry)
+    void PreviewDialog(HWND hwnd, const ResEntry& Entry)
     {
         ByteStream stream(Entry.data);
         DialogRes dialog_res;
@@ -5784,7 +5784,7 @@ struct MainWnd : public WindowBase
         }
     }
 
-    void MainWnd_PreviewStringTable(HWND hwnd, const ResEntry& Entry)
+    void PreviewStringTable(HWND hwnd, const ResEntry& Entry)
     {
         ResEntries found;
         Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
@@ -5803,13 +5803,13 @@ struct MainWnd : public WindowBase
         ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
-    void MainWnd_PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
+    void PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
     {
     }
 
-    void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
+    void Preview(HWND hwnd, const ResEntry& Entry)
     {
-        MainWnd_HidePreview(hwnd);
+        HidePreview(hwnd);
 
         std::wstring str = DumpDataAsString(Entry.data);
         SetWindowTextW(g_hBinEdit, str.c_str());
@@ -5820,85 +5820,85 @@ struct MainWnd : public WindowBase
 
         if (Entry.type == RT_ICON)
         {
-            MainWnd_PreviewIcon(hwnd, Entry);
+            PreviewIcon(hwnd, Entry);
         }
         else if (Entry.type == RT_CURSOR)
         {
-            MainWnd_PreviewCursor(hwnd, Entry);
+            PreviewCursor(hwnd, Entry);
         }
         else if (Entry.type == RT_GROUP_ICON)
         {
-            MainWnd_PreviewGroupIcon(hwnd, Entry);
+            PreviewGroupIcon(hwnd, Entry);
         }
         else if (Entry.type == RT_GROUP_CURSOR)
         {
-            MainWnd_PreviewGroupCursor(hwnd, Entry);
+            PreviewGroupCursor(hwnd, Entry);
         }
         else if (Entry.type == RT_BITMAP)
         {
-            MainWnd_PreviewBitmap(hwnd, Entry);
+            PreviewBitmap(hwnd, Entry);
         }
         else if (Entry.type == RT_ACCELERATOR)
         {
-            MainWnd_PreviewAccel(hwnd, Entry);
+            PreviewAccel(hwnd, Entry);
         }
         else if (Entry.type == RT_STRING)
         {
-            MainWnd_PreviewString(hwnd, Entry);
+            PreviewString(hwnd, Entry);
         }
         else if (Entry.type == RT_MENU)
         {
-            MainWnd_PreviewMenu(hwnd, Entry);
+            PreviewMenu(hwnd, Entry);
         }
         else if (Entry.type == RT_DIALOG)
         {
-            MainWnd_PreviewDialog(hwnd, Entry);
+            PreviewDialog(hwnd, Entry);
         }
         else if (Entry.type == RT_MESSAGETABLE)
         {
-            MainWnd_PreviewMessage(hwnd, Entry);
+            PreviewMessage(hwnd, Entry);
         }
     #ifndef RT_MANIFEST
         #define RT_MANIFEST 24
     #endif
         else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
         {
-            MainWnd_PreviewHtml(hwnd, Entry);
+            PreviewHtml(hwnd, Entry);
         }
         else if (Entry.type == RT_VERSION)
         {
-            MainWnd_PreviewVersion(hwnd, Entry);
+            PreviewVersion(hwnd, Entry);
         }
         else if (Entry.type == L"PNG")
         {
-            MainWnd_PreviewPNG(hwnd, Entry);
+            PreviewPNG(hwnd, Entry);
         }
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
     }
 
-    void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
+    void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     {
-        MainWnd_HidePreview(hwnd);
+        HidePreview(hwnd);
 
         WORD i = LOWORD(lParam);
         ResEntry& Entry = g_Entries[i];
 
         if (HIWORD(lParam) == I_LANG)
         {
-            MainWnd_Preview(hwnd, Entry);
+            Preview(hwnd, Entry);
         }
         else if (HIWORD(lParam) == I_STRING)
         {
             SetWindowTextW(g_hBinEdit, NULL);
             ShowWindow(g_hBinEdit, SW_HIDE);
-            MainWnd_PreviewStringTable(hwnd, Entry);
+            PreviewStringTable(hwnd, Entry);
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
             SetWindowTextW(g_hBinEdit, NULL);
             ShowWindow(g_hBinEdit, SW_HIDE);
-            MainWnd_PreviewMessageTable(hwnd, Entry);
+            PreviewMessageTable(hwnd, Entry);
         }
 
         if (DoubleClick)
@@ -5948,7 +5948,7 @@ struct MainWnd : public WindowBase
         PostMessageW(hwnd, WM_SIZE, 0, 0);
     }
 
-    BOOL MainWnd_IsEditableEntry(HWND hwnd, LPARAM lParam)
+    BOOL IsEditableEntry(HWND hwnd, LPARAM lParam)
     {
         const WORD i = LOWORD(lParam);
         const ResEntry& Entry = g_Entries[i];
@@ -6046,7 +6046,7 @@ struct MainWnd : public WindowBase
                     std::string TextAnsi = WideToAnsi(WideText);
                     entry.data.assign(TextAnsi.begin(), TextAnsi.end());
                 }
-                MainWnd_SelectTV(hwnd, lParam, FALSE);
+                SelectTV(hwnd, lParam, FALSE);
 
                 return TRUE;    // success
             }
@@ -6181,7 +6181,7 @@ struct MainWnd : public WindowBase
         return Success;
     }
 
-    BOOL MainWnd_CompileIfNecessary(HWND hwnd)
+    BOOL CompileIfNecessary(HWND hwnd)
     {
         if (Edit_GetModify(g_hSrcEdit))
         {
