@@ -1,9 +1,44 @@
+// RisohEditor.hpp
+////////////////////////////////////////////////////////////////////////////
+
 #ifndef RISOHEDITOR_HPP_
 #define RISOHEDITOR_HPP_
+
+////////////////////////////////////////////////////////////////////////////
+
+#ifndef UNICODE
+    #define UNICODE
+#endif
+#ifndef _UNICODE
+    #define _UNICODE
+#endif
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
+#endif
+
+////////////////////////////////////////////////////////////////////////////
+
+#include <windows.h>
+#include <windowsx.h>
+#include <shlobj.h>
+#include <dlgs.h>
+#include <tchar.h>
+#include <commctrl.h>
+#include <commdlg.h>
+#include <mbstring.h>
+
+#include <algorithm>    // for std::sort
+#include <string>       // for std::string, std::wstring
+#include <cassert>      // for assert macro
+#include <cstdio>
+
+////////////////////////////////////////////////////////////////////////////
 
 #include "MWindowBase.hpp"
 #include "Res.hpp"
 
+// RisohEditor.cpp
 LPWSTR MakeFilterDx(LPWSTR psz);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 HBITMAP Create24BppBitmapDx(INT width, INT height);
@@ -67,4 +102,10 @@ BOOL DoReplaceBitmap(HWND hwnd,
                      WORD Lang,
                      const std::wstring& BitmapFile);
 
+#include "MReplaceBinDlg.hpp"
+
+////////////////////////////////////////////////////////////////////////////
+
 #endif  // ndef RISOHEDITOR_HPP_
+
+////////////////////////////////////////////////////////////////////////////

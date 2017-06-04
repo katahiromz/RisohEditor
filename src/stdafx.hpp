@@ -1,31 +1,6 @@
 #pragma once
 
-#ifndef UNICODE
-    #define UNICODE
-#endif
-#ifndef _UNICODE
-    #define _UNICODE
-#endif
-
-#ifndef _CRT_SECURE_NO_WARNINGS
-    #define _CRT_SECURE_NO_WARNINGS
-#endif
-
-#include <windows.h>
-#include <windowsx.h>
-#include <shlobj.h>
-#include <dlgs.h>
-#include <tchar.h>
-#include <commctrl.h>
-#include <commdlg.h>
-#include <mbstring.h>
-
-#include <algorithm>    // for std::sort
-#include <string>       // for std::string, std::wstring
-#include <cassert>      // for assert macro
-#include <cstdio>
-
-#include "MWindowBase.hpp"
+#include "RisohEditor.hpp"
 
 std::wstring str_vkey(WORD w);
 

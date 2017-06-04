@@ -5,6 +5,7 @@
 #include "ByteStream.hpp"
 #include "Png.hpp"
 #include "Text.hpp"
+#include "PackedDIB.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
