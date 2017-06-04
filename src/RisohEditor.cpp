@@ -28,7 +28,6 @@ WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 
 WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
-ResEntries  g_Entries;
 
 HWND        g_hTreeView = NULL;
 BOOL        g_bInEdit = FALSE;
@@ -2074,7 +2073,7 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
     return ret;
 }
 
-std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
+std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& data)
 {
     std::wstring ret;
     WCHAR sz[128];
@@ -2106,10 +2105,10 @@ std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
         WORD xHotSpot = 0;
         WORD yHotSpot = 0;
 
-        INT k = Res_Find(g_Entries, RT_CURSOR, nID, 0xFFFF);
+        INT k = Res_Find(Entries, RT_CURSOR, nID, 0xFFFF);
         if (k != -1)
         {
-            const ResEntry& CursorEntry = g_Entries[k];
+            const ResEntry& CursorEntry = Entries[k];
             LOCALHEADER header;
             if (CursorEntry.size() >= sizeof(header))
             {
@@ -4212,6 +4211,7 @@ struct MainWnd : MWindowBase
     WCHAR       m_szConstantsFile[MAX_PATH];
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
+    ResEntries  m_Entries;
 
     MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc),
@@ -4375,7 +4375,7 @@ struct MainWnd : MWindowBase
 
         if (m_argc >= 2)
         {
-            DoLoad(hwnd, g_Entries, m_targv[1]);
+            DoLoad(hwnd, m_Entries, m_targv[1]);
         }
 
         m_hMenu = GetMenu(hwnd);
@@ -4418,7 +4418,7 @@ struct MainWnd : MWindowBase
         if (hItem == NULL)
             return;
 
-        TV_Delete(g_hTreeView, hItem, g_Entries);
+        TV_Delete(g_hTreeView, hItem, m_Entries);
         HidePreview(hwnd);
     }
 
@@ -4452,7 +4452,7 @@ struct MainWnd : MWindowBase
             if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
             {
                 ResEntries selection;
-                INT count = TV_GetSelection(g_hTreeView, selection, g_Entries);
+                INT count = TV_GetSelection(g_hTreeView, selection, m_Entries);
                 if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
@@ -4460,7 +4460,7 @@ struct MainWnd : MWindowBase
             }
             else
             {
-                if (!DoExtractBin(ofn.lpstrFile, g_Entries[i]))
+                if (!DoExtractBin(ofn.lpstrFile, m_Entries[i]))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
@@ -4490,7 +4490,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"ico";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractIcon(ofn.lpstrFile, g_Entries, g_Entries[i]))
+            if (!DoExtractIcon(ofn.lpstrFile, m_Entries, m_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTICO);
             }
@@ -4519,7 +4519,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"cur";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractCursor(ofn.lpstrFile, g_Entries, g_Entries[i]))
+            if (!DoExtractCursor(ofn.lpstrFile, m_Entries, m_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTCUR);
             }
@@ -4550,7 +4550,7 @@ struct MainWnd : MWindowBase
         {
             BOOL PNG;
             PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-            if (!DoExtractBitmap(ofn.lpstrFile, g_Entries, g_Entries[i], PNG))
+            if (!DoExtractBitmap(ofn.lpstrFile, m_Entries, m_Entries[i], PNG))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTBMP);
             }
@@ -4564,7 +4564,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceBinDlg dialog(g_Entries, g_Entries[i]);
+        MReplaceBinDlg dialog(m_Entries, m_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4600,14 +4600,14 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
             {
-                if (!DoSaveResAs(hwnd, g_Entries, File))
+                if (!DoSaveResAs(hwnd, m_Entries, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             else
             {
-                if (!DoSaveAs(hwnd, g_Entries, File))
+                if (!DoSaveAs(hwnd, m_Entries, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
@@ -4632,7 +4632,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(Item.lParam);
-        const ResEntry& Entry = g_Entries[i];
+        const ResEntry& Entry = m_Entries[i];
         if (Entry.type == RT_DIALOG)
         {
             MTestDialog dialog;
@@ -4652,7 +4652,7 @@ struct MainWnd : MWindowBase
 
     void OnAddIcon(HWND hwnd)
     {
-        MAddIconDlg dialog(g_Entries);
+        MAddIconDlg dialog(m_Entries);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4663,7 +4663,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceIconDlg dialog(g_Entries, g_Entries[i]);
+        MReplaceIconDlg dialog(m_Entries, m_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4674,7 +4674,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceCursorDlg dialog(g_Entries, g_Entries[i]);
+        MReplaceCursorDlg dialog(m_Entries, m_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4699,13 +4699,13 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"exe";
         if (GetOpenFileNameW(&ofn))
         {
-            DoLoad(hwnd, g_Entries, File);
+            DoLoad(hwnd, m_Entries, File);
         }
     }
 
     void OnAddBitmap(HWND hwnd)
     {
-        MAddBitmapDlg dialog(g_Entries);
+        MAddBitmapDlg dialog(m_Entries);
         dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
     }
 
@@ -4716,19 +4716,19 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceBitmapDlg dialog(g_Entries, g_Entries[i]);
+        MReplaceBitmapDlg dialog(m_Entries, m_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
     void OnAddCursor(HWND hwnd)
     {
-        MAddCursorDlg dialog(g_Entries);
+        MAddCursorDlg dialog(m_Entries);
         dialog.DialogBoxDx(hwnd);
     }
 
     void OnAddRes(HWND hwnd)
     {
-        MAddResDlg dialog(g_Entries);
+        MAddResDlg dialog(m_Entries);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4771,7 +4771,7 @@ struct MainWnd : MWindowBase
             if (DoImport(hwnd, File, entries))
             {
                 BOOL Overwrite = TRUE;
-                if (Res_Intersect(g_Entries, entries))
+                if (Res_Intersect(m_Entries, entries))
                 {
                     INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE),
                                           g_szTitle,
@@ -4791,10 +4791,10 @@ struct MainWnd : MWindowBase
                 size_t i, count = entries.size();
                 for (i = 0; i < count; ++i)
                 {
-                    Res_AddEntry(g_Entries, entries[i], Overwrite);
+                    Res_AddEntry(m_Entries, entries[i], Overwrite);
                 }
 
-                TV_RefreshInfo(g_hTreeView, g_Entries);
+                TV_RefreshInfo(g_hTreeView, m_Entries);
             }
             else
             {
@@ -4865,7 +4865,7 @@ struct MainWnd : MWindowBase
 
         if (DoCompileParts(hwnd, WideText))
         {
-            TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
             LPARAM lParam = TV_GetParam(g_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
         }
@@ -4878,7 +4878,7 @@ struct MainWnd : MWindowBase
             return;
 
         WORD i = LOWORD(lParam);
-        ResEntry& Entry = g_Entries[i];
+        ResEntry& Entry = m_Entries[i];
         if (!Res_CanGuiEdit(Entry.type))
         {
             return;
@@ -4929,7 +4929,7 @@ struct MainWnd : MWindowBase
         else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
         {
             ResEntries found;
-            Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
+            Res_Search(found, m_Entries, RT_STRING, (WORD)0, Entry.lang);
 
             StringRes str_res;
             ResEntries::iterator it, end = found.end();
@@ -4949,7 +4949,7 @@ struct MainWnd : MWindowBase
 
                 if (DoCompileParts(hwnd, WideText))
                 {
-                    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+                    TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
@@ -4962,8 +4962,8 @@ struct MainWnd : MWindowBase
             return;
 
         DoSetFile(hwnd, NULL);
-        g_Entries.clear();
-        TV_RefreshInfo(g_hTreeView, g_Entries);
+        m_Entries.clear();
+        TV_RefreshInfo(g_hTreeView, m_Entries);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -5067,14 +5067,14 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(pch, L".ico") == 0)
             {
-                MAddIconDlg dialog(g_Entries);
+                MAddIconDlg dialog(m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".cur") == 0)
             {
-                MAddCursorDlg dialog(g_Entries);
+                MAddCursorDlg dialog(m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
@@ -5082,19 +5082,19 @@ struct MainWnd : MWindowBase
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
                      lstrcmpiW(pch, L".png") == 0)
             {
-                MAddBitmapDlg dialog(g_Entries);
+                MAddBitmapDlg dialog(m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".res") == 0)
             {
-                DoLoad(hwnd, g_Entries, File);
+                DoLoad(hwnd, m_Entries, File);
                 return;
             }
         }
 
-        DoLoad(hwnd, g_Entries, File);
+        DoLoad(hwnd, m_Entries, File);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -5199,7 +5199,7 @@ struct MainWnd : MWindowBase
         TreeView_GetItem(g_hTreeView, &Item);
 
         UINT i = LOWORD(Item.lParam);
-        const ResEntry& Entry = g_Entries[i];
+        const ResEntry& Entry = m_Entries[i];
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
         BOOL bEditable = IsEditableEntry(hwnd, lParam);
@@ -5414,7 +5414,7 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromIconsDx(hwnd, g_Entries, Entry);
+        g_hBitmap = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -5426,10 +5426,10 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, g_Entries, Entry);
+        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
         assert(g_hBitmap);
 
-        std::wstring str = DumpGroupCursorInfo(Entry.data);
+        std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
         assert(str.size());
         SetWindowTextW(m_hSrcEdit, str.c_str());
         ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
@@ -5557,7 +5557,7 @@ struct MainWnd : MWindowBase
     void PreviewStringTable(HWND hwnd, const ResEntry& Entry)
     {
         ResEntries found;
-        Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
+        Res_Search(found, m_Entries, RT_STRING, (WORD)0, Entry.lang);
 
         StringRes str_res;
         ResEntries::iterator it, end = found.end();
@@ -5649,7 +5649,7 @@ struct MainWnd : MWindowBase
         HidePreview(hwnd);
 
         WORD i = LOWORD(lParam);
-        ResEntry& Entry = g_Entries[i];
+        ResEntry& Entry = m_Entries[i];
 
         if (HIWORD(lParam) == I_LANG)
         {
@@ -5718,7 +5718,7 @@ struct MainWnd : MWindowBase
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam)
     {
         const WORD i = LOWORD(lParam);
-        const ResEntry& Entry = g_Entries[i];
+        const ResEntry& Entry = m_Entries[i];
         const ID_OR_STRING& type = Entry.type;
         switch (HIWORD(lParam))
         {
@@ -5748,7 +5748,7 @@ struct MainWnd : MWindowBase
         if (HIWORD(lParam) == I_LANG)
         {
             WORD i = LOWORD(lParam);
-            ResEntry& entry = g_Entries[i];
+            ResEntry& entry = m_Entries[i];
 
             if (entries.size() != 1 ||
                 entries[0].name != entry.name ||
@@ -5763,13 +5763,13 @@ struct MainWnd : MWindowBase
         else if (HIWORD(lParam) == I_STRING)
         {
             WORD i = LOWORD(lParam);
-            ResEntry& entry = g_Entries[i];
+            ResEntry& entry = m_Entries[i];
 
-            Res_DeleteNames(g_Entries, RT_STRING, entry.lang);
+            Res_DeleteNames(m_Entries, RT_STRING, entry.lang);
 
             for (size_t m = 0; m < entries.size(); ++m)
             {
-                if (!Res_AddEntry(g_Entries, entries[m], TRUE))
+                if (!Res_AddEntry(m_Entries, entries[m], TRUE))
                 {
                     msg += WideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
                     return FALSE;
@@ -5794,7 +5794,7 @@ struct MainWnd : MWindowBase
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
         WORD i = LOWORD(lParam);
-        ResEntry& entry = g_Entries[i];
+        ResEntry& entry = m_Entries[i];
 
         std::string TextUtf8 = WideToUtf8(WideText);
         if (HIWORD(lParam) == I_LANG)
@@ -6202,7 +6202,7 @@ struct MainWnd : MWindowBase
         if ((pch && lstrcmpiW(pch, L".res") == 0) ||
             !GetBinaryType(g_szFile, &dwBinType))
         {
-            return DoSaveResAs(hwnd, g_Entries, ExeFile);
+            return DoSaveResAs(hwnd, m_Entries, ExeFile);
         }
 
         return DoSaveExeAs(hwnd, Entries, ExeFile);
