@@ -10,11 +10,6 @@ WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
 ResEntries  g_Entries;
 
-WCHAR       g_szDataFolder[MAX_PATH] = L"";
-WCHAR       g_szConstantsFile[MAX_PATH] = L"";
-WCHAR       g_szCppExe[MAX_PATH] = L"";
-WCHAR       g_szWindresExe[MAX_PATH] = L"";
-
 HWND        g_hTreeView = NULL;
 HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
@@ -4317,6 +4312,10 @@ struct MainWnd : public WindowBase
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
     HFONT       m_hSmallFont;
+    WCHAR       m_szDataFolder[MAX_PATH];
+    WCHAR       m_szConstantsFile[MAX_PATH];
+    WCHAR       m_szCppExe[MAX_PATH];
+    WCHAR       m_szWindresExe[MAX_PATH];
 
     MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc),
@@ -4333,6 +4332,10 @@ struct MainWnd : public WindowBase
         m_hNormalFont = NULL;
         m_hLargeFont = NULL;
         m_hSmallFont = NULL;
+        m_szDataFolder[0] = 0;
+        m_szConstantsFile[0] = 0;
+        m_szCppExe[0] = 0;
+        m_szWindresExe[0] = 0;
     }
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
@@ -5967,12 +5970,12 @@ struct MainWnd : public WindowBase
         wsprintfW(CmdLine,
             L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
             L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
-            g_szWindresExe, szPath3, g_szCppExe, szPath1);
+            m_szWindresExe, szPath3, m_szCppExe, szPath1);
     #else
         wsprintfW(CmdLine,
             L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
             L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
-            g_szWindresExe, szPath3, g_szCppExe, szPath1);
+            m_szWindresExe, szPath3, m_szCppExe, szPath1);
     #endif
 
         // MessageBoxW(hwnd, CmdLine, NULL, 0);
@@ -6115,7 +6118,7 @@ struct MainWnd : public WindowBase
                 }
             }
         }
-        lstrcpynW(g_szDataFolder, szPath, MAX_PATH);
+        lstrcpynW(m_szDataFolder, szPath, MAX_PATH);
         return TRUE;
     }
 
@@ -6128,34 +6131,34 @@ struct MainWnd : public WindowBase
         }
 
         // Constants.txt
-        lstrcpyW(g_szConstantsFile, g_szDataFolder);
-        lstrcatW(g_szConstantsFile, L"\\Constants.txt");
-        if (!g_ConstantsDB.LoadFromFile(g_szConstantsFile))
+        lstrcpyW(m_szConstantsFile, m_szDataFolder);
+        lstrcatW(m_szConstantsFile, L"\\Constants.txt");
+        if (!g_ConstantsDB.LoadFromFile(m_szConstantsFile))
         {
             ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
             return -2;  // failure
         }
-        ReplaceBackslash(g_szConstantsFile);
+        ReplaceBackslash(m_szConstantsFile);
 
         // cpp.exe
-        lstrcpyW(g_szCppExe, g_szDataFolder);
-        lstrcatW(g_szCppExe, L"\\bin\\cpp.exe");
-        if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
+        lstrcpyW(m_szCppExe, m_szDataFolder);
+        lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+        if (::GetFileAttributesW(m_szCppExe) == INVALID_FILE_ATTRIBUTES)
         {
             ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
             return -3;  // failure
         }
-        ReplaceBackslash(g_szCppExe);
+        ReplaceBackslash(m_szCppExe);
 
         // windres.exe
-        lstrcpyW(g_szWindresExe, g_szDataFolder);
-        lstrcatW(g_szWindresExe, L"\\bin\\windres.exe");
-        if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
+        lstrcpyW(m_szWindresExe, m_szDataFolder);
+        lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+        if (::GetFileAttributesW(m_szWindresExe) == INVALID_FILE_ATTRIBUTES)
         {
             ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
             return -4;  // failure
         }
-        ReplaceBackslash(g_szWindresExe);
+        ReplaceBackslash(m_szWindresExe);
 
         return 0;   // success
     }
