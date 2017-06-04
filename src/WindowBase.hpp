@@ -456,15 +456,15 @@ struct WindowBase
         return GetAncestorDx(m_hwnd);
     }
 
-	HICON LoadIconDx(INT id)
-	{
-		return LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(id));
-	}
+    HICON LoadIconDx(INT id)
+    {
+        return LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(id));
+    }
 
     HICON LoadSmallIconDx(UINT id)
     {
         return HICON(LoadImage(GetModuleHandle(NULL), 
-			                   MAKEINTRESOURCE(id),
+                               MAKEINTRESOURCE(id),
                                IMAGE_ICON, 16, 16, 0));
     }
 
