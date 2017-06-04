@@ -4,7 +4,6 @@
 
 HINSTANCE   g_hInstance = NULL;
 HWND        g_hMainWnd = NULL;
-HMENU       g_hMenu = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 WCHAR       g_szBmpViewClass[]  = L"RisohEditor BmpView Class";
 
@@ -21,23 +20,12 @@ HWND        g_hTreeView = NULL;
 HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
-HWND        g_hToolBar = NULL;
 BOOL        g_bInEdit = FALSE;
-
-HIMAGELIST  g_hImageList = NULL;
-HICON       g_hFileIcon = NULL;
-HICON       g_hFolderIcon = NULL;
 
 BITMAP      g_bm = { 0 };
 HBITMAP     g_hBitmap = NULL;
 HICON       g_hIcon = NULL;
 HCURSOR     g_hCursor = NULL;
-
-HFONT       g_hNormalFont = NULL;
-HFONT       g_hLargeFont = NULL;
-HFONT       g_hSmallFont = NULL;
-
-HACCEL      g_hAccel = NULL;
 
 struct LangEntry
 {
@@ -50,34 +38,6 @@ struct LangEntry
     }
 };
 std::vector<LangEntry> g_Langs;
-
-static LPCWSTR s_pszClassName = L"katahiromz's RisohEditor";
-
-void DebugPrint(LPCWSTR pszFormat, ...)
-{
-    WCHAR Buffer[512];
-    va_list va;
-    va_start(va, pszFormat);
-    wvsprintfW(Buffer, pszFormat, va);
-    va_end(va);
-    OutputDebugStringW(Buffer);
-}
-
-LPWSTR LoadStringDx(UINT id)
-{
-    static WCHAR s_sz[MAX_PATH];
-    ZeroMemory(s_sz, sizeof(s_sz));
-    LoadStringW(g_hInstance, id, s_sz, _countof(s_sz));
-    return s_sz;
-}
-
-LPWSTR LoadStringDx2(UINT id)
-{
-    static WCHAR s_sz[MAX_PATH];
-    ZeroMemory(s_sz, sizeof(s_sz));
-    LoadStringW(g_hInstance, id, s_sz, _countof(s_sz));
-    return s_sz;
-}
 
 LPWSTR MakeFilterDx(LPWSTR psz)
 {
@@ -4458,6 +4418,14 @@ struct MainWnd : public WindowBase
     HINSTANCE   m_hInst;        // the instance handle
     HICON       m_hIcon;        // the icon handle
     HACCEL      m_hAccel;       // the accelerator handle
+    HMENU       m_hMenu;
+    HIMAGELIST  m_hImageList;
+    HICON       m_hFileIcon;
+    HICON       m_hFolderIcon;
+    HWND        m_hToolBar;
+    HFONT       m_hNormalFont;
+    HFONT       m_hLargeFont;
+    HFONT       m_hSmallFont;
 
     MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc),
@@ -4466,19 +4434,29 @@ struct MainWnd : public WindowBase
         m_hIcon(NULL),
         m_hAccel(NULL)
     {
+        m_hMenu = NULL;
+        m_hImageList = NULL;
+        m_hFileIcon = NULL;
+        m_hFolderIcon = NULL;
+        m_hToolBar = NULL;
+        m_hNormalFont = NULL;
+        m_hLargeFont = NULL;
+        m_hSmallFont = NULL;
     }
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
         WindowBase::ModifyWndClassDx(wcx);
         wcx.lpszMenuName = MAKEINTRESOURCE(1);
+        wcx.hIcon = m_hIcon;
+        wcx.hIconSm = m_hIcon;
     }
 
     BOOL RegisterClassesDx();
 
     virtual LPCTSTR GetWndClassNameDx() const
     {
-        return s_pszClassName;
+        return TEXT("katahiromz's RisohEditor");
     }
 
     BOOL StartDx(INT nCmdShow)
@@ -4541,8 +4519,6 @@ struct MainWnd : public WindowBase
         InitCommonControls();
 
         LoadStringW(g_hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
-        g_hAccel = LoadAcceleratorsW(g_hInstance, MAKEINTRESOURCEW(1));
-
         LoadLangInfo();
 
         INT nRet = CheckData();
@@ -4560,14 +4536,14 @@ struct MainWnd : public WindowBase
         if (g_hTreeView == NULL)
             return FALSE;
 
-        g_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
+        m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
 
-        g_hFileIcon = LoadSmallIconDx(100);
-        ImageList_AddIcon(g_hImageList, g_hFileIcon);
-        g_hFolderIcon = LoadSmallIconDx(101);
-        ImageList_AddIcon(g_hImageList, g_hFolderIcon);
+        m_hFileIcon = LoadSmallIconDx(100);
+        ImageList_AddIcon(m_hImageList, m_hFileIcon);
+        m_hFolderIcon = LoadSmallIconDx(101);
+        ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
-        TreeView_SetImageList(g_hTreeView, g_hImageList, TVSIL_NORMAL);
+        TreeView_SetImageList(g_hTreeView, m_hImageList, TVSIL_NORMAL);
 
         dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
             ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
@@ -4578,8 +4554,8 @@ struct MainWnd : public WindowBase
         if (g_hBinEdit == NULL)
             return FALSE;
 
-        g_hToolBar = ToolBar_Create(hwnd);
-        if (g_hToolBar == NULL)
+        m_hToolBar = ToolBar_Create(hwnd);
+        if (m_hToolBar == NULL)
             return FALSE;
 
         g_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
@@ -4593,19 +4569,19 @@ struct MainWnd : public WindowBase
         lf.lfFaceName[0] = UNICODE_NULL;
 
         lf.lfHeight = 11;
-        g_hSmallFont = CreateFontIndirectW(&lf);
-        assert(g_hSmallFont);
+        m_hSmallFont = CreateFontIndirectW(&lf);
+        assert(m_hSmallFont);
 
         lf.lfHeight = 13;
-        g_hNormalFont = ::CreateFontIndirectW(&lf);
-        assert(g_hNormalFont);
+        m_hNormalFont = ::CreateFontIndirectW(&lf);
+        assert(m_hNormalFont);
 
         lf.lfHeight = 15;
-        g_hLargeFont = ::CreateFontIndirectW(&lf);
-        assert(g_hLargeFont);
+        m_hLargeFont = ::CreateFontIndirectW(&lf);
+        assert(m_hLargeFont);
 
-        SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
-        SetWindowFont(g_hBinEdit, g_hSmallFont, TRUE);
+        SetWindowFont(g_hSrcEdit, m_hNormalFont, TRUE);
+        SetWindowFont(g_hBinEdit, m_hSmallFont, TRUE);
 
         dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
         g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
@@ -4618,7 +4594,7 @@ struct MainWnd : public WindowBase
             DoLoad(hwnd, m_targv[1]);
         }
 
-        g_hMenu = GetMenu(hwnd);
+        m_hMenu = GetMenu(hwnd);
 
         DragAcceptFiles(hwnd, TRUE);
         SetFocus(g_hTreeView);
@@ -4642,7 +4618,7 @@ struct MainWnd : public WindowBase
         Edit_SetModify(g_hSrcEdit, FALSE);
 
         ShowWindow(g_hBmpView, SW_HIDE);
-        ShowWindow(g_hToolBar, SW_HIDE);
+        ShowWindow(m_hToolBar, SW_HIDE);
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
 
@@ -5294,11 +5270,11 @@ struct MainWnd : public WindowBase
     void MainWnd_OnDestroy(HWND hwnd)
     {
         DeleteObject(g_hBitmap);
-        DeleteObject(g_hNormalFont);
-        DeleteObject(g_hSmallFont);
-        ImageList_Destroy(g_hImageList);
-        DestroyIcon(g_hFileIcon);
-        DestroyIcon(g_hFolderIcon);
+        DeleteObject(m_hNormalFont);
+        DeleteObject(m_hSmallFont);
+        ImageList_Destroy(m_hImageList);
+        DestroyIcon(m_hFileIcon);
+        DestroyIcon(m_hFolderIcon);
         PostQuitMessage(0);
     }
 
@@ -5346,7 +5322,7 @@ struct MainWnd : public WindowBase
 
     void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-        SendMessageW(g_hToolBar, TB_AUTOSIZE, 0, 0);
+        SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
 
         RECT ToolRect, ClientRect;
 
@@ -5355,9 +5331,9 @@ struct MainWnd : public WindowBase
         cy = ClientRect.bottom - ClientRect.top ;
 
         INT x = 0, y = 0;
-        if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
+        if (g_bInEdit && ::IsWindowVisible(m_hToolBar))
         {
-            GetWindowRect(g_hToolBar, &ToolRect);
+            GetWindowRect(m_hToolBar, &ToolRect);
             y += ToolRect.bottom - ToolRect.top;
             cy -= ToolRect.bottom - ToolRect.top;
         }
@@ -5375,7 +5351,7 @@ struct MainWnd : public WindowBase
 
         if (IsWindowVisible(g_hSrcEdit))
         {
-            if (::IsWindowVisible(g_hToolBar))
+            if (::IsWindowVisible(m_hToolBar))
             {
                 if (::IsWindowVisible(g_hBinEdit))
                 {
@@ -5924,7 +5900,7 @@ struct MainWnd : public WindowBase
 
         if (DoubleClick)
         {
-            SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
+            SetWindowFont(g_hSrcEdit, m_hLargeFont, TRUE);
             Edit_SetReadOnly(g_hSrcEdit, FALSE);
             SetFocus(g_hSrcEdit);
 
@@ -5932,18 +5908,18 @@ struct MainWnd : public WindowBase
             {
                 if (Res_IsTestable(Entry.type))
                 {
-                    ToolBar_Update(g_hToolBar, 2);
+                    ToolBar_Update(m_hToolBar, 2);
                 }
                 else
                 {
-                    ToolBar_Update(g_hToolBar, 1);
+                    ToolBar_Update(m_hToolBar, 1);
                 }
             }
             else
             {
-                ToolBar_Update(g_hToolBar, 0);
+                ToolBar_Update(m_hToolBar, 0);
             }
-            ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
             ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
             ShowWindow(g_hTreeView, SW_HIDE);
@@ -5954,14 +5930,14 @@ struct MainWnd : public WindowBase
         }
         else
         {
-            SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
+            SetWindowFont(g_hSrcEdit, m_hNormalFont, TRUE);
             Edit_SetReadOnly(g_hSrcEdit, TRUE);
             SetFocus(g_hTreeView);
 
-            ShowWindow(g_hToolBar, SW_HIDE);
+            ShowWindow(m_hToolBar, SW_HIDE);
             ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
             ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
-            SetMenu(hwnd, g_hMenu);
+            SetMenu(hwnd, m_hMenu);
 
             g_bInEdit = FALSE;
         }
