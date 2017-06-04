@@ -12,7 +12,6 @@ ResEntries  g_Entries;
 HWND        g_hTreeView = NULL;
 BOOL        g_bInEdit = FALSE;
 
-BITMAP      g_bm = { 0 };
 HBITMAP     g_hBitmap = NULL;
 
 struct LangEntry
@@ -4130,6 +4129,13 @@ EnumLocalesProc(LPWSTR lpLocaleString)
 
 struct BmpView : WindowBase
 {
+    BITMAP      m_bm;
+
+    BmpView()
+    {
+        ZeroMemory(&m_bm, sizeof(m_bm));
+    }
+
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("RisohEditor BmpView Class");
@@ -4163,7 +4169,7 @@ struct BmpView : WindowBase
             SelectObject(hMemDC, g_hBitmap);
             INT dx = GetScrollPos(hwnd, SB_HORZ);
             INT dy = GetScrollPos(hwnd, SB_VERT);
-            BitBlt(hDC, -dx, -dy, g_bm.bmWidth, g_bm.bmHeight, hMemDC, 0, 0, SRCCOPY);
+            BitBlt(hDC, -dx, -dy, m_bm.bmWidth, m_bm.bmHeight, hMemDC, 0, 0, SRCCOPY);
         }
         DeleteDC(hMemDC);
         EndPaint(hwnd, &ps);
@@ -4197,7 +4203,7 @@ struct BmpView : WindowBase
             info.nPos = 0;
             break;
         case SB_BOTTOM:
-            info.nPos = g_bm.bmHeight;
+            info.nPos = m_bm.bmHeight;
             break;
         case SB_ENDSCROLL:
             return;
@@ -4238,7 +4244,7 @@ struct BmpView : WindowBase
             info.nPos = 0;
             break;
         case SB_BOTTOM:
-            info.nPos = g_bm.bmHeight;
+            info.nPos = m_bm.bmHeight;
             break;
         case SB_ENDSCROLL:
             return;
@@ -4261,7 +4267,7 @@ struct BmpView : WindowBase
 
     void UpdateScrollInfo(HWND hwnd)
     {
-        if (!GetObjectW(g_hBitmap, sizeof(g_bm), &g_bm))
+        if (!GetObjectW(g_hBitmap, sizeof(m_bm), &m_bm))
             return;
 
         RECT rc;
@@ -4273,7 +4279,7 @@ struct BmpView : WindowBase
         info.cbSize = sizeof(info);
         info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
         info.nMin = 0;
-        info.nMax = g_bm.bmWidth;
+        info.nMax = m_bm.bmWidth;
         info.nPage = rc.right - rc.left;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_HORZ, &info, TRUE);
@@ -4282,7 +4288,7 @@ struct BmpView : WindowBase
         info.cbSize = sizeof(info);
         info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
         info.nMin = 0;
-        info.nMax = g_bm.bmHeight;
+        info.nMax = m_bm.bmHeight;
         info.nPage = rc.bottom - rc.top;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_VERT, &info, TRUE);
