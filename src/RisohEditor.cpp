@@ -860,7 +860,7 @@ struct AddIconDlg : MDialogBase
     LPCWSTR File;
     HICON   m_hIcon;
 
-    AddIconDlg() : File(NULL), m_hIcon(NULL)
+    AddIconDlg() : MDialogBase(IDD_ADDICON), File(NULL), m_hIcon(NULL)
     {
     }
 
@@ -1021,7 +1021,7 @@ struct ReplaceIconDlg : MDialogBase
     ResEntry& m_Entry;
     HICON   m_hIcon;
 
-    ReplaceIconDlg(ResEntry& Entry) : m_Entry(Entry)
+    ReplaceIconDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEICON), m_Entry(Entry)
     {
         m_hIcon = NULL;
     }
@@ -4640,7 +4640,7 @@ struct MainWnd : MWindowBase
     void OnAddIcon(HWND hwnd)
     {
         AddIconDlg dialog;
-        dialog.DialogBoxDx(hwnd, IDD_ADDICON);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnReplaceIcon(HWND hwnd)
@@ -4651,7 +4651,7 @@ struct MainWnd : MWindowBase
 
         UINT i = LOWORD(lParam);
         ReplaceIconDlg dialog(g_Entries[i]);
-        dialog.DialogBoxDx(hwnd, IDD_REPLACEICON);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnReplaceCursor(HWND hwnd)
@@ -5056,7 +5056,7 @@ struct MainWnd : MWindowBase
             {
                 AddIconDlg dialog;
                 dialog.File = File;
-                dialog.DialogBoxDx(hwnd, IDD_ADDICON);
+                dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".cur") == 0)
