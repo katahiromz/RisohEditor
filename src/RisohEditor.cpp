@@ -1599,10 +1599,12 @@ struct MReplaceBitmapDlg : MDialogBase
 
 struct MAddCursorDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     LPCWSTR   File;
     HCURSOR   m_hCursor;
 
-    MAddCursorDlg() : MDialogBase(IDD_ADDCURSOR), File(NULL)
+    MAddCursorDlg(ResEntries& Entries)
+        : MDialogBase(IDD_ADDCURSOR), m_Entries(Entries), File(NULL)
     {
         m_hCursor = NULL;
     }
@@ -1649,7 +1651,7 @@ struct MAddCursorDlg : MDialogBase
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, RT_GROUP_ICON, Name, Lang);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
@@ -1667,7 +1669,7 @@ struct MAddCursorDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceCursor(hwnd, g_Entries, Name, Lang, File))
+            if (!DoReplaceCursor(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
@@ -1675,7 +1677,7 @@ struct MAddCursorDlg : MDialogBase
         }
         else
         {
-            if (!DoAddCursor(hwnd, g_Entries, Name, Lang, File))
+            if (!DoAddCursor(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
@@ -1820,7 +1822,7 @@ struct MAddResDlg : MDialogBase
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(g_Entries, Type, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, Type, Name, Lang);
         if (iEntry != -1)
         {
             if (File.empty() && Res_HasSample(Type))
@@ -1847,7 +1849,7 @@ struct MAddResDlg : MDialogBase
         {
             if (Res_HasNoName(Type))
             {
-                Res_DeleteNames(g_Entries, Type, Lang);
+                Res_DeleteNames(m_Entries, Type, Lang);
             }
 
             ByteStream stream;
@@ -1901,12 +1903,12 @@ struct MAddResDlg : MDialogBase
 
             if (bOK)
             {
-                Res_AddEntry(g_Entries, Type, Name, Lang, stream.data(), FALSE);
+                Res_AddEntry(m_Entries, Type, Name, Lang, stream.data(), FALSE);
 
-                TV_RefreshInfo(g_hTreeView, g_Entries, FALSE, FALSE);
+                TV_RefreshInfo(g_hTreeView, m_Entries, FALSE, FALSE);
 
                 ResEntry entry(Type, Name, Lang);
-                TV_SelectEntry(g_hTreeView, g_Entries, entry);
+                TV_SelectEntry(g_hTreeView, m_Entries, entry);
             }
         }
 
@@ -1914,7 +1916,7 @@ struct MAddResDlg : MDialogBase
         {
             if (Overwrite)
             {
-                if (!DoReplaceBin(hwnd, g_Entries, Type, Name, Lang, File))
+                if (!DoReplaceBin(hwnd, m_Entries, Type, Name, Lang, File))
                 {
                     ErrorBoxDx(IDS_CANNOTREPLACE);
                     return;
@@ -1922,7 +1924,7 @@ struct MAddResDlg : MDialogBase
             }
             else
             {
-                if (!DoAddBin(hwnd, g_Entries, Type, Name, Lang, File))
+                if (!DoAddBin(hwnd, m_Entries, Type, Name, Lang, File))
                 {
                     ErrorBoxDx(IDS_CANNOTADDRES);
                     return;
@@ -4720,7 +4722,7 @@ struct MainWnd : MWindowBase
 
     void OnAddCursor(HWND hwnd)
     {
-        MAddCursorDlg dialog;
+        MAddCursorDlg dialog(g_Entries);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -5072,7 +5074,7 @@ struct MainWnd : MWindowBase
             }
             else if (lstrcmpiW(pch, L".cur") == 0)
             {
-                MAddCursorDlg dialog;
+                MAddCursorDlg dialog(g_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
