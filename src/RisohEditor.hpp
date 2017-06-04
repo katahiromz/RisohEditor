@@ -105,17 +105,6 @@ BOOL DoReplaceBitmap(HWND hwnd,
 
 ////////////////////////////////////////////////////////////////////////////
 
-struct STRING_ENTRY
-{
-    WCHAR StringID[128];
-    WCHAR StringValue[512];
-};
-
-void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
-
-////////////////////////////////////////////////////////////////////////////
-
 #include "MReplaceBinDlg.hpp"
 #include "MTestMenuDlg.hpp"
 #include "MTestDialog.hpp"

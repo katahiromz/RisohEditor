@@ -5,7 +5,6 @@
 #define MZC4_MSTRINGSDLG_HPP_
 
 #include "RisohEditor.hpp"
-#include "StringRes.hpp"
 #include "MAddStrDlg.hpp"
 #include "MModifyStrDlg.hpp"
 
