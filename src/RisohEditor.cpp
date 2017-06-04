@@ -30,9 +30,6 @@ WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
 
 HWND        g_hTreeView = NULL;
-BOOL        g_bInEdit = FALSE;
-
-HBITMAP     g_hBitmap = NULL;
 
 //////////////////////////////////////////////////////////////////////////////
 // languages
@@ -1082,6 +1079,7 @@ struct MainWnd : MWindowBase
     HWND        m_hToolBar;
     HWND        m_hBinEdit;
     HWND        m_hSrcEdit;
+    BOOL        m_bInEdit;
     MBmpView    m_bmp_view;
 
     HFONT       m_hNormalFont;
@@ -1107,6 +1105,7 @@ struct MainWnd : MWindowBase
         m_hToolBar = NULL;
         m_hBinEdit = NULL;
         m_hSrcEdit = NULL;
+        m_bInEdit = FALSE;
 
         m_hNormalFont = NULL;
         m_hLargeFont = NULL;
@@ -1282,12 +1281,12 @@ struct MainWnd : MWindowBase
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
 
-        g_bInEdit = FALSE;
+        m_bInEdit = FALSE;
     }
 
     void OnDeleteRes(HWND hwnd)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return;
 
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
@@ -1446,7 +1445,7 @@ struct MainWnd : MWindowBase
 
     void OnSaveAs(HWND hwnd)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return;
 
         WCHAR File[MAX_PATH];
@@ -1555,7 +1554,7 @@ struct MainWnd : MWindowBase
 
     void OnOpen(HWND hwnd)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return;
 
         WCHAR File[MAX_PATH];
@@ -1624,7 +1623,7 @@ struct MainWnd : MWindowBase
 
     void OnImport(HWND hwnd)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return;
 
         WCHAR File[MAX_PATH] = TEXT("");
@@ -1717,7 +1716,7 @@ struct MainWnd : MWindowBase
 
     void OnCancelEdit(HWND hwnd)
     {
-        if (!g_bInEdit)
+        if (!m_bInEdit)
             return;
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -1834,7 +1833,7 @@ struct MainWnd : MWindowBase
 
     void OnNew(HWND hwnd)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return;
 
         DoSetFile(hwnd, NULL);
@@ -1984,7 +1983,7 @@ struct MainWnd : MWindowBase
         cy = ClientRect.bottom - ClientRect.top ;
 
         INT x = 0, y = 0;
-        if (g_bInEdit && ::IsWindowVisible(m_hToolBar))
+        if (m_bInEdit && ::IsWindowVisible(m_hToolBar))
         {
             GetWindowRect(m_hToolBar, &ToolRect);
             y += ToolRect.bottom - ToolRect.top;
@@ -2051,7 +2050,7 @@ struct MainWnd : MWindowBase
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-        if (hItem == NULL || g_bInEdit)
+        if (hItem == NULL || m_bInEdit)
         {
             EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -2572,7 +2571,7 @@ struct MainWnd : MWindowBase
             ShowWindow(m_hBinEdit, SW_HIDE);
             SetMenu(hwnd, NULL);
 
-            g_bInEdit = TRUE;
+            m_bInEdit = TRUE;
         }
         else
         {
@@ -2585,7 +2584,7 @@ struct MainWnd : MWindowBase
             ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
             SetMenu(hwnd, m_hMenu);
 
-            g_bInEdit = FALSE;
+            m_bInEdit = FALSE;
         }
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -2978,7 +2977,7 @@ struct MainWnd : MWindowBase
 
         TV_RefreshInfo(g_hTreeView, Entries);
         DoSetFile(hwnd, Path);
-        g_bInEdit = FALSE;
+        m_bInEdit = FALSE;
 
         return TRUE;
     }
@@ -3070,7 +3069,7 @@ struct MainWnd : MWindowBase
 
     BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
     {
-        if (g_bInEdit)
+        if (m_bInEdit)
             return TRUE;
 
         DWORD dwBinType;
