@@ -200,7 +200,7 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     return hbmIcon;
 }
 
-HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
+HBITMAP CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 {
     ICONDIR dir;
     if (Entry.size() < sizeof(dir))
@@ -223,15 +223,15 @@ HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang);
         if (k == -1)
-            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
         if (k == -1)
         {
             assert(0);
             return NULL;
         }
-        ResEntry& IconEntry = g_Entries[k];
+        ResEntry& IconEntry = Entries[k];
 
         BITMAP bm;
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
@@ -257,16 +257,16 @@ HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang);
         if (k == -1)
-            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
         if (k == -1)
         {
             assert(0);
             DeleteObject(hbm);
             return NULL;
         }
-        ResEntry& IconEntry = g_Entries[k];
+        ResEntry& IconEntry = Entries[k];
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
 
         ii_draw(hbm, hbmIcon, 0, y);
@@ -292,7 +292,7 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     return hbmCursor;
 }
 
-HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
+HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 {
     ICONDIR dir;
     if (Entry.size() < sizeof(dir))
@@ -315,15 +315,15 @@ HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
         if (k == -1)
-            k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
         if (k == -1)
         {
             assert(0);
             return NULL;
         }
-        ResEntry& CursorEntry = g_Entries[k];
+        ResEntry& CursorEntry = Entries[k];
 
         BITMAP bm;
         HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
@@ -353,16 +353,16 @@ HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+            INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
             if (k == -1)
-                k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+                k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
             if (k == -1)
             {
                 assert(0);
                 DeleteObject(hbm);
                 return NULL;
             }
-            ResEntry& CursorEntry = g_Entries[k];
+            ResEntry& CursorEntry = Entries[k];
 
             BITMAP bm;
             HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
@@ -655,7 +655,7 @@ BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
     return TRUE;
 }
 
-BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
+BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
 {
     WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
 
@@ -676,8 +676,8 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
         if (!DoImport(hwnd, Path, entries))
             return FALSE;
 
-        g_Entries = entries;
-        TV_RefreshInfo(g_hTreeView, g_Entries);
+        Entries = entries;
+        TV_RefreshInfo(g_hTreeView, Entries);
         DoSetFile(hwnd, Path);
         return TRUE;
     }
@@ -690,11 +690,11 @@ BOOL DoLoad(HWND hwnd, LPCWSTR FileName)
         return FALSE;
     }
 
-    g_Entries.clear();
-    Res_GetListFromRes(hMod, (LPARAM)&g_Entries);
+    Entries.clear();
+    Res_GetListFromRes(hMod, (LPARAM)&Entries);
     FreeLibrary(hMod);
 
-    TV_RefreshInfo(g_hTreeView, g_Entries);
+    TV_RefreshInfo(g_hTreeView, Entries);
     DoSetFile(hwnd, Path);
     g_bInEdit = FALSE;
 
@@ -742,28 +742,28 @@ BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries)
     return bs.SaveToFile(FileName);
 }
 
-BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL DoSaveResAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
 {
-    if (DoExtractRes(hwnd, ExeFile, g_Entries))
+    if (DoExtractRes(hwnd, ExeFile, Entries))
     {
-        Res_Optimize(g_Entries);
+        Res_Optimize(Entries);
         DoSetFile(hwnd, ExeFile);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
 {
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
     BOOL b1 = ::CopyFileW(g_szFile, TempFile, FALSE);
-    BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, g_Entries);
+    BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, Entries);
     BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
     if (b3)
     {
         DeleteFileW(TempFile);
-        Res_Optimize(g_Entries);
+        Res_Optimize(Entries);
         DoSetFile(hwnd, ExeFile);
 
         return TRUE;
@@ -773,7 +773,7 @@ BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     return FALSE;
 }
 
-BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL DoSaveAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
 {
     if (g_bInEdit)
         return TRUE;
@@ -783,33 +783,33 @@ BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
     if ((pch && lstrcmpiW(pch, L".res") == 0) ||
         !GetBinaryType(g_szFile, &dwBinType))
     {
-        return DoSaveResAs(hwnd, ExeFile);
+        return DoSaveResAs(hwnd, g_Entries, ExeFile);
     }
 
-    return DoSaveExeAs(hwnd, ExeFile);
+    return DoSaveExeAs(hwnd, Entries, ExeFile);
 }
 
-BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry)
+BOOL DoExtractIcon(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
 {
     if (Entry.type == RT_GROUP_ICON)
-        return Res_ExtractGroupIcon(g_Entries, Entry, FileName);
+        return Res_ExtractGroupIcon(Entries, Entry, FileName);
     else if (Entry.type == RT_ICON)
-        return Res_ExtractIcon(g_Entries, Entry, FileName);
+        return Res_ExtractIcon(Entries, Entry, FileName);
     else
         return FALSE;
 }
 
-BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry)
+BOOL DoExtractCursor(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
 {
     if (Entry.type == RT_GROUP_CURSOR)
-        return Res_ExtractGroupCursor(g_Entries, Entry, FileName);
+        return Res_ExtractGroupCursor(Entries, Entry, FileName);
     else if (Entry.type == RT_CURSOR)
-        return Res_ExtractCursor(g_Entries, Entry, FileName);
+        return Res_ExtractCursor(Entries, Entry, FileName);
     else
         return FALSE;
 }
 
-BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG)
+BOOL DoExtractBitmap(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry, BOOL WritePNG)
 {
     BITMAPFILEHEADER FileHeader;
 
@@ -840,6 +840,7 @@ BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG)
 }
 
 BOOL DoAddBin(HWND hwnd,
+              ResEntries& Entries,
               const ID_OR_STRING& Type,
               const ID_OR_STRING& Name,
               WORD Lang,
@@ -849,12 +850,13 @@ BOOL DoAddBin(HWND hwnd,
     if (!bs.LoadFromFile(File.c_str()))
         return FALSE;
 
-    Res_AddEntry(g_Entries, Type, Name, Lang, bs.data(), FALSE);
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoReplaceBin(HWND hwnd,
+                  ResEntries& Entries,
                   const ID_OR_STRING& Type,
                   const ID_OR_STRING& Name,
                   WORD Lang,
@@ -864,74 +866,80 @@ BOOL DoReplaceBin(HWND hwnd,
     if (!bs.LoadFromFile(File.c_str()))
         return FALSE;
 
-    Res_AddEntry(g_Entries, Type, Name, Lang, bs.data(), TRUE);
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), TRUE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoAddIcon(HWND hwnd,
+               ResEntries& Entries,
                const ID_OR_STRING& Name,
                WORD Lang,
                const std::wstring& IconFile)
 {
-    if (!Res_AddGroupIcon(g_Entries, Name, Lang, IconFile, FALSE))
+    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoReplaceIcon(HWND hwnd,
+                   ResEntries& Entries,
                    const ID_OR_STRING& Name,
                    WORD Lang,
                    const std::wstring& IconFile)
 {
-    if (!Res_AddGroupIcon(g_Entries, Name, Lang, IconFile, TRUE))
+    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoAddCursor(HWND hwnd,
+                 ResEntries& Entries,
                  const ID_OR_STRING& Name,
                  WORD Lang,
                  const std::wstring& CurFile)
 {
-    if (!Res_AddGroupCursor(g_Entries, Name, Lang, CurFile, FALSE))
+    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoReplaceCursor(HWND hwnd,
+                     ResEntries& Entries,
                      const ID_OR_STRING& Name,
                      WORD Lang,
                      const std::wstring& CurFile)
 {
-    if (!Res_AddGroupCursor(g_Entries, Name, Lang, CurFile, TRUE))
+    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoAddBitmap(HWND hwnd,
+                 ResEntries& Entries,
                  const ID_OR_STRING& Name,
                  WORD Lang,
                  const std::wstring& BitmapFile)
 {
-    if (!Res_AddBitmap(g_Entries, Name, Lang, BitmapFile, FALSE))
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
 BOOL DoReplaceBitmap(HWND hwnd,
+                     ResEntries& Entries,
                      const ID_OR_STRING& Name,
                      WORD Lang,
                      const std::wstring& BitmapFile)
 {
-    if (!Res_AddBitmap(g_Entries, Name, Lang, BitmapFile, TRUE))
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
         return FALSE;
-    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
     return TRUE;
 }
 
@@ -1050,7 +1058,7 @@ struct ReplaceBinDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
+        if (!DoReplaceBin(hwnd, g_Entries, Type, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANNOTREPLACE);
             return;
@@ -1167,7 +1175,7 @@ struct AddIconDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceIcon(hwnd, Name, Lang, File))
+            if (!DoReplaceIcon(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;
@@ -1175,7 +1183,7 @@ struct AddIconDlg : MDialogBase
         }
         else
         {
-            if (!DoAddIcon(hwnd, Name, Lang, File))
+            if (!DoAddIcon(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANNOTADDICON);
                 return;
@@ -1304,7 +1312,7 @@ struct ReplaceIconDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceIcon(hwnd, Name, Lang, File))
+        if (!DoReplaceIcon(hwnd, g_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACEICO);
             return;
@@ -1444,7 +1452,7 @@ struct ReplaceCursorDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceCursor(hwnd, Name, Lang, File))
+        if (!DoReplaceCursor(hwnd, g_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACECUR);
             return;
@@ -1612,7 +1620,7 @@ struct AddBitmapDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceBitmap(hwnd, Name, Lang, File))
+            if (!DoReplaceBitmap(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
                 return;
@@ -1620,7 +1628,7 @@ struct AddBitmapDlg : MDialogBase
         }
         else
         {
-            if (!DoAddBitmap(hwnd, Name, Lang, File))
+            if (!DoAddBitmap(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTADDBMP);
                 return;
@@ -1719,7 +1727,7 @@ struct ReplaceBitmapDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBitmap(hwnd, Name, Lang, File))
+        if (!DoReplaceBitmap(hwnd, g_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;
@@ -1863,7 +1871,7 @@ struct AddCursorDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceCursor(hwnd, Name, Lang, File))
+            if (!DoReplaceCursor(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
@@ -1871,7 +1879,7 @@ struct AddCursorDlg : MDialogBase
         }
         else
         {
-            if (!DoAddCursor(hwnd, Name, Lang, File))
+            if (!DoAddCursor(hwnd, g_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
@@ -2104,7 +2112,7 @@ struct AddResDlg : MDialogBase
         {
             if (Overwrite)
             {
-                if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
+                if (!DoReplaceBin(hwnd, g_Entries, Type, Name, Lang, File))
                 {
                     ErrorBoxDx(IDS_CANNOTREPLACE);
                     return;
@@ -2112,7 +2120,7 @@ struct AddResDlg : MDialogBase
             }
             else
             {
-                if (!DoAddBin(hwnd, Type, Name, Lang, File))
+                if (!DoAddBin(hwnd, g_Entries, Type, Name, Lang, File))
                 {
                     ErrorBoxDx(IDS_CANNOTADDRES);
                     return;
@@ -4563,7 +4571,7 @@ struct MainWnd : MWindowBase
 
         if (m_argc >= 2)
         {
-            DoLoad(hwnd, m_targv[1]);
+            DoLoad(hwnd, g_Entries, m_targv[1]);
         }
 
         m_hMenu = GetMenu(hwnd);
@@ -4678,7 +4686,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"ico";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractIcon(ofn.lpstrFile, g_Entries[i]))
+            if (!DoExtractIcon(ofn.lpstrFile, g_Entries, g_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTICO);
             }
@@ -4707,7 +4715,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"cur";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractCursor(ofn.lpstrFile, g_Entries[i]))
+            if (!DoExtractCursor(ofn.lpstrFile, g_Entries, g_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTCUR);
             }
@@ -4738,7 +4746,7 @@ struct MainWnd : MWindowBase
         {
             BOOL PNG;
             PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-            if (!DoExtractBitmap(ofn.lpstrFile, g_Entries[i], PNG))
+            if (!DoExtractBitmap(ofn.lpstrFile, g_Entries, g_Entries[i], PNG))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTBMP);
             }
@@ -4788,14 +4796,14 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
             {
-                if (!DoSaveResAs(hwnd, File))
+                if (!DoSaveResAs(hwnd, g_Entries, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             else
             {
-                if (!DoSaveAs(hwnd, File))
+                if (!DoSaveAs(hwnd, g_Entries, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
@@ -4887,7 +4895,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"exe";
         if (GetOpenFileNameW(&ofn))
         {
-            DoLoad(hwnd, File);
+            DoLoad(hwnd, g_Entries, File);
         }
     }
 
@@ -5277,12 +5285,12 @@ struct MainWnd : MWindowBase
             }
             else if (lstrcmpiW(pch, L".res") == 0)
             {
-                DoLoad(hwnd, File);
+                DoLoad(hwnd, g_Entries, File);
                 return;
             }
         }
 
-        DoLoad(hwnd, File);
+        DoLoad(hwnd, g_Entries, File);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -5602,7 +5610,7 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
+        g_hBitmap = CreateBitmapFromIconsDx(hwnd, g_Entries, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -5614,7 +5622,7 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, Entry);
+        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, g_Entries, Entry);
         assert(g_hBitmap);
 
         std::wstring str = DumpGroupCursorInfo(Entry.data);
