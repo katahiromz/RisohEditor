@@ -6248,9 +6248,8 @@ WinMain(HINSTANCE   hInstance,
     LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
     {
-        MainWnd app(__argc, __targv, hInstance);
+        MainWnd app(argc, targv, hInstance);
 
         if (app.RegisterClassesDx())
         {
@@ -6268,7 +6267,6 @@ WinMain(HINSTANCE   hInstance,
             ret = 1;
         }
     }
-
     CoUninitialize();
 
 #if (WINVER >= 0x0500)
