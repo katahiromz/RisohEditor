@@ -843,7 +843,7 @@ struct MReplaceBinDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBin(hwnd, g_Entries, Type, Name, Lang, File))
+        if (!DoReplaceBin(hwnd, m_Entries, Type, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANNOTREPLACE);
             return;
@@ -881,10 +881,12 @@ struct MReplaceBinDlg : MDialogBase
 
 struct MAddIconDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     LPCWSTR File;
     HICON   m_hIcon;
 
-    MAddIconDlg() : MDialogBase(IDD_ADDICON), File(NULL), m_hIcon(NULL)
+    MAddIconDlg(ResEntries& Entries)
+        : MDialogBase(IDD_ADDICON), m_Entries(Entries), File(NULL), m_hIcon(NULL)
     {
     }
 
@@ -942,7 +944,7 @@ struct MAddIconDlg : MDialogBase
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, RT_GROUP_ICON, Name, Lang);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
@@ -960,7 +962,7 @@ struct MAddIconDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceIcon(hwnd, g_Entries, Name, Lang, File))
+            if (!DoReplaceIcon(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;
@@ -968,7 +970,7 @@ struct MAddIconDlg : MDialogBase
         }
         else
         {
-            if (!DoAddIcon(hwnd, g_Entries, Name, Lang, File))
+            if (!DoAddIcon(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANNOTADDICON);
                 return;
@@ -1042,10 +1044,12 @@ struct MAddIconDlg : MDialogBase
 
 struct MReplaceIconDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     ResEntry& m_Entry;
     HICON   m_hIcon;
 
-    MReplaceIconDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEICON), m_Entry(Entry)
+    MReplaceIconDlg(ResEntries& Entries, ResEntry& Entry)
+        : MDialogBase(IDD_REPLACEICON), m_Entries(Entries), m_Entry(Entry)
     {
         m_hIcon = NULL;
     }
@@ -1097,7 +1101,7 @@ struct MReplaceIconDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceIcon(hwnd, g_Entries, Name, Lang, File))
+        if (!DoReplaceIcon(hwnd, m_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACEICO);
             return;
@@ -1182,10 +1186,12 @@ struct MReplaceIconDlg : MDialogBase
 
 struct MReplaceCursorDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     ResEntry& m_Entry;
     HCURSOR   m_hCursor;
 
-    MReplaceCursorDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACECUR), m_Entry(Entry)
+    MReplaceCursorDlg(ResEntries& Entries, ResEntry& Entry) :
+        MDialogBase(IDD_REPLACECUR), m_Entries(Entries), m_Entry(Entry)
     {
         m_hCursor = NULL;
     }
@@ -1237,7 +1243,7 @@ struct MReplaceCursorDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceCursor(hwnd, g_Entries, Name, Lang, File))
+        if (!DoReplaceCursor(hwnd, m_Entries, Name, Lang, File))
         {
             ErrorBoxDx(IDS_CANTREPLACECUR);
             return;
@@ -1323,8 +1329,11 @@ struct MReplaceCursorDlg : MDialogBase
 
 struct MAddBitmapDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     LPCWSTR File;
-    MAddBitmapDlg() : MDialogBase(IDD_ADDBITMAP), File(NULL)
+
+    MAddBitmapDlg(ResEntries& Entries) :
+        MDialogBase(IDD_ADDBITMAP), m_Entries(Entries), File(NULL)
     {
     }
 
@@ -1382,7 +1391,7 @@ struct MAddBitmapDlg : MDialogBase
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(g_Entries, RT_BITMAP, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, RT_BITMAP, Name, Lang);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
@@ -1405,7 +1414,7 @@ struct MAddBitmapDlg : MDialogBase
 
         if (Overwrite)
         {
-            if (!DoReplaceBitmap(hwnd, g_Entries, Name, Lang, File))
+            if (!DoReplaceBitmap(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
                 return;
@@ -1413,7 +1422,7 @@ struct MAddBitmapDlg : MDialogBase
         }
         else
         {
-            if (!DoAddBitmap(hwnd, g_Entries, Name, Lang, File))
+            if (!DoAddBitmap(hwnd, m_Entries, Name, Lang, File))
             {
                 ErrorBoxDx(IDS_CANTADDBMP);
                 return;
@@ -4639,7 +4648,7 @@ struct MainWnd : MWindowBase
 
     void OnAddIcon(HWND hwnd)
     {
-        MAddIconDlg dialog;
+        MAddIconDlg dialog(g_Entries);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4650,7 +4659,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceIconDlg dialog(g_Entries[i]);
+        MReplaceIconDlg dialog(g_Entries, g_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4661,7 +4670,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceCursorDlg dialog(g_Entries[i]);
+        MReplaceCursorDlg dialog(g_Entries, g_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4692,7 +4701,7 @@ struct MainWnd : MWindowBase
 
     void OnAddBitmap(HWND hwnd)
     {
-        MAddBitmapDlg dialog;
+        MAddBitmapDlg dialog(g_Entries);
         dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
     }
 
@@ -5054,7 +5063,7 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(pch, L".ico") == 0)
             {
-                MAddIconDlg dialog;
+                MAddIconDlg dialog(g_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
@@ -5069,7 +5078,7 @@ struct MainWnd : MWindowBase
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
                      lstrcmpiW(pch, L".png") == 0)
             {
-                MAddBitmapDlg dialog;
+                MAddBitmapDlg dialog(g_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
