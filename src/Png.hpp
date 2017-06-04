@@ -1,3 +1,6 @@
+// Png.hpp -- PNG Images
+//////////////////////////////////////////////////////////////////////////////
+
 #ifndef PNG_HPP_
 #define PNG_HPP_
 
@@ -6,7 +9,9 @@
 #pragma comment(lib, "libpng.lib")
 #pragma comment(lib, "zlib.lib")
 
-// png.cpp
+//////////////////////////////////////////////////////////////////////////////
+
+// Png.cpp
 HBITMAP ii_png_load_common(FILE *inf, float *dpi);
 HBITMAP ii_png_load_a(const char *pszFileName, float *dpi);
 HBITMAP ii_png_load_w(const wchar_t *pszFileName, float *dpi);
@@ -29,4 +34,8 @@ void ii_draw(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y);
     #define ii_png_save ii_png_save_a
 #endif
 
+//////////////////////////////////////////////////////////////////////////////
+
 #endif  // ndef PNG_HPP_
+
+//////////////////////////////////////////////////////////////////////////////

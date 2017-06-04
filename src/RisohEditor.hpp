@@ -4,6 +4,8 @@
 #ifndef RISOHEDITOR_HPP_
 #define RISOHEDITOR_HPP_
 
+#pragma once
+
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef UNICODE
@@ -139,6 +141,11 @@ BOOL DoReplaceBitmap(HWND hwnd,
 
 #include "MFile.hpp"
 #include "MProcessMaker.hpp"
+
+#pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "ole32.lib")
+#pragma comment(lib, "shell32.lib")
+#pragma comment(lib, "uuid.lib")
 
 ////////////////////////////////////////////////////////////////////////////
 

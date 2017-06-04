@@ -1,3 +1,6 @@
+#ifndef RESOURCE_H_
+#define RESOURCE_H_
+
 #define ID_NEW              100
 #define ID_OPEN             101
 #define ID_SAVEAS           102
@@ -111,3 +114,5 @@
 #define IDS_SEPARATOR       67
 #define IDS_COMPILENOW      68
 #define IDS_RADWINDOW       69
+
+#endif  // ndef RESOURCE_H_

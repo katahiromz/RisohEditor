@@ -1,4 +1,9 @@
+// Samples.cpp --- Sample Resources
+//////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.hpp"
+
+//////////////////////////////////////////////////////////////////////////////
 
 static const BYTE abAccel[] = {
 0x09, 0x00, 0x4E, 0x00, 0x01, 0x00, 0x00, 0x00, 0x89, 0x00, 0x4F, 0x00, 0x02, 
@@ -186,6 +191,8 @@ static const BYTE abManifest[] = {
 0x6D, 0x62, 0x6C, 0x79, 0x3E, 0x0D, 0x0A, 
 };
 
+//////////////////////////////////////////////////////////////////////////////
+
 const BYTE *GetAccelSample(DWORD& Size)
 {
     Size = sizeof(abAccel);
@@ -227,3 +234,5 @@ const BYTE *GetManifestSample(DWORD& Size)
     Size = sizeof(abManifest);
     return abManifest;
 }
+
+//////////////////////////////////////////////////////////////////////////////

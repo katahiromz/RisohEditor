@@ -1,3 +1,6 @@
+// Png.cpp -- PNG Images
+//////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.hpp"
 
 #define II_WIDTHBYTES(i) (((i) + 31) / 32 * 4)
@@ -11,6 +14,8 @@ typedef struct II_MEMORY
     size_t              i_user;         /* user data integer */
     size_t              i_user_2;       /* user data integer 2nd */
 } II_MEMORY;
+
+//////////////////////////////////////////////////////////////////////////////
 
 HBITMAP
 ii_png_load_common(FILE *inf, float *dpi)
@@ -501,3 +506,4 @@ void ii_draw(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
     DeleteDC(hDC);
 }
 
+//////////////////////////////////////////////////////////////////////////////
