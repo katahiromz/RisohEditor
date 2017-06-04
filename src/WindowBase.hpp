@@ -323,6 +323,15 @@ struct WindowBase
         return MsgBoxDx(pszString, NULL, uType);
     }
 
+    INT ErrorBoxDx(UINT nStringID, UINT uType = MB_ICONERROR)
+    {
+        return MsgBoxDx(MAKEINTRESOURCE(nStringID), TEXT("ERROR"), uType);
+    }
+    INT ErrorBoxDx(LPCTSTR pszString, UINT uType = MB_ICONERROR)
+    {
+        return MsgBoxDx(pszString, TEXT("ERROR"), uType);
+    }
+
     VOID CenterWindowDx() const
     {
         CenterWindowDx(m_hwnd);

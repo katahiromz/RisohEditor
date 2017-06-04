@@ -767,8 +767,7 @@ struct ReplaceBinDlg : DialogBase
 
         if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTREPLACE),
-                        NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_CANNOTREPLACE);
             return;
         }
 
@@ -943,8 +942,7 @@ struct AddIconDlg : DialogBase
         {
             if (!DoReplaceIcon(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEICO),
-                            NULL, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;
             }
         }
@@ -952,8 +950,7 @@ struct AddIconDlg : DialogBase
         {
             if (!DoAddIcon(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDICON),
-                            NULL, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANNOTADDICON);
                 return;
             }
         }
@@ -1071,7 +1068,7 @@ struct ReplaceIconDlg : DialogBase
 
         if (!DoReplaceIcon(hwnd, Name, Lang, File))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEICO), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_CANTREPLACEICO);
             return;
         }
 
@@ -1201,8 +1198,7 @@ struct ReplaceCursorDlg : DialogBase
 
         if (!DoReplaceCursor(hwnd, Name, Lang, File))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACECUR),
-                        NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_CANTREPLACECUR);
             return;
         }
 
@@ -1345,8 +1341,8 @@ struct AddBitmapDlg : DialogBase
         INT iEntry = Res_Find(g_Entries, RT_BITMAP, Name, Lang);
         if (iEntry != -1)
         {
-            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
+                              MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
@@ -1367,8 +1363,7 @@ struct AddBitmapDlg : DialogBase
         {
             if (!DoReplaceBitmap(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEBMP),
-                            NULL, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTREPLACEBMP);
                 return;
             }
         }
@@ -1376,8 +1371,7 @@ struct AddBitmapDlg : DialogBase
         {
             if (!DoAddBitmap(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTADDBMP),
-                            NULL, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTADDBMP);
                 return;
             }
         }
@@ -1473,8 +1467,7 @@ struct ReplaceBitmapDlg : DialogBase
 
         if (!DoReplaceBitmap(hwnd, Name, Lang, File))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACEBMP),
-                        NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;
         }
 
@@ -1591,8 +1584,8 @@ struct AddCursorDlg : DialogBase
         INT iEntry = Res_Find(g_Entries, RT_GROUP_ICON, Name, Lang);
         if (iEntry != -1)
         {
-            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
+                              MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
@@ -1608,8 +1601,7 @@ struct AddCursorDlg : DialogBase
         {
             if (!DoReplaceCursor(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTREPLACECUR),
-                            NULL, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
             }
         }
@@ -1617,8 +1609,7 @@ struct AddCursorDlg : DialogBase
         {
             if (!DoAddCursor(hwnd, Name, Lang, File))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDCUR), NULL,
-                            MB_ICONERROR);
+                ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
             }
         }
@@ -1757,13 +1748,12 @@ struct AddResDlg : DialogBase
         {
             if (File.empty() && Res_HasSample(Type))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_ALREADYEXISTS), g_szTitle,
-                            MB_ICONERROR);
+                ErrorBoxDx(IDS_ALREADYEXISTS);
                 return;
             }
 
-            INT id = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE), g_szTitle,
-                                 MB_ICONINFORMATION | MB_YESNOCANCEL);
+            INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, g_szTitle,
+                              MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
@@ -1849,8 +1839,7 @@ struct AddResDlg : DialogBase
             {
                 if (!DoReplaceBin(hwnd, Type, Name, Lang, File))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTREPLACE),
-                                NULL, MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTREPLACE);
                     return;
                 }
             }
@@ -1858,8 +1847,7 @@ struct AddResDlg : DialogBase
             {
                 if (!DoAddBin(hwnd, Type, Name, Lang, File))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTADDRES), NULL,
-                                MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTADDRES);
                     return;
                 }
             }
@@ -2498,7 +2486,7 @@ struct AddKeyDlg : DialogBase
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
         if (!Cmb1_CheckKey(hwnd, hCmb1, bVirtKey, str))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_INVALIDKEY);
             return;
         }
         lstrcpynW(m_entry.sz0, str.c_str(), _countof(m_entry.sz0));
@@ -2598,7 +2586,7 @@ struct ModifyKeyDlg : DialogBase
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
         if (!Cmb1_CheckKey(hwnd, hCmb1, bVirtKey, str))
         {
-            MessageBoxW(hwnd, LoadStringDx(IDS_INVALIDKEY), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_INVALIDKEY);
             return;
         }
         lstrcpynW(m_entry.sz0, str.c_str(), _countof(m_entry.sz0));
@@ -2798,7 +2786,7 @@ struct EditAccelDlg : DialogBase
 
         if (Count == 0)
         {
-            MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_DATAISEMPTY);
             return;
         }
 
@@ -3259,7 +3247,7 @@ struct StringsDlg : DialogBase
         INT iItem, Count = ListView_GetItemCount(hCtl1);
         if (Count == 0)
         {
-            MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_DATAISEMPTY);
             return;
         }
 
@@ -3985,7 +3973,7 @@ struct EditMenuDlg : DialogBase
 
         if (Count == 0)
         {
-            MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+            ErrorBoxDx(IDS_DATAISEMPTY);
             return;
         }
 
@@ -4370,7 +4358,7 @@ struct MainWnd : public WindowBase
         if (!CreateWindowDx(NULL, g_szTitle, WS_OVERLAPPEDWINDOW, 0,
             CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
         {
-            MsgBoxDx(TEXT("failure of CreateWindow"), NULL, MB_ICONERROR);
+            ErrorBoxDx(TEXT("failure of CreateWindow"));
             return FALSE;
         }
 
@@ -4571,16 +4559,14 @@ struct MainWnd : public WindowBase
                 INT count = TV_GetSelection(g_hTreeView, selection, g_Entries);
                 if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
-                                g_szTitle, MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             else
             {
                 if (!DoExtractBin(ofn.lpstrFile, g_Entries[i]))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
-                                g_szTitle, MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
         }
@@ -4610,8 +4596,7 @@ struct MainWnd : public WindowBase
         {
             if (!DoExtractIcon(ofn.lpstrFile, g_Entries[i]))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTICO),
-                            g_szTitle, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTEXTRACTICO);
             }
         }
     }
@@ -4640,8 +4625,7 @@ struct MainWnd : public WindowBase
         {
             if (!DoExtractCursor(ofn.lpstrFile, g_Entries[i]))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTCUR),
-                            g_szTitle, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTEXTRACTCUR);
             }
         }
     }
@@ -4672,8 +4656,7 @@ struct MainWnd : public WindowBase
             PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
             if (!DoExtractBitmap(ofn.lpstrFile, g_Entries[i], PNG))
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTBMP),
-                            g_szTitle, MB_ICONERROR);
+                ErrorBoxDx(IDS_CANTEXTRACTBMP);
             }
         }
     }
@@ -4723,14 +4706,14 @@ struct MainWnd : public WindowBase
             {
                 if (!DoSaveResAs(hwnd, File))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             else
             {
                 if (!DoSaveAs(hwnd, File))
                 {
-                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
+                    ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
         }
@@ -4919,8 +4902,7 @@ struct MainWnd : public WindowBase
             }
             else
             {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTIMPORT), NULL,
-                            MB_ICONERROR);
+                ErrorBoxDx(IDS_CANNOTIMPORT);
             }
         }
     }
@@ -6141,8 +6123,7 @@ struct MainWnd : public WindowBase
     {
         if (!CheckDataFolder())
         {
-            MessageBoxA(NULL, "ERROR: data folder was not found!",
-                        NULL, MB_ICONERROR);
+            ErrorBoxDx(TEXT("ERROR: data folder was not found!"));
             return -1;  // failure
         }
 
@@ -6151,8 +6132,7 @@ struct MainWnd : public WindowBase
         lstrcatW(g_szConstantsFile, L"\\Constants.txt");
         if (!g_ConstantsDB.LoadFromFile(g_szConstantsFile))
         {
-            MessageBoxA(NULL, "ERROR: Unable to load Constants.txt file.",
-                        NULL, MB_ICONERROR);
+            ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
             return -2;  // failure
         }
         ReplaceBackslash(g_szConstantsFile);
@@ -6162,7 +6142,7 @@ struct MainWnd : public WindowBase
         lstrcatW(g_szCppExe, L"\\bin\\cpp.exe");
         if (::GetFileAttributesW(g_szCppExe) == INVALID_FILE_ATTRIBUTES)
         {
-            MessageBoxA(NULL, "ERROR: No cpp.exe found.", NULL, MB_ICONERROR);
+            ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
             return -3;  // failure
         }
         ReplaceBackslash(g_szCppExe);
@@ -6172,7 +6152,7 @@ struct MainWnd : public WindowBase
         lstrcatW(g_szWindresExe, L"\\bin\\windres.exe");
         if (::GetFileAttributesW(g_szWindresExe) == INVALID_FILE_ATTRIBUTES)
         {
-            MessageBoxA(NULL, "ERROR: No windres.exe found.", NULL, MB_ICONERROR);
+            ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
             return -4;  // failure
         }
         ReplaceBackslash(g_szWindresExe);
@@ -6208,7 +6188,7 @@ BOOL MainWnd::RegisterClassesDx()
     wc.lpszClassName = g_szBmpViewClass;
     if (!RegisterClassW(&wc))
     {
-        MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
+        ErrorBoxDx(TEXT("ERROR: RegisterClass failed."));
         return FALSE;
     }
 
