@@ -466,6 +466,30 @@ BOOL DoReplaceBin(HWND hwnd,
     return TRUE;
 }
 
+BOOL DoAddBitmap(HWND hwnd,
+                 ResEntries& Entries,
+                 const ID_OR_STRING& Name,
+                 WORD Lang,
+                 const std::wstring& BitmapFile)
+{
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
+BOOL DoReplaceBitmap(HWND hwnd,
+                     ResEntries& Entries,
+                     const ID_OR_STRING& Name,
+                     WORD Lang,
+                     const std::wstring& BitmapFile)
+{
+    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
+        return FALSE;
+    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
+    return TRUE;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // specialized tool bar
 
@@ -703,14 +727,14 @@ BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// ReplaceBinDlg
+// MReplaceBinDlg
 
-struct ReplaceBinDlg : MDialogBase
+struct MReplaceBinDlg : MDialogBase
 {
     ResEntries& m_Entries;
     ResEntry& m_Entry;
 
-    ReplaceBinDlg(ResEntries& Entries, ResEntry& Entry)
+    MReplaceBinDlg(ResEntries& Entries, ResEntry& Entry)
         : MDialogBase(IDD_REPLACERES), m_Entries(Entries), m_Entry(Entry)
     {
     }
@@ -853,18 +877,18 @@ struct ReplaceBinDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// AddIconDlg
+// MAddIconDlg
 
-struct AddIconDlg : MDialogBase
+struct MAddIconDlg : MDialogBase
 {
     LPCWSTR File;
     HICON   m_hIcon;
 
-    AddIconDlg() : MDialogBase(IDD_ADDICON), File(NULL), m_hIcon(NULL)
+    MAddIconDlg() : MDialogBase(IDD_ADDICON), File(NULL), m_hIcon(NULL)
     {
     }
 
-    ~AddIconDlg()
+    ~MAddIconDlg()
     {
         DestroyIcon(m_hIcon);
     }
@@ -1014,19 +1038,19 @@ struct AddIconDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// ReplaceIconDlg
+// MReplaceIconDlg
 
-struct ReplaceIconDlg : MDialogBase
+struct MReplaceIconDlg : MDialogBase
 {
     ResEntry& m_Entry;
     HICON   m_hIcon;
 
-    ReplaceIconDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEICON), m_Entry(Entry)
+    MReplaceIconDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEICON), m_Entry(Entry)
     {
         m_hIcon = NULL;
     }
 
-    ~ReplaceIconDlg()
+    ~MReplaceIconDlg()
     {
         DestroyIcon(m_hIcon);
     }
@@ -1154,19 +1178,19 @@ struct ReplaceIconDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// ReplaceCursorDlg
+// MReplaceCursorDlg
 
-struct ReplaceCursorDlg : MDialogBase
+struct MReplaceCursorDlg : MDialogBase
 {
     ResEntry& m_Entry;
     HCURSOR   m_hCursor;
 
-    ReplaceCursorDlg(ResEntry& Entry) : m_Entry(Entry)
+    MReplaceCursorDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACECUR), m_Entry(Entry)
     {
         m_hCursor = NULL;
     }
 
-    ~ReplaceCursorDlg()
+    ~MReplaceCursorDlg()
     {
         DestroyCursor(m_hCursor);
     }
@@ -1295,36 +1319,12 @@ struct ReplaceCursorDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// AddBitmapDlg
+// MAddBitmapDlg
 
-BOOL DoAddBitmap(HWND hwnd,
-                 ResEntries& Entries,
-                 const ID_OR_STRING& Name,
-                 WORD Lang,
-                 const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceBitmap(HWND hwnd,
-                     ResEntries& Entries,
-                     const ID_OR_STRING& Name,
-                     WORD Lang,
-                     const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-struct AddBitmapDlg : MDialogBase
+struct MAddBitmapDlg : MDialogBase
 {
     LPCWSTR File;
-    AddBitmapDlg() : File(NULL)
+    MAddBitmapDlg() : MDialogBase(IDD_ADDBITMAP), File(NULL)
     {
     }
 
@@ -1460,13 +1460,13 @@ struct AddBitmapDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// ReplaceBitmapDlg
+// MReplaceBitmapDlg
 
-struct ReplaceBitmapDlg : MDialogBase
+struct MReplaceBitmapDlg : MDialogBase
 {
     ResEntry& m_Entry;
 
-    ReplaceBitmapDlg(ResEntry& Entry) : m_Entry(Entry)
+    MReplaceBitmapDlg(ResEntry& Entry) : MDialogBase(IDD_REPLACEBMP), m_Entry(Entry)
     {
     }
 
@@ -1584,19 +1584,19 @@ struct ReplaceBitmapDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// AddCursorDlg
+// MAddCursorDlg
 
-struct AddCursorDlg : MDialogBase
+struct MAddCursorDlg : MDialogBase
 {
     LPCWSTR   File;
     HCURSOR   m_hCursor;
 
-    AddCursorDlg() : File(NULL)
+    MAddCursorDlg() : MDialogBase(IDD_ADDCURSOR), File(NULL)
     {
         m_hCursor = NULL;
     }
 
-    ~AddCursorDlg()
+    ~MAddCursorDlg()
     {
         DestroyCursor(m_hCursor);
     }
@@ -1746,13 +1746,13 @@ struct AddCursorDlg : MDialogBase
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// AddResDlg
+// MAddResDlg
 
-struct AddResDlg : MDialogBase
+struct MAddResDlg : MDialogBase
 {
     ResEntries& m_Entries;
 
-    AddResDlg(ResEntries& Entries) : m_Entries(Entries)
+    MAddResDlg(ResEntries& Entries) : MDialogBase(IDD_ADDRES), m_Entries(Entries)
     {
     }
 
@@ -4551,7 +4551,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        ReplaceBinDlg dialog(g_Entries, g_Entries[i]);
+        MReplaceBinDlg dialog(g_Entries, g_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4639,7 +4639,7 @@ struct MainWnd : MWindowBase
 
     void OnAddIcon(HWND hwnd)
     {
-        AddIconDlg dialog;
+        MAddIconDlg dialog;
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4650,7 +4650,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        ReplaceIconDlg dialog(g_Entries[i]);
+        MReplaceIconDlg dialog(g_Entries[i]);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4661,8 +4661,8 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        ReplaceCursorDlg dialog(g_Entries[i]);
-        dialog.DialogBoxDx(hwnd, IDD_REPLACECUR);
+        MReplaceCursorDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnOpen(HWND hwnd)
@@ -4692,7 +4692,7 @@ struct MainWnd : MWindowBase
 
     void OnAddBitmap(HWND hwnd)
     {
-        AddBitmapDlg dialog;
+        MAddBitmapDlg dialog;
         dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
     }
 
@@ -4703,20 +4703,20 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        ReplaceBitmapDlg dialog(g_Entries[i]);
-        dialog.DialogBoxDx(hwnd, IDD_REPLACEBMP);
+        MReplaceBitmapDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnAddCursor(HWND hwnd)
     {
-        AddCursorDlg dialog;
-        dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
+        MAddCursorDlg dialog;
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnAddRes(HWND hwnd)
     {
-        AddResDlg dialog(g_Entries);
-        dialog.DialogBoxDx(hwnd, IDD_ADDRES);
+        MAddResDlg dialog(g_Entries);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnAbout(HWND hwnd)
@@ -5054,24 +5054,24 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(pch, L".ico") == 0)
             {
-                AddIconDlg dialog;
+                MAddIconDlg dialog;
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".cur") == 0)
             {
-                AddCursorDlg dialog;
+                MAddCursorDlg dialog;
                 dialog.File = File;
-                dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
+                dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
                      lstrcmpiW(pch, L".png") == 0)
             {
-                AddBitmapDlg dialog;
+                MAddBitmapDlg dialog;
                 dialog.File = File;
-                dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
+                dialog.DialogBoxDx(hwnd);
                 return;
             }
             else if (lstrcmpiW(pch, L".res") == 0)
