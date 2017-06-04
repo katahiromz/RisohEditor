@@ -707,9 +707,11 @@ BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
 
 struct ReplaceBinDlg : MDialogBase
 {
+    ResEntries& m_Entries;
     ResEntry& m_Entry;
 
-    ReplaceBinDlg(ResEntry& Entry) : m_Entry(Entry)
+    ReplaceBinDlg(ResEntries& Entries, ResEntry& Entry)
+        : m_Entries(Entries), m_Entry(Entry)
     {
     }
 
@@ -4549,7 +4551,7 @@ struct MainWnd : MWindowBase
             return;
 
         UINT i = LOWORD(lParam);
-        ReplaceBinDlg dialog(g_Entries[i]);
+        ReplaceBinDlg dialog(g_Entries, g_Entries[i]);
         dialog.DialogBoxDx(hwnd, IDD_REPLACERES);
     }
 
