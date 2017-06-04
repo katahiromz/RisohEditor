@@ -16,7 +16,6 @@ BOOL        g_bInEdit = FALSE;
 
 BITMAP      g_bm = { 0 };
 HBITMAP     g_hBitmap = NULL;
-HICON       g_hIcon = NULL;
 HCURSOR     g_hCursor = NULL;
 
 struct LangEntry
@@ -861,18 +860,24 @@ struct TestMenuDlg : DialogBase
 struct AddIconDlg : DialogBase
 {
     LPCWSTR File;
+    HICON   m_hIcon;
 
-    AddIconDlg() : File(NULL)
+    AddIconDlg() : File(NULL), m_hIcon(NULL)
     {
+    }
+
+    ~AddIconDlg()
+    {
+        DestroyIcon(m_hIcon);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemTextW(hwnd, edt1, File);
-        if (g_hIcon)
-            DestroyIcon(g_hIcon);
-        g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-        Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+        if (m_hIcon)
+            DestroyIcon(m_hIcon);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+        Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
 
         DragAcceptFiles(hwnd, TRUE);
 
@@ -974,10 +979,10 @@ struct AddIconDlg : DialogBase
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, File);
-            if (g_hIcon)
-                DestroyIcon(g_hIcon);
-            g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-            Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+            if (m_hIcon)
+                DestroyIcon(m_hIcon);
+            m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+            Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
         }
     }
 
@@ -1003,18 +1008,26 @@ struct AddIconDlg : DialogBase
         DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
 
-        if (g_hIcon)
-            DestroyIcon(g_hIcon);
-        g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-        Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+        if (m_hIcon)
+            DestroyIcon(m_hIcon);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+        Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
     }
 };
 
 struct ReplaceIconDlg : DialogBase
 {
     ResEntry& m_Entry;
+    HICON   m_hIcon;
+
     ReplaceIconDlg(ResEntry& Entry) : m_Entry(Entry)
     {
+        m_hIcon = NULL;
+    }
+
+    ~ReplaceIconDlg()
+    {
+        DestroyIcon(m_hIcon);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -1091,10 +1104,10 @@ struct ReplaceIconDlg : DialogBase
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, File);
-            if (g_hIcon)
-                DestroyIcon(g_hIcon);
-            g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-            Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+            if (m_hIcon)
+                DestroyIcon(m_hIcon);
+            m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+            Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
         }
     }
 
@@ -1120,10 +1133,10 @@ struct ReplaceIconDlg : DialogBase
         DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
 
-        if (g_hIcon)
-            DestroyIcon(g_hIcon);
-        g_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
-        Static_SetIcon(GetDlgItem(hwnd, ico1), g_hIcon);
+        if (m_hIcon)
+            DestroyIcon(m_hIcon);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+        Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
     }
 
     virtual INT_PTR CALLBACK
