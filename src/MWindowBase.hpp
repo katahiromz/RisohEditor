@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    21   /* Version 21 */
+#define MZC4_MWINDOWBASE_HPP_    22   /* Version 22 */
 
 #pragma once
 
@@ -526,9 +526,10 @@ public:
 
 struct MDialogBase : public MWindowBase
 {
-    BOOL m_bModal;
+    BOOL    m_bModal;
+    INT     m_nDialogID;
 
-    MDialogBase() : m_bModal(FALSE)
+    MDialogBase(INT nDialogID = 0) : m_bModal(FALSE), m_nDialogID(nDialogID)
     {
     }
 
@@ -603,6 +604,10 @@ struct MDialogBase : public MWindowBase
         }
         return (m_hwnd != NULL);
     }
+    BOOL CreateDialogDx(HWND hwndParent)
+    {
+        return CreateDialogDx(hwndParent, m_nDialogID);
+    }
 
     INT_PTR DialogBoxDx(HWND hwndParent, INT nDialogID)
     {
@@ -611,6 +616,10 @@ struct MDialogBase : public MWindowBase
             MAKEINTRESOURCE(nDialogID), hwndParent,
             MDialogBase::DialogProc, (LPARAM)this);
         return nID;
+    }
+    INT_PTR DialogBoxDx(HWND hwndParent)
+    {
+        return DialogBoxDx(hwndParent, m_nDialogID);
     }
 
     BOOL CreateDialogIndirectDx(HWND hwndParent, const void *ptr)

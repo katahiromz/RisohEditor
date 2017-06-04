@@ -711,7 +711,7 @@ struct ReplaceBinDlg : MDialogBase
     ResEntry& m_Entry;
 
     ReplaceBinDlg(ResEntries& Entries, ResEntry& Entry)
-        : m_Entries(Entries), m_Entry(Entry)
+        : MDialogBase(IDD_REPLACERES), m_Entries(Entries), m_Entry(Entry)
     {
     }
 
@@ -4552,7 +4552,7 @@ struct MainWnd : MWindowBase
 
         UINT i = LOWORD(lParam);
         ReplaceBinDlg dialog(g_Entries, g_Entries[i]);
-        dialog.DialogBoxDx(hwnd, IDD_REPLACERES);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnSaveAs(HWND hwnd)
