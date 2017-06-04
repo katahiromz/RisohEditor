@@ -117,6 +117,7 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// specialized global functions
 
 std::wstring str_vkey(WORD w)
 {
@@ -575,6 +576,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// actions
 
 BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
 {
@@ -5319,9 +5321,9 @@ struct MainWnd : public WindowBase
             cy -= ToolRect.bottom - ToolRect.top;
         }
 
-    #define TV_WIDTH 250
-    #define SE_WIDTH 256
-    #define BE_HEIGHT 100
+#define TV_WIDTH 250
+#define SE_WIDTH 256
+#define BE_HEIGHT 100
 
         if (::IsWindowVisible(g_hTreeView))
         {
