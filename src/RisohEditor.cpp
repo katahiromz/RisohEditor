@@ -1,6 +1,12 @@
+// RisouEditor.cpp --- RisouEditor
+//////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.hpp"
 
 #pragma comment(lib, "msimg32.lib")
+
+//////////////////////////////////////////////////////////////////////////////
+// global variables
 
 HINSTANCE   g_hInstance = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
@@ -25,6 +31,9 @@ struct LangEntry
     }
 };
 std::vector<LangEntry> g_Langs;
+
+//////////////////////////////////////////////////////////////////////////////
+// useful global functions
 
 LPWSTR MakeFilterDx(LPWSTR psz)
 {
@@ -71,6 +80,24 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
     return bRes;
 }
 
+HBITMAP Create24BppBitmapDx(INT width, INT height)
+{
+    BITMAPINFO bi;
+    ZeroMemory(&bi, sizeof(bi));
+    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bi.bmiHeader.biWidth = width;
+    bi.bmiHeader.biHeight = height;
+    bi.bmiHeader.biPlanes = 1;
+    bi.bmiHeader.biBitCount = 24;
+    bi.bmiHeader.biCompression = BI_RGB;
+    HDC hDC = CreateCompatibleDC(NULL);
+    LPVOID pvBits;
+    HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS,
+                                   &pvBits, NULL, 0);
+    DeleteDC(hDC);
+    return hbm;
+}
+
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
     using namespace std;
@@ -78,11 +105,6 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
     int n = fwrite(pv, size, 1, fp);
     fclose(fp);
     return n == 1;
-}
-
-std::wstring str_vkey(WORD w)
-{
-    return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
 }
 
 LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
@@ -94,11 +116,259 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
     return TempFile;
 }
 
-HICON LoadSmallIconDx(UINT id)
+//////////////////////////////////////////////////////////////////////////////
+
+std::wstring str_vkey(WORD w)
 {
-    return HICON(LoadImageW(g_hInstance, MAKEINTRESOURCEW(id),
-                            IMAGE_ICON, 16, 16, 0));
+    return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
 }
+
+HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
+{
+    HBITMAP hbm = Create24BppBitmapDx(width, height);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+    {
+        HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
+        DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
+        if (bCursor)
+        {
+            // mirror
+            StretchBlt(hDC, 0, height, width, -height,
+                       hDC, 0, 0, width, height, SRCCOPY);
+        }
+    }
+    SelectObject(hDC, hbmOld);
+    DeleteDC(hDC);
+
+    return hbm;
+}
+
+HBITMAP
+CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+{
+    HBITMAP hbmIcon;
+
+    if (Entry.size() >= 4 &&
+        memcmp(&Entry[0], "\x89\x50\x4E\x47", 4) == 0)
+    {
+        hbmIcon = ii_png_load_mem(&Entry[0], Entry.size());
+    }
+    else
+    {
+        HICON hIcon;
+        BITMAP bm;
+        hIcon = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, TRUE);
+        assert(hIcon);
+        hbmIcon = CreateBitmapFromIconDx(hIcon,
+                                         bm.bmWidth, bm.bmHeight, FALSE);
+        DestroyIcon(hIcon);
+    }
+
+    GetObject(hbmIcon, sizeof(bm), &bm);
+    if (bm.bmBitsPixel == 32)
+    {
+        ii_premultiply(hbmIcon);
+    }
+
+    return hbmIcon;
+}
+
+HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
+{
+    ICONDIR dir;
+    if (Entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return NULL;
+    }
+
+    memcpy(&dir, &Entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
+    {
+        assert(0);
+        return NULL;
+    }
+
+    const GRPICONDIRENTRY *pEntries;
+    pEntries = (const GRPICONDIRENTRY *)&Entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        if (k == -1)
+            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+        if (k == -1)
+        {
+            assert(0);
+            return NULL;
+        }
+        ResEntry& IconEntry = g_Entries[k];
+
+        BITMAP bm;
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
+
+        if (cx < bm.bmWidth)
+            cx = bm.bmWidth;
+        cy += bm.bmHeight;
+
+        DeleteObject(hbmIcon);
+    }
+
+    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+    
+    BITMAP bm;
+    GetObject(hbm, sizeof(bm), &bm);
+
+    INT y = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        if (k == -1)
+            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+        if (k == -1)
+        {
+            assert(0);
+            DeleteObject(hbm);
+            return NULL;
+        }
+        ResEntry& IconEntry = g_Entries[k];
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
+
+        ii_draw(hbm, hbmIcon, 0, y);
+        y += bm.bmHeight;
+    }
+
+    return hbm;
+}
+
+HBITMAP
+CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+{
+    HBITMAP hbmCursor;
+
+    HICON hCursor;
+    hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+    assert(hCursor);
+    hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+    DestroyCursor(hCursor);
+
+    GetObject(hbmCursor, sizeof(bm), &bm);
+    assert(hbmCursor);
+    return hbmCursor;
+}
+
+HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
+{
+    ICONDIR dir;
+    if (Entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return NULL;
+    }
+
+    memcpy(&dir, &Entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+    {
+        assert(0);
+        return NULL;
+    }
+
+    const GRPCURSORDIRENTRY *pEntries;
+    pEntries = (const GRPCURSORDIRENTRY *)&Entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+        if (k == -1)
+            k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+        if (k == -1)
+        {
+            assert(0);
+            return NULL;
+        }
+        ResEntry& CursorEntry = g_Entries[k];
+
+        BITMAP bm;
+        HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
+        assert(hbmCursor);
+        assert(bm.bmWidth);
+        assert(bm.bmHeight);
+
+        if (cx < bm.bmWidth)
+            cx = bm.bmWidth;
+        cy += bm.bmHeight;
+
+        DeleteObject(hbmCursor);
+    }
+
+    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HDC hDC2 = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+    {
+        INT y = 0;
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+            if (k == -1)
+                k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+            if (k == -1)
+            {
+                assert(0);
+                DeleteObject(hbm);
+                return NULL;
+            }
+            ResEntry& CursorEntry = g_Entries[k];
+
+            BITMAP bm;
+            HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
+            assert(hbmCursor);
+            assert(bm.bmWidth);
+            assert(bm.bmHeight);
+            {
+                HGDIOBJ hbm2Old = SelectObject(hDC2, hbmCursor);
+                BitBlt(hDC, 0, y, bm.bmWidth, bm.bmHeight, hDC2, 0, 0, SRCCOPY);
+                SelectObject(hDC2, hbm2Old);
+            }
+            DeleteObject(hbmCursor);
+
+            y += bm.bmHeight;
+        }
+    }
+    SelectObject(hDC, hbmOld);
+    DeleteDC(hDC2);
+    DeleteDC(hDC);
+
+    return hbm;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// specialized tool bar
 
 TBBUTTON g_buttons0[] =
 {
@@ -176,6 +446,8 @@ HWND ToolBar_Create(HWND hwndParent)
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
 }
+
+//////////////////////////////////////////////////////////////////////////////
 
 void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
 {
@@ -301,6 +573,8 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
     File = szFile;
     return TRUE;
 }
+
+//////////////////////////////////////////////////////////////////////////////
 
 BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
 {
@@ -641,6 +915,9 @@ BOOL DoReplaceBitmap(HWND hwnd,
     return TRUE;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// ReplaceBinDlg
+
 struct ReplaceBinDlg : DialogBase
 {
     ResEntry& m_Entry;
@@ -786,6 +1063,9 @@ struct ReplaceBinDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// TestDialog
+
 struct TestDialog : DialogBase
 {
     virtual INT_PTR CALLBACK
@@ -816,6 +1096,9 @@ struct TestDialog : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// TestMenuDlg
 
 struct TestMenuDlg : DialogBase
 {
@@ -852,6 +1135,9 @@ struct TestMenuDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// AddIconDlg
 
 struct AddIconDlg : DialogBase
 {
@@ -1011,6 +1297,9 @@ struct AddIconDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// ReplaceIconDlg
+
 struct ReplaceIconDlg : DialogBase
 {
     ResEntry& m_Entry;
@@ -1147,6 +1436,9 @@ struct ReplaceIconDlg : DialogBase
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// ReplaceCursorDlg
 
 struct ReplaceCursorDlg : DialogBase
 {
@@ -1286,6 +1578,9 @@ struct ReplaceCursorDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// AddBitmapDlg
+
 struct AddBitmapDlg : DialogBase
 {
     LPCWSTR File;
@@ -1424,6 +1719,9 @@ struct AddBitmapDlg : DialogBase
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// ReplaceBitmapDlg
+
 struct ReplaceBitmapDlg : DialogBase
 {
     ResEntry& m_Entry;
@@ -1544,6 +1842,9 @@ struct ReplaceBitmapDlg : DialogBase
         return 0;
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// AddCursorDlg
 
 struct AddCursorDlg : DialogBase
 {
@@ -1703,6 +2004,9 @@ struct AddCursorDlg : DialogBase
         return 0;
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// AddResDlg
 
 struct AddResDlg : DialogBase
 {
@@ -1940,81 +2244,7 @@ struct AddResDlg : DialogBase
     }
 };
 
-HBITMAP Create24BppBitmapDx(INT width, INT height)
-{
-    BITMAPINFO bi;
-    ZeroMemory(&bi, sizeof(bi));
-    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bi.bmiHeader.biWidth = width;
-    bi.bmiHeader.biHeight = height;
-    bi.bmiHeader.biPlanes = 1;
-    bi.bmiHeader.biBitCount = 24;
-    bi.bmiHeader.biCompression = BI_RGB;
-    HDC hDC = CreateCompatibleDC(NULL);
-    LPVOID pvBits;
-    HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS,
-                                   &pvBits, NULL, 0);
-    DeleteDC(hDC);
-    return hbm;
-}
-
-HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
-{
-    HBITMAP hbm = Create24BppBitmapDx(width, height);
-    if (hbm == NULL)
-    {
-        assert(0);
-        return NULL;
-    }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
-
-    HDC hDC = CreateCompatibleDC(NULL);
-    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
-    {
-        HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
-        DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
-        if (bCursor)
-        {
-            // mirror
-            StretchBlt(hDC, 0, height, width, -height,
-                       hDC, 0, 0, width, height, SRCCOPY);
-        }
-    }
-    SelectObject(hDC, hbmOld);
-    DeleteDC(hDC);
-
-    return hbm;
-}
-
-HBITMAP
-CreateBitmapFromIconOrPng(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
-{
-    HBITMAP hbmIcon;
-
-    if (Entry.size() >= 4 &&
-        memcmp(&Entry[0], "\x89\x50\x4E\x47", 4) == 0)
-    {
-        hbmIcon = ii_png_load_mem(&Entry[0], Entry.size());
-    }
-    else
-    {
-        HICON hIcon;
-        BITMAP bm;
-        hIcon = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, TRUE);
-        assert(hIcon);
-        hbmIcon = CreateBitmapFromIconDx(hIcon,
-                                         bm.bmWidth, bm.bmHeight, FALSE);
-        DestroyIcon(hIcon);
-    }
-
-    GetObject(hbmIcon, sizeof(bm), &bm);
-    if (bm.bmBitsPixel == 32)
-    {
-        ii_premultiply(hbmIcon);
-    }
-
-    return hbmIcon;
-}
+//////////////////////////////////////////////////////////////////////////////
 
 std::wstring DumpBitmapInfo(HBITMAP hbm)
 {
@@ -2041,82 +2271,6 @@ std::wstring DumpCursorInfo(const BITMAP& bm)
     ret = sz;
 
     return ret;
-}
-
-HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
-{
-    ICONDIR dir;
-    if (Entry.size() < sizeof(dir))
-    {
-        assert(0);
-        return NULL;
-    }
-
-    memcpy(&dir, &Entry[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
-    {
-        assert(0);
-        return NULL;
-    }
-
-    const GRPICONDIRENTRY *pEntries;
-    pEntries = (const GRPICONDIRENTRY *)&Entry[sizeof(dir)];
-
-    LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
-        if (k == -1)
-            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
-        if (k == -1)
-        {
-            assert(0);
-            return NULL;
-        }
-        ResEntry& IconEntry = g_Entries[k];
-
-        BITMAP bm;
-        HBITMAP hbmIcon = CreateBitmapFromIconOrPng(hwnd, IconEntry, bm);
-
-        if (cx < bm.bmWidth)
-            cx = bm.bmWidth;
-        cy += bm.bmHeight;
-
-        DeleteObject(hbmIcon);
-    }
-
-    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
-    if (hbm == NULL)
-    {
-        assert(0);
-        return NULL;
-    }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
-    
-    BITMAP bm;
-    GetObject(hbm, sizeof(bm), &bm);
-
-    INT y = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, Entry.lang);
-        if (k == -1)
-            k = Res_Find(g_Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
-        if (k == -1)
-        {
-            assert(0);
-            DeleteObject(hbm);
-            return NULL;
-        }
-        ResEntry& IconEntry = g_Entries[k];
-        HBITMAP hbmIcon = CreateBitmapFromIconOrPng(hwnd, IconEntry, bm);
-
-        ii_draw(hbm, hbmIcon, 0, y);
-        y += bm.bmHeight;
-    }
-
-    return hbm;
 }
 
 std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
@@ -2159,116 +2313,6 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
     }
 
     return ret;
-}
-
-HBITMAP
-CreateBitmapFromCursor(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
-{
-    HBITMAP hbmCursor;
-
-    HICON hCursor;
-    hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-    assert(hCursor);
-    hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
-    DestroyCursor(hCursor);
-
-    GetObject(hbmCursor, sizeof(bm), &bm);
-    assert(hbmCursor);
-    return hbmCursor;
-}
-
-HBITMAP CreateBitmapFromCursorsDx(HWND hwnd, const ResEntry& Entry)
-{
-    ICONDIR dir;
-    if (Entry.size() < sizeof(dir))
-    {
-        assert(0);
-        return NULL;
-    }
-
-    memcpy(&dir, &Entry[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
-    {
-        assert(0);
-        return NULL;
-    }
-
-    const GRPCURSORDIRENTRY *pEntries;
-    pEntries = (const GRPCURSORDIRENTRY *)&Entry[sizeof(dir)];
-
-    LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
-        if (k == -1)
-            k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
-        if (k == -1)
-        {
-            assert(0);
-            return NULL;
-        }
-        ResEntry& CursorEntry = g_Entries[k];
-
-        BITMAP bm;
-        HBITMAP hbmCursor = CreateBitmapFromCursor(hwnd, CursorEntry, bm);
-        assert(hbmCursor);
-        assert(bm.bmWidth);
-        assert(bm.bmHeight);
-
-        if (cx < bm.bmWidth)
-            cx = bm.bmWidth;
-        cy += bm.bmHeight;
-
-        DeleteObject(hbmCursor);
-    }
-
-    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
-    if (hbm == NULL)
-    {
-        assert(0);
-        return NULL;
-    }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
-
-    HDC hDC = CreateCompatibleDC(NULL);
-    HDC hDC2 = CreateCompatibleDC(NULL);
-    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
-    {
-        INT y = 0;
-        for (WORD i = 0; i < dir.idCount; ++i)
-        {
-            INT k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
-            if (k == -1)
-                k = Res_Find(g_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
-            if (k == -1)
-            {
-                assert(0);
-                DeleteObject(hbm);
-                return NULL;
-            }
-            ResEntry& CursorEntry = g_Entries[k];
-
-            BITMAP bm;
-            HBITMAP hbmCursor = CreateBitmapFromCursor(hwnd, CursorEntry, bm);
-            assert(hbmCursor);
-            assert(bm.bmWidth);
-            assert(bm.bmHeight);
-            {
-                HGDIOBJ hbm2Old = SelectObject(hDC2, hbmCursor);
-                BitBlt(hDC, 0, y, bm.bmWidth, bm.bmHeight, hDC2, 0, 0, SRCCOPY);
-                SelectObject(hDC2, hbm2Old);
-            }
-            DeleteObject(hbmCursor);
-
-            y += bm.bmHeight;
-        }
-    }
-    SelectObject(hDC, hbmOld);
-    DeleteDC(hDC2);
-    DeleteDC(hDC);
-
-    return hbm;
 }
 
 std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
@@ -5551,7 +5595,7 @@ struct MainWnd : public WindowBase
     void PreviewIcon(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
-        g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
+        g_hBitmap = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
 
         std::wstring str = DumpBitmapInfo(g_hBitmap);
         SetWindowTextW(m_hSrcEdit, str.c_str());
