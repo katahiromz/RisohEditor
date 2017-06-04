@@ -16,7 +16,6 @@ BOOL        g_bInEdit = FALSE;
 
 BITMAP      g_bm = { 0 };
 HBITMAP     g_hBitmap = NULL;
-HCURSOR     g_hCursor = NULL;
 
 struct LangEntry
 {
@@ -1155,9 +1154,16 @@ struct ReplaceIconDlg : DialogBase
 struct ReplaceCursorDlg : DialogBase
 {
     ResEntry& m_Entry;
+    HCURSOR   m_hCursor;
 
     ReplaceCursorDlg(ResEntry& Entry) : m_Entry(Entry)
     {
+        m_hCursor = NULL;
+    }
+
+    ~ReplaceCursorDlg()
+    {
+        DestroyCursor(m_hCursor);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -1234,10 +1240,10 @@ struct ReplaceCursorDlg : DialogBase
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, File);
-            if (g_hCursor)
-                DestroyCursor(g_hCursor);
-            g_hCursor = LoadCursorFromFile(File);
-            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+            if (m_hCursor)
+                DestroyCursor(m_hCursor);
+            m_hCursor = LoadCursorFromFile(File);
+            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         }
     }
 
@@ -1263,10 +1269,10 @@ struct ReplaceCursorDlg : DialogBase
         DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
 
-        if (g_hCursor)
-            DestroyCursor(g_hCursor);
-        g_hCursor = LoadCursorFromFile(File);
-        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(File);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         DragFinish(hdrop);
     }
 
@@ -1545,18 +1551,25 @@ struct ReplaceBitmapDlg : DialogBase
 struct AddCursorDlg : DialogBase
 {
     LPCWSTR File;
+    HCURSOR   m_hCursor;
 
     AddCursorDlg() : File(NULL)
     {
+        m_hCursor = NULL;
+    }
+
+    ~AddCursorDlg()
+    {
+        DestroyCursor(m_hCursor);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemTextW(hwnd, edt1, File);
-        if (g_hCursor)
-            DestroyCursor(g_hCursor);
-        g_hCursor = LoadCursorFromFile(File);
-        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(File);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
 
         DragAcceptFiles(hwnd, TRUE);
 
@@ -1646,10 +1659,10 @@ struct AddCursorDlg : DialogBase
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, File);
-            if (g_hCursor)
-                DestroyCursor(g_hCursor);
-            g_hCursor = LoadCursorFromFile(File);
-            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+            if (m_hCursor)
+                DestroyCursor(m_hCursor);
+            m_hCursor = LoadCursorFromFile(File);
+            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         }
     }
 
@@ -1675,10 +1688,10 @@ struct AddCursorDlg : DialogBase
         DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
 
-        if (g_hCursor)
-            DestroyCursor(g_hCursor);
-        g_hCursor = LoadCursorFromFile(File);
-        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(g_hCursor));
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(File);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
     }
 
     virtual INT_PTR CALLBACK
