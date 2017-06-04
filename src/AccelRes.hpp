@@ -11,6 +11,8 @@
 #include "ByteStream.hpp"
 #include "Text.hpp"
 
+std::wstring str_vkey(WORD w);
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct ACCEL_ENTRY

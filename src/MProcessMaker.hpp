@@ -6,6 +6,9 @@
 #ifndef MZC4_PROCESSMAKER_HPP_
 #define MZC4_PROCESSMAKER_HPP_
 
+#include <windows.h>
+#include <cassert>
+
 ////////////////////////////////////////////////////////////////////////////
 // MProcessMaker --- Win32 process maker
 

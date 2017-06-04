@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <windows.h>
+#include <commctrl.h>
 #include "id_string.hpp"
 #include "IconRes.hpp"
 #include "ByteStream.hpp"

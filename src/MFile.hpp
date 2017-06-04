@@ -8,6 +8,9 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
+#include <windows.h>
+#include <cassert>
+
 #ifndef LOLONG
     #define LOLONG(dwl) static_cast<DWORD>(dwl)
 #endif

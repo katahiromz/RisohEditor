@@ -117,7 +117,7 @@ MZC_INLINE HANDLE MProcessMaker::GetThreadHandle() const
 
 MZC_INLINE DWORD MProcessMaker::GetExitCode() const
 {
-    assert(m_pi.hProcess != NULL);
+    assert(m_pi.hProcess);
     DWORD dwExitCode;
     ::GetExitCodeProcess(m_pi.hProcess, &dwExitCode);
     return dwExitCode;
@@ -125,14 +125,14 @@ MZC_INLINE DWORD MProcessMaker::GetExitCode() const
 
 MZC_INLINE DWORD MProcessMaker::WaitForSingleObject(DWORD dwTimeout/* = INFINITE*/)
 {
-    assert(m_pi.hProcess != NULL);
+    assert(m_pi.hProcess);
     return ::WaitForSingleObject(m_pi.hProcess, dwTimeout);
 }
 
 MZC_INLINE DWORD MProcessMaker::WaitForSingleObjectEx(
     DWORD dwTimeout/* = INFINITE*/, BOOL bAlertable/* = TRUE*/)
 {
-    assert(m_pi.hProcess != NULL);
+    assert(m_pi.hProcess);
     return ::WaitForSingleObjectEx(m_pi.hProcess, dwTimeout, bAlertable);
 }
 

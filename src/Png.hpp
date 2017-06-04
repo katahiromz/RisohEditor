@@ -4,6 +4,7 @@
 #ifndef PNG_HPP_
 #define PNG_HPP_
 
+#include <windows.h>
 #include <png.h>
 
 #pragma comment(lib, "libpng.lib")

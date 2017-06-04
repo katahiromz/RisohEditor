@@ -7,9 +7,11 @@
 #include <windows.h>
 #include <vector>
 #include <stack>
+#include <cassert>
 
 #include "id_string.hpp"
 #include "ConstantsDB.hpp"
+#include "ByteStream.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
