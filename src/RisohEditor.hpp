@@ -110,13 +110,13 @@ BOOL DoReplaceBitmap(HWND hwnd,
 #include "MReplaceIconDlg.hpp"
 #include "MReplaceCursorDlg.hpp"
 #include "MAddBitmapDlg.hpp"
+#include "MReplaceBitmapDlg.hpp"
 #include "MAddCursorDlg.hpp"
+#include "MAddResDlg.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"
 #include "ByteStream.hpp"
-
-#include "Samples.hpp"
 
 #include "AccelRes.hpp"
 #include "IconRes.hpp"

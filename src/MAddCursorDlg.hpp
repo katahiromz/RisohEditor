@@ -1,8 +1,8 @@
-// MReplaceBitmapDlg
+// MAddCursorDlg
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MREPLACEBITMAPDLG_HPP_
-#define MZC4_MREPLACEBITMAPDLG_HPP_
+#ifndef MZC4_MADDCURSORDLG_HPP_
+#define MZC4_MADDCURSORDLG_HPP_
 
 #include "RisohEditor.hpp"
 
@@ -13,31 +13,32 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MReplaceBitmapDlg : MDialogBase
+struct MAddCursorDlg : MDialogBase
 {
     ResEntries& m_Entries;
-    ResEntry& m_Entry;
+    LPCWSTR   File;
+    HCURSOR   m_hCursor;
 
-    MReplaceBitmapDlg(ResEntries& Entries, ResEntry& Entry)
-        : MDialogBase(IDD_REPLACEBMP), m_Entries(Entries), m_Entry(Entry)
+    MAddCursorDlg(ResEntries& Entries)
+        : MDialogBase(IDD_ADDCURSOR), m_Entries(Entries), File(NULL)
     {
+        m_hCursor = NULL;
+    }
+
+    ~MAddCursorDlg()
+    {
+        DestroyCursor(m_hCursor);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        DragAcceptFiles(hwnd, TRUE);
+        SetDlgItemTextW(hwnd, edt1, File);
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(File);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
 
-        // for Name
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (m_Entry.name.is_str())
-        {
-            SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
-        }
-        else
-        {
-            SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
-        }
-        EnableWindow(hCmb2, FALSE);
+        DragAcceptFiles(hwnd, TRUE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -48,7 +49,7 @@ struct MReplaceBitmapDlg : MDialogBase
 
     void OnOK(HWND hwnd)
     {
-        ID_OR_STRING Type = RT_GROUP_ICON;
+        ID_OR_STRING Type = RT_GROUP_CURSOR;
 
         ID_OR_STRING Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -65,10 +66,37 @@ struct MReplaceBitmapDlg : MDialogBase
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBitmap(hwnd, m_Entries, Name, Lang, File))
+        BOOL Overwrite = FALSE;
+        INT iEntry = Res_Find(m_Entries, RT_GROUP_ICON, Name, Lang);
+        if (iEntry != -1)
         {
-            ErrorBoxDx(IDS_CANTREPLACEBMP);
-            return;
+            INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
+            switch (id)
+            {
+            case IDYES:
+                Overwrite = TRUE;
+                break;
+            case IDNO:
+            case IDCANCEL:
+                return;
+            }
+        }
+
+        if (Overwrite)
+        {
+            if (!DoReplaceCursor(hwnd, m_Entries, Name, Lang, File))
+            {
+                ErrorBoxDx(IDS_CANTREPLACECUR);
+                return;
+            }
+        }
+        else
+        {
+            if (!DoAddCursor(hwnd, m_Entries, Name, Lang, File))
+            {
+                ErrorBoxDx(IDS_CANNOTADDCUR);
+                return;
+            }
         }
 
         EndDialog(hwnd, IDOK);
@@ -87,16 +115,20 @@ struct MReplaceBitmapDlg : MDialogBase
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
         ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_REPLACEBMP);
+        ofn.lpstrTitle = LoadStringDx2(IDS_ADDCUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        ofn.lpstrDefExt = L"bmp";
+        ofn.lpstrDefExt = L"cur";
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, File);
+            if (m_hCursor)
+                DestroyCursor(m_hCursor);
+            m_hCursor = LoadCursorFromFile(File);
+            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         }
     }
 
@@ -121,6 +153,11 @@ struct MReplaceBitmapDlg : MDialogBase
         WCHAR File[MAX_PATH];
         DragQueryFileW(hdrop, 0, File, _countof(File));
         SetDlgItemTextW(hwnd, edt1, File);
+
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(File);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
     }
 
     virtual INT_PTR CALLBACK
@@ -138,6 +175,6 @@ struct MReplaceBitmapDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MREPLACEBITMAPDLG_HPP_
+#endif  // ndef MZC4_MADDCURSORDLG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////
