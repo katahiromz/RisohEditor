@@ -960,8 +960,6 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 {
     if (bVirtKey)
@@ -1049,209 +1047,6 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// BmpView
-
-struct BmpView : MWindowBase
-{
-    BITMAP      m_bm;
-
-    BmpView()
-    {
-        ZeroMemory(&m_bm, sizeof(m_bm));
-    }
-
-    virtual LPCTSTR GetWndClassNameDx() const
-    {
-        return TEXT("RisohEditor BmpView Class");
-    }
-
-    virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
-    {
-        wcx.hIcon = NULL;
-        wcx.hCursor = LoadCursor(NULL, IDC_CROSS);
-        wcx.hbrBackground = GetStockBrush(LTGRAY_BRUSH);
-        wcx.lpszMenuName = NULL;
-    }
-
-    BOOL CreateDx(HWND hwndParent, INT CtrlID = 4)
-    {
-        DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
-        DWORD dwExStyle = WS_EX_CLIENTEDGE;
-        return CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle,
-            0, 0, 0, 0, (HMENU)CtrlID);
-    }
-
-    void OnPaint(HWND hwnd)
-    {
-        PAINTSTRUCT ps;
-        HDC hDC = BeginPaint(hwnd, &ps);
-        if (hDC == NULL)
-            return;
-
-        HDC hMemDC = CreateCompatibleDC(NULL);
-        {
-            SelectObject(hMemDC, g_hBitmap);
-            INT dx = GetScrollPos(hwnd, SB_HORZ);
-            INT dy = GetScrollPos(hwnd, SB_VERT);
-            BitBlt(hDC, -dx, -dy, m_bm.bmWidth, m_bm.bmHeight, hMemDC, 0, 0, SRCCOPY);
-        }
-        DeleteDC(hMemDC);
-        EndPaint(hwnd, &ps);
-    }
-
-    BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
-    {
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-        FillRect(hdc, &rc, GetStockBrush(COLOR_BACKGROUND));
-        return TRUE;
-    }
-
-    void OnHScroll(HWND hwnd, HWND hwndCtl, UINT code, int pos)
-    {
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-
-        SCROLLINFO info;
-        ZeroMemory(&info, sizeof(info));
-        info.cbSize = sizeof(info);
-        info.fMask = SIF_POS | SIF_PAGE | SIF_DISABLENOSCROLL;
-        info.nPage = rc.right - rc.left;
-        switch (code)
-        {
-        case SB_THUMBPOSITION:
-        case SB_THUMBTRACK:
-            info.nPos = pos;
-            break;
-        case SB_TOP:
-            info.nPos = 0;
-            break;
-        case SB_BOTTOM:
-            info.nPos = m_bm.bmHeight;
-            break;
-        case SB_ENDSCROLL:
-            return;
-        case SB_LINEDOWN:
-            info.nPos = GetScrollPos(hwnd, SB_HORZ) + 10;
-            break;
-        case SB_LINEUP:
-            info.nPos = GetScrollPos(hwnd, SB_HORZ) - 10;
-            break;
-        case SB_PAGEDOWN:
-            info.nPos = GetScrollPos(hwnd, SB_HORZ) + info.nPage;
-            break;
-        case SB_PAGEUP:
-            info.nPos = GetScrollPos(hwnd, SB_HORZ) - info.nPage;
-            break;
-        }
-        SetScrollInfo(hwnd, SB_HORZ, &info, TRUE);
-        InvalidateRect(hwnd, NULL, TRUE);
-    }
-
-    void OnVScroll(HWND hwnd, HWND hwndCtl, UINT code, int pos)
-    {
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-
-        SCROLLINFO info;
-        ZeroMemory(&info, sizeof(info));
-        info.cbSize = sizeof(info);
-        info.fMask = SIF_POS | SIF_PAGE | SIF_DISABLENOSCROLL;
-        info.nPage = rc.bottom - rc.top;
-        switch (code)
-        {
-        case SB_THUMBPOSITION:
-        case SB_THUMBTRACK:
-            info.nPos = pos;
-            break;
-        case SB_TOP:
-            info.nPos = 0;
-            break;
-        case SB_BOTTOM:
-            info.nPos = m_bm.bmHeight;
-            break;
-        case SB_ENDSCROLL:
-            return;
-        case SB_LINEDOWN:
-            info.nPos = GetScrollPos(hwnd, SB_VERT) + 10;
-            break;
-        case SB_LINEUP:
-            info.nPos = GetScrollPos(hwnd, SB_VERT) - 10;
-            break;
-        case SB_PAGEDOWN:
-            info.nPos = GetScrollPos(hwnd, SB_VERT) + info.nPage;
-            break;
-        case SB_PAGEUP:
-            info.nPos = GetScrollPos(hwnd, SB_VERT) - info.nPage;
-            break;
-        }
-        SetScrollInfo(hwnd, SB_VERT, &info, TRUE);
-        InvalidateRect(hwnd, NULL, TRUE);
-    }
-
-    void UpdateScrollInfo(HWND hwnd)
-    {
-        if (!GetObjectW(g_hBitmap, sizeof(m_bm), &m_bm))
-            return;
-
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-
-        SCROLLINFO info;
-
-        ZeroMemory(&info, sizeof(info));
-        info.cbSize = sizeof(info);
-        info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-        info.nMin = 0;
-        info.nMax = m_bm.bmWidth;
-        info.nPage = rc.right - rc.left;
-        info.nPos = 0;
-        SetScrollInfo(hwnd, SB_HORZ, &info, TRUE);
-
-        ZeroMemory(&info, sizeof(info));
-        info.cbSize = sizeof(info);
-        info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-        info.nMin = 0;
-        info.nMax = m_bm.bmHeight;
-        info.nPage = rc.bottom - rc.top;
-        info.nPos = 0;
-        SetScrollInfo(hwnd, SB_VERT, &info, TRUE);
-
-        InvalidateRect(hwnd, NULL, TRUE);
-    }
-
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        if (id != 999)
-            return;
-
-        UpdateScrollInfo(hwnd);
-    }
-
-    void OnSize(HWND hwnd, UINT state, int cx, int cy)
-    {
-        UpdateScrollInfo(hwnd);
-        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
-    }
-
-    virtual LRESULT CALLBACK
-    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
-            HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
-            HANDLE_MSG(hwnd, WM_HSCROLL, OnHScroll);
-            HANDLE_MSG(hwnd, WM_VSCROLL, OnVScroll);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
-        default:
-            return DefaultProcDx();
-        }
-    }
-};
-
 std::wstring
 Res_GetLangName(WORD Lang)
 {
@@ -1287,7 +1082,7 @@ struct MainWnd : MWindowBase
     HWND        m_hToolBar;
     HWND        m_hBinEdit;
     HWND        m_hSrcEdit;
-    BmpView     m_bmp_view;
+    MBmpView    m_bmp_view;
 
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
@@ -1472,11 +1267,7 @@ struct MainWnd : MWindowBase
 
     VOID HidePreview(HWND hwnd)
     {
-        if (g_hBitmap)
-        {
-            DeleteObject(g_hBitmap);
-            g_hBitmap = NULL;
-        }
+        m_bmp_view.DestroyBmp();
 
         SetWindowTextW(m_hBinEdit, NULL);
         ShowWindow(m_hBinEdit, SW_HIDE);
@@ -2131,7 +1922,7 @@ struct MainWnd : MWindowBase
 
     void OnDestroy(HWND hwnd)
     {
-        DeleteObject(g_hBitmap);
+        m_bmp_view.DestroyBmp();
         DeleteObject(m_hNormalFont);
         DeleteObject(m_hSmallFont);
         ImageList_Destroy(m_hImageList);
@@ -2472,9 +2263,9 @@ struct MainWnd : MWindowBase
     void PreviewIcon(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
-        g_hBitmap = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
+        m_bmp_view = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
 
-        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_bmp_view);
         SetWindowTextW(m_hSrcEdit, str.c_str());
         ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
@@ -2486,7 +2277,7 @@ struct MainWnd : MWindowBase
     {
         BITMAP bm;
         HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-        g_hBitmap = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+        m_bmp_view = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
         std::wstring str = DumpCursorInfo(bm);
         DestroyCursor(hCursor);
 
@@ -2499,7 +2290,7 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
+        m_bmp_view = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -2511,8 +2302,8 @@ struct MainWnd : MWindowBase
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
-        assert(g_hBitmap);
+        m_bmp_view = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
+        assert(m_bmp_view);
 
         std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
         assert(str.size());
@@ -2525,9 +2316,9 @@ struct MainWnd : MWindowBase
 
     void PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     {
-        g_hBitmap = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+        m_bmp_view = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
 
-        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_bmp_view);
         SetWindowTextW(m_hSrcEdit, str.c_str());
         ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
@@ -2542,16 +2333,16 @@ struct MainWnd : MWindowBase
         {
             BITMAP bm;
             GetObject(hbm, sizeof(bm), &bm);
-            g_hBitmap = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
-            if (g_hBitmap)
+            m_bmp_view = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
+            if (m_bmp_view)
             {
-                ii_fill(g_hBitmap, GetStockBrush(LTGRAY_BRUSH));
-                ii_draw(g_hBitmap, hbm, 0, 0);
+                ii_fill(m_bmp_view, GetStockBrush(LTGRAY_BRUSH));
+                ii_draw(m_bmp_view, hbm, 0, 0);
             }
             DeleteObject(hbm);
         }
 
-        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_bmp_view);
         SetWindowTextW(m_hSrcEdit, str.c_str());
         ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 

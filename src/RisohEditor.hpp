@@ -141,6 +141,7 @@ struct MENU_ENTRY
 #include "MStringsDlg.hpp"
 #include "MEditMenuDlg.hpp"
 #include "MEditAccelDlg.hpp"
+#include "MBmpView.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"
