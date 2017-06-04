@@ -7,10 +7,7 @@ HWND        g_hMainWnd = NULL;
 HMENU       g_hMenu = NULL;
 WCHAR       g_szTitle[MAX_PATH] = L"RisohEditor by katahiromz";
 WCHAR       g_szBmpViewClass[]  = L"RisohEditor BmpView Class";
-WCHAR       g_szRadBaseClass[]  = L"RisohEditor RAD Base Class";
 
-INT         g_argc = 0;
-LPWSTR *    g_wargv = NULL;
 WCHAR       g_szFile[MAX_PATH] = L"";
 ConstantsDB g_ConstantsDB;
 ResEntries  g_Entries;
@@ -25,8 +22,6 @@ HWND        g_hBinEdit = NULL;
 HWND        g_hSrcEdit = NULL;
 HWND        g_hBmpView = NULL;
 HWND        g_hToolBar = NULL;
-HWND        g_hRadBase = NULL;
-HWND        g_hRadDialog = NULL;
 BOOL        g_bInEdit = FALSE;
 
 HIMAGELIST  g_hImageList = NULL;
@@ -588,270 +583,6 @@ HWND ToolBar_Create(HWND hwndParent)
     return hwndTB;
 }
 
-BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
-{
-    DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
-        TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
-        TVS_LINESATROOT | TVS_SHOWSELALWAYS;
-    g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
-        WC_TREEVIEWW, NULL, dwStyle, 0, 0, 0, 0, hwnd,
-        (HMENU)1, g_hInstance, NULL);
-    if (g_hTreeView == NULL)
-        return FALSE;
-
-    g_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
-
-    g_hFileIcon = LoadSmallIconDx(100);
-    ImageList_AddIcon(g_hImageList, g_hFileIcon);
-    g_hFolderIcon = LoadSmallIconDx(101);
-    ImageList_AddIcon(g_hImageList, g_hFolderIcon);
-
-    TreeView_SetImageList(g_hTreeView, g_hImageList, TVSIL_NORMAL);
-
-    dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
-        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-    g_hBinEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
-        L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
-        (HMENU)2, g_hInstance, NULL);
-    if (g_hBinEdit == NULL)
-        return FALSE;
-
-    g_hToolBar = ToolBar_Create(hwnd);
-    if (g_hToolBar == NULL)
-        return FALSE;
-
-    g_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
-        L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
-        (HMENU)3, g_hInstance, NULL);
-    ShowWindow(g_hSrcEdit, FALSE);
-
-    LOGFONTW lf;
-    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
-    lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
-    lf.lfFaceName[0] = UNICODE_NULL;
-
-    lf.lfHeight = 11;
-    g_hSmallFont = CreateFontIndirectW(&lf);
-    assert(g_hSmallFont);
-
-    lf.lfHeight = 13;
-    g_hNormalFont = ::CreateFontIndirectW(&lf);
-    assert(g_hNormalFont);
-
-    lf.lfHeight = 15;
-    g_hLargeFont = ::CreateFontIndirectW(&lf);
-    assert(g_hLargeFont);
-
-    SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
-    SetWindowFont(g_hBinEdit, g_hSmallFont, TRUE);
-
-    dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
-    g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
-        g_szBmpViewClass, NULL, dwStyle, 0, 0, 0, 0, hwnd,
-        (HMENU)4, g_hInstance, NULL);
-    ShowWindow(g_hBmpView, FALSE);
-
-    if (g_argc >= 2)
-    {
-        DoLoad(hwnd, g_wargv[1]);
-    }
-
-    g_hMenu = GetMenu(hwnd);
-
-    DragAcceptFiles(hwnd, TRUE);
-    SetFocus(g_hTreeView);
-    return TRUE;
-}
-
-VOID MainWnd_HidePreview(HWND hwnd)
-{
-    if (g_hBitmap)
-    {
-        DeleteObject(g_hBitmap);
-        g_hBitmap = NULL;
-    }
-
-    SetWindowTextW(g_hBinEdit, NULL);
-    ShowWindow(g_hBinEdit, SW_HIDE);
-    Edit_SetModify(g_hBinEdit, FALSE);
-
-    SetWindowTextW(g_hSrcEdit, NULL);
-    ShowWindow(g_hSrcEdit, SW_HIDE);
-    Edit_SetModify(g_hSrcEdit, FALSE);
-
-    ShowWindow(g_hBmpView, SW_HIDE);
-    ShowWindow(g_hToolBar, SW_HIDE);
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
-
-    if (IsWindow(g_hRadDialog))
-    {
-        DestroyWindow(g_hRadDialog);
-        g_hRadDialog = NULL;
-    }
-    if (IsWindow(g_hRadBase))
-    {
-        DestroyWindow(g_hRadBase);
-        g_hRadBase = NULL;
-    }
-
-    g_bInEdit = FALSE;
-}
-
-void MainWnd_OnDeleteRes(HWND hwnd)
-{
-    if (g_bInEdit)
-        return;
-
-    HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL)
-        return;
-
-    TV_Delete(g_hTreeView, hItem, g_Entries);
-    MainWnd_HidePreview(hwnd);
-}
-
-void MainWnd_OnExtractBin(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) == I_NONE)
-        return;
-
-    UINT i = LOWORD(lParam);
-
-    WCHAR szFile[MAX_PATH] = L"";
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    if (HIWORD(lParam) == I_LANG)
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
-    else
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTRES);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"res";
-    if (GetSaveFileNameW(&ofn))
-    {
-        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
-        {
-            ResEntries selection;
-            INT count = TV_GetSelection(g_hTreeView, selection, g_Entries);
-            if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
-            {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
-                            g_szTitle, MB_ICONERROR);
-            }
-        }
-        else
-        {
-            if (!DoExtractBin(ofn.lpstrFile, g_Entries[i]))
-            {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
-                            g_szTitle, MB_ICONERROR);
-            }
-        }
-    }
-}
-
-void MainWnd_OnExtractIcon(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-
-    WCHAR szFile[MAX_PATH] = L"";
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTICO);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"ico";
-    if (GetSaveFileNameW(&ofn))
-    {
-        if (!DoExtractIcon(ofn.lpstrFile, g_Entries[i]))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTICO),
-                        g_szTitle, MB_ICONERROR);
-        }
-    }
-}
-
-void MainWnd_OnExtractCursor(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-
-    WCHAR szFile[MAX_PATH] = L"";
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTCUR);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"cur";
-    if (GetSaveFileNameW(&ofn))
-    {
-        if (!DoExtractCursor(ofn.lpstrFile, g_Entries[i]))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTCUR),
-                        g_szTitle, MB_ICONERROR);
-        }
-    }
-}
-
-void MainWnd_OnExtractBitmap(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-
-    WCHAR szFile[MAX_PATH] = L"";
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTBMP);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"bmp";
-    if (GetSaveFileNameW(&ofn))
-    {
-        BOOL PNG;
-        PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-        if (!DoExtractBitmap(ofn.lpstrFile, g_Entries[i], PNG))
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTBMP),
-                        g_szTitle, MB_ICONERROR);
-        }
-    }
-}
-
 void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
 {
     for (size_t i = 0; i < g_Langs.size(); ++i)
@@ -1124,65 +855,6 @@ struct ReplaceBinDlg : DialogBase
     }
 };
 
-
-void MainWnd_OnReplaceBin(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-    ReplaceBinDlg dialog(g_Entries[i]);
-    dialog.DialogBoxDx(hwnd, IDD_REPLACERES);
-}
-
-void MainWnd_OnSaveAs(HWND hwnd)
-{
-    if (g_bInEdit)
-        return;
-
-    WCHAR File[MAX_PATH];
-
-    lstrcpynW(File, g_szFile, _countof(File));
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    DWORD dwBinType;
-    if (g_szFile[0] == UNICODE_NULL || !GetBinaryType(g_szFile, &dwBinType))
-    {
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-        ofn.lpstrDefExt = L"res";
-    }
-    else
-    {
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-        ofn.lpstrDefExt = L"exe";
-    }
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_SAVEAS);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
-    if (GetSaveFileNameW(&ofn))
-    {
-        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
-        {
-            if (!DoSaveResAs(hwnd, File))
-            {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
-            }
-        }
-        else
-        {
-            if (!DoSaveAs(hwnd, File))
-            {
-                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
-            }
-        }
-    }
-}
-
 struct TestDialog : DialogBase
 {
     virtual INT_PTR CALLBACK
@@ -1245,41 +917,6 @@ struct TestMenuDlg : DialogBase
         return DefaultProcDx();
     }
 };
-
-void MainWnd_OnTest(HWND hwnd)
-{
-    HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL)
-        return;
-
-    TV_ITEM Item;
-    ZeroMemory(&Item, sizeof(Item));
-    Item.mask = TVIF_PARAM;
-    Item.hItem = hItem;
-    TreeView_GetItem(g_hTreeView, &Item);
-
-    if (HIWORD(Item.lParam) != 3)
-        return;
-
-    UINT i = LOWORD(Item.lParam);
-    const ResEntry& Entry = g_Entries[i];
-    if (Entry.type == RT_DIALOG)
-    {
-        TestDialog dialog;
-        dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
-    }
-    else if (Entry.type == RT_MENU)
-    {
-        HMENU hMenu = LoadMenuIndirect(&Entry[0]);
-        if (hMenu)
-        {
-            TestMenuDlg dialog;
-            dialog.m_hMenu = hMenu;
-            dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
-            DestroyMenu(hMenu);
-        }
-    }
-}
 
 struct AddIconDlg : DialogBase
 {
@@ -1435,12 +1072,6 @@ struct AddIconDlg : DialogBase
     }
 };
 
-void MainWnd_OnAddIcon(HWND hwnd)
-{
-    AddIconDlg dialog;
-    dialog.DialogBoxDx(hwnd, IDD_ADDICON);
-}
-
 struct ReplaceIconDlg : DialogBase
 {
     ResEntry& m_Entry;
@@ -1569,17 +1200,6 @@ struct ReplaceIconDlg : DialogBase
         return DefaultProcDx();
     }
 };
-
-void MainWnd_OnReplaceIcon(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-    ReplaceIconDlg dialog(g_Entries[i]);
-    dialog.DialogBoxDx(hwnd, IDD_REPLACEICON);
-}
 
 struct ReplaceCursorDlg : DialogBase
 {
@@ -1712,42 +1332,6 @@ struct ReplaceCursorDlg : DialogBase
         return 0;
     }
 };
-
-void MainWnd_OnReplaceCursor(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-    ReplaceCursorDlg dialog(g_Entries[i]);
-    dialog.DialogBoxDx(hwnd, IDD_REPLACECUR);
-}
-
-void MainWnd_OnOpen(HWND hwnd)
-{
-    if (g_bInEdit)
-        return;
-
-    WCHAR File[MAX_PATH];
-    lstrcpynW(File, g_szFile, _countof(File));
-
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_OPEN);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"exe";
-    if (GetOpenFileNameW(&ofn))
-    {
-        DoLoad(hwnd, File);
-    }
-}
 
 struct AddBitmapDlg : DialogBase
 {
@@ -1889,12 +1473,6 @@ struct AddBitmapDlg : DialogBase
     }
 };
 
-void MainWnd_OnAddBitmap(HWND hwnd)
-{
-    AddBitmapDlg dialog;
-    dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
-}
-
 struct ReplaceBitmapDlg : DialogBase
 {
     ResEntry& m_Entry;
@@ -2016,17 +1594,6 @@ struct ReplaceBitmapDlg : DialogBase
         return 0;
     }
 };
-
-void MainWnd_OnReplaceBitmap(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (HIWORD(lParam) != I_NAME)
-        return;
-
-    UINT i = LOWORD(lParam);
-    ReplaceBitmapDlg dialog(g_Entries[i]);
-    dialog.DialogBoxDx(hwnd, IDD_REPLACEBMP);
-}
 
 struct AddCursorDlg : DialogBase
 {
@@ -2181,12 +1748,6 @@ struct AddCursorDlg : DialogBase
         return 0;
     }
 };
-
-void MainWnd_OnAddCursor(HWND hwnd)
-{
-    AddCursorDlg dialog;
-    dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
-}
 
 struct AddResDlg : DialogBase
 {
@@ -2427,84 +1988,6 @@ struct AddResDlg : DialogBase
     }
 };
 
-void MainWnd_OnAddRes(HWND hwnd)
-{
-    AddResDlg dialog;
-    dialog.DialogBoxDx(hwnd, IDD_ADDRES);
-}
-
-void MainWnd_OnAbout(HWND hwnd)
-{
-    MSGBOXPARAMSW Params;
-    ZeroMemory(&Params, sizeof(Params));
-    Params.cbSize = sizeof(Params);
-    Params.hwndOwner = hwnd;
-    Params.hInstance = g_hInstance;
-    Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
-    Params.lpszCaption = g_szTitle;
-    Params.dwStyle = MB_OK | MB_USERICON;
-    Params.lpszIcon = MAKEINTRESOURCEW(1);
-    Params.dwLanguageId = LANG_USER_DEFAULT;
-    MessageBoxIndirectW(&Params);
-}
-
-void MainWnd_OnImport(HWND hwnd)
-{
-    if (g_bInEdit)
-        return;
-
-    WCHAR File[MAX_PATH] = TEXT("");
-
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
-    ofn.lpstrTitle = LoadStringDx2(IDS_IMPORTRES);
-    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"res";
-    if (GetOpenFileNameW(&ofn))
-    {
-        ResEntries entries;
-        if (DoImport(hwnd, File, entries))
-        {
-            BOOL Overwrite = TRUE;
-            if (Res_Intersect(g_Entries, entries))
-            {
-                INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE),
-                                      g_szTitle,
-                                      MB_ICONINFORMATION | MB_YESNOCANCEL);
-                switch (nID)
-                {
-                case IDYES:
-                    break;
-                case IDNO:
-                    Overwrite = FALSE;
-                    break;
-                case IDCANCEL:
-                    return;
-                }
-            }
-
-            size_t i, count = entries.size();
-            for (i = 0; i < count; ++i)
-            {
-                Res_AddEntry(g_Entries, entries[i], Overwrite);
-            }
-
-            TV_RefreshInfo(g_hTreeView, g_Entries);
-        }
-        else
-        {
-            MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTIMPORT), NULL,
-                        MB_ICONERROR);
-        }
-    }
-}
-
 HBITMAP Create24BppBitmapDx(INT width, INT height)
 {
     BITMAPINFO bi;
@@ -2595,19 +2078,6 @@ std::wstring DumpBitmapInfo(HBITMAP hbm)
     return ret;
 }
 
-void MainWnd_PreviewIcon(HWND hwnd, const ResEntry& Entry)
-{
-    BITMAP bm;
-    g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
-
-    std::wstring str = DumpBitmapInfo(g_hBitmap);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
-
 std::wstring DumpCursorInfo(const BITMAP& bm)
 {
     std::wstring ret;
@@ -2619,21 +2089,6 @@ std::wstring DumpCursorInfo(const BITMAP& bm)
     ret = sz;
 
     return ret;
-}
-
-void MainWnd_PreviewCursor(HWND hwnd, const ResEntry& Entry)
-{
-    BITMAP bm;
-    HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-    g_hBitmap = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
-    std::wstring str = DumpCursorInfo(bm);
-    DestroyCursor(hCursor);
-
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
 }
 
 HBITMAP CreateBitmapFromIconsDx(HWND hwnd, const ResEntry& Entry)
@@ -2752,18 +2207,6 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
     }
 
     return ret;
-}
-
-void MainWnd_PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
-{
-    g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
-
-    std::wstring str = DumpGroupIconInfo(Entry.data);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
 }
 
 HBITMAP
@@ -2935,159 +2378,6 @@ std::wstring DumpGroupCursorInfo(const std::vector<BYTE>& data)
     return ret;
 }
 
-void MainWnd_PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
-{
-    g_hBitmap = CreateBitmapFromCursorsDx(hwnd, Entry);
-    assert(g_hBitmap);
-
-    std::wstring str = DumpGroupCursorInfo(Entry.data);
-    assert(str.size());
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
-
-void MainWnd_PreviewBitmap(HWND hwnd, const ResEntry& Entry)
-{
-    g_hBitmap = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
-
-    std::wstring str = DumpBitmapInfo(g_hBitmap);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
-
-void MainWnd_PreviewPNG(HWND hwnd, const ResEntry& Entry)
-{
-    HBITMAP hbm = ii_png_load_mem(&Entry[0], Entry.size());
-    if (hbm)
-    {
-        BITMAP bm;
-        GetObject(hbm, sizeof(bm), &bm);
-        g_hBitmap = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
-        if (g_hBitmap)
-        {
-            ii_fill(g_hBitmap, GetStockBrush(LTGRAY_BRUSH));
-            ii_draw(g_hBitmap, hbm, 0, 0);
-        }
-        DeleteObject(hbm);
-    }
-
-    std::wstring str = DumpBitmapInfo(g_hBitmap);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-
-    SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
-    ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
-}
-
-
-void MainWnd_PreviewAccel(HWND hwnd, const ResEntry& Entry)
-{
-    ByteStream stream(Entry.data);
-    AccelRes accel;
-    if (accel.LoadFromStream(stream))
-    {
-        std::wstring str = accel.Dump(Entry.name);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewMessage(HWND hwnd, const ResEntry& Entry)
-{
-    ByteStream stream(Entry.data);
-    MessageRes mes;
-    if (mes.LoadFromStream(stream))
-    {
-        std::wstring str = mes.Dump();
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewString(HWND hwnd, const ResEntry& Entry)
-{
-    ByteStream stream(Entry.data);
-    StringRes str_res;
-    WORD nTableID = Entry.name.m_ID;
-    if (str_res.LoadFromStream(stream, nTableID))
-    {
-        std::wstring str = str_res.Dump(nTableID);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewHtml(HWND hwnd, const ResEntry& Entry)
-{
-    std::wstring str = BinaryToText(Entry.data);
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-}
-
-void MainWnd_PreviewMenu(HWND hwnd, const ResEntry& Entry)
-{
-    ByteStream stream(Entry.data);
-    MenuRes menu_res;
-    if (menu_res.LoadFromStream(stream))
-    {
-        std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewVersion(HWND hwnd, const ResEntry& Entry)
-{
-    VersionRes ver_res;
-    if (ver_res.LoadFromData(Entry.data))
-    {
-        std::wstring str = ver_res.Dump(Entry.name);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewDialog(HWND hwnd, const ResEntry& Entry)
-{
-    ByteStream stream(Entry.data);
-    DialogRes dialog_res;
-    if (dialog_res.LoadFromStream(stream))
-    {
-        std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
-        SetWindowTextW(g_hSrcEdit, str.c_str());
-        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-    }
-}
-
-void MainWnd_PreviewStringTable(HWND hwnd, const ResEntry& Entry)
-{
-    ResEntries found;
-    Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
-
-    StringRes str_res;
-    ResEntries::iterator it, end = found.end();
-    for (it = found.begin(); it != end; ++it)
-    {
-        ByteStream stream(it->data);
-        if (!str_res.LoadFromStream(stream, it->name.m_ID))
-            return;
-    }
-
-    std::wstring str = str_res.Dump();
-    SetWindowTextW(g_hSrcEdit, str.c_str());
-    ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
-}
-
-void MainWnd_PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
-{
-}
-
 std::wstring
 DumpDataAsString(const std::vector<BYTE>& data)
 {
@@ -3162,454 +2452,12 @@ DumpDataAsString(const std::vector<BYTE>& data)
     return ret;
 }
 
-void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
-{
-    MainWnd_HidePreview(hwnd);
-
-    std::wstring str = DumpDataAsString(Entry.data);
-    SetWindowTextW(g_hBinEdit, str.c_str());
-    if (str.empty())
-        ShowWindow(g_hBinEdit, SW_HIDE);
-    else
-        ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
-
-    if (Entry.type == RT_ICON)
-    {
-        MainWnd_PreviewIcon(hwnd, Entry);
-    }
-    else if (Entry.type == RT_CURSOR)
-    {
-        MainWnd_PreviewCursor(hwnd, Entry);
-    }
-    else if (Entry.type == RT_GROUP_ICON)
-    {
-        MainWnd_PreviewGroupIcon(hwnd, Entry);
-    }
-    else if (Entry.type == RT_GROUP_CURSOR)
-    {
-        MainWnd_PreviewGroupCursor(hwnd, Entry);
-    }
-    else if (Entry.type == RT_BITMAP)
-    {
-        MainWnd_PreviewBitmap(hwnd, Entry);
-    }
-    else if (Entry.type == RT_ACCELERATOR)
-    {
-        MainWnd_PreviewAccel(hwnd, Entry);
-    }
-    else if (Entry.type == RT_STRING)
-    {
-        MainWnd_PreviewString(hwnd, Entry);
-    }
-    else if (Entry.type == RT_MENU)
-    {
-        MainWnd_PreviewMenu(hwnd, Entry);
-    }
-    else if (Entry.type == RT_DIALOG)
-    {
-        MainWnd_PreviewDialog(hwnd, Entry);
-    }
-    else if (Entry.type == RT_MESSAGETABLE)
-    {
-        MainWnd_PreviewMessage(hwnd, Entry);
-    }
-#ifndef RT_MANIFEST
-    #define RT_MANIFEST 24
-#endif
-    else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
-    {
-        MainWnd_PreviewHtml(hwnd, Entry);
-    }
-    else if (Entry.type == RT_VERSION)
-    {
-        MainWnd_PreviewVersion(hwnd, Entry);
-    }
-    else if (Entry.type == L"PNG")
-    {
-        MainWnd_PreviewPNG(hwnd, Entry);
-    }
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
-}
-
-void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
-{
-    MainWnd_HidePreview(hwnd);
-
-    WORD i = LOWORD(lParam);
-    ResEntry& Entry = g_Entries[i];
-
-    if (HIWORD(lParam) == I_LANG)
-    {
-        MainWnd_Preview(hwnd, Entry);
-    }
-    else if (HIWORD(lParam) == I_STRING)
-    {
-        SetWindowTextW(g_hBinEdit, NULL);
-        ShowWindow(g_hBinEdit, SW_HIDE);
-        MainWnd_PreviewStringTable(hwnd, Entry);
-    }
-    else if (HIWORD(lParam) == I_MESSAGE)
-    {
-        SetWindowTextW(g_hBinEdit, NULL);
-        ShowWindow(g_hBinEdit, SW_HIDE);
-        MainWnd_PreviewMessageTable(hwnd, Entry);
-    }
-
-    if (DoubleClick)
-    {
-        SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
-        Edit_SetReadOnly(g_hSrcEdit, FALSE);
-        SetFocus(g_hSrcEdit);
-
-        if (Res_CanGuiEdit(Entry.type))
-        {
-            if (Res_IsTestable(Entry.type))
-            {
-                ToolBar_Update(g_hToolBar, 2);
-            }
-            else
-            {
-                ToolBar_Update(g_hToolBar, 1);
-            }
-        }
-        else
-        {
-            ToolBar_Update(g_hToolBar, 0);
-        }
-        ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
-
-        ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
-        ShowWindow(g_hTreeView, SW_HIDE);
-        ShowWindow(g_hBinEdit, SW_HIDE);
-        SetMenu(hwnd, NULL);
-
-        g_bInEdit = TRUE;
-    }
-    else
-    {
-        SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
-        Edit_SetReadOnly(g_hSrcEdit, TRUE);
-        SetFocus(g_hTreeView);
-
-        ShowWindow(g_hToolBar, SW_HIDE);
-        ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
-        ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
-        SetMenu(hwnd, g_hMenu);
-
-        g_bInEdit = FALSE;
-    }
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
-}
-
-BOOL MainWnd_IsEditableEntry(HWND hwnd, LPARAM lParam)
-{
-    const WORD i = LOWORD(lParam);
-    const ResEntry& Entry = g_Entries[i];
-    const ID_OR_STRING& type = Entry.type;
-    switch (HIWORD(lParam))
-    {
-    case I_LANG:
-        if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
-            type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION)
-        {
-            ;
-        }
-        else
-        {
-            return FALSE;
-        }
-        break;
-    case I_STRING: case I_MESSAGE:
-        break;
-    default:
-        return FALSE;
-    }
-    return TRUE;
-}
-
-void MainWnd_OnEdit(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (!MainWnd_IsEditableEntry(hwnd, lParam))
-        return;
-
-    MainWnd_SelectTV(hwnd, lParam, TRUE);
-}
-
-LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
-{
-    if (pnmhdr->code == NM_DBLCLK)
-    {
-        MainWnd_OnEdit(hwnd);
-    }
-    else if (pnmhdr->code == TVN_SELCHANGED)
-    {
-        NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
-        LPARAM lParam = pTV->itemNew.lParam;
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
-    }
-    else if (pnmhdr->code == TVN_KEYDOWN)
-    {
-        TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
-        switch (pTVKD->wVKey)
-        {
-        case VK_RETURN:
-            MainWnd_OnEdit(hwnd);
-            break;
-        case VK_DELETE:
-            PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
-            break;
-        }
-    }
-    return 0;
-}
-
-void MainWnd_OnCancelEdit(HWND hwnd)
-{
-    if (!g_bInEdit)
-        return;
-
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    MainWnd_SelectTV(hwnd, lParam, FALSE);
-}
-
-BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-
-    if (HIWORD(lParam) == I_LANG)
-    {
-        WORD i = LOWORD(lParam);
-        ResEntry& entry = g_Entries[i];
-
-        if (entries.size() != 1 ||
-            entries[0].name != entry.name ||
-            entries[0].lang != entry.lang)
-        {
-            msg += WideToAnsi(LoadStringDx(IDS_RESMISMATCH));
-            return FALSE;
-        }
-        entry = entries[0];
-        return TRUE;
-    }
-    else if (HIWORD(lParam) == I_STRING)
-    {
-        WORD i = LOWORD(lParam);
-        ResEntry& entry = g_Entries[i];
-
-        Res_DeleteNames(g_Entries, RT_STRING, entry.lang);
-
-        for (size_t m = 0; m < entries.size(); ++m)
-        {
-            if (!Res_AddEntry(g_Entries, entries[m], TRUE))
-            {
-                msg += WideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
-                return FALSE;
-            }
-        }
-
-        return TRUE;
-    }
-    else if (HIWORD(lParam) == I_MESSAGE)
-    {
-        // FIXME
-        return TRUE;
-    }
-    else
-    {
-        // FIXME
-        return TRUE;
-    }
-}
-
 void ReplaceBackslash(LPWSTR szPath)
 {
     for (WCHAR *pch = szPath; *pch; ++pch)
     {
         if (*pch == L'\\')
             *pch = L'/';
-    }
-}
-
-BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    WORD i = LOWORD(lParam);
-    ResEntry& entry = g_Entries[i];
-
-    std::string TextUtf8 = WideToUtf8(WideText);
-    if (HIWORD(lParam) == I_LANG)
-    {
-        if (Res_IsPlainText(entry.type))
-        {
-            if (WideText.find(L"\"UTF-8\"") != std::wstring::npos)
-            {
-                entry.data.assign(TextUtf8.begin(), TextUtf8.end());
-
-                static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
-                entry.data.insert(entry.data.begin(), &bom[0], &bom[3]);
-            }
-            else
-            {
-                std::string TextAnsi = WideToAnsi(WideText);
-                entry.data.assign(TextAnsi.begin(), TextAnsi.end());
-            }
-            MainWnd_SelectTV(hwnd, lParam, FALSE);
-
-            return TRUE;    // success
-        }
-    }
-
-    WCHAR szTempPath[MAX_PATH];
-    ::GetTempPathW(_countof(szTempPath), szTempPath);
-
-    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
-
-    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
-    ReplaceBackslash(szPath1);
-    MFile r1(szPath1, TRUE);
-
-    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
-    ReplaceBackslash(szPath2);
-    MFile r2(szPath2, TRUE);
-
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    ReplaceBackslash(szPath3);
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
-
-    r1.WriteFormatA("#include <windows.h>\r\n");
-    r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("#include <prsht.h>\r\n");
-    r1.WriteFormatA("#include <dlgs.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
-                    PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
-    r1.WriteFormatA("#pragma code_page(65001)\r\n");
-    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.CloseHandle();
-
-    DWORD cbWritten;
-    r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
-    r2.CloseHandle();
-
-    WCHAR CmdLine[512];
-#if 1
-    wsprintfW(CmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
-        g_szWindresExe, szPath3, g_szCppExe, szPath1);
-#else
-    wsprintfW(CmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
-        g_szWindresExe, szPath3, g_szCppExe, szPath1);
-#endif
-
-    // MessageBoxW(hwnd, CmdLine, NULL, 0);
-
-    std::vector<BYTE> output;
-    std::string msg = WideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
-    output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
-
-    BOOL Success = FALSE;
-    ByteStream stream;
-
-    MProcessMaker pmaker;
-    pmaker.SetShowWindow(SW_HIDE);
-    MFile hInputWrite, hOutputRead;
-    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcess(NULL, CmdLine))
-    {
-        DWORD cbAvail;
-        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
-        {
-            if (cbAvail == 0)
-            {
-                if (!pmaker.IsRunning())
-                    break;
-
-                pmaker.WaitForSingleObject(500);
-                continue;
-            }
-
-            CHAR szBuf[256];
-            DWORD cbRead;
-            if (cbAvail > sizeof(szBuf))
-                cbAvail = sizeof(szBuf);
-            else  if (cbAvail == 0)
-                continue;
-
-            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
-            {
-                if (cbRead == 0)
-                    continue;
-
-                stream.WriteData(szBuf, cbRead);
-            }
-        }
-
-        output = stream.data();
-
-        if (pmaker.GetExitCode() == 0)
-        {
-            ResEntries entries;
-            if (DoImport(hwnd, szPath3, entries))
-            {
-                std::string msg;
-                Success = DoWindresResult(hwnd, entries, msg);
-                if (msg.size())
-                {
-                    output.insert(output.end(), msg.begin(), msg.end());
-                }
-            }
-        }
-    }
-
-    ::DeleteFileW(szPath1);
-    ::DeleteFileW(szPath2);
-    ::DeleteFileW(szPath3);
-
-    if (!Success)
-    {
-        if (output.empty())
-        {
-            SetWindowTextW(g_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
-        }
-        else
-        {
-            output.insert(output.end(), 0);
-            SetWindowTextA(g_hBinEdit, (char *)&output[0]);
-            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
-        }
-    }
-
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
-
-    return Success;
-}
-
-void MainWnd_OnCompile(HWND hwnd)
-{
-    if (!Edit_GetModify(g_hSrcEdit))
-    {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
-        return;
-    }
-
-    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
-    std::wstring WideText;
-    WideText.resize(cchText);
-    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
-
-    if (DoCompileParts(hwnd, WideText))
-    {
-        TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
-        LPARAM lParam = TV_GetParam(g_hTreeView);
-        MainWnd_SelectTV(hwnd, lParam, FALSE);
     }
 }
 
@@ -3756,9 +2604,9 @@ struct ModifyKeyDlg : DialogBase
 {
     ACCEL_ENTRY m_entry;
 
-	ModifyKeyDlg(ACCEL_ENTRY& entry) : m_entry(entry)
-	{
-	}
+    ModifyKeyDlg(ACCEL_ENTRY& entry) : m_entry(entry)
+    {
+    }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
@@ -5309,1092 +4157,6 @@ struct EditMenuDlg : DialogBase
     }
 };
 
-BOOL MainWnd_CompileIfNecessary(HWND hwnd)
-{
-    if (Edit_GetModify(g_hSrcEdit))
-    {
-        INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
-                            MB_ICONINFORMATION | MB_YESNOCANCEL);
-        switch (id)
-        {
-        case IDYES:
-            {
-                INT cchText = GetWindowTextLengthW(g_hSrcEdit);
-                std::wstring WideText;
-                WideText.resize(cchText);
-                GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
-
-                if (!DoCompileParts(hwnd, WideText))
-                    return FALSE;
-
-                Edit_SetModify(g_hSrcEdit, FALSE);
-            }
-            break;
-        case IDNO:
-            break;
-        case IDCANCEL:
-            return FALSE;
-        }
-    }
-    return TRUE;
-}
-
-std::map<HWND, WNDPROC> g_map;
-
-struct RadHelper
-{
-    HWND m_hwndOwner;
-    HWND m_hwnd;
-    HWND m_hwndSelected;
-    INT m_xDialogBaseUnit;
-    INT m_yDialogBaseUnit;
-    WNDPROC m_OldWndProc;
-    BOOL m_Moving;
-    DialogRes m_dialog_res;
-
-    // // PrintWindow
-    // HINSTANCE hUser32;
-    // typedef BOOL (WINAPI *PRINTWINDOW)(HWND, HDC, UINT);
-    // PRINTWINDOW pPrintWindow;
-#ifndef PW_CLIENTONLY
-    #define PW_CLIENTONLY   1
-#endif
-    //BOOL Print(HWND hwnd, HDC hDC)
-    //{
-    //    UINT uFlags = PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND |
-    //                  PRF_NONCLIENT | PRF_OWNED;
-    //    PostMessage(hwnd, WM_PRINT, (WPARAM)hDC, uFlags);
-    //    return TRUE;
-    //}
-
-    RadHelper()
-    {
-        m_hwndSelected = m_hwnd = m_hwndOwner = NULL;
-        m_xDialogBaseUnit = 0;
-        m_yDialogBaseUnit = 0;
-        m_OldWndProc = NULL;
-        m_Moving = FALSE;
-    }
-
-    ~RadHelper()
-    {
-    }
-
-    static LRESULT CALLBACK 
-    ControlWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        if (uMsg == WM_LBUTTONDOWN)
-            MessageBoxA(NULL, "OK2", NULL, 0);
-        switch (uMsg)
-        {
-        case WM_NCLBUTTONDOWN:
-        case WM_NCLBUTTONUP:
-        case WM_NCLBUTTONDBLCLK:
-        case WM_NCMBUTTONDOWN:
-        case WM_NCMBUTTONUP:
-        case WM_NCMBUTTONDBLCLK:
-        case WM_NCRBUTTONDOWN:
-        case WM_NCRBUTTONUP:
-        case WM_NCRBUTTONDBLCLK:
-        case WM_NCXBUTTONDOWN:
-        case WM_NCXBUTTONUP:
-        case WM_NCXBUTTONDBLCLK:
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
-        case WM_LBUTTONDBLCLK:
-        case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP:
-        case WM_MBUTTONDBLCLK:
-        case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
-        case WM_RBUTTONDBLCLK:
-        case WM_XBUTTONDOWN:
-        case WM_XBUTTONUP:
-        case WM_XBUTTONDBLCLK:
-        case WM_MOUSEMOVE:
-        case WM_MOUSEWHEEL:
-            SendMouseMesssageToParent(hwnd, uMsg, wParam, lParam);
-            return 0;
-        case WM_MOUSEACTIVATE:
-            return MA_NOACTIVATEANDEAT;
-        case WM_SYSKEYDOWN:
-        case WM_SYSKEYUP:
-        case WM_KEYDOWN:
-        case WM_KEYUP:
-            SendKeyMesssageToParent(hwnd, uMsg, wParam, lParam);
-            return 0;
-        case WM_SETFOCUS:
-        case WM_SETCURSOR:
-            return 0;
-        }
-        WNDPROC OldProc = g_map[hwnd];
-        if (OldProc)
-            return CallWindowProc(OldProc, hwnd, uMsg, wParam, lParam);
-        return 0;
-    }
-
-    void SubclassChild(HWND hCtrl)
-    {
-        WNDPROC OldProc = SubclassWindow(hCtrl, RadHelper::ControlWindowProc);
-        g_map[hCtrl] = OldProc;
-
-        SubclassAllChildren(hCtrl);
-    }
-
-    void SubclassAllChildren(HWND hwnd)
-    {
-        HWND hCtrl = GetTopWindow(hwnd);
-        while (hCtrl)
-        {
-            SubclassChild(hCtrl);
-
-            hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
-        }
-    }
-
-    INT GetBaseUnits(INT& yUnit)
-    {
-        return m_dialog_res.GetBaseUnits(yUnit);
-    }
-
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        m_OldWndProc = SubclassWindow(hwnd, RadHelper::WindowProc);
-
-        SetParent(hwnd, m_hwndOwner);
-
-        RECT Rect;
-        GetWindowRect(hwnd, &Rect);
-        SIZE Size;
-        Size.cx = Rect.right - Rect.left;
-        Size.cy = Rect.bottom - Rect.top;
-        MoveWindow(hwnd, 0, 0, Size.cx, Size.cy, TRUE);
-
-        SubclassAllChildren(hwnd);
-
-        m_hwnd = hwnd;
-        return FALSE;
-    }
-
-    static void
-    SendMouseMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        HWND Parent = GetParent(hwnd);
-        if (Parent == NULL)
-            Parent = GetWindow(hwnd, GW_OWNER);
-
-        POINT pt;
-        pt.x = GET_X_LPARAM(lParam);
-        pt.y = GET_Y_LPARAM(lParam);
-        if (uMsg != WM_MOUSEWHEEL)
-        {
-            MapWindowPoints(hwnd, Parent, &pt, 1);
-            lParam = MAKELPARAM(pt.x, pt.y);
-        }
-        if (uMsg == WM_LBUTTONDOWN)
-        {
-            uMsg = uMsg;
-        }
-
-        SendMessage(Parent, uMsg, wParam, lParam);
-    }
-
-    static void
-    SendKeyMesssageToParent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        HWND Parent = GetParent(hwnd);
-        if (Parent == NULL)
-            Parent = GetWindow(hwnd, GW_OWNER);
-
-        SendMessage(Parent, uMsg, wParam, lParam);
-    }
-
-    LRESULT CallWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
-    }
-
-    void DrawSelected(HDC hDC)
-    {
-        RECT rc;
-        GetWindowRect(m_hwndSelected, &rc);
-        MapWindowRect(NULL, m_hwndOwner, &rc);
-
-        FillRect(hDC, &rc, GetStockBrush(BLACK_BRUSH));
-    }
-
-    void OnPaint(HWND hwnd)
-    {
-        FORWARD_WM_PAINT(hwnd, CallWndProc);
-
-        HWND hCtrl = GetTopWindow(hwnd);
-        while (hCtrl)
-        {
-            SendMessageW(hCtrl, WM_PAINT, 0, 0);
-
-            hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
-        }
-
-        DWORD flags = DCX_WINDOW | DCX_CACHE | 
-                      DCX_NORESETATTRS | DCX_EXCLUDEUPDATE;
-        HDC hDC = GetDCEx(m_hwnd, NULL, flags);
-        DrawSelected(hDC);
-        ReleaseDC(hwnd, hDC);
-    }
-
-    LRESULT CALLBACK
-    WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-        HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
-        case WM_NCLBUTTONDOWN:
-        case WM_NCLBUTTONUP:
-        case WM_NCLBUTTONDBLCLK:
-        case WM_NCMBUTTONDOWN:
-        case WM_NCMBUTTONUP:
-        case WM_NCMBUTTONDBLCLK:
-        case WM_NCRBUTTONDOWN:
-        case WM_NCRBUTTONUP:
-        case WM_NCRBUTTONDBLCLK:
-        case WM_NCXBUTTONDOWN:
-        case WM_NCXBUTTONUP:
-        case WM_NCXBUTTONDBLCLK:
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
-        case WM_LBUTTONDBLCLK:
-        case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP:
-        case WM_MBUTTONDBLCLK:
-        case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
-        case WM_RBUTTONDBLCLK:
-        case WM_XBUTTONDOWN:
-        case WM_XBUTTONUP:
-        case WM_XBUTTONDBLCLK:
-        case WM_MOUSEMOVE:
-        case WM_MOUSEWHEEL:
-            SendMouseMesssageToParent(hwnd, uMsg, wParam, lParam);
-            break;
-        case WM_SYSKEYDOWN:
-        case WM_SYSKEYUP:
-        case WM_KEYDOWN:
-        case WM_KEYUP:
-            SendKeyMesssageToParent(hwnd, uMsg, wParam, lParam);
-            break;
-        case WM_NCHITTEST:
-            return HTCLIENT;
-        case WM_NCDESTROY:
-            m_hwnd = NULL;
-            return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
-        default:
-            return CallWindowProc(m_OldWndProc, hwnd, uMsg, wParam, lParam);
-        }
-        return 0;
-    }
-
-    static LRESULT CALLBACK 
-    WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        RadHelper *pRad;
-        LPARAM nData = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        pRad = (RadHelper *)nData;
-
-        if (pRad)
-        {
-            return pRad->WndProc(hwnd, uMsg, wParam, lParam);
-        }
-
-        return 0;
-    }
-
-    INT_PTR CALLBACK
-    DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-        }
-        return 0;
-    }
-
-    static INT_PTR CALLBACK 
-    DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        RadHelper *pRad;
-        if (uMsg == WM_INITDIALOG)
-        {
-            SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-            pRad = (RadHelper *)lParam;
-        }
-        else
-        {
-            LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-            pRad = (RadHelper *)lParam;
-        }
-
-        if (pRad)
-        {
-            return pRad->DlgProc(hwnd, uMsg, wParam, lParam);
-        }
-
-        return 0;
-    }
-
-    void Create()
-    {
-        m_dialog_res.Fixup(FALSE);
-        std::vector<BYTE> data = m_dialog_res.data();
-        m_dialog_res.Fixup(TRUE);
-
-        g_hRadDialog = CreateDialogIndirectParam(
-            g_hInstance, (LPDLGTEMPLATE)&data[0], m_hwndOwner, 
-            RadHelper::DialogProc, (LPARAM)this);
-        if (g_hRadDialog == NULL)
-        {
-            DWORD err = GetLastError();
-        }
-
-        ShowWindow(g_hRadDialog, SW_SHOWNORMAL);
-        UpdateWindow(g_hRadDialog);
-    }
-};
-
-BOOL RadBase_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
-{
-    RadHelper& rad = *(RadHelper *)lpCreateStruct->lpCreateParams;
-    rad.m_hwndOwner = hwnd;
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)&rad);
-
-    rad.Create();
-
-    RECT Rect;
-    GetWindowRect(rad.m_hwnd, &Rect);
-    SIZE Size;
-    Size.cx = Rect.right - Rect.left;
-    Size.cy = Rect.bottom - Rect.top;
-
-    DWORD style = GetWindowLong(hwnd, GWL_STYLE);
-    DWORD exstyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-    SetRect(&Rect, 0, 0, Size.cx, Size.cy);
-    AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
-    OffsetRect(&Rect, -Rect.left, -Rect.top);
-
-    rad.m_Moving = TRUE;
-    MoveWindow(hwnd, 0, 0, Rect.right, Rect.bottom, TRUE);
-    rad.m_Moving = FALSE;
-
-    return TRUE;
-}
-
-void RadBase_Update(HWND hwnd)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    if (lParam == 0)
-    {
-        return;
-    }
-
-    RadHelper& rad = *(RadHelper *)lParam;
-
-    lParam = TV_GetParam(g_hTreeView);
-    WORD i = LOWORD(lParam);
-    ResEntry& Entry = g_Entries[i];
-
-    Entry.data = rad.m_dialog_res.data();
-
-    MainWnd_PreviewDialog(hwnd, Entry);
-}
-
-void RadBase_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    // FIXME
-}
-
-void RadBase_OnNCDestroy(HWND hwnd)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    delete (RadHelper *)lParam;
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
-
-    if (g_bInEdit)
-    {
-        Edit_SetReadOnly(g_hSrcEdit, FALSE);
-    }
-}
-
-void RadBase_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
-{
-    MessageBoxA(NULL, "NN", NULL, 0);
-}
-
-void RadBase_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    RadHelper& rad = *(RadHelper *)lParam;
-
-    POINT pt;
-    pt.x = x;
-    pt.y = y;
-    MapWindowPoints(hwnd, NULL, &pt, 1);
-
-    HWND hCtrl = GetTopWindow(rad.m_hwnd);
-    while (hCtrl)
-    {
-        RECT rc;
-        GetWindowRect(hCtrl, &rc);
-        if (PtInRect(&rc, pt))
-            break;
-
-        hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
-    }
-
-    if (hCtrl)
-    {
-        MessageBoxA(NULL, "OK", NULL, 0);
-    }
-
-    rad.m_hwndSelected = hCtrl;
-    InvalidateRect(rad.m_hwnd, NULL, TRUE);
-}
-
-void RadBase_OnSize(HWND hwnd, UINT state, int cx, int cy)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    if (g_hRadDialog == NULL || lParam == 0)
-    {
-        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
-        return;
-    }
-
-    RadHelper& rad = *(RadHelper *)lParam;
-    if (rad.m_hwnd == NULL || rad.m_Moving)
-    {
-        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
-        return;
-    }
-
-    rad.m_dialog_res.Update();
-
-    INT xDialogBaseUnit, yDialogBaseUnit;
-    xDialogBaseUnit = rad.m_dialog_res.GetBaseUnits(yDialogBaseUnit);
-    if (xDialogBaseUnit == 0)
-    {
-        FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
-        return;
-    }
-
-    RECT Rect1;
-    GetClientRect(hwnd, &Rect1);
-
-    INT cxPixels = Rect1.right - Rect1.left;
-    INT cyPixels = Rect1.bottom - Rect1.top;
-    MoveWindow(rad.m_hwnd, 0, 0, cxPixels, cyPixels, TRUE);
-
-    RECT Rect2;
-    GetClientRect(rad.m_hwnd, &Rect2);
-
-    INT cxDialog = MulDiv((Rect2.right - Rect2.left), 4, xDialogBaseUnit);
-    INT cyDialog = MulDiv((Rect2.bottom - Rect2.top), 8, yDialogBaseUnit);
-
-    rad.m_dialog_res.m_siz.cx = cxDialog;
-    rad.m_dialog_res.m_siz.cy = cyDialog;
-
-    cxPixels = MulDiv(cxDialog, xDialogBaseUnit, 4);
-    cyPixels = MulDiv(cyDialog, yDialogBaseUnit, 8);
-    SetRect(&Rect2, 0, 0, cxPixels, cyPixels);
-
-    DWORD style = GetWindowStyle(rad.m_hwnd);
-    DWORD exstyle = GetWindowExStyle(rad.m_hwnd);
-    AdjustWindowRectEx(&Rect2, style, FALSE, exstyle);
-    OffsetRect(&Rect2, -Rect2.left, -Rect2.top);
-    cxPixels = Rect2.right;
-    cyPixels = Rect2.bottom;
-
-    MoveWindow(rad.m_hwnd, 0, 0, cxPixels, cyPixels, TRUE);
-
-    RadBase_Update(hwnd);
-}
-
-void RadBase_OnPaint(HWND hwnd)
-{
-    FORWARD_WM_PAINT(hwnd, DefWindowProcW);
-}
-
-LRESULT CALLBACK
-RadBaseWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_CREATE, RadBase_OnCreate);
-        HANDLE_MSG(hwnd, WM_COMMAND, RadBase_OnCommand);
-        HANDLE_MSG(hwnd, WM_LBUTTONDOWN, RadBase_OnLButtonDown);
-        HANDLE_MSG(hwnd, WM_RBUTTONDOWN, RadBase_OnRButtonDown);
-        HANDLE_MSG(hwnd, WM_SIZE, RadBase_OnSize);
-        HANDLE_MSG(hwnd, WM_PAINT, RadBase_OnPaint);
-        HANDLE_MSG(hwnd, WM_NCDESTROY, RadBase_OnNCDestroy);
-        default:
-            return DefWindowProcW(hwnd, uMsg, wParam, lParam);
-    }
-    return 0;
-}
-
-void MainWnd_OnGuiEdit(HWND hwnd)
-{
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    if (!MainWnd_IsEditableEntry(hwnd, lParam))
-        return;
-
-    WORD i = LOWORD(lParam);
-    ResEntry& Entry = g_Entries[i];
-    if (!Res_CanGuiEdit(Entry.type))
-    {
-        return;
-    }
-
-    if (!MainWnd_CompileIfNecessary(hwnd))
-    {
-        return;
-    }
-
-    const ResEntry::DataType& data = Entry.data;
-    ByteStream stream(data);
-    if (Entry.type == RT_ACCELERATOR)
-    {
-        EditAccelDlg dialog;
-        if (dialog.m_accel_res.LoadFromStream(stream))
-        {
-            INT nID = dialog.DialogBoxDx(hwnd, IDD_EDITACCEL);
-            if (nID == IDOK)
-            {
-                dialog.m_accel_res.Update();
-                Entry.data = dialog.m_accel_res.data();
-                MainWnd_SelectTV(hwnd, lParam, FALSE);
-                return;
-            }
-        }
-    }
-    else if (Entry.type == RT_MENU)
-    {
-        MenuRes menu_res;
-        if (menu_res.LoadFromStream(stream))
-        {
-            EditMenuDlg dialog(menu_res);
-            INT nID = dialog.DialogBoxDx(hwnd, IDD_EDITMENU);
-            if (nID == IDOK)
-            {
-                menu_res.Update();
-                Entry.data = menu_res.data();
-                MainWnd_SelectTV(hwnd, lParam, FALSE);
-                return;
-            }
-        }
-    }
-    else if (Entry.type == RT_DIALOG)
-    {
-        if (IsWindow(g_hRadBase))
-        {
-            SetForegroundWindow(g_hRadBase);
-        }
-        else
-        {
-            RadHelper *rad = new RadHelper;
-            if (rad->m_dialog_res.LoadFromStream(stream))
-            {
-                if (g_bInEdit)
-                {
-                    Edit_SetReadOnly(g_hSrcEdit, TRUE);
-                }
-                g_hRadBase = CreateWindow(g_szRadBaseClass, 
-                    LoadStringDx(IDS_RADWINDOW),
-                    WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,
-                    hwnd, NULL, g_hInstance, rad);
-                ShowWindow(g_hRadBase, SW_SHOWNORMAL);
-                UpdateWindow(g_hRadBase);
-            }
-        }
-    }
-    else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
-    {
-        ResEntries found;
-        Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
-
-        StringRes str_res;
-        ResEntries::iterator it, end = found.end();
-        for (it = found.begin(); it != end; ++it)
-        {
-            ByteStream stream(it->data);
-            if (!str_res.LoadFromStream(stream, it->name.m_ID))
-                return;
-        }
-
-        StringsDlg dialog(str_res);
-        INT nID = dialog.DialogBoxDx(hwnd, IDD_STRINGS);
-        if (nID == IDOK)
-        {
-            std::wstring WideText = str_res.Dump();
-            SetWindowTextW(g_hSrcEdit, WideText.c_str());
-
-            if (DoCompileParts(hwnd, WideText))
-            {
-                TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
-                MainWnd_SelectTV(hwnd, lParam, FALSE);
-            }
-        }
-    }
-}
-
-void MainWnd_OnNew(HWND hwnd)
-{
-    if (g_bInEdit)
-        return;
-
-    DoSetFile(hwnd, NULL);
-    g_Entries.clear();
-    TV_RefreshInfo(g_hTreeView, g_Entries);
-}
-
-void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    switch (id)
-    {
-    case ID_NEW:
-        MainWnd_OnNew(hwnd);
-        break;
-    case ID_OPEN:
-        MainWnd_OnOpen(hwnd);
-        break;
-    case ID_SAVEAS:
-        MainWnd_OnSaveAs(hwnd);
-        break;
-    case ID_IMPORT:
-        MainWnd_OnImport(hwnd);
-        break;
-    case ID_EXIT:
-        DestroyWindow(hwnd);
-        break;
-    case ID_ADDICON:
-        MainWnd_OnAddIcon(hwnd);
-        break;
-    case ID_ADDCURSOR:
-        MainWnd_OnAddCursor(hwnd);
-        break;
-    case ID_ADDBITMAP:
-        MainWnd_OnAddBitmap(hwnd);
-        break;
-    case ID_ADDRES:
-        MainWnd_OnAddRes(hwnd);
-        break;
-    case ID_REPLACEICON:
-        MainWnd_OnReplaceIcon(hwnd);
-        break;
-    case ID_REPLACECURSOR:
-        break;
-    case ID_REPLACEBITMAP:
-        MainWnd_OnReplaceBitmap(hwnd);
-        break;
-    case ID_REPLACEBIN:
-        MainWnd_OnReplaceBin(hwnd);
-        break;
-    case ID_DELETERES:
-        MainWnd_OnDeleteRes(hwnd);
-        break;
-    case ID_EDIT:
-        MainWnd_OnEdit(hwnd);
-        break;
-    case ID_EXTRACTICON:
-        MainWnd_OnExtractIcon(hwnd);
-        break;
-    case ID_EXTRACTCURSOR:
-        MainWnd_OnExtractCursor(hwnd);
-        break;
-    case ID_EXTRACTBITMAP:
-        MainWnd_OnExtractBitmap(hwnd);
-        break;
-    case ID_EXTRACTBIN:
-        MainWnd_OnExtractBin(hwnd);
-        break;
-    case ID_ABOUT:
-        MainWnd_OnAbout(hwnd);
-        break;
-    case ID_TEST:
-        MainWnd_OnTest(hwnd);
-        break;
-    case ID_CANCELEDIT:
-        MainWnd_OnCancelEdit(hwnd);
-        break;
-    case ID_COMPILE:
-        MainWnd_OnCompile(hwnd);
-        break;
-    case ID_GUIEDIT:
-        MainWnd_OnGuiEdit(hwnd);
-        break;
-    }
-}
-
-void MainWnd_OnDestroy(HWND hwnd)
-{
-    DeleteObject(g_hBitmap);
-    DeleteObject(g_hNormalFont);
-    DeleteObject(g_hSmallFont);
-    ImageList_Destroy(g_hImageList);
-    DestroyIcon(g_hFileIcon);
-    DestroyIcon(g_hFolderIcon);
-    PostQuitMessage(0);
-}
-
-void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
-{
-    WCHAR File[MAX_PATH], *pch;
-
-    DragQueryFileW(hdrop, 0, File, _countof(File));
-    DragFinish(hdrop);
-
-    pch = wcsrchr(File, L'.');
-    if (pch)
-    {
-        if (lstrcmpiW(pch, L".ico") == 0)
-        {
-            AddIconDlg dialog;
-            dialog.File = File;
-            dialog.DialogBoxDx(hwnd, IDD_ADDICON);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".cur") == 0)
-        {
-            AddCursorDlg dialog;
-            dialog.File = File;
-            dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".bmp") == 0 ||
-                 lstrcmpiW(pch, L".png") == 0)
-        {
-            AddBitmapDlg dialog;
-            dialog.File = File;
-            dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".res") == 0)
-        {
-            DoLoad(hwnd, File);
-            return;
-        }
-    }
-
-    DoLoad(hwnd, File);
-}
-
-void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
-{
-    SendMessageW(g_hToolBar, TB_AUTOSIZE, 0, 0);
-
-    RECT ToolRect, ClientRect;
-
-    GetClientRect(hwnd, &ClientRect);
-    cx = ClientRect.right - ClientRect.left;
-    cy = ClientRect.bottom - ClientRect.top ;
-
-    INT x = 0, y = 0;
-    if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
-    {
-        GetWindowRect(g_hToolBar, &ToolRect);
-        y += ToolRect.bottom - ToolRect.top;
-        cy -= ToolRect.bottom - ToolRect.top;
-    }
-
-#define TV_WIDTH 250
-#define SE_WIDTH 256
-#define BE_HEIGHT 100
-
-    if (::IsWindowVisible(g_hTreeView))
-    {
-        MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
-        x += TV_WIDTH;
-        cx -= TV_WIDTH;
-    }
-
-    if (IsWindowVisible(g_hSrcEdit))
-    {
-        if (::IsWindowVisible(g_hToolBar))
-        {
-            if (::IsWindowVisible(g_hBinEdit))
-            {
-                MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-            }
-            else
-            {
-                MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
-            }
-        }
-        else if (IsWindowVisible(g_hBmpView))
-        {
-            if (::IsWindowVisible(g_hBinEdit))
-            {
-                MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
-                MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
-                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-            }
-            else
-            {
-                MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
-                MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy, TRUE);
-            }
-        }
-        else
-        {
-            if (::IsWindowVisible(g_hBinEdit))
-            {
-                MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-            }
-            else
-            {
-                MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
-            }
-        }
-    }
-    else
-    {
-        if (::IsWindowVisible(g_hBinEdit))
-        {
-            MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
-        }
-    }
-}
-
-void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
-{
-    HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-    if (hItem == NULL || g_bInEdit || IsWindow(g_hRadBase))
-    {
-        EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
-        return;
-    }
-
-    TV_ITEM Item;
-    ZeroMemory(&Item, sizeof(Item));
-    Item.mask = TVIF_PARAM;
-    Item.hItem = hItem;
-    TreeView_GetItem(g_hTreeView, &Item);
-
-    UINT i = LOWORD(Item.lParam);
-    const ResEntry& Entry = g_Entries[i];
-
-    LPARAM lParam = TV_GetParam(g_hTreeView);
-    BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
-    if (bEditable)
-    {
-        EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
-        if (Res_CanGuiEdit(Entry.type))
-        {
-            EnableMenuItem(hMenu, ID_GUIEDIT, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
-        }
-    }
-    else
-    {
-        EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
-    }
-
-    switch (HIWORD(Item.lParam))
-    {
-    case I_TYPE:
-        EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-        break;
-    case I_NAME:
-        EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-        break;
-    case I_LANG:
-        if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON)
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        }
-        if (Entry.type == RT_GROUP_ICON)
-        {
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        }
-
-        if (Entry.type == RT_BITMAP)
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        }
-
-        if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR)
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        }
-        if (Entry.type == RT_GROUP_CURSOR)
-        {
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        }
-
-        if (Entry.type == RT_DIALOG || Entry.type == RT_MENU)
-        {
-            EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-        }
-
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-        break;
-    case I_STRING: case I_MESSAGE:
-        EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-        break;
-    default:
-        EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
-        break;
-    }
-}
-
-void MainWnd_OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
-{
-    if (hwndContext != g_hTreeView)
-        return;
-
-    POINT pt = {(INT)xPos, (INT)yPos};
-    HTREEITEM hItem;
-    if (xPos == -1 && yPos == -1)
-    {
-        hItem = TreeView_GetSelection(hwndContext);
-
-        RECT rc;
-        TreeView_GetItemRect(hwndContext, hItem, &rc, FALSE);
-        pt.x = (rc.left + rc.right) / 2;
-        pt.y = (rc.top + rc.bottom) / 2;
-    }
-    else
-    {
-        ScreenToClient(hwndContext, &pt);
-
-        TV_HITTESTINFO HitTest;
-        ZeroMemory(&HitTest, sizeof(HitTest));
-        HitTest.pt = pt;
-        TreeView_HitTest(hwndContext, &HitTest);
-
-        hItem = HitTest.hItem;
-    }
-
-    TreeView_SelectItem(hwndContext, hItem);
-
-    HMENU hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(2));
-    MainWnd_OnInitMenu(hwnd, hMenu);
-    HMENU hSubMenu = GetSubMenu(hMenu, 0);
-    if (hMenu == NULL || hSubMenu == NULL)
-        return;
-
-    ClientToScreen(hwndContext, &pt);
-
-    SetForegroundWindow(hwndContext);
-    INT id;
-    UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
-    id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
-                        hwndContext, NULL);
-    PostMessageW(hwndContext, WM_NULL, 0, 0);
-    DestroyMenu(hMenu);
-
-    if (id)
-    {
-        SendMessageW(hwnd, WM_COMMAND, id, 0);
-    }
-}
-
-LRESULT CALLBACK
-WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_CREATE, MainWnd_OnCreate);
-        HANDLE_MSG(hwnd, WM_COMMAND, MainWnd_OnCommand);
-        HANDLE_MSG(hwnd, WM_DESTROY, MainWnd_OnDestroy);
-        HANDLE_MSG(hwnd, WM_DROPFILES, MainWnd_OnDropFiles);
-        HANDLE_MSG(hwnd, WM_SIZE, MainWnd_OnSize);
-        HANDLE_MSG(hwnd, WM_NOTIFY, MainWnd_OnNotify);
-        HANDLE_MSG(hwnd, WM_CONTEXTMENU, MainWnd_OnContextMenu);
-        HANDLE_MSG(hwnd, WM_INITMENU, MainWnd_OnInitMenu);
-
-    default:
-        return DefWindowProcW(hwnd, uMsg, wParam, lParam);
-    }
-}
-
 BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
 {
@@ -6688,45 +4450,1798 @@ void LoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-INT InitInstance(HINSTANCE hInstance)
+struct MainWnd : public WindowBase
 {
-    g_hInstance = hInstance;
-    InitCommonControls();
-    g_wargv = CommandLineToArgvW(GetCommandLineW(), &g_argc);
+    INT         m_argc;         // number of command line parameters
+    TCHAR **    m_targv;        // command line parameters
 
-    LoadStringW(hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
-    g_hAccel = LoadAcceleratorsW(hInstance, MAKEINTRESOURCEW(1));
+    HINSTANCE   m_hInst;        // the instance handle
+    HICON       m_hIcon;        // the icon handle
+    HACCEL      m_hAccel;       // the accelerator handle
 
-    LoadLangInfo();
-
-    INT nRet = CheckData();
-    if (nRet)
+    MainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
+        m_argc(argc),
+        m_targv(targv),
+        m_hInst(hInst),
+        m_hIcon(NULL),
+        m_hAccel(NULL)
     {
-        return nRet;    // failure
     }
 
-    WNDCLASSW wc;
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-    wc.lpfnWndProc = WindowProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(1));
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = HBRUSH(COLOR_3DFACE + 1);
-    wc.lpszMenuName = MAKEINTRESOURCEW(1);
-    wc.lpszClassName = s_pszClassName;
-    if (!RegisterClassW(&wc))
+    virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
-        MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
-        return 2;
+        WindowBase::ModifyWndClassDx(wcx);
+        wcx.lpszMenuName = MAKEINTRESOURCE(1);
     }
 
+    BOOL RegisterClassesDx();
+
+    virtual LPCTSTR GetWndClassNameDx() const
+    {
+        return s_pszClassName;
+    }
+
+    BOOL StartDx(INT nCmdShow)
+    {
+        m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
+        m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
+
+        CreateWindowDx(NULL, g_szTitle, WS_OVERLAPPEDWINDOW, 0,
+            CW_USEDEFAULT, CW_USEDEFAULT, 760, 480);
+
+        g_hMainWnd = m_hwnd;
+        if (g_hMainWnd == NULL)
+        {
+            MsgBoxDx(TEXT("failure of CreateWindow"), NULL, MB_ICONERROR);
+            return FALSE;
+        }
+
+        ShowWindow(g_hMainWnd, SW_SHOWDEFAULT);
+        UpdateWindow(g_hMainWnd);
+
+        return TRUE;
+    }
+
+    // message loop
+    INT_PTR RunDx()
+    {
+        MSG msg;
+        while (::GetMessage(&msg, NULL, 0, 0))
+        {
+            if (!::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            {
+                ::TranslateMessage(&msg);
+                ::DispatchMessage(&msg);
+            }
+        }
+        return INT(msg.wParam);
+    }
+
+    virtual LRESULT CALLBACK
+    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_CREATE, MainWnd_OnCreate);
+            HANDLE_MSG(hwnd, WM_COMMAND, MainWnd_OnCommand);
+            HANDLE_MSG(hwnd, WM_DESTROY, MainWnd_OnDestroy);
+            HANDLE_MSG(hwnd, WM_DROPFILES, MainWnd_OnDropFiles);
+            HANDLE_MSG(hwnd, WM_SIZE, MainWnd_OnSize);
+            HANDLE_MSG(hwnd, WM_NOTIFY, MainWnd_OnNotify);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, MainWnd_OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENU, MainWnd_OnInitMenu);
+        default:
+            return DefaultProcDx();
+        }
+    }
+
+    BOOL MainWnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    {
+        g_hInstance = m_hInst;
+        InitCommonControls();
+
+        LoadStringW(g_hInstance, IDS_TITLE, g_szTitle, _countof(g_szTitle));
+        g_hAccel = LoadAcceleratorsW(g_hInstance, MAKEINTRESOURCEW(1));
+
+        LoadLangInfo();
+
+        INT nRet = CheckData();
+        if (nRet)
+        {
+            return FALSE;
+        }
+
+        DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
+            TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
+            TVS_LINESATROOT | TVS_SHOWSELALWAYS;
+        g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
+            WC_TREEVIEWW, NULL, dwStyle, 0, 0, 0, 0, hwnd,
+            (HMENU)1, g_hInstance, NULL);
+        if (g_hTreeView == NULL)
+            return FALSE;
+
+        g_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
+
+        g_hFileIcon = LoadSmallIconDx(100);
+        ImageList_AddIcon(g_hImageList, g_hFileIcon);
+        g_hFolderIcon = LoadSmallIconDx(101);
+        ImageList_AddIcon(g_hImageList, g_hFolderIcon);
+
+        TreeView_SetImageList(g_hTreeView, g_hImageList, TVSIL_NORMAL);
+
+        dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
+            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+        g_hBinEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
+            L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
+            (HMENU)2, g_hInstance, NULL);
+        if (g_hBinEdit == NULL)
+            return FALSE;
+
+        g_hToolBar = ToolBar_Create(hwnd);
+        if (g_hToolBar == NULL)
+            return FALSE;
+
+        g_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
+            L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
+            (HMENU)3, g_hInstance, NULL);
+        ShowWindow(g_hSrcEdit, FALSE);
+
+        LOGFONTW lf;
+        GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+        lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
+        lf.lfFaceName[0] = UNICODE_NULL;
+
+        lf.lfHeight = 11;
+        g_hSmallFont = CreateFontIndirectW(&lf);
+        assert(g_hSmallFont);
+
+        lf.lfHeight = 13;
+        g_hNormalFont = ::CreateFontIndirectW(&lf);
+        assert(g_hNormalFont);
+
+        lf.lfHeight = 15;
+        g_hLargeFont = ::CreateFontIndirectW(&lf);
+        assert(g_hLargeFont);
+
+        SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
+        SetWindowFont(g_hBinEdit, g_hSmallFont, TRUE);
+
+        dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
+        g_hBmpView = CreateWindowExW(WS_EX_CLIENTEDGE,
+            g_szBmpViewClass, NULL, dwStyle, 0, 0, 0, 0, hwnd,
+            (HMENU)4, g_hInstance, NULL);
+        ShowWindow(g_hBmpView, FALSE);
+
+        if (m_argc >= 2)
+        {
+            DoLoad(hwnd, m_targv[1]);
+        }
+
+        g_hMenu = GetMenu(hwnd);
+
+        DragAcceptFiles(hwnd, TRUE);
+        SetFocus(g_hTreeView);
+        return TRUE;
+    }
+
+    VOID MainWnd_HidePreview(HWND hwnd)
+    {
+        if (g_hBitmap)
+        {
+            DeleteObject(g_hBitmap);
+            g_hBitmap = NULL;
+        }
+
+        SetWindowTextW(g_hBinEdit, NULL);
+        ShowWindow(g_hBinEdit, SW_HIDE);
+        Edit_SetModify(g_hBinEdit, FALSE);
+
+        SetWindowTextW(g_hSrcEdit, NULL);
+        ShowWindow(g_hSrcEdit, SW_HIDE);
+        Edit_SetModify(g_hSrcEdit, FALSE);
+
+        ShowWindow(g_hBmpView, SW_HIDE);
+        ShowWindow(g_hToolBar, SW_HIDE);
+
+        PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+        g_bInEdit = FALSE;
+    }
+
+    void MainWnd_OnDeleteRes(HWND hwnd)
+    {
+        if (g_bInEdit)
+            return;
+
+        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        if (hItem == NULL)
+            return;
+
+        TV_Delete(g_hTreeView, hItem, g_Entries);
+        MainWnd_HidePreview(hwnd);
+    }
+
+    void MainWnd_OnExtractBin(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) == I_NONE)
+            return;
+
+        UINT i = LOWORD(lParam);
+
+        WCHAR szFile[MAX_PATH] = L"";
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        if (HIWORD(lParam) == I_LANG)
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
+        else
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTRES);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+        ofn.lpstrDefExt = L"res";
+        if (GetSaveFileNameW(&ofn))
+        {
+            if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+            {
+                ResEntries selection;
+                INT count = TV_GetSelection(g_hTreeView, selection, g_Entries);
+                if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
+                {
+                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
+                                g_szTitle, MB_ICONERROR);
+                }
+            }
+            else
+            {
+                if (!DoExtractBin(ofn.lpstrFile, g_Entries[i]))
+                {
+                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE),
+                                g_szTitle, MB_ICONERROR);
+                }
+            }
+        }
+    }
+
+    void MainWnd_OnExtractIcon(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+
+        WCHAR szFile[MAX_PATH] = L"";
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTICO);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+        ofn.lpstrDefExt = L"ico";
+        if (GetSaveFileNameW(&ofn))
+        {
+            if (!DoExtractIcon(ofn.lpstrFile, g_Entries[i]))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTICO),
+                            g_szTitle, MB_ICONERROR);
+            }
+        }
+    }
+
+    void MainWnd_OnExtractCursor(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+
+        WCHAR szFile[MAX_PATH] = L"";
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTCUR);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+        ofn.lpstrDefExt = L"cur";
+        if (GetSaveFileNameW(&ofn))
+        {
+            if (!DoExtractCursor(ofn.lpstrFile, g_Entries[i]))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTCUR),
+                            g_szTitle, MB_ICONERROR);
+            }
+        }
+    }
+
+    void MainWnd_OnExtractBitmap(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+
+        WCHAR szFile[MAX_PATH] = L"";
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTBMP);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+        ofn.lpstrDefExt = L"bmp";
+        if (GetSaveFileNameW(&ofn))
+        {
+            BOOL PNG;
+            PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
+            if (!DoExtractBitmap(ofn.lpstrFile, g_Entries[i], PNG))
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANTEXTRACTBMP),
+                            g_szTitle, MB_ICONERROR);
+            }
+        }
+    }
+
+    void MainWnd_OnReplaceBin(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ReplaceBinDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd, IDD_REPLACERES);
+    }
+
+    void MainWnd_OnSaveAs(HWND hwnd)
+    {
+        if (g_bInEdit)
+            return;
+
+        WCHAR File[MAX_PATH];
+
+        lstrcpynW(File, g_szFile, _countof(File));
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        DWORD dwBinType;
+        if (g_szFile[0] == UNICODE_NULL || !GetBinaryType(g_szFile, &dwBinType))
+        {
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+            ofn.lpstrDefExt = L"res";
+        }
+        else
+        {
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+            ofn.lpstrDefExt = L"exe";
+        }
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_SAVEAS);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+        if (GetSaveFileNameW(&ofn))
+        {
+            if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+            {
+                if (!DoSaveResAs(hwnd, File))
+                {
+                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
+                }
+            }
+            else
+            {
+                if (!DoSaveAs(hwnd, File))
+                {
+                    MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTSAVE), NULL, MB_ICONERROR);
+                }
+            }
+        }
+    }
+
+
+    void MainWnd_OnTest(HWND hwnd)
+    {
+        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        if (hItem == NULL)
+            return;
+
+        TV_ITEM Item;
+        ZeroMemory(&Item, sizeof(Item));
+        Item.mask = TVIF_PARAM;
+        Item.hItem = hItem;
+        TreeView_GetItem(g_hTreeView, &Item);
+
+        if (HIWORD(Item.lParam) != 3)
+            return;
+
+        UINT i = LOWORD(Item.lParam);
+        const ResEntry& Entry = g_Entries[i];
+        if (Entry.type == RT_DIALOG)
+        {
+            TestDialog dialog;
+            dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
+        }
+        else if (Entry.type == RT_MENU)
+        {
+            HMENU hMenu = LoadMenuIndirect(&Entry[0]);
+            if (hMenu)
+            {
+                TestMenuDlg dialog;
+                dialog.m_hMenu = hMenu;
+                dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
+                DestroyMenu(hMenu);
+            }
+        }
+    }
+
+    void MainWnd_OnAddIcon(HWND hwnd)
+    {
+        AddIconDlg dialog;
+        dialog.DialogBoxDx(hwnd, IDD_ADDICON);
+    }
+
+    void MainWnd_OnReplaceIcon(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ReplaceIconDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd, IDD_REPLACEICON);
+    }
+
+    void MainWnd_OnReplaceCursor(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ReplaceCursorDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd, IDD_REPLACECUR);
+    }
+
+    void MainWnd_OnOpen(HWND hwnd)
+    {
+        if (g_bInEdit)
+            return;
+
+        WCHAR File[MAX_PATH];
+        lstrcpynW(File, g_szFile, _countof(File));
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_OPEN);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"exe";
+        if (GetOpenFileNameW(&ofn))
+        {
+            DoLoad(hwnd, File);
+        }
+    }
+
+    void MainWnd_OnAddBitmap(HWND hwnd)
+    {
+        AddBitmapDlg dialog;
+        dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
+    }
+
+    void MainWnd_OnReplaceBitmap(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_NAME)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ReplaceBitmapDlg dialog(g_Entries[i]);
+        dialog.DialogBoxDx(hwnd, IDD_REPLACEBMP);
+    }
+
+    void MainWnd_OnAddCursor(HWND hwnd)
+    {
+        AddCursorDlg dialog;
+        dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
+    }
+
+    void MainWnd_OnAddRes(HWND hwnd)
+    {
+        AddResDlg dialog;
+        dialog.DialogBoxDx(hwnd, IDD_ADDRES);
+    }
+
+    void MainWnd_OnAbout(HWND hwnd)
+    {
+        MSGBOXPARAMSW Params;
+        ZeroMemory(&Params, sizeof(Params));
+        Params.cbSize = sizeof(Params);
+        Params.hwndOwner = hwnd;
+        Params.hInstance = g_hInstance;
+        Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
+        Params.lpszCaption = g_szTitle;
+        Params.dwStyle = MB_OK | MB_USERICON;
+        Params.lpszIcon = MAKEINTRESOURCEW(1);
+        Params.dwLanguageId = LANG_USER_DEFAULT;
+        MessageBoxIndirectW(&Params);
+    }
+
+    void MainWnd_OnImport(HWND hwnd)
+    {
+        if (g_bInEdit)
+            return;
+
+        WCHAR File[MAX_PATH] = TEXT("");
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx2(IDS_IMPORTRES);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"res";
+        if (GetOpenFileNameW(&ofn))
+        {
+            ResEntries entries;
+            if (DoImport(hwnd, File, entries))
+            {
+                BOOL Overwrite = TRUE;
+                if (Res_Intersect(g_Entries, entries))
+                {
+                    INT nID = MessageBoxW(hwnd, LoadStringDx(IDS_EXISTSOVERWRITE),
+                                          g_szTitle,
+                                          MB_ICONINFORMATION | MB_YESNOCANCEL);
+                    switch (nID)
+                    {
+                    case IDYES:
+                        break;
+                    case IDNO:
+                        Overwrite = FALSE;
+                        break;
+                    case IDCANCEL:
+                        return;
+                    }
+                }
+
+                size_t i, count = entries.size();
+                for (i = 0; i < count; ++i)
+                {
+                    Res_AddEntry(g_Entries, entries[i], Overwrite);
+                }
+
+                TV_RefreshInfo(g_hTreeView, g_Entries);
+            }
+            else
+            {
+                MessageBoxW(hwnd, LoadStringDx(IDS_CANNOTIMPORT), NULL,
+                            MB_ICONERROR);
+            }
+        }
+    }
+
+    void MainWnd_OnEdit(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (!MainWnd_IsEditableEntry(hwnd, lParam))
+            return;
+
+        MainWnd_SelectTV(hwnd, lParam, TRUE);
+    }
+
+    LRESULT MainWnd_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+    {
+        if (pnmhdr->code == NM_DBLCLK)
+        {
+            MainWnd_OnEdit(hwnd);
+        }
+        else if (pnmhdr->code == TVN_SELCHANGED)
+        {
+            NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
+            LPARAM lParam = pTV->itemNew.lParam;
+            MainWnd_SelectTV(hwnd, lParam, FALSE);
+        }
+        else if (pnmhdr->code == TVN_KEYDOWN)
+        {
+            TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
+            switch (pTVKD->wVKey)
+            {
+            case VK_RETURN:
+                MainWnd_OnEdit(hwnd);
+                break;
+            case VK_DELETE:
+                PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
+                break;
+            }
+        }
+        return 0;
+    }
+
+    void MainWnd_OnCancelEdit(HWND hwnd)
+    {
+        if (!g_bInEdit)
+            return;
+
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        MainWnd_SelectTV(hwnd, lParam, FALSE);
+    }
+
+    void MainWnd_OnCompile(HWND hwnd)
+    {
+        if (!Edit_GetModify(g_hSrcEdit))
+        {
+            LPARAM lParam = TV_GetParam(g_hTreeView);
+            MainWnd_SelectTV(hwnd, lParam, FALSE);
+            return;
+        }
+
+        INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+        std::wstring WideText;
+        WideText.resize(cchText);
+        GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+        if (DoCompileParts(hwnd, WideText))
+        {
+            TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+            LPARAM lParam = TV_GetParam(g_hTreeView);
+            MainWnd_SelectTV(hwnd, lParam, FALSE);
+        }
+    }
+
+    void MainWnd_OnGuiEdit(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (!MainWnd_IsEditableEntry(hwnd, lParam))
+            return;
+
+        WORD i = LOWORD(lParam);
+        ResEntry& Entry = g_Entries[i];
+        if (!Res_CanGuiEdit(Entry.type))
+        {
+            return;
+        }
+
+        if (!MainWnd_CompileIfNecessary(hwnd))
+        {
+            return;
+        }
+
+        const ResEntry::DataType& data = Entry.data;
+        ByteStream stream(data);
+        if (Entry.type == RT_ACCELERATOR)
+        {
+            EditAccelDlg dialog;
+            if (dialog.m_accel_res.LoadFromStream(stream))
+            {
+                INT nID = dialog.DialogBoxDx(hwnd, IDD_EDITACCEL);
+                if (nID == IDOK)
+                {
+                    dialog.m_accel_res.Update();
+                    Entry.data = dialog.m_accel_res.data();
+                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                    return;
+                }
+            }
+        }
+        else if (Entry.type == RT_MENU)
+        {
+            MenuRes menu_res;
+            if (menu_res.LoadFromStream(stream))
+            {
+                EditMenuDlg dialog(menu_res);
+                INT nID = dialog.DialogBoxDx(hwnd, IDD_EDITMENU);
+                if (nID == IDOK)
+                {
+                    menu_res.Update();
+                    Entry.data = menu_res.data();
+                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                    return;
+                }
+            }
+        }
+        else if (Entry.type == RT_DIALOG)
+        {
+            // FIXME
+        }
+        else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
+        {
+            ResEntries found;
+            Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
+
+            StringRes str_res;
+            ResEntries::iterator it, end = found.end();
+            for (it = found.begin(); it != end; ++it)
+            {
+                ByteStream stream(it->data);
+                if (!str_res.LoadFromStream(stream, it->name.m_ID))
+                    return;
+            }
+
+            StringsDlg dialog(str_res);
+            INT nID = dialog.DialogBoxDx(hwnd, IDD_STRINGS);
+            if (nID == IDOK)
+            {
+                std::wstring WideText = str_res.Dump();
+                SetWindowTextW(g_hSrcEdit, WideText.c_str());
+
+                if (DoCompileParts(hwnd, WideText))
+                {
+                    TV_RefreshInfo(g_hTreeView, g_Entries, FALSE);
+                    MainWnd_SelectTV(hwnd, lParam, FALSE);
+                }
+            }
+        }
+    }
+
+    void MainWnd_OnNew(HWND hwnd)
+    {
+        if (g_bInEdit)
+            return;
+
+        DoSetFile(hwnd, NULL);
+        g_Entries.clear();
+        TV_RefreshInfo(g_hTreeView, g_Entries);
+    }
+
+    void MainWnd_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case ID_NEW:
+            MainWnd_OnNew(hwnd);
+            break;
+        case ID_OPEN:
+            MainWnd_OnOpen(hwnd);
+            break;
+        case ID_SAVEAS:
+            MainWnd_OnSaveAs(hwnd);
+            break;
+        case ID_IMPORT:
+            MainWnd_OnImport(hwnd);
+            break;
+        case ID_EXIT:
+            DestroyWindow(hwnd);
+            break;
+        case ID_ADDICON:
+            MainWnd_OnAddIcon(hwnd);
+            break;
+        case ID_ADDCURSOR:
+            MainWnd_OnAddCursor(hwnd);
+            break;
+        case ID_ADDBITMAP:
+            MainWnd_OnAddBitmap(hwnd);
+            break;
+        case ID_ADDRES:
+            MainWnd_OnAddRes(hwnd);
+            break;
+        case ID_REPLACEICON:
+            MainWnd_OnReplaceIcon(hwnd);
+            break;
+        case ID_REPLACECURSOR:
+            break;
+        case ID_REPLACEBITMAP:
+            MainWnd_OnReplaceBitmap(hwnd);
+            break;
+        case ID_REPLACEBIN:
+            MainWnd_OnReplaceBin(hwnd);
+            break;
+        case ID_DELETERES:
+            MainWnd_OnDeleteRes(hwnd);
+            break;
+        case ID_EDIT:
+            MainWnd_OnEdit(hwnd);
+            break;
+        case ID_EXTRACTICON:
+            MainWnd_OnExtractIcon(hwnd);
+            break;
+        case ID_EXTRACTCURSOR:
+            MainWnd_OnExtractCursor(hwnd);
+            break;
+        case ID_EXTRACTBITMAP:
+            MainWnd_OnExtractBitmap(hwnd);
+            break;
+        case ID_EXTRACTBIN:
+            MainWnd_OnExtractBin(hwnd);
+            break;
+        case ID_ABOUT:
+            MainWnd_OnAbout(hwnd);
+            break;
+        case ID_TEST:
+            MainWnd_OnTest(hwnd);
+            break;
+        case ID_CANCELEDIT:
+            MainWnd_OnCancelEdit(hwnd);
+            break;
+        case ID_COMPILE:
+            MainWnd_OnCompile(hwnd);
+            break;
+        case ID_GUIEDIT:
+            MainWnd_OnGuiEdit(hwnd);
+            break;
+        }
+    }
+
+    void MainWnd_OnDestroy(HWND hwnd)
+    {
+        DeleteObject(g_hBitmap);
+        DeleteObject(g_hNormalFont);
+        DeleteObject(g_hSmallFont);
+        ImageList_Destroy(g_hImageList);
+        DestroyIcon(g_hFileIcon);
+        DestroyIcon(g_hFolderIcon);
+        PostQuitMessage(0);
+    }
+
+    void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
+    {
+        WCHAR File[MAX_PATH], *pch;
+
+        DragQueryFileW(hdrop, 0, File, _countof(File));
+        DragFinish(hdrop);
+
+        pch = wcsrchr(File, L'.');
+        if (pch)
+        {
+            if (lstrcmpiW(pch, L".ico") == 0)
+            {
+                AddIconDlg dialog;
+                dialog.File = File;
+                dialog.DialogBoxDx(hwnd, IDD_ADDICON);
+                return;
+            }
+            else if (lstrcmpiW(pch, L".cur") == 0)
+            {
+                AddCursorDlg dialog;
+                dialog.File = File;
+                dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
+                return;
+            }
+            else if (lstrcmpiW(pch, L".bmp") == 0 ||
+                     lstrcmpiW(pch, L".png") == 0)
+            {
+                AddBitmapDlg dialog;
+                dialog.File = File;
+                dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
+                return;
+            }
+            else if (lstrcmpiW(pch, L".res") == 0)
+            {
+                DoLoad(hwnd, File);
+                return;
+            }
+        }
+
+        DoLoad(hwnd, File);
+    }
+
+    void MainWnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        SendMessageW(g_hToolBar, TB_AUTOSIZE, 0, 0);
+
+        RECT ToolRect, ClientRect;
+
+        GetClientRect(hwnd, &ClientRect);
+        cx = ClientRect.right - ClientRect.left;
+        cy = ClientRect.bottom - ClientRect.top ;
+
+        INT x = 0, y = 0;
+        if (g_bInEdit && ::IsWindowVisible(g_hToolBar))
+        {
+            GetWindowRect(g_hToolBar, &ToolRect);
+            y += ToolRect.bottom - ToolRect.top;
+            cy -= ToolRect.bottom - ToolRect.top;
+        }
+
+    #define TV_WIDTH 250
+    #define SE_WIDTH 256
+    #define BE_HEIGHT 100
+
+        if (::IsWindowVisible(g_hTreeView))
+        {
+            MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
+            x += TV_WIDTH;
+            cx -= TV_WIDTH;
+        }
+
+        if (IsWindowVisible(g_hSrcEdit))
+        {
+            if (::IsWindowVisible(g_hToolBar))
+            {
+                if (::IsWindowVisible(g_hBinEdit))
+                {
+                    MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                }
+                else
+                {
+                    MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+                }
+            }
+            else if (IsWindowVisible(g_hBmpView))
+            {
+                if (::IsWindowVisible(g_hBinEdit))
+                {
+                    MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                }
+                else
+                {
+                    MoveWindow(g_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
+                    MoveWindow(g_hBmpView, x + SE_WIDTH, y, cx - SE_WIDTH, cy, TRUE);
+                }
+            }
+            else
+            {
+                if (::IsWindowVisible(g_hBinEdit))
+                {
+                    MoveWindow(g_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
+                    MoveWindow(g_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
+                }
+                else
+                {
+                    MoveWindow(g_hSrcEdit, x, y, cx, cy, TRUE);
+                }
+            }
+        }
+        else
+        {
+            if (::IsWindowVisible(g_hBinEdit))
+            {
+                MoveWindow(g_hBinEdit, x, y, cx, cy, TRUE);
+            }
+        }
+    }
+
+    void MainWnd_OnInitMenu(HWND hwnd, HMENU hMenu)
+    {
+        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        if (hItem == NULL || g_bInEdit)
+        {
+            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+            return;
+        }
+
+        TV_ITEM Item;
+        ZeroMemory(&Item, sizeof(Item));
+        Item.mask = TVIF_PARAM;
+        Item.hItem = hItem;
+        TreeView_GetItem(g_hTreeView, &Item);
+
+        UINT i = LOWORD(Item.lParam);
+        const ResEntry& Entry = g_Entries[i];
+
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        BOOL bEditable = MainWnd_IsEditableEntry(hwnd, lParam);
+        if (bEditable)
+        {
+            EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
+            if (Res_CanGuiEdit(Entry.type))
+            {
+                EnableMenuItem(hMenu, ID_GUIEDIT, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+            }
+        }
+        else
+        {
+            EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+        }
+
+        switch (HIWORD(Item.lParam))
+        {
+        case I_TYPE:
+            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            break;
+        case I_NAME:
+            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            break;
+        case I_LANG:
+            if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON)
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTICON, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            }
+            if (Entry.type == RT_GROUP_ICON)
+            {
+                EnableMenuItem(hMenu, ID_REPLACEICON, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            }
+
+            if (Entry.type == RT_BITMAP)
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+                EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            }
+
+            if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR)
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            }
+            if (Entry.type == RT_GROUP_CURSOR)
+            {
+                EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            }
+
+            if (Entry.type == RT_DIALOG || Entry.type == RT_MENU)
+            {
+                EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            }
+
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
+            break;
+        case I_STRING: case I_MESSAGE:
+            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            break;
+        default:
+            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
+            break;
+        }
+    }
+
+    void MainWnd_OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext != g_hTreeView)
+            return;
+
+        POINT pt = {(INT)xPos, (INT)yPos};
+        HTREEITEM hItem;
+        if (xPos == -1 && yPos == -1)
+        {
+            hItem = TreeView_GetSelection(hwndContext);
+
+            RECT rc;
+            TreeView_GetItemRect(hwndContext, hItem, &rc, FALSE);
+            pt.x = (rc.left + rc.right) / 2;
+            pt.y = (rc.top + rc.bottom) / 2;
+        }
+        else
+        {
+            ScreenToClient(hwndContext, &pt);
+
+            TV_HITTESTINFO HitTest;
+            ZeroMemory(&HitTest, sizeof(HitTest));
+            HitTest.pt = pt;
+            TreeView_HitTest(hwndContext, &HitTest);
+
+            hItem = HitTest.hItem;
+        }
+
+        TreeView_SelectItem(hwndContext, hItem);
+
+        HMENU hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(2));
+        MainWnd_OnInitMenu(hwnd, hMenu);
+        HMENU hSubMenu = GetSubMenu(hMenu, 0);
+        if (hMenu == NULL || hSubMenu == NULL)
+            return;
+
+        ClientToScreen(hwndContext, &pt);
+
+        SetForegroundWindow(hwndContext);
+        INT id;
+        UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
+        id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
+                            hwndContext, NULL);
+        PostMessageW(hwndContext, WM_NULL, 0, 0);
+        DestroyMenu(hMenu);
+
+        if (id)
+        {
+            SendMessageW(hwnd, WM_COMMAND, id, 0);
+        }
+    }
+
+    void MainWnd_PreviewIcon(HWND hwnd, const ResEntry& Entry)
+    {
+        BITMAP bm;
+        g_hBitmap = CreateBitmapFromIconOrPng(hwnd, Entry, bm);
+
+        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+    void MainWnd_PreviewCursor(HWND hwnd, const ResEntry& Entry)
+    {
+        BITMAP bm;
+        HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+        g_hBitmap = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+        std::wstring str = DumpCursorInfo(bm);
+        DestroyCursor(hCursor);
+
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+    void MainWnd_PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
+    {
+        g_hBitmap = CreateBitmapFromIconsDx(hwnd, Entry);
+
+        std::wstring str = DumpGroupIconInfo(Entry.data);
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+    void MainWnd_PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
+    {
+        g_hBitmap = CreateBitmapFromCursorsDx(hwnd, Entry);
+        assert(g_hBitmap);
+
+        std::wstring str = DumpGroupCursorInfo(Entry.data);
+        assert(str.size());
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+    void MainWnd_PreviewBitmap(HWND hwnd, const ResEntry& Entry)
+    {
+        g_hBitmap = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+
+        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+    void MainWnd_PreviewPNG(HWND hwnd, const ResEntry& Entry)
+    {
+        HBITMAP hbm = ii_png_load_mem(&Entry[0], Entry.size());
+        if (hbm)
+        {
+            BITMAP bm;
+            GetObject(hbm, sizeof(bm), &bm);
+            g_hBitmap = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
+            if (g_hBitmap)
+            {
+                ii_fill(g_hBitmap, GetStockBrush(LTGRAY_BRUSH));
+                ii_draw(g_hBitmap, hbm, 0, 0);
+            }
+            DeleteObject(hbm);
+        }
+
+        std::wstring str = DumpBitmapInfo(g_hBitmap);
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+
+        SendMessageW(g_hBmpView, WM_COMMAND, 999, 0);
+        ShowWindow(g_hBmpView, SW_SHOWNOACTIVATE);
+    }
+
+
+    void MainWnd_PreviewAccel(HWND hwnd, const ResEntry& Entry)
+    {
+        ByteStream stream(Entry.data);
+        AccelRes accel;
+        if (accel.LoadFromStream(stream))
+        {
+            std::wstring str = accel.Dump(Entry.name);
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewMessage(HWND hwnd, const ResEntry& Entry)
+    {
+        ByteStream stream(Entry.data);
+        MessageRes mes;
+        if (mes.LoadFromStream(stream))
+        {
+            std::wstring str = mes.Dump();
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewString(HWND hwnd, const ResEntry& Entry)
+    {
+        ByteStream stream(Entry.data);
+        StringRes str_res;
+        WORD nTableID = Entry.name.m_ID;
+        if (str_res.LoadFromStream(stream, nTableID))
+        {
+            std::wstring str = str_res.Dump(nTableID);
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewHtml(HWND hwnd, const ResEntry& Entry)
+    {
+        std::wstring str = BinaryToText(Entry.data);
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+    }
+
+    void MainWnd_PreviewMenu(HWND hwnd, const ResEntry& Entry)
+    {
+        ByteStream stream(Entry.data);
+        MenuRes menu_res;
+        if (menu_res.LoadFromStream(stream))
+        {
+            std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewVersion(HWND hwnd, const ResEntry& Entry)
+    {
+        VersionRes ver_res;
+        if (ver_res.LoadFromData(Entry.data))
+        {
+            std::wstring str = ver_res.Dump(Entry.name);
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewDialog(HWND hwnd, const ResEntry& Entry)
+    {
+        ByteStream stream(Entry.data);
+        DialogRes dialog_res;
+        if (dialog_res.LoadFromStream(stream))
+        {
+            std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
+            SetWindowTextW(g_hSrcEdit, str.c_str());
+            ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        }
+    }
+
+    void MainWnd_PreviewStringTable(HWND hwnd, const ResEntry& Entry)
+    {
+        ResEntries found;
+        Res_Search(found, g_Entries, RT_STRING, (WORD)0, Entry.lang);
+
+        StringRes str_res;
+        ResEntries::iterator it, end = found.end();
+        for (it = found.begin(); it != end; ++it)
+        {
+            ByteStream stream(it->data);
+            if (!str_res.LoadFromStream(stream, it->name.m_ID))
+                return;
+        }
+
+        std::wstring str = str_res.Dump();
+        SetWindowTextW(g_hSrcEdit, str.c_str());
+        ShowWindow(g_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+    }
+
+    void MainWnd_PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
+    {
+    }
+
+    void MainWnd_Preview(HWND hwnd, const ResEntry& Entry)
+    {
+        MainWnd_HidePreview(hwnd);
+
+        std::wstring str = DumpDataAsString(Entry.data);
+        SetWindowTextW(g_hBinEdit, str.c_str());
+        if (str.empty())
+            ShowWindow(g_hBinEdit, SW_HIDE);
+        else
+            ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+
+        if (Entry.type == RT_ICON)
+        {
+            MainWnd_PreviewIcon(hwnd, Entry);
+        }
+        else if (Entry.type == RT_CURSOR)
+        {
+            MainWnd_PreviewCursor(hwnd, Entry);
+        }
+        else if (Entry.type == RT_GROUP_ICON)
+        {
+            MainWnd_PreviewGroupIcon(hwnd, Entry);
+        }
+        else if (Entry.type == RT_GROUP_CURSOR)
+        {
+            MainWnd_PreviewGroupCursor(hwnd, Entry);
+        }
+        else if (Entry.type == RT_BITMAP)
+        {
+            MainWnd_PreviewBitmap(hwnd, Entry);
+        }
+        else if (Entry.type == RT_ACCELERATOR)
+        {
+            MainWnd_PreviewAccel(hwnd, Entry);
+        }
+        else if (Entry.type == RT_STRING)
+        {
+            MainWnd_PreviewString(hwnd, Entry);
+        }
+        else if (Entry.type == RT_MENU)
+        {
+            MainWnd_PreviewMenu(hwnd, Entry);
+        }
+        else if (Entry.type == RT_DIALOG)
+        {
+            MainWnd_PreviewDialog(hwnd, Entry);
+        }
+        else if (Entry.type == RT_MESSAGETABLE)
+        {
+            MainWnd_PreviewMessage(hwnd, Entry);
+        }
+    #ifndef RT_MANIFEST
+        #define RT_MANIFEST 24
+    #endif
+        else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
+        {
+            MainWnd_PreviewHtml(hwnd, Entry);
+        }
+        else if (Entry.type == RT_VERSION)
+        {
+            MainWnd_PreviewVersion(hwnd, Entry);
+        }
+        else if (Entry.type == L"PNG")
+        {
+            MainWnd_PreviewPNG(hwnd, Entry);
+        }
+
+        PostMessageW(hwnd, WM_SIZE, 0, 0);
+    }
+
+    void MainWnd_SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
+    {
+        MainWnd_HidePreview(hwnd);
+
+        WORD i = LOWORD(lParam);
+        ResEntry& Entry = g_Entries[i];
+
+        if (HIWORD(lParam) == I_LANG)
+        {
+            MainWnd_Preview(hwnd, Entry);
+        }
+        else if (HIWORD(lParam) == I_STRING)
+        {
+            SetWindowTextW(g_hBinEdit, NULL);
+            ShowWindow(g_hBinEdit, SW_HIDE);
+            MainWnd_PreviewStringTable(hwnd, Entry);
+        }
+        else if (HIWORD(lParam) == I_MESSAGE)
+        {
+            SetWindowTextW(g_hBinEdit, NULL);
+            ShowWindow(g_hBinEdit, SW_HIDE);
+            MainWnd_PreviewMessageTable(hwnd, Entry);
+        }
+
+        if (DoubleClick)
+        {
+            SetWindowFont(g_hSrcEdit, g_hLargeFont, TRUE);
+            Edit_SetReadOnly(g_hSrcEdit, FALSE);
+            SetFocus(g_hSrcEdit);
+
+            if (Res_CanGuiEdit(Entry.type))
+            {
+                if (Res_IsTestable(Entry.type))
+                {
+                    ToolBar_Update(g_hToolBar, 2);
+                }
+                else
+                {
+                    ToolBar_Update(g_hToolBar, 1);
+                }
+            }
+            else
+            {
+                ToolBar_Update(g_hToolBar, 0);
+            }
+            ShowWindow(g_hToolBar, SW_SHOWNOACTIVATE);
+
+            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(g_hTreeView, SW_HIDE);
+            ShowWindow(g_hBinEdit, SW_HIDE);
+            SetMenu(hwnd, NULL);
+
+            g_bInEdit = TRUE;
+        }
+        else
+        {
+            SetWindowFont(g_hSrcEdit, g_hNormalFont, TRUE);
+            Edit_SetReadOnly(g_hSrcEdit, TRUE);
+            SetFocus(g_hTreeView);
+
+            ShowWindow(g_hToolBar, SW_HIDE);
+            ShowWindow(g_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
+            SetMenu(hwnd, g_hMenu);
+
+            g_bInEdit = FALSE;
+        }
+
+        PostMessageW(hwnd, WM_SIZE, 0, 0);
+    }
+
+    BOOL MainWnd_IsEditableEntry(HWND hwnd, LPARAM lParam)
+    {
+        const WORD i = LOWORD(lParam);
+        const ResEntry& Entry = g_Entries[i];
+        const ID_OR_STRING& type = Entry.type;
+        switch (HIWORD(lParam))
+        {
+        case I_LANG:
+            if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
+                type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION)
+            {
+                ;
+            }
+            else
+            {
+                return FALSE;
+            }
+            break;
+        case I_STRING: case I_MESSAGE:
+            break;
+        default:
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+
+        if (HIWORD(lParam) == I_LANG)
+        {
+            WORD i = LOWORD(lParam);
+            ResEntry& entry = g_Entries[i];
+
+            if (entries.size() != 1 ||
+                entries[0].name != entry.name ||
+                entries[0].lang != entry.lang)
+            {
+                msg += WideToAnsi(LoadStringDx(IDS_RESMISMATCH));
+                return FALSE;
+            }
+            entry = entries[0];
+            return TRUE;
+        }
+        else if (HIWORD(lParam) == I_STRING)
+        {
+            WORD i = LOWORD(lParam);
+            ResEntry& entry = g_Entries[i];
+
+            Res_DeleteNames(g_Entries, RT_STRING, entry.lang);
+
+            for (size_t m = 0; m < entries.size(); ++m)
+            {
+                if (!Res_AddEntry(g_Entries, entries[m], TRUE))
+                {
+                    msg += WideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
+                    return FALSE;
+                }
+            }
+
+            return TRUE;
+        }
+        else if (HIWORD(lParam) == I_MESSAGE)
+        {
+            // FIXME
+            return TRUE;
+        }
+        else
+        {
+            // FIXME
+            return TRUE;
+        }
+    }
+
+    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        WORD i = LOWORD(lParam);
+        ResEntry& entry = g_Entries[i];
+
+        std::string TextUtf8 = WideToUtf8(WideText);
+        if (HIWORD(lParam) == I_LANG)
+        {
+            if (Res_IsPlainText(entry.type))
+            {
+                if (WideText.find(L"\"UTF-8\"") != std::wstring::npos)
+                {
+                    entry.data.assign(TextUtf8.begin(), TextUtf8.end());
+
+                    static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
+                    entry.data.insert(entry.data.begin(), &bom[0], &bom[3]);
+                }
+                else
+                {
+                    std::string TextAnsi = WideToAnsi(WideText);
+                    entry.data.assign(TextAnsi.begin(), TextAnsi.end());
+                }
+                MainWnd_SelectTV(hwnd, lParam, FALSE);
+
+                return TRUE;    // success
+            }
+        }
+
+        WCHAR szTempPath[MAX_PATH];
+        ::GetTempPathW(_countof(szTempPath), szTempPath);
+
+        WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+
+        lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+        ReplaceBackslash(szPath1);
+        MFile r1(szPath1, TRUE);
+
+        lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+        ReplaceBackslash(szPath2);
+        MFile r2(szPath2, TRUE);
+
+        lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+        ReplaceBackslash(szPath3);
+        MFile r3(szPath3, TRUE);
+        r3.CloseHandle();
+
+        r1.WriteFormatA("#include <windows.h>\r\n");
+        r1.WriteFormatA("#include <commctrl.h>\r\n");
+        r1.WriteFormatA("#include <prsht.h>\r\n");
+        r1.WriteFormatA("#include <dlgs.h>\r\n");
+        r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+                        PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
+        r1.WriteFormatA("#pragma code_page(65001)\r\n");
+        r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+        r1.CloseHandle();
+
+        DWORD cbWritten;
+        r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
+        r2.CloseHandle();
+
+        WCHAR CmdLine[512];
+    #if 1
+        wsprintfW(CmdLine,
+            L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
+            L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
+            g_szWindresExe, szPath3, g_szCppExe, szPath1);
+    #else
+        wsprintfW(CmdLine,
+            L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
+            L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
+            g_szWindresExe, szPath3, g_szCppExe, szPath1);
+    #endif
+
+        // MessageBoxW(hwnd, CmdLine, NULL, 0);
+
+        std::vector<BYTE> output;
+        std::string msg = WideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
+        output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
+
+        BOOL Success = FALSE;
+        ByteStream stream;
+
+        MProcessMaker pmaker;
+        pmaker.SetShowWindow(SW_HIDE);
+        MFile hInputWrite, hOutputRead;
+        if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+            pmaker.CreateProcess(NULL, CmdLine))
+        {
+            DWORD cbAvail;
+            while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+            {
+                if (cbAvail == 0)
+                {
+                    if (!pmaker.IsRunning())
+                        break;
+
+                    pmaker.WaitForSingleObject(500);
+                    continue;
+                }
+
+                CHAR szBuf[256];
+                DWORD cbRead;
+                if (cbAvail > sizeof(szBuf))
+                    cbAvail = sizeof(szBuf);
+                else  if (cbAvail == 0)
+                    continue;
+
+                if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+                {
+                    if (cbRead == 0)
+                        continue;
+
+                    stream.WriteData(szBuf, cbRead);
+                }
+            }
+
+            output = stream.data();
+
+            if (pmaker.GetExitCode() == 0)
+            {
+                ResEntries entries;
+                if (DoImport(hwnd, szPath3, entries))
+                {
+                    std::string msg;
+                    Success = DoWindresResult(hwnd, entries, msg);
+                    if (msg.size())
+                    {
+                        output.insert(output.end(), msg.begin(), msg.end());
+                    }
+                }
+            }
+        }
+
+        ::DeleteFileW(szPath1);
+        ::DeleteFileW(szPath2);
+        ::DeleteFileW(szPath3);
+
+        if (!Success)
+        {
+            if (output.empty())
+            {
+                SetWindowTextW(g_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+                ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+            }
+            else
+            {
+                output.insert(output.end(), 0);
+                SetWindowTextA(g_hBinEdit, (char *)&output[0]);
+                ShowWindow(g_hBinEdit, SW_SHOWNOACTIVATE);
+            }
+        }
+
+        PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+        return Success;
+    }
+
+    BOOL MainWnd_CompileIfNecessary(HWND hwnd)
+    {
+        if (Edit_GetModify(g_hSrcEdit))
+        {
+            INT id = MessageBox(hwnd, LoadStringDx(IDS_COMPILENOW), g_szTitle,
+                                MB_ICONINFORMATION | MB_YESNOCANCEL);
+            switch (id)
+            {
+            case IDYES:
+                {
+                    INT cchText = GetWindowTextLengthW(g_hSrcEdit);
+                    std::wstring WideText;
+                    WideText.resize(cchText);
+                    GetWindowTextW(g_hSrcEdit, &WideText[0], cchText + 1);
+
+                    if (!DoCompileParts(hwnd, WideText))
+                        return FALSE;
+
+                    Edit_SetModify(g_hSrcEdit, FALSE);
+                }
+                break;
+            case IDNO:
+                break;
+            case IDCANCEL:
+                return FALSE;
+            }
+        }
+        return TRUE;
+    }
+
+};
+
+BOOL MainWnd::RegisterClassesDx()
+{
+    WNDCLASS wc;
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wc.lpfnWndProc = BmpViewWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
+    wc.hInstance = g_hInstance;
     wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     wc.hCursor = LoadCursor(NULL, IDC_CROSS);
     wc.hbrBackground = GetStockBrush(LTGRAY_BRUSH);
@@ -6735,26 +6250,10 @@ INT InitInstance(HINSTANCE hInstance)
     if (!RegisterClassW(&wc))
     {
         MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
-        return 3;
+        return FALSE;
     }
 
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-    wc.lpfnWndProc = RadBaseWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = GetStockBrush(GRAY_BRUSH);
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = g_szRadBaseClass;
-    if (!RegisterClassW(&wc))
-    {
-        MessageBoxA(NULL, "RegisterClass failed", NULL, MB_ICONERROR);
-        return 4;
-    }
-
-    return 0;   // success
+    return TRUE;
 }
 
 INT WINAPI
@@ -6763,14 +6262,52 @@ WinMain(HINSTANCE   hInstance,
         LPSTR       lpCmdLine,
         INT         nCmdShow)
 {
-    INT nRet = InitInstance(hInstance);
-    if (nRet)
-    {
-        return nRet;    // failure
-    }
+    int ret;
+
+    INT argc = 0;
+    LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
+    {
+        MainWnd app(__argc, __targv, hInstance);
+
+        if (app.RegisterClassesDx())
+        {
+            if (app.StartDx(nCmdShow))
+            {
+                ret = INT(app.RunDx());
+            }
+            else
+            {
+                ret = 2;
+            }
+        }
+        else
+        {
+            ret = 1;
+        }
+    }
+
+    CoUninitialize();
+
+#if (WINVER >= 0x0500)
+    HANDLE hProcess = GetCurrentProcess();
+    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"),
+                 GetGuiResources(hProcess, GR_GDIOBJECTS));
+    DebugPrintDx(TEXT("Count of USER objects: %ld\n"),
+                 GetGuiResources(hProcess, GR_USEROBJECTS));
+#endif
+
+#if defined(_MSC_VER) && !defined(NDEBUG)
+    // for detecting memory leak (MSVC only)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+    return ret;
+}
+
+/*
     g_hMainWnd = CreateWindowW(s_pszClassName, g_szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 760, 480,
         NULL, NULL, hInstance, NULL);
@@ -6788,14 +6325,8 @@ WinMain(HINSTANCE   hInstance,
     {
         if (TranslateAccelerator(g_hMainWnd, g_hAccel, &msg))
             continue;
-        if (IsDialogMessage(g_hRadDialog, &msg))
-            continue;
 
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
-
-    CoUninitialize();
-
-    return INT(msg.wParam);
-}
+*/
