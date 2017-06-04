@@ -1,18 +1,18 @@
-// TestMenuDlg
+// MTestMenuDlg
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_TESTMENUDLG_HPP_
-#define MZC4_TESTMENUDLG_HPP_
+#ifndef MZC4_MTESTMENUDLG_HPP_
+#define MZC4_MTESTMENUDLG_HPP_
 
-#include "WindowBase.hpp"
+#include "MWindowBase.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct TestMenuDlg : DialogBase
+struct MTestMenuDlg : MDialogBase
 {
     HMENU m_hMenu;
 
-    TestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)
+    MTestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)
     {
     }
 
@@ -46,6 +46,6 @@ struct TestMenuDlg : DialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_TESTMENUDLG_HPP_
+#endif  // ndef MZC4_MTESTMENUDLG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

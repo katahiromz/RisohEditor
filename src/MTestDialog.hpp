@@ -1,14 +1,14 @@
-// TestDialog
+// MTestDialog
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_TESTDIALOG_HPP_
-#define MZC4_TESTDIALOG_HPP_
+#ifndef MZC4_MTESTDIALOG_HPP_
+#define MZC4_MTESTDIALOG_HPP_
 
-#include "WindowBase.hpp"
+#include "MWindowBase.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct TestDialog : DialogBase
+struct MTestDialog : MDialogBase
 {
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -41,6 +41,6 @@ struct TestDialog : DialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_TESTDIALOG_HPP_
+#endif  // ndef MZC4_MTESTDIALOG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

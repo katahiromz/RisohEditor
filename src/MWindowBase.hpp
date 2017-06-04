@@ -1,12 +1,10 @@
-// WindowBase.hpp --- MZC4 window base
+// MWindowBase.hpp --- MZC4 window base
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_WINDOW_BASE_HPP_
-#define MZC4_WINDOW_BASE_HPP_    20   /* Version 20 */
+#ifndef MZC4_MWINDOWBASE_HPP_
+#define MZC4_MWINDOWBASE_HPP_    21   /* Version 21 */
 
-#if _MSC_VER > 1000
-    #pragma once
-#endif
+#pragma once
 
 //////////////////////////////////////////////////////////////////////////////
 // headers
@@ -31,9 +29,11 @@
 #include <dlgs.h>           // dialog control IDs
 
 // standard C/C++ library
-#include <string>   // std::string and std::wstring
-#include <cassert>  // assert
-#include <cstring>  // C string library
+#include <string>           // std::string and std::wstring
+#include <cassert>          // assert
+#include <cstring>          // C string library
+
+#include "resource.h"       // resource IDs
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -61,8 +61,8 @@
     #endif
 #endif
 
-struct WindowBase;
-struct DialogBase;
+struct MWindowBase;
+struct MDialogBase;
 
 //////////////////////////////////////////////////////////////////////////////
 // public functions
@@ -90,17 +90,17 @@ LPCTSTR MZCAPI GetStringDx2(LPCTSTR psz);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct WindowBase
+struct MWindowBase
 {
     HWND m_hwnd;
     WNDPROC m_fnOldProc;
     MSG m_msg;
 
-    WindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
+    MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
     {
     }
 
-    virtual ~WindowBase()
+    virtual ~MWindowBase()
     {
     }
 
@@ -117,16 +117,16 @@ struct WindowBase
         return m_hwnd == NULL;
     }
 
-    static WindowBase *GetUserData(HWND hwnd)
+    static MWindowBase *GetUserData(HWND hwnd)
     {
-        return (WindowBase *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        return (MWindowBase *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     }
     static void SetUserData(HWND hwnd, void *ptr)
     {
         SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)ptr);
     }
 
-    WindowBase *GetUserData() const
+    MWindowBase *GetUserData() const
     {
         return GetUserData(m_hwnd);
     }
@@ -173,12 +173,12 @@ struct WindowBase
     static LRESULT CALLBACK
     WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        WindowBase *base;
+        MWindowBase *base;
         if (uMsg == WM_CREATE)
         {
             LPCREATESTRUCT pcs = (LPCREATESTRUCT)lParam;
             assert(pcs->lpCreateParams);
-            base = (WindowBase *)pcs->lpCreateParams;
+            base = (MWindowBase *)pcs->lpCreateParams;
             base->m_hwnd = hwnd;
         }
         else
@@ -207,7 +207,7 @@ struct WindowBase
 
     virtual LPCTSTR GetWndClassNameDx() const
     {
-        return TEXT("katahiromz's WindowBase Class");
+        return TEXT("katahiromz's MWindowBase Class");
     }
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
@@ -226,7 +226,7 @@ struct WindowBase
 
         wcx.cbSize = sizeof(wcx);
         wcx.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-        wcx.lpfnWndProc = WindowBase::WindowProc;
+        wcx.lpfnWndProc = MWindowBase::WindowProc;
         wcx.hInstance = hMod;
         wcx.hIcon = ::LoadIcon(NULL, IDI_APPLICATION);
         wcx.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -263,7 +263,7 @@ struct WindowBase
     {
         m_hwnd = hwnd;
         SetUserData(hwnd, this);
-        m_fnOldProc = SubclassWindow(hwnd, WindowBase::WindowProc);
+        m_fnOldProc = SubclassWindow(hwnd, MWindowBase::WindowProc);
     }
 
     void UnsubclassDx(HWND hwnd)
@@ -294,11 +294,11 @@ struct WindowBase
             Title = GetStringDx(pszTitle);
         }
 
-        WindowBase::_doHookCenterMsgBoxDx(TRUE);
+        MWindowBase::_doHookCenterMsgBoxDx(TRUE);
         INT nID = ::MessageBox(m_hwnd, GetStringDx(pszString),
                                Title.c_str(), uType);
         DWORD err = GetLastError();
-        WindowBase::_doHookCenterMsgBoxDx(FALSE);
+        MWindowBase::_doHookCenterMsgBoxDx(FALSE);
 
         return nID;
     }
@@ -516,7 +516,7 @@ private:
 #endif  // ndef MZC_NO_CENTER_MSGBOX
     }
 
-#ifdef MZC_FAT_AND_RICH
+#ifdef MZC4_FAT_AND_RICH
 public:
     #include "WindowBaseRichMethods.hpp"
 #endif
@@ -524,11 +524,11 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct DialogBase : public WindowBase
+struct MDialogBase : public MWindowBase
 {
     BOOL m_bModal;
 
-    DialogBase() : m_bModal(FALSE)
+    MDialogBase() : m_bModal(FALSE)
     {
     }
 
@@ -552,11 +552,11 @@ struct DialogBase : public WindowBase
     static INT_PTR CALLBACK
     DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        DialogBase *base;
+        MDialogBase *base;
         if (uMsg == WM_INITDIALOG)
         {
             assert(lParam);
-            base = (DialogBase *)lParam;
+            base = (MDialogBase *)lParam;
             base->m_hwnd = hwnd;
             if (base->m_bModal)
             {
@@ -582,9 +582,9 @@ struct DialogBase : public WindowBase
         return ret;
     }
 
-    static DialogBase *GetUserData(HWND hwnd)
+    static MDialogBase *GetUserData(HWND hwnd)
     {
-        return (DialogBase *)GetWindowLongPtr(hwnd, DWLP_USER);
+        return (MDialogBase *)GetWindowLongPtr(hwnd, DWLP_USER);
     }
     static void SetUserData(HWND hwnd, void *ptr)
     {
@@ -595,7 +595,7 @@ struct DialogBase : public WindowBase
     {
         m_bModal = FALSE;
         m_hwnd = ::CreateDialogParam(::GetModuleHandle(NULL),
-            MAKEINTRESOURCE(nDialogID), hwndParent, DialogBase::DialogProc,
+            MAKEINTRESOURCE(nDialogID), hwndParent, MDialogBase::DialogProc,
             (LPARAM)this);
         if (m_hwnd)
         {
@@ -609,7 +609,7 @@ struct DialogBase : public WindowBase
         m_bModal = TRUE;
         INT_PTR nID = ::DialogBoxParam(::GetModuleHandle(NULL),
             MAKEINTRESOURCE(nDialogID), hwndParent,
-            DialogBase::DialogProc, (LPARAM)this);
+            MDialogBase::DialogProc, (LPARAM)this);
         return nID;
     }
 
@@ -619,7 +619,7 @@ struct DialogBase : public WindowBase
         m_hwnd = ::CreateDialogIndirectParam(
             ::GetModuleHandle(NULL),
             (const DLGTEMPLATE *)ptr,
-            hwndParent, DialogBase::DialogProc, (LPARAM)this);
+            hwndParent, MDialogBase::DialogProc, (LPARAM)this);
         if (m_hwnd)
         {
             SetUserData(m_hwnd, this);
@@ -632,7 +632,7 @@ struct DialogBase : public WindowBase
         m_bModal = TRUE;
         INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL),
             (const DLGTEMPLATE *)ptr, hwndParent,
-            DialogBase::DialogProc, (LPARAM)this);
+            MDialogBase::DialogProc, (LPARAM)this);
         return nID;
     }
 
@@ -641,7 +641,7 @@ struct DialogBase : public WindowBase
         return TEXT("#32770");
     }
 
-#ifdef MZC_FAT_AND_RICH
+#ifdef MZC4_FAT_AND_RICH
 public:
     #include "DialogBaseRichMethods.hpp"
 #endif
@@ -772,19 +772,20 @@ inline LPCTSTR MZCAPI GetStringDx2(INT nStringID)
 
 //////////////////////////////////////////////////////////////////////////////
 
-#ifdef MZC_FAT_AND_RICH
-    #include "Button.hpp"
-    #include "ComboBox.hpp"
-    #include "Edit.hpp"
-    #include "ListBox.hpp"
-    #include "ScrollBar.hpp"
-    #include "Static.hpp"
-    #include "CommCtrl.hpp"
-    #include "CommDlg.hpp"
+#ifdef MZC4_FAT_AND_RICH
+    #include "MPointSizeRect.hpp"
+    #include "MButton.hpp"
+    #include "MComboBox.hpp"
+    #include "MEdit.hpp"
+    #include "MListBox.hpp"
+    #include "MScrollBar.hpp"
+    #include "MStatic.hpp"
+    #include "MCommCtrl.hpp"
+    #include "MCommDlg.hpp"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_WINDOW_BASE_HPP_
+#endif  // ndef MZC4_MWINDOWBASE_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

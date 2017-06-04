@@ -25,14 +25,8 @@
 #include <cassert>      // for assert macro
 #include <cstdio>
 
-#ifndef _countof
-    #define _countof(x)     (sizeof(x) / sizeof(x[0]))
-#endif
+#include "MWindowBase.hpp"
 
-#include "resource.h"
-#include "WindowBase.hpp"
-
-LPWSTR LoadStringDx(UINT id);
 std::wstring str_vkey(WORD w);
 
 #include "id_string.hpp"
@@ -57,8 +51,8 @@ std::wstring str_vkey(WORD w);
 #include "File.hpp"
 #include "ProcessMaker.hpp"
 
-#include "TestMenuDlg.hpp"
-#include "TestDialog.hpp"
+#include "MTestMenuDlg.hpp"
+#include "MTestDialog.hpp"
 
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "ole32.lib")

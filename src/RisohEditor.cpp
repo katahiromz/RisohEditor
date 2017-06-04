@@ -938,7 +938,7 @@ BOOL DoReplaceBitmap(HWND hwnd,
 //////////////////////////////////////////////////////////////////////////////
 // ReplaceBinDlg
 
-struct ReplaceBinDlg : DialogBase
+struct ReplaceBinDlg : MDialogBase
 {
     ResEntry& m_Entry;
 
@@ -1086,7 +1086,7 @@ struct ReplaceBinDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // AddIconDlg
 
-struct AddIconDlg : DialogBase
+struct AddIconDlg : MDialogBase
 {
     LPCWSTR File;
     HICON   m_hIcon;
@@ -1247,7 +1247,7 @@ struct AddIconDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ReplaceIconDlg
 
-struct ReplaceIconDlg : DialogBase
+struct ReplaceIconDlg : MDialogBase
 {
     ResEntry& m_Entry;
     HICON   m_hIcon;
@@ -1387,7 +1387,7 @@ struct ReplaceIconDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ReplaceCursorDlg
 
-struct ReplaceCursorDlg : DialogBase
+struct ReplaceCursorDlg : MDialogBase
 {
     ResEntry& m_Entry;
     HCURSOR   m_hCursor;
@@ -1528,7 +1528,7 @@ struct ReplaceCursorDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // AddBitmapDlg
 
-struct AddBitmapDlg : DialogBase
+struct AddBitmapDlg : MDialogBase
 {
     LPCWSTR File;
     AddBitmapDlg() : File(NULL)
@@ -1669,7 +1669,7 @@ struct AddBitmapDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ReplaceBitmapDlg
 
-struct ReplaceBitmapDlg : DialogBase
+struct ReplaceBitmapDlg : MDialogBase
 {
     ResEntry& m_Entry;
 
@@ -1793,7 +1793,7 @@ struct ReplaceBitmapDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // AddCursorDlg
 
-struct AddCursorDlg : DialogBase
+struct AddCursorDlg : MDialogBase
 {
     LPCWSTR File;
     HCURSOR   m_hCursor;
@@ -1955,7 +1955,7 @@ struct AddCursorDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // AddResDlg
 
-struct AddResDlg : DialogBase
+struct AddResDlg : MDialogBase
 {
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
@@ -2475,7 +2475,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 //////////////////////////////////////////////////////////////////////////////
 // AddKeyDlg
 
-struct AddKeyDlg : DialogBase
+struct AddKeyDlg : MDialogBase
 {
     ACCEL_ENTRY m_entry;
 
@@ -2551,7 +2551,7 @@ struct AddKeyDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ModifyKeyDlg
 
-struct ModifyKeyDlg : DialogBase
+struct ModifyKeyDlg : MDialogBase
 {
     ACCEL_ENTRY m_entry;
 
@@ -2664,7 +2664,7 @@ struct ModifyKeyDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // EditAccelDlg
 
-struct EditAccelDlg : DialogBase
+struct EditAccelDlg : MDialogBase
 {
     AccelRes m_accel_res;
 
@@ -3030,7 +3030,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 //////////////////////////////////////////////////////////////////////////////
 // AddStrDlg
 
-struct AddStrDlg : DialogBase
+struct AddStrDlg : MDialogBase
 {
     STRING_ENTRY& m_entry;
 
@@ -3072,7 +3072,7 @@ struct AddStrDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ModifyStrDlg
 
-struct ModifyStrDlg : DialogBase
+struct ModifyStrDlg : MDialogBase
 {
     STRING_ENTRY& m_entry;
     ModifyStrDlg(STRING_ENTRY& entry) : m_entry(entry)
@@ -3114,7 +3114,7 @@ struct ModifyStrDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // StringsDlg
 
-struct StringsDlg : DialogBase
+struct StringsDlg : MDialogBase
 {
     StringRes& m_str_res;
 
@@ -3369,7 +3369,7 @@ struct MENU_ENTRY
 //////////////////////////////////////////////////////////////////////////////
 // AddMItemDlg
 
-struct AddMItemDlg : DialogBase
+struct AddMItemDlg : MDialogBase
 {
     MENU_ENTRY& m_entry;
 
@@ -3473,7 +3473,7 @@ struct AddMItemDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // ModifyMItemDlg
 
-struct ModifyMItemDlg : DialogBase
+struct ModifyMItemDlg : MDialogBase
 {
     MENU_ENTRY& m_entry;
 
@@ -3615,7 +3615,7 @@ struct ModifyMItemDlg : DialogBase
 //////////////////////////////////////////////////////////////////////////////
 // EditMenuDlg
 
-struct EditMenuDlg : DialogBase
+struct EditMenuDlg : MDialogBase
 {
     MenuRes& m_menu_res;
 
@@ -4156,7 +4156,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
 //////////////////////////////////////////////////////////////////////////////
 // BmpView
 
-struct BmpView : WindowBase
+struct BmpView : MWindowBase
 {
     BITMAP      m_bm;
 
@@ -4376,7 +4376,7 @@ Res_GetLangName(WORD Lang)
 //////////////////////////////////////////////////////////////////////////////
 // MainWnd
 
-struct MainWnd : WindowBase
+struct MainWnd : MWindowBase
 {
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
@@ -4427,7 +4427,7 @@ struct MainWnd : WindowBase
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
-        WindowBase::ModifyWndClassDx(wcx);
+        MWindowBase::ModifyWndClassDx(wcx);
         wcx.lpszMenuName = MAKEINTRESOURCE(1);
         wcx.hIcon = m_hIcon;
         wcx.hIconSm = m_hIcon;
@@ -4823,7 +4823,7 @@ struct MainWnd : WindowBase
         const ResEntry& Entry = g_Entries[i];
         if (Entry.type == RT_DIALOG)
         {
-            TestDialog dialog;
+            MTestDialog dialog;
             dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
         }
         else if (Entry.type == RT_MENU)
@@ -4831,7 +4831,7 @@ struct MainWnd : WindowBase
             HMENU hMenu = LoadMenuIndirect(&Entry[0]);
             if (hMenu)
             {
-                TestMenuDlg dialog(hMenu);
+                MTestMenuDlg dialog(hMenu);
                 dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
                 DestroyMenu(hMenu);
             }

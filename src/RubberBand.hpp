@@ -4,17 +4,17 @@
 #ifndef RUBBER_BAND_HPP_
 #define RUBBER_BAND_HPP_    2   /* Version 2 */
 
-#include "WindowBase.hpp"
+#include "MWindowBase.hpp"
 
 struct RubberBandTarget;
 struct RubberBand;
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct RubberBand : WindowBase
+struct RubberBand : MWindowBase
 {
     HRGN m_hRgn;
-    WindowBase  m_target;
+    MWindowBase  m_target;
     enum { m_nGripSize = 3 };
 
     RubberBand() : m_hRgn(NULL)
@@ -363,7 +363,7 @@ struct RubberBand : WindowBase
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
-        WindowBase::ModifyWndClassDx(wcx);
+        MWindowBase::ModifyWndClassDx(wcx);
         wcx.hIcon = NULL;
         wcx.hbrBackground = GetStockBrush(NULL_BRUSH);
         wcx.hIconSm = NULL;
