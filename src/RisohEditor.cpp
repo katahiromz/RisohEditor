@@ -4490,7 +4490,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"ico";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractIcon(ofn.lpstrFile, m_Entries, m_Entries[i]))
+            if (!DoExtractIcon(ofn.lpstrFile, m_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTICO);
             }
@@ -4519,7 +4519,7 @@ struct MainWnd : MWindowBase
         ofn.lpstrDefExt = L"cur";
         if (GetSaveFileNameW(&ofn))
         {
-            if (!DoExtractCursor(ofn.lpstrFile, m_Entries, m_Entries[i]))
+            if (!DoExtractCursor(ofn.lpstrFile, m_Entries[i]))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTCUR);
             }
@@ -4550,7 +4550,7 @@ struct MainWnd : MWindowBase
         {
             BOOL PNG;
             PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-            if (!DoExtractBitmap(ofn.lpstrFile, m_Entries, m_Entries[i], PNG))
+            if (!DoExtractBitmap(ofn.lpstrFile, m_Entries[i], PNG))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTBMP);
             }
@@ -4600,21 +4600,20 @@ struct MainWnd : MWindowBase
         {
             if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
             {
-                if (!DoSaveResAs(hwnd, m_Entries, File))
+                if (!DoSaveResAs(hwnd, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             else
             {
-                if (!DoSaveAs(hwnd, m_Entries, File))
+                if (!DoSaveAs(hwnd, File))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
         }
     }
-
 
     void OnTest(HWND hwnd)
     {
@@ -6181,18 +6180,18 @@ struct MainWnd : MWindowBase
         return bs.SaveToFile(FileName);
     }
 
-    BOOL DoSaveResAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
     {
-        if (DoExtractRes(hwnd, ExeFile, Entries))
+        if (DoExtractRes(hwnd, ExeFile, m_Entries))
         {
-            Res_Optimize(Entries);
+            Res_Optimize(m_Entries);
             DoSetFile(hwnd, ExeFile);
             return TRUE;
         }
         return FALSE;
     }
 
-    BOOL DoSaveAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
     {
         if (g_bInEdit)
             return TRUE;
@@ -6202,23 +6201,23 @@ struct MainWnd : MWindowBase
         if ((pch && lstrcmpiW(pch, L".res") == 0) ||
             !GetBinaryType(g_szFile, &dwBinType))
         {
-            return DoSaveResAs(hwnd, m_Entries, ExeFile);
+            return DoSaveResAs(hwnd, ExeFile);
         }
 
-        return DoSaveExeAs(hwnd, Entries, ExeFile);
+        return DoSaveExeAs(hwnd, ExeFile);
     }
 
-    BOOL DoSaveExeAs(HWND hwnd, ResEntries& Entries, LPCWSTR ExeFile)
+    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     {
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
         BOOL b1 = ::CopyFileW(g_szFile, TempFile, FALSE);
-        BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, Entries);
+        BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_Entries);
         BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
         if (b3)
         {
             DeleteFileW(TempFile);
-            Res_Optimize(Entries);
+            Res_Optimize(m_Entries);
             DoSetFile(hwnd, ExeFile);
 
             return TRUE;
@@ -6228,27 +6227,27 @@ struct MainWnd : MWindowBase
         return FALSE;
     }
 
-    BOOL DoExtractIcon(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
+    BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry)
     {
         if (Entry.type == RT_GROUP_ICON)
-            return Res_ExtractGroupIcon(Entries, Entry, FileName);
+            return Res_ExtractGroupIcon(m_Entries, Entry, FileName);
         else if (Entry.type == RT_ICON)
-            return Res_ExtractIcon(Entries, Entry, FileName);
+            return Res_ExtractIcon(m_Entries, Entry, FileName);
         else
             return FALSE;
     }
 
-    BOOL DoExtractCursor(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry)
+    BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry)
     {
         if (Entry.type == RT_GROUP_CURSOR)
-            return Res_ExtractGroupCursor(Entries, Entry, FileName);
+            return Res_ExtractGroupCursor(m_Entries, Entry, FileName);
         else if (Entry.type == RT_CURSOR)
-            return Res_ExtractCursor(Entries, Entry, FileName);
+            return Res_ExtractCursor(m_Entries, Entry, FileName);
         else
             return FALSE;
     }
 
-    BOOL DoExtractBitmap(LPCWSTR FileName, ResEntries& Entries, const ResEntry& Entry, BOOL WritePNG)
+    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG)
     {
         BITMAPFILEHEADER FileHeader;
 
