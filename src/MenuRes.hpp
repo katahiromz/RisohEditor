@@ -1,3 +1,6 @@
+// MenuRes.hpp  --- Menu Resources
+//////////////////////////////////////////////////////////////////////////////
+
 #ifndef MENU_RES_HPP_
 #define MENU_RES_HPP_
 
@@ -7,6 +10,8 @@
 
 #include "id_string.hpp"
 #include "ConstantsDB.hpp"
+
+//////////////////////////////////////////////////////////////////////////////
 
 // header of RT_MENU
 typedef struct MENUHEADER
@@ -66,6 +71,17 @@ typedef struct MENUEX_TEMPLATE_ITEM_HEADER
     //DWORD dwHelpId;       // only if popup
 } MENUEX_TEMPLATE_ITEM_HEADER;
 #include <poppack.h>
+
+struct MENU_ENTRY
+{
+    WCHAR Caption[128];
+    WCHAR Flags[64];
+    WCHAR CommandID[64];
+    WCHAR HelpID[64];
+    WORD wDepth;
+};
+
+//////////////////////////////////////////////////////////////////////////////
 
 class MenuRes
 {
@@ -784,4 +800,8 @@ inline void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const std::wstrin
         dwType |= MFT_RIGHTJUSTIFY;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 #endif  // ndef MENU_RES_HPP_
+
+//////////////////////////////////////////////////////////////////////////////

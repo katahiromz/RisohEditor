@@ -114,18 +114,6 @@ struct STRING_ENTRY
 void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 
-//////////////////////////////////////////////////////////////////////////////
-// MENU_ENTRY
-
-struct MENU_ENTRY
-{
-    WCHAR Caption[128];
-    WCHAR Flags[64];
-    WCHAR CommandID[64];
-    WCHAR HelpID[64];
-    WORD wDepth;
-};
-
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MReplaceBinDlg.hpp"
