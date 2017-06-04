@@ -109,6 +109,7 @@ BOOL DoReplaceBitmap(HWND hwnd,
 #include "MAddIconDlg.hpp"
 #include "MReplaceIconDlg.hpp"
 #include "MReplaceCursorDlg.hpp"
+#include "MAddBitmapDlg.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"
