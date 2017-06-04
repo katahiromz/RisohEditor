@@ -456,6 +456,18 @@ struct WindowBase
         return GetAncestorDx(m_hwnd);
     }
 
+	HICON LoadIconDx(INT id)
+	{
+		return LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(id));
+	}
+
+    HICON LoadSmallIconDx(UINT id)
+    {
+        return HICON(LoadImage(GetModuleHandle(NULL), 
+			                   MAKEINTRESOURCE(id),
+                               IMAGE_ICON, 16, 16, 0));
+    }
+
 private:
     static inline LRESULT CALLBACK
     _msgBoxCbtProcDx(INT nCode, WPARAM wParam, LPARAM lParam)
