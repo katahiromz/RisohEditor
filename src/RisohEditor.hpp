@@ -114,6 +114,18 @@ struct STRING_ENTRY
 void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 
+//////////////////////////////////////////////////////////////////////////////
+// MENU_ENTRY
+
+struct MENU_ENTRY
+{
+    WCHAR Caption[128];
+    WCHAR Flags[64];
+    WCHAR CommandID[64];
+    WCHAR HelpID[64];
+    WORD wDepth;
+};
+
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MReplaceBinDlg.hpp"
@@ -127,6 +139,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 #include "MAddCursorDlg.hpp"
 #include "MAddResDlg.hpp"
 #include "MStringsDlg.hpp"
+#include "MEditMenuDlg.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"
