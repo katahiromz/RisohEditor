@@ -39,6 +39,7 @@
 #include "Res.hpp"
 
 // RisohEditor.cpp
+std::wstring str_vkey(WORD w);
 LPWSTR MakeFilterDx(LPWSTR psz);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 HBITMAP Create24BppBitmapDx(INT width, INT height);
@@ -103,6 +104,31 @@ BOOL DoReplaceBitmap(HWND hwnd,
                      const std::wstring& BitmapFile);
 
 #include "MReplaceBinDlg.hpp"
+#include "MTestMenuDlg.hpp"
+#include "MTestDialog.hpp"
+#include "MAddIconDlg.hpp"
+
+#include "id_string.hpp"
+#include "Text.hpp"
+#include "ByteStream.hpp"
+
+#include "Samples.hpp"
+
+#include "AccelRes.hpp"
+#include "IconRes.hpp"
+#include "MenuRes.hpp"
+#include "MessageRes.hpp"
+#include "StringRes.hpp"
+#include "DialogRes.hpp"
+#include "VersionRes.hpp"
+
+#include "ConstantsDB.hpp"
+#include "PackedDIB.hpp"
+#include "Png.hpp"
+#include "Res.hpp"
+
+#include "MFile.hpp"
+#include "MProcessMaker.hpp"
 
 ////////////////////////////////////////////////////////////////////////////
 

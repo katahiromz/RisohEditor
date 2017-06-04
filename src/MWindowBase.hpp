@@ -303,22 +303,22 @@ struct MWindowBase
         return nID;
     }
 
-    INT MsgBoxDx(UINT nStringID, UINT nTitleID, UINT uType = MB_ICONINFORMATION)
+    INT MsgBoxDx(UINT nStringID, UINT nTitleID, UINT uType)
     {
         return MsgBoxDx(MAKEINTRESOURCE(nStringID), MAKEINTRESOURCE(nTitleID), uType);
     }
 
-    INT MsgBoxDx(UINT nStringID, LPCTSTR pszTitle, UINT uType = MB_ICONINFORMATION)
+    INT MsgBoxDx(UINT nStringID, LPCTSTR pszTitle, UINT uType)
     {
         return MsgBoxDx(MAKEINTRESOURCE(nStringID), pszTitle, uType);
     }
 
-    INT MsgBoxDx(UINT nStringID, UINT uType = MB_ICONINFORMATION)
+    INT MsgBoxDx(UINT nStringID, UINT uType)
     {
         return MsgBoxDx(MAKEINTRESOURCE(nStringID), NULL, uType);
     }
 
-    INT MsgBoxDx(LPCTSTR pszString, UINT uType = MB_ICONINFORMATION)
+    INT MsgBoxDx(LPCTSTR pszString, UINT uType)
     {
         return MsgBoxDx(pszString, NULL, uType);
     }
