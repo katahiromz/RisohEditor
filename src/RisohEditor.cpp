@@ -6,6 +6,21 @@
 #pragma comment(lib, "msimg32.lib")
 
 //////////////////////////////////////////////////////////////////////////////
+// constants
+
+#ifndef INVALID_FILE_ATTRIBUTES
+    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
+#endif
+
+#define TV_WIDTH 250
+#define SE_WIDTH 256
+#define BE_HEIGHT 100
+
+#ifndef RT_MANIFEST
+    #define RT_MANIFEST 24
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
 // global variables
 
 HINSTANCE   g_hInstance = NULL;
@@ -4390,11 +4405,7 @@ Res_GetLangName(WORD Lang)
     return std::wstring(sz);
 }
 
-#ifndef INVALID_FILE_ATTRIBUTES
-    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
-#endif
-
-struct MainWnd : public WindowBase
+struct MainWnd : WindowBase
 {
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
@@ -5321,10 +5332,6 @@ struct MainWnd : public WindowBase
             cy -= ToolRect.bottom - ToolRect.top;
         }
 
-#define TV_WIDTH 250
-#define SE_WIDTH 256
-#define BE_HEIGHT 100
-
         if (::IsWindowVisible(g_hTreeView))
         {
             MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
@@ -5838,9 +5845,6 @@ struct MainWnd : public WindowBase
         {
             PreviewMessage(hwnd, Entry);
         }
-    #ifndef RT_MANIFEST
-        #define RT_MANIFEST 24
-    #endif
         else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
         {
             PreviewHtml(hwnd, Entry);
