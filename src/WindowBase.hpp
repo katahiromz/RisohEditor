@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_WINDOW_BASE_HPP_
-#define MZC4_WINDOW_BASE_HPP_    19   /* Version 19 */
+#define MZC4_WINDOW_BASE_HPP_    20   /* Version 20 */
 
 #if _MSC_VER > 1000
     #pragma once
