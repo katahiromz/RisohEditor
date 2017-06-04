@@ -1283,11 +1283,11 @@ void MainWnd_OnTest(HWND hwnd)
 
 struct AddIconDlg : DialogBase
 {
-	LPCWSTR File;
+    LPCWSTR File;
 
-	AddIconDlg() : File(NULL)
-	{
-	}
+    AddIconDlg() : File(NULL)
+    {
+    }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
@@ -2033,8 +2033,8 @@ struct AddCursorDlg : DialogBase
     LPCWSTR File;
 
     AddCursorDlg() : File(NULL)
-	{
-	}
+    {
+    }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
@@ -3860,7 +3860,7 @@ struct ModifyKeyDlg : DialogBase
 
 struct EditAccelDlg : DialogBase
 {
-	AccelRes m_accel_res;
+    AccelRes m_accel_res;
 
     void OnUp(HWND hwnd)
     {
@@ -4221,314 +4221,323 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
 
-BOOL StringsDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+struct AddStrDlg : DialogBase
 {
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    StringRes& str_res = *(StringRes *)lParam;
+    STRING_ENTRY& m_entry;
 
-    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-    ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
-
-    LV_COLUMN column;
-    ZeroMemory(&column, sizeof(column));
-
-    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-    column.fmt = LVCFMT_LEFT;
-    column.cx = 140;
-    column.pszText = LoadStringDx(IDS_STRINGID);
-    column.iSubItem = 0;
-    ListView_InsertColumn(hCtl1, 0, &column);
-
-    column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-    column.fmt = LVCFMT_LEFT;
-    column.cx = 500;
-    column.pszText = LoadStringDx(IDS_STRINGVALUE);
-    column.iSubItem = 1;
-    ListView_InsertColumn(hCtl1, 1, &column);
-
-    typedef StringRes::map_type map_type;
-    const map_type& map = str_res.map();
-
-    INT i = 0;
-    map_type::const_iterator it, end = map.end();
-    for (it = map.begin(); it != end; ++it)
+    AddStrDlg(STRING_ENTRY& entry) : m_entry(entry)
     {
-        if (it->second.empty())
-            continue;
+    }
 
-        std::wstring str;
-        str = str_dec(it->first);
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        return TRUE;
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            StrDlg_GetEntry(hwnd, m_entry);
+            EndDialog(hwnd, IDOK);
+            break;
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return 0;
+    }
+};
+
+struct ModifyStrDlg : DialogBase
+{
+    STRING_ENTRY& m_entry;
+    ModifyStrDlg(STRING_ENTRY& entry) : m_entry(entry)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        StrDlg_SetEntry(hwnd, m_entry);
+        return TRUE;
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            StrDlg_GetEntry(hwnd, m_entry);
+            EndDialog(hwnd, IDOK);
+            break;
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
+};
+
+struct StringsDlg : DialogBase
+{
+    StringRes& m_str_res;
+
+    StringsDlg(StringRes& str_res) : m_str_res(str_res)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+        ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
+
+        LV_COLUMN column;
+        ZeroMemory(&column, sizeof(column));
+
+        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+        column.fmt = LVCFMT_LEFT;
+        column.cx = 140;
+        column.pszText = LoadStringDx(IDS_STRINGID);
+        column.iSubItem = 0;
+        ListView_InsertColumn(hCtl1, 0, &column);
+
+        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+        column.fmt = LVCFMT_LEFT;
+        column.cx = 500;
+        column.pszText = LoadStringDx(IDS_STRINGVALUE);
+        column.iSubItem = 1;
+        ListView_InsertColumn(hCtl1, 1, &column);
+
+        typedef StringRes::map_type map_type;
+        const map_type& map = m_str_res.map();
+
+        INT i = 0;
+        map_type::const_iterator it, end = map.end();
+        for (it = map.begin(); it != end; ++it)
+        {
+            if (it->second.empty())
+                continue;
+
+            std::wstring str;
+            str = str_dec(it->first);
+
+            LV_ITEM item;
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = &str[0];
+            ListView_InsertItem(hCtl1, &item);
+
+            str = str_quote(it->second);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            ++i;
+        }
+
+        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+        ListView_SetItemState(hCtl1, 0, state, state);
+        SetFocus(hCtl1);
+
+        return TRUE;
+    }
+
+    void OnAdd(HWND hwnd)
+    {
+        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+        STRING_ENTRY s_entry;
+        ZeroMemory(&s_entry, sizeof(s_entry));
+        AddStrDlg dialog(s_entry);
+        INT nID = dialog.DialogBoxDx(hwnd, IDD_ADDSTR);
+        if (IDOK != nID)
+        {
+            return;
+        }
+
+        INT iItem = ListView_GetItemCount(hCtl1);
 
         LV_ITEM item;
+
         ZeroMemory(&item, sizeof(item));
-        item.iItem = i;
+        item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
-        item.pszText = &str[0];
+        item.pszText = s_entry.StringID;
         ListView_InsertItem(hCtl1, &item);
 
-        str = str_quote(it->second);
+        std::wstring str = s_entry.StringValue;
+        str = str_quote(str);
 
         ZeroMemory(&item, sizeof(item));
-        item.iItem = i;
+        item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
         item.pszText = &str[0];
         ListView_SetItem(hCtl1, &item);
 
-        ++i;
+        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+        ListView_SetItemState(hCtl1, iItem, state, state);
     }
 
-    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-    ListView_SetItemState(hCtl1, 0, state, state);
-    SetFocus(hCtl1);
-
-    return TRUE;
-}
-
-BOOL AddStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-{
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
-
-    return TRUE;
-}
-
-void AddStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
-    switch (id)
+    void OnDelete(HWND hwnd)
     {
-    case IDOK:
-        StrDlg_GetEntry(hwnd, s_entry);
-        EndDialog(hwnd, IDOK);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    }
-}
+        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
-INT_PTR CALLBACK
-AddStrDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, AddStrDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, AddStrDlg_OnCommand);
-    }
-    return 0;
-}
-
-void StringsDlg_OnAdd(HWND hwnd)
-{
-    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-    STRING_ENTRY s_entry;
-    ZeroMemory(&s_entry, sizeof(s_entry));
-    INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_ADDSTR),
-                              hwnd, AddStrDlgProc, (LPARAM)&s_entry);
-    if (IDOK != nID)
-    {
-        return;
-    }
-
-    INT iItem = ListView_GetItemCount(hCtl1);
-
-    LV_ITEM item;
-
-    ZeroMemory(&item, sizeof(item));
-    item.iItem = iItem;
-    item.mask = LVIF_TEXT;
-    item.iSubItem = 0;
-    item.pszText = s_entry.StringID;
-    ListView_InsertItem(hCtl1, &item);
-
-    std::wstring str = s_entry.StringValue;
-    str = str_quote(str);
-
-    ZeroMemory(&item, sizeof(item));
-    item.iItem = iItem;
-    item.mask = LVIF_TEXT;
-    item.iSubItem = 1;
-    item.pszText = &str[0];
-    ListView_SetItem(hCtl1, &item);
-
-    UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-    ListView_SetItemState(hCtl1, iItem, state, state);
-}
-
-void StringsDlg_OnDelete(HWND hwnd)
-{
-    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
-    if (iItem >= 0)
-    {
-        ListView_DeleteItem(hCtl1, iItem);
-    }
-}
-
-BOOL ModifyStrDlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-{
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, lParam);
-    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
-
-    StrDlg_SetEntry(hwnd, s_entry);
-
-    return TRUE;
-}
-
-void ModifyStrDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    STRING_ENTRY& s_entry = *(STRING_ENTRY *)lParam;
-    switch (id)
-    {
-    case IDOK:
-        StrDlg_GetEntry(hwnd, s_entry);
-        EndDialog(hwnd, IDOK);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    }
-}
-
-INT_PTR CALLBACK
-ModifyStrDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, ModifyStrDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, ModifyStrDlg_OnCommand);
-    }
-    return 0;
-}
-
-void StringsDlg_GetEntry(HWND hwnd, HWND hCtl1, INT iItem, STRING_ENTRY& entry)
-{
-    ListView_GetItemText(hCtl1, iItem, 0, entry.StringID, _countof(entry.StringID));
-    str_trim(entry.StringID);
-
-    ListView_GetItemText(hCtl1, iItem, 1, entry.StringValue, _countof(entry.StringValue));
-    str_trim(entry.StringValue);
-    if (entry.StringValue[0] == L'"')
-    {
-        str_unquote(entry.StringValue);
-    }
-}
-
-void StringsDlg_OnModify(HWND hwnd)
-{
-    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-    INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
-    if (iItem < 0)
-    {
-        return;
-    }
-
-    STRING_ENTRY s_entry;
-    StringsDlg_GetEntry(hwnd, hCtl1, iItem, s_entry);
-
-    INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_MODIFYSTR),
-                              hwnd, ModifyStrDlgProc, (LPARAM)&s_entry);
-    if (IDOK == nID)
-    {
-        ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
-
-        std::wstring str = str_quote(s_entry.StringValue);
-        ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
-    }
-}
-
-void StringsDlg_OnOK(HWND hwnd)
-{
-    LPARAM lParam = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    StringRes& str_res = *(StringRes *)lParam;
-
-    HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-    INT iItem, Count = ListView_GetItemCount(hCtl1);
-    if (Count == 0)
-    {
-        MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
-        return;
-    }
-
-    str_res.map().clear();
-
-    STRING_ENTRY s_entry;
-    for (iItem = 0; iItem < Count; ++iItem)
-    {
-        StringsDlg_GetEntry(hwnd, hCtl1, iItem, s_entry);
-
-        WORD wID = (WORD)_wtoi(s_entry.StringID);
-        std::wstring str = s_entry.StringValue;
-
-        str_res.map().insert(std::make_pair(wID, str));
-    }
-
-    EndDialog(hwnd, IDOK);
-}
-
-void StringsDlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-{
-    switch (id)
-    {
-    case psh1:
-        StringsDlg_OnAdd(hwnd);
-        break;
-    case psh2:
-        StringsDlg_OnModify(hwnd);
-        break;
-    case psh3:
-        StringsDlg_OnDelete(hwnd);
-        break;
-    case IDOK:
-        StringsDlg_OnOK(hwnd);
-        break;
-    case IDCANCEL:
-        EndDialog(hwnd, IDCANCEL);
-        break;
-    }
-}
-
-LRESULT StringsDlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
-{
-    if (idFrom == ctl1)
-    {
-        if (pnmhdr->code == LVN_KEYDOWN)
+        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
         {
-            LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
-            if (KeyDown->wVKey == VK_DELETE)
+            ListView_DeleteItem(hCtl1, iItem);
+        }
+    }
+
+    void GetEntry(HWND hwnd, HWND hCtl1, INT iItem, STRING_ENTRY& entry)
+    {
+        ListView_GetItemText(hCtl1, iItem, 0, entry.StringID, _countof(entry.StringID));
+        str_trim(entry.StringID);
+
+        ListView_GetItemText(hCtl1, iItem, 1, entry.StringValue, _countof(entry.StringValue));
+        str_trim(entry.StringValue);
+        if (entry.StringValue[0] == L'"')
+        {
+            str_unquote(entry.StringValue);
+        }
+    }
+
+    void OnModify(HWND hwnd)
+    {
+        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem < 0)
+        {
+            return;
+        }
+
+        STRING_ENTRY s_entry;
+        GetEntry(hwnd, hCtl1, iItem, s_entry);
+
+        ModifyStrDlg dialog(s_entry);
+        INT nID = dialog.DialogBoxDx(hwnd, IDD_MODIFYSTR);
+        if (IDOK == nID)
+        {
+            ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
+
+            std::wstring str = str_quote(s_entry.StringValue);
+            ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
+        }
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
+
+        INT iItem, Count = ListView_GetItemCount(hCtl1);
+        if (Count == 0)
+        {
+            MessageBox(hwnd, LoadStringDx(IDS_DATAISEMPTY), NULL, MB_ICONERROR);
+            return;
+        }
+
+        m_str_res.map().clear();
+
+        STRING_ENTRY s_entry;
+        for (iItem = 0; iItem < Count; ++iItem)
+        {
+            GetEntry(hwnd, hCtl1, iItem, s_entry);
+
+            WORD wID = (WORD)_wtoi(s_entry.StringID);
+            std::wstring str = s_entry.StringValue;
+
+            m_str_res.map().insert(std::make_pair(wID, str));
+        }
+
+        EndDialog(hwnd, IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case psh1:
+            OnAdd(hwnd);
+            break;
+        case psh2:
+            OnModify(hwnd);
+            break;
+        case psh3:
+            OnDelete(hwnd);
+            break;
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+    {
+        if (idFrom == ctl1)
+        {
+            if (pnmhdr->code == LVN_KEYDOWN)
             {
-                StringsDlg_OnDelete(hwnd);
+                LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+                if (KeyDown->wVKey == VK_DELETE)
+                {
+                    OnDelete(hwnd);
+                    return 0;
+                }
+            }
+            if (pnmhdr->code == NM_DBLCLK)
+            {
+                OnModify(hwnd);
                 return 0;
             }
         }
-        if (pnmhdr->code == NM_DBLCLK)
-        {
-            StringsDlg_OnModify(hwnd);
-            return 0;
-        }
+        return 0;
     }
-    return 0;
-}
 
-INT_PTR CALLBACK
-StringsDlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        HANDLE_MSG(hwnd, WM_INITDIALOG, StringsDlg_OnInitDialog);
-        HANDLE_MSG(hwnd, WM_COMMAND, StringsDlg_OnCommand);
-        HANDLE_MSG(hwnd, WM_NOTIFY, StringsDlg_OnNotify);
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+        }
+        return DefaultProcDx();
     }
-    return 0;
-}
+};
 
 struct MENU_ENTRY
 {
@@ -5843,7 +5852,7 @@ void MainWnd_OnGuiEdit(HWND hwnd)
     ByteStream stream(data);
     if (Entry.type == RT_ACCELERATOR)
     {
-		EditAccelDlg dialog;
+        EditAccelDlg dialog;
         if (dialog.m_accel_res.LoadFromStream(stream))
         {
             INT nID = dialog.DialogBoxDx(hwnd, IDD_EDITACCEL);
@@ -5910,8 +5919,8 @@ void MainWnd_OnGuiEdit(HWND hwnd)
                 return;
         }
 
-        INT nID = DialogBoxParamW(g_hInstance, MAKEINTRESOURCEW(IDD_STRINGS),
-                                  hwnd, StringsDlgProc, (LPARAM)&str_res);
+        StringsDlg dialog(str_res);
+        INT nID = dialog.DialogBoxDx(hwnd, IDD_STRINGS);
         if (nID == IDOK)
         {
             std::wstring WideText = str_res.Dump();
@@ -6037,23 +6046,23 @@ void MainWnd_OnDropFiles(HWND hwnd, HDROP hdrop)
     {
         if (lstrcmpiW(pch, L".ico") == 0)
         {
-			AddIconDlg dialog;
-			dialog.File = File;
-			dialog.DialogBoxDx(hwnd, IDD_ADDICON);
+            AddIconDlg dialog;
+            dialog.File = File;
+            dialog.DialogBoxDx(hwnd, IDD_ADDICON);
             return;
         }
         else if (lstrcmpiW(pch, L".cur") == 0)
         {
-			AddCursorDlg dialog;
-			dialog.File = File;
-			dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
+            AddCursorDlg dialog;
+            dialog.File = File;
+            dialog.DialogBoxDx(hwnd, IDD_ADDCURSOR);
             return;
         }
         else if (lstrcmpiW(pch, L".bmp") == 0 ||
-				 lstrcmpiW(pch, L".png") == 0)
+                 lstrcmpiW(pch, L".png") == 0)
         {
-			AddBitmapDlg dialog;
-			dialog.File = File;
+            AddBitmapDlg dialog;
+            dialog.File = File;
             dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
             return;
         }
