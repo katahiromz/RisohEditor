@@ -103,6 +103,19 @@ BOOL DoReplaceBitmap(HWND hwnd,
                      WORD Lang,
                      const std::wstring& BitmapFile);
 
+////////////////////////////////////////////////////////////////////////////
+
+struct STRING_ENTRY
+{
+    WCHAR StringID[128];
+    WCHAR StringValue[512];
+};
+
+void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
+
+////////////////////////////////////////////////////////////////////////////
+
 #include "MReplaceBinDlg.hpp"
 #include "MTestMenuDlg.hpp"
 #include "MTestDialog.hpp"
@@ -113,6 +126,7 @@ BOOL DoReplaceBitmap(HWND hwnd,
 #include "MReplaceBitmapDlg.hpp"
 #include "MAddCursorDlg.hpp"
 #include "MAddResDlg.hpp"
+#include "MStringsDlg.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"
