@@ -6,9 +6,9 @@
 
 #include "RisohEditor.hpp"
 #include "MenuRes.hpp"
-#include "MModifyMItemDlg.hpp"
 
 struct MAddMItemDlg;
+struct MModifyMItemDlg;
 struct MEditMenuDlg;
 
 //////////////////////////////////////////////////////////////////////////////
