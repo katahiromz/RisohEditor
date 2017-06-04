@@ -140,6 +140,7 @@ struct MENU_ENTRY
 #include "MAddResDlg.hpp"
 #include "MStringsDlg.hpp"
 #include "MEditMenuDlg.hpp"
+#include "MEditAccelDlg.hpp"
 
 #include "id_string.hpp"
 #include "Text.hpp"

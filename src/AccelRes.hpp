@@ -8,6 +8,13 @@
 #include "ByteStream.hpp"
 #include "Text.hpp"
 
+struct ACCEL_ENTRY
+{
+    WCHAR sz0[128];
+    WCHAR sz1[16];
+    WCHAR sz2[128];
+};
+
 struct AccelTableEntry
 {
     WORD   fFlags;
