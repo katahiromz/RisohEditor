@@ -13,8 +13,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MReplaceBitmapDlg : MDialogBase
+class MReplaceBitmapDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
 

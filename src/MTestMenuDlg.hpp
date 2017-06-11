@@ -8,8 +8,9 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MTestMenuDlg : MDialogBase
+class MTestMenuDlg : public MDialogBase
 {
+public:
     HMENU m_hMenu;
 
     MTestMenuDlg(HMENU hMenu) : m_hMenu(hMenu)

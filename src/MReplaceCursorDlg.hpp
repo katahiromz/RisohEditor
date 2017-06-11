@@ -13,11 +13,13 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MReplaceCursorDlg : MDialogBase
+class MReplaceCursorDlg : public MDialogBase
 {
+protected:
+    HCURSOR   m_hCursor;
+public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
-    HCURSOR   m_hCursor;
 
     MReplaceCursorDlg(ResEntries& Entries, ResEntry& Entry) :
         MDialogBase(IDD_REPLACECUR), m_Entries(Entries), m_Entry(Entry)

@@ -13,11 +13,13 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MReplaceIconDlg : MDialogBase
+class MReplaceIconDlg : public MDialogBase
 {
+protected:
+    HICON   m_hIcon;
+public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
-    HICON   m_hIcon;
 
     MReplaceIconDlg(ResEntries& Entries, ResEntry& Entry)
         : MDialogBase(IDD_REPLACEICON), m_Entries(Entries), m_Entry(Entry)

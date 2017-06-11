@@ -17,8 +17,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MReplaceBinDlg : MDialogBase
+class MReplaceBinDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;

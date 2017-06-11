@@ -8,8 +8,13 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MTestDialog : MDialogBase
+class MTestDialog : public MDialogBase
 {
+public:
+    MTestDialog()
+    {
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
