@@ -14,8 +14,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddIconDlg : MDialogBase
+class MAddIconDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     LPCWSTR File;
     HICON   m_hIcon;

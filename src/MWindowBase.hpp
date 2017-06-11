@@ -61,8 +61,8 @@
     #endif
 #endif
 
-struct MWindowBase;
-struct MDialogBase;
+class MWindowBase;
+class MDialogBase;
 
 //////////////////////////////////////////////////////////////////////////////
 // public functions
@@ -94,9 +94,9 @@ class MWindowBase
 {
 protected:
     MSG m_msg;
-    WNDPROC m_fnOldProc;
 public:
     HWND m_hwnd;
+    WNDPROC m_fnOldProc;
 
     MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
     {

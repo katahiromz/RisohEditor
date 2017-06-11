@@ -13,8 +13,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddBitmapDlg : MDialogBase
+class MAddBitmapDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     LPCWSTR File;
 

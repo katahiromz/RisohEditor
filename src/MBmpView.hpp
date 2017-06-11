@@ -8,8 +8,9 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MBmpView : MWindowBase
+class MBmpView : public MWindowBase
 {
+public:
     BITMAP      m_bm;
     HBITMAP     m_hBitmap;
 

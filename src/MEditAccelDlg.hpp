@@ -15,14 +15,15 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
 
 std::wstring GetKeyID(UINT wId);
 
-struct MAddKeyDlg;
-struct MModifyKeyDlg;
-struct MEditAccelDlg;
+class MAddKeyDlg;
+class MModifyKeyDlg;
+class MEditAccelDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddKeyDlg : MDialogBase
+class MAddKeyDlg : public MDialogBase
 {
+public:
     ACCEL_ENTRY& m_entry;
 
     MAddKeyDlg(ACCEL_ENTRY& entry) : MDialogBase(IDD_ADDKEY), m_entry(entry)
@@ -100,8 +101,9 @@ struct MAddKeyDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MModifyKeyDlg : MDialogBase
+class MModifyKeyDlg : public MDialogBase
 {
+public:
     ACCEL_ENTRY& m_entry;
 
     MModifyKeyDlg(ACCEL_ENTRY& entry) : MDialogBase(IDD_MODIFYKEY), m_entry(entry)
@@ -212,8 +214,9 @@ struct MModifyKeyDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MEditAccelDlg : MDialogBase
+class MEditAccelDlg : public MDialogBase
 {
+public:
     AccelRes& m_accel_res;
     ConstantsDB& m_db;
 

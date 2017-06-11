@@ -29,8 +29,6 @@ ConstantsDB g_ConstantsDB;
 
 HWND        g_hTreeView = NULL;
 
-/*static*/ MRadWindow *MRadWindow::s_p_rad_window = NULL;
-
 //////////////////////////////////////////////////////////////////////////////
 // languages
 
@@ -1035,8 +1033,9 @@ Res_GetLangName(WORD Lang)
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd
 
-struct MMainWnd : MWindowBase
+class MMainWnd : public MWindowBase
 {
+public:
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
 

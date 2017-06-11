@@ -7,14 +7,15 @@
 #include "RisohEditor.hpp"
 #include "StringRes.hpp"
 
-struct MAddStrDlg;
-struct MModifyStrDlg;
-struct MStringsDlg;
+class MAddStrDlg;
+class MModifyStrDlg;
+class MStringsDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddStrDlg : MDialogBase
+class MAddStrDlg : public MDialogBase
 {
+public:
     STRING_ENTRY& m_entry;
 
     MAddStrDlg(STRING_ENTRY& entry) : MDialogBase(IDD_ADDSTR), m_entry(entry)
@@ -54,9 +55,11 @@ struct MAddStrDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MModifyStrDlg : MDialogBase
+class MModifyStrDlg : public MDialogBase
 {
+public:
     STRING_ENTRY& m_entry;
+
     MModifyStrDlg(STRING_ENTRY& entry) : MDialogBase(IDD_MODIFYSTR), m_entry(entry)
     {
     }
@@ -95,8 +98,9 @@ struct MModifyStrDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MStringsDlg : MDialogBase
+class MStringsDlg : public MDialogBase
 {
+public:
     StringRes& m_str_res;
 
     MStringsDlg(StringRes& str_res) : MDialogBase(IDD_STRINGS), m_str_res(str_res)

@@ -15,8 +15,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddResDlg : MDialogBase
+class MAddResDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     ConstantsDB& m_db;
     HWND m_hTreeView;

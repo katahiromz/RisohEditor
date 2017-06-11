@@ -13,8 +13,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddCursorDlg : MDialogBase
+class MAddCursorDlg : public MDialogBase
 {
+public:
     ResEntries& m_Entries;
     LPCWSTR   File;
     HCURSOR   m_hCursor;

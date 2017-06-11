@@ -8,10 +8,19 @@
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
 
+class MSubclassedControl;
+class MRadDialog;
+class MRadWindow;
+
 //////////////////////////////////////////////////////////////////////////////
 
-struct MSubclassedControl : MWindowBase
+class MSubclassedControl : public MWindowBase
 {
+public:
+    MSubclassedControl()
+    {
+    }
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -39,8 +48,13 @@ struct MSubclassedControl : MWindowBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MRadDialog : MDialogBase
+class MRadDialog : public MDialogBase
 {
+public:
+    MRadDialog()
+    {
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -134,18 +148,26 @@ struct MRadDialog : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MRadWindow : MWindowBase
+class MRadWindow : public MWindowBase
 {
-    INT         m_xDialogBaseUnit;
-    INT         m_yDialogBaseUnit;
-    HHOOK       m_mouse_hook;
-    MRadDialog   m_rad_dialog;
-    RubberBand  m_rubber_band;
-    DialogRes   m_dialog_res;
-    static MRadWindow *s_p_rad_window;
+protected:
+    HHOOK           m_mouse_hook;
+    MRubberBand     m_rubber_band;
+public:
+    INT             m_xDialogBaseUnit;
+    INT             m_yDialogBaseUnit;
+    MRadDialog      m_rad_dialog;
+    DialogRes       m_dialog_res;
 
-    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-                  m_mouse_hook(NULL)
+    static MRadWindow*& Singleton()
+    {
+        // FIXME: support multiple MRadWindow
+        static MRadWindow *p_rad_window;
+        return p_rad_window;
+    }
+
+    MRadWindow() : m_mouse_hook(NULL),
+                   m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
     {
     }
 
@@ -168,54 +190,54 @@ struct MRadWindow : MWindowBase
     static LRESULT CALLBACK
     MouseProc(INT nCode, WPARAM wParam, LPARAM lParam)
     {
-        if (s_p_rad_window == NULL)
+        if (Singleton() == NULL)
             return 0;
         if (nCode < 0)
-            return CallNextHookEx(s_p_rad_window->m_mouse_hook, nCode, wParam, lParam);
+            return CallNextHookEx(Singleton()->m_mouse_hook, nCode, wParam, lParam);
 
         MOUSEHOOKSTRUCT *pmhs = (MOUSEHOOKSTRUCT *)lParam;
         if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN)
         {
             RECT rc;
-            GetWindowRect(s_p_rad_window->m_rad_dialog, &rc);
+            GetWindowRect(Singleton()->m_rad_dialog, &rc);
             POINT pt = pmhs->pt;
             if (PtInRect(&rc, pt))
             {
-                ScreenToClient(s_p_rad_window->m_rad_dialog, &pt);
-                BOOL IsVisible = IsWindowVisible(s_p_rad_window->m_rubber_band);
-                DestroyWindow(s_p_rad_window->m_rubber_band);
-                HWND hwnd = ChildWindowFromPointEx(s_p_rad_window->m_rad_dialog, pt, CWP_ALL);
-                s_p_rad_window->m_rubber_band.CreateDx(s_p_rad_window->m_rad_dialog, FALSE);
+                ScreenToClient(Singleton()->m_rad_dialog, &pt);
+                BOOL IsVisible = IsWindowVisible(Singleton()->m_rubber_band);
+                DestroyWindow(Singleton()->m_rubber_band);
+                HWND hwnd = ChildWindowFromPointEx(Singleton()->m_rad_dialog, pt, CWP_ALL);
+                Singleton()->m_rubber_band.CreateDx(Singleton()->m_rad_dialog, FALSE);
                 if (wParam == WM_RBUTTONDOWN)
                 {
-                    PostMessage(s_p_rad_window->m_rad_dialog, WM_CONTEXTMENU,
+                    PostMessage(Singleton()->m_rad_dialog, WM_CONTEXTMENU,
                         (WPARAM)hwnd, MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
                     if (IsVisible)
                     {
-                        ShowWindow(s_p_rad_window->m_rubber_band, SW_SHOWNOACTIVATE);
+                        ShowWindow(Singleton()->m_rubber_band, SW_SHOWNOACTIVATE);
                     }
                     return TRUE;
                 }
                 else if (wParam == WM_LBUTTONDOWN)
                 {
-                    if (hwnd && s_p_rad_window->m_rad_dialog.m_hwnd != hwnd)
+                    if (hwnd && Singleton()->m_rad_dialog.m_hwnd != hwnd)
                     {
-                        hwnd = GetPrimaryControl(hwnd, s_p_rad_window->m_rad_dialog);
-                        s_p_rad_window->m_rubber_band.SetTarget(hwnd);
-                        s_p_rad_window->m_rubber_band.FitToTarget();
-                        ShowWindow(s_p_rad_window->m_rubber_band, SW_SHOWNOACTIVATE);
+                        hwnd = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
+                        Singleton()->m_rubber_band.SetTarget(hwnd);
+                        Singleton()->m_rubber_band.FitToTarget();
+                        ShowWindow(Singleton()->m_rubber_band, SW_SHOWNOACTIVATE);
                         return TRUE;
                     }
                 }
             }
         }
 
-        return CallNextHookEx(s_p_rad_window->m_mouse_hook, nCode, wParam, lParam);
+        return CallNextHookEx(Singleton()->m_mouse_hook, nCode, wParam, lParam);
     }
 
     BOOL HookMouse(HWND hwnd)
     {
-        s_p_rad_window = this;
+        Singleton() = this;
         DWORD dwThreadID = GetCurrentThreadId();
         m_mouse_hook = SetWindowsHookEx(WH_MOUSE, MouseProc, NULL, dwThreadID);
         return (m_mouse_hook != NULL);

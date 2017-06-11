@@ -7,14 +7,15 @@
 #include "RisohEditor.hpp"
 #include "MenuRes.hpp"
 
-struct MAddMItemDlg;
-struct MModifyMItemDlg;
-struct MEditMenuDlg;
+class MAddMItemDlg;
+class MModifyMItemDlg;
+class MEditMenuDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MAddMItemDlg : MDialogBase
+class MAddMItemDlg : public MDialogBase
 {
+public:
     MENU_ENTRY& m_entry;
 
     MAddMItemDlg(MENU_ENTRY& entry) : MDialogBase(IDD_ADDMITEM), m_entry(entry)
@@ -116,8 +117,9 @@ struct MAddMItemDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MModifyMItemDlg : MDialogBase
+class MModifyMItemDlg : public MDialogBase
 {
+public:
     MENU_ENTRY& m_entry;
 
     MModifyMItemDlg(MENU_ENTRY& entry) : MDialogBase(IDD_MODIFYMITEM), m_entry(entry)
@@ -257,8 +259,9 @@ struct MModifyMItemDlg : MDialogBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MEditMenuDlg : MDialogBase
+class MEditMenuDlg : public MDialogBase
 {
+public:
     MenuRes& m_menu_res;
 
     MEditMenuDlg(MenuRes& menu_res) : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res)

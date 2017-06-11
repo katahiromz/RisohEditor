@@ -1,23 +1,25 @@
-// RubberBand.hpp -- Rubber Band for Win32
+// MRubberBand.hpp -- Rubber Band for Win32
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RUBBER_BAND_HPP_
-#define RUBBER_BAND_HPP_    2   /* Version 2 */
+#ifndef MZC4_MRUBBER_BAND_HPP_
+#define MZC4_MRUBBER_BAND_HPP_    3   /* Version 3 */
 
 #include "MWindowBase.hpp"
 
-struct RubberBandTarget;
-struct RubberBand;
+class MRubberBand;
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct RubberBand : MWindowBase
+class MRubberBand : public MWindowBase
 {
+protected:
     HRGN m_hRgn;
+
+public:
     MWindowBase  m_target;
     enum { m_nGripSize = 3 };
 
-    RubberBand() : m_hRgn(NULL)
+    MRubberBand() : m_hRgn(NULL)
     {
     }
 
@@ -382,6 +384,6 @@ struct RubberBand : MWindowBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef RUBBER_BAND_HPP_
+#endif  // ndef MZC4_MRUBBER_BAND_HPP_
 
 //////////////////////////////////////////////////////////////////////////////
