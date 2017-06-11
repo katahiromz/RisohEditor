@@ -38,6 +38,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MWindowBase.hpp"
+#include "MRadWindow.hpp"
 #include "Res.hpp"
 
 // RisohEditor.cpp

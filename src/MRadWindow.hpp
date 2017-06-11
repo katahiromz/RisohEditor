@@ -430,15 +430,9 @@ struct MRadWindow : MWindowBase
         UnhookMouse();
         BOOL IsVisible = IsWindowVisible(m_rubber_band);
         ShowWindow(m_rubber_band, SW_HIDE);
-        switch (id)
-        {
-        case IDM_TEST2:
-            MsgBoxDx(TEXT("Test2"));
-            break;
-        case IDM_TEST3:
-            MsgBoxDx(TEXT("Test3"));
-            break;
-        }
+
+        FORWARD_WM_COMMAND(GetParent(hwnd), id, hwndCtl, codeNotify, SendMessage);
+
         if (IsVisible)
             ShowWindow(m_rubber_band, SW_SHOWNOACTIVATE);
         HookMouse(hwnd);

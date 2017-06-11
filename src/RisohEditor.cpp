@@ -29,6 +29,8 @@ ConstantsDB g_ConstantsDB;
 
 HWND        g_hTreeView = NULL;
 
+/*static*/ MRadWindow *MRadWindow::s_p_rad_window = NULL;
+
 //////////////////////////////////////////////////////////////////////////////
 // languages
 
@@ -1050,6 +1052,7 @@ struct MMainWnd : MWindowBase
     HWND        m_hSrcEdit;
     BOOL        m_bInEdit;
     MBmpView    m_bmp_view;
+    MRadWindow  m_rad_window;
 
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
@@ -1124,11 +1127,14 @@ struct MMainWnd : MWindowBase
         MSG msg;
         while (::GetMessage(&msg, NULL, 0, 0))
         {
-            if (!::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-            {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-            }
+            if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
+                continue;
+
+            if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+                continue;
+
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
         }
         return INT(msg.wParam);
     }
@@ -1794,7 +1800,20 @@ struct MMainWnd : MWindowBase
         }
         else if (Entry.type == RT_DIALOG)
         {
-            // FIXME
+            if (m_rad_window)
+            {
+                SetForegroundWindow(m_rad_window);
+                return;
+            }
+
+            ByteStream stream(Entry.data);
+            m_rad_window.m_dialog_res.LoadFromStream(stream);
+
+            if (m_rad_window.CreateWindowDx(m_hwnd, LoadStringDx(IDS_RADWINDOW)))
+            {
+                ShowWindow(m_rad_window, SW_SHOWNOACTIVATE);
+                UpdateWindow(m_rad_window);
+            }
         }
         else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
         {
