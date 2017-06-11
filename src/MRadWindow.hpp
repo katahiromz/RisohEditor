@@ -55,6 +55,20 @@ public:
     {
     }
 
+    INT GetTabIndex(HWND hwndTargetCtrl) const
+    {
+        INT index = 0;
+        for (HWND hwndCtrl = ::GetTopWindow(m_hwnd);
+             hwndCtrl;
+             hwndCtrl = ::GetWindow(hwndCtrl, GW_HWNDNEXT))
+        {
+            if (hwndCtrl == hwndTargetCtrl)
+                return index;
+            ++index;
+        }
+        return -1;
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -174,6 +188,11 @@ public:
     ~MRadWindow()
     {
         UnhookMouse();
+    }
+
+    INT GetTabIndex(HWND hwndTargetCtrl) const
+    {
+        return m_rad_dialog.GetTabIndex(hwndTargetCtrl);
     }
 
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
