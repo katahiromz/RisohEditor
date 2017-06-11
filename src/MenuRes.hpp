@@ -376,7 +376,7 @@ public:
 
         string_type ret;
 
-        ret += name.wstr();
+        ret += name.str();
         ret += L" MENU\r\n";
         ret += L"{\r\n";
 
@@ -436,7 +436,7 @@ public:
     {
         string_type ret;
 
-        ret += name.wstr();
+        ret += name.str();
         ret += L" MENUEX\r\n";
         ret += L"{\r\n";
 

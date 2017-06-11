@@ -148,14 +148,50 @@ struct ID_OR_STRING
         return m_ID != w;
     }
 
-    std::wstring wstr() const
+    std::wstring& str() const
     {
+        static std::wstring s_str;
         if (m_ID == 0)
         {
             if (m_Str.size())
-                return m_Str;
+            {
+                s_str = m_Str;
+                return s_str;
+            }
         }
-        return str_dec(m_ID);
+        s_str = str_dec(m_ID);
+        return s_str;
+    }
+
+    std::wstring& str_or_empty() const
+    {
+        static std::wstring s_str;
+        if (m_ID == 0)
+        {
+            if (m_Str.size())
+            {
+                s_str = m_Str;
+            }
+            else
+            {
+                s_str.clear();
+            }
+        }
+        else
+        {
+            s_str = str_dec(m_ID);
+        }
+        return s_str;
+    }
+
+    LPCWSTR c_str() const
+    {
+        return str().c_str();
+    }
+
+    LPCWSTR c_str_or_empty() const
+    {
+        return str_or_empty().c_str();
     }
 
     std::wstring quoted_wstr() const

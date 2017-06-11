@@ -167,7 +167,7 @@ public:
         std::wstring ret;
         WCHAR line[MAX_PATH];
 
-        ret += name.wstr();
+        ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
         wsprintfW(line, L"FILEVERSION %u,%u,%u,%u\r\n",

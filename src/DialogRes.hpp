@@ -304,7 +304,7 @@ struct DialogItem
         }
         else
         {
-            cls = m_Class.wstr();
+            cls = m_Class.str();
         }
 
         if (lstrcmpiW(cls.c_str(), L"BUTTON") == 0)
@@ -370,7 +370,7 @@ struct DialogItem
         }
         else
         {
-            cls = m_Class.wstr();
+            cls = m_Class.str();
             ret += m_Class.quoted_wstr();
         }
 
@@ -575,6 +575,7 @@ struct DialogRes
     ID_OR_STRING                m_TypeFace;
     DialogItems                 Items;
     DWORD                       m_OldStyle, m_OldExStyle;
+    LANGID                      m_LangID;
 
     DialogRes()
     {
@@ -592,6 +593,7 @@ struct DialogRes
         m_Weight = FW_NORMAL;
         m_Italic = FALSE;
         m_CharSet = DEFAULT_CHARSET;
+        m_LangID = 0;
     }
 
     BOOL IsExtended() const
@@ -688,7 +690,7 @@ struct DialogRes
     {
         std::wstring ret;
 
-        ret += id_or_str.wstr();
+        ret += id_or_str.str();
         if (IsExtended())
         {
             ret += L" DIALOGEX ";

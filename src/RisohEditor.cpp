@@ -1801,12 +1801,12 @@ public:
         {
             if (m_rad_window)
             {
-                SetForegroundWindow(m_rad_window);
-                return;
+                DestroyWindow(m_rad_window);
             }
 
             ByteStream stream(Entry.data);
             m_rad_window.m_dialog_res.LoadFromStream(stream);
+            m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
             if (m_rad_window.CreateWindowDx(m_hwnd, LoadStringDx(IDS_RADWINDOW)))
             {

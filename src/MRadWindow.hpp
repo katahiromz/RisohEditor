@@ -7,6 +7,7 @@
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
+#include "MDlgPropDlg.hpp"
 
 class MSubclassedControl;
 class MRadDialog;
@@ -491,7 +492,11 @@ public:
 
     void OnDlgProp(HWND hwnd)
     {
-        // FIXME
+        MDlgPropDlg dialog(m_dialog_res);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // FIXME
+        }
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

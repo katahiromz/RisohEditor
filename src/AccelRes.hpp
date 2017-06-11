@@ -86,7 +86,7 @@ public:
     {
         std::wstring ret;
 
-        ret += id_or_str.wstr();
+        ret += id_or_str.str();
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
         ret += L"{\r\n";
