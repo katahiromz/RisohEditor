@@ -45,6 +45,7 @@
 #define IDD_ADDMITEM        115
 #define IDD_MODIFYMITEM     116
 #define IDD_EDITMENU        117
+#define IDD_DLGPROP         118
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
