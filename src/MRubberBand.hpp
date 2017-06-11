@@ -16,7 +16,7 @@ protected:
     HRGN m_hRgn;
 
 public:
-    MWindowBase  m_target;
+    MWindowBase     m_target;
     enum { m_nGripSize = 3 };
 
     MRubberBand() : m_hRgn(NULL)
@@ -61,7 +61,6 @@ public:
         {
             if (m_target)
             {
-                ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
                 FitToTarget();
             }
         }
@@ -133,7 +132,7 @@ public:
         MoveWindow(m_target, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
         BringWindowToTop(m_hwnd);
-        InvalidateRect(m_hwnd, NULL, TRUE);
+        InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
     void FitToTarget()
@@ -156,7 +155,10 @@ public:
         MoveWindow(m_hwnd, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
         BringWindowToTop(m_hwnd);
-        InvalidateRect(m_hwnd, NULL, TRUE);
+
+        HRGN hRgn = GetRgnOrDrawOrHitTest(m_hwnd);
+        SetRgn(hRgn, FALSE);
+        InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
     void OnDestroy(HWND hwnd)
@@ -254,44 +256,20 @@ public:
         return TRUE;
     }
 
-    void InvalidateClient()
-    {
-        HRGN hRgn = GetRgnOrDrawOrHitTest(m_hwnd);
-        SetRgn(hRgn, TRUE);
-
-        RECT rc;
-        GetIdealClientRect(&rc);
-
-        HWND hTargetParent = GetParent(m_target);
-        MapWindowRect(m_hwnd, hTargetParent, &rc);
-        InvalidateRect(hTargetParent, &rc, TRUE);
-
-        GetIdealClientRect(&rc);
-        MapWindowRect(m_hwnd, m_target, &rc);
-        InvalidateRect(m_target, &rc, TRUE);
-
-        BringWindowToTop(m_hwnd);
-        SetTimer(m_hwnd, 999, 100, NULL);
-    }
-
     void OnMove(HWND hwnd, int x, int y)
     {
-        if (m_hwnd)
+        if (m_hwnd && m_target)
         {
             FitToBand();
         }
-
-        InvalidateClient();
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-        if (m_hwnd)
+        if (m_hwnd && m_target)
         {
             FitToBand();
         }
-
-        InvalidateClient();
     }
 
     HRGN GetRgnOrDrawOrHitTest(HWND hwnd, HDC hDC = NULL, LPPOINT ppt = NULL)
@@ -379,7 +357,7 @@ public:
     void SetTarget(HWND hwndTarget)
     {
         m_target.m_hwnd = hwndTarget;
-        if (hwndTarget)
+        if (IsWindowVisible(hwndTarget))
         {
             FitToTarget();
             ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);

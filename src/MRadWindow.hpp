@@ -293,12 +293,14 @@ public:
         wcx.hIconSm = NULL;
     }
 
-    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    BOOL ReCreate(HWND hwnd)
     {
-        if (!HookMouse(hwnd))
-        {
-            return FALSE;
-        }
+        UnhookMouse();
+
+        if (m_rad_dialog)
+            DestroyWindow(m_rad_dialog);
+        if (m_rubber_band)
+            DestroyWindow(m_rubber_band);
 
         m_dialog_res.Fixup(FALSE);
         std::vector<BYTE> data = m_dialog_res.data();
@@ -314,12 +316,20 @@ public:
             return FALSE;
         }
 
+        if (!HookMouse(hwnd))
+        {
+            return FALSE;
+        }
+
         FitToRadDialog();
 
         ShowWindow(m_rad_dialog, SW_SHOWNORMAL);
         UpdateWindow(m_rad_dialog);
+    }
 
-        return TRUE;
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    {
+        return ReCreate(hwnd);
     }
 
     void OnDestroy(HWND hwnd)
@@ -341,8 +351,7 @@ public:
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
             case WM_EXITSIZEMOVE:
-                m_rubber_band.InvalidateClient();
-                InvalidateRect(m_rubber_band, NULL, FALSE);
+                m_rubber_band.SetTarget(m_rubber_band.m_target);
                 return 0;
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
@@ -482,7 +491,17 @@ public:
 
     void OnDelCtrl(HWND hwnd)
     {
-        // FIXME
+        HWND hCtrl = m_rubber_band.m_target;
+        if (hCtrl == NULL)
+            return;
+
+        UINT nIndex = GetCtrlIndex(hCtrl);
+        if (nIndex < m_dialog_res.Items.size())
+        {
+            m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
+            m_dialog_res.m_cItems--;
+            ReCreate(hwnd);
+        }
     }
 
     void OnCtrlProp(HWND hwnd)
@@ -560,7 +579,7 @@ public:
             TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
             xPos, yPos, 0, hwnd, prc);
         PostMessage(hwnd, WM_NULL, 0, 0);
-        SendMessage(hwnd, WM_COMMAND, nCmd, 0);
+        PostMessage(hwnd, WM_COMMAND, nCmd, 0);
         HookMouse(hwnd);
     }
 
