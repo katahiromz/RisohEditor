@@ -8,9 +8,10 @@
 #include "ConstantsDB.hpp"
 #include "Samples.hpp"
 
-void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid);
-BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name);
-BOOL Cmb3_CheckLang(HWND hCmb3, WORD& Lang);
+void InitLangComboBox(HWND hCmb3, LANGID langid);
+BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type);
+BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -44,7 +45,7 @@ public:
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        Cmb3_InsertLangItemsAndSelectLang(hCmb3, GetUserDefaultLangID());
+        InitLangComboBox(hCmb3, GetUserDefaultLangID());
 
         return TRUE;
     }
@@ -61,18 +62,18 @@ public:
         }
         else
         {
-            if (!Cmb1_CheckType(hCmb1, Type))
+            if (!CheckTypeComboBox(hCmb1, Type))
                 return;
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         ID_OR_STRING Name;
-        if (!Res_HasNoName(Type) && !Cmb2_CheckName(hCmb2, Name))
+        if (!Res_HasNoName(Type) && !CheckNameComboBox(hCmb2, Name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         WORD Lang;
-        if (!Cmb3_CheckLang(hCmb3, Lang))
+        if (!CheckLangComboBox(hCmb3, Lang))
             return;
 
         std::wstring File;

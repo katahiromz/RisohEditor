@@ -568,7 +568,7 @@ HWND ToolBar_Create(HWND hwndParent)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
+void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
     for (size_t i = 0; i < g_Langs.size(); ++i)
     {
@@ -582,7 +582,7 @@ void Cmb3_InsertLangItemsAndSelectLang(HWND hCmb3, LANGID langid)
     }
 }
 
-BOOL Cmb1_CheckType(HWND hCmb1, ID_OR_STRING& Type)
+BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
@@ -610,7 +610,7 @@ BOOL Cmb1_CheckType(HWND hCmb1, ID_OR_STRING& Type)
     return TRUE;
 }
 
-BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name)
+BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
@@ -637,7 +637,7 @@ BOOL Cmb2_CheckName(HWND hCmb2, ID_OR_STRING& Name)
     return TRUE;
 }
 
-BOOL Cmb3_CheckLang(HWND hCmb3, WORD& Lang)
+BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
