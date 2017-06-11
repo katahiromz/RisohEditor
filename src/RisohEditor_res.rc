@@ -73,15 +73,3 @@ FILETYPE        VFT_APP
 #ifndef NO_JAPS_ALLOWED
     #include "lang\\ja-JP.rc"
 #endif
-
-3 MENU
-{
-    MENUITEM "TEST1", 1
-    MENUITEM "TEST2", 2
-    POPUP "TEST3"
-    {
-        MENUITEM "TEST4", 4
-        MENUITEM SEPARATOR
-        MENUITEM "TEST5", 5
-    }
-}

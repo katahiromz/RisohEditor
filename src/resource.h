@@ -26,6 +26,10 @@
 #define ID_CANCELEDIT       123
 #define ID_SHOWDIALOG       124
 #define ID_GUIEDIT          125
+#define ID_ADDCTRL          126
+#define ID_DELCTRL          127
+#define ID_CTRLPROP         128
+#define ID_DLGPROP          129
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
