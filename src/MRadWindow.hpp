@@ -75,7 +75,6 @@ public:
         switch (uMsg)
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
@@ -111,7 +110,6 @@ public:
 
     void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
-        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
     }
 
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
@@ -152,11 +150,6 @@ public:
 
         DoSubclassChildren(hwnd);
         return FALSE;
-    }
-
-    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
-    {
-        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwndContext, xPos, yPos, SendMessage);
     }
 };
 
@@ -223,18 +216,11 @@ public:
             if (PtInRect(&rc, pt))
             {
                 ScreenToClient(Singleton()->m_rad_dialog, &pt);
-                BOOL IsVisible = IsWindowVisible(Singleton()->m_rubber_band);
-                DestroyWindow(Singleton()->m_rubber_band);
                 HWND hwnd = ChildWindowFromPointEx(Singleton()->m_rad_dialog, pt, CWP_ALL);
-                Singleton()->m_rubber_band.CreateDx(Singleton()->m_rad_dialog, FALSE);
                 if (wParam == WM_RBUTTONDOWN)
                 {
-                    PostMessage(Singleton()->m_rad_dialog, WM_CONTEXTMENU,
-                        (WPARAM)hwnd, MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
-                    if (IsVisible)
-                    {
-                        ShowWindow(Singleton()->m_rubber_band, SW_SHOWNOACTIVATE);
-                    }
+                    PostMessage(Singleton()->m_hwnd, WM_CONTEXTMENU, (WPARAM)hwnd,
+                                MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
                     return TRUE;
                 }
                 else if (wParam == WM_LBUTTONDOWN)
@@ -243,8 +229,11 @@ public:
                     {
                         hwnd = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
                         Singleton()->m_rubber_band.SetTarget(hwnd);
-                        Singleton()->m_rubber_band.FitToTarget();
-                        ShowWindow(Singleton()->m_rubber_band, SW_SHOWNOACTIVATE);
+                        return TRUE;
+                    }
+                    else
+                    {
+                        Singleton()->m_rubber_band.SetTarget(NULL);
                         return TRUE;
                     }
                 }
@@ -256,9 +245,12 @@ public:
 
     BOOL HookMouse(HWND hwnd)
     {
-        Singleton() = this;
-        DWORD dwThreadID = GetCurrentThreadId();
-        m_mouse_hook = SetWindowsHookEx(WH_MOUSE, MouseProc, NULL, dwThreadID);
+        if (m_mouse_hook == NULL)
+        {
+            Singleton() = this;
+            DWORD dwThreadID = GetCurrentThreadId();
+            m_mouse_hook = SetWindowsHookEx(WH_MOUSE, MouseProc, NULL, dwThreadID);
+        }
         return (m_mouse_hook != NULL);
     }
 
@@ -466,25 +458,57 @@ public:
         }
     }
 
+    void OnDlgProc(HWND hwnd)
+    {
+        // FIXME
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         UnhookMouse();
         BOOL IsVisible = IsWindowVisible(m_rubber_band);
         ShowWindow(m_rubber_band, SW_HIDE);
 
-        FORWARD_WM_COMMAND(GetParent(hwnd), id, hwndCtl, codeNotify, SendMessage);
+        // FIXME
+        switch (id)
+        {
+        case ID_ADDCTRL:
+            break;
+        case ID_DELCTRL:
+            break;
+        case ID_CTRLPROP:
+            break;
+        case ID_DLGPROP:
+            OnDlgProc(hwnd);
+            break;
+        }
 
-        if (IsVisible)
+        if (IsVisible && ::IsWindow(m_rubber_band))
             ShowWindow(m_rubber_band, SW_SHOWNOACTIVATE);
         HookMouse(hwnd);
     }
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
-        HMENU hSubMenu = GetSubMenu(hMenu, 0);
+        UnhookMouse();
 
-        m_rubber_band.InvalidateClient();
+        POINT pt;
+        pt.x = xPos;
+        pt.y = yPos;
+        ScreenToClient(m_rad_dialog, &pt);
+        HWND hCtrl = ChildWindowFromPointEx(m_rad_dialog, pt, CWP_ALL);
+        hCtrl = GetPrimaryControl(hCtrl, m_rad_dialog);
+        if (hCtrl != m_rad_dialog.m_hwnd && hCtrl != m_hwnd)
+        {
+            m_rubber_band.SetTarget(hCtrl);
+        }
+        else
+        {
+            m_rubber_band.SetTarget(NULL);
+        }
+
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(3));
+        HMENU hSubMenu = GetSubMenu(hMenu, 0);
  
         LPRECT prc = NULL;
         RECT rc;
@@ -494,13 +518,12 @@ public:
             prc = &rc;
         }
 
-        UnhookMouse();
-        TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+        INT nCmd = TrackPopupMenu(hSubMenu,
+            TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
             xPos, yPos, 0, hwnd, prc);
         PostMessage(hwnd, WM_NULL, 0, 0);
+        SendMessage(hwnd, WM_COMMAND, nCmd, 0);
         HookMouse(hwnd);
-
-        m_rubber_band.InvalidateClient();
     }
 
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)

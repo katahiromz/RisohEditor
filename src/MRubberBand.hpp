@@ -379,6 +379,15 @@ public:
     void SetTarget(HWND hwndTarget)
     {
         m_target.m_hwnd = hwndTarget;
+        if (hwndTarget)
+        {
+            FitToTarget();
+            ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
+        }
+        else
+        {
+            ShowWindow(m_hwnd, SW_HIDE);
+        }
     }
 };
 
