@@ -338,6 +338,7 @@ public:
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
             case WM_EXITSIZEMOVE:
                 m_rubber_band.InvalidateClient();
                 InvalidateRect(m_rubber_band, NULL, FALSE);
@@ -345,6 +346,7 @@ public:
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
+
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
@@ -455,6 +457,20 @@ public:
                 return;
             }
             m_rubber_band.FitToTarget();
+        }
+    }
+
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        if (m_rubber_band.m_target)
+        {
+            EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
         }
     }
 
