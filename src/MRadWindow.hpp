@@ -458,7 +458,7 @@ public:
         }
     }
 
-    void OnDlgProc(HWND hwnd)
+    void OnDlgProp(HWND hwnd)
     {
         // FIXME
     }
@@ -479,7 +479,7 @@ public:
         case ID_CTRLPROP:
             break;
         case ID_DLGPROP:
-            OnDlgProc(hwnd);
+            OnDlgProp(hwnd);
             break;
         }
 
