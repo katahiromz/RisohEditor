@@ -56,7 +56,7 @@ public:
     {
     }
 
-    INT GetTabIndex(HWND hwndTargetCtrl) const
+    INT GetCtrlIndex(HWND hwndTargetCtrl) const
     {
         INT index = 0;
         for (HWND hwndCtrl = ::GetTopWindow(m_hwnd);
@@ -184,9 +184,9 @@ public:
         UnhookMouse();
     }
 
-    INT GetTabIndex(HWND hwndTargetCtrl) const
+    INT GetCtrlIndex(HWND hwndTargetCtrl) const
     {
-        return m_rad_dialog.GetTabIndex(hwndTargetCtrl);
+        return m_rad_dialog.GetCtrlIndex(hwndTargetCtrl);
     }
 
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
