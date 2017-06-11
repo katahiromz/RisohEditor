@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    22   /* Version 22 */
+#define MZC4_MWINDOWBASE_HPP_    23   /* Version 23 */
 
 #pragma once
 
@@ -90,11 +90,13 @@ LPCTSTR MZCAPI GetStringDx2(LPCTSTR psz);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MWindowBase
+class MWindowBase
 {
-    HWND m_hwnd;
-    WNDPROC m_fnOldProc;
+protected:
     MSG m_msg;
+    WNDPROC m_fnOldProc;
+public:
+    HWND m_hwnd;
 
     MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
     {
@@ -518,15 +520,17 @@ private:
 
 #ifdef MZC4_FAT_AND_RICH
 public:
-    #include "WindowBaseRichMethods.hpp"
+    #include "MWindowBaseRichMethods.hpp"
 #endif
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MDialogBase : public MWindowBase
+class MDialogBase : public MWindowBase
 {
+protected:
     BOOL    m_bModal;
+public:
     INT     m_nDialogID;
 
     MDialogBase(INT nDialogID = 0) : m_bModal(FALSE), m_nDialogID(nDialogID)
@@ -652,7 +656,7 @@ struct MDialogBase : public MWindowBase
 
 #ifdef MZC4_FAT_AND_RICH
 public:
-    #include "DialogBaseRichMethods.hpp"
+    #include "MDialogBaseRichMethods.hpp"
 #endif
 };
 
