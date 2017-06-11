@@ -458,6 +458,21 @@ public:
         }
     }
 
+    void OnAddCtrl(HWND hwnd)
+    {
+        // FIXME
+    }
+
+    void OnDelCtrl(HWND hwnd)
+    {
+        // FIXME
+    }
+
+    void OnCtrlProp(HWND hwnd)
+    {
+        // FIXME
+    }
+
     void OnDlgProp(HWND hwnd)
     {
         // FIXME
@@ -469,14 +484,16 @@ public:
         BOOL IsVisible = IsWindowVisible(m_rubber_band);
         ShowWindow(m_rubber_band, SW_HIDE);
 
-        // FIXME
         switch (id)
         {
         case ID_ADDCTRL:
+            OnAddCtrl(hwnd);
             break;
         case ID_DELCTRL:
+            OnDelCtrl(hwnd);
             break;
         case ID_CTRLPROP:
+            OnCtrlProp(hwnd);
             break;
         case ID_DLGPROP:
             OnDlgProp(hwnd);
