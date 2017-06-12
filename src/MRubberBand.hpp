@@ -28,7 +28,7 @@ public:
     {
         return CreateWindowDx(hwndParent, NULL,
             (bVisible ? WS_VISIBLE : 0) | WS_POPUP | WS_THICKFRAME,
-            WS_EX_TOOLWINDOW | WS_EX_TOPMOST, x, y, cx, cy);
+            WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, x, y, cx, cy);
     }
 
     virtual LRESULT CALLBACK
@@ -49,6 +49,7 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONDOWN, OnNCRButtonDown);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_ACTIVATE, OnActivate);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         default:
             return DefaultProcDx(hwnd, uMsg, wParam, lParam);
         }
@@ -121,7 +122,6 @@ public:
     {
         if (!m_target)
         {
-            BringWindowToTop(m_hwnd);
             return;
         }
 
@@ -131,7 +131,6 @@ public:
 
         MoveWindow(m_target, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
-        BringWindowToTop(m_hwnd);
         InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
@@ -139,7 +138,6 @@ public:
     {
         if (!m_target)
         {
-            BringWindowToTop(m_hwnd);
             return;
         }
 
@@ -154,10 +152,9 @@ public:
 
         MoveWindow(m_hwnd, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
-        BringWindowToTop(m_hwnd);
 
         HRGN hRgn = GetRgnOrDrawOrHitTest(m_hwnd);
-        SetRgn(hRgn, FALSE);
+        SetRgn(hRgn);
         InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
@@ -174,17 +171,8 @@ public:
         OffsetRect(prc, -prc->left, -prc->top);
     }
 
-    void SetRgn(HRGN hRgn, BOOL bUpdating = FALSE)
+    void SetRgn(HRGN hRgn)
     {
-        if (!bUpdating)
-        {
-            RECT rc;
-            GetIdealClientRect(&rc);
-            HRGN hClientRgn = CreateRectRgnIndirect(&rc);
-            UnionRgn(hRgn, hRgn, hClientRgn);
-            DeleteObject(hClientRgn);
-        }
-
         HRGN hRgnOld = m_hRgn;
         SetWindowRgn(m_hwnd, hRgn, FALSE);
         m_hRgn = hRgn;
@@ -356,6 +344,9 @@ public:
 
     void SetTarget(HWND hwndTarget)
     {
+        if (m_hwnd == NULL)
+            return;
+
         m_target.m_hwnd = hwndTarget;
         if (IsWindowVisible(hwndTarget))
         {
@@ -365,6 +356,14 @@ public:
         else
         {
             ShowWindow(m_hwnd, SW_HIDE);
+        }
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        if (id == 666)
+        {
+            FitToTarget();
         }
     }
 };

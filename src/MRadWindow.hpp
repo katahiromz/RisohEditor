@@ -18,7 +18,11 @@ class MRadWindow;
 class MSubclassedControl : public MWindowBase
 {
 public:
-    MSubclassedControl()
+    HWND    m_hwndDialog;
+    HWND    m_hwndRubberBand;
+
+    MSubclassedControl(HWND hwndDialog, HWND hwndRubberBand)
+        : m_hwndDialog(hwndDialog), m_hwndRubberBand(hwndRubberBand)
     {
     }
 
@@ -29,6 +33,13 @@ public:
         {
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_NCDESTROY, OnNCDestroy);
+            HANDLE_MSG(hwnd, WM_MOVE, OnMove);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
+            //HANDLE_MSG(hwnd, WM_MOUSEACTIVATE, OnMouseActivate);
+            HANDLE_MSG(hwnd, WM_NCHITTEST, OnNCHitTest);
+            HANDLE_MSG(hwnd, WM_NCLBUTTONDOWN, OnNCLButtonDown);
+            HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
@@ -45,6 +56,67 @@ public:
     {
         delete this;
     }
+
+    BOOL SendMouseMsgToParent(HWND hwnd, UINT uMsg, WPARAM wParam, BOOL ScreenCoord)
+    {
+        HWND hwndParent = GetParent(hwnd);
+        if (hwndParent)
+        {
+            POINT pt;
+            GetCursorPos(&pt);
+            if (!ScreenCoord)
+                ScreenToClient(hwnd, &pt);
+            SendMessage(hwndParent, uMsg, wParam, MAKELPARAM(pt.x, pt.y));
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        InvalidateRect(hwnd, NULL, TRUE);
+        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, 0);
+    }
+
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        InvalidateRect(hwnd, NULL, TRUE);
+        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, 0);
+    }
+
+    BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+        return TRUE;
+    }
+
+    //int OnMouseActivate(HWND hwnd, HWND hwndTopLevel, UINT codeHitTest, UINT msg)
+    //{
+    //    return MA_NOACTIVATE;
+    //}
+
+    UINT OnNCHitTest(HWND hwnd, int x, int y)
+    {
+        HWND hwndParent = GetParent(hwnd);
+        if (GetClassWord(hwndParent, GCW_ATOM) != 0x8002)
+        {
+            return HTTRANSPARENT;
+        }
+        else
+        {
+            return HTCAPTION;
+        }
+    }
+
+    void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
+    {
+        DefaultProcDx(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, MAKELPARAM(x, y));
+    }
+
+    void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
+    {
+        DefaultProcDx(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, MAKELPARAM(x, y));
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -59,8 +131,7 @@ public:
     INT GetCtrlIndex(HWND hwndTargetCtrl) const
     {
         INT index = 0;
-        for (HWND hwndCtrl = ::GetTopWindow(m_hwnd);
-             hwndCtrl;
+        for (HWND hwndCtrl = ::GetTopWindow(m_hwnd); hwndCtrl;
              hwndCtrl = ::GetWindow(hwndCtrl, GW_HWNDNEXT))
         {
             if (hwndCtrl == hwndTargetCtrl)
@@ -125,20 +196,20 @@ public:
         }
     }
 
-    void DoSubclass(HWND hCtrl)
+    void DoSubclass(HWND hCtrl, HWND hwndRubberBand)
     {
-        MSubclassedControl *pCtrl = new MSubclassedControl;
+        MSubclassedControl *pCtrl = new MSubclassedControl(m_hwnd, hwndRubberBand);
         pCtrl->SubclassDx(hCtrl);
 
-        DoSubclassChildren(hCtrl);
+        DoSubclassChildren(hCtrl, hwndRubberBand);
     }
 
-    void DoSubclassChildren(HWND hwnd)
+    void DoSubclassChildren(HWND hwnd, HWND hwndRubberBand)
     {
         HWND hCtrl = GetTopWindow(hwnd);
         while (hCtrl)
         {
-            DoSubclass(hCtrl);
+            DoSubclass(hCtrl, hwndRubberBand);
             hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
         }
     }
@@ -147,9 +218,6 @@ public:
     {
         POINT pt = { 0, 0 };
         SetWindowPosDx(&pt);
-        SubclassDx(hwnd);
-
-        DoSubclassChildren(hwnd);
         return FALSE;
     }
 };
@@ -209,7 +277,7 @@ public:
             return CallNextHookEx(Singleton()->m_mouse_hook, nCode, wParam, lParam);
 
         MOUSEHOOKSTRUCT *pmhs = (MOUSEHOOKSTRUCT *)lParam;
-        if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN)
+        if (wParam == WM_NCLBUTTONDOWN || wParam == WM_RBUTTONDOWN)
         {
             RECT rc;
             GetWindowRect(Singleton()->m_rad_dialog, &rc);
@@ -224,18 +292,17 @@ public:
                                 MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
                     return TRUE;
                 }
-                else if (wParam == WM_LBUTTONDOWN)
+                else
                 {
-                    if (hwnd && Singleton()->m_rad_dialog.m_hwnd != hwnd)
+                    if (hwnd && Singleton()->m_hwnd != hwnd &&
+                        Singleton()->m_rad_dialog.m_hwnd != hwnd)
                     {
                         hwnd = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
                         Singleton()->m_rubber_band.SetTarget(hwnd);
-                        return TRUE;
                     }
                     else
                     {
                         Singleton()->m_rubber_band.SetTarget(NULL);
-                        return TRUE;
                     }
                 }
             }
@@ -315,6 +382,9 @@ public:
         {
             return FALSE;
         }
+
+        m_rad_dialog.SubclassDx(m_rad_dialog);
+        m_rad_dialog.DoSubclassChildren(m_rad_dialog, m_rubber_band);
 
         if (!HookMouse(hwnd))
         {
