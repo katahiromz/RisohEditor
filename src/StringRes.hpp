@@ -4,7 +4,7 @@
 #ifndef STRING_RES_HPP_
 #define STRING_RES_HPP_
 
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "Text.hpp"
 #include <map>
 
@@ -31,7 +31,7 @@ public:
     {
     }
 
-    BOOL LoadFromStream(const ByteStream& stream, WORD wName)
+    BOOL LoadFromStream(const MByteStreamEx& stream, WORD wName)
     {
         for (WORD i = 0; i < 16; ++i)
         {
@@ -57,7 +57,7 @@ public:
         return TRUE;
     }
 
-    BOOL SaveToStream(ByteStream& stream, WORD wName)
+    BOOL SaveToStream(MByteStreamEx& stream, WORD wName)
     {
         WORD first, last;
         GetRange(wName, first, last);

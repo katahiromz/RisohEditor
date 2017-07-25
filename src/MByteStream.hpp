@@ -1,34 +1,48 @@
-// ByteStream --- Byte Stream
+// MByteStream.hpp -- MZC4 byte stream                          -*- C++ -*-
+// This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
+////////////////////////////////////////////////////////////////////////////
+
+#ifndef MZC4_MBYTESTREAM_HPP_
+#define MZC4_MBYTESTREAM_HPP_       2       /* Version 2 */
+
+class MByteStream;
+
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef BYTE_STREAM_HPP_
-#define BYTE_STREAM_HPP_
+#ifndef _INC_WINDOWS
+    #include <windows.h>    // Win32API
+#endif
+#include <cassert>          // assert
 
-#include <windows.h>
-#include <vector>
-#include "id_string.hpp"
+#include <vector>           // for std::vector
+#include <string>           // for std::string and std::wstring
 
 //////////////////////////////////////////////////////////////////////////////
 
-class ByteStream
+class MByteStream
 {
 public:
-    typedef std::vector<BYTE> DataType;
+    typedef std::vector<BYTE> data_type;
 
-    ByteStream() : m_pos(0)
+    MByteStream() : m_pos(0)
     {
     }
 
-    ByteStream(const DataType& data) : m_pos(0), m_data(data)
+    MByteStream(size_t size) : m_pos(0)
+    {
+        m_data.resize(size);
+    }
+
+    MByteStream(const data_type& data) : m_pos(0), m_data(data)
     {
     }
 
-    ByteStream(const void *ptr, size_t size) :
+    MByteStream(const void *ptr, size_t size) :
         m_pos(0), m_data((const BYTE *)ptr, (const BYTE *)ptr + size)
     {
     }
 
-    virtual ~ByteStream()
+    virtual ~MByteStream()
     {
     }
 
@@ -37,18 +51,23 @@ public:
         m_data.assign((const BYTE *)ptr, (const BYTE *)ptr + size);
     }
 
+    void assign(const void *ptr1, const void *ptr2)
+    {
+        m_data.assign((const BYTE *)ptr1, (const BYTE *)ptr2);
+    }
+
     void clear()
     {
         m_pos = 0;
         m_data.clear();
     }
 
-    DataType& data()
+    data_type& data()
     {
         return m_data;
     }
 
-    const DataType& data() const
+    const data_type& data() const
     {
         return m_data;
     }
@@ -319,30 +338,6 @@ public:
         return WriteData(&str[0], (str.size() + 1) * sizeof(WCHAR));
     }
 
-    BOOL ReadString(ID_OR_STRING& id_or_str) const
-    {
-        WORD w;
-        if (!PeekWord(w))
-            return FALSE;
-
-        if (w == 0)
-        {
-            ReadWord(w);
-            id_or_str.clear();
-            return TRUE;
-        }
-
-        if (w == 0xFFFF)
-        {
-            WORD w;
-            if (!ReadWord(w) || !ReadWord(w))
-                return FALSE;
-            id_or_str = w;
-            return TRUE;
-        }
-
-        return ReadSz(id_or_str.m_Str);
-    }
     BOOL WriteString(LPCWSTR psz)
     {
         if (psz == NULL)
@@ -359,39 +354,11 @@ public:
         return WriteData(psz, (lstrlenW(psz) + 1) * sizeof(WCHAR));
     }
 
-    BOOL ReadID(ID_OR_STRING& id_or_str) const
-    {
-        WORD w;
-        if (!PeekWord(w))
-            return FALSE;
-        if (w == 0xFFFF)
-        {
-            ReadWord(w);
-            if (ReadWord(w))
-            {
-                id_or_str = w;
-                return TRUE;
-            }
-            return FALSE;
-        }
-        return ReadSz(id_or_str.m_Str);
-    }
-    BOOL WriteID(const ID_OR_STRING& id_or_str)
-    {
-        if (id_or_str.is_str())
-        {
-            return WriteSz(id_or_str.m_Str);
-        }
-        return WriteWord(0xFFFF) && WriteWord(id_or_str.m_ID);
-    }
-
 protected:
     mutable DWORD       m_pos;
-    DataType            m_data;
+    data_type           m_data;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef BYTE_STREAM_HPP_
-
-//////////////////////////////////////////////////////////////////////////////
+#endif  // ndef MZC4_MBYTESTREAM_HPP_

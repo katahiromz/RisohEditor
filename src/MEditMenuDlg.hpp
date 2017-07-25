@@ -31,14 +31,14 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
+        ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
         str_trim(m_entry.Caption);
         if (m_entry.Caption[0] == L'"')
         {
             str_unquote(m_entry.Caption);
         }
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
+        ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
         str_trim(m_entry.CommandID);
 
         DWORD dwType = 0, dwState = 0;
@@ -79,7 +79,7 @@ public:
 
         ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -90,7 +90,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         case chx6:
             if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
@@ -173,14 +173,14 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
+        ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
         str_trim(m_entry.Caption);
         if (m_entry.Caption[0] == L'"')
         {
             str_unquote(m_entry.Caption);
         }
 
-        GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
+        ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
         str_trim(m_entry.CommandID);
 
         DWORD dwType = 0, dwState = 0;
@@ -221,7 +221,7 @@ public:
 
         ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -232,7 +232,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         case chx6:
             if (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED)
@@ -708,7 +708,7 @@ public:
             }
         }
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -740,7 +740,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         }
     }

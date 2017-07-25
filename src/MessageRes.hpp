@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "Text.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ public:
 
     MessageRes() { }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         m_map.clear();
         if (stream.size() < 4)
@@ -94,7 +94,7 @@ public:
         return TRUE;
     }
 
-    BOOL SaveToStream(ByteStream& stream)
+    BOOL SaveToStream(MByteStreamEx& stream)
     {
         if (m_map.empty())
             return TRUE;

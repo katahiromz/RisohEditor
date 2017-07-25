@@ -8,7 +8,7 @@
 #include <cassert>
 #include <vector>
 
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "Text.hpp"
 
 std::wstring str_vkey(WORD w);
@@ -39,7 +39,7 @@ public:
     typedef std::vector<entry_type>     entries_type;
     AccelRes() { }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         m_entries.clear();
         if (stream.size() < sizeof(entry_type))

@@ -125,7 +125,7 @@ BOOL DoReplaceBitmap(HWND hwnd,
 
 #include "id_string.hpp"
 #include "Text.hpp"
-#include "ByteStream.hpp"
+#include "MByteStream.hpp"
 
 #include "AccelRes.hpp"
 #include "IconRes.hpp"

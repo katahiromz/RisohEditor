@@ -111,7 +111,7 @@ public:
                 Res_DeleteNames(m_Entries, Type, Lang);
             }
 
-            ByteStream stream;
+            MByteStreamEx stream;
             if (Type == RT_ACCELERATOR)
             {
                 DWORD Size;
@@ -191,13 +191,13 @@ public:
             }
         }
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnPsh1(HWND hwnd)
     {
         WCHAR File[MAX_PATH];
-        GetDlgItemText(hwnd, edt1, File, _countof(File));
+        ::GetDlgItemText(hwnd, edt1, File, _countof(File));
 
         std::wstring strFile = File;
         str_trim(strFile);
@@ -210,7 +210,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ALLFILES));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_ADDRES);
+        ofn.lpstrTitle = LoadStringDx(IDS_ADDRES);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"bin";
@@ -228,7 +228,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         case psh1:
             OnPsh1(hwnd);

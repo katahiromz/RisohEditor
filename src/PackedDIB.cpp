@@ -234,7 +234,7 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& Data, HBITMAP hbm)
 
     DeleteDC(hDC);
 
-    ByteStream bs;
+    MByteStreamEx bs;
     if (bs.WriteRaw(*pbmih) &&
         bs.WriteData(bi.bmiColors, cbColors) &&
         bs.WriteData(&Bits[0], Bits.size()))

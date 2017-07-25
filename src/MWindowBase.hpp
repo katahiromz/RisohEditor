@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    41     /* Version 41 */
+#define MZC4_MWINDOWBASE_HPP_    42     /* Version 42 */
 
 class MWindowBase;
 class MDialogBase;
@@ -473,6 +473,12 @@ public:
     MDialogBase(HWND hwndOwner, LPCTSTR pDialogName)
         : m_bModal(FALSE), m_hwndOwner(hwndOwner),
           m_pDialogName(pDialogName)
+    {
+    }
+
+    MDialogBase(INT nDialogID)
+        : m_bModal(FALSE), m_hwndOwner(NULL),
+          m_pDialogName(MAKEINTRESOURCE(nDialogID))
     {
     }
 

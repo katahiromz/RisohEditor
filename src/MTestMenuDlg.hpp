@@ -28,7 +28,7 @@ public:
         switch (id)
         {
         case IDOK: case IDCANCEL:
-            EndDialog(hwnd, id);
+            EndDialog(id);
             break;
         }
     }

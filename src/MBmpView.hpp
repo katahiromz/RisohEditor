@@ -32,11 +32,6 @@ public:
         wcx.lpszMenuName = NULL;
     }
 
-    operator HBITMAP() const
-    {
-        return m_hBitmap;
-    }
-
     MBmpView& operator=(HBITMAP hbm)
     {
         DestroyBmp();

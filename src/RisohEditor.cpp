@@ -437,7 +437,7 @@ BOOL DoAddBin(HWND hwnd,
               WORD Lang,
               const std::wstring& File)
 {
-    ByteStream bs;
+    MByteStreamEx bs;
     if (!bs.LoadFromFile(File.c_str()))
         return FALSE;
 
@@ -453,7 +453,7 @@ BOOL DoReplaceBin(HWND hwnd,
                   WORD Lang,
                   const std::wstring& File)
 {
-    ByteStream bs;
+    MByteStreamEx bs;
     if (!bs.LoadFromFile(File.c_str()))
         return FALSE;
 
@@ -1243,18 +1243,18 @@ public:
     {
         m_bmp_view.DestroyBmp();
 
-        SetWindowTextW(m_hBinEdit, NULL);
-        ShowWindow(m_hBinEdit, SW_HIDE);
+        ::SetWindowTextW(m_hBinEdit, NULL);
+        ::ShowWindow(m_hBinEdit, SW_HIDE);
         Edit_SetModify(m_hBinEdit, FALSE);
 
-        SetWindowTextW(m_hSrcEdit, NULL);
-        ShowWindow(m_hSrcEdit, SW_HIDE);
+        ::SetWindowTextW(m_hSrcEdit, NULL);
+        ::ShowWindow(m_hSrcEdit, SW_HIDE);
         Edit_SetModify(m_hSrcEdit, FALSE);
 
-        ShowWindow(m_bmp_view, SW_HIDE);
-        ShowWindow(m_hToolBar, SW_HIDE);
+        ::ShowWindow(m_bmp_view, SW_HIDE);
+        ::ShowWindow(m_hToolBar, SW_HIDE);
 
-        PostMessageW(hwnd, WM_SIZE, 0, 0);
+        ::PostMessageW(hwnd, WM_SIZE, 0, 0);
 
         m_bInEdit = FALSE;
     }
@@ -1263,7 +1263,7 @@ public:
     {
         if (FileName == 0 || FileName[0] == UNICODE_NULL)
         {
-            SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+            ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
             return TRUE;
         }
 
@@ -1276,11 +1276,11 @@ public:
         if (pch)
         {
             wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-            SetWindowTextW(hwnd, sz);
+            ::SetWindowTextW(hwnd, sz);
         }
         else
         {
-            SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+            ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
         }
         return TRUE;
     }
@@ -1319,7 +1319,7 @@ public:
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTRES);
+        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"res";
@@ -1360,7 +1360,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTICO);
+        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"ico";
@@ -1389,7 +1389,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTCUR);
+        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"cur";
@@ -1418,7 +1418,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx2(IDS_EXTRACTBMP);
+        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTBMP);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"bmp";
@@ -1469,7 +1469,7 @@ public:
         }
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_SAVEAS);
+        ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
         if (GetSaveFileNameW(&ofn))
@@ -1568,7 +1568,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_OPEN);
+        ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"exe";
@@ -1615,7 +1615,7 @@ public:
         Params.hwndOwner = hwnd;
         Params.hInstance = g_hInstance;
         Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
-        Params.lpszCaption = LoadStringDx2(IDS_APPNAME);
+        Params.lpszCaption = LoadStringDx(IDS_APPNAME);
         Params.dwStyle = MB_OK | MB_USERICON;
         Params.lpszIcon = MAKEINTRESOURCEW(1);
         Params.dwLanguageId = LANG_USER_DEFAULT;
@@ -1636,7 +1636,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_IMPORTRES);
+        ofn.lpstrTitle = LoadStringDx(IDS_IMPORTRES);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"res";
@@ -1732,10 +1732,10 @@ public:
             return;
         }
 
-        INT cchText = GetWindowTextLengthW(m_hSrcEdit);
+        INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
         std::wstring WideText;
         WideText.resize(cchText);
-        GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
+        ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
         if (DoCompileParts(hwnd, WideText))
         {
@@ -1764,7 +1764,7 @@ public:
         }
 
         const ResEntry::DataType& data = Entry.data;
-        ByteStream stream(data);
+        MByteStreamEx stream(data);
         if (Entry.type == RT_ACCELERATOR)
         {
             AccelRes accel_res;
@@ -1804,7 +1804,7 @@ public:
                 DestroyWindow(m_rad_window);
             }
 
-            ByteStream stream(Entry.data);
+            MByteStreamEx stream(Entry.data);
             m_rad_window.m_dialog_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
@@ -1823,7 +1823,7 @@ public:
             ResEntries::iterator it, end = found.end();
             for (it = found.begin(); it != end; ++it)
             {
-                ByteStream stream(it->data);
+                MByteStreamEx stream(it->data);
                 if (!str_res.LoadFromStream(stream, it->name.m_ID))
                     return;
             }
@@ -1833,7 +1833,7 @@ public:
             if (nID == IDOK)
             {
                 std::wstring WideText = str_res.Dump();
-                SetWindowTextW(m_hSrcEdit, WideText.c_str());
+                ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
                 if (DoCompileParts(hwnd, WideText))
                 {
@@ -2252,19 +2252,19 @@ public:
 
         HMENU hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(2));
         OnInitMenu(hwnd, hMenu);
-        HMENU hSubMenu = GetSubMenu(hMenu, 0);
+        HMENU hSubMenu = ::GetSubMenu(hMenu, 0);
         if (hMenu == NULL || hSubMenu == NULL)
             return;
 
         ClientToScreen(hwndContext, &pt);
 
-        SetForegroundWindow(hwndContext);
+        ::SetForegroundWindow(hwndContext);
         INT id;
         UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
         id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
                             hwndContext, NULL);
-        PostMessageW(hwndContext, WM_NULL, 0, 0);
-        DestroyMenu(hMenu);
+        ::PostMessageW(hwndContext, WM_NULL, 0, 0);
+        ::DestroyMenu(hMenu);
 
         if (id)
         {
@@ -2277,12 +2277,12 @@ public:
         BITMAP bm;
         m_bmp_view = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
     void PreviewCursor(HWND hwnd, const ResEntry& Entry)
@@ -2293,11 +2293,11 @@ public:
         std::wstring str = DumpCursorInfo(bm);
         DestroyCursor(hCursor);
 
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
@@ -2305,11 +2305,11 @@ public:
         m_bmp_view = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
@@ -2319,23 +2319,23 @@ public:
 
         std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
         assert(str.size());
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
     void PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     {
         m_bmp_view = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
     void PreviewPNG(HWND hwnd, const ResEntry& Entry)
@@ -2346,76 +2346,76 @@ public:
             BITMAP bm;
             GetObject(hbm, sizeof(bm), &bm);
             m_bmp_view = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
-            if (m_bmp_view)
+            if (!!m_bmp_view)
             {
-                ii_fill(m_bmp_view, GetStockBrush(LTGRAY_BRUSH));
-                ii_draw(m_bmp_view, hbm, 0, 0);
+                ii_fill(m_bmp_view.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
+                ii_draw(m_bmp_view.m_hBitmap, hbm, 0, 0);
             }
             DeleteObject(hbm);
         }
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
+        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
     }
 
 
     void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
-        ByteStream stream(Entry.data);
+        MByteStreamEx stream(Entry.data);
         AccelRes accel;
         if (accel.LoadFromStream(stream))
         {
             std::wstring str = accel.Dump(Entry.name);
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
     void PreviewMessage(HWND hwnd, const ResEntry& Entry)
     {
-        ByteStream stream(Entry.data);
+        MByteStreamEx stream(Entry.data);
         MessageRes mes;
         if (mes.LoadFromStream(stream))
         {
             std::wstring str = mes.Dump();
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
     void PreviewString(HWND hwnd, const ResEntry& Entry)
     {
-        ByteStream stream(Entry.data);
+        MByteStreamEx stream(Entry.data);
         StringRes str_res;
         WORD nTableID = Entry.name.m_ID;
         if (str_res.LoadFromStream(stream, nTableID))
         {
             std::wstring str = str_res.Dump(nTableID);
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
     void PreviewHtml(HWND hwnd, const ResEntry& Entry)
     {
         std::wstring str = BinaryToText(Entry.data);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMenu(HWND hwnd, const ResEntry& Entry)
     {
-        ByteStream stream(Entry.data);
+        MByteStreamEx stream(Entry.data);
         MenuRes menu_res;
         if (menu_res.LoadFromStream(stream))
         {
             std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2425,20 +2425,20 @@ public:
         if (ver_res.LoadFromData(Entry.data))
         {
             std::wstring str = ver_res.Dump(Entry.name);
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
     void PreviewDialog(HWND hwnd, const ResEntry& Entry)
     {
-        ByteStream stream(Entry.data);
+        MByteStreamEx stream(Entry.data);
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {
             std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
-            SetWindowTextW(m_hSrcEdit, str.c_str());
-            ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+            ::SetWindowTextW(m_hSrcEdit, str.c_str());
+            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2451,14 +2451,14 @@ public:
         ResEntries::iterator it, end = found.end();
         for (it = found.begin(); it != end; ++it)
         {
-            ByteStream stream(it->data);
+            MByteStreamEx stream(it->data);
             if (!str_res.LoadFromStream(stream, it->name.m_ID))
                 return;
         }
 
         std::wstring str = str_res.Dump();
-        SetWindowTextW(m_hSrcEdit, str.c_str());
-        ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
@@ -2470,11 +2470,11 @@ public:
         HidePreview(hwnd);
 
         std::wstring str = DumpDataAsString(Entry.data);
-        SetWindowTextW(m_hBinEdit, str.c_str());
+        ::SetWindowTextW(m_hBinEdit, str.c_str());
         if (str.empty())
-            ShowWindow(m_hBinEdit, SW_HIDE);
+            ::ShowWindow(m_hBinEdit, SW_HIDE);
         else
-            ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
 
         if (Entry.type == RT_ICON)
         {
@@ -2545,14 +2545,14 @@ public:
         }
         else if (HIWORD(lParam) == I_STRING)
         {
-            SetWindowTextW(m_hBinEdit, NULL);
-            ShowWindow(m_hBinEdit, SW_HIDE);
+            ::SetWindowTextW(m_hBinEdit, NULL);
+            ::ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewStringTable(hwnd, Entry);
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
-            SetWindowTextW(m_hBinEdit, NULL);
-            ShowWindow(m_hBinEdit, SW_HIDE);
+            ::SetWindowTextW(m_hBinEdit, NULL);
+            ::ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewMessageTable(hwnd, Entry);
         }
 
@@ -2560,7 +2560,7 @@ public:
         {
             SetWindowFont(m_hSrcEdit, m_hLargeFont, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
-            SetFocus(m_hSrcEdit);
+            ::SetFocus(m_hSrcEdit);
 
             if (Res_CanGuiEdit(Entry.type))
             {
@@ -2577,12 +2577,12 @@ public:
             {
                 ToolBar_Update(m_hToolBar, 0);
             }
-            ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
+            ::ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
-            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
-            ShowWindow(g_hTreeView, SW_HIDE);
-            ShowWindow(m_hBinEdit, SW_HIDE);
-            SetMenu(hwnd, NULL);
+            ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ::ShowWindow(g_hTreeView, SW_HIDE);
+            ::ShowWindow(m_hBinEdit, SW_HIDE);
+            ::SetMenu(hwnd, NULL);
 
             m_bInEdit = TRUE;
         }
@@ -2590,12 +2590,12 @@ public:
         {
             SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, TRUE);
-            SetFocus(g_hTreeView);
+            ::SetFocus(g_hTreeView);
 
-            ShowWindow(m_hToolBar, SW_HIDE);
-            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
-            ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
-            SetMenu(hwnd, m_hMenu);
+            ::ShowWindow(m_hToolBar, SW_HIDE);
+            ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ::ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
+            ::SetMenu(hwnd, m_hMenu);
 
             m_bInEdit = FALSE;
         }
@@ -2759,7 +2759,7 @@ public:
         output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
         BOOL Success = FALSE;
-        ByteStream stream;
+        MByteStreamEx stream;
 
         MProcessMaker pmaker;
         pmaker.SetShowWindow(SW_HIDE);
@@ -2820,14 +2820,14 @@ public:
         {
             if (output.empty())
             {
-                SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-                ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+                ::SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+                ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             }
             else
             {
                 output.insert(output.end(), 0);
-                SetWindowTextA(m_hBinEdit, (char *)&output[0]);
-                ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+                ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
+                ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             }
         }
 
@@ -2845,10 +2845,10 @@ public:
             {
             case IDYES:
                 {
-                    INT cchText = GetWindowTextLengthW(m_hSrcEdit);
+                    INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
                     std::wstring WideText;
                     WideText.resize(cchText);
-                    GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
+                    ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
                     if (!DoCompileParts(hwnd, WideText))
                         return FALSE;
@@ -2996,13 +2996,13 @@ public:
 
     BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
     {
-        ByteStream bs(Entry.data);
+        MByteStreamEx bs(Entry.data);
         return bs.SaveToFile(FileName);
     }
 
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (!stream.LoadFromFile(ResFile))
             return FALSE;
 
@@ -3035,7 +3035,7 @@ public:
 
     BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries)
     {
-        ByteStream bs;
+        MByteStreamEx bs;
         ResourceHeader header;
         if (!header.WriteTo(bs))
             return FALSE;
@@ -3158,7 +3158,7 @@ public:
 
         FileHeader.bfOffBits = sizeof(FileHeader) + Offset;
 
-        ByteStream bs;
+        MByteStreamEx bs;
         if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&Entry[0], Entry.size()))
             return FALSE;
 

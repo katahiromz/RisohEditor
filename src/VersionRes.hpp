@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "Text.hpp"
 #include "id_string.hpp"
 
@@ -39,7 +39,7 @@ class VersionRes
 public:
     VersionRes() { }
 
-    BOOL VarsFromStream(Vars& vars, const ByteStream& stream)
+    BOOL VarsFromStream(Vars& vars, const MByteStreamEx& stream)
     {
         Var var;
 
@@ -78,7 +78,7 @@ public:
     {
         ZeroMemory(&m_fixed, sizeof(m_fixed));
 
-        ByteStream stream(data);
+        MByteStreamEx stream(data);
         if (!VarsFromStream(m_vars, stream))
             return FALSE;
 

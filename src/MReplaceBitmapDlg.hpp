@@ -32,13 +32,13 @@ public:
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         if (m_Entry.name.is_str())
         {
-            SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
+            ::SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
         }
         else
         {
-            SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
+            ::SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
         }
-        EnableWindow(hCmb2, FALSE);
+        ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -72,13 +72,13 @@ public:
             return;
         }
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnPsh1(HWND hwnd)
     {
         WCHAR File[MAX_PATH];
-        GetDlgItemText(hwnd, edt1, File, _countof(File));
+        ::GetDlgItemText(hwnd, edt1, File, _countof(File));
 
         std::wstring strFile = File;
         str_trim(strFile);
@@ -91,7 +91,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_REPLACEBMP);
+        ofn.lpstrTitle = LoadStringDx(IDS_REPLACEBMP);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"bmp";
@@ -109,7 +109,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         case psh1:
             OnPsh1(hwnd);

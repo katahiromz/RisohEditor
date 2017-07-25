@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <vector>
 #include "id_string.hpp"
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ struct DialogItem
         ID = 0;
     }
 
-    BOOL LoadFromStream(const ByteStream& stream, BOOL Extended = FALSE)
+    BOOL LoadFromStream(const MByteStreamEx& stream, BOOL Extended = FALSE)
     {
         if (Extended)
             return LoadFromStreamEx(stream);
@@ -155,7 +155,7 @@ struct DialogItem
         return TRUE;
     }
 
-    BOOL LoadFromStreamEx(const ByteStream& stream)
+    BOOL LoadFromStreamEx(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
@@ -196,7 +196,7 @@ struct DialogItem
         return TRUE;
     }
 
-    BOOL SaveToStream(ByteStream& stream, BOOL Extended = FALSE) const
+    BOOL SaveToStream(MByteStreamEx& stream, BOOL Extended = FALSE) const
     {
         if (Extended)
         {
@@ -246,7 +246,7 @@ struct DialogItem
         return TRUE;
     }
 
-    BOOL SaveToStreamEx(ByteStream& stream) const
+    BOOL SaveToStreamEx(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -601,7 +601,7 @@ struct DialogRes
         return m_Signature == 0xFFFF;
     }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         if (stream.size() < sizeof(WORD) * 2)
             return FALSE;
@@ -640,7 +640,7 @@ struct DialogRes
         return FALSE;
     }
 
-    BOOL SaveToStream(ByteStream& stream) const
+    BOOL SaveToStream(MByteStreamEx& stream) const
     {
         if (IsExtended())
         {
@@ -681,7 +681,7 @@ struct DialogRes
 
     std::vector<BYTE> data() const
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         SaveToStream(stream);
         return stream.data();
     }
@@ -891,7 +891,7 @@ struct DialogRes
     }
 
 protected:
-    BOOL _headerFromStream(const ByteStream& stream)
+    BOOL _headerFromStream(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
@@ -935,7 +935,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerFromStreamEx(const ByteStream& stream)
+    BOOL _headerFromStreamEx(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
@@ -980,7 +980,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerToStream(ByteStream& stream) const
+    BOOL _headerToStream(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -1013,7 +1013,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerExToStream(ByteStream& stream) const
+    BOOL _headerExToStream(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 

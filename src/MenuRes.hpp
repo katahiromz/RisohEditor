@@ -11,7 +11,7 @@
 
 #include "id_string.hpp"
 #include "ConstantsDB.hpp"
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ public:
         return (m_header.wVersion == 1);
     }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         if (!stream.PeekWord(m_header.wVersion))
             return FALSE;
@@ -184,7 +184,7 @@ public:
         return TRUE;
     }
 
-    BOOL LoadFromStreamEx(const ByteStream& stream)
+    BOOL LoadFromStreamEx(const MByteStreamEx& stream)
     {
         if (!stream.ReadRaw(m_header))
         {
@@ -282,7 +282,7 @@ public:
 
     std::vector<BYTE> data() const
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (IsExtended())
             SaveToStreamEx(stream);
         else
@@ -290,7 +290,7 @@ public:
         return stream.data();
     }
 
-    BOOL SaveToStream(ByteStream& stream) const
+    BOOL SaveToStream(MByteStreamEx& stream) const
     {
         if (IsExtended())
             return SaveToStreamEx(stream);
@@ -325,7 +325,7 @@ public:
         return TRUE;
     }
 
-    BOOL SaveToStreamEx(ByteStream& stream) const
+    BOOL SaveToStreamEx(MByteStreamEx& stream) const
     {
         if (!IsExtended())
             return FALSE;

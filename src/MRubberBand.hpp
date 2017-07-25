@@ -54,7 +54,6 @@ public:
         default:
             return DefaultProcDx(hwnd, uMsg, wParam, lParam);
         }
-        return 0;
     }
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)

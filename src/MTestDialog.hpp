@@ -25,17 +25,17 @@ public:
             dwStyle = GetWindowStyle(hwnd);
             if (!(dwStyle & WS_SYSMENU))
             {
-                EndDialog(hwnd, IDOK);
+                EndDialog(IDOK);
             }
             break;
         case WM_LBUTTONDBLCLK:
-            EndDialog(hwnd, IDOK);
+            EndDialog(IDOK);
             break;
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
             case IDOK: case IDCANCEL:
-                EndDialog(hwnd, LOWORD(wParam));
+                EndDialog(LOWORD(wParam));
                 break;
             }
             break;

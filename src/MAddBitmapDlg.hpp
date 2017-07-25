@@ -40,7 +40,7 @@ public:
     void OnPsh1(HWND hwnd)
     {
         WCHAR File[MAX_PATH];
-        GetDlgItemText(hwnd, edt1, File, _countof(File));
+        ::GetDlgItemText(hwnd, edt1, File, _countof(File));
 
         std::wstring strFile = File;
         str_trim(strFile);
@@ -53,7 +53,7 @@ public:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
         ofn.lpstrFile = File;
         ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx2(IDS_ADDBMP);
+        ofn.lpstrTitle = LoadStringDx(IDS_ADDBMP);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"bmp";
@@ -115,7 +115,7 @@ public:
             }
         }
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -126,7 +126,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         case psh1:
             OnPsh1(hwnd);

@@ -33,10 +33,10 @@ public:
         {
         case IDOK:
             StrDlg_GetEntry(hwnd, m_entry);
-            EndDialog(hwnd, IDOK);
+            EndDialog(IDOK);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         }
     }
@@ -76,10 +76,10 @@ public:
         {
         case IDOK:
             StrDlg_GetEntry(hwnd, m_entry);
-            EndDialog(hwnd, IDOK);
+            EndDialog(IDOK);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         }
     }
@@ -279,7 +279,7 @@ public:
             m_str_res.map().insert(std::make_pair(wID, str));
         }
 
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -299,7 +299,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         }
     }

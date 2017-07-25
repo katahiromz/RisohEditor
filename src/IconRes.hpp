@@ -6,7 +6,7 @@
 
 #include <windows.h>
 #include <cassert>
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -142,7 +142,7 @@ public:
         return DWORD(m_images[index].size());
     }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         DWORD size = sizeof(ICONDIR);
         if (stream.size() < size)
@@ -177,14 +177,14 @@ public:
 
     BOOL LoadFromFile(LPCTSTR pszFileName)
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (!stream.LoadFromFile(pszFileName))
             return FALSE;
 
         return LoadFromStream(stream);
     }
 
-    BOOL SaveToStream(ByteStream& stream)
+    BOOL SaveToStream(MByteStreamEx& stream)
     {
         stream.clear();
         if (!IsIconDirOK())
@@ -218,7 +218,7 @@ public:
 
     BOOL SaveToFile(LPCTSTR pszFileName)
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (!SaveToStream(stream))
             return FALSE;
         return stream.SaveToFile(pszFileName);
@@ -355,7 +355,7 @@ public:
         return DWORD(m_images[index].size());
     }
 
-    BOOL LoadFromStream(const ByteStream& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream)
     {
         DWORD size = sizeof(ICONDIR);
         if (stream.size() < size)
@@ -387,7 +387,7 @@ public:
             local.yHotSpot = m_entries[i].yHotSpot;
             LPBYTE pb = (LPBYTE)stream.ptr(stream.pos());
 
-            ByteStream bs;
+            MByteStreamEx bs;
             if (!bs.WriteRaw(local))
                 return FALSE;
             if (!bs.WriteData(pb, m_entries[i].dwBytesInRes))
@@ -401,14 +401,14 @@ public:
 
     BOOL LoadFromFile(LPCTSTR pszFileName)
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (!stream.LoadFromFile(pszFileName))
             return FALSE;
 
         return LoadFromStream(stream);
     }
 
-    BOOL SaveToStream(ByteStream& stream)
+    BOOL SaveToStream(MByteStreamEx& stream)
     {
         stream.clear();
         if (!IsIconDirOK())
@@ -444,7 +444,7 @@ public:
 
     BOOL SaveToFile(LPCTSTR pszFileName)
     {
-        ByteStream stream;
+        MByteStreamEx stream;
         if (!SaveToStream(stream))
             return FALSE;
         return stream.SaveToFile(pszFileName);

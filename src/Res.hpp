@@ -10,7 +10,7 @@
 #include <commctrl.h>
 #include "id_string.hpp"
 #include "IconRes.hpp"
-#include "ByteStream.hpp"
+#include "MByteStreamEx.hpp"
 #include "Png.hpp"
 #include "Text.hpp"
 #include "PackedDIB.hpp"
@@ -134,7 +134,7 @@ struct ResourceHeader
         Characteristics = 0;
     }
 
-    BOOL ReadFrom(const ByteStream& bs)
+    BOOL ReadFrom(const MByteStreamEx& bs)
     {
         if (!bs.ReadRaw(DataSize) || !bs.ReadRaw(HeaderSize) ||
             !bs.ReadID(Type) || !bs.ReadID(Name))
@@ -154,7 +154,7 @@ struct ResourceHeader
         return TRUE;
     }
 
-    BOOL WriteTo(ByteStream& bs) const
+    BOOL WriteTo(MByteStreamEx& bs) const
     {
         if (!bs.WriteRaw(DataSize) || !bs.WriteRaw(HeaderSize) ||
             !bs.WriteID(Type) || !bs.WriteID(Name))
@@ -382,7 +382,7 @@ Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
 {
     assert(Entry.type == RT_GROUP_ICON);
 
-    ByteStream bs(Entry.data);
+    MByteStreamEx bs(Entry.data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -411,7 +411,7 @@ Res_DeleteGroupCursor(ResEntries& Entries, ResEntry& Entry)
 {
     assert(Entry.type == RT_GROUP_CURSOR);
 
-    ByteStream bs(Entry.data);
+    MByteStreamEx bs(Entry.data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -523,7 +523,7 @@ inline BOOL
 Res_AddBitmap(ResEntries& Entries, const ID_OR_STRING& Name,
               WORD Lang, const std::wstring& BitmapFile, BOOL Replace = FALSE)
 {
-    ByteStream stream;
+    MByteStreamEx stream;
     if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
         return FALSE;
 
@@ -1138,7 +1138,7 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
         offset += DirEntries[i].dwBytesInRes;
     }
 
-    ByteStream stream;
+    MByteStreamEx stream;
     if (!stream.WriteRaw(dir))
     {
         assert(0);
@@ -1208,7 +1208,7 @@ Res_ExtractIcon(const ResEntries& Entries,
     entry.dwBytesInRes = IconEntry.size();
     entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
 
-    ByteStream stream;
+    MByteStreamEx stream;
     if (!stream.WriteRaw(dir) ||
         !stream.WriteData(&entry, sizeof(entry)) ||
         !stream.WriteData(&IconEntry[0], IconEntry.size()))
@@ -1284,7 +1284,7 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
         offset += DirEntries[i].dwBytesInRes;
     }
 
-    ByteStream stream;
+    MByteStreamEx stream;
     if (!stream.WriteRaw(dir))
     {
         assert(0);
@@ -1366,7 +1366,7 @@ Res_ExtractCursor(const ResEntries& Entries,
     pb = LPBYTE(&CursorEntry[0]) + cbLocal;
     cb = CursorEntry.size() - cbLocal;
 
-    ByteStream stream;
+    MByteStreamEx stream;
     if (!stream.WriteRaw(dir) ||
         !stream.WriteData(&entry, sizeof(entry)) ||
         !stream.WriteData(pb, cb))

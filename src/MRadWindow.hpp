@@ -405,6 +405,7 @@ public:
 
         ShowWindow(m_rad_dialog, SW_SHOWNORMAL);
         UpdateWindow(m_rad_dialog);
+        return TRUE;
     }
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
