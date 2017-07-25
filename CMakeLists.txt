@@ -58,8 +58,6 @@ ENABLE_LANGUAGE(RC)
 
 # Win32
 add_executable(RisohEditor WIN32 
-    src/MFile.cpp
-    src/MProcessMaker.cpp
     src/PackedDIB.cpp
     src/Png.cpp
     src/RisohEditor.cpp
