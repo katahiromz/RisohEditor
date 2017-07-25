@@ -37,7 +37,6 @@ HEADERS = \
 	src\MWindowBase.hpp \
 	src\PackedDIB.hpp \
 	src\Png.hpp \
-	src\pstdint.h \
 	src\Res.hpp \
 	src\resource.h \
 	src\RisohEditor.hpp \
