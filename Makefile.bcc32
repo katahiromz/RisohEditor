@@ -23,7 +23,6 @@ HEADERS = \
 	src\MenuRes.hpp \
 	src\MessageRes.hpp \
 	src\MFile.hpp \
-	src\MFileAPI.h \
 	src\MProcessMaker.hpp \
 	src\MRadWindow.hpp \
 	src\MReplaceBinDlg.hpp \
