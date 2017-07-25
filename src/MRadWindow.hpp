@@ -75,13 +75,15 @@ public:
     void OnMove(HWND hwnd, int x, int y)
     {
         InvalidateRect(hwnd, NULL, TRUE);
-        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, 0);
+        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, (LPARAM)m_hwnd);
+        DefaultProcDx();
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         InvalidateRect(hwnd, NULL, TRUE);
-        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, 0);
+        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, (LPARAM)m_hwnd);
+        DefaultProcDx();
     }
 
     BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
@@ -198,6 +200,9 @@ public:
 
     void DoSubclass(HWND hCtrl, HWND hwndRubberBand)
     {
+        if (hCtrl == hwndRubberBand)
+            return;
+
         MSubclassedControl *pCtrl = new MSubclassedControl(m_hwnd, hwndRubberBand);
         pCtrl->SubclassDx(hCtrl);
 
@@ -268,6 +273,11 @@ public:
         }
     }
 
+    void SetTarget(HWND hwndTarget)
+    {
+        m_rubber_band.SetTarget(hwndTarget);
+    }
+
     static LRESULT CALLBACK
     MouseProc(INT nCode, WPARAM wParam, LPARAM lParam)
     {
@@ -284,27 +294,27 @@ public:
             POINT pt = pmhs->pt;
             if (PtInRect(&rc, pt))
             {
-                ScreenToClient(Singleton()->m_rad_dialog, &pt);
-                HWND hwnd = ChildWindowFromPointEx(Singleton()->m_rad_dialog, pt, CWP_ALL);
-                if (wParam == WM_RBUTTONDOWN)
+                HWND hwnd = WindowFromPoint(pt);
+                if (hwnd != Singleton()->m_rubber_band.m_hwnd)
                 {
-                    PostMessage(Singleton()->m_hwnd, WM_CONTEXTMENU, (WPARAM)hwnd,
-                                MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
-                    return TRUE;
-                }
-                else
-                {
-                    if (hwnd && Singleton()->m_hwnd != hwnd &&
-                        Singleton()->m_rad_dialog.m_hwnd != hwnd)
+                    ScreenToClient(Singleton()->m_rad_dialog, &pt);
+                    hwnd = ChildWindowFromPointEx(Singleton()->m_rad_dialog, pt, CWP_ALL);
+                    if (wParam == WM_RBUTTONDOWN)
                     {
-                        hwnd = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
-                        Singleton()->m_rubber_band.SetTarget(hwnd);
+                        PostMessage(Singleton()->m_hwnd, WM_CONTEXTMENU, (WPARAM)hwnd,
+                                    MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
+                        return TRUE;
                     }
-                    else
+                    if (hwnd)
                     {
-                        Singleton()->m_rubber_band.SetTarget(NULL);
+                        HWND hwndCtrl = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
+                        Singleton()->SetTarget(hwndCtrl);
                     }
                 }
+            }
+            else
+            {
+                Singleton()->SetTarget(NULL);
             }
         }
 
@@ -378,7 +388,7 @@ public:
             return FALSE;
         }
 
-        if (!m_rubber_band.CreateDx(m_rad_dialog, FALSE))
+        if (!m_rubber_band.CreateDx(m_hwnd, FALSE))
         {
             return FALSE;
         }
@@ -421,7 +431,7 @@ public:
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
             case WM_EXITSIZEMOVE:
-                m_rubber_band.SetTarget(m_rubber_band.m_target);
+                SetTarget(m_rubber_band.m_target);
                 return 0;
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
@@ -449,7 +459,7 @@ public:
                     {
                         hwndPrev = GetWindow(target, GW_HWNDLAST);
                     }
-                    m_rubber_band.SetTarget(hwndPrev);
+                    SetTarget(hwndPrev);
                 }
                 else
                 {
@@ -458,7 +468,7 @@ public:
                     {
                         hwndNext = GetWindow(target, GW_HWNDFIRST);
                     }
-                    m_rubber_band.SetTarget(hwndNext);
+                    SetTarget(hwndNext);
                 }
                 break;
             case VK_UP:
@@ -627,11 +637,11 @@ public:
         hCtrl = GetPrimaryControl(hCtrl, m_rad_dialog);
         if (hCtrl != m_rad_dialog.m_hwnd && hCtrl != m_hwnd)
         {
-            m_rubber_band.SetTarget(hCtrl);
+            SetTarget(hCtrl);
         }
         else
         {
-            m_rubber_band.SetTarget(NULL);
+            SetTarget(NULL);
         }
 
         HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(3));

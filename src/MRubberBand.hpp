@@ -13,13 +13,14 @@ class MRubberBand;
 class MRubberBand : public MWindowBase
 {
 protected:
-    HRGN m_hRgn;
+    HRGN    m_hRgn;
+    BOOL    m_bPosUpdating;
 
 public:
     MWindowBase     m_target;
     enum { m_nGripSize = 3 };
 
-    MRubberBand() : m_hRgn(NULL)
+    MRubberBand() : m_hRgn(NULL), m_bPosUpdating(FALSE)
     {
     }
 
@@ -28,7 +29,7 @@ public:
     {
         return CreateWindowDx(hwndParent, NULL,
             (bVisible ? WS_VISIBLE : 0) | WS_POPUP | WS_THICKFRAME,
-            WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, x, y, cx, cy);
+            WS_EX_TOOLWINDOW | WS_EX_TOPMOST/* | WS_EX_NOACTIVATE*/, x, y, cx, cy);
     }
 
     virtual LRESULT CALLBACK
@@ -129,8 +130,11 @@ public:
         GetIdealClientRect(&rc);
         MapWindowRect(m_hwnd, GetParent(m_target), &rc);
 
+        m_bPosUpdating = TRUE;
+        BringWindowToTop(m_target);
         MoveWindow(m_target, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
+        m_bPosUpdating = FALSE;
         InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
@@ -150,8 +154,11 @@ public:
 
         InflateRect(&rc, 2 * m_nGripSize, 2 * m_nGripSize);
 
+        m_bPosUpdating = TRUE;
+        BringWindowToTop(m_target);
         MoveWindow(m_hwnd, rc.left, rc.top,
             rc.right - rc.left, rc.bottom - rc.top, TRUE);
+        m_bPosUpdating = FALSE;
 
         HRGN hRgn = GetRgnOrDrawOrHitTest(m_hwnd);
         SetRgn(hRgn);
@@ -246,7 +253,7 @@ public:
 
     void OnMove(HWND hwnd, int x, int y)
     {
-        if (m_hwnd && m_target)
+        if (m_hwnd && m_target && !m_bPosUpdating)
         {
             FitToBand();
         }
@@ -254,7 +261,7 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-        if (m_hwnd && m_target)
+        if (m_hwnd && m_target && !m_bPosUpdating)
         {
             FitToBand();
         }
@@ -347,8 +354,12 @@ public:
         if (m_hwnd == NULL)
             return;
 
-        m_target.m_hwnd = hwndTarget;
-        if (IsWindowVisible(hwndTarget))
+        if (m_hwnd != hwndTarget)
+        {
+            m_target.m_hwnd = hwndTarget;
+        }
+
+        if (IsWindow(m_target))
         {
             FitToTarget();
             ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
@@ -363,7 +374,7 @@ public:
     {
         if (id == 666)
         {
-            FitToTarget();
+            SetTarget((HWND)m_msg.lParam);
         }
     }
 };
