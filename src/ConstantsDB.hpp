@@ -126,7 +126,8 @@ public:
         char buf[MAX_PATH];
         while (fgets(buf, MAX_PATH, fp))
         {
-            MStringW line = MAnsiToWide(buf).c_str();
+            MStringW line;
+            line = MAnsiToWide(buf);
 
             mstr_trim(line);
             if (line.empty())
