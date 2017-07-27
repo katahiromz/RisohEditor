@@ -10,7 +10,7 @@
 #include <map>
 
 #include "MByteStreamEx.hpp"
-#include "Text.hpp"
+#include "MString.hpp"
 #include "id_string.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -97,11 +97,11 @@ public:
         return TRUE;
     }
 
-    std::wstring DumpValue(WORD wType, const Var& value, int depth = 0) const
+    MStringW DumpValue(WORD wType, const Var& value, int depth = 0) const
     {
-        std::wstring ret = std::wstring(depth * 4, L' ');
+        MStringW ret = std::wstring(depth * 4, L' ');
         ret += L"VALUE ";
-        ret += str_quote(value.key);
+        ret += mstr_quote(value.key);
 
         if (value.value.size() >= 2)
         {
@@ -120,7 +120,7 @@ public:
                 WCHAR *pch = (WCHAR *)(&value.value[0]);
                 std::wstring str(pch, value.value.size() / 2);
                 ret += L", ";
-                ret += str_quote(str);
+                ret += mstr_quote(str);
             }
         }
         else

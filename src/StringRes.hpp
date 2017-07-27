@@ -5,7 +5,7 @@
 #define STRING_RES_HPP_
 
 #include "MByteStreamEx.hpp"
-#include "Text.hpp"
+#include "MString.hpp"
 #include <map>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -89,10 +89,10 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += str_dec(i);
+            ret += mstr_dec(i);
 
             ret += L", \"";
-            ret += str_escape(m_map[i]);
+            ret += mstr_escape(m_map[i]);
             ret += L"\"\r\n";
         }
         ret += L"}\r\n";
@@ -114,10 +114,10 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += str_dec(it->first);
+            ret += mstr_dec(it->first);
 
             ret += L", \"";
-            ret += str_escape(it->second);
+            ret += mstr_escape(it->second);
             ret += L"\"\r\n";
         }
 

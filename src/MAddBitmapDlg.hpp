@@ -40,7 +40,7 @@ public:
     void OnPsh1(HWND hwnd)
     {
         MString strFile = GetDlgItemText(edt1);
-        str_trim(strFile);
+        mstr_trim(strFile);
 
         WCHAR szFile[MAX_PATH];
         lstrcpynW(szFile, strFile.c_str(), _countof(szFile));

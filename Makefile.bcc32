@@ -30,9 +30,11 @@ HEADERS = \
 	src\MReplaceCursorDlg.hpp \
 	src\MReplaceIconDlg.hpp \
 	src\MRubberBand.hpp \
+	src\MString.hpp \
 	src\MStringsDlg.hpp \
 	src\MTestDialog.hpp \
 	src\MTestMenuDlg.hpp \
+	src\MTextToText.hpp \
 	src\MWindowBase.hpp \
 	src\PackedDIB.hpp \
 	src\Png.hpp \
@@ -42,7 +44,6 @@ HEADERS = \
 	src\Samples.hpp \
 	src\stdafx.hpp \
 	src\StringRes.hpp \
-	src\Text.hpp \
 	src\VersionRes.hpp \
 
 OBJS = \

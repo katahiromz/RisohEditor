@@ -139,8 +139,8 @@ public:
             if (it->second.empty())
                 continue;
 
-            std::wstring str;
-            str = str_dec(it->first);
+            MStringW str;
+            str = mstr_dec(it->first);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
@@ -150,7 +150,7 @@ public:
             item.pszText = &str[0];
             ListView_InsertItem(hCtl1, &item);
 
-            str = str_quote(it->second);
+            str = mstr_quote(it->second);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -194,7 +194,7 @@ public:
         ListView_InsertItem(hCtl1, &item);
 
         std::wstring str = s_entry.StringValue;
-        str = str_quote(str);
+        str = mstr_quote(str);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
@@ -221,13 +221,13 @@ public:
     void GetEntry(HWND hwnd, HWND hCtl1, INT iItem, STRING_ENTRY& entry)
     {
         ListView_GetItemText(hCtl1, iItem, 0, entry.StringID, _countof(entry.StringID));
-        str_trim(entry.StringID);
+        mstr_trim(entry.StringID);
 
         ListView_GetItemText(hCtl1, iItem, 1, entry.StringValue, _countof(entry.StringValue));
-        str_trim(entry.StringValue);
+        mstr_trim(entry.StringValue);
         if (entry.StringValue[0] == L'"')
         {
-            str_unquote(entry.StringValue);
+            mstr_unquote(entry.StringValue);
         }
     }
 
@@ -250,7 +250,7 @@ public:
         {
             ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
 
-            std::wstring str = str_quote(s_entry.StringValue);
+            std::wstring str = mstr_quote(s_entry.StringValue);
             ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
         }
     }

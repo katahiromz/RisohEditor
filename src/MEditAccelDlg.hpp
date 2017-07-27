@@ -511,7 +511,7 @@ public:
             else
             {
                 str += (WCHAR)it->wAscii;
-                str = str_quote(str);
+                str = mstr_quote(str);
             }
 
             LV_ITEM item;

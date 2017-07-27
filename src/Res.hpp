@@ -12,7 +12,7 @@
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
 #include "Png.hpp"
-#include "Text.hpp"
+#include "MString.hpp"
 #include "PackedDIB.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -644,7 +644,7 @@ Res_GetName(const ID_OR_STRING& id_or_str)
     std::wstring ret;
     if (id_or_str.m_ID != 0)
     {
-        ret = str_dec(id_or_str.m_ID);
+        ret = mstr_dec(id_or_str.m_ID);
     }
     else
     {

@@ -300,7 +300,7 @@ struct DialogItem
         if (m_Class.is_int())
         {
             if (!IDToPredefClass(m_Class.m_ID, cls))
-                cls = str_hex(m_Class.m_ID);
+                cls = mstr_hex(m_Class.m_ID);
         }
         else
         {
@@ -364,9 +364,9 @@ struct DialogItem
         if (m_Class.is_int())
         {
             if (IDToPredefClass(m_Class.m_ID, cls))
-                ret += str_quote(cls);
+                ret += mstr_quote(cls);
             else
-                ret += str_hex(m_Class.m_ID);
+                ret += mstr_hex(m_Class.m_ID);
         }
         else
         {
@@ -382,13 +382,13 @@ struct DialogItem
         }
 
         ret += L", ";
-        ret += str_dec(m_pt.x);
+        ret += mstr_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(m_pt.y);
+        ret += mstr_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(m_siz.cx);
+        ret += mstr_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(m_siz.cy);
+        ret += mstr_dec(m_siz.cy);
         if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
@@ -398,7 +398,7 @@ struct DialogItem
         if (m_HelpID)
         {
             ret += L", ";
-            ret += str_hex(m_HelpID);
+            ret += mstr_hex(m_HelpID);
         }
 
         return ret;
@@ -419,13 +419,13 @@ struct DialogItem
         }
         ret += db.GetCtrlID(ID);
         ret += L", ";
-        ret += str_dec(m_pt.x);
+        ret += mstr_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(m_pt.y);
+        ret += mstr_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(m_siz.cx);
+        ret += mstr_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(m_siz.cy);
+        ret += mstr_dec(m_siz.cy);
         if (m_Style != DefStyle || m_ExStyle)
         {
             ret += L", ";
@@ -441,7 +441,7 @@ struct DialogItem
         if (m_HelpID)
         {
             ret += L", ";
-            ret += str_hex(m_HelpID);
+            ret += mstr_hex(m_HelpID);
         }
         return ret;
     }
@@ -700,13 +700,13 @@ struct DialogRes
             ret += L" DIALOG ";
         }
 
-        ret += str_dec(m_pt.x);
+        ret += mstr_dec(m_pt.x);
         ret += L", ";
-        ret += str_dec(m_pt.y);
+        ret += mstr_dec(m_pt.y);
         ret += L", ";
-        ret += str_dec(m_siz.cx);
+        ret += mstr_dec(m_siz.cx);
         ret += L", ";
-        ret += str_dec(m_siz.cy);
+        ret += mstr_dec(m_siz.cy);
         ret += L"\r\n";
 
         if (!m_Title.empty())
@@ -730,7 +730,7 @@ struct DialogRes
                 if (!str.empty())
                     str += L" | ";
 
-                str = str_hex(value);
+                str = mstr_hex(value);
             }
             ret += L"STYLE ";
             ret += str;
@@ -746,7 +746,7 @@ struct DialogRes
                 if (!str.empty())
                     str += L" | ";
 
-                str = str_hex(value);
+                str = mstr_hex(value);
             }
             ret += L"EXSTYLE ";
             ret += str;
@@ -756,17 +756,17 @@ struct DialogRes
         if (m_Style & (DS_SETFONT | DS_SHELLFONT))
         {
             ret += L"FONT ";
-            ret += str_dec(m_PointSize);
+            ret += mstr_dec(m_PointSize);
             ret += L", ";
             ret += m_TypeFace.quoted_wstr();
             if (IsExtended())
             {
                 ret += L", ";
-                ret += str_dec(m_Weight);
+                ret += mstr_dec(m_Weight);
                 ret += L", ";
-                ret += str_dec(!!m_Italic);
+                ret += mstr_dec(!!m_Italic);
                 ret += L", ";
-                ret += str_dec(m_CharSet);
+                ret += mstr_dec(m_CharSet);
             }
             ret += L"\r\n";
         }

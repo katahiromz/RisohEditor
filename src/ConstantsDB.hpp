@@ -11,7 +11,8 @@
 #include <cstdio>
 #include <iostream>
 
-#include "Text.hpp"
+#include "MString.hpp"
+#include "id_string.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -125,8 +126,9 @@ public:
         char buf[MAX_PATH];
         while (fgets(buf, MAX_PATH, fp))
         {
-            std::wstring line = AnsiToWide(buf);
-            str_trim(line);
+            MStringW line = MAnsiToWide(buf).c_str();
+
+            mstr_trim(line);
             if (line.empty())
                 continue;
 
@@ -153,12 +155,12 @@ public:
             WCHAR *pch2 = wcstok(NULL, s_delim);
 
             NameType name = pch0;
-            str_trim(name);
+            mstr_trim(name);
             if (name.empty())
                 continue;
 
             StringType value_str = pch1;
-            str_trim(value_str);
+            mstr_trim(value_str);
             if (value_str.empty())
                 continue;
 
@@ -171,7 +173,7 @@ public:
             {
                 mask_str = pch2;
             }
-            str_trim(mask_str);
+            mstr_trim(mask_str);
 
             ValueType value;
             if (iswdigit(value_str[0]))
@@ -226,7 +228,7 @@ public:
             if (!ret.empty())
                 ret += L" | ";
 
-            ret += str_hex(value);
+            ret += mstr_hex(value);
         }
 
         if (default_value)
@@ -272,7 +274,7 @@ public:
             if (!ret.empty())
                 ret += L" | ";
 
-            ret += str_hex(value);
+            ret += mstr_hex(value);
         }
 
         if (default_value)
@@ -305,7 +307,7 @@ public:
             }
         }
 
-        return str_hex(value);
+        return mstr_hex(value);
     }
 
     ValueType
@@ -321,7 +323,7 @@ public:
         std::vector<StringType>::iterator it, end = values.end();
         for (it = values.begin(); it != end; ++it)
         {
-            str_trim(*it);
+            mstr_trim(*it);
             if ((*it).empty())
                 continue;
 
@@ -334,7 +336,7 @@ public:
                 if ((*it).find(L"NOT ") != StringType::npos)
                 {
                     (*it) = (*it).substr(4);
-                    str_trim(*it);
+                    mstr_trim(*it);
                     value &= ~GetValue(category, *it);
                 }
                 else

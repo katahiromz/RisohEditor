@@ -105,8 +105,8 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        std::wstring strFile = GetDlgItemText(edt1);
-        str_trim(strFile);
+        MStringW strFile = GetDlgItemText(edt1);
+        mstr_trim(strFile);
 
         WCHAR szFile[MAX_PATH];
         lstrcpynW(szFile, strFile.c_str(), _countof(szFile));

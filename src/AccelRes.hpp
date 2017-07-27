@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "MByteStreamEx.hpp"
-#include "Text.hpp"
+#include "MString.hpp"
 
 std::wstring str_vkey(WORD w);
 
@@ -109,10 +109,10 @@ public:
             {
                 std::string str;
                 str += (char)it->wAscii;
-                ret += AnsiToWide(str_quote(str));
+                ret += MAnsiToWide(mstr_quote(str));
             }
             ret += L", ";
-            ret += str_dec(it->wId);
+            ret += mstr_dec(it->wId);
 
             if (NOINVERT)
                 ret += L", NOINVERT";

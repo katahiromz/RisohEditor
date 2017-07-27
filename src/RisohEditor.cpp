@@ -586,8 +586,8 @@ BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
-    std::wstring Str = szType;
-    str_trim(Str);
+    MStringW Str = szType;
+    mstr_trim(Str);
     lstrcpynW(szType, Str.c_str(), _countof(szType));
 
     if (szType[0] == UNICODE_NULL)
@@ -614,8 +614,8 @@ BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
-    std::wstring Str = szName;
-    str_trim(Str);
+    MStringW Str = szName;
+    mstr_trim(Str);
     lstrcpynW(szName, Str.c_str(), _countof(szName));
     if (szName[0] == UNICODE_NULL)
     {
@@ -641,8 +641,8 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
-    std::wstring Str = szLang;
-    str_trim(Str);
+    MStringW Str = szLang;
+    mstr_trim(Str);
     lstrcpynW(szLang, Str.c_str(), _countof(szLang));
 
     if (szLang[0] == UNICODE_NULL)
@@ -678,8 +678,8 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
 {
     WCHAR szFile[MAX_PATH];
     GetWindowTextW(hEdt1, szFile, _countof(szFile));
-    std::wstring Str = szFile;
-    str_trim(Str);
+    MStringW Str = szFile;
+    mstr_trim(Str);
     lstrcpynW(szFile, Str.c_str(), _countof(szFile));
     if (::GetFileAttributesW(szFile) == 0xFFFFFFFF)
     {
@@ -908,7 +908,7 @@ void ReplaceBackslash(LPWSTR szPath)
 
 std::wstring GetKeyID(UINT wId)
 {
-    return str_dec(wId);
+    return mstr_dec(wId);
 }
 
 void Cmb1_InitVirtualKeys(HWND hCmb1)
@@ -939,7 +939,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
             {
                 return FALSE;
             }
-            str = str_dec(i);
+            str = mstr_dec(i);
         }
     }
     else
@@ -954,11 +954,11 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
             {
                 return FALSE;
             }
-            str = str_quote(str2);
+            str = mstr_quote(str2);
         }
         else
         {
-            str = str_dec(i);
+            str = mstr_dec(i);
         }
     }
 
@@ -971,14 +971,14 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
-    str_trim(str);
+    mstr_trim(str);
     lstrcpynW(entry.StringID, str.c_str(), _countof(entry.StringID));
 
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
-    str_trim(str);
+    mstr_trim(str);
     if (str[0] == L'"')
     {
-        str_unquote(str);
+        mstr_unquote(str);
     }
     lstrcpynW(entry.StringValue, str.c_str(), _countof(entry.StringValue));
 }
@@ -988,7 +988,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
 
     std::wstring str = entry.StringValue;
-    str = str_quote(str);
+    str = mstr_quote(str);
 
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
@@ -2400,7 +2400,9 @@ public:
 
     void PreviewHtml(HWND hwnd, const ResEntry& Entry)
     {
-        std::wstring str = BinaryToText(Entry.data);
+        MTextType type;
+        type.nNewLine = MNEWLINE_NOCHANGE;
+        std::wstring str = mstr_from_bin(&Entry.data[0], Entry.data.size(), &type);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
         ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
@@ -2627,7 +2629,7 @@ public:
         return TRUE;
     }
 
-    BOOL DoWindresResult(HWND hwnd, ResEntries& entries, std::string& msg)
+    BOOL DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
 
@@ -2640,7 +2642,7 @@ public:
                 entries[0].name != entry.name ||
                 entries[0].lang != entry.lang)
             {
-                msg += WideToAnsi(LoadStringDx(IDS_RESMISMATCH));
+                msg += MWideToAnsi(LoadStringDx(IDS_RESMISMATCH));
                 return FALSE;
             }
             entry = entries[0];
@@ -2657,7 +2659,7 @@ public:
             {
                 if (!Res_AddEntry(m_Entries, entries[m], TRUE))
                 {
-                    msg += WideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
+                    msg += MWideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
                     return FALSE;
                 }
             }
@@ -2682,7 +2684,8 @@ public:
         WORD i = LOWORD(lParam);
         ResEntry& entry = m_Entries[i];
 
-        std::string TextUtf8 = WideToUtf8(WideText);
+        MStringA TextUtf8;
+        TextUtf8 = MWideToUtf8(WideText);
         if (HIWORD(lParam) == I_LANG)
         {
             if (Res_IsPlainText(entry.type))
@@ -2696,7 +2699,8 @@ public:
                 }
                 else
                 {
-                    std::string TextAnsi = WideToAnsi(WideText);
+                    MStringA TextAnsi;
+                    TextAnsi = MWideToAnsi(WideText);
                     entry.data.assign(TextAnsi.begin(), TextAnsi.end());
                 }
                 SelectTV(hwnd, lParam, FALSE);
@@ -2753,7 +2757,8 @@ public:
         // MessageBoxW(hwnd, CmdLine, NULL, 0);
 
         std::vector<BYTE> output;
-        std::string msg = WideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
+        MStringA msg;
+        msg = MWideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
         output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
         BOOL Success = FALSE;
@@ -2800,7 +2805,7 @@ public:
                 ResEntries entries;
                 if (DoImport(hwnd, szPath3, entries))
                 {
-                    std::string msg;
+                    MStringA msg;
                     Success = DoWindresResult(hwnd, entries, msg);
                     if (msg.size())
                     {

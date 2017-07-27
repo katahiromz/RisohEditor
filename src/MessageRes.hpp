@@ -10,7 +10,7 @@
 #include <map>
 
 #include "MByteStreamEx.hpp"
-#include "Text.hpp"
+#include "MString.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -79,8 +79,8 @@ public:
                 {
                     if (data.size())
                     {
-                        std::string str(data[0], data.size());
-                        std::wstring wstr = AnsiToWide(str);
+                        MStringA str(data[0], data.size());
+                        MStringW wstr = MAnsiToWide(str).c_str();
                         m_map[k] = wstr;
                     }
                     else
@@ -139,9 +139,9 @@ public:
                     MESSAGE_RESOURCE_ENTRY_HEADER header;
                     header.Length = wstr.size() * sizeof(WCHAR);
 
-                    if (is_ascii(wstr))
+                    if (mstr_is_ascii(wstr))
                     {
-                        std::string astr = WideToAnsi(wstr);
+                        MWideToAnsi astr(wstr);
 
                         header.Flags = 0;
                         if (!stream.WriteRaw(header))
@@ -183,7 +183,7 @@ public:
             ret += L"    ";
             ret += sz;
             ret += L", \"";
-            ret += str_escape(it->second);
+            ret += mstr_escape(it->second);
             ret += L"\"\r\n";
         }
 

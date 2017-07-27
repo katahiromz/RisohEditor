@@ -32,14 +32,14 @@ public:
     void OnOK(HWND hwnd)
     {
         ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
-        str_trim(m_entry.Caption);
+        mstr_trim(m_entry.Caption);
         if (m_entry.Caption[0] == L'"')
         {
-            str_unquote(m_entry.Caption);
+            mstr_unquote(m_entry.Caption);
         }
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
-        str_trim(m_entry.CommandID);
+        mstr_trim(m_entry.CommandID);
 
         DWORD dwType = 0, dwState = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -128,7 +128,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, cmb1, str_quote(m_entry.Caption).c_str());
+        SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.Caption).c_str());
         SetDlgItemTextW(hwnd, cmb2, m_entry.CommandID);
         SetDlgItemTextW(hwnd, edt1, m_entry.HelpID);
 
@@ -174,14 +174,14 @@ public:
     void OnOK(HWND hwnd)
     {
         ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
-        str_trim(m_entry.Caption);
+        mstr_trim(m_entry.Caption);
         if (m_entry.Caption[0] == L'"')
         {
-            str_unquote(m_entry.Caption);
+            mstr_unquote(m_entry.Caption);
         }
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
-        str_trim(m_entry.CommandID);
+        mstr_trim(m_entry.CommandID);
 
         DWORD dwType = 0, dwState = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -317,7 +317,7 @@ public:
             exitems_type::iterator it, end = exitems.end();
             for (it = exitems.begin(); it != end; ++it, ++i)
             {
-                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+                str = mstr_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
                 if (it->text.empty() && it->menuId == 0)
                 {
                     str += LoadStringDx(IDS_SEPARATOR);
@@ -325,7 +325,7 @@ public:
                 }
                 else
                 {
-                    str += str_quote(it->text);
+                    str += mstr_quote(it->text);
                 }
 
                 ZeroMemory(&item, sizeof(item));
@@ -344,7 +344,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = str_dec(it->menuId);
+                str = mstr_dec(it->menuId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -353,7 +353,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = str_dec(it->dwHelpId);
+                str = mstr_dec(it->dwHelpId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -370,14 +370,14 @@ public:
             items_type::iterator it, end = items.end();
             for (it = items.begin(); it != end; ++it, ++i)
             {
-                str = str_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
+                str = mstr_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
                 if (it->text.empty() && it->wMenuID == 0)
                 {
                     str += LoadStringDx(IDS_SEPARATOR);
                 }
                 else
                 {
-                    str += str_quote(it->text);
+                    str += mstr_quote(it->text);
                 }
 
                 ZeroMemory(&item, sizeof(item));
@@ -398,7 +398,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = str_dec(it->wMenuID);
+                str = mstr_dec(it->wMenuID);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -407,7 +407,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = str_dec(0);
+                str = mstr_dec(0);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -440,11 +440,11 @@ public:
 
         INT iItem = ListView_GetItemCount(hCtl1);
 
-        std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
+        MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = m_entry.Caption;
         if (str.empty() || wcsstr(m_entry.Flags, L"S ") != NULL)
             str = LoadStringDx(IDS_SEPARATOR);
-        str = str_repeat(strIndent, m_entry.wDepth) + str;
+        str = mstr_repeat(strIndent, m_entry.wDepth) + str;
 
         LV_ITEM item;
 
@@ -486,16 +486,16 @@ public:
         ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
 
         entry.wDepth = 0;
-        std::wstring str = Caption, strIndent = LoadStringDx(IDS_INDENT);
+        MStringW str = Caption, strIndent = LoadStringDx(IDS_INDENT);
         while (str.find(strIndent) == 0)
         {
             str = str.substr(strIndent.size());
             ++entry.wDepth;
         }
-        str_trim(str);
+        mstr_trim(str);
         if (str[0] == L'"')
         {
-            str_unquote(str);
+            mstr_unquote(str);
         }
         if (str.empty() || str == LoadStringDx(IDS_SEPARATOR))
         {
@@ -512,13 +512,13 @@ public:
 
     BOOL SetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     {
-        std::wstring str, strIndent = LoadStringDx(IDS_INDENT);
-        str = str_repeat(strIndent, entry.wDepth);
+        MStringW str, strIndent = LoadStringDx(IDS_INDENT);
+        str = mstr_repeat(strIndent, entry.wDepth);
 
         if (entry.Caption[0] == 0 || wcsstr(entry.Flags, L"S ") != NULL)
             str += LoadStringDx(IDS_SEPARATOR);
         else
-            str += str_quote(entry.Caption);
+            str += mstr_quote(entry.Caption);
 
         ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
         ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
@@ -642,8 +642,8 @@ public:
         ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
 
         std::wstring strIndent = LoadStringDx(IDS_INDENT);
-        INT depth_up = str_repeat_count(CaptionUp, strIndent);
-        INT depth = str_repeat_count(Caption, strIndent);
+        INT depth_up = mstr_repeat_count(CaptionUp, strIndent);
+        INT depth = mstr_repeat_count(Caption, strIndent);
 
         if (depth_up < depth)
             return;

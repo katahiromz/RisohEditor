@@ -395,7 +395,7 @@ public:
             {
                 ret += string_type((it->wDepth + 1) * 4, L' ');
                 ret += L"POPUP \"";
-                ret += str_escape(it->text);
+                ret += mstr_escape(it->text);
                 ret += L"\"";
                 ret += DumpFlags(it->fItemFlags);
                 ret += L"\r\n";
@@ -412,9 +412,9 @@ public:
                 else
                 {
                     ret += L"MENUITEM \"";
-                    ret += str_escape(it->text);
+                    ret += mstr_escape(it->text);
                     ret += L"\", ";
-                    ret += str_dec(it->wMenuID);
+                    ret += mstr_dec(it->wMenuID);
                     ret += DumpFlags(it->fItemFlags);
                     ret += L"\r\n";
                 }
@@ -455,11 +455,11 @@ public:
             {
                 ret += string_type((it->wDepth + 1) * 4, L' ');
                 ret += L"POPUP ";
-                ret += str_quote(it->text);
+                ret += mstr_quote(it->text);
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += str_dec(it->menuId);
+                    ret += mstr_dec(it->menuId);
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {
@@ -476,7 +476,7 @@ public:
                 if (it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += str_hex(it->dwHelpId);
+                    ret += mstr_hex(it->dwHelpId);
                 }
                 ret += L"\r\n";
                 ret += string_type((it->wDepth + 1) * 4, L' ');
@@ -492,11 +492,11 @@ public:
                 else
                 {
                     ret += L"MENUITEM ";
-                    ret += str_quote(it->text);
+                    ret += mstr_quote(it->text);
                     if (it->menuId || it->dwType || it->dwState)
                     {
                         ret += L", ";
-                        ret += str_dec(it->menuId);
+                        ret += mstr_dec(it->menuId);
                     }
                     if (it->dwType || it->dwState)
                     {
