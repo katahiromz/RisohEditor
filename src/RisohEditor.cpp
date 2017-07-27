@@ -970,19 +970,17 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 
 void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
-    WCHAR Buffer[512];
+    MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
+    str_trim(str);
+    lstrcpynW(entry.StringID, str.c_str(), _countof(entry.StringID));
 
-    GetDlgItemTextW(hwnd, cmb1, Buffer, _countof(Buffer));
-    str_trim(Buffer);
-    lstrcpynW(entry.StringID, Buffer, _countof(entry.StringID));
-
-    GetDlgItemTextW(hwnd, edt1, Buffer, _countof(Buffer));
-    str_trim(Buffer);
-    if (Buffer[0] == L'"')
+    str = MWindowBase::GetDlgItemText(hwnd, edt1);
+    str_trim(str);
+    if (str[0] == L'"')
     {
-        str_unquote(Buffer);
+        str_unquote(str);
     }
-    lstrcpynW(entry.StringValue, Buffer, _countof(entry.StringValue));
+    lstrcpynW(entry.StringValue, str.c_str(), _countof(entry.StringValue));
 }
 
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)

@@ -85,30 +85,29 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        WCHAR File[MAX_PATH];
-        ::GetDlgItemText(hwnd, edt1, File, _countof(File));
-
-        std::wstring strFile = File;
+        std::wstring strFile = GetDlgItemText(edt1);
         str_trim(strFile);
-        lstrcpynW(File, strFile.c_str(), _countof(File));
+
+        WCHAR szFile[MAX_PATH];
+        lstrcpynW(szFile, strFile.c_str(), _countof(szFile));
 
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
         ofn.hwndOwner = hwnd;
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
-        ofn.lpstrFile = File;
-        ofn.nMaxFile = _countof(File);
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = _countof(szFile);
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACECUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"cur";
         if (GetOpenFileNameW(&ofn))
         {
-            SetDlgItemTextW(hwnd, edt1, File);
+            SetDlgItemTextW(hwnd, edt1, szFile);
             if (m_hCursor)
                 DestroyCursor(m_hCursor);
-            m_hCursor = LoadCursorFromFile(File);
+            m_hCursor = LoadCursorFromFile(szFile);
             SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         }
     }
