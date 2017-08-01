@@ -378,6 +378,32 @@ public:
     {
     }
 
+    void Renumber()
+    {
+        INT nIndex = 0;
+        TCHAR szClass[64];
+        HWND hwndCtrl = ::GetTopWindow(m_hwnd);
+        for (;;)
+        {
+            HWND hwndNext = GetNextWindow(hwndCtrl, GW_HWNDNEXT);
+            if (hwndNext == NULL)
+            {
+                break;
+            }
+
+            hwndCtrl = hwndNext;
+            ::GetClassName(hwndCtrl, szClass, _countof(szClass));
+            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
+            {
+                MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+                if (pCtrl)
+                {
+                    pCtrl->m_nIndex = nIndex++;
+                }
+            }
+        }
+    }
+
     HWND GetNextCtrl(HWND hwndCtrl) const
     {
         HWND hwnd = hwndCtrl;
@@ -712,6 +738,7 @@ struct MRadWindow : MWindowBase
 
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + pCtrl->m_nIndex);
         m_dialog_res.m_cItems--;
+        m_rad_dialog.Renumber();
         UpdateRes();
 
         return 0;
