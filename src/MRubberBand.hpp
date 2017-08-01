@@ -63,7 +63,6 @@ public:
         default:
             return DefaultProcDx(hwnd, uMsg, wParam, lParam);
         }
-        return 0;
     }
 
     void GetIdealClientRect(LPRECT prc)
