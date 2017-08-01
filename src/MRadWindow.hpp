@@ -1,11 +1,16 @@
-#ifndef RADWINDOW_HPP_
-#define RADWINDOW_HPP_
+// MRadWindow
+//////////////////////////////////////////////////////////////////////////////
+
+#ifndef MZC4_RADWINDOW_HPP_
+#define MZC4_RADWINDOW_HPP_
 
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
 #include "resource.h"
 #include <set>
+
+//////////////////////////////////////////////////////////////////////////////
 
 #define MYWM_MOVE               (WM_USER + 100)
 #define MYWM_SIZE               (WM_USER + 101)
@@ -909,4 +914,6 @@ struct MRadWindow : MWindowBase
     }
 };
 
-#endif  // ndef RADWINDOW_HPP_
+//////////////////////////////////////////////////////////////////////////////
+
+#endif  // ndef MZC4_RADWINDOW_HPP_
