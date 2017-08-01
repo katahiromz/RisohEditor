@@ -1681,6 +1681,8 @@ public:
         if (!IsEditableEntry(hwnd, lParam))
             return;
 
+        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
         SelectTV(hwnd, lParam, TRUE);
     }
 
@@ -1760,6 +1762,8 @@ public:
         {
             return;
         }
+
+        Edit_SetReadOnly(m_hSrcEdit, TRUE);
 
         const ResEntry::DataType& data = Entry.data;
         MByteStreamEx stream(data);
