@@ -6,6 +6,8 @@
 
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
+#include "MDlgPropDlg.hpp"
+#include "MCtrlPropDlg.hpp"
 #include "DialogRes.hpp"
 #include "resource.h"
 #include <set>
@@ -101,7 +103,8 @@ public:
             }
         }
         GetTargets().clear();
-        GetLastSel() = NULL;
+        GetTargets().insert(hwnd);
+        GetLastSel() = hwnd;
     }
 
     void Deselect()
@@ -213,6 +216,8 @@ public:
         if (fDoubleClick)
             return;
 
+        OnNCLButtonDown(hwnd, FALSE, x, y, codeHitTest);
+        OnNCLButtonUp(hwnd, x, y, codeHitTest);
         SendMessage(GetParent(hwnd), WM_NCRBUTTONDOWN, (WPARAM)hwnd, MAKELPARAM(x, y));
     }
 
@@ -433,8 +438,18 @@ public:
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
+            HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
+            HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+    {
+        if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
+            return;
+
+        MRadCtrl::DeselectSelection();
     }
 
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -695,6 +710,8 @@ struct MRadWindow : MWindowBase
 
     void OnDlgProp(HWND hwnd)
     {
+        MDlgPropDlg dialog(m_dialog_res);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

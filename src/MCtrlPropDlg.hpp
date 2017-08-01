@@ -32,7 +32,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        EndDialog(hwnd, IDOK);
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -43,7 +43,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(hwnd, IDCANCEL);
+            EndDialog(IDCANCEL);
             break;
         }
     }
