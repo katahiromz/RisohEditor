@@ -4,6 +4,7 @@
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
+#include "resource.h"
 #include <set>
 
 #define MYWM_MOVE               (WM_USER + 100)
@@ -461,11 +462,13 @@ public:
 
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        SendMessage(GetParent(hwnd), MYWM_MOVE, wParam, lParam);
         return 0;
     }
 
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        SendMessage(GetParent(hwnd), MYWM_SIZE, wParam, lParam);
         return 0;
     }
 
@@ -473,6 +476,7 @@ public:
     {
         if (!m_bDestroying)
         {
+            SendMessage(GetParent(hwnd), MYWM_DESTROY, wParam, lParam);
         }
         return 0;
     }
@@ -651,13 +655,58 @@ struct MRadWindow : MWindowBase
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MESSAGE(hwnd, MYWM_MOVE, OnCtrlMove);
+            HANDLE_MESSAGE(hwnd, MYWM_SIZE, OnCtrlSize);
+            HANDLE_MESSAGE(hwnd, MYWM_DESTROY, OnCtrlDestroy);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
 
+    LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        return 0;
+    }
+
+    LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        return 0;
+    }
+
+    LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        ::MessageBoxA(NULL, "OK", NULL, 0);
+        return 0;
+    }
+
+    void OnAddCtrl(HWND hwnd)
+    {
+    }
+
+    void OnCtrlProp(HWND hwnd)
+    {
+    }
+
+    void OnDlgProp(HWND hwnd)
+    {
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        ;
+        switch (id)
+        {
+        case ID_DELCTRL:
+            MRadCtrl::DeleteSelection();
+            break;
+        case ID_ADDCTRL:
+            OnAddCtrl(hwnd);
+            break;
+        case ID_CTRLPROP:
+            OnCtrlProp(hwnd);
+            break;
+        case ID_DLGPROP:
+            OnDlgProp(hwnd);
+            break;
+        }
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -787,7 +836,7 @@ struct MRadWindow : MWindowBase
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(3));
         HMENU hSubMenu = GetSubMenu(hMenu, 0);
 
         ::SetForegroundWindow(hwnd);
