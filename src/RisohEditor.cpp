@@ -1856,6 +1856,26 @@ public:
         TV_RefreshInfo(g_hTreeView, m_Entries);
     }
 
+    void OnUpdateRes(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(g_hTreeView);
+        if (HIWORD(lParam) != I_LANG)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ResEntry& Entry = m_Entries[i];
+
+        DialogRes& dialog_res = m_rad_window.m_dialog_res;
+
+        MByteStreamEx stream;
+        dialog_res.SaveToStream(stream);
+        Entry.data = stream.data();
+
+        std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
+        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -1933,6 +1953,9 @@ public:
             break;
         case ID_DESTROYRAD:
             OnCancelEdit(hwnd);
+            break;
+        case ID_UPDATERES:
+            OnUpdateRes(hwnd);
             break;
         }
     }

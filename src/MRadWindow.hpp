@@ -694,8 +694,26 @@ struct MRadWindow : MWindowBase
         return 0;
     }
 
+    void UpdateRes()
+    {
+        HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
+        PostMessage(hwndOwner, WM_COMMAND, ID_UPDATERES, 0);
+    }
+
     LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        HWND hwndCtrl = (HWND)wParam;
+        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+        if (pCtrl == NULL)
+            return 0;
+
+        if (pCtrl->m_nIndex == -1)
+            return 0;
+
+        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + pCtrl->m_nIndex);
+        m_dialog_res.m_cItems--;
+        UpdateRes();
+
         return 0;
     }
 
