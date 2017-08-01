@@ -1810,7 +1810,9 @@ public:
             m_rad_window.m_dialog_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
-            if (m_rad_window.CreateWindowDx(m_hwnd, LoadStringDx(IDS_RADWINDOW)))
+            DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+            if (m_rad_window.CreateWindowDx(m_hwnd, LoadStringDx(IDS_RADWINDOW),
+                                            style))
             {
                 ShowWindow(m_rad_window, SW_SHOWNOACTIVATE);
                 UpdateWindow(m_rad_window);
