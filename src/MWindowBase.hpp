@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    42     /* Version 42 */
+#define MZC4_MWINDOWBASE_HPP_    43     /* Version 43 */
 
 class MWindowBase;
 class MDialogBase;
@@ -260,9 +260,9 @@ public:
         return m_fnOldProc != NULL;
     }
 
-    VOID UnsubclassDx(HWND hwnd)
+    VOID UnsubclassDx()
     {
-        SubclassWindow(hwnd, m_fnOldProc);
+        SubclassWindow(m_hwnd, m_fnOldProc);
         Detach();
         m_fnOldProc = NULL;
     }
