@@ -103,7 +103,8 @@ public:
             }
         }
         GetTargets().clear();
-        GetTargets().insert(hwnd);
+        if (hwnd)
+            GetTargets().insert(hwnd);
         GetLastSel() = hwnd;
     }
 
