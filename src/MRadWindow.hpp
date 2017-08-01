@@ -696,7 +696,6 @@ struct MRadWindow : MWindowBase
 
     LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
-        ::MessageBoxA(NULL, "OK", NULL, 0);
         return 0;
     }
 
