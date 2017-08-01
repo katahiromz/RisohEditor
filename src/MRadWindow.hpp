@@ -14,9 +14,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-#define MYWM_MOVE               (WM_USER + 100)
-#define MYWM_SIZE               (WM_USER + 101)
-#define MYWM_DESTROY            (WM_USER + 102)
+#define MYWM_CTRLMOVE           (WM_USER + 100)
+#define MYWM_CTRLSIZE           (WM_USER + 101)
+#define MYWM_CTRLDESTROY        (WM_USER + 102)
+#define MYWM_DLGSIZE            (WM_USER + 103)
 
 class MRadCtrl : public MWindowBase
 {
@@ -264,7 +265,7 @@ public:
         ::GetClientRect(hwnd, &rc);
         ::InvalidateRect(hwnd, &rc, TRUE);
 
-        SendMessage(GetParent(hwnd), MYWM_MOVE, (WPARAM)hwnd, 0);
+        SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -278,12 +279,12 @@ public:
         if (!m_bSizing)
             ResizeSelection(hwnd, cx, cy);
 
-        SendMessage(GetParent(hwnd), MYWM_SIZE, (WPARAM)hwnd, 0);
+        SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
     }
 
     void OnDestroy(HWND hwnd)
     {
-        SendMessage(GetParent(hwnd), MYWM_DESTROY, (WPARAM)hwnd, 0);
+        SendMessage(GetParent(hwnd), MYWM_CTRLDESTROY, (WPARAM)hwnd, 0);
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -500,22 +501,28 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
             HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MESSAGE(hwnd, MYWM_MOVE, OnCtrlMove);
-            HANDLE_MESSAGE(hwnd, MYWM_SIZE, OnCtrlSize);
-            HANDLE_MESSAGE(hwnd, MYWM_DESTROY, OnCtrlDestroy);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLDESTROY, OnCtrlDestroy);
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
+    }
+
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
-        SendMessage(GetParent(hwnd), MYWM_MOVE, wParam, lParam);
+        SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, wParam, lParam);
         return 0;
     }
 
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
-        SendMessage(GetParent(hwnd), MYWM_SIZE, wParam, lParam);
+        SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, wParam, lParam);
         return 0;
     }
 
@@ -523,7 +530,7 @@ public:
     {
         if (!m_bDestroying)
         {
-            SendMessage(GetParent(hwnd), MYWM_DESTROY, wParam, lParam);
+            SendMessage(GetParent(hwnd), MYWM_CTRLDESTROY, wParam, lParam);
         }
         return 0;
     }
@@ -626,6 +633,26 @@ struct MRadWindow : MWindowBase
     {
     }
 
+    void ClientToDialog(POINT *ppt)
+    {
+        ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
+        ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
+    }
+
+    void ClientToDialog(SIZE *psiz)
+    {
+        psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
+        psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
+    }
+
+    void ClientToDialog(RECT *prc)
+    {
+        prc->left = (prc->left * 4) / m_xDialogBaseUnit;
+        prc->right = (prc->right * 4) / m_xDialogBaseUnit;
+        prc->top = (prc->top * 8) / m_yDialogBaseUnit;
+        prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
+    }
+
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
     {
         for (;;)
@@ -704,20 +731,59 @@ struct MRadWindow : MWindowBase
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-            HANDLE_MESSAGE(hwnd, MYWM_MOVE, OnCtrlMove);
-            HANDLE_MESSAGE(hwnd, MYWM_SIZE, OnCtrlSize);
-            HANDLE_MESSAGE(hwnd, MYWM_DESTROY, OnCtrlDestroy);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
+            HANDLE_MESSAGE(hwnd, MYWM_CTRLDESTROY, OnCtrlDestroy);
+            HANDLE_MESSAGE(hwnd, MYWM_DLGSIZE, OnDlgSize);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
 
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        HWND hwndCtrl = (HWND)wParam;
+        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+        if (pCtrl == NULL)
+            return 0;
+
+        if (pCtrl->m_nIndex == -1)
+            return 0;
+
+        RECT rc;
+        GetWindowRect(*pCtrl, &rc);
+        MapWindowRect(NULL, m_rad_dialog, &rc);
+
+        ClientToDialog(&rc);
+
+        m_dialog_res.Items[pCtrl->m_nIndex].m_pt.x = rc.left;
+        m_dialog_res.Items[pCtrl->m_nIndex].m_pt.y = rc.top;
+
+        UpdateRes();
+
         return 0;
     }
 
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        HWND hwndCtrl = (HWND)wParam;
+        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+        if (pCtrl == NULL)
+            return 0;
+
+        if (pCtrl->m_nIndex == -1)
+            return 0;
+
+        RECT rc;
+        GetWindowRect(*pCtrl, &rc);
+        MapWindowRect(NULL, m_rad_dialog, &rc);
+
+        ClientToDialog(&rc);
+
+        m_dialog_res.Items[pCtrl->m_nIndex].m_siz.cx = rc.right - rc.left;
+        m_dialog_res.Items[pCtrl->m_nIndex].m_siz.cy = rc.bottom - rc.top;
+
+        UpdateRes();
+
         return 0;
     }
 
@@ -740,6 +806,21 @@ struct MRadWindow : MWindowBase
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + pCtrl->m_nIndex);
         m_dialog_res.m_cItems--;
         m_rad_dialog.Renumber();
+        UpdateRes();
+
+        return 0;
+    }
+
+    LRESULT OnDlgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        RECT rc;
+        GetClientRect(m_rad_dialog, &rc);
+        ClientToDialog(&rc);
+
+        m_dialog_res.m_pt.x = rc.left;
+        m_dialog_res.m_pt.y = rc.top;
+        m_dialog_res.m_siz.cx = rc.right - rc.left;
+        m_dialog_res.m_siz.cy = rc.bottom - rc.top;
         UpdateRes();
 
         return 0;
