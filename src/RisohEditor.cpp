@@ -1931,6 +1931,9 @@ public:
         case ID_GUIEDIT:
             OnGuiEdit(hwnd);
             break;
+        case ID_DESTROYRAD:
+            OnCancelEdit(hwnd);
+            break;
         }
     }
 

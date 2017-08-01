@@ -642,6 +642,8 @@ struct MRadWindow : MWindowBase
     void OnDestroy(HWND hwnd)
     {
         m_rad_dialog.m_bDestroying = TRUE;
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
     }
 
     virtual LRESULT CALLBACK

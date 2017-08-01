@@ -30,6 +30,7 @@
 #define ID_DELCTRL          127
 #define ID_CTRLPROP         128
 #define ID_DLGPROP          129
+#define ID_DESTROYRAD       130
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
