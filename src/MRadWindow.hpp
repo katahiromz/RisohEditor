@@ -5,7 +5,10 @@
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
 #include <set>
-#include <map>
+
+#define MYWM_MOVE               (WM_USER + 100)
+#define MYWM_SIZE               (WM_USER + 101)
+#define MYWM_DESTROY            (WM_USER + 102)
 
 class MRadCtrl : public MWindowBase
 {
@@ -185,6 +188,7 @@ public:
             HANDLE_MSG(hwnd, WM_NCLBUTTONUP, OnNCLButtonUp);
             HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
@@ -247,6 +251,8 @@ public:
         RECT rc;
         ::GetClientRect(hwnd, &rc);
         ::InvalidateRect(hwnd, &rc, TRUE);
+
+        SendMessage(GetParent(hwnd), MYWM_MOVE, (WPARAM)hwnd, 0);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -259,6 +265,13 @@ public:
 
         if (!m_bSizing)
             ResizeSelection(hwnd, cx, cy);
+
+        SendMessage(GetParent(hwnd), MYWM_SIZE, (WPARAM)hwnd, 0);
+    }
+
+    void OnDestroy(HWND hwnd)
+    {
+        SendMessage(GetParent(hwnd), MYWM_DESTROY, (WPARAM)hwnd, 0);
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -348,54 +361,62 @@ public:
 class MRadDialog : public MDialogBase
 {
 public:
+    BOOL m_bDestroying;
+
+    MRadDialog() : m_bDestroying(FALSE)
+    {
+    }
+
     HWND GetNextCtrl(HWND hwndCtrl) const
     {
-        HWND hwndNext = GetNextWindow(hwndCtrl, GW_HWNDNEXT);
-        if (hwndNext == NULL)
-        {
-            hwndNext = GetNextWindow(hwndCtrl, GW_HWNDFIRST);
-        }
+        HWND hwnd = hwndCtrl;
 
         TCHAR szClass[64];
-        while (hwndNext)
+        for (;;)
         {
+            HWND hwndNext = GetNextWindow(hwnd, GW_HWNDNEXT);
+            if (hwndNext == NULL)
+            {
+                hwndNext = GetNextWindow(hwnd, GW_HWNDFIRST);
+            }
+
+            if (hwndNext == hwndCtrl)
+                return NULL;
+
+            hwnd = hwndNext;
+
             ::GetClassName(hwndNext, szClass, _countof(szClass));
             if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
                 break;
-
-            hwndNext = GetNextWindow(hwndNext, GW_HWNDNEXT);
-        }
-        if (hwndNext == NULL)
-        {
-            hwndNext = GetNextWindow(hwndCtrl, GW_HWNDFIRST);
         }
 
-        return hwndNext;
+        return hwnd;
     }
 
     HWND GetPrevCtrl(HWND hwndCtrl) const
     {
-        HWND hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDPREV);
-        if (hwndPrev == NULL)
-        {
-            hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDLAST);
-        }
+        HWND hwnd = hwndCtrl;
 
         TCHAR szClass[64];
-        while (hwndPrev)
+        for (;;)
         {
+            HWND hwndPrev = GetNextWindow(hwnd, GW_HWNDPREV);
+            if (hwndPrev == NULL)
+            {
+                hwndPrev = GetNextWindow(hwnd, GW_HWNDLAST);
+            }
+
+            if (hwndPrev == hwndCtrl)
+                return NULL;
+
+            hwnd = hwndPrev;
+
             ::GetClassName(hwndPrev, szClass, _countof(szClass));
             if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
                 break;
-
-            hwndPrev = GetNextWindow(hwndPrev, GW_HWNDPREV);
-        }
-        if (hwndPrev == NULL)
-        {
-            hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDLAST);
         }
 
-        return hwndPrev;
+        return hwnd;
     }
 
     virtual INT_PTR CALLBACK
@@ -431,8 +452,29 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
             HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+            HANDLE_MESSAGE(hwnd, MYWM_MOVE, OnCtrlMove);
+            HANDLE_MESSAGE(hwnd, MYWM_SIZE, OnCtrlSize);
+            HANDLE_MESSAGE(hwnd, MYWM_DESTROY, OnCtrlDestroy);
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        return 0;
+    }
+
+    LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        return 0;
+    }
+
+    LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        if (!m_bDestroying)
+        {
+        }
+        return 0;
     }
 
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
@@ -579,6 +621,7 @@ struct MRadWindow : MWindowBase
         std::vector<BYTE> data = m_dialog_res.data();
         m_dialog_res.Fixup(TRUE);
 
+        m_rad_dialog.m_bDestroying = FALSE;
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
             return FALSE;
@@ -594,6 +637,7 @@ struct MRadWindow : MWindowBase
 
     void OnDestroy(HWND hwnd)
     {
+        m_rad_dialog.m_bDestroying = TRUE;
     }
 
     virtual LRESULT CALLBACK
