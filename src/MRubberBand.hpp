@@ -1,35 +1,50 @@
 // MRubberBand.hpp -- Rubber Band for Win32
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MRUBBER_BAND_HPP_
-#define MZC4_MRUBBER_BAND_HPP_    3   /* Version 3 */
-
-#include "MWindowBase.hpp"
+#ifndef MZC4_RUBBER_BAND_HPP_
+#define MZC4_RUBBER_BAND_HPP_
 
 class MRubberBand;
 
 //////////////////////////////////////////////////////////////////////////////
 
+#include "MWindowBase.hpp"
+
 class MRubberBand : public MWindowBase
 {
-protected:
-    HRGN    m_hRgn;
-    BOOL    m_bPosUpdating;
-
 public:
-    MWindowBase     m_target;
+    HRGN m_hRgn;
+    HWND m_hwndTarget;
     enum { m_nGripSize = 3 };
 
-    MRubberBand() : m_hRgn(NULL), m_bPosUpdating(FALSE)
+    MRubberBand() : m_hRgn(NULL), m_hwndTarget(NULL)
     {
     }
 
-    BOOL CreateDx(HWND hwndParent, BOOL bVisible = FALSE,
+    BOOL CreateDx(HWND hwndParent, HWND hwndTarget, BOOL bVisible = FALSE,
                   INT x = 0, INT y = 0, INT cx = 0, INT cy = 0)
     {
-        return CreateWindowDx(hwndParent, NULL,
-            (bVisible ? WS_VISIBLE : 0) | WS_POPUP | WS_THICKFRAME,
-            WS_EX_TOOLWINDOW | WS_EX_TOPMOST/* | WS_EX_NOACTIVATE*/, x, y, cx, cy);
+        m_hwndTarget = hwndTarget;
+        BOOL bOK = CreateWindowDx(hwndParent, NULL,
+            (bVisible ? WS_VISIBLE : 0) | WS_CHILD | WS_THICKFRAME,
+            WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_TOPMOST,
+            x, y, cx, cy);
+        if (bOK)
+        {
+            FitToTarget();
+        }
+        return bOK;
+    }
+
+    HWND GetTarget() const
+    {
+        return m_hwndTarget;
+    }
+
+    virtual void PostNcDestroy()
+    {
+        m_hwnd = NULL;
+        delete this;
     }
 
     virtual LRESULT CALLBACK
@@ -37,79 +52,18 @@ public:
     {
         switch (uMsg)
         {
-            HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
             HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_NCCALCSIZE, OnNCCalcSize);
+            HANDLE_MSG(hwnd, WM_NCPAINT, OnNCPaint);
             HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
             HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_NCHITTEST, OnNCHitTest);
             HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
-            HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
-            HANDLE_MSG(hwnd, WM_CLOSE, OnClose);
-            HANDLE_MSG(hwnd, WM_NCRBUTTONDOWN, OnNCRButtonDown);
-            HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MSG(hwnd, WM_ACTIVATE, OnActivate);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         default:
             return DefaultProcDx(hwnd, uMsg, wParam, lParam);
         }
-    }
-
-    void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
-    {
-        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
-        {
-            if (m_target)
-            {
-                FitToTarget();
-            }
-        }
-        else
-        {
-            if (GetAncestorDx(hwndActDeact) != GetAncestorDx(m_hwnd))
-            {
-                ShowWindow(m_hwnd, SW_HIDE);
-            }
-        }
-    }
-
-    void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
-    {
-        FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, SendMessage);
-    }
-
-    void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
-    {
-        if (m_target)
-        {
-            FORWARD_WM_CONTEXTMENU(GetParent(m_target), m_target, x, y, PostMessage);
-        }
-    }
-
-    void OnTimer(HWND hwnd, UINT id)
-    {
-        if (id == 999)
-        {
-            KillTimer(hwnd, 999);
-            HRGN hRgn = GetRgnOrDrawOrHitTest(hwnd);
-            SetRgn(hRgn);
-        }
-    }
-
-    void OnClose(HWND hwnd)
-    {
-        PostMessage(GetWindow(hwnd, GW_OWNER), WM_CLOSE, 0, 0);
-    }
-
-    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
-    {
-        assert(!m_target);
-        m_target.m_hwnd = NULL;
-
-        HRGN hRgn = GetRgnOrDrawOrHitTest(hwnd);
-        SetRgn(hRgn);
-        return TRUE;
+        return 0;
     }
 
     void GetIdealClientRect(LPRECT prc)
@@ -120,55 +74,43 @@ public:
 
     void FitToBand()
     {
-        if (!m_target)
-        {
+        if (m_hwndTarget == NULL)
             return;
-        }
 
         RECT rc;
         GetIdealClientRect(&rc);
-        MapWindowRect(m_hwnd, GetParent(m_target), &rc);
+        MapWindowRect(m_hwnd, GetParent(m_hwndTarget), &rc);
 
-        m_bPosUpdating = TRUE;
-        BringWindowToTop(m_target);
-        MoveWindow(m_target, rc.left, rc.top,
-            rc.right - rc.left, rc.bottom - rc.top, TRUE);
-        m_bPosUpdating = FALSE;
-        InvalidateRect(m_hwnd, NULL, FALSE);
+        ::SetWindowPos(m_hwndTarget, NULL,
+            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+            SWP_NOACTIVATE | SWP_NOZORDER);
+
+        ::InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
     void FitToTarget()
     {
-        if (!m_target)
-        {
+        if (m_hwndTarget == NULL)
             return;
-        }
 
         RECT rc;
-        GetWindowRect(m_target, &rc);
-        if ((GetWindowStyle(m_hwnd) & WS_CHILD) && GetParent(m_hwnd))
-        {
-            MapWindowRect(NULL, GetParent(m_hwnd), &rc);
-        }
+        GetWindowRect(m_hwndTarget, &rc);
+        MapWindowRect(NULL, GetParent(m_hwnd), &rc);
 
         InflateRect(&rc, 2 * m_nGripSize, 2 * m_nGripSize);
 
-        m_bPosUpdating = TRUE;
-        BringWindowToTop(m_target);
-        MoveWindow(m_hwnd, rc.left, rc.top,
-            rc.right - rc.left, rc.bottom - rc.top, TRUE);
-        m_bPosUpdating = FALSE;
+        ::SetWindowPos(m_hwnd, NULL,
+            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+            SWP_NOACTIVATE | SWP_NOZORDER);
 
-        HRGN hRgn = GetRgnOrDrawOrHitTest(m_hwnd);
-        SetRgn(hRgn);
-        InvalidateRect(m_hwnd, NULL, FALSE);
+        ::InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
     void OnDestroy(HWND hwnd)
     {
         DeleteObject(m_hRgn);
         m_hRgn = NULL;
-        m_target.m_hwnd = NULL;
+        m_hwndTarget = NULL;
     }
 
     void GetRect(HWND hwnd, LPRECT prc)
@@ -177,48 +119,45 @@ public:
         OffsetRect(prc, -prc->left, -prc->top);
     }
 
-    void SetRgn(HRGN hRgn)
+    void SetRgn(HRGN hRgn, BOOL bClient = TRUE)
     {
-        HRGN hRgnOld = m_hRgn;
-        SetWindowRgn(m_hwnd, hRgn, FALSE);
-        m_hRgn = hRgn;
+#if 0
+        if (bClient && m_hwndTarget)
+        {
+            RECT rc;
+            GetIdealClientRect(&rc);
 
-        DeleteObject(hRgnOld);
+            HRGN hClientRgn = CreateRectRgnIndirect(&rc);
+            UnionRgn(hRgn, hRgn, hClientRgn);
+            DeleteObject(hClientRgn);
+        }
+#endif
+        DeleteObject(m_hRgn);
+        SetWindowRgn(m_hwnd, hRgn, TRUE);
+        m_hRgn = hRgn;
+    }
+
+    void OnNCPaint(HWND hwnd, HRGN hrgn)
+    {
+        RECT rc;
+        GetRect(hwnd, &rc);
+
+        HDC hDC = GetWindowDC(hwnd);
+        HPEN hPenOld = SelectPen(hDC, GetStockPen(BLACK_PEN));
+        HBRUSH hbrOld = SelectBrush(hDC, GetStockBrush(WHITE_BRUSH));
+        {
+            GetRgnOrDrawOrHitTest(hwnd, hDC, NULL);
+        }
+        SelectBrush(hDC, hbrOld);
+        SelectPen(hDC, hPenOld);
+        ReleaseDC(hwnd, hDC);
     }
 
     void OnPaint(HWND hwnd)
     {
         PAINTSTRUCT ps;
-        HDC hDC = BeginPaint(hwnd, &ps);
-        if (hDC)
-        {
-            HPEN hPenOld = SelectPen(hDC, GetStockPen(BLACK_PEN));
-            HBRUSH hbrOld = SelectBrush(hDC, GetStockBrush(WHITE_BRUSH));
-            {
-                GetRgnOrDrawOrHitTest(hwnd, hDC, NULL);
-            }
-            SelectBrush(hDC, hbrOld);
-            SelectPen(hDC, hPenOld);
-
-            if (m_target)
-            {
-                RECT rc;
-                GetIdealClientRect(&rc);
-
-                RECT rcParent;
-                HWND hParent = GetParent(m_target);
-                GetWindowRect(hParent, &rcParent);
-                MapWindowRect(NULL, m_hwnd, &rcParent);
-                IntersectClipRect(hDC, rcParent.left, rcParent.top,
-                                       rcParent.right, rcParent.bottom);
-
-                SetWindowOrgEx(hDC, -rc.left, -rc.top, NULL);
-                SendMessage(m_target, WM_PRINT, (WPARAM)hDC,
-                            PRF_CHILDREN | PRF_CLIENT | PRF_NONCLIENT);
-            }
-
-            EndPaint(hwnd, &ps);
-        }
+        BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
     }
 
     UINT OnNCHitTest(HWND hwnd, int x, int y)
@@ -252,18 +191,31 @@ public:
 
     void OnMove(HWND hwnd, int x, int y)
     {
-        if (m_hwnd && m_target && !m_bPosUpdating)
+        HRGN hRgn;
+#if 0
+        hRgn = GetRgnOrDrawOrHitTest(hwnd);
+        SetRgn(hRgn, FALSE);
+#endif
+
+        if (m_hwnd && m_hwndTarget)
         {
             FitToBand();
         }
+
+        hRgn = GetRgnOrDrawOrHitTest(hwnd);
+        SetRgn(hRgn, TRUE);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-        if (m_hwnd && m_target && !m_bPosUpdating)
+        if (m_hwndTarget)
         {
             FitToBand();
         }
+
+        HRGN hRgn = GetRgnOrDrawOrHitTest(hwnd);
+        SetRgn(hRgn);
+        InvalidateRect(hwnd, NULL, TRUE);
     }
 
     HRGN GetRgnOrDrawOrHitTest(HWND hwnd, HDC hDC = NULL, LPPOINT ppt = NULL)
@@ -337,7 +289,6 @@ public:
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
-        MWindowBase::ModifyWndClassDx(wcx);
         wcx.hIcon = NULL;
         wcx.hbrBackground = GetStockBrush(NULL_BRUSH);
         wcx.hIconSm = NULL;
@@ -345,41 +296,12 @@ public:
 
     UINT OnNCCalcSize(HWND hwnd, BOOL fCalcValidRects, NCCALCSIZE_PARAMS *lpcsp)
     {
-        return WVR_REDRAW;
-    }
-
-    void SetTarget(HWND hwndTarget)
-    {
-        if (m_hwnd == NULL)
-            return;
-
-        if (m_hwnd != hwndTarget)
-        {
-            m_target.m_hwnd = hwndTarget;
-        }
-
-        if (IsWindow(m_target))
-        {
-            FitToTarget();
-            ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
-        }
-        else
-        {
-            ShowWindow(m_hwnd, SW_HIDE);
-        }
-    }
-
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        if (id == 666)
-        {
-            SetTarget((HWND)m_msg.lParam);
-        }
+        return 0;
     }
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MRUBBER_BAND_HPP_
+#endif  // ndef MZC4_RUBBER_BAND_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

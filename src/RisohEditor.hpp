@@ -40,6 +40,7 @@
 #include "MWindowBase.hpp"
 #include "MRadWindow.hpp"
 #include "Res.hpp"
+#include "resource.h"
 
 // RisohEditor.cpp
 std::wstring str_vkey(WORD w);

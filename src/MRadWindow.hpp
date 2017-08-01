@@ -1,29 +1,175 @@
-// MRadWindow --- RADical Development Window
-//////////////////////////////////////////////////////////////////////////////
-
-#ifndef MZC4_MRADWINDOW_HPP_
-#define MZC4_MRADWINDOW_HPP_    5   /* Version 5 */
+#ifndef RADWINDOW_HPP_
+#define RADWINDOW_HPP_
 
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
 #include "DialogRes.hpp"
-#include "MDlgPropDlg.hpp"
+#include <set>
+#include <map>
 
-class MSubclassedControl;
-class MRadDialog;
-class MRadWindow;
-
-//////////////////////////////////////////////////////////////////////////////
-
-class MSubclassedControl : public MWindowBase
+class MRadCtrl : public MWindowBase
 {
 public:
-    HWND    m_hwndDialog;
-    HWND    m_hwndRubberBand;
+    BOOL m_bTopCtrl;
+    HWND m_hwndRubberBand;
+    BOOL m_bMoving;
+    BOOL m_bSizing;
+    INT m_nIndex;
+    POINT m_pt;
 
-    MSubclassedControl(HWND hwndDialog, HWND hwndRubberBand)
-        : m_hwndDialog(hwndDialog), m_hwndRubberBand(hwndRubberBand)
+    MRadCtrl() : m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+                 m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1)
     {
+        m_pt.x = m_pt.y = -1;
+    }
+
+    typedef std::set<HWND> set_type;
+    static set_type& GetTargets()
+    {
+        static set_type s_set;
+        return s_set;
+    }
+
+    static HWND& GetLastSel()
+    {
+        static HWND s_hwnd = NULL;
+        return s_hwnd;
+    }
+
+    MRubberBand *GetRubberBand()
+    {
+        MWindowBase *base = GetUserData(m_hwndRubberBand);
+        if (base)
+        {
+            MRubberBand *band = static_cast<MRubberBand *>(base);
+            return band;
+        }
+        return NULL;
+    }
+
+    static MRadCtrl *GetRadCtrl(HWND hwnd)
+    {
+        MWindowBase *base = GetUserData(hwnd);
+        if (base)
+        {
+            MRadCtrl *pCtrl;
+            pCtrl = static_cast<MRadCtrl *>(base);
+            return pCtrl;
+        }
+        return NULL;
+    }
+
+    static void DeselectSelection()
+    {
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            if (pCtrl)
+            {
+                ::DestroyWindow(pCtrl->m_hwndRubberBand);
+                pCtrl->m_hwndRubberBand = NULL;
+            }
+        }
+        GetTargets().clear();
+        GetLastSel() = NULL;
+    }
+
+    static void DeleteSelection(HWND hwnd = NULL)
+    {
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
+        {
+            if (hwnd == *it)
+                continue;
+
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            if (pCtrl)
+            {
+                ::DestroyWindow(pCtrl->m_hwndRubberBand);
+                pCtrl->m_hwndRubberBand = NULL;
+                ::DestroyWindow(*pCtrl);
+            }
+        }
+        GetTargets().clear();
+        GetLastSel() = NULL;
+    }
+
+    void Deselect()
+    {
+        MRubberBand *band = GetRubberBand();
+        if (band)
+        {
+            ::DestroyWindow(*band);
+        }
+        GetTargets().erase(m_hwnd);
+        m_hwndRubberBand = NULL;
+        GetLastSel() = NULL;
+    }
+
+    static void Select(HWND hwnd)
+    {
+        if (hwnd == NULL)
+            return;
+
+        MRadCtrl *pCtrl = GetRadCtrl(hwnd);
+        if (pCtrl == NULL)
+            return;
+
+        MRubberBand *band = new MRubberBand;
+        band->CreateDx(GetParent(hwnd), hwnd, TRUE);
+
+        pCtrl->m_hwndRubberBand = *band;
+        GetTargets().insert(hwnd);
+        GetLastSel() = hwnd;
+    }
+
+    static void MoveSelection(HWND hwnd, INT dx, INT dy)
+    {
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
+        {
+            if (hwnd == *it)
+                continue;
+
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            if (pCtrl)
+            {
+                RECT rc;
+                ::GetWindowRect(*pCtrl, &rc);
+                ::MapWindowPoints(NULL, ::GetParent(*pCtrl), (LPPOINT)&rc, 2);
+                OffsetRect(&rc, dx, dy);
+
+                pCtrl->m_bMoving = TRUE;
+                pCtrl->SetWindowPosDx((LPPOINT)&rc);
+                pCtrl->m_bMoving = FALSE;
+            }
+        }
+    }
+
+    static void ResizeSelection(HWND hwnd, INT cx, INT cy)
+    {
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
+        {
+            if (hwnd == *it)
+                continue;
+
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            if (pCtrl && !pCtrl->m_bSizing)
+            {
+                pCtrl->m_bSizing = TRUE;
+                SIZE siz = { cx , cy };
+                pCtrl->SetWindowPosDx(NULL, &siz);
+                pCtrl->m_bSizing = FALSE;
+
+                MRubberBand *band = pCtrl->GetRubberBand();
+                if (band)
+                {
+                    band->FitToTarget();
+                }
+            }
+        }
     }
 
     virtual LRESULT CALLBACK
@@ -31,17 +177,88 @@ public:
     {
         switch (uMsg)
         {
+            HANDLE_MSG(hwnd, WM_NCHITTEST, OnNCHitTest);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MSG(hwnd, WM_NCDESTROY, OnNCDestroy);
+            HANDLE_MSG(hwnd, WM_NCLBUTTONDOWN, OnNCLButtonDown);
+            HANDLE_MSG(hwnd, WM_NCLBUTTONDBLCLK, OnNCLButtonDown);
+            HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
+            HANDLE_MSG(hwnd, WM_NCLBUTTONUP, OnNCLButtonUp);
             HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
-            HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
-            //HANDLE_MSG(hwnd, WM_MOUSEACTIVATE, OnMouseActivate);
-            HANDLE_MSG(hwnd, WM_NCHITTEST, OnNCHitTest);
-            HANDLE_MSG(hwnd, WM_NCLBUTTONDOWN, OnNCLButtonDown);
-            HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
+            HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
+            HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
+            HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
+            HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
+            HANDLE_MSG(hwnd, WM_NCRBUTTONDOWN, OnNCRButtonDown);
+            HANDLE_MSG(hwnd, WM_NCRBUTTONDBLCLK, OnNCRButtonDown);
+            HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
+            case WM_MOVING: case WM_SIZING:
+                return 0;
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
+    {
+        if (fDoubleClick)
+            return;
+
+        SendMessage(GetParent(hwnd), WM_NCRBUTTONDOWN, (WPARAM)hwnd, MAKELPARAM(x, y));
+    }
+
+    void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
+    {
+    }
+
+    void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+    {
+    }
+
+    void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
+    {
+    }
+
+    void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
+    {
+    }
+
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        if (!m_bTopCtrl)
+        {
+            DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
+            return;
+        }
+
+        if (!m_bMoving)
+        {
+            POINT pt;
+            ::GetCursorPos(&pt);
+            MoveSelection(hwnd, pt.x - m_pt.x, pt.y - m_pt.y);
+            m_pt = pt;
+        }
+
+        MRubberBand *band = GetRubberBand();
+        if (band)
+        {
+            band->FitToTarget();
+        }
+
+        RECT rc;
+        ::GetClientRect(hwnd, &rc);
+        ::InvalidateRect(hwnd, &rc, TRUE);
+    }
+
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        DefaultProcDx(hwnd, WM_SIZE, 0, MAKELPARAM(cx, cy));
+        if (!m_bTopCtrl)
+        {
+            return;
+        }
+
+        if (!m_bSizing)
+            ResizeSelection(hwnd, cx, cy);
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -52,95 +269,133 @@ public:
         }
     }
 
-    void OnNCDestroy(HWND hwnd)
+    void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
-        delete this;
-    }
+        ::GetCursorPos(&m_pt);
 
-    BOOL SendMouseMsgToParent(HWND hwnd, UINT uMsg, WPARAM wParam, BOOL ScreenCoord)
-    {
-        HWND hwndParent = GetParent(hwnd);
-        if (hwndParent)
+        if (fDoubleClick)
+            return;
+
+        if (codeHitTest != HTCAPTION)
+            return;
+
+        if (GetKeyState(VK_CONTROL) < 0)
         {
-            POINT pt;
-            GetCursorPos(&pt);
-            if (!ScreenCoord)
-                ScreenToClient(hwnd, &pt);
-            SendMessage(hwndParent, uMsg, wParam, MAKELPARAM(pt.x, pt.y));
-            return TRUE;
+            if (m_hwndRubberBand)
+            {
+                Deselect();
+                return;
+            }
         }
-        return FALSE;
-    }
-
-    void OnMove(HWND hwnd, int x, int y)
-    {
-        InvalidateRect(hwnd, NULL, TRUE);
-        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, (LPARAM)m_hwnd);
-        DefaultProcDx();
-    }
-
-    void OnSize(HWND hwnd, UINT state, int cx, int cy)
-    {
-        InvalidateRect(hwnd, NULL, TRUE);
-        SendMessage(m_hwndRubberBand, WM_COMMAND, 666, (LPARAM)m_hwnd);
-        DefaultProcDx();
-    }
-
-    BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
-    {
-        SetCursor(LoadCursor(NULL, IDC_ARROW));
-        return TRUE;
-    }
-
-    //int OnMouseActivate(HWND hwnd, HWND hwndTopLevel, UINT codeHitTest, UINT msg)
-    //{
-    //    return MA_NOACTIVATE;
-    //}
-
-    UINT OnNCHitTest(HWND hwnd, int x, int y)
-    {
-        HWND hwndParent = GetParent(hwnd);
-        if (GetClassWord(hwndParent, GCW_ATOM) != 0x8002)
+        else if (GetKeyState(VK_SHIFT) < 0)
         {
-            return HTTRANSPARENT;
+            if (m_hwndRubberBand)
+            {
+                return;
+            }
         }
         else
         {
-            return HTCAPTION;
+            if (m_hwndRubberBand)
+            {
+                ;
+            }
+            else
+            {
+                DeselectSelection();
+            }
         }
-    }
 
-    void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
-    {
-        DefaultProcDx(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, MAKELPARAM(x, y));
+        if (m_hwndRubberBand == NULL)
+        {
+            Select(hwnd);
+        }
+
+        HWND hwndPrev = GetWindow(hwnd, GW_HWNDPREV);
+        ::DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
+        SetWindowPosDx(NULL, NULL, hwndPrev);
     }
 
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
     {
-        DefaultProcDx(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, MAKELPARAM(x, y));
+        ::DefWindowProc(hwnd, WM_NCMOUSEMOVE, codeHitTest, MAKELPARAM(x, y));
+    }
+
+    void OnNCLButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
+    {
+        m_bMoving = FALSE;
+        m_pt.x = -1;
+        m_pt.y = -1;
+        ::DefWindowProc(hwnd, WM_NCLBUTTONUP, codeHitTest, MAKELPARAM(x, y));
+    }
+
+    UINT OnNCHitTest(HWND hwnd, int x, int y)
+    {
+        if (m_bTopCtrl)
+        {
+            return HTCAPTION;
+        }
+        return HTTRANSPARENT;
+    }
+
+    virtual void PostNcDestroy()
+    {
+        m_hwnd = NULL;
+        delete this;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 class MRadDialog : public MDialogBase
 {
 public:
-    MRadDialog()
+    HWND GetNextCtrl(HWND hwndCtrl) const
     {
+        HWND hwndNext = GetNextWindow(hwndCtrl, GW_HWNDNEXT);
+        if (hwndNext == NULL)
+        {
+            hwndNext = GetNextWindow(hwndCtrl, GW_HWNDFIRST);
+        }
+
+        TCHAR szClass[64];
+        while (hwndNext)
+        {
+            ::GetClassName(hwndNext, szClass, _countof(szClass));
+            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
+                break;
+
+            hwndNext = GetNextWindow(hwndNext, GW_HWNDNEXT);
+        }
+        if (hwndNext == NULL)
+        {
+            hwndNext = GetNextWindow(hwndCtrl, GW_HWNDFIRST);
+        }
+
+        return hwndNext;
     }
 
-    INT GetCtrlIndex(HWND hwndTargetCtrl) const
+    HWND GetPrevCtrl(HWND hwndCtrl) const
     {
-        INT index = 0;
-        for (HWND hwndCtrl = ::GetTopWindow(m_hwnd); hwndCtrl;
-             hwndCtrl = ::GetWindow(hwndCtrl, GW_HWNDNEXT))
+        HWND hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDPREV);
+        if (hwndPrev == NULL)
         {
-            if (hwndCtrl == hwndTargetCtrl)
-                return index;
-            ++index;
+            hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDLAST);
         }
-        return -1;
+
+        TCHAR szClass[64];
+        while (hwndPrev)
+        {
+            ::GetClassName(hwndPrev, szClass, _countof(szClass));
+            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
+                break;
+
+            hwndPrev = GetNextWindow(hwndPrev, GW_HWNDPREV);
+        }
+        if (hwndPrev == NULL)
+        {
+            hwndPrev = GetNextWindow(hwndCtrl, GW_HWNDLAST);
+        }
+
+        return hwndPrev;
     }
 
     virtual INT_PTR CALLBACK
@@ -149,8 +404,18 @@ public:
         switch (uMsg)
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
+            HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+    {
+        if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
+            return;
+
+        MRadCtrl::DeselectSelection();
     }
 
     virtual LRESULT CALLBACK
@@ -180,6 +445,10 @@ public:
 
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
+        if (fDoubleClick)
+            return;
+
+        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
     }
 
     void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
@@ -198,24 +467,39 @@ public:
         }
     }
 
-    void DoSubclass(HWND hCtrl, HWND hwndRubberBand)
+    void DoSubclass(HWND hCtrl, BOOL bTop)
     {
-        if (hCtrl == hwndRubberBand)
-            return;
-
-        MSubclassedControl *pCtrl = new MSubclassedControl(m_hwnd, hwndRubberBand);
+        MRadCtrl *pCtrl = new MRadCtrl;
         pCtrl->SubclassDx(hCtrl);
+        pCtrl->m_bTopCtrl = bTop;
 
-        DoSubclassChildren(hCtrl, hwndRubberBand);
+        DoSubclassChildren(hCtrl);
     }
 
-    void DoSubclassChildren(HWND hwnd, HWND hwndRubberBand)
+    void DoSubclassChildren(HWND hwnd, BOOL bTop = FALSE)
     {
         HWND hCtrl = GetTopWindow(hwnd);
-        while (hCtrl)
+        if (bTop)
         {
-            DoSubclass(hCtrl, hwndRubberBand);
-            hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+            INT nIndex = 0;
+            while (hCtrl)
+            {
+                DoSubclass(hCtrl, bTop);
+
+                MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl);
+                pCtrl->m_nIndex = nIndex;
+
+                hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+                ++nIndex;
+            }
+        }
+        else
+        {
+            while (hCtrl)
+            {
+                DoSubclass(hCtrl, bTop);
+                hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+            }
         }
     }
 
@@ -223,43 +507,30 @@ public:
     {
         POINT pt = { 0, 0 };
         SetWindowPosDx(&pt);
+        SubclassDx(hwnd);
+
+        DoSubclassChildren(hwnd, TRUE);
+
         return FALSE;
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
-class MRadWindow : public MWindowBase
+struct MRadWindow : MWindowBase
 {
-protected:
-    HHOOK           m_mouse_hook;
-    MRubberBand     m_rubber_band;
-public:
-    INT             m_xDialogBaseUnit;
-    INT             m_yDialogBaseUnit;
-    MRadDialog      m_rad_dialog;
-    DialogRes       m_dialog_res;
+    INT         m_xDialogBaseUnit;
+    INT         m_yDialogBaseUnit;
+    HHOOK       m_mouse_hook;
+    MRadDialog  m_rad_dialog;
+    DialogRes   m_dialog_res;
+    static MRadWindow *s_p_rad_window;
 
-    static MRadWindow*& Singleton()
-    {
-        // FIXME: support multiple MRadWindow
-        static MRadWindow *p_rad_window;
-        return p_rad_window;
-    }
-
-    MRadWindow() : m_mouse_hook(NULL),
-                   m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
+    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
+                   m_mouse_hook(NULL)
     {
     }
 
     ~MRadWindow()
     {
-        UnhookMouse();
-    }
-
-    INT GetCtrlIndex(HWND hwndTargetCtrl) const
-    {
-        return m_rad_dialog.GetCtrlIndex(hwndTargetCtrl);
     }
 
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
@@ -270,74 +541,6 @@ public:
                 return hwnd;
 
             hwnd = GetParent(hwnd);
-        }
-    }
-
-    void SetTarget(HWND hwndTarget)
-    {
-        m_rubber_band.SetTarget(hwndTarget);
-    }
-
-    static LRESULT CALLBACK
-    MouseProc(INT nCode, WPARAM wParam, LPARAM lParam)
-    {
-        if (Singleton() == NULL)
-            return 0;
-        if (nCode < 0)
-            return CallNextHookEx(Singleton()->m_mouse_hook, nCode, wParam, lParam);
-
-        MOUSEHOOKSTRUCT *pmhs = (MOUSEHOOKSTRUCT *)lParam;
-        if (wParam == WM_NCLBUTTONDOWN || wParam == WM_RBUTTONDOWN)
-        {
-            RECT rc;
-            GetWindowRect(Singleton()->m_rad_dialog, &rc);
-            POINT pt = pmhs->pt;
-            if (PtInRect(&rc, pt))
-            {
-                HWND hwnd = WindowFromPoint(pt);
-                if (hwnd != Singleton()->m_rubber_band.m_hwnd)
-                {
-                    ScreenToClient(Singleton()->m_rad_dialog, &pt);
-                    hwnd = ChildWindowFromPointEx(Singleton()->m_rad_dialog, pt, CWP_ALL);
-                    if (wParam == WM_RBUTTONDOWN)
-                    {
-                        PostMessage(Singleton()->m_hwnd, WM_CONTEXTMENU, (WPARAM)hwnd,
-                                    MAKELPARAM(pmhs->pt.x, pmhs->pt.y));
-                        return TRUE;
-                    }
-                    if (hwnd)
-                    {
-                        HWND hwndCtrl = GetPrimaryControl(hwnd, Singleton()->m_rad_dialog);
-                        Singleton()->SetTarget(hwndCtrl);
-                    }
-                }
-            }
-            else
-            {
-                Singleton()->SetTarget(NULL);
-            }
-        }
-
-        return CallNextHookEx(Singleton()->m_mouse_hook, nCode, wParam, lParam);
-    }
-
-    BOOL HookMouse(HWND hwnd)
-    {
-        if (m_mouse_hook == NULL)
-        {
-            Singleton() = this;
-            DWORD dwThreadID = GetCurrentThreadId();
-            m_mouse_hook = SetWindowsHookEx(WH_MOUSE, MouseProc, NULL, dwThreadID);
-        }
-        return (m_mouse_hook != NULL);
-    }
-
-    void UnhookMouse()
-    {
-        if (m_mouse_hook)
-        {
-            UnhookWindowsHookEx(m_mouse_hook);
-            m_mouse_hook = NULL;
         }
     }
 
@@ -370,15 +573,8 @@ public:
         wcx.hIconSm = NULL;
     }
 
-    BOOL ReCreate(HWND hwnd)
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
-        UnhookMouse();
-
-        if (m_rad_dialog)
-            DestroyWindow(m_rad_dialog);
-        if (m_rubber_band)
-            DestroyWindow(m_rubber_band);
-
         m_dialog_res.Fixup(FALSE);
         std::vector<BYTE> data = m_dialog_res.data();
         m_dialog_res.Fixup(TRUE);
@@ -388,34 +584,16 @@ public:
             return FALSE;
         }
 
-        if (!m_rubber_band.CreateDx(m_hwnd, FALSE))
-        {
-            return FALSE;
-        }
-
-        m_rad_dialog.SubclassDx(m_rad_dialog);
-        m_rad_dialog.DoSubclassChildren(m_rad_dialog, m_rubber_band);
-
-        if (!HookMouse(hwnd))
-        {
-            return FALSE;
-        }
-
         FitToRadDialog();
 
         ShowWindow(m_rad_dialog, SW_SHOWNORMAL);
         UpdateWindow(m_rad_dialog);
-        return TRUE;
-    }
 
-    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
-    {
-        return ReCreate(hwnd);
+        return TRUE;
     }
 
     void OnDestroy(HWND hwnd)
     {
-        UnhookMouse();
     }
 
     virtual LRESULT CALLBACK
@@ -424,244 +602,154 @@ public:
         switch (uMsg)
         {
             HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
-            HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
-            case WM_EXITSIZEMOVE:
-                SetTarget(m_rubber_band.m_target);
-                return 0;
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
 
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        ;
+    }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
         HWND hwndPrev, hwndNext;
         RECT rc;
-        if (fDown)
-        {
-            MWindowBase& dialog = m_rad_dialog;
-            MWindowBase& target = m_rubber_band.m_target;
-            if (!target)
-                return;
-
-            switch (vk)
-            {
-            case VK_TAB:
-                if (GetKeyState(VK_SHIFT) < 0)
-                {
-                    hwndPrev = GetWindow(target, GW_HWNDPREV);
-                    if (hwndPrev == NULL)
-                    {
-                        hwndPrev = GetWindow(target, GW_HWNDLAST);
-                    }
-                    SetTarget(hwndPrev);
-                }
-                else
-                {
-                    hwndNext = GetWindow(target, GW_HWNDNEXT);
-                    if (hwndNext == NULL)
-                    {
-                        hwndNext = GetWindow(target, GW_HWNDFIRST);
-                    }
-                    SetTarget(hwndNext);
-                }
-                break;
-            case VK_UP:
-                if (GetKeyState(VK_SHIFT) < 0)
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    SIZE siz = SizeFromRectDx(&rc);
-                    siz.cy -= 1;
-                    target.SetWindowPosDx(NULL, &siz);
-                }
-                else
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    rc.top -= 1;
-                    POINT pt = { rc.left, rc.top };
-                    target.SetWindowPosDx(&pt);
-                }
-                break;
-            case VK_DOWN:
-                if (GetKeyState(VK_SHIFT) < 0)
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    SIZE siz = SizeFromRectDx(&rc);
-                    siz.cy += 1;
-                    target.SetWindowPosDx(NULL, &siz);
-                }
-                else
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    rc.top += 1;
-                    POINT pt = { rc.left, rc.top };
-                    target.SetWindowPosDx(&pt);
-                }
-                break;
-            case VK_LEFT:
-                if (GetKeyState(VK_SHIFT) < 0)
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    SIZE siz = SizeFromRectDx(&rc);
-                    siz.cx -= 1;
-                    target.SetWindowPosDx(NULL, &siz);
-                }
-                else
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    rc.left -= 1;
-                    POINT pt = { rc.left, rc.top };
-                    target.SetWindowPosDx(&pt);
-                }
-                break;
-            case VK_RIGHT:
-                if (GetKeyState(VK_SHIFT) < 0)
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    SIZE siz = SizeFromRectDx(&rc);
-                    siz.cx += 1;
-                    target.SetWindowPosDx(NULL, &siz);
-                }
-                else
-                {
-                    GetWindowRect(target, &rc);
-                    MapWindowRect(NULL, dialog, &rc);
-                    rc.right += 1;
-                    POINT pt = { rc.left, rc.top };
-                    target.SetWindowPosDx(&pt);
-                }
-                break;
-            default:
-                return;
-            }
-            m_rubber_band.FitToTarget();
-        }
-    }
-
-    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
-    {
-        if (m_rubber_band.m_target)
-        {
-            EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
-        }
-        else
-        {
-            EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
-        }
-    }
-
-    void OnAddCtrl(HWND hwnd)
-    {
-        // FIXME
-    }
-
-    void OnDelCtrl(HWND hwnd)
-    {
-        HWND hCtrl = m_rubber_band.m_target;
-        if (hCtrl == NULL)
+        if (!fDown)
             return;
 
-        UINT nIndex = GetCtrlIndex(hCtrl);
-        if (nIndex < m_dialog_res.Items.size())
+        HWND hwndTarget = MRadCtrl::GetLastSel();
+        if (hwndTarget == NULL && !MRadCtrl::GetTargets().empty())
         {
-            m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
-            m_dialog_res.m_cItems--;
-            ReCreate(hwnd);
-        }
-    }
-
-    void OnCtrlProp(HWND hwnd)
-    {
-        // FIXME
-    }
-
-    void OnDlgProp(HWND hwnd)
-    {
-        MDlgPropDlg dialog(m_dialog_res);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // FIXME
-        }
-    }
-
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        UnhookMouse();
-        BOOL IsVisible = IsWindowVisible(m_rubber_band);
-        ShowWindow(m_rubber_band, SW_HIDE);
-
-        switch (id)
-        {
-        case ID_ADDCTRL:
-            OnAddCtrl(hwnd);
-            break;
-        case ID_DELCTRL:
-            OnDelCtrl(hwnd);
-            break;
-        case ID_CTRLPROP:
-            OnCtrlProp(hwnd);
-            break;
-        case ID_DLGPROP:
-            OnDlgProp(hwnd);
-            break;
+            hwndTarget = *MRadCtrl::GetTargets().begin();
         }
 
-        if (IsVisible && ::IsWindow(m_rubber_band))
-            ShowWindow(m_rubber_band, SW_SHOWNOACTIVATE);
-        HookMouse(hwnd);
+        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndTarget);
+
+        switch (vk)
+        {
+        case VK_TAB:
+            if (GetKeyState(VK_SHIFT) < 0)
+            {
+                if (hwndTarget == NULL)
+                {
+                    hwndTarget = GetWindow(m_rad_dialog, GW_HWNDLAST);
+                }
+                else
+                {
+                    hwndTarget = m_rad_dialog.GetPrevCtrl(hwndTarget);
+                }
+                MRadCtrl::DeselectSelection();
+                MRadCtrl::Select(hwndTarget);
+            }
+            else
+            {
+                if (hwndTarget == NULL)
+                {
+                    hwndTarget = GetWindow(m_rad_dialog, GW_HWNDFIRST);
+                }
+                else
+                {
+                    hwndTarget = m_rad_dialog.GetNextCtrl(hwndTarget);
+                }
+                MRadCtrl::DeselectSelection();
+                MRadCtrl::Select(hwndTarget);
+            }
+            break;
+        case VK_UP:
+            if (pCtrl == NULL)
+            {
+                return;
+            }
+            if (GetKeyState(VK_SHIFT) < 0)
+            {
+                GetWindowRect(*pCtrl, &rc);
+                MapWindowRect(NULL, m_rad_dialog, &rc);
+                SIZE siz = SizeFromRectDx(&rc);
+                siz.cy -= 1;
+                MRadCtrl::ResizeSelection(NULL, siz.cx, siz.cy);
+            }
+            else
+            {
+                MRadCtrl::MoveSelection(NULL, 0, -1);
+            }
+            break;
+        case VK_DOWN:
+            if (pCtrl == NULL)
+            {
+                return;
+            }
+            if (GetKeyState(VK_SHIFT) < 0)
+            {
+                GetWindowRect(*pCtrl, &rc);
+                MapWindowRect(NULL, m_rad_dialog, &rc);
+                SIZE siz = SizeFromRectDx(&rc);
+                siz.cy += 1;
+                MRadCtrl::ResizeSelection(NULL, siz.cx, siz.cy);
+            }
+            else
+            {
+                MRadCtrl::MoveSelection(NULL, 0, +1);
+            }
+            break;
+        case VK_LEFT:
+            if (pCtrl == NULL)
+            {
+                return;
+            }
+            if (GetKeyState(VK_SHIFT) < 0)
+            {
+                GetWindowRect(*pCtrl, &rc);
+                MapWindowRect(NULL, m_rad_dialog, &rc);
+                SIZE siz = SizeFromRectDx(&rc);
+                siz.cx -= 1;
+                MRadCtrl::ResizeSelection(NULL, siz.cx, siz.cy);
+            }
+            else
+            {
+                MRadCtrl::MoveSelection(NULL, -1, 0);
+            }
+            break;
+        case VK_RIGHT:
+            if (pCtrl == NULL)
+            {
+                return;
+            }
+            if (GetKeyState(VK_SHIFT) < 0)
+            {
+                GetWindowRect(*pCtrl, &rc);
+                MapWindowRect(NULL, m_rad_dialog, &rc);
+                SIZE siz = SizeFromRectDx(&rc);
+                siz.cx += 1;
+                MRadCtrl::ResizeSelection(NULL, siz.cx, siz.cy);
+            }
+            else
+            {
+                MRadCtrl::MoveSelection(NULL, +1, 0);
+            }
+            break;
+        case VK_DELETE:
+            MRadCtrl::DeleteSelection();
+            break;
+        default:
+            return;
+        }
     }
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        UnhookMouse();
-
-        POINT pt;
-        pt.x = xPos;
-        pt.y = yPos;
-        ScreenToClient(m_rad_dialog, &pt);
-        HWND hCtrl = ChildWindowFromPointEx(m_rad_dialog, pt, CWP_ALL);
-        hCtrl = GetPrimaryControl(hCtrl, m_rad_dialog);
-        if (hCtrl != m_rad_dialog.m_hwnd && hCtrl != m_hwnd)
-        {
-            SetTarget(hCtrl);
-        }
-        else
-        {
-            SetTarget(NULL);
-        }
-
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(3));
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
         HMENU hSubMenu = GetSubMenu(hMenu, 0);
- 
-        LPRECT prc = NULL;
-        RECT rc;
-        if (m_rubber_band.m_target)
-        {
-            GetWindowRect(m_rubber_band.m_target, &rc);
-            prc = &rc;
-        }
 
-        INT nCmd = TrackPopupMenu(hSubMenu,
-            TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD,
-            xPos, yPos, 0, hwnd, prc);
-        PostMessage(hwnd, WM_NULL, 0, 0);
-        PostMessage(hwnd, WM_COMMAND, nCmd, 0);
-        HookMouse(hwnd);
+        ::SetForegroundWindow(hwnd);
+        ::TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+            xPos, yPos, 0, hwnd, NULL);
+        ::PostMessage(hwnd, WM_NULL, 0, 0);
     }
 
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)
@@ -683,11 +771,6 @@ public:
 
     virtual void Update(HWND hwnd)
     {
-    }
-
-    void OnMove(HWND hwnd, int x, int y)
-    {
-        m_rubber_band.FitToTarget();
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -731,8 +814,4 @@ public:
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MRADWINDOW_HPP_
-
-//////////////////////////////////////////////////////////////////////////////
+#endif  // ndef RADWINDOW_HPP_
