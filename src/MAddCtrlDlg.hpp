@@ -26,6 +26,18 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        extern ConstantsDB g_ConstantsDB;
+
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+
+        ConstantsDB::TableType table =
+            g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb1, it->name.c_str());
+        }
+
         return TRUE;
     }
 
