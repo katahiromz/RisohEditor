@@ -10,6 +10,7 @@ HEADERS = \
 	src\IconRes.hpp \
 	src\id_string.hpp \
 	src\MAddBitmapDlg.hpp \
+	src\MAddCtrlDlg.hpp \
 	src\MAddCursorDlg.hpp \
 	src\MAddIconDlg.hpp \
 	src\MAddResDlg.hpp \
