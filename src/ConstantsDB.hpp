@@ -43,19 +43,6 @@ public:
     typedef std::vector<EntryType> TableType;
     typedef std::map<CategoryType, TableType> MapType;
 
-    struct CheckItem
-    {
-        BOOL        checked;
-        ValueType   value;
-        ValueType   mask;
-        NameType    name;
-
-        CheckItem() : checked(FALSE), value(0), mask(0)
-        {
-        }
-    };
-    typedef std::vector<CheckItem> CheckList;
-
     ConstantsDB()
     {
     }
@@ -347,49 +334,6 @@ public:
             }
         }
 
-        return value;
-    }
-
-    BOOL GetCheckList(CategoryType category, CheckList& List, ValueType value) const
-    {
-        ::CharUpperW(&category[0]);
-
-        List.clear();
-
-        MapType::const_iterator found = m_Map.find(category);
-        if (found == m_Map.end())
-            return FALSE;
-
-        const TableType& Table = found->second;
-        TableType::const_iterator it, end = Table.end();
-        CheckItem item;
-        for (it = Table.begin(); it != end; ++it)
-        {
-            if (it->value == 0)
-                continue;
-
-            item.checked = ((value & it->mask) == it->value);
-            item.name = it->name;
-            item.value = it->value;
-            item.mask = it->mask;
-            List.push_back(item);
-        }
-
-        return TRUE;
-    }
-
-    ValueType ValueFromCheckList(const CheckList& List) const
-    {
-        ValueType value = 0;
-        CheckList::const_iterator it, end = List.end();
-        for (it = List.begin(); it != end; ++it)
-        {
-            if (it->checked)
-            {
-                value &= ~it->mask;
-                value |= it->value;
-            }
-        }
         return value;
     }
 

@@ -18,66 +18,142 @@ public:
     BOOL m_bUpdating;
     DWORD m_dwStyle;
     DWORD m_dwExStyle;
+    ConstantsDB::TableType m_style_table;
+    ConstantsDB::TableType m_exstyle_table;
+    std::vector<BYTE>   m_style_selection;
+    std::vector<BYTE>   m_exstyle_selection;
 
     MAddCtrlDlg(DialogRes& dialog_res)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), m_bUpdating(FALSE)
     {
     }
 
-    void InitStyleListBox(HWND hLst1, LPCTSTR pszClass)
+    void InitTables(LPCTSTR pszClass)
     {
         extern ConstantsDB g_ConstantsDB;
 
-        ListBox_ResetContent(hLst1);
-
         ConstantsDB::TableType table;
-        if (pszClass[0])
+
+        m_style_table.clear();
+        if (pszClass && pszClass[0])
         {
             table = g_ConstantsDB.GetTable(pszClass);
             if (table.size())
             {
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
-                {
-                    if (it->value == 0)
-                        continue;
-
-                    ListBox_AddString(hLst1, it->name.c_str());
-                }
+                m_style_table.insert(m_style_table.end(),
+                    table.begin(), table.end());
             }
         }
         table = g_ConstantsDB.GetTable(TEXT("STYLE"));
         if (table.size())
         {
-            ConstantsDB::TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
-            {
-                if (it->value == 0)
-                    continue;
-
-                ListBox_AddString(hLst1, it->name.c_str());
-            }
+            m_style_table.insert(m_style_table.end(),
+                table.begin(), table.end());
         }
+        m_style_selection.resize(m_style_table.size());
+
+        m_exstyle_table.clear();
+        table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        if (table.size())
+        {
+            m_exstyle_table.insert(m_style_table.end(),
+                table.begin(), table.end());
+        }
+        m_exstyle_selection.resize(m_exstyle_table.size());
     }
 
-    void InitExStyleListBox(HWND hLst2)
+    void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table,
+                          const std::vector<BYTE>& sel)
     {
-        extern ConstantsDB g_ConstantsDB;
+        ListBox_ResetContent(hLst);
 
-        ListBox_ResetContent(hLst2);
-
-        ConstantsDB::TableType table;
-        table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             ConstantsDB::TableType::iterator it, end = table.end();
             for (it = table.begin(); it != end; ++it)
             {
-                if (it->value == 0)
-                    continue;
-
-                ListBox_AddString(hLst2, it->name.c_str());
+                ListBox_AddString(hLst, it->name.c_str());
             }
+        }
+    }
+
+    void GetSelection(HWND hLst, std::vector<BYTE>& sel)
+    {
+        for (size_t i = 0; i < sel.size(); ++i)
+        {
+            sel[i] = (ListBox_GetSel(hLst, (DWORD)i) > 0);
+        }
+    }
+
+    void GetSelection(std::vector<BYTE>& sel,
+                      const ConstantsDB::TableType& table, DWORD dwValue)
+    {
+        for (size_t i = 0; i < table.size(); ++i)
+        {
+            if ((dwValue & table[i].mask) == table[i].value)
+                sel[i] = TRUE;
+            else
+                sel[i] = FALSE;
+        }
+    }
+
+    DWORD AnalyseDifference(
+        DWORD dwValue, ConstantsDB::TableType& table,
+        std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
+    {
+        assert(old_sel.size() == new_sel.size());
+        for (size_t i = 0; i < old_sel.size(); ++i)
+        {
+            if (old_sel[i] && !new_sel[i])
+            {
+                dwValue &= ~table[i].mask;
+            }
+            else if (!old_sel[i] && new_sel[i])
+            {
+                dwValue &= ~table[i].mask;
+                dwValue |= table[i].value;
+            }
+        }
+        return dwValue;
+    }
+
+    void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
+    {
+        for (size_t i = 0; i < sel.size(); ++i)
+        {
+            ListBox_SetSel(hLst, sel[i], (DWORD)i);
+        }
+    }
+
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
+                        DWORD dwValue)
+    {
+        for (size_t i = 0; i < table.size(); ++i)
+        {
+            if ((dwValue & table[i].mask) == table[i].value)
+            {
+                ListBox_SetSel(hLst, TRUE, (DWORD)i);
+            }
+            else
+            {
+                ListBox_SetSel(hLst, FALSE, (DWORD)i);
+            }
+        }
+    }
+
+    void InitClassComboBox(HWND hCmb1)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        ComboBox_ResetContent(hCmb1);
+
+        ConstantsDB::TableType table;
+        table = g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
+
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb1, it->name.c_str());
         }
     }
 
@@ -86,30 +162,26 @@ public:
         extern ConstantsDB g_ConstantsDB;
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        InitClassComboBox(hCmb1);
 
-        ConstantsDB::TableType table;
+        InitTables(NULL);
 
-        {
-            table = g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
-            ConstantsDB::TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
-            {
-                ComboBox_AddString(hCmb1, it->name.c_str());
-            }
-        }
+        std::vector<BYTE> sel;
+        TCHAR szText[64];
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
-        InitStyleListBox(hLst1, TEXT(""));
-
-        HWND hLst2 = GetDlgItem(hwnd, lst2);
-        InitExStyleListBox(hLst2);
-
-        TCHAR szText[64];
         m_dwStyle = WS_VISIBLE | WS_CHILD;
+        GetSelection(sel, m_style_table, m_dwStyle);
+        InitStyleListBox(hLst1, m_style_table, sel);
+
         wsprintf(szText, TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
 
+        HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
+        GetSelection(sel, m_exstyle_table, m_dwExStyle);
+        InitStyleListBox(hLst2, m_exstyle_table, sel);
+
         wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
 
@@ -257,6 +329,20 @@ public:
         }
     }
 
+    void UpdateClass(HWND hLst1, const MString& strClass)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        MString str = strClass;
+        str += TEXT(".DEFAULT.STYLE");
+        DWORD style = g_ConstantsDB.GetValue(str, TEXT("STYLE"));
+
+        std::vector<BYTE> sel;
+        GetSelection(sel, m_style_table, style);
+
+        InitStyleListBox(hLst1, m_style_table, sel);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -277,13 +363,15 @@ public:
                 ComboBox_GetLBText(hCmb1, nIndex, szText);
                 MString text = szText;
                 mstr_trim(text);
-                InitStyleListBox(hLst1, text.c_str());
+                InitTables(text.c_str());
+                UpdateClass(hLst1, text);
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
                 MString text = GetDlgItemText(hwnd, cmb1);
                 mstr_trim(text);
-                InitStyleListBox(hLst1, text.c_str());
+                InitTables(text.c_str());
+                UpdateClass(hLst1, text);
             }
             break;
         case lst1:
