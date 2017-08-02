@@ -9,10 +9,6 @@
 #include "MString.hpp"
 #include "resource.h"
 
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddCtrlDlg : public MDialogBase
