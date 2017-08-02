@@ -828,6 +828,8 @@ struct MRadWindow : MWindowBase
 
     void OnAddCtrl(HWND hwnd)
     {
+        MAddCtrlDlg dialog(m_dialog_res);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnCtrlProp(HWND hwnd)
