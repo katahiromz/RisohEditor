@@ -6,6 +6,7 @@
 
 #include "RisohEditor.hpp"
 #include "DialogRes.hpp"
+#include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);

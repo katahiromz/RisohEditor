@@ -6,6 +6,7 @@
 
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
+#include "MAddCtrlDlg.hpp"
 #include "MDlgPropDlg.hpp"
 #include "MCtrlPropDlg.hpp"
 #include "DialogRes.hpp"
