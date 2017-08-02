@@ -53,6 +53,7 @@
 #define IDD_EDITMENU        117
 #define IDD_DLGPROP         118
 #define IDD_CTRLPROP        119
+#define IDD_ADDCTRL         120
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
