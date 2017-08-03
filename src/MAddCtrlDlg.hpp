@@ -163,6 +163,13 @@ public:
     {
         extern ConstantsDB g_ConstantsDB;
 
+        INT cx = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+        INT cy = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+        SetDlgItemInt(hwnd, edt3, cx, FALSE);
+        SetDlgItemInt(hwnd, edt4, cy, FALSE);
+
+        SetDlgItemInt(hwnd, cmb5, 0, FALSE);
+
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         m_bUpdating = TRUE;
         InitClassComboBox(hCmb1);
@@ -313,6 +320,27 @@ public:
         m_bUpdating = FALSE;
 
         ListBox_SetTopIndex(hLst1, 0);
+
+        INT cx, cy;
+        cx = g_ConstantsDB.GetValue(strClass + TEXT(".SIZE"), TEXT("WIDTH"));
+        cy = g_ConstantsDB.GetValue(strClass + TEXT(".SIZE"), TEXT("HEIGHT"));
+        if (cx == 0 && cy == 0)
+        {
+            cx = g_ConstantsDB.GetValue(strSuper + TEXT(".SIZE"), TEXT("WIDTH"));
+            cy = g_ConstantsDB.GetValue(strSuper + TEXT(".SIZE"), TEXT("HEIGHT"));
+        }
+        if (cx == 0 && cy == 0)
+        {
+            cx = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+            cy = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+        }
+        SetDlgItemInt(hwnd, edt3, cx, FALSE);
+        SetDlgItemInt(hwnd, edt4, cy, FALSE);
+
+        if (strSuper.size())
+            SetDlgItemText(hwnd, cmb4, strSuper.c_str());
+        else
+            SetDlgItemText(hwnd, cmb4, strClass.c_str());
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
