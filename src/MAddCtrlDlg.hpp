@@ -56,7 +56,7 @@ public:
         table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
-            m_exstyle_table.insert(m_style_table.end(),
+            m_exstyle_table.insert(m_exstyle_table.end(),
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
@@ -177,6 +177,7 @@ public:
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
+		sel.resize(m_style_table.size());
         GetSelection(sel, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table, sel);
 
@@ -185,6 +186,7 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
+		sel.resize(m_exstyle_table.size());
         GetSelection(sel, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table, sel);
 
