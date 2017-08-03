@@ -376,9 +376,11 @@ class MRadDialog : public MDialogBase
 {
 public:
     BOOL m_bDestroying;
+    POINT m_ptClicked;
 
     MRadDialog() : m_bDestroying(FALSE)
     {
+        m_ptClicked.x = m_ptClicked.y = -1;
     }
 
     void Renumber()
@@ -478,6 +480,9 @@ public:
         if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
             return;
 
+        m_ptClicked.x = x;
+        m_ptClicked.y = y;
+
         MRadCtrl::DeselectSelection();
     }
 
@@ -485,6 +490,9 @@ public:
     {
         if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
             return;
+
+        m_ptClicked.x = x;
+        m_ptClicked.y = y;
 
         MRadCtrl::DeselectSelection();
     }
@@ -548,6 +556,10 @@ public:
     {
         if (fDoubleClick)
             return;
+
+        m_ptClicked.x = x;
+        m_ptClicked.y = y;
+        ::ScreenToClient(hwnd, &m_ptClicked);
 
         FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
     }
@@ -620,13 +632,11 @@ struct MRadWindow : MWindowBase
 {
     INT         m_xDialogBaseUnit;
     INT         m_yDialogBaseUnit;
-    HHOOK       m_mouse_hook;
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
     static MRadWindow *s_p_rad_window;
 
-    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-                   m_mouse_hook(NULL)
+    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
     {
     }
 
@@ -849,7 +859,12 @@ struct MRadWindow : MWindowBase
 
     void OnAddCtrl(HWND hwnd)
     {
-        MAddCtrlDlg dialog(m_dialog_res);
+        POINT pt = m_rad_dialog.m_ptClicked;
+        ClientToDialog(&pt);
+        if (pt.x < 0 || pt.y < 0)
+            pt.x = pt.y = 0;
+
+        MAddCtrlDlg dialog(m_dialog_res, pt);
         dialog.DialogBoxDx(hwnd);
     }
 

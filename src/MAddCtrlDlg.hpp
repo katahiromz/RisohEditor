@@ -18,13 +18,15 @@ public:
     BOOL            m_bUpdating;
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
+    POINT           m_pt;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
 
-    MAddCtrlDlg(DialogRes& dialog_res)
-        : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), m_bUpdating(FALSE)
+    MAddCtrlDlg(DialogRes& dialog_res, POINT pt)
+        : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), m_bUpdating(FALSE),
+          m_pt(pt)
     {
     }
 
@@ -163,6 +165,9 @@ public:
     {
         extern ConstantsDB g_ConstantsDB;
 
+        SetDlgItemInt(hwnd, edt1, m_pt.x, FALSE);
+        SetDlgItemInt(hwnd, edt2, m_pt.y, FALSE);
+
         INT cx = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
         INT cy = g_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
@@ -206,6 +211,27 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        extern ConstantsDB g_ConstantsDB;
+
+        MString strCaption = GetDlgItemText(cmb2);
+
+        INT x = GetDlgItemInt(hwnd, edt1, NULL, TRUE);
+        INT y = GetDlgItemInt(hwnd, edt2, NULL, TRUE);
+        INT cx = GetDlgItemInt(hwnd, edt3, NULL, TRUE);
+        INT cy = GetDlgItemInt(hwnd, edt4, NULL, TRUE);
+        INT id = GetDlgItemInt(hwnd, cmb3, NULL, TRUE);
+
+        MString strClass = GetDlgItemText(cmb4);
+
+        MString strHelp = GetDlgItemText(cmb5);
+        DWORD help = _tcstoul(strHelp.c_str(), NULL, 0);
+
+        MString strStyle = GetDlgItemText(edt6);
+        DWORD style = _tcstoul(strStyle.c_str(), NULL, 16);
+
+        MString strExStyle = GetDlgItemText(edt7);
+        DWORD exstyle = _tcstoul(strExStyle.c_str(), NULL, 16);
+
         EndDialog(IDOK);
     }
 
