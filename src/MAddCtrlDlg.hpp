@@ -14,14 +14,14 @@
 class MAddCtrlDlg : public MDialogBase
 {
 public:
-    DialogRes&  m_dialog_res;
-    BOOL m_bUpdating;
-    DWORD m_dwStyle;
-    DWORD m_dwExStyle;
-    ConstantsDB::TableType m_style_table;
-    ConstantsDB::TableType m_exstyle_table;
-    std::vector<BYTE>   m_style_selection;
-    std::vector<BYTE>   m_exstyle_selection;
+    DialogRes&      m_dialog_res;
+    BOOL            m_bUpdating;
+    DWORD           m_dwStyle;
+    DWORD           m_dwExStyle;
+    ConstantsDB::TableType  m_style_table;
+    ConstantsDB::TableType  m_exstyle_table;
+    std::vector<BYTE>       m_style_selection;
+    std::vector<BYTE>       m_exstyle_selection;
 
     MAddCtrlDlg(DialogRes& dialog_res)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), m_bUpdating(FALSE)
@@ -165,10 +165,10 @@ public:
     {
         extern ConstantsDB g_ConstantsDB;
 
-        m_bUpdating = TRUE;
-
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        m_bUpdating = TRUE;
         InitClassComboBox(hCmb1);
+        m_bUpdating = FALSE;
 
         InitTables(NULL);
 
@@ -177,22 +177,24 @@ public:
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
-		sel.resize(m_style_table.size());
+        sel.resize(m_style_table.size());
         GetSelection(sel, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table, sel);
 
+        m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
+        m_bUpdating = FALSE;
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
-		sel.resize(m_exstyle_table.size());
+        sel.resize(m_exstyle_table.size());
         GetSelection(sel, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table, sel);
 
+        m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
-
         m_bUpdating = FALSE;
 
         return TRUE;
@@ -213,11 +215,9 @@ public:
         std::vector<BYTE> old_style_selection = m_style_selection;
         GetSelection(hLst1, m_style_selection);
 
-        DWORD dwNewStyle = AnalyseDifference(m_dwStyle, m_style_table,
-                                             old_style_selection, m_style_selection);
-
-        m_dwStyle = dwNewStyle;
-        ApplySelection(hLst1, m_style_table, dwNewStyle);
+        m_dwStyle = AnalyseDifference(m_dwStyle, m_style_table,
+                                      old_style_selection, m_style_selection);
+        ApplySelection(hLst1, m_style_table, m_dwStyle);
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
@@ -236,11 +236,9 @@ public:
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetSelection(hLst2, m_exstyle_selection);
 
-        DWORD dwNewExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
-                                               old_exstyle_selection, m_exstyle_selection);
-
-        m_dwExStyle = dwNewExStyle;
-        ApplySelection(hLst2, m_exstyle_table, dwNewExStyle);
+        m_dwExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
+                                        old_exstyle_selection, m_exstyle_selection);
+        ApplySelection(hLst2, m_exstyle_table, m_dwExStyle);
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
