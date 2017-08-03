@@ -119,15 +119,18 @@ public:
 
     void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
     {
+        m_bUpdating = TRUE;
         for (size_t i = 0; i < sel.size(); ++i)
         {
             ListBox_SetSel(hLst, sel[i], (DWORD)i);
         }
+        m_bUpdating = FALSE;
     }
 
     void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
                         DWORD dwValue)
     {
+        m_bUpdating = TRUE;
         for (size_t i = 0; i < table.size(); ++i)
         {
             if ((dwValue & table[i].mask) == table[i].value)
@@ -139,6 +142,7 @@ public:
                 ListBox_SetSel(hLst, FALSE, (DWORD)i);
             }
         }
+        m_bUpdating = FALSE;
     }
 
     void InitClassComboBox(HWND hCmb1)
@@ -160,6 +164,8 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         extern ConstantsDB g_ConstantsDB;
+
+        m_bUpdating = TRUE;
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1);
@@ -185,6 +191,8 @@ public:
         wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
 
+        m_bUpdating = FALSE;
+
         return TRUE;
     }
 
@@ -198,29 +206,20 @@ public:
         if (m_bUpdating)
             return;
 
-        extern ConstantsDB g_ConstantsDB;
-
-        TCHAR szText[64];
-        MString strClass = GetDlgItemText(hwnd, cmb1);
-        mstr_trim(strClass);
-
-        INT sels[64];
         HWND hLst1 = GetDlgItem(hwnd, lst1);
-        INT nCount = ListBox_GetSelItems(hLst1, _countof(sels), sels);
-        DWORD dwStyle = 0;
-        for (INT i = 0; i < nCount; ++i)
-        {
-            ListBox_GetText(hLst1, sels[i], szText);
 
-            DWORD dwValue = g_ConstantsDB.GetValue(strClass, szText);
-            if (dwValue == 0)
-                dwValue = g_ConstantsDB.GetValue(TEXT("STYLE"), szText);
-            dwStyle |= dwValue;
-        }
+        std::vector<BYTE> old_style_selection = m_style_selection;
+        GetSelection(hLst1, m_style_selection);
 
-        m_dwStyle = dwStyle;
-        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        DWORD dwNewStyle = AnalyseDifference(m_dwStyle, m_style_table,
+                                             old_style_selection, m_style_selection);
+
+        m_dwStyle = dwNewStyle;
+        ApplySelection(hLst1, m_style_table, dwNewStyle);
+
         m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
         m_bUpdating = FALSE;
     }
@@ -230,24 +229,20 @@ public:
         if (m_bUpdating)
             return;
 
-        extern ConstantsDB g_ConstantsDB;
-
-        TCHAR szText[64];
-        INT sels[64];
         HWND hLst2 = GetDlgItem(hwnd, lst2);
-        INT nCount = ListBox_GetSelItems(hLst2, _countof(sels), sels);
-        DWORD dwExStyle = 0;
-        for (INT i = 0; i < nCount; ++i)
-        {
-            ListBox_GetText(hLst2, sels[i], szText);
 
-            DWORD dwValue = g_ConstantsDB.GetValue(TEXT("EXSTYLE"), szText);
-            dwExStyle |= dwValue;
-        }
+        std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
+        GetSelection(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = dwExStyle;
-        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+        DWORD dwNewExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
+                                               old_exstyle_selection, m_exstyle_selection);
+
+        m_dwExStyle = dwNewExStyle;
+        ApplySelection(hLst2, m_exstyle_table, dwNewExStyle);
+
         m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
         m_bUpdating = FALSE;
     }
@@ -257,40 +252,16 @@ public:
         if (m_bUpdating)
             return;
 
-        extern ConstantsDB g_ConstantsDB;
-
-        MString strClass = GetDlgItemText(hwnd, cmb1);
-        mstr_trim(strClass);
-
         MString text = GetDlgItemText(hwnd, edt6);
         mstr_trim(text);
         DWORD dwStyle = _tcstoul(text.c_str(), NULL, 16);
 
-        TCHAR szText[64];
-        INT sels[64];
+        std::vector<BYTE> old_style_selection = m_style_selection;
+        GetSelection(m_style_selection, m_style_table, dwStyle);
+
         HWND hLst1 = GetDlgItem(hwnd, lst1);
-        INT nCount = ListBox_GetSelItems(hLst1, _countof(sels), sels);
-        for (INT i = 0; i < nCount; ++i)
-        {
-            ListBox_GetText(hLst1, sels[i], szText);
-
-            DWORD dwValue = g_ConstantsDB.GetValue(strClass, szText);
-            if (dwValue == 0)
-                dwValue = g_ConstantsDB.GetValue(TEXT("STYLE"), szText);
-            if (dwValue == 0)
-                continue;
-
-            m_bUpdating = TRUE;
-            if ((dwStyle & dwValue) == dwValue)
-            {
-                ListBox_SetSel(hLst1, TRUE, i);
-            }
-            else
-            {
-                ListBox_SetSel(hLst1, FALSE, i);
-            }
-            m_bUpdating = FALSE;
-        }
+        m_dwStyle = dwStyle;
+        ApplySelection(hLst1, m_style_table, dwStyle);
     }
 
     void OnEdt7(HWND hwnd)
@@ -298,35 +269,16 @@ public:
         if (m_bUpdating)
             return;
 
-        extern ConstantsDB g_ConstantsDB;
-
-        MString text = GetDlgItemText(hwnd, edt6);
+        MString text = GetDlgItemText(hwnd, edt7);
         mstr_trim(text);
         DWORD dwExStyle = _tcstoul(text.c_str(), NULL, 16);
 
-        TCHAR szText[64];
-        INT sels[64];
+        std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
+        GetSelection(m_exstyle_selection, m_exstyle_table, dwExStyle);
+
         HWND hLst2 = GetDlgItem(hwnd, lst2);
-        INT nCount = ListBox_GetSelItems(hLst2, _countof(sels), sels);
-        for (INT i = 0; i < nCount; ++i)
-        {
-            ListBox_GetText(hLst2, sels[i], szText);
-
-            DWORD dwValue = g_ConstantsDB.GetValue(TEXT("EXSTYLE"), szText);
-            if (dwValue == 0)
-                continue;
-
-            m_bUpdating = TRUE;
-            if ((dwExStyle & dwValue) == dwValue)
-            {
-                ListBox_SetSel(hLst2, TRUE, i);
-            }
-            else
-            {
-                ListBox_SetSel(hLst2, FALSE, i);
-            }
-            m_bUpdating = FALSE;
-        }
+        m_dwExStyle = dwExStyle;
+        ApplySelection(hLst2, m_exstyle_table, dwExStyle);
     }
 
     void UpdateClass(HWND hLst1, const MString& strClass)
