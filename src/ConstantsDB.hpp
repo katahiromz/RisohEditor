@@ -116,6 +116,9 @@ public:
             MStringW line;
             line = MAnsiToWide(buf);
 
+            mstr_replace_all(line, L" |", L"|");
+            mstr_replace_all(line, L"| ", L"|");
+
             mstr_trim(line);
             if (line.empty())
                 continue;

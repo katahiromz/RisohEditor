@@ -88,6 +88,7 @@ public:
     void GetSelection(std::vector<BYTE>& sel,
                       const ConstantsDB::TableType& table, DWORD dwValue)
     {
+        sel.resize(table.size());
         for (size_t i = 0; i < table.size(); ++i)
         {
             if ((dwValue & table[i].mask) == table[i].value)
@@ -128,19 +129,13 @@ public:
     }
 
     void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
-                        DWORD dwValue)
+                        std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
         for (size_t i = 0; i < table.size(); ++i)
         {
-            if ((dwValue & table[i].mask) == table[i].value)
-            {
-                ListBox_SetSel(hLst, TRUE, (DWORD)i);
-            }
-            else
-            {
-                ListBox_SetSel(hLst, FALSE, (DWORD)i);
-            }
+            sel[i] = ((dwValue & table[i].mask) == table[i].value);
+            ListBox_SetSel(hLst, sel[i], (DWORD)i);
         }
         m_bUpdating = FALSE;
     }
@@ -177,7 +172,6 @@ public:
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
-        sel.resize(m_style_table.size());
         GetSelection(sel, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table, sel);
 
@@ -188,7 +182,6 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
-        sel.resize(m_exstyle_table.size());
         GetSelection(sel, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table, sel);
 
@@ -217,7 +210,7 @@ public:
 
         m_dwStyle = AnalyseDifference(m_dwStyle, m_style_table,
                                       old_style_selection, m_style_selection);
-        ApplySelection(hLst1, m_style_table, m_dwStyle);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
@@ -238,7 +231,7 @@ public:
 
         m_dwExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
                                         old_exstyle_selection, m_exstyle_selection);
-        ApplySelection(hLst2, m_exstyle_table, m_dwExStyle);
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
@@ -261,7 +254,7 @@ public:
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = dwStyle;
-        ApplySelection(hLst1, m_style_table, dwStyle);
+        ApplySelection(hLst1, m_style_table, m_style_selection, dwStyle);
     }
 
     void OnEdt7(HWND hwnd)
@@ -278,7 +271,7 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = dwExStyle;
-        ApplySelection(hLst2, m_exstyle_table, dwExStyle);
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, dwExStyle);
     }
 
     void UpdateClass(HWND hLst1, const MString& strClass)

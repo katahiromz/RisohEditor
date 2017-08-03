@@ -856,7 +856,7 @@ struct DialogRes
                 int pixels = MulDiv(m_PointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
 
                 LOGFONTW lf;
-				ZeroMemory(&lf, sizeof(lf));
+                ZeroMemory(&lf, sizeof(lf));
                 lf.lfHeight = -pixels;
                 lf.lfWeight = m_Weight;
                 lf.lfItalic = m_Italic;
