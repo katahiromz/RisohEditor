@@ -120,10 +120,12 @@ public:
     void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
     {
         m_bUpdating = TRUE;
+        INT iTop = ListBox_GetTopIndex(hLst);
         for (size_t i = 0; i < sel.size(); ++i)
         {
             ListBox_SetSel(hLst, sel[i], (DWORD)i);
         }
+        ListBox_SetTopIndex(hLst, iTop);
         m_bUpdating = FALSE;
     }
 
@@ -131,11 +133,13 @@ public:
                         std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
+        INT iTop = ListBox_GetTopIndex(hLst);
         for (size_t i = 0; i < table.size(); ++i)
         {
             sel[i] = ((dwValue & table[i].mask) == table[i].value);
             ListBox_SetSel(hLst, sel[i], (DWORD)i);
         }
+        ListBox_SetTopIndex(hLst, iTop);
         m_bUpdating = FALSE;
     }
 
@@ -307,6 +311,8 @@ public:
         wsprintf(szText, TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
         m_bUpdating = FALSE;
+
+        ListBox_SetTopIndex(hLst1, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
