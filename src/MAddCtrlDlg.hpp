@@ -62,8 +62,7 @@ public:
         m_exstyle_selection.resize(m_exstyle_table.size());
     }
 
-    void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table,
-                          const std::vector<BYTE>& sel)
+    void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
     {
         ListBox_ResetContent(hLst);
 
@@ -172,7 +171,7 @@ public:
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
-        InitStyleListBox(hLst1, m_style_table, m_style_selection);
+        InitStyleListBox(hLst1, m_style_table);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
         m_bUpdating = TRUE;
@@ -183,7 +182,7 @@ public:
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
         GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
-        InitStyleListBox(hLst2, m_exstyle_table, m_exstyle_selection);
+        InitStyleListBox(hLst2, m_exstyle_table);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
         m_bUpdating = TRUE;
@@ -275,18 +274,39 @@ public:
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, dwExStyle);
     }
 
-    void UpdateClass(HWND hLst1, const MString& strClass)
+    void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
         extern ConstantsDB g_ConstantsDB;
 
-        MString str = strClass;
-        str += TEXT(".DEFAULT.STYLE");
-        DWORD style = g_ConstantsDB.GetValue(str, TEXT("STYLE"));
+        MString strSuper;
+        DWORD dwType = g_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        if (dwType >= 3)
+        {
+            ConstantsDB::TableType table;
+            table = g_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
+            if (table.size())
+            {
+                strSuper = table[0].name;
+            }
+        }
 
-        std::vector<BYTE> sel;
-        GetSelection(sel, m_style_table, style);
+        if (strSuper.size())
+            InitTables(strSuper.c_str());
+        else
+            InitTables(strClass.c_str());
 
-        InitStyleListBox(hLst1, m_style_table, sel);
+        MString str = strClass + TEXT(".DEFAULT.STYLE");
+        m_dwStyle = g_ConstantsDB.GetValue(str, TEXT("STYLE"));
+
+        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        InitStyleListBox(hLst1, m_style_table);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
+
+        m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        SetDlgItemText(hwnd, edt6, szText);
+        m_bUpdating = FALSE;
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -309,15 +329,14 @@ public:
                 ComboBox_GetLBText(hCmb1, nIndex, szText);
                 MString text = szText;
                 mstr_trim(text);
-                InitTables(text.c_str());
-                UpdateClass(hLst1, text);
+                UpdateClass(hwnd, hLst1, text);
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
                 MString text = GetDlgItemText(hwnd, cmb1);
                 mstr_trim(text);
                 InitTables(text.c_str());
-                UpdateClass(hLst1, text);
+                UpdateClass(hwnd, hLst1, text);
             }
             break;
         case lst1:
