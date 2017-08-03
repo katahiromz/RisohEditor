@@ -167,13 +167,13 @@ public:
 
         InitTables(NULL);
 
-        std::vector<BYTE> sel;
         TCHAR szText[64];
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
-        GetSelection(sel, m_style_table, m_dwStyle);
-        InitStyleListBox(hLst1, m_style_table, sel);
+        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        InitStyleListBox(hLst1, m_style_table, m_style_selection);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
         m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwStyle);
@@ -182,8 +182,9 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
-        GetSelection(sel, m_exstyle_table, m_dwExStyle);
-        InitStyleListBox(hLst2, m_exstyle_table, sel);
+        GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
+        InitStyleListBox(hLst2, m_exstyle_table, m_exstyle_selection);
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
         m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
