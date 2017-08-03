@@ -84,6 +84,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "&Delete Control", ID_DELCTRL
         MENUITEM "&Properties for Control...", ID_CTRLPROP
         MENUITEM SEPARATOR
+        POPUP "&Index"
+        BEGIN
+            MENUITEM "To &Top", ID_CTRLINDEXTOP
+            MENUITEM SEPARATOR
+            MENUITEM "&Minus", ID_CTRLINDEXMINUS
+            MENUITEM "&Plus", ID_CTRLINDEXPLUS
+            MENUITEM SEPARATOR
+            MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
+        END
+        MENUITEM SEPARATOR
+        MENUITEM SEPARATOR
         MENUITEM "Pr&operties for Dialog...", ID_DLGPROP
     }
 }
@@ -158,6 +169,7 @@ STRINGTABLE
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "Data has been changed. Compile now?"
     IDS_RADWINDOW, "Edit Dialog"
+    IDS_ENTERCLASS, "Please enter the window class name."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

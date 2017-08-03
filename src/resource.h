@@ -32,6 +32,10 @@
 #define ID_DLGPROP          129
 #define ID_DESTROYRAD       130
 #define ID_UPDATERES        131
+#define ID_CTRLINDEXTOP     132
+#define ID_CTRLINDEXBOTTOM  133
+#define ID_CTRLINDEXMINUS   134
+#define ID_CTRLINDEXPLUS    135
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -123,5 +127,6 @@
 #define IDS_SEPARATOR       67
 #define IDS_COMPILENOW      68
 #define IDS_RADWINDOW       69
+#define IDS_ENTERCLASS      70
 
 #endif  // ndef RESOURCE_H_

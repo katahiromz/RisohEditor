@@ -161,6 +161,20 @@ public:
         }
     }
 
+    void InitCtrlIDComboBox(HWND hCmb)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        ConstantsDB::TableType table;
+        table = g_ConstantsDB.GetTable(TEXT("CTRLID"));
+
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb, it->name.c_str());
+        }
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         extern ConstantsDB g_ConstantsDB;
@@ -174,6 +188,9 @@ public:
         SetDlgItemInt(hwnd, edt4, cy, FALSE);
 
         SetDlgItemInt(hwnd, cmb5, 0, FALSE);
+
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        InitCtrlIDComboBox(hCmb3);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         m_bUpdating = TRUE;
@@ -214,23 +231,63 @@ public:
         extern ConstantsDB g_ConstantsDB;
 
         MString strCaption = GetDlgItemText(cmb2);
+        mstr_trim(strCaption);
+        if (strCaption[0] == TEXT('"'))
+        {
+            mstr_unquote(strCaption);
+        }
 
         INT x = GetDlgItemInt(hwnd, edt1, NULL, TRUE);
         INT y = GetDlgItemInt(hwnd, edt2, NULL, TRUE);
         INT cx = GetDlgItemInt(hwnd, edt3, NULL, TRUE);
         INT cy = GetDlgItemInt(hwnd, edt4, NULL, TRUE);
-        INT id = GetDlgItemInt(hwnd, cmb3, NULL, TRUE);
+        MString strID = GetDlgItemText(cmb3);
+        mstr_trim(strID);
+        UINT id;
+        if (TEXT('0') <= strID[0] && strID[0] <= TEXT('9'))
+        {
+            id = _tcstoul(strID.c_str(), NULL, 0);
+        }
+        else
+        {
+            id = g_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
+        }
 
         MString strClass = GetDlgItemText(cmb4);
+        mstr_trim(strClass);
+        if (strClass.empty())
+        {
+            SetFocus(GetDlgItem(hwnd, cmb4));
+            MsgBoxDx(LoadStringDx(IDS_ENTERCLASS), MB_ICONERROR);
+            return;
+        }
 
         MString strHelp = GetDlgItemText(cmb5);
+        mstr_trim(strHelp);
         DWORD help = _tcstoul(strHelp.c_str(), NULL, 0);
 
         MString strStyle = GetDlgItemText(edt6);
+        mstr_trim(strStyle);
         DWORD style = _tcstoul(strStyle.c_str(), NULL, 16);
 
         MString strExStyle = GetDlgItemText(edt7);
+        mstr_trim(strExStyle);
         DWORD exstyle = _tcstoul(strExStyle.c_str(), NULL, 16);
+
+        DialogItem item;
+        item.m_HelpID = help;
+        item.m_Style = style;
+        item.m_ExStyle = exstyle;
+        item.m_pt.x = x;
+        item.m_pt.y = y;
+        item.m_siz.cx = cx;
+        item.m_siz.cy = cy;
+        item.ID = id;
+        item.m_Class = strClass.c_str();
+        item.m_Title = strCaption.c_str();
+
+        m_dialog_res.m_cItems++;
+        m_dialog_res.Items.push_back(item);
 
         EndDialog(IDOK);
     }

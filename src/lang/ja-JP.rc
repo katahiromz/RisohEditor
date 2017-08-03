@@ -84,6 +84,16 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "コントロールの削除(&D)", ID_DELCTRL
         MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
         MENUITEM SEPARATOR
+        POPUP "インデックス(&I)"
+        BEGIN
+            MENUITEM "先頭へ(&T)", ID_CTRLINDEXTOP
+            MENUITEM SEPARATOR
+            MENUITEM "減らす(&M)", ID_CTRLINDEXMINUS
+            MENUITEM "増やす(&P)", ID_CTRLINDEXPLUS
+            MENUITEM SEPARATOR
+            MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
+        END
+        MENUITEM SEPARATOR
         MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP
     }
 }
@@ -158,6 +168,7 @@ STRINGTABLE
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "データが変更されています。コンパイルしますか？"
     IDS_RADWINDOW, "ダイアログの編集"
+    IDS_ENTERCLASS, "ウィンドウ クラス名を入力して下さい。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

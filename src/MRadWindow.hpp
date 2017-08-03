@@ -49,6 +49,20 @@ public:
         return s_hwnd;
     }
 
+    static std::set<INT> GetTargetIndeces()
+    {
+        set_type targets = MRadCtrl::GetTargets();
+
+        std::set<INT> indeces;
+        set_type::iterator it, end = targets.end();
+        for (it = targets.begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            indeces.insert(pCtrl->m_nIndex);
+        }
+        return indeces;
+    }
+
     MRubberBand *GetRubberBand()
     {
         MWindowBase *base = GetUserData(m_hwndRubberBand);
@@ -618,6 +632,9 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        MRadCtrl::GetTargets().clear();
+        MRadCtrl::GetLastSel() = NULL;
+
         POINT pt = { 0, 0 };
         SetWindowPosDx(&pt);
         SubclassDx(hwnd);
@@ -707,9 +724,10 @@ struct MRadWindow : MWindowBase
         DWORD exstyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
         SetRect(&Rect, 0, 0, Size.cx, Size.cy);
         AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
-        OffsetRect(&Rect, -Rect.left, -Rect.top);
 
-        MoveWindow(m_hwnd, 0, 0, Rect.right, Rect.bottom, TRUE);
+        Size.cx = Rect.right - Rect.left;
+        Size.cy = Rect.bottom - Rect.top;
+        SetWindowPosDx(NULL, &Size);
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
@@ -724,8 +742,14 @@ struct MRadWindow : MWindowBase
         wcx.hIconSm = NULL;
     }
 
-    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    BOOL ReCreateRadDialog(HWND hwnd)
     {
+        if (m_rad_dialog)
+        {
+            m_rad_dialog.m_bDestroying = TRUE;
+            DestroyWindow(m_rad_dialog);
+        }
+
         m_dialog_res.Fixup(FALSE);
         std::vector<BYTE> data = m_dialog_res.data();
         m_dialog_res.Fixup(TRUE);
@@ -742,6 +766,11 @@ struct MRadWindow : MWindowBase
         UpdateWindow(m_rad_dialog);
 
         return TRUE;
+    }
+
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    {
+        return ReCreateRadDialog(hwnd);
     }
 
     void OnDestroy(HWND hwnd)
@@ -766,8 +795,41 @@ struct MRadWindow : MWindowBase
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLDESTROY, OnCtrlDestroy);
             HANDLE_MESSAGE(hwnd, MYWM_DLGSIZE, OnDlgSize);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        if (set.empty())
+        {
+            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
+        }
+        else if (set.size() == 1)
+        {
+            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
+        }
+        else
+        {
+            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
+        }
     }
 
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -822,6 +884,7 @@ struct MRadWindow : MWindowBase
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_UPDATERES, 0);
+        m_rad_dialog.Renumber();
     }
 
     LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -865,7 +928,11 @@ struct MRadWindow : MWindowBase
             pt.x = pt.y = 0;
 
         MAddCtrlDlg dialog(m_dialog_res, pt);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            ReCreateRadDialog(hwnd);
+            UpdateRes();
+        }
     }
 
     void OnCtrlProp(HWND hwnd)
@@ -894,7 +961,107 @@ struct MRadWindow : MWindowBase
         case ID_DLGPROP:
             OnDlgProp(hwnd);
             break;
+        case ID_CTRLINDEXTOP:
+            IndexTop(hwnd);
+            break;
+        case ID_CTRLINDEXBOTTOM:
+            IndexBottom(hwnd);
+            break;
+        case ID_CTRLINDEXMINUS:
+            IndexMinus(hwnd);
+            break;
+        case ID_CTRLINDEXPLUS:
+            IndexPlus(hwnd);
+            break;
         }
+    }
+
+    void IndexTop(HWND hwnd)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
+            return;
+
+        DialogItems items1, items2;
+        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        {
+            if (indeces.find(i) == indeces.end())
+            {
+                items1.push_back(m_dialog_res.Items[i]);
+            }
+            else
+            {
+                items2.push_back(m_dialog_res.Items[i]);
+            }
+        }
+        m_dialog_res.Items = items1;
+        m_dialog_res.Items.insert(m_dialog_res.Items.begin(), items2.begin(), items2.end());
+
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
+    }
+
+    void IndexBottom(HWND hwnd)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
+            return;
+
+        DialogItems items1, items2;
+        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        {
+            if (indeces.find(i) == indeces.end())
+            {
+                items1.push_back(m_dialog_res.Items[i]);
+            }
+            else
+            {
+                items2.push_back(m_dialog_res.Items[i]);
+            }
+        }
+        m_dialog_res.Items = items1;
+        m_dialog_res.Items.insert(m_dialog_res.Items.end(), items2.begin(), items2.end());
+
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
+    }
+
+    void IndexMinus(HWND hwnd)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.size() != 1)
+            return;
+
+        INT nIndex = *indeces.begin();
+
+        DialogItem item;
+        item = m_dialog_res.Items[nIndex];
+        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
+        if (nIndex > 0)
+            --nIndex;
+        m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
+
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
+    }
+
+    void IndexPlus(HWND hwnd)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.size() != 1)
+            return;
+
+        INT nIndex = *indeces.begin();
+
+        DialogItem item;
+        item = m_dialog_res.Items[nIndex];
+        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
+        if (nIndex + 1 < m_dialog_res.m_cItems)
+            ++nIndex;
+        m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
+
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -1034,23 +1201,16 @@ struct MRadWindow : MWindowBase
 
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)
     {
+        m_xDialogBaseUnit = m_dialog_res.GetBaseUnits(m_yDialogBaseUnit);
         if (m_xDialogBaseUnit == 0)
         {
-            m_xDialogBaseUnit = m_dialog_res.GetBaseUnits(m_yDialogBaseUnit);
-            if (m_xDialogBaseUnit == 0)
-            {
-                return FALSE;
-            }
+            return FALSE;
         }
 
         xDialogBaseUnit = m_xDialogBaseUnit;
         yDialogBaseUnit = m_yDialogBaseUnit;
 
         return TRUE;
-    }
-
-    virtual void Update(HWND hwnd)
-    {
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -1089,8 +1249,6 @@ struct MRadWindow : MWindowBase
         cyPixels = Rect2.bottom;
 
         MoveWindow(m_rad_dialog, 0, 0, cxPixels, cyPixels, TRUE);
-
-        Update(hwnd);
     }
 };
 
