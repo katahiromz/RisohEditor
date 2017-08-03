@@ -654,6 +654,26 @@ struct MRadWindow : MWindowBase
         prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
     }
 
+    void DialogToClient(POINT *ppt)
+    {
+        ppt->x = (ppt->x * m_xDialogBaseUnit) / 4;
+        ppt->y = (ppt->y * m_yDialogBaseUnit) / 8;
+    }
+
+    void DialogToClient(SIZE *psiz)
+    {
+        psiz->cx = (psiz->cx * m_xDialogBaseUnit) / 4;
+        psiz->cy = (psiz->cy * m_yDialogBaseUnit) / 8;
+    }
+
+    void DialogToClient(RECT *prc)
+    {
+        prc->left = (prc->left * m_xDialogBaseUnit) / 4;
+        prc->right = (prc->right * m_xDialogBaseUnit) / 4;
+        prc->top = (prc->top * m_yDialogBaseUnit) / 8;
+        prc->bottom = (prc->bottom * m_yDialogBaseUnit) / 8;
+    }
+
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
     {
         for (;;)
