@@ -884,7 +884,6 @@ struct MRadWindow : MWindowBase
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
-        HWND hwndPrev, hwndNext;
         RECT rc;
         if (!fDown)
             return;
