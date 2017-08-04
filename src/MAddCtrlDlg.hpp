@@ -11,6 +11,15 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+void GetSelection(HWND hLst, std::vector<BYTE>& sel);
+void GetSelection(std::vector<BYTE>& sel,
+                  const ConstantsDB::TableType& table, DWORD dwValue);
+DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
+    std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
+void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
+
+//////////////////////////////////////////////////////////////////////////////
+
 class MAddCtrlDlg : public MDialogBase
 {
 public:
@@ -62,61 +71,6 @@ public:
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
-    }
-
-    void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
-    {
-        ListBox_ResetContent(hLst);
-
-        if (table.size())
-        {
-            ConstantsDB::TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
-            {
-                ListBox_AddString(hLst, it->name.c_str());
-            }
-        }
-    }
-
-    void GetSelection(HWND hLst, std::vector<BYTE>& sel)
-    {
-        for (size_t i = 0; i < sel.size(); ++i)
-        {
-            sel[i] = (ListBox_GetSel(hLst, (DWORD)i) > 0);
-        }
-    }
-
-    void GetSelection(std::vector<BYTE>& sel,
-                      const ConstantsDB::TableType& table, DWORD dwValue)
-    {
-        sel.resize(table.size());
-        for (size_t i = 0; i < table.size(); ++i)
-        {
-            if ((dwValue & table[i].mask) == table[i].value)
-                sel[i] = TRUE;
-            else
-                sel[i] = FALSE;
-        }
-    }
-
-    DWORD AnalyseDifference(
-        DWORD dwValue, ConstantsDB::TableType& table,
-        std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
-    {
-        assert(old_sel.size() == new_sel.size());
-        for (size_t i = 0; i < old_sel.size(); ++i)
-        {
-            if (old_sel[i] && !new_sel[i])
-            {
-                dwValue &= ~table[i].mask;
-            }
-            else if (!old_sel[i] && new_sel[i])
-            {
-                dwValue &= ~table[i].mask;
-                dwValue |= table[i].value;
-            }
-        }
-        return dwValue;
     }
 
     void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
@@ -210,6 +164,7 @@ public:
         m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
+        ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
@@ -221,6 +176,7 @@ public:
         m_bUpdating = TRUE;
         wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
+        ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
         return TRUE;

@@ -942,7 +942,11 @@ struct MRadWindow : MWindowBase
     void OnDlgProp(HWND hwnd)
     {
         MDlgPropDlg dialog(m_dialog_res);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            ReCreateRadDialog(hwnd);
+            UpdateRes();
+        }
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

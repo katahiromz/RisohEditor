@@ -30,6 +30,82 @@ ConstantsDB g_ConstantsDB;
 HWND        g_hTreeView = NULL;
 
 //////////////////////////////////////////////////////////////////////////////
+
+void GetSelection(HWND hLst, std::vector<BYTE>& sel)
+{
+    for (size_t i = 0; i < sel.size(); ++i)
+    {
+        sel[i] = (ListBox_GetSel(hLst, (DWORD)i) > 0);
+    }
+}
+
+void GetSelection(std::vector<BYTE>& sel,
+                  const ConstantsDB::TableType& table, DWORD dwValue)
+{
+    sel.resize(table.size());
+    for (size_t i = 0; i < table.size(); ++i)
+    {
+        if ((dwValue & table[i].mask) == table[i].value)
+            sel[i] = TRUE;
+        else
+            sel[i] = FALSE;
+    }
+}
+
+DWORD AnalyseDifference(
+    DWORD dwValue, ConstantsDB::TableType& table,
+    std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
+{
+    assert(old_sel.size() == new_sel.size());
+    for (size_t i = 0; i < old_sel.size(); ++i)
+    {
+        if (old_sel[i] && !new_sel[i])
+        {
+            dwValue &= ~table[i].mask;
+        }
+        else if (!old_sel[i] && new_sel[i])
+        {
+            dwValue &= ~table[i].mask;
+            dwValue |= table[i].value;
+        }
+    }
+    return dwValue;
+}
+
+void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
+{
+    ListBox_ResetContent(hLst);
+
+    if (table.size())
+    {
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ListBox_AddString(hLst, it->name.c_str());
+        }
+    }
+}
+
+static int CALLBACK
+EnumFontFamProc(
+    ENUMLOGFONT *lpelf,
+    NEWTEXTMETRIC *lpntm,
+    int FontType,
+    LPARAM lParam)
+{
+    HWND hCmb = HWND(lParam);
+    ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
+    return TRUE;
+}
+
+void InitFontComboBox(HWND hCmb)
+{
+    HDC hDC = CreateCompatibleDC(NULL);
+    ::EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, (LPARAM)hCmb);
+    DeleteDC(hDC);
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // languages
 
 struct LangEntry
