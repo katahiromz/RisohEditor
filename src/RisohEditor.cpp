@@ -105,6 +105,69 @@ void InitFontComboBox(HWND hCmb)
     DeleteDC(hDC);
 }
 
+typedef struct CharSetInfo
+{
+    BYTE CharSet;
+    LPCTSTR Name;
+} CharSetInfo;
+
+static const CharSetInfo s_charset_entries[] =
+{
+    { ANSI_CHARSET, TEXT("ANSI_CHARSET") },
+    { DEFAULT_CHARSET, TEXT("DEFAULT_CHARSET") },
+    { SYMBOL_CHARSET, TEXT("SYMBOL_CHARSET") },
+    { SHIFTJIS_CHARSET, TEXT("SHIFTJIS_CHARSET") },
+    { HANGEUL_CHARSET, TEXT("HANGEUL_CHARSET") },
+    { HANGUL_CHARSET, TEXT("HANGUL_CHARSET") },
+    { GB2312_CHARSET, TEXT("GB2312_CHARSET") },
+    { CHINESEBIG5_CHARSET, TEXT("CHINESEBIG5_CHARSET") },
+    { OEM_CHARSET, TEXT("OEM_CHARSET") },
+    { JOHAB_CHARSET, TEXT("JOHAB_CHARSET") },
+    { HEBREW_CHARSET, TEXT("HEBREW_CHARSET") },
+    { ARABIC_CHARSET, TEXT("ARABIC_CHARSET") },
+    { GREEK_CHARSET, TEXT("GREEK_CHARSET") },
+    { TURKISH_CHARSET, TEXT("TURKISH_CHARSET") },
+    { VIETNAMESE_CHARSET, TEXT("VIETNAMESE_CHARSET") },
+    { THAI_CHARSET, TEXT("THAI_CHARSET") },
+    { EASTEUROPE_CHARSET, TEXT("EASTEUROPE_CHARSET") },
+    { RUSSIAN_CHARSET, TEXT("RUSSIAN_CHARSET") },
+    { MAC_CHARSET, TEXT("MAC_CHARSET") },
+    { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") },
+};
+
+void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
+{
+    ComboBox_ResetContent(hCmb);
+
+    for (UINT i = 0; i < _countof(s_charset_entries); ++i)
+    {
+        ComboBox_AddString(hCmb, s_charset_entries[i].Name);
+    }
+    for (UINT i = 0; i < _countof(s_charset_entries); ++i)
+    {
+        ComboBox_SetItemData(hCmb, i, s_charset_entries[i].CharSet);
+    }
+    ComboBox_SetCurSel(hCmb, 1);
+    for (UINT i = 0; i < _countof(s_charset_entries); ++i)
+    {
+        if (s_charset_entries[i].CharSet == CharSet)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+            break;
+        }
+    }
+}
+
+BYTE GetCharSetFromComboBox(HWND hCmb)
+{
+    INT i = ComboBox_GetCurSel(hCmb);
+    if (i == CB_ERR)
+        return DEFAULT_CHARSET;
+    if (i < _countof(s_charset_entries))
+        return s_charset_entries[i].CharSet;
+    return DEFAULT_CHARSET;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // languages
 

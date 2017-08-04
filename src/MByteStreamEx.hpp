@@ -38,6 +38,7 @@ public:
         WORD w;
         if (!PeekWord(w))
             return FALSE;
+
         if (w == 0xFFFF)
         {
             ReadWord(w);
@@ -48,6 +49,8 @@ public:
             }
             return FALSE;
         }
+
+        id_or_str.m_ID = 0;
         return ReadSz(id_or_str.m_Str);
     }
 
@@ -82,6 +85,7 @@ public:
             return TRUE;
         }
 
+        id_or_str.m_ID = 0;
         return ReadSz(id_or_str.m_Str);
     }
 

@@ -646,7 +646,7 @@ struct DialogRes
     {
         if (IsExtended())
         {
-            if (_headerExToStream(stream))
+            if (_headerToStreamEx(stream))
             {
                 size_t i, count = Items.size();
                 for (i = 0; i < count; ++i)
@@ -925,9 +925,9 @@ protected:
         m_siz.cx = Template.cx;
         m_siz.cy = Template.cy;
 
-        if (!stream.ReadID(m_Menu) ||
-            !stream.ReadID(m_Class) || 
-            !stream.ReadID(m_Title))
+        if (!stream.ReadString(m_Menu) ||
+            !stream.ReadString(m_Class) || 
+            !stream.ReadString(m_Title))
         {
             return FALSE;
         }
@@ -972,9 +972,9 @@ protected:
         m_siz.cx = TemplateEx.cx;
         m_siz.cy = TemplateEx.cy;
 
-        if (!stream.ReadID(m_Menu) ||
-            !stream.ReadID(m_Class) ||
-            !stream.ReadID(m_Title))
+        if (!stream.ReadString(m_Menu) ||
+            !stream.ReadString(m_Class) ||
+            !stream.ReadString(m_Title))
         {
             return FALSE;
         }
@@ -1009,9 +1009,9 @@ protected:
         Template.cx = (SHORT)m_siz.cx;
         Template.cy = (SHORT)m_siz.cy;
         if (!stream.WriteRaw(Template) ||
-            !stream.WriteID(m_Menu) ||
-            !stream.WriteID(m_Class) ||
-            !stream.WriteID(m_Title))
+            !stream.WriteString(m_Menu.Ptr()) ||
+            !stream.WriteString(m_Class.Ptr()) ||
+            !stream.WriteString(m_Title.Ptr()))
         {
             return FALSE;
         }
@@ -1028,7 +1028,7 @@ protected:
         return TRUE;
     }
 
-    BOOL _headerExToStream(MByteStreamEx& stream) const
+    BOOL _headerToStreamEx(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -1044,9 +1044,9 @@ protected:
         TemplateEx.cx = (short)m_siz.cx;
         TemplateEx.cy = (short)m_siz.cy;
         if (!stream.WriteRaw(TemplateEx) ||
-            !stream.WriteID(m_Menu) ||
-            !stream.WriteID(m_Class) ||
-            !stream.WriteID(m_Title))
+            !stream.WriteString(m_Menu.Ptr()) ||
+            !stream.WriteString(m_Class.Ptr()) ||
+            !stream.WriteString(m_Title.Ptr()))
         {
             return FALSE;
         }

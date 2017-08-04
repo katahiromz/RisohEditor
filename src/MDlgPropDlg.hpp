@@ -16,6 +16,8 @@ void GetSelection(std::vector<BYTE>& sel,
 DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
+void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
+BYTE GetCharSetFromComboBox(HWND hCmb);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -115,6 +117,14 @@ public:
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
         InitFontComboBox(hCmb4);
 
+        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
+        InitCharSetComboBox(hCmb5, m_dialog_res.m_CharSet);
+
+        if (m_dialog_res.m_Weight >= FW_BOLD)
+            CheckDlgButton(hwnd, chx2, BST_CHECKED);
+        if (m_dialog_res.m_Italic)
+            CheckDlgButton(hwnd, chx3, BST_CHECKED);
+
         ::SetDlgItemInt(hwnd, edt1, m_dialog_res.m_pt.x, TRUE);
         ::SetDlgItemInt(hwnd, edt2, m_dialog_res.m_pt.y, TRUE);
         ::SetDlgItemInt(hwnd, edt3, m_dialog_res.m_siz.cx, TRUE);
@@ -173,6 +183,8 @@ public:
     void OnOK(HWND hwnd)
     {
         BOOL bExtended = (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+        BOOL bBold = (::IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
+        BOOL bItalic = (::IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
 
         MString strCaption = GetDlgItemText(cmb1);
         mstr_trim(strCaption);
@@ -239,6 +251,12 @@ public:
         m_dialog_res.m_Italic = FALSE;
         m_dialog_res.m_CharSet = DEFAULT_CHARSET;
         m_dialog_res.m_TypeFace = strFont.c_str();
+
+        m_dialog_res.m_Weight = (bBold ? FW_BOLD : FW_DONTCARE);
+        m_dialog_res.m_Italic = (bItalic ? TRUE : FALSE);
+
+        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
+        m_dialog_res.m_CharSet = GetCharSetFromComboBox(hCmb5);
 
         EndDialog(IDOK);
     }
