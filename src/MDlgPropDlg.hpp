@@ -98,7 +98,13 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        ::SetDlgItemTextW(hwnd, cmb1, m_dialog_res.m_Title.c_str_or_empty());
+        MString strCaption = m_dialog_res.m_Title.c_str();
+        if (strCaption.size())
+        {
+            strCaption = mstr_quote(strCaption);
+        }
+
+        ::SetDlgItemTextW(hwnd, cmb1, strCaption.c_str());
         ::SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
 
         if (m_dialog_res.IsExtended())
