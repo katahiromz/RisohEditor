@@ -10,8 +10,8 @@
 
 struct ID_OR_STRING;
 
-std::wstring mstr_dec(UINT nID);
-std::wstring mstr_hex(UINT nID);
+std::wstring mstr_dec(INT nID);
+std::wstring mstr_hex(INT nID);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(std::wstring& str);
 bool mstr_unquote(char *str);
@@ -465,16 +465,16 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring mstr_dec(UINT nID)
+inline std::wstring mstr_dec(INT nID)
 {
     using namespace std;
     wchar_t sz[32];
-    wsprintfW(sz, L"%u", nID);
+    wsprintfW(sz, L"%d", nID);
     std::wstring ret(sz);
     return ret;
 }
 
-inline std::wstring mstr_hex(UINT nID)
+inline std::wstring mstr_hex(INT nID)
 {
     std::wstring ret;
     if (nID == 0)

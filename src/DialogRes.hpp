@@ -576,6 +576,8 @@ struct DialogRes
     DialogItems                 Items;
     DWORD                       m_OldStyle, m_OldExStyle;
     LANGID                      m_LangID;
+    ID_OR_STRING                m_OldMenu;
+    ID_OR_STRING                m_OldClass;
 
     DialogRes()
     {
@@ -721,6 +723,12 @@ struct DialogRes
             ret += m_Class.quoted_wstr();
             ret += L"\r\n";
         }
+        if (IsExtended() && !m_Menu.empty())
+        {
+            ret += L"MENU ";
+            ret += m_Menu.quoted_wstr();
+            ret += L"\r\n";
+        }
 
         {
             DWORD value = (m_Style & ~DS_SETFONT);
@@ -791,17 +799,24 @@ struct DialogRes
         {
             m_Style = m_OldStyle;
             m_ExStyle = m_OldExStyle;
+            m_Menu = m_OldMenu;
+            m_Class = m_OldClass;
         }
         else
         {
             m_OldStyle = m_Style;
             m_OldExStyle = m_ExStyle;
+            m_OldMenu = m_Menu;
+            m_OldClass = m_Class;
 
             m_Style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
             m_Style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG;
             m_ExStyle &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                          WS_EX_LAYERED | WS_EX_TRANSPARENT);
             m_ExStyle |= WS_EX_NOACTIVATE | WS_EX_MDICHILD;
+
+            m_Menu.clear();
+            m_Class.clear();
         }
 
         DialogItems::iterator it, end = Items.end();
