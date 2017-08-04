@@ -399,6 +399,9 @@ public:
 
     void Renumber()
     {
+		if (!::IsWindow(m_hwnd))
+			return;
+
         INT nIndex = 0;
         TCHAR szClass[64];
         HWND hwndCtrl = ::GetTopWindow(m_hwnd);
