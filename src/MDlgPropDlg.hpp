@@ -8,8 +8,6 @@
 #include "DialogRes.hpp"
 #include "resource.h"
 
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 void InitFontComboBox(HWND hCmb);
 
 void GetSelection(HWND hLst, std::vector<BYTE>& sel);
@@ -132,9 +130,6 @@ public:
         ::SetDlgItemInt(hwnd, edt5, m_dialog_res.m_PointSize, TRUE);
         ::SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
 
-        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        InitLangComboBox(hCmb5, m_dialog_res.m_LangID);
-
         ::SetDlgItemTextW(hwnd, cmb6, m_dialog_res.m_Menu.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
 
@@ -171,11 +166,6 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb5, Lang))
-            return;
-
         BOOL bExtended = (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
 
         MString strCaption = GetDlgItemText(cmb1);
@@ -243,7 +233,6 @@ public:
         m_dialog_res.m_Italic = FALSE;
         m_dialog_res.m_CharSet = DEFAULT_CHARSET;
         m_dialog_res.m_TypeFace = strFont.c_str();
-        m_dialog_res.m_LangID = Lang;
 
         EndDialog(IDOK);
     }
