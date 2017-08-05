@@ -43,7 +43,6 @@ public:
     };
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
-    BOOL                m_bUniqueClass;
     std::set<INT>       m_indeces;
     DWORD               m_flags;
     DWORD               m_dwStyle;
@@ -56,8 +55,78 @@ public:
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_bUniqueClass(FALSE), m_indeces(indeces)
+          m_bUpdating(FALSE), m_indeces(indeces)
     {
+    }
+
+    void GetInfo()
+    {
+        if (m_indeces.empty())
+            return;
+
+        m_flags = F_ALL;
+        std::set<INT>::iterator it, end = m_indeces.end();
+        it = m_indeces.begin();
+        {
+            DialogItem& item = m_dialog_res.Items[*it];
+            m_item = item;
+        }
+        for (++it; it != end; ++it)
+        {
+            DialogItem& item = m_dialog_res.Items[*it];
+            if (m_item.m_HelpID != item.m_HelpID)
+                m_flags &= ~F_HELP;
+            if (m_item.m_Style != item.m_Style)
+                m_flags &= ~F_STYLE;
+            if (m_item.m_ExStyle != item.m_ExStyle)
+                m_flags &= ~F_EXSTYLE;
+            if (m_item.m_pt.x != item.m_pt.x)
+                m_flags &= ~F_X;
+            if (m_item.m_pt.y != item.m_pt.y)
+                m_flags &= ~F_Y;
+            if (m_item.m_siz.cx != item.m_siz.cx)
+                m_flags &= ~F_CX;
+            if (m_item.m_siz.cy != item.m_siz.cy)
+                m_flags &= ~F_CY;
+            if (m_item.ID != item.ID)
+                m_flags &= ~F_ID;
+            if (m_item.m_Class != item.m_Class)
+                m_flags &= ~F_CLASS;
+            if (m_item.m_Title  != item.m_Title)
+                m_flags &= ~F_TITLE;
+        }
+    }
+
+    void SetInfo(DWORD flags)
+    {
+        if (m_indeces.empty())
+            return;
+
+        std::set<INT>::iterator it, end = m_indeces.end();
+        for (it = m_indeces.begin(); it != end; ++it)
+        {
+            DialogItem& item = m_dialog_res.Items[*it];
+            if ((m_flags & F_HELP) || (flags & F_HELP))
+                item.m_HelpID = m_item.m_HelpID;
+            if ((m_flags & F_STYLE) || (flags & F_STYLE))
+                item.m_Style = m_item.m_Style;
+            if ((m_flags & F_EXSTYLE) || (flags & F_EXSTYLE))
+                item.m_ExStyle = m_item.m_ExStyle;
+            if ((m_flags & F_X) || (flags & F_X))
+                item.m_pt.x = m_item.m_pt.x;
+            if ((m_flags & F_Y) || (flags & F_Y))
+                item.m_pt.y = m_item.m_pt.y;
+            if ((m_flags & F_CX) || (flags & F_CX))
+                item.m_siz.cx = m_item.m_siz.cx;
+            if ((m_flags & F_CY) || (flags & F_CY))
+                item.m_siz.cy = m_item.m_siz.cy;
+            if ((m_flags & F_ID) || (flags & F_ID))
+                item.ID = m_item.ID;
+            if ((m_flags & F_CLASS) || (flags & F_CLASS))
+                item.m_Class = m_item.m_Class;
+            if ((m_flags & F_TITLE) || (flags & F_TITLE))
+                item.m_Title = m_item.m_Title;
+        }
     }
 
     void InitTables(LPCTSTR pszClass)
