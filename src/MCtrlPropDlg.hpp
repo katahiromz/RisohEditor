@@ -210,35 +210,85 @@ public:
         GetInfo();
 
         if (m_flags & F_CLASS)
+        {
             InitTables(m_item.m_Class.c_str());
+            SetDlgItemText(hwnd, cmb4, m_item.m_Class.c_str());
+        }
         else
+        {
             InitTables(NULL);
+        }
 
         TCHAR szText[64];
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
-        m_dwStyle = WS_VISIBLE | WS_CHILD;
+        if (m_flags & F_STYLE)
+            m_dwStyle = m_item.m_Style;
+        else
+            m_dwStyle = 0;
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
-        m_bUpdating = TRUE;
-        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
-        SetDlgItemText(hwnd, edt6, szText);
-        ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
-        m_bUpdating = FALSE;
+        if (m_flags & F_STYLE)
+        {
+            m_bUpdating = TRUE;
+            wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+            SetDlgItemText(hwnd, edt6, szText);
+            ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
+            m_bUpdating = FALSE;
+        }
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
-        m_dwExStyle = 0;
+        if (m_flags & F_EXSTYLE)
+            m_dwExStyle = m_item.m_ExStyle;
+        else
+            m_dwExStyle = 0;
         GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
-        m_bUpdating = TRUE;
-        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
-        SetDlgItemText(hwnd, edt7, szText);
-        ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
-        m_bUpdating = FALSE;
+        if (m_flags & F_EXSTYLE)
+        {
+            m_bUpdating = TRUE;
+            wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+            SetDlgItemText(hwnd, edt7, szText);
+            ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
+            m_bUpdating = FALSE;
+        }
+
+        if (m_flags & F_HELP)
+        {
+            SetDlgItemInt(hwnd, cmb5, m_item.m_HelpID, FALSE);
+        }
+        if (m_flags & F_X)
+        {
+            SetDlgItemInt(hwnd, edt1, m_item.m_pt.x, TRUE);
+        }
+        if (m_flags & F_Y)
+        {
+            SetDlgItemInt(hwnd, edt2, m_item.m_pt.y, TRUE);
+        }
+        if (m_flags & F_CX)
+        {
+            SetDlgItemInt(hwnd, edt3, m_item.m_siz.cx, TRUE);
+        }
+        if (m_flags & F_CY)
+        {
+            SetDlgItemInt(hwnd, edt4, m_item.m_siz.cy, TRUE);
+        }
+        if (m_flags & F_ID)
+        {
+            SetDlgItemInt(hwnd, cmb3, m_item.ID, TRUE);
+        }
+        if (m_flags & F_CLASS)
+        {
+            SetDlgItemText(hwnd, cmb4, m_item.m_Class.c_str());
+        }
+        if (m_flags & F_TITLE)
+        {
+            SetDlgItemText(hwnd, cmb2, m_item.m_Title.c_str());
+        }
 
         return TRUE;
     }
