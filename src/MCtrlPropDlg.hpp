@@ -28,6 +28,7 @@ class MCtrlPropDlg : public MDialogBase
 public:
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
+    BOOL                m_bUniqueClass;
     std::set<INT>       m_indeces;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -38,7 +39,7 @@ public:
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_indeces(indeces)
+          m_bUpdating(FALSE), m_bUniqueClass(FALSE), m_indeces(indeces)
     {
     }
 
@@ -110,6 +111,34 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3);
 
+        InitTables(NULL);
+
+        TCHAR szText[64];
+
+        HWND hLst1 = GetDlgItem(hwnd, lst1);
+        m_dwStyle = WS_VISIBLE | WS_CHILD;
+        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        InitStyleListBox(hLst1, m_style_table);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
+
+        m_bUpdating = TRUE;
+        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        SetDlgItemText(hwnd, edt6, szText);
+        ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
+        m_bUpdating = FALSE;
+
+        HWND hLst2 = GetDlgItem(hwnd, lst2);
+        m_dwExStyle = 0;
+        GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
+        InitStyleListBox(hLst2, m_exstyle_table);
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
+
+        m_bUpdating = TRUE;
+        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+        SetDlgItemText(hwnd, edt7, szText);
+        ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
+        m_bUpdating = FALSE;
+
         return TRUE;
     }
 
@@ -118,8 +147,129 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnLst1(HWND hwnd)
+    {
+        if (m_bUpdating)
+            return;
+
+        HWND hLst1 = GetDlgItem(hwnd, lst1);
+
+        std::vector<BYTE> old_style_selection = m_style_selection;
+        GetSelection(hLst1, m_style_selection);
+
+        m_dwStyle = AnalyseDifference(m_dwStyle, m_style_table,
+                                      old_style_selection, m_style_selection);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
+
+        m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        SetDlgItemText(hwnd, edt6, szText);
+        m_bUpdating = FALSE;
+    }
+
+    void OnLst2(HWND hwnd)
+    {
+        if (m_bUpdating)
+            return;
+
+        HWND hLst2 = GetDlgItem(hwnd, lst2);
+
+        std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
+        GetSelection(hLst2, m_exstyle_selection);
+
+        m_dwExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
+                                        old_exstyle_selection, m_exstyle_selection);
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
+
+        m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+        SetDlgItemText(hwnd, edt7, szText);
+        m_bUpdating = FALSE;
+    }
+
+    void OnEdt6(HWND hwnd)
+    {
+        if (m_bUpdating)
+            return;
+
+        MString text = GetDlgItemText(hwnd, edt6);
+        mstr_trim(text);
+        DWORD dwStyle = _tcstoul(text.c_str(), NULL, 16);
+
+        std::vector<BYTE> old_style_selection = m_style_selection;
+        GetSelection(m_style_selection, m_style_table, dwStyle);
+
+        HWND hLst1 = GetDlgItem(hwnd, lst1);
+        m_dwStyle = dwStyle;
+        ApplySelection(hLst1, m_style_table, m_style_selection, dwStyle);
+    }
+
+    void OnEdt7(HWND hwnd)
+    {
+        if (m_bUpdating)
+            return;
+
+        MString text = GetDlgItemText(hwnd, edt7);
+        mstr_trim(text);
+        DWORD dwExStyle = _tcstoul(text.c_str(), NULL, 16);
+
+        std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
+        GetSelection(m_exstyle_selection, m_exstyle_table, dwExStyle);
+
+        HWND hLst2 = GetDlgItem(hwnd, lst2);
+        m_dwExStyle = dwExStyle;
+        ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, dwExStyle);
+    }
+
+    void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        MString strSuper;
+        DWORD dwType = g_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        if (dwType >= 3)
+        {
+            ConstantsDB::TableType table;
+            table = g_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
+            if (table.size())
+            {
+                strSuper = table[0].name;
+            }
+        }
+
+        if (strSuper.size())
+            InitTables(strSuper.c_str());
+        else
+            InitTables(strClass.c_str());
+
+        MString str = strClass + TEXT(".DEFAULT.STYLE");
+        m_dwStyle = g_ConstantsDB.GetValue(str, TEXT("STYLE"));
+
+        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        InitStyleListBox(hLst1, m_style_table);
+        ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
+
+        m_bUpdating = TRUE;
+        TCHAR szText[32];
+        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        SetDlgItemText(hwnd, edt6, szText);
+        m_bUpdating = FALSE;
+
+        ListBox_SetTopIndex(hLst1, 0);
+
+        if (strSuper.size())
+            SetDlgItemText(hwnd, cmb4, strSuper.c_str());
+        else
+            SetDlgItemText(hwnd, cmb4, strClass.c_str());
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        HWND hLst1 = GetDlgItem(hwnd, lst1);
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        TCHAR szText[64];
         switch (id)
         {
         case IDOK:
@@ -127,6 +277,47 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_SELCHANGE)
+            {
+                INT nIndex = ComboBox_GetCurSel(hCmb1);
+                ComboBox_GetLBText(hCmb1, nIndex, szText);
+                MString text = szText;
+                mstr_trim(text);
+                UpdateClass(hwnd, hLst1, text);
+            }
+            else if (codeNotify == CBN_EDITCHANGE)
+            {
+                MString text = GetDlgItemText(hwnd, cmb1);
+                mstr_trim(text);
+                InitTables(text.c_str());
+                UpdateClass(hwnd, hLst1, text);
+            }
+            break;
+        case lst1:
+            if (codeNotify == LBN_SELCHANGE)
+            {
+                OnLst1(hwnd);
+            }
+            break;
+        case lst2:
+            if (codeNotify == LBN_SELCHANGE)
+            {
+                OnLst2(hwnd);
+            }
+            break;
+        case edt6:
+            if (codeNotify == EN_CHANGE)
+            {
+                OnEdt6(hwnd);
+            }
+            break;
+        case edt7:
+            if (codeNotify == EN_CHANGE)
+            {
+                OnEdt7(hwnd);
+            }
             break;
         }
     }
