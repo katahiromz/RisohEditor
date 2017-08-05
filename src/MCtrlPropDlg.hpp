@@ -6,23 +6,30 @@
 
 #include "RisohEditor.hpp"
 #include "DialogRes.hpp"
+#include "MString.hpp"
 #include "resource.h"
+#include <set>
 
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
+//////////////////////////////////////////////////////////////////////////////
+
+void GetSelection(HWND hLst, std::vector<BYTE>& sel);
+void GetSelection(std::vector<BYTE>& sel,
+                  const ConstantsDB::TableType& table, DWORD dwValue);
+DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
+    std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
+void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MCtrlPropDlg : public MDialogBase
 {
 public:
-    DialogRes&  m_dialog_res;
-    INT         m_nCtrlIndex;
+    DialogRes&          m_dialog_res;
+    std::set<INT>       m_indeces;
 
-    MCtrlPropDlg(DialogRes& dialog_res, INT nCtrlIndex)
+    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_nCtrlIndex(nCtrlIndex)
+          m_indeces(indeces)
     {
     }
 

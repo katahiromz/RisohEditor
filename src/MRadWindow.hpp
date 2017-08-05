@@ -945,6 +945,12 @@ struct MRadWindow : MWindowBase
 
     void OnCtrlProp(HWND hwnd)
     {
+        MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces());
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            ReCreateRadDialog(hwnd);
+            UpdateRes();
+        }
     }
 
     void OnDlgProp(HWND hwnd)
