@@ -107,6 +107,84 @@ public:
         }
     }
 
+    DWORD GetItemAndFlags(DialogItem& item)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        DWORD flags = m_flags;
+
+        MString strCaption = GetDlgItemText(cmb2);
+        mstr_trim(strCaption);
+        if (!strCaption.empty())
+            flags |= F_TITLE;
+        item.m_Title = strCaption.c_str();
+
+        MString strX = GetDlgItemText(edt1);
+        mstr_trim(strX);
+        if (!strX.empty())
+            flags |= F_X;
+        item.m_pt.x = _tcstoul(strX.c_str(), NULL, 0);
+
+        MString strY = GetDlgItemText(edt2);
+        mstr_trim(strY);
+        if (!strY.empty())
+            flags |= F_Y;
+        item.m_pt.y = _tcstoul(strY.c_str(), NULL, 0);
+
+        MString strCX = GetDlgItemText(edt3);
+        mstr_trim(strCX);
+        if (!strCX.empty())
+            flags |= F_CX;
+        item.m_siz.cx = _tcstoul(strCX.c_str(), NULL, 0);
+
+        MString strCY = GetDlgItemText(edt4);
+        mstr_trim(strCY);
+        if (!strCY.empty())
+            flags |= F_CY;
+        item.m_siz.cy = _tcstoul(strCY.c_str(), NULL, 0);
+
+        MString strID = GetDlgItemText(cmb3);
+        mstr_trim(strID);
+        if (!strID.empty())
+            flags |= F_ID;
+        UINT id;
+        if (TEXT('0') <= strID[0] && strID[0] <= TEXT('9'))
+        {
+            id = _tcstoul(strID.c_str(), NULL, 0);
+        }
+        else
+        {
+            id = g_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
+        }
+        item.ID = id;
+
+        MString strClass = GetDlgItemText(cmb4);
+        mstr_trim(strClass);
+        if (!strClass.empty())
+            flags |= F_CLASS;
+        item.m_Class = strClass.c_str();
+
+        MString strHelp = GetDlgItemText(cmb5);
+        mstr_trim(strHelp);
+        if (!strHelp.empty())
+            flags |= F_HELP;
+        item.m_HelpID = _tcstoul(strHelp.c_str(), NULL, 0);
+
+        MString strStyle = GetDlgItemText(edt6);
+        mstr_trim(strStyle);
+        if (!strStyle.empty())
+            flags |= F_STYLE;
+        item.m_Style = _tcstoul(strStyle.c_str(), NULL, 16);
+
+        MString strExStyle = GetDlgItemText(edt7);
+        mstr_trim(strExStyle);
+        if (!strExStyle.empty())
+            flags |= F_EXSTYLE;
+        item.m_ExStyle = _tcstoul(strExStyle.c_str(), NULL, 16);
+
+        return flags;
+    }
+
     void SetInfo(DWORD flags)
     {
         if (m_indeces.empty())
@@ -295,6 +373,22 @@ public:
 
     void OnOK(HWND hwnd)
     {
+
+        DWORD flags = GetItemAndFlags(m_item);
+        if (flags & F_CLASS)
+        {
+            MString strClass = GetDlgItemText(cmb4);
+            mstr_trim(strClass);
+            if (strClass.empty())
+            {
+                SetFocus(GetDlgItem(hwnd, cmb4));
+                MsgBoxDx(LoadStringDx(IDS_ENTERCLASS), MB_ICONERROR);
+                return;
+            }
+        }
+
+        SetInfo(flags);
+
         EndDialog(IDOK);
     }
 
