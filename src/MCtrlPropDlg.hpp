@@ -26,12 +26,29 @@ void InitCtrlIDComboBox(HWND hCmb);
 class MCtrlPropDlg : public MDialogBase
 {
 public:
+    enum Flags
+    {
+        F_NONE = 0,
+        F_HELP = 0x0001,
+        F_STYLE = 0x0002,
+        F_EXSTYLE = 0x0004,
+        F_X = 0x0008,
+        F_Y = 0x0010,
+        F_CX = 0x0020,
+        F_CY = 0x0040,
+        F_ID = 0x0080,
+        F_CLASS = 0x0100,
+        F_TITLE = 0x0200,
+        F_ALL = 0x03FF
+    };
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     BOOL                m_bUniqueClass;
     std::set<INT>       m_indeces;
+    DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
+    DialogItem          m_item;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
