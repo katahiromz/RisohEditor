@@ -381,6 +381,10 @@ public:
 
     virtual void PostNcDestroy()
     {
+        if (m_bTopCtrl)
+        {
+            DebugPrintDx("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
+        }
         m_hwnd = NULL;
         delete this;
     }
@@ -395,35 +399,6 @@ public:
     MRadDialog() : m_bDestroying(FALSE)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
-    }
-
-    void Renumber()
-    {
-        if (!::IsWindow(m_hwnd))
-            return;
-
-        INT nIndex = 0;
-        TCHAR szClass[64];
-        HWND hwndCtrl = ::GetTopWindow(m_hwnd);
-        for (;;)
-        {
-            HWND hwndNext = GetNextWindow(hwndCtrl, GW_HWNDNEXT);
-            if (hwndNext == NULL)
-            {
-                break;
-            }
-
-            hwndCtrl = hwndNext;
-            ::GetClassName(hwndCtrl, szClass, _countof(szClass));
-            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
-            {
-                MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
-                if (pCtrl)
-                {
-                    pCtrl->m_nIndex = nIndex++;
-                }
-            }
-        }
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
@@ -597,11 +572,15 @@ public:
         }
     }
 
-    void DoSubclass(HWND hCtrl, BOOL bTop)
+    void DoSubclass(HWND hCtrl, INT nIndex)
     {
         MRadCtrl *pCtrl = new MRadCtrl;
         pCtrl->SubclassDx(hCtrl);
-        pCtrl->m_bTopCtrl = bTop;
+        pCtrl->m_bTopCtrl = (nIndex != -1);
+        pCtrl->m_nIndex = nIndex;
+
+        MString text = GetWindowText(hCtrl);
+        DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
 
         DoSubclassChildren(hCtrl);
     }
@@ -614,20 +593,16 @@ public:
             INT nIndex = 0;
             while (hCtrl)
             {
-                DoSubclass(hCtrl, bTop);
-
-                MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl);
-                pCtrl->m_nIndex = nIndex;
+                DoSubclass(hCtrl, nIndex++);
 
                 hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
-                ++nIndex;
             }
         }
         else
         {
             while (hCtrl)
             {
-                DoSubclass(hCtrl, bTop);
+                DoSubclass(hCtrl, -1);
                 hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
             }
         }
@@ -847,8 +822,10 @@ struct MRadWindow : MWindowBase
         if (pCtrl == NULL)
             return 0;
 
-        if (pCtrl->m_nIndex == -1)
+        if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
             return 0;
+
+        DebugPrintDx("OnCtrlMove: %d\n", pCtrl->m_nIndex);
 
         RECT rc;
         GetWindowRect(*pCtrl, &rc);
@@ -871,8 +848,10 @@ struct MRadWindow : MWindowBase
         if (pCtrl == NULL)
             return 0;
 
-        if (pCtrl->m_nIndex == -1)
+        if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
             return 0;
+
+        DebugPrintDx("OnCtrlSize: %d\n", pCtrl->m_nIndex);
 
         RECT rc;
         GetWindowRect(*pCtrl, &rc);
@@ -892,7 +871,6 @@ struct MRadWindow : MWindowBase
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_UPDATERES, 0);
-        m_rad_dialog.Renumber();
     }
 
     LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -907,7 +885,6 @@ struct MRadWindow : MWindowBase
 
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + pCtrl->m_nIndex);
         m_dialog_res.m_cItems--;
-        m_rad_dialog.Renumber();
         UpdateRes();
 
         return 0;
@@ -935,12 +912,12 @@ struct MRadWindow : MWindowBase
         if (pt.x < 0 || pt.y < 0)
             pt.x = pt.y = 0;
 
-		RECT rc;
-		GetClientRect(hwnd, &rc);
-		if (rc.right - 30 < pt.x)
-			pt.x = rc.right - 30;
-		if (rc.bottom - 30 < pt.y)
-			pt.y = rc.bottom - 30;
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        if (rc.right - 30 < pt.x)
+            pt.x = rc.right - 30;
+        if (rc.bottom - 30 < pt.y)
+            pt.y = rc.bottom - 30;
 
         MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -1058,7 +1035,7 @@ struct MRadWindow : MWindowBase
             return;
 
         INT nIndex = *indeces.begin();
-
+	
         DialogItem item;
         item = m_dialog_res.Items[nIndex];
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
