@@ -770,7 +770,7 @@ struct MRadWindow : MWindowBase
 
         FitToRadDialog();
 
-        ShowWindow(m_rad_dialog, SW_SHOWNORMAL);
+        ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);
         UpdateWindow(m_rad_dialog);
 
         return TRUE;
@@ -934,6 +934,13 @@ struct MRadWindow : MWindowBase
         ClientToDialog(&pt);
         if (pt.x < 0 || pt.y < 0)
             pt.x = pt.y = 0;
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		if (rc.right - 30 < pt.x)
+			pt.x = rc.right - 30;
+		if (rc.bottom - 30 < pt.y)
+			pt.y = rc.bottom - 30;
 
         MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
