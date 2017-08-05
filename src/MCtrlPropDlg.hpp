@@ -95,6 +95,16 @@ public:
             if (m_item.m_Title  != item.m_Title)
                 m_flags &= ~F_TITLE;
         }
+
+        if (m_flags & F_CLASS)
+        {
+            if (m_item.m_Class.is_int())
+            {
+                std::wstring cls;
+                if (IDToPredefClass(m_item.m_Class.m_ID, cls))
+                    m_item.m_Class = cls.c_str();
+            }
+        }
     }
 
     void SetInfo(DWORD flags)
@@ -197,7 +207,12 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3);
 
-        InitTables(NULL);
+        GetInfo();
+
+        if (m_flags & F_CLASS)
+            InitTables(m_item.m_Class.c_str());
+        else
+            InitTables(NULL);
 
         TCHAR szText[64];
 
