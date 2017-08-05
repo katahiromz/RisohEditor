@@ -25,11 +25,18 @@ class MCtrlPropDlg : public MDialogBase
 {
 public:
     DialogRes&          m_dialog_res;
+    BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
+    DWORD               m_dwStyle;
+    DWORD               m_dwExStyle;
+    ConstantsDB::TableType  m_style_table;
+    ConstantsDB::TableType  m_exstyle_table;
+    std::vector<BYTE>       m_style_selection;
+    std::vector<BYTE>       m_exstyle_selection;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_indeces(indeces)
+          m_bUpdating(FALSE), m_indeces(indeces)
     {
     }
 
