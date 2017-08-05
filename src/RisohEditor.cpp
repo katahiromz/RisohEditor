@@ -168,6 +168,32 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     return DEFAULT_CHARSET;
 }
 
+void InitClassComboBox(HWND hCmb)
+{
+    ComboBox_ResetContent(hCmb);
+
+    ConstantsDB::TableType table;
+    table = g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
+
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        ComboBox_AddString(hCmb, it->name.c_str());
+    }
+}
+
+void InitCtrlIDComboBox(HWND hCmb)
+{
+    ConstantsDB::TableType table;
+    table = g_ConstantsDB.GetTable(TEXT("CTRLID"));
+
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        ComboBox_AddString(hCmb, it->name.c_str());
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // languages
 

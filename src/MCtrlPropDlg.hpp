@@ -18,6 +18,8 @@ void GetSelection(std::vector<BYTE>& sel,
 DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
+void InitClassComboBox(HWND hCmb);
+void InitCtrlIDComboBox(HWND hCmb);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +42,74 @@ public:
     {
     }
 
+    void InitTables(LPCTSTR pszClass)
+    {
+        extern ConstantsDB g_ConstantsDB;
+
+        ConstantsDB::TableType table;
+
+        m_style_table.clear();
+        if (pszClass && pszClass[0])
+        {
+            table = g_ConstantsDB.GetTable(pszClass);
+            if (table.size())
+            {
+                m_style_table.insert(m_style_table.end(),
+                    table.begin(), table.end());
+            }
+        }
+        table = g_ConstantsDB.GetTable(TEXT("STYLE"));
+        if (table.size())
+        {
+            m_style_table.insert(m_style_table.end(),
+                table.begin(), table.end());
+        }
+        m_style_selection.resize(m_style_table.size());
+
+        m_exstyle_table.clear();
+        table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        if (table.size())
+        {
+            m_exstyle_table.insert(m_exstyle_table.end(),
+                table.begin(), table.end());
+        }
+        m_exstyle_selection.resize(m_exstyle_table.size());
+    }
+
+    void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
+    {
+        m_bUpdating = TRUE;
+        INT iTop = ListBox_GetTopIndex(hLst);
+        for (size_t i = 0; i < sel.size(); ++i)
+        {
+            ListBox_SetSel(hLst, sel[i], (DWORD)i);
+        }
+        ListBox_SetTopIndex(hLst, iTop);
+        m_bUpdating = FALSE;
+    }
+
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
+                        std::vector<BYTE>& sel, DWORD dwValue)
+    {
+        m_bUpdating = TRUE;
+        INT iTop = ListBox_GetTopIndex(hLst);
+        for (size_t i = 0; i < table.size(); ++i)
+        {
+            sel[i] = ((dwValue & table[i].mask) == table[i].value);
+            ListBox_SetSel(hLst, sel[i], (DWORD)i);
+        }
+        ListBox_SetTopIndex(hLst, iTop);
+        m_bUpdating = FALSE;
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        InitClassComboBox(hCmb1);
+
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        InitCtrlIDComboBox(hCmb3);
+
         return TRUE;
     }
 

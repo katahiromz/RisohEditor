@@ -17,6 +17,8 @@ void GetSelection(std::vector<BYTE>& sel,
 DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
+void InitClassComboBox(HWND hCmb);
+void InitCtrlIDComboBox(HWND hCmb);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -99,36 +101,6 @@ public:
         m_bUpdating = FALSE;
     }
 
-    void InitClassComboBox(HWND hCmb1)
-    {
-        extern ConstantsDB g_ConstantsDB;
-
-        ComboBox_ResetContent(hCmb1);
-
-        ConstantsDB::TableType table;
-        table = g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
-
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
-        {
-            ComboBox_AddString(hCmb1, it->name.c_str());
-        }
-    }
-
-    void InitCtrlIDComboBox(HWND hCmb)
-    {
-        extern ConstantsDB g_ConstantsDB;
-
-        ConstantsDB::TableType table;
-        table = g_ConstantsDB.GetTable(TEXT("CTRLID"));
-
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
-        {
-            ComboBox_AddString(hCmb, it->name.c_str());
-        }
-    }
-
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         extern ConstantsDB g_ConstantsDB;
@@ -143,13 +115,11 @@ public:
 
         SetDlgItemInt(hwnd, cmb5, 0, FALSE);
 
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        InitClassComboBox(hCmb1);
+
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3);
-
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        m_bUpdating = TRUE;
-        InitClassComboBox(hCmb1);
-        m_bUpdating = FALSE;
 
         InitTables(NULL);
 
