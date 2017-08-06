@@ -1107,11 +1107,7 @@ struct MRadWindow : MWindowBase
     BOOL CanIndexMinus() const
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.size() <= 0)
-            return FALSE;
-
-        INT nIndex = *indeces.begin();
-        if (nIndex <= 0)
+        if (indeces.count(0) > 0)
             return FALSE;
 
         return TRUE;
@@ -1138,15 +1134,8 @@ struct MRadWindow : MWindowBase
     BOOL CanIndexPlus() const
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.empty())
+        if (indeces.count(m_dialog_res.m_cItems - 1) > 0)
             return FALSE;
-
-        std::set<INT>::iterator it, end = indeces.end();
-        for (it = indeces.begin(); it != end; ++it)
-        {
-            if (*it == m_dialog_res.m_cItems - 1)
-                return FALSE;
-        }
 
         return TRUE;
     }
