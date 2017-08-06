@@ -1035,12 +1035,13 @@ struct MRadWindow : MWindowBase
             return;
 
         INT nIndex = *indeces.begin();
-	
+        if (nIndex <= 0)
+            return;
+    
         DialogItem item;
         item = m_dialog_res.Items[nIndex];
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
-        if (nIndex > 0)
-            --nIndex;
+        --nIndex;
         m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
 
         ReCreateRadDialog(hwnd);
@@ -1054,13 +1055,17 @@ struct MRadWindow : MWindowBase
             return;
 
         INT nIndex = *indeces.begin();
+        if (nIndex + 1 > m_dialog_res.m_cItems)
+            return;
 
         DialogItem item;
         item = m_dialog_res.Items[nIndex];
         m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
-        if (nIndex + 1 < m_dialog_res.m_cItems)
-            ++nIndex;
-        m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
+        ++nIndex;
+        if (nIndex == m_dialog_res.m_cItems)
+            m_dialog_res.Items.insert(m_dialog_res.Items.end(), item);
+        else
+            m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
