@@ -790,28 +790,52 @@ struct MRadWindow : MWindowBase
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
         }
         else
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+        }
+
+        if (CanIndexTop())
+        {
             ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
+        }
+        else
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
+        }
+
+        if (CanIndexBottom())
+        {
             ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
+        }
+        else
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
+        }
+
+        if (CanIndexMinus())
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
+        }
+        else
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
+        }
+
+        if (CanIndexPlus())
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
+        }
+        else
+        {
+            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
         }
     }
 
@@ -978,6 +1002,32 @@ struct MRadWindow : MWindowBase
         }
     }
 
+    BOOL CanIndexTop() const
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
+            return FALSE;
+
+        INT iSelected = -1;
+        INT iUnselected = -1;
+        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        {
+            if (indeces.find(i) != indeces.end())
+            {
+                if (iUnselected != -1)
+                    return TRUE;
+
+                iSelected = i;
+            }
+            else
+            {
+                iUnselected = i;
+            }
+        }
+
+        return FALSE;
+    }
+
     void IndexTop(HWND hwnd)
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
@@ -1001,6 +1051,32 @@ struct MRadWindow : MWindowBase
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
+    }
+
+    BOOL CanIndexBottom() const
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
+            return FALSE;
+
+        INT iSelected = -1;
+        INT iUnselected = -1;
+        for (INT i = m_dialog_res.m_cItems - 1; i >= 0; --i)
+        {
+            if (indeces.find(i) != indeces.end())
+            {
+                if (iUnselected != -1)
+                    return TRUE;
+
+                iSelected = i;
+            }
+            else
+            {
+                iUnselected = i;
+            }
+        }
+
+        return FALSE;
     }
 
     void IndexBottom(HWND hwnd)
@@ -1028,44 +1104,70 @@ struct MRadWindow : MWindowBase
         UpdateRes();
     }
 
-    void IndexMinus(HWND hwnd)
+    BOOL CanIndexMinus() const
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.size() != 1)
-            return;
+        if (indeces.size() <= 0)
+            return FALSE;
 
         INT nIndex = *indeces.begin();
         if (nIndex <= 0)
+            return FALSE;
+
+        return TRUE;
+    }
+
+    void IndexMinus(HWND hwnd)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
             return;
-    
-        DialogItem item;
-        item = m_dialog_res.Items[nIndex];
-        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
-        --nIndex;
-        m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
+
+        for (INT i = 0; i < m_dialog_res.m_cItems - 1; ++i)
+        {
+            if (indeces.find(i + 1) != indeces.end())
+            {
+                std::swap(m_dialog_res.Items[i], m_dialog_res.Items[i + 1]);
+            }
+        }
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
     }
 
+    BOOL CanIndexPlus() const
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        if (indeces.empty())
+            return FALSE;
+
+        std::set<INT>::iterator it, end = indeces.end();
+        for (it = indeces.begin(); it != end; ++it)
+        {
+            if (*it == m_dialog_res.m_cItems - 1)
+                return FALSE;
+        }
+
+        return TRUE;
+    }
+
     void IndexPlus(HWND hwnd)
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.size() != 1)
+        if (indeces.empty())
             return;
 
         INT nIndex = *indeces.begin();
         if (nIndex + 1 > m_dialog_res.m_cItems)
             return;
 
-        DialogItem item;
-        item = m_dialog_res.Items[nIndex];
-        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + nIndex);
-        ++nIndex;
-        if (nIndex == m_dialog_res.m_cItems)
-            m_dialog_res.Items.insert(m_dialog_res.Items.end(), item);
-        else
-            m_dialog_res.Items.insert(m_dialog_res.Items.begin() + nIndex, item);
+        for (INT i = m_dialog_res.m_cItems - 1; i > 0; --i)
+        {
+            if (indeces.find(i - 1) != indeces.end())
+            {
+                std::swap(m_dialog_res.Items[i], m_dialog_res.Items[i - 1]);
+            }
+        }
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
