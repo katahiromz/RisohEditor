@@ -1146,10 +1146,6 @@ struct MRadWindow : MWindowBase
         if (indeces.empty())
             return;
 
-        INT nIndex = *indeces.begin();
-        if (nIndex + 1 > m_dialog_res.m_cItems)
-            return;
-
         for (INT i = m_dialog_res.m_cItems - 1; i > 0; --i)
         {
             if (indeces.find(i - 1) != indeces.end())
