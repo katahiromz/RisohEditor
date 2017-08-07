@@ -80,9 +80,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     POPUP "Popup"
     {
         MENUITEM "&Add Control...", ID_ADDCTRL
-        MENUITEM SEPARATOR
         MENUITEM "&Delete Control", ID_DELCTRL
-        MENUITEM "&Properties for Control...", ID_CTRLPROP
         MENUITEM SEPARATOR
         POPUP "&Index"
         BEGIN
@@ -92,9 +90,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             MENUITEM "&Plus", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
+            MENUITEM SEPARATOR
+            MENUITEM "&Switch Visibility", ID_SHOWHIDEINDEX
         END
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
+        MENUITEM "&Properties for Control...", ID_CTRLPROP
         MENUITEM "Pr&operties for Dialog...", ID_DLGPROP
     }
 }

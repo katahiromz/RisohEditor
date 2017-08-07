@@ -80,9 +80,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     POPUP "ポップアップ"
     {
         MENUITEM "コントロールの追加(&A)...", ID_ADDCTRL
-        MENUITEM SEPARATOR
         MENUITEM "コントロールの削除(&D)", ID_DELCTRL
-        MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
         MENUITEM SEPARATOR
         POPUP "インデックス(&I)"
         BEGIN
@@ -92,8 +90,11 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
             MENUITEM "増やす(&P)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
+            MENUITEM SEPARATOR
+            MENUITEM "表示の切り替え(&S)", ID_SHOWHIDEINDEX
         END
         MENUITEM SEPARATOR
+        MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP
     }
 }

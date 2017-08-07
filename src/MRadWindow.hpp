@@ -1,34 +1,36 @@
 // MRadWindow
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_RADWINDOW_HPP_
-#define MZC4_RADWINDOW_HPP_
+#ifndef MZC4_MRADWINDOW_HPP_
+#define MZC4_MRADWINDOW_HPP_
 
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
+#include "MIndexLabels.hpp"
 #include "MAddCtrlDlg.hpp"
 #include "MDlgPropDlg.hpp"
 #include "MCtrlPropDlg.hpp"
 #include "DialogRes.hpp"
 #include "resource.h"
+#include <map>
 #include <set>
 
 //////////////////////////////////////////////////////////////////////////////
 
 #define MYWM_CTRLMOVE           (WM_USER + 100)
 #define MYWM_CTRLSIZE           (WM_USER + 101)
-#define MYWM_CTRLDESTROY        (WM_USER + 102)
 #define MYWM_DLGSIZE            (WM_USER + 103)
+#define MYWM_DELETESEL          (WM_USER + 104)
 
 class MRadCtrl : public MWindowBase
 {
 public:
-    BOOL m_bTopCtrl;
-    HWND m_hwndRubberBand;
-    BOOL m_bMoving;
-    BOOL m_bSizing;
-    INT m_nIndex;
-    POINT m_pt;
+    BOOL            m_bTopCtrl;
+    HWND            m_hwndRubberBand;
+    BOOL            m_bMoving;
+    BOOL            m_bSizing;
+    INT             m_nIndex;
+    POINT           m_pt;
 
     MRadCtrl() : m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
                  m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1)
@@ -61,6 +63,13 @@ public:
             indeces.insert(pCtrl->m_nIndex);
         }
         return indeces;
+    }
+
+    typedef std::map<INT, HWND> map_type;
+    static map_type& IndexToCtrlMap()
+    {
+        static map_type s_map;
+        return s_map;
     }
 
     MRubberBand *GetRubberBand()
@@ -102,26 +111,13 @@ public:
         GetLastSel() = NULL;
     }
 
-    static void DeleteSelection(HWND hwnd = NULL)
+    static void DeleteSelection()
     {
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
-        {
-            if (hwnd == *it)
-                continue;
+        if (GetTargets().empty())
+            return;
 
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
-            if (pCtrl)
-            {
-                ::DestroyWindow(pCtrl->m_hwndRubberBand);
-                pCtrl->m_hwndRubberBand = NULL;
-                ::DestroyWindow(*pCtrl);
-            }
-        }
-        GetTargets().clear();
-        if (hwnd)
-            GetTargets().insert(hwnd);
-        GetLastSel() = hwnd;
+        set_type::iterator it = GetTargets().begin();
+        PostMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
     void Deselect()
@@ -214,7 +210,6 @@ public:
             HANDLE_MSG(hwnd, WM_NCLBUTTONUP, OnNCLButtonUp);
             HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
-            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
@@ -295,11 +290,6 @@ public:
             ResizeSelection(hwnd, cx, cy);
 
         SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
-    }
-
-    void OnDestroy(HWND hwnd)
-    {
-        SendMessage(GetParent(hwnd), MYWM_CTRLDESTROY, (WPARAM)hwnd, 0);
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -393,12 +383,20 @@ public:
 class MRadDialog : public MDialogBase
 {
 public:
-    BOOL m_bDestroying;
-    POINT m_ptClicked;
+    BOOL    m_index_visible;
+    POINT   m_ptClicked;
+    MIndexLabels    m_labels;
 
-    MRadDialog() : m_bDestroying(FALSE)
+    MRadDialog() : m_index_visible(FALSE)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
+
+        HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
+        LOGFONT lf;
+        GetObject(hFont, sizeof(lf), &lf);
+        lf.lfHeight = 14;
+        hFont = ::CreateFontIndirect(&lf);
+        m_labels.m_hFont = hFont;
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
@@ -505,7 +503,7 @@ public:
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
-            HANDLE_MESSAGE(hwnd, MYWM_CTRLDESTROY, OnCtrlDestroy);
+            HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
     }
@@ -513,6 +511,12 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
+    }
+
+    LRESULT OnDeleteSel(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        SendMessage(GetParent(hwnd), MYWM_DELETESEL, wParam, lParam);
+        return 0;
     }
 
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -524,15 +528,6 @@ public:
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, wParam, lParam);
-        return 0;
-    }
-
-    LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        if (!m_bDestroying)
-        {
-            SendMessage(GetParent(hwnd), MYWM_CTRLDESTROY, wParam, lParam);
-        }
         return 0;
     }
 
@@ -579,6 +574,11 @@ public:
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
 
+        if (nIndex != -1)
+        {
+            MRadCtrl::IndexToCtrlMap()[nIndex] = hCtrl;
+        }
+
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
 
@@ -612,6 +612,7 @@ public:
     {
         MRadCtrl::GetTargets().clear();
         MRadCtrl::GetLastSel() = NULL;
+        MRadCtrl::IndexToCtrlMap().clear();
 
         POINT pt = { 0, 0 };
         SetWindowPosDx(&pt);
@@ -619,7 +620,19 @@ public:
 
         DoSubclassChildren(hwnd, TRUE);
 
+        if (m_index_visible)
+            ShowHideLabels(TRUE);
+
         return FALSE;
+    }
+
+    void ShowHideLabels(BOOL bShow = TRUE)
+    {
+        m_index_visible = bShow;
+        if (bShow)
+            m_labels.ReCreate(m_hwnd, MRadCtrl::IndexToCtrlMap());
+        else
+            m_labels.Destroy();
     }
 };
 
@@ -724,7 +737,6 @@ struct MRadWindow : MWindowBase
     {
         if (m_rad_dialog)
         {
-            m_rad_dialog.m_bDestroying = TRUE;
             DestroyWindow(m_rad_dialog);
         }
 
@@ -737,7 +749,6 @@ struct MRadWindow : MWindowBase
 #endif
         m_dialog_res.Fixup(TRUE);
 
-        m_rad_dialog.m_bDestroying = FALSE;
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
             return FALSE;
@@ -758,7 +769,6 @@ struct MRadWindow : MWindowBase
 
     void OnDestroy(HWND hwnd)
     {
-        m_rad_dialog.m_bDestroying = TRUE;
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
     }
@@ -776,8 +786,8 @@ struct MRadWindow : MWindowBase
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
-            HANDLE_MESSAGE(hwnd, MYWM_CTRLDESTROY, OnCtrlDestroy);
             HANDLE_MESSAGE(hwnd, MYWM_DLGSIZE, OnDlgSize);
+            HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
             HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
@@ -839,6 +849,22 @@ struct MRadWindow : MWindowBase
         }
     }
 
+    LRESULT OnDeleteSel(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        std::set<INT>::reverse_iterator rit, rend = indeces.rend();
+        for (rit = indeces.rbegin(); rit != rend; ++rit)
+        {
+            m_dialog_res.Items.erase(m_dialog_res.Items.begin() + *rit);
+            m_dialog_res.m_cItems--;
+        }
+
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
+
+        return 0;
+    }
+
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         HWND hwndCtrl = (HWND)wParam;
@@ -895,6 +921,8 @@ struct MRadWindow : MWindowBase
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_UPDATERES, 0);
+
+        m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
 
     LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -971,6 +999,12 @@ struct MRadWindow : MWindowBase
         }
     }
 
+    void OnShowHideIndex(HWND hwnd)
+    {
+		m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
+        m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -998,6 +1032,9 @@ struct MRadWindow : MWindowBase
             break;
         case ID_CTRLINDEXPLUS:
             IndexPlus(hwnd);
+            break;
+        case ID_SHOWHIDEINDEX:
+            OnShowHideIndex(hwnd);
             break;
         }
     }
@@ -1348,4 +1385,4 @@ struct MRadWindow : MWindowBase
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_RADWINDOW_HPP_
+#endif  // ndef MZC4_MRADWINDOW_HPP_
