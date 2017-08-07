@@ -1354,24 +1354,23 @@ struct MRadWindow : MWindowBase
         if (!GetBaseUnits(xDialogBaseUnit, yDialogBaseUnit))
             return;
 
-        RECT Rect1;
-        GetClientRect(m_hwnd, &Rect1);
-        SIZE siz = SizeFromRectDx(&Rect1);
+        RECT rc;
+        GetClientRect(m_hwnd, &rc);
+        SIZE siz = SizeFromRectDx(&rc);
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
 
-        RECT Rect2;
-        GetClientRect(m_rad_dialog, &Rect2);
-        siz = SizeFromRectDx(&Rect2);
+        GetClientRect(m_rad_dialog, &rc);
+        siz = SizeFromRectDx(&rc);
         ClientToDialog(&siz);
 
         m_dialog_res.m_siz = siz;
         DialogToClient(&siz);
-        SetRect(&Rect2, 0, 0, siz.cx, siz.cy);
+        SetRect(&rc, 0, 0, siz.cx, siz.cy);
 
         DWORD style = GetWindowStyle(m_rad_dialog);
         DWORD exstyle = GetWindowExStyle(m_rad_dialog);
-        AdjustWindowRectEx(&Rect2, style, FALSE, exstyle);
-        siz = SizeFromRectDx(&Rect2);
+        AdjustWindowRectEx(&rc, style, FALSE, exstyle);
+        siz = SizeFromRectDx(&rc);
 
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
     }
