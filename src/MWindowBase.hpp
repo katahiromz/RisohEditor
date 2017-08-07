@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    43     /* Version 43 */
+#define MZC4_MWINDOWBASE_HPP_    44     /* Version 44 */
 
 class MWindowBase;
 class MDialogBase;
@@ -681,7 +681,7 @@ inline LPTSTR MZCAPI LoadStringDx(INT nID)
     TCHAR *buffer = s_sz[s_index];
     s_index = (s_index + 1) % _countof(s_sz);
     buffer[0] = 0;
-    ::LoadString(::GetModuleHandle(NULL), nID, buffer, buf_size);
+    ::LoadString(NULL, nID, buffer, buf_size);
     return buffer;
 }
 
