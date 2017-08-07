@@ -418,7 +418,8 @@ public:
             hwnd = hwndNext;
 
             ::GetClassName(hwndNext, szClass, _countof(szClass));
-            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
+            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0 &&
+                lstrcmpi(szClass, MIndexLabels().GetWndClassNameDx()) != 0)
                 break;
         }
 
@@ -444,7 +445,8 @@ public:
             hwnd = hwndPrev;
 
             ::GetClassName(hwndPrev, szClass, _countof(szClass));
-            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0)
+            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0 &&
+                lstrcmpi(szClass, MIndexLabels().GetWndClassNameDx()) != 0)
                 break;
         }
 
@@ -1001,7 +1003,7 @@ struct MRadWindow : MWindowBase
 
     void OnShowHideIndex(HWND hwnd)
     {
-		m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
+        m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
 
@@ -1144,7 +1146,7 @@ struct MRadWindow : MWindowBase
     BOOL CanIndexMinus() const
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.count(0) > 0)
+        if (indeces.empty() || indeces.count(0) > 0)
             return FALSE;
 
         return TRUE;
@@ -1171,7 +1173,7 @@ struct MRadWindow : MWindowBase
     BOOL CanIndexPlus() const
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        if (indeces.count(m_dialog_res.m_cItems - 1) > 0)
+        if (indeces.empty() || indeces.count(m_dialog_res.m_cItems - 1) > 0)
             return FALSE;
 
         return TRUE;
