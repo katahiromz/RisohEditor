@@ -1356,26 +1356,24 @@ struct MRadWindow : MWindowBase
 
         RECT Rect1;
         GetClientRect(m_hwnd, &Rect1);
-        SIZE sizPixels = SizeFromRectDx(&Rect1);
-        MoveWindow(m_rad_dialog, 0, 0, sizPixels.cx, sizPixels.cy, TRUE);
+        SIZE siz = SizeFromRectDx(&Rect1);
+        MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
 
         RECT Rect2;
         GetClientRect(m_rad_dialog, &Rect2);
-        SIZE sizDialog = SizeFromRectDx(&Rect2);
-        ClientToDialog(&sizDialog);
+        siz = SizeFromRectDx(&Rect2);
+        ClientToDialog(&siz);
 
-        m_dialog_res.m_siz = sizDialog;
-
-        sizPixels = sizDialog;
-        DialogToClient(&sizPixels);
-        SetRect(&Rect2, 0, 0, sizPixels.cx, sizPixels.cy);
+        m_dialog_res.m_siz = siz;
+        DialogToClient(&siz);
+        SetRect(&Rect2, 0, 0, siz.cx, siz.cy);
 
         DWORD style = GetWindowStyle(m_rad_dialog);
         DWORD exstyle = GetWindowExStyle(m_rad_dialog);
         AdjustWindowRectEx(&Rect2, style, FALSE, exstyle);
-        sizPixels = SizeFromRectDx(&Rect2);
+        siz = SizeFromRectDx(&Rect2);
 
-        MoveWindow(m_rad_dialog, 0, 0, sizPixels.cx, sizPixels.cy, TRUE);
+        MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
     }
 };
 
