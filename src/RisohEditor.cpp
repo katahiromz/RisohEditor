@@ -1976,7 +1976,7 @@ public:
             m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
             DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
-            if (m_rad_window.CreateWindowDx(m_hwnd, LoadStringDx(IDS_RADWINDOW),
+            if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
                                             style))
             {
                 ShowWindow(m_rad_window, SW_SHOWNOACTIVATE);

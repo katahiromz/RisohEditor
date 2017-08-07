@@ -644,7 +644,6 @@ struct MRadWindow : MWindowBase
     INT         m_yDialogBaseUnit;
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
-    static MRadWindow *s_p_rad_window;
 
     MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
     {
