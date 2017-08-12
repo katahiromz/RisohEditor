@@ -37,6 +37,10 @@
 #define ID_CTRLINDEXMINUS   134
 #define ID_CTRLINDEXPLUS    135
 #define ID_SHOWHIDEINDEX    136
+#define ID_ALIGNUP          137
+#define ID_ALIGNDOWN        138
+#define ID_ALIGNLEFT        139
+#define ID_ALIGNRIGHT       140
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

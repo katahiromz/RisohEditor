@@ -93,6 +93,13 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             MENUITEM SEPARATOR
             MENUITEM "&Switch Visibility", ID_SHOWHIDEINDEX
         END
+        POPUP "&Alignment"
+        BEGIN
+            MENUITEM "Align &Up", ID_ALIGNUP
+            MENUITEM "Align &Down", ID_ALIGNDOWN
+            MENUITEM "Align &Left", ID_ALIGNLEFT
+            MENUITEM "Align &Right", ID_ALIGNRIGHT
+        END
         MENUITEM SEPARATOR
         MENUITEM "&Properties for Control...", ID_CTRLPROP
         MENUITEM "Pr&operties for Dialog...", ID_DLGPROP

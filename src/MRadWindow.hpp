@@ -14,6 +14,7 @@
 #include "resource.h"
 #include <map>
 #include <set>
+#include <climits>
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -801,16 +802,28 @@ struct MRadWindow : MWindowBase
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_GRAYED);
         }
         else
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_ENABLED);
         }
 
         if (CanIndexTop())
@@ -1037,6 +1050,132 @@ struct MRadWindow : MWindowBase
         case ID_SHOWHIDEINDEX:
             OnShowHideIndex(hwnd);
             break;
+        case ID_ALIGNUP:
+            OnAlignUp(hwnd);
+            break;
+        case ID_ALIGNDOWN:
+            OnAlignDown(hwnd);
+            break;
+        case ID_ALIGNLEFT:
+            OnAlignLeft(hwnd);
+            break;
+        case ID_ALIGNRIGHT:
+            OnAlignRight(hwnd);
+            break;
+        }
+    }
+
+    void OnAlignUp(HWND hwnd)
+    {
+        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        if (set.size() < 2)
+            return;
+
+        INT nUp = INT_MAX;
+        RECT rc;
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
+        {
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            if (rc.top < nUp)
+                nUp = rc.top;
+        }
+        for (it = set.begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            pCtrl->m_bMoving = TRUE;
+            SetWindowPos(*it, NULL, rc.left, nUp, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+            pCtrl->m_bMoving = FALSE;
+        }
+    }
+
+    void OnAlignDown(HWND hwnd)
+    {
+        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        if (set.size() < 2)
+            return;
+
+        INT nDown = INT_MIN;
+        RECT rc;
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
+        {
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            if (nDown < rc.bottom)
+                nDown = rc.bottom;
+        }
+        for (it = set.begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            INT cy = rc.bottom - rc.top;
+            pCtrl->m_bMoving = TRUE;
+            SetWindowPos(*it, NULL, rc.left, nDown - cy, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+            pCtrl->m_bMoving = FALSE;
+        }
+    }
+
+    void OnAlignLeft(HWND hwnd)
+    {
+        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        if (set.size() < 2)
+            return;
+
+        INT nLeft = INT_MAX;
+        RECT rc;
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
+        {
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            if (rc.left < nLeft)
+                nLeft = rc.left;
+        }
+        for (it = set.begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            pCtrl->m_bMoving = TRUE;
+            SetWindowPos(*it, NULL, nLeft, rc.top, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+            pCtrl->m_bMoving = FALSE;
+        }
+    }
+
+    void OnAlignRight(HWND hwnd)
+    {
+        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        if (set.size() < 2)
+            return;
+
+        INT nRight = INT_MIN;
+        RECT rc;
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
+        {
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            if (nRight < rc.right)
+                nRight = rc.right;
+        }
+        for (it = set.begin(); it != end; ++it)
+        {
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
+            MapWindowRect(NULL, m_rad_dialog, &rc);
+            INT cx = rc.right - rc.left;
+            pCtrl->m_bMoving = TRUE;
+            SetWindowPos(*it, NULL, nRight - cx, rc.top, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+            pCtrl->m_bMoving = FALSE;
         }
     }
 

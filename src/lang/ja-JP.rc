@@ -93,6 +93,13 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
             MENUITEM SEPARATOR
             MENUITEM "表示の切り替え(&S)", ID_SHOWHIDEINDEX
         END
+        POPUP "位置そろえ(&A)"
+        BEGIN
+            MENUITEM "上そろえ(&U)", ID_ALIGNUP
+            MENUITEM "下そろえ(&D)", ID_ALIGNDOWN
+            MENUITEM "左そろえ(&L)", ID_ALIGNLEFT
+            MENUITEM "右そろえ(&R)", ID_ALIGNRIGHT
+        END
         MENUITEM SEPARATOR
         MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP

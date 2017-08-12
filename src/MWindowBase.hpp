@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    44     /* Version 44 */
+#define MZC4_MWINDOWBASE_HPP_    45     /* Version 45 */
 
 class MWindowBase;
 class MDialogBase;
@@ -547,6 +547,11 @@ public:
         assert(::IsWindow(Handle()));
         return ::EndDialog(Handle(), nResult);
     }
+    static BOOL EndDialog(HWND hwnd, INT_PTR nResult)
+    {
+        assert(::IsWindow(hwnd));
+        return ::EndDialog(hwnd, nResult);
+    }
 
     VOID NextDlgCtrl() const
     {
@@ -565,6 +570,11 @@ public:
     {
         assert(IsWindow(Handle()));
         return ::MapDialogRect(Handle(), prc);
+    }
+    static BOOL MapDialogRect(HWND hwnd, LPRECT prc)
+    {
+        assert(IsWindow(hwnd));
+        return ::MapDialogRect(hwnd, prc);
     }
 
     BOOL IsDialogMessage(LPMSG pMsg)
