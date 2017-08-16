@@ -39,6 +39,7 @@
 
 #include "MWindowBase.hpp"
 #include "MRadWindow.hpp"
+#include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
 #include "Res.hpp"
 #include "resource.h"

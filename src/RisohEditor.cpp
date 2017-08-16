@@ -656,26 +656,22 @@ BOOL DoReplaceBitmap(HWND hwnd,
 
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 TBBUTTON g_buttons2[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 void ToolBar_Update(HWND hwnd, INT iType)
@@ -1208,16 +1204,19 @@ public:
     HIMAGELIST  m_hImageList;
     HICON       m_hFileIcon;
     HICON       m_hFolderIcon;
-    HWND        m_hToolBar;
-    HWND        m_hBinEdit;
-    HWND        m_hSrcEdit;
     BOOL        m_bInEdit;
-    MBmpView    m_bmp_view;
-    MRadWindow  m_rad_window;
-
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
     HFONT       m_hSmallFont;
+    HWND        m_hToolBar;
+    MEditCtrl       m_hBinEdit;
+    MEditCtrl       m_hSrcEdit;
+    MBmpView        m_hBmpView;
+    MRadWindow      m_rad_window;
+    MSplitterWnd    m_splitter1;
+    MSplitterWnd    m_splitter2;
+    MSplitterWnd    m_splitter3;
+
     WCHAR       m_szDataFolder[MAX_PATH];
     WCHAR       m_szConstantsFile[MAX_PATH];
     WCHAR       m_szCppExe[MAX_PATH];
@@ -1230,19 +1229,16 @@ public:
         m_targv(targv),
         m_hInst(hInst),
         m_hIcon(NULL),
-        m_hAccel(NULL)
+        m_hAccel(NULL),
+        m_hImageList(NULL),
+        m_hFileIcon(NULL),
+        m_hFolderIcon(NULL),
+        m_bInEdit(FALSE),
+        m_hNormalFont(NULL),
+        m_hLargeFont(NULL),
+        m_hSmallFont(NULL),
+        m_hToolBar(NULL)
     {
-        m_hImageList = NULL;
-        m_hFileIcon = NULL;
-        m_hFolderIcon = NULL;
-        m_hToolBar = NULL;
-        m_hBinEdit = NULL;
-        m_hSrcEdit = NULL;
-        m_bInEdit = FALSE;
-
-        m_hNormalFont = NULL;
-        m_hLargeFont = NULL;
-        m_hSmallFont = NULL;
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
         m_szCppExe[0] = 0;
@@ -1326,45 +1322,68 @@ public:
 
         INT nRet = CheckData();
         if (nRet)
-        {
-            return FALSE;
-        }
-
-        DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
-            TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
-            TVS_LINESATROOT | TVS_SHOWSELALWAYS;
-        g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
-            WC_TREEVIEWW, NULL, dwStyle, 0, 0, 0, 0, hwnd,
-            (HMENU)1, g_hInstance, NULL);
-        if (g_hTreeView == NULL)
             return FALSE;
 
         m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
-
+        if (m_hImageList == NULL)
+            return FALSE;
         m_hFileIcon = LoadSmallIconDx(100);
         ImageList_AddIcon(m_hImageList, m_hFileIcon);
         m_hFolderIcon = LoadSmallIconDx(101);
         ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
-        TreeView_SetImageList(g_hTreeView, m_hImageList, TVSIL_NORMAL);
-
-        dwStyle = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
-            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-        m_hBinEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
-            L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
-            (HMENU)2, g_hInstance, NULL);
-        if (m_hBinEdit == NULL)
-            return FALSE;
-
         m_hToolBar = ToolBar_Create(hwnd);
         if (m_hToolBar == NULL)
             return FALSE;
 
-        m_hSrcEdit = CreateWindowExW(WS_EX_CLIENTEDGE,
-            L"EDIT", NULL, dwStyle, 0, 0, 0, 0, hwnd,
-            (HMENU)3, g_hInstance, NULL);
-        ShowWindow(m_hSrcEdit, FALSE);
+        DWORD style, exstyle;
+
+        style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
+        if (!m_splitter1.CreateDx(hwnd, 2, style))
+            return FALSE;
+
+        style = WS_CHILD | WS_VISIBLE | SWS_VERT | SWS_BOTTOMALIGN;
+        if (!m_splitter2.CreateDx(m_splitter1, 2, style))
+            return FALSE;
+
+        style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
+        if (!m_splitter3.CreateDx(m_splitter2, 1, style))
+            return FALSE;
+
+        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
+            TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
+            TVS_LINESATROOT | TVS_SHOWSELALWAYS;
+        g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
+            WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
+            (HMENU)1, g_hInstance, NULL);
+        if (g_hTreeView == NULL)
+            return FALSE;
+
+        TreeView_SetImageList(g_hTreeView, m_hImageList, TVSIL_NORMAL);
+
+        m_splitter1.SetPane(0, g_hTreeView);
+        m_splitter1.SetPane(1, m_splitter2);
+        m_splitter1.SetPaneExtent(0, TV_WIDTH);
+
+        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
+            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+        exstyle = WS_EX_CLIENTEDGE;
+        m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
+        m_splitter2.SetPane(0, m_splitter3);
+        m_splitter2.SetPane(1, m_hBinEdit);
+        m_splitter2.SetPaneExtent(1, BE_HEIGHT);
+
+        style = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
+            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+        exstyle = WS_EX_CLIENTEDGE;
+        m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
+        if (!m_hBmpView.CreateDx(m_splitter3, 4))
+            return FALSE;
+
+        m_splitter3.SetPane(0, m_hSrcEdit);
+        //m_splitter3.SetPane(1, m_hBmpView);
 
         LOGFONTW lf;
         GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
@@ -1386,8 +1405,6 @@ public:
         SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
         SetWindowFont(m_hBinEdit, m_hSmallFont, TRUE);
 
-        m_bmp_view.CreateDx(hwnd, 4);
-
         if (m_argc >= 2)
         {
             DoLoad(hwnd, m_Entries, m_targv[1]);
@@ -1400,17 +1417,16 @@ public:
 
     VOID HidePreview(HWND hwnd)
     {
-        m_bmp_view.DestroyBmp();
+        m_hBmpView.DestroyBmp();
 
         ::SetWindowTextW(m_hBinEdit, NULL);
-        ::ShowWindow(m_hBinEdit, SW_HIDE);
         Edit_SetModify(m_hBinEdit, FALSE);
 
         ::SetWindowTextW(m_hSrcEdit, NULL);
-        ::ShowWindow(m_hSrcEdit, SW_HIDE);
         Edit_SetModify(m_hSrcEdit, FALSE);
 
-        ::ShowWindow(m_bmp_view, SW_HIDE);
+        ShowBmpView(FALSE);
+
         ::ShowWindow(m_hToolBar, SW_HIDE);
 
         ::PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -2036,7 +2052,6 @@ public:
 
         std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -2125,7 +2140,7 @@ public:
 
     void OnDestroy(HWND hwnd)
     {
-        m_bmp_view.DestroyBmp();
+        m_hBmpView.DestroyBmp();
         DeleteObject(m_hNormalFont);
         DeleteObject(m_hSmallFont);
         ImageList_Destroy(m_hImageList);
@@ -2176,6 +2191,43 @@ public:
         DoLoad(hwnd, m_Entries, File);
     }
 
+    void ShowBmpView(BOOL bShow = TRUE)
+    {
+        if (bShow)
+        {
+            ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
+            m_splitter3.SetPaneCount(2);
+            m_splitter3.SetPane(0, m_hSrcEdit);
+            m_splitter3.SetPane(1, m_hBmpView);
+            m_splitter3.SetPaneExtent(1, 180);
+        }
+        else
+        {
+            ShowWindow(m_hBmpView, SW_HIDE);
+            m_splitter3.SetPaneCount(1);
+            m_splitter3.SetPane(0, m_hSrcEdit);
+        }
+        ::SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
+    }
+
+    void ShowBinEdit(BOOL bShow = TRUE)
+    {
+        if (bShow)
+        {
+            ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+            m_splitter2.SetPaneCount(2);
+            m_splitter2.SetPane(0, m_splitter3);
+            m_splitter2.SetPane(1, m_hBinEdit);
+            m_splitter2.SetPaneExtent(1, BE_HEIGHT);
+        }
+        else
+        {
+            ShowWindow(m_hBinEdit, SW_HIDE);
+            m_splitter2.SetPaneCount(1);
+            m_splitter2.SetPane(0, m_splitter3);
+        }
+    }
+
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
@@ -2183,72 +2235,17 @@ public:
         RECT ToolRect, ClientRect;
 
         GetClientRect(hwnd, &ClientRect);
-        cx = ClientRect.right - ClientRect.left;
-        cy = ClientRect.bottom - ClientRect.top ;
+        SIZE sizClient = SizeFromRectDx(&ClientRect);
 
         INT x = 0, y = 0;
         if (m_bInEdit && ::IsWindowVisible(m_hToolBar))
         {
             GetWindowRect(m_hToolBar, &ToolRect);
             y += ToolRect.bottom - ToolRect.top;
-            cy -= ToolRect.bottom - ToolRect.top;
+            sizClient.cy -= ToolRect.bottom - ToolRect.top;
         }
 
-        if (::IsWindowVisible(g_hTreeView))
-        {
-            MoveWindow(g_hTreeView, x, y, TV_WIDTH, cy, TRUE);
-            x += TV_WIDTH;
-            cx -= TV_WIDTH;
-        }
-
-        if (IsWindowVisible(m_hSrcEdit))
-        {
-            if (::IsWindowVisible(m_hToolBar))
-            {
-                if (::IsWindowVisible(m_hBinEdit))
-                {
-                    MoveWindow(m_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-                }
-                else
-                {
-                    MoveWindow(m_hSrcEdit, x, y, cx, cy, TRUE);
-                }
-            }
-            else if (IsWindowVisible(m_bmp_view))
-            {
-                if (::IsWindowVisible(m_hBinEdit))
-                {
-                    MoveWindow(m_hSrcEdit, x, y, SE_WIDTH, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(m_bmp_view, x + SE_WIDTH, y, cx - SE_WIDTH, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-                }
-                else
-                {
-                    MoveWindow(m_hSrcEdit, x, y, SE_WIDTH, cy, TRUE);
-                    MoveWindow(m_bmp_view, x + SE_WIDTH, y, cx - SE_WIDTH, cy, TRUE);
-                }
-            }
-            else
-            {
-                if (::IsWindowVisible(m_hBinEdit))
-                {
-                    MoveWindow(m_hSrcEdit, x, y, cx, cy - BE_HEIGHT, TRUE);
-                    MoveWindow(m_hBinEdit, x, y + cy - BE_HEIGHT, cx, BE_HEIGHT, TRUE);
-                }
-                else
-                {
-                    MoveWindow(m_hSrcEdit, x, y, cx, cy, TRUE);
-                }
-            }
-        }
-        else
-        {
-            if (::IsWindowVisible(m_hBinEdit))
-            {
-                MoveWindow(m_hBinEdit, x, y, cx, cy, TRUE);
-            }
-        }
+        MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
     }
 
     void OnInitMenu(HWND hwnd, HMENU hMenu)
@@ -2466,67 +2463,57 @@ public:
     void PreviewIcon(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
-        m_bmp_view = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
+        m_hBmpView = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
 
     void PreviewCursor(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
         HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-        m_bmp_view = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+        m_hBmpView = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
         std::wstring str = DumpCursorInfo(bm);
         DestroyCursor(hCursor);
 
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
-        m_bmp_view = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
+        m_hBmpView = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
-        m_bmp_view = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
-        assert(m_bmp_view);
+        m_hBmpView = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
+        assert(m_hBmpView);
 
         std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
         assert(str.size());
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
 
     void PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     {
-        m_bmp_view = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+        m_hBmpView = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
 
     void PreviewPNG(HWND hwnd, const ResEntry& Entry)
@@ -2536,23 +2523,20 @@ public:
         {
             BITMAP bm;
             GetObject(hbm, sizeof(bm), &bm);
-            m_bmp_view = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
-            if (!!m_bmp_view)
+            m_hBmpView = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
+            if (!!m_hBmpView)
             {
-                ii_fill(m_bmp_view.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
-                ii_draw(m_bmp_view.m_hBitmap, hbm, 0, 0);
+                ii_fill(m_hBmpView.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
+                ii_draw(m_hBmpView.m_hBitmap, hbm, 0, 0);
             }
             DeleteObject(hbm);
         }
 
-        std::wstring str = DumpBitmapInfo(m_bmp_view.m_hBitmap);
+        std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
 
-        ::SendMessageW(m_bmp_view, WM_COMMAND, 999, 0);
-        ::ShowWindow(m_bmp_view, SW_SHOWNOACTIVATE);
+        ShowBmpView(TRUE);
     }
-
 
     void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
@@ -2562,7 +2546,6 @@ public:
         {
             std::wstring str = accel.Dump(Entry.name);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2574,7 +2557,6 @@ public:
         {
             std::wstring str = mes.Dump();
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2587,7 +2569,6 @@ public:
         {
             std::wstring str = str_res.Dump(nTableID);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2597,7 +2578,6 @@ public:
         type.nNewLine = MNEWLINE_NOCHANGE;
         std::wstring str = mstr_from_bin(&Entry.data[0], Entry.data.size(), &type);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMenu(HWND hwnd, const ResEntry& Entry)
@@ -2608,7 +2588,6 @@ public:
         {
             std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2619,7 +2598,6 @@ public:
         {
             std::wstring str = ver_res.Dump(Entry.name);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2631,7 +2609,6 @@ public:
         {
             std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
-            ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
         }
     }
 
@@ -2651,7 +2628,6 @@ public:
 
         std::wstring str = str_res.Dump();
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
-        ::ShowWindow(m_hSrcEdit, (str.empty() ? SW_HIDE : SW_SHOWNOACTIVATE));
     }
 
     void PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
@@ -2664,10 +2640,6 @@ public:
 
         std::wstring str = DumpDataAsString(Entry.data);
         ::SetWindowTextW(m_hBinEdit, str.c_str());
-        if (str.empty())
-            ::ShowWindow(m_hBinEdit, SW_HIDE);
-        else
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
 
         if (Entry.type == RT_ICON)
         {
@@ -2735,18 +2707,23 @@ public:
         if (HIWORD(lParam) == I_LANG)
         {
             Preview(hwnd, Entry);
+            ShowBinEdit(TRUE);
         }
         else if (HIWORD(lParam) == I_STRING)
         {
             ::SetWindowTextW(m_hBinEdit, NULL);
-            ::ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewStringTable(hwnd, Entry);
+            ShowBinEdit(FALSE);
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
             ::SetWindowTextW(m_hBinEdit, NULL);
-            ::ShowWindow(m_hBinEdit, SW_HIDE);
             PreviewMessageTable(hwnd, Entry);
+            ShowBinEdit(FALSE);
+        }
+        else
+        {
+            ShowBinEdit(TRUE);
         }
 
         if (DoubleClick)
@@ -2772,10 +2749,6 @@ public:
             }
             ::ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
-            ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
-            ::ShowWindow(g_hTreeView, SW_HIDE);
-            ::ShowWindow(m_hBinEdit, SW_HIDE);
-
             m_bInEdit = TRUE;
         }
         else
@@ -2785,8 +2758,6 @@ public:
             ::SetFocus(g_hTreeView);
 
             ::ShowWindow(m_hToolBar, SW_HIDE);
-            ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
-            ::ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
 
             m_bInEdit = FALSE;
         }
