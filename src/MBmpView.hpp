@@ -48,9 +48,11 @@ public:
         }
     }
 
-    BOOL CreateDx(HWND hwndParent, INT CtrlID = 4)
+    BOOL CreateDx(HWND hwndParent, INT CtrlID = 4, BOOL bVisible = FALSE)
     {
-        DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
+        DWORD dwStyle = WS_CHILD | WS_HSCROLL | WS_VSCROLL;
+        if (bVisible)
+            dwStyle |= WS_VISIBLE;
         DWORD dwExStyle = WS_EX_CLIENTEDGE;
         return CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle,
             0, 0, 0, 0, (HMENU)CtrlID);
