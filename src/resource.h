@@ -41,6 +41,7 @@
 #define ID_ALIGNDOWN        138
 #define ID_ALIGNLEFT        139
 #define ID_ALIGNRIGHT       140
+#define ID_TEXTEDIT         141
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -133,5 +134,6 @@
 #define IDS_COMPILENOW      68
 #define IDS_RADWINDOW       69
 #define IDS_ENTERCLASS      70
+#define IDS_TEXTEDIT        71
 
 #endif  // ndef RESOURCE_H_

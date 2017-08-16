@@ -19,7 +19,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     }
     POPUP "&Edit"
     {
-        MENUITEM "Text Edit...\tEnter", ID_EDIT
+        MENUITEM "Text Edit...\tEnter", ID_TEXTEDIT
         MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
@@ -51,7 +51,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "Popup"
     {
-        MENUITEM "Text Edit...\tEnter", ID_EDIT
+        MENUITEM "Text Edit...\tEnter", ID_TEXTEDIT
         MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
@@ -177,6 +177,7 @@ STRINGTABLE
     IDS_COMPILENOW, "Data has been changed. Compile now?"
     IDS_RADWINDOW, "Edit Dialog"
     IDS_ENTERCLASS, "Please enter the window class name."
+    IDS_TEXTEDIT, "Text Edit (Ctrl+T)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

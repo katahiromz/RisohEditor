@@ -19,7 +19,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "テキスト編集...\tEnter", ID_EDIT
+        MENUITEM "テキスト編集...\tEnter", ID_TEXTEDIT
         MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
@@ -51,7 +51,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ポップアップ"
     {
-        MENUITEM "テキスト編集...\tEnter", ID_EDIT
+        MENUITEM "テキスト編集...\tEnter", ID_TEXTEDIT
         MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
@@ -177,6 +177,7 @@ STRINGTABLE
     IDS_COMPILENOW, "データが変更されています。コンパイルしますか？"
     IDS_RADWINDOW, "ダイアログの編集"
     IDS_ENTERCLASS, "ウィンドウ クラス名を入力して下さい。"
+    IDS_TEXTEDIT, "テキスト編集 (Ctrl+T)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
