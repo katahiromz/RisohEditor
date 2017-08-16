@@ -20,6 +20,7 @@ HEADERS = \
 	src\MCtrlPropDlg.hpp \
 	src\MDlgPropDlg.hpp \
 	src\MEditAccelDlg.hpp \
+	src\MEditCtrl.hpp \
 	src\MEditMenuDlg.hpp \
 	src\MenuRes.hpp \
 	src\MessageRes.hpp \
