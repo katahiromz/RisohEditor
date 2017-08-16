@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    45     /* Version 45 */
+#define MZC4_MWINDOWBASE_HPP_    47     /* Version 47 */
 
 class MWindowBase;
 class MDialogBase;
@@ -75,14 +75,6 @@ class MDialogBase;
     #else
         #define MString     MStringA
     #endif
-#endif
-
-// FootmarkDx and FootmarkThisDx
-#ifndef FootmarkDx
-    #define FootmarkDx()
-#endif
-#ifndef FootmarkThisDx
-    #define FootmarkThisDx()
 #endif
 
 // NOTE: Old Digital Mars C/C++ Compiler doesn't define INT_PTR type likely.
@@ -233,8 +225,8 @@ public:
                         INT cx = CW_USEDEFAULT, INT cy = CW_USEDEFAULT,
                         HMENU hMenu = NULL);
     BOOL CreateAsChildDx(HWND hwndParent, LPCTSTR pszText,
-                         DWORD Style = WS_CHILD, DWORD ExStyle = 0,
-                         INT nCtrlID = -1,
+                         DWORD Style = WS_CHILD | WS_VISIBLE,
+                         DWORD ExStyle = 0, INT nCtrlID = -1,
                          INT x = CW_USEDEFAULT, INT y = CW_USEDEFAULT,
                          INT cx = CW_USEDEFAULT, INT cy = CW_USEDEFAULT);
 
@@ -807,7 +799,7 @@ inline BOOL MWindowBase::CreateWindowDx(
 inline BOOL
 MWindowBase::CreateAsChildDx(
     HWND hwndParent, LPCTSTR pszText,
-    DWORD Style/* = WS_CHILD*/,
+    DWORD Style/* = WS_CHILD | WS_VISIBLE*/,
     DWORD ExStyle/* = 0*/, INT nCtrlID/* = -1*/,
     INT x/* = CW_USEDEFAULT*/, INT y/* = CW_USEDEFAULT*/,
     INT cx/* = CW_USEDEFAULT*/, INT cy/* = CW_USEDEFAULT*/)
