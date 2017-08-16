@@ -1205,7 +1205,6 @@ public:
     HINSTANCE   m_hInst;        // the instance handle
     HICON       m_hIcon;        // the icon handle
     HACCEL      m_hAccel;       // the accelerator handle
-    HMENU       m_hMenu;
     HIMAGELIST  m_hImageList;
     HICON       m_hFileIcon;
     HICON       m_hFolderIcon;
@@ -1233,7 +1232,6 @@ public:
         m_hIcon(NULL),
         m_hAccel(NULL)
     {
-        m_hMenu = NULL;
         m_hImageList = NULL;
         m_hFileIcon = NULL;
         m_hFolderIcon = NULL;
@@ -1394,8 +1392,6 @@ public:
         {
             DoLoad(hwnd, m_Entries, m_targv[1]);
         }
-
-        m_hMenu = GetMenu(hwnd);
 
         DragAcceptFiles(hwnd, TRUE);
         SetFocus(g_hTreeView);
@@ -2779,7 +2775,6 @@ public:
             ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
             ::ShowWindow(g_hTreeView, SW_HIDE);
             ::ShowWindow(m_hBinEdit, SW_HIDE);
-            ::SetMenu(hwnd, NULL);
 
             m_bInEdit = TRUE;
         }
@@ -2792,7 +2787,6 @@ public:
             ::ShowWindow(m_hToolBar, SW_HIDE);
             ::ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
             ::ShowWindow(g_hTreeView, SW_SHOWNOACTIVATE);
-            ::SetMenu(hwnd, m_hMenu);
 
             m_bInEdit = FALSE;
         }
