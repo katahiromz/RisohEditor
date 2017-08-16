@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSPLITTERWND_HPP_
-#define MZC4_MSPLITTERWND_HPP_      2   /* Version 2 */
+#define MZC4_MSPLITTERWND_HPP_      4   /* Version 4 */
 
 class MSplitterWnd;
 
@@ -210,6 +210,7 @@ public:
             xy += cxyPane;
         }
         m_vecPanes[m_nPaneCount].xyPos = cxy;
+        PostMessageDx(WM_SIZE);
     }
 
     void UpdatePanes()
@@ -242,6 +243,8 @@ public:
         HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
         HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
         HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
+        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         case WM_CAPTURECHANGED:
             m_iDraggingBorder = -1;
             return 0;
@@ -257,6 +260,16 @@ public:
 
     virtual VOID ModifyWndClassDx(WNDCLASSEX& wcx)
     {
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        FORWARD_WM_COMMAND(GetParent(hwnd), id, hwndCtl, codeNotify, PostMessage);
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+    {
+        return FORWARD_WM_NOTIFY(GetParent(hwnd), idFrom, pnmhdr, SendMessage);
     }
 
 protected:
