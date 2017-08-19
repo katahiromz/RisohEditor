@@ -19,7 +19,6 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "テキスト編集...\tCtrl+T", ID_TEXTEDIT
         MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
@@ -51,7 +50,6 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ポップアップ"
     {
-        MENUITEM "テキスト編集...\tEnter", ID_TEXTEDIT
         MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "アイコンを追加...", ID_ADDICON
@@ -83,7 +81,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "コントロールの削除(&D)", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "インデックス(&I)"
-        BEGIN
+        {
             MENUITEM "先頭へ(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "減らす(&M)", ID_CTRLINDEXMINUS
@@ -92,14 +90,14 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
             MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "表示の切り替え(&S)", ID_SHOWHIDEINDEX
-        END
+        }
         POPUP "位置そろえ(&A)"
-        BEGIN
+        {
             MENUITEM "上そろえ(&T)", ID_TOPALIGN
             MENUITEM "下そろえ(&B)", ID_BOTTOMALIGN
             MENUITEM "左そろえ(&L)", ID_LEFTALIGN
             MENUITEM "右そろえ(&R)", ID_RIGHTALIGN
-        END
+        }
         MENUITEM SEPARATOR
         MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP

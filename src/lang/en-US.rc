@@ -19,7 +19,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     }
     POPUP "&Edit"
     {
-        MENUITEM "Text Edit...\tCtrl+T", ID_TEXTEDIT
         MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
@@ -51,8 +50,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "Popup"
     {
-        MENUITEM "Text Edit...\tEnter", ID_TEXTEDIT
-        MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Edit by GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
@@ -159,7 +157,7 @@ STRINGTABLE
     IDS_CANNOTSTARTUP, "Unable to start up the resource compiler."
     IDS_RESMISMATCH, "Resource was mismatched."
     IDS_SAMPLETEXT, "This is a sample."
-    IDS_GUIEDIT, "GUI Edit (Ctrl+G)"
+    IDS_GUIEDIT, "Edit by GUI (Ctrl+G)"
     IDS_ALREADYEXISTS, "Already exists."
     IDS_KEY, "Key"
     IDS_FLAGS, "Flags"
@@ -177,7 +175,7 @@ STRINGTABLE
     IDS_COMPILENOW, "Data has been changed. Compile now?"
     IDS_RADWINDOW, "Edit Dialog"
     IDS_ENTERCLASS, "Please enter the window class name."
-    IDS_TEXTEDIT, "Text Edit (Ctrl+T)"
+    IDS_TEXTEDIT, "Edit by Text (Ctrl+T)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
