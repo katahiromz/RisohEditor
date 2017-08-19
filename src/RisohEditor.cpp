@@ -1888,7 +1888,10 @@ public:
     {
         if (pnmhdr->code == NM_DBLCLK)
         {
-            OnEdit(hwnd);
+            if (pnmhdr->hwndFrom == g_hTreeView)
+            {
+                OnEdit(hwnd);
+            }
         }
         else if (pnmhdr->code == TVN_SELCHANGING)
         {
@@ -1918,8 +1921,7 @@ public:
 
     void OnCancelEdit(HWND hwnd)
     {
-        if (!CompileIfNecessary(hwnd))
-            return;
+        Edit_SetModify(m_hSrcEdit, FALSE);
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
         SelectTV(hwnd, lParam, FALSE);
@@ -1939,9 +1941,11 @@ public:
         WideText.resize(cchText);
         ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
+        Edit_SetModify(m_hSrcEdit, FALSE);
         if (DoCompileParts(hwnd, WideText))
         {
             TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+
             LPARAM lParam = TV_GetParam(g_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
         }
@@ -2079,6 +2083,12 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
+        {
+            ToolBar_Update(m_hToolBar, 2);
+            return;
+        }
+
         switch (id)
         {
         case ID_NEW:
@@ -2664,75 +2674,75 @@ public:
         std::wstring str = DumpDataAsString(Entry.data);
         ::SetWindowTextW(m_hBinEdit, str.c_str());
 
-        BOOL ret;
+        BOOL bEditable;
         if (Entry.type == RT_ICON)
         {
             PreviewIcon(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_CURSOR)
         {
             PreviewCursor(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_GROUP_ICON)
         {
             PreviewGroupIcon(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_GROUP_CURSOR)
         {
             PreviewGroupCursor(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_BITMAP)
         {
             PreviewBitmap(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_ACCELERATOR)
         {
             PreviewAccel(hwnd, Entry);
-            ret = TRUE;
+            bEditable = TRUE;
         }
         else if (Entry.type == RT_STRING)
         {
             PreviewString(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_MENU)
         {
             PreviewMenu(hwnd, Entry);
-            ret = TRUE;
+            bEditable = TRUE;
         }
         else if (Entry.type == RT_DIALOG)
         {
             PreviewDialog(hwnd, Entry);
-            ret = TRUE;
+            bEditable = TRUE;
         }
         else if (Entry.type == RT_MESSAGETABLE)
         {
             PreviewMessage(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
         {
             PreviewHtml(hwnd, Entry);
-            ret = TRUE;
+            bEditable = TRUE;
         }
         else if (Entry.type == RT_VERSION)
         {
             PreviewVersion(hwnd, Entry);
-            ret = TRUE;
+            bEditable = TRUE;
         }
         else if (Entry.type == L"PNG")
         {
             PreviewPNG(hwnd, Entry);
-            ret = FALSE;
+            bEditable = FALSE;
         }
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
-        return ret;
+        return bEditable;
     }
 
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
