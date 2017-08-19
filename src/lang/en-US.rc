@@ -95,10 +95,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         END
         POPUP "&Alignment"
         BEGIN
-            MENUITEM "Align &Up", ID_ALIGNUP
-            MENUITEM "Align &Down", ID_ALIGNDOWN
-            MENUITEM "Align &Left", ID_ALIGNLEFT
-            MENUITEM "Align &Right", ID_ALIGNRIGHT
+            MENUITEM "&Top-Align", ID_TOPALIGN
+            MENUITEM "&Bottom-Align", ID_BOTTOMALIGN
+            MENUITEM "&Left-Align", ID_LEFTALIGN
+            MENUITEM "&Right-Align", ID_RIGHTALIGN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Properties for Control...", ID_CTRLPROP

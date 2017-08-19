@@ -802,28 +802,28 @@ struct MRadWindow : MWindowBase
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
         }
         else
         {
             ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
             ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_ALIGNUP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_ALIGNDOWN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_ALIGNLEFT, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_ALIGNRIGHT, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_ENABLED);
         }
 
         if (CanIndexTop())
@@ -1050,22 +1050,22 @@ struct MRadWindow : MWindowBase
         case ID_SHOWHIDEINDEX:
             OnShowHideIndex(hwnd);
             break;
-        case ID_ALIGNUP:
-            OnAlignUp(hwnd);
+        case ID_TOPALIGN:
+            OnTopAlign(hwnd);
             break;
-        case ID_ALIGNDOWN:
-            OnAlignDown(hwnd);
+        case ID_BOTTOMALIGN:
+            OnBottomAlign(hwnd);
             break;
-        case ID_ALIGNLEFT:
-            OnAlignLeft(hwnd);
+        case ID_LEFTALIGN:
+            OnLeftAlign(hwnd);
             break;
-        case ID_ALIGNRIGHT:
-            OnAlignRight(hwnd);
+        case ID_RIGHTALIGN:
+            OnRightAlign(hwnd);
             break;
         }
     }
 
-    void OnAlignUp(HWND hwnd)
+    void OnTopAlign(HWND hwnd)
     {
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.size() < 2)
@@ -1093,7 +1093,7 @@ struct MRadWindow : MWindowBase
         }
     }
 
-    void OnAlignDown(HWND hwnd)
+    void OnBottomAlign(HWND hwnd)
     {
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.size() < 2)
@@ -1122,7 +1122,7 @@ struct MRadWindow : MWindowBase
         }
     }
 
-    void OnAlignLeft(HWND hwnd)
+    void OnLeftAlign(HWND hwnd)
     {
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.size() < 2)
@@ -1150,7 +1150,7 @@ struct MRadWindow : MWindowBase
         }
     }
 
-    void OnAlignRight(HWND hwnd)
+    void OnRightAlign(HWND hwnd)
     {
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.size() < 2)

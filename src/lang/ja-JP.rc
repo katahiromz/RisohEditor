@@ -95,10 +95,10 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         END
         POPUP "位置そろえ(&A)"
         BEGIN
-            MENUITEM "上そろえ(&U)", ID_ALIGNUP
-            MENUITEM "下そろえ(&D)", ID_ALIGNDOWN
-            MENUITEM "左そろえ(&L)", ID_ALIGNLEFT
-            MENUITEM "右そろえ(&R)", ID_ALIGNRIGHT
+            MENUITEM "上そろえ(&T)", ID_TOPALIGN
+            MENUITEM "下そろえ(&B)", ID_BOTTOMALIGN
+            MENUITEM "左そろえ(&L)", ID_LEFTALIGN
+            MENUITEM "右そろえ(&R)", ID_RIGHTALIGN
         END
         MENUITEM SEPARATOR
         MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
