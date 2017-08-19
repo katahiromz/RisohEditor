@@ -176,6 +176,9 @@ STRINGTABLE
     IDS_RADWINDOW, "ダイアログの編集"
     IDS_ENTERCLASS, "ウィンドウ クラス名を入力して下さい。"
     IDS_TEXTEDIT, "テキスト編集 (Ctrl+T)"
+    IDS_CURSORINFO, "イメージ#%u: 幅 %u, 高さ %u, ビットの深さ %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
+    IDS_IMAGECOUNT, "イメージ数: %u\r\n"
+    IDS_ICONINFO, "イメージ#%u: 幅 %u, 高さ %u, ビットの深さ %u, ID %u\r\n"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

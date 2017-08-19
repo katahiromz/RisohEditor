@@ -135,5 +135,8 @@
 #define IDS_RADWINDOW       69
 #define IDS_ENTERCLASS      70
 #define IDS_TEXTEDIT        71
+#define IDS_CURSORINFO      72
+#define IDS_IMAGECOUNT      73
+#define IDS_ICONINFO        74
 
 #endif  // ndef RESOURCE_H_

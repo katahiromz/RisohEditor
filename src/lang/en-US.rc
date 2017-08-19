@@ -176,6 +176,9 @@ STRINGTABLE
     IDS_RADWINDOW, "Edit Dialog"
     IDS_ENTERCLASS, "Please enter the window class name."
     IDS_TEXTEDIT, "Edit by Text (Ctrl+T)"
+    IDS_CURSORINFO, "Image #%u: Width %u, Height %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
+    IDS_IMAGECOUNT, "ImageCount: %u\r\n"
+    IDS_ICONINFO, "Image #%u: Width %u, Height %u, BitCount %u, ID %u\r\n"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -926,7 +926,7 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
         return ret;
     }
 
-    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
+    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
     ret += sz;
     ret += L"-------\r\n";
 
@@ -944,8 +944,8 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        wsprintfW(sz, L"Image #%u: Width %u, Height %u, BitCount %u, ID %u\r\n",
-                      i, Width, Height, pEntries[i].wBitCount, nID);
+        wsprintfW(sz, LoadStringDx(IDS_ICONINFO),
+                  i, Width, Height, pEntries[i].wBitCount, nID);
         ret += sz;
     }
 
@@ -968,7 +968,7 @@ std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& d
         return ret;
     }
 
-    wsprintfW(sz, L"ImageCount: %u\r\n", dir.idCount);
+    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
     ret += sz;
     ret += L"-------\r\n";
 
@@ -1002,9 +1002,8 @@ std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& d
         if (Height == 0)
             Height = 256;
 
-        wsprintfW(sz,
-                      L"Image #%u: Width %u, Height %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n",
-                      i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
+        wsprintfW(sz, LoadStringDx(IDS_CURSORINFO),
+                  i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
         ret += sz;
     }
 
