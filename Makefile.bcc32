@@ -1,7 +1,7 @@
 DOTOBJ = .obj
 DOTEXE = .exe
 
-CXXFLAGS = -W -w-8057 -v -y -D_DEBUG
+CXXFLAGS = -W -w-8057 -v -y -D_DEBUG -DUNICODE -D_UNICODE
 
 HEADERS = \
 	src\AccelRes.hpp \
@@ -25,6 +25,7 @@ HEADERS = \
 	src\MenuRes.hpp \
 	src\MessageRes.hpp \
 	src\MFile.hpp \
+	src\MIndexLabels.hpp \
 	src\MProcessMaker.hpp \
 	src\MRadWindow.hpp \
 	src\MReplaceBinDlg.hpp \
