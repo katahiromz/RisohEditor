@@ -21,6 +21,9 @@ public:
         DWORD dwStyle;
         switch (uMsg)
         {
+        case WM_INITDIALOG:
+            CenterWindowDx();
+            return TRUE;
         case WM_LBUTTONDOWN:
             dwStyle = GetWindowStyle(hwnd);
             if (!(dwStyle & WS_SYSMENU))
