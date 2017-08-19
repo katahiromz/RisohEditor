@@ -674,6 +674,21 @@ TBBUTTON g_buttons2[] =
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
 };
 
+TBBUTTON g_buttons3[] =
+{
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+};
+
+TBBUTTON g_buttons4[] =
+{
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+};
+
+TBBUTTON g_buttons5[] =
+{
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+};
+
 void ToolBar_Update(HWND hwnd, INT iType)
 {
     while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
@@ -689,6 +704,15 @@ void ToolBar_Update(HWND hwnd, INT iType)
         break;
     case 2:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
+        break;
+    case 3:
+        //SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
+        break;
+    case 4:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
+        break;
+    case 5:
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons5), (LPARAM)g_buttons5);
         break;
     }
 }
@@ -722,6 +746,9 @@ HWND ToolBar_Create(HWND hwndParent)
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
+    //ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
 
     ToolBar_Update(hwndTB, 0);
     return hwndTB;
@@ -1204,7 +1231,6 @@ public:
     HIMAGELIST  m_hImageList;
     HICON       m_hFileIcon;
     HICON       m_hFolderIcon;
-    BOOL        m_bInEdit;
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
     HFONT       m_hSmallFont;
@@ -1233,7 +1259,6 @@ public:
         m_hImageList(NULL),
         m_hFileIcon(NULL),
         m_hFolderIcon(NULL),
-        m_bInEdit(FALSE),
         m_hNormalFont(NULL),
         m_hLargeFont(NULL),
         m_hSmallFont(NULL),
@@ -1427,11 +1452,7 @@ public:
 
         ShowBmpView(FALSE);
 
-        ::ShowWindow(m_hToolBar, SW_HIDE);
-
-        ::PostMessageW(hwnd, WM_SIZE, 0, 0);
-
-        m_bInEdit = FALSE;
+        ::PostMessageDx(WM_SIZE);
     }
 
     BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
@@ -1462,7 +1483,7 @@ public:
 
     void OnDeleteRes(HWND hwnd)
     {
-        if (m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return;
 
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
@@ -1621,7 +1642,7 @@ public:
 
     void OnSaveAs(HWND hwnd)
     {
-        if (m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return;
 
         WCHAR File[MAX_PATH];
@@ -1730,7 +1751,7 @@ public:
 
     void OnOpen(HWND hwnd)
     {
-        if (m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return;
 
         WCHAR File[MAX_PATH];
@@ -1799,7 +1820,7 @@ public:
 
     void OnImport(HWND hwnd)
     {
-        if (m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return;
 
         WCHAR File[MAX_PATH] = TEXT("");
@@ -1869,6 +1890,10 @@ public:
         {
             OnEdit(hwnd);
         }
+        else if (pnmhdr->code == TVN_SELCHANGING)
+        {
+            return !CompileIfNecessary(hwnd);
+        }
         else if (pnmhdr->code == TVN_SELCHANGED)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
@@ -1893,7 +1918,7 @@ public:
 
     void OnCancelEdit(HWND hwnd)
     {
-        if (!m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return;
 
         LPARAM lParam = TV_GetParam(g_hTreeView);
@@ -1956,7 +1981,6 @@ public:
                     accel_res.Update();
                     Entry.data = accel_res.data();
                     SelectTV(hwnd, lParam, FALSE);
-                    return;
                 }
             }
         }
@@ -2023,13 +2047,12 @@ public:
                 }
             }
         }
+
+        Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
 
     void OnNew(HWND hwnd)
     {
-        if (m_bInEdit)
-            return;
-
         DoSetFile(hwnd, NULL);
         m_Entries.clear();
         TV_RefreshInfo(g_hTreeView, m_Entries);
@@ -2238,7 +2261,7 @@ public:
         SIZE sizClient = SizeFromRectDx(&ClientRect);
 
         INT x = 0, y = 0;
-        if (m_bInEdit && ::IsWindowVisible(m_hToolBar))
+        if (::IsWindowVisible(m_hToolBar))
         {
             GetWindowRect(m_hToolBar, &ToolRect);
             y += ToolRect.bottom - ToolRect.top;
@@ -2251,7 +2274,7 @@ public:
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
         HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
-        if (hItem == NULL || m_bInEdit)
+        if (hItem == NULL)
         {
             EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -2575,7 +2598,7 @@ public:
     void PreviewHtml(HWND hwnd, const ResEntry& Entry)
     {
         MTextType type;
-        type.nNewLine = MNEWLINE_NOCHANGE;
+        type.nNewLine = MNEWLINE_CRLF;
         std::wstring str = mstr_from_bin(&Entry.data[0], Entry.data.size(), &type);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
@@ -2634,67 +2657,82 @@ public:
     {
     }
 
-    void Preview(HWND hwnd, const ResEntry& Entry)
+    BOOL Preview(HWND hwnd, const ResEntry& Entry)
     {
         HidePreview(hwnd);
 
         std::wstring str = DumpDataAsString(Entry.data);
         ::SetWindowTextW(m_hBinEdit, str.c_str());
 
+        BOOL ret;
         if (Entry.type == RT_ICON)
         {
             PreviewIcon(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_CURSOR)
         {
             PreviewCursor(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_GROUP_ICON)
         {
             PreviewGroupIcon(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_GROUP_CURSOR)
         {
             PreviewGroupCursor(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_BITMAP)
         {
             PreviewBitmap(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_ACCELERATOR)
         {
             PreviewAccel(hwnd, Entry);
+            ret = TRUE;
         }
         else if (Entry.type == RT_STRING)
         {
             PreviewString(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_MENU)
         {
             PreviewMenu(hwnd, Entry);
+            ret = TRUE;
         }
         else if (Entry.type == RT_DIALOG)
         {
             PreviewDialog(hwnd, Entry);
+            ret = TRUE;
         }
         else if (Entry.type == RT_MESSAGETABLE)
         {
             PreviewMessage(hwnd, Entry);
+            ret = FALSE;
         }
         else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
         {
             PreviewHtml(hwnd, Entry);
+            ret = TRUE;
         }
         else if (Entry.type == RT_VERSION)
         {
             PreviewVersion(hwnd, Entry);
+            ret = TRUE;
         }
         else if (Entry.type == L"PNG")
         {
             PreviewPNG(hwnd, Entry);
+            ret = FALSE;
         }
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);
+        return ret;
     }
 
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
@@ -2704,9 +2742,10 @@ public:
         WORD i = LOWORD(lParam);
         ResEntry& Entry = m_Entries[i];
 
+        BOOL bEditable, bSelectNone = FALSE;
         if (HIWORD(lParam) == I_LANG)
         {
-            Preview(hwnd, Entry);
+            bEditable = Preview(hwnd, Entry);
             ShowBinEdit(TRUE);
         }
         else if (HIWORD(lParam) == I_STRING)
@@ -2714,55 +2753,61 @@ public:
             ::SetWindowTextW(m_hBinEdit, NULL);
             PreviewStringTable(hwnd, Entry);
             ShowBinEdit(FALSE);
+            bEditable = TRUE;
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
             ::SetWindowTextW(m_hBinEdit, NULL);
             PreviewMessageTable(hwnd, Entry);
             ShowBinEdit(FALSE);
+            bEditable = FALSE;
         }
         else
         {
-            ShowBinEdit(TRUE);
+            ShowBinEdit(FALSE);
+            bEditable = FALSE;
+            bSelectNone = TRUE;
         }
 
-        if (DoubleClick)
+        if (bEditable)
         {
-            SetWindowFont(m_hSrcEdit, m_hLargeFont, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
-            ::SetFocus(m_hSrcEdit);
-
-            if (Res_CanGuiEdit(Entry.type))
+            if (DoubleClick)
             {
-                if (Res_IsTestable(Entry.type))
-                {
-                    ToolBar_Update(m_hToolBar, 2);
-                }
-                else
-                {
-                    ToolBar_Update(m_hToolBar, 1);
-                }
+                ::SetFocus(m_hSrcEdit);
             }
             else
             {
-                ToolBar_Update(m_hToolBar, 0);
+                ::SetFocus(g_hTreeView);
             }
-            ::ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
-            m_bInEdit = TRUE;
+            if (Edit_GetModify(m_hSrcEdit))
+            {
+                ToolBar_Update(m_hToolBar, 2);
+            }
+            else
+            {
+                if (Res_IsTestable(Entry.type))
+                {
+                    ToolBar_Update(m_hToolBar, 0);
+                }
+                else
+                {
+                    ToolBar_Update(m_hToolBar, 4);
+                }
+            }
+            ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
         }
         else
         {
-            SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, TRUE);
             ::SetFocus(g_hTreeView);
 
-            ::ShowWindow(m_hToolBar, SW_HIDE);
-
-            m_bInEdit = FALSE;
+            ToolBar_Update(m_hToolBar, 3);
+            ShowWindow(m_hToolBar, SW_HIDE);
         }
 
-        PostMessageW(hwnd, WM_SIZE, 0, 0);
+        PostMessageDx(WM_SIZE);
     }
 
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam)
@@ -3154,7 +3199,6 @@ public:
 
         TV_RefreshInfo(g_hTreeView, Entries);
         DoSetFile(hwnd, Path);
-        m_bInEdit = FALSE;
 
         return TRUE;
     }
@@ -3235,6 +3279,9 @@ public:
 
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
     {
+        if (!CompileIfNecessary(hwnd))
+            return FALSE;
+
         if (DoExtractRes(hwnd, ExeFile, m_Entries))
         {
             Res_Optimize(m_Entries);
@@ -3246,7 +3293,7 @@ public:
 
     BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
     {
-        if (m_bInEdit)
+        if (!CompileIfNecessary(hwnd))
             return TRUE;
 
         DWORD dwBinType;
