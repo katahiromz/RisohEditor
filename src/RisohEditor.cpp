@@ -1452,7 +1452,7 @@ public:
 
         ShowBmpView(FALSE);
 
-        ::PostMessageDx(WM_SIZE);
+        PostMessageDx(WM_SIZE);
     }
 
     BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
