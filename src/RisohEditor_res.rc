@@ -5,9 +5,6 @@
 // UTF-8
 #pragma code_page(65001)
 
-// NOTE: If you hate the Japanese, #define NO_JAPS_ALLOWED here. You are welcome.
-//#define NO_JAPS_ALLOWED
-
 1 ICON "res\\RisohEditor.ico"
 100 ICON "res\\file.ico"
 101 ICON "res\\folder.ico"
@@ -31,7 +28,6 @@ PRODUCTVERSION  0, 0, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
-#ifndef NO_JAPS_ALLOWED
     // Japanese
     BLOCK "StringFileInfo"
     {
@@ -45,7 +41,6 @@ FILETYPE        VFT_APP
             VALUE "ProductVersion", "0.0\0"
         }
     }
-#endif  // ndef NO_JAPS_ALLOWED
     // English (U.S.)
     BLOCK "StringFileInfo"
     {
@@ -61,15 +56,15 @@ FILETYPE        VFT_APP
     }
     BLOCK "VarFileInfo"
     {
-#ifdef NO_JAPS_ALLOWED
+#if 1
+        // Japanese
         VALUE "Translation", 0x0409, 0x04E4
 #else
+        // English (U.S.)
         VALUE "Translation", 0x0411, 0x03A4
 #endif
     }
 }
 
 #include "lang\\en-US.rc"
-#ifndef NO_JAPS_ALLOWED
-    #include "lang\\ja-JP.rc"
-#endif
+#include "lang\\ja-JP.rc"
