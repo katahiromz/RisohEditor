@@ -2795,16 +2795,17 @@ public:
             {
                 ToolBar_Update(m_hToolBar, 2);
             }
+            else if (Res_IsTestable(Entry.type))
+            {
+                ToolBar_Update(m_hToolBar, 0);
+            }
+            else if (Res_CanGuiEdit(Entry.type))
+            {
+                ToolBar_Update(m_hToolBar, 4);
+            }
             else
             {
-                if (Res_IsTestable(Entry.type))
-                {
-                    ToolBar_Update(m_hToolBar, 0);
-                }
-                else
-                {
-                    ToolBar_Update(m_hToolBar, 4);
-                }
+                ToolBar_Update(m_hToolBar, 3);
             }
         }
         else

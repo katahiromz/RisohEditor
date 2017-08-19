@@ -1395,7 +1395,7 @@ Res_CanGuiEdit(const ID_OR_STRING& type)
 {
     return type == RT_DIALOG || type == RT_MENU ||
            type == RT_STRING || type == RT_MESSAGETABLE ||
-           type == RT_ACCELERATOR || type == RT_VERSION;
+           type == RT_ACCELERATOR;
 }
 
 inline BOOL
