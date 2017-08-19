@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSPLITTERWND_HPP_
-#define MZC4_MSPLITTERWND_HPP_      5   /* Version 5 */
+#define MZC4_MSPLITTERWND_HPP_      6   /* Version 6 */
 
 class MSplitterWnd;
 
@@ -119,6 +119,12 @@ public:
         }
 
         m_vecPanes[nIndex].xyPos = nPos;
+    }
+
+    INT GetPaneExtent(INT nIndex) const
+    {
+        assert(0 <= nIndex && nIndex < m_nPaneCount);
+        return m_vecPanes[nIndex + 1].xyPos - m_vecPanes[nIndex].xyPos;
     }
 
     VOID SetPaneExtent(INT nIndex, INT cxy, BOOL bUpdate = TRUE)
@@ -367,11 +373,11 @@ protected:
             INT dxy = cxy - m_vecPanes[m_nPaneCount].xyPos;
             for (INT i = 1; i < m_nPaneCount; ++i)
             {
-                SetPanePos(i, m_vecPanes[i].xyPos + dxy);
+                SetPanePos(i, m_vecPanes[i].xyPos + dxy, FALSE);
             }
         }
 
-        SetPanePos(m_nPaneCount, cxy);
+        SetPanePos(m_nPaneCount, cxy, FALSE);
         UpdatePanes();
     }
 
