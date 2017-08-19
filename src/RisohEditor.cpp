@@ -735,7 +735,7 @@ HWND ToolBar_Create(HWND hwndParent)
 {
     HWND hwndTB;
     hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | /*WS_VISIBLE | */ CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
         0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
     if (hwndTB == NULL)
         return hwndTB;
@@ -750,7 +750,7 @@ HWND ToolBar_Create(HWND hwndParent)
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
 
-    ToolBar_Update(hwndTB, 0);
+    ToolBar_Update(hwndTB, 3);
     return hwndTB;
 }
 
@@ -2806,7 +2806,6 @@ public:
                     ToolBar_Update(m_hToolBar, 4);
                 }
             }
-            ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
         }
         else
         {
@@ -2814,8 +2813,8 @@ public:
             ::SetFocus(g_hTreeView);
 
             ToolBar_Update(m_hToolBar, 3);
-            ShowWindow(m_hToolBar, SW_HIDE);
         }
+        ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
         PostMessageDx(WM_SIZE);
     }
