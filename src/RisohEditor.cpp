@@ -23,8 +23,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // global variables
 
-HINSTANCE   g_hInstance = NULL;
-
 ConstantsDB g_ConstantsDB;
 
 HWND        g_hTreeView = NULL;
@@ -730,7 +728,7 @@ HWND ToolBar_Create(HWND hwndParent)
     HWND hwndTB;
     hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
         WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
-        0, 0, 0, 0, hwndParent, (HMENU)1, g_hInstance, NULL);
+        0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
     if (hwndTB == NULL)
         return hwndTB;
 
@@ -1336,7 +1334,6 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
-        g_hInstance = m_hInst;
         InitCommonControls();
 
         LoadLangInfo();
@@ -1376,7 +1373,7 @@ public:
             TVS_LINESATROOT | TVS_SHOWSELALWAYS;
         g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
             WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
-            (HMENU)1, g_hInstance, NULL);
+            (HMENU)1, m_hInst, NULL);
         if (g_hTreeView == NULL)
             return FALSE;
 
@@ -1805,7 +1802,7 @@ public:
         ZeroMemory(&Params, sizeof(Params));
         Params.cbSize = sizeof(Params);
         Params.hwndOwner = hwnd;
-        Params.hInstance = g_hInstance;
+        Params.hInstance = m_hInst;
         Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
         Params.lpszCaption = LoadStringDx(IDS_APPNAME);
         Params.dwStyle = MB_OK | MB_USERICON;
@@ -2467,7 +2464,7 @@ public:
 
         TreeView_SelectItem(hwndContext, hItem);
 
-        HMENU hMenu = LoadMenuW(g_hInstance, MAKEINTRESOURCEW(2));
+        HMENU hMenu = LoadMenuW(m_hInst, MAKEINTRESOURCEW(2));
         OnInitMenu(hwnd, hMenu);
         HMENU hSubMenu = ::GetSubMenu(hMenu, 0);
         if (hMenu == NULL || hSubMenu == NULL)
