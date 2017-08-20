@@ -12,7 +12,7 @@
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
-#define TV_WIDTH    250     // default g_hTreeView width
+#define TV_WIDTH    250     // default m_hTreeView width
 #define BV_WIDTH    160     // default m_hBmpView width
 #define BE_HEIGHT   100     // default m_hBinEdit height
 
@@ -24,8 +24,6 @@
 // global variables
 
 ConstantsDB g_ConstantsDB;
-
-HWND        g_hTreeView = NULL;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1121,6 +1119,7 @@ public:
     HFONT       m_hNormalFont;
     HFONT       m_hLargeFont;
     HFONT       m_hSmallFont;
+    HWND        m_hTreeView;
     HWND        m_hToolBar;
     MEditCtrl       m_hBinEdit;
     MEditCtrl       m_hSrcEdit;
@@ -1149,6 +1148,7 @@ public:
         m_hNormalFont(NULL),
         m_hLargeFont(NULL),
         m_hSmallFont(NULL),
+        m_hTreeView(NULL),
         m_hToolBar(NULL)
     {
         m_szDataFolder[0] = 0;
@@ -1267,15 +1267,15 @@ public:
         style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
             TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
             TVS_LINESATROOT | TVS_SHOWSELALWAYS;
-        g_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
+        m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
             WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
             (HMENU)1, m_hInst, NULL);
-        if (g_hTreeView == NULL)
+        if (m_hTreeView == NULL)
             return FALSE;
 
-        TreeView_SetImageList(g_hTreeView, m_hImageList, TVSIL_NORMAL);
+        TreeView_SetImageList(m_hTreeView, m_hImageList, TVSIL_NORMAL);
 
-        m_splitter1.SetPane(0, g_hTreeView);
+        m_splitter1.SetPane(0, m_hTreeView);
         m_splitter1.SetPane(1, m_splitter2);
         m_splitter1.SetPaneExtent(0, TV_WIDTH);
 
@@ -1325,7 +1325,7 @@ public:
         }
 
         DragAcceptFiles(hwnd, TRUE);
-        SetFocus(g_hTreeView);
+        SetFocus(m_hTreeView);
         return TRUE;
     }
 
@@ -1375,17 +1375,17 @@ public:
         if (!CompileIfNecessary(hwnd))
             return;
 
-        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
             return;
 
-        TV_Delete(g_hTreeView, hItem, m_Entries);
+        TV_Delete(m_hTreeView, hItem, m_Entries);
         HidePreview(hwnd);
     }
 
     void OnExtractBin(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) == I_NONE)
             return;
 
@@ -1413,7 +1413,7 @@ public:
             if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
             {
                 ResEntries selection;
-                INT count = TV_GetSelection(g_hTreeView, selection, m_Entries);
+                INT count = TV_GetSelection(m_hTreeView, selection, m_Entries);
                 if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
                 {
                     ErrorBoxDx(IDS_CANNOTSAVE);
@@ -1431,7 +1431,7 @@ public:
 
     void OnExtractIcon(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1460,7 +1460,7 @@ public:
 
     void OnExtractCursor(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1489,7 +1489,7 @@ public:
 
     void OnExtractBitmap(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1520,7 +1520,7 @@ public:
 
     void OnReplaceBin(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1528,7 +1528,7 @@ public:
         MReplaceBinDlg dialog(m_Entries, m_Entries[i], g_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
@@ -1581,7 +1581,7 @@ public:
 
     void OnTest(HWND hwnd)
     {
-        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
             return;
 
@@ -1589,7 +1589,7 @@ public:
         ZeroMemory(&Item, sizeof(Item));
         Item.mask = TVIF_PARAM;
         Item.hItem = hItem;
-        TreeView_GetItem(g_hTreeView, &Item);
+        TreeView_GetItem(m_hTreeView, &Item);
 
         if (HIWORD(Item.lParam) != 3)
             return;
@@ -1618,13 +1618,13 @@ public:
         MAddIconDlg dialog(m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
     void OnReplaceIcon(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1632,13 +1632,13 @@ public:
         MReplaceIconDlg dialog(m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
     void OnReplaceCursor(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1646,7 +1646,7 @@ public:
         MReplaceCursorDlg dialog(m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
@@ -1680,13 +1680,13 @@ public:
         MAddBitmapDlg dialog(m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
     void OnReplaceBitmap(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -1694,7 +1694,7 @@ public:
         MReplaceBitmapDlg dialog(m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
@@ -1703,16 +1703,16 @@ public:
         MAddCursorDlg dialog(m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
     void OnAddRes(HWND hwnd)
     {
-        MAddResDlg dialog(m_Entries, g_ConstantsDB, g_hTreeView);
+        MAddResDlg dialog(m_Entries, g_ConstantsDB, m_hTreeView);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         }
     }
 
@@ -1777,7 +1777,7 @@ public:
                     Res_AddEntry(m_Entries, entries[i], Overwrite);
                 }
 
-                TV_RefreshInfo(g_hTreeView, m_Entries);
+                TV_RefreshInfo(m_hTreeView, m_Entries);
             }
             else
             {
@@ -1788,7 +1788,7 @@ public:
 
     void OnEdit(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (!IsEditableEntry(hwnd, lParam))
             return;
 
@@ -1801,7 +1801,7 @@ public:
     {
         if (pnmhdr->code == NM_DBLCLK)
         {
-            if (pnmhdr->hwndFrom == g_hTreeView)
+            if (pnmhdr->hwndFrom == m_hTreeView)
             {
                 OnEdit(hwnd);
             }
@@ -1836,7 +1836,7 @@ public:
     {
         Edit_SetModify(m_hSrcEdit, FALSE);
 
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         SelectTV(hwnd, lParam, FALSE);
     }
 
@@ -1844,7 +1844,7 @@ public:
     {
         if (!Edit_GetModify(m_hSrcEdit))
         {
-            LPARAM lParam = TV_GetParam(g_hTreeView);
+            LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
             return;
         }
@@ -1857,16 +1857,16 @@ public:
         Edit_SetModify(m_hSrcEdit, FALSE);
         if (DoCompileParts(hwnd, WideText))
         {
-            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
 
-            LPARAM lParam = TV_GetParam(g_hTreeView);
+            LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
         }
     }
 
     void OnGuiEdit(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (!IsEditableEntry(hwnd, lParam))
             return;
 
@@ -1959,7 +1959,7 @@ public:
 
                 if (DoCompileParts(hwnd, WideText))
                 {
-                    TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
@@ -1972,12 +1972,12 @@ public:
     {
         DoSetFile(hwnd, NULL);
         m_Entries.clear();
-        TV_RefreshInfo(g_hTreeView, m_Entries);
+        TV_RefreshInfo(m_hTreeView, m_Entries);
     }
 
     void OnUpdateRes(HWND hwnd)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
             return;
 
@@ -2111,7 +2111,7 @@ public:
                 dialog.File = File;
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
-                    TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
                 }
                 return;
             }
@@ -2199,7 +2199,7 @@ public:
 
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
-        HTREEITEM hItem = TreeView_GetSelection(g_hTreeView);
+        HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
         {
             EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -2221,12 +2221,12 @@ public:
         ZeroMemory(&Item, sizeof(Item));
         Item.mask = TVIF_PARAM;
         Item.hItem = hItem;
-        TreeView_GetItem(g_hTreeView, &Item);
+        TreeView_GetItem(m_hTreeView, &Item);
 
         UINT i = LOWORD(Item.lParam);
         const ResEntry& Entry = m_Entries[i];
 
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         BOOL bEditable = IsEditableEntry(hwnd, lParam);
         if (bEditable)
         {
@@ -2359,7 +2359,7 @@ public:
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        if (hwndContext != g_hTreeView)
+        if (hwndContext != m_hTreeView)
             return;
 
         POINT pt = {(INT)xPos, (INT)yPos};
@@ -2704,7 +2704,7 @@ public:
             }
             else
             {
-                ::SetFocus(g_hTreeView);
+                ::SetFocus(m_hTreeView);
             }
 
             if (Edit_GetModify(m_hSrcEdit))
@@ -2727,7 +2727,7 @@ public:
         else
         {
             Edit_SetReadOnly(m_hSrcEdit, TRUE);
-            ::SetFocus(g_hTreeView);
+            ::SetFocus(m_hTreeView);
 
             ToolBar_Update(m_hToolBar, 3);
         }
@@ -2764,7 +2764,7 @@ public:
 
     BOOL DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
 
         if (HIWORD(lParam) == I_LANG)
         {
@@ -2813,7 +2813,7 @@ public:
 
     BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
     {
-        LPARAM lParam = TV_GetParam(g_hTreeView);
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         WORD i = LOWORD(lParam);
         ResEntry& entry = m_Entries[i];
 
@@ -3106,7 +3106,7 @@ public:
                 return FALSE;
 
             Entries = entries;
-            TV_RefreshInfo(g_hTreeView, Entries);
+            TV_RefreshInfo(m_hTreeView, Entries);
             DoSetFile(hwnd, Path);
             return TRUE;
         }
@@ -3123,7 +3123,7 @@ public:
         Res_GetListFromRes(hMod, (LPARAM)&Entries);
         FreeLibrary(hMod);
 
-        TV_RefreshInfo(g_hTreeView, Entries);
+        TV_RefreshInfo(m_hTreeView, Entries);
         DoSetFile(hwnd, Path);
 
         return TRUE;
