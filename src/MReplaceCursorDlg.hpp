@@ -74,7 +74,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceCursor(hwnd, m_Entries, Name, Lang, File))
+        if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, TRUE))
         {
             ErrorBoxDx(IDS_CANTREPLACECUR);
             return;

@@ -83,21 +83,13 @@ public:
             }
         }
 
-        if (Overwrite)
+        if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, Overwrite))
         {
-            if (!DoReplaceCursor(hwnd, m_Entries, Name, Lang, File))
-            {
+            if (Overwrite)
                 ErrorBoxDx(IDS_CANTREPLACECUR);
-                return;
-            }
-        }
-        else
-        {
-            if (!DoAddCursor(hwnd, m_Entries, Name, Lang, File))
-            {
+            else
                 ErrorBoxDx(IDS_CANNOTADDCUR);
-                return;
-            }
+            return;
         }
 
         EndDialog(IDOK);

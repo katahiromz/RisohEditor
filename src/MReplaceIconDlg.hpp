@@ -74,7 +74,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceIcon(hwnd, m_Entries, Name, Lang, File))
+        if (!Res_AddGroupIcon(m_Entries, Name, Lang, File, TRUE))
         {
             ErrorBoxDx(IDS_CANTREPLACEICO);
             return;

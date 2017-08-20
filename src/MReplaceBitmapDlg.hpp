@@ -66,7 +66,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBitmap(hwnd, m_Entries, Name, Lang, File))
+        if (!Res_AddBitmap(m_Entries, Name, Lang, File, TRUE))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;

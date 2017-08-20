@@ -132,11 +132,14 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!DoReplaceBin(hwnd, m_Entries, Type, Name, Lang, File))
+        MByteStreamEx bs;
+        if (!bs.LoadFromFile(File.c_str()))
         {
             ErrorBoxDx(IDS_CANNOTREPLACE);
             return;
         }
+
+        Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), TRUE);
 
         EndDialog(IDOK);
     }

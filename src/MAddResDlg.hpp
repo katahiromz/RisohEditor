@@ -171,25 +171,16 @@ public:
             }
         }
 
-        if (!bOK)
+        MByteStreamEx bs;
+        if (!bOK || !bs.LoadFromFile(File.c_str()))
         {
             if (Overwrite)
-            {
-                if (!DoReplaceBin(hwnd, m_Entries, Type, Name, Lang, File))
-                {
-                    ErrorBoxDx(IDS_CANNOTREPLACE);
-                    return;
-                }
-            }
+                ErrorBoxDx(IDS_CANNOTREPLACE);
             else
-            {
-                if (!DoAddBin(hwnd, m_Entries, Type, Name, Lang, File))
-                {
-                    ErrorBoxDx(IDS_CANNOTADDRES);
-                    return;
-                }
-            }
+                ErrorBoxDx(IDS_CANNOTADDRES);
+            return;
         }
+        Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), Overwrite);
 
         EndDialog(IDOK);
     }

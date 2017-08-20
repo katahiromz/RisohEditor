@@ -94,21 +94,13 @@ public:
             }
         }
 
-        if (Overwrite)
+        if (!Res_AddGroupIcon(m_Entries, Name, Lang, File, Overwrite))
         {
-            if (!DoReplaceIcon(hwnd, m_Entries, Name, Lang, File))
-            {
+            if (Overwrite)
                 ErrorBoxDx(IDS_CANTREPLACEICO);
-                return;
-            }
-        }
-        else
-        {
-            if (!DoAddIcon(hwnd, m_Entries, Name, Lang, File))
-            {
+            else
                 ErrorBoxDx(IDS_CANNOTADDICON);
-                return;
-            }
+            return;
         }
 
         EndDialog(IDOK);

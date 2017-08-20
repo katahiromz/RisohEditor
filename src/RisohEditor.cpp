@@ -539,110 +539,6 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     return hbm;
 }
 
-BOOL DoAddCursor(HWND hwnd,
-                 ResEntries& Entries,
-                 const ID_OR_STRING& Name,
-                 WORD Lang,
-                 const std::wstring& CurFile)
-{
-    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceCursor(HWND hwnd,
-                     ResEntries& Entries,
-                     const ID_OR_STRING& Name,
-                     WORD Lang,
-                     const std::wstring& CurFile)
-{
-    if (!Res_AddGroupCursor(Entries, Name, Lang, CurFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddIcon(HWND hwnd,
-               ResEntries& Entries,
-               const ID_OR_STRING& Name,
-               WORD Lang,
-               const std::wstring& IconFile)
-{
-    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceIcon(HWND hwnd,
-                   ResEntries& Entries,
-                   const ID_OR_STRING& Name,
-                   WORD Lang,
-                   const std::wstring& IconFile)
-{
-    if (!Res_AddGroupIcon(Entries, Name, Lang, IconFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddBin(HWND hwnd,
-              ResEntries& Entries,
-              const ID_OR_STRING& Type,
-              const ID_OR_STRING& Name,
-              WORD Lang,
-              const std::wstring& File)
-{
-    MByteStreamEx bs;
-    if (!bs.LoadFromFile(File.c_str()))
-        return FALSE;
-
-    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), FALSE);
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceBin(HWND hwnd,
-                  ResEntries& Entries,
-                  const ID_OR_STRING& Type,
-                  const ID_OR_STRING& Name,
-                  WORD Lang,
-                  const std::wstring& File)
-{
-    MByteStreamEx bs;
-    if (!bs.LoadFromFile(File.c_str()))
-        return FALSE;
-
-    Res_AddEntry(Entries, Type, Name, Lang, bs.data(), TRUE);
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoAddBitmap(HWND hwnd,
-                 ResEntries& Entries,
-                 const ID_OR_STRING& Name,
-                 WORD Lang,
-                 const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, FALSE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
-BOOL DoReplaceBitmap(HWND hwnd,
-                     ResEntries& Entries,
-                     const ID_OR_STRING& Name,
-                     WORD Lang,
-                     const std::wstring& BitmapFile)
-{
-    if (!Res_AddBitmap(Entries, Name, Lang, BitmapFile, TRUE))
-        return FALSE;
-    TV_RefreshInfo(g_hTreeView, Entries, FALSE);
-    return TRUE;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // specialized tool bar
 
@@ -1630,7 +1526,10 @@ public:
 
         UINT i = LOWORD(lParam);
         MReplaceBinDlg dialog(m_Entries, m_Entries[i], g_ConstantsDB);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnSaveAs(HWND hwnd)
@@ -1717,7 +1616,10 @@ public:
     void OnAddIcon(HWND hwnd)
     {
         MAddIconDlg dialog(m_Entries);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnReplaceIcon(HWND hwnd)
@@ -1728,7 +1630,10 @@ public:
 
         UINT i = LOWORD(lParam);
         MReplaceIconDlg dialog(m_Entries, m_Entries[i]);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnReplaceCursor(HWND hwnd)
@@ -1739,7 +1644,10 @@ public:
 
         UINT i = LOWORD(lParam);
         MReplaceCursorDlg dialog(m_Entries, m_Entries[i]);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnOpen(HWND hwnd)
@@ -1770,7 +1678,10 @@ public:
     void OnAddBitmap(HWND hwnd)
     {
         MAddBitmapDlg dialog(m_Entries);
-        dialog.DialogBoxDx(hwnd, IDD_ADDBITMAP);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnReplaceBitmap(HWND hwnd)
@@ -1781,19 +1692,28 @@ public:
 
         UINT i = LOWORD(lParam);
         MReplaceBitmapDlg dialog(m_Entries, m_Entries[i]);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnAddCursor(HWND hwnd)
     {
         MAddCursorDlg dialog(m_Entries);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnAddRes(HWND hwnd)
     {
         MAddResDlg dialog(m_Entries, g_ConstantsDB, g_hTreeView);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+        }
     }
 
     void OnAbout(HWND hwnd)
@@ -2189,7 +2109,10 @@ public:
             {
                 MAddIconDlg dialog(m_Entries);
                 dialog.File = File;
-                dialog.DialogBoxDx(hwnd);
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(g_hTreeView, m_Entries, FALSE);
+                }
                 return;
             }
             else if (lstrcmpiW(pch, L".cur") == 0)

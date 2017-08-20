@@ -97,21 +97,13 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (Overwrite)
+        if (!Res_AddBitmap(m_Entries, Name, Lang, File, Overwrite))
         {
-            if (!DoReplaceBitmap(hwnd, m_Entries, Name, Lang, File))
-            {
+            if (Overwrite)
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
-                return;
-            }
-        }
-        else
-        {
-            if (!DoAddBitmap(hwnd, m_Entries, Name, Lang, File))
-            {
+            else
                 ErrorBoxDx(IDS_CANTADDBMP);
-                return;
-            }
+            return;
         }
 
         EndDialog(IDOK);
