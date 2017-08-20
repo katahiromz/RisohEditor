@@ -1285,6 +1285,9 @@ public:
 
     BOOL StartDx(INT nCmdShow)
     {
+        MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
+        MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
+
         m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
         m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
 

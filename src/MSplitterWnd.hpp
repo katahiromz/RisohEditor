@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSPLITTERWND_HPP_
-#define MZC4_MSPLITTERWND_HPP_      6   /* Version 6 */
+#define MZC4_MSPLITTERWND_HPP_      7   /* Version 7 */
 
 class MSplitterWnd;
 
@@ -25,9 +25,7 @@ class MSplitterWnd : public MWindowBase
 public:
     enum { m_cxyBorder = 4, m_cxyMin = 8 };
 
-    MSplitterWnd() : m_iDraggingBorder(-1), m_nPaneCount(0),
-        m_hcurNS(::LoadCursor(NULL, IDC_SIZENS)),
-        m_hcurWE(::LoadCursor(NULL, IDC_SIZEWE))
+    MSplitterWnd() : m_iDraggingBorder(-1), m_nPaneCount(0)
     {
         m_vecPanes.resize(1);
     }
@@ -286,13 +284,15 @@ public:
         FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwndContext, xPos, yPos, SendMessage);
     }
 
-    void SetCursorNS(HCURSOR hcurNS)
+    static HCURSOR& CursorNS()
     {
-        m_hcurNS = hcurNS;
+        static HCURSOR s_hcurNS = ::LoadCursor(NULL, IDC_SIZENS);
+        return s_hcurNS;
     }
-    void SetCursorWE(HCURSOR hcurWE)
+    static HCURSOR& CursorWE()
     {
-        m_hcurWE = hcurWE;
+        static HCURSOR s_hcurWE = ::LoadCursor(NULL, IDC_SIZEWE);
+        return s_hcurWE;
     }
 
 protected:
@@ -311,8 +311,6 @@ protected:
     };
     INT                     m_iDraggingBorder;
     INT                     m_nPaneCount;
-    HCURSOR                 m_hcurNS;
-    HCURSOR                 m_hcurWE;
     std::vector<PANEINFO>   m_vecPanes;
 
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -329,9 +327,9 @@ protected:
         m_iDraggingBorder = iBorder;
 
         if (IsVertical())
-            ::SetCursor(m_hcurNS);
+            ::SetCursor(CursorNS());
         else
-            ::SetCursor(m_hcurWE);
+            ::SetCursor(CursorWE());
     }
 
     void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
@@ -394,9 +392,9 @@ protected:
         }
 
         if (IsVertical())
-            ::SetCursor(m_hcurNS);
+            ::SetCursor(CursorNS());
         else
-            ::SetCursor(m_hcurWE);
+            ::SetCursor(CursorWE());
         return TRUE;
     }
 };

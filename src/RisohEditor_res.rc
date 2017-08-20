@@ -9,6 +9,9 @@
 100 ICON "res\\file.ico"
 101 ICON "res\\folder.ico"
 
+1 CURSOR "res\\cursor-ns.cur"
+2 CURSOR "res\\cursor-we.cur"
+
 1 ACCELERATORS
 {
     "N", ID_NEW, VIRTKEY, CONTROL
