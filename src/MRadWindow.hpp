@@ -31,10 +31,12 @@ public:
     BOOL            m_bMoving;
     BOOL            m_bSizing;
     INT             m_nIndex;
+    ConstantsDB&    m_ConstantsDB;
     POINT           m_pt;
 
-    MRadCtrl() : m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-                 m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1)
+    MRadCtrl(ConstantsDB& db) :
+        m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_ConstantsDB(db)
     {
         m_pt.x = m_pt.y = -1;
     }
@@ -384,11 +386,12 @@ public:
 class MRadDialog : public MDialogBase
 {
 public:
-    BOOL    m_index_visible;
-    POINT   m_ptClicked;
+    BOOL            m_index_visible;
+    ConstantsDB&    m_ConstantsDB;
+    POINT           m_ptClicked;
     MIndexLabels    m_labels;
 
-    MRadDialog() : m_index_visible(FALSE)
+    MRadDialog(ConstantsDB& db) : m_index_visible(FALSE), m_ConstantsDB(db)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -572,7 +575,7 @@ public:
 
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
-        MRadCtrl *pCtrl = new MRadCtrl;
+        MRadCtrl *pCtrl = new MRadCtrl(m_ConstantsDB);
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
@@ -639,14 +642,16 @@ public:
     }
 };
 
-struct MRadWindow : MWindowBase
+class MRadWindow : public MWindowBase
 {
+public:
     INT         m_xDialogBaseUnit;
     INT         m_yDialogBaseUnit;
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
 
-    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
+    MRadWindow(ConstantsDB& db) : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
+                                  m_rad_dialog(db)
     {
     }
 
@@ -985,7 +990,7 @@ struct MRadWindow : MWindowBase
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
-        MAddCtrlDlg dialog(m_dialog_res, pt);
+        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_ConstantsDB, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -995,7 +1000,8 @@ struct MRadWindow : MWindowBase
 
     void OnCtrlProp(HWND hwnd)
     {
-        MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces());
+        MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces(),
+                            m_rad_dialog.m_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1005,7 +1011,7 @@ struct MRadWindow : MWindowBase
 
     void OnDlgProp(HWND hwnd)
     {
-        MDlgPropDlg dialog(m_dialog_res);
+        MDlgPropDlg dialog(m_dialog_res, m_rad_dialog.m_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);

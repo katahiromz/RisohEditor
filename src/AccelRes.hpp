@@ -10,8 +10,7 @@
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
-
-std::wstring str_vkey(WORD w);
+#include "ConstantsDB.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -37,7 +36,8 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    AccelRes() { }
+    ConstantsDB& m_ConstantsDB;
+    AccelRes(ConstantsDB& db) : m_ConstantsDB(db) { }
 
     BOOL LoadFromStream(const MByteStreamEx& stream)
     {
@@ -103,7 +103,7 @@ public:
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += str_vkey(it->wAscii);
+                ret += m_ConstantsDB.GetName(L"VIRTUALKEYS", it->wAscii);
             }
             else
             {

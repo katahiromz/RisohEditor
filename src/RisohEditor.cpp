@@ -21,11 +21,6 @@
 #define BE_HEIGHT   100     // default m_hBinEdit height
 
 //////////////////////////////////////////////////////////////////////////////
-// global variables
-
-ConstantsDB g_ConstantsDB;
-
-//////////////////////////////////////////////////////////////////////////////
 
 void GetSelection(HWND hLst, std::vector<BYTE>& sel)
 {
@@ -164,12 +159,12 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     return DEFAULT_CHARSET;
 }
 
-void InitClassComboBox(HWND hCmb)
+void InitClassComboBox(HWND hCmb, ConstantsDB& db)
 {
     ComboBox_ResetContent(hCmb);
 
     ConstantsDB::TableType table;
-    table = g_ConstantsDB.GetTable(TEXT("CONTROL.CLASSES"));
+    table = db.GetTable(TEXT("CONTROL.CLASSES"));
 
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -178,10 +173,10 @@ void InitClassComboBox(HWND hCmb)
     }
 }
 
-void InitCtrlIDComboBox(HWND hCmb)
+void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
 {
     ConstantsDB::TableType table;
-    table = g_ConstantsDB.GetTable(TEXT("CTRLID"));
+    table = db.GetTable(TEXT("CTRLID"));
 
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -291,11 +286,6 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 
 //////////////////////////////////////////////////////////////////////////////
 // specialized global functions
-
-std::wstring str_vkey(WORD w)
-{
-    return g_ConstantsDB.GetName(L"VIRTUALKEYS", w);
-}
 
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 {
@@ -984,13 +974,13 @@ std::wstring GetKeyID(UINT wId)
     return mstr_dec(wId);
 }
 
-void Cmb1_InitVirtualKeys(HWND hCmb1)
+void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)
 {
     ComboBox_ResetContent(hCmb1);
 
     typedef ConstantsDB::TableType TableType;
     TableType table;
-    table = g_ConstantsDB.GetTable(L"VIRTUALKEYS");
+    table = db.GetTable(L"VIRTUALKEYS");
 
     TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -1121,10 +1111,11 @@ public:
     HFONT       m_hSmallFont;
     HWND        m_hTreeView;
     HWND        m_hToolBar;
+    ConstantsDB m_ConstantsDB;
+    MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit;
     MEditCtrl       m_hSrcEdit;
     MBmpView        m_hBmpView;
-    MRadWindow      m_rad_window;
     MSplitterWnd    m_splitter1;
     MSplitterWnd    m_splitter2;
     MSplitterWnd    m_splitter3;
@@ -1149,7 +1140,8 @@ public:
         m_hLargeFont(NULL),
         m_hSmallFont(NULL),
         m_hTreeView(NULL),
-        m_hToolBar(NULL)
+        m_hToolBar(NULL),
+        m_rad_window(m_ConstantsDB)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1525,7 +1517,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceBinDlg dialog(m_Entries, m_Entries[i], g_ConstantsDB);
+        MReplaceBinDlg dialog(m_Entries, m_Entries[i], m_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1709,7 +1701,7 @@ public:
 
     void OnAddRes(HWND hwnd)
     {
-        MAddResDlg dialog(m_Entries, g_ConstantsDB, m_hTreeView);
+        MAddResDlg dialog(m_Entries, m_ConstantsDB, m_hTreeView);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1888,8 +1880,8 @@ public:
         MByteStreamEx stream(data);
         if (Entry.type == RT_ACCELERATOR)
         {
-            AccelRes accel_res;
-            MEditAccelDlg dialog(accel_res, g_ConstantsDB);
+            AccelRes accel_res(m_ConstantsDB);
+            MEditAccelDlg dialog(accel_res, m_ConstantsDB);
             if (accel_res.LoadFromStream(stream))
             {
                 INT nID = dialog.DialogBoxDx(hwnd);
@@ -1990,7 +1982,7 @@ public:
         dialog_res.SaveToStream(stream);
         Entry.data = stream.data();
 
-        std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
+        std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 
@@ -2490,7 +2482,7 @@ public:
     void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
         MByteStreamEx stream(Entry.data);
-        AccelRes accel;
+        AccelRes accel(m_ConstantsDB);
         if (accel.LoadFromStream(stream))
         {
             std::wstring str = accel.Dump(Entry.name);
@@ -2535,7 +2527,7 @@ public:
         MenuRes menu_res;
         if (menu_res.LoadFromStream(stream))
         {
-            std::wstring str = menu_res.Dump(Entry.name, g_ConstantsDB);
+            std::wstring str = menu_res.Dump(Entry.name, m_ConstantsDB);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }
@@ -2556,7 +2548,7 @@ public:
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {
-            std::wstring str = dialog_res.Dump(Entry.name, g_ConstantsDB);
+            std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }
@@ -3042,7 +3034,7 @@ public:
         // Constants.txt
         lstrcpyW(m_szConstantsFile, m_szDataFolder);
         lstrcatW(m_szConstantsFile, L"\\Constants.txt");
-        if (!g_ConstantsDB.LoadFromFile(m_szConstantsFile))
+        if (!m_ConstantsDB.LoadFromFile(m_szConstantsFile))
         {
             ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
             return -2;  // failure

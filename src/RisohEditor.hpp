@@ -42,16 +42,15 @@
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
 #include "Res.hpp"
+#include "ConstantsDB.hpp"
 #include "resource.h"
 
 // RisohEditor.cpp
-std::wstring str_vkey(WORD w);
 LPWSTR MakeFilterDx(LPWSTR psz);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 HBITMAP Create24BppBitmapDx(INT width, INT height);
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
-std::wstring str_vkey(WORD w);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 HBITMAP

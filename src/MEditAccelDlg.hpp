@@ -10,7 +10,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Cmb1_InitVirtualKeys(HWND hCmb1);
+void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
 
 std::wstring GetKeyID(UINT wId);
@@ -25,8 +25,10 @@ class MAddKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
+    ConstantsDB& m_ConstantsDB;
 
-    MAddKeyDlg(ACCEL_ENTRY& entry) : MDialogBase(IDD_ADDKEY), m_entry(entry)
+    MAddKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
+        MDialogBase(IDD_ADDKEY), m_entry(entry), m_ConstantsDB(db)
     {
     }
 
@@ -35,7 +37,7 @@ public:
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        Cmb1_InitVirtualKeys(hCmb1);
+        Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
 
         return TRUE;
     }
@@ -105,8 +107,10 @@ class MModifyKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
+    ConstantsDB& m_ConstantsDB;
 
-    MModifyKeyDlg(ACCEL_ENTRY& entry) : MDialogBase(IDD_MODIFYKEY), m_entry(entry)
+    MModifyKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
+        MDialogBase(IDD_MODIFYKEY), m_entry(entry), m_ConstantsDB(db)
     {
     }
 
@@ -131,7 +135,7 @@ public:
         if (Flags & FVIRTKEY)
         {
             HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-            Cmb1_InitVirtualKeys(hCmb1);
+            Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
 
             INT i = ComboBox_FindStringExact(hCmb1, -1, m_entry.sz0);
             if (i != CB_ERR)
@@ -184,7 +188,7 @@ public:
         case chx1:
             if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
             {
-                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1));
+                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1), m_ConstantsDB);
             }
             else
             {
@@ -218,10 +222,10 @@ class MEditAccelDlg : public MDialogBase
 {
 public:
     AccelRes& m_accel_res;
-    ConstantsDB& m_db;
+    ConstantsDB& m_ConstantsDB;
 
     MEditAccelDlg(AccelRes& accel_res, ConstantsDB& db)
-        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_db(db)
+        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_ConstantsDB(db)
     {
     }
 
@@ -296,7 +300,7 @@ public:
 
         ACCEL_ENTRY entry;
 
-        MAddKeyDlg dialog(entry);
+        MAddKeyDlg dialog(entry, m_ConstantsDB);
         if (IDOK != dialog.DialogBoxDx(hwnd))
         {
             return;
@@ -346,7 +350,7 @@ public:
         ListView_GetItemText(hCtl1, iItem, 1, a_entry.sz1, _countof(a_entry.sz1));
         ListView_GetItemText(hCtl1, iItem, 2, a_entry.sz2, _countof(a_entry.sz2));
 
-        MModifyKeyDlg dialog(a_entry);
+        MModifyKeyDlg dialog(a_entry, m_ConstantsDB);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             ListView_SetItemText(hCtl1, iItem, 0, a_entry.sz0);
@@ -382,7 +386,7 @@ public:
             entry.fFlags = Flags;
             if (Flags & FVIRTKEY)
             {
-                entry.wAscii = (WORD)m_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+                entry.wAscii = (WORD)m_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
             }
             else
             {
@@ -506,7 +510,7 @@ public:
             std::wstring str;
             if (it->fFlags & FVIRTKEY)
             {
-                str = m_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                str = m_ConstantsDB.GetName(L"VIRTUALKEYS", it->wAscii);
             }
             else
             {

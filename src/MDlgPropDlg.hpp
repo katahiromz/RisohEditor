@@ -24,37 +24,37 @@ BYTE GetCharSetFromComboBox(HWND hCmb);
 class MDlgPropDlg : public MDialogBase
 {
 public:
-    DialogRes&  m_dialog_res;
-    BOOL        m_bUpdating;
-    DWORD       m_dwStyle;
-    DWORD       m_dwExStyle;
+    DialogRes&      m_dialog_res;
+    BOOL            m_bUpdating;
+    ConstantsDB&    m_ConstantsDB;
+    DWORD           m_dwStyle;
+    DWORD           m_dwExStyle;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
 
-    MDlgPropDlg(DialogRes& dialog_res) :
-        MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE)
+    MDlgPropDlg(DialogRes& dialog_res, ConstantsDB& db) :
+        MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE),
+        m_ConstantsDB(db)
     {
     }
 
     void InitTables(LPCTSTR pszClass)
     {
-        extern ConstantsDB g_ConstantsDB;
-
         ConstantsDB::TableType table;
 
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = g_ConstantsDB.GetTable(pszClass);
+            table = m_ConstantsDB.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
-        table = g_ConstantsDB.GetTable(TEXT("STYLE"));
+        table = m_ConstantsDB.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
@@ -63,7 +63,7 @@ public:
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        table = m_ConstantsDB.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             m_exstyle_table.insert(m_exstyle_table.end(),

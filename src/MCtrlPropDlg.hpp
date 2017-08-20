@@ -18,8 +18,8 @@ void GetSelection(std::vector<BYTE>& sel,
 DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitClassComboBox(HWND hCmb);
-void InitCtrlIDComboBox(HWND hCmb);
+void InitClassComboBox(HWND hCmb, ConstantsDB& db);
+void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +44,7 @@ public:
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
+    ConstantsDB&        m_ConstantsDB;
     DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -53,9 +54,9 @@ public:
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
 
-    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
+    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_indeces(indeces)
+          m_bUpdating(FALSE), m_indeces(indeces), m_ConstantsDB(db)
     {
     }
 
@@ -109,8 +110,6 @@ public:
 
     DWORD GetItemAndFlags(DialogItem& item)
     {
-        extern ConstantsDB g_ConstantsDB;
-
         DWORD flags = m_flags;
 
         MString strCaption = GetDlgItemText(cmb2);
@@ -154,7 +153,7 @@ public:
         }
         else
         {
-            id = g_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
+            id = m_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
         }
         item.ID = id;
 
@@ -219,21 +218,19 @@ public:
 
     void InitTables(LPCTSTR pszClass)
     {
-        extern ConstantsDB g_ConstantsDB;
-
         ConstantsDB::TableType table;
 
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = g_ConstantsDB.GetTable(pszClass);
+            table = m_ConstantsDB.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
-        table = g_ConstantsDB.GetTable(TEXT("STYLE"));
+        table = m_ConstantsDB.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
@@ -242,7 +239,7 @@ public:
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = g_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        table = m_ConstantsDB.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             m_exstyle_table.insert(m_exstyle_table.end(),
@@ -280,10 +277,10 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitClassComboBox(hCmb1);
+        InitClassComboBox(hCmb1, m_ConstantsDB);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitCtrlIDComboBox(hCmb3);
+        InitCtrlIDComboBox(hCmb3, m_ConstantsDB);
 
         GetInfo();
 
@@ -470,14 +467,12 @@ public:
 
     void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
-        extern ConstantsDB g_ConstantsDB;
-
         MString strSuper;
-        DWORD dwType = g_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        DWORD dwType = m_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
         if (dwType >= 3)
         {
             ConstantsDB::TableType table;
-            table = g_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
+            table = m_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
             if (table.size())
             {
                 strSuper = table[0].name;
@@ -490,7 +485,7 @@ public:
             InitTables(strClass.c_str());
 
         MString str = strClass + TEXT(".DEFAULT.STYLE");
-        m_dwStyle = g_ConstantsDB.GetValue(str, TEXT("STYLE"));
+        m_dwStyle = m_ConstantsDB.GetValue(str, TEXT("STYLE"));
 
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
