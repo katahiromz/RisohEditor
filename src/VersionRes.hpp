@@ -170,14 +170,14 @@ public:
         ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
-        wsprintfW(line, L"FILEVERSION %u,%u,%u,%u\r\n",
+        wsprintfW(line, L"FILEVERSION %u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwFileVersionMS),
             LOWORD(m_fixed.dwFileVersionMS),
             HIWORD(m_fixed.dwFileVersionLS),
             LOWORD(m_fixed.dwFileVersionLS));
         ret += line;
 
-        wsprintfW(line, L"PRODUCTVERSION %u,%u,%u,%u\r\n",
+        wsprintfW(line, L"PRODUCTVERSION %u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwProductVersionMS),
             LOWORD(m_fixed.dwProductVersionMS),
             HIWORD(m_fixed.dwProductVersionLS),
