@@ -1597,7 +1597,7 @@ public:
     void OnExtractBitmap(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
@@ -1628,7 +1628,7 @@ public:
     void OnReplaceBin(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
@@ -1726,7 +1726,7 @@ public:
     void OnReplaceIcon(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
@@ -1737,7 +1737,7 @@ public:
     void OnReplaceCursor(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
@@ -1779,7 +1779,7 @@ public:
     void OnReplaceBitmap(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
