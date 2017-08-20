@@ -7,6 +7,7 @@
 
 1 ICON "res\\RisohEditor.ico"
 2 ICON "res\\ico.ico"
+3 ICON "res\\smily.ico"
 
 100 ICON "res\\file.ico"
 101 ICON "res\\folder.ico"
