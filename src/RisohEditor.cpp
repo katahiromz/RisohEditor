@@ -316,12 +316,6 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
     {
         HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
         DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
-        if (bCursor)
-        {
-            // mirror
-            StretchBlt(hDC, 0, height, width, -height,
-                       hDC, 0, 0, width, height, SRCCOPY);
-        }
     }
     SelectObject(hDC, hbmOld);
     DeleteDC(hDC);
