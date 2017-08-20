@@ -6,11 +6,15 @@
 #pragma code_page(65001)
 
 1 ICON "res\\RisohEditor.ico"
+2 ICON "res\\ico.ico"
+
 100 ICON "res\\file.ico"
 101 ICON "res\\folder.ico"
 
 1 CURSOR "res\\cursor-ns.cur"
 2 CURSOR "res\\cursor-we.cur"
+
+1 BITMAP "res\\bmp.bmp"
 
 1 ACCELERATORS
 {
