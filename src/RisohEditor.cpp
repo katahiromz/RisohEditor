@@ -12,13 +12,13 @@
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
-#define TV_WIDTH    250     // default m_hTreeView width
-#define BV_WIDTH    160     // default m_hBmpView width
-#define BE_HEIGHT   100     // default m_hBinEdit height
-
 #ifndef RT_MANIFEST
     #define RT_MANIFEST 24
 #endif
+
+#define TV_WIDTH    250     // default m_hTreeView width
+#define BV_WIDTH    160     // default m_hBmpView width
+#define BE_HEIGHT   100     // default m_hBinEdit height
 
 //////////////////////////////////////////////////////////////////////////////
 // global variables
