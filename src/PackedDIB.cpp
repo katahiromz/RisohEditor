@@ -150,11 +150,11 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon)
 {
     LPBYTE pb = (LPBYTE)(void *)pPackedDIB;
 
-    int xHotSpot = 0, yHotSpot = 0;
-    if (Size >= 4 && !bIcon)
+    //int xHotSpot = 0, yHotSpot = 0;
+    if (!bIcon)
     {
-        xHotSpot = ((LPWORD)pb)[0];
-        yHotSpot = ((LPWORD)pb)[1];
+        //xHotSpot = ((LPWORD)pb)[0];
+        //yHotSpot = ((LPWORD)pb)[1];
         pb += 2 * sizeof(WORD);
         Size -= 2 * sizeof(WORD);
     }
@@ -166,22 +166,16 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon)
     }
     bm.bmHeight /= 2;
 
+    if (!bIcon)
+    {
+        pb -= 2 * sizeof(WORD);
+        Size += 2 * sizeof(WORD);
+    }
+
     HICON hIcon;
-    if (bIcon)
-    {
-        hIcon = CreateIconFromResourceEx(pb, Size, bIcon, 0x00030000,
-                                         bm.bmWidth, bm.bmHeight, 0);
-        assert(hIcon);
-    }
-    else
-    {
-        LPBYTE pbBits = (LPBYTE)bm.bmBits;
-        LPBYTE pbXor = pbBits;
-        LPBYTE pbAnd = pbBits + bm.bmWidthBytes * bm.bmHeight;
-        hIcon = CreateCursor(GetModuleHandle(NULL), xHotSpot, yHotSpot,
-                             bm.bmWidth, bm.bmHeight, pbAnd, pbXor);
-        assert(hIcon);
-    }
+    hIcon = CreateIconFromResourceEx(pb, Size, bIcon, 0x00030000,
+                                     bm.bmWidth, bm.bmHeight, 0);
+    assert(hIcon);
     return hIcon;
 }
 
