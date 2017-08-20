@@ -1539,7 +1539,7 @@ public:
     void OnExtractIcon(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
@@ -1568,7 +1568,7 @@ public:
     void OnExtractCursor(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(g_hTreeView);
-        if (HIWORD(lParam) != I_NAME)
+        if (HIWORD(lParam) != I_LANG)
             return;
 
         UINT i = LOWORD(lParam);
