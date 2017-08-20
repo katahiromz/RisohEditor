@@ -12,9 +12,9 @@
     #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
 #endif
 
-#define TV_WIDTH 250
-#define SE_WIDTH 256
-#define BE_HEIGHT 100
+#define TV_WIDTH    250     // default g_hTreeView width
+#define BV_WIDTH    160     // default m_hBmpView width
+#define BE_HEIGHT   100     // default m_hBinEdit height
 
 #ifndef RT_MANIFEST
     #define RT_MANIFEST 24
@@ -2225,7 +2225,7 @@ public:
             m_splitter3.SetPaneCount(2);
             m_splitter3.SetPane(0, m_hSrcEdit);
             m_splitter3.SetPane(1, m_hBmpView);
-            m_splitter3.SetPaneExtent(1, 180);
+            m_splitter3.SetPaneExtent(1, BV_WIDTH);
         }
         else
         {
