@@ -172,7 +172,7 @@ public:
         }
 
         MByteStreamEx bs;
-        if (!bOK || !bs.LoadFromFile(File.c_str()))
+        if (!bOK && !bs.LoadFromFile(File.c_str()))
         {
             if (Overwrite)
                 ErrorBoxDx(IDS_CANNOTREPLACE);
