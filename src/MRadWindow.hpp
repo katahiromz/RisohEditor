@@ -34,6 +34,49 @@ public:
     ConstantsDB&    m_ConstantsDB;
     POINT           m_pt;
 
+    static HICON Icon()
+    {
+        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+        return s_hIcon;
+    }
+    static HBITMAP Bitmap()
+    {
+        static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+        return s_hbm;
+    }
+
+    void EndSubclass()
+    {
+        TCHAR szClass[64];
+        GetClassName(m_hwnd, szClass, _countof(szClass));
+        if (lstrcmpi(szClass, TEXT("STATIC")) == 0)
+        {
+            DWORD style = GetWindowStyle(m_hwnd);
+            if ((style & SS_TYPEMASK) == SS_ICON)
+            {
+                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
+            }
+            else if ((style & SS_TYPEMASK) == SS_BITMAP)
+            {
+                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
+            }
+            return;
+        }
+        else if (lstrcmpi(szClass, TEXT("BUTTON")) == 0)
+        {
+            DWORD style = GetWindowStyle(m_hwnd);
+            if (style & BS_ICON)
+            {
+                SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
+            }
+            else if (style & BS_BITMAP)
+            {
+                SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
+            }
+            return;
+        }
+    }
+
     MRadCtrl(ConstantsDB& db) :
         m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
         m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_ConstantsDB(db)
@@ -293,6 +336,7 @@ public:
             ResizeSelection(hwnd, cx, cy);
 
         SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
+        InvalidateRect(hwnd, NULL, TRUE);
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -584,6 +628,8 @@ public:
         {
             MRadCtrl::IndexToCtrlMap()[nIndex] = hCtrl;
         }
+
+        pCtrl->EndSubclass();
 
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
