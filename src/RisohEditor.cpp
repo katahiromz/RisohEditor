@@ -2472,7 +2472,23 @@ public:
 
     void PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     {
-        m_hBmpView = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+        HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+        if (hbm == NULL)
+        {
+            // BI_RLE4, BI_RLE8
+            WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
+            GetTempPathW(_countof(szPath), szPath);
+            GetTempFileNameW(szPath, L"reb", 0, szTempFile);
+
+            if (DoExtractBitmap(szTempFile, Entry, FALSE))
+            {
+                hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
+                    LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+            }
+
+            DeleteFileW(szTempFile);
+        }
+        m_hBmpView = hbm;
 
         std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
