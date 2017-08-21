@@ -42,7 +42,7 @@ public:
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, GetUserDefaultLangID());
+        InitLangComboBox(hCmb3, m_Entry.lang);
 
         return TRUE;
     }
