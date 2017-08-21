@@ -1935,6 +1935,7 @@ public:
             if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
                                             style))
             {
+                CenterWindowDx(m_rad_window);
                 ShowWindow(m_rad_window, SW_SHOWNOACTIVATE);
                 UpdateWindow(m_rad_window);
             }
