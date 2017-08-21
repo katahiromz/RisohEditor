@@ -68,10 +68,12 @@ public:
         {
             ::SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
         }
+        ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, m_Entry.lang);
+        ::EnableWindow(hCmb3, FALSE);
 
         return TRUE;
     }
