@@ -1827,6 +1827,7 @@ public:
     void OnCancelEdit(HWND hwnd)
     {
         Edit_SetModify(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
         LPARAM lParam = TV_GetParam(m_hTreeView);
         SelectTV(hwnd, lParam, FALSE);
@@ -1892,6 +1893,7 @@ public:
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
+            Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
         else if (Entry.type == RT_MENU)
         {
@@ -1908,6 +1910,7 @@ public:
                     return;
                 }
             }
+            Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
         else if (Entry.type == RT_DIALOG)
         {
@@ -1955,9 +1958,8 @@ public:
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
+            Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
-
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
 
     void OnNew(HWND hwnd)
