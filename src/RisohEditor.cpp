@@ -1215,8 +1215,17 @@ public:
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_INITMENU, OnInitMenu);
+            HANDLE_MSG(hwnd, WM_ACTIVATE, OnActivate);
         default:
             return DefaultProcDx();
+        }
+    }
+
+    void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+    {
+        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
+        {
+            SetFocus(m_hTreeView);
         }
     }
 
@@ -1256,7 +1265,7 @@ public:
         if (!m_splitter3.CreateDx(m_splitter2, 1, style))
             return FALSE;
 
-        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
+        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
             TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
             TVS_LINESATROOT | TVS_SHOWSELALWAYS;
         m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
@@ -1271,7 +1280,7 @@ public:
         m_splitter1.SetPane(1, m_splitter2);
         m_splitter1.SetPaneExtent(0, TV_WIDTH);
 
-        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL |
+        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
             ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
             ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
         exstyle = WS_EX_CLIENTEDGE;
@@ -1280,7 +1289,7 @@ public:
         m_splitter2.SetPane(1, m_hBinEdit);
         m_splitter2.SetPaneExtent(1, BE_HEIGHT);
 
-        style = WS_CHILD | WS_VISIBLE | WS_VSCROLL |
+        style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
             ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
             ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
         exstyle = WS_EX_CLIENTEDGE;
