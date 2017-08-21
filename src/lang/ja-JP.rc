@@ -106,8 +106,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
 STRINGTABLE
 {
-    IDS_APPNAME, "理想エディター by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - 理想エディター by 片山博文MZ"
+    IDS_APPNAME, "リソーエディタ 0.5 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - リソーエディタ 0.5 by 片山博文MZ"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE, "保存できませんでした。"
@@ -133,7 +133,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "ビットマップの置き換えができませんでした。"
     IDS_REPLACEBMP, "ビットマップの置き換え"
     IDS_ERRORCODE, "エラーコード %dが発生しました。"
-    IDS_VERSIONINFO, "理想エディター Version 0.0"
+    IDS_VERSIONINFO, "リソーエディタ Version 0.5"
     IDS_ADDRES, "リソースの追加"
     IDS_CANNOTADDRES, "リソースの追加ができませんでした。"
     IDS_CANTADDBMP, "ビットマップの追加ができませんでした。"

@@ -31,8 +31,8 @@
 }
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     0, 0, 0, 0
-PRODUCTVERSION  0, 0, 0, 0
+FILEVERSION     0, 5, 0, 0
+PRODUCTVERSION  0, 5, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
@@ -42,11 +42,11 @@ FILETYPE        VFT_APP
         BLOCK "041103A4"
         {
             VALUE "CompanyName", "片山博文MZ\0"
-            VALUE "FileDescription", "理想エディター\0"
-            VALUE "FileVersion", "0.0\0"
+            VALUE "FileDescription", "リソーエディタ\0"
+            VALUE "FileVersion", "0.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017 片山博文MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "0.0\0"
+            VALUE "ProductVersion", "0.5\0"
         }
     }
     // English (U.S.)
@@ -55,11 +55,11 @@ FILETYPE        VFT_APP
         BLOCK "040904E4"
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
-            VALUE "FileDescription", "Risou Editor\0"
-            VALUE "FileVersion", "0.0\0"
+            VALUE "FileDescription", "RisohEditor\0"
+            VALUE "FileVersion", "0.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "0.0\0"
+            VALUE "ProductVersion", "0.5\0"
         }
     }
     BLOCK "VarFileInfo"
