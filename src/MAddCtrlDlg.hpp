@@ -146,6 +146,7 @@ public:
         ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
+        CenterWindowDx();
         return TRUE;
     }
 

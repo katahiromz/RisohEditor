@@ -44,6 +44,7 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());
 
+        CenterWindowDx();
         return TRUE;
     }
 

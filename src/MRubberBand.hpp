@@ -25,10 +25,10 @@ public:
                   INT x = 0, INT y = 0, INT cx = 0, INT cy = 0)
     {
         m_hwndTarget = hwndTarget;
-        BOOL bOK = CreateWindowDx(hwndParent, NULL,
-            (bVisible ? WS_VISIBLE : 0) | WS_CHILD | WS_THICKFRAME,
-            WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_TOPMOST,
-            x, y, cx, cy);
+        DWORD style = (bVisible ? WS_VISIBLE : 0) | WS_CHILD | WS_THICKFRAME;
+        DWORD exstyle = WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_TOPMOST;
+        BOOL bOK = CreateAsChildDx(hwndParent, NULL, style, exstyle, -1,
+                                   x, y, cx, cy);
         if (bOK)
         {
             FitToTarget();

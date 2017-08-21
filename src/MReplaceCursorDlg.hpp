@@ -53,6 +53,7 @@ public:
         InitLangComboBox(hCmb3, m_Entry.lang);
         ::EnableWindow(hCmb3, FALSE);
 
+        CenterWindowDx();
         return TRUE;
     }
 

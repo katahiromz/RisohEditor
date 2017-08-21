@@ -54,8 +54,7 @@ public:
         if (bVisible)
             dwStyle |= WS_VISIBLE;
         DWORD dwExStyle = WS_EX_CLIENTEDGE;
-        return CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle,
-            0, 0, 0, 0, (HMENU)CtrlID);
+        return CreateAsChildDx(hwndParent, NULL, dwStyle, dwExStyle, CtrlID);
     }
 
     void OnPaint(HWND hwnd)

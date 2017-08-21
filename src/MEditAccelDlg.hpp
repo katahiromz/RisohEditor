@@ -39,6 +39,7 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
 
+        CenterWindowDx();
         return TRUE;
     }
 

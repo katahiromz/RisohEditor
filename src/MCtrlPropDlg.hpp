@@ -365,6 +365,7 @@ public:
             SetDlgItemText(hwnd, cmb2, m_item.m_Title.c_str());
         }
 
+        CenterWindowDx();
         return TRUE;
     }
 

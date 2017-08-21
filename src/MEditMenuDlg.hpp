@@ -26,6 +26,7 @@ public:
     {
         SetDlgItemInt(hwnd, cmb2, 0, TRUE);
         SetDlgItemInt(hwnd, edt1, 0, TRUE);
+        CenterWindowDx();
         return TRUE;
     }
 
