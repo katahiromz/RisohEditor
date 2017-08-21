@@ -134,7 +134,7 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD Size)
     LPBYTE pb = (LPBYTE)pPackedDIB + Offset;
     Size -= Offset;
 
-    BITMAPINFO bi = *(LPBITMAPINFO)pPackedDIB;
+    BITMAPINFO bi = *(const BITMAPINFO *)pPackedDIB;
     //BITMAPINFOHEADER *pbmih = &bi.bmiHeader;
     LPVOID pBits;
 
