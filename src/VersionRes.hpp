@@ -170,24 +170,24 @@ public:
         ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
-        wsprintfW(line, L"FILEVERSION %u, %u, %u, %u\r\n",
+        wsprintfW(line, L"FILEVERSION\t%u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwFileVersionMS),
             LOWORD(m_fixed.dwFileVersionMS),
             HIWORD(m_fixed.dwFileVersionLS),
             LOWORD(m_fixed.dwFileVersionLS));
         ret += line;
 
-        wsprintfW(line, L"PRODUCTVERSION %u, %u, %u, %u\r\n",
+        wsprintfW(line, L"PRODUCTVERSION\t%u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwProductVersionMS),
             LOWORD(m_fixed.dwProductVersionMS),
             HIWORD(m_fixed.dwProductVersionLS),
             LOWORD(m_fixed.dwProductVersionLS));
         ret += line;
 
-        wsprintfW(line, L"FILEOS 0x%04lX\r\n", m_fixed.dwFileOS);
+        wsprintfW(line, L"FILEOS\t\t0x%04lX\r\n", m_fixed.dwFileOS);
         ret += line;
 
-        wsprintfW(line, L"FILETYPE 0x%X\r\n", m_fixed.dwFileType);
+        wsprintfW(line, L"FILETYPE\t0x%X\r\n", m_fixed.dwFileType);
         ret += line;
 
         ret += L"{\r\n";
