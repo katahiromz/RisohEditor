@@ -1986,6 +1986,9 @@ public:
 
         std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
+
+        str = DumpDataAsString(Entry.data);
+        ::SetWindowTextW(m_hBinEdit, str.c_str());
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
