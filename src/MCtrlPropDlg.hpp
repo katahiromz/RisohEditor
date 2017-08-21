@@ -362,7 +362,7 @@ public:
         }
         if (m_flags & F_TITLE)
         {
-            SetDlgItemText(hwnd, cmb2, m_item.m_Title.c_str());
+            SetDlgItemText(hwnd, cmb2, m_item.m_Title.c_str_or_empty());
         }
 
         CenterWindowDx();
