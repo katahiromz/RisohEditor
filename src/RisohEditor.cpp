@@ -2584,7 +2584,7 @@ public:
         std::wstring str = DumpDataAsString(Entry.data);
         ::SetWindowTextW(m_hBinEdit, str.c_str());
 
-        BOOL bEditable;
+        BOOL bEditable = FALSE;
         if (Entry.type == RT_ICON)
         {
             PreviewIcon(hwnd, Entry);
