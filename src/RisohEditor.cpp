@@ -1800,7 +1800,15 @@ public:
         }
         else if (pnmhdr->code == TVN_SELCHANGING)
         {
-            return !CompileIfNecessary(hwnd);
+            if (m_rad_window)
+            {
+                DestroyWindow(m_rad_window);
+                return FALSE;
+            }
+            else
+            {
+                return !CompileIfNecessary(hwnd);
+            }
         }
         else if (pnmhdr->code == TVN_SELCHANGED)
         {
