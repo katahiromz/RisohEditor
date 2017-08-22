@@ -2631,7 +2631,7 @@ public:
         HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
         if (hbm == NULL)
         {
-            // BI_RLE4, BI_RLE8
+            // Try a dirty hack for BI_RLE4, BI_RLE8, ...
             WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
             GetTempPathW(_countof(szPath), szPath);
             GetTempFileNameW(szPath, L"reb", 0, szTempFile);
@@ -2641,7 +2641,6 @@ public:
                 hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
                     LR_CREATEDIBSECTION | LR_LOADFROMFILE);
             }
-
             DeleteFileW(szTempFile);
         }
         m_hBmpView = hbm;
