@@ -169,6 +169,7 @@ public:
         if ((dwType & MFT_RIGHTJUSTIFY) == MFT_RIGHTJUSTIFY)
             CheckDlgButton(hwnd, chx13, BST_CHECKED);
 
+        CenterWindowDx();
         return TRUE;
     }
 
@@ -423,6 +424,7 @@ public:
         ListView_SetItemState(hCtl1, 0, state, state);
         SetFocus(hCtl1);
 
+        CenterWindowDx();
         return TRUE;
     }
 

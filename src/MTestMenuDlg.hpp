@@ -19,8 +19,8 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        CenterWindowDx();
         SetMenu(hwnd, m_hMenu);
+        CenterWindowDx();
         return TRUE;
     }
 
