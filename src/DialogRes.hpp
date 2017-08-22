@@ -293,7 +293,7 @@ struct DialogItem
         return TRUE;
     }
 
-    std::wstring Dump(const ConstantsDB& db)
+    std::wstring Dump(const ConstantsDB& db, BOOL bAlwaysControl = FALSE)
     {
         std::wstring ret, cls;
 
@@ -307,51 +307,54 @@ struct DialogItem
             cls = m_Class.str();
         }
 
-        if (lstrcmpiW(cls.c_str(), L"BUTTON") == 0)
+        if (!bAlwaysControl)
         {
+            if (lstrcmpiW(cls.c_str(), L"BUTTON") == 0)
+            {
 #ifndef BS_TYPEMASK
     #define BS_TYPEMASK     0x0000000F
 #endif
-            if ((m_Style & BS_TYPEMASK) == BS_AUTO3STATE)
-                return _do_AUTO3STATE(db);
-            if ((m_Style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
-                return _do_AUTOCHECKBOX(db);
-            if ((m_Style & BS_TYPEMASK) == BS_AUTORADIOBUTTON)
-                return _do_AUTORADIOBUTTON(db);
-            if ((m_Style & BS_TYPEMASK) == BS_CHECKBOX)
-                return _do_CHECKBOX(db);
-            if ((m_Style & BS_TYPEMASK) == BS_DEFPUSHBUTTON)
-                return _do_DEFPUSHBUTTON(db);
-            if ((m_Style & BS_TYPEMASK) == BS_GROUPBOX)
-                return _do_GROUPBOX(db);
-            if ((m_Style & BS_TYPEMASK) == BS_PUSHBUTTON)
-                return _do_PUSHBUTTON(db);
-            if ((m_Style & BS_TYPEMASK) == BS_RADIOBUTTON)
-                return _do_RADIOBUTTON(db);
-            if ((m_Style & BS_TYPEMASK) == BS_3STATE)
-                return _do_STATE3(db);
+                if ((m_Style & BS_TYPEMASK) == BS_AUTO3STATE)
+                    return _do_AUTO3STATE(db);
+                if ((m_Style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
+                    return _do_AUTOCHECKBOX(db);
+                if ((m_Style & BS_TYPEMASK) == BS_AUTORADIOBUTTON)
+                    return _do_AUTORADIOBUTTON(db);
+                if ((m_Style & BS_TYPEMASK) == BS_CHECKBOX)
+                    return _do_CHECKBOX(db);
+                if ((m_Style & BS_TYPEMASK) == BS_DEFPUSHBUTTON)
+                    return _do_DEFPUSHBUTTON(db);
+                if ((m_Style & BS_TYPEMASK) == BS_GROUPBOX)
+                    return _do_GROUPBOX(db);
+                if ((m_Style & BS_TYPEMASK) == BS_PUSHBUTTON)
+                    return _do_PUSHBUTTON(db);
+                if ((m_Style & BS_TYPEMASK) == BS_RADIOBUTTON)
+                    return _do_RADIOBUTTON(db);
+                if ((m_Style & BS_TYPEMASK) == BS_3STATE)
+                    return _do_STATE3(db);
+            }
+            if (lstrcmpiW(cls.c_str(), L"STATIC") == 0)
+            {
+                if ((m_Style & SS_TYPEMASK) == SS_LEFT)
+                    return _do_LTEXT(db);
+                if ((m_Style & SS_TYPEMASK) == SS_CENTER)
+                    return _do_CTEXT(db);
+                if ((m_Style & SS_TYPEMASK) == SS_RIGHT)
+                    return _do_RTEXT(db);
+                if ((m_Style & SS_TYPEMASK) == SS_ICON)
+                    return _do_ICON(db);
+            }
+            if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
+            {
+                return _do_EDITTEXT(db);
+            }
+            if (lstrcmpiW(cls.c_str(), L"COMBOBOX") == 0)
+                return _do_COMBOBOX(db);
+            if (lstrcmpiW(cls.c_str(), L"LISTBOX") == 0)
+                return _do_LISTBOX(db);
+            if (lstrcmpiW(cls.c_str(), L"SCROLLBAR") == 0)
+                return _do_SCROLLBAR(db);
         }
-        if (lstrcmpiW(cls.c_str(), L"STATIC") == 0)
-        {
-            if ((m_Style & SS_TYPEMASK) == SS_LEFT)
-                return _do_LTEXT(db);
-            if ((m_Style & SS_TYPEMASK) == SS_CENTER)
-                return _do_CTEXT(db);
-            if ((m_Style & SS_TYPEMASK) == SS_RIGHT)
-                return _do_RTEXT(db);
-            if ((m_Style & SS_TYPEMASK) == SS_ICON)
-                return _do_ICON(db);
-        }
-        if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
-        {
-            return _do_EDITTEXT(db);
-        }
-        if (lstrcmpiW(cls.c_str(), L"COMBOBOX") == 0)
-            return _do_COMBOBOX(db);
-        if (lstrcmpiW(cls.c_str(), L"LISTBOX") == 0)
-            return _do_LISTBOX(db);
-        if (lstrcmpiW(cls.c_str(), L"SCROLLBAR") == 0)
-            return _do_SCROLLBAR(db);
 
         ret += L"CONTROL ";
         if (!m_Title.empty())
@@ -688,7 +691,8 @@ struct DialogRes
         return stream.data();
     }
 
-    std::wstring Dump(const ID_OR_STRING& id_or_str, const ConstantsDB& db)
+    std::wstring Dump(const ID_OR_STRING& id_or_str, const ConstantsDB& db,
+                      BOOL bAlwaysControl = FALSE)
     {
         std::wstring ret;
 
@@ -784,7 +788,7 @@ struct DialogRes
         for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
-            ret += Items[i].Dump(db);
+            ret += Items[i].Dump(db, bAlwaysControl);
             ret += L"\r\n";
         }
 

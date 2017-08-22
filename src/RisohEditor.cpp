@@ -1114,6 +1114,7 @@ public:
     HWND        m_hToolBar;
     HWND        m_hStatusBar;
     BOOL        m_bShowBinEdit;
+    BOOL        m_bAlwaysControl;
     ConstantsDB m_ConstantsDB;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit;
@@ -1146,6 +1147,7 @@ public:
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
         m_bShowBinEdit(TRUE),
+        m_bAlwaysControl(FALSE),
         m_rad_window(m_ConstantsDB)
     {
         m_szDataFolder[0] = 0;
@@ -2208,6 +2210,13 @@ public:
                 m_bShowBinEdit = TRUE;
             ShowBinEdit(m_bShowBinEdit);
             break;
+        case ID_ALWAYSCONTROL:
+            {
+                m_bAlwaysControl = !m_bAlwaysControl;
+                LPARAM lParam = TV_GetParam(m_hTreeView);
+                SelectTV(hwnd, lParam, TRUE);
+            }
+            break;
         }
 
         if (bUpdateStatus && !::IsWindow(m_rad_window))
@@ -2346,6 +2355,11 @@ public:
 
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
+        if (m_bAlwaysControl)
+            CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_CHECKED);
+        else
+            CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_UNCHECKED);
+
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
         {
@@ -2719,7 +2733,7 @@ public:
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {
-            std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB);
+            std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB, m_bAlwaysControl);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }

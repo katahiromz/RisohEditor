@@ -44,6 +44,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     {
         MENUITEM "&Status Bar", ID_STATUSBAR
         MENUITEM "&Binary", ID_BINARYPANE
+        MENUITEM SEPARATOR
+        MENUITEM "Always &CONTROL statement", ID_ALWAYSCONTROL
     }
     POPUP "&Help"
     {

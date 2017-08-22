@@ -44,6 +44,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     {
         MENUITEM "ステータス バー(&S)", ID_STATUSBAR
         MENUITEM "バイナリー(&B)", ID_BINARYPANE
+        MENUITEM SEPARATOR
+        MENUITEM "常に&CONTROL文", ID_ALWAYSCONTROL
     }
     POPUP "ヘルプ(&H)"
     {
