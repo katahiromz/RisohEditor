@@ -20,9 +20,13 @@
 
 #define MYWM_CTRLMOVE           (WM_USER + 100)
 #define MYWM_CTRLSIZE           (WM_USER + 101)
+#ifndef MYWM_SELCHANGE
+    #define MYWM_SELCHANGE      (WM_USER + 102)
+#endif
 #define MYWM_DLGSIZE            (WM_USER + 103)
 #define MYWM_DELETESEL          (WM_USER + 104)
 #define MYWM_MOVESIZEREPORT     (WM_USER + 105)
+#define MYWM_CLEARSTATUS        (WM_USER + 106)
 
 class MRadCtrl : public MWindowBase
 {
@@ -512,6 +516,7 @@ public:
             HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, OnLButtonDown);
             HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
             HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
+            HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
@@ -525,6 +530,11 @@ public:
         m_ptClicked.y = y;
 
         MRadCtrl::DeselectSelection();
+    }
+
+    LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
     }
 
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -843,8 +853,32 @@ public:
             HANDLE_MESSAGE(hwnd, MYWM_DLGSIZE, OnDlgSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
             HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
+            HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+
+        HWND hwndSel = MRadCtrl::GetLastSel();
+        if (hwndSel == NULL)
+        {
+            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            return 0;
+        }
+        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndSel);
+        if (pCtrl == NULL)
+        {
+            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            return 0;
+        }
+
+        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
+            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
+            MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)

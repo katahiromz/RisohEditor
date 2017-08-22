@@ -10,6 +10,10 @@ class MRubberBand;
 
 #include "MWindowBase.hpp"
 
+#ifndef MYWM_SELCHANGE
+    #define MYWM_SELCHANGE      (WM_USER + 102)
+#endif
+
 class MRubberBand : public MWindowBase
 {
 public:
@@ -32,6 +36,7 @@ public:
         if (bOK)
         {
             FitToTarget();
+            PostMessage(hwndParent, MYWM_SELCHANGE, 0, 0);
         }
         return bOK;
     }
@@ -107,6 +112,7 @@ public:
 
     void OnDestroy(HWND hwnd)
     {
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
         DeleteObject(m_hRgn);
         m_hRgn = NULL;
         m_hwndTarget = NULL;

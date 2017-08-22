@@ -1218,6 +1218,7 @@ public:
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_INITMENU, OnInitMenu);
             HANDLE_MSG(hwnd, WM_ACTIVATE, OnActivate);
+            HANDLE_MESSAGE(hwnd, MYWM_CLEARSTATUS, OnClearStatus);
             HANDLE_MESSAGE(hwnd, MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         default:
             return DefaultProcDx();
@@ -1234,6 +1235,13 @@ public:
         WCHAR szText[64];
         wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
         ChangeStatusText(szText);
+        return 0;
+    }
+
+    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        ChangeStatusText(TEXT(""));
+        return 0;
     }
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
@@ -2053,7 +2061,8 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        ChangeStatusText(IDS_EXECUTINGCMD);
+        if (!::IsWindow(m_rad_window))
+            ChangeStatusText(IDS_EXECUTINGCMD);
 
         if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
         {
@@ -2062,7 +2071,7 @@ public:
             return;
         }
 
-        INT ret = 0;
+        BOOL bUpdateStatus = TRUE;
         switch (id)
         {
         case ID_NEW:
@@ -2141,6 +2150,7 @@ public:
             break;
         case ID_UPDATERES:
             OnUpdateRes(hwnd);
+            bUpdateStatus = FALSE;
             break;
         case ID_DELCTRL:
             MRadCtrl::DeleteSelection();
@@ -2183,9 +2193,7 @@ public:
             break;
         }
 
-        if (ret)
-            ChangeStatusText(ret);
-        else
+        if (bUpdateStatus && !::IsWindow(m_rad_window))
             ChangeStatusText(IDS_READY);
     }
 
