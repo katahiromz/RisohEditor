@@ -16,9 +16,10 @@
     #define RT_MANIFEST 24
 #endif
 
-#define TV_WIDTH    250     // default m_hTreeView width
-#define BV_WIDTH    160     // default m_hBmpView width
-#define BE_HEIGHT   90      // default m_hBinEdit height
+#define TV_WIDTH        250     // default m_hTreeView width
+#define BV_WIDTH        160     // default m_hBmpView width
+#define BE_HEIGHT       90      // default m_hBinEdit height
+#define CX_STATUS_PART  80      // status bar part width
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -2333,7 +2334,7 @@ public:
         }
         if (::IsWindowVisible(m_hStatusBar))
         {
-            INT anWidths[] = { ClientRect.right - 80, -1 };
+            INT anWidths[] = { ClientRect.right - CX_STATUS_PART, -1 };
             SendMessage(m_hStatusBar, SB_SETPARTS, 2, (LPARAM)anWidths);
             GetWindowRect(m_hStatusBar, &rc);
             sizClient.cy -= rc.bottom - rc.top;
