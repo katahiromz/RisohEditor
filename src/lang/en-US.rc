@@ -43,6 +43,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     POPUP "&View"
     {
         MENUITEM "&Status Bar", ID_STATUSBAR
+        MENUITEM "&Binary", ID_BINARYPANE
     }
     POPUP "&Help"
     {

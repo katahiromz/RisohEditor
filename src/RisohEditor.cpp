@@ -18,7 +18,7 @@
 
 #define TV_WIDTH    250     // default m_hTreeView width
 #define BV_WIDTH    160     // default m_hBmpView width
-#define BE_HEIGHT   100     // default m_hBinEdit height
+#define BE_HEIGHT   80      // default m_hBinEdit height
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1112,6 +1112,7 @@ public:
     HWND        m_hTreeView;
     HWND        m_hToolBar;
     HWND        m_hStatusBar;
+    BOOL        m_bShowBinEdit;
     ConstantsDB m_ConstantsDB;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit;
@@ -1143,6 +1144,7 @@ public:
         m_hTreeView(NULL),
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
+        m_bShowBinEdit(TRUE),
         m_rad_window(m_ConstantsDB)
     {
         m_szDataFolder[0] = 0;
@@ -2198,6 +2200,10 @@ public:
                 ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
             PostMessageDx(WM_SIZE);
             break;
+        case ID_BINARYPANE:
+            m_bShowBinEdit = !m_bShowBinEdit;
+            ShowBinEdit(m_bShowBinEdit);
+            break;
         }
 
         if (bUpdateStatus && !::IsWindow(m_rad_window))
@@ -2292,6 +2298,7 @@ public:
     {
         if (bShow)
         {
+            m_bShowBinEdit = TRUE;
             ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             m_splitter2.SetPaneCount(2);
             m_splitter2.SetPane(0, m_splitter3);
@@ -2300,6 +2307,7 @@ public:
         }
         else
         {
+            m_bShowBinEdit = FALSE;
             ShowWindow(m_hBinEdit, SW_HIDE);
             m_splitter2.SetPaneCount(1);
             m_splitter2.SetPane(0, m_splitter3);

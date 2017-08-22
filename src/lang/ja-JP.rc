@@ -43,6 +43,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     POPUP "表示(&V)"
     {
         MENUITEM "ステータス バー(&S)", ID_STATUSBAR
+        MENUITEM "バイナリー(&B)", ID_BINARYPANE
     }
     POPUP "ヘルプ(&H)"
     {
