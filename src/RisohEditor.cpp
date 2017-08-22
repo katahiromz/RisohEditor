@@ -18,7 +18,7 @@
 
 #define TV_WIDTH    250     // default m_hTreeView width
 #define BV_WIDTH    160     // default m_hBmpView width
-#define BE_HEIGHT   80      // default m_hBinEdit height
+#define BE_HEIGHT   90      // default m_hBinEdit height
 
 //////////////////////////////////////////////////////////////////////////////
 
