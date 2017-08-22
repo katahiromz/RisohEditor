@@ -2202,7 +2202,10 @@ public:
             PostMessageDx(WM_SIZE);
             break;
         case ID_BINARYPANE:
-            m_bShowBinEdit = !m_bShowBinEdit;
+            if (IsWindowVisible(m_hBinEdit))
+                m_bShowBinEdit = FALSE;
+            else
+                m_bShowBinEdit = TRUE;
             ShowBinEdit(m_bShowBinEdit);
             break;
         }
@@ -2297,9 +2300,8 @@ public:
 
     void ShowBinEdit(BOOL bShow = TRUE)
     {
-        if (bShow)
+        if (bShow && m_bShowBinEdit)
         {
-            m_bShowBinEdit = TRUE;
             ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             m_splitter2.SetPaneCount(2);
             m_splitter2.SetPane(0, m_splitter3);
@@ -2308,7 +2310,6 @@ public:
         }
         else
         {
-            m_bShowBinEdit = FALSE;
             ShowWindow(m_hBinEdit, SW_HIDE);
             m_splitter2.SetPaneCount(1);
             m_splitter2.SetPane(0, m_splitter3);
