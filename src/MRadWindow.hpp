@@ -22,6 +22,7 @@
 #define MYWM_CTRLSIZE           (WM_USER + 101)
 #define MYWM_DLGSIZE            (WM_USER + 103)
 #define MYWM_DELETESEL          (WM_USER + 104)
+#define MYWM_MOVESIZEREPORT     (WM_USER + 105)
 
 class MRadCtrl : public MWindowBase
 {
@@ -948,10 +949,16 @@ public:
 
         ClientToDialog(&rc);
 
-        m_dialog_res.Items[pCtrl->m_nIndex].m_pt.x = rc.left;
-        m_dialog_res.Items[pCtrl->m_nIndex].m_pt.y = rc.top;
+        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+        item.m_pt.x = rc.left;
+        item.m_pt.y = rc.top;
 
         UpdateRes();
+
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
+            MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
         return 0;
     }
@@ -974,10 +981,16 @@ public:
 
         ClientToDialog(&rc);
 
-        m_dialog_res.Items[pCtrl->m_nIndex].m_siz.cx = rc.right - rc.left;
-        m_dialog_res.Items[pCtrl->m_nIndex].m_siz.cy = rc.bottom - rc.top;
+        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+        item.m_siz.cx = rc.right - rc.left;
+        item.m_siz.cy = rc.bottom - rc.top;
 
         UpdateRes();
+
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
+            MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
         return 0;
     }
@@ -1018,6 +1031,11 @@ public:
         m_dialog_res.m_siz.cx = rc.right - rc.left;
         m_dialog_res.m_siz.cy = rc.bottom - rc.top;
         UpdateRes();
+
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(rc.left, rc.top),
+            MAKELPARAM(rc.right - rc.left, rc.bottom - rc.top));
 
         return 0;
     }

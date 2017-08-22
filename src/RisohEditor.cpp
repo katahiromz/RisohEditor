@@ -1218,9 +1218,22 @@ public:
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_INITMENU, OnInitMenu);
             HANDLE_MSG(hwnd, WM_ACTIVATE, OnActivate);
+            HANDLE_MESSAGE(hwnd, MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         default:
             return DefaultProcDx();
         }
+    }
+
+    LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        INT x = (SHORT)LOWORD(wParam);
+        INT y = (SHORT)HIWORD(wParam);
+        INT cx = (SHORT)LOWORD(lParam);
+        INT cy = (SHORT)HIWORD(lParam);
+
+        WCHAR szText[64];
+        wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
+        ChangeStatusText(szText);
     }
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
@@ -2031,7 +2044,11 @@ public:
 
     void ChangeStatusText(INT nID)
     {
-        SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)LoadStringDx(nID));
+        ChangeStatusText(LoadStringDx(nID));
+    }
+    void ChangeStatusText(LPCTSTR pszText)
+    {
+        SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
