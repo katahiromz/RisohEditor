@@ -40,6 +40,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource\tDel", ID_DELETERES
     }
+    POPUP "&View"
+    {
+        MENUITEM "&Status Bar", ID_STATUSBAR
+    }
     POPUP "&Help"
     {
         MENUITEM "&About...", ID_ABOUT

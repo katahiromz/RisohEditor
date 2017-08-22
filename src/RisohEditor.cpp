@@ -2191,6 +2191,13 @@ public:
         case ID_RIGHTALIGN:
             m_rad_window.OnRightAlign(hwnd);
             break;
+        case ID_STATUSBAR:
+            if (IsWindowVisible(m_hStatusBar))
+                ShowWindow(m_hStatusBar, SW_HIDE);
+            else
+                ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+            PostMessageDx(WM_SIZE);
+            break;
         }
 
         if (bUpdateStatus && !::IsWindow(m_rad_window))

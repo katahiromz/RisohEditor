@@ -40,6 +40,10 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "リソースを削除(&D)\tDel", ID_DELETERES
     }
+    POPUP "表示(&V)"
+    {
+        MENUITEM "ステータス バー(&S)", ID_STATUSBAR
+    }
     POPUP "ヘルプ(&H)"
     {
         MENUITEM "バージョン情報(&A)...", ID_ABOUT

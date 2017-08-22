@@ -43,6 +43,7 @@
 #define ID_RIGHTALIGN       140
 #define ID_TEXTEDIT         141
 #define ID_READY            142
+#define ID_STATUSBAR        143
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
