@@ -2355,6 +2355,16 @@ public:
 
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
+        if (IsWindowVisible(m_hStatusBar))
+            CheckMenuItem(hMenu, ID_STATUSBAR, MF_CHECKED);
+        else
+            CheckMenuItem(hMenu, ID_STATUSBAR, MF_UNCHECKED);
+
+        if (IsWindowVisible(m_hBinEdit))
+            CheckMenuItem(hMenu, ID_BINARYPANE, MF_CHECKED);
+        else
+            CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
+
         if (m_bAlwaysControl)
             CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_CHECKED);
         else
