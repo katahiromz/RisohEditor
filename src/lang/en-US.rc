@@ -38,7 +38,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource\tDel", ID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
     }
     POPUP "&View"
     {
@@ -76,7 +76,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource\tDel", ID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
     }
 }
 

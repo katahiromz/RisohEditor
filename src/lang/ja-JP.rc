@@ -38,7 +38,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソースを削除(&D)\tDel", ID_DELETERES
+        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
     }
     POPUP "表示(&V)"
     {
@@ -76,7 +76,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソースを削除(&D)\tDel", ID_DELETERES
+        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
     }
 }
 
