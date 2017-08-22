@@ -179,6 +179,13 @@ STRINGTABLE
     IDS_CURSORINFO, "Image #%u: Width %u, Height %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT, "ImageCount: %u\r\n"
     IDS_ICONINFO, "Image #%u: Width %u, Height %u, BitCount %u, ID %u\r\n"
+    IDS_READY, "Ready"
+    IDS_EXECUTINGCMD, "Executing command..."
+    IDS_EDITINGBYGUI, "Editing by GUI..."
+    IDS_COORD, "%d, %d, %d, %d"
+    IDS_STARTING, "Starting..."
+    IDS_COMPILING, "Compiling..."
+    IDS_CANNOTLOAD, "Unable to load."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

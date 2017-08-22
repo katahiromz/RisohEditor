@@ -1111,6 +1111,7 @@ public:
     HFONT       m_hSmallFont;
     HWND        m_hTreeView;
     HWND        m_hToolBar;
+    HWND        m_hStatusBar;
     ConstantsDB m_ConstantsDB;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit;
@@ -1141,6 +1142,7 @@ public:
         m_hSmallFont(NULL),
         m_hTreeView(NULL),
         m_hToolBar(NULL),
+        m_hStatusBar(NULL),
         m_rad_window(m_ConstantsDB)
     {
         m_szDataFolder[0] = 0;
@@ -1231,8 +1233,6 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
-        InitCommonControls();
-
         LoadLangInfo();
 
         INT nRet = CheckData();
@@ -1300,6 +1300,15 @@ public:
         m_splitter3.SetPane(0, m_hSrcEdit);
         //m_splitter3.SetPane(1, m_hBmpView);
 
+        style = WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP | CCS_BOTTOM;
+        m_hStatusBar = CreateStatusWindow(style, LoadStringDx(IDS_STARTING), hwnd, 8);
+        if (m_hStatusBar == NULL)
+            return FALSE;
+
+        INT anWidths[] = { -1 };
+        SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
+        ChangeStatusText(IDS_STARTING);
+
         LOGFONTW lf;
         GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
         lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
@@ -1327,6 +1336,9 @@ public:
 
         DragAcceptFiles(hwnd, TRUE);
         SetFocus(m_hTreeView);
+
+        PostMessageDx(WM_COMMAND, ID_READY);
+
         return TRUE;
     }
 
@@ -1859,6 +1871,8 @@ public:
             return;
         }
 
+        ChangeStatusText(IDS_COMPILING);
+
         INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
         std::wstring WideText;
         WideText.resize(cchText);
@@ -1902,6 +1916,7 @@ public:
             MEditAccelDlg dialog(accel_res, m_ConstantsDB);
             if (accel_res.LoadFromStream(stream))
             {
+                ChangeStatusText(IDS_EDITINGBYGUI);
                 INT nID = dialog.DialogBoxDx(hwnd);
                 if (nID == IDOK)
                 {
@@ -1917,6 +1932,7 @@ public:
             MenuRes menu_res;
             if (menu_res.LoadFromStream(stream))
             {
+                ChangeStatusText(IDS_EDITINGBYGUI);
                 MEditMenuDlg dialog(menu_res);
                 INT nID = dialog.DialogBoxDx(hwnd);
                 if (nID == IDOK)
@@ -1924,7 +1940,6 @@ public:
                     menu_res.Update();
                     Entry.data = menu_res.data();
                     SelectTV(hwnd, lParam, FALSE);
-                    return;
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -1940,6 +1955,7 @@ public:
             m_rad_window.m_dialog_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
+            ChangeStatusText(IDS_EDITINGBYGUI);
             DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
             if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
                                             style))
@@ -1960,9 +1976,13 @@ public:
             {
                 MByteStreamEx stream(it->data);
                 if (!str_res.LoadFromStream(stream, it->name.m_ID))
+                {
+                    ErrorBoxDx(IDS_CANNOTLOAD);
                     return;
+                }
             }
 
+            ChangeStatusText(IDS_EDITINGBYGUI);
             MStringsDlg dialog(str_res);
             INT nID = dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
@@ -2009,14 +2029,23 @@ public:
         ::SetWindowTextW(m_hBinEdit, str.c_str());
     }
 
+    void ChangeStatusText(INT nID)
+    {
+        SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)LoadStringDx(nID));
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        ChangeStatusText(IDS_EXECUTINGCMD);
+
         if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
         {
             ToolBar_Update(m_hToolBar, 2);
+            ChangeStatusText(IDS_READY);
             return;
         }
 
+        INT ret = 0;
         switch (id)
         {
         case ID_NEW:
@@ -2096,7 +2125,51 @@ public:
         case ID_UPDATERES:
             OnUpdateRes(hwnd);
             break;
+        case ID_DELCTRL:
+            MRadCtrl::DeleteSelection();
+            break;
+        case ID_ADDCTRL:
+            m_rad_window.OnAddCtrl(hwnd);
+            break;
+        case ID_CTRLPROP:
+            m_rad_window.OnCtrlProp(hwnd);
+            break;
+        case ID_DLGPROP:
+            m_rad_window.OnDlgProp(hwnd);
+            break;
+        case ID_CTRLINDEXTOP:
+            m_rad_window.IndexTop(hwnd);
+            break;
+        case ID_CTRLINDEXBOTTOM:
+            m_rad_window.IndexBottom(hwnd);
+            break;
+        case ID_CTRLINDEXMINUS:
+            m_rad_window.IndexMinus(hwnd);
+            break;
+        case ID_CTRLINDEXPLUS:
+            m_rad_window.IndexPlus(hwnd);
+            break;
+        case ID_SHOWHIDEINDEX:
+            m_rad_window.OnShowHideIndex(hwnd);
+            break;
+        case ID_TOPALIGN:
+            m_rad_window.OnTopAlign(hwnd);
+            break;
+        case ID_BOTTOMALIGN:
+            m_rad_window.OnBottomAlign(hwnd);
+            break;
+        case ID_LEFTALIGN:
+            m_rad_window.OnLeftAlign(hwnd);
+            break;
+        case ID_RIGHTALIGN:
+            m_rad_window.OnRightAlign(hwnd);
+            break;
         }
+
+        if (ret)
+            ChangeStatusText(ret);
+        else
+            ChangeStatusText(IDS_READY);
     }
 
     void OnDestroy(HWND hwnd)
@@ -2114,6 +2187,8 @@ public:
     {
         WCHAR File[MAX_PATH], *pch;
 
+        ChangeStatusText(IDS_EXECUTINGCMD);
+
         DragQueryFileW(hdrop, 0, File, _countof(File));
         DragFinish(hdrop);
 
@@ -2124,10 +2199,9 @@ public:
             {
                 MAddIconDlg dialog(m_Entries);
                 dialog.File = File;
-                if (dialog.DialogBoxDx(hwnd) == IDOK)
-                {
-                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                }
+                dialog.DialogBoxDx(hwnd);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                ChangeStatusText(IDS_READY);
                 return;
             }
             else if (lstrcmpiW(pch, L".cur") == 0)
@@ -2135,6 +2209,8 @@ public:
                 MAddCursorDlg dialog(m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                ChangeStatusText(IDS_READY);
                 return;
             }
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
@@ -2143,16 +2219,22 @@ public:
                 MAddBitmapDlg dialog(m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                ChangeStatusText(IDS_READY);
                 return;
             }
             else if (lstrcmpiW(pch, L".res") == 0)
             {
                 DoLoad(hwnd, m_Entries, File);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                ChangeStatusText(IDS_READY);
                 return;
             }
         }
 
         DoLoad(hwnd, m_Entries, File);
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        ChangeStatusText(IDS_READY);
     }
 
     void ShowBmpView(BOOL bShow = TRUE)
@@ -2195,8 +2277,9 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
+        SendMessageW(m_hStatusBar, WM_SIZE, 0, 0);
 
-        RECT ToolRect, ClientRect;
+        RECT rc, ClientRect;
 
         GetClientRect(hwnd, &ClientRect);
         SIZE sizClient = SizeFromRectDx(&ClientRect);
@@ -2204,9 +2287,16 @@ public:
         INT x = 0, y = 0;
         if (::IsWindowVisible(m_hToolBar))
         {
-            GetWindowRect(m_hToolBar, &ToolRect);
-            y += ToolRect.bottom - ToolRect.top;
-            sizClient.cy -= ToolRect.bottom - ToolRect.top;
+            GetWindowRect(m_hToolBar, &rc);
+            y += rc.bottom - rc.top;
+            sizClient.cy -= rc.bottom - rc.top;
+        }
+        if (::IsWindowVisible(m_hStatusBar))
+        {
+            INT anWidths[] = { ClientRect.right - 80, -1 };
+            SendMessage(m_hStatusBar, SB_SETPARTS, 2, (LPARAM)anWidths);
+            GetWindowRect(m_hStatusBar, &rc);
+            sizClient.cy -= rc.bottom - rc.top;
         }
 
         MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
@@ -3347,6 +3437,7 @@ WinMain(HINSTANCE   hInstance,
     LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    InitCommonControls();
     {
         MMainWnd app(argc, targv, hInstance);
 

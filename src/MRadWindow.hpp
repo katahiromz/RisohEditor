@@ -1073,48 +1073,8 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        switch (id)
-        {
-        case ID_DELCTRL:
-            MRadCtrl::DeleteSelection();
-            break;
-        case ID_ADDCTRL:
-            OnAddCtrl(hwnd);
-            break;
-        case ID_CTRLPROP:
-            OnCtrlProp(hwnd);
-            break;
-        case ID_DLGPROP:
-            OnDlgProp(hwnd);
-            break;
-        case ID_CTRLINDEXTOP:
-            IndexTop(hwnd);
-            break;
-        case ID_CTRLINDEXBOTTOM:
-            IndexBottom(hwnd);
-            break;
-        case ID_CTRLINDEXMINUS:
-            IndexMinus(hwnd);
-            break;
-        case ID_CTRLINDEXPLUS:
-            IndexPlus(hwnd);
-            break;
-        case ID_SHOWHIDEINDEX:
-            OnShowHideIndex(hwnd);
-            break;
-        case ID_TOPALIGN:
-            OnTopAlign(hwnd);
-            break;
-        case ID_BOTTOMALIGN:
-            OnBottomAlign(hwnd);
-            break;
-        case ID_LEFTALIGN:
-            OnLeftAlign(hwnd);
-            break;
-        case ID_RIGHTALIGN:
-            OnRightAlign(hwnd);
-            break;
-        }
+        HWND hwndOwner = ::GetWindow(hwnd, GW_OWNER);
+        FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, SendMessage);
     }
 
     void OnTopAlign(HWND hwnd)

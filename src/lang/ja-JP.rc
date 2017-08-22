@@ -179,6 +179,13 @@ STRINGTABLE
     IDS_CURSORINFO, "イメージ#%u: 幅 %u, 高さ %u, ビットの深さ %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT, "イメージ数: %u\r\n"
     IDS_ICONINFO, "イメージ#%u: 幅 %u, 高さ %u, ビットの深さ %u, ID %u\r\n"
+    IDS_READY, "準備完了"
+    IDS_EXECUTINGCMD, "コマンド実行中..."
+    IDS_EDITINGBYGUI, "GUI編集中..."
+    IDS_COORD, "%d, %d, %d, %d"
+    IDS_STARTING, "起動中..."
+    IDS_COMPILING, "コンパイル中..."
+    IDS_CANNOTLOAD, "読み込めません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -42,6 +42,7 @@
 #define ID_LEFTALIGN        139
 #define ID_RIGHTALIGN       140
 #define ID_TEXTEDIT         141
+#define ID_READY            142
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -138,5 +139,12 @@
 #define IDS_CURSORINFO      72
 #define IDS_IMAGECOUNT      73
 #define IDS_ICONINFO        74
+#define IDS_READY           75
+#define IDS_EXECUTINGCMD    76
+#define IDS_EDITINGBYGUI    77
+#define IDS_COORD           78
+#define IDS_STARTING        79
+#define IDS_COMPILING       80
+#define IDS_CANNOTLOAD      81
 
 #endif  // ndef RESOURCE_H_
