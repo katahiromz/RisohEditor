@@ -24,17 +24,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Resource...", ID_ADDRES
+        MENUITEM "Add Resource Item...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
+        MENUITEM "Replace Binary Resource Item...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON
         MENUITEM "Extract Cursor...", ID_EXTRACTCURSOR
         MENUITEM "Extract Bitmap...", ID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource...", ID_EXTRACTBIN
+        MENUITEM "Extract Binary Resource Item...", ID_EXTRACTBIN
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
@@ -62,17 +62,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Add Icon...", ID_ADDICON
         MENUITEM "Add Cursor...", ID_ADDCURSOR
         MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Resource...", ID_ADDRES
+        MENUITEM "Add Resource Item...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "Replace Icon...", ID_REPLACEICON
         MENUITEM "Replace Cursor...", ID_REPLACECURSOR
         MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource...", ID_REPLACEBIN
+        MENUITEM "Replace Binary Resource Item...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "Extract Icon...", ID_EXTRACTICON
         MENUITEM "Extract Cursor...", ID_EXTRACTCURSOR
         MENUITEM "Extract Bitmap...", ID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource...", ID_EXTRACTBIN
+        MENUITEM "Extract Binary Resource Item...", ID_EXTRACTBIN
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR

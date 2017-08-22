@@ -24,17 +24,17 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "リソースを追加...", ID_ADDRES
+        MENUITEM "リソース項目を追加...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
+        MENUITEM "バイナリ リソース項目を置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON
         MENUITEM "カーソルを抽出...", ID_EXTRACTCURSOR
         MENUITEM "ビットマップを抽出...", ID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソースを抽出...", ID_EXTRACTBIN
+        MENUITEM "バイナリ リソース項目を抽出...", ID_EXTRACTBIN
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
@@ -62,17 +62,17 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "アイコンを追加...", ID_ADDICON
         MENUITEM "カーソルを追加...", ID_ADDCURSOR
         MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "リソースを追加...", ID_ADDRES
+        MENUITEM "リソース項目を追加...", ID_ADDRES
         MENUITEM SEPARATOR
         MENUITEM "アイコンを置き換え...", ID_REPLACEICON
         MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
         MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "バイナリ リソースを置き換え...", ID_REPLACEBIN
+        MENUITEM "バイナリ リソース項目を置き換え...", ID_REPLACEBIN
         MENUITEM SEPARATOR
         MENUITEM "アイコンを抽出...", ID_EXTRACTICON
         MENUITEM "カーソルを抽出...", ID_EXTRACTCURSOR
         MENUITEM "ビットマップを抽出...", ID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソースを抽出...", ID_EXTRACTBIN
+        MENUITEM "バイナリ リソース項目を抽出...", ID_EXTRACTBIN
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
