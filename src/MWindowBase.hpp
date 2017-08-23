@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    47     /* Version 47 */
+#define MZC4_MWINDOWBASE_HPP_    48     /* Version 48 */
 
 class MWindowBase;
 class MDialogBase;
@@ -108,6 +108,12 @@ SIZE MZCAPI SizeFromRectDx(LPCRECT prc);
 LPTSTR MZCAPI LoadStringDx(INT nID);
 LPCTSTR MZCAPI GetStringDx(INT nStringID);
 LPCTSTR MZCAPI GetStringDx(LPCTSTR psz);
+BOOL MZCAPI GetWindowPosDx(HWND hwnd, POINT *ppt = NULL, SIZE *psiz = NULL);
+BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc);
+BOOL MZCAPI SetWindowPosDx(HWND hwnd, LPPOINT ppt = NULL, LPSIZE psiz = NULL,
+    HWND hwndInsertAfter = NULL,
+    UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+BOOL MZCAPI SetWindowPosDx(HWND hwnd, const RECT *prc);
 
 //////////////////////////////////////////////////////////////////////////////
 // Messaging
@@ -332,9 +338,22 @@ public:
 
     static VOID CenterWindowDx(HWND hwnd);
 
-    VOID SetWindowPosDx(LPPOINT ppt = NULL, LPSIZE psiz = NULL,
+    static BOOL MZCAPI GetWindowPosDx(HWND hwnd, POINT *ppt = NULL, SIZE *psiz = NULL);
+    static BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc);
+
+    BOOL MZCAPI GetWindowPosDx(POINT *ppt = NULL, SIZE *psiz = NULL);
+    BOOL MZCAPI GetWindowPosDx(RECT *prc);
+
+    static BOOL SetWindowPosDx(HWND hwnd,
+                               LPPOINT ppt = NULL, LPSIZE psiz = NULL,
+                               HWND hwndInsertAfter = NULL,
+                               UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    static BOOL SetWindowPosDx(HWND hwnd, const RECT *prc);
+
+    BOOL SetWindowPosDx(LPPOINT ppt = NULL, LPSIZE psiz = NULL,
                         HWND hwndInsertAfter = NULL,
                         UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    BOOL SetWindowPosDx(const RECT *prc);
 
     static HWND GetAncestorDx(HWND hTarget);
     HWND GetAncestorDx() const
@@ -701,6 +720,91 @@ inline LPCTSTR MZCAPI GetStringDx(INT nStringID)
     return LoadStringDx(nStringID);
 }
 
+inline BOOL MZCAPI
+GetWindowPosDx(HWND hwnd, POINT *ppt/* = NULL*/, SIZE *psiz/* = NULL*/)
+{
+    RECT rc;
+    if (!GetWindowRect(hwnd, &rc))
+        return FALSE;
+
+    if (ppt)
+    {
+        ppt->x = rc.left;
+        ppt->y = rc.top;
+        if (GetWindowStyle(hwnd) & WS_CHILD)
+        {
+            MapWindowPoints(NULL, GetParent(hwnd), ppt, 1);
+        }
+    }
+    if (psiz)
+    {
+        psiz->cx = rc.right - rc.left;
+        psiz->cy = rc.bottom - rc.top;
+    }
+    return TRUE;
+}
+
+inline BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc)
+{
+    POINT pt;
+    SIZE siz;
+    if (!GetWindowPosDx(hwnd, &pt, &siz))
+        return FALSE;
+    prc->left = pt.x;
+    prc->top = pt.y;
+    prc->right = pt.x + siz.cx;
+    prc->bottom = pt.x + siz.cy;
+    return TRUE;
+}
+
+inline BOOL MZCAPI
+SetWindowPosDx(HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
+    HWND hwndInsertAfter/* = NULL*/,
+    UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
+{
+    if (hwndInsertAfter == NULL)
+    {
+        uFlags |= SWP_NOZORDER;
+    }
+
+    INT x = 0, y = 0;
+    if (ppt == NULL)
+    {
+        uFlags |= SWP_NOMOVE;
+    }
+    else
+    {
+        x = ppt->x;
+        y = ppt->y;
+    }
+
+    INT cx = 0, cy = 0;
+    if (psiz == NULL)
+    {
+        uFlags |= SWP_NOSIZE;
+    }
+    else
+    {
+        cx = psiz->cx;
+        cy = psiz->cy;
+    }
+
+    return ::SetWindowPos(hwnd, hwndInsertAfter, x, y, cx, cy, uFlags);
+}
+
+inline BOOL MZCAPI
+SetWindowPosDx(HWND hwnd, const RECT *prc)
+{
+    assert(prc);
+    POINT pt;
+    SIZE siz;
+    pt.x = prc->left;
+    pt.y = prc->top;
+    siz.cx = prc->right - prc->left;
+    siz.cy = prc->bottom - prc->top;
+    return ::SetWindowPosDx(hwnd, &pt, &siz);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 inline VOID
@@ -904,40 +1008,62 @@ inline /*static*/ VOID MWindowBase::CenterWindowDx(HWND hwnd)
                    SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-inline VOID
+inline /*static*/ BOOL MZCAPI
+MWindowBase::GetWindowPosDx(HWND hwnd, POINT *ppt/* = NULL*/, SIZE *psiz/* = NULL*/)
+{
+    assert(IsWindow(hwnd));
+    return ::GetWindowPosDx(hwnd, ppt, psiz);
+}
+
+inline BOOL MZCAPI
+MWindowBase::GetWindowPosDx(POINT *ppt/* = NULL*/, SIZE *psiz/* = NULL*/)
+{
+    assert(IsWindow(m_hwnd));
+    return ::GetWindowPosDx(m_hwnd, ppt, psiz);
+}
+
+inline /*static*/ BOOL MZCAPI MWindowBase::GetWindowPosDx(HWND hwnd, RECT *prc)
+{
+    assert(IsWindow(hwnd));
+    return ::GetWindowPosDx(hwnd, prc);
+}
+
+inline BOOL MZCAPI MWindowBase::GetWindowPosDx(RECT *prc)
+{
+    assert(IsWindow(m_hwnd));
+    return ::GetWindowPosDx(m_hwnd, prc);
+}
+
+inline /*static*/ BOOL
+MWindowBase::SetWindowPosDx(
+    HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
+    HWND hwndInsertAfter/* = NULL*/,
+    UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
+{
+    assert(IsWindow(hwnd));
+    return ::SetWindowPosDx(hwnd, ppt, psiz, hwndInsertAfter, uFlags);
+}
+
+inline /*static*/ BOOL MWindowBase::SetWindowPosDx(HWND hwnd, const RECT *prc)
+{
+    assert(IsWindow(hwnd));
+    return ::SetWindowPosDx(hwnd, prc);
+}
+
+inline BOOL
 MWindowBase::SetWindowPosDx(
     LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
     HWND hwndInsertAfter/* = NULL*/,
     UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
 {
-    if (hwndInsertAfter == NULL)
-    {
-        uFlags |= SWP_NOZORDER;
-    }
+    assert(IsWindow(m_hwnd));
+    return ::SetWindowPosDx(m_hwnd, ppt, psiz, hwndInsertAfter, uFlags);
+}
 
-    INT x = 0, y = 0;
-    if (ppt == NULL)
-    {
-        uFlags |= SWP_NOMOVE;
-    }
-    else
-    {
-        x = ppt->x;
-        y = ppt->y;
-    }
-
-    INT cx = 0, cy = 0;
-    if (psiz == NULL)
-    {
-        uFlags |= SWP_NOSIZE;
-    }
-    else
-    {
-        cx = psiz->cx;
-        cy = psiz->cy;
-    }
-
-    ::SetWindowPos(m_hwnd, hwndInsertAfter, x, y, cx, cy, uFlags);
+inline BOOL MWindowBase::SetWindowPosDx(const RECT *prc)
+{
+    assert(IsWindow(m_hwnd));
+    return ::SetWindowPosDx(m_hwnd, prc);
 }
 
 inline /*static*/ HWND MWindowBase::GetAncestorDx(HWND hTarget)
