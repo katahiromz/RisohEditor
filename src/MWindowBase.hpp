@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    48     /* Version 48 */
+#define MZC4_MWINDOWBASE_HPP_    49     /* Version 49 */
 
 class MWindowBase;
 class MDialogBase;
@@ -375,6 +375,16 @@ public:
                                IMAGE_ICON, cxSmall, cySmall, 0));
     }
 
+    HFONT GetFontDx() const
+    {
+        assert(::IsWindow(m_hwnd));
+        return GetWindowFont(m_hwnd);
+    }
+    void SetFontDx(HFONT hFont, BOOL bRedraw = TRUE)
+    {
+        assert(::IsWindow(m_hwnd));
+        SetWindowFont(m_hwnd, hFont, bRedraw);
+    }
     DWORD GetStyleDx() const
     {
         assert(::IsWindow(m_hwnd));
