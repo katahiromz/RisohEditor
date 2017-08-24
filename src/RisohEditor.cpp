@@ -2310,17 +2310,12 @@ public:
             m_rad_window.OnRightAlign(m_rad_window);
             break;
         case ID_STATUSBAR:
-            if (IsWindowVisible(m_hStatusBar))
-                ShowWindow(m_hStatusBar, SW_HIDE);
-            else
-                ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+            m_settings.bShowStatusBar = !m_settings.bShowStatusBar;
+            ShowStatusBar(m_settings.bShowStatusBar);
             PostMessageDx(WM_SIZE);
             break;
         case ID_BINARYPANE:
-            if (IsWindowVisible(m_hBinEdit))
-                m_settings.bShowBinEdit = FALSE;
-            else
-                m_settings.bShowBinEdit = TRUE;
+            m_settings.bShowBinEdit = !m_settings.bShowBinEdit;
             ShowBinEdit(m_settings.bShowBinEdit);
             break;
         case ID_ALWAYSCONTROL:
@@ -2341,6 +2336,8 @@ public:
                     DoLoad(hwnd, m_Entries, m_settings.vecRecentlyUsed[i].c_str());
                 }
             }
+            break;
+        case ID_READY:
             break;
         default:
             bUpdateStatus = FALSE;
@@ -2437,6 +2434,14 @@ public:
             m_splitter3.SetPane(0, m_hSrcEdit);
         }
         ::SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
+    }
+
+    void ShowStatusBar(BOOL bShow = TRUE)
+    {
+        if (bShow)
+            ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+        else
+            ShowWindow(m_hStatusBar, SW_HIDE);
     }
 
     void ShowBinEdit(BOOL bShow = TRUE)
@@ -3777,7 +3782,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
-    m_settings.bShowStatusBar = IsWindowVisible(m_hStatusBar);
     if (m_splitter3.GetPaneCount() >= 2)
         m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
     if (m_splitter2.GetPaneCount() >= 2)
