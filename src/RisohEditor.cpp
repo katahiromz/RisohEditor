@@ -2347,6 +2347,18 @@ public:
         case ID_MRUFILE1:
         case ID_MRUFILE2:
         case ID_MRUFILE3:
+        case ID_MRUFILE4:
+        case ID_MRUFILE5:
+        case ID_MRUFILE6:
+        case ID_MRUFILE7:
+        case ID_MRUFILE8:
+        case ID_MRUFILE9:
+        case ID_MRUFILE10:
+        case ID_MRUFILE11:
+        case ID_MRUFILE12:
+        case ID_MRUFILE13:
+        case ID_MRUFILE14:
+        case ID_MRUFILE15:
             {
                 DWORD i = id - ID_MRUFILE0;
                 if (i < m_settings.vecRecentlyUsed.size())
