@@ -2444,7 +2444,8 @@ public:
             EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
             break;
         case I_LANG:
-            if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON)
+            if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON ||
+                Entry.type == RT_ANIICON)
             {
                 EnableMenuItem(hMenu, ID_EXTRACTICON, MF_ENABLED);
             }
@@ -2452,7 +2453,7 @@ public:
             {
                 EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
             }
-            if (Entry.type == RT_GROUP_ICON)
+            if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ANIICON)
             {
                 EnableMenuItem(hMenu, ID_REPLACEICON, MF_ENABLED);
             }
@@ -2472,7 +2473,8 @@ public:
                 EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
             }
 
-            if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR)
+            if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR ||
+                Entry.type == RT_ANICURSOR)
             {
                 EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_ENABLED);
             }
@@ -2480,7 +2482,7 @@ public:
             {
                 EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
             }
-            if (Entry.type == RT_GROUP_CURSOR)
+            if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_ANICURSOR)
             {
                 EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_ENABLED);
             }
@@ -2747,6 +2749,50 @@ public:
         }
     }
 
+    void PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon)
+    {
+        HICON hIcon = NULL;
+
+        {
+            WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
+            GetTempPathW(_countof(szPath), szPath);
+            GetTempFileNameW(szPath, L"ani", 0, szTempFile);
+
+            MFile file;
+            DWORD cbWritten = 0;
+            if (file.OpenFileForOutput(szTempFile) &&
+                file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            {
+                file.CloseHandle();
+                if (bIcon)
+                {
+                    hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON,
+                        0, 0, LR_LOADFROMFILE);
+                }
+                else
+                {
+                    hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_CURSOR,
+                        0, 0, LR_LOADFROMFILE);
+                }
+            }
+            DeleteFileW(szTempFile);
+        }
+
+        if (hIcon)
+        {
+            m_hBmpView.SetIcon(hIcon, bIcon);
+            if (bIcon)
+                ::SetWindowTextW(m_hSrcEdit, TEXT("RT_ANIICON"));
+            else
+                ::SetWindowTextW(m_hSrcEdit, TEXT("RT_ANICURSOR"));
+        }
+        else
+        {
+            m_hBmpView.DestroyBmp();
+        }
+        ShowBmpView(TRUE);
+    }
+
     void PreviewStringTable(HWND hwnd, const ResEntry& Entry)
     {
         ResEntries found;
@@ -2821,6 +2867,16 @@ public:
         {
             PreviewDialog(hwnd, Entry);
             bEditable = TRUE;
+        }
+        else if (Entry.type == RT_ANIICON)
+        {
+            PreviewAniIcon(hwnd, Entry, TRUE);
+            bEditable = FALSE;
+        }
+        else if (Entry.type == RT_ANICURSOR)
+        {
+            PreviewAniIcon(hwnd, Entry, FALSE);
+            bEditable = FALSE;
         }
         else if (Entry.type == RT_MESSAGETABLE)
         {

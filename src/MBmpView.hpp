@@ -13,10 +13,22 @@ class MBmpView : public MWindowBase
 public:
     BITMAP      m_bm;
     HBITMAP     m_hBitmap;
+    HICON       m_hIcon;
+    HWND        m_hStatic;
 
     MBmpView()
     {
         ZeroMemory(&m_bm, sizeof(m_bm));
+    }
+
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+    {
+        DWORD style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
+        m_hStatic = CreateWindowEx(0, TEXT("STATIC"), NULL,
+            style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
+        if (m_hStatic == NULL)
+            return FALSE;
+        return TRUE;
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
@@ -36,7 +48,16 @@ public:
     {
         DestroyBmp();
         m_hBitmap = hbm;
+        ShowWindow(m_hStatic, SW_HIDE);
         return *this;
+    }
+
+    void SetIcon(HICON hIcon, BOOL bIcon)
+    {
+        DestroyBmp();
+        m_hIcon = hIcon;
+        SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
+        ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
     }
 
     void DestroyBmp()
@@ -45,6 +66,11 @@ public:
         {
             DeleteObject(m_hBitmap);
             m_hBitmap = NULL;
+        }
+        if (m_hIcon)
+        {
+            DestroyIcon(m_hIcon);
+            m_hIcon = NULL;
         }
     }
 
@@ -215,6 +241,7 @@ public:
     {
         switch (uMsg)
         {
+            HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
             HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
             HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
             HANDLE_MSG(hwnd, WM_HSCROLL, OnHScroll);
