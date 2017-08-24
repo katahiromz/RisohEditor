@@ -1102,6 +1102,7 @@ struct RisohSettings
     INT     nTreeViewWidth;
     INT     nBmpViewWidth;
     INT     nBinEditHeight;
+    BOOL    bGuiByDblClick;
 
     RisohSettings()
     {
@@ -1116,6 +1117,7 @@ struct RisohSettings
         nTreeViewWidth = TV_WIDTH;
         nBmpViewWidth = BV_WIDTH;
         nBinEditHeight = BE_HEIGHT;
+        bGuiByDblClick = TRUE;
     }
 };
 
@@ -1890,7 +1892,6 @@ public:
             return;
 
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-
         SelectTV(hwnd, lParam, TRUE);
     }
 
@@ -1901,6 +1902,10 @@ public:
             if (pnmhdr->hwndFrom == m_hTreeView)
             {
                 OnEdit(hwnd);
+                if (m_settings.bGuiByDblClick)
+                {
+                    OnGuiEdit(hwnd);
+                }
             }
         }
         else if (pnmhdr->code == TVN_SELCHANGING)
@@ -2048,7 +2053,7 @@ public:
                                             style))
             {
                 CenterWindowDx(m_rad_window);
-                ShowWindow(m_rad_window, SW_SHOWNOACTIVATE);
+                ShowWindow(m_rad_window, SW_SHOWNORMAL);
                 UpdateWindow(m_rad_window);
             }
         }
@@ -3679,6 +3684,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)m_settings.nTreeViewWidth);
     keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)m_settings.nBmpViewWidth);
     keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)m_settings.nBinEditHeight);
+    keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)m_settings.bGuiByDblClick);
 
     return TRUE;
 }
@@ -3711,6 +3717,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("TreeViewWidth"), m_settings.nTreeViewWidth);
     keyRisoh.SetDword(TEXT("BmpViewWidth"), m_settings.nBmpViewWidth);
     keyRisoh.SetDword(TEXT("BinEditHeight"), m_settings.nBinEditHeight);
+    keyRisoh.SetDword(TEXT("bGuiByDblClick"), m_settings.bGuiByDblClick);
     return TRUE;
 }
 
