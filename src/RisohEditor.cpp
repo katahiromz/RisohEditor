@@ -1099,6 +1099,9 @@ struct RisohSettings
     BOOL    bShowBinEdit;
     BOOL    bAlwaysControl;
     BOOL    bShowStatusBar;
+    INT     nTreeViewWidth;
+    INT     nBmpViewWidth;
+    INT     nBinEditHeight;
 
     RisohSettings()
     {
@@ -1110,8 +1113,16 @@ struct RisohSettings
         bShowBinEdit = TRUE;
         bAlwaysControl = FALSE;
         bShowStatusBar = TRUE;
+        nTreeViewWidth = TV_WIDTH;
+        nBmpViewWidth = BV_WIDTH;
+        nBinEditHeight = BE_HEIGHT;
     }
 };
+
+#define TV_WIDTH        250     // default m_hTreeView width
+#define BV_WIDTH        160     // default m_hBmpView width
+#define BE_HEIGHT       90      // default m_hBinEdit height
+#define CX_STATUS_PART  80      // status bar part width
 
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd
@@ -1326,7 +1337,7 @@ public:
 
         m_splitter1.SetPane(0, m_hTreeView);
         m_splitter1.SetPane(1, m_splitter2);
-        m_splitter1.SetPaneExtent(0, TV_WIDTH);
+        m_splitter1.SetPaneExtent(0, m_settings.nTreeViewWidth);
 
         style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
             ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
@@ -1356,6 +1367,11 @@ public:
         INT anWidths[] = { -1 };
         SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
         ChangeStatusText(IDS_STARTING);
+
+        if (m_settings.bShowStatusBar)
+            ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+        else
+            ShowWindow(m_hStatusBar, SW_HIDE);
 
         LOGFONTW lf;
         GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
@@ -2344,10 +2360,12 @@ public:
             m_splitter3.SetPaneCount(2);
             m_splitter3.SetPane(0, m_hSrcEdit);
             m_splitter3.SetPane(1, m_hBmpView);
-            m_splitter3.SetPaneExtent(1, BV_WIDTH);
+            m_splitter3.SetPaneExtent(1, m_settings.nBmpViewWidth);
         }
         else
         {
+            if (m_splitter3.GetPaneCount() >= 2)
+                m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
             ShowWindow(m_hBmpView, SW_HIDE);
             m_splitter3.SetPaneCount(1);
             m_splitter3.SetPane(0, m_hSrcEdit);
@@ -2363,10 +2381,12 @@ public:
             m_splitter2.SetPaneCount(2);
             m_splitter2.SetPane(0, m_splitter3);
             m_splitter2.SetPane(1, m_hBinEdit);
-            m_splitter2.SetPaneExtent(1, BE_HEIGHT);
+            m_splitter2.SetPaneExtent(1, m_settings.nBinEditHeight);
         }
         else
         {
+            if (m_splitter2.GetPaneCount() >= 2)
+                m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
             ShowWindow(m_hBinEdit, SW_HIDE);
             m_splitter2.SetPaneCount(1);
             m_splitter2.SetPane(0, m_splitter3);
@@ -3656,11 +3676,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)m_settings.bAlwaysControl);
-
-    if (m_settings.bShowStatusBar)
-        ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
-    else
-        ShowWindow(m_hStatusBar, SW_HIDE);
+    keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)m_settings.nTreeViewWidth);
+    keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)m_settings.nBmpViewWidth);
+    keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)m_settings.nBinEditHeight);
 
     return TRUE;
 }
@@ -3680,10 +3698,19 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         return FALSE;
 
     m_settings.bShowStatusBar = IsWindowVisible(m_hStatusBar);
+    if (m_splitter3.GetPaneCount() >= 2)
+        m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+    if (m_splitter2.GetPaneCount() >= 2)
+        m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+    if (m_splitter1.GetPaneCount() >= 1)
+        m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
     keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
     keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);
+    keyRisoh.SetDword(TEXT("TreeViewWidth"), m_settings.nTreeViewWidth);
+    keyRisoh.SetDword(TEXT("BmpViewWidth"), m_settings.nBmpViewWidth);
+    keyRisoh.SetDword(TEXT("BinEditHeight"), m_settings.nBinEditHeight);
     return TRUE;
 }
 
