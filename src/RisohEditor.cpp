@@ -1096,13 +1096,15 @@ Res_GetLangName(WORD Lang)
 
 struct RisohSettings
 {
-    BOOL    bShowBinEdit;
-    BOOL    bAlwaysControl;
-    BOOL    bShowStatusBar;
-    INT     nTreeViewWidth;
-    INT     nBmpViewWidth;
-    INT     nBinEditHeight;
-    BOOL    bGuiByDblClick;
+    BOOL        bShowBinEdit;
+    BOOL        bAlwaysControl;
+    BOOL        bShowStatusBar;
+    INT         nTreeViewWidth;
+    INT         nBmpViewWidth;
+    INT         nBinEditHeight;
+    BOOL        bGuiByDblClick;
+    typedef std::vector<MString> mru_type;
+    mru_type    vecRecentlyUsed;
 
     RisohSettings()
     {
@@ -1118,6 +1120,20 @@ struct RisohSettings
         nBmpViewWidth = BV_WIDTH;
         nBinEditHeight = BE_HEIGHT;
         bGuiByDblClick = TRUE;
+        vecRecentlyUsed.clear();
+    }
+
+    void AddFile(LPCTSTR pszFile)
+    {
+        for (size_t i = 0; i < vecRecentlyUsed.size(); ++i)
+        {
+            if (vecRecentlyUsed[i] == pszFile)
+            {
+                vecRecentlyUsed.erase(vecRecentlyUsed.begin() + i);
+                break;
+            }
+        }
+        vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
     }
 };
 
@@ -1241,6 +1257,29 @@ public:
             ::DispatchMessage(&msg);
         }
         return INT(msg.wParam);
+    }
+
+    void UpdateMenu()
+    {
+        HMENU hMenu = GetMenu(m_hwnd);
+        HMENU hFileMenu = GetSubMenu(hMenu, 0);
+        HMENU hMruMenu = GetSubMenu(hFileMenu, GetMenuItemCount(hFileMenu) - 3);
+		assert(hMruMenu);
+        while (DeleteMenu(hMruMenu, 0, MF_BYPOSITION))
+            ;
+
+        INT i = 0;
+        RisohSettings::mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
+        for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
+        {
+            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, it->c_str());
+            ++i;
+        }
+
+        if (m_settings.vecRecentlyUsed.empty())
+        {
+            InsertMenu(hMruMenu, 0, MF_BYPOSITION | MF_STRING | MF_GRAYED, -1, LoadStringDx(IDS_NONE));
+        }
     }
 
     virtual LRESULT CALLBACK
@@ -1402,6 +1441,7 @@ public:
 
         DragAcceptFiles(hwnd, TRUE);
         SetFocus(m_hTreeView);
+        UpdateMenu();
 
         PostMessageDx(WM_COMMAND, ID_READY);
 
@@ -1446,6 +1486,9 @@ public:
         {
             ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
         }
+
+        m_settings.AddFile(m_szFile);
+        UpdateMenu();
         return TRUE;
     }
 
@@ -2282,6 +2325,18 @@ public:
                 m_settings.bAlwaysControl = !m_settings.bAlwaysControl;
                 LPARAM lParam = TV_GetParam(m_hTreeView);
                 SelectTV(hwnd, lParam, TRUE);
+            }
+            break;
+        case ID_MRUFILE0:
+        case ID_MRUFILE1:
+        case ID_MRUFILE2:
+        case ID_MRUFILE3:
+            {
+                DWORD i = id - ID_MRUFILE0;
+                if (i < m_settings.vecRecentlyUsed.size())
+                {
+                    DoLoad(hwnd, m_Entries, m_settings.vecRecentlyUsed[i].c_str());
+                }
             }
             break;
         }
@@ -3686,6 +3741,19 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)m_settings.nBinEditHeight);
     keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)m_settings.bGuiByDblClick);
 
+    DWORD i, dwCount;
+    keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
+    if (dwCount > 4)
+        dwCount = 4;
+
+    TCHAR szFormat[32], szFile[MAX_PATH];
+    for (i = 0; i < dwCount; ++i)
+    {
+        wsprintf(szFormat, TEXT("File%lu"), i);
+        keyRisoh.QuerySz(szFormat, szFile, MAX_PATH);
+        m_settings.vecRecentlyUsed.push_back(szFile);
+    }
+
     return TRUE;
 }
 
@@ -3718,6 +3786,18 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("BmpViewWidth"), m_settings.nBmpViewWidth);
     keyRisoh.SetDword(TEXT("BinEditHeight"), m_settings.nBinEditHeight);
     keyRisoh.SetDword(TEXT("bGuiByDblClick"), m_settings.bGuiByDblClick);
+
+    DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
+    if (dwCount > 4)
+        dwCount = 4;
+    keyRisoh.SetDword(TEXT("FileCount"), dwCount);
+
+    TCHAR szFormat[32];
+    for (i = 0; i < dwCount; ++i)
+    {
+        wsprintf(szFormat, TEXT("File%lu"), i);
+        keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
+    }
     return TRUE;
 }
 

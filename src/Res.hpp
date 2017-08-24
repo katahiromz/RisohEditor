@@ -975,7 +975,8 @@ TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE,
     if (lParam)
     {
         WORD k = LOWORD(lParam);
-        entry = Entries[k];
+		if (k < Entries.size())
+	        entry = Entries[k];
     }
 
     TreeView_DeleteAllItems(hwnd);

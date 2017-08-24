@@ -46,6 +46,10 @@
 #define ID_STATUSBAR        143
 #define ID_BINARYPANE       144
 #define ID_ALWAYSCONTROL    145
+#define ID_MRUFILE0         146
+#define ID_MRUFILE1         147
+#define ID_MRUFILE2         148
+#define ID_MRUFILE3         149
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -149,5 +153,6 @@
 #define IDS_STARTING        79
 #define IDS_COMPILING       80
 #define IDS_CANNOTLOAD      81
+#define IDS_NONE            82
 
 #endif  // ndef RESOURCE_H_

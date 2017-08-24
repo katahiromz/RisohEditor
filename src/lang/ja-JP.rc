@@ -15,6 +15,11 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM SEPARATOR
+        POPUP "最近使ったファイル(&R)"
+        {
+            MENUITEM "(なし)", -1, GRAYED
+        }
+        MENUITEM SEPARATOR
         MENUITEM "終了(&X)\tAlt+F4", ID_EXIT
     }
     POPUP "編集(&E)"
@@ -193,6 +198,7 @@ STRINGTABLE
     IDS_STARTING, "起動中..."
     IDS_COMPILING, "コンパイル中..."
     IDS_CANNOTLOAD, "読み込めません。"
+    IDS_NONE, "(なし)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

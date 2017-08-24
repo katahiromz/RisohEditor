@@ -15,6 +15,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM SEPARATOR
+        POPUP "Recently Used Files"
+        {
+            MENUITEM "(None)", -1, GRAYED
+        }
+        MENUITEM SEPARATOR
         MENUITEM "E&xit\tAlt+F4", ID_EXIT
     }
     POPUP "&Edit"
@@ -193,6 +198,7 @@ STRINGTABLE
     IDS_STARTING, "Starting..."
     IDS_COMPILING, "Compiling..."
     IDS_CANNOTLOAD, "Unable to load."
+    IDS_NONE, "(None)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
