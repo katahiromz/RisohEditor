@@ -50,6 +50,18 @@
 #define ID_MRUFILE1         147
 #define ID_MRUFILE2         148
 #define ID_MRUFILE3         149
+#define ID_MRUFILE4         150
+#define ID_MRUFILE5         151
+#define ID_MRUFILE6         152
+#define ID_MRUFILE7         153
+#define ID_MRUFILE8         154
+#define ID_MRUFILE9         155
+#define ID_MRUFILE10        156
+#define ID_MRUFILE11        157
+#define ID_MRUFILE12        158
+#define ID_MRUFILE13        159
+#define ID_MRUFILE14        160
+#define ID_MRUFILE15        161
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
