@@ -33,6 +33,8 @@
 #include <algorithm>    // for std::sort
 #include <string>       // for std::string, std::wstring
 #include <cassert>      // for assert macro
+#include <vector>       // for std::vector
+#include <map>          // for std::map
 #include <cstdio>
 
 ////////////////////////////////////////////////////////////////////////////
