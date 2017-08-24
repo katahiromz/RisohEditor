@@ -21,6 +21,8 @@
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
 
+#define MAX_MRU         5       // the number of most recently used files
+
 //////////////////////////////////////////////////////////////////////////////
 
 void GetSelection(HWND hLst, std::vector<BYTE>& sel)
@@ -1134,6 +1136,8 @@ struct RisohSettings
             }
         }
         vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
+        if (vecRecentlyUsed.size() > MAX_MRU)
+            vecRecentlyUsed.resize(MAX_MRU);
     }
 };
 
@@ -1269,10 +1273,24 @@ public:
             ;
 
         INT i = 0;
+        TCHAR szText[MAX_PATH * 2];
+        static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
         RisohSettings::mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
         for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
         {
+#if 1
+            LPCTSTR pch = _tcsrchr(it->c_str(), TEXT('\\'));
+            if (pch == NULL)
+                pch = _tcsrchr(it->c_str(), TEXT('/'));
+            if (pch == NULL)
+                pch = it->c_str();
+            else
+                ++pch;
+            wsprintf(szText, TEXT("&%c  %s"), szPrefix[i], pch);
+            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, szText);
+#else
             InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, it->c_str());
+#endif
             ++i;
         }
 
@@ -3754,8 +3772,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
-    if (dwCount > 4)
-        dwCount = 4;
+    if (dwCount > MAX_MRU)
+        dwCount = MAX_MRU;
 
     TCHAR szFormat[32], szFile[MAX_PATH];
     for (i = 0; i < dwCount; ++i)
@@ -3798,8 +3816,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bGuiByDblClick"), m_settings.bGuiByDblClick);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
-    if (dwCount > 4)
-        dwCount = 4;
+    if (dwCount > MAX_MRU)
+        dwCount = MAX_MRU;
     keyRisoh.SetDword(TEXT("FileCount"), dwCount);
 
     TCHAR szFormat[32];
