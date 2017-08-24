@@ -26,3 +26,4 @@ Makefile
 TMP1.$$$
 *.filters
 *.sdf
+ipch

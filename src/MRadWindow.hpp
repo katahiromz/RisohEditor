@@ -678,9 +678,10 @@ public:
         MRadCtrl::GetLastSel() = NULL;
         MRadCtrl::IndexToCtrlMap().clear();
 
+        SubclassDx(hwnd);
+
         POINT pt = { 0, 0 };
         SetWindowPosDx(&pt);
-        SubclassDx(hwnd);
 
         DoSubclassChildren(hwnd, TRUE);
 
