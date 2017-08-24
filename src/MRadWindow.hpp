@@ -523,8 +523,14 @@ public:
             HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
             HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
             HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         }
         return 0;
+    }
+
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwndContext, xPos, yPos, SendMessage);
     }
 
     void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -834,6 +840,7 @@ public:
         ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);
         UpdateWindow(m_rad_dialog);
 
+        SetForegroundWindow(hwnd);
         return TRUE;
     }
 

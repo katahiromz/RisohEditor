@@ -2556,6 +2556,11 @@ public:
         if (hwndContext != m_hTreeView)
             return;
 
+        if (IsWindowVisible(m_rad_window))
+        {
+            DestroyWindow(m_rad_window);
+        }
+
         POINT pt = {(INT)xPos, (INT)yPos};
         HTREEITEM hItem;
         if (xPos == -1 && yPos == -1)
