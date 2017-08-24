@@ -1475,6 +1475,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
+        ResEntry& entry = m_Entries[i];
 
         WCHAR szFile[MAX_PATH] = L"";
         OPENFILENAMEW ofn;
@@ -1487,7 +1488,16 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        ofn.lpstrDefExt = L"ico";
+        if (entry.type == RT_ANIICON)
+        {
+            ofn.nFilterIndex = 2;
+            ofn.lpstrDefExt = L"ani";
+        }
+        else
+        {
+            ofn.nFilterIndex = 1;
+            ofn.lpstrDefExt = L"ico";
+        }
         if (GetSaveFileNameW(&ofn))
         {
             if (!DoExtractIcon(ofn.lpstrFile, m_Entries[i]))
@@ -1504,6 +1514,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
+        ResEntry& entry = m_Entries[i];
 
         WCHAR szFile[MAX_PATH] = L"";
         OPENFILENAMEW ofn;
@@ -1516,7 +1527,16 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
             OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        ofn.lpstrDefExt = L"cur";
+        if (entry.type == RT_ANICURSOR)
+        {
+            ofn.nFilterIndex = 2;
+            ofn.lpstrDefExt = L"ani";
+        }
+        else
+        {
+            ofn.nFilterIndex = 1;
+            ofn.lpstrDefExt = L"cur";
+        }
         if (GetSaveFileNameW(&ofn))
         {
             if (!DoExtractCursor(ofn.lpstrFile, m_Entries[i]))
@@ -2110,6 +2130,7 @@ public:
             OnReplaceIcon(hwnd);
             break;
         case ID_REPLACECURSOR:
+            OnReplaceCursor(hwnd);
             break;
         case ID_REPLACEBITMAP:
             OnReplaceBitmap(hwnd);
@@ -3498,21 +3519,49 @@ public:
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry)
     {
         if (Entry.type == RT_GROUP_ICON)
+        {
             return Res_ExtractGroupIcon(m_Entries, Entry, FileName);
+        }
         else if (Entry.type == RT_ICON)
+        {
             return Res_ExtractIcon(m_Entries, Entry, FileName);
-        else
-            return FALSE;
+        }
+        else if (Entry.type == RT_ANIICON)
+        {
+            MFile file;
+            DWORD cbWritten = 0;
+            if (file.OpenFileForOutput(FileName) &&
+                file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            {
+                file.CloseHandle();
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 
     BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry)
     {
         if (Entry.type == RT_GROUP_CURSOR)
+        {
             return Res_ExtractGroupCursor(m_Entries, Entry, FileName);
+        }
         else if (Entry.type == RT_CURSOR)
+        {
             return Res_ExtractCursor(m_Entries, Entry, FileName);
-        else
-            return FALSE;
+        }
+        else if (Entry.type == RT_ANICURSOR)
+        {
+            MFile file;
+            DWORD cbWritten = 0;
+            if (file.OpenFileForOutput(FileName) &&
+                file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            {
+                file.CloseHandle();
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 
     BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG)

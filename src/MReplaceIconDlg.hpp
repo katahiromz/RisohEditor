@@ -59,7 +59,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ID_OR_STRING Type = RT_GROUP_ICON;
+        ID_OR_STRING Type = m_Entry.type;
 
         ID_OR_STRING Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -76,10 +76,28 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!Res_AddGroupIcon(m_Entries, Name, Lang, File, TRUE))
+        BOOL bAni = FALSE;
+        size_t ich = File.find(L'.');
+        if (ich != std::wstring::npos && lstrcmpiW(&File[ich], L".ani") == 0)
+            bAni = TRUE;
+
+        if (bAni)
         {
-            ErrorBoxDx(IDS_CANTREPLACEICO);
-            return;
+            MByteStream bs;
+            if (!bs.LoadFromFile(File.c_str()) ||
+                !Res_AddEntry(m_Entries, RT_ANIICON, Name, Lang, bs.data(), TRUE))
+            {
+                ErrorBoxDx(IDS_CANTREPLACEICO);
+                return;
+            }
+        }
+        else
+        {
+            if (!Res_AddGroupIcon(m_Entries, Name, Lang, File, TRUE))
+            {
+                ErrorBoxDx(IDS_CANTREPLACEICO);
+                return;
+            }
         }
 
         EndDialog(IDOK);
@@ -103,7 +121,16 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACEICO);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        ofn.lpstrDefExt = L"ico";
+        if (m_Entry.type == RT_ANIICON)
+        {
+            ofn.nFilterIndex = 2;
+            ofn.lpstrDefExt = L"ani";
+        }
+        else
+        {
+            ofn.nFilterIndex = 1;
+            ofn.lpstrDefExt = L"ico";
+        }
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, szFile);

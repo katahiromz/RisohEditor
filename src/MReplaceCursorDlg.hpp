@@ -59,7 +59,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ID_OR_STRING Type = RT_GROUP_CURSOR;
+        ID_OR_STRING Type = m_Entry.type;
 
         ID_OR_STRING Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -76,10 +76,28 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
-        if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, TRUE))
+        BOOL bAni = FALSE;
+        size_t ich = File.find(L'.');
+        if (ich != std::wstring::npos && lstrcmpiW(&File[ich], L".ani") == 0)
+            bAni = TRUE;
+
+        if (bAni)
         {
-            ErrorBoxDx(IDS_CANTREPLACECUR);
-            return;
+            MByteStream bs;
+            if (!bs.LoadFromFile(File.c_str()) ||
+                !Res_AddEntry(m_Entries, RT_ANICURSOR, Name, Lang, bs.data(), TRUE))
+            {
+                ErrorBoxDx(IDS_CANTREPLACECUR);
+                return;
+            }
+        }
+        else
+        {
+            if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, TRUE))
+            {
+                ErrorBoxDx(IDS_CANTREPLACECUR);
+                return;
+            }
         }
 
         EndDialog(IDOK);
@@ -103,7 +121,16 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACECUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        ofn.lpstrDefExt = L"cur";
+        if (m_Entry.type == RT_ANICURSOR)
+        {
+            ofn.nFilterIndex = 2;
+            ofn.lpstrDefExt = L"ani";
+        }
+        else
+        {
+            ofn.nFilterIndex = 1;
+            ofn.lpstrDefExt = L"cur";
+        }
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, szFile);
