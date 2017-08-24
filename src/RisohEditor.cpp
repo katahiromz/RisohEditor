@@ -1093,6 +1093,27 @@ Res_GetLangName(WORD Lang)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+struct RisohSettings
+{
+    BOOL    bShowBinEdit;
+    BOOL    bAlwaysControl;
+    BOOL    bShowStatusBar;
+
+    RisohSettings()
+    {
+        SetDefault();
+    }
+
+    void SetDefault()
+    {
+        bShowBinEdit = TRUE;
+        bAlwaysControl = FALSE;
+        bShowStatusBar = TRUE;
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////
 // MMainWnd
 
 class MMainWnd : public MWindowBase
@@ -1113,9 +1134,8 @@ public:
     HWND        m_hTreeView;
     HWND        m_hToolBar;
     HWND        m_hStatusBar;
-    BOOL        m_bShowBinEdit;
-    BOOL        m_bAlwaysControl;
-    ConstantsDB m_ConstantsDB;
+    RisohSettings   m_settings;
+    ConstantsDB     m_ConstantsDB;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit;
     MEditCtrl       m_hSrcEdit;
@@ -1146,8 +1166,6 @@ public:
         m_hTreeView(NULL),
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
-        m_bShowBinEdit(TRUE),
-        m_bAlwaysControl(FALSE),
         m_rad_window(m_ConstantsDB)
     {
         m_szDataFolder[0] = 0;
@@ -1156,6 +1174,9 @@ public:
         m_szWindresExe[0] = 0;
         m_szFile[0] = 0;
     }
+
+    BOOL LoadSettings(HWND hwnd);
+    BOOL SaveSettings(HWND hwnd);
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
@@ -1260,6 +1281,7 @@ public:
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         LoadLangInfo();
+        LoadSettings(hwnd);
 
         INT nRet = CheckData();
         if (nRet)
@@ -1370,7 +1392,7 @@ public:
 
     VOID HidePreview(HWND hwnd)
     {
-        m_hBmpView.DestroyBmp();
+        m_hBmpView.DestroyView();
 
         ::SetWindowTextW(m_hBinEdit, NULL);
         Edit_SetModify(m_hBinEdit, FALSE);
@@ -1941,6 +1963,9 @@ public:
             return;
 
         WORD i = LOWORD(lParam);
+        if (i >= m_Entries.size())
+            return;
+
         ResEntry& Entry = m_Entries[i];
         if (!Res_CanGuiEdit(Entry.type))
         {
@@ -2226,14 +2251,14 @@ public:
             break;
         case ID_BINARYPANE:
             if (IsWindowVisible(m_hBinEdit))
-                m_bShowBinEdit = FALSE;
+                m_settings.bShowBinEdit = FALSE;
             else
-                m_bShowBinEdit = TRUE;
-            ShowBinEdit(m_bShowBinEdit);
+                m_settings.bShowBinEdit = TRUE;
+            ShowBinEdit(m_settings.bShowBinEdit);
             break;
         case ID_ALWAYSCONTROL:
             {
-                m_bAlwaysControl = !m_bAlwaysControl;
+                m_settings.bAlwaysControl = !m_settings.bAlwaysControl;
                 LPARAM lParam = TV_GetParam(m_hTreeView);
                 SelectTV(hwnd, lParam, TRUE);
             }
@@ -2246,7 +2271,9 @@ public:
 
     void OnDestroy(HWND hwnd)
     {
-        m_hBmpView.DestroyBmp();
+        SaveSettings(hwnd);
+
+        m_hBmpView.DestroyView();
         DeleteObject(m_hNormalFont);
         DeleteObject(m_hSmallFont);
         ImageList_Destroy(m_hImageList);
@@ -2330,7 +2357,7 @@ public:
 
     void ShowBinEdit(BOOL bShow = TRUE)
     {
-        if (bShow && m_bShowBinEdit)
+        if (bShow && m_settings.bShowBinEdit)
         {
             ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             m_splitter2.SetPaneCount(2);
@@ -2386,7 +2413,7 @@ public:
         else
             CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
 
-        if (m_bAlwaysControl)
+        if (m_settings.bAlwaysControl)
             CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_CHECKED);
         else
             CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_UNCHECKED);
@@ -2770,7 +2797,7 @@ public:
         DialogRes dialog_res;
         if (dialog_res.LoadFromStream(stream))
         {
-            std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB, m_bAlwaysControl);
+            std::wstring str = dialog_res.Dump(Entry.name, m_ConstantsDB, m_settings.bAlwaysControl);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }
@@ -2814,7 +2841,7 @@ public:
         }
         else
         {
-            m_hBmpView.DestroyBmp();
+            m_hBmpView.DestroyView();
         }
         ShowBmpView(TRUE);
     }
@@ -2934,6 +2961,9 @@ public:
         HidePreview(hwnd);
 
         WORD i = LOWORD(lParam);
+        if (m_Entries.size() <= i)
+            return;
+
         ResEntry& Entry = m_Entries[i];
 
         BOOL bEditable, bSelectNone = FALSE;
@@ -3007,6 +3037,9 @@ public:
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam)
     {
         const WORD i = LOWORD(lParam);
+        if (m_Entries.size() <= i)
+            return FALSE;
+
         const ResEntry& Entry = m_Entries[i];
         const ID_OR_STRING& type = Entry.type;
         switch (HIWORD(lParam))
@@ -3033,10 +3066,12 @@ public:
     BOOL DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
+        WORD i = LOWORD(lParam);
+        if (m_Entries.size() <= i)
+            return FALSE;
 
         if (HIWORD(lParam) == I_LANG)
         {
-            WORD i = LOWORD(lParam);
             ResEntry& entry = m_Entries[i];
 
             if (entries.size() != 1 ||
@@ -3051,7 +3086,6 @@ public:
         }
         else if (HIWORD(lParam) == I_STRING)
         {
-            WORD i = LOWORD(lParam);
             ResEntry& entry = m_Entries[i];
 
             Res_DeleteNames(m_Entries, RT_STRING, entry.lang);
@@ -3083,6 +3117,9 @@ public:
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
         WORD i = LOWORD(lParam);
+        if (m_Entries.size() <= i)
+            return FALSE;
+
         ResEntry& entry = m_Entries[i];
 
         MStringA TextUtf8;
@@ -3599,6 +3636,56 @@ public:
         return bs.SaveToFile(FileName);
     }
 };
+
+BOOL MMainWnd::LoadSettings(HWND hwnd)
+{
+    m_settings.SetDefault();
+
+    MRegKey key(HKCU, TEXT("Software"));
+    if (!key)
+        return FALSE;
+
+    MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"));
+    if (!keySoftware)
+        return FALSE;
+
+    MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"));
+    if (!keyRisoh)
+        return FALSE;
+
+    keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
+    keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
+    keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)m_settings.bAlwaysControl);
+
+    if (m_settings.bShowStatusBar)
+        ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+    else
+        ShowWindow(m_hStatusBar, SW_HIDE);
+
+    return TRUE;
+}
+
+BOOL MMainWnd::SaveSettings(HWND hwnd)
+{
+    MRegKey key(HKCU, TEXT("Software"), TRUE);
+    if (!key)
+        return FALSE;
+
+    MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"), TRUE);
+    if (!keySoftware)
+        return FALSE;
+
+    MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"), TRUE);
+    if (!keyRisoh)
+        return FALSE;
+
+    m_settings.bShowStatusBar = IsWindowVisible(m_hStatusBar);
+
+    keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
+    keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
+    keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);
+    return TRUE;
+}
 
 INT WINAPI
 WinMain(HINSTANCE   hInstance,

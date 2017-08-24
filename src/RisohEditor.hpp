@@ -41,6 +41,7 @@
 #include "MRadWindow.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
+#include "MRegKey.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"
 #include "resource.h"

@@ -46,7 +46,7 @@ public:
 
     MBmpView& operator=(HBITMAP hbm)
     {
-        DestroyBmp();
+        DestroyView();
         m_hBitmap = hbm;
         ShowWindow(m_hStatic, SW_HIDE);
         return *this;
@@ -54,13 +54,13 @@ public:
 
     void SetIcon(HICON hIcon, BOOL bIcon)
     {
-        DestroyBmp();
+        DestroyView();
         m_hIcon = hIcon;
         SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
         ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
     }
 
-    void DestroyBmp()
+    void DestroyView()
     {
         if (m_hBitmap)
         {
