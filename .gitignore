@@ -24,3 +24,5 @@ Makefile
 *.td2
 *.ncb
 TMP1.$$$
+*.filters
+*.sdf

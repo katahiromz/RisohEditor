@@ -535,6 +535,7 @@ public:
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         PostMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
+		return 0;
     }
 
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -879,6 +880,7 @@ public:
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+		return 0;
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
