@@ -100,7 +100,7 @@ struct DialogItem
     DWORD               m_ExStyle;
     POINT               m_pt;
     SIZE                m_siz;
-    WORD                ID;
+    WORD                m_ID;
     ID_OR_STRING        m_Class;
     ID_OR_STRING        m_Title;
     std::vector<BYTE>   Extra;
@@ -115,7 +115,7 @@ struct DialogItem
         m_pt.y = 0;
         m_siz.cx = 0;
         m_siz.cy = 0;
-        ID = 0;
+        m_ID = 0;
     }
 
     BOOL LoadFromStream(const MByteStreamEx& stream, BOOL Extended = FALSE)
@@ -136,7 +136,7 @@ struct DialogItem
         m_pt.y = Item.y;
         m_siz.cx = Item.cx;
         m_siz.cy = Item.cy;
-        ID = Item.id;
+        m_ID = Item.id;
 
         if (!stream.ReadString(m_Class) ||
             !stream.ReadString(m_Title))
@@ -172,7 +172,7 @@ struct DialogItem
         m_pt.y = Item.y;
         m_siz.cx = Item.cx;
         m_siz.cy = Item.cy;
-        ID = Item.id;
+        m_ID = Item.id;
 
         stream.ReadDwordAlignment();
 
@@ -212,7 +212,7 @@ struct DialogItem
         Item.y = (SHORT)m_pt.y;
         Item.cx = (SHORT)m_siz.cx;
         Item.cy = (SHORT)m_siz.cy;
-        Item.id = ID;
+        Item.id = m_ID;
         if (!stream.WriteData(&Item, sizeof(Item)))
             return FALSE;
 
@@ -258,7 +258,7 @@ struct DialogItem
         ItemEx.y = (short)m_pt.y;
         ItemEx.cx = (short)m_siz.cx;
         ItemEx.cy = (short)m_siz.cy;
-        ItemEx.id = ID;
+        ItemEx.id = m_ID;
         if (!stream.WriteRaw(ItemEx))
             return FALSE;
 
@@ -362,7 +362,7 @@ struct DialogItem
             ret += m_Title.quoted_wstr();
             ret += L", ";
         }
-        ret += db.GetCtrlID(ID);
+        ret += db.GetCtrlID(m_ID);
         ret += L", ";
         if (m_Class.is_int())
         {
@@ -420,7 +420,7 @@ struct DialogItem
             ret += m_Title.quoted_wstr();
             ret += L", ";
         }
-        ret += db.GetCtrlID(ID);
+        ret += db.GetCtrlID(m_ID);
         ret += L", ";
         ret += mstr_dec(m_pt.x);
         ret += L", ";

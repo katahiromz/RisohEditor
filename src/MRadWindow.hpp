@@ -52,7 +52,9 @@ public:
 
     void EndSubclass()
     {
-        TCHAR szClass[64];
+        SIZE siz;
+        TCHAR szClass[16];
+        GetWindowPosDx(m_hwnd, NULL, &siz);
         GetClassName(m_hwnd, szClass, _countof(szClass));
         if (lstrcmpi(szClass, TEXT("STATIC")) == 0)
         {
@@ -60,10 +62,12 @@ public:
             if ((style & SS_TYPEMASK) == SS_ICON)
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             else if ((style & SS_TYPEMASK) == SS_BITMAP)
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             return;
         }
@@ -73,10 +77,12 @@ public:
             if (style & BS_ICON)
             {
                 SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             else if (style & BS_BITMAP)
             {
                 SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             return;
         }
@@ -518,7 +524,7 @@ public:
             HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
             HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
         }
-        return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+        return 0;
     }
 
     void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -535,7 +541,7 @@ public:
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         PostMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
-		return 0;
+        return 0;
     }
 
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -678,15 +684,15 @@ public:
         MRadCtrl::GetLastSel() = NULL;
         MRadCtrl::IndexToCtrlMap().clear();
 
-        SubclassDx(hwnd);
-
         POINT pt = { 0, 0 };
-        SetWindowPosDx(&pt);
+        SetWindowPosDx(hwnd, &pt);
 
         DoSubclassChildren(hwnd, TRUE);
 
         if (m_index_visible)
             ShowHideLabels(TRUE);
+
+        SubclassDx(hwnd);
 
         return FALSE;
     }
@@ -801,6 +807,8 @@ public:
 
     BOOL ReCreateRadDialog(HWND hwnd)
     {
+        assert(IsWindow(hwnd));
+
         if (m_rad_dialog)
         {
             DestroyWindow(m_rad_dialog);
@@ -819,6 +827,7 @@ public:
         {
             return FALSE;
         }
+        assert(IsWindow(m_rad_dialog));
 
         FitToRadDialog();
 
@@ -881,7 +890,7 @@ public:
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
-		return 0;
+        return 0;
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)

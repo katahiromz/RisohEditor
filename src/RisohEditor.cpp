@@ -2182,40 +2182,40 @@ public:
             MRadCtrl::DeleteSelection();
             break;
         case ID_ADDCTRL:
-            m_rad_window.OnAddCtrl(hwnd);
+            m_rad_window.OnAddCtrl(m_rad_window);
             break;
         case ID_CTRLPROP:
-            m_rad_window.OnCtrlProp(hwnd);
+            m_rad_window.OnCtrlProp(m_rad_window);
             break;
         case ID_DLGPROP:
-            m_rad_window.OnDlgProp(hwnd);
+            m_rad_window.OnDlgProp(m_rad_window);
             break;
         case ID_CTRLINDEXTOP:
-            m_rad_window.IndexTop(hwnd);
+            m_rad_window.IndexTop(m_rad_window);
             break;
         case ID_CTRLINDEXBOTTOM:
-            m_rad_window.IndexBottom(hwnd);
+            m_rad_window.IndexBottom(m_rad_window);
             break;
         case ID_CTRLINDEXMINUS:
-            m_rad_window.IndexMinus(hwnd);
+            m_rad_window.IndexMinus(m_rad_window);
             break;
         case ID_CTRLINDEXPLUS:
-            m_rad_window.IndexPlus(hwnd);
+            m_rad_window.IndexPlus(m_rad_window);
             break;
         case ID_SHOWHIDEINDEX:
-            m_rad_window.OnShowHideIndex(hwnd);
+            m_rad_window.OnShowHideIndex(m_rad_window);
             break;
         case ID_TOPALIGN:
-            m_rad_window.OnTopAlign(hwnd);
+            m_rad_window.OnTopAlign(m_rad_window);
             break;
         case ID_BOTTOMALIGN:
-            m_rad_window.OnBottomAlign(hwnd);
+            m_rad_window.OnBottomAlign(m_rad_window);
             break;
         case ID_LEFTALIGN:
-            m_rad_window.OnLeftAlign(hwnd);
+            m_rad_window.OnLeftAlign(m_rad_window);
             break;
         case ID_RIGHTALIGN:
-            m_rad_window.OnRightAlign(hwnd);
+            m_rad_window.OnRightAlign(m_rad_window);
             break;
         case ID_STATUSBAR:
             if (IsWindowVisible(m_hStatusBar))

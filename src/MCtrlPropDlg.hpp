@@ -89,7 +89,7 @@ public:
                 m_flags &= ~F_CX;
             if (m_item.m_siz.cy != item.m_siz.cy)
                 m_flags &= ~F_CY;
-            if (m_item.ID != item.ID)
+            if (m_item.m_ID != item.m_ID)
                 m_flags &= ~F_ID;
             if (m_item.m_Class != item.m_Class)
                 m_flags &= ~F_CLASS;
@@ -155,7 +155,7 @@ public:
         {
             id = m_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
         }
-        item.ID = id;
+        item.m_ID = id;
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
@@ -208,7 +208,7 @@ public:
             if ((m_flags & F_CY) || (flags & F_CY))
                 item.m_siz.cy = m_item.m_siz.cy;
             if ((m_flags & F_ID) || (flags & F_ID))
-                item.ID = m_item.ID;
+                item.m_ID = m_item.m_ID;
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
                 item.m_Class = m_item.m_Class;
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
@@ -354,7 +354,7 @@ public:
         }
         if (m_flags & F_ID)
         {
-            SetDlgItemInt(hwnd, cmb3, m_item.ID, TRUE);
+            SetDlgItemInt(hwnd, cmb3, m_item.m_ID, TRUE);
         }
         if (m_flags & F_CLASS)
         {

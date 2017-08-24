@@ -9,6 +9,8 @@
 #include "MString.hpp"
 #include "resource.h"
 
+class MAddCtrlDlg;
+
 //////////////////////////////////////////////////////////////////////////////
 
 void GetSelection(HWND hLst, std::vector<BYTE>& sel);
@@ -204,7 +206,7 @@ public:
         item.m_pt.y = y;
         item.m_siz.cx = cx;
         item.m_siz.cy = cy;
-        item.ID = id;
+        item.m_ID = id;
         item.m_Class = strClass.c_str();
         item.m_Title = strCaption.c_str();
 
