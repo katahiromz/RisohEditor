@@ -1125,6 +1125,7 @@ struct RisohSettings
         nBinEditHeight = BE_HEIGHT;
         bGuiByDblClick = TRUE;
         vecRecentlyUsed.clear();
+
         mapIdAssoc.clear();
         mapIdAssoc[TEXT("RT_CURSOR")] = TEXT("IDC_");
         mapIdAssoc[TEXT("RT_BITMAP")] = TEXT("IDB_");
