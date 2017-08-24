@@ -357,11 +357,8 @@ struct DialogItem
         }
 
         ret += L"CONTROL ";
-        if (!m_Title.empty())
-        {
-            ret += m_Title.quoted_wstr();
-            ret += L", ";
-        }
+        ret += m_Title.quoted_wstr();
+        ret += L", ";
         ret += db.GetCtrlID(m_ID);
         ret += L", ";
         if (m_Class.is_int())
