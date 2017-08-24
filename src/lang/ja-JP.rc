@@ -148,7 +148,7 @@ STRINGTABLE
     IDS_CANTEXTRACTBMP, "ビットマップの抽出ができませんでした。"
     IDS_CANTREPLACECUR, "カーソルの置き換えができませんでした。"
     IDS_CANNOTADDCUR, "カーソルの追加ができませんでした。"
-    IDS_CURFILTER, "カーソル ファイル (*.cur)|*.cur|すべてのファイル (*.*)|*.*|"
+    IDS_CURFILTER, "カーソル ファイル (*.cur)|*.cur|アニメカーソル (*.ani)|*.ani|すべてのファイル (*.*)|*.*|"
     IDS_ADDCUR, "カーソルの追加"
     IDS_REPLACECUR, "カーソルの置き換え"
     IDS_EXTRACTICO, "アイコンの抽出"

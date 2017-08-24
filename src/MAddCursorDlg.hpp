@@ -68,8 +68,13 @@ public:
         if (!Edt1_CheckFile(hEdt1, File))
             return;
 
+        BOOL bAni = FALSE;
+        size_t ich = File.find(L'.');
+        if (ich != std::wstring::npos && lstrcmpiW(&File[ich], L".ani") == 0)
+            bAni = TRUE;
+
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, RT_GROUP_ICON, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, (bAni ? RT_ANICURSOR : RT_GROUP_CURSOR), Name, Lang);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -84,13 +89,29 @@ public:
             }
         }
 
-        if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, Overwrite))
+        if (bAni)
         {
-            if (Overwrite)
-                ErrorBoxDx(IDS_CANTREPLACECUR);
-            else
-                ErrorBoxDx(IDS_CANNOTADDCUR);
-            return;
+            MByteStream bs;
+            if (!bs.LoadFromFile(File.c_str()) ||
+                !Res_AddEntry(m_Entries, RT_ANICURSOR, Name, Lang, bs.data(), Overwrite))
+            {
+                if (Overwrite)
+                    ErrorBoxDx(IDS_CANTREPLACECUR);
+                else
+                    ErrorBoxDx(IDS_CANNOTADDCUR);
+                return;
+            }
+        }
+        else
+        {
+            if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, Overwrite))
+            {
+                if (Overwrite)
+                    ErrorBoxDx(IDS_CANTREPLACECUR);
+                else
+                    ErrorBoxDx(IDS_CANNOTADDCUR);
+                return;
+            }
         }
 
         EndDialog(IDOK);

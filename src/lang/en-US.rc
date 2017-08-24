@@ -148,7 +148,7 @@ STRINGTABLE
     IDS_CANTEXTRACTBMP, "Unable to extract the bitmap."
     IDS_CANTREPLACECUR, "Unable to replace the cursor."
     IDS_CANNOTADDCUR, "Unable to add the cursor."
-    IDS_CURFILTER, "Cursor Files (*.cur)|*.cur|All Files (*.*)|*.*|"
+    IDS_CURFILTER, "Cursor Files (*.cur)|*.cur|Animation Cursor (*.ani)|*.ani|All Files (*.*)|*.*|"
     IDS_ADDCUR, "Add Cursor"
     IDS_REPLACECUR, "Replace Cursor"
     IDS_EXTRACTICO, "Extract Icon"
