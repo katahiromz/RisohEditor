@@ -2258,7 +2258,7 @@ public:
             else if (lstrcmpiW(pch, L".cur") == 0)
             {
                 MAddCursorDlg dialog(m_Entries);
-                dialog.File = File;
+                dialog.m_File = File;
                 dialog.DialogBoxDx(hwnd);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
                 ChangeStatusText(IDS_READY);
