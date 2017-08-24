@@ -2276,7 +2276,7 @@ public:
                 ChangeStatusText(IDS_READY);
                 return;
             }
-            else if (lstrcmpiW(pch, L".cur") == 0)
+            else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
             {
                 MAddCursorDlg dialog(m_Entries);
                 dialog.m_File = File;
