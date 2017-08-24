@@ -84,6 +84,7 @@
 #define IDD_DLGPROP         118
 #define IDD_CTRLPROP        119
 #define IDD_ADDCTRL         120
+#define IDD_IDASSOC         121
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
