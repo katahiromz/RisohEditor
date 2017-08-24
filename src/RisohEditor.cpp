@@ -1264,7 +1264,7 @@ public:
         HMENU hMenu = GetMenu(m_hwnd);
         HMENU hFileMenu = GetSubMenu(hMenu, 0);
         HMENU hMruMenu = GetSubMenu(hFileMenu, GetMenuItemCount(hFileMenu) - 3);
-		assert(hMruMenu);
+        assert(hMruMenu);
         while (DeleteMenu(hMruMenu, 0, MF_BYPOSITION))
             ;
 
