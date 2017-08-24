@@ -2061,6 +2061,7 @@ public:
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            ChangeStatusText(IDS_READY);
         }
         else if (Entry.type == RT_MENU)
         {
@@ -2078,6 +2079,7 @@ public:
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            ChangeStatusText(IDS_READY);
         }
         else if (Entry.type == RT_DIALOG)
         {
@@ -2132,6 +2134,7 @@ public:
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            ChangeStatusText(IDS_READY);
         }
     }
 
@@ -2175,15 +2178,15 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        if (!::IsWindow(m_rad_window))
-            ChangeStatusText(IDS_EXECUTINGCMD);
-
         if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
         {
             ToolBar_Update(m_hToolBar, 2);
             ChangeStatusText(IDS_READY);
             return;
         }
+
+        if (!::IsWindow(m_rad_window) && id >= 100)
+            ChangeStatusText(IDS_EXECUTINGCMD);
 
         BOOL bUpdateStatus = TRUE;
         switch (id)
@@ -2338,6 +2341,9 @@ public:
                     DoLoad(hwnd, m_Entries, m_settings.vecRecentlyUsed[i].c_str());
                 }
             }
+            break;
+        default:
+            bUpdateStatus = FALSE;
             break;
         }
 
