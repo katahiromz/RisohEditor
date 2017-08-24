@@ -1129,7 +1129,6 @@ struct RisohSettings
         mapIdAssoc.clear();
         mapIdAssoc[TEXT("RT_CURSOR")] = TEXT("IDC_");
         mapIdAssoc[TEXT("RT_BITMAP")] = TEXT("IDB_");
-        mapIdAssoc[TEXT("RT_ICON")] = TEXT("IDI_");
         mapIdAssoc[TEXT("RT_MENU")] = TEXT("IDM_");
         mapIdAssoc[TEXT("RT_DIALOG")] = TEXT("IDD_");
         mapIdAssoc[TEXT("RT_STRING")] = TEXT("IDS_");
@@ -1137,8 +1136,8 @@ struct RisohSettings
         mapIdAssoc[TEXT("RT_RCDATA")] = TEXT("IDR_");
         mapIdAssoc[TEXT("RT_GROUP_CURSOR")] = TEXT("IDC_");
         mapIdAssoc[TEXT("RT_GROUP_ICON")] = TEXT("IDI_");
-        mapIdAssoc[TEXT("RT_ANICURSOR")] = TEXT("IDC_");
-        mapIdAssoc[TEXT("RT_ANIICON")] = TEXT("IDI_");
+        mapIdAssoc[TEXT("RT_ANICURSOR")] = TEXT("IDAC_");
+        mapIdAssoc[TEXT("RT_ANIICON")] = TEXT("IDAI_");
         mapIdAssoc[TEXT("RT_HTML")] = TEXT("IDH_");
         mapIdAssoc[TEXT("HELPID")] = TEXT("HELPID_");
         mapIdAssoc[TEXT("COMMANDID")] = TEXT("ID_");
