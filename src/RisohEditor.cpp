@@ -1601,7 +1601,6 @@ public:
         {
             PlaySound((LPCTSTR)&entry[0], NULL, SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
         }
-        return;
     }
 
     void OnExtractIcon(HWND hwnd)
