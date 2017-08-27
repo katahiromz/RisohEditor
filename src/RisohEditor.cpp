@@ -1139,8 +1139,9 @@ struct RisohSettings
         mapIdAssoc[TEXT("RT_ANICURSOR")] = TEXT("IDAC_");
         mapIdAssoc[TEXT("RT_ANIICON")] = TEXT("IDAI_");
         mapIdAssoc[TEXT("RT_HTML")] = TEXT("IDH_");
-        mapIdAssoc[TEXT("HELPID")] = TEXT("HELPID_");
-        mapIdAssoc[TEXT("COMMANDID")] = TEXT("ID_");
+        mapIdAssoc[TEXT("HELP.ID")] = TEXT("HELPID_");
+        mapIdAssoc[TEXT("COMMAND.ID")] = TEXT("CMDID_");
+        mapIdAssoc[TEXT("CONTROL.ID")] = TEXT("CID_");
     }
 
     void AddFile(LPCTSTR pszFile)
@@ -1585,6 +1586,22 @@ public:
                 }
             }
         }
+    }
+
+    void OnPlay(HWND hwnd)
+    {
+        LPARAM lParam = TV_GetParam(m_hTreeView);
+        if (HIWORD(lParam) != I_LANG)
+            return;
+
+        UINT i = LOWORD(lParam);
+        ResEntry& entry = m_Entries[i];
+
+        if (entry.type == L"WAVE")
+        {
+            PlaySound((LPCTSTR)&entry[0], NULL, SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
+        }
+        return;
     }
 
     void OnExtractIcon(HWND hwnd)
@@ -2385,6 +2402,9 @@ public:
                 }
             }
             break;
+        case ID_PLAY:
+            OnPlay(hwnd);
+            break;
         case ID_READY:
             break;
         default:
@@ -2867,6 +2887,14 @@ public:
         ShowBmpView(TRUE);
     }
 
+    void PreviewWAVE(HWND hwnd, const ResEntry& Entry)
+    {
+        ::SetWindowTextW(m_hSrcEdit, L"WAVE sound");
+
+        m_hBmpView.SetPlay();
+        ShowBmpView(TRUE);
+    }
+
     void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
         MByteStreamEx stream(Entry.data);
@@ -3088,6 +3116,11 @@ public:
         else if (Entry.type == L"PNG")
         {
             PreviewPNG(hwnd, Entry);
+            bEditable = FALSE;
+        }
+        else if (Entry.type == L"WAVE")
+        {
+            PreviewWAVE(hwnd, Entry);
             bEditable = FALSE;
         }
 

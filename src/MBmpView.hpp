@@ -6,6 +6,8 @@
 
 #include "RisohEditor.hpp"
 
+class MBmpView;
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MBmpView : public MWindowBase
@@ -15,6 +17,7 @@ public:
     HBITMAP     m_hBitmap;
     HICON       m_hIcon;
     HWND        m_hStatic;
+    HWND        m_hPlayButton;
 
     MBmpView()
     {
@@ -28,6 +31,12 @@ public:
             style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
         if (m_hStatic == NULL)
             return FALSE;
+        style = WS_CHILD | BS_PUSHBUTTON | BS_CENTER;
+        m_hPlayButton = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Play"),
+            style, 0, 0, 64, 65, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
+        if (m_hPlayButton == NULL)
+            return FALSE;
+        SetWindowFont(m_hPlayButton, GetStockFont(DEFAULT_GUI_FONT), TRUE);
         return TRUE;
     }
 
@@ -49,6 +58,7 @@ public:
         DestroyView();
         m_hBitmap = hbm;
         ShowWindow(m_hStatic, SW_HIDE);
+        ShowWindow(m_hPlayButton, SW_HIDE);
         return *this;
     }
 
@@ -58,6 +68,14 @@ public:
         m_hIcon = hIcon;
         SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
         ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
+        ShowWindow(m_hPlayButton, SW_HIDE);
+    }
+
+    void SetPlay()
+    {
+        DestroyView();
+        ShowWindow(m_hStatic, SW_HIDE);
+        ShowWindow(m_hPlayButton, SW_SHOWNOACTIVATE);
     }
 
     void DestroyView()
@@ -224,10 +242,17 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        if (id != 999)
-            return;
-
-        UpdateScrollInfo(hwnd);
+        switch (id)
+        {
+        case 999:
+            UpdateScrollInfo(hwnd);
+            break;
+        case 1:
+            break;
+        case 2:
+            PostMessage(GetParent(hwnd), WM_COMMAND, ID_PLAY, 0);
+            break;
+        }
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)

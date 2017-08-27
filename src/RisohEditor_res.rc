@@ -18,6 +18,7 @@
 1 ANICURSOR "res\\bounce.ani"
 
 1 BITMAP "res\\bmp.bmp"
+1 WAVE "res\\wa.wav"
 
 1 ACCELERATORS
 {
