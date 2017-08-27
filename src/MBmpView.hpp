@@ -250,7 +250,10 @@ public:
         case 1:
             break;
         case 2:
-            PostMessage(GetParent(hwnd), WM_COMMAND, ID_PLAY, 0);
+            if (codeNotify == BN_CLICKED)
+            {
+                PostMessage(GetParent(hwnd), WM_COMMAND, ID_PLAY, 0);
+            }
             break;
         }
     }
