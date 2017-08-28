@@ -70,6 +70,15 @@ public:
         return TRUE;
     }
 
+    void OnPsh1(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem == -1)
+            return;
+
+        // TODO: ...
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -79,6 +88,9 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
             break;
         }
     }
