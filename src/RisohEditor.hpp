@@ -84,6 +84,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 #include "MStringsDlg.hpp"
 #include "MEditMenuDlg.hpp"
 #include "MEditAccelDlg.hpp"
+#include "MIdAssocDlg.hpp"
 #include "MBmpView.hpp"
 
 #include "id_string.hpp"

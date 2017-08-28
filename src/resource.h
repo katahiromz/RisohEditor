@@ -63,6 +63,7 @@
 #define ID_MRUFILE14        160
 #define ID_MRUFILE15        161
 #define ID_PLAY             162
+#define ID_IDASSOC          163
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

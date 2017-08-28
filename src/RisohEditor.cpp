@@ -2406,6 +2406,9 @@ public:
             break;
         case ID_READY:
             break;
+        case ID_IDASSOC:
+            OnIdAssoc(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2426,6 +2429,12 @@ public:
         DestroyIcon(m_hFileIcon);
         DestroyIcon(m_hFolderIcon);
         PostQuitMessage(0);
+    }
+
+    void OnIdAssoc(HWND hwnd)
+    {
+        MIdAssocDlg dialog(m_settings.mapIdAssoc);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)

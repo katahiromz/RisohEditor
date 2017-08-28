@@ -15,6 +15,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM SEPARATOR
+        MENUITEM "&ID Association", ID_IDASSOC
+        MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
             MENUITEM "(None)", -1, GRAYED
