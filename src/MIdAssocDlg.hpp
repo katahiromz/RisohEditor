@@ -5,6 +5,7 @@
 #define MZC4_MIDASSOCDLG_HPP_
 
 #include "MWindowBase.hpp"
+#include "MModifyAssocDlg.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -17,6 +18,37 @@ public:
 
     MIdAssocDlg(map_type& map) : MDialogBase(IDD_IDASSOC), m_map(map)
     {
+    }
+
+    void Lst1_Init(HWND hLst1)
+    {
+        ListView_DeleteAllItems(hLst1);
+
+        LV_ITEM item;
+
+        INT iItem = 0;
+        map_type::iterator it, end = m_map.end();
+        for (it = m_map.begin(); it != end; ++it)
+        {
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = const_cast<LPTSTR>(it->first.c_str());
+            ListView_InsertItem(m_hLst1, &item);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = const_cast<LPTSTR>(it->second.c_str());
+            ListView_SetItem(m_hLst1, &item);
+
+            ++iItem;
+        }
+
+        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+        ListView_SetItemState(m_hLst1, 0, state, state);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -41,31 +73,7 @@ public:
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
 
-        LV_ITEM item;
-
-        INT iItem = 0;
-        map_type::iterator it, end = m_map.end();
-        for (it = m_map.begin(); it != end; ++it)
-        {
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 0;
-            item.pszText = const_cast<LPWSTR>(it->first.c_str());
-            ListView_InsertItem(m_hLst1, &item);
-
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 1;
-            item.pszText = const_cast<LPWSTR>(it->second.c_str());
-            ListView_SetItem(m_hLst1, &item);
-
-            ++iItem;
-        }
-
-        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(m_hLst1, 0, state, state);
+        Lst1_Init(m_hLst1);
 
         return TRUE;
     }
@@ -76,7 +84,21 @@ public:
         if (iItem == -1)
             return;
 
-        // TODO: ...
+        TCHAR szText[64];
+        MString str1, str2;
+
+        ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+        str1 = szText;
+
+        ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+        str2 = szText;
+
+        MModifyAssocDlg dialog(str1, str2);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            m_map[str1] = str2;
+            ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPTSTR>(str2.c_str()));
+        }
     }
 
     void OnOK(HWND hwnd)

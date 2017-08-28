@@ -173,5 +173,6 @@
 #define IDS_WAVESOUND       83
 #define IDS_IDTYPE          84
 #define IDS_IDPREFIX        85
+#define IDS_EMPTYSTR        86
 
 #endif  // ndef RESOURCE_H_
