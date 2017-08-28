@@ -81,7 +81,20 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        // TODO: ...
+        TCHAR szText[64];
+        MString str1, str2;
+
+        INT iItem, nCount = ListView_GetItemCount(m_hLst1);
+        for (iItem = 0; iItem < nCount; ++iItem)
+        {
+            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+            str1 = szText;
+
+            ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+            str2 = szText;
+
+            m_map[str1] = str2;
+        }
 
         EndDialog(IDOK);
     }
