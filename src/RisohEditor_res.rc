@@ -11,6 +11,7 @@
 
 100 ICON "res\\file.ico"
 101 ICON "res\\folder.ico"
+102 ICON "res\\play.ico"
 
 1 CURSOR "res\\cursor-ns.cur"
 2 CURSOR "res\\cursor-we.cur"

@@ -31,11 +31,13 @@ public:
             style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
         if (m_hStatic == NULL)
             return FALSE;
-        style = WS_CHILD | BS_PUSHBUTTON | BS_CENTER;
+        style = WS_CHILD | BS_PUSHBUTTON | BS_CENTER | BS_ICON;
         m_hPlayButton = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Play"),
             style, 0, 0, 64, 65, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
         if (m_hPlayButton == NULL)
             return FALSE;
+        HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(102));
+        SendMessage(m_hPlayButton, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
         SetWindowFont(m_hPlayButton, GetStockFont(DEFAULT_GUI_FONT), TRUE);
         return TRUE;
     }
