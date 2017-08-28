@@ -1,4 +1,4 @@
-// MModifyAssoc.hpp
+// MModifyAssocDlg.hpp
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MMODIFYASSOCDLG_HPP_
@@ -8,10 +8,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MModifyAssoc : public MDialogBase
+class MModifyAssocDlg : public MDialogBase
 {
 public:
-    MModifyAssoc()
+    MModifyAssocDlg()
     {
     }
 
