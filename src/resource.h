@@ -174,5 +174,7 @@
 #define IDS_IDTYPE          84
 #define IDS_IDPREFIX        85
 #define IDS_EMPTYSTR        86
+#define IDS_ANICURSOR       87
+#define IDS_ANIICON         88
 
 #endif  // ndef RESOURCE_H_

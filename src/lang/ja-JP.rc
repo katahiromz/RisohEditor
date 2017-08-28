@@ -205,6 +205,8 @@ STRINGTABLE
     IDS_IDTYPE, "IDの種類"
     IDS_IDPREFIX, "IDプレフィックス"
     IDS_EMPTYSTR, "文字列を入力して下さい。"
+    IDS_ANICURSOR, "(アニメーション カーソル)"
+    IDS_ANIICON, "(アニメーション アイコン)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

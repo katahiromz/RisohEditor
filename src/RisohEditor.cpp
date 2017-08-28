@@ -3020,9 +3020,9 @@ public:
         {
             m_hBmpView.SetIcon(hIcon, bIcon);
             if (bIcon)
-                ::SetWindowTextW(m_hSrcEdit, TEXT("RT_ANIICON"));
+                ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANIICON));
             else
-                ::SetWindowTextW(m_hSrcEdit, TEXT("RT_ANICURSOR"));
+                ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANICURSOR));
         }
         else
         {

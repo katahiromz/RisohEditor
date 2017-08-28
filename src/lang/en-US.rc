@@ -205,6 +205,8 @@ STRINGTABLE
     IDS_IDTYPE, "ID Type"
     IDS_IDPREFIX, "ID Prefix"
     IDS_EMPTYSTR, "Please enter a string."
+    IDS_ANICURSOR, "(Animation Cursor)"
+    IDS_ANIICON, "(Animation Icon)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
