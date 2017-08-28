@@ -138,6 +138,14 @@ public:
         }
     }
 
+    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+    {
+        if (idFrom == lst1 && pnmhdr->code == NM_DBLCLK)
+        {
+            OnPsh1(hwnd);
+        }
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -145,6 +153,7 @@ public:
         {
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         default:
             return DefaultProcDx();
         }
