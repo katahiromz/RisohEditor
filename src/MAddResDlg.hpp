@@ -22,10 +22,12 @@ public:
     ResEntries& m_Entries;
     ConstantsDB& m_db;
     HWND m_hTreeView;
+    ID_OR_STRING m_type;
+    LPCTSTR m_file;
 
     MAddResDlg(ResEntries& Entries, ConstantsDB& db, HWND hTreeView)
         : MDialogBase(IDD_ADDRES), m_Entries(Entries), m_db(db),
-          m_hTreeView(hTreeView)
+          m_hTreeView(hTreeView), m_type(0xFFFF), m_file(NULL)
     {
     }
 
@@ -34,18 +36,39 @@ public:
         DragAcceptFiles(hwnd, TRUE);
 
         // for Types
+        INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < Table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
             wsprintfW(sz, L"%s (%lu)", Table[i].name.c_str(), Table[i].value);
-            ComboBox_AddString(hCmb1, sz);
+            k = ComboBox_AddString(hCmb1, sz);
+            if (m_type == WORD(Table[i].value))
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
+        if (m_type == TEXT("WAVE"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("PNG"));
+        if (m_type == TEXT("PNG"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
         }
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());
+
+        // for File
+        if (m_file)
+        {
+            SetDlgItemTextW(hwnd, edt1, m_file);
+        }
 
         CenterWindowDx();
         return TRUE;
@@ -64,7 +87,9 @@ public:
         else
         {
             if (!CheckTypeComboBox(hCmb1, Type))
+            {
                 return;
+            }
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -104,9 +129,10 @@ public:
             }
         }
 
-        BOOL bOK = TRUE;
+        BOOL bOK = FALSE;
         if (File.empty() && Res_HasSample(Type))
         {
+            bOK = TRUE;
             if (Res_HasNoName(Type))
             {
                 Res_DeleteNames(m_Entries, Type, Lang);

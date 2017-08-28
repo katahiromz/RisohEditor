@@ -46,17 +46,28 @@ public:
         DragAcceptFiles(hwnd, TRUE);
 
         // for Types
+        INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < Table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
             wsprintfW(sz, L"%s (%lu)", Table[i].name.c_str(), Table[i].value);
-            INT k = ComboBox_AddString(hCmb1, sz);
+            k = ComboBox_AddString(hCmb1, sz);
             if (m_Entry.type == WORD(Table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
+        if (m_Entry.type == TEXT("WAVE"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("PNG"));
+        if (m_Entry.type == TEXT("PNG"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);

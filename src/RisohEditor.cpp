@@ -2458,6 +2458,16 @@ public:
                 ChangeStatusText(IDS_READY);
                 return;
             }
+            else if (lstrcmpiW(pch, L".wav") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_ConstantsDB, m_hTreeView);
+                dialog.m_type = L"WAVE";
+                dialog.m_file = File;
+                dialog.DialogBoxDx(hwnd);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                ChangeStatusText(IDS_READY);
+                return;
+            }
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
                      lstrcmpiW(pch, L".png") == 0)
             {
@@ -2888,7 +2898,7 @@ public:
 
     void PreviewWAVE(HWND hwnd, const ResEntry& Entry)
     {
-        ::SetWindowTextW(m_hSrcEdit, L"WAVE sound");
+        ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_WAVESOUND));
 
         m_hBmpView.SetPlay();
         ShowBmpView(TRUE);

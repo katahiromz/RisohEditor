@@ -168,5 +168,6 @@
 #define IDS_COMPILING       80
 #define IDS_CANNOTLOAD      81
 #define IDS_NONE            82
+#define IDS_WAVESOUND       83
 
 #endif  // ndef RESOURCE_H_
