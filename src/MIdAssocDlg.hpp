@@ -79,12 +79,19 @@ public:
         // TODO: ...
     }
 
+    void OnOK(HWND hwnd)
+    {
+        // TODO: ...
+
+        EndDialog(IDOK);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case IDOK:
-            EndDialog(IDOK);
+            OnOK(hwnd);
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
