@@ -24,6 +24,7 @@ public:
     {
         SetDlgItemText(hwnd, edt1, m_text1.c_str());
         SetDlgItemText(hwnd, edt2, m_text2.c_str());
+        CenterWindowDx();
         return TRUE;
     }
 

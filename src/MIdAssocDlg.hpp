@@ -75,6 +75,7 @@ public:
 
         Lst1_Init(m_hLst1);
 
+        CenterWindowDx();
         return TRUE;
     }
 
