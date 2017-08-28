@@ -201,7 +201,9 @@ STRINGTABLE
     IDS_COMPILING, "コンパイル中..."
     IDS_CANNOTLOAD, "読み込めません。"
     IDS_NONE, "(なし)"
-    IDS_WAVESOUND, "WAVE音声"
+    IDS_WAVESOUND, "(WAVE音声)"
+    IDS_IDTYPE, "IDの種類"
+    IDS_IDPREFIX, "IDプレフィックス"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

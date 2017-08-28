@@ -201,7 +201,9 @@ STRINGTABLE
     IDS_COMPILING, "Compiling..."
     IDS_CANNOTLOAD, "Unable to load."
     IDS_NONE, "(None)"
-    IDS_WAVESOUND, "WAVE Sound"
+    IDS_WAVESOUND, "(WAVE Sound)"
+    IDS_IDTYPE, "ID Type"
+    IDS_IDPREFIX, "ID Prefix"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
