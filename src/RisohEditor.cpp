@@ -3860,8 +3860,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     for (i = 0; i < dwCount; ++i)
     {
         wsprintf(szFormat, TEXT("File%lu"), i);
-        keyRisoh.QuerySz(szFormat, szFile, MAX_PATH);
+        keyRisoh.QuerySz(szFormat, szFile, _countof(szFile));
         m_settings.vecRecentlyUsed.push_back(szFile);
+    }
+
+    TCHAR szName[MAX_PATH];
+    RisohSettings::map_type::iterator it, end = m_settings.mapIdAssoc.end();
+    for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
+    {
+        keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName));
+        if (szName[0])
+            it->second = szName;
     }
 
     return TRUE;
@@ -3907,6 +3916,13 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         wsprintf(szFormat, TEXT("File%lu"), i);
         keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
     }
+
+    RisohSettings::map_type::iterator it, end = m_settings.mapIdAssoc.end();
+    for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
+    {
+        keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
+    }
+
     return TRUE;
 }
 
