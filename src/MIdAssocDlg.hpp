@@ -72,7 +72,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem == -1)
             return;
 
