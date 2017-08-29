@@ -16,7 +16,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
-        MENUITEM "ファイル&resource.hの読み込み...\tCtrl+R", ID_LOADRESH
+        MENUITEM "ファイル &resource.h の読み込み...\tCtrl+R", ID_LOADRESH
         MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"
         {
