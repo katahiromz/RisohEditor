@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     3   /* Version 3 */
+#define MZC4_MPROCESSMAKER_HPP_     4   /* Version 4 */
 
 #include "MFile.hpp"
 
@@ -23,7 +23,7 @@ class MProcessMaker
 public:
     MProcessMaker();
     MProcessMaker(LPCTSTR pszAppName, LPCTSTR pszCommandLine = NULL,
-                  LPCTSTR pszzEnvironment = NULL, BOOL bInherit = TRUE,
+                  LPCTSTR pszzEnvironment = NULL, BOOL bInherit = FALSE,
                   LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
                   LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
     virtual ~MProcessMaker();
@@ -58,13 +58,13 @@ public:
                             PSECURITY_ATTRIBUTES psa = NULL);
 
     BOOL CreateProcess(LPCTSTR pszAppName, LPCTSTR pszCommandLine = NULL,
-                       LPCTSTR pszzEnvironment = NULL, BOOL bInherit = TRUE,
+                       LPCTSTR pszzEnvironment = NULL, BOOL bInherit = FALSE,
                        LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
                        LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
     BOOL CreateProcessAsUser(HANDLE hToken, LPCTSTR pszAppName,
                              LPCTSTR pszCommandLine = NULL,
                              LPCTSTR pszzEnvironment = NULL,
-                             BOOL bInherit = TRUE,
+                             BOOL bInherit = FALSE,
                              LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
                              LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
     DWORD WaitForSingleObject(DWORD dwTimeout = INFINITE);
@@ -351,7 +351,7 @@ inline VOID MProcessMaker::Init()
 
 inline MProcessMaker::MProcessMaker(
     LPCTSTR pszAppName, LPCTSTR pszCommandLine/* = NULL*/,
-    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = TRUE*/,
+    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = FALSE*/,
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
     LPSECURITY_ATTRIBUTES lpThreadAttributes/* = NULL*/)
 {
@@ -362,7 +362,7 @@ inline MProcessMaker::MProcessMaker(
 
 inline BOOL MProcessMaker::CreateProcess(
     LPCTSTR pszAppName, LPCTSTR pszCommandLine/* = NULL*/,
-    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = TRUE*/,
+    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = FALSE*/,
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
     LPSECURITY_ATTRIBUTES lpThreadAttributes/* = NULL*/)
 {
@@ -403,7 +403,7 @@ inline BOOL MProcessMaker::CreateProcess(
 
 inline BOOL MProcessMaker::CreateProcessAsUser(
     HANDLE hToken, LPCTSTR pszAppName, LPCTSTR pszCommandLine/* = NULL*/,
-    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = TRUE*/,
+    LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = FALSE*/,
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
     LPSECURITY_ATTRIBUTES lpThreadAttributes/* = NULL*/)
 {
