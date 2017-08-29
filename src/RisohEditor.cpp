@@ -1107,8 +1107,10 @@ struct RisohSettings
     BOOL        bGuiByDblClick;
     typedef std::vector<MString> mru_type;
     mru_type    vecRecentlyUsed;
-    typedef std::map<MString, MString> map_type;
-    map_type    mapIdAssoc;
+    typedef std::map<MString, MString>  assoc_map_type;
+    assoc_map_type      mapIdAssoc;
+    typedef std::map<MStringA, MStringA>  id_map_type;
+    id_map_type         mapIDs;
 
     RisohSettings()
     {
@@ -1142,6 +1144,8 @@ struct RisohSettings
         mapIdAssoc[TEXT("HELP.ID")] = TEXT("HELPID_");
         mapIdAssoc[TEXT("COMMAND.ID")] = TEXT("CMDID_");
         mapIdAssoc[TEXT("CONTROL.ID")] = TEXT("CID_");
+
+        mapIDs.clear();
     }
 
     void AddFile(LPCTSTR pszFile)
@@ -2433,8 +2437,28 @@ public:
 
         for (size_t i = 0; i < len; ++i)
         {
-            // TODO:
-            //MessageBoxA(hwnd, macros[i].c_str(), lines[i + 1].c_str(), MB_ICONINFORMATION);
+            const MStringA& macro = macros[i];
+            const MStringA& line = lines[i + 1];
+            using namespace MacroParser;
+            StringScanner scanner(line);
+            TokenStream stream(scanner);
+            stream.read_tokens();
+            Parser parser(stream);
+            if (parser.parse())
+            {
+                int value = 0;
+                if (eval_ast(parser.ast(), value))
+                {
+                    char sz[32];
+                    wsprintfA(sz, "%d", value);
+                    m_settings.mapIDs[macro] = sz;
+                }
+                else if (parser.ast()->m_id == ASTID_STRING)
+                {
+                    StringAst *str = (StringAst *)parser.ast();
+                    m_settings.mapIDs[macro] = str->m_str;
+                }
+            }
         }
         return TRUE;
     }
@@ -2493,13 +2517,13 @@ public:
         wsprintfW(szCmdLine, L"\"%s\" -Wp,-E \"%s\"", m_szCppExe, szTempFile1);
         //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
-        MByteStreamEx stream;
         MProcessMaker pmaker;
         pmaker.SetShowWindow(SW_HIDE);
         MFile hInputWrite, hOutputRead;
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcess(NULL, szCmdLine))
         {
+            std::vector<char> data;
             DWORD cbAvail, cbRead;
             CHAR szBuf[256];
             while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
@@ -2523,21 +2547,10 @@ public:
                     if (cbRead == 0)
                         continue;
 
-                    stream.WriteData(szBuf, cbRead);
+                    data.insert(data.end(), &szBuf[0], &szBuf[cbRead]);
                 }
             }
             pmaker.CloseAll();
-
-            std::vector<BYTE> data = stream.data();
-
-            WCHAR szTempFile2[MAX_PATH];
-            lstrcpynW(szTempFile2, GetTempFileNameDx(L"R2"), MAX_PATH);
-            ReplaceBackslash(szTempFile2);
-
-            MFile file2(szTempFile2, TRUE);
-            DWORD cbWritten;
-            file2.WriteFile(&data[0], (DWORD)data.size(), &cbWritten);
-            file2.CloseHandle();
 
             MStringA str((char *)&data[0], data.size());
             size_t pragma_found = str.find("#pragma RisohEditor");
@@ -2550,12 +2563,13 @@ public:
         }
 
         DeleteFileW(szTempFile1);
-
         return FALSE;
     }
 
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
+        m_ConstantsDB.m_Map[TEXT("RESOURCE.IDS")].clear();
+
         WCHAR szTempFile[MAX_PATH];
         lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
         ReplaceBackslash(szTempFile);
@@ -2605,22 +2619,22 @@ public:
         if (!CompileIfNecessary(hwnd))
             return;
 
-        WCHAR File[MAX_PATH] = TEXT("resource.h");
+        WCHAR szFile[MAX_PATH] = TEXT("resource.h");
 
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
         ofn.hwndOwner = hwnd;
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
-        ofn.lpstrFile = File;
-        ofn.nMaxFile = _countof(File);
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = _countof(szFile);
         ofn.lpstrTitle = LoadStringDx(IDS_LOADRESH);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
         ofn.lpstrDefExt = L"h";
         if (GetOpenFileNameW(&ofn))
         {
-            DoLoadResH(hwnd, File);
+            DoLoadResH(hwnd, szFile);
         }
     }
 
@@ -4067,7 +4081,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     TCHAR szName[MAX_PATH];
-    RisohSettings::map_type::iterator it, end = m_settings.mapIdAssoc.end();
+    RisohSettings::assoc_map_type::iterator it, end = m_settings.mapIdAssoc.end();
     for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
     {
         keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName));
@@ -4119,7 +4133,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
     }
 
-    RisohSettings::map_type::iterator it, end = m_settings.mapIdAssoc.end();
+    RisohSettings::assoc_map_type::iterator it, end = m_settings.mapIdAssoc.end();
     for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
     {
         keyRisoh.SetSz(it->first.c_str(), it->second.c_str());

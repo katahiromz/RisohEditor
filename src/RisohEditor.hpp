@@ -47,6 +47,7 @@
 #include "MRegKey.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"
+#include "MacroParser.hpp"
 #include "resource.h"
 
 // RisohEditor.cpp

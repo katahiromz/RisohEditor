@@ -42,6 +42,7 @@ public:
     };
     typedef std::vector<EntryType> TableType;
     typedef std::map<CategoryType, TableType> MapType;
+    MapType m_Map;
 
     ConstantsDB()
     {
@@ -355,8 +356,6 @@ public:
     }
 
 protected:
-    MapType m_Map;
-
     StringType _dumpBitField(CategoryType category, ValueType& value,
                              BOOL Not = FALSE) const
     {
