@@ -2421,7 +2421,7 @@ public:
             ChangeStatusText(IDS_READY);
     }
 
-    BOOL DoLoadResH(LPCTSTR pszFile)
+    BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
         // TODO:
         return TRUE;
@@ -2447,7 +2447,7 @@ public:
         ofn.lpstrDefExt = L"h";
         if (GetOpenFileNameW(&ofn))
         {
-            DoLoadResH(File);
+            DoLoadResH(hwnd, File);
         }
     }
 
@@ -3369,9 +3369,6 @@ public:
                 return TRUE;    // success
             }
         }
-
-        WCHAR szTempPath[MAX_PATH];
-        ::GetTempPathW(_countof(szTempPath), szTempPath);
 
         WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
