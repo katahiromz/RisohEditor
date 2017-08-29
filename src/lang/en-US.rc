@@ -15,7 +15,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM SEPARATOR
-        MENUITEM "&ID Association", ID_IDASSOC
+        MENUITEM "&ID Association...", ID_IDASSOC
+        MENUITEM "Load &resource.h File...\tCtrl+R", ID_LOADRESH
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
@@ -207,6 +208,8 @@ STRINGTABLE
     IDS_EMPTYSTR, "Please enter a string."
     IDS_ANICURSOR, "(Animation Cursor)"
     IDS_ANIICON, "(Animation Icon)"
+    IDS_HEADFILTER, "Header Files (*.h)|*.h|All Files (*.*)|*.*|"
+    IDS_LOADRESH, "Load ""resource.h"" File"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

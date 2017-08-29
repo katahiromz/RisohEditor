@@ -2409,6 +2409,9 @@ public:
         case ID_IDASSOC:
             OnIdAssoc(hwnd);
             break;
+        case ID_LOADRESH:
+            OnLoadResH(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2416,6 +2419,36 @@ public:
 
         if (bUpdateStatus && !::IsWindow(m_rad_window))
             ChangeStatusText(IDS_READY);
+    }
+
+    BOOL DoLoadResH(LPCTSTR pszFile)
+    {
+        // TODO:
+        return TRUE;
+    }
+
+    void OnLoadResH(HWND hwnd)
+    {
+        if (!CompileIfNecessary(hwnd))
+            return;
+
+        WCHAR File[MAX_PATH] = TEXT("resource.h");
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx(IDS_LOADRESH);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"h";
+        if (GetOpenFileNameW(&ofn))
+        {
+            DoLoadResH(File);
+        }
     }
 
     void OnDestroy(HWND hwnd)
@@ -3369,20 +3402,20 @@ public:
         r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
         r2.CloseHandle();
 
-        WCHAR CmdLine[512];
-    #if 1
-        wsprintfW(CmdLine,
+        WCHAR szCmdLine[512];
+#if 1
+        wsprintfW(szCmdLine,
             L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
             L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
             m_szWindresExe, szPath3, m_szCppExe, szPath1);
-    #else
-        wsprintfW(CmdLine,
+#else
+        wsprintfW(szCmdLine,
             L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
             L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
             m_szWindresExe, szPath3, m_szCppExe, szPath1);
-    #endif
+#endif
 
-        // MessageBoxW(hwnd, CmdLine, NULL, 0);
+        // MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
         std::vector<BYTE> output;
         MStringA msg;
@@ -3396,7 +3429,7 @@ public:
         pmaker.SetShowWindow(SW_HIDE);
         MFile hInputWrite, hOutputRead;
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-            pmaker.CreateProcess(NULL, CmdLine))
+            pmaker.CreateProcess(NULL, szCmdLine))
         {
             DWORD cbAvail;
             while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
@@ -3414,7 +3447,7 @@ public:
                 DWORD cbRead;
                 if (cbAvail > sizeof(szBuf))
                     cbAvail = sizeof(szBuf);
-                else  if (cbAvail == 0)
+                else if (cbAvail == 0)
                     continue;
 
                 if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))

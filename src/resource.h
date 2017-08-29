@@ -64,6 +64,7 @@
 #define ID_MRUFILE15        161
 #define ID_PLAY             162
 #define ID_IDASSOC          163
+#define ID_LOADRESH         164
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -176,5 +177,7 @@
 #define IDS_EMPTYSTR        86
 #define IDS_ANICURSOR       87
 #define IDS_ANIICON         88
+#define IDS_HEADFILTER      89
+#define IDS_LOADRESH        90
 
 #endif  // ndef RESOURCE_H_
