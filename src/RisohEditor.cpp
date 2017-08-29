@@ -2421,10 +2421,183 @@ public:
             ChangeStatusText(IDS_READY);
     }
 
+    BOOL ParseMacros(HWND hwnd, std::vector<MStringA>& macros, MStringA& str)
+    {
+        std::vector<MStringA> lines;
+        mstr_trim(str);
+        mstr_split(lines, str, "\n");
+
+        size_t len = lines.size() - 1;
+        if (macros.size() < len)
+            len = macros.size();
+
+        for (size_t i = 0; i < len; ++i)
+        {
+            // TODO:
+            //MessageBoxA(hwnd, macros[i].c_str(), lines[i + 1].c_str(), MB_ICONINFORMATION);
+        }
+        return TRUE;
+    }
+
+    BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
+    {
+        MStringA str(psz, len);
+        std::vector<MStringA> lines, macros;
+        mstr_split(lines, str, "\n");
+
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            MStringA& line = lines[i];
+            mstr_trim(line);
+            if (line.empty())
+                continue;
+            if (line.find("#define _") != MStringA::npos)
+                continue;
+            size_t found0 = line.find("#define ");
+            if (found0 == MStringA::npos)
+                continue;
+            line = line.substr(strlen("#define "));
+            size_t found1 = line.find_first_of(" \t");
+            size_t found2 = line.find('(');
+            if (found1 == MStringA::npos)
+                continue;
+            if (found2 != MStringA::npos && found2 < found1)
+                continue;
+            macros.push_back(line.substr(0, found1));
+        }
+
+        if (macros.empty())
+            return TRUE;
+
+        WCHAR szTempFile1[MAX_PATH];
+        lstrcpynW(szTempFile1, GetTempFileNameDx(L"R1"), MAX_PATH);
+        ReplaceBackslash(szTempFile1);
+
+        DWORD cbWritten;
+        MFile file1(szTempFile1, TRUE);
+        char buf[MAX_PATH + 64];
+        WCHAR szFile[MAX_PATH];
+        lstrcpyW(szFile, pszFile);
+        ReplaceBackslash(szFile);
+        wsprintfA(buf, "#include \"%s\"\n", MTextToAnsi(szFile).c_str());
+        file1.WriteSzA(buf, &cbWritten);
+        file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
+        for (size_t i = 0; i < macros.size(); ++i)
+        {
+            wsprintfA(buf, "%s\n", macros[i].c_str());
+            file1.WriteSzA(buf, &cbWritten);
+        }
+        file1.CloseHandle();
+
+        WCHAR szCmdLine[512];
+        wsprintfW(szCmdLine, L"\"%s\" -Wp,-E \"%s\"", m_szCppExe, szTempFile1);
+        //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+        MByteStreamEx stream;
+        MProcessMaker pmaker;
+        pmaker.SetShowWindow(SW_HIDE);
+        MFile hInputWrite, hOutputRead;
+        if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+            pmaker.CreateProcess(NULL, szCmdLine))
+        {
+            DWORD cbAvail, cbRead;
+            CHAR szBuf[256];
+            while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+            {
+                if (cbAvail == 0)
+                {
+                    if (!pmaker.IsRunning())
+                        break;
+
+                    pmaker.WaitForSingleObject(500);
+                    continue;
+                }
+
+                if (cbAvail > sizeof(szBuf))
+                    cbAvail = sizeof(szBuf);
+                else if (cbAvail == 0)
+                    continue;
+
+                if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+                {
+                    if (cbRead == 0)
+                        continue;
+
+                    stream.WriteData(szBuf, cbRead);
+                }
+            }
+            pmaker.CloseAll();
+
+            std::vector<BYTE> data = stream.data();
+
+            WCHAR szTempFile2[MAX_PATH];
+            lstrcpynW(szTempFile2, GetTempFileNameDx(L"R2"), MAX_PATH);
+            ReplaceBackslash(szTempFile2);
+
+            MFile file2(szTempFile2, TRUE);
+            DWORD cbWritten;
+            file2.WriteFile(&data[0], (DWORD)data.size(), &cbWritten);
+            file2.CloseHandle();
+
+            MStringA str((char *)&data[0], data.size());
+            size_t pragma_found = str.find("#pragma RisohEditor");
+            if (pragma_found != MStringA::npos)
+            {
+                DeleteFileW(szTempFile1);
+                str = str.substr(pragma_found);
+                return ParseMacros(hwnd, macros, str);
+            }
+        }
+
+        DeleteFileW(szTempFile1);
+
+        return FALSE;
+    }
+
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
-        // TODO:
-        return TRUE;
+        WCHAR szTempFile[MAX_PATH];
+        lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
+        ReplaceBackslash(szTempFile);
+
+        MFile file(szTempFile, TRUE);
+        file.CloseHandle();
+
+        WCHAR szCmdLine[512];
+        wsprintfW(szCmdLine,
+            L"-E -dM -DRC_INVOKED -o \"%s\" -x none \"%s\"", szTempFile, pszFile);
+        //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+        SHELLEXECUTEINFOW info;
+        ZeroMemory(&info, sizeof(info));
+        info.cbSize = sizeof(info);
+        info.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE | SEE_MASK_FLAG_NO_UI;
+        info.hwnd = hwnd;
+        info.lpFile = m_szCppExe;
+        info.lpParameters = szCmdLine;
+        info.nShow = SW_HIDE;
+        if (ShellExecuteExW(&info))
+        {
+            WaitForSingleObject(info.hProcess, INFINITE);
+            CloseHandle(info.hProcess);
+            if (file.OpenFileForInput(szTempFile))
+            {
+                DWORD cbRead;
+                CHAR szBuf[512];
+                std::vector<char> data;
+                while (file.ReadFile(szBuf, 512, &cbRead) && cbRead)
+                {
+                    data.insert(data.end(), &szBuf[0], &szBuf[cbRead]);
+                }
+                file.CloseHandle();
+                DeleteFileW(szTempFile);
+                data.push_back(0);
+                return ParseResH(hwnd, pszFile, &data[0], (DWORD)(data.size() - 1));
+            }
+        }
+        DeleteFileW(szTempFile);
+
+        return FALSE;
     }
 
     void OnLoadResH(HWND hwnd)
@@ -3411,7 +3584,6 @@ public:
             L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
             m_szWindresExe, szPath3, m_szCppExe, szPath1);
 #endif
-
         // MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
         std::vector<BYTE> output;
