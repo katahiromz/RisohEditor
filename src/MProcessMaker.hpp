@@ -3,18 +3,11 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     4   /* Version 4 */
+#define MZC4_MPROCESSMAKER_HPP_     6   /* Version 6 */
 
 #include "MFile.hpp"
-
-#if defined(__BORLANDC__) && (__BORLANDC__ <= 0x551)
-    #ifndef _strdup
-        #define _strdup strdup
-    #endif
-    #ifndef _wcsdup
-        #define _wcsdup wcsdup
-    #endif
-#endif
+#include <tchar.h>
+#include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -132,8 +125,6 @@ inline VOID MProcessMaker::SetStdInput(HANDLE hStdIn)
     m_si.hStdInput = hStdIn;
     if (hStdIn != NULL)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
-    else
-        m_si.dwFlags &= ~STARTF_USESTDHANDLES;
 }
 
 inline VOID MProcessMaker::SetStdOutput(HANDLE hStdOut)
@@ -141,8 +132,6 @@ inline VOID MProcessMaker::SetStdOutput(HANDLE hStdOut)
     m_si.hStdOutput = hStdOut;
     if (hStdOut != NULL)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
-    else
-        m_si.dwFlags &= ~STARTF_USESTDHANDLES;
 }
 
 inline VOID MProcessMaker::SetStdError(HANDLE hStdErr)
@@ -150,8 +139,6 @@ inline VOID MProcessMaker::SetStdError(HANDLE hStdErr)
     m_si.hStdError = hStdErr;
     if (hStdErr != NULL)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
-    else
-        m_si.dwFlags &= ~STARTF_USESTDHANDLES;
 }
 
 inline VOID MProcessMaker::SetShowWindow(INT nCmdShow/* = SW_HIDE*/)
@@ -366,12 +353,13 @@ inline BOOL MProcessMaker::CreateProcess(
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
     LPSECURITY_ATTRIBUTES lpThreadAttributes/* = NULL*/)
 {
+    using namespace std;
     BOOL b;
+    LPTSTR pszCmdLine = _tcsdup(pszCommandLine);
     LPCVOID pcEnv = reinterpret_cast<LPCVOID>(pszzEnvironment);
     LPVOID pEnv = const_cast<LPVOID>(pcEnv);
-    if (pszCommandLine)
+    if (pszCmdLine)
     {
-        LPTSTR pszCmdLine = const_cast<LPTSTR>(pszCommandLine);
         #ifdef UNICODE
             b = ::CreateProcess(pszAppName, pszCmdLine, 
                 lpProcessAttributes, lpThreadAttributes,
@@ -383,6 +371,7 @@ inline BOOL MProcessMaker::CreateProcess(
                 bInherit, m_dwCreationFlags, pEnv,
                 m_pszCurDir, &m_si, &m_pi);
         #endif
+        free(pszCmdLine);
     }
     else
     {
