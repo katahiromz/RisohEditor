@@ -2473,7 +2473,7 @@ public:
 
     void OnConfig(HWND hwnd)
     {
-        MConfigDlg dialog;
+        MConfigDlg dialog(m_settings);
         dialog.DialogBoxDx(hwnd);
     }
 

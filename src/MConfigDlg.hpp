@@ -4,14 +4,17 @@
 #ifndef MZC4_MCONFIGDLG_HPP_
 #define MZC4_MCONFIGDLG_HPP_
 
-#include "MWindowBase.hpp"
+#include "RisohEditor.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MConfigDlg : public MDialogBase
 {
 public:
-    MConfigDlg() : MDialogBase(IDD_CONFIG)
+    RisohSettings& m_settings;
+
+    MConfigDlg(RisohSettings& settings)
+        : MDialogBase(IDD_CONFIG), m_settings(settings)
     {
     }
 
