@@ -1107,10 +1107,10 @@ struct RisohSettings
     BOOL        bGuiByDblClick;
     typedef std::vector<MString> mru_type;
     mru_type    vecRecentlyUsed;
-    typedef std::map<MString, MString>  assoc_map_type;
-    assoc_map_type      mapIdAssoc;
-    typedef std::map<MStringA, MStringA>  id_map_type;
-    id_map_type         mapIDs;
+    typedef std::map<MString, MString>      assoc_map_type;
+    typedef std::map<MStringA, MStringA>    id_map_type;
+    assoc_map_type      assoc_map;
+    id_map_type         id_map;
 
     RisohSettings()
     {
@@ -1128,23 +1128,23 @@ struct RisohSettings
         bGuiByDblClick = TRUE;
         vecRecentlyUsed.clear();
 
-        mapIdAssoc.clear();
-        mapIdAssoc[TEXT("Cursor.ID")] = TEXT("IDC_");
-        mapIdAssoc[TEXT("Bitmap.ID")] = TEXT("IDB_");
-        mapIdAssoc[TEXT("Menu.ID")] = TEXT("IDM_");
-        mapIdAssoc[TEXT("Dialog.ID")] = TEXT("IDD_");
-        mapIdAssoc[TEXT("String.ID")] = TEXT("IDS_");
-        mapIdAssoc[TEXT("Accel.ID")] = TEXT("IDA_");
-        mapIdAssoc[TEXT("Cursor.ID")] = TEXT("IDC_");
-        mapIdAssoc[TEXT("Icon.ID")] = TEXT("IDI_");
-        mapIdAssoc[TEXT("AniCursor.ID")] = TEXT("IDAC_");
-        mapIdAssoc[TEXT("AniIcon.ID")] = TEXT("IDAI_");
-        mapIdAssoc[TEXT("Html.ID")] = TEXT("IDH_");
-        mapIdAssoc[TEXT("Help.ID")] = TEXT("HELPID_");
-        mapIdAssoc[TEXT("Command.ID")] = TEXT("CMDID_");
-        mapIdAssoc[TEXT("Control.ID")] = TEXT("CID_");
+        assoc_map.clear();
+        assoc_map[TEXT("Cursor.ID")] = TEXT("IDC_");
+        assoc_map[TEXT("Bitmap.ID")] = TEXT("IDB_");
+        assoc_map[TEXT("Menu.ID")] = TEXT("IDM_");
+        assoc_map[TEXT("Dialog.ID")] = TEXT("IDD_");
+        assoc_map[TEXT("String.ID")] = TEXT("IDS_");
+        assoc_map[TEXT("Accel.ID")] = TEXT("IDA_");
+        assoc_map[TEXT("Cursor.ID")] = TEXT("IDC_");
+        assoc_map[TEXT("Icon.ID")] = TEXT("IDI_");
+        assoc_map[TEXT("AniCursor.ID")] = TEXT("IDAC_");
+        assoc_map[TEXT("AniIcon.ID")] = TEXT("IDAI_");
+        assoc_map[TEXT("Html.ID")] = TEXT("IDH_");
+        assoc_map[TEXT("Help.ID")] = TEXT("HELPID_");
+        assoc_map[TEXT("Command.ID")] = TEXT("CMDID_");
+        assoc_map[TEXT("Control.ID")] = TEXT("CID_");
 
-        mapIDs.clear();
+        id_map.clear();
     }
 
     void AddFile(LPCTSTR pszFile)
@@ -2432,17 +2432,27 @@ public:
             ChangeStatusText(IDS_READY);
     }
 
+    void UpdateIDList(HWND hwnd)
+    {
+        if (!IsWindow(m_id_list_dlg))
+            return;
+
+        m_id_list_dlg.SetItems(m_settings.assoc_map, m_settings.id_map);
+    }
+
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE)
     {
         if (bShow)
         {
             DestroyWindow(m_id_list_dlg);
-        }
-        else
-        {
             m_id_list_dlg.CreateDialogDx(hwnd);
             ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
             UpdateWindow(m_id_list_dlg);
+            UpdateIDList(hwnd);
+        }
+        else
+        {
+            DestroyWindow(m_id_list_dlg);
         }
     }
 
@@ -2477,12 +2487,12 @@ public:
                 {
                     char sz[32];
                     wsprintfA(sz, "%d", value);
-                    m_settings.mapIDs[macro] = sz;
+                    m_settings.id_map[macro] = sz;
                 }
                 else if (parser.ast()->m_id == ASTID_STRING)
                 {
                     StringAst *str = (StringAst *)parser.ast();
-                    m_settings.mapIDs[macro] = str->m_str;
+                    m_settings.id_map[macro] = str->m_str;
                 }
             }
         }
@@ -2681,7 +2691,7 @@ public:
 
     void OnIdAssoc(HWND hwnd)
     {
-        MIdAssocDlg dialog(m_settings.mapIdAssoc);
+        MIdAssocDlg dialog(m_settings.assoc_map);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -4114,8 +4124,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     TCHAR szName[MAX_PATH];
-    RisohSettings::assoc_map_type::iterator it, end = m_settings.mapIdAssoc.end();
-    for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
+    RisohSettings::assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+    for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
         keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName));
         if (szName[0])
@@ -4166,8 +4176,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
     }
 
-    RisohSettings::assoc_map_type::iterator it, end = m_settings.mapIdAssoc.end();
-    for (it = m_settings.mapIdAssoc.begin(); it != end; ++it)
+    RisohSettings::assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+    for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
         keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
     }

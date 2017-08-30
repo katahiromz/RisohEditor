@@ -49,6 +49,10 @@ struct MIdOrString
         {
             m_ID = LOWORD(Str);
         }
+        else if (L'0' <= Str[0] && Str[0] <= L'9')
+        {
+            m_ID = _wtoi(Str);
+        }
         else
         {
             m_ID = 0;
@@ -130,6 +134,37 @@ struct MIdOrString
         }
         return false;
     }
+    bool operator<(const MIdOrString& id_or_str) const
+    {
+        if (id_or_str.m_ID != 0)
+        {
+            if (m_ID != 0)
+                return m_ID < id_or_str.m_ID;
+            return -1;
+        }
+        else
+        {
+            if (m_ID == 0)
+                return m_Str < id_or_str.m_Str;
+            return 1;
+        }
+    }
+    bool operator>(const MIdOrString& id_or_str) const
+    {
+        if (id_or_str.m_ID != 0)
+        {
+            if (m_ID != 0)
+                return m_ID > id_or_str.m_ID;
+            return 1;
+        }
+        else
+        {
+            if (m_ID == 0)
+                return m_Str > id_or_str.m_Str;
+            return -1;
+        }
+    }
+
     bool operator==(const WCHAR *psz) const
     {
         if (IS_INTRESOURCE(psz))
