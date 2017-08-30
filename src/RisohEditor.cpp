@@ -2472,7 +2472,7 @@ public:
         if (bShow)
         {
             DestroyWindow(m_id_list_dlg);
-            m_id_list_dlg.CreateDialogDx(hwnd);
+            m_id_list_dlg.CreateDialogDx(NULL);
             ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
             UpdateWindow(m_id_list_dlg);
             UpdateIDList(hwnd);
@@ -2485,7 +2485,7 @@ public:
 
     void OnIDList(HWND hwnd)
     {
-        ShowIDList(hwnd, !IsWindowVisible(m_id_list_dlg));
+        ShowIDList(hwnd, TRUE);
     }
 
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str)
@@ -2892,11 +2892,6 @@ public:
             CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_CHECKED);
         else
             CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_UNCHECKED);
-
-        if (IsWindowVisible(m_id_list_dlg))
-            CheckMenuItem(hMenu, CMDID_IDLIST, MF_CHECKED);
-        else
-            CheckMenuItem(hMenu, CMDID_IDLIST, MF_UNCHECKED);
 
         if ((BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID"))
             CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_CHECKED);
