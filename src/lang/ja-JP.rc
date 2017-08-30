@@ -8,56 +8,56 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ファイル(&F)"
     {
-        MENUITEM "新規作成(&N)\tCtrl+N", ID_NEW
+        MENUITEM "新規作成(&N)\tCtrl+N", CMDID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "開く(&O)...\tCtrl+O", ID_OPEN
-        MENUITEM "名前を付けて保存(&A)...\tCtrl+S", ID_SAVEAS
+        MENUITEM "開く(&O)...\tCtrl+O", CMDID_OPEN
+        MENUITEM "名前を付けて保存(&A)...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
+        MENUITEM "インポート(&I)...\tCtrl+I", CMDID_IMPORT
         MENUITEM SEPARATOR
-        MENUITEM "&IDの関連付け...", ID_IDASSOC
-        MENUITEM "ファイル &resource.h の読み込み...\tCtrl+R", ID_LOADRESH
+        MENUITEM "&IDの関連付け...", CMDID_IDASSOC
+        MENUITEM "ファイル &resource.h の読み込み...\tCtrl+R", CMDID_LOADRESH
         MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"
         {
             MENUITEM "(なし)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "終了(&X)\tAlt+F4", ID_EXIT
+        MENUITEM "終了(&X)\tAlt+F4", CMDID_EXIT
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを追加...", ID_ADDICON
-        MENUITEM "カーソルを追加...", ID_ADDCURSOR
-        MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "リソース項目を追加...", ID_ADDRES
+        MENUITEM "アイコンを追加...", CMDID_ADDICON
+        MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
+        MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+        MENUITEM "リソース項目を追加...", CMDID_ADDRES
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを置き換え...", ID_REPLACEICON
-        MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
-        MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "バイナリ リソース項目を置き換え...", ID_REPLACEBIN
+        MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
+        MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
+        MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
+        MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを抽出...", ID_EXTRACTICON
-        MENUITEM "カーソルを抽出...", ID_EXTRACTCURSOR
-        MENUITEM "ビットマップを抽出...", ID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソース項目を抽出...", ID_EXTRACTBIN
+        MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
+        MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
+        MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
+        MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
         MENUITEM SEPARATOR
-        MENUITEM "テストする(&T)", ID_TEST
+        MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
+        MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
     POPUP "表示(&V)"
     {
-        MENUITEM "ステータス バー(&S)", ID_STATUSBAR
-        MENUITEM "バイナリー(&B)", ID_BINARYPANE
+        MENUITEM "ステータス バー(&S)", CMDID_STATUSBAR
+        MENUITEM "バイナリー(&B)", CMDID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "常に&CONTROL文", ID_ALWAYSCONTROL
+        MENUITEM "常に&CONTROL文", CMDID_ALWAYSCONTROL
     }
     POPUP "ヘルプ(&H)"
     {
-        MENUITEM "バージョン情報(&A)...", ID_ABOUT
+        MENUITEM "バージョン情報(&A)...", CMDID_ABOUT
     }
 }
 
@@ -65,26 +65,26 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ポップアップ"
     {
-        MENUITEM "GUI編集...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを追加...", ID_ADDICON
-        MENUITEM "カーソルを追加...", ID_ADDCURSOR
-        MENUITEM "ビットマップを追加...", ID_ADDBITMAP
-        MENUITEM "リソース項目を追加...", ID_ADDRES
+        MENUITEM "アイコンを追加...", CMDID_ADDICON
+        MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
+        MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+        MENUITEM "リソース項目を追加...", CMDID_ADDRES
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを置き換え...", ID_REPLACEICON
-        MENUITEM "カーソルを置き換え...", ID_REPLACECURSOR
-        MENUITEM "ビットマップを置き換え...", ID_REPLACEBITMAP
-        MENUITEM "バイナリ リソース項目を置き換え...", ID_REPLACEBIN
+        MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
+        MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
+        MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
+        MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを抽出...", ID_EXTRACTICON
-        MENUITEM "カーソルを抽出...", ID_EXTRACTCURSOR
-        MENUITEM "ビットマップを抽出...", ID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソース項目を抽出...", ID_EXTRACTBIN
+        MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
+        MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
+        MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
+        MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
         MENUITEM SEPARATOR
-        MENUITEM "テストする(&T)", ID_TEST
+        MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
+        MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
 }
 
@@ -92,30 +92,30 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 {
     POPUP "ポップアップ"
     {
-        MENUITEM "コントロールの追加(&A)...", ID_ADDCTRL
-        MENUITEM "コントロールの削除(&D)", ID_DELCTRL
+        MENUITEM "コントロールの追加(&A)...", CMDID_ADDCTRL
+        MENUITEM "コントロールの削除(&D)", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "インデックス(&I)"
         {
-            MENUITEM "先頭へ(&T)", ID_CTRLINDEXTOP
+            MENUITEM "先頭へ(&T)", CMDID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "減らす(&M)", ID_CTRLINDEXMINUS
-            MENUITEM "増やす(&P)", ID_CTRLINDEXPLUS
+            MENUITEM "減らす(&M)", CMDID_CTRLINDEXMINUS
+            MENUITEM "増やす(&P)", CMDID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "末尾へ(&B)", ID_CTRLINDEXBOTTOM
+            MENUITEM "末尾へ(&B)", CMDID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "表示の切り替え(&S)", ID_SHOWHIDEINDEX
+            MENUITEM "表示の切り替え(&S)", CMDID_SHOWHIDEINDEX
         }
         POPUP "位置そろえ(&A)"
         {
-            MENUITEM "上そろえ(&T)", ID_TOPALIGN
-            MENUITEM "下そろえ(&B)", ID_BOTTOMALIGN
-            MENUITEM "左そろえ(&L)", ID_LEFTALIGN
-            MENUITEM "右そろえ(&R)", ID_RIGHTALIGN
+            MENUITEM "上そろえ(&T)", CMDID_TOPALIGN
+            MENUITEM "下そろえ(&B)", CMDID_BOTTOMALIGN
+            MENUITEM "左そろえ(&L)", CMDID_LEFTALIGN
+            MENUITEM "右そろえ(&R)", CMDID_RIGHTALIGN
         }
         MENUITEM SEPARATOR
-        MENUITEM "コントロールのプロパティ(&P)...", ID_CTRLPROP
-        MENUITEM "ダイアログのプロパティ(&O)...", ID_DLGPROP
+        MENUITEM "コントロールのプロパティ(&P)...", CMDID_CTRLPROP
+        MENUITEM "ダイアログのプロパティ(&O)...", CMDID_DLGPROP
     }
 }
 

@@ -39,15 +39,15 @@ public:
 
     WORD            lang;
     BOOL            updated;
-    ID_OR_STRING    type;
-    ID_OR_STRING    name;
+    MIdOrString    type;
+    MIdOrString    name;
     DataType        data;
 
     ResEntry() : lang(0xFFFF), updated(FALSE)
     {
     }
 
-    ResEntry(const ID_OR_STRING& Type, const ID_OR_STRING& Name, WORD Lang,
+    ResEntry(const MIdOrString& Type, const MIdOrString& Name, WORD Lang,
              BOOL Updated = TRUE)
      : type(Type), name(Name), lang(Lang), updated(Updated)
     {
@@ -113,8 +113,8 @@ struct ResourceHeader
 {
     DWORD           DataSize;
     DWORD           HeaderSize;
-    ID_OR_STRING    Type;
-    ID_OR_STRING    Name;
+    MIdOrString    Type;
+    MIdOrString    Name;
     DWORD           DataVersion;
     WORD            MemoryFlags;
     WORD            LanguageId;
@@ -174,7 +174,7 @@ struct ResourceHeader
         return TRUE;
     }
 
-    DWORD GetHeaderSize(ID_OR_STRING type, ID_OR_STRING name) const
+    DWORD GetHeaderSize(MIdOrString type, MIdOrString name) const
     {
         DWORD size = 0;
         if (type.is_str())
@@ -196,8 +196,8 @@ struct ResourceHeader
 
 inline INT
 Res_Find(const ResEntries& Entries,
-         const ID_OR_STRING& Type, 
-         const ID_OR_STRING& Name,
+         const MIdOrString& Type, 
+         const MIdOrString& Name,
          WORD Lang)
 {
     size_t i, count = Entries.size();
@@ -261,8 +261,8 @@ Res_Find(const ResEntries& Entries, const ResEntry& Entry)
 inline void
 Res_Search(ResEntries& Found,
            const ResEntries& Entries,
-           const ID_OR_STRING& Type, 
-           const ID_OR_STRING& Name,
+           const MIdOrString& Type, 
+           const MIdOrString& Name,
            WORD Lang)
 {
     Found.clear();
@@ -368,8 +368,8 @@ Res_AddEntry(ResEntries& Entries, const ResEntry& Entry,
 }
 
 inline BOOL
-Res_AddEntry(ResEntries& Entries, const ID_OR_STRING& Type,
-             const ID_OR_STRING& Name, WORD Lang,
+Res_AddEntry(ResEntries& Entries, const MIdOrString& Type,
+             const MIdOrString& Name, WORD Lang,
              const ResEntry::DataType& Data, BOOL Replace = FALSE)
 {
     ResEntry Entry(Type, Name, Lang);
@@ -436,8 +436,8 @@ Res_DeleteGroupCursor(ResEntries& Entries, ResEntry& Entry)
 }
 
 inline BOOL
-Res_DeleteEntries(ResEntries& Entries, const ID_OR_STRING& Type,
-                  const ID_OR_STRING& Name, WORD Lang)
+Res_DeleteEntries(ResEntries& Entries, const MIdOrString& Type,
+                  const MIdOrString& Name, WORD Lang)
 {
     BOOL bFound = FALSE;
     for (;;)
@@ -474,7 +474,7 @@ Res_DeleteEntries(ResEntries& Entries, const ResEntry& Entry)
 }
 
 inline BOOL
-Res_AddGroupIcon(ResEntries& Entries, const ID_OR_STRING& Name,
+Res_AddGroupIcon(ResEntries& Entries, const MIdOrString& Name,
                  WORD Lang, const std::wstring& FileName,
                  BOOL Replace = FALSE)
 {
@@ -497,7 +497,7 @@ Res_AddGroupIcon(ResEntries& Entries, const ID_OR_STRING& Name,
 }
 
 inline BOOL
-Res_AddGroupCursor(ResEntries& Entries, const ID_OR_STRING& Name,
+Res_AddGroupCursor(ResEntries& Entries, const MIdOrString& Name,
                    WORD Lang, const std::wstring& FileName,
                    BOOL Replace = FALSE)
 {
@@ -520,7 +520,7 @@ Res_AddGroupCursor(ResEntries& Entries, const ID_OR_STRING& Name,
 }
 
 inline BOOL
-Res_AddBitmap(ResEntries& Entries, const ID_OR_STRING& Name,
+Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
               WORD Lang, const std::wstring& BitmapFile, BOOL Replace = FALSE)
 {
     MByteStreamEx stream;
@@ -588,7 +588,7 @@ Res_GetListFromRes(HMODULE hMod, LPARAM lParam)
 ///////////////////////////////////////////////////////////////////////////////
 
 inline std::wstring
-Res_GetType(const ID_OR_STRING& id_or_str)
+Res_GetType(const MIdOrString& id_or_str)
 {
     wchar_t sz[32];
     std::wstring ret, name;
@@ -639,7 +639,7 @@ Res_GetType(const ID_OR_STRING& id_or_str)
 }
 
 inline std::wstring
-Res_GetName(const ID_OR_STRING& id_or_str)
+Res_GetName(const MIdOrString& id_or_str)
 {
     std::wstring ret;
     if (id_or_str.m_ID != 0)
@@ -1380,19 +1380,19 @@ Res_ExtractCursor(const ResEntries& Entries,
 }
 
 inline INT
-Res_IsPlainText(const ID_OR_STRING& type)
+Res_IsPlainText(const MIdOrString& type)
 {
     return type == RT_HTML || type == RT_MANIFEST || type == RT_DLGINCLUDE;
 }
 
 inline INT
-Res_IsTestable(const ID_OR_STRING& type)
+Res_IsTestable(const MIdOrString& type)
 {
     return type == RT_DIALOG || type == RT_MENU;
 }
 
 inline BOOL
-Res_CanGuiEdit(const ID_OR_STRING& type)
+Res_CanGuiEdit(const MIdOrString& type)
 {
     return type == RT_DIALOG || type == RT_MENU ||
            type == RT_STRING || type == RT_MESSAGETABLE ||
@@ -1400,7 +1400,7 @@ Res_CanGuiEdit(const ID_OR_STRING& type)
 }
 
 inline BOOL
-Res_HasSample(const ID_OR_STRING& type)
+Res_HasSample(const MIdOrString& type)
 {
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
            type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
@@ -1408,13 +1408,13 @@ Res_HasSample(const ID_OR_STRING& type)
 }
 
 inline BOOL
-Res_HasNoName(const ID_OR_STRING& type)
+Res_HasNoName(const MIdOrString& type)
 {
     return type == RT_STRING || type == RT_MESSAGETABLE;
 }
 
 inline void
-Res_DeleteNames(ResEntries& entries, const ID_OR_STRING& type, WORD lang)
+Res_DeleteNames(ResEntries& entries, const MIdOrString& type, WORD lang)
 {
     INT k;
     for (;;)

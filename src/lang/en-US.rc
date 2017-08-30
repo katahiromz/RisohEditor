@@ -8,56 +8,56 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "&File"
     {
-        MENUITEM "&New\tCtrl+N", ID_NEW
+        MENUITEM "&New\tCtrl+N", CMDID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "&Open...\tCtrl+O", ID_OPEN
-        MENUITEM "Save &As...\tCtrl+S", ID_SAVEAS
+        MENUITEM "&Open...\tCtrl+O", CMDID_OPEN
+        MENUITEM "Save &As...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "&Import...\tCtrl+I", ID_IMPORT
+        MENUITEM "&Import...\tCtrl+I", CMDID_IMPORT
         MENUITEM SEPARATOR
-        MENUITEM "&ID Association...", ID_IDASSOC
-        MENUITEM "Load &resource.h File...\tCtrl+R", ID_LOADRESH
+        MENUITEM "&ID Association...", CMDID_IDASSOC
+        MENUITEM "Load &resource.h File...\tCtrl+R", CMDID_LOADRESH
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
             MENUITEM "(None)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4", ID_EXIT
+        MENUITEM "E&xit\tAlt+F4", CMDID_EXIT
     }
     POPUP "&Edit"
     {
-        MENUITEM "GUI Edit...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "GUI Edit...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "Add Icon...", ID_ADDICON
-        MENUITEM "Add Cursor...", ID_ADDCURSOR
-        MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Resource Item...", ID_ADDRES
+        MENUITEM "Add Icon...", CMDID_ADDICON
+        MENUITEM "Add Cursor...", CMDID_ADDCURSOR
+        MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+        MENUITEM "Add Resource Item...", CMDID_ADDRES
         MENUITEM SEPARATOR
-        MENUITEM "Replace Icon...", ID_REPLACEICON
-        MENUITEM "Replace Cursor...", ID_REPLACECURSOR
-        MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource Item...", ID_REPLACEBIN
+        MENUITEM "Replace Icon...", CMDID_REPLACEICON
+        MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
+        MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
+        MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
         MENUITEM SEPARATOR
-        MENUITEM "Extract Icon...", ID_EXTRACTICON
-        MENUITEM "Extract Cursor...", ID_EXTRACTCURSOR
-        MENUITEM "Extract Bitmap...", ID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource Item...", ID_EXTRACTBIN
+        MENUITEM "Extract Icon...", CMDID_EXTRACTICON
+        MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
+        MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
+        MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", ID_TEST
+        MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
     POPUP "&View"
     {
-        MENUITEM "&Status Bar", ID_STATUSBAR
-        MENUITEM "&Binary", ID_BINARYPANE
+        MENUITEM "&Status Bar", CMDID_STATUSBAR
+        MENUITEM "&Binary", CMDID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "Always &CONTROL statement", ID_ALWAYSCONTROL
+        MENUITEM "Always &CONTROL statement", CMDID_ALWAYSCONTROL
     }
     POPUP "&Help"
     {
-        MENUITEM "&About...", ID_ABOUT
+        MENUITEM "&About...", CMDID_ABOUT
     }
 }
 
@@ -65,26 +65,26 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "Popup"
     {
-        MENUITEM "Edit by GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Edit by GUI...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "Add Icon...", ID_ADDICON
-        MENUITEM "Add Cursor...", ID_ADDCURSOR
-        MENUITEM "Add Bitmap...", ID_ADDBITMAP
-        MENUITEM "Add Resource Item...", ID_ADDRES
+        MENUITEM "Add Icon...", CMDID_ADDICON
+        MENUITEM "Add Cursor...", CMDID_ADDCURSOR
+        MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+        MENUITEM "Add Resource Item...", CMDID_ADDRES
         MENUITEM SEPARATOR
-        MENUITEM "Replace Icon...", ID_REPLACEICON
-        MENUITEM "Replace Cursor...", ID_REPLACECURSOR
-        MENUITEM "Replace Bitmap...", ID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource Item...", ID_REPLACEBIN
+        MENUITEM "Replace Icon...", CMDID_REPLACEICON
+        MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
+        MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
+        MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
         MENUITEM SEPARATOR
-        MENUITEM "Extract Icon...", ID_EXTRACTICON
-        MENUITEM "Extract Cursor...", ID_EXTRACTCURSOR
-        MENUITEM "Extract Bitmap...", ID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource Item...", ID_EXTRACTBIN
+        MENUITEM "Extract Icon...", CMDID_EXTRACTICON
+        MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
+        MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
+        MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", ID_TEST
+        MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
 }
 
@@ -92,30 +92,30 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 {
     POPUP "Popup"
     {
-        MENUITEM "&Add Control...", ID_ADDCTRL
-        MENUITEM "&Delete Control", ID_DELCTRL
+        MENUITEM "&Add Control...", CMDID_ADDCTRL
+        MENUITEM "&Delete Control", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "&Index"
         BEGIN
-            MENUITEM "To &Top", ID_CTRLINDEXTOP
+            MENUITEM "To &Top", CMDID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "&Minus", ID_CTRLINDEXMINUS
-            MENUITEM "&Plus", ID_CTRLINDEXPLUS
+            MENUITEM "&Minus", CMDID_CTRLINDEXMINUS
+            MENUITEM "&Plus", CMDID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
+            MENUITEM "To &Bottom", CMDID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "&Switch Visibility", ID_SHOWHIDEINDEX
+            MENUITEM "&Switch Visibility", CMDID_SHOWHIDEINDEX
         END
         POPUP "&Alignment"
         BEGIN
-            MENUITEM "&Top-Align", ID_TOPALIGN
-            MENUITEM "&Bottom-Align", ID_BOTTOMALIGN
-            MENUITEM "&Left-Align", ID_LEFTALIGN
-            MENUITEM "&Right-Align", ID_RIGHTALIGN
+            MENUITEM "&Top-Align", CMDID_TOPALIGN
+            MENUITEM "&Bottom-Align", CMDID_BOTTOMALIGN
+            MENUITEM "&Left-Align", CMDID_LEFTALIGN
+            MENUITEM "&Right-Align", CMDID_RIGHTALIGN
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Properties for Control...", ID_CTRLPROP
-        MENUITEM "Pr&operties for Dialog...", ID_DLGPROP
+        MENUITEM "&Properties for Control...", CMDID_CTRLPROP
+        MENUITEM "Pr&operties for Dialog...", CMDID_DLGPROP
     }
 }
 

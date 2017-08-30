@@ -852,7 +852,7 @@ public:
     void OnDestroy(HWND hwnd)
     {
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
+        PostMessage(hwndOwner, WM_COMMAND, CMDID_DESTROYRAD, 0);
     }
 
     virtual LRESULT CALLBACK
@@ -905,66 +905,66 @@ public:
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.empty())
         {
-            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
-            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_TOPALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_LEFTALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
         }
 
         if (CanIndexTop())
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_GRAYED);
         }
 
         if (CanIndexBottom())
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_GRAYED);
         }
 
         if (CanIndexMinus())
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_GRAYED);
         }
 
         if (CanIndexPlus())
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_GRAYED);
         }
     }
 
@@ -1051,7 +1051,7 @@ public:
     void UpdateRes()
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, ID_UPDATERES, 0);
+        PostMessage(hwndOwner, WM_COMMAND, CMDID_UPDATERES, 0);
 
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }

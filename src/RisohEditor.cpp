@@ -535,22 +535,22 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, CMDID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { -1, CMDID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+    { -1, CMDID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { -1, CMDID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 TBBUTTON g_buttons2[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, CMDID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, CMDID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
 };
 
 TBBUTTON g_buttons3[] =
@@ -560,12 +560,12 @@ TBBUTTON g_buttons3[] =
 
 TBBUTTON g_buttons4[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, CMDID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
 };
 
 TBBUTTON g_buttons5[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+    { -1, CMDID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
 };
 
 void ToolBar_Update(HWND hwnd, INT iType)
@@ -649,7 +649,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     }
 }
 
-BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type)
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
@@ -677,7 +677,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type)
     return TRUE;
 }
 
-BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name)
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
@@ -1129,21 +1129,20 @@ struct RisohSettings
         vecRecentlyUsed.clear();
 
         mapIdAssoc.clear();
-        mapIdAssoc[TEXT("RT_CURSOR")] = TEXT("IDC_");
-        mapIdAssoc[TEXT("RT_BITMAP")] = TEXT("IDB_");
-        mapIdAssoc[TEXT("RT_MENU")] = TEXT("IDM_");
-        mapIdAssoc[TEXT("RT_DIALOG")] = TEXT("IDD_");
-        mapIdAssoc[TEXT("RT_STRING")] = TEXT("IDS_");
-        mapIdAssoc[TEXT("RT_ACCELERATOR")] = TEXT("IDA_");
-        mapIdAssoc[TEXT("RT_RCDATA")] = TEXT("IDR_");
-        mapIdAssoc[TEXT("RT_GROUP_CURSOR")] = TEXT("IDC_");
-        mapIdAssoc[TEXT("RT_GROUP_ICON")] = TEXT("IDI_");
-        mapIdAssoc[TEXT("RT_ANICURSOR")] = TEXT("IDAC_");
-        mapIdAssoc[TEXT("RT_ANIICON")] = TEXT("IDAI_");
-        mapIdAssoc[TEXT("RT_HTML")] = TEXT("IDH_");
-        mapIdAssoc[TEXT("HELP.ID")] = TEXT("HELPID_");
-        mapIdAssoc[TEXT("COMMAND.ID")] = TEXT("CMDID_");
-        mapIdAssoc[TEXT("CONTROL.ID")] = TEXT("CID_");
+        mapIdAssoc[TEXT("Cursor.ID")] = TEXT("IDC_");
+        mapIdAssoc[TEXT("Bitmap.ID")] = TEXT("IDB_");
+        mapIdAssoc[TEXT("Menu.ID")] = TEXT("IDM_");
+        mapIdAssoc[TEXT("Dialog.ID")] = TEXT("IDD_");
+        mapIdAssoc[TEXT("String.ID")] = TEXT("IDS_");
+        mapIdAssoc[TEXT("Accel.ID")] = TEXT("IDA_");
+        mapIdAssoc[TEXT("Cursor.ID")] = TEXT("IDC_");
+        mapIdAssoc[TEXT("Icon.ID")] = TEXT("IDI_");
+        mapIdAssoc[TEXT("AniCursor.ID")] = TEXT("IDAC_");
+        mapIdAssoc[TEXT("AniIcon.ID")] = TEXT("IDAI_");
+        mapIdAssoc[TEXT("Html.ID")] = TEXT("IDH_");
+        mapIdAssoc[TEXT("Help.ID")] = TEXT("HELPID_");
+        mapIdAssoc[TEXT("Command.ID")] = TEXT("CMDID_");
+        mapIdAssoc[TEXT("Control.ID")] = TEXT("CID_");
 
         mapIDs.clear();
     }
@@ -1310,9 +1309,9 @@ public:
             else
                 ++pch;
             wsprintf(szText, TEXT("&%c  %s"), szPrefix[i], pch);
-            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, szText);
+            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, szText);
 #else
-            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, it->c_str());
+            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, it->c_str());
 #endif
             ++i;
         }
@@ -1484,7 +1483,7 @@ public:
         SetFocus(m_hTreeView);
         UpdateMenu();
 
-        PostMessageDx(WM_COMMAND, ID_READY);
+        PostMessageDx(WM_COMMAND, CMDID_READY);
 
         return TRUE;
     }
@@ -2034,7 +2033,7 @@ public:
                 OnEdit(hwnd);
                 break;
             case VK_DELETE:
-                PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
+                PostMessageW(hwnd, WM_COMMAND, CMDID_DELETERES, 0);
                 break;
             }
         }
@@ -2247,173 +2246,173 @@ public:
         BOOL bUpdateStatus = TRUE;
         switch (id)
         {
-        case ID_NEW:
+        case CMDID_NEW:
             OnNew(hwnd);
             break;
-        case ID_OPEN:
+        case CMDID_OPEN:
             OnOpen(hwnd);
             break;
-        case ID_SAVEAS:
+        case CMDID_SAVEAS:
             OnSaveAs(hwnd);
             break;
-        case ID_IMPORT:
+        case CMDID_IMPORT:
             OnImport(hwnd);
             break;
-        case ID_EXIT:
+        case CMDID_EXIT:
             DestroyWindow(hwnd);
             break;
-        case ID_ADDICON:
+        case CMDID_ADDICON:
             OnAddIcon(hwnd);
             break;
-        case ID_ADDCURSOR:
+        case CMDID_ADDCURSOR:
             OnAddCursor(hwnd);
             break;
-        case ID_ADDBITMAP:
+        case CMDID_ADDBITMAP:
             OnAddBitmap(hwnd);
             break;
-        case ID_ADDRES:
+        case CMDID_ADDRES:
             OnAddRes(hwnd);
             break;
-        case ID_REPLACEICON:
+        case CMDID_REPLACEICON:
             OnReplaceIcon(hwnd);
             break;
-        case ID_REPLACECURSOR:
+        case CMDID_REPLACECURSOR:
             OnReplaceCursor(hwnd);
             break;
-        case ID_REPLACEBITMAP:
+        case CMDID_REPLACEBITMAP:
             OnReplaceBitmap(hwnd);
             break;
-        case ID_REPLACEBIN:
+        case CMDID_REPLACEBIN:
             OnReplaceBin(hwnd);
             break;
-        case ID_DELETERES:
+        case CMDID_DELETERES:
             OnDeleteRes(hwnd);
             break;
-        case ID_EDIT:
+        case CMDID_EDIT:
             OnEdit(hwnd);
             break;
-        case ID_EXTRACTICON:
+        case CMDID_EXTRACTICON:
             OnExtractIcon(hwnd);
             break;
-        case ID_EXTRACTCURSOR:
+        case CMDID_EXTRACTCURSOR:
             OnExtractCursor(hwnd);
             break;
-        case ID_EXTRACTBITMAP:
+        case CMDID_EXTRACTBITMAP:
             OnExtractBitmap(hwnd);
             break;
-        case ID_EXTRACTBIN:
+        case CMDID_EXTRACTBIN:
             OnExtractBin(hwnd);
             break;
-        case ID_ABOUT:
+        case CMDID_ABOUT:
             OnAbout(hwnd);
             break;
-        case ID_TEST:
+        case CMDID_TEST:
             OnTest(hwnd);
             break;
-        case ID_CANCELEDIT:
+        case CMDID_CANCELEDIT:
             OnCancelEdit(hwnd);
             break;
-        case ID_COMPILE:
+        case CMDID_COMPILE:
             OnCompile(hwnd);
             break;
-        case ID_GUIEDIT:
+        case CMDID_GUIEDIT:
             OnGuiEdit(hwnd);
             break;
-        case ID_DESTROYRAD:
+        case CMDID_DESTROYRAD:
             OnCancelEdit(hwnd);
             break;
-        case ID_UPDATERES:
+        case CMDID_UPDATERES:
             OnUpdateRes(hwnd);
             bUpdateStatus = FALSE;
             break;
-        case ID_DELCTRL:
+        case CMDID_DELCTRL:
             MRadCtrl::DeleteSelection();
             break;
-        case ID_ADDCTRL:
+        case CMDID_ADDCTRL:
             m_rad_window.OnAddCtrl(m_rad_window);
             break;
-        case ID_CTRLPROP:
+        case CMDID_CTRLPROP:
             m_rad_window.OnCtrlProp(m_rad_window);
             break;
-        case ID_DLGPROP:
+        case CMDID_DLGPROP:
             m_rad_window.OnDlgProp(m_rad_window);
             break;
-        case ID_CTRLINDEXTOP:
+        case CMDID_CTRLINDEXTOP:
             m_rad_window.IndexTop(m_rad_window);
             break;
-        case ID_CTRLINDEXBOTTOM:
+        case CMDID_CTRLINDEXBOTTOM:
             m_rad_window.IndexBottom(m_rad_window);
             break;
-        case ID_CTRLINDEXMINUS:
+        case CMDID_CTRLINDEXMINUS:
             m_rad_window.IndexMinus(m_rad_window);
             break;
-        case ID_CTRLINDEXPLUS:
+        case CMDID_CTRLINDEXPLUS:
             m_rad_window.IndexPlus(m_rad_window);
             break;
-        case ID_SHOWHIDEINDEX:
+        case CMDID_SHOWHIDEINDEX:
             m_rad_window.OnShowHideIndex(m_rad_window);
             break;
-        case ID_TOPALIGN:
+        case CMDID_TOPALIGN:
             m_rad_window.OnTopAlign(m_rad_window);
             break;
-        case ID_BOTTOMALIGN:
+        case CMDID_BOTTOMALIGN:
             m_rad_window.OnBottomAlign(m_rad_window);
             break;
-        case ID_LEFTALIGN:
+        case CMDID_LEFTALIGN:
             m_rad_window.OnLeftAlign(m_rad_window);
             break;
-        case ID_RIGHTALIGN:
+        case CMDID_RIGHTALIGN:
             m_rad_window.OnRightAlign(m_rad_window);
             break;
-        case ID_STATUSBAR:
+        case CMDID_STATUSBAR:
             m_settings.bShowStatusBar = !m_settings.bShowStatusBar;
             ShowStatusBar(m_settings.bShowStatusBar);
             PostMessageDx(WM_SIZE);
             break;
-        case ID_BINARYPANE:
+        case CMDID_BINARYPANE:
             m_settings.bShowBinEdit = !m_settings.bShowBinEdit;
             ShowBinEdit(m_settings.bShowBinEdit);
             break;
-        case ID_ALWAYSCONTROL:
+        case CMDID_ALWAYSCONTROL:
             {
                 m_settings.bAlwaysControl = !m_settings.bAlwaysControl;
                 LPARAM lParam = TV_GetParam(m_hTreeView);
                 SelectTV(hwnd, lParam, TRUE);
             }
             break;
-        case ID_MRUFILE0:
-        case ID_MRUFILE1:
-        case ID_MRUFILE2:
-        case ID_MRUFILE3:
-        case ID_MRUFILE4:
-        case ID_MRUFILE5:
-        case ID_MRUFILE6:
-        case ID_MRUFILE7:
-        case ID_MRUFILE8:
-        case ID_MRUFILE9:
-        case ID_MRUFILE10:
-        case ID_MRUFILE11:
-        case ID_MRUFILE12:
-        case ID_MRUFILE13:
-        case ID_MRUFILE14:
-        case ID_MRUFILE15:
+        case CMDID_MRUFILE0:
+        case CMDID_MRUFILE1:
+        case CMDID_MRUFILE2:
+        case CMDID_MRUFILE3:
+        case CMDID_MRUFILE4:
+        case CMDID_MRUFILE5:
+        case CMDID_MRUFILE6:
+        case CMDID_MRUFILE7:
+        case CMDID_MRUFILE8:
+        case CMDID_MRUFILE9:
+        case CMDID_MRUFILE10:
+        case CMDID_MRUFILE11:
+        case CMDID_MRUFILE12:
+        case CMDID_MRUFILE13:
+        case CMDID_MRUFILE14:
+        case CMDID_MRUFILE15:
             {
-                DWORD i = id - ID_MRUFILE0;
+                DWORD i = id - CMDID_MRUFILE0;
                 if (i < m_settings.vecRecentlyUsed.size())
                 {
                     DoLoad(hwnd, m_Entries, m_settings.vecRecentlyUsed[i].c_str());
                 }
             }
             break;
-        case ID_PLAY:
+        case CMDID_PLAY:
             OnPlay(hwnd);
             break;
-        case ID_READY:
+        case CMDID_READY:
             break;
-        case ID_IDASSOC:
+        case CMDID_IDASSOC:
             OnIdAssoc(hwnd);
             break;
-        case ID_LOADRESH:
+        case CMDID_LOADRESH:
             OnLoadResH(hwnd);
             break;
         default:
@@ -2801,35 +2800,35 @@ public:
     void OnInitMenu(HWND hwnd, HMENU hMenu)
     {
         if (IsWindowVisible(m_hStatusBar))
-            CheckMenuItem(hMenu, ID_STATUSBAR, MF_CHECKED);
+            CheckMenuItem(hMenu, CMDID_STATUSBAR, MF_CHECKED);
         else
-            CheckMenuItem(hMenu, ID_STATUSBAR, MF_UNCHECKED);
+            CheckMenuItem(hMenu, CMDID_STATUSBAR, MF_UNCHECKED);
 
         if (IsWindowVisible(m_hBinEdit))
-            CheckMenuItem(hMenu, ID_BINARYPANE, MF_CHECKED);
+            CheckMenuItem(hMenu, CMDID_BINARYPANE, MF_CHECKED);
         else
-            CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
+            CheckMenuItem(hMenu, CMDID_BINARYPANE, MF_UNCHECKED);
 
         if (m_settings.bAlwaysControl)
-            CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_CHECKED);
+            CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_CHECKED);
         else
-            CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_UNCHECKED);
+            CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_UNCHECKED);
 
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
         {
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_GRAYED);
             return;
         }
 
@@ -2846,131 +2845,131 @@ public:
         BOOL bEditable = IsEditableEntry(hwnd, lParam);
         if (bEditable)
         {
-            EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_EDIT, MF_ENABLED);
             if (Res_CanGuiEdit(Entry.type))
             {
-                EnableMenuItem(hMenu, ID_GUIEDIT, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_GRAYED);
             }
         }
         else
         {
-            EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EDIT, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_GRAYED);
         }
 
         switch (HIWORD(Item.lParam))
         {
         case I_TYPE:
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
             break;
         case I_NAME:
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
             break;
         case I_LANG:
             if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON ||
                 Entry.type == RT_ANIICON)
             {
-                EnableMenuItem(hMenu, ID_EXTRACTICON, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
             }
             if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ANIICON)
             {
-                EnableMenuItem(hMenu, ID_REPLACEICON, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
             }
 
             if (Entry.type == RT_BITMAP)
             {
-                EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_ENABLED);
-                EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-                EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
             }
 
             if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR ||
                 Entry.type == RT_ANICURSOR)
             {
-                EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
             }
             if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_ANICURSOR)
             {
-                EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
             }
 
             if (Entry.type == RT_DIALOG || Entry.type == RT_MENU)
             {
-                EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
+                EnableMenuItem(hMenu, CMDID_TEST, MF_ENABLED);
             }
             else
             {
-                EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+                EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
             }
 
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
             break;
         case I_STRING: case I_MESSAGE:
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
             break;
         default:
-            EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_REPLACEBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
-            EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELETERES, MF_GRAYED);
             break;
         }
     }
@@ -3451,7 +3450,7 @@ public:
             return FALSE;
 
         const ResEntry& Entry = m_Entries[i];
-        const ID_OR_STRING& type = Entry.type;
+        const MIdOrString& type = Entry.type;
         switch (HIWORD(lParam))
         {
         case I_LANG:

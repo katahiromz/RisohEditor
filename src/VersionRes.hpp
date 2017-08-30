@@ -162,7 +162,7 @@ public:
         return ret;
     }
 
-    std::wstring Dump(const ID_OR_STRING& name) const
+    std::wstring Dump(const MIdOrString& name) const
     {
         std::wstring ret;
         WCHAR line[MAX_PATH];

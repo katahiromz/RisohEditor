@@ -194,17 +194,17 @@ public:
 protected:
     map_type    m_map;
 
-    struct ID_RANGE
+    struct RANGE_OF_ID
     {
         ULONG FirstId;
         ULONG LastId;
     };
-    typedef ID_RANGE range_type;
+    typedef RANGE_OF_ID range_type;
     typedef std::vector<range_type> ranges_type;
 
     BOOL GetRanges(ranges_type& ranges) const
     {
-        ID_RANGE range = { 0xFFFFFFFF, 0xFFFFFFFF };
+        RANGE_OF_ID range = { 0xFFFFFFFF, 0xFFFFFFFF };
 
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)

@@ -82,7 +82,7 @@ public:
         return std::vector<BYTE>(pb, pb + size);
     }
 
-    std::wstring Dump(const ID_OR_STRING &id_or_str) const
+    std::wstring Dump(const MIdOrString &id_or_str) const
     {
         std::wstring ret;
 

@@ -7,7 +7,7 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
@@ -59,9 +59,9 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ID_OR_STRING Type = m_Entry.type;
+        MIdOrString Type = m_Entry.type;
 
-        ID_OR_STRING Name;
+        MIdOrString Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         if (!CheckNameComboBox(hCmb2, Name))
             return;

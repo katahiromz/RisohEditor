@@ -10,8 +10,8 @@
 #include "ConstantsDB.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, ID_OR_STRING& Type);
-BOOL CheckNameComboBox(HWND hCmb2, ID_OR_STRING& Name);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
@@ -117,7 +117,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ID_OR_STRING Type;
+        MIdOrString Type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
@@ -132,7 +132,7 @@ public:
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        ID_OR_STRING Name;
+        MIdOrString Name;
         if (!CheckNameComboBox(hCmb2, Name))
             return;
 

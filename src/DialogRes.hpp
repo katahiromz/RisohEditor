@@ -101,8 +101,8 @@ struct DialogItem
     POINT               m_pt;
     SIZE                m_siz;
     WORD                m_ID;
-    ID_OR_STRING        m_Class;
-    ID_OR_STRING        m_Title;
+    MIdOrString        m_Class;
+    MIdOrString        m_Title;
     std::vector<BYTE>   Extra;
     DWORD               m_OldStyle, m_OldExStyle;
 
@@ -565,19 +565,19 @@ struct DialogRes
     WORD                        m_cItems;
     POINT                       m_pt;
     SIZE                        m_siz;
-    ID_OR_STRING                m_Menu;
-    ID_OR_STRING                m_Class;
-    ID_OR_STRING                m_Title;
+    MIdOrString                m_Menu;
+    MIdOrString                m_Class;
+    MIdOrString                m_Title;
     short                       m_PointSize;
     short                       m_Weight;
     BYTE                        m_Italic;
     BYTE                        m_CharSet;
-    ID_OR_STRING                m_TypeFace;
+    MIdOrString                m_TypeFace;
     DialogItems                 Items;
     DWORD                       m_OldStyle, m_OldExStyle;
     LANGID                      m_LangID;
-    ID_OR_STRING                m_OldMenu;
-    ID_OR_STRING                m_OldClass;
+    MIdOrString                m_OldMenu;
+    MIdOrString                m_OldClass;
 
     DialogRes()
     {
@@ -688,7 +688,7 @@ struct DialogRes
         return stream.data();
     }
 
-    std::wstring Dump(const ID_OR_STRING& id_or_str, const ConstantsDB& db,
+    std::wstring Dump(const MIdOrString& id_or_str, const ConstantsDB& db,
                       BOOL bAlwaysControl = FALSE)
     {
         std::wstring ret;

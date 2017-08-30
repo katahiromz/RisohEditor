@@ -33,7 +33,7 @@ public:
     {
     }
 
-    BOOL ReadID(ID_OR_STRING& id_or_str) const
+    BOOL ReadID(MIdOrString& id_or_str) const
     {
         WORD w;
         if (!PeekWord(w))
@@ -54,7 +54,7 @@ public:
         return ReadSz(id_or_str.m_Str);
     }
 
-    BOOL WriteID(const ID_OR_STRING& id_or_str)
+    BOOL WriteID(const MIdOrString& id_or_str)
     {
         if (id_or_str.is_str())
         {
@@ -63,7 +63,7 @@ public:
         return WriteWord(0xFFFF) && WriteWord(id_or_str.m_ID);
     }
 
-    BOOL ReadString(ID_OR_STRING& id_or_str) const
+    BOOL ReadString(MIdOrString& id_or_str) const
     {
         WORD w;
         if (!PeekWord(w))

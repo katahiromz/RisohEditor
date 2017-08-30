@@ -1,14 +1,14 @@
 // is_string.hpp --- ID and Strings
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef ID_STRING_HPP_
-#define ID_STRING_HPP_
+#ifndef MIDORSTRING_HPP_
+#define MIDORSTRING_HPP_
 
 #include "MString.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct ID_OR_STRING;
+struct MIdOrString;
 
 std::wstring mstr_dec(INT nID);
 std::wstring mstr_hex(INT nID);
@@ -30,20 +30,20 @@ bool mstr_is_ascii(const T_STR& str);
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct ID_OR_STRING
+struct MIdOrString
 {
     WORD m_ID;
     std::wstring m_Str;
 
-    ID_OR_STRING() : m_ID(0)
+    MIdOrString() : m_ID(0)
     {
     }
 
-    ID_OR_STRING(WORD ID) : m_ID(ID)
+    MIdOrString(WORD ID) : m_ID(ID)
     {
     }
 
-    ID_OR_STRING(LPCWSTR Str)
+    MIdOrString(LPCWSTR Str)
     {
         if (IS_INTRESOURCE(Str))
         {
@@ -94,14 +94,14 @@ struct ID_OR_STRING
         m_Str.clear();
     }
 
-    ID_OR_STRING& operator=(WORD ID)
+    MIdOrString& operator=(WORD ID)
     {
         m_ID = ID;
         m_Str.clear();
         return *this;
     }
 
-    ID_OR_STRING& operator=(const WCHAR *Str)
+    MIdOrString& operator=(const WCHAR *Str)
     {
         if (IS_INTRESOURCE(Str))
         {
@@ -116,7 +116,7 @@ struct ID_OR_STRING
         return *this;
     }
 
-    bool operator==(const ID_OR_STRING& id_or_str) const
+    bool operator==(const MIdOrString& id_or_str) const
     {
         if (id_or_str.m_ID != 0)
         {
@@ -153,7 +153,7 @@ struct ID_OR_STRING
         return m_ID == w;
     }
 
-    bool operator!=(const ID_OR_STRING& id_or_str) const
+    bool operator!=(const MIdOrString& id_or_str) const
     {
         return !(*this == id_or_str);
     }
@@ -582,6 +582,6 @@ inline const wchar_t *skip_space(const wchar_t *pch)
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef ID_STRING_HPP_
+#endif  // ndef MIDORSTRING_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

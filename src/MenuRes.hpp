@@ -369,7 +369,7 @@ public:
         return TRUE;
     }
 
-    string_type Dump(ID_OR_STRING name, const ConstantsDB& db)
+    string_type Dump(MIdOrString name, const ConstantsDB& db)
     {
         if (IsExtended())
             return DumpEx(name, db);
@@ -432,7 +432,7 @@ public:
         return ret;
     }
 
-    string_type DumpEx(ID_OR_STRING name, const ConstantsDB& db)
+    string_type DumpEx(MIdOrString name, const ConstantsDB& db)
     {
         string_type ret;
 
