@@ -2056,6 +2056,10 @@ public:
             {
             case VK_RETURN:
                 OnEdit(hwnd);
+                if (m_settings.bGuiByDblClick)
+                {
+                    OnGuiEdit(hwnd);
+                }
                 break;
             case VK_DELETE:
                 PostMessageW(hwnd, WM_COMMAND, CMDID_DELETERES, 0);
