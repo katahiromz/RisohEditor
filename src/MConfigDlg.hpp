@@ -17,6 +17,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        CenterWindowDx();
         return TRUE;
     }
 
