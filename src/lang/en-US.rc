@@ -56,7 +56,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "List of &Resource IDs", CMDID_IDLIST
         MENUITEM SEPARATOR
         MENUITEM "Always &CONTROL statement", CMDID_ALWAYSCONTROL
-        MENUITEM "Hide &ID Macros", CMDID_HIDEIDMACROS
+        MENUITEM "Don't Use &ID Macros", CMDID_HIDEIDMACROS
     }
     POPUP "&Help"
     {
