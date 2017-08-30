@@ -11,9 +11,10 @@
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -70,15 +71,9 @@ public:
             ComboBox_SetCurSel(hCmb1, k);
         }
 
+        // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (m_Entry.name.is_str())
-        {
-            ::SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
-        }
-        else
-        {
-            ::SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
-        }
+        InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
@@ -133,7 +128,7 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString Name;
-        if (!CheckNameComboBox(hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, Name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);

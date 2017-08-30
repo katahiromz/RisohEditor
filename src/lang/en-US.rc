@@ -215,6 +215,7 @@ STRINGTABLE
     IDS_LOADRESH, "Load ""resource.h"" File"
     IDS_NAME, "Name"
     IDS_VALUE, "Value"
+    IDS_NOSUCHID, "No such ID found."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

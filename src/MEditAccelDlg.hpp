@@ -12,6 +12,8 @@
 
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
+void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
+BOOL CheckCommand(ConstantsDB& db, MString strCommand);
 
 std::wstring GetKeyID(UINT wId);
 
@@ -38,6 +40,9 @@ public:
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitCommandComboBox(hCmb2, m_ConstantsDB, TEXT(""));
 
         CenterWindowDx();
         return TRUE;
@@ -73,6 +78,12 @@ public:
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        mstr_trim(m_entry.sz2);
+        if (!CheckCommand(m_ConstantsDB, m_entry.sz2))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
 
         EndDialog(IDOK);
     }
@@ -117,8 +128,10 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitCommandComboBox(hCmb2, m_ConstantsDB, m_entry.sz2);
+
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
-        SetDlgItemTextW(hwnd, cmb2, m_entry.sz2);
 
         WORD Flags;
         SetKeyFlags(Flags, m_entry.sz1);
@@ -179,6 +192,12 @@ public:
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        mstr_trim(m_entry.sz2);
+        if (!CheckCommand(m_ConstantsDB, m_entry.sz2))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
 
         EndDialog(IDOK);
     }

@@ -137,8 +137,9 @@ public:
         ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_Class.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
-        ::SetDlgItemInt(hwnd, cmb3, m_dialog_res.m_HelpID, FALSE);
-        ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 12, 0);
+        MStringW strHelp = m_ConstantsDB.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_HelpID);
+        ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
+        ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 32, 0);
 
         ::SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_TypeFace.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
@@ -204,7 +205,15 @@ public:
 
         MString strHelp = GetDlgItemText(cmb3);
         mstr_trim(strHelp);
-        DWORD help = _tcstoul(strHelp.c_str(), NULL, 0);
+        DWORD help;
+        if (m_ConstantsDB.HasResID(strHelp))
+        {
+            help = m_ConstantsDB.GetResIDValue(strHelp);
+        }
+        else
+        {
+            help = _tcstoul(strHelp.c_str(), NULL, 0);
+        }
 
         INT nFontSize = GetDlgItemInt(hwnd, edt5, NULL, TRUE);
 

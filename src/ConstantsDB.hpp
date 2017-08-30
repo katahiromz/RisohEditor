@@ -101,6 +101,18 @@ public:
         return GetValue(L"RESOURCE.ID", name);
     }
 
+    BOOL HasResID(NameType name) const
+    {
+        const TableType& table = GetTable(L"RESOURCE.ID");
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name == name)
+                return TRUE;
+        }
+        return FALSE;
+    }
+
     StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
     {
         if ((BOOL)GetValue(L"HIDE.ID", L"HIDE.ID"))

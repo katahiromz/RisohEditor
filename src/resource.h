@@ -187,5 +187,6 @@
 #define IDS_LOADRESH        90
 #define IDS_NAME            91
 #define IDS_VALUE           92
+#define IDS_NOSUCHID        93
 
 #endif  // ndef RESOURCE_H_

@@ -186,6 +186,56 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     {
         ComboBox_AddString(hCmb, it->name.c_str());
     }
+
+    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+        return;
+
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    MStringW prefix = table[IDTYPE_CONTROL].name;
+    if (prefix.empty())
+        return;
+
+    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        ComboBox_AddString(hCmb, it->name.c_str());
+    }
+}
+
+void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
+{
+    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+        return;
+
+    ConstantsDB::TableType table;
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    MStringW prefix = table[IDTYPE_COMMAND].name;
+    if (prefix.empty())
+        return;
+
+    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == strCommand)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
+    }
+
+    SetWindowText(hCmb, strCommand.c_str());
+}
+
+BOOL CheckCommand(ConstantsDB& db, MString strCommand)
+{
+    mstr_trim(strCommand);
+    if ('0' <= strCommand[0] && strCommand[0] <= '9')
+    {
+        return TRUE;
+    }
+    return db.HasResID(strCommand);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -677,7 +727,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
     return TRUE;
 }
 
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name)
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
@@ -698,9 +748,11 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name)
     }
     else
     {
-        Name = szName;
+        if (db.HasResID(szName))
+            Name = db.GetResIDValue(szName);
+        else
+            Name = szName;
     }
-
     return TRUE;
 }
 
@@ -1788,7 +1840,7 @@ public:
 
     void OnAddIcon(HWND hwnd)
     {
-        MAddIconDlg dialog(m_Entries);
+        MAddIconDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1802,7 +1854,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceIconDlg dialog(m_Entries, m_Entries[i]);
+        MReplaceIconDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1816,7 +1868,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceCursorDlg dialog(m_Entries, m_Entries[i]);
+        MReplaceCursorDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1850,7 +1902,7 @@ public:
 
     void OnAddBitmap(HWND hwnd)
     {
-        MAddBitmapDlg dialog(m_Entries);
+        MAddBitmapDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1864,7 +1916,7 @@ public:
             return;
 
         UINT i = LOWORD(lParam);
-        MReplaceBitmapDlg dialog(m_Entries, m_Entries[i]);
+        MReplaceBitmapDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -1873,7 +1925,7 @@ public:
 
     void OnAddCursor(HWND hwnd)
     {
-        MAddCursorDlg dialog(m_Entries);
+        MAddCursorDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -2100,7 +2152,7 @@ public:
             if (menu_res.LoadFromStream(stream))
             {
                 ChangeStatusText(IDS_EDITINGBYGUI);
-                MEditMenuDlg dialog(menu_res);
+                MEditMenuDlg dialog(m_ConstantsDB, menu_res);
                 INT nID = dialog.DialogBoxDx(hwnd);
                 if (nID == IDOK)
                 {
@@ -2720,7 +2772,7 @@ public:
         {
             if (lstrcmpiW(pch, L".ico") == 0)
             {
-                MAddIconDlg dialog(m_Entries);
+                MAddIconDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -2729,7 +2781,7 @@ public:
             }
             else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
             {
-                MAddCursorDlg dialog(m_Entries);
+                MAddCursorDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.m_File = File;
                 dialog.DialogBoxDx(hwnd);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
@@ -2749,7 +2801,7 @@ public:
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
                      lstrcmpiW(pch, L".png") == 0)
             {
-                MAddBitmapDlg dialog(m_Entries);
+                MAddBitmapDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);

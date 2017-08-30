@@ -215,6 +215,7 @@ STRINGTABLE
     IDS_LOADRESH, "ファイル ""resource.h"" を読み込む"
     IDS_NAME, "名前"
     IDS_VALUE, "値"
+    IDS_NOSUCHID, "そのようなIDは見つかりません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

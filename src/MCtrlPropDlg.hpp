@@ -167,7 +167,14 @@ public:
         mstr_trim(strHelp);
         if (!strHelp.empty())
             flags |= F_HELP;
-        item.m_HelpID = _tcstoul(strHelp.c_str(), NULL, 0);
+        if (m_ConstantsDB.HasResID(strHelp))
+        {
+            item.m_HelpID = m_ConstantsDB.GetResIDValue(strHelp);
+        }
+        else
+        {
+            item.m_HelpID = _tcstoul(strHelp.c_str(), NULL, 0);
+        }
 
         MString strStyle = GetDlgItemText(edt6);
         mstr_trim(strStyle);
@@ -334,7 +341,8 @@ public:
 
         if (m_flags & F_HELP)
         {
-            SetDlgItemInt(hwnd, cmb5, m_item.m_HelpID, FALSE);
+            MStringW name = m_ConstantsDB.GetNameOfResID(IDTYPE_HELP, m_item.m_HelpID);
+            SetDlgItemTextW(hwnd, cmb5, name.c_str());
         }
         if (m_flags & F_X)
         {
@@ -354,7 +362,8 @@ public:
         }
         if (m_flags & F_ID)
         {
-            SetDlgItemInt(hwnd, cmb3, m_item.m_ID, TRUE);
+            MStringW name = m_ConstantsDB.GetNameOfResID(IDTYPE_CONTROL, m_item.m_HelpID);
+            SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
         if (m_flags & F_CLASS)
         {

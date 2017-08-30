@@ -11,20 +11,25 @@ class MAddMItemDlg;
 class MModifyMItemDlg;
 class MEditMenuDlg;
 
+BOOL CheckCommand(ConstantsDB& db, MString strCommand);
+void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddMItemDlg : public MDialogBase
 {
 public:
     MENU_ENTRY& m_entry;
+    ConstantsDB& m_db;
 
-    MAddMItemDlg(MENU_ENTRY& entry) : MDialogBase(IDD_ADDMITEM), m_entry(entry)
+    MAddMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
+        : MDialogBase(IDD_ADDMITEM), m_entry(entry), m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemInt(hwnd, cmb2, 0, TRUE);
+        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, L"");
         SetDlgItemInt(hwnd, edt1, 0, TRUE);
         CenterWindowDx();
         return TRUE;
@@ -41,6 +46,11 @@ public:
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
         mstr_trim(m_entry.CommandID);
+        if (!CheckCommand(m_db, m_entry.CommandID))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
 
         DWORD dwType = 0, dwState = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -122,15 +132,18 @@ class MModifyMItemDlg : public MDialogBase
 {
 public:
     MENU_ENTRY& m_entry;
+    ConstantsDB& m_db;
 
-    MModifyMItemDlg(MENU_ENTRY& entry) : MDialogBase(IDD_MODIFYMITEM), m_entry(entry)
+    MModifyMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
+        : MDialogBase(IDD_MODIFYMITEM), m_entry(entry), m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.Caption).c_str());
-        SetDlgItemTextW(hwnd, cmb2, m_entry.CommandID);
+
+        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, m_entry.CommandID);
         SetDlgItemTextW(hwnd, edt1, m_entry.HelpID);
 
         DWORD dwType, dwState;
@@ -184,6 +197,11 @@ public:
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
         mstr_trim(m_entry.CommandID);
+        if (!CheckCommand(m_db, m_entry.CommandID))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
 
         DWORD dwType = 0, dwState = 0;
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
@@ -265,8 +283,10 @@ class MEditMenuDlg : public MDialogBase
 {
 public:
     MenuRes& m_menu_res;
+    ConstantsDB& m_db;
 
-    MEditMenuDlg(MenuRes& menu_res) : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res)
+    MEditMenuDlg(ConstantsDB& db, MenuRes& menu_res)
+        : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res), m_db(db)
     {
     }
 
@@ -346,7 +366,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = mstr_dec(it->menuId);
+                str = m_db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -355,7 +375,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = mstr_dec(it->dwHelpId);
+                str = m_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -400,7 +420,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = mstr_dec(it->wMenuID);
+                str = m_db.GetNameOfResID(IDTYPE_COMMAND, it->wMenuID);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -409,7 +429,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = mstr_dec(0);
+                str = TEXT("0");
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -434,7 +454,7 @@ public:
 
         MENU_ENTRY m_entry;
         ZeroMemory(&m_entry, sizeof(m_entry));
-        MAddMItemDlg dialog(m_entry);
+        MAddMItemDlg dialog(m_db, m_entry);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
@@ -543,7 +563,7 @@ public:
         MENU_ENTRY m_entry;
         GetEntry(hwnd, hCtl1, m_entry, iItem);
         
-        MModifyMItemDlg dialog(m_entry);
+        MModifyMItemDlg dialog(m_db, m_entry);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
@@ -681,10 +701,16 @@ public:
                 MenuRes::ExMenuItem exitem;
 
                 SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.Flags);
-                exitem.menuId = _wtoi(entry.CommandID);
+                if (m_db.HasResID(entry.CommandID))
+                    exitem.menuId = m_db.GetResIDValue(entry.CommandID);
+                else
+                    exitem.menuId = _wtoi(entry.CommandID);
                 exitem.bResInfo = 0;
                 exitem.text = entry.Caption;
-                exitem.dwHelpId = _wtoi(entry.HelpID);
+                if (m_db.HasResID(entry.HelpID))
+                    exitem.dwHelpId = m_db.GetResIDValue(entry.HelpID);
+                else
+                    exitem.dwHelpId = _wtoi(entry.HelpID);
                 exitem.wDepth = entry.wDepth;
 
                 m_menu_res.exitems().push_back(exitem);
@@ -703,7 +729,10 @@ public:
                 MenuRes::MenuItem item;
 
                 SetMenuFlags(item.fItemFlags, entry.Flags);
-                item.wMenuID = _wtoi(entry.CommandID);
+                if (m_db.HasResID(entry.CommandID))
+                    item.wMenuID = m_db.GetResIDValue(entry.CommandID);
+                else
+                    item.wMenuID = _wtoi(entry.CommandID);
                 item.wDepth = entry.wDepth;
                 item.text = entry.Caption;
 

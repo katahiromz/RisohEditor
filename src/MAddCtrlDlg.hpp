@@ -172,9 +172,17 @@ public:
         {
             id = _tcstoul(strID.c_str(), NULL, 0);
         }
+        else if (m_ConstantsDB.HasResID(strID))
+        {
+            id = m_ConstantsDB.GetResIDValue(strID);
+        }
         else
         {
-            id = m_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
+            HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+            Edit_SetSel(hCmb3, 0, -1);
+            SetFocus(hCmb3);
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
         }
 
         MString strClass = GetDlgItemText(cmb4);
@@ -188,7 +196,15 @@ public:
 
         MString strHelp = GetDlgItemText(cmb5);
         mstr_trim(strHelp);
-        DWORD help = _tcstoul(strHelp.c_str(), NULL, 0);
+        DWORD help;
+        if (m_ConstantsDB.HasResID(strHelp))
+        {
+            help = m_ConstantsDB.GetResIDValue(strHelp);
+        }
+        else
+        {
+            help = _tcstoul(strHelp.c_str(), NULL, 0);
+        }
 
         MString strStyle = GetDlgItemText(edt6);
         mstr_trim(strStyle);

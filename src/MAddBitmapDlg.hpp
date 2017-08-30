@@ -7,7 +7,7 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 
@@ -18,9 +18,11 @@ class MAddBitmapDlg : public MDialogBase
 public:
     ResEntries& m_Entries;
     LPCWSTR File;
+    ConstantsDB& m_db;
 
-    MAddBitmapDlg(ResEntries& Entries) :
-        MDialogBase(IDD_ADDBITMAP), m_Entries(Entries), File(NULL)
+    MAddBitmapDlg(ConstantsDB& db, ResEntries& Entries) :
+        MDialogBase(IDD_ADDBITMAP), m_Entries(Entries), File(NULL),
+        m_db(db)
     {
     }
 
@@ -69,7 +71,7 @@ public:
 
         MIdOrString Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, Name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);

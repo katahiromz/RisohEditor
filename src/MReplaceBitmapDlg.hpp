@@ -7,9 +7,10 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -18,9 +19,11 @@ class MReplaceBitmapDlg : public MDialogBase
 public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
+    ConstantsDB& m_db;
 
-    MReplaceBitmapDlg(ResEntries& Entries, ResEntry& Entry)
-        : MDialogBase(IDD_REPLACEBMP), m_Entries(Entries), m_Entry(Entry)
+    MReplaceBitmapDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry)
+        : MDialogBase(IDD_REPLACEBMP), m_Entries(Entries), m_Entry(Entry),
+          m_db(db)
     {
     }
 
@@ -30,14 +33,7 @@ public:
 
         // for Name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (m_Entry.name.is_str())
-        {
-            ::SetWindowTextW(hCmb2, m_Entry.name.m_Str.c_str());
-        }
-        else
-        {
-            ::SetDlgItemInt(hwnd, cmb2, m_Entry.name.m_ID, FALSE);
-        }
+        InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
@@ -55,7 +51,7 @@ public:
 
         MIdOrString Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, Name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
