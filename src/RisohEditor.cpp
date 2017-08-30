@@ -21,8 +21,6 @@
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
 
-#define MAX_MRU         5       // the number of most recently used files
-
 //////////////////////////////////////////////////////////////////////////////
 
 void GetSelection(HWND hLst, std::vector<BYTE>& sel)
@@ -1183,43 +1181,6 @@ Res_GetLangName(WORD Lang)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-typedef std::vector<MString>            mru_type;
-typedef std::map<MString, MString>      assoc_map_type;
-typedef std::map<MStringA, MStringA>    id_map_type;
-
-struct RisohSettings
-{
-    BOOL        bShowBinEdit;
-    BOOL        bAlwaysControl;
-    BOOL        bShowStatusBar;
-    INT         nTreeViewWidth;
-    INT         nBmpViewWidth;
-    INT         nBinEditHeight;
-    BOOL        bGuiByDblClick;
-    mru_type    vecRecentlyUsed;
-    assoc_map_type      assoc_map;
-    id_map_type         id_map;
-
-    RisohSettings()
-    {
-    }
-
-    void AddFile(LPCTSTR pszFile)
-    {
-        for (size_t i = 0; i < vecRecentlyUsed.size(); ++i)
-        {
-            if (vecRecentlyUsed[i] == pszFile)
-            {
-                vecRecentlyUsed.erase(vecRecentlyUsed.begin() + i);
-                break;
-            }
-        }
-        vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
-        if (vecRecentlyUsed.size() > MAX_MRU)
-            vecRecentlyUsed.resize(MAX_MRU);
-    }
-};
 
 #define TV_WIDTH        250     // default m_hTreeView width
 #define BV_WIDTH        160     // default m_hBmpView width
@@ -2490,6 +2451,9 @@ public:
         case CMDID_HIDEIDMACROS:
             OnHideIDMacros(hwnd);
             break;
+        case CMDID_CONFIG:
+            OnConfig(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2505,6 +2469,11 @@ public:
         m_ConstantsDB.m_map[L"RESOURCE.ID"].clear();
         m_szResourceH[0] = 0;
         ShowIDList(hwnd, FALSE);
+    }
+
+    void OnConfig(HWND hwnd)
+    {
+        // TODO:
     }
 
     void OnHideIDMacros(HWND hwnd)

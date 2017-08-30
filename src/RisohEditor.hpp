@@ -72,6 +72,47 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 
 ////////////////////////////////////////////////////////////////////////////
 
+#define MAX_MRU         5       // the number of most recently used files
+
+typedef std::vector<MString>            mru_type;
+typedef std::map<MString, MString>      assoc_map_type;
+typedef std::map<MStringA, MStringA>    id_map_type;
+
+struct RisohSettings
+{
+    BOOL        bShowBinEdit;
+    BOOL        bAlwaysControl;
+    BOOL        bShowStatusBar;
+    INT         nTreeViewWidth;
+    INT         nBmpViewWidth;
+    INT         nBinEditHeight;
+    BOOL        bGuiByDblClick;
+    mru_type    vecRecentlyUsed;
+    assoc_map_type      assoc_map;
+    id_map_type         id_map;
+
+    RisohSettings()
+    {
+    }
+
+    void AddFile(LPCTSTR pszFile)
+    {
+        for (size_t i = 0; i < vecRecentlyUsed.size(); ++i)
+        {
+            if (vecRecentlyUsed[i] == pszFile)
+            {
+                vecRecentlyUsed.erase(vecRecentlyUsed.begin() + i);
+                break;
+            }
+        }
+        vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
+        if (vecRecentlyUsed.size() > MAX_MRU)
+            vecRecentlyUsed.resize(MAX_MRU);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////
+
 #include "MReplaceBinDlg.hpp"
 #include "MTestMenuDlg.hpp"
 #include "MTestDialog.hpp"

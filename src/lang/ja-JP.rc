@@ -19,6 +19,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "&resource.h の読み込み...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "resource.h のアンロード(&U)", CMDID_UNLOADRESH
         MENUITEM SEPARATOR
+        MENUITEM "設定(&C)", CMDID_CONFIG
+        MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"
         {
             MENUITEM "(なし)", -1, GRAYED
