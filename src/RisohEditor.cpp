@@ -1115,37 +1115,6 @@ struct RisohSettings
 
     RisohSettings()
     {
-        SetDefault();
-    }
-
-    void SetDefault()
-    {
-        bShowBinEdit = TRUE;
-        bAlwaysControl = FALSE;
-        bShowStatusBar = TRUE;
-        nTreeViewWidth = TV_WIDTH;
-        nBmpViewWidth = BV_WIDTH;
-        nBinEditHeight = BE_HEIGHT;
-        bGuiByDblClick = TRUE;
-        vecRecentlyUsed.clear();
-
-        assoc_map.clear();
-        assoc_map[TEXT("Cursor.ID")] = TEXT("IDC_");
-        assoc_map[TEXT("Bitmap.ID")] = TEXT("IDB_");
-        assoc_map[TEXT("Menu.ID")] = TEXT("IDM_");
-        assoc_map[TEXT("Dialog.ID")] = TEXT("IDD_");
-        assoc_map[TEXT("String.ID")] = TEXT("IDS_");
-        assoc_map[TEXT("Accel.ID")] = TEXT("IDA_");
-        assoc_map[TEXT("Icon.ID")] = TEXT("IDI_");
-        assoc_map[TEXT("AniCursor.ID")] = TEXT("IDAC_");
-        assoc_map[TEXT("AniIcon.ID")] = TEXT("IDAI_");
-        assoc_map[TEXT("Html.ID")] = TEXT("IDH_");
-        assoc_map[TEXT("Help.ID")] = TEXT("HELPID_");
-        assoc_map[TEXT("Command.ID")] = TEXT("CMDID_");
-        assoc_map[TEXT("Control.ID")] = TEXT("CID_");
-        assoc_map[TEXT("Resource.ID")] = TEXT("IDR_");
-
-        id_map.clear();
     }
 
     void AddFile(LPCTSTR pszFile)
@@ -1234,6 +1203,7 @@ public:
         m_szResourceH[0] = 0;
     }
 
+    void SetDefaultSettings(HWND hwnd);
     BOOL LoadSettings(HWND hwnd);
     BOOL SaveSettings(HWND hwnd);
 
@@ -1378,11 +1348,12 @@ public:
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         LoadLangInfo();
-        LoadSettings(hwnd);
 
         INT nRet = CheckData();
         if (nRet)
             return FALSE;
+
+        LoadSettings(hwnd);
 
         m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
         if (m_hImageList == NULL)
@@ -4179,9 +4150,54 @@ public:
     }
 };
 
+void MMainWnd::SetDefaultSettings(HWND hwnd)
+{
+    m_settings.bShowBinEdit = TRUE;
+    m_settings.bAlwaysControl = FALSE;
+    m_settings.bShowStatusBar = TRUE;
+    m_settings.nTreeViewWidth = TV_WIDTH;
+    m_settings.nBmpViewWidth = BV_WIDTH;
+    m_settings.nBinEditHeight = BE_HEIGHT;
+    m_settings.bGuiByDblClick = TRUE;
+    m_settings.vecRecentlyUsed.clear();
+
+    ConstantsDB::TableType table1, table2;
+    table1 = m_ConstantsDB.GetTable(L"RESOURCE.ID.TYPE");
+    table2 = m_ConstantsDB.GetTable(L"RESOURCE.ID.PREFIX");
+    assert(table1.size() == table2.size());
+
+    m_settings.assoc_map.clear();
+    if (table1.size() && table1.size() == table2.size())
+    {
+        for (size_t i = 0; i < table1.size(); ++i)
+        {
+            m_settings.assoc_map.insert(std::make_pair(table1[i].name, table2[i].name));
+        }
+    }
+    else
+    {
+        m_settings.assoc_map[L"Cursor.ID"] = L"IDC_";
+        m_settings.assoc_map[L"Bitmap.ID"] = L"IDB_";
+        m_settings.assoc_map[L"Menu.ID"] = L"IDM_";
+        m_settings.assoc_map[L"Dialog.ID"] = L"IDD_";
+        m_settings.assoc_map[L"String.ID"] = L"IDS_";
+        m_settings.assoc_map[L"Accel.ID"] = L"IDA_";
+        m_settings.assoc_map[L"Icon.ID"] = L"IDI_";
+        m_settings.assoc_map[L"AniCursor.ID"] = L"IDAC_";
+        m_settings.assoc_map[L"AniIcon.ID"] = L"IDAI_";
+        m_settings.assoc_map[L"Html.ID"] = L"IDH_";
+        m_settings.assoc_map[L"Help.ID"] = L"HELPID_";
+        m_settings.assoc_map[L"Command.ID"] = L"CMDID_";
+        m_settings.assoc_map[L"Control.ID"] = L"CID_";
+        m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
+    }
+
+    m_settings.id_map.clear();
+}
+
 BOOL MMainWnd::LoadSettings(HWND hwnd)
 {
-    m_settings.SetDefault();
+    SetDefaultSettings(hwnd);
 
     MRegKey key(HKCU, TEXT("Software"));
     if (!key)
