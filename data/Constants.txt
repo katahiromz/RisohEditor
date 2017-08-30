@@ -28,14 +28,14 @@ Menu.ID, 2
 Dialog.ID, 3
 String.ID, 4
 Accel.ID, 5
-Cursor.ID, 6
-Icon.ID, 7
-AniCursor.ID, 8
-AniIcon.ID, 9
-Html.ID, 10
-Help.ID, 11
-Command.ID, 12
-Control.ID, 13
+Icon.ID, 6
+AniCursor.ID, 7
+AniIcon.ID, 8
+Html.ID, 9
+Help.ID, 10
+Command.ID, 11
+Control.ID, 12
+Resource.ID, 13
 
 [RESOURCE.ID.PREFIX]
 IDC_, 0
@@ -44,14 +44,14 @@ IDM_, 2
 IDD_, 3
 IDS_, 4
 IDA_, 5
-IDC_, 6
-IDI_, 7
-IDAC_, 8
-IDAI_, 9
-IDH_, 10
-HELPID_, 11
-CMDID_, 12
-CID_, 13
+IDI_, 6
+IDAC_, 7
+IDAI_, 8
+IDH_, 9
+HELPID_, 10
+CMDID_, 11
+CID_, 12
+IDR_, 13
 
 [STYLE]
 WS_OVERLAPPED, 0x00000000

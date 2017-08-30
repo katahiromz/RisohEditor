@@ -16,6 +16,21 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+#define IDTYPE_CURSOR       0   // Cursor.ID
+#define IDTYPE_BITMAP       1   // Bitmap.ID
+#define IDTYPE_MENU         2   // Menu.ID
+#define IDTYPE_DIALOG       3   // Dialog.ID
+#define IDTYPE_STRING       4   // String.ID
+#define IDTYPE_ACCEL        5   // Accel.ID
+#define IDTYPE_ICON         6   // Icon.ID
+#define IDTYPE_ANICURSOR    7   // AniCursor.ID
+#define IDTYPE_ANIICON      8   // AniIcon.ID
+#define IDTYPE_HTML         9   // Html.ID
+#define IDTYPE_HELP         10  // Help.ID
+#define IDTYPE_COMMAND      11  // Command.ID
+#define IDTYPE_CONTROL      12  // Control.ID
+#define IDTYPE_RESOURCE     13  // Resource.ID
+
 class ConstantsDB
 {
 public:
@@ -79,6 +94,45 @@ public:
             }
         }
         return table1;
+    }
+
+    ValueType GetResIDValue(NameType name) const
+    {
+        return GetValue(L"RESOURCE.ID", name);
+    }
+
+    StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
+    {
+        TableType table = GetTable(L"RESOURCE.ID.PREFIX");
+        if (nIDTYPE_ >= table.size())
+            return mstr_dec(value);
+
+        StringType prefix = table[nIDTYPE_].name;
+        if (prefix.empty())
+            return mstr_dec(value);
+
+        table = GetTableByPrefix(L"RESOURCE.ID", prefix);
+        TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->value == value)
+                return it->name;
+        }
+
+        if (nIDTYPE_ == IDTYPE_CONTROL)
+        {
+            if (value == -1 || value == 0xFFFF)
+                return L"-1";
+
+            return DumpValue(L"CTRLID", value);
+        }
+
+        if (nIDTYPE_ != IDTYPE_RESOURCE)
+        {
+            return GetNameOfResID(IDTYPE_RESOURCE, value);
+        }
+
+        return L"";
     }
 
     NameType GetName(CategoryType category, ValueType value) const

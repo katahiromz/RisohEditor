@@ -1136,7 +1136,6 @@ struct RisohSettings
         assoc_map[TEXT("Dialog.ID")] = TEXT("IDD_");
         assoc_map[TEXT("String.ID")] = TEXT("IDS_");
         assoc_map[TEXT("Accel.ID")] = TEXT("IDA_");
-        assoc_map[TEXT("Cursor.ID")] = TEXT("IDC_");
         assoc_map[TEXT("Icon.ID")] = TEXT("IDI_");
         assoc_map[TEXT("AniCursor.ID")] = TEXT("IDAC_");
         assoc_map[TEXT("AniIcon.ID")] = TEXT("IDAI_");
@@ -1144,6 +1143,7 @@ struct RisohSettings
         assoc_map[TEXT("Help.ID")] = TEXT("HELPID_");
         assoc_map[TEXT("Command.ID")] = TEXT("CMDID_");
         assoc_map[TEXT("Control.ID")] = TEXT("CID_");
+        assoc_map[TEXT("Resource.ID")] = TEXT("IDR_");
 
         id_map.clear();
     }
