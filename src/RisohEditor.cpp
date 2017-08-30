@@ -2428,6 +2428,9 @@ public:
         case CMDID_UNLOADRESH:
             OnUnloadResH(hwnd);
             break;
+        case CMDID_HIDEIDMACROS:
+            OnHideIDMacros(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2443,6 +2446,17 @@ public:
         m_ConstantsDB.m_map[L"RESOURCE.ID"].clear();
         m_szResourceH[0] = 0;
         ShowIDList(hwnd, FALSE);
+    }
+
+    void OnHideIDMacros(HWND hwnd)
+    {
+        BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+        bHide = !bHide;
+        ConstantsDB::TableType& table = m_ConstantsDB.m_map[L"HIDE.ID"];
+        table.clear();
+        ConstantsDB::EntryType entry(L"HIDE.ID", bHide);
+        table.push_back(entry);
+        SelectTV(hwnd, 0, FALSE);
     }
 
     void UpdateIDList(HWND hwnd)
@@ -2883,6 +2897,11 @@ public:
             CheckMenuItem(hMenu, CMDID_IDLIST, MF_CHECKED);
         else
             CheckMenuItem(hMenu, CMDID_IDLIST, MF_UNCHECKED);
+
+        if ((BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID"))
+            CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_CHECKED);
+        else
+            CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_UNCHECKED);
 
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
@@ -3439,6 +3458,9 @@ public:
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     {
         HidePreview(hwnd);
+
+        if (lParam == 0)
+            lParam = TV_GetParam(m_hTreeView);
 
         WORD i = LOWORD(lParam);
         if (m_Entries.size() <= i)
@@ -4178,6 +4200,15 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
+    BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+    keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHide);
+    {
+        ConstantsDB::TableType& table = m_ConstantsDB.m_map[L"HIDE.ID"];
+        table.clear();
+        ConstantsDB::EntryType entry(L"HIDE.ID", bHide);
+        table.push_back(entry);
+    }
+
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)m_settings.bAlwaysControl);
@@ -4232,6 +4263,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (m_splitter1.GetPaneCount() >= 1)
         m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
+    BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+    keyRisoh.SetDword(TEXT("HIDE.ID"), bHide);
     keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
     keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);

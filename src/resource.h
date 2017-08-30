@@ -69,6 +69,7 @@
 #define CMDID_LOADRESH         164
 #define CMDID_IDLIST           165
 #define CMDID_UNLOADRESH       166
+#define CMDID_HIDEIDMACROS     167
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

@@ -103,6 +103,9 @@ public:
 
     StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
     {
+        if ((BOOL)GetValue(L"HIDE.ID", L"HIDE.ID"))
+            return mstr_dec(value);
+
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
         if (nIDTYPE_ >= table.size())
             return mstr_dec(value);

@@ -10,7 +10,7 @@
 
 struct MIdOrString;
 
-std::wstring mstr_dec(INT nID);
+std::wstring mstr_dec(WORD nID);
 std::wstring mstr_hex(INT nID);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(std::wstring& str);
@@ -500,11 +500,11 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring mstr_dec(INT nID)
+inline std::wstring mstr_dec(WORD nID)
 {
     using namespace std;
     wchar_t sz[32];
-    wsprintfW(sz, L"%d", nID);
+    wsprintfW(sz, L"%d", (SHORT)nID);
     std::wstring ret(sz);
     return ret;
 }
