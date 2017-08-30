@@ -327,7 +327,7 @@ public:
         WORD w;
         while (ReadWord(w))
         {
-            if (w == UNICODE_NULL)
+            if (w == 0)
                 return TRUE;
             str += (WCHAR)w;
         }

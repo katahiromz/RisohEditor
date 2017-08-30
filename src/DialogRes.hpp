@@ -886,7 +886,7 @@ struct DialogRes
                 lf.lfItalic = m_Italic;
                 lf.lfCharSet = DEFAULT_CHARSET;
                 if (m_TypeFace.empty())
-                    lf.lfFaceName[0] = UNICODE_NULL;
+                    lf.lfFaceName[0] = 0;
                 else
                     lstrcpyW(lf.lfFaceName, m_TypeFace.m_Str.c_str());
 

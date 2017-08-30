@@ -211,7 +211,7 @@ LPWSTR MakeFilterDx(LPWSTR psz)
     for (LPWSTR pch = psz; *pch; ++pch)
     {
         if (*pch == L'|')
-            *pch = UNICODE_NULL;
+            *pch = 0;
     }
     return psz;
 }
@@ -224,7 +224,7 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
     IPersistFile*       pPersistFile;
     HRESULT             hRes;
 
-    pszPath[0] = UNICODE_NULL;
+    pszPath[0] = 0;
     hRes = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, 
                             IID_IShellLinkW, (void **)&pShellLink);
     if (SUCCEEDED(hRes))
@@ -239,7 +239,7 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
                 pShellLink->Resolve(hwnd, SLR_NO_UI | SLR_UPDATE);
 
                 hRes = pShellLink->GetPath(pszPath, MAX_PATH, &find, 0);
-                if (SUCCEEDED(hRes) && UNICODE_NULL != pszPath[0])
+                if (SUCCEEDED(hRes) && 0 != pszPath[0])
                 {
                     bRes = TRUE;
                 }
@@ -657,7 +657,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
     mstr_trim(Str);
     lstrcpynW(szType, Str.c_str(), _countof(szType));
 
-    if (szType[0] == UNICODE_NULL)
+    if (szType[0] == 0)
     {
         ComboBox_SetEditSel(hCmb1, 0, -1);
         SetFocus(hCmb1);
@@ -684,7 +684,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& Name)
     MStringW Str = szName;
     mstr_trim(Str);
     lstrcpynW(szName, Str.c_str(), _countof(szName));
-    if (szName[0] == UNICODE_NULL)
+    if (szName[0] == 0)
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);
         SetFocus(hCmb2);
@@ -712,7 +712,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
     mstr_trim(Str);
     lstrcpynW(szLang, Str.c_str(), _countof(szLang));
 
-    if (szLang[0] == UNICODE_NULL)
+    if (szLang[0] == 0)
     {
         ComboBox_SetEditSel(hCmb3, 0, -1);
         SetFocus(hCmb3);
@@ -1433,7 +1433,7 @@ public:
         LOGFONTW lf;
         GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
         lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
-        lf.lfFaceName[0] = UNICODE_NULL;
+        lf.lfFaceName[0] = 0;
 
         lf.lfHeight = 11;
         m_hSmallFont = CreateFontIndirectW(&lf);
@@ -1481,7 +1481,7 @@ public:
 
     BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
     {
-        if (FileName == 0 || FileName[0] == UNICODE_NULL)
+        if (FileName == 0 || FileName[0] == 0)
         {
             ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
             return TRUE;
@@ -1718,7 +1718,7 @@ public:
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
         ofn.hwndOwner = hwnd;
         DWORD dwBinType;
-        if (m_szFile[0] == UNICODE_NULL || !GetBinaryType(m_szFile, &dwBinType))
+        if (m_szFile[0] == 0 || !GetBinaryType(m_szFile, &dwBinType))
         {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
             ofn.lpstrDefExt = L"res";

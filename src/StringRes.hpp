@@ -47,7 +47,7 @@ public:
 
             if (wLen > 0)
             {
-                string_type str(wLen, UNICODE_NULL);
+                string_type str(wLen, 0);
                 if (!stream.ReadData(&str[0], wLen * sizeof(WCHAR)))
                     break;
 
