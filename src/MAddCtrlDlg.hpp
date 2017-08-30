@@ -32,7 +32,7 @@ public:
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
     POINT           m_pt;
-    ConstantsDB&    m_ConstantsDB;
+    ConstantsDB&    m_db;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
@@ -40,7 +40,7 @@ public:
 
     MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res),
-          m_ConstantsDB(db), m_bUpdating(FALSE), m_pt(pt)
+          m_db(db), m_bUpdating(FALSE), m_pt(pt)
     {
     }
 
@@ -51,14 +51,14 @@ public:
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = m_ConstantsDB.GetTable(pszClass);
+            table = m_db.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
-        table = m_ConstantsDB.GetTable(TEXT("STYLE"));
+        table = m_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
@@ -67,7 +67,7 @@ public:
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = m_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        table = m_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             m_exstyle_table.insert(m_exstyle_table.end(),
@@ -107,18 +107,18 @@ public:
         SetDlgItemInt(hwnd, edt1, m_pt.x, FALSE);
         SetDlgItemInt(hwnd, edt2, m_pt.y, FALSE);
 
-        INT cx = m_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
-        INT cy = m_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+        INT cx = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+        INT cy = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
         SetDlgItemInt(hwnd, edt4, cy, FALSE);
 
         SetDlgItemInt(hwnd, cmb5, 0, FALSE);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitClassComboBox(hCmb1, m_ConstantsDB);
+        InitClassComboBox(hCmb1, m_db);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitCtrlIDComboBox(hCmb3, m_ConstantsDB);
+        InitCtrlIDComboBox(hCmb3, m_db);
 
         InitTables(NULL);
 
@@ -168,13 +168,18 @@ public:
         MString strID = GetDlgItemText(cmb3);
         mstr_trim(strID);
         UINT id;
-        if (TEXT('0') <= strID[0] && strID[0] <= TEXT('9'))
+        if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
+            strID[0] == TEXT('-'))
         {
-            id = _tcstoul(strID.c_str(), NULL, 0);
+            id = _tcstol(strID.c_str(), NULL, 0);
         }
-        else if (m_ConstantsDB.HasResID(strID))
+        else if (m_db.HasResID(strID))
         {
-            id = m_ConstantsDB.GetResIDValue(strID);
+            id = m_db.GetResIDValue(strID);
+        }
+        else if (m_db.HasCtrlID(strID))
+        {
+            id = m_db.GetCtrlIDValue(strID);
         }
         else
         {
@@ -197,9 +202,9 @@ public:
         MString strHelp = GetDlgItemText(cmb5);
         mstr_trim(strHelp);
         DWORD help;
-        if (m_ConstantsDB.HasResID(strHelp))
+        if (m_db.HasResID(strHelp))
         {
-            help = m_ConstantsDB.GetResIDValue(strHelp);
+            help = m_db.GetResIDValue(strHelp);
         }
         else
         {
@@ -311,11 +316,11 @@ public:
     void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
         MString strSuper;
-        DWORD dwType = m_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        DWORD dwType = m_db.GetValue(TEXT("CONTROL.CLASSES"), strClass);
         if (dwType >= 3)
         {
             ConstantsDB::TableType table;
-            table = m_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
+            table = m_db.GetTable(strClass + TEXT(".SUPERCLASS"));
             if (table.size())
             {
                 strSuper = table[0].name;
@@ -328,7 +333,7 @@ public:
             InitTables(strClass.c_str());
 
         MString str = strClass + TEXT(".DEFAULT.STYLE");
-        m_dwStyle = m_ConstantsDB.GetValue(str, TEXT("STYLE"));
+        m_dwStyle = m_db.GetValue(str, TEXT("STYLE"));
 
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
@@ -343,17 +348,17 @@ public:
         ListBox_SetTopIndex(hLst1, 0);
 
         INT cx, cy;
-        cx = m_ConstantsDB.GetValue(strClass + TEXT(".SIZE"), TEXT("WIDTH"));
-        cy = m_ConstantsDB.GetValue(strClass + TEXT(".SIZE"), TEXT("HEIGHT"));
+        cx = m_db.GetValue(strClass + TEXT(".SIZE"), TEXT("WIDTH"));
+        cy = m_db.GetValue(strClass + TEXT(".SIZE"), TEXT("HEIGHT"));
         if (cx == 0 && cy == 0)
         {
-            cx = m_ConstantsDB.GetValue(strSuper + TEXT(".SIZE"), TEXT("WIDTH"));
-            cy = m_ConstantsDB.GetValue(strSuper + TEXT(".SIZE"), TEXT("HEIGHT"));
+            cx = m_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("WIDTH"));
+            cy = m_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("HEIGHT"));
         }
         if (cx == 0 && cy == 0)
         {
-            cx = m_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
-            cy = m_ConstantsDB.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+            cx = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+            cy = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
         }
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
         SetDlgItemInt(hwnd, edt4, cy, FALSE);

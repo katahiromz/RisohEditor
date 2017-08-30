@@ -36,7 +36,7 @@ public:
     BOOL            m_bMoving;
     BOOL            m_bSizing;
     INT             m_nIndex;
-    ConstantsDB&    m_ConstantsDB;
+    ConstantsDB&    m_db;
     POINT           m_pt;
 
     static HICON Icon()
@@ -90,7 +90,7 @@ public:
 
     MRadCtrl(ConstantsDB& db) :
         m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_ConstantsDB(db)
+        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_db(db)
     {
         m_pt.x = m_pt.y = -1;
     }
@@ -442,11 +442,11 @@ class MRadDialog : public MDialogBase
 {
 public:
     BOOL            m_index_visible;
-    ConstantsDB&    m_ConstantsDB;
+    ConstantsDB&    m_db;
     POINT           m_ptClicked;
     MIndexLabels    m_labels;
 
-    MRadDialog(ConstantsDB& db) : m_index_visible(FALSE), m_ConstantsDB(db)
+    MRadDialog(ConstantsDB& db) : m_index_visible(FALSE), m_db(db)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -643,7 +643,7 @@ public:
 
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
-        MRadCtrl *pCtrl = new MRadCtrl(m_ConstantsDB);
+        MRadCtrl *pCtrl = new MRadCtrl(m_db);
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
@@ -1107,7 +1107,7 @@ public:
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
-        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_ConstantsDB, pt);
+        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_db, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1118,7 +1118,7 @@ public:
     void OnCtrlProp(HWND hwnd)
     {
         MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces(),
-                            m_rad_dialog.m_ConstantsDB);
+                            m_rad_dialog.m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1128,7 +1128,7 @@ public:
 
     void OnDlgProp(HWND hwnd)
     {
-        MDlgPropDlg dialog(m_dialog_res, m_rad_dialog.m_ConstantsDB);
+        MDlgPropDlg dialog(m_dialog_res, m_rad_dialog.m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);

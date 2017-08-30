@@ -26,7 +26,7 @@ class MDlgPropDlg : public MDialogBase
 public:
     DialogRes&      m_dialog_res;
     BOOL            m_bUpdating;
-    ConstantsDB&    m_ConstantsDB;
+    ConstantsDB&    m_db;
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
     ConstantsDB::TableType  m_style_table;
@@ -36,7 +36,7 @@ public:
 
     MDlgPropDlg(DialogRes& dialog_res, ConstantsDB& db) :
         MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE),
-        m_ConstantsDB(db)
+        m_db(db)
     {
     }
 
@@ -47,14 +47,14 @@ public:
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = m_ConstantsDB.GetTable(pszClass);
+            table = m_db.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
-        table = m_ConstantsDB.GetTable(TEXT("STYLE"));
+        table = m_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
@@ -63,7 +63,7 @@ public:
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = m_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        table = m_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             m_exstyle_table.insert(m_exstyle_table.end(),
@@ -137,7 +137,7 @@ public:
         ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_Class.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
-        MStringW strHelp = m_ConstantsDB.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_HelpID);
+        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_HelpID);
         ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 32, 0);
 
@@ -206,9 +206,9 @@ public:
         MString strHelp = GetDlgItemText(cmb3);
         mstr_trim(strHelp);
         DWORD help;
-        if (m_ConstantsDB.HasResID(strHelp))
+        if (m_db.HasResID(strHelp))
         {
-            help = m_ConstantsDB.GetResIDValue(strHelp);
+            help = m_db.GetResIDValue(strHelp);
         }
         else
         {

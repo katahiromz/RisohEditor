@@ -27,10 +27,10 @@ class MAddKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
-    ConstantsDB& m_ConstantsDB;
+    ConstantsDB& m_db;
 
     MAddKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_ADDKEY), m_entry(entry), m_ConstantsDB(db)
+        MDialogBase(IDD_ADDKEY), m_entry(entry), m_db(db)
     {
     }
 
@@ -39,10 +39,10 @@ public:
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
+        Cmb1_InitVirtualKeys(hCmb1, m_db);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_ConstantsDB, TEXT(""));
+        InitCommandComboBox(hCmb2, m_db, TEXT(""));
 
         CenterWindowDx();
         return TRUE;
@@ -79,7 +79,7 @@ public:
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_ConstantsDB, m_entry.sz2))
+        if (!CheckCommand(m_db, m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -119,17 +119,17 @@ class MModifyKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
-    ConstantsDB& m_ConstantsDB;
+    ConstantsDB& m_db;
 
     MModifyKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_MODIFYKEY), m_entry(entry), m_ConstantsDB(db)
+        MDialogBase(IDD_MODIFYKEY), m_entry(entry), m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_ConstantsDB, m_entry.sz2);
+        InitCommandComboBox(hCmb2, m_db, m_entry.sz2);
 
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
 
@@ -149,7 +149,7 @@ public:
         if (Flags & FVIRTKEY)
         {
             HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-            Cmb1_InitVirtualKeys(hCmb1, m_ConstantsDB);
+            Cmb1_InitVirtualKeys(hCmb1, m_db);
 
             INT i = ComboBox_FindStringExact(hCmb1, -1, m_entry.sz0);
             if (i != CB_ERR)
@@ -193,7 +193,7 @@ public:
 
         ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_ConstantsDB, m_entry.sz2))
+        if (!CheckCommand(m_db, m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -209,7 +209,7 @@ public:
         case chx1:
             if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
             {
-                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1), m_ConstantsDB);
+                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1), m_db);
             }
             else
             {
@@ -243,10 +243,10 @@ class MEditAccelDlg : public MDialogBase
 {
 public:
     AccelRes& m_accel_res;
-    ConstantsDB& m_ConstantsDB;
+    ConstantsDB& m_db;
 
     MEditAccelDlg(AccelRes& accel_res, ConstantsDB& db)
-        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_ConstantsDB(db)
+        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_db(db)
     {
     }
 
@@ -321,7 +321,7 @@ public:
 
         ACCEL_ENTRY entry;
 
-        MAddKeyDlg dialog(entry, m_ConstantsDB);
+        MAddKeyDlg dialog(entry, m_db);
         if (IDOK != dialog.DialogBoxDx(hwnd))
         {
             return;
@@ -371,7 +371,7 @@ public:
         ListView_GetItemText(hCtl1, iItem, 1, a_entry.sz1, _countof(a_entry.sz1));
         ListView_GetItemText(hCtl1, iItem, 2, a_entry.sz2, _countof(a_entry.sz2));
 
-        MModifyKeyDlg dialog(a_entry, m_ConstantsDB);
+        MModifyKeyDlg dialog(a_entry, m_db);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             ListView_SetItemText(hCtl1, iItem, 0, a_entry.sz0);
@@ -407,7 +407,7 @@ public:
             entry.fFlags = Flags;
             if (Flags & FVIRTKEY)
             {
-                entry.wAscii = (WORD)m_ConstantsDB.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+                entry.wAscii = (WORD)m_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
             }
             else
             {
@@ -531,7 +531,7 @@ public:
             std::wstring str;
             if (it->fFlags & FVIRTKEY)
             {
-                str = m_ConstantsDB.GetName(L"VIRTUALKEYS", it->wAscii);
+                str = m_db.GetName(L"VIRTUALKEYS", it->wAscii);
             }
             else
             {

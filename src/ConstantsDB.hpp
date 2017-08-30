@@ -100,11 +100,26 @@ public:
     {
         return GetValue(L"RESOURCE.ID", name);
     }
+    ValueType GetCtrlIDValue(NameType name) const
+    {
+        return GetValue(L"CTRLID", name);
+    }
 
+    BOOL HasCtrlID(NameType name) const
+    {
+        TableType table = GetTable(L"CTRLID");
+        TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name == name)
+                return TRUE;
+        }
+        return FALSE;
+    }
     BOOL HasResID(NameType name) const
     {
-        const TableType& table = GetTable(L"RESOURCE.ID");
-        TableType::const_iterator it, end = table.end();
+        TableType table = GetTable(L"RESOURCE.ID");
+        TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             if (it->name == name)

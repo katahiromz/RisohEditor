@@ -36,8 +36,8 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    ConstantsDB& m_ConstantsDB;
-    AccelRes(ConstantsDB& db) : m_ConstantsDB(db) { }
+    ConstantsDB& m_db;
+    AccelRes(ConstantsDB& db) : m_db(db) { }
 
     BOOL LoadFromStream(const MByteStreamEx& stream)
     {
@@ -92,7 +92,7 @@ public:
         }
         else
         {
-            ret += m_ConstantsDB.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_ID);
+            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_ID);
         }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
@@ -110,7 +110,7 @@ public:
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += m_ConstantsDB.GetName(L"VIRTUALKEYS", it->wAscii);
+                ret += m_db.GetName(L"VIRTUALKEYS", it->wAscii);
             }
             else
             {
@@ -125,7 +125,7 @@ public:
             }
             else
             {
-                ret += m_ConstantsDB.GetNameOfResID(IDTYPE_COMMAND, it->wId);
+                ret += m_db.GetNameOfResID(IDTYPE_COMMAND, it->wId);
             }
 
             if (NOINVERT)

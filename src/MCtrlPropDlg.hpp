@@ -44,7 +44,7 @@ public:
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
-    ConstantsDB&        m_ConstantsDB;
+    ConstantsDB&        m_db;
     DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -56,7 +56,7 @@ public:
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_indeces(indeces), m_ConstantsDB(db)
+          m_bUpdating(FALSE), m_indeces(indeces), m_db(db)
     {
     }
 
@@ -147,13 +147,26 @@ public:
         if (!strID.empty())
             flags |= F_ID;
         UINT id;
-        if (TEXT('0') <= strID[0] && strID[0] <= TEXT('9'))
+        if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
+            strID[0] == TEXT('-'))
         {
             id = _tcstoul(strID.c_str(), NULL, 0);
         }
+        else if (m_db.HasCtrlID(strID))
+        {
+            id = m_db.GetCtrlIDValue(strID);
+        }
+        else if (m_db.HasResID(strID))
+        {
+            id = m_db.GetResIDValue(strID);
+        }
         else
         {
-            id = m_ConstantsDB.GetValue(TEXT("CTRLID"), strID);
+            HWND hCmb3 = GetDlgItem(m_hwnd, cmb3);
+            Edit_SetSel(hCmb3, 0, -1);
+            SetFocus(hCmb3);
+            ErrorBoxDx(IDS_NOSUCHID);
+            return 0xFFFFFFFF;
         }
         item.m_ID = id;
 
@@ -167,9 +180,9 @@ public:
         mstr_trim(strHelp);
         if (!strHelp.empty())
             flags |= F_HELP;
-        if (m_ConstantsDB.HasResID(strHelp))
+        if (m_db.HasResID(strHelp))
         {
-            item.m_HelpID = m_ConstantsDB.GetResIDValue(strHelp);
+            item.m_HelpID = m_db.GetResIDValue(strHelp);
         }
         else
         {
@@ -230,14 +243,14 @@ public:
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = m_ConstantsDB.GetTable(pszClass);
+            table = m_db.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(),
                     table.begin(), table.end());
             }
         }
-        table = m_ConstantsDB.GetTable(TEXT("STYLE"));
+        table = m_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
@@ -246,7 +259,7 @@ public:
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = m_ConstantsDB.GetTable(TEXT("EXSTYLE"));
+        table = m_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
             m_exstyle_table.insert(m_exstyle_table.end(),
@@ -284,10 +297,10 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitClassComboBox(hCmb1, m_ConstantsDB);
+        InitClassComboBox(hCmb1, m_db);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitCtrlIDComboBox(hCmb3, m_ConstantsDB);
+        InitCtrlIDComboBox(hCmb3, m_db);
 
         GetInfo();
 
@@ -341,7 +354,7 @@ public:
 
         if (m_flags & F_HELP)
         {
-            MStringW name = m_ConstantsDB.GetNameOfResID(IDTYPE_HELP, m_item.m_HelpID);
+            MStringW name = m_db.GetNameOfResID(IDTYPE_HELP, m_item.m_HelpID);
             SetDlgItemTextW(hwnd, cmb5, name.c_str());
         }
         if (m_flags & F_X)
@@ -362,7 +375,7 @@ public:
         }
         if (m_flags & F_ID)
         {
-            MStringW name = m_ConstantsDB.GetNameOfResID(IDTYPE_CONTROL, m_item.m_HelpID);
+            MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_HelpID);
             SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
         if (m_flags & F_CLASS)
@@ -380,8 +393,11 @@ public:
 
     void OnOK(HWND hwnd)
     {
-
         DWORD flags = GetItemAndFlags(m_item);
+        if (flags == 0xFFFFFFFF)
+        {
+            return;
+        }
         if (flags & F_CLASS)
         {
             MString strClass = GetDlgItemText(cmb4);
@@ -478,11 +494,11 @@ public:
     void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
         MString strSuper;
-        DWORD dwType = m_ConstantsDB.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        DWORD dwType = m_db.GetValue(TEXT("CONTROL.CLASSES"), strClass);
         if (dwType >= 3)
         {
             ConstantsDB::TableType table;
-            table = m_ConstantsDB.GetTable(strClass + TEXT(".SUPERCLASS"));
+            table = m_db.GetTable(strClass + TEXT(".SUPERCLASS"));
             if (table.size())
             {
                 strSuper = table[0].name;
@@ -495,7 +511,7 @@ public:
             InitTables(strClass.c_str());
 
         MString str = strClass + TEXT(".DEFAULT.STYLE");
-        m_dwStyle = m_ConstantsDB.GetValue(str, TEXT("STYLE"));
+        m_dwStyle = m_db.GetValue(str, TEXT("STYLE"));
 
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);

@@ -231,7 +231,7 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
 BOOL CheckCommand(ConstantsDB& db, MString strCommand)
 {
     mstr_trim(strCommand);
-    if ('0' <= strCommand[0] && strCommand[0] <= '9')
+    if (('0' <= strCommand[0] && strCommand[0] <= '9') || strCommand[0] == '-')
     {
         return TRUE;
     }
@@ -1115,7 +1115,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     mstr_trim(str);
-    if ('0' <= str[0] && str[0] <= '9')
+    if (('0' <= str[0] && str[0] <= '9') || str[0] == '-')
     {
         LONG n = wcstol(str.c_str(), NULL, 0);
         str = mstr_dec(n);
