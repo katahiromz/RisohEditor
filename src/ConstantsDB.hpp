@@ -157,7 +157,8 @@ public:
             return DumpValue(L"CTRLID", value);
         }
 
-        if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING)
+        if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
+            nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND)
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
