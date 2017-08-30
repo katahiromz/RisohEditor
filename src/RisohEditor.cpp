@@ -1096,6 +1096,10 @@ Res_GetLangName(WORD Lang)
 
 //////////////////////////////////////////////////////////////////////////////
 
+typedef std::vector<MString>            mru_type;
+typedef std::map<MString, MString>      assoc_map_type;
+typedef std::map<MStringA, MStringA>    id_map_type;
+
 struct RisohSettings
 {
     BOOL        bShowBinEdit;
@@ -1105,10 +1109,7 @@ struct RisohSettings
     INT         nBmpViewWidth;
     INT         nBinEditHeight;
     BOOL        bGuiByDblClick;
-    typedef std::vector<MString> mru_type;
     mru_type    vecRecentlyUsed;
-    typedef std::map<MString, MString>      assoc_map_type;
-    typedef std::map<MStringA, MStringA>    id_map_type;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
 
@@ -1301,7 +1302,7 @@ public:
         INT i = 0;
         TCHAR szText[MAX_PATH * 2];
         static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
-        RisohSettings::mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
+        mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
         for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
         {
 #if 1
@@ -2491,12 +2492,26 @@ public:
                     wsprintfA(sz, "%d", value);
                     m_settings.id_map[macro] = sz;
                 }
+#if 0
                 else if (parser.ast()->m_id == ASTID_STRING)
                 {
                     StringAst *str = (StringAst *)parser.ast();
                     m_settings.id_map[macro] = str->m_str;
                 }
+#endif
             }
+        }
+
+        ConstantsDB::TableType& table = m_ConstantsDB.m_Map[L"RESOURCE.ID"];
+        table.clear();
+        id_map_type::iterator it, end = m_settings.id_map.end();
+        for (it = m_settings.id_map.begin(); it != end; ++it)
+        {
+            MStringW str1 = MAnsiToWide(it->first).c_str();
+            MStringW str2 = MAnsiToWide(it->second).c_str();
+            DWORD value2 = wcstoul(str2.c_str(), NULL, 0);
+            ConstantsDB::EntryType entry(str1, value2);
+            table.push_back(entry);
         }
 
         ShowIDList(hwnd, TRUE);
@@ -4174,7 +4189,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     TCHAR szName[MAX_PATH];
-    RisohSettings::assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+    assoc_map_type::iterator it, end = m_settings.assoc_map.end();
     for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
         keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName));
@@ -4226,7 +4241,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
     }
 
-    RisohSettings::assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+    assoc_map_type::iterator it, end = m_settings.assoc_map.end();
     for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
         keyRisoh.SetSz(it->first.c_str(), it->second.c_str());

@@ -21,6 +21,38 @@ RT_ANIICON, 22
 RT_HTML, 23
 RT_MANIFEST, 24
 
+[RESOURCE.ID.TYPE]
+Cursor.ID, 0
+Bitmap.ID, 1
+Menu.ID, 2
+Dialog.ID, 3
+String.ID, 4
+Accel.ID, 5
+Cursor.ID, 6
+Icon.ID, 7
+AniCursor.ID, 8
+AniIcon.ID, 9
+Html.ID, 10
+Help.ID, 11
+Command.ID, 12
+Control.ID, 13
+
+[RESOURCE.ID.PREFIX]
+IDC_, 0
+IDB_, 1
+IDM_, 2
+IDD_, 3
+IDS_, 4
+IDA_, 5
+IDC_, 6
+IDI_, 7
+IDAC_, 8
+IDAI_, 9
+IDH_, 10
+HELPID_, 11
+CMDID_, 12
+CID_, 13
+
 [STYLE]
 WS_OVERLAPPED, 0x00000000
 WS_POPUP, 0x80000000
