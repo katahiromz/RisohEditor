@@ -1205,6 +1205,7 @@ public:
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
     WCHAR       m_szFile[MAX_PATH];
+    WCHAR       m_szResourceH[MAX_PATH];
     ResEntries  m_Entries;
 
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
@@ -1229,6 +1230,7 @@ public:
         m_szCppExe[0] = 0;
         m_szWindresExe[0] = 0;
         m_szFile[0] = 0;
+        m_szResourceH[0] = 0;
     }
 
     BOOL LoadSettings(HWND hwnd);
@@ -2458,10 +2460,10 @@ public:
 
     void OnIDList(HWND hwnd)
     {
-        ShowIDList(hwnd, IsWindowVisible(m_id_list_dlg));
+        ShowIDList(hwnd, !IsWindowVisible(m_id_list_dlg));
     }
 
-    BOOL ParseMacros(HWND hwnd, std::vector<MStringA>& macros, MStringA& str)
+    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str)
     {
         std::vector<MStringA> lines;
         mstr_trim(str);
@@ -2498,6 +2500,7 @@ public:
         }
 
         ShowIDList(hwnd, TRUE);
+        lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
         return TRUE;
     }
 
@@ -2596,7 +2599,7 @@ public:
             {
                 DeleteFileW(szTempFile1);
                 str = str.substr(pragma_found);
-                return ParseMacros(hwnd, macros, str);
+                return ParseMacros(hwnd, pszFile, macros, str);
             }
         }
 
@@ -2606,8 +2609,6 @@ public:
 
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
-        m_ConstantsDB.m_Map[TEXT("RESOURCE.IDS")].clear();
-
         WCHAR szTempFile[MAX_PATH];
         lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
         ReplaceBackslash(szTempFile);
@@ -3879,8 +3880,55 @@ public:
 
         TV_RefreshInfo(m_hTreeView, Entries);
         DoSetFile(hwnd, Path);
+        CheckResourceH(hwnd, Path);
 
         return TRUE;
+    }
+
+    BOOL CheckResourceH(HWND hwnd, LPCTSTR Path)
+    {
+        m_szResourceH[0] = 0;
+
+        TCHAR szPath[MAX_PATH];
+        lstrcpyn(szPath, Path, _countof(szPath));
+        ReplaceBackslash(szPath);
+
+        TCHAR *pch = _tcsrchr(szPath, TEXT('/'));
+        if (pch == NULL)
+            return FALSE;
+
+        ++pch;
+        lstrcpy(pch, TEXT("resource.h"));
+        if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpy(pch, TEXT("../resource.h"));
+            if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpy(pch, TEXT("../../resource.h"));
+                if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpy(pch, TEXT("../../../resource.h"));
+                    if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        lstrcpy(pch, TEXT("../src/resource.h"));
+                        if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                        {
+                            lstrcpy(pch, TEXT("../../src/resource.h"));
+                            if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                            {
+                                lstrcpy(pch, TEXT("../../../src/resource.h"));
+                                if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                                {
+                                    return FALSE;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return DoLoadResH(hwnd, szPath);
     }
 
     BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
