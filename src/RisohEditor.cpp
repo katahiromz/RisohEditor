@@ -2473,7 +2473,8 @@ public:
 
     void OnConfig(HWND hwnd)
     {
-        // TODO:
+        MConfigDlg dialog;
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnHideIDMacros(HWND hwnd)

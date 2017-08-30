@@ -129,6 +129,7 @@ struct RisohSettings
 #include "MIdAssocDlg.hpp"
 #include "MBmpView.hpp"
 #include "MIDListDlg.hpp"
+#include "MConfigDlg.hpp"
 
 #include "id_string.hpp"
 #include "MString.hpp"
