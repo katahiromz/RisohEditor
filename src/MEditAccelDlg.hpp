@@ -419,10 +419,10 @@ public:
                 }
                 else
                 {
-                    entry.wAscii = _wtoi(a_entry.sz0);
+                    entry.wAscii = wcstol(a_entry.sz0, NULL, 0);
                 }
             }
-            entry.wId = _wtoi(a_entry.sz2);
+            entry.wId = wcstol(a_entry.sz2, NULL, 0);
 
             m_accel_res.Entries().push_back(entry);
         }

@@ -318,7 +318,7 @@ public:
         {
             GetEntry(hwnd, hCtl1, iItem, s_entry);
 
-            WORD wID = (WORD)_wtoi(s_entry.StringID);
+            WORD wID = (WORD)wcstol(s_entry.StringID, NULL, 0);
             std::wstring str = s_entry.StringValue;
 
             m_str_res.map().insert(std::make_pair(wID, str));

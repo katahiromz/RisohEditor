@@ -704,13 +704,13 @@ public:
                 if (m_db.HasResID(entry.CommandID))
                     exitem.menuId = m_db.GetResIDValue(entry.CommandID);
                 else
-                    exitem.menuId = _wtoi(entry.CommandID);
+                    exitem.menuId = wcstol(entry.CommandID, NULL, 0);
                 exitem.bResInfo = 0;
                 exitem.text = entry.Caption;
                 if (m_db.HasResID(entry.HelpID))
                     exitem.dwHelpId = m_db.GetResIDValue(entry.HelpID);
                 else
-                    exitem.dwHelpId = _wtoi(entry.HelpID);
+                    exitem.dwHelpId = wcstol(entry.HelpID, NULL, 0);
                 exitem.wDepth = entry.wDepth;
 
                 m_menu_res.exitems().push_back(exitem);
@@ -732,7 +732,7 @@ public:
                 if (m_db.HasResID(entry.CommandID))
                     item.wMenuID = m_db.GetResIDValue(entry.CommandID);
                 else
-                    item.wMenuID = _wtoi(entry.CommandID);
+                    item.wMenuID = wcstol(entry.CommandID, NULL, 0);
                 item.wDepth = entry.wDepth;
                 item.text = entry.Caption;
 
