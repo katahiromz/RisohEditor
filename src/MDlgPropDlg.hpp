@@ -212,7 +212,7 @@ public:
         }
         else
         {
-            help = _tcstoul(strHelp.c_str(), NULL, 0);
+            help = _tcstol(strHelp.c_str(), NULL, 0);
         }
 
         INT nFontSize = GetDlgItemInt(hwnd, edt5, NULL, TRUE);

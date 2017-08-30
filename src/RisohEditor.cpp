@@ -740,9 +740,9 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szType[0]))
+    else if (iswdigit(szType[0]) || szType[0] == L'-')
     {
-        Type = WORD(wcstoul(szType, NULL, 0));
+        Type = WORD(wcstol(szType, NULL, 0));
     }
     else
     {
@@ -767,9 +767,9 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szName[0]))
+    else if (iswdigit(szName[0]) || szName[0] == L'-')
     {
-        Name = WORD(wcstoul(szName, NULL, 0));
+        Name = WORD(wcstol(szName, NULL, 0));
     }
     else
     {
@@ -797,9 +797,9 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szLang[0]))
+    else if (iswdigit(szLang[0]) || szLang[0] == L'-')
     {
-        Lang = WORD(wcstoul(szLang, NULL, 0));
+        Lang = WORD(wcstol(szLang, NULL, 0));
     }
     else
     {
@@ -2591,7 +2591,7 @@ public:
         {
             MStringW str1 = MAnsiToWide(it->first).c_str();
             MStringW str2 = MAnsiToWide(it->second).c_str();
-            DWORD value2 = wcstoul(str2.c_str(), NULL, 0);
+            DWORD value2 = wcstol(str2.c_str(), NULL, 0);
             ConstantsDB::EntryType entry(str1, value2);
             table.push_back(entry);
         }
