@@ -359,7 +359,7 @@ struct DialogItem
         ret += L"CONTROL ";
         ret += m_Title.quoted_wstr();
         ret += L", ";
-        ret += db.GetCtrlID(m_ID);
+        ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
         if (m_Class.is_int())
         {
@@ -417,7 +417,7 @@ struct DialogItem
             ret += m_Title.quoted_wstr();
             ret += L", ";
         }
-        ret += db.GetCtrlID(m_ID);
+        ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
         ret += mstr_dec(m_pt.x);
         ret += L", ";

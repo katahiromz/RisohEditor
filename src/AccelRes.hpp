@@ -86,7 +86,14 @@ public:
     {
         std::wstring ret;
 
-        ret += id_or_str.str();
+        if (id_or_str.m_ID == 0)
+        {
+            ret += id_or_str.str();
+        }
+        else
+        {
+            ret += m_ConstantsDB.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_ID);
+        }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
         ret += L"{\r\n";
@@ -112,7 +119,14 @@ public:
                 ret += MAnsiToWide(mstr_quote(str));
             }
             ret += L", ";
-            ret += mstr_dec(it->wId);
+            if (0)
+            {
+                ret += mstr_dec(it->wId);
+            }
+            else
+            {
+                ret += m_ConstantsDB.GetNameOfResID(IDTYPE_COMMAND, it->wId);
+            }
 
             if (NOINVERT)
                 ret += L", NOINVERT";

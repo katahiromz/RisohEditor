@@ -416,20 +416,6 @@ public:
         return value;
     }
 
-    std::wstring GetCtrlID(WORD id) const
-    {
-        std::wstring ret;
-        if (id == 0xFFFF)
-        {
-            ret = L"-1";
-        }
-        else
-        {
-            ret = DumpValue(L"CTRLID", id);
-        }
-        return ret;
-    }
-
 protected:
     StringType _dumpBitField(CategoryType category, ValueType& value,
                              BOOL Not = FALSE) const
