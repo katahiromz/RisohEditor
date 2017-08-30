@@ -231,7 +231,8 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
 BOOL CheckCommand(ConstantsDB& db, MString strCommand)
 {
     mstr_trim(strCommand);
-    if (('0' <= strCommand[0] && strCommand[0] <= '9') || strCommand[0] == '-')
+    if (('0' <= strCommand[0] && strCommand[0] <= '9') ||
+        strCommand[0] == '-' || strCommand[0] == '+')
     {
         return TRUE;
     }
@@ -740,7 +741,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szType[0]) || szType[0] == L'-')
+    else if (iswdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
     {
         Type = WORD(wcstol(szType, NULL, 0));
     }
@@ -767,7 +768,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szName[0]) || szName[0] == L'-')
+    else if (iswdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
     {
         Name = WORD(wcstol(szName, NULL, 0));
     }
@@ -797,7 +798,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szLang[0]) || szLang[0] == L'-')
+    else if (iswdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
     {
         Lang = WORD(wcstol(szLang, NULL, 0));
     }
@@ -1115,7 +1116,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     mstr_trim(str);
-    if (('0' <= str[0] && str[0] <= '9') || str[0] == '-')
+    if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         LONG n = wcstol(str.c_str(), NULL, 0);
         str = mstr_dec(n);

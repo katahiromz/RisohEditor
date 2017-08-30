@@ -148,7 +148,7 @@ public:
             flags |= F_ID;
         UINT id;
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
-            strID[0] == TEXT('-'))
+            strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
             id = _tcstol(strID.c_str(), NULL, 0);
         }

@@ -49,9 +49,10 @@ struct MIdOrString
         {
             m_ID = LOWORD(Str);
         }
-        else if ((L'0' <= Str[0] && Str[0] <= L'9') || Str[0] == L'-')
+        else if ((L'0' <= Str[0] && Str[0] <= L'9') ||
+                 Str[0] == L'-' || Str[0] == L'+')
         {
-            m_ID = _wtoi(Str);
+            m_ID = wcstol(Str, NULL, 0);
         }
         else
         {
