@@ -2029,6 +2029,7 @@ public:
                 {
                     OnGuiEdit(hwnd);
                 }
+                return 1;
             }
         }
         else if (pnmhdr->code == TVN_SELCHANGING)
@@ -2049,21 +2050,26 @@ public:
             LPARAM lParam = pTV->itemNew.lParam;
             SelectTV(hwnd, lParam, FALSE);
         }
-        else if (pnmhdr->code == TVN_KEYDOWN)
+        else if (pnmhdr->code == NM_RETURN)
         {
-            TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
-            switch (pTVKD->wVKey)
+            if (pnmhdr->hwndFrom == m_hTreeView)
             {
-            case VK_RETURN:
                 OnEdit(hwnd);
                 if (m_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
-                break;
+                return 1;
+            }
+        }
+        else if (pnmhdr->code == TVN_KEYDOWN)
+        {
+            TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
+            switch (pTVKD->wVKey)
+            {
             case VK_DELETE:
                 PostMessageW(hwnd, WM_COMMAND, CMDID_DELETERES, 0);
-                break;
+                return 1;
             }
         }
         return 0;
