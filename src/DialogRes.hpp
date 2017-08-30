@@ -693,7 +693,15 @@ struct DialogRes
     {
         std::wstring ret;
 
-        ret += id_or_str.str();
+        if (id_or_str.m_ID == 0)
+        {
+            ret += id_or_str.str();
+        }
+        else
+        {
+            ret += db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_ID);
+        }
+
         if (IsExtended())
         {
             ret += L" DIALOGEX ";
