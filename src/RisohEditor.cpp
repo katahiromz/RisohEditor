@@ -1198,6 +1198,7 @@ public:
     MSplitterWnd    m_splitter1;
     MSplitterWnd    m_splitter2;
     MSplitterWnd    m_splitter3;
+    MIDListDlg      m_id_list_dlg;
 
     WCHAR       m_szDataFolder[MAX_PATH];
     WCHAR       m_szConstantsFile[MAX_PATH];
@@ -1275,7 +1276,8 @@ public:
         {
             if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
                 continue;
-
+            if (::IsDialogMessage(m_id_list_dlg, &msg))
+                continue;
             if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
                 continue;
 
@@ -2243,6 +2245,8 @@ public:
         if (!::IsWindow(m_rad_window) && id >= 100)
             ChangeStatusText(IDS_EXECUTINGCMD);
 
+        static INT s_nCount = 0;
+        ++s_nCount;
         BOOL bUpdateStatus = TRUE;
         switch (id)
         {
@@ -2415,13 +2419,29 @@ public:
         case CMDID_LOADRESH:
             OnLoadResH(hwnd);
             break;
+        case CMDID_IDLIST:
+            OnIDList(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
         }
+        --s_nCount;
 
-        if (bUpdateStatus && !::IsWindow(m_rad_window))
+        if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
             ChangeStatusText(IDS_READY);
+    }
+
+    void OnIDList(HWND hwnd)
+    {
+        if (IsWindow(m_id_list_dlg))
+        {
+            DestroyWindow(m_id_list_dlg);
+        }
+
+        m_id_list_dlg.CreateDialogDx(NULL);
+        ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
+        UpdateWindow(m_id_list_dlg);
     }
 
     BOOL ParseMacros(HWND hwnd, std::vector<MStringA>& macros, MStringA& str)
@@ -2459,6 +2479,8 @@ public:
                 }
             }
         }
+
+        SendMessageDx(WM_COMMAND, CMDID_IDLIST);
         return TRUE;
     }
 
@@ -2813,6 +2835,11 @@ public:
             CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_CHECKED);
         else
             CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_UNCHECKED);
+
+        if (IsWindowVisible(m_id_list_dlg))
+            CheckMenuItem(hMenu, CMDID_IDLIST, MF_CHECKED);
+        else
+            CheckMenuItem(hMenu, CMDID_IDLIST, MF_UNCHECKED);
 
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
