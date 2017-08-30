@@ -2434,14 +2434,16 @@ public:
 
     void OnIDList(HWND hwnd)
     {
-        if (IsWindow(m_id_list_dlg))
+        if (IsWindowVisible(m_id_list_dlg))
         {
             DestroyWindow(m_id_list_dlg);
         }
-
-        m_id_list_dlg.CreateDialogDx(NULL);
-        ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
-        UpdateWindow(m_id_list_dlg);
+        else
+        {
+            m_id_list_dlg.CreateDialogDx(NULL);
+            ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
+            UpdateWindow(m_id_list_dlg);
+        }
     }
 
     BOOL ParseMacros(HWND hwnd, std::vector<MStringA>& macros, MStringA& str)
