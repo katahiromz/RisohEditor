@@ -205,6 +205,8 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
 
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
 {
+    SetWindowText(hCmb, strCommand.c_str());
+
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
         return;
 
@@ -224,8 +226,6 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
             ComboBox_SetCurSel(hCmb, i);
         }
     }
-
-    SetWindowText(hCmb, strCommand.c_str());
 }
 
 BOOL CheckCommand(ConstantsDB& db, MString strCommand)
@@ -236,6 +236,31 @@ BOOL CheckCommand(ConstantsDB& db, MString strCommand)
         return TRUE;
     }
     return db.HasResID(strCommand);
+}
+
+void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
+{
+    SetWindowText(hCmb, strString.c_str());
+
+    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+        return;
+
+    ConstantsDB::TableType table;
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    MStringW prefix = table[IDTYPE_STRING].name;
+    if (prefix.empty())
+        return;
+
+    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == strString)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1086,10 +1111,19 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
 //////////////////////////////////////////////////////////////////////////////
 // STRING_ENTRY
 
-void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     mstr_trim(str);
+    if ('0' <= str[0] && str[0] <= '9')
+    {
+        LONG n = wcstol(str.c_str(), NULL, 0);
+        str = mstr_dec(n);
+    }
+    else if (!db.HasResID(str))
+    {
+        return FALSE;
+    }
     lstrcpynW(entry.StringID, str.c_str(), _countof(entry.StringID));
 
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
@@ -1099,9 +1133,10 @@ void StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
         mstr_unquote(str);
     }
     lstrcpynW(entry.StringValue, str.c_str(), _countof(entry.StringValue));
+    return TRUE;
 }
 
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
 
@@ -2203,7 +2238,7 @@ public:
             }
 
             ChangeStatusText(IDS_EDITINGBYGUI);
-            MStringsDlg dialog(str_res);
+            MStringsDlg dialog(m_ConstantsDB, str_res, m_Entries);
             INT nID = dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {

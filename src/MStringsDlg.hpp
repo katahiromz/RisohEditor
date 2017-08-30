@@ -11,14 +11,21 @@ class MAddStrDlg;
 class MModifyStrDlg;
 class MStringsDlg;
 
+void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString);
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddStrDlg : public MDialogBase
 {
 public:
     STRING_ENTRY& m_entry;
+    ConstantsDB& m_db;
+    ResEntries& m_entries;
 
-    MAddStrDlg(STRING_ENTRY& entry) : MDialogBase(IDD_ADDSTR), m_entry(entry)
+    MAddStrDlg(ConstantsDB& db, STRING_ENTRY& entry, ResEntries& entries)
+        : MDialogBase(IDD_ADDSTR), m_entry(entry), m_db(db), m_entries(entries)
     {
     }
 
@@ -33,7 +40,11 @@ public:
         switch (id)
         {
         case IDOK:
-            StrDlg_GetEntry(hwnd, m_entry);
+            if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+            {
+                ErrorBoxDx(IDS_NOSUCHID);
+                return;
+            }
             EndDialog(IDOK);
             break;
         case IDCANCEL:
@@ -60,14 +71,19 @@ class MModifyStrDlg : public MDialogBase
 {
 public:
     STRING_ENTRY& m_entry;
+    ConstantsDB& m_db;
 
-    MModifyStrDlg(STRING_ENTRY& entry) : MDialogBase(IDD_MODIFYSTR), m_entry(entry)
+    MModifyStrDlg(ConstantsDB& db, STRING_ENTRY& entry)
+        : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        StrDlg_SetEntry(hwnd, m_entry);
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        InitStringComboBox(hCmb1, m_db, L"");
+
+        StrDlg_SetEntry(hwnd, m_entry, m_db);
         CenterWindowDx();
         return TRUE;
     }
@@ -77,7 +93,11 @@ public:
         switch (id)
         {
         case IDOK:
-            StrDlg_GetEntry(hwnd, m_entry);
+            if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+            {
+                ErrorBoxDx(IDS_NOSUCHID);
+                return;
+            }
             EndDialog(IDOK);
             break;
         case IDCANCEL:
@@ -104,9 +124,50 @@ class MStringsDlg : public MDialogBase
 {
 public:
     StringRes& m_str_res;
+    ConstantsDB& m_db;
+    ResEntries& m_entries;
 
-    MStringsDlg(StringRes& str_res) : MDialogBase(IDD_STRINGS), m_str_res(str_res)
+    MStringsDlg(ConstantsDB& db, StringRes& str_res, ResEntries& entries)
+        : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db),
+          m_entries(entries)
     {
+    }
+
+    void InitCtl1(HWND hCtl1)
+    {
+        ListView_DeleteAllItems(hCtl1);
+
+        typedef StringRes::map_type map_type;
+        const map_type& map = m_str_res.map();
+
+        INT i = 0;
+        map_type::const_iterator it, end = map.end();
+        for (it = map.begin(); it != end; ++it)
+        {
+            if (it->second.empty())
+                continue;
+
+            MStringW str = m_db.GetNameOfResID(IDTYPE_STRING, it->first);
+
+            LV_ITEM item;
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = &str[0];
+            ListView_InsertItem(hCtl1, &item);
+
+            str = mstr_quote(it->second);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = &str[0];
+            ListView_SetItem(hCtl1, &item);
+
+            ++i;
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -131,38 +192,7 @@ public:
         column.iSubItem = 1;
         ListView_InsertColumn(hCtl1, 1, &column);
 
-        typedef StringRes::map_type map_type;
-        const map_type& map = m_str_res.map();
-
-        INT i = 0;
-        map_type::const_iterator it, end = map.end();
-        for (it = map.begin(); it != end; ++it)
-        {
-            if (it->second.empty())
-                continue;
-
-            MStringW str;
-            str = mstr_dec(it->first);
-
-            LV_ITEM item;
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = i;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 0;
-            item.pszText = &str[0];
-            ListView_InsertItem(hCtl1, &item);
-
-            str = mstr_quote(it->second);
-
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = i;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 1;
-            item.pszText = &str[0];
-            ListView_SetItem(hCtl1, &item);
-
-            ++i;
-        }
+        InitCtl1(hCtl1);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, 0, state, state);
@@ -178,16 +208,28 @@ public:
 
         STRING_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
-        MAddStrDlg dialog(s_entry);
+        MAddStrDlg dialog(m_db, s_entry, m_entries);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
             return;
         }
 
-        INT iItem = ListView_GetItemCount(hCtl1);
+        INT iItem;
+
+        LV_FINDINFO find;
+        TCHAR sz[128];
+        ZeroMemory(&find, sizeof(find));
+        find.flags = LVFI_STRING;
+        find.psz = sz;
+        iItem = ListView_FindItem(hCtl1, -1, &find);
+        if (iItem != -1)
+        {
+            ListView_DeleteItem(hCtl1, iItem);
+        }
 
         LV_ITEM item;
+        iItem = ListView_GetItemCount(hCtl1);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
@@ -247,7 +289,7 @@ public:
         STRING_ENTRY s_entry;
         GetEntry(hwnd, hCtl1, iItem, s_entry);
 
-        MModifyStrDlg dialog(s_entry);
+        MModifyStrDlg dialog(m_db, s_entry);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
