@@ -181,5 +181,7 @@
 #define IDS_ANIICON         88
 #define IDS_HEADFILTER      89
 #define IDS_LOADRESH        90
+#define IDS_NAME            91
+#define IDS_VALUE           92
 
 #endif  // ndef RESOURCE_H_

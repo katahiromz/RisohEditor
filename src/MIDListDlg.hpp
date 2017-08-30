@@ -14,6 +14,32 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         m_hLst1 = GetDlgItem(hwnd, lst1);
+        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
+
+        LV_COLUMN column;
+        ZeroMemory(&column, sizeof(column));
+
+        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+        column.fmt = LVCFMT_LEFT;
+        column.cx = 160;
+        column.pszText = LoadStringDx(IDS_NAME);
+        column.iSubItem = 0;
+        ListView_InsertColumn(m_hLst1, 0, &column);
+
+        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+        column.fmt = LVCFMT_LEFT;
+        column.cx = 90;
+        column.pszText = LoadStringDx(IDS_IDTYPE);
+        column.iSubItem = 1;
+        ListView_InsertColumn(m_hLst1, 1, &column);
+
+        column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+        column.fmt = LVCFMT_LEFT;
+        column.cx = 80;
+        column.pszText = LoadStringDx(IDS_VALUE);
+        column.iSubItem = 2;
+        ListView_InsertColumn(m_hLst1, 2, &column);
+
         return TRUE;
     }
 

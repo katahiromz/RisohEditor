@@ -2440,7 +2440,7 @@ public:
         }
         else
         {
-            m_id_list_dlg.CreateDialogDx(NULL);
+            m_id_list_dlg.CreateDialogDx(hwnd);
             ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
             UpdateWindow(m_id_list_dlg);
         }
