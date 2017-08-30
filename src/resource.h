@@ -190,5 +190,6 @@
 #define IDS_NAME            91
 #define IDS_VALUE           92
 #define IDS_NOSUCHID        93
+#define IDS_IMAGEINFO       94
 
 #endif  // ndef RESOURCE_H_

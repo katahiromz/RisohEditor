@@ -218,6 +218,7 @@ STRINGTABLE
     IDS_NAME, "名前"
     IDS_VALUE, "値"
     IDS_NOSUCHID, "そのようなIDは見つかりません。"
+    IDS_IMAGEINFO, "幅 %u、高さ %u、ビットの深さ %u\r\n"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

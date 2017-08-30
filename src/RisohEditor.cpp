@@ -846,7 +846,7 @@ std::wstring DumpBitmapInfo(HBITMAP hbm)
         return ret;
 
     WCHAR sz[64];
-    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
+    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
               bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     ret = sz;
     return ret;
@@ -858,7 +858,7 @@ std::wstring DumpCursorInfo(const BITMAP& bm)
 
     using namespace std;
     WCHAR sz[128];
-    wsprintfW(sz, L"Width %u, Height %u, BitsPixel %u\r\n",
+    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
               bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     ret = sz;
 

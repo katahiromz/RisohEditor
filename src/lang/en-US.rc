@@ -218,6 +218,7 @@ STRINGTABLE
     IDS_NAME, "Name"
     IDS_VALUE, "Value"
     IDS_NOSUCHID, "No such ID found."
+    IDS_IMAGEINFO, "Width %u, Height %u, BitsPixel %u\r\n"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
