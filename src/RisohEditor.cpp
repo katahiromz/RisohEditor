@@ -2432,9 +2432,9 @@ public:
             ChangeStatusText(IDS_READY);
     }
 
-    void OnIDList(HWND hwnd)
+    void ShowIDList(HWND hwnd, BOOL bShow = TRUE)
     {
-        if (IsWindowVisible(m_id_list_dlg))
+        if (bShow)
         {
             DestroyWindow(m_id_list_dlg);
         }
@@ -2444,6 +2444,11 @@ public:
             ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
             UpdateWindow(m_id_list_dlg);
         }
+    }
+
+    void OnIDList(HWND hwnd)
+    {
+        ShowIDList(hwnd, IsWindowVisible(m_id_list_dlg));
     }
 
     BOOL ParseMacros(HWND hwnd, std::vector<MStringA>& macros, MStringA& str)
@@ -2482,7 +2487,7 @@ public:
             }
         }
 
-        SendMessageDx(WM_COMMAND, CMDID_IDLIST);
+        ShowIDList(hwnd, TRUE);
         return TRUE;
     }
 
