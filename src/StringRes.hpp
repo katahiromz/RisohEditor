@@ -6,6 +6,7 @@
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
+#include "ConstantsDB.hpp"
 #include <map>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -74,7 +75,7 @@ public:
         return TRUE;
     }
 
-    string_type Dump(WORD wName)
+    string_type Dump(const ConstantsDB& db, WORD wName)
     {
         string_type ret;
 
@@ -89,7 +90,14 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += mstr_dec(i);
+            if (0)
+            {
+                ret += mstr_dec(i);
+            }
+            else
+            {
+                ret += db.GetNameOfResID(IDTYPE_STRING, i);
+            }
 
             ret += L", \"";
             ret += mstr_escape(m_map[i]);
@@ -100,7 +108,7 @@ public:
         return ret;
     }
 
-    string_type Dump()
+    string_type Dump(const ConstantsDB& db)
     {
         string_type ret;
 
@@ -114,7 +122,14 @@ public:
                 continue;
 
             ret += L"    ";
-            ret += mstr_dec(it->first);
+            if (0)
+            {
+                ret += mstr_dec(it->first);
+            }
+            else
+            {
+                ret += db.GetNameOfResID(IDTYPE_STRING, it->first);
+            }
 
             ret += L", \"";
             ret += mstr_escape(it->second);

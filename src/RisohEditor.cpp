@@ -2184,7 +2184,7 @@ public:
             INT nID = dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
-                std::wstring WideText = str_res.Dump();
+                std::wstring WideText = str_res.Dump(m_ConstantsDB);
                 ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
                 if (DoCompileParts(hwnd, WideText))
@@ -3221,7 +3221,7 @@ public:
         WORD nTableID = Entry.name.m_ID;
         if (str_res.LoadFromStream(stream, nTableID))
         {
-            std::wstring str = str_res.Dump(nTableID);
+            std::wstring str = str_res.Dump(m_ConstantsDB, nTableID);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }
@@ -3324,12 +3324,13 @@ public:
                 return;
         }
 
-        std::wstring str = str_res.Dump();
+        std::wstring str = str_res.Dump(m_ConstantsDB);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 
     void PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
     {
+        assert(0);
     }
 
     BOOL Preview(HWND hwnd, const ResEntry& Entry)
