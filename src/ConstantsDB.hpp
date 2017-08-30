@@ -132,7 +132,7 @@ public:
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
 
-        return L"";
+        return mstr_dec(value);
     }
 
     NameType GetName(CategoryType category, ValueType value) const

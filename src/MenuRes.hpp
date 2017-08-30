@@ -376,7 +376,15 @@ public:
 
         string_type ret;
 
-        ret += name.str();
+        if (name.m_ID == 0)
+        {
+            ret += name.str();
+        }
+        else
+        {
+            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_ID);
+        }
+
         ret += L" MENU\r\n";
         ret += L"{\r\n";
 
@@ -414,7 +422,14 @@ public:
                     ret += L"MENUITEM \"";
                     ret += mstr_escape(it->text);
                     ret += L"\", ";
-                    ret += mstr_dec(it->wMenuID);
+                    if (0)
+                    {
+                        ret += mstr_dec(it->wMenuID);
+                    }
+                    else
+                    {
+                        ret += db.GetNameOfResID(IDTYPE_COMMAND, it->wMenuID);
+                    }
                     ret += DumpFlags(it->fItemFlags);
                     ret += L"\r\n";
                 }
@@ -436,7 +451,15 @@ public:
     {
         string_type ret;
 
-        ret += name.str();
+        if (name.m_ID == 0)
+        {
+            ret += name.str();
+        }
+        else
+        {
+            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_ID);
+        }
+
         ret += L" MENUEX\r\n";
         ret += L"{\r\n";
 
@@ -476,7 +499,14 @@ public:
                 if (it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += mstr_hex(it->dwHelpId);
+                    if (0)
+                    {
+                        ret += mstr_hex(it->dwHelpId);
+                    }
+                    else
+                    {
+                        ret += db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
+                    }
                 }
                 ret += L"\r\n";
                 ret += string_type((it->wDepth + 1) * 4, L' ');
@@ -496,7 +526,14 @@ public:
                     if (it->menuId || it->dwType || it->dwState)
                     {
                         ret += L", ";
-                        ret += mstr_dec(it->menuId);
+                        if (0)
+                        {
+                            ret += mstr_dec(it->menuId);
+                        }
+                        else
+                        {
+                            ret += db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
+                        }
                     }
                     if (it->dwType || it->dwState)
                     {
