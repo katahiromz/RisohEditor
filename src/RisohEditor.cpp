@@ -2502,7 +2502,7 @@ public:
             }
         }
 
-        ConstantsDB::TableType& table = m_ConstantsDB.m_Map[L"RESOURCE.ID"];
+        ConstantsDB::TableType& table = m_ConstantsDB.m_map[L"RESOURCE.ID"];
         table.clear();
         id_map_type::iterator it, end = m_settings.id_map.end();
         for (it = m_settings.id_map.begin(); it != end; ++it)

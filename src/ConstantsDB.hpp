@@ -42,7 +42,7 @@ public:
     };
     typedef std::vector<EntryType> TableType;
     typedef std::map<CategoryType, TableType> MapType;
-    MapType m_Map;
+    MapType m_map;
 
     ConstantsDB()
     {
@@ -52,19 +52,40 @@ public:
     {
         ::CharUpperW(&category[0]);
 
-        MapType::const_iterator it = m_Map.find(category);
-        if (it == m_Map.end())
+        MapType::const_iterator it = m_map.find(category);
+        if (it == m_map.end())
             return TableType();
 
-        TableType Table = it->second;
-        return Table;
+        TableType table = it->second;
+        return table;
+    }
+
+    TableType GetTableByPrefix(CategoryType category, NameType prefix) const
+    {
+        ::CharUpperW(&category[0]);
+
+        TableType table1;
+        MapType::const_iterator found = m_map.find(category);
+        if (found == m_map.end())
+            return table1;
+
+        const TableType& table2 = found->second;
+        TableType::const_iterator it, end = table2.end();
+        for (it = table2.begin(); it != end; ++it)
+        {
+            if (it->name.find(prefix) == 0)
+            {
+                table1.push_back(*it);
+            }
+        }
+        return table1;
     }
 
     NameType GetName(CategoryType category, ValueType value) const
     {
-        const TableType& Table = GetTable(category);
-        TableType::const_iterator it, end = Table.end();
-        for (it = Table.begin(); it != end; ++it)
+        const TableType& table = GetTable(category);
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
         {
             if (it->value == value)
                 return it->name;
@@ -74,9 +95,9 @@ public:
 
     ValueType GetValue(CategoryType category, NameType name) const
     {
-        const TableType& Table = GetTable(category);
-        TableType::const_iterator it, end = Table.end();
-        for (it = Table.begin(); it != end; ++it)
+        const TableType& table = GetTable(category);
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
                 return it->value;
@@ -104,7 +125,7 @@ public:
     BOOL LoadFromFile(LPCWSTR FileName)
     {
         using namespace std;
-        m_Map.clear();
+        m_map.clear();
 
         FILE *fp = _wfopen(FileName, L"rb");
         if (fp == NULL)
@@ -131,7 +152,7 @@ public:
                 {
                     category = line.substr(1, line.size() - 2);
                     ::CharUpperW(&category[0]);
-                    m_Map[category];
+                    m_map[category];
                 }
                 continue;
             }
@@ -188,7 +209,7 @@ public:
             }
 
             EntryType entry(name, value, mask);
-            m_Map[category].push_back(entry);
+            m_map[category].push_back(entry);
         }
 
         fclose(fp);
@@ -285,13 +306,13 @@ public:
 
         ::CharUpperW(&category[0]);
 
-        MapType::const_iterator found = m_Map.find(category);
-        if (found == m_Map.end())
+        MapType::const_iterator found = m_map.find(category);
+        if (found == m_map.end())
             return ret;
 
-        const TableType& Table = found->second;
-        TableType::const_iterator it, end = Table.end();
-        for (it = Table.begin(); it != end; ++it)
+        const TableType& table = found->second;
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
         {
             if (value == it->value)
             {
@@ -363,13 +384,13 @@ protected:
 
         ::CharUpperW(&category[0]);
 
-        MapType::const_iterator found = m_Map.find(category);
-        if (found == m_Map.end())
+        MapType::const_iterator found = m_map.find(category);
+        if (found == m_map.end())
             return ret;
 
-        const TableType& Table = found->second;
-        TableType::const_iterator it, end = Table.end();
-        for (it = Table.begin(); it != end; ++it)
+        const TableType& table = found->second;
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
         {
             if (it->value == 0)
                 continue;
