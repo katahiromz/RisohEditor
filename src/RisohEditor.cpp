@@ -2425,6 +2425,9 @@ public:
         case CMDID_IDLIST:
             OnIDList(hwnd);
             break;
+        case CMDID_UNLOADRESH:
+            OnUnloadResH(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2433,6 +2436,13 @@ public:
 
         if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
             ChangeStatusText(IDS_READY);
+    }
+
+    void OnUnloadResH(HWND hwnd)
+    {
+        m_ConstantsDB.m_map[L"RESOURCE.ID"].clear();
+        m_szResourceH[0] = 0;
+        ShowIDList(hwnd, FALSE);
     }
 
     void UpdateIDList(HWND hwnd)

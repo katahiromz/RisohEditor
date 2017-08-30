@@ -16,7 +16,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "&Import...\tCtrl+I", CMDID_IMPORT
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", CMDID_IDASSOC
-        MENUITEM "Load &resource.h File...\tCtrl+R", CMDID_LOADRESH
+        MENUITEM "Load &resource.h...\tCtrl+R", CMDID_LOADRESH
+        MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
