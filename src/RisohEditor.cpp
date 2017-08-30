@@ -3620,6 +3620,8 @@ public:
         r1.WriteFormatA("#include <commctrl.h>\r\n");
         r1.WriteFormatA("#include <prsht.h>\r\n");
         r1.WriteFormatA("#include <dlgs.h>\r\n");
+        if (m_szResourceH[0])
+            r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(m_szResourceH).c_str());
         r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                         PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
         r1.WriteFormatA("#pragma code_page(65001)\r\n");
