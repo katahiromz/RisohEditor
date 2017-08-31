@@ -101,8 +101,8 @@ struct DialogItem
     POINT               m_pt;
     SIZE                m_siz;
     WORD                m_ID;
-    MIdOrString        m_Class;
-    MIdOrString        m_Title;
+    MIdOrString         m_Class;
+    MIdOrString         m_Title;
     std::vector<BYTE>   Extra;
     DWORD               m_OldStyle, m_OldExStyle;
 

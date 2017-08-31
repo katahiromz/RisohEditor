@@ -37,6 +37,7 @@ public:
     BOOL            m_bSizing;
     INT             m_nIndex;
     ConstantsDB&    m_db;
+    RisohSettings&  m_settings;
     POINT           m_pt;
 
     static HICON Icon()
@@ -88,9 +89,10 @@ public:
         }
     }
 
-    MRadCtrl(ConstantsDB& db) :
+    MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
         m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_db(db)
+        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_db(db),
+        m_settings(settings)
     {
         m_pt.x = m_pt.y = -1;
     }
@@ -445,8 +447,10 @@ public:
     ConstantsDB&    m_db;
     POINT           m_ptClicked;
     MIndexLabels    m_labels;
+    RisohSettings&  m_settings;
 
-    MRadDialog(ConstantsDB& db) : m_index_visible(FALSE), m_db(db)
+    MRadDialog(RisohSettings& settings, ConstantsDB& db)
+        : m_index_visible(FALSE), m_db(db), m_settings(settings)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -643,7 +647,7 @@ public:
 
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
-        MRadCtrl *pCtrl = new MRadCtrl(m_db);
+        MRadCtrl *pCtrl = new MRadCtrl(m_db, m_settings);
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
@@ -720,10 +724,11 @@ public:
     INT         m_yDialogBaseUnit;
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
-    INT         m_nComboHeight;
+    RisohSettings& m_settings;
 
-    MRadWindow(ConstantsDB& db) : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-                                  m_rad_dialog(db)
+    MRadWindow(ConstantsDB& db, RisohSettings& settings)
+        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
+          m_settings(settings)
     {
     }
 
@@ -1044,7 +1049,7 @@ public:
         if (lstrcmpi(szClass, TEXT("COMBOBOX")) == 0 ||
             lstrcmpi(szClass, WC_COMBOBOXEX) == 0)
         {
-            item.m_siz.cy = m_nComboHeight;
+            item.m_siz.cy = m_settings.nComboHeight;
         }
 
         UpdateRes();
@@ -1116,7 +1121,7 @@ public:
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
-        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_db, pt);
+        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_db, pt, m_settings);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);

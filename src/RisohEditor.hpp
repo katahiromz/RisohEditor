@@ -41,7 +41,6 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MWindowBase.hpp"
-#include "MRadWindow.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
 #include "MRegKey.hpp"
@@ -128,6 +127,7 @@ struct RisohSettings
 
 ////////////////////////////////////////////////////////////////////////////
 
+#include "MRadWindow.hpp"
 #include "MReplaceBinDlg.hpp"
 #include "MTestMenuDlg.hpp"
 #include "MTestDialog.hpp"

@@ -160,7 +160,7 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     return DEFAULT_CHARSET;
 }
 
-void InitClassComboBox(HWND hCmb, ConstantsDB& db)
+void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass)
 {
     ComboBox_ResetContent(hCmb);
 
@@ -170,7 +170,32 @@ void InitClassComboBox(HWND hCmb, ConstantsDB& db)
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
     {
-        ComboBox_AddString(hCmb, it->name.c_str());
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == pszClass)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
+    }
+}
+
+void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass)
+{
+    ComboBox_ResetContent(hCmb);
+
+    ConstantsDB::TableType table;
+    table = db.GetTable(TEXT("CONTROL.CLASSES"));
+
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        if (it->value > 2)
+            continue;
+
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == pszWndClass)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
     }
 }
 
@@ -1242,7 +1267,7 @@ public:
         m_hTreeView(NULL),
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
-        m_rad_window(m_ConstantsDB),
+        m_rad_window(m_ConstantsDB, m_settings),
         m_id_list_dlg(m_ConstantsDB, m_settings)
     {
         m_szDataFolder[0] = 0;
@@ -1405,7 +1430,6 @@ public:
             return FALSE;
 
         LoadSettings(hwnd);
-        m_rad_window.m_nComboHeight = m_settings.nComboHeight;
 
         if (m_settings.bResumeWindowPos)
         {
@@ -2555,7 +2579,6 @@ public:
         MConfigDlg dialog(m_settings);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            m_rad_window.m_nComboHeight = m_settings.nComboHeight;
             SelectTV(hwnd, 0, FALSE);
         }
     }
@@ -4527,6 +4550,7 @@ WinMain(HINSTANCE   hInstance,
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     InitCommonControls();
+    HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
     {
         MMainWnd app(argc, targv, hInstance);
 
@@ -4539,6 +4563,7 @@ WinMain(HINSTANCE   hInstance,
             ret = 2;
         }
     }
+    FreeLibrary(hinstRichEdit);
     CoUninitialize();
 
 #if (WINVER >= 0x0500)

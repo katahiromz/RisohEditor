@@ -18,7 +18,8 @@ void GetSelection(std::vector<BYTE>& sel,
 DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitClassComboBox(HWND hCmb, ConstantsDB& db);
+void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
+void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -204,10 +205,10 @@ public:
         return flags;
     }
 
-    void SetInfo(DWORD flags)
+    BOOL SetInfo(DWORD flags)
     {
         if (m_indeces.empty())
-            return;
+            return TRUE;
 
         std::set<INT>::iterator it, end = m_indeces.end();
         for (it = m_indeces.begin(); it != end; ++it)
@@ -230,10 +231,23 @@ public:
             if ((m_flags & F_ID) || (flags & F_ID))
                 item.m_ID = m_item.m_ID;
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
+            {
                 item.m_Class = m_item.m_Class;
+                WNDCLASSEX cls;
+                if (!item.m_Class.empty() &&
+                    !GetClassInfoEx(NULL, item.m_Class.str().c_str(), &cls))
+                {
+                    HWND hCmb4 = GetDlgItem(m_hwnd, cmb4);
+                    ComboBox_SetEditSel(hCmb4, 0, -1);
+                    SetFocus(hCmb4);
+                    ErrorBoxDx(IDS_ENTERCLASS);
+                    return FALSE;
+                }
+            }
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
                 item.m_Title = m_item.m_Title;
         }
+        return TRUE;
     }
 
     void InitTables(LPCTSTR pszClass)
@@ -297,7 +311,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitClassComboBox(hCmb1, m_db);
+        InitClassComboBox(hCmb1, m_db, TEXT(""));
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
@@ -307,12 +321,14 @@ public:
         if (m_flags & F_CLASS)
         {
             InitTables(m_item.m_Class.c_str());
-            SetDlgItemText(hwnd, cmb4, m_item.m_Class.c_str());
         }
         else
         {
             InitTables(NULL);
         }
+
+        HWND hCmb4 = GetDlgItem(hwnd, cmb4);
+        InitWndClassComboBox(hCmb4, m_db, m_item.m_Class.c_str());
 
         TCHAR szText[64];
 
@@ -410,7 +426,8 @@ public:
             }
         }
 
-        SetInfo(flags);
+        if (!SetInfo(flags))
+            return;
 
         EndDialog(IDOK);
     }
@@ -535,6 +552,7 @@ public:
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        HWND hCmb4 = GetDlgItem(hwnd, cmb4);
         TCHAR szText[64];
         switch (id)
         {
@@ -556,6 +574,23 @@ public:
             else if (codeNotify == CBN_EDITCHANGE)
             {
                 MString text = GetDlgItemText(hwnd, cmb1);
+                mstr_trim(text);
+                InitTables(text.c_str());
+                UpdateClass(hwnd, hLst1, text);
+            }
+            break;
+        case cmb4:
+            if (codeNotify == CBN_SELCHANGE)
+            {
+                INT nIndex = ComboBox_GetCurSel(hCmb4);
+                ComboBox_GetLBText(hCmb4, nIndex, szText);
+                MString text = szText;
+                mstr_trim(text);
+                UpdateClass(hwnd, hLst1, text);
+            }
+            else if (codeNotify == CBN_EDITCHANGE)
+            {
+                MString text = GetDlgItemText(hwnd, cmb4);
                 mstr_trim(text);
                 InitTables(text.c_str());
                 UpdateClass(hwnd, hLst1, text);

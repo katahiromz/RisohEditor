@@ -206,7 +206,7 @@ STRINGTABLE
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "データが変更されています。コンパイルしますか？"
     IDS_RADWINDOW, "ダイアログの編集"
-    IDS_ENTERCLASS, "ウィンドウ クラス名を入力して下さい。"
+    IDS_ENTERCLASS, "正当なウィンドウ クラス名を入力して下さい。"
     IDS_TEXTEDIT, "テキスト編集 (Ctrl+T)"
     IDS_CURSORINFO, "イメージ#%u: 幅 %u, 高さ %u, ビットの深さ %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT, "イメージ数: %u\r\n"
