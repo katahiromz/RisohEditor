@@ -21,13 +21,13 @@ class MAddResDlg : public MDialogBase
 public:
     ResEntries& m_Entries;
     ConstantsDB& m_db;
-    HWND m_hTreeView;
     MIdOrString m_type;
     LPCTSTR m_file;
+    ResEntry m_entry;
 
-    MAddResDlg(ResEntries& Entries, ConstantsDB& db, HWND hTreeView)
+    MAddResDlg(ResEntries& Entries, ConstantsDB& db)
         : MDialogBase(IDD_ADDRES), m_Entries(Entries), m_db(db),
-          m_hTreeView(hTreeView), m_type(0xFFFF), m_file(NULL)
+          m_type(0xFFFF), m_file(NULL)
     {
     }
 
@@ -130,6 +130,7 @@ public:
         }
 
         BOOL bOK = FALSE;
+        BOOL bAdded = FALSE;
         if (File.empty() && Res_HasSample(Type))
         {
             bOK = TRUE;
@@ -190,11 +191,9 @@ public:
             if (bOK)
             {
                 Res_AddEntry(m_Entries, Type, Name, Lang, stream.data(), FALSE);
-
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-
                 ResEntry entry(Type, Name, Lang);
-                TV_SelectEntry(m_hTreeView, m_Entries, entry);
+                m_entry = entry;
+                bAdded = TRUE;
             }
         }
 
@@ -207,7 +206,12 @@ public:
                 ErrorBoxDx(IDS_CANNOTADDRES);
             return;
         }
-        Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), Overwrite);
+        if (!bAdded)
+        {
+            Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), Overwrite);
+            ResEntry entry(Type, Name, Lang);
+            m_entry = entry;
+        }
 
         EndDialog(IDOK);
     }

@@ -20,6 +20,7 @@ public:
     LPCWSTR File;
     HICON   m_hIcon;
     ConstantsDB& m_db;
+    ResEntry m_entry;
 
     MAddIconDlg(ConstantsDB& db, ResEntries& Entries)
         : MDialogBase(IDD_ADDICON), m_Entries(Entries), File(NULL), m_hIcon(NULL),
@@ -105,6 +106,9 @@ public:
                 ErrorBoxDx(IDS_CANNOTADDICON);
             return;
         }
+
+        ResEntry entry(Type, Name, Lang);
+        m_entry = entry;
 
         EndDialog(IDOK);
     }

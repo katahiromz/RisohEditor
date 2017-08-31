@@ -1977,10 +1977,11 @@ public:
 
     void OnAddRes(HWND hwnd)
     {
-        MAddResDlg dialog(m_Entries, m_ConstantsDB, m_hTreeView);
+        MAddResDlg dialog(m_Entries, m_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -2912,7 +2913,8 @@ public:
                 MAddIconDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
                 return;
             }
@@ -2921,18 +2923,22 @@ public:
                 MAddCursorDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.m_File = File;
                 dialog.DialogBoxDx(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
                 return;
             }
             else if (lstrcmpiW(pch, L".wav") == 0)
             {
-                MAddResDlg dialog(m_Entries, m_ConstantsDB, m_hTreeView);
+                MAddResDlg dialog(m_Entries, m_ConstantsDB);
                 dialog.m_type = L"WAVE";
                 dialog.m_file = File;
-                dialog.DialogBoxDx(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                ChangeStatusText(IDS_READY);
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
                 return;
             }
             else if (lstrcmpiW(pch, L".bmp") == 0 ||
@@ -2941,21 +2947,22 @@ public:
                 MAddBitmapDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.File = File;
                 dialog.DialogBoxDx(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
                 return;
             }
             else if (lstrcmpiW(pch, L".res") == 0)
             {
                 DoLoad(hwnd, m_Entries, File);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
                 ChangeStatusText(IDS_READY);
                 return;
             }
         }
 
         DoLoad(hwnd, m_Entries, File);
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
         ChangeStatusText(IDS_READY);
     }
 

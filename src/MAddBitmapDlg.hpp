@@ -19,6 +19,7 @@ public:
     ResEntries& m_Entries;
     LPCWSTR File;
     ConstantsDB& m_db;
+    ResEntry m_entry;
 
     MAddBitmapDlg(ConstantsDB& db, ResEntries& Entries) :
         MDialogBase(IDD_ADDBITMAP), m_Entries(Entries), File(NULL),
@@ -108,6 +109,9 @@ public:
                 ErrorBoxDx(IDS_CANTADDBMP);
             return;
         }
+
+        ResEntry entry(Type, Name, Lang);
+        m_entry = entry;
 
         EndDialog(IDOK);
     }
