@@ -1073,9 +1073,12 @@ void ReplaceBackslash(LPWSTR szPath)
     }
 }
 
-std::wstring GetKeyID(UINT wId)
+std::wstring GetKeyID(ConstantsDB& db, UINT wId)
 {
-    return mstr_dec(wId);
+    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+        return mstr_dec(wId);
+
+    return db.GetNameOfResID(IDTYPE_ACCEL, wId);
 }
 
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)
@@ -1423,6 +1426,8 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        m_id_list_dlg.m_hMainWnd = hwnd;
+
         LoadLangInfo();
 
         INT nRet = CheckData();
@@ -2276,7 +2281,7 @@ public:
         TV_RefreshInfo(m_hTreeView, m_Entries);
     }
 
-    void OnUpdateRes(HWND hwnd)
+    void OnUpdateDlgRes(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
         if (HIWORD(lParam) != I_LANG)
@@ -2284,6 +2289,10 @@ public:
 
         UINT i = LOWORD(lParam);
         ResEntry& Entry = m_Entries[i];
+        if (Entry.type != RT_DIALOG)
+        {
+            return;
+        }
 
         DialogRes& dialog_res = m_rad_window.m_dialog_res;
 
@@ -2399,8 +2408,8 @@ public:
         case CMDID_DESTROYRAD:
             OnCancelEdit(hwnd);
             break;
-        case CMDID_UPDATERES:
-            OnUpdateRes(hwnd);
+        case CMDID_UPDATEDLGRES:
+            OnUpdateDlgRes(hwnd);
             bUpdateStatus = FALSE;
             break;
         case CMDID_DELCTRL:
@@ -2508,6 +2517,9 @@ public:
         case CMDID_ADVICERESH:
             OnAdviceResH(hwnd);
             break;
+        case CMDID_UPDATEID:
+            OnUpdateID(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2516,6 +2528,11 @@ public:
 
         if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
             ChangeStatusText(IDS_READY);
+    }
+
+    void OnUpdateID(HWND hwnd)
+    {
+        SelectTV(hwnd, 0, FALSE);
     }
 
     void OnAdviceResH(HWND hwnd)

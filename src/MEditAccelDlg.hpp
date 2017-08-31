@@ -15,7 +15,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 BOOL CheckCommand(ConstantsDB& db, MString strCommand);
 
-std::wstring GetKeyID(UINT wId);
+std::wstring GetKeyID(ConstantsDB& db, UINT wId);
 
 class MAddKeyDlg;
 class MModifyKeyDlg;
@@ -556,7 +556,7 @@ public:
             item.pszText = &str[0];
             ListView_SetItem(hCtl1, &item);
 
-            str = GetKeyID(it->wId);
+            str = GetKeyID(m_db, it->wId);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;

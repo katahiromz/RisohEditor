@@ -16,9 +16,11 @@ public:
     typedef std::map<MStringA, MStringA>    id_map_type;
     RisohSettings& m_settings;
     ConstantsDB& m_db;
+    HWND m_hMainWnd;
 
     MIDListDlg(ConstantsDB& db, RisohSettings& settings)
-        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings)
+        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings),
+          m_hMainWnd(NULL)
     {
     }
 
@@ -226,6 +228,7 @@ public:
                     m_settings.removed_ids.erase(stra1);
 
                     SetItems();
+                    SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
                 }
             }
             break;
@@ -265,6 +268,7 @@ public:
                     m_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
 
                     SetItems();
+                    SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
                 }
             }
             break;
@@ -294,6 +298,7 @@ public:
                     m_settings.removed_ids.insert(std::make_pair(astr1, astr2));
                 }
                 SetItems();
+                SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
             }
             break;
         case CMDID_COPYRESIDNAME:

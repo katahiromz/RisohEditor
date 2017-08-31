@@ -1065,7 +1065,7 @@ public:
     void UpdateRes()
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, CMDID_UPDATERES, 0);
+        PostMessage(hwndOwner, WM_COMMAND, CMDID_UPDATEDLGRES, 0);
 
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }

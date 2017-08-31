@@ -33,7 +33,7 @@
 #define CMDID_CTRLPROP          128
 #define CMDID_DLGPROP           129
 #define CMDID_DESTROYRAD        130
-#define CMDID_UPDATERES         131
+#define CMDID_UPDATEDLGRES      131
 #define CMDID_CTRLINDEXTOP      132
 #define CMDID_CTRLINDEXBOTTOM   133
 #define CMDID_CTRLINDEXMINUS    134
@@ -78,6 +78,7 @@
 #define CMDID_COPYRESIDNAME     173
 #define CMDID_COPYIDDEF         174
 #define CMDID_ADVICERESH        175
+#define CMDID_UPDATEID          176
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
