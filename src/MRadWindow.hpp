@@ -720,6 +720,7 @@ public:
     INT         m_yDialogBaseUnit;
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
+    INT         m_nComboHeight;
 
     MRadWindow(ConstantsDB& db) : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
                                   m_rad_dialog(db)
@@ -1037,6 +1038,14 @@ public:
         DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
         item.m_siz.cx = rc.right - rc.left;
         item.m_siz.cy = rc.bottom - rc.top;
+
+        TCHAR szClass[64];
+        GetClassName(hwndCtrl, szClass, _countof(szClass));
+        if (lstrcmpi(szClass, TEXT("COMBOBOX")) == 0 ||
+            lstrcmpi(szClass, WC_COMBOBOXEX) == 0)
+        {
+            item.m_siz.cy = m_nComboHeight;
+        }
 
         UpdateRes();
 

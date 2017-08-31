@@ -1405,6 +1405,7 @@ public:
             return FALSE;
 
         LoadSettings(hwnd);
+        m_rad_window.m_nComboHeight = m_settings.nComboHeight;
 
         if (m_settings.bResumeWindowPos)
         {
@@ -2502,6 +2503,7 @@ public:
         MConfigDlg dialog(m_settings);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            m_rad_window.m_nComboHeight = m_settings.nComboHeight;
             SelectTV(hwnd, 0, FALSE);
         }
     }
