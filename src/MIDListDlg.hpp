@@ -13,8 +13,8 @@ public:
     typedef std::map<MString, MString>      assoc_map_type;
     typedef std::map<MStringA, MStringA>    id_map_type;
     RisohSettings& m_settings;
-    const assoc_map_type *m_assoc_map;
-    const id_map_type *m_id_map;
+    assoc_map_type *m_assoc_map;
+    id_map_type *m_id_map;
 
     MIDListDlg(RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_settings(settings), m_assoc_map(NULL), m_id_map(NULL)
@@ -82,7 +82,7 @@ public:
         return 0;
     }
 
-    void SetItems(const assoc_map_type& assoc_map, const id_map_type& id_map)
+    void SetItems(assoc_map_type& assoc_map, id_map_type& id_map)
     {
         m_assoc_map = &assoc_map;
         m_id_map = &id_map;
@@ -176,6 +176,8 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        INT iItem;
+        TCHAR szText[64];
         switch (id)
         {
         case IDCANCEL:
@@ -188,7 +190,10 @@ public:
             // TODO:
             break;
         case CMDID_DELETERESID:
-            // TODO:
+            iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+            m_id_map->erase(MTextToAnsi(szText).c_str());
+            SetItems(*m_assoc_map, *m_id_map);
             break;
         }
     }
