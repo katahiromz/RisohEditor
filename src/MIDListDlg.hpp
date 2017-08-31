@@ -173,6 +173,31 @@ public:
         return TRUE;
     }
 
+    BOOL CopyText(HWND hwnd, const MString& text)
+    {
+#ifdef UNICODE
+        UINT CF_ = CF_UNICODETEXT;
+#else
+        UINT CF_ = CF_TEXT;
+#endif
+        DWORD size = (text.size() + 1) * sizeof(TCHAR);
+        LPTSTR psz = (LPTSTR)GlobalAllocPtr(GMEM_SHARE | GMEM_MOVEABLE, size);
+        if (psz)
+        {
+            HGLOBAL hGlobal = GlobalPtrHandle(psz);
+            CopyMemory(psz, text.c_str(), size);
+            GlobalUnlockPtr(psz);
+
+            if (OpenClipboard(hwnd))
+            {
+                EmptyClipboard();
+                SetClipboardData(CF_, hGlobal);
+                return CloseClipboard();
+            }
+        }
+        return FALSE;
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         INT iItem;
@@ -250,6 +275,28 @@ public:
 
                 m_settings.id_map.erase(MTextToAnsi(szText).c_str());
                 SetItems();
+            }
+            break;
+        case CMDID_COPYRESIDNAME:
+            {
+                iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+                CopyText(hwnd, szText);
+            }
+            break;
+        case CMDID_COPYIDDEF:
+            {
+                iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+                MString text1 = szText;
+                ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+                MString text2 = szText;
+                MString text = TEXT("#define ");
+                text += text1;
+                text += TEXT(" ");
+                text += text2;
+                text += TEXT("\r\n");
+                CopyText(hwnd, text);
             }
             break;
         }
