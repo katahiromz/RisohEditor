@@ -253,13 +253,16 @@ public:
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
-                    m_settings.id_map.erase(MTextToAnsi(str1).c_str());
+                    MStringA stra1old = MTextToAnsi(str1).c_str();
+                    MStringA stra2old = MTextToAnsi(str2).c_str();
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
+                    m_settings.id_map.erase(stra1old);
                     m_settings.id_map.insert(std::make_pair(stra1, stra2));
-
+                    m_settings.added_ids.erase(stra1old);
                     m_settings.added_ids.insert(std::make_pair(stra1, stra2));
-                    m_settings.removed_ids.insert(std::make_pair(stra1, stra2));
+                    m_settings.removed_ids.erase(stra1old);
+                    m_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
 
                     SetItems();
                 }
