@@ -320,8 +320,6 @@ public:
         MModifyStrDlg dialog(m_db, s_entry, m_str_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
-            ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
-
             std::wstring str = mstr_quote(s_entry.StringValue);
             ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
         }
