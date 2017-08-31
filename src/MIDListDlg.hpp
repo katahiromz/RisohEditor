@@ -181,6 +181,15 @@ public:
         case IDCANCEL:
             ::DestroyWindow(hwnd);
             break;
+        case CMDID_ADDRESID:
+            // TODO:
+            break;
+        case CMDID_MODIFYRESID:
+            // TODO:
+            break;
+        case CMDID_DELETERESID:
+            // TODO:
+            break;
         }
     }
 
@@ -193,6 +202,7 @@ public:
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_MOVE, OnMove);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+        HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         default:
             return DefaultProcDx();
         }
@@ -214,6 +224,20 @@ public:
         m_settings.nIDListHeight = rc.bottom - rc.top;
 
         MoveWindow(m_hLst1, 0, 0, cx, cy, TRUE);
+    }
+
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext == m_hLst1)
+        {
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hSubMenu = GetSubMenu(hMenu, 3);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                xPos, yPos, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+        }
     }
 
 protected:

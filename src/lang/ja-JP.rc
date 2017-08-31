@@ -122,6 +122,13 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     {
         MENUITEM "変更(&M)...", CMDID_MODIFYASSOC
     }
+    POPUP "ポップアップ #3"
+    {
+        MENUITEM "追加(&A)...", CMDID_ADDRESID
+        MENUITEM "変更(&M)...", CMDID_MODIFYRESID
+        MENUITEM SEPARATOR
+        MENUITEM "削除(&D)", CMDID_DELETERESID
+    }
 }
 
 STRINGTABLE

@@ -72,6 +72,9 @@
 #define CMDID_HIDEIDMACROS      167
 #define CMDID_CONFIG            168
 #define CMDID_MODIFYASSOC       169
+#define CMDID_ADDRESID          170
+#define CMDID_MODIFYRESID       171
+#define CMDID_DELETERESID       172
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
