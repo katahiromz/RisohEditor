@@ -135,6 +135,9 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case CMDID_MODIFYASSOC:
+            OnPsh1(hwnd);
+            break;
         }
     }
 
@@ -146,6 +149,20 @@ public:
         }
     }
 
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext == m_hLst1)
+        {
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hSubMenu = GetSubMenu(hMenu, 2);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                xPos, yPos, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+        }
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -154,6 +171,7 @@ public:
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+        HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         default:
             return DefaultProcDx();
         }

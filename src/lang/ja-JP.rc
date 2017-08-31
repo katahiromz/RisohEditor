@@ -68,7 +68,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
 2 MENU
 {
-    POPUP "ポップアップ"
+    POPUP "ポップアップ #0"
     {
         MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
@@ -91,11 +91,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
-}
-
-3 MENU
-{
-    POPUP "ポップアップ"
+    POPUP "ポップアップ #1"
     {
         MENUITEM "コントロールの追加(&A)...", CMDID_ADDCTRL
         MENUITEM "コントロールの削除(&D)", CMDID_DELCTRL
@@ -121,6 +117,10 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "コントロールのプロパティ(&P)...", CMDID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", CMDID_DLGPROP
+    }
+    POPUP "ポップアップ #2"
+    {
+        MENUITEM "変更(&M)...", CMDID_MODIFYASSOC
     }
 }
 

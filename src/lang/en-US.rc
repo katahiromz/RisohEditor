@@ -68,7 +68,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 2 MENU
 {
-    POPUP "Popup"
+    POPUP "Popup #0"
     {
         MENUITEM "Edit by GUI...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
@@ -91,11 +91,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
-}
-
-3 MENU
-{
-    POPUP "Popup"
+    POPUP "Popup #1"
     {
         MENUITEM "&Add Control...", CMDID_ADDCTRL
         MENUITEM "&Delete Control", CMDID_DELCTRL
@@ -121,6 +117,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Properties for Control...", CMDID_CTRLPROP
         MENUITEM "Pr&operties for Dialog...", CMDID_DLGPROP
+    }
+    POPUP "Popup #2"
+    {
+        MENUITEM "&Modify...", CMDID_MODIFYASSOC
     }
 }
 

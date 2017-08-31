@@ -1553,8 +1553,8 @@ public:
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(3));
-        HMENU hSubMenu = GetSubMenu(hMenu, 0);
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+        HMENU hSubMenu = GetSubMenu(hMenu, 1);
 
         ::SetForegroundWindow(hwnd);
         ::TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
