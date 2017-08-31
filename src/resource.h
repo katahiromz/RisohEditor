@@ -101,6 +101,8 @@
 #define IDD_MODIFYASSOC     122
 #define IDD_IDLIST          123
 #define IDD_CONFIG          124
+#define IDD_ADDRESID        125
+#define IDD_MODIFYRESID     126
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
