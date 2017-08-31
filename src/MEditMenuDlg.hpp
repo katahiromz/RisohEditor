@@ -89,6 +89,9 @@ public:
         lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
 
         ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
+        DWORD help = m_db.GetResIDValue(m_entry.HelpID);
+        MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
+        lstrcpynW(m_entry.HelpID, strHelp.c_str(), _countof(m_entry.HelpID));
 
         EndDialog(IDOK);
     }
@@ -240,6 +243,9 @@ public:
         lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
 
         ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
+        DWORD help = m_db.GetResIDValue(m_entry.HelpID);
+        MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
+        lstrcpynW(m_entry.HelpID, strHelp.c_str(), _countof(m_entry.HelpID));
 
         EndDialog(IDOK);
     }
@@ -701,16 +707,10 @@ public:
                 MenuRes::ExMenuItem exitem;
 
                 SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.Flags);
-                if (m_db.HasResID(entry.CommandID))
-                    exitem.menuId = m_db.GetResIDValue(entry.CommandID);
-                else
-                    exitem.menuId = wcstol(entry.CommandID, NULL, 0);
+                exitem.menuId = m_db.GetResIDValue(entry.CommandID);
                 exitem.bResInfo = 0;
                 exitem.text = entry.Caption;
-                if (m_db.HasResID(entry.HelpID))
-                    exitem.dwHelpId = m_db.GetResIDValue(entry.HelpID);
-                else
-                    exitem.dwHelpId = wcstol(entry.HelpID, NULL, 0);
+                exitem.dwHelpId = m_db.GetResIDValue(entry.HelpID);
                 exitem.wDepth = entry.wDepth;
 
                 m_menu_res.exitems().push_back(exitem);
@@ -729,10 +729,7 @@ public:
                 MenuRes::MenuItem item;
 
                 SetMenuFlags(item.fItemFlags, entry.Flags);
-                if (m_db.HasResID(entry.CommandID))
-                    item.wMenuID = m_db.GetResIDValue(entry.CommandID);
-                else
-                    item.wMenuID = wcstol(entry.CommandID, NULL, 0);
+                item.wMenuID = m_db.GetResIDValue(entry.CommandID);
                 item.wDepth = entry.wDepth;
                 item.text = entry.Caption;
 

@@ -422,7 +422,7 @@ public:
                     entry.wAscii = wcstol(a_entry.sz0, NULL, 0);
                 }
             }
-            entry.wId = wcstol(a_entry.sz2, NULL, 0);
+            entry.wId = m_db.GetResIDValue(a_entry.sz2);
 
             m_accel_res.Entries().push_back(entry);
         }

@@ -1078,7 +1078,7 @@ std::wstring GetKeyID(ConstantsDB& db, UINT wId)
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
         return mstr_dec(wId);
 
-    return db.GetNameOfResID(IDTYPE_ACCEL, wId);
+    return db.GetNameOfResID(IDTYPE_COMMAND, wId);
 }
 
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)
