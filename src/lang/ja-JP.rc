@@ -227,6 +227,7 @@ STRINGTABLE
     IDS_NOSUCHID, "そのようなIDは見つかりません。"
     IDS_IMAGEINFO, "幅 %u、高さ %u、ビットの深さ %u\r\n"
     IDS_ENTERINT, "整数を入力して下さい。"
+    IDS_ENTERTEXT, "テキストを入力して下さい。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

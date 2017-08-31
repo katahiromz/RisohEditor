@@ -198,5 +198,6 @@
 #define IDS_NOSUCHID        93
 #define IDS_IMAGEINFO       94
 #define IDS_ENTERINT        95
+#define IDS_ENTERTEXT       96
 
 #endif  // ndef RESOURCE_H_

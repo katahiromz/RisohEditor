@@ -32,6 +32,30 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        MString str1 = GetDlgItemText(hwnd, edt1);
+        mstr_trim(str1);
+        if (str1.empty())
+        {
+            HWND hEdt1 = GetDlgItem(hwnd, edt1);
+            Edit_SetSel(hEdt1, 0, -1);
+            SetFocus(hEdt1);
+            ErrorBoxDx(IDS_ENTERTEXT);
+            return;
+        }
+        m_str1 = str1;
+
+        MString str2 = GetDlgItemText(hwnd, edt3);
+        mstr_trim(str2);
+        if (str2.empty())
+        {
+            HWND hEdt3 = GetDlgItem(hwnd, edt3);
+            Edit_SetSel(hEdt3, 0, -1);
+            SetFocus(hEdt3);
+            ErrorBoxDx(IDS_ENTERTEXT);
+            return;
+        }
+        m_str2 = str2;
+
         EndDialog(IDOK);
     }
 
