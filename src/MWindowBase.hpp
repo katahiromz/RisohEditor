@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    49     /* Version 49 */
+#define MZC4_MWINDOWBASE_HPP_    50     /* Version 50 */
 
 class MWindowBase;
 class MDialogBase;
@@ -1152,10 +1152,7 @@ MDialogBase::DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         assert(lParam);
         base = (MDialogBase *)lParam;
-        if (base->m_bModal)
-        {
-            base->Attach(hwnd);
-        }
+        base->Attach(hwnd);
     }
     else
     {
@@ -1198,7 +1195,11 @@ MDialogBase::CreateDialogIndirectDx(HWND hwndOwner, const VOID *ptr)
         reinterpret_cast<const DLGTEMPLATE *>(ptr),
         m_hwndOwner, MDialogBase::DialogProc,
         reinterpret_cast<LPARAM>(this));
-    return Attach(hwnd);
+    if (hwnd == NULL)
+    {
+        Detach();
+    }
+    return hwnd != NULL;
 }
 
 inline INT_PTR
@@ -1228,7 +1229,11 @@ MDialogBase::CreateDialogDx(HWND hwndOwner, LPCTSTR pDialogName)
     HWND hwnd = ::CreateDialogParam(::GetModuleHandle(NULL), pDialogName,
                                     m_hwndOwner, MDialogBase::DialogProc,
                                     reinterpret_cast<LPARAM>(this));
-    return Attach(hwnd);
+    if (hwnd == NULL)
+    {
+        Detach();
+    }
+    return hwnd != NULL;
 }
 
 inline INT_PTR

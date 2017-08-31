@@ -163,12 +163,12 @@ public:
             if (m_settings.nIDListLeft != CW_USEDEFAULT)
             {
                 POINT pt = { m_settings.nIDListLeft, m_settings.nIDListTop };
-                SetWindowPosDx(hwnd, &pt);
+                SetWindowPosDx(&pt);
             }
             if (m_settings.nIDListWidth != CW_USEDEFAULT)
             {
                 SIZE siz = { m_settings.nIDListWidth, m_settings.nIDListHeight };
-                SetWindowPosDx(hwnd, NULL, &siz);
+                SetWindowPosDx(NULL, &siz);
             }
         }
 
@@ -344,6 +344,7 @@ public:
 
     void OnMove(HWND hwnd, int x, int y)
     {
+        assert(m_hwnd);
         RECT rc;
         GetWindowRect(hwnd, &rc);
         m_settings.nIDListLeft = rc.left;
@@ -352,6 +353,7 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+        assert(m_hwnd);
         RECT rc;
         GetWindowRect(hwnd, &rc);
         m_settings.nIDListWidth = rc.right - rc.left;
