@@ -219,6 +219,7 @@ STRINGTABLE
     IDS_VALUE, "Value"
     IDS_NOSUCHID, "No such ID found."
     IDS_IMAGEINFO, "Width %u, Height %u, BitsPixel %u\r\n"
+    IDS_ENTERINT, "Please enter a valid integer."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

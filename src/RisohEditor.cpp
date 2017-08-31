@@ -1242,7 +1242,8 @@ public:
         m_hTreeView(NULL),
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
-        m_rad_window(m_ConstantsDB)
+        m_rad_window(m_ConstantsDB),
+        m_id_list_dlg(m_settings)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1355,6 +1356,7 @@ public:
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_DROPFILES, OnDropFiles);
+            HANDLE_MSG(hwnd, WM_MOVE, OnMove);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
@@ -1403,6 +1405,20 @@ public:
             return FALSE;
 
         LoadSettings(hwnd);
+
+        if (m_settings.bResumeWindowPos)
+        {
+            if (m_settings.nWindowLeft != CW_USEDEFAULT)
+            {
+                POINT pt = { m_settings.nWindowLeft, m_settings.nWindowTop };
+                SetWindowPosDx(&pt);
+            }
+            if (m_settings.nWindowWidth != CW_USEDEFAULT)
+            {
+                SIZE siz = { m_settings.nWindowWidth, m_settings.nWindowHeight };
+                SetWindowPosDx(NULL, &siz);
+            }
+        }
 
         m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
         if (m_hImageList == NULL)
@@ -2484,16 +2500,20 @@ public:
     void OnConfig(HWND hwnd)
     {
         MConfigDlg dialog(m_settings);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            SelectTV(hwnd, 0, FALSE);
+        }
     }
 
     void OnHideIDMacros(HWND hwnd)
     {
-        BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
-        bHide = !bHide;
+        BOOL bHideID = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+        bHideID = !bHideID;
+        m_settings.bHideID = bHideID;
         ConstantsDB::TableType& table = m_ConstantsDB.m_map[L"HIDE.ID"];
         table.clear();
-        ConstantsDB::EntryType entry(L"HIDE.ID", bHide);
+        ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
         table.push_back(entry);
         SelectTV(hwnd, 0, FALSE);
     }
@@ -2577,8 +2597,11 @@ public:
             table.push_back(entry);
         }
 
-        ShowIDList(hwnd, TRUE);
         lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
+        if (m_settings.bAutoShowIDList)
+        {
+            ShowIDList(hwnd, TRUE);
+        }
         return TRUE;
     }
 
@@ -2887,12 +2910,24 @@ public:
         }
     }
 
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+        m_settings.nWindowLeft = rc.left;
+        m_settings.nWindowTop = rc.top;
+    }
+
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
         SendMessageW(m_hStatusBar, WM_SIZE, 0, 0);
 
         RECT rc, ClientRect;
+
+        GetWindowRect(hwnd, &rc);
+        m_settings.nWindowWidth = rc.right - rc.left;
+        m_settings.nWindowHeight = rc.bottom - rc.top;
 
         GetClientRect(hwnd, &ClientRect);
         SIZE sizClient = SizeFromRectDx(&ClientRect);
@@ -3964,7 +3999,10 @@ public:
 
         TV_RefreshInfo(m_hTreeView, Entries);
         DoSetFile(hwnd, Path);
-        CheckResourceH(hwnd, Path);
+
+        m_szResourceH[0] = 0;
+        if (m_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, Path);
 
         return TRUE;
     }
@@ -4227,7 +4265,19 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nBmpViewWidth = BV_WIDTH;
     m_settings.nBinEditHeight = BE_HEIGHT;
     m_settings.bGuiByDblClick = TRUE;
+    m_settings.bResumeWindowPos = TRUE;
+    m_settings.bAutoLoadNearbyResH = TRUE;
+    m_settings.bAutoShowIDList = TRUE;
+    m_settings.nComboHeight = 300;
     m_settings.vecRecentlyUsed.clear();
+    m_settings.nWindowLeft = CW_USEDEFAULT;
+    m_settings.nWindowTop = CW_USEDEFAULT;
+    m_settings.nWindowWidth = 760;
+    m_settings.nWindowHeight = 480;
+    m_settings.nIDListLeft = CW_USEDEFAULT;
+    m_settings.nIDListTop = CW_USEDEFAULT;
+    m_settings.nIDListWidth = 366;
+    m_settings.nIDListHeight = 490;
 
     ConstantsDB::TableType table1, table2;
     table1 = m_ConstantsDB.GetTable(L"RESOURCE.ID.TYPE");
@@ -4279,14 +4329,16 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
-    BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
-    keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHide);
+    BOOL bHideID = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+    keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHideID);
     {
         ConstantsDB::TableType& table = m_ConstantsDB.m_map[L"HIDE.ID"];
         table.clear();
-        ConstantsDB::EntryType entry(L"HIDE.ID", bHide);
+        ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
         table.push_back(entry);
+
     }
+    m_settings.bHideID = bHideID;
 
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
@@ -4295,6 +4347,18 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)m_settings.nBmpViewWidth);
     keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)m_settings.nBinEditHeight);
     keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)m_settings.bGuiByDblClick);
+    keyRisoh.QueryDword(TEXT("bResumeWindowPos"), (DWORD&)m_settings.bResumeWindowPos);
+    keyRisoh.QueryDword(TEXT("bAutoLoadNearbyResH"), (DWORD&)m_settings.bAutoLoadNearbyResH);
+    keyRisoh.QueryDword(TEXT("bAutoShowIDList"), (DWORD&)m_settings.bAutoShowIDList);
+    keyRisoh.QueryDword(TEXT("nComboHeight"), (DWORD&)m_settings.nComboHeight);
+    keyRisoh.QueryDword(TEXT("nWindowLeft"), (DWORD&)m_settings.nWindowLeft);
+    keyRisoh.QueryDword(TEXT("nWindowTop"), (DWORD&)m_settings.nWindowTop);
+    keyRisoh.QueryDword(TEXT("nWindowWidth"), (DWORD&)m_settings.nWindowWidth);
+    keyRisoh.QueryDword(TEXT("nWindowHeight"), (DWORD&)m_settings.nWindowHeight);
+    keyRisoh.QueryDword(TEXT("nIDListLeft"), (DWORD&)m_settings.nIDListLeft);
+    keyRisoh.QueryDword(TEXT("nIDListTop"), (DWORD&)m_settings.nIDListTop);
+    keyRisoh.QueryDword(TEXT("nIDListWidth"), (DWORD&)m_settings.nIDListWidth);
+    keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)m_settings.nIDListHeight);
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
@@ -4342,8 +4406,9 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (m_splitter1.GetPaneCount() >= 1)
         m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
-    BOOL bHide = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
-    keyRisoh.SetDword(TEXT("HIDE.ID"), bHide);
+    BOOL bHideID = (BOOL)m_ConstantsDB.GetValue(L"HIDE.ID", L"HIDE.ID");
+    m_settings.bHideID = bHideID;
+    keyRisoh.SetDword(TEXT("HIDE.ID"), m_settings.bHideID);
     keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
     keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);
@@ -4351,6 +4416,18 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("BmpViewWidth"), m_settings.nBmpViewWidth);
     keyRisoh.SetDword(TEXT("BinEditHeight"), m_settings.nBinEditHeight);
     keyRisoh.SetDword(TEXT("bGuiByDblClick"), m_settings.bGuiByDblClick);
+    keyRisoh.SetDword(TEXT("bResumeWindowPos"), m_settings.bResumeWindowPos);
+    keyRisoh.SetDword(TEXT("bAutoLoadNearbyResH"), m_settings.bAutoLoadNearbyResH);
+    keyRisoh.SetDword(TEXT("bAutoShowIDList"), m_settings.bAutoShowIDList);
+    keyRisoh.SetDword(TEXT("nComboHeight"), m_settings.nComboHeight);
+    keyRisoh.SetDword(TEXT("nWindowLeft"), m_settings.nWindowLeft);
+    keyRisoh.SetDword(TEXT("nWindowTop"), m_settings.nWindowTop);
+    keyRisoh.SetDword(TEXT("nWindowWidth"), m_settings.nWindowWidth);
+    keyRisoh.SetDword(TEXT("nWindowHeight"), m_settings.nWindowHeight);
+    keyRisoh.SetDword(TEXT("nIDListLeft"), m_settings.nIDListLeft);
+    keyRisoh.SetDword(TEXT("nIDListTop"), m_settings.nIDListTop);
+    keyRisoh.SetDword(TEXT("nIDListWidth"), m_settings.nIDListWidth);
+    keyRisoh.SetDword(TEXT("nIDListHeight"), m_settings.nIDListHeight);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)

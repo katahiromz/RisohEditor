@@ -87,7 +87,20 @@ struct RisohSettings
     INT         nBmpViewWidth;
     INT         nBinEditHeight;
     BOOL        bGuiByDblClick;
+    BOOL        bResumeWindowPos;
+    BOOL        bAutoLoadNearbyResH;
+    BOOL        bAutoShowIDList;
+    BOOL        bHideID;
+    INT         nComboHeight;
     mru_type    vecRecentlyUsed;
+    INT         nWindowLeft;
+    INT         nWindowTop;
+    INT         nWindowWidth;
+    INT         nWindowHeight;
+    INT         nIDListLeft;
+    INT         nIDListTop;
+    INT         nIDListWidth;
+    INT         nIDListHeight;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
 

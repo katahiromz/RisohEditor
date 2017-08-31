@@ -1,6 +1,7 @@
 #ifndef MZC4_MIDLISTDLG_HPP_
 #define MZC4_MIDLISTDLG_HPP_
 
+#include "RisohEditor.hpp"
 #include "MWindowBase.hpp"
 #include "MTextToText.hpp"
 #include "id_string.hpp"
@@ -11,8 +12,14 @@ class MIDListDlg : public MDialogBase
 public:
     typedef std::map<MString, MString>      assoc_map_type;
     typedef std::map<MStringA, MStringA>    id_map_type;
+    RisohSettings& m_settings;
     const assoc_map_type *m_assoc_map;
     const id_map_type *m_id_map;
+
+    MIDListDlg(RisohSettings& settings)
+        : MDialogBase(IDD_IDLIST), m_settings(settings), m_assoc_map(NULL), m_id_map(NULL)
+    {
+    }
 
     MString GetAssoc(const assoc_map_type& assoc_map, const MString& name)
     {
@@ -121,10 +128,6 @@ public:
         ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
     }
 
-    MIDListDlg() : MDialogBase(IDD_IDLIST)
-    {
-    }
-
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         m_hLst1 = GetDlgItem(hwnd, lst1);
@@ -154,6 +157,20 @@ public:
         column.iSubItem = 2;
         ListView_InsertColumn(m_hLst1, 2, &column);
 
+        if (m_settings.bResumeWindowPos)
+        {
+            if (m_settings.nIDListLeft != CW_USEDEFAULT)
+            {
+                POINT pt = { m_settings.nIDListLeft, m_settings.nIDListTop };
+                SetWindowPosDx(hwnd, &pt);
+            }
+            if (m_settings.nIDListWidth != CW_USEDEFAULT)
+            {
+                SIZE siz = { m_settings.nIDListWidth, m_settings.nIDListHeight };
+                SetWindowPosDx(hwnd, NULL, &siz);
+            }
+        }
+
         return TRUE;
     }
 
@@ -174,14 +191,28 @@ public:
         {
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        HANDLE_MSG(hwnd, WM_MOVE, OnMove);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         default:
             return DefaultProcDx();
         }
     }
 
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+        m_settings.nIDListLeft = rc.left;
+        m_settings.nIDListTop = rc.top;
+    }
+
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+        m_settings.nIDListWidth = rc.right - rc.left;
+        m_settings.nIDListHeight = rc.bottom - rc.top;
+
         MoveWindow(m_hLst1, 0, 0, cx, cy, TRUE);
     }
 
