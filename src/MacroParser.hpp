@@ -400,6 +400,10 @@ namespace MacroParser
         Parser(TokenStream& stream) : m_stream(stream), m_ast(NULL)
         {
         }
+        ~Parser()
+        {
+            delete m_ast;
+        }
 
         BaseAst *ast() const
         {
