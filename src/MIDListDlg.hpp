@@ -6,6 +6,8 @@
 #include "MTextToText.hpp"
 #include "id_string.hpp"
 #include "resource.h"
+#include "MAddResIDDlg.hpp"
+#include "MModifyResIDDlg.hpp"
 
 class MIDListDlg : public MDialogBase
 {
@@ -13,11 +15,13 @@ public:
     typedef std::map<MString, MString>      assoc_map_type;
     typedef std::map<MStringA, MStringA>    id_map_type;
     RisohSettings& m_settings;
+    ConstantsDB& m_db;
     assoc_map_type *m_assoc_map;
     id_map_type *m_id_map;
 
-    MIDListDlg(RisohSettings& settings)
-        : MDialogBase(IDD_IDLIST), m_settings(settings), m_assoc_map(NULL), m_id_map(NULL)
+    MIDListDlg(ConstantsDB& db, RisohSettings& settings)
+        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings),
+          m_assoc_map(NULL), m_id_map(NULL)
     {
     }
 
@@ -178,16 +182,36 @@ public:
     {
         INT iItem;
         TCHAR szText[64];
+        MString str1, str2;
         switch (id)
         {
         case IDCANCEL:
             ::DestroyWindow(hwnd);
             break;
         case CMDID_ADDRESID:
-            // TODO:
+            {
+                MAddResIDDlg dialog(m_db);
+                dialog.DialogBoxDx(hwnd);
+                // TODO:
+            }
             break;
         case CMDID_MODIFYRESID:
-            // TODO:
+            iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+            str1 = szText;
+            ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+            str2 = szText;
+            {
+                MModifyResIDDlg dialog(m_db, str1, str2);
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    m_id_map->erase(MTextToAnsi(str1).c_str());
+                    MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
+                    MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
+                    m_id_map->insert(std::make_pair(stra1, stra2));
+                    SetItems(*m_assoc_map, *m_id_map);
+                }
+            }
             break;
         case CMDID_DELETERESID:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);

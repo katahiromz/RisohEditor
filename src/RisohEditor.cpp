@@ -1243,7 +1243,7 @@ public:
         m_hToolBar(NULL),
         m_hStatusBar(NULL),
         m_rad_window(m_ConstantsDB),
-        m_id_list_dlg(m_settings)
+        m_id_list_dlg(m_ConstantsDB, m_settings)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
