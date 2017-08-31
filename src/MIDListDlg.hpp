@@ -210,7 +210,7 @@ public:
             break;
         case CMDID_ADDRESID:
             {
-                MAddResIDDlg dialog(m_db);
+                MAddResIDDlg dialog(m_settings, m_db);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
@@ -277,9 +277,6 @@ public:
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
                 MStringA astr2 = MTextToAnsi(szText).c_str();
 
-                m_settings.added_ids.erase(astr1.c_str());
-                m_settings.removed_ids.insert(std::make_pair(astr1.c_str(), astr2.c_str()));
-
                 ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
                 ConstantsDB::TableType::iterator it, end = table.end();
                 for (it = table.begin(); it != end; ++it)
@@ -291,7 +288,11 @@ public:
                     }
                 }
 
-                m_settings.id_map.erase(astr1.c_str());
+                m_settings.id_map.erase(astr1);
+                if (!m_settings.added_ids.erase(astr1))
+                {
+                    m_settings.removed_ids.insert(std::make_pair(astr1, astr2));
+                }
                 SetItems();
             }
             break;

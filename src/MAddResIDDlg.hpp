@@ -12,11 +12,13 @@
 class MAddResIDDlg : public MDialogBase
 {
 public:
+    RisohSettings& m_settings;
     ConstantsDB& m_db;
     MString m_str1;
     MString m_str2;
 
-    MAddResIDDlg(ConstantsDB& db) : MDialogBase(IDD_ADDRESID), m_db(db)
+    MAddResIDDlg(RisohSettings& settings, ConstantsDB& db)
+        : MDialogBase(IDD_ADDRESID), m_settings(settings), m_db(db)
     {
     }
 
@@ -62,6 +64,16 @@ public:
             return;
         }
         m_str2 = str3;
+
+        MStringA str1a = MTextToAnsi(str1).c_str();
+        if (m_settings.id_map.find(str1a) != m_settings.id_map.end())
+        {
+            HWND hEdt1 = GetDlgItem(hwnd, edt1);
+            Edit_SetSel(hEdt1, 0, -1);
+            SetFocus(hEdt1);
+            ErrorBoxDx(IDS_ALREADYEXISTS);
+            return;
+        }
 
         EndDialog(IDOK);
     }
