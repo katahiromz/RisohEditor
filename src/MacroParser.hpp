@@ -1067,7 +1067,6 @@ namespace MacroParser
     inline BaseAst* Parser::visit_primary_expression()
     {
         BaseAst *ast;
-        size_t i;
         switch (type())
         {
         case TOK_IDENT:

@@ -382,13 +382,13 @@ struct DialogItem
         }
 
         ret += L", ";
-        ret += mstr_dec(m_pt.x);
+        ret += mstr_dec((WORD)m_pt.x);
         ret += L", ";
-        ret += mstr_dec(m_pt.y);
+        ret += mstr_dec((WORD)m_pt.y);
         ret += L", ";
-        ret += mstr_dec(m_siz.cx);
+        ret += mstr_dec((WORD)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec(m_siz.cy);
+        ret += mstr_dec((WORD)m_siz.cy);
         if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
@@ -419,13 +419,13 @@ struct DialogItem
         }
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
-        ret += mstr_dec(m_pt.x);
+        ret += mstr_dec((WORD)m_pt.x);
         ret += L", ";
-        ret += mstr_dec(m_pt.y);
+        ret += mstr_dec((WORD)m_pt.y);
         ret += L", ";
-        ret += mstr_dec(m_siz.cx);
+        ret += mstr_dec((WORD)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec(m_siz.cy);
+        ret += mstr_dec((WORD)m_siz.cy);
         if (m_Style != DefStyle || m_ExStyle)
         {
             ret += L", ";
@@ -711,13 +711,13 @@ struct DialogRes
             ret += L" DIALOG ";
         }
 
-        ret += mstr_dec(m_pt.x);
+        ret += mstr_dec((WORD)m_pt.x);
         ret += L", ";
-        ret += mstr_dec(m_pt.y);
+        ret += mstr_dec((WORD)m_pt.y);
         ret += L", ";
-        ret += mstr_dec(m_siz.cx);
+        ret += mstr_dec((WORD)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec(m_siz.cy);
+        ret += mstr_dec((WORD)m_siz.cy);
         ret += L"\r\n";
 
         if (!m_Title.empty())

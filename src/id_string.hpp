@@ -52,7 +52,7 @@ struct MIdOrString
         else if ((L'0' <= Str[0] && Str[0] <= L'9') ||
                  Str[0] == L'-' || Str[0] == L'+')
         {
-            m_ID = wcstol(Str, NULL, 0);
+            m_ID = (WORD)wcstol(Str, NULL, 0);
         }
         else
         {
@@ -141,13 +141,13 @@ struct MIdOrString
         {
             if (m_ID != 0)
                 return m_ID < id_or_str.m_ID;
-            return -1;
+            return true;
         }
         else
         {
             if (m_ID == 0)
                 return m_Str < id_or_str.m_Str;
-            return 1;
+            return false;
         }
     }
     bool operator>(const MIdOrString& id_or_str) const
@@ -156,13 +156,13 @@ struct MIdOrString
         {
             if (m_ID != 0)
                 return m_ID > id_or_str.m_ID;
-            return 1;
+            return false;
         }
         else
         {
             if (m_ID == 0)
                 return m_Str > id_or_str.m_Str;
-            return -1;
+            return true;
         }
     }
 

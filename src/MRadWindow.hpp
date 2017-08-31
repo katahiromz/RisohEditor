@@ -27,6 +27,7 @@
 #define MYWM_DELETESEL          (WM_USER + 104)
 #define MYWM_MOVESIZEREPORT     (WM_USER + 105)
 #define MYWM_CLEARSTATUS        (WM_USER + 106)
+#define MYWM_COMPILECHECK       (WM_USER + 107)
 
 class MRadCtrl : public MWindowBase
 {
@@ -866,20 +867,33 @@ public:
     {
         switch (uMsg)
         {
-            HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
-            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
-            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
-            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
-            HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-            HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
-            HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
-            HANDLE_MESSAGE(hwnd, MYWM_DLGSIZE, OnDlgSize);
-            HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
-            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
-            HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
+            DO_MSG(WM_CREATE, OnCreate);
+            DO_MSG(WM_SIZE, OnSize);
+            DO_MSG(WM_DESTROY, OnDestroy);
+            DO_MSG(WM_CONTEXTMENU, OnContextMenu);
+            DO_MSG(WM_KEYDOWN, OnKey);
+            DO_MSG(WM_COMMAND, OnCommand);
+            DO_MESSAGE(MYWM_CTRLMOVE, OnCtrlMove);
+            DO_MESSAGE(MYWM_CTRLSIZE, OnCtrlSize);
+            DO_MESSAGE(MYWM_DLGSIZE, OnDlgSize);
+            DO_MESSAGE(MYWM_DELETESEL, OnDeleteSel);
+            DO_MSG(WM_INITMENUPOPUP, OnInitMenuPopup);
+            DO_MESSAGE(MYWM_SELCHANGE, OnSelChange);
+            DO_MSG(WM_ACTIVATE, OnActivate);
         }
-        return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+        return DefaultProcDx();
+    }
+
+    void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+    {
+        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
+        {
+            HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+            if (!SendMessage(hwndOwner, MYWM_COMPILECHECK, (WPARAM)hwnd, 0))
+            {
+                DestroyWindow(hwnd);
+            }
+        }
     }
 
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)

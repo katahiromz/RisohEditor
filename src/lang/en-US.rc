@@ -237,6 +237,7 @@ STRINGTABLE
     IDS_ADDNEXTIDS, "Please add the following IDs to ""resource.h"":\r\n\r\n"
     IDS_DELETENEXTIDS, "Please delete the following IDs from ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE, "There is no change of Resource IDs."
+    IDS_DLGFAIL, "Oops, I failed to create a RAD dialog."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

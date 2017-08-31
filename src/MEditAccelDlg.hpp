@@ -419,10 +419,10 @@ public:
                 }
                 else
                 {
-                    entry.wAscii = wcstol(a_entry.sz0, NULL, 0);
+                    entry.wAscii = (WORD)wcstol(a_entry.sz0, NULL, 0);
                 }
             }
-            entry.wId = m_db.GetResIDValue(a_entry.sz2);
+            entry.wId = (WORD)m_db.GetResIDValue(a_entry.sz2);
 
             m_accel_res.Entries().push_back(entry);
         }

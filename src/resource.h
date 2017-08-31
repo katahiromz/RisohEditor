@@ -208,5 +208,6 @@
 #define IDS_ADDNEXTIDS      98
 #define IDS_DELETENEXTIDS   99
 #define IDS_NOCHANGE        100
+#define IDS_DLGFAIL         101
 
 #endif  // ndef RESOURCE_H_

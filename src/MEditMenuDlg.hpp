@@ -729,7 +729,7 @@ public:
                 MenuRes::MenuItem item;
 
                 SetMenuFlags(item.fItemFlags, entry.Flags);
-                item.wMenuID = m_db.GetResIDValue(entry.CommandID);
+                item.wMenuID = (WORD)m_db.GetResIDValue(entry.CommandID);
                 item.wDepth = entry.wDepth;
                 item.text = entry.Caption;
 

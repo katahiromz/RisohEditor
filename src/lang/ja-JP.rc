@@ -237,6 +237,7 @@ STRINGTABLE
     IDS_ADDNEXTIDS, "次のリソースIDを""resource.h""に追加して下さい。:\r\n\r\n"
     IDS_DELETENEXTIDS, "次のリソースIDを""resource.h""から削除して下さい。:\r\n\r\n"
     IDS_NOCHANGE, "リソースIDの変更点はありません。"
+    IDS_DLGFAIL, "RADダイアログを作成するのに失敗しました。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
