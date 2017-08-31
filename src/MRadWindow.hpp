@@ -891,9 +891,10 @@ public:
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             if (!SendMessage(hwndOwner, MYWM_COMPILECHECK, (WPARAM)hwnd, 0))
             {
-                DestroyWindow(hwnd);
+                return;
             }
         }
+        FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, DefWindowProc);
     }
 
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)

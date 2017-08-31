@@ -1400,8 +1400,11 @@ public:
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
-        HWND hRadWindow = (HWND)wParam;
-        return CompileIfNecessary(hRadWindow);
+        if (!CompileIfNecessary(hwnd))
+        {
+            return FALSE;
+        }
+        return FALSE;
     }
 
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -2155,12 +2158,18 @@ public:
 
     void OnCompile(HWND hwnd)
     {
+        LPARAM lParam = TV_GetParam(m_hTreeView);
         if (!Edit_GetModify(m_hSrcEdit))
         {
-            LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
             return;
         }
+
+        WORD i = LOWORD(lParam);
+        if (i >= m_Entries.size())
+            return;
+
+        ResEntry& entry = m_Entries[i];
 
         ChangeStatusText(IDS_COMPILING);
 
@@ -2170,14 +2179,10 @@ public:
         ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
         Edit_SetModify(m_hSrcEdit, FALSE);
-        ResEntry m_entry;
-        if (DoCompileParts(hwnd, WideText, m_entry))
+        if (DoCompileParts(hwnd, WideText))
         {
             TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, m_entry);
-
-            LPARAM lParam = TV_GetParam(m_hTreeView);
-            SelectTV(hwnd, lParam, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, entry);
         }
     }
 
@@ -2220,6 +2225,7 @@ public:
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, Entry);
             ChangeStatusText(IDS_READY);
         }
         else if (Entry.type == RT_MENU)
@@ -2238,6 +2244,7 @@ public:
                 }
             }
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, Entry);
             ChangeStatusText(IDS_READY);
         }
         else if (Entry.type == RT_DIALOG)
@@ -2291,11 +2298,10 @@ public:
                 std::wstring WideText = str_res.Dump(m_db);
                 ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
-                ResEntry m_entry;
-                if (DoCompileParts(hwnd, WideText, m_entry))
+                if (DoCompileParts(hwnd, WideText))
                 {
-                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                    TV_SelectEntry(m_hTreeView, m_Entries, m_entry);
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, Entry);
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
@@ -3820,7 +3826,7 @@ public:
         }
     }
 
-    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText, ResEntry& entry_copy)
+    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
         WORD i = LOWORD(lParam);
@@ -3849,7 +3855,6 @@ public:
                     entry.data.assign(TextAnsi.begin(), TextAnsi.end());
                 }
                 SelectTV(hwnd, lParam, FALSE);
-                entry_copy = entry;
 
                 return TRUE;    // success
             }
@@ -3997,23 +4002,36 @@ public:
                     WideText.resize(cchText);
                     ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
-                    ResEntry entry_copy;
-                    if (!DoCompileParts(hwnd, WideText, entry_copy))
-                        return FALSE;
-
-                    if (IsWindow(m_rad_window))
+                    if (!DoCompileParts(hwnd, WideText))
                     {
-                        MByteStreamEx stream(entry_copy.data);
-                        DialogRes& dialog_res = m_rad_window.m_dialog_res;
-                        if (dialog_res.LoadFromStream(stream))
-                        {
-                            std::wstring str = dialog_res.Dump(entry_copy.name, m_db, m_settings.bAlwaysControl);
-                            ::SetWindowTextW(m_hSrcEdit, str.c_str());
-                        }
-                        m_rad_window.ReCreateRadDialog(m_rad_window);
+                        return FALSE;
                     }
 
-                    TV_SelectEntry(m_hTreeView, m_Entries, entry_copy);
+                    LPARAM lParam = TV_GetParam(m_hTreeView);
+                    WORD i = LOWORD(lParam);
+                    if (m_Entries.size() <= i)
+                        return FALSE;
+                    ResEntry& entry = m_Entries[i];
+
+                    if (HIWORD(lParam) == I_LANG && IsWindow(m_rad_window) &&
+                        entry.type == RT_DIALOG)
+                    {
+                        DestroyWindow(m_rad_window);
+                        m_rad_window.Detach();
+
+                        MByteStreamEx stream(entry.data);
+                        m_rad_window.m_dialog_res.LoadFromStream(stream);
+
+                        DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+                        if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
+                                                        style))
+                        {
+                            CenterWindowDx(m_rad_window);
+                            ShowWindow(m_rad_window, SW_SHOWNORMAL);
+                            UpdateWindow(m_rad_window);
+                        }
+                    }
+
                     Edit_SetModify(m_hSrcEdit, FALSE);
                 }
                 break;

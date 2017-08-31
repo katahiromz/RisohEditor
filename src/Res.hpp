@@ -39,8 +39,8 @@ public:
 
     WORD            lang;
     BOOL            updated;
-    MIdOrString    type;
-    MIdOrString    name;
+    MIdOrString     type;
+    MIdOrString     name;
     DataType        data;
 
     ResEntry() : lang(0xFFFF), updated(FALSE)
