@@ -114,17 +114,22 @@ public:
         return TRUE;
     }
 
+    void OnOK(HWND hwnd)
+    {
+        if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
+        EndDialog(IDOK);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case IDOK:
-            if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
-            {
-                ErrorBoxDx(IDS_NOSUCHID);
-                return;
-            }
-            EndDialog(IDOK);
+            OnOK(hwnd);
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
@@ -233,8 +238,7 @@ public:
         STRING_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
         MAddStrDlg dialog(m_db, s_entry, m_str_res);
-        INT nID = dialog.DialogBoxDx(hwnd);
-        if (IDOK != nID)
+        if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
         }
@@ -314,8 +318,7 @@ public:
         GetEntry(hwnd, hCtl1, iItem, s_entry);
 
         MModifyStrDlg dialog(m_db, s_entry, m_str_res);
-        INT nID = dialog.DialogBoxDx(hwnd);
-        if (IDOK == nID)
+        if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             ListView_SetItemText(hCtl1, iItem, 0, s_entry.StringID);
 
@@ -342,7 +345,7 @@ public:
         {
             GetEntry(hwnd, hCtl1, iItem, s_entry);
 
-            WORD wID = (WORD)wcstol(s_entry.StringID, NULL, 0);
+            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
             std::wstring str = s_entry.StringValue;
 
             m_str_res.map().insert(std::make_pair(wID, str));
