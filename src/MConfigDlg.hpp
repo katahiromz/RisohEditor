@@ -38,10 +38,10 @@ public:
         if (!bTranslated)
         {
             HWND hEdt1 = GetDlgItem(hwnd, edt1);
-            Edit_SetSel(hEdt, 0, -1);
+            Edit_SetSel(hEdt1, 0, -1);
             SetFocus(hEdt1);
             ErrorBoxDx(IDS_ENTERINT);
-            return 0;
+            return;
         }
         m_settings.nComboHeight = nHeight;
 
