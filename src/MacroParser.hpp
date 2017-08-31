@@ -10,6 +10,7 @@
 #include <vector>
 #include <cstdio>
 #include <cassert>
+#include <cstring>
 
 /////////////////////////////////////////////////////////////////////////
 // the BNF (subset of C language:
