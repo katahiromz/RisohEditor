@@ -16,20 +16,17 @@ public:
     typedef std::map<MStringA, MStringA>    id_map_type;
     RisohSettings& m_settings;
     ConstantsDB& m_db;
-    assoc_map_type *m_assoc_map;
-    id_map_type *m_id_map;
 
     MIDListDlg(ConstantsDB& db, RisohSettings& settings)
-        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings),
-          m_assoc_map(NULL), m_id_map(NULL)
+        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings)
     {
     }
 
-    MString GetAssoc(const assoc_map_type& assoc_map, const MString& name)
+    MString GetAssoc(const MString& name)
     {
         MString str;
-        assoc_map_type::const_iterator it, end = assoc_map.end();
-        for (it = assoc_map.begin(); it != end; ++it)
+        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
+        for (it = m_settings.assoc_map.begin(); it != end; ++it)
         {
             if (name.find(it->second) == 0)
             {
@@ -86,20 +83,18 @@ public:
         return 0;
     }
 
-    void SetItems(assoc_map_type& assoc_map, id_map_type& id_map)
+    void SetItems()
     {
-        m_assoc_map = &assoc_map;
-        m_id_map = &id_map;
         ListView_DeleteAllItems(m_hLst1);
 
         INT iItem = 0;
-        id_map_type::const_iterator it, end = id_map.end();
-        for (it = id_map.begin(); it != end; ++it)
+        id_map_type::const_iterator it, end = m_settings.id_map.end();
+        for (it = m_settings.id_map.begin(); it != end; ++it)
         {
             LV_ITEM item;
 
             MString text1 = MAnsiToText(it->first.c_str()).c_str();
-            MString text2 = GetAssoc(assoc_map, text1);
+            MString text2 = GetAssoc(text1);
             MString text3 = MAnsiToText(it->second.c_str()).c_str();
             if (text2.empty())
                 continue;
@@ -200,8 +195,8 @@ public:
 
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
-                    m_id_map->insert(std::make_pair(stra1, stra2));
-                    SetItems(*m_assoc_map, *m_id_map);
+                    m_settings.id_map.insert(std::make_pair(stra1, stra2));
+                    SetItems();
                 }
             }
             break;
@@ -229,11 +224,11 @@ public:
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
-                    m_id_map->erase(MTextToAnsi(str1).c_str());
+                    m_settings.id_map.erase(MTextToAnsi(str1).c_str());
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
-                    m_id_map->insert(std::make_pair(stra1, stra2));
-                    SetItems(*m_assoc_map, *m_id_map);
+                    m_settings.id_map.insert(std::make_pair(stra1, stra2));
+                    SetItems();
                 }
             }
             break;
@@ -253,8 +248,8 @@ public:
                     }
                 }
 
-                m_id_map->erase(MTextToAnsi(szText).c_str());
-                SetItems(*m_assoc_map, *m_id_map);
+                m_settings.id_map.erase(MTextToAnsi(szText).c_str());
+                SetItems();
             }
             break;
         }

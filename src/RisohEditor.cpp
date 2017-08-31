@@ -2525,7 +2525,7 @@ public:
         if (!IsWindow(m_id_list_dlg))
             return;
 
-        m_id_list_dlg.SetItems(m_settings.assoc_map, m_settings.id_map);
+        m_id_list_dlg.SetItems();
     }
 
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE)
