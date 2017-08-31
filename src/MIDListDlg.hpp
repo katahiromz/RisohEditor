@@ -191,8 +191,13 @@ public:
         case CMDID_ADDRESID:
             {
                 MAddResIDDlg dialog(m_db);
-                dialog.DialogBoxDx(hwnd);
-                // TODO:
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
+                    MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
+                    m_id_map->insert(std::make_pair(stra1, stra2));
+                    SetItems(*m_assoc_map, *m_id_map);
+                }
             }
             break;
         case CMDID_MODIFYRESID:
