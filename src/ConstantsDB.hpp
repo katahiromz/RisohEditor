@@ -175,7 +175,7 @@ public:
             if (it->value == value)
                 return it->name;
         }
-        return 0;
+        return NameType();
     }
 
     ValueType GetValue(CategoryType category, NameType name) const
@@ -187,8 +187,7 @@ public:
             if (it->name == name)
                 return it->value;
         }
-        std::printf("%S: not found\n", name.c_str());
-        return 0;
+        return (ValueType)wcstol(name.c_str(), NULL, 0);
     }
 
     template <typename T_STR_CONTAINER>

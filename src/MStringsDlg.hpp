@@ -35,17 +35,42 @@ public:
         return TRUE;
     }
 
+    void OnOK(HWND hwnd)
+    {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+        {
+            Edit_SetSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
+        INT value;
+        if (m_db.HasResID(m_entry.StringID))
+        {
+            value = m_db.GetResIDValue(m_entry.StringID);
+        }
+        else
+        {
+            value = wcstol(m_entry.StringID, NULL, 0);
+        }
+        if (m_str_res.map().find((WORD)value) != m_str_res.map().end())
+        {
+            Edit_SetSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_ALREADYEXISTS);
+            return;
+        }
+
+        EndDialog(IDOK);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case IDOK:
-            if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
-            {
-                ErrorBoxDx(IDS_NOSUCHID);
-                return;
-            }
-            EndDialog(IDOK);
+            OnOK(hwnd);
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
