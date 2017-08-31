@@ -226,8 +226,9 @@ STRINGTABLE
     IDS_VALUE, "値"
     IDS_NOSUCHID, "そのようなIDは見つかりません。"
     IDS_IMAGEINFO, "幅 %u、高さ %u、ビットの深さ %u\r\n"
-    IDS_ENTERINT, "整数を入力して下さい。"
-    IDS_ENTERTEXT, "テキストを入力して下さい。"
+    IDS_ENTERINT, "正当な整数を入力して下さい。"
+    IDS_ENTERTEXT, "正当なテキストを入力して下さい。"
+    IDS_ENTERID, "正当なIDを入力して下さい。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
