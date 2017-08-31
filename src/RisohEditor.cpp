@@ -2502,6 +2502,7 @@ public:
             m_settings.removed_ids.empty())
         {
             str += LoadStringDx(IDS_NOCHANGE);
+            str += TEXT("\r\n");
         }
 
         if (!m_settings.added_ids.empty())
@@ -2517,7 +2518,7 @@ public:
                 str += MAnsiToText(it->second).c_str();
                 str += TEXT("\r\n");
             }
-            str += TEXT("\r\n\r\n");
+            str += TEXT("\r\n");
         }
 
         if (!m_settings.removed_ids.empty())
@@ -2533,6 +2534,7 @@ public:
                 str += MAnsiToText(it->second).c_str();
                 str += TEXT("\r\n");
             }
+            str += TEXT("\r\n");
         }
 
         MAdviceResHDlg dialog(m_settings, str);
