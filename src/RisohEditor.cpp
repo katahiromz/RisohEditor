@@ -2761,7 +2761,11 @@ public:
         if (!CompileIfNecessary(hwnd))
             return;
 
-        WCHAR szFile[MAX_PATH] = TEXT("resource.h");
+        WCHAR szFile[MAX_PATH];
+        if (m_szResourceH[0])
+            lstrcpynW(szFile, m_szResourceH, _countof(szFile));
+        else
+            lstrcpyW(szFile, L"resource.h");
 
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
