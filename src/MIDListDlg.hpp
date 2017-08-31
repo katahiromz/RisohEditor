@@ -193,6 +193,11 @@ public:
                 MAddResIDDlg dialog(m_db);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
+                    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                    INT value = wcstol(dialog.m_str2.c_str(), NULL, 0);
+                    ConstantsDB::EntryType entry(dialog.m_str1, value);
+                    table.push_back(entry);
+
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
                     m_id_map->insert(std::make_pair(stra1, stra2));
@@ -210,6 +215,20 @@ public:
                 MModifyResIDDlg dialog(m_db, str1, str2);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
+                    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                    ConstantsDB::TableType::iterator it, end = table.end();
+                    for (it = table.begin(); it != end; ++it)
+                    {
+                        if (it->name == str1)
+                        {
+                            table.erase(it);
+                            break;
+                        }
+                    }
+                    INT value = wcstol(dialog.m_str2.c_str(), NULL, 0);
+                    ConstantsDB::EntryType entry(dialog.m_str1, value);
+                    table.push_back(entry);
+
                     m_id_map->erase(MTextToAnsi(str1).c_str());
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
@@ -219,10 +238,24 @@ public:
             }
             break;
         case CMDID_DELETERESID:
-            iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
-            m_id_map->erase(MTextToAnsi(szText).c_str());
-            SetItems(*m_assoc_map, *m_id_map);
+            {
+                iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+
+                ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                ConstantsDB::TableType::iterator it, end = table.end();
+                for (it = table.begin(); it != end; ++it)
+                {
+                    if (it->name == szText)
+                    {
+                        table.erase(it);
+                        break;
+                    }
+                }
+
+                m_id_map->erase(MTextToAnsi(szText).c_str());
+                SetItems(*m_assoc_map, *m_id_map);
+            }
             break;
         }
     }
@@ -237,6 +270,7 @@ public:
         HANDLE_MSG(hwnd, WM_MOVE, OnMove);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         default:
             return DefaultProcDx();
         }
@@ -272,6 +306,19 @@ public:
                 xPos, yPos, 0, hwnd, NULL);
             PostMessage(hwnd, WM_NULL, 0, 0);
         }
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+    {
+        if (idFrom == lst1)
+        {
+            if (pnmhdr->code == NM_DBLCLK || pnmhdr->code == NM_RETURN)
+            {
+                PostMessageDx(WM_COMMAND, CMDID_MODIFYRESID);
+                return 1;
+            }
+        }
+        return 0;
     }
 
 protected:

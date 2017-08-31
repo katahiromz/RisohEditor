@@ -143,10 +143,15 @@ public:
 
     LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
     {
-        if (idFrom == lst1 && pnmhdr->code == NM_DBLCLK)
+        if (pnmhdr->idFrom == lst1)
         {
-            OnPsh1(hwnd);
+            if (pnmhdr->code == NM_DBLCLK)
+            {
+                OnPsh1(hwnd);
+                return 1;
+            }
         }
+        return 0;
     }
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
@@ -170,8 +175,8 @@ public:
         {
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         default:
             return DefaultProcDx();
         }
