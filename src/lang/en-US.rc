@@ -138,8 +138,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 0.5 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 0.5 by Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor 0.6 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 0.6 by Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Extract Resource"
     IDS_RESBINFILTER, "Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_CANNOTSAVE, "Unable to save."
@@ -165,7 +165,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Unable to replace bitmap."
     IDS_REPLACEBMP, "Replace Bitmap"
     IDS_ERRORCODE, "Error Code %d"
-    IDS_VERSIONINFO, "RisohEditor Version 0.5"
+    IDS_VERSIONINFO, "RisohEditor Version 0.6"
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."
