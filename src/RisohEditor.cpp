@@ -2227,7 +2227,7 @@ public:
             }
 
             ChangeStatusText(IDS_EDITINGBYGUI);
-            MStringsDlg dialog(m_ConstantsDB, str_res, m_Entries);
+            MStringsDlg dialog(m_ConstantsDB, str_res);
             INT nID = dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {

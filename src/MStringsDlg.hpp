@@ -22,10 +22,10 @@ class MAddStrDlg : public MDialogBase
 public:
     STRING_ENTRY& m_entry;
     ConstantsDB& m_db;
-    ResEntries& m_entries;
+    StringRes& m_str_res;
 
-    MAddStrDlg(ConstantsDB& db, STRING_ENTRY& entry, ResEntries& entries)
-        : MDialogBase(IDD_ADDSTR), m_entry(entry), m_db(db), m_entries(entries)
+    MAddStrDlg(ConstantsDB& db, STRING_ENTRY& entry, StringRes& str_res)
+        : MDialogBase(IDD_ADDSTR), m_entry(entry), m_db(db), m_str_res(str_res)
     {
     }
 
@@ -72,9 +72,10 @@ class MModifyStrDlg : public MDialogBase
 public:
     STRING_ENTRY& m_entry;
     ConstantsDB& m_db;
+    StringRes& m_str_res;
 
-    MModifyStrDlg(ConstantsDB& db, STRING_ENTRY& entry)
-        : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_db(db)
+    MModifyStrDlg(ConstantsDB& db, STRING_ENTRY& entry, StringRes& str_res)
+        : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_db(db), m_str_res(str_res)
     {
     }
 
@@ -125,11 +126,9 @@ class MStringsDlg : public MDialogBase
 public:
     StringRes& m_str_res;
     ConstantsDB& m_db;
-    ResEntries& m_entries;
 
-    MStringsDlg(ConstantsDB& db, StringRes& str_res, ResEntries& entries)
-        : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db),
-          m_entries(entries)
+    MStringsDlg(ConstantsDB& db, StringRes& str_res)
+        : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db)
     {
     }
 
@@ -208,7 +207,7 @@ public:
 
         STRING_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
-        MAddStrDlg dialog(m_db, s_entry, m_entries);
+        MAddStrDlg dialog(m_db, s_entry, m_str_res);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
@@ -289,7 +288,7 @@ public:
         STRING_ENTRY s_entry;
         GetEntry(hwnd, hCtl1, iItem, s_entry);
 
-        MModifyStrDlg dialog(m_db, s_entry);
+        MModifyStrDlg dialog(m_db, s_entry, m_str_res);
         INT nID = dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
