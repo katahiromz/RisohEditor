@@ -24,6 +24,7 @@ public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
+    ResEntry m_entry;
 
     MReplaceBinDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
         : MDialogBase(IDD_REPLACERES), m_Entries(Entries), m_Entry(Entry), m_db(db)
@@ -149,6 +150,9 @@ public:
         }
 
         Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), TRUE);
+
+        ResEntry entry(Type, Name, Lang);
+        m_entry = entry;
 
         EndDialog(IDOK);
     }

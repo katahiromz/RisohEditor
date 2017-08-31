@@ -20,6 +20,7 @@ public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
+    ResEntry m_entry;
 
     MReplaceBitmapDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry)
         : MDialogBase(IDD_REPLACEBMP), m_Entries(Entries), m_Entry(Entry),
@@ -47,7 +48,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type = RT_GROUP_ICON;
+        MIdOrString Type = RT_BITMAP;
 
         MIdOrString Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -69,6 +70,9 @@ public:
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;
         }
+
+        ResEntry entry(Type, Name, Lang);
+        m_entry = entry;
 
         EndDialog(IDOK);
     }

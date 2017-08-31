@@ -68,7 +68,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type = RT_GROUP_ICON;
+        MIdOrString Type = RT_BITMAP;
 
         MIdOrString Name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);

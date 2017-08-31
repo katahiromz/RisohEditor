@@ -1796,7 +1796,8 @@ public:
         MReplaceBinDlg dialog(m_Entries, m_Entries[i], m_ConstantsDB);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1886,7 +1887,8 @@ public:
         MAddIconDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1900,7 +1902,8 @@ public:
         MReplaceIconDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1914,7 +1917,8 @@ public:
         MReplaceCursorDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1948,7 +1952,8 @@ public:
         MAddBitmapDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1962,7 +1967,8 @@ public:
         MReplaceBitmapDlg dialog(m_ConstantsDB, m_Entries, m_Entries[i]);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -1971,7 +1977,8 @@ public:
         MAddCursorDlg dialog(m_ConstantsDB, m_Entries);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
         }
     }
 
@@ -2148,9 +2155,11 @@ public:
         ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
         Edit_SetModify(m_hSrcEdit, FALSE);
-        if (DoCompileParts(hwnd, WideText))
+        ResEntry m_entry;
+        if (DoCompileParts(hwnd, WideText, m_entry))
         {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, m_entry);
 
             LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
@@ -2264,9 +2273,11 @@ public:
                 std::wstring WideText = str_res.Dump(m_ConstantsDB);
                 ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
-                if (DoCompileParts(hwnd, WideText))
+                ResEntry m_entry;
+                if (DoCompileParts(hwnd, WideText, m_entry))
                 {
                     TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, m_entry);
                     SelectTV(hwnd, lParam, FALSE);
                 }
             }
@@ -2946,10 +2957,12 @@ public:
             {
                 MAddBitmapDlg dialog(m_ConstantsDB, m_Entries);
                 dialog.File = File;
-                dialog.DialogBoxDx(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-                ChangeStatusText(IDS_READY);
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
                 return;
             }
             else if (lstrcmpiW(pch, L".res") == 0)
@@ -3789,7 +3802,7 @@ public:
         }
     }
 
-    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText)
+    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText, ResEntry& m_entry)
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
         WORD i = LOWORD(lParam);
@@ -3797,6 +3810,7 @@ public:
             return FALSE;
 
         ResEntry& entry = m_Entries[i];
+        m_entry = entry;
 
         MStringA TextUtf8;
         TextUtf8 = MWideToUtf8(WideText);
@@ -3965,9 +3979,11 @@ public:
                     WideText.resize(cchText);
                     ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
-                    if (!DoCompileParts(hwnd, WideText))
+                    ResEntry m_entry;
+                    if (!DoCompileParts(hwnd, WideText, m_entry))
                         return FALSE;
 
+                    TV_SelectEntry(m_hTreeView, m_Entries, m_entry);
                     Edit_SetModify(m_hSrcEdit, FALSE);
                 }
                 break;

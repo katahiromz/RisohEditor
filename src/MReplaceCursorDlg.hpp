@@ -22,6 +22,7 @@ public:
     ResEntries& m_Entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
+    ResEntry m_entry;
 
     MReplaceCursorDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry) :
         MDialogBase(IDD_REPLACECUR), m_Entries(Entries), m_Entry(Entry),
@@ -95,6 +96,9 @@ public:
                 return;
             }
         }
+
+        ResEntry entry(Type, Name, Lang);
+        m_entry = entry;
 
         EndDialog(IDOK);
     }
