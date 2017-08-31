@@ -221,6 +221,10 @@ public:
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
                     m_settings.id_map.insert(std::make_pair(stra1, stra2));
+
+                    m_settings.added_ids.insert(std::make_pair(stra1, stra2));
+                    m_settings.removed_ids.erase(stra1);
+
                     SetItems();
                 }
             }
@@ -253,6 +257,10 @@ public:
                     MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
                     m_settings.id_map.insert(std::make_pair(stra1, stra2));
+
+                    m_settings.added_ids.insert(std::make_pair(stra1, stra2));
+                    m_settings.removed_ids.insert(std::make_pair(stra1, stra2));
+
                     SetItems();
                 }
             }
@@ -261,19 +269,26 @@ public:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+                MString str1 = szText;
+                MStringA astr1 = MTextToAnsi(szText).c_str();
+                ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+                MStringA astr2 = MTextToAnsi(szText).c_str();
+
+                m_settings.added_ids.erase(astr1.c_str());
+                m_settings.removed_ids.insert(std::make_pair(astr1.c_str(), astr2.c_str()));
 
                 ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
                 ConstantsDB::TableType::iterator it, end = table.end();
                 for (it = table.begin(); it != end; ++it)
                 {
-                    if (it->name == szText)
+                    if (it->name == str1)
                     {
                         table.erase(it);
                         break;
                     }
                 }
 
-                m_settings.id_map.erase(MTextToAnsi(szText).c_str());
+                m_settings.id_map.erase(astr1.c_str());
                 SetItems();
             }
             break;
@@ -358,6 +373,15 @@ public:
             {
                 PostMessageDx(WM_COMMAND, CMDID_MODIFYRESID);
                 return 1;
+            }
+            if (pnmhdr->code == LVN_KEYDOWN)
+            {
+                LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
+                if (down->wVKey == VK_DELETE)
+                {
+                    PostMessageDx(WM_COMMAND, CMDID_DELETERESID);
+                    return 1;
+                }
             }
         }
         return 0;

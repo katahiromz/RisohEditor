@@ -2481,6 +2481,9 @@ public:
         case CMDID_CONFIG:
             OnConfig(hwnd);
             break;
+        case CMDID_ADVICERESH:
+            OnAdviceResH(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2491,9 +2494,56 @@ public:
             ChangeStatusText(IDS_READY);
     }
 
+    void OnAdviceResH(HWND hwnd)
+    {
+        MString str;
+
+        if (m_settings.added_ids.empty() &&
+            m_settings.removed_ids.empty())
+        {
+            str += LoadStringDx(IDS_NOCHANGE);
+        }
+
+        if (!m_settings.added_ids.empty())
+        {
+            str += LoadStringDx(IDS_ADDNEXTIDS);
+
+            id_map_type::iterator it, end = m_settings.added_ids.end();
+            for (it = m_settings.added_ids.begin(); it != end; ++it)
+            {
+                str += TEXT("#define ");
+                str += MAnsiToText(it->first).c_str();
+                str += TEXT(" ");
+                str += MAnsiToText(it->second).c_str();
+                str += TEXT("\r\n");
+            }
+            str += TEXT("\r\n\r\n");
+        }
+
+        if (!m_settings.removed_ids.empty())
+        {
+            str += LoadStringDx(IDS_DELETENEXTIDS);
+
+            id_map_type::iterator it, end = m_settings.removed_ids.end();
+            for (it = m_settings.removed_ids.begin(); it != end; ++it)
+            {
+                str += TEXT("#define ");
+                str += MAnsiToText(it->first).c_str();
+                str += TEXT(" ");
+                str += MAnsiToText(it->second).c_str();
+                str += TEXT("\r\n");
+            }
+        }
+
+        MAdviceResHDlg dialog(m_settings, str);
+        dialog.DialogBoxDx(hwnd);
+    }
+
     void OnUnloadResH(HWND hwnd)
     {
         m_ConstantsDB.m_map[L"RESOURCE.ID"].clear();
+        m_settings.added_ids.clear();
+        m_settings.removed_ids.clear();
         m_szResourceH[0] = 0;
         ShowIDList(hwnd, FALSE);
     }
@@ -4007,6 +4057,8 @@ public:
         DoSetFile(hwnd, Path);
 
         m_szResourceH[0] = 0;
+        m_settings.added_ids.clear();
+        m_settings.removed_ids.clear();
         if (m_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, Path);
 
@@ -4016,6 +4068,8 @@ public:
     BOOL CheckResourceH(HWND hwnd, LPCTSTR Path)
     {
         m_szResourceH[0] = 0;
+        m_settings.added_ids.clear();
+        m_settings.removed_ids.clear();
 
         TCHAR szPath[MAX_PATH];
         lstrcpyn(szPath, Path, _countof(szPath));
@@ -4317,6 +4371,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     }
 
     m_settings.id_map.clear();
+    m_settings.added_ids.clear();
+    m_settings.removed_ids.clear();
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)

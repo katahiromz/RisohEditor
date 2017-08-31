@@ -19,6 +19,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Load &resource.h...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
         MENUITEM SEPARATOR
+        MENUITEM "Ad&vice resource.h Change...", CMDID_ADVICERESH
+        MENUITEM SEPARATOR
         MENUITEM "&Configuration", CMDID_CONFIG
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
@@ -232,6 +234,9 @@ STRINGTABLE
     IDS_ENTERINT, "Please enter a valid integer."
     IDS_ENTERTEXT, "Please enter a valid text."
     IDS_ENTERID, "Please enter a valid ID."
+    IDS_ADDNEXTIDS, "Please add the following IDs to ""resource.h"":\r\n\r\n"
+    IDS_DELETENEXTIDS, "Please delete the following IDs from ""resource.h"":\r\n\r\n"
+    IDS_NOCHANGE, "There is no change of Resource IDs."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
@@ -732,4 +737,15 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 85, 70, 60, 14
+}
+
+IDD_ADVICERESH DIALOG 0, 0, 209, 184
+CAPTION "Advice of Changing File ""resource.h"""
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "Please modify File ""resource.h"" As Follows:", -1, 10, 10, 195, 20
+    EDITTEXT edt1, 10, 30, 190, 130, ES_MULTILINE | ES_READONLY
+    DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
+    PUSHBUTTON "&Clear Modification", psh1, 10, 165, 90, 14
 }

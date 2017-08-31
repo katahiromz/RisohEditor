@@ -19,6 +19,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "&resource.h の読み込み...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "resource.h のアンロード(&U)", CMDID_UNLOADRESH
         MENUITEM SEPARATOR
+        MENUITEM "resource.h の変更を助言する(&V)...", CMDID_ADVICERESH
+        MENUITEM SEPARATOR
         MENUITEM "設定(&C)", CMDID_CONFIG
         MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"
@@ -232,6 +234,9 @@ STRINGTABLE
     IDS_ENTERINT, "正当な整数を入力して下さい。"
     IDS_ENTERTEXT, "正当なテキストを入力して下さい。"
     IDS_ENTERID, "正当なIDを入力して下さい。"
+    IDS_ADDNEXTIDS, "次のリソースIDを""resource.h""に追加して下さい。:\r\n\r\n"
+    IDS_DELETENEXTIDS, "次のリソースIDを""resource.h""から削除して下さい。:\r\n\r\n"
+    IDS_NOCHANGE, "リソースIDの変更点はありません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
@@ -732,4 +737,15 @@ FONT 9, "MS UI Gothic"
     EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 85, 70, 60, 14
+}
+
+IDD_ADVICERESH DIALOG 0, 0, 209, 184
+CAPTION "ファイル「resource.h」変更の提案"
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "次のようにファイル「resource.h」を変更して下さい。", -1, 10, 10, 195, 20
+    EDITTEXT edt1, 10, 30, 190, 130, ES_MULTILINE | ES_READONLY
+    DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
+    PUSHBUTTON "変更点のクリア(&C)", psh1, 10, 165, 90, 14
 }

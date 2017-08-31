@@ -103,6 +103,8 @@ struct RisohSettings
     INT         nIDListHeight;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
+    id_map_type         added_ids;
+    id_map_type         removed_ids;
 
     RisohSettings()
     {
@@ -143,6 +145,7 @@ struct RisohSettings
 #include "MBmpView.hpp"
 #include "MIDListDlg.hpp"
 #include "MConfigDlg.hpp"
+#include "MAdviceResHDlg.hpp"
 
 #include "id_string.hpp"
 #include "MString.hpp"

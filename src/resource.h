@@ -77,6 +77,7 @@
 #define CMDID_DELETERESID       172
 #define CMDID_COPYRESIDNAME     173
 #define CMDID_COPYIDDEF         174
+#define CMDID_ADVICERESH        175
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -105,6 +106,7 @@
 #define IDD_CONFIG          124
 #define IDD_ADDRESID        125
 #define IDD_MODIFYRESID     126
+#define IDD_ADVICERESH      127
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
@@ -202,5 +204,8 @@
 #define IDS_ENTERINT        95
 #define IDS_ENTERTEXT       96
 #define IDS_ENTERID         97
+#define IDS_ADDNEXTIDS      98
+#define IDS_DELETENEXTIDS   99
+#define IDS_NOCHANGE        100
 
 #endif  // ndef RESOURCE_H_
