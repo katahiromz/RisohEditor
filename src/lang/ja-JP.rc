@@ -687,7 +687,7 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "近くの""&resource.h""を自動的に読み込む", chx4, 10, 70, 190, 14, WS_TABSTOP
     AUTOCHECKBOX "自動的にリソースIDの一覧を表示する(&L)", chx5, 10, 90, 190, 14, WS_TABSTOP
     RTEXT "コンボボックスの高さ(&B):", -1, 10, 114, 75, 12
-    EDITTEXT edt1, 90, 110, 36, 14
+    EDITTEXT edt1, 90, 110, 36, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 80, 160, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 145, 160, 60, 14
 }

@@ -687,7 +687,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Automatically Load Nearby ""&resource.h""", chx4, 10, 70, 190, 14, WS_TABSTOP
     AUTOCHECKBOX "Automatically Show the &List of Resource IDs", chx5, 10, 90, 190, 14, WS_TABSTOP
     RTEXT "Height of Combo&Box:", -1, 10, 114, 75, 12
-    EDITTEXT edt1, 90, 110, 36, 14
+    EDITTEXT edt1, 90, 110, 36, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 80, 160, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 145, 160, 60, 14
 }
