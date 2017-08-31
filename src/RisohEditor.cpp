@@ -4654,6 +4654,8 @@ WinMain(HINSTANCE   hInstance,
     FreeLibrary(hinstRichEdit);
     CoUninitialize();
 
+    assert(MacroParser::BaseAst::alive_count() == 0);
+
 #if (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
     DebugPrintDx(TEXT("Count of GDI objects: %ld\n"),

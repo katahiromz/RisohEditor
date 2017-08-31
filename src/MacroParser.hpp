@@ -224,16 +224,28 @@ namespace MacroParser
     {
         AstID m_id;
 
+        static int& alive_count()
+        {
+            static int s_count = 0;
+            return s_count;
+        }
+
         BaseAst(AstID id) : m_id(id)
         {
+            ++alive_count();
         }
         virtual ~BaseAst()
         {
+            --alive_count();
         }
         virtual void print() const
         {
             std::printf("[AST#%d]", (int)m_id);
         }
+    private:
+        BaseAst();
+        BaseAst(const BaseAst&);
+        BaseAst& operator=(const BaseAst&);
     };
 
     struct IdentAst : public BaseAst
