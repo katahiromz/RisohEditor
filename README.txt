@@ -1,1 +1,12 @@
-RisohEditor is a Win32 resource editor by Katayama Hirofumi MZ.
+////////////////////////////////////////
+RisohEditor by katahiromz
+////////////////////////////////////////
+
+RisohEditor is a Win32API resource editor by Katayama Hirofumi MZ.
+
+/////////////////////////////////////////////////////
+// Katayama Hirofumi MZ (katahiromz) [A.N.T.]
+// Homepage     http://katahiromz.web.fc2.com/
+// BBS          http://katahiromz.bbs.fc2.com/
+// E-Mail       katayama.hirofumi.mz@gmail.com
+/////////////////////////////////////////////////////
