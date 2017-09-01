@@ -603,7 +603,7 @@ public:
 
     HBRUSH OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
     {
-        if (type == CTLCOLOR_DLG)
+        if (type == CTLCOLOR_DLG && m_settings.bShowDotsOnDialog)
         {
             SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
             SetBkColor(hdc, GetSysColor(COLOR_3DFACE));
@@ -942,12 +942,19 @@ public:
     {
         if (m_settings.bResumeWindowPos)
         {
-            POINT pt = { m_settings.nRadLeft, m_settings.nRadTop };
-            SetWindowPosDx(&pt);
+            if (m_settings.nRadLeft != CW_USEDEFAULT)
+            {
+                POINT pt = { m_settings.nRadLeft, m_settings.nRadTop };
+                SetWindowPosDx(&pt);
+            }
+            else
+            {
+                CenterWindowDx(hwnd);
+            }
         }
         else
         {
-            CenterWindowDx();
+            CenterWindowDx(hwnd);
         }
 
         return ReCreateRadDialog(hwnd);

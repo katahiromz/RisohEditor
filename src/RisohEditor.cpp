@@ -4513,6 +4513,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bResumeWindowPos = TRUE;
     m_settings.bAutoLoadNearbyResH = TRUE;
     m_settings.bAutoShowIDList = TRUE;
+    m_settings.bShowDotsOnDialog = TRUE;
     m_settings.nComboHeight = 300;
     m_settings.vecRecentlyUsed.clear();
     m_settings.nWindowLeft = CW_USEDEFAULT;
@@ -4599,6 +4600,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bResumeWindowPos"), (DWORD&)m_settings.bResumeWindowPos);
     keyRisoh.QueryDword(TEXT("bAutoLoadNearbyResH"), (DWORD&)m_settings.bAutoLoadNearbyResH);
     keyRisoh.QueryDword(TEXT("bAutoShowIDList"), (DWORD&)m_settings.bAutoShowIDList);
+    keyRisoh.QueryDword(TEXT("bShowDotsOnDialog"), (DWORD&)m_settings.bShowDotsOnDialog);
     keyRisoh.QueryDword(TEXT("nComboHeight"), (DWORD&)m_settings.nComboHeight);
     keyRisoh.QueryDword(TEXT("nWindowLeft"), (DWORD&)m_settings.nWindowLeft);
     keyRisoh.QueryDword(TEXT("nWindowTop"), (DWORD&)m_settings.nWindowTop);
@@ -4670,6 +4672,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bResumeWindowPos"), m_settings.bResumeWindowPos);
     keyRisoh.SetDword(TEXT("bAutoLoadNearbyResH"), m_settings.bAutoLoadNearbyResH);
     keyRisoh.SetDword(TEXT("bAutoShowIDList"), m_settings.bAutoShowIDList);
+    keyRisoh.SetDword(TEXT("bShowDotsOnDialog"), m_settings.bShowDotsOnDialog);
     keyRisoh.SetDword(TEXT("nComboHeight"), m_settings.nComboHeight);
     keyRisoh.SetDword(TEXT("nWindowLeft"), m_settings.nWindowLeft);
     keyRisoh.SetDword(TEXT("nWindowTop"), m_settings.nWindowTop);

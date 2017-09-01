@@ -90,6 +90,7 @@ struct RisohSettings
     BOOL        bAutoLoadNearbyResH;
     BOOL        bAutoShowIDList;
     BOOL        bHideID;
+    BOOL        bShowDotsOnDialog;
     INT         nComboHeight;
     mru_type    vecRecentlyUsed;
     INT         nWindowLeft;

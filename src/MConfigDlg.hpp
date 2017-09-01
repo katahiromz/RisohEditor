@@ -25,6 +25,7 @@ public:
         CheckDlgButton(hwnd, chx3, m_settings.bResumeWindowPos ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx4, m_settings.bAutoLoadNearbyResH ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx5, m_settings.bAutoShowIDList ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx6, m_settings.bShowDotsOnDialog ? BST_CHECKED : BST_UNCHECKED);
         SetDlgItemInt(hwnd, edt1, m_settings.nComboHeight, FALSE);
 
         CenterWindowDx();
@@ -50,6 +51,7 @@ public:
         m_settings.bResumeWindowPos = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
         m_settings.bAutoLoadNearbyResH = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
         m_settings.bAutoShowIDList = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
+        m_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
 
         EndDialog(IDOK);
     }

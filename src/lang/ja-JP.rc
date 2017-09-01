@@ -708,7 +708,7 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "次回、ウィンドウ位置を復元する(&P)", chx3, 10, 50, 190, 14
     AUTOCHECKBOX "近くの""&resource.h""を自動的に読み込む", chx4, 10, 70, 190, 14
     AUTOCHECKBOX "自動的にリソースIDの一覧を表示する(&L)", chx5, 10, 90, 190, 14
-    AUTOCHECKBOX "ダイアログ編集に点々を表示する(&D)", chx5, 10, 110, 190, 14
+    AUTOCHECKBOX "ダイアログ編集に点々を表示する(&D)", chx6, 10, 110, 190, 14
     RTEXT "コンボボックスの高さ(&B):", -1, 10, 134, 75, 12
     EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 80, 160, 60, 14
