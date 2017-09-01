@@ -702,7 +702,7 @@ FONT 9, "MS Shell Dlg"
 {
     AUTOCHECKBOX "&Always CONTROL Statement", chx1, 10, 10, 190, 14, WS_TABSTOP
     AUTOCHECKBOX "Don't Use ID &Macros", chx2, 10, 30, 190, 14, WS_TABSTOP
-    AUTOCHECKBOX "Next Time Resume Window &Position", chx3, 10, 50, 190, 14, WS_TABSTOP
+    AUTOCHECKBOX "Resume Previous Window &Position", chx3, 10, 50, 190, 14, WS_TABSTOP
     AUTOCHECKBOX "Automatically Load Nearby ""&resource.h""", chx4, 10, 70, 190, 14, WS_TABSTOP
     AUTOCHECKBOX "Automatically Show the &List of Resource IDs", chx5, 10, 90, 190, 14, WS_TABSTOP
     RTEXT "Height of Combo&Box:", -1, 10, 114, 75, 12
