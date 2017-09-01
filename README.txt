@@ -7,7 +7,7 @@ RisohEditor is a Win32API resource editor by Katayama Hirofumi MZ.
 It works on Windows Vista/7/8.1/10.
 
 [HISTORY]
-2017.08.31 First release.
+2017.08.31 ver.0.6 First release.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
