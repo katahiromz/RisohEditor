@@ -126,7 +126,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
     }
     POPUP "Popup #2"
     {
-        MENUITEM "&Modify...\tEnter", CMDID_MODIFYASSOC
+        MENUITEM "&Modify...", CMDID_MODIFYASSOC
     }
     POPUP "Popup #3"
     {
