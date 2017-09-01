@@ -19,15 +19,9 @@ public:
         if (uMsg == WM_GETDLGCODE)
         {
             LPMSG pMsg = (LPMSG)lParam;
-            if (pMsg)
+            if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
             {
-                if (pMsg->message == WM_KEYDOWN)
-                {
-                    if (pMsg->wParam == VK_RETURN)
-                    {
-                        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID, (LPARAM)hwnd);
-                    }
-                }
+                SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID);
             }
         }
         return DefaultProcDx();
