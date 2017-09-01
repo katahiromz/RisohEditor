@@ -4638,6 +4638,7 @@ WinMain(HINSTANCE   hInstance,
 
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     InitCommonControls();
+    MEditCtrl::SetCtrlAHookDx(TRUE);
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
     {
         MMainWnd app(argc, targv, hInstance);
@@ -4652,6 +4653,7 @@ WinMain(HINSTANCE   hInstance,
         }
     }
     FreeLibrary(hinstRichEdit);
+    MEditCtrl::SetCtrlAHookDx(FALSE);
     CoUninitialize();
 
     assert(MacroParser::BaseAst::alive_count() == 0);
