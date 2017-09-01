@@ -2654,12 +2654,12 @@ public:
             str += TEXT("\r\n");
         }
 
-        if (!m_settings.added_ids.empty())
+        if (!m_settings.removed_ids.empty())
         {
-            str += LoadStringDx(IDS_ADDNEXTIDS);
+            str += LoadStringDx(IDS_DELETENEXTIDS);
 
-            id_map_type::iterator it, end = m_settings.added_ids.end();
-            for (it = m_settings.added_ids.begin(); it != end; ++it)
+            id_map_type::iterator it, end = m_settings.removed_ids.end();
+            for (it = m_settings.removed_ids.begin(); it != end; ++it)
             {
                 str += TEXT("#define ");
                 str += MAnsiToText(it->first).c_str();
@@ -2670,12 +2670,12 @@ public:
             str += TEXT("\r\n");
         }
 
-        if (!m_settings.removed_ids.empty())
+        if (!m_settings.added_ids.empty())
         {
-            str += LoadStringDx(IDS_DELETENEXTIDS);
+            str += LoadStringDx(IDS_ADDNEXTIDS);
 
-            id_map_type::iterator it, end = m_settings.removed_ids.end();
-            for (it = m_settings.removed_ids.begin(); it != end; ++it)
+            id_map_type::iterator it, end = m_settings.added_ids.end();
+            for (it = m_settings.added_ids.begin(); it != end; ++it)
             {
                 str += TEXT("#define ");
                 str += MAnsiToText(it->first).c_str();
