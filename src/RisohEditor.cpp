@@ -2320,6 +2320,7 @@ public:
 
     void OnNew(HWND hwnd)
     {
+        OnUnloadResH(hwnd);
         DoSetFile(hwnd, NULL);
         m_Entries.clear();
         TV_RefreshInfo(m_hTreeView, m_Entries);
@@ -2693,6 +2694,7 @@ public:
     void OnUnloadResH(HWND hwnd)
     {
         m_db.m_map[L"RESOURCE.ID"].clear();
+        m_settings.id_map.clear();
         m_settings.added_ids.clear();
         m_settings.removed_ids.clear();
         m_szResourceH[0] = 0;
