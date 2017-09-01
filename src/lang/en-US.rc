@@ -703,13 +703,14 @@ CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "&Always CONTROL Statement", chx1, 10, 10, 190, 14, WS_TABSTOP
-    AUTOCHECKBOX "Don't Use ID &Macros", chx2, 10, 30, 190, 14, WS_TABSTOP
-    AUTOCHECKBOX "Resume Previous Window &Position", chx3, 10, 50, 190, 14, WS_TABSTOP
-    AUTOCHECKBOX "Automatically Load Nearby ""&resource.h""", chx4, 10, 70, 190, 14, WS_TABSTOP
-    AUTOCHECKBOX "Automatically Show the &List of Resource IDs", chx5, 10, 90, 190, 14, WS_TABSTOP
-    RTEXT "Height of Combo&Box:", -1, 10, 114, 75, 12
-    EDITTEXT edt1, 90, 110, 36, 14, ES_NUMBER
+    AUTOCHECKBOX "&Always CONTROL Statement", chx1, 10, 10, 190, 14
+    AUTOCHECKBOX "Don't Use ID &Macros", chx2, 10, 30, 190, 14
+    AUTOCHECKBOX "Resume Previous Window &Position", chx3, 10, 50, 190, 14
+    AUTOCHECKBOX "Automatically Load Nearby ""&resource.h""", chx4, 10, 70, 190, 14
+    AUTOCHECKBOX "Automatically Show the &List of Resource IDs", chx5, 10, 90, 190, 14
+    AUTOCHECKBOX "Show &Dots On Dialog Edit", chx5, 10, 110, 190, 14
+    RTEXT "Height of Combo&Box:", -1, 10, 134, 75, 12
+    EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 80, 160, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 145, 160, 60, 14
 }
