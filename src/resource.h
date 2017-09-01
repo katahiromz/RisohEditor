@@ -81,6 +81,7 @@
 #define CMDID_UPDATEID          176
 #define CMDID_OPENREADME        177
 #define CMDID_OPENREADMEJP      178
+#define CMDID_LOADWCLIB         179
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -211,5 +212,6 @@
 #define IDS_DELETENEXTIDS   99
 #define IDS_NOCHANGE        100
 #define IDS_DLGFAIL         101
+#define IDS_LOADWCLIB       102
 
 #endif  // ndef RESOURCE_H_

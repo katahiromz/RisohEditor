@@ -14,6 +14,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Save &As...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "Load &Window Class Library...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", CMDID_IDASSOC
         MENUITEM "Load &resource.h...\tCtrl+R", CMDID_LOADRESH
@@ -242,6 +243,7 @@ STRINGTABLE
     IDS_DELETENEXTIDS, "Please delete the following IDs from ""resource.h"":\r\n\r\n"
     IDS_NOCHANGE, "There is no change of Resource IDs."
     IDS_DLGFAIL, "Oops, I failed to create a RAD dialog."
+    IDS_LOADWCLIB, "Load A Window Class Library"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

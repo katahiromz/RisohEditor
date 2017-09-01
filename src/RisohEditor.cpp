@@ -2026,6 +2026,33 @@ public:
         MessageBoxIndirectW(&Params);
     }
 
+    void OnLoadWCLib(HWND hwnd)
+    {
+        if (!CompileIfNecessary(hwnd))
+            return;
+
+        WCHAR File[MAX_PATH] = TEXT("");
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+        ofn.lpstrFile = File;
+        ofn.nMaxFile = _countof(File);
+        ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"dll";
+        if (GetOpenFileNameW(&ofn))
+        {
+            if (!LoadLibraryW(File))
+            {
+                ErrorBoxDx(IDS_CANNOTLOAD);
+            }
+        }
+    }
+
     void OnImport(HWND hwnd)
     {
         if (!CompileIfNecessary(hwnd))
@@ -2570,6 +2597,9 @@ public:
             break;
         case CMDID_OPENREADMEJP:
             OnOpenReadMeJp(hwnd);
+            break;
+        case CMDID_LOADWCLIB:
+            OnLoadWCLib(hwnd);
             break;
         default:
             bUpdateStatus = FALSE;

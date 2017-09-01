@@ -14,6 +14,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "名前を付けて保存(&A)...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "インポート(&I)...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "ウィンドウ クラス ライブラリを読み込む(&W)...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", CMDID_IDASSOC
         MENUITEM "&resource.h の読み込み...\tCtrl+R", CMDID_LOADRESH
@@ -242,6 +243,7 @@ STRINGTABLE
     IDS_DELETENEXTIDS, "次のリソースIDを""resource.h""から削除して下さい。:\r\n\r\n"
     IDS_NOCHANGE, "リソースIDの変更点はありません。"
     IDS_DLGFAIL, "RADダイアログを作成するのに失敗しました。"
+    IDS_LOADWCLIB, "ウィンドウ クラス ライブラリを読み込む"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
