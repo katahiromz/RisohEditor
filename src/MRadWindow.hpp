@@ -11,6 +11,7 @@
 #include "MDlgPropDlg.hpp"
 #include "MCtrlPropDlg.hpp"
 #include "DialogRes.hpp"
+#include "PackedDIB.hpp"
 #include "resource.h"
 #include <map>
 #include <set>
@@ -449,9 +450,11 @@ public:
     POINT           m_ptClicked;
     MIndexLabels    m_labels;
     RisohSettings&  m_settings;
+    HBRUSH          m_hbrBack;
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
-        : m_index_visible(FALSE), m_db(db), m_settings(settings)
+        : m_index_visible(FALSE), m_db(db), m_settings(settings),
+          m_hbrBack(NULL)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -461,6 +464,15 @@ public:
         lf.lfHeight = 14;
         hFont = ::CreateFontIndirect(&lf);
         m_labels.m_hFont = hFont;
+    }
+
+    ~MRadDialog()
+    {
+        if (m_hbrBack)
+        {
+            DeleteObject(m_hbrBack);
+            m_hbrBack = NULL;
+        }
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
@@ -580,11 +592,23 @@ public:
             HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_CTLCOLORDLG, OnCtlColor);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    HBRUSH OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
+    {
+        if (type == CTLCOLOR_DLG)
+        {
+            SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
+            SetBkColor(hdc, GetSysColor(COLOR_3DFACE));
+            return m_hbrBack;
+        }
+        return FORWARD_WM_CTLCOLORDLG(hwnd, hdc, hwndChild, CallWindowProcDx);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -689,8 +713,63 @@ public:
         }
     }
 
+    HBRUSH CreateBackBrush()
+    {
+        BITMAPINFO bi;
+        ZeroMemory(&bi, sizeof(bi));
+        bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bi.bmiHeader.biWidth = 8;
+        bi.bmiHeader.biHeight = 8;
+        bi.bmiHeader.biPlanes = 1;
+        bi.bmiHeader.biBitCount = 24;
+
+        HDC hDC = CreateCompatibleDC(NULL);
+        LPVOID pvBits;
+        HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+        {
+            HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+            RECT rc;
+            SetRect(&rc, 0, 0, 8, 8);
+            FillRect(hDC, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+            COLORREF rgb = GetSysColor(COLOR_3DFACE);
+            DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
+            if (dwTotal < 255)
+            {
+                SetPixel(hDC, 0, 0, RGB(255, 255, 255));
+            }
+            else
+            {
+                SetPixel(hDC, 0, 0, RGB(0, 0, 0));
+            }
+            SelectObject(hDC, hbmOld);
+        }
+        DeleteDC(hDC);
+
+        std::vector<BYTE> data;
+        if (!PackedDIB_CreateFromHandle(data, hbm))
+        {
+            DeleteObject(hbm);
+            return GetSysColorBrush(COLOR_3DFACE);
+        }
+
+        LOGBRUSH lb;
+        lb.lbStyle = BS_DIBPATTERNPT;
+        lb.lbColor = DIB_RGB_COLORS;
+        lb.lbHatch = (ULONG_PTR)&data[0];
+        HBRUSH hbr = ::CreateBrushIndirect(&lb);
+        DeleteObject(hbm);
+        return hbr;
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        if (m_hbrBack)
+        {
+            DeleteObject(m_hbrBack);
+            m_hbrBack = NULL;
+        }
+        m_hbrBack = CreateBackBrush();
+
         MRadCtrl::GetTargets().clear();
         MRadCtrl::GetLastSel() = NULL;
         MRadCtrl::IndexToCtrlMap().clear();
