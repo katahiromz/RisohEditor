@@ -945,6 +945,10 @@ public:
             POINT pt = { m_settings.nRadLeft, m_settings.nRadTop };
             SetWindowPosDx(&pt);
         }
+        else
+        {
+            CenterWindowDx();
+        }
 
         return ReCreateRadDialog(hwnd);
     }
