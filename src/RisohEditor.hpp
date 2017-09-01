@@ -100,6 +100,8 @@ struct RisohSettings
     INT         nIDListTop;
     INT         nIDListWidth;
     INT         nIDListHeight;
+    INT         nRadLeft;
+    INT         nRadTop;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
     id_map_type         added_ids;

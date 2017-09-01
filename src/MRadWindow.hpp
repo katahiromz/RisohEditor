@@ -853,6 +853,12 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        if (m_settings.bResumeWindowPos)
+        {
+            POINT pt = { m_settings.nRadLeft, m_settings.nRadTop };
+            SetWindowPosDx(&pt);
+        }
+
         return ReCreateRadDialog(hwnd);
     }
 
@@ -868,6 +874,7 @@ public:
         switch (uMsg)
         {
             DO_MSG(WM_CREATE, OnCreate);
+            DO_MSG(WM_MOVE, OnMove);
             DO_MSG(WM_SIZE, OnSize);
             DO_MSG(WM_DESTROY, OnDestroy);
             DO_MSG(WM_CONTEXTMENU, OnContextMenu);
@@ -1594,6 +1601,15 @@ public:
         yDialogBaseUnit = m_yDialogBaseUnit;
 
         return TRUE;
+    }
+
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+
+        m_settings.nRadLeft = rc.left;
+        m_settings.nRadTop = rc.top;
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)

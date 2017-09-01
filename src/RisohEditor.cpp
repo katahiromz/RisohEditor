@@ -4451,6 +4451,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nIDListTop = CW_USEDEFAULT;
     m_settings.nIDListWidth = 366;
     m_settings.nIDListHeight = 490;
+    m_settings.nRadLeft = CW_USEDEFAULT;
+    m_settings.nRadTop = CW_USEDEFAULT;
 
     ConstantsDB::TableType table1, table2;
     table1 = m_db.GetTable(L"RESOURCE.ID.TYPE");
@@ -4534,6 +4536,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nIDListTop"), (DWORD&)m_settings.nIDListTop);
     keyRisoh.QueryDword(TEXT("nIDListWidth"), (DWORD&)m_settings.nIDListWidth);
     keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)m_settings.nIDListHeight);
+    keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)m_settings.nRadLeft);
+    keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
@@ -4603,6 +4607,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nIDListTop"), m_settings.nIDListTop);
     keyRisoh.SetDword(TEXT("nIDListWidth"), m_settings.nIDListWidth);
     keyRisoh.SetDword(TEXT("nIDListHeight"), m_settings.nIDListHeight);
+    keyRisoh.SetDword(TEXT("nRadLeft"), m_settings.nRadLeft);
+    keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)
