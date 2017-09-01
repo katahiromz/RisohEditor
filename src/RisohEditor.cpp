@@ -1390,12 +1390,21 @@ public:
             DO_MSG(WM_CONTEXTMENU, OnContextMenu);
             DO_MSG(WM_INITMENU, OnInitMenu);
             DO_MSG(WM_ACTIVATE, OnActivate);
+            DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
             DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
             DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
             DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
         default:
             return DefaultProcDx();
         }
+    }
+
+    void OnSysColorChange(HWND hwnd)
+    {
+        m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
     }
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)

@@ -593,6 +593,7 @@ public:
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_CTLCOLORDLG, OnCtlColor);
+            HANDLE_MSG(hwnd, WM_SYSCOLORCHANGE, OnSysColorChange);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
@@ -761,7 +762,7 @@ public:
         return hbr;
     }
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    void OnSysColorChange(HWND hwnd)
     {
         if (m_hbrBack)
         {
@@ -769,6 +770,13 @@ public:
             m_hbrBack = NULL;
         }
         m_hbrBack = CreateBackBrush();
+
+        InvalidateRect(hwnd, NULL, TRUE);
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        OnSysColorChange(hwnd);
 
         MRadCtrl::GetTargets().clear();
         MRadCtrl::GetLastSel() = NULL;
@@ -966,8 +974,14 @@ public:
             DO_MSG(WM_INITMENUPOPUP, OnInitMenuPopup);
             DO_MESSAGE(MYWM_SELCHANGE, OnSelChange);
             DO_MSG(WM_ACTIVATE, OnActivate);
+            DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
         }
         return DefaultProcDx();
+    }
+
+    void OnSysColorChange(HWND hwnd)
+    {
+        m_rad_dialog.SendMessageDx(WM_SYSCOLORCHANGE);
     }
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)

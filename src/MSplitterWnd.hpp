@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSPLITTERWND_HPP_
-#define MZC4_MSPLITTERWND_HPP_      7   /* Version 7 */
+#define MZC4_MSPLITTERWND_HPP_      8   /* Version 8 */
 
 class MSplitterWnd;
 
@@ -252,11 +252,20 @@ public:
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+        HANDLE_MSG(hwnd, WM_SYSCOLORCHANGE, OnSysColorChange);
         case WM_CAPTURECHANGED:
             m_iDraggingBorder = -1;
             return 0;
         default:
             return DefaultProcDx();
+        }
+    }
+
+    void OnSysColorChange(HWND hwnd)
+    {
+        for (size_t i = 0; i < m_vecPanes.size(); ++i)
+        {
+            SendMessage(m_vecPanes[i].hwndPane, WM_SYSCOLORCHANGE, 0, 0);
         }
     }
 
