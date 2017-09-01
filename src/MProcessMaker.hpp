@@ -3,10 +3,9 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     7   /* Version 7 */
+#define MZC4_MPROCESSMAKER_HPP_     8   /* Version 8 */
 
 #include "MFile.hpp"
-#include "MSecurityAttributes.hpp"
 #include <tchar.h>
 #include <cstring>
 
@@ -49,16 +48,16 @@ public:
     BOOL PrepareForRedirect(PHANDLE phInputWrite, PHANDLE phOutputRead,
                             PHANDLE phErrorRead);
 
-    BOOL CreateProcess(LPCTSTR pszAppName, LPCTSTR pszCommandLine = NULL,
-                       LPCTSTR pszzEnvironment = NULL, BOOL bInherit = TRUE,
-                       LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
-                       LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
-    BOOL CreateProcessAsUser(HANDLE hToken, LPCTSTR pszAppName,
-                             LPCTSTR pszCommandLine = NULL,
-                             LPCTSTR pszzEnvironment = NULL,
-                             BOOL bInherit = TRUE,
-                             LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
-                             LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
+    BOOL CreateProcessDx(LPCTSTR pszAppName, LPCTSTR pszCommandLine = NULL,
+                         LPCTSTR pszzEnvironment = NULL, BOOL bInherit = TRUE,
+                         LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
+                         LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
+    BOOL CreateProcessAsUserDx(HANDLE hToken, LPCTSTR pszAppName,
+                               LPCTSTR pszCommandLine = NULL,
+                               LPCTSTR pszzEnvironment = NULL,
+                               BOOL bInherit = TRUE,
+                               LPSECURITY_ATTRIBUTES lpProcessAttributes = NULL,
+                               LPSECURITY_ATTRIBUTES lpThreadAttributes = NULL);
     DWORD WaitForSingleObject(DWORD dwTimeout = INFINITE);
     DWORD WaitForSingleObjectEx(DWORD dwTimeout = INFINITE,
                                 BOOL bAlertable = TRUE);
@@ -342,11 +341,11 @@ inline MProcessMaker::MProcessMaker(
     LPSECURITY_ATTRIBUTES lpThreadAttributes/* = NULL*/)
 {
     Init();
-    CreateProcess(pszAppName, pszCommandLine, pszzEnvironment,
+    CreateProcessDx(pszAppName, pszCommandLine, pszzEnvironment,
         bInherit, lpProcessAttributes, lpThreadAttributes);
 }
 
-inline BOOL MProcessMaker::CreateProcess(
+inline BOOL MProcessMaker::CreateProcessDx(
     LPCTSTR pszAppName, LPCTSTR pszCommandLine/* = NULL*/,
     LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = TRUE*/,
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
@@ -393,7 +392,7 @@ inline BOOL MProcessMaker::CreateProcess(
     return b;
 }
 
-inline BOOL MProcessMaker::CreateProcessAsUser(
+inline BOOL MProcessMaker::CreateProcessAsUserDx(
     HANDLE hToken, LPCTSTR pszAppName, LPCTSTR pszCommandLine/* = NULL*/,
     LPCTSTR pszzEnvironment/* = NULL*/, BOOL bInherit/* = TRUE*/,
     LPSECURITY_ATTRIBUTES lpProcessAttributes/* = NULL*/,
@@ -441,7 +440,10 @@ inline BOOL MProcessMaker::CreateProcessAsUser(
 inline BOOL MProcessMaker::PrepareForRedirect(
     PHANDLE phInputWrite, PHANDLE phOutputRead, PHANDLE phErrorRead)
 {
-    MSecurityAttributes sa;
+    SECURITY_ATTRIBUTES sa;
+    sa.nLength = sizeof(sa);
+    sa.lpSecurityDescriptor = NULL;
+    sa.bInheritHandle = TRUE;
 
     MFile hInputRead, hInputWriteTmp;
     MFile hOutputReadTmp, hOutputWrite;

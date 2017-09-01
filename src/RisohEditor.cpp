@@ -2865,7 +2865,7 @@ public:
         pmaker.SetShowWindow(SW_HIDE);
         MFile hInputWrite, hOutputRead;
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-            pmaker.CreateProcess(NULL, szCmdLine))
+            pmaker.CreateProcessDx(NULL, szCmdLine))
         {
             std::vector<char> data;
             DWORD cbAvail, cbRead;
@@ -3980,7 +3980,7 @@ public:
         pmaker.SetShowWindow(SW_HIDE);
         MFile hInputWrite, hOutputRead;
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-            pmaker.CreateProcess(NULL, szCmdLine))
+            pmaker.CreateProcessDx(NULL, szCmdLine))
         {
             DWORD cbAvail;
             while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
@@ -4089,7 +4089,6 @@ public:
                         if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
                                                         style))
                         {
-                            CenterWindowDx(m_rad_window);
                             ShowWindow(m_rad_window, SW_SHOWNORMAL);
                             UpdateWindow(m_rad_window);
                         }
