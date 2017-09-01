@@ -1,7 +1,7 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
-#define IDR_MAINFRAME           1
+#define IDR_MAINFRAME           (1-0)
 
 #define CMDID_NEW               100
 #define CMDID_OPEN              101

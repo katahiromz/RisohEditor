@@ -347,7 +347,7 @@ namespace MacroParser
 
         TripleAst(const string_type& str,
                   BaseAst *first, BaseAst *second, BaseAst *third)
-            : BaseAst(ASTID_BINARY), m_str(str),
+            : BaseAst(ASTID_TRIPLE), m_str(str),
               m_first(first), m_second(second), m_third(third)
         {
         }
@@ -734,6 +734,7 @@ namespace MacroParser
         if (type() == TOK_SYMBOL && str() == ",")
         {
             CommaAst *comma = new CommaAst();
+            comma->add(cond);
             do
             {
                 next();
@@ -1106,7 +1107,10 @@ namespace MacroParser
                 if (ast)
                 {
                     if (type() == TOK_SYMBOL && str() == ")")
+					{
+						next();
                         return ast;
+					}
                     delete ast;
                     ast = NULL;
                 }
