@@ -126,7 +126,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
     POPUP "ポップアップ #2"
     {
-        MENUITEM "変更(&M)...", CMDID_MODIFYASSOC
+        MENUITEM "変更(&M)...\tEnter", CMDID_MODIFYASSOC
     }
     POPUP "ポップアップ #3"
     {
