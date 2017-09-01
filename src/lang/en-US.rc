@@ -19,8 +19,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "&ID Association...", CMDID_IDASSOC
         MENUITEM "Load &resource.h...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
-        MENUITEM SEPARATOR
-        MENUITEM "Ad&vice resource.h Change...", CMDID_ADVICERESH
+        MENUITEM "Ad&vice resource.h Modification...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
         MENUITEM "&Configuration", CMDID_CONFIG
         MENUITEM SEPARATOR

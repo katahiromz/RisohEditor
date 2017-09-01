@@ -19,7 +19,6 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "&IDの関連付け...", CMDID_IDASSOC
         MENUITEM "&resource.h の読み込み...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "resource.h のアンロード(&U)", CMDID_UNLOADRESH
-        MENUITEM SEPARATOR
         MENUITEM "resource.h の変更を助言する(&V)...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
         MENUITEM "設定(&C)", CMDID_CONFIG
