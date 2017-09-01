@@ -1,3 +1,6 @@
+// MIDListDlg
+//////////////////////////////////////////////////////////////////////////////
+
 #ifndef MZC4_MIDLISTDLG_HPP_
 #define MZC4_MIDLISTDLG_HPP_
 
@@ -8,6 +11,11 @@
 #include "resource.h"
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"
+
+class MSubclassedListView;
+class MIDListDlg;
+
+//////////////////////////////////////////////////////////////////////////////
 
 // Let the listview subclassed to get Enter key
 class MSubclassedListView : public MWindowBase
@@ -446,5 +454,7 @@ public:
 protected:
     HWND m_hLst1;
 };
+
+//////////////////////////////////////////////////////////////////////////////
 
 #endif  // ndef MZC4_MIDLISTDLG_HPP_
