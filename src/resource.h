@@ -79,6 +79,8 @@
 #define CMDID_COPYIDDEF         174
 #define CMDID_ADVICERESH        175
 #define CMDID_UPDATEID          176
+#define CMDID_OPENREADME        177
+#define CMDID_OPENREADMEJP      178
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

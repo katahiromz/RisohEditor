@@ -2556,6 +2556,12 @@ public:
         case CMDID_UPDATEID:
             OnUpdateID(hwnd);
             break;
+        case CMDID_OPENREADME:
+            OnOpenReadMe(hwnd);
+            break;
+        case CMDID_OPENREADMEJP:
+            OnOpenReadMeJp(hwnd);
+            break;
         default:
             bUpdateStatus = FALSE;
             break;
@@ -2564,6 +2570,64 @@ public:
 
         if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
             ChangeStatusText(IDS_READY);
+    }
+
+    void OnOpenReadMe(HWND hwnd)
+    {
+        WCHAR szPath[MAX_PATH];
+        GetModuleFileNameW(NULL, szPath, _countof(szPath));
+        LPWSTR pch = wcsrchr(szPath, L'\\');
+        if (pch == NULL)
+            return;
+
+        ++pch;
+        lstrcpyW(pch, L"README.txt");
+        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"../README.txt");
+            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"../../README.txt");
+                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"../../../README.txt");
+                    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+    }
+
+    void OnOpenReadMeJp(HWND hwnd)
+    {
+        WCHAR szPath[MAX_PATH];
+        GetModuleFileNameW(NULL, szPath, _countof(szPath));
+        LPWSTR pch = wcsrchr(szPath, L'\\');
+        if (pch == NULL)
+            return;
+
+        ++pch;
+        lstrcpyW(pch, L"READMEJP.txt");
+        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"../READMEJP.txt");
+            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"../../READMEJP.txt");
+                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"../../../READMEJP.txt");
+                    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
     }
 
     void OnUpdateID(HWND hwnd)

@@ -65,6 +65,9 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
     POPUP "ヘルプ(&H)"
     {
+        MENUITEM "&README.txtを開く", CMDID_OPENREADME
+        MENUITEM "README&JP.txtを開く", CMDID_OPENREADMEJP
+        MENUITEM SEPARATOR
         MENUITEM "バージョン情報(&A)...", CMDID_ABOUT
     }
 }
