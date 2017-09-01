@@ -406,7 +406,8 @@ public:
 
         HWND hwndPrev = GetWindow(hwnd, GW_HWNDPREV);
         ::DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
-        SetWindowPosDx(NULL, NULL, hwndPrev);
+        if (IsWindow(m_hwnd))
+            SetWindowPosDx(NULL, NULL, hwndPrev);
     }
 
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
