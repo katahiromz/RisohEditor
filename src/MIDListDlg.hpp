@@ -21,7 +21,7 @@ public:
             LPMSG pMsg = (LPMSG)lParam;
             if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
             {
-                SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID);
+                SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID, (LPARAM)hwnd);
             }
         }
         return DefaultProcDx();
