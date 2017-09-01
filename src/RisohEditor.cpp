@@ -3781,14 +3781,6 @@ public:
         if (bEditable)
         {
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
-            if (DoubleClick)
-            {
-                ::SetFocus(m_hSrcEdit);
-            }
-            else
-            {
-                ::SetFocus(m_hTreeView);
-            }
 
             if (Edit_GetModify(m_hSrcEdit))
             {
@@ -3810,7 +3802,6 @@ public:
         else
         {
             Edit_SetReadOnly(m_hSrcEdit, TRUE);
-            ::SetFocus(m_hTreeView);
 
             ToolBar_Update(m_hToolBar, 3);
         }

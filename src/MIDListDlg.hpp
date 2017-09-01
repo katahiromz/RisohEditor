@@ -9,6 +9,31 @@
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"
 
+// Let the listview subclassed to get Enter key
+class MSubclassedListView : public MWindowBase
+{
+public:
+    virtual LRESULT CALLBACK
+    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        if (uMsg == WM_GETDLGCODE)
+        {
+            LPMSG pMsg = (LPMSG)lParam;
+            if (pMsg)
+            {
+                if (pMsg->message == WM_KEYDOWN)
+                {
+                    if (pMsg->wParam == VK_RETURN)
+                    {
+                        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID, (LPARAM)hwnd);
+                    }
+                }
+            }
+        }
+        return DefaultProcDx();
+    }
+};
+
 class MIDListDlg : public MDialogBase
 {
 public:
@@ -17,6 +42,7 @@ public:
     RisohSettings& m_settings;
     ConstantsDB& m_db;
     HWND m_hMainWnd;
+    MSubclassedListView m_lv;
 
     MIDListDlg(ConstantsDB& db, RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings),
@@ -133,6 +159,7 @@ public:
     {
         m_hLst1 = GetDlgItem(hwnd, lst1);
         ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
+        m_lv.SubclassDx(m_hLst1);
 
         LV_COLUMN column;
         ZeroMemory(&column, sizeof(column));
@@ -267,7 +294,11 @@ public:
                     m_settings.removed_ids.erase(stra1old);
                     m_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
 
-                    SetItems();
+                    ListView_SetItemText(m_hLst1, iItem, 0, &str1[0]);
+                    MString assoc = GetAssoc(str1);
+                    ListView_SetItemText(m_hLst1, iItem, 1, &assoc[0]);
+                    ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
+
                     SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
                 }
             }
@@ -297,7 +328,8 @@ public:
                 {
                     m_settings.removed_ids.insert(std::make_pair(astr1, astr2));
                 }
-                SetItems();
+
+                ListView_DeleteItem(m_hLst1, iItem);
                 SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
             }
             break;
@@ -366,6 +398,23 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
+            if ((SHORT)xPos == -1 && (SHORT)yPos == -1)
+            {
+                RECT rc;
+                INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1 ||
+                    !ListView_GetItemRect(m_hLst1, iItem, &rc, LVIR_LABEL))
+                {
+                    GetWindowRect(m_hLst1, &rc);
+                }
+                else
+                {
+                    MapWindowRect(m_hLst1, NULL, &rc);
+                }
+                xPos = (rc.left + rc.right) / 2;
+                yPos = (rc.top + rc.bottom) / 2;
+            }
+
             HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
             HMENU hSubMenu = GetSubMenu(hMenu, 3);
 
@@ -378,21 +427,23 @@ public:
 
     LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
     {
-        if (idFrom == lst1)
+        if (pnmhdr->code == NM_DBLCLK)
         {
-            if (pnmhdr->code == NM_DBLCLK || pnmhdr->code == NM_RETURN)
+            PostMessageDx(WM_COMMAND, CMDID_MODIFYRESID);
+            return 1;
+        }
+        if (pnmhdr->code == LVN_KEYDOWN)
+        {
+            LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
+            if (down->wVKey == VK_DELETE)
             {
-                PostMessageDx(WM_COMMAND, CMDID_MODIFYRESID);
+                PostMessageDx(WM_COMMAND, CMDID_DELETERESID);
                 return 1;
             }
-            if (pnmhdr->code == LVN_KEYDOWN)
+            if (down->wVKey == 'C' && GetKeyState(VK_CONTROL) < 0)
             {
-                LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
-                if (down->wVKey == VK_DELETE)
-                {
-                    PostMessageDx(WM_COMMAND, CMDID_DELETERESID);
-                    return 1;
-                }
+                PostMessageDx(WM_COMMAND, CMDID_COPYIDDEF);
+                return 1;
             }
         }
         return 0;
