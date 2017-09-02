@@ -4806,6 +4806,7 @@ public:
         if (m_fr.Flags & FR_DIALOGTERM)
         {
             m_hFindReplaceDlg = NULL;
+            SetFocus(m_hSrcEdit);
             return 0;
         }
         if (m_fr.Flags & FR_REPLACEALL)
