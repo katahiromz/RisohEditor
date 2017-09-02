@@ -3253,6 +3253,22 @@ public:
         else
             CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_UNCHECKED);
 
+        if (GetWindowTextLength(m_hSrcEdit) == 0 ||
+            !IsWindowVisible(m_hSrcEdit))
+        {
+            EnableMenuItem(hMenu, CMDID_FIND, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_FINDDOWNWARD, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_FINDUPWARD, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_REPLACE, MF_GRAYED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, CMDID_FIND, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_FINDDOWNWARD, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_FINDUPWARD, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_REPLACE, MF_ENABLED);
+        }
+
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
         {
@@ -4561,6 +4577,8 @@ public:
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
             return;
+        if (!IsWindowVisible(m_hSrcEdit))
+            return;
 
         if (m_hFindReplaceDlg)
         {
@@ -4577,7 +4595,8 @@ public:
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
             return FALSE;
-
+        if (!IsWindowVisible(m_hSrcEdit))
+            return FALSE;
         if (m_szFindWhat[0] == 0)
         {
             OnFind(hwnd);
@@ -4624,7 +4643,8 @@ public:
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
             return FALSE;
-
+        if (!IsWindowVisible(m_hSrcEdit))
+            return FALSE;
         if (m_szFindWhat[0] == 0)
         {
             OnFind(hwnd);
@@ -4667,6 +4687,8 @@ public:
     BOOL OnReplaceNext(HWND hwnd)
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (!IsWindowVisible(m_hSrcEdit))
             return FALSE;
         if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
             return FALSE;
@@ -4718,6 +4740,8 @@ public:
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
             return FALSE;
+        if (!IsWindowVisible(m_hSrcEdit))
+            return FALSE;
         if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
             return FALSE;
         if (m_szFindWhat[0] == 0)
@@ -4767,6 +4791,8 @@ public:
     BOOL OnReplace(HWND hwnd)
     {
         if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (!IsWindowVisible(m_hSrcEdit))
             return FALSE;
         if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
             return FALSE;
