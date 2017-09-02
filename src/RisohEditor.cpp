@@ -1254,6 +1254,10 @@ public:
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
     ResEntries  m_Entries;
+    HWND        m_hFindReplaceDlg;
+    TCHAR       m_szFindWhat[80];
+    TCHAR       m_szReplaceWith[80];
+    FINDREPLACE m_fr;
 
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc),
@@ -1279,6 +1283,18 @@ public:
         m_szWindresExe[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
+
+        ZeroMemory(&m_fr, sizeof(m_fr));
+        m_fr.lStructSize = sizeof(m_fr);
+        m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
+
+        m_szFindWhat[0] = 0;
+        m_fr.lpstrFindWhat = m_szFindWhat;
+        m_fr.wFindWhatLen = _countof(m_szFindWhat);
+
+        m_szReplaceWith[0] = 0;
+        m_fr.lpstrReplaceWith = m_szReplaceWith;
+        m_fr.wReplaceWithLen = _countof(m_szReplaceWith);
     }
 
     void SetDefaultSettings(HWND hwnd);
@@ -1331,6 +1347,8 @@ public:
                 continue;
             if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
                 continue;
+            if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+                continue;
 
             ::TranslateMessage(&msg);
             ::DispatchMessage(&msg);
@@ -1378,6 +1396,7 @@ public:
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+        static UINT s_uFindMsg = RegisterWindowMessage(FINDMSGSTRING);
         switch (uMsg)
         {
             DO_MSG(WM_CREATE, OnCreate);
@@ -1395,6 +1414,10 @@ public:
             DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
             DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
         default:
+            if (uMsg == s_uFindMsg)
+            {
+                return OnFindMsg(hwnd, wParam, lParam);
+            }
             return DefaultProcDx();
         }
     }
@@ -2600,6 +2623,18 @@ public:
             break;
         case CMDID_LOADWCLIB:
             OnLoadWCLib(hwnd);
+            break;
+        case CMDID_FIND:
+            OnFind(hwnd);
+            break;
+        case CMDID_FINDDOWNWARD:
+            OnFindNext(hwnd);
+            break;
+        case CMDID_FINDUPWARD:
+            OnFindPrev(hwnd);
+            break;
+        case CMDID_REPLACE:
+            OnReplace(hwnd);
             break;
         default:
             bUpdateStatus = FALSE;
@@ -4520,6 +4555,282 @@ public:
             return FALSE;
 
         return bs.SaveToFile(FileName);
+    }
+
+    void OnFind(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return;
+
+        if (m_hFindReplaceDlg)
+        {
+            SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
+            m_hFindReplaceDlg = NULL;
+        }
+
+        m_fr.hwndOwner = hwnd;
+        m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
+        m_hFindReplaceDlg = FindText(&m_fr);
+    }
+
+    BOOL OnFindNext(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+
+        if (m_szFindWhat[0] == 0)
+        {
+            OnFind(hwnd);
+            return FALSE;
+        }
+
+        DWORD ibegin, iend;
+        SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
+
+        TCHAR szText[_countof(m_szFindWhat)];
+        lstrcpyn(szText, m_szFindWhat, _countof(szText));
+        if (szText[0] == 0)
+            return FALSE;
+
+        MString str = GetWindowText(m_hSrcEdit);
+        if (str.empty())
+            return FALSE;
+
+        if (!(m_fr.Flags & FR_MATCHCASE))
+        {
+            CharUpper(szText);
+            CharUpper(&str[0]);
+        }
+
+        MString substr = str.substr(ibegin, iend - ibegin);
+        if (substr == szText)
+        {
+            ibegin += (DWORD)substr.size();
+        }
+        
+
+        size_t i = str.find(szText, ibegin);
+        if (i == MString::npos)
+            return FALSE;
+
+        ibegin = (DWORD)i;
+        iend = ibegin + lstrlen(m_szFindWhat);
+        SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+        SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    BOOL OnFindPrev(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+
+        if (m_szFindWhat[0] == 0)
+        {
+            OnFind(hwnd);
+            return FALSE;
+        }
+
+        DWORD ibegin, iend;
+        SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
+
+        TCHAR szText[_countof(m_szFindWhat)];
+        lstrcpyn(szText, m_szFindWhat, _countof(szText));
+        if (szText[0] == 0)
+            return FALSE;
+
+        MString str = GetWindowText(m_hSrcEdit);
+        if (str.empty())
+            return FALSE;
+
+        if (!(m_fr.Flags & FR_MATCHCASE))
+        {
+            CharUpper(szText);
+            CharUpper(&str[0]);
+        }
+
+        MString substr = str.substr(ibegin, iend - ibegin);
+        if (substr == szText)
+            --ibegin;
+
+        size_t i = str.rfind(szText, ibegin);
+        if (i == MString::npos)
+            return FALSE;
+
+        ibegin = (DWORD)i;
+        iend = ibegin + lstrlen(m_szFindWhat);
+        SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+        SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    BOOL OnReplaceNext(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
+            return FALSE;
+        if (m_szFindWhat[0] == 0)
+        {
+            OnReplace(hwnd);
+            return FALSE;
+        }
+
+        DWORD ibegin, iend;
+        SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
+
+        TCHAR szText[_countof(m_szFindWhat)];
+        lstrcpyn(szText, m_szFindWhat, _countof(szText));
+        if (szText[0] == 0)
+            return FALSE;
+
+        MString str = GetWindowText(m_hSrcEdit);
+        if (str.empty())
+            return FALSE;
+
+        if (!(m_fr.Flags & FR_MATCHCASE))
+        {
+            CharUpper(szText);
+            CharUpper(&str[0]);
+        }
+
+        MString substr = str.substr(ibegin, iend - ibegin);
+        if (substr == szText)
+        {
+            SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
+            Edit_SetModify(m_hSrcEdit, TRUE);
+            str.replace(ibegin, iend - ibegin, m_szReplaceWith);
+            ibegin += lstrlen(m_szReplaceWith);
+        }
+
+        size_t i = str.find(szText, ibegin);
+        if (i == MString::npos)
+            return FALSE;
+
+        ibegin = (DWORD)i;
+        iend = ibegin + lstrlen(m_szFindWhat);
+        SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+        SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    BOOL OnReplacePrev(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
+            return FALSE;
+        if (m_szFindWhat[0] == 0)
+        {
+            OnReplace(hwnd);
+            return FALSE;
+        }
+
+        DWORD ibegin, iend;
+        SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
+
+        TCHAR szText[_countof(m_szFindWhat)];
+        lstrcpyn(szText, m_szFindWhat, _countof(szText));
+        if (szText[0] == 0)
+            return FALSE;
+
+        MString str = GetWindowText(m_hSrcEdit);
+        if (str.empty())
+            return FALSE;
+
+        if (!(m_fr.Flags & FR_MATCHCASE))
+        {
+            CharUpper(szText);
+            CharUpper(&str[0]);
+        }
+
+        MString substr = str.substr(ibegin, iend - ibegin);
+        if (substr == szText)
+        {
+            SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
+            Edit_SetModify(m_hSrcEdit, TRUE);
+            str.replace(ibegin, iend - ibegin, m_szReplaceWith);
+            --ibegin;
+        }
+
+        size_t i = str.rfind(szText, ibegin);
+        if (i == MString::npos)
+            return FALSE;
+
+        ibegin = (DWORD)i;
+        iend = ibegin + lstrlen(m_szFindWhat);
+        SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+        SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    BOOL OnReplace(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
+            return FALSE;
+        if (m_hFindReplaceDlg)
+        {
+            SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
+            m_hFindReplaceDlg = NULL;
+        }
+
+        m_fr.hwndOwner = hwnd;
+        m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
+        m_hFindReplaceDlg = ReplaceText(&m_fr);
+        return TRUE;
+    }
+
+    BOOL OnReplaceAll(HWND hwnd)
+    {
+        if (GetWindowTextLength(m_hSrcEdit) == 0)
+            return FALSE;
+        if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
+            return FALSE;
+
+        DWORD istart, iend;
+        SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&istart, (LPARAM)&iend);
+
+        SendMessage(m_hSrcEdit, EM_SETSEL, 0, 0);
+        while (OnReplaceNext(hwnd))
+            ;
+
+        SendMessage(m_hSrcEdit, EM_SETSEL, istart, iend);
+        SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    LRESULT OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        if (m_fr.Flags & FR_DIALOGTERM)
+        {
+            m_hFindReplaceDlg = NULL;
+            return 0;
+        }
+        if (m_fr.Flags & FR_REPLACEALL)
+        {
+            OnReplaceAll(hwnd);
+        }
+        else if (m_fr.Flags & FR_REPLACE)
+        {
+            if (m_fr.Flags & FR_DOWN)
+                OnReplaceNext(hwnd);
+            else
+                OnReplacePrev(hwnd);
+        }
+        else if (m_fr.Flags & FR_FINDNEXT)
+        {
+            if (m_fr.Flags & FR_DOWN)
+            {
+                OnFindNext(hwnd);
+            }
+            else
+            {
+                OnFindPrev(hwnd);
+            }
+        }
+        return 0;
     }
 };
 

@@ -82,6 +82,10 @@
 #define CMDID_OPENREADME        177
 #define CMDID_OPENREADMEJP      178
 #define CMDID_LOADWCLIB         179
+#define CMDID_FIND              180
+#define CMDID_FINDDOWNWARD      181
+#define CMDID_FINDUPWARD        182
+#define CMDID_REPLACE           183
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

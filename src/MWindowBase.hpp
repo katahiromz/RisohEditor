@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    50     /* Version 50 */
+#define MZC4_MWINDOWBASE_HPP_    51     /* Version 51 */
 
 class MWindowBase;
 class MDialogBase;
@@ -308,6 +308,11 @@ public:
         CenterWindowDx(m_hwnd);
     }
 
+    static INT GetWindowTextLength(HWND hwnd)
+    {
+        assert(::IsWindow(hwnd));
+        return ::GetWindowTextLength(hwnd);
+    }
     INT GetWindowTextLength() const
     {
         assert(::IsWindow(Handle()));

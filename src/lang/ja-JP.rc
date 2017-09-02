@@ -53,6 +53,15 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
+    POPUP "検索(&S)"
+    {
+        MENUITEM "検索(&F)...\tCtrl+F", CMDID_FIND
+        MENUITEM SEPARATOR
+        MENUITEM "上検索(&U)", CMDID_FINDUPWARD
+        MENUITEM "下検索(&D)", CMDID_FINDDOWNWARD
+        MENUITEM SEPARATOR
+        MENUITEM "置換(&R)...\tCtrl+H", CMDID_REPLACE
+    }
     POPUP "表示(&V)"
     {
         MENUITEM "ステータス バー(&S)", CMDID_STATUSBAR

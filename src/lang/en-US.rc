@@ -53,6 +53,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
+    POPUP "&Search"
+    {
+        MENUITEM "&Find...\tCtrl+F", CMDID_FIND
+        MENUITEM SEPARATOR
+        MENUITEM "Search &Upward", CMDID_FINDUPWARD
+        MENUITEM "Search &Downward", CMDID_FINDDOWNWARD
+        MENUITEM SEPARATOR
+        MENUITEM "&Replace...\tCtrl+H", CMDID_REPLACE
+    }
     POPUP "&View"
     {
         MENUITEM "&Status Bar", CMDID_STATUSBAR
