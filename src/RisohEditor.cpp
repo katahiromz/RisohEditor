@@ -4624,8 +4624,17 @@ public:
 
         if (WritePNG)
         {
+            BOOL ret = FALSE;
             HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
-            BOOL ret = !!ii_png_save_w(FileName, hbm, 0);
+            Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
+            if (pBitmap)
+            {
+                CLSID cls;
+                if (GetEncoderClsid(L"image/png", &cls) != -1)
+                {
+                    ret = pBitmap->Save(FileName, &cls) == Gdiplus::Ok;
+                }
+            }
             DeleteObject(hbm);
             return ret;
         }
