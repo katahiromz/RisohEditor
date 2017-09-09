@@ -4625,7 +4625,7 @@ public:
                 CLSID cls;
                 if (GetEncoderClsid(L"image/png", &cls) != -1)
                 {
-                    ret = pBitmap->Save(FileName, &cls) == Gdiplus::Ok;
+                    ret = pBitmap->Save(FileName, &cls, NULL) == Gdiplus::Ok;
                 }
             }
             DeleteObject(hbm);

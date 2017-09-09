@@ -11,7 +11,6 @@
 #include "id_string.hpp"
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
-#include "Png.hpp"
 #include "MString.hpp"
 #include "PackedDIB.hpp"
 #include "MBitmapDx.hpp"

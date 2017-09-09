@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MREGKEY_HPP_
-#define MZC4_MREGKEY_HPP_       5   /* Version 5 */
+#define MZC4_MREGKEY_HPP_       6   /* Version 6 */
 
 #ifndef HKCR
     #define HKCR    HKEY_CLASSES_ROOT
@@ -769,7 +769,10 @@ inline LONG RegDeleteTreeDx(HKEY hKey, LPCTSTR pszSubKey/* = NULL*/)
 
     cchSubKeyMax++;
     cchValueMax++;
-    cchMax = max(cchSubKeyMax, cchValueMax);
+    if (cchSubKeyMax < cchValueMax)
+        cchMax = cchValueMax;
+    else
+        cchMax = cchSubKeyMax;
     if (cchMax > sizeof(szNameBuf) / sizeof(TCHAR))
     {
         pszName = new(std::nothrow) TCHAR[cchMax * sizeof(TCHAR)];

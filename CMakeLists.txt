@@ -49,21 +49,16 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
 endif()
 
-# libpng
-find_package(PNG REQUIRED)
-include_directories(${PNG_INCLUDE_DIRS})
-
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
 # Win32
 add_executable(RisohEditor WIN32 
     src/PackedDIB.cpp
-    src/Png.cpp
     src/RisohEditor.cpp
     src/Samples.cpp
     src/RisohEditor_res.rc)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus ${PNG_LIBRARIES})
+target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus)
 
 # do statically link
 set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_START_STATIC 1)

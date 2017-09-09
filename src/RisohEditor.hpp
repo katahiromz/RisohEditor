@@ -166,7 +166,6 @@ struct RisohSettings
 
 #include "ConstantsDB.hpp"
 #include "PackedDIB.hpp"
-#include "Png.hpp"
 #include "Res.hpp"
 
 #include "MFile.hpp"
