@@ -53,6 +53,7 @@ public:
 
     ~MBmpView()
     {
+        DeleteTempFile();
         DestroyView();
     }
 
@@ -106,6 +107,7 @@ public:
         ShowWindow(m_hPlayButton, SW_HIDE);
         ShowWindow(m_mci_window, SW_HIDE);
         UpdateScrollInfo(m_hwnd);
+        DeleteTempFile();
     }
 
     void SetIcon(HICON hIcon, BOOL bIcon)
@@ -117,6 +119,7 @@ public:
         ShowWindow(m_hPlayButton, SW_HIDE);
         ShowWindow(m_mci_window, SW_HIDE);
         UpdateScrollInfo(m_hwnd);
+        DeleteTempFile();
     }
 
     void SetImage(const void *ptr, DWORD size)
@@ -132,6 +135,7 @@ public:
             UpdateScrollInfo(m_hwnd);
             SetTimer(m_hwnd, TIMER_ID, 0, NULL);
         }
+        DeleteTempFile();
     }
 
     void SetAVI(const void *ptr, DWORD size)
@@ -143,7 +147,10 @@ public:
 
         TCHAR szTempPath[MAX_PATH];
         GetTempPath(MAX_PATH, szTempPath);
+        DeleteTempFile();
         GetTempFileName(szTempPath, TEXT("avi"), 0, m_szTempFile);
+        ShowScrollBar(m_hwnd, SB_HORZ, FALSE);
+        ShowScrollBar(m_hwnd, SB_VERT, FALSE);
 
         MByteStreamEx stream;
         stream.WriteData(ptr, size);
@@ -153,8 +160,6 @@ public:
             MCIWndOpen(m_mci_window, m_szTempFile, 0);
             MCIWndPlay(m_mci_window);
         }
-        ShowScrollBar(m_hwnd, SB_HORZ, FALSE);
-        ShowScrollBar(m_hwnd, SB_VERT, FALSE);
     }
 
     void SetPlay()
@@ -163,6 +168,19 @@ public:
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_SHOWNOACTIVATE);
         ShowWindow(m_mci_window, SW_HIDE);
+        DeleteTempFile();
+    }
+
+    void DeleteTempFile()
+    {
+        if (m_szTempFile[0])
+        {
+            if (DeleteFile(m_szTempFile) ||
+                GetFileAttributes(m_szTempFile) == 0xFFFFFFFF)
+            {
+                m_szTempFile[0] = 0;
+            }
+        }
     }
 
     void DestroyView()
@@ -182,11 +200,6 @@ public:
             m_hIcon = NULL;
         }
         m_bitmap.SetBitmap(NULL);
-        if (m_szTempFile[0])
-        {
-            DeleteFile(m_szTempFile);
-            m_szTempFile[0] = 0;
-        }
     }
 
     BOOL CreateDx(HWND hwndParent, INT CtrlID = 4, BOOL bVisible = FALSE)
