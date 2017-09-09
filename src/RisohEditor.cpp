@@ -3194,10 +3194,63 @@ public:
                 }
                 return;
             }
-            else if (lstrcmpiW(pch, L".bmp") == 0)
+            else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
             {
                 MAddBitmapDlg dialog(m_db, m_Entries);
                 dialog.File = File;
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
+            else if (lstrcmpiW(pch, L".png") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"PNG";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
+            else if (lstrcmpiW(pch, L".gif") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"GIF";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
+            else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
+                     lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"JPEG";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
+            else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"TIFF";
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
