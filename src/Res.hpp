@@ -14,6 +14,7 @@
 #include "Png.hpp"
 #include "MString.hpp"
 #include "PackedDIB.hpp"
+#include "MBitmapDx.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -527,12 +528,16 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
     if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
         return FALSE;
 
-    if (memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)
+    if (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
+        memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
+        memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0) // PNG
     {
-        // PNG
-        HBITMAP hbm = ii_png_load_mem(&stream[0], stream.size());
-        if (hbm == NULL)
+        MBitmapDx bitmap;
+        if (!bitmap.CreateFromMemory(&stream[0], stream.size()))
             return FALSE;
+
+        LONG cx, cy;
+        HBITMAP hbm = bitmap.GetHBITMAP(cx, cy);
 
         std::vector<BYTE> PackedDIB;
         if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
@@ -1179,7 +1184,6 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
 }
 
 BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm);
-HBITMAP ii_png_load_mem(const void *pv, png_uint_32 cb);
 
 inline BOOL
 Res_ExtractIcon(const ResEntries& Entries,
@@ -1194,7 +1198,11 @@ Res_ExtractIcon(const ResEntries& Entries,
     BITMAP bm;
     if (!PackedDIB_GetInfo(&IconEntry[0], IconEntry.size(), bm))
     {
-        HBITMAP hbm = ii_png_load_mem(&IconEntry[0], IconEntry.size());
+        MBitmapDx bitmap;
+        bitmap.CreateFromMemory(&IconEntry[0], IconEntry.size());
+
+        LONG cx, cy;
+        HBITMAP hbm = bitmap.GetHBITMAP(cx, cy);
         GetObject(hbm, sizeof(bm), &bm);
         DeleteObject(hbm);
     }

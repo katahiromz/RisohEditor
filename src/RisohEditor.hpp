@@ -21,6 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
+#include <initguid.h>
 #include <windows.h>
 #include <windowsx.h>
 #include <shlobj.h>
@@ -44,6 +45,7 @@
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
 #include "MRegKey.hpp"
+#include "MBitmapDx.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"
 #include "MacroParser.hpp"
