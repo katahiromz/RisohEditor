@@ -462,7 +462,10 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     if (Entry.size() >= 4 &&
         memcmp(&Entry[0], "\x89\x50\x4E\x47", 4) == 0)
     {
-        hbmIcon = ii_png_load_mem(&Entry[0], Entry.size());
+        MBitmapDx bitmap;
+        bitmap.CreateFromMemory(&Entry[0], Entry.size());
+        LONG cx, cy;
+        hbmIcon = bitmap.GetHBITMAP32(cx, cy);
     }
     else
     {
@@ -584,6 +587,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
             return NULL;
         }
         ResEntry& IconEntry = Entries[k];
+
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
 
         DrawBitmapDx(hbm, hbmIcon, 0, y);

@@ -50,6 +50,9 @@ public:
     void FreeDelayPropertyItem();
     BOOL Step(DWORD& dwDelay);
 
+    UINT GetWidth();
+    UINT GetHeight();
+
 protected:
     Gdiplus::Bitmap        *m_pBitmap;
     COLORREF                m_rgbBack;
@@ -323,7 +326,7 @@ inline HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
     ZeroMemory(&bmi, sizeof(bmi));
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmi.bmiHeader.biWidth = cx;
-    bmi.bmiHeader.biHeight = cy;
+    bmi.bmiHeader.biHeight = -cy;
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = 32;
     LPVOID pvBits;
@@ -332,16 +335,22 @@ inline HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
     if (hbm == NULL)
         return NULL;
 
-    HDC hDC1 = CreateCompatibleDC(NULL);
-    HGDIOBJ hbmOld = SelectObject(hDC1, hbm);
+    for (LONG y = 0; y < cy; ++y)
     {
-        Graphics g2(m_pBitmap);
-        HDC hDC2 = g2.GetHDC();
-        BitBlt(hDC1, 0, 0, cx, cy, hDC2, 0, 0, SRCCOPY);
-        g2.ReleaseHDC(hDC2);
+        for (LONG x = 0; x < cx; ++x)
+        {
+            Color color;
+            m_pBitmap->GetPixel(x, y, &color);
+            BYTE a = color.GetA();
+            BYTE r = color.GetR();
+            BYTE g = color.GetG();
+            BYTE b = color.GetB();
+            ((LPBYTE)pvBits)[(x + y * cx) * 4 + 0] = b;
+            ((LPBYTE)pvBits)[(x + y * cx) * 4 + 1] = g;
+            ((LPBYTE)pvBits)[(x + y * cx) * 4 + 2] = r;
+            ((LPBYTE)pvBits)[(x + y * cx) * 4 + 3] = a;
+        }
     }
-    SelectObject(hDC1, hbmOld);
-    DeleteDC(hDC1);
 
     return hbm;
 }
@@ -390,6 +399,24 @@ inline BOOL MBitmapDx::Step(DWORD& dwDelay)
     }
 
     return FALSE;
+}
+
+inline UINT MBitmapDx::GetWidth()
+{
+    if (m_pBitmap)
+    {
+        return m_pBitmap->GetWidth();
+    }
+    return 0;
+}
+
+inline UINT MBitmapDx::GetHeight()
+{
+    if (m_pBitmap)
+    {
+        return m_pBitmap->GetHeight();
+    }
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
