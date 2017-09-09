@@ -4004,23 +4004,29 @@ public:
         }
         else if (HIWORD(lParam) == I_STRING)
         {
+            m_hBmpView.DestroyView();
             ::SetWindowTextW(m_hBinEdit, NULL);
             PreviewStringTable(hwnd, Entry);
             ShowBinEdit(FALSE);
             bEditable = TRUE;
+            m_hBmpView.DeleteTempFile();
         }
         else if (HIWORD(lParam) == I_MESSAGE)
         {
+            m_hBmpView.DestroyView();
             ::SetWindowTextW(m_hBinEdit, NULL);
             PreviewMessageTable(hwnd, Entry);
             ShowBinEdit(FALSE);
             bEditable = FALSE;
+            m_hBmpView.DeleteTempFile();
         }
         else
         {
+            m_hBmpView.DestroyView();
             ShowBinEdit(FALSE);
             bEditable = FALSE;
             bSelectNone = TRUE;
+            m_hBmpView.DeleteTempFile();
         }
 
         if (bEditable)
