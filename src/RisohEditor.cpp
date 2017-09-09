@@ -389,6 +389,26 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 //////////////////////////////////////////////////////////////////////////////
 // specialized global functions
 
+void FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
+{
+    BITMAP bm;
+    if (!GetObject(hbm, sizeof(bm), &bm))
+        return;
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    {
+        HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+        {
+            RECT rc;
+            SetRect(&rc, 0, 0, bm.bmWidth, bm.bmHeight);
+            FillRect(hDC, &rc, hbr);
+            DeleteObject(hbr);
+        }
+        SelectObject(hDC, hbmOld);
+    }
+    DeleteDC(hDC);
+}
+
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 {
     HBITMAP hbm = Create24BppBitmapDx(width, height);
@@ -397,7 +417,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
         assert(0);
         return NULL;
     }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
 
     HDC hDC = CreateCompatibleDC(NULL);
     HGDIOBJ hbmOld = SelectObject(hDC, hbm);
@@ -409,6 +429,29 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
     DeleteDC(hDC);
 
     return hbm;
+}
+
+void
+PremultiplyDx(HBITMAP hbm32bpp)
+{
+    BITMAP bm;
+    png_uint_32 cdw;
+    LPBYTE pb;
+    png_byte alpha;
+    GetObject(hbm32bpp, sizeof(bm), &bm);
+    if (bm.bmBitsPixel == 32)
+    {
+        cdw = bm.bmWidth * bm.bmHeight;
+        pb = (LPBYTE) bm.bmBits;
+        while (cdw--)
+        {
+            alpha = pb[3];
+            pb[0] = (png_byte) ((png_uint_32) pb[0] * alpha / 255);
+            pb[1] = (png_byte) ((png_uint_32) pb[1] * alpha / 255);
+            pb[2] = (png_byte) ((png_uint_32) pb[2] * alpha / 255);
+            pb += 4;
+        }
+    }
 }
 
 HBITMAP
@@ -435,10 +478,42 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     GetObject(hbmIcon, sizeof(bm), &bm);
     if (bm.bmBitsPixel == 32)
     {
-        ii_premultiply(hbmIcon);
+        PremultiplyDx(hbmIcon);
     }
 
     return hbmIcon;
+}
+
+void DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
+{
+    BITMAP bmSrc;
+    GetObject(hbmSrc, sizeof(bmSrc), &bmSrc);
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HDC hDC2 = CreateCompatibleDC(NULL);
+    {
+        HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+        HGDIOBJ hbm2Old = SelectObject(hDC2, hbmSrc);
+        if (bmSrc.bmBitsPixel == 32)
+        {
+            BLENDFUNCTION bf;
+            bf.BlendOp = AC_SRC_OVER;
+            bf.BlendFlags = 0;
+            bf.SourceConstantAlpha = 0xFF;
+            bf.AlphaFormat = AC_SRC_ALPHA;
+            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+                       hDC2, 0, 0, bmSrc.bmWidth, bmSrc.bmHeight, bf);
+        }
+        else
+        {
+            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+                   hDC2, 0, 0, SRCCOPY);
+        }
+        SelectObject(hDC, hbm2Old);
+        SelectObject(hDC, hbmOld);
+    }
+    DeleteDC(hDC2);
+    DeleteDC(hDC);
 }
 
 HBITMAP
@@ -491,7 +566,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
         assert(0);
         return NULL;
     }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
     
     BITMAP bm;
     GetObject(hbm, sizeof(bm), &bm);
@@ -511,7 +586,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
         ResEntry& IconEntry = Entries[k];
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
 
-        ii_draw(hbm, hbmIcon, 0, y);
+        DrawBitmapDx(hbm, hbmIcon, 0, y);
         y += bm.bmHeight;
     }
 
@@ -587,7 +662,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
         assert(0);
         return NULL;
     }
-    ii_fill(hbm, GetStockBrush(LTGRAY_BRUSH));
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
 
     HDC hDC = CreateCompatibleDC(NULL);
     HDC hDC2 = CreateCompatibleDC(NULL);
@@ -3567,8 +3642,8 @@ public:
             m_hBmpView.SetBitmap(Create24BppBitmapDx(bm.bmWidth, bm.bmHeight));
             if (!!m_hBmpView)
             {
-                ii_fill(m_hBmpView.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
-                ii_draw(m_hBmpView.m_hBitmap, hbm, 0, 0);
+                FillBitmapDx(m_hBmpView.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
+                DrawBitmapDx(m_hBmpView.m_hBitmap, hbm, 0, 0);
             }
             DeleteObject(hbm);
         }

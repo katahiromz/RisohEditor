@@ -225,6 +225,7 @@ inline BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
     Destroy();
 
     Gdiplus::Bitmap *pBitmap = NULL;
+
     m_hGlobal = GlobalAlloc(GMEM_MOVEABLE, dwSize);
     if (m_hGlobal)
     {
