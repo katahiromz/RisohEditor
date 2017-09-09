@@ -252,6 +252,7 @@ STRINGTABLE
     IDS_NOCHANGE, "リソースIDの変更点はありません。"
     IDS_DLGFAIL, "RADダイアログを作成するのに失敗しました。"
     IDS_LOADWCLIB, "ウィンドウ クラス ライブラリを読み込む"
+    IDS_AVIMOVIE, "(AVI動画)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

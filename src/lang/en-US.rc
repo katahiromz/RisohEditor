@@ -252,6 +252,7 @@ STRINGTABLE
     IDS_NOCHANGE, "There is no change of Resource IDs."
     IDS_DLGFAIL, "Oops, I failed to create a RAD dialog."
     IDS_LOADWCLIB, "Load A Window Class Library"
+    IDS_AVIMOVIE, "(AVI Movie)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

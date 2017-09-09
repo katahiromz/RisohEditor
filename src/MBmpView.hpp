@@ -7,9 +7,29 @@
 #include "RisohEditor.hpp"
 #include "MBitmapDx.hpp"
 
+#ifndef _INC_VFW
+    #include <vfw.h>
+#endif
+#pragma comment (lib, "vfw32.lib")
+
 class MBmpView;
 
 //////////////////////////////////////////////////////////////////////////////
+
+class MMciSubclassed : public MWindowBase
+{
+public:
+    virtual LRESULT CALLBACK
+    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+        case WM_ERASEBKGND:
+            return (LRESULT)GetStockBrush(LTGRAY_BRUSH);
+        }
+        return DefaultProcDx();
+    }
+};
 
 class MBmpView : public MWindowBase
 {
@@ -20,11 +40,15 @@ public:
     HWND        m_hStatic;
     HWND        m_hPlayButton;
     MBitmapDx   m_bitmap;
+    HWND        m_mci_window;
+    MMciSubclassed  m_mci;
+    TCHAR       m_szTempFile[MAX_PATH];
     enum { TIMER_ID = 999 };
 
     MBmpView()
     {
         ZeroMemory(&m_bm, sizeof(m_bm));
+        m_szTempFile[0] = 0;
     }
 
     ~MBmpView()
@@ -34,16 +58,27 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
-        DWORD style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
+        DWORD style = WS_CHILD | WS_BORDER | MCIWNDF_NOMENU | MCIWNDF_NOPLAYBAR |
+                      MCIWNDF_NOAUTOSIZEWINDOW | MCIWNDF_NOAUTOSIZEMOVIE |
+                      MCIWNDF_NOTIFYALL;
+        m_mci_window = MCIWndCreate(hwnd, GetModuleHandle(NULL), style, NULL);
+        if (m_mci_window == NULL)
+            return FALSE;
+
+        m_mci.SubclassDx(m_mci_window);
+
+        style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
         m_hStatic = CreateWindowEx(0, TEXT("STATIC"), NULL,
             style, 0, 0, 32, 32, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
         if (m_hStatic == NULL)
             return FALSE;
+
         style = WS_CHILD | BS_PUSHBUTTON | BS_CENTER | BS_ICON;
         m_hPlayButton = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Play"),
             style, 0, 0, 64, 65, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
         if (m_hPlayButton == NULL)
             return FALSE;
+
         HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(102));
         SendMessage(m_hPlayButton, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
         SetWindowFont(m_hPlayButton, GetStockFont(DEFAULT_GUI_FONT), TRUE);
@@ -69,6 +104,7 @@ public:
         m_hBitmap = hbm;
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_HIDE);
+        ShowWindow(m_mci_window, SW_HIDE);
         UpdateScrollInfo(m_hwnd);
     }
 
@@ -79,6 +115,7 @@ public:
         SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
         ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
         ShowWindow(m_hPlayButton, SW_HIDE);
+        ShowWindow(m_mci_window, SW_HIDE);
         UpdateScrollInfo(m_hwnd);
     }
 
@@ -87,6 +124,7 @@ public:
         DestroyView();
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_HIDE);
+        ShowWindow(m_mci_window, SW_HIDE);
         if (m_bitmap.CreateFromMemory(ptr, size))
         {
             LONG cx, cy;
@@ -96,16 +134,43 @@ public:
         }
     }
 
+    void SetAVI(const void *ptr, DWORD size)
+    {
+        DestroyView();
+        ShowWindow(m_hStatic, SW_HIDE);
+        ShowWindow(m_hPlayButton, SW_HIDE);
+        ShowWindow(m_mci_window, SW_HIDE);
+
+        TCHAR szTempPath[MAX_PATH];
+        GetTempPath(MAX_PATH, szTempPath);
+        GetTempFileName(szTempPath, TEXT("avi"), 0, m_szTempFile);
+
+        MByteStreamEx stream;
+        stream.WriteData(ptr, size);
+        if (stream.SaveToFile(m_szTempFile))
+        {
+            ShowWindow(m_mci_window, SW_SHOWNOACTIVATE);
+            MCIWndOpen(m_mci_window, m_szTempFile, 0);
+            MCIWndPlay(m_mci_window);
+        }
+        ShowScrollBar(m_hwnd, SB_HORZ, FALSE);
+        ShowScrollBar(m_hwnd, SB_VERT, FALSE);
+    }
+
     void SetPlay()
     {
         DestroyView();
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_SHOWNOACTIVATE);
+        ShowWindow(m_mci_window, SW_HIDE);
     }
 
     void DestroyView()
     {
         KillTimer(m_hwnd, TIMER_ID);
+        ShowWindow(m_mci_window, SW_HIDE);
+        MCIWndStop(m_mci_window);
+        MCIWndClose(m_mci_window);
         if (m_hBitmap)
         {
             DeleteObject(m_hBitmap);
@@ -117,6 +182,11 @@ public:
             m_hIcon = NULL;
         }
         m_bitmap.SetBitmap(NULL);
+        if (m_szTempFile[0])
+        {
+            DeleteFile(m_szTempFile);
+            m_szTempFile[0] = 0;
+        }
     }
 
     BOOL CreateDx(HWND hwndParent, INT CtrlID = 4, BOOL bVisible = FALSE)
@@ -254,6 +324,7 @@ public:
         info.nPage = rc.right - rc.left;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_HORZ, &info, TRUE);
+        ShowScrollBar(hwnd, SB_HORZ, TRUE);
 
         ZeroMemory(&info, sizeof(info));
         info.cbSize = sizeof(info);
@@ -263,6 +334,7 @@ public:
         info.nPage = rc.bottom - rc.top;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_VERT, &info, TRUE);
+        ShowScrollBar(hwnd, SB_VERT, TRUE);
 
         InvalidateRect(hwnd, NULL, TRUE);
     }
@@ -288,6 +360,7 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         UpdateScrollInfo(hwnd);
+        MoveWindow(m_mci_window, 0, 0, cx, cy, TRUE);
         FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
     }
 
@@ -311,6 +384,11 @@ public:
         }
     }
 
+    void OnDestroy(HWND hwnd)
+    {
+        DestroyView();
+    }
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -324,9 +402,19 @@ public:
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
+            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         default:
+            if (uMsg == MCIWNDM_NOTIFYMODE)
+            {
+                if (lParam == MCI_MODE_STOP)
+                {
+                    MCIWndPlayFrom(m_mci_window, 0);
+                    break;
+                }
+            }
             return DefaultProcDx();
         }
+        return 0;
     }
 };
 

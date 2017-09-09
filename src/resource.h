@@ -217,5 +217,6 @@
 #define IDS_NOCHANGE        100
 #define IDS_DLGFAIL         101
 #define IDS_LOADWCLIB       102
+#define IDS_AVIMOVIE        103
 
 #endif  // ndef RESOURCE_H_

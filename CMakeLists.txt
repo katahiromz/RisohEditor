@@ -58,7 +58,7 @@ add_executable(RisohEditor WIN32
     src/RisohEditor.cpp
     src/Samples.cpp
     src/RisohEditor_res.rc)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus)
+target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32)
 
 # do statically link
 set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_START_STATIC 1)

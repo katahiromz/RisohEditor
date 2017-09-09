@@ -3259,6 +3259,19 @@ public:
                 }
                 return;
             }
+            else if (lstrcmpiW(pch, L".avi") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"AVI";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
             else if (lstrcmpiW(pch, L".res") == 0)
             {
                 DoLoad(hwnd, m_Entries, File);
@@ -3273,8 +3286,24 @@ public:
         ChangeStatusText(IDS_READY);
     }
 
+    void ShowMovie(BOOL bShow = TRUE)
+    {
+        if (bShow)
+        {
+            ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hSrcEdit, SW_HIDE);
+            m_splitter3.SetPaneCount(1);
+            m_splitter3.SetPane(0, m_hBmpView);
+        }
+        else
+        {
+            ShowBmpView(FALSE);
+        }
+    }
+
     void ShowBmpView(BOOL bShow = TRUE)
     {
+        ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
         if (bShow)
         {
             ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
@@ -3706,6 +3735,14 @@ public:
         ShowBmpView(TRUE);
     }
 
+    void PreviewAVI(HWND hwnd, const ResEntry& Entry)
+    {
+        ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
+
+        m_hBmpView.SetAVI(&Entry[0], Entry.size());
+        ShowMovie(TRUE);
+    }
+
     void PreviewAccel(HWND hwnd, const ResEntry& Entry)
     {
         MByteStreamEx stream(Entry.data);
@@ -3934,6 +3971,11 @@ public:
         else if (Entry.type == L"WAVE")
         {
             PreviewWAVE(hwnd, Entry);
+            bEditable = FALSE;
+        }
+        else if (Entry.type == L"AVI")
+        {
+            PreviewAVI(hwnd, Entry);
             bEditable = FALSE;
         }
 

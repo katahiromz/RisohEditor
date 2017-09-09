@@ -86,6 +86,11 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        k = ComboBox_AddString(hCmb1, TEXT("AVI"));
+        if (m_Entry.type == TEXT("AVI"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
