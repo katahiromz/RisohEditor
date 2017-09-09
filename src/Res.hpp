@@ -538,7 +538,7 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
             return FALSE;
 
         LONG cx, cy;
-        HBITMAP hbm = bitmap.GetHBITMAP(cx, cy);
+        HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
 
         std::vector<BYTE> PackedDIB;
         if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
@@ -1203,7 +1203,7 @@ Res_ExtractIcon(const ResEntries& Entries,
         bitmap.CreateFromMemory(&IconEntry[0], IconEntry.size());
 
         LONG cx, cy;
-        HBITMAP hbm = bitmap.GetHBITMAP(cx, cy);
+        HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
         GetObject(hbm, sizeof(bm), &bm);
         DeleteObject(hbm);
     }

@@ -43,6 +43,7 @@ public:
     DWORD GetFrameDelay(UINT nFrameIndex) const;
 
     HBITMAP GetHBITMAP(LONG& cx, LONG& cy);
+    HBITMAP GetHBITMAP32(LONG& cx, LONG& cy);
 
     void Destroy();
     void FreeBitmap();
@@ -303,6 +304,44 @@ inline HBITMAP MBitmapDx::GetHBITMAP(LONG& cx, LONG& cy)
     }
     SelectObject(hDC, hbmOld);
     DeleteDC(hDC);
+
+    return hbm;
+}
+
+inline HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
+{
+    using namespace Gdiplus;
+    if (!(m_pBitmap->GetPixelFormat() & PixelFormatAlpha))
+    {
+        return GetHBITMAP(cx, cy);
+    }
+
+    cx = m_pBitmap->GetWidth();
+    cy = m_pBitmap->GetHeight();
+
+    BITMAPINFO bmi;
+    ZeroMemory(&bmi, sizeof(bmi));
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = cx;
+    bmi.bmiHeader.biHeight = cy;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;
+    LPVOID pvBits;
+    HBITMAP hbm;
+    hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    if (hbm == NULL)
+        return NULL;
+
+    HDC hDC1 = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hDC1, hbm);
+    {
+        Graphics g2(m_pBitmap);
+        HDC hDC2 = g2.GetHDC();
+        BitBlt(hDC1, 0, 0, cx, cy, hDC2, 0, 0, SRCCOPY);
+        g2.ReleaseHDC(hDC2);
+    }
+    SelectObject(hDC1, hbmOld);
+    DeleteDC(hDC1);
 
     return hbm;
 }

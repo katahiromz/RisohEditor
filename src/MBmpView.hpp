@@ -84,6 +84,9 @@ public:
         ShowWindow(m_hPlayButton, SW_HIDE);
         if (m_bitmap.CreateFromMemory(ptr, size))
         {
+            LONG cx, cy;
+            m_hBitmap = m_bitmap.GetHBITMAP(cx, cy);
+            UpdateScrollInfo(m_hwnd);
             SetTimer(m_hwnd, TIMER_ID, 0, NULL);
         }
     }
@@ -297,7 +300,6 @@ public:
                 DeleteObject(m_hBitmap);
             }
             m_hBitmap = m_bitmap.GetHBITMAP(cx, cy);
-            UpdateScrollInfo(hwnd);
             InvalidateRect(hwnd, NULL, FALSE);
             SetTimer(hwnd, TIMER_ID, dwDelay, NULL);
         }
