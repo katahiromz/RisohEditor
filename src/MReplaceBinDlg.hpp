@@ -71,6 +71,21 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        k = ComboBox_AddString(hCmb1, TEXT("GIF"));
+        if (m_Entry.type == TEXT("GIF"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
+        if (m_Entry.type == TEXT("JPEG"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
+        if (m_Entry.type == TEXT("TIFF"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);

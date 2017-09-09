@@ -3194,8 +3194,7 @@ public:
                 }
                 return;
             }
-            else if (lstrcmpiW(pch, L".bmp") == 0 ||
-                     lstrcmpiW(pch, L".png") == 0)
+            else if (lstrcmpiW(pch, L".bmp") == 0)
             {
                 MAddBitmapDlg dialog(m_db, m_Entries);
                 dialog.File = File;
