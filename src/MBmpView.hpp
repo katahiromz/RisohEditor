@@ -27,6 +27,11 @@ public:
         ZeroMemory(&m_bm, sizeof(m_bm));
     }
 
+    ~MBmpView()
+    {
+        DestroyView();
+    }
+
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
         DWORD style = WS_CHILD | SS_ICON | SS_REALSIZEIMAGE;
@@ -100,6 +105,7 @@ public:
 
     void DestroyView()
     {
+        KillTimer(m_hwnd, TIMER_ID);
         if (m_hBitmap)
         {
             DeleteObject(m_hBitmap);
