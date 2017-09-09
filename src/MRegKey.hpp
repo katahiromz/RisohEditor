@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MREGKEY_HPP_
-#define MZC4_MREGKEY_HPP_       4   /* Version 4 */
+#define MZC4_MREGKEY_HPP_       5   /* Version 5 */
 
 #ifndef HKCR
     #define HKCR    HKEY_CLASSES_ROOT
