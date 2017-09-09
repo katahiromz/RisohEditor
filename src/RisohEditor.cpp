@@ -956,7 +956,7 @@ std::wstring DumpBitmapInfo(HBITMAP hbm)
     return ret;
 }
 
-std::wstring DumpCursorInfo(const BITMAP& bm)
+std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE)
 {
     std::wstring ret;
 
@@ -3279,6 +3279,32 @@ public:
                 ChangeStatusText(IDS_READY);
                 return;
             }
+            else if (lstrcmpiW(pch, L".wmf") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"WMF";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
+            else if (lstrcmpiW(pch, L".emf") == 0)
+            {
+                MAddResDlg dialog(m_Entries, m_db);
+                dialog.m_file = File;
+                dialog.m_type = L"EMF";
+                if (dialog.DialogBoxDx(hwnd) == IDOK)
+                {
+                    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+                    TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                    ChangeStatusText(IDS_READY);
+                }
+                return;
+            }
         }
 
         DoLoad(hwnd, m_Entries, File);
@@ -3651,7 +3677,18 @@ public:
         BITMAP bm;
         m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, Entry, bm));
 
-        std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
+        std::wstring str;
+        HICON hIcon = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, TRUE);
+        if (hIcon)
+        {
+            str = DumpIconInfo(bm, TRUE);
+        }
+        else
+        {
+            str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
+        }
+        DestroyIcon(hIcon);
+
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
 
         ShowBmpView(TRUE);
@@ -3662,7 +3699,7 @@ public:
         BITMAP bm;
         HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
         m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
-        std::wstring str = DumpCursorInfo(bm);
+        std::wstring str = DumpIconInfo(bm, FALSE);
         DestroyCursor(hCursor);
 
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3963,7 +4000,9 @@ public:
             bEditable = TRUE;
         }
         else if (Entry.type == L"PNG" || Entry.type == L"GIF" ||
-                 Entry.type == L"JPEG" || Entry.type == L"TIFF")
+                 Entry.type == L"JPEG" || Entry.type == L"TIFF" ||
+                 Entry.type == L"JPG" || Entry.type == L"TIF" ||
+                 Entry.type == L"EMF" || Entry.type == L"WMF")
         {
             PreviewImage(hwnd, Entry);
             bEditable = FALSE;

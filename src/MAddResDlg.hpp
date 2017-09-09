@@ -79,6 +79,16 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        k = ComboBox_AddString(hCmb1, TEXT("EMF"));
+        if (m_type == TEXT("EMF"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("WMF"));
+        if (m_type == TEXT("WMF"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
