@@ -528,9 +528,10 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
     if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
         return FALSE;
 
-    if (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
-        memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
-        memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0) // PNG
+    if (stream.size() >= 4 &&
+        (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
+         memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
+         memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
     {
         MBitmapDx bitmap;
         if (!bitmap.CreateFromMemory(&stream[0], stream.size()))
