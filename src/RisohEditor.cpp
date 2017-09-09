@@ -3489,7 +3489,7 @@ public:
     void PreviewIcon(HWND hwnd, const ResEntry& Entry)
     {
         BITMAP bm;
-        m_hBmpView = CreateBitmapFromIconOrPngDx(hwnd, Entry, bm);
+        m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, Entry, bm));
 
         std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3501,7 +3501,7 @@ public:
     {
         BITMAP bm;
         HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
-        m_hBmpView = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+        m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
         std::wstring str = DumpCursorInfo(bm);
         DestroyCursor(hCursor);
 
@@ -3512,7 +3512,7 @@ public:
 
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
     {
-        m_hBmpView = CreateBitmapFromIconsDx(hwnd, m_Entries, Entry);
+        m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_Entries, Entry));
 
         std::wstring str = DumpGroupIconInfo(Entry.data);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3522,7 +3522,7 @@ public:
 
     void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
     {
-        m_hBmpView = CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry);
+        m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry));
         assert(m_hBmpView);
 
         std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
@@ -3549,7 +3549,7 @@ public:
             }
             DeleteFileW(szTempFile);
         }
-        m_hBmpView = hbm;
+        m_hBmpView.SetBitmap(hbm);
 
         std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3564,7 +3564,7 @@ public:
         {
             BITMAP bm;
             GetObject(hbm, sizeof(bm), &bm);
-            m_hBmpView = Create24BppBitmapDx(bm.bmWidth, bm.bmHeight);
+            m_hBmpView.SetBitmap(Create24BppBitmapDx(bm.bmWidth, bm.bmHeight));
             if (!!m_hBmpView)
             {
                 ii_fill(m_hBmpView.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));

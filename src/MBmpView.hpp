@@ -55,13 +55,12 @@ public:
         wcx.lpszMenuName = NULL;
     }
 
-    MBmpView& operator=(HBITMAP hbm)
+    void SetBitmap(HBITMAP hbm)
     {
         DestroyView();
         m_hBitmap = hbm;
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_HIDE);
-        return *this;
     }
 
     void SetIcon(HICON hIcon, BOOL bIcon)
