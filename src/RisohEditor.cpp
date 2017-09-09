@@ -5156,6 +5156,11 @@ WinMain(HINSTANCE   hInstance,
     InitCommonControls();
     MEditCtrl::SetCtrlAHookDx(TRUE);
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
+
+    Gdiplus::GdiplusStartupInput gp_startup_input;
+    ULONG_PTR gp_token;
+    Gdiplus::GdiplusStartup(&gp_token, &gp_startup_input, NULL);
+
     {
         MMainWnd app(argc, targv, hInstance);
 
@@ -5168,6 +5173,9 @@ WinMain(HINSTANCE   hInstance,
             ret = 2;
         }
     }
+
+    Gdiplus::GdiplusShutdown(gp_token);
+
     FreeLibrary(hinstRichEdit);
     MEditCtrl::SetCtrlAHookDx(FALSE);
     CoUninitialize();

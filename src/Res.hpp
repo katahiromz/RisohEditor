@@ -557,7 +557,7 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
             return FALSE;
 
         DWORD i0 = FileHeadSize, i1 = stream.size();
-        ResEntry::DataType HeadLess(&stream[i0], &stream[i1]);
+        ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
         Res_AddEntry(Entries, RT_BITMAP, Name, Lang, HeadLess, Replace);
     }
 

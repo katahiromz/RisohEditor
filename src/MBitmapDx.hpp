@@ -239,7 +239,7 @@ inline BOOL MBitmapDx::CreateFromMemory(const void *pvData, DWORD dwSize)
         IStream *pStream = NULL;
         if (CreateStreamOnHGlobal(m_hGlobal, FALSE, &pStream) == S_OK)
         {
-            pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+			pBitmap = Gdiplus::Bitmap::FromStream(pStream);
             pStream->Release();
         }
     }
