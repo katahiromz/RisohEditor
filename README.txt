@@ -25,6 +25,8 @@ RisohEditor by katahiromz
         Upgrade "cpp.exe" to version 7.1.0.
         Upgrade "windres.exe" to version 2.28.
         Support of loading window class libraries.
+    2017.09.10 ver.0.8
+        Support GIF/PNG/JPEG/TIFF/AVI/WMF/EMF.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
