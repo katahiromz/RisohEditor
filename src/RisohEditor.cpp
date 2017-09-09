@@ -435,9 +435,9 @@ void
 PremultiplyDx(HBITMAP hbm32bpp)
 {
     BITMAP bm;
-    png_uint_32 cdw;
+    DWORD cdw;
     LPBYTE pb;
-    png_byte alpha;
+    BYTE alpha;
     GetObject(hbm32bpp, sizeof(bm), &bm);
     if (bm.bmBitsPixel == 32)
     {
@@ -446,9 +446,9 @@ PremultiplyDx(HBITMAP hbm32bpp)
         while (cdw--)
         {
             alpha = pb[3];
-            pb[0] = (png_byte) ((png_uint_32) pb[0] * alpha / 255);
-            pb[1] = (png_byte) ((png_uint_32) pb[1] * alpha / 255);
-            pb[2] = (png_byte) ((png_uint_32) pb[2] * alpha / 255);
+            pb[0] = (BYTE) ((DWORD) pb[0] * alpha / 255);
+            pb[1] = (BYTE) ((DWORD) pb[1] * alpha / 255);
+            pb[2] = (BYTE) ((DWORD) pb[2] * alpha / 255);
             pb += 4;
         }
     }
