@@ -138,19 +138,18 @@ public:
         DeleteTempFile();
     }
 
-    void SetAVI(const void *ptr, DWORD size)
+    void SetMedia(const void *ptr, DWORD size)
     {
         DestroyView();
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_HIDE);
         ShowWindow(m_mci_window, SW_HIDE);
+        DeleteTempFile();
 
         TCHAR szTempPath[MAX_PATH];
         GetTempPath(MAX_PATH, szTempPath);
-        DeleteTempFile();
         GetTempFileName(szTempPath, TEXT("avi"), 0, m_szTempFile);
-        ShowScrollBar(m_hwnd, SB_HORZ, FALSE);
-        ShowScrollBar(m_hwnd, SB_VERT, FALSE);
+        ShowScrollBar(m_hwnd, SB_BOTH, FALSE);
 
         MByteStreamEx stream;
         stream.WriteData(ptr, size);
@@ -319,11 +318,8 @@ public:
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
-    void UpdateScrollInfo(HWND hwnd)
+    void UpdateScrollInfo(HWND hwnd, SIZE siz)
     {
-        if (!GetObjectW(m_hBitmap, sizeof(m_bm), &m_bm))
-            return;
-
         RECT rc;
         GetClientRect(hwnd, &rc);
 
@@ -333,7 +329,7 @@ public:
         info.cbSize = sizeof(info);
         info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
         info.nMin = 0;
-        info.nMax = m_bm.bmWidth;
+        info.nMax = siz.cx;
         info.nPage = rc.right - rc.left;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_HORZ, &info, TRUE);
@@ -343,13 +339,22 @@ public:
         info.cbSize = sizeof(info);
         info.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
         info.nMin = 0;
-        info.nMax = m_bm.bmHeight;
+        info.nMax = siz.cy;
         info.nPage = rc.bottom - rc.top;
         info.nPos = 0;
         SetScrollInfo(hwnd, SB_VERT, &info, TRUE);
         ShowScrollBar(hwnd, SB_VERT, TRUE);
 
         InvalidateRect(hwnd, NULL, TRUE);
+    }
+
+    void UpdateScrollInfo(HWND hwnd)
+    {
+        if (!GetObjectW(m_hBitmap, sizeof(m_bm), &m_bm))
+            return;
+
+        SIZE siz = { m_bm.bmWidth, m_bm.bmHeight };
+        UpdateScrollInfo(hwnd, siz);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

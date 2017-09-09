@@ -3776,7 +3776,7 @@ public:
     {
         ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
 
-        m_hBmpView.SetAVI(&Entry[0], Entry.size());
+        m_hBmpView.SetMedia(&Entry[0], Entry.size());
         ShowMovie(TRUE);
     }
 
