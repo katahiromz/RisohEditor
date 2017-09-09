@@ -26,6 +26,7 @@ RisohEditor by katahiromz
         Upgrade "windres.exe" to version 2.28.
         Support of loading window class libraries.
     2017.09.10 ver.0.8
+        Use DLL file "gdiplus.dll".
         Support GIF/PNG/JPEG/TIFF/AVI/WMF/EMF.
 
 /////////////////////////////////////////////////////
