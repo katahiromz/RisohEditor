@@ -5,6 +5,7 @@
 #define MZC4_MBMPVIEW_HPP_
 
 #include "RisohEditor.hpp"
+#include "MBitmapDx.hpp"
 
 class MBmpView;
 
@@ -18,6 +19,8 @@ public:
     HICON       m_hIcon;
     HWND        m_hStatic;
     HWND        m_hPlayButton;
+    MBitmapDx   m_bitmap;
+    enum { TIMER_ID = 999 };
 
     MBmpView()
     {
@@ -61,6 +64,7 @@ public:
         m_hBitmap = hbm;
         ShowWindow(m_hStatic, SW_HIDE);
         ShowWindow(m_hPlayButton, SW_HIDE);
+        UpdateScrollInfo(m_hwnd);
     }
 
     void SetIcon(HICON hIcon, BOOL bIcon)
@@ -70,6 +74,18 @@ public:
         SendMessage(m_hStatic, STM_SETIMAGE, (bIcon ? IMAGE_ICON : IMAGE_CURSOR), (LPARAM)hIcon);
         ShowWindow(m_hStatic, SW_SHOWNOACTIVATE);
         ShowWindow(m_hPlayButton, SW_HIDE);
+        UpdateScrollInfo(m_hwnd);
+    }
+
+    void SetImage(const void *ptr, DWORD size)
+    {
+        DestroyView();
+        ShowWindow(m_hStatic, SW_HIDE);
+        ShowWindow(m_hPlayButton, SW_HIDE);
+        if (m_bitmap.CreateFromMemory(ptr, size))
+        {
+            SetTimer(m_hwnd, TIMER_ID, 0, NULL);
+        }
     }
 
     void SetPlay()
@@ -91,6 +107,7 @@ public:
             DestroyIcon(m_hIcon);
             m_hIcon = NULL;
         }
+        m_bitmap.SetBitmap(NULL);
     }
 
     BOOL CreateDx(HWND hwndParent, INT CtrlID = 4, BOOL bVisible = FALSE)
@@ -265,6 +282,27 @@ public:
         FORWARD_WM_SIZE(hwnd, state, cx, cy, DefWindowProcW);
     }
 
+    void OnTimer(HWND hwnd, UINT id)
+    {
+        KillTimer(hwnd, id);
+        if (id != TIMER_ID)
+            return;
+
+        DWORD dwDelay;
+        if (m_bitmap.Step(dwDelay))
+        {
+            LONG cx, cy;
+            if (m_hBitmap)
+            {
+                DeleteObject(m_hBitmap);
+            }
+            m_hBitmap = m_bitmap.GetHBITMAP(cx, cy);
+            UpdateScrollInfo(hwnd);
+            InvalidateRect(hwnd, NULL, FALSE);
+            SetTimer(hwnd, TIMER_ID, dwDelay, NULL);
+        }
+    }
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -277,6 +315,7 @@ public:
             HANDLE_MSG(hwnd, WM_VSCROLL, OnVScroll);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
         default:
             return DefaultProcDx();
         }

@@ -3632,21 +3632,9 @@ public:
         ShowBmpView(TRUE);
     }
 
-    void PreviewPNG(HWND hwnd, const ResEntry& Entry)
+    void PreviewImage(HWND hwnd, const ResEntry& Entry)
     {
-        HBITMAP hbm = ii_png_load_mem(&Entry[0], Entry.size());
-        if (hbm)
-        {
-            BITMAP bm;
-            GetObject(hbm, sizeof(bm), &bm);
-            m_hBmpView.SetBitmap(Create24BppBitmapDx(bm.bmWidth, bm.bmHeight));
-            if (!!m_hBmpView)
-            {
-                FillBitmapDx(m_hBmpView.m_hBitmap, GetStockBrush(LTGRAY_BRUSH));
-                DrawBitmapDx(m_hBmpView.m_hBitmap, hbm, 0, 0);
-            }
-            DeleteObject(hbm);
-        }
+        m_hBmpView.SetImage(&Entry[0], Entry.size());
 
         std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3881,9 +3869,10 @@ public:
             PreviewVersion(hwnd, Entry);
             bEditable = TRUE;
         }
-        else if (Entry.type == L"PNG")
+        else if (Entry.type == L"PNG" || Entry.type == L"GIF" ||
+                 Entry.type == L"JPEG" || Entry.type == L"TIFF")
         {
-            PreviewPNG(hwnd, Entry);
+            PreviewImage(hwnd, Entry);
             bEditable = FALSE;
         }
         else if (Entry.type == L"WAVE")
