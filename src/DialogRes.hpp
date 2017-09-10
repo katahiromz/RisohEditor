@@ -105,6 +105,7 @@ struct DialogItem
     MIdOrString         m_Title;
     std::vector<BYTE>   Extra;
     DWORD               m_OldStyle, m_OldExStyle;
+    SIZE                m_sizOld;
 
     DialogItem()
     {
@@ -412,11 +413,8 @@ struct DialogItem
         std::wstring ret;
         ret += ctrl;
         ret += L" ";
-        if (!m_Title.empty())
-        {
-            ret += m_Title.quoted_wstr();
-            ret += L", ";
-        }
+        ret += m_Title.quoted_wstr();
+        ret += L", ";
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
         ret += mstr_dec((WORD)m_pt.x);
@@ -536,6 +534,7 @@ struct DialogItem
         {
             m_Style = m_OldStyle;
             m_ExStyle = m_OldExStyle;
+            m_siz = m_sizOld;
         }
         else
         {
@@ -548,6 +547,12 @@ struct DialogItem
             m_ExStyle &= ~(WS_EX_ACCEPTFILES | WS_EX_LAYERED | WS_EX_TRANSPARENT |
                          WS_EX_TOPMOST);
             m_ExStyle |= WS_EX_NOACTIVATE;
+            m_sizOld = m_siz;
+            if (m_siz.cx == 0 && m_siz.cy == 0)
+            {
+                m_siz.cx = 20;
+                m_siz.cy = 20;
+            }
         }
     }
 };
