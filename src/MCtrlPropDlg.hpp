@@ -117,6 +117,8 @@ public:
         mstr_trim(strCaption);
         if (!strCaption.empty())
             flags |= F_TITLE;
+        if (strCaption[0] == TEXT('"'))
+            mstr_unquote(strCaption);
         item.m_Title = strCaption.c_str();
 
         MString strX = GetDlgItemText(edt1);
@@ -400,7 +402,15 @@ public:
         }
         if (m_flags & F_TITLE)
         {
-            SetDlgItemText(hwnd, cmb2, m_item.m_Title.c_str_or_empty());
+            MString strCaption;
+            if (!m_item.m_Title.empty())
+            {
+                if (m_item.m_Title.is_int())
+                    strCaption = m_item.m_Title.c_str();
+                else
+                    strCaption = m_item.m_Title.quoted_wstr();
+            }
+            SetDlgItemText(hwnd, cmb2, strCaption.c_str());
         }
 
         CenterWindowDx();
