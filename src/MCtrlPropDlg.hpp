@@ -391,7 +391,7 @@ public:
         }
         if (m_flags & F_ID)
         {
-            MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_HelpID);
+            MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_ID);
             SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
         if (m_flags & F_CLASS)
