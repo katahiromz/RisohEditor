@@ -426,7 +426,7 @@ struct DialogItem
         ret += mstr_dec((WORD)m_siz.cx);
         ret += L", ";
         ret += mstr_dec((WORD)m_siz.cy);
-        if (m_Style != DefStyle || m_ExStyle)
+        if (m_Style != DefStyle || m_ExStyle || m_HelpID)
         {
             ret += L", ";
             DWORD value = m_Style;
