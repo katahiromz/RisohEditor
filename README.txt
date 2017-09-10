@@ -29,6 +29,7 @@ RisohEditor by katahiromz
         Use DLL file "gdiplus.dll".
         Support GIF/PNG/JPEG/TIFF/AVI/WMF/EMF.
         Correct display of icon information.
+        Correct dialog information.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
