@@ -1729,6 +1729,11 @@ public:
         if (!CompileIfNecessary(hwnd))
             return;
 
+        if (m_rad_window)
+        {
+            DestroyWindow(m_rad_window);
+        }
+
         HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
         if (hItem == NULL)
             return;
