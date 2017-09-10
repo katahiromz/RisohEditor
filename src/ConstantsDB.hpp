@@ -404,7 +404,7 @@ public:
             }
         }
 
-        return mstr_hex(value);
+        return mstr_dec(value);
     }
 
     ValueType
