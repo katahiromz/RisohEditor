@@ -2474,7 +2474,7 @@ public:
         dialog_res.SaveToStream(stream);
         Entry.data = stream.data();
 
-        std::wstring str = dialog_res.Dump(Entry.name, m_db);
+        std::wstring str = dialog_res.Dump(Entry.name);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
 
         str = DumpDataAsString(Entry.data);
@@ -3846,10 +3846,10 @@ public:
     void PreviewDialog(HWND hwnd, const ResEntry& Entry)
     {
         MByteStreamEx stream(Entry.data);
-        DialogRes dialog_res;
+        DialogRes dialog_res(m_db);
         if (dialog_res.LoadFromStream(stream))
         {
-            std::wstring str = dialog_res.Dump(Entry.name, m_db, m_settings.bAlwaysControl);
+            std::wstring str = dialog_res.Dump(Entry.name, m_settings.bAlwaysControl);
             ::SetWindowTextW(m_hSrcEdit, str.c_str());
         }
     }

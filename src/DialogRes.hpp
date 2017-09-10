@@ -398,7 +398,7 @@ struct DialogItem
         if (m_HelpID)
         {
             ret += L", ";
-            ret += mstr_hex(m_HelpID);
+            ret += db.GetNameOfResID(IDTYPE_HELP, m_HelpID);
         }
 
         return ret;
@@ -441,7 +441,7 @@ struct DialogItem
         if (m_HelpID)
         {
             ret += L", ";
-            ret += mstr_hex(m_HelpID);
+            ret += db.GetNameOfResID(IDTYPE_HELP, m_HelpID);
         }
         return ret;
     }
@@ -557,6 +557,7 @@ typedef std::vector<DialogItem> DialogItems;
 
 struct DialogRes
 {
+    ConstantsDB&                m_db;
     WORD                        m_Version;
     WORD                        m_Signature;
     DWORD                       m_HelpID;
@@ -565,21 +566,21 @@ struct DialogRes
     WORD                        m_cItems;
     POINT                       m_pt;
     SIZE                        m_siz;
-    MIdOrString                m_Menu;
-    MIdOrString                m_Class;
-    MIdOrString                m_Title;
+    MIdOrString                 m_Menu;
+    MIdOrString                 m_Class;
+    MIdOrString                 m_Title;
     short                       m_PointSize;
     short                       m_Weight;
     BYTE                        m_Italic;
     BYTE                        m_CharSet;
-    MIdOrString                m_TypeFace;
+    MIdOrString                 m_TypeFace;
     DialogItems                 Items;
     DWORD                       m_OldStyle, m_OldExStyle;
     LANGID                      m_LangID;
-    MIdOrString                m_OldMenu;
-    MIdOrString                m_OldClass;
+    MIdOrString                 m_OldMenu;
+    MIdOrString                 m_OldClass;
 
-    DialogRes()
+    DialogRes(ConstantsDB& db) : m_db(db)
     {
         m_Version = 0;
         m_Signature = 0;
@@ -688,8 +689,7 @@ struct DialogRes
         return stream.data();
     }
 
-    std::wstring Dump(const MIdOrString& id_or_str, const ConstantsDB& db,
-                      BOOL bAlwaysControl = FALSE)
+    std::wstring Dump(const MIdOrString& id_or_str, BOOL bAlwaysControl = FALSE)
     {
         std::wstring ret;
 
@@ -699,7 +699,7 @@ struct DialogRes
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_ID);
+            ret += m_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_ID);
         }
 
         if (IsExtended())
@@ -718,6 +718,11 @@ struct DialogRes
         ret += mstr_dec((WORD)m_siz.cx);
         ret += L", ";
         ret += mstr_dec((WORD)m_siz.cy);
+        if (IsExtended() && m_HelpID)
+        {
+            ret += L", ";
+            ret += m_db.GetNameOfResID(IDTYPE_HELP, m_HelpID);
+        }
         ret += L"\r\n";
 
         if (!m_Title.empty())
@@ -741,7 +746,7 @@ struct DialogRes
 
         {
             DWORD value = (m_Style & ~DS_SETFONT);
-            std::wstring str = db.DumpBitField(L"DIALOG", L"STYLE", value);
+            std::wstring str = m_db.DumpBitField(L"DIALOG", L"STYLE", value);
             if (value)
             {
                 if (!str.empty())
@@ -757,7 +762,7 @@ struct DialogRes
         if (m_ExStyle)
         {
             DWORD value = m_ExStyle;
-            std::wstring str = db.DumpBitField(L"EXSTYLE", L"", value);
+            std::wstring str = m_db.DumpBitField(L"EXSTYLE", L"", value);
             if (value)
             {
                 if (!str.empty())
@@ -793,7 +798,7 @@ struct DialogRes
         for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
-            ret += Items[i].Dump(db, bAlwaysControl);
+            ret += Items[i].Dump(m_db, bAlwaysControl);
             ret += L"\r\n";
         }
 

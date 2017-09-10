@@ -817,7 +817,7 @@ public:
 
     MRadWindow(ConstantsDB& db, RisohSettings& settings)
         : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
-          m_settings(settings)
+          m_dialog_res(db), m_settings(settings)
     {
     }
 
