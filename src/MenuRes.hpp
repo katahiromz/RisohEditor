@@ -501,7 +501,7 @@ public:
                     ret += L", ";
                     if (0)
                     {
-                        ret += mstr_hex(it->dwHelpId);
+                        ret += mstr_dec(it->dwHelpId);
                     }
                     else
                     {

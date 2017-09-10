@@ -301,7 +301,7 @@ struct DialogItem
         if (m_Class.is_int())
         {
             if (!IDToPredefClass(m_Class.m_ID, cls))
-                cls = mstr_hex(m_Class.m_ID);
+                cls = mstr_dec(m_Class.m_ID);
         }
         else
         {
@@ -367,7 +367,7 @@ struct DialogItem
             if (IDToPredefClass(m_Class.m_ID, cls))
                 ret += mstr_quote(cls);
             else
-                ret += mstr_hex(m_Class.m_ID);
+                ret += mstr_dec(m_Class.m_ID);
         }
         else
         {
