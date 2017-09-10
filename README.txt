@@ -30,6 +30,7 @@ RisohEditor by katahiromz
         Support GIF/PNG/JPEG/TIFF/AVI/WMF/EMF.
         Correct display of icon information.
         Correct dialog information.
+        Hide the dialog when the user delete the dialog resource.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
