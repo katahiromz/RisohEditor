@@ -79,7 +79,7 @@ public:
                 {
                     if (data.size())
                     {
-                        MStringA str(&data[0], data.size());
+                        MStringA str((const char *)&data[0], data.size());
                         MStringW wstr = MAnsiToWide(str).c_str();
                         m_map[k] = wstr;
                     }

@@ -3393,8 +3393,11 @@ public:
     {
         RECT rc;
         GetWindowRect(hwnd, &rc);
-        m_settings.nWindowLeft = rc.left;
-        m_settings.nWindowTop = rc.top;
+        if (!IsZoomed(hwnd))
+        {
+            m_settings.nWindowLeft = rc.left;
+            m_settings.nWindowTop = rc.top;
+        }
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
