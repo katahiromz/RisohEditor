@@ -99,6 +99,7 @@ struct RisohSettings
     INT         nWindowTop;
     INT         nWindowWidth;
     INT         nWindowHeight;
+    BOOL        bMaximized;
     INT         nIDListLeft;
     INT         nIDListTop;
     INT         nIDListWidth;

@@ -1408,7 +1408,14 @@ public:
             return FALSE;
         }
 
-        ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+        if (m_settings.bResumeWindowPos && m_settings.bMaximized)
+        {
+            ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
+        }
+        else
+        {
+            ShowWindow(m_hwnd, nCmdShow);
+        }
         UpdateWindow(m_hwnd);
 
         return TRUE;
@@ -3397,9 +3404,17 @@ public:
 
         RECT rc, ClientRect;
 
-        GetWindowRect(hwnd, &rc);
-        m_settings.nWindowWidth = rc.right - rc.left;
-        m_settings.nWindowHeight = rc.bottom - rc.top;
+        if (IsZoomed(hwnd))
+        {
+            m_settings.bMaximized = TRUE;
+        }
+        else
+        {
+            GetWindowRect(hwnd, &rc);
+            m_settings.nWindowWidth = rc.right - rc.left;
+            m_settings.nWindowHeight = rc.bottom - rc.top;
+            m_settings.bMaximized = FALSE;
+        }
 
         GetClientRect(hwnd, &ClientRect);
         SIZE sizClient = SizeFromRectDx(&ClientRect);
@@ -5101,6 +5116,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nWindowTop = CW_USEDEFAULT;
     m_settings.nWindowWidth = 760;
     m_settings.nWindowHeight = 480;
+    m_settings.bMaximized = FALSE;
     m_settings.nIDListLeft = CW_USEDEFAULT;
     m_settings.nIDListTop = CW_USEDEFAULT;
     m_settings.nIDListWidth = 366;
@@ -5187,6 +5203,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nWindowTop"), (DWORD&)m_settings.nWindowTop);
     keyRisoh.QueryDword(TEXT("nWindowWidth"), (DWORD&)m_settings.nWindowWidth);
     keyRisoh.QueryDword(TEXT("nWindowHeight"), (DWORD&)m_settings.nWindowHeight);
+    keyRisoh.QueryDword(TEXT("bMaximized"), (DWORD&)m_settings.bMaximized);
     keyRisoh.QueryDword(TEXT("nIDListLeft"), (DWORD&)m_settings.nIDListLeft);
     keyRisoh.QueryDword(TEXT("nIDListTop"), (DWORD&)m_settings.nIDListTop);
     keyRisoh.QueryDword(TEXT("nIDListWidth"), (DWORD&)m_settings.nIDListWidth);
@@ -5259,6 +5276,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nWindowTop"), m_settings.nWindowTop);
     keyRisoh.SetDword(TEXT("nWindowWidth"), m_settings.nWindowWidth);
     keyRisoh.SetDword(TEXT("nWindowHeight"), m_settings.nWindowHeight);
+    keyRisoh.SetDword(TEXT("bMaximized"), m_settings.bMaximized);
     keyRisoh.SetDword(TEXT("nIDListLeft"), m_settings.nIDListLeft);
     keyRisoh.SetDword(TEXT("nIDListTop"), m_settings.nIDListTop);
     keyRisoh.SetDword(TEXT("nIDListWidth"), m_settings.nIDListWidth);
