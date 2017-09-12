@@ -1155,7 +1155,7 @@ void ReplaceBackslash(LPWSTR szPath)
 std::wstring GetKeyID(ConstantsDB& db, UINT wId)
 {
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
-        return mstr_dec_short(wId);
+        return mstr_dec_short((SHORT)wId);
 
     return db.GetNameOfResID(IDTYPE_COMMAND, wId);
 }

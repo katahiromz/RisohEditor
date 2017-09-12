@@ -171,7 +171,7 @@ public:
             ErrorBoxDx(IDS_NOSUCHID);
             return 0xFFFFFFFF;
         }
-        item.m_ID = id;
+        item.m_ID = (WORD)id;
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);

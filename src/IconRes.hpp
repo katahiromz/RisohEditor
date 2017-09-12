@@ -271,7 +271,7 @@ public:
             }
 
             grpEntry.dwBytesInRes       = m_entries[i].dwBytesInRes;
-            grpEntry.nID                = nBaseID + i;
+            grpEntry.nID                = WORD(nBaseID + i);
 
             memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
             offset += sizeof(grpEntry);
@@ -500,7 +500,7 @@ public:
 
             grpEntry.wHeight           *= 2;
             grpEntry.dwBytesInRes       = m_entries[i].dwBytesInRes;
-            grpEntry.nID                = nBaseID + i;
+            grpEntry.nID                = WORD(nBaseID + i);
 
             memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
             offset += sizeof(grpEntry);

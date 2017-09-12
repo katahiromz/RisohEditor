@@ -490,7 +490,7 @@ Res_AddGroupIcon(ResEntries& Entries, const MIdOrString& Name,
     int i, Count = icon.GetImageCount();
     for (i = 0; i < Count; ++i)
     {
-        Res_AddEntry(Entries, RT_ICON, NextIconID + i, Lang,
+        Res_AddEntry(Entries, RT_ICON, WORD(NextIconID + i), Lang,
                      icon.GetImage(i));
     }
     return TRUE;
@@ -513,7 +513,7 @@ Res_AddGroupCursor(ResEntries& Entries, const MIdOrString& Name,
     int i, Count = cur.GetImageCount();
     for (i = 0; i < Count; ++i)
     {
-        Res_AddEntry(Entries, RT_CURSOR, NextCursorID + i, Lang,
+        Res_AddEntry(Entries, RT_CURSOR, WORD(NextCursorID + i), Lang,
                      cur.GetImage(i));
     }
     return TRUE;

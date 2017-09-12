@@ -173,19 +173,19 @@ public:
         INT cy = GetDlgItemInt(hwnd, edt4, NULL, TRUE);
         MString strID = GetDlgItemText(cmb3);
         mstr_trim(strID);
-        UINT id;
+        WORD id;
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
             strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
-            id = _tcstol(strID.c_str(), NULL, 0);
+            id = (WORD)_tcstol(strID.c_str(), NULL, 0);
         }
         else if (m_db.HasResID(strID))
         {
-            id = m_db.GetResIDValue(strID);
+            id = (WORD)m_db.GetResIDValue(strID);
         }
         else if (m_db.HasCtrlID(strID))
         {
-            id = m_db.GetCtrlIDValue(strID);
+            id = (WORD)m_db.GetCtrlIDValue(strID);
         }
         else
         {

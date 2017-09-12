@@ -79,7 +79,7 @@ public:
                 {
                     if (data.size())
                     {
-                        MStringA str(data[0], data.size());
+                        MStringA str(&data[0], data.size());
                         MStringW wstr = MAnsiToWide(str).c_str();
                         m_map[k] = wstr;
                     }
@@ -137,7 +137,7 @@ public:
                 {
                     std::wstring& wstr = m_map[k];
                     MESSAGE_RESOURCE_ENTRY_HEADER header;
-                    header.Length = wstr.size() * sizeof(WCHAR);
+                    header.Length = (WORD)(wstr.size() * sizeof(WCHAR));
 
                     if (mstr_is_ascii(wstr))
                     {

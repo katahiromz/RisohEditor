@@ -482,7 +482,7 @@ public:
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += mstr_dec_short(it->menuId);
+                    ret += mstr_dec_short((SHORT)it->menuId);
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {
