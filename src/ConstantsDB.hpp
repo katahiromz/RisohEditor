@@ -131,15 +131,15 @@ public:
     StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
     {
         if ((BOOL)GetValue(L"HIDE.ID", L"HIDE.ID"))
-            return mstr_dec((WORD)value);
+            return mstr_dec_short((SHORT)value);
 
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
         if (nIDTYPE_ >= (INT)table.size())
-            return mstr_dec((WORD)value);
+            return mstr_dec_short((SHORT)value);
 
         StringType prefix = table[nIDTYPE_].name;
         if (prefix.empty())
-            return mstr_dec((WORD)value);
+            return mstr_dec_short((SHORT)value);
 
         table = GetTableByPrefix(L"RESOURCE.ID", prefix);
         TableType::iterator it, end = table.end();
@@ -158,12 +158,18 @@ public:
         }
 
         if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
-            nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND)
+            nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
+            nIDTYPE_ != IDTYPE_HELP)
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
 
-        return mstr_dec((WORD)value);
+        if (nIDTYPE_ == IDTYPE_HELP)
+        {
+            return mstr_dec(value);
+        }
+
+        return mstr_dec_short((SHORT)value);
     }
 
     NameType GetName(CategoryType category, ValueType value) const

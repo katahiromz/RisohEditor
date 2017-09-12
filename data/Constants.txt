@@ -48,7 +48,7 @@ IDI_, 6
 IDAC_, 7
 IDAI_, 8
 IDH_, 9
-HELPID_, 10
+HID_, 10
 CMDID_, 11
 CID_, 12
 IDR_, 13

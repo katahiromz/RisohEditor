@@ -424,7 +424,7 @@ public:
                     ret += L"\", ";
                     if (0)
                     {
-                        ret += mstr_dec(it->wMenuID);
+                        ret += mstr_dec_short(it->wMenuID);
                     }
                     else
                     {
@@ -482,7 +482,7 @@ public:
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += mstr_dec(it->menuId);
+                    ret += mstr_dec_short(it->menuId);
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {

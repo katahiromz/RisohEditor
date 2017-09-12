@@ -649,7 +649,7 @@ Res_GetName(const MIdOrString& id_or_str)
     std::wstring ret;
     if (id_or_str.m_ID != 0)
     {
-        ret = mstr_dec(id_or_str.m_ID);
+        ret = mstr_dec_short(id_or_str.m_ID);
     }
     else
     {

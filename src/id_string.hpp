@@ -10,7 +10,8 @@
 
 struct MIdOrString;
 
-std::wstring mstr_dec(WORD nID);
+std::wstring mstr_dec_short(SHORT nID);
+std::wstring mstr_dec(LONG nID);
 std::wstring mstr_hex(INT nID);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(std::wstring& str);
@@ -217,7 +218,7 @@ struct MIdOrString
                 return s_str;
             }
         }
-        s_str = mstr_dec(m_ID);
+        s_str = mstr_dec_short(m_ID);
         return s_str;
     }
 
@@ -237,7 +238,7 @@ struct MIdOrString
         }
         else
         {
-            s_str = mstr_dec(m_ID);
+            s_str = mstr_dec_short(m_ID);
         }
         return s_str;
     }
@@ -270,7 +271,7 @@ struct MIdOrString
         }
         else
         {
-            ret = mstr_dec(m_ID);
+            ret = mstr_dec_short(m_ID);
         }
         return ret;
     }
@@ -501,11 +502,20 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring mstr_dec(WORD nID)
+inline std::wstring mstr_dec_short(SHORT nID)
 {
     using namespace std;
     wchar_t sz[32];
-    wsprintfW(sz, L"%d", (SHORT)nID);
+    wsprintfW(sz, L"%d", nID);
+    std::wstring ret(sz);
+    return ret;
+}
+
+inline std::wstring mstr_dec(LONG nID)
+{
+    using namespace std;
+    wchar_t sz[32];
+    wsprintfW(sz, L"%ld", nID);
     std::wstring ret(sz);
     return ret;
 }

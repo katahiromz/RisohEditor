@@ -301,7 +301,7 @@ struct DialogItem
         if (m_Class.is_int())
         {
             if (!IDToPredefClass(m_Class.m_ID, cls))
-                cls = mstr_dec(m_Class.m_ID);
+                cls = mstr_dec_short(m_Class.m_ID);
         }
         else
         {
@@ -367,7 +367,7 @@ struct DialogItem
             if (IDToPredefClass(m_Class.m_ID, cls))
                 ret += mstr_quote(cls);
             else
-                ret += mstr_dec(m_Class.m_ID);
+                ret += mstr_dec_short(m_Class.m_ID);
         }
         else
         {
@@ -383,13 +383,13 @@ struct DialogItem
         }
 
         ret += L", ";
-        ret += mstr_dec((WORD)m_pt.x);
+        ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
-        ret += mstr_dec((WORD)m_pt.y);
+        ret += mstr_dec_short((SHORT)m_pt.y);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cx);
+        ret += mstr_dec_short((SHORT)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cy);
+        ret += mstr_dec_short((SHORT)m_siz.cy);
         if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
@@ -417,13 +417,13 @@ struct DialogItem
         ret += L", ";
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
-        ret += mstr_dec((WORD)m_pt.x);
+        ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
-        ret += mstr_dec((WORD)m_pt.y);
+        ret += mstr_dec_short((SHORT)m_pt.y);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cx);
+        ret += mstr_dec_short((SHORT)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cy);
+        ret += mstr_dec_short((SHORT)m_siz.cy);
         if (m_Style != DefStyle || m_ExStyle || m_HelpID)
         {
             ret += L", ";
@@ -716,13 +716,13 @@ struct DialogRes
             ret += L" DIALOG ";
         }
 
-        ret += mstr_dec((WORD)m_pt.x);
+        ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
-        ret += mstr_dec((WORD)m_pt.y);
+        ret += mstr_dec_short((SHORT)m_pt.y);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cx);
+        ret += mstr_dec_short((SHORT)m_siz.cx);
         ret += L", ";
-        ret += mstr_dec((WORD)m_siz.cy);
+        ret += mstr_dec_short((SHORT)m_siz.cy);
         if (IsExtended() && m_HelpID)
         {
             ret += L", ";
@@ -783,17 +783,17 @@ struct DialogRes
         if (m_Style & (DS_SETFONT | DS_SHELLFONT))
         {
             ret += L"FONT ";
-            ret += mstr_dec(m_PointSize);
+            ret += mstr_dec_short(m_PointSize);
             ret += L", ";
             ret += m_TypeFace.quoted_wstr();
             if (IsExtended())
             {
                 ret += L", ";
-                ret += mstr_dec(m_Weight);
+                ret += mstr_dec_short(m_Weight);
                 ret += L", ";
-                ret += mstr_dec(!!m_Italic);
+                ret += mstr_dec_short(!!m_Italic);
                 ret += L", ";
-                ret += mstr_dec(m_CharSet);
+                ret += mstr_dec_short(m_CharSet);
             }
             ret += L"\r\n";
         }

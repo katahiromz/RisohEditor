@@ -92,7 +92,7 @@ public:
             ret += L"    ";
             if (0)
             {
-                ret += mstr_dec(i);
+                ret += mstr_dec_short(i);
             }
             else
             {

@@ -1155,7 +1155,7 @@ void ReplaceBackslash(LPWSTR szPath)
 std::wstring GetKeyID(ConstantsDB& db, UINT wId)
 {
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
-        return mstr_dec(wId);
+        return mstr_dec_short(wId);
 
     return db.GetNameOfResID(IDTYPE_COMMAND, wId);
 }
@@ -1224,7 +1224,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         LONG n = wcstol(str.c_str(), NULL, 0);
-        str = mstr_dec((WORD)n);
+        str = mstr_dec_short((SHORT)n);
     }
     else if (!db.HasResID(str))
     {
@@ -5149,7 +5149,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
         m_settings.assoc_map[L"AniCursor.ID"] = L"IDAC_";
         m_settings.assoc_map[L"AniIcon.ID"] = L"IDAI_";
         m_settings.assoc_map[L"Html.ID"] = L"IDH_";
-        m_settings.assoc_map[L"Help.ID"] = L"HELPID_";
+        m_settings.assoc_map[L"Help.ID"] = L"HID_";
         m_settings.assoc_map[L"Command.ID"] = L"CMDID_";
         m_settings.assoc_map[L"Control.ID"] = L"CID_";
         m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
