@@ -31,11 +31,12 @@ RisohEditor by katahiromz
         Correct display of icon information.
         Correct dialog information.
         Hide the dialog when the user delete the dialog resource.
-    2017.09.17 ver.0.9
+    2017.09.16 ver.0.9
+        Add installer.
+        Enrich the tool bar.
         Enable to resume the window maximized status.
         Fix interpretation of IDs.
         Fix the prefix of help IDs from "HELPID_" to "HID_".
-        Empower tool bar.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
