@@ -11,6 +11,9 @@ RisohEditor by katahiromz
 
     See LICENSE.txt for details of copyrights and 
     license agreement.
+[WARNING!]
+    Please don't install in "C:\Program Files" or "C:\Program Files (x86)".
+    Because the resource compiler hates spaces in the file path.
 [HISTORY]
     2017.08.31 ver.0.6
         First release.
