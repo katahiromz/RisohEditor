@@ -733,7 +733,11 @@ TBBUTTON g_buttons2[] =
 
 TBBUTTON g_buttons3[] =
 {
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, CMDID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON },
+    { -1, CMDID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR },
+    { -1, CMDID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG },
+    { -1, CMDID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU },
+    { -1, CMDID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO },
 };
 
 TBBUTTON g_buttons4[] =
@@ -763,7 +767,7 @@ void ToolBar_Update(HWND hwnd, INT iType)
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
         break;
     case 3:
-        //SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
+        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
         break;
     case 4:
         SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
@@ -803,7 +807,7 @@ HWND ToolBar_Create(HWND hwndParent)
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
-    //ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
 
@@ -2125,6 +2129,39 @@ public:
         }
     }
 
+    void OnAddMenu(HWND hwnd)
+    {
+        MAddResDlg dialog(m_Entries, m_db);
+        dialog.m_type = RT_MENU;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        }
+    }
+
+    void OnAddVerInfo(HWND hwnd)
+    {
+        MAddResDlg dialog(m_Entries, m_db);
+        dialog.m_type = RT_VERSION;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        }
+    }
+
+    void OnAddDialog(HWND hwnd)
+    {
+        MAddResDlg dialog(m_Entries, m_db);
+        dialog.m_type = RT_DIALOG;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        }
+    }
+
     void OnAbout(HWND hwnd)
     {
         MSGBOXPARAMSW Params;
@@ -2726,6 +2763,15 @@ public:
             break;
         case CMDID_REPLACE:
             OnReplace(hwnd);
+            break;
+        case CMDID_ADDMENU:
+            OnAddMenu(hwnd);
+            break;
+        case CMDID_ADDVERINFO:
+            OnAddVerInfo(hwnd);
+            break;
+        case CMDID_ADDDIALOG:
+            OnAddDialog(hwnd);
             break;
         default:
             bUpdateStatus = FALSE;

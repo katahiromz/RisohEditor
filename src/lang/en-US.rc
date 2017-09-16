@@ -253,6 +253,10 @@ STRINGTABLE
     IDS_DLGFAIL, "Oops, I failed to create a RAD dialog."
     IDS_LOADWCLIB, "Load A Window Class Library"
     IDS_AVIMOVIE, "(AVI Movie)"
+    IDS_ADDDIALOG, "Add Dialog"
+    IDS_ADDMENU, "Add Menu"
+    IDS_ADDVERINFO, "Add VerInfo"
+    IDS_ADDCURSOR, "Add Cursor"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -86,6 +86,9 @@
 #define CMDID_FINDDOWNWARD      181
 #define CMDID_FINDUPWARD        182
 #define CMDID_REPLACE           183
+#define CMDID_ADDMENU           184
+#define CMDID_ADDVERINFO        185
+#define CMDID_ADDDIALOG         186
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -218,5 +221,9 @@
 #define IDS_DLGFAIL         101
 #define IDS_LOADWCLIB       102
 #define IDS_AVIMOVIE        103
+#define IDS_ADDDIALOG       104
+#define IDS_ADDMENU         105
+#define IDS_ADDVERINFO      106
+#define IDS_ADDCURSOR       107
 
 #endif  // ndef RESOURCE_H_

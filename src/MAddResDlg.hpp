@@ -90,6 +90,11 @@ public:
             ComboBox_SetCurSel(hCmb1, k);
         }
 
+        if (m_type == RT_VERSION)
+        {
+            SetDlgItemInt(hwnd, cmb2, 1, FALSE);
+        }
+
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());

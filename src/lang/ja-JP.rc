@@ -253,6 +253,10 @@ STRINGTABLE
     IDS_DLGFAIL, "RADダイアログを作成するのに失敗しました。"
     IDS_LOADWCLIB, "ウィンドウ クラス ライブラリを読み込む"
     IDS_AVIMOVIE, "(AVI動画)"
+    IDS_ADDDIALOG, "ダイアログの追加"
+    IDS_ADDMENU, "メニューの追加"
+    IDS_ADDVERINFO, "バージョン情報の追加"
+    IDS_ADDCURSOR, "カーソルの追加"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
