@@ -4665,6 +4665,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
+    MWaitCursor wait;
     if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
     {
         ToolBar_Update(m_hToolBar, 2);
