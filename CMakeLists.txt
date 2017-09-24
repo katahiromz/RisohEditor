@@ -25,7 +25,9 @@ endif()
 
 # define _DEBUG on Debug version
 if (uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DEBUG")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DEBUG=1")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG=1")
 endif()
 
 # set output directory (build/)
