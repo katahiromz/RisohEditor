@@ -329,6 +329,8 @@ struct DialogItem
                     return _do_GROUPBOX(db);
                 if ((m_Style & BS_TYPEMASK) == BS_PUSHBUTTON)
                     return _do_PUSHBUTTON(db);
+                if ((m_Style & BS_TYPEMASK) == BS_PUSHBOX)
+                    return _do_PUSHBOX(db);
                 if ((m_Style & BS_TYPEMASK) == BS_RADIOBUTTON)
                     return _do_RADIOBUTTON(db);
                 if ((m_Style & BS_TYPEMASK) == BS_3STATE)
@@ -494,6 +496,10 @@ struct DialogItem
     std::wstring _do_PUSHBUTTON(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"PUSHBUTTON", (BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+    }
+    std::wstring _do_PUSHBOX(const ConstantsDB& db)
+    {
+        return _do_BUTTON(db, L"PUSHBOX", (BS_PUSHBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
     std::wstring _do_RADIOBUTTON(const ConstantsDB& db)
     {
