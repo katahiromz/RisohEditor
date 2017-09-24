@@ -1320,6 +1320,11 @@ protected:
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
 
+    // selection
+    MIdOrString     m_type;
+    MIdOrString     m_name;
+    WORD            m_lang;
+
     // classes
     RisohSettings   m_settings;
     ConstantsDB     m_db;
@@ -1352,6 +1357,8 @@ public:
         m_szWindresExe[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
+
+        m_lang = 0xFFFF;
 
         ZeroMemory(&m_fr, sizeof(m_fr));
         m_fr.lStructSize = sizeof(m_fr);
@@ -1409,7 +1416,8 @@ public:
     void UpdateMenu();
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick);
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
-    BOOL CompileIfNecessary(HWND hwnd);
+    BOOL CompileIfNecessary(HWND hwnd, BOOL bReopen = FALSE);
+    BOOL ReCompileOnSelChange(HWND hwnd, BOOL bReopen = FALSE);
 
     // ID list
     void UpdateIDList(HWND hwnd);
@@ -1553,7 +1561,7 @@ void MMainWnd::OnSysColorChange(HWND hwnd)
 
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
     {
         return FALSE;
     }
@@ -1626,6 +1634,9 @@ void MMainWnd::UpdateMenu()
 
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) == I_NONE)
         return;
@@ -1672,6 +1683,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -1711,6 +1725,9 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 
 void MMainWnd::OnExtractCursor(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -1750,6 +1767,9 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
 
 void MMainWnd::OnExtractBitmap(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -1781,6 +1801,9 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 
 void MMainWnd::OnReplaceBin(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -1796,6 +1819,9 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 
 void MMainWnd::OnAbout(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     MSGBOXPARAMSW params;
 
     ZeroMemory(&params, sizeof(params));
@@ -1815,7 +1841,7 @@ void MMainWnd::OnAbout(HWND hwnd)
 
 void MMainWnd::OnLoadWCLib(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
     WCHAR File[MAX_PATH] = TEXT("");
@@ -1842,7 +1868,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 
 void MMainWnd::OnImport(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
     WCHAR File[MAX_PATH] = TEXT("");
@@ -1897,7 +1923,7 @@ void MMainWnd::OnImport(HWND hwnd)
 
 void MMainWnd::OnOpen(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
     WCHAR File[MAX_PATH];
@@ -1922,6 +1948,7 @@ void MMainWnd::OnOpen(HWND hwnd)
 
 void MMainWnd::OnNew(HWND hwnd)
 {
+    HidePreview(hwnd);
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL);
     m_Entries.clear();
@@ -1930,7 +1957,7 @@ void MMainWnd::OnNew(HWND hwnd)
 
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
     WCHAR File[MAX_PATH];
@@ -2003,13 +2030,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
 void MMainWnd::OnDeleteRes(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, FALSE))
         return;
-
-    if (m_rad_window)
-    {
-        DestroyWindow(m_rad_window);
-    }
 
     HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
     if (hItem == NULL)
@@ -2096,7 +2118,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, FALSE))
     {
         return;
     }
@@ -2143,11 +2165,6 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_DIALOG)
     {
-        if (m_rad_window)
-        {
-            DestroyWindow(m_rad_window);
-        }
-
         MByteStreamEx stream(Entry.data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_LangID = Entry.lang;
@@ -3022,6 +3039,9 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     }
 
     ResEntry& Entry = m_Entries[i];
+    m_type = Entry.type;
+    m_name = Entry.name;
+    m_lang = Entry.lang;
 
     BOOL bEditable, bSelectNone = FALSE;
     if (HIWORD(lParam) == I_LANG)
@@ -3342,7 +3362,56 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
     return Success;
 }
 
-BOOL MMainWnd::CompileIfNecessary(HWND hwnd)
+BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
+{
+    INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
+    std::wstring WideText;
+    WideText.resize(cchText);
+    ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
+
+    if (!CompileParts(hwnd, WideText))
+    {
+        return FALSE;
+    }
+
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    WORD i = LOWORD(lParam);
+    if (m_Entries.size() <= i)
+        return FALSE;
+
+    Edit_SetModify(m_hSrcEdit, FALSE);
+
+    if (IsWindow(m_rad_window))
+    {
+        DestroyWindow(m_rad_window);
+    }
+
+    if (bReopen)
+    {
+        ResEntry& entry = m_Entries[i];
+        if (m_type == entry.type && m_name == entry.name &&
+            m_lang == entry.lang)
+        {
+            if (HIWORD(lParam) == I_LANG && entry.type == RT_DIALOG)
+            {
+                MByteStreamEx stream(entry.data);
+                m_rad_window.m_dialog_res.LoadFromStream(stream);
+
+                DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+                if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
+                                                style))
+                {
+                    ShowWindow(m_rad_window, SW_SHOWNORMAL);
+                    UpdateWindow(m_rad_window);
+                }
+            }
+        }
+    }
+
+    return TRUE;
+}
+
+BOOL MMainWnd::CompileIfNecessary(HWND hwnd, BOOL bReopen/* = FALSE*/)
 {
     if (Edit_GetModify(m_hSrcEdit))
     {
@@ -3350,45 +3419,11 @@ BOOL MMainWnd::CompileIfNecessary(HWND hwnd)
         switch (id)
         {
         case IDYES:
-            {
-                INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-                std::wstring WideText;
-                WideText.resize(cchText);
-                ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
-
-                if (!CompileParts(hwnd, WideText))
-                {
-                    return FALSE;
-                }
-
-                LPARAM lParam = TV_GetParam(m_hTreeView);
-                WORD i = LOWORD(lParam);
-                if (m_Entries.size() <= i)
-                    return FALSE;
-                ResEntry& entry = m_Entries[i];
-
-                if (HIWORD(lParam) == I_LANG && IsWindow(m_rad_window) &&
-                    entry.type == RT_DIALOG)
-                {
-                    DestroyWindow(m_rad_window);
-                    m_rad_window.Detach();
-
-                    MByteStreamEx stream(entry.data);
-                    m_rad_window.m_dialog_res.LoadFromStream(stream);
-
-                    DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
-                    if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
-                                                    style))
-                    {
-                        ShowWindow(m_rad_window, SW_SHOWNORMAL);
-                        UpdateWindow(m_rad_window);
-                    }
-                }
-
-                Edit_SetModify(m_hSrcEdit, FALSE);
-            }
-            break;
+            return ReCompileOnSelChange(hwnd, bReopen);
         case IDNO:
+            Edit_SetModify(m_hSrcEdit, FALSE);
+            if (IsWindow(m_rad_window))
+                DestroyWindow(m_rad_window);
             break;
         case IDCANCEL:
             return FALSE;
@@ -3962,7 +3997,7 @@ BOOL MMainWnd::DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
 
 BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
         return FALSE;
 
     if (DoExtractRes(hwnd, ExeFile, m_Entries))
@@ -3976,7 +4011,7 @@ BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
 
 BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
         return TRUE;
 
     DWORD dwBinType;
@@ -4262,7 +4297,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd))
+    if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
     WCHAR szFile[MAX_PATH];
@@ -4552,6 +4587,9 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 
 void MMainWnd::OnAdviceResH(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     MString str;
 
     if (m_settings.added_ids.empty() &&
@@ -4599,6 +4637,9 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
 
 void MMainWnd::OnUnloadResH(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     m_db.m_map[L"RESOURCE.ID"].clear();
     m_settings.id_map.clear();
     m_settings.added_ids.clear();
@@ -4609,6 +4650,9 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
 
 void MMainWnd::OnConfig(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MConfigDlg dialog(m_settings);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -4659,6 +4703,9 @@ void MMainWnd::OnIDList(HWND hwnd)
 
 void MMainWnd::OnIdAssoc(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
     MIdAssocDlg dialog(m_settings.assoc_map);
     dialog.DialogBoxDx(hwnd);
 }
@@ -4919,11 +4966,11 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
+    LPARAM lParam = TV_GetParam(m_hTreeView);
     if (pnmhdr->code == NM_DBLCLK)
     {
         if (pnmhdr->hwndFrom == m_hTreeView)
         {
-            LPARAM lParam = TV_GetParam(m_hTreeView);
             if (HIWORD(lParam) == I_LANG)
             {
                 OnEdit(hwnd);
@@ -4939,15 +4986,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (!m_bLoading)
         {
-            if (m_rad_window)
-            {
-                DestroyWindow(m_rad_window);
-                return FALSE;
-            }
-            else
-            {
-                return !CompileIfNecessary(hwnd);
-            }
+            if (!CompileIfNecessary(hwnd, FALSE))
+                return TRUE;
+        }
+        if (IsWindow(m_rad_window))
+        {
+            DestroyWindow(m_rad_window);
         }
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
@@ -4963,7 +5007,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (pnmhdr->hwndFrom == m_hTreeView)
         {
-            LPARAM lParam = TV_GetParam(m_hTreeView);
             if (HIWORD(lParam) == I_LANG)
             {
                 OnEdit(hwnd);
@@ -4990,6 +5033,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 void MMainWnd::OnTest(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
     if (hItem == NULL)
         return;
@@ -5024,6 +5070,9 @@ void MMainWnd::OnTest(HWND hwnd)
 
 void MMainWnd::OnAddIcon(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddIconDlg dialog(m_db, m_Entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -5034,6 +5083,9 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 
 void MMainWnd::OnReplaceIcon(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -5049,6 +5101,9 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
 
 void MMainWnd::OnReplaceCursor(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -5064,6 +5119,9 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
 
 void MMainWnd::OnAddBitmap(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddBitmapDlg dialog(m_db, m_Entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -5074,6 +5132,9 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 
 void MMainWnd::OnReplaceBitmap(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) != I_LANG)
         return;
@@ -5089,6 +5150,9 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
 
 void MMainWnd::OnAddCursor(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddCursorDlg dialog(m_db, m_Entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -5099,6 +5163,9 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 
 void MMainWnd::OnAddRes(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddResDlg dialog(m_Entries, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -5109,6 +5176,9 @@ void MMainWnd::OnAddRes(HWND hwnd)
 
 void MMainWnd::OnAddMenu(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddResDlg dialog(m_Entries, m_db);
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -5120,6 +5190,9 @@ void MMainWnd::OnAddMenu(HWND hwnd)
 
 void MMainWnd::OnAddVerInfo(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddResDlg dialog(m_Entries, m_db);
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -5131,6 +5204,9 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
 
 void MMainWnd::OnAddDialog(HWND hwnd)
 {
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
     MAddResDlg dialog(m_Entries, m_db);
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
