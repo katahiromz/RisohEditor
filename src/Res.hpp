@@ -972,21 +972,8 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen = TRUE,
-               BOOL bSelect = FALSE)
+TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
 {
-    if (bNewlyOpen)
-        bSelect = FALSE;
-
-    ResEntry entry;
-    LPARAM lParam = TV_GetParam(hwnd, NULL);
-    if (lParam)
-    {
-        WORD k = LOWORD(lParam);
-        if (k < Entries.size())
-            entry = Entries[k];
-    }
-
     TreeView_DeleteAllItems(hwnd);
 
     BOOL Expand = FALSE;
@@ -1036,9 +1023,6 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen = TRUE,
             continue;
         }
     }
-
-    if (bSelect)
-        TV_SelectEntry(hwnd, Entries, entry);
 }
 
 inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& Entries)
@@ -1071,7 +1055,7 @@ inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& Entries)
         break;
     }
 
-    TV_RefreshInfo(hwnd, Entries);
+    TV_RefreshInfo(hwnd, Entries, FALSE);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
 }
