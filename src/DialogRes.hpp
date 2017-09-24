@@ -329,8 +329,11 @@ struct DialogItem
                     return _do_GROUPBOX(db);
                 if ((m_Style & BS_TYPEMASK) == BS_PUSHBUTTON)
                     return _do_PUSHBUTTON(db);
-                if ((m_Style & BS_TYPEMASK) == BS_PUSHBOX)
+                if ((m_Style & BS_TYPEMASK) == BS_PUSHBOX ||
+                    (m_Style & BS_TYPEMASK) == 0xC)
+                {
                     return _do_PUSHBOX(db);
+                }
                 if ((m_Style & BS_TYPEMASK) == BS_RADIOBUTTON)
                     return _do_RADIOBUTTON(db);
                 if ((m_Style & BS_TYPEMASK) == BS_3STATE)
@@ -441,6 +444,11 @@ struct DialogItem
         {
             ret += L", ";
             DWORD value = m_Style;
+            if (ctrl == L"PUSHBOX" && (value & BS_TYPEMASK) == 0xC)
+            {
+                value &= ~BS_TYPEMASK;
+                value |= BS_PUSHBOX;
+            }
             ret += db.DumpBitField(cls.c_str(), L"STYLE", value, DefStyle);
         }
         if (m_ExStyle || m_HelpID)
