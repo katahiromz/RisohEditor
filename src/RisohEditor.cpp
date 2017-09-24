@@ -4256,12 +4256,22 @@ void MMainWnd::OnDestroy(HWND hwnd)
 {
     SaveSettings(hwnd);
 
-    m_hBmpView.DestroyView();
-    DeleteObject(m_hNormalFont);
-    DeleteObject(m_hSmallFont);
+    DestroyIcon(m_hIcon);
+    DestroyIcon(m_hIconSm);
+    DestroyAcceleratorTable(m_hAccel);
     ImageList_Destroy(m_hImageList);
     DestroyIcon(m_hFileIcon);
     DestroyIcon(m_hFolderIcon);
+    DeleteObject(m_hNormalFont);
+    DeleteObject(m_hLargeFont);
+    DeleteObject(m_hSmallFont);
+
+    DestroyWindow(m_hTreeView);
+    DestroyWindow(m_hToolBar);
+    DestroyWindow(m_hStatusBar);
+    DestroyWindow(m_hFindReplaceDlg);
+
+    m_hBmpView.DestroyView();
     PostQuitMessage(0);
 }
 
