@@ -4266,12 +4266,13 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DeleteObject(m_hLargeFont);
     DeleteObject(m_hSmallFont);
 
+    m_hBmpView.DestroyView();
+
     DestroyWindow(m_hTreeView);
     DestroyWindow(m_hToolBar);
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
 
-    m_hBmpView.DestroyView();
     PostQuitMessage(0);
 }
 
