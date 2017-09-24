@@ -10,6 +10,10 @@
 #include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
 
+#ifndef BS_PUSHBOX
+    #define BS_PUSHBOX  0x0000000A
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 
 #include <pshpack2.h>
