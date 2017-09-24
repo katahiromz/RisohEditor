@@ -2016,7 +2016,14 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
         return;
 
     TV_Delete(m_hTreeView, hItem, m_Entries);
+    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
     HidePreview(hwnd);
+
+    if (m_Entries.empty())
+    {
+        LPARAM lParam = TV_GetParam(m_hTreeView);
+        SelectTV(hwnd, lParam, FALSE);
+    }
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
@@ -3009,7 +3016,10 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
     WORD i = LOWORD(lParam);
     if (m_Entries.size() <= i)
+    {
+        ToolBar_Update(m_hToolBar, 3);
         return;
+    }
 
     ResEntry& Entry = m_Entries[i];
 

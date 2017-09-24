@@ -972,7 +972,7 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE,
+TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen = TRUE,
                BOOL bSelect = FALSE)
 {
     if (bNewlyOpen)
@@ -1025,6 +1025,16 @@ TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE,
         hItem = _tv_FindOrInsertDepth2(hwnd, hItem, Entries, i, Expand);
         hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, Expand);
         hItem = hItem;
+    }
+
+    for (size_t i = Entries.size(); i > 0; )
+    {
+        --i;
+        if (Entries[i].empty())
+        {
+            Entries.erase(Entries.begin() + i);
+            continue;
+        }
     }
 
     if (bSelect)
