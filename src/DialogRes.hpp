@@ -525,7 +525,7 @@ struct DialogItem
     {
         assert(m_Title.empty());
         return _do_CONTROL(0, db, L"COMBOBOX", L"COMBOBOX",
-                           CBS_SIMPLE | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
+                           WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_ICON(const ConstantsDB& db)
     {

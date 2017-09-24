@@ -4209,8 +4209,14 @@ public:
         {
             ResEntry& entry = m_Entries[i];
 
+            MIdOrString name = entry.name;
+            if (name.is_str())
+            {
+                name = (WORD)m_db.GetResIDValue(name.c_str());
+            }
+
             if (entries.size() != 1 ||
-                entries[0].name != entry.name ||
+                entries[0].name != name ||
                 entries[0].lang != entry.lang)
             {
                 msg += MWideToAnsi(LoadStringDx(IDS_RESMISMATCH));
@@ -4299,7 +4305,6 @@ public:
 
         r1.WriteFormatA("#include <windows.h>\r\n");
         r1.WriteFormatA("#include <commctrl.h>\r\n");
-        r1.WriteFormatA("#include <prsht.h>\r\n");
         r1.WriteFormatA("#include <dlgs.h>\r\n");
         if (m_szResourceH[0])
             r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(m_szResourceH).c_str());
@@ -4386,10 +4391,6 @@ public:
             }
         }
 
-        ::DeleteFileW(szPath1);
-        ::DeleteFileW(szPath2);
-        ::DeleteFileW(szPath3);
-
         if (!Success)
         {
             if (output.empty())
@@ -4403,6 +4404,17 @@ public:
                 ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
                 ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
             }
+#ifdef NDEBUG
+            ::DeleteFileW(szPath1);
+            ::DeleteFileW(szPath2);
+            ::DeleteFileW(szPath3);
+#endif
+        }
+        else
+        {
+            ::DeleteFileW(szPath1);
+            ::DeleteFileW(szPath2);
+            ::DeleteFileW(szPath3);
         }
 
         PostMessageW(hwnd, WM_SIZE, 0, 0);

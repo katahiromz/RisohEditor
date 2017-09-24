@@ -328,7 +328,7 @@ public:
 
         if (value)
         {
-            if (!ret.empty())
+            if (!ret.empty() && ret != L"0")
                 ret += L" | ";
 
             ret += mstr_hex(value);
@@ -337,7 +337,9 @@ public:
         if (default_value)
         {
             str3 = _dumpBitField(cat1, default_value, TRUE);
-            if (!ret.empty())
+			if (ret == L"0")
+				ret.clear();
+            else if (!ret.empty())
                 ret += L" | ";
             ret += str3;
         }
@@ -357,16 +359,16 @@ public:
         if (!cat2.empty())
             str2 = _dumpBitField(cat2, value);
 
-        if (!str1.empty())
+        if (!str1.empty() && str1 != L"0")
         {
-            if (!str2.empty())
+            if (!str2.empty() && str2 != L"0")
                 ret = str1 + L" | " + str2;
             else
                 ret = str1;
         }
         else
         {
-            if (!str2.empty())
+            if (!str2.empty() && str2 != L"0")
                 ret = str2;
             else
                 ret = L"0";
@@ -383,7 +385,9 @@ public:
         if (default_value)
         {
             str3 = _dumpBitField(cat1, default_value, TRUE);
-            if (!ret.empty())
+			if (ret == L"0")
+				ret.clear();
+            else if (!ret.empty())
                 ret += L" | ";
             ret += str3;
         }
@@ -477,7 +481,9 @@ protected:
                     ret += L" | ";
 
                 if (Not)
+                {
                     ret += L"NOT ";
+                }
                 ret += it->name;
                 value &= ~it->value;
             }
