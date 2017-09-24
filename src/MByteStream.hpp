@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAM_HPP_
-#define MZC4_MBYTESTREAM_HPP_       2       /* Version 2 */
+#define MZC4_MBYTESTREAM_HPP_       3       /* Version 3 */
 
 class MByteStream;
 
@@ -23,6 +23,7 @@ class MByteStream
 {
 public:
     typedef std::vector<BYTE> data_type;
+    typedef std::size_t size_type;
 
     MByteStream() : m_pos(0)
     {
@@ -72,32 +73,32 @@ public:
         return m_data;
     }
 
-    void *ptr(DWORD index = 0)
+    void *ptr(size_t index = 0)
     {
         return &m_data[index];
     }
-    const void *ptr(DWORD index = 0) const
+    const void *ptr(size_t index = 0) const
     {
         return &m_data[index];
     }
 
-    DWORD size() const
+    size_t size() const
     {
-        return DWORD(m_data.size());
+        return m_data.size();
     }
 
-    DWORD remainder() const
+    size_t remainder() const
     {
         if (m_pos <= size())
             return size() - m_pos;
         return 0;
     }
 
-    DWORD pos() const
+    size_t pos() const
     {
         return m_pos;
     }
-    void pos(DWORD pos_) const
+    void pos(size_t pos_) const
     {
         m_pos = pos_;
     }
@@ -129,11 +130,11 @@ public:
         return WriteData(&data, sizeof(T));
     }
 
-    BOOL WriteData(const void *data, DWORD Size)
+    BOOL WriteData(const void *data, size_t Size)
     {
         if (data && Size)
         {
-            DWORD old_size = size();
+            size_t old_size = size();
             m_data.resize(old_size + Size);
             memcpy(&m_data[old_size], data, Size);
         }
@@ -179,7 +180,7 @@ public:
         return ReadData(&value, sizeof(T));
     }
 
-    BOOL ReadData(void *data, DWORD Size) const
+    BOOL ReadData(void *data, size_t Size) const
     {
         if (m_pos + Size <= size())
         {
@@ -225,7 +226,7 @@ public:
 
     BOOL PeekWord(WORD& w) const
     {
-        DWORD Size = sizeof(WORD);
+        size_t Size = sizeof(WORD);
         if (m_pos + Size <= size())
         {
             memcpy(&w, &m_data[m_pos], Size);
@@ -236,7 +237,7 @@ public:
 
     BOOL PeekByte(BYTE& b) const
     {
-        DWORD Size = sizeof(BYTE);
+        size_t Size = sizeof(BYTE);
         if (m_pos + Size <= size())
         {
             memcpy(&b, &m_data[m_pos], Size);
@@ -253,7 +254,7 @@ public:
 
     void ReadDwordAlignment() const
     {
-        DWORD mod = (m_pos & 3);
+        size_t mod = (m_pos & 3);
         if (mod)
             m_pos += 4 - mod;
     }
@@ -312,11 +313,11 @@ public:
         return TRUE;
     }
 
-    BYTE& operator[](DWORD index)
+    BYTE& operator[](size_t index)
     {
         return m_data[index];
     }
-    const BYTE& operator[](DWORD index) const
+    const BYTE& operator[](size_t index) const
     {
         return m_data[index];
     }
@@ -355,7 +356,7 @@ public:
     }
 
 protected:
-    mutable DWORD       m_pos;
+    mutable size_type   m_pos;
     data_type           m_data;
 };
 

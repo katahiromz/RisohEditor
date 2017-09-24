@@ -45,12 +45,12 @@ public:
 
         stream.ReadDwordAlignment();
 
-        DWORD pos0 = stream.pos();
+        size_t pos0 = stream.pos();
 
         if (!stream.ReadRaw(var.head) || !stream.ReadSz(var.key))
             return FALSE;
 
-        DWORD pos1 = pos0 + var.head.wLength;
+        size_t pos1 = pos0 + var.head.wLength;
         stream.ReadDwordAlignment();
 
         if (var.head.wValueLength)

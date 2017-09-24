@@ -461,7 +461,7 @@ public:
         MENU_ENTRY m_entry;
         ZeroMemory(&m_entry, sizeof(m_entry));
         MAddMItemDlg dialog(m_db, m_entry);
-        INT nID = dialog.DialogBoxDx(hwnd);
+        INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
             return;
@@ -570,7 +570,7 @@ public:
         GetEntry(hwnd, hCtl1, m_entry, iItem);
         
         MModifyMItemDlg dialog(m_db, m_entry);
-        INT nID = dialog.DialogBoxDx(hwnd);
+        INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
             SetEntry(hwnd, hCtl1, m_entry, iItem);

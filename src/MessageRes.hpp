@@ -64,7 +64,7 @@ public:
 
                 if (header.Flags == MESSAGE_RESOURCE_UNICODE)
                 {
-                    DWORD len = data.size() / sizeof(wchar_t);
+                    size_t len = data.size() / sizeof(wchar_t);
                     if (len)
                     {
                         std::wstring str((const wchar_t *)&data[0], len);
@@ -120,12 +120,12 @@ public:
                 MESSAGE_RESOURCE_BLOCK Block;
                 Block.LowId = it->FirstId;
                 Block.HighId = it->LastId;
-                Block.OffsetToEntries = offsets[i];
+                Block.OffsetToEntries = (DWORD)offsets[i];
                 Blocks.push_back(Block);
             }
         }
 
-        DWORD SizeOfBlocks = Blocks.size() * sizeof(MESSAGE_RESOURCE_BLOCK);
+        size_t SizeOfBlocks = Blocks.size() * sizeof(MESSAGE_RESOURCE_BLOCK);
         if (!stream.WriteData(&Blocks[0], SizeOfBlocks))
             return FALSE;
 
@@ -147,7 +147,7 @@ public:
                         if (!stream.WriteRaw(header))
                             return FALSE;
 
-                        DWORD size = astr.size() * sizeof(char);
+                        size_t size = astr.size() * sizeof(char);
                         if (!stream.WriteData(&astr[0], size))
                             return FALSE;
                     }
@@ -157,7 +157,7 @@ public:
                         if (!stream.WriteRaw(header))
                             return FALSE;
 
-                        DWORD size = wstr.size() * sizeof(WCHAR);
+                        size_t size = wstr.size() * sizeof(WCHAR);
                         if (!stream.WriteData(&wstr[0], size))
                             return FALSE;
                     }
@@ -227,10 +227,10 @@ protected:
         return TRUE;
     }
 
-    typedef std::vector<DWORD> offsets_type;
+    typedef std::vector<size_t> offsets_type;
     BOOL OffsetsFromRanges(offsets_type& offsets, const ranges_type& ranges)
     {
-        DWORD offset = sizeof(ULONG);
+        size_t offset = sizeof(ULONG);
         offset += sizeof(MESSAGE_RESOURCE_BLOCK) * ranges.size();
 
         ranges_type::const_iterator it, end = ranges.end();

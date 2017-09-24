@@ -211,7 +211,7 @@ public:
 #else
         UINT CF_ = CF_TEXT;
 #endif
-        DWORD size = (text.size() + 1) * sizeof(TCHAR);
+        DWORD size = DWORD((text.size() + 1) * sizeof(TCHAR));
         LPTSTR psz = (LPTSTR)GlobalAllocPtr(GMEM_SHARE | GMEM_MOVEABLE, size);
         if (psz)
         {

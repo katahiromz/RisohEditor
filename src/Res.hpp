@@ -174,9 +174,9 @@ struct ResourceHeader
         return TRUE;
     }
 
-    DWORD GetHeaderSize(MIdOrString type, MIdOrString name) const
+    size_t GetHeaderSize(MIdOrString type, MIdOrString name) const
     {
-        DWORD size = 0;
+        size_t size = 0;
         if (type.is_str())
             size += (type.m_Str.size() + 1) * sizeof(WCHAR);
         else
@@ -533,7 +533,7 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
          memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
     {
         MBitmapDx bitmap;
-        if (!bitmap.CreateFromMemory(&stream[0], stream.size()))
+        if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
             return FALSE;
 
         LONG cx, cy;
@@ -551,11 +551,11 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
     }
     else
     {
-        DWORD FileHeadSize = sizeof(BITMAPFILEHEADER);
+        size_t FileHeadSize = sizeof(BITMAPFILEHEADER);
         if (stream.size() < FileHeadSize)
             return FALSE;
 
-        DWORD i0 = FileHeadSize, i1 = stream.size();
+        size_t i0 = FileHeadSize, i1 = stream.size();
         ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
         Res_AddEntry(Entries, RT_BITMAP, Name, Lang, HeadLess, Replace);
     }

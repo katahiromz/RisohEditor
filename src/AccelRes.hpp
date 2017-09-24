@@ -77,7 +77,7 @@ public:
 
     std::vector<BYTE> data() const
     {
-        DWORD size = m_entries.size() * sizeof(entry_type);
+        size_t size = m_entries.size() * sizeof(entry_type);
         const BYTE *pb = (const BYTE *)&m_entries[0];
         return std::vector<BYTE>(pb, pb + size);
     }

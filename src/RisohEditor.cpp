@@ -372,7 +372,7 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
     using namespace std;
     FILE *fp = _tfopen(filename, _T("wb"));
-    int n = fwrite(pv, size, 1, fp);
+    int n = (int)fwrite(pv, size, 1, fp);
     fclose(fp);
     return n == 1;
 }
@@ -786,7 +786,7 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
             continue;
 
         INT_PTR id = pButtons[i].iString;
-        LPWSTR psz = LoadStringDx(id);
+        LPWSTR psz = LoadStringDx(INT(id));
         id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
         pButtons[i].iString = id;
     }
@@ -2103,7 +2103,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (accel_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
-            INT nID = dialog.DialogBoxDx(hwnd);
+            INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
                 accel_res.Update();
@@ -2122,7 +2122,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
             MEditMenuDlg dialog(m_db, menu_res);
-            INT nID = dialog.DialogBoxDx(hwnd);
+            INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
                 menu_res.Update();
@@ -2178,7 +2178,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
         ChangeStatusText(IDS_EDITINGBYGUI);
         MStringsDlg dialog(m_db, str_res);
-        INT nID = dialog.DialogBoxDx(hwnd);
+        INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
             std::wstring WideText = str_res.Dump(m_db);
@@ -3223,8 +3223,9 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
+	DWORD cbWrite = DWORD(TextUtf8.size() * sizeof(char));
     DWORD cbWritten;
-    r2.WriteFile(TextUtf8.c_str(), TextUtf8.size() * sizeof(char), &cbWritten);
+    r2.WriteFile(TextUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
 
     WCHAR szCmdLine[512];
@@ -3903,7 +3904,7 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entri
         const ResEntry& Entry = *it;
 
         header.DataSize = Entry.size();
-        header.HeaderSize = header.GetHeaderSize(Entry.type, Entry.name);
+        header.HeaderSize = (DWORD)header.GetHeaderSize(Entry.type, Entry.name);
         header.Type = Entry.type;
         header.Name = Entry.name;
         header.DataVersion = 0;

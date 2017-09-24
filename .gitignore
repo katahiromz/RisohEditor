@@ -26,5 +26,6 @@ Makefile
 TMP1.$$$
 *.filters
 *.sdf
+*.opensdf
 ipch
 risoheditor-*-setup.exe
