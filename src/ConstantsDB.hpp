@@ -337,9 +337,9 @@ public:
         if (default_value)
         {
             str3 = _dumpBitField(cat1, default_value, TRUE);
-			if (ret == L"0")
-				ret.clear();
-            else if (!ret.empty())
+            if (ret == L"0")
+                ret.clear();
+            else if (!ret.empty() && !str3.empty())
                 ret += L" | ";
             ret += str3;
         }
@@ -385,9 +385,9 @@ public:
         if (default_value)
         {
             str3 = _dumpBitField(cat1, default_value, TRUE);
-			if (ret == L"0")
-				ret.clear();
-            else if (!ret.empty())
+            if (ret == L"0")
+                ret.clear();
+            else if (!ret.empty() && !str3.empty())
                 ret += L" | ";
             ret += str3;
         }
