@@ -1380,6 +1380,7 @@ public:
         m_fr.wReplaceWithLen = _countof(m_szReplaceWith);
     }
 
+    // settings
     void SetDefaultSettings(HWND hwnd);
     BOOL LoadSettings(HWND hwnd);
     BOOL SaveSettings(HWND hwnd);
@@ -1398,64 +1399,29 @@ public:
     }
 
     BOOL StartDx(INT nCmdShow);
-
-    // message loop
     INT_PTR RunDx();
-
-    void UpdateMenu();
 
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    void OnSysColorChange(HWND hwnd)
-    {
-        m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
-    }
-
-    LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        if (!CompileIfNecessary(hwnd))
-        {
-            return FALSE;
-        }
-        return FALSE;
-    }
-
-    LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        INT x = (SHORT)LOWORD(wParam);
-        INT y = (SHORT)HIWORD(wParam);
-        INT cx = (SHORT)LOWORD(lParam);
-        INT cy = (SHORT)HIWORD(lParam);
-
-        WCHAR szText[64];
-        wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
-        ChangeStatusText(szText);
-        return 0;
-    }
-
-    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        ChangeStatusText(TEXT(""));
-        return 0;
-    }
-
-    void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
-    {
-        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
-        {
-            SetFocus(m_hTreeView);
-        }
-    }
-
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
+    void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
+    void OnSysColorChange(HWND hwnd);
+    void OnPlay(HWND hwnd);
+    void OnDropFiles(HWND hwnd, HDROP hdrop);
+    void OnMove(HWND hwnd, int x, int y);
+    void OnSize(HWND hwnd, UINT state, int cx, int cy);
+    void OnInitMenu(HWND hwnd, HMENU hMenu);
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos);
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
+    void OnDestroy(HWND hwnd);
+
+    LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     BOOL DoSetFile(HWND hwnd, LPCWSTR FileName);
-
-    void OnPlay(HWND hwnd);
+    void UpdateMenu();
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -1489,14 +1455,13 @@ public:
     void OnHideIDMacros(HWND hwnd);
     void OnTest(HWND hwnd);
 
-    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
-
     void OnCancelEdit(HWND hwnd);
     void OnCompile(HWND hwnd);
     void OnGuiEdit(HWND hwnd);
     void OnEdit(HWND hwnd);
     void OnUpdateDlgRes(HWND hwnd);
 
+    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void ChangeStatusText(INT nID)
     {
         ChangeStatusText(LoadStringDx(nID));
@@ -1505,8 +1470,6 @@ public:
     {
         SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
     }
-
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
 
     void OnUpdateID(HWND hwnd)
     {
@@ -1518,22 +1481,13 @@ public:
     void OnIDList(HWND hwnd);
     void OnIdAssoc(HWND hwnd);
 
-    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
-    BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
-    BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
-
-    void OnDropFiles(HWND hwnd, HDROP hdrop);
-    void OnMove(HWND hwnd, int x, int y);
-    void OnSize(HWND hwnd, UINT state, int cx, int cy);
-    void OnInitMenu(HWND hwnd, HMENU hMenu);
-    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos);
-    void OnDestroy(HWND hwnd);
-
+    // show/hide
     void ShowMovie(BOOL bShow = TRUE);
     void ShowBmpView(BOOL bShow = TRUE);
     void ShowStatusBar(BOOL bShow = TRUE);
     void ShowBinEdit(BOOL bShow = TRUE);
 
+    // preview
     VOID HidePreview(HWND hwnd);
     void PreviewIcon(HWND hwnd, const ResEntry& Entry);
     void PreviewCursor(HWND hwnd, const ResEntry& Entry);
@@ -1559,15 +1513,17 @@ public:
 
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
 
+    BOOL CompileIfNecessary(HWND hwnd);
     BOOL DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
     BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText);
-    BOOL CompileIfNecessary(HWND hwnd);
 
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
 
-    void LoadLangInfo(VOID);
-
+    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
+    BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
+    BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
+    void DoLoadLangInfo(VOID);
     BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
@@ -1593,6 +1549,50 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd out-of-line functions
+
+    void MMainWnd::OnSysColorChange(HWND hwnd)
+    {
+        m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
+        m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
+    }
+
+    LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        if (!CompileIfNecessary(hwnd))
+        {
+            return FALSE;
+        }
+        return FALSE;
+    }
+
+    LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        INT x = (SHORT)LOWORD(wParam);
+        INT y = (SHORT)HIWORD(wParam);
+        INT cx = (SHORT)LOWORD(lParam);
+        INT cy = (SHORT)HIWORD(lParam);
+
+        WCHAR szText[64];
+        wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
+        ChangeStatusText(szText);
+        return 0;
+    }
+
+    LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        ChangeStatusText(TEXT(""));
+        return 0;
+    }
+
+    void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+    {
+        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
+        {
+            SetFocus(m_hTreeView);
+        }
+    }
 
 void MMainWnd::UpdateMenu()
 {
@@ -3460,7 +3460,7 @@ INT MMainWnd::CheckData(VOID)
     return 0;   // success
 }
 
-void MMainWnd::LoadLangInfo(VOID)
+void MMainWnd::DoLoadLangInfo(VOID)
 {
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
     {
@@ -5295,7 +5295,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     m_id_list_dlg.m_hMainWnd = hwnd;
 
-    LoadLangInfo();
+    DoLoadLangInfo();
 
     INT nRet = CheckData();
     if (nRet)
