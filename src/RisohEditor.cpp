@@ -5504,8 +5504,6 @@ WinMain(HINSTANCE   hInstance,
         LPSTR       lpCmdLine,
         INT         nCmdShow)
 {
-    int ret;
-
     // get Unicode command line
     INT argc = 0;
     LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -5515,12 +5513,13 @@ WinMain(HINSTANCE   hInstance,
     InitCommonControls();
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
-    // GDI+
+    // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
     ULONG_PTR gp_token;
     Gdiplus::GdiplusStartup(&gp_token, &gp_startup_input, NULL);
 
     // main process
+    int ret;
     MEditCtrl::SetCtrlAHookDx(TRUE);
     {
         MMainWnd app(argc, targv, hInstance);
@@ -5537,7 +5536,7 @@ WinMain(HINSTANCE   hInstance,
     }
     MEditCtrl::SetCtrlAHookDx(FALSE);
 
-    // GDI+
+    // free GDI+
     Gdiplus::GdiplusShutdown(gp_token);
 
     // free the libraries
