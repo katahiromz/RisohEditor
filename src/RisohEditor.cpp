@@ -1307,27 +1307,23 @@ public:
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
 
+    // handles
     HINSTANCE   m_hInst;        // the instance handle
     HICON       m_hIcon;        // the icon handle
+    HICON       m_hIconSm;      // the small icon handle
     HACCEL      m_hAccel;       // the accelerator handle
-    HIMAGELIST  m_hImageList;
-    HICON       m_hFileIcon;
-    HICON       m_hFolderIcon;
-    HFONT       m_hNormalFont;
-    HFONT       m_hLargeFont;
-    HFONT       m_hSmallFont;
-    HWND        m_hTreeView;
-    HWND        m_hToolBar;
-    HWND        m_hStatusBar;
+    HIMAGELIST  m_hImageList;   // the image list for m_hTreeView
+    HICON       m_hFileIcon, m_hFolderIcon;
+    HFONT       m_hNormalFont, m_hLargeFont, m_hSmallFont;
+    HWND        m_hTreeView, m_hToolBar, m_hStatusBar;
+    HWND        m_hFindReplaceDlg;
+
     RisohSettings   m_settings;
     ConstantsDB     m_db;
     MRadWindow      m_rad_window;
-    MEditCtrl       m_hBinEdit;
-    MEditCtrl       m_hSrcEdit;
+    MEditCtrl       m_hBinEdit, m_hSrcEdit;
     MBmpView        m_hBmpView;
-    MSplitterWnd    m_splitter1;
-    MSplitterWnd    m_splitter2;
-    MSplitterWnd    m_splitter3;
+    MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
     MIDListDlg      m_id_list_dlg;
 
     WCHAR       m_szDataFolder[MAX_PATH];
@@ -1337,26 +1333,18 @@ public:
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
     ResEntries  m_Entries;
-    HWND        m_hFindReplaceDlg;
     TCHAR       m_szFindWhat[80];
     TCHAR       m_szReplaceWith[80];
     FINDREPLACE m_fr;
 
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
-        m_argc(argc),
-        m_targv(targv),
+        m_argc(argc), m_targv(targv),
         m_hInst(hInst),
-        m_hIcon(NULL),
-        m_hAccel(NULL),
-        m_hImageList(NULL),
-        m_hFileIcon(NULL),
-        m_hFolderIcon(NULL),
-        m_hNormalFont(NULL),
-        m_hLargeFont(NULL),
-        m_hSmallFont(NULL),
-        m_hTreeView(NULL),
-        m_hToolBar(NULL),
-        m_hStatusBar(NULL),
+        m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
+        m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
+        m_hNormalFont(NULL), m_hLargeFont(NULL), m_hSmallFont(NULL),
+        m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
+        m_hFindReplaceDlg(NULL),
         m_rad_window(m_db, m_settings),
         m_id_list_dlg(m_db, m_settings)
     {
@@ -1390,7 +1378,7 @@ public:
         MWindowBase::ModifyWndClassDx(wcx);
         wcx.lpszMenuName = MAKEINTRESOURCE(1);
         wcx.hIcon = m_hIcon;
-        wcx.hIconSm = m_hIcon;
+        wcx.hIconSm = m_hIconSm;
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
@@ -5467,7 +5455,8 @@ BOOL MMainWnd::StartDx(INT nCmdShow)
     MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
     MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
 
-    m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
+    m_hIcon = LoadIconDx(1);
+    m_hIconSm = LoadSmallIconDx(1);
     m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
 
     if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
