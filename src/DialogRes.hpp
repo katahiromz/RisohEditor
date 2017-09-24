@@ -518,30 +518,30 @@ struct DialogItem
     std::wstring _do_EDITTEXT(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(0, db, L"EDITTEXT", L"EDIT",
+        return _do_CONTROL(FALSE, db, L"EDITTEXT", L"EDIT",
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_COMBOBOX(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(0, db, L"COMBOBOX", L"COMBOBOX",
+        return _do_CONTROL(FALSE, db, L"COMBOBOX", L"COMBOBOX",
                            WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_ICON(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(0, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(TRUE, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_LISTBOX(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(0, db, L"LISTBOX", L"LISTBOX",
+        return _do_CONTROL(FALSE, db, L"LISTBOX", L"LISTBOX",
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_SCROLLBAR(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(0, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(FALSE, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
     void Fixup(BOOL bRevert = FALSE)
@@ -767,7 +767,7 @@ struct DialogRes
 
         {
             DWORD value = (m_Style & ~DS_SETFONT);
-            std::wstring str = m_db.DumpBitField(L"DIALOG", L"STYLE", value);
+            std::wstring str = m_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
             if (value)
             {
                 if (!str.empty())

@@ -54,7 +54,7 @@ public:
                     table.begin(), table.end());
             }
         }
-        table = m_db.GetTable(TEXT("STYLE"));
+        table = m_db.GetTable(TEXT("PARENT.STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(),
