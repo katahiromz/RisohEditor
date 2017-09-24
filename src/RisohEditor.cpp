@@ -3671,7 +3671,7 @@ void MMainWnd::OnFind(HWND hwnd)
     if (!IsWindowVisible(m_hSrcEdit))
         return;
 
-    if (m_hFindReplaceDlg)
+    if (IsWindow(m_hFindReplaceDlg))
     {
         SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
         m_hFindReplaceDlg = NULL;
@@ -3887,7 +3887,7 @@ BOOL MMainWnd::OnReplace(HWND hwnd)
         return FALSE;
     if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
         return FALSE;
-    if (m_hFindReplaceDlg)
+    if (IsWindow(m_hFindReplaceDlg))
     {
         SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
         m_hFindReplaceDlg = NULL;
