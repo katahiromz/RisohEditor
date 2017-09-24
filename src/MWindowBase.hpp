@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    51     /* Version 51 */
+#define MZC4_MWINDOWBASE_HPP_    52     /* Version 52 */
 
 class MWindowBase;
 class MDialogBase;
@@ -460,11 +460,11 @@ public:
         m_hwnd = NULL;
     }
 
+    static HHOOK HookCenterMsgBoxDx(BOOL bHook);
+
 private:
     static inline LRESULT CALLBACK
     _msgBoxCbtProcDx(INT nCode, WPARAM wParam, LPARAM lParam);
-
-    static HHOOK _doHookCenterMsgBoxDx(BOOL bHook);
 
 #ifdef MZC4_FAT_AND_RICH
 public:
@@ -958,10 +958,10 @@ MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
         Title = GetStringDx(pszTitle);
     }
 
-    MWindowBase::_doHookCenterMsgBoxDx(TRUE);
+    MWindowBase::HookCenterMsgBoxDx(TRUE);
     INT nID = ::MessageBox(m_hwnd, GetStringDx(pszString),
                            Title.c_str(), uType);
-    MWindowBase::_doHookCenterMsgBoxDx(FALSE);
+    MWindowBase::HookCenterMsgBoxDx(FALSE);
 
     return nID;
 }
@@ -1119,7 +1119,7 @@ MWindowBase::_msgBoxCbtProcDx(INT nCode, WPARAM wParam, LPARAM lParam)
     return 0;   // allow the operation
 }
 
-inline /*static*/ HHOOK MWindowBase::_doHookCenterMsgBoxDx(BOOL bHook)
+inline /*static*/ HHOOK MWindowBase::HookCenterMsgBoxDx(BOOL bHook)
 {
 #ifdef MZC_NO_CENTER_MSGBOX
     return NULL;

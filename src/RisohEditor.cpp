@@ -1795,17 +1795,20 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 
 void MMainWnd::OnAbout(HWND hwnd)
 {
-    MSGBOXPARAMSW Params;
-    ZeroMemory(&Params, sizeof(Params));
-    Params.cbSize = sizeof(Params);
-    Params.hwndOwner = hwnd;
-    Params.hInstance = m_hInst;
-    Params.lpszText = LoadStringDx(IDS_VERSIONINFO);
-    Params.lpszCaption = LoadStringDx(IDS_APPNAME);
-    Params.dwStyle = MB_OK | MB_USERICON;
-    Params.lpszIcon = MAKEINTRESOURCEW(1);
-    Params.dwLanguageId = LANG_USER_DEFAULT;
-    MessageBoxIndirectW(&Params);
+    MSGBOXPARAMSW params;
+    ZeroMemory(&params, sizeof(params));
+    params.cbSize = sizeof(params);
+    params.hwndOwner = hwnd;
+    params.hInstance = m_hInst;
+    params.lpszText = LoadStringDx(IDS_VERSIONINFO);
+    params.lpszCaption = LoadStringDx(IDS_APPNAME);
+    params.dwStyle = MB_OK | MB_USERICON;
+    params.lpszIcon = MAKEINTRESOURCEW(1);
+    params.dwLanguageId = LANG_USER_DEFAULT;
+
+    MWindowBase::HookCenterMsgBoxDx(TRUE);
+    MessageBoxIndirectW(&params);
+    MWindowBase::HookCenterMsgBoxDx(FALSE);
 }
 
 void MMainWnd::OnLoadWCLib(HWND hwnd)
