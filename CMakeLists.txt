@@ -41,6 +41,7 @@ endif()
 # do statically link
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 SET(BUILD_SHARED_LIBRARIES OFF)
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
     SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
@@ -52,16 +53,9 @@ endif()
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
-# Win32
-add_executable(RisohEditor WIN32 
-    src/PackedDIB.cpp
-    src/RisohEditor.cpp
-    src/Samples.cpp
-    src/RisohEditor_res.rc)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32)
+##############################################################################
 
-# do statically link
-set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_START_STATIC 1)
-set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_END_STATIC 1)
+add_subdirectory(src)
+add_subdirectory(tests)
 
 ##############################################################################
