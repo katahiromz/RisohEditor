@@ -42,12 +42,12 @@ public:
     RisohSettings&  m_settings;
     POINT           m_pt;
 
-    static HICON Icon()
+    static HICON& Icon()
     {
         static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
         return s_hIcon;
     }
-    static HBITMAP Bitmap()
+    static HBITMAP& Bitmap()
     {
         static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
         return s_hbm;

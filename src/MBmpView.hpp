@@ -86,6 +86,20 @@ public:
         return TRUE;
     }
 
+    void OnDestroy(HWND hwnd)
+    {
+        DestroyView();
+
+        DestroyWindow(m_mci_window);
+        m_mci_window = NULL;
+
+        DestroyWindow(m_hStatic);
+        m_hStatic = NULL;
+
+        DestroyWindow(m_hPlayButton);
+        m_hPlayButton = NULL;
+    }
+
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("RisohEditor MBmpView Class");
@@ -400,11 +414,6 @@ public:
             InvalidateRect(hwnd, NULL, FALSE);
             SetTimer(hwnd, TIMER_ID, dwDelay, NULL);
         }
-    }
-
-    void OnDestroy(HWND hwnd)
-    {
-        DestroyView();
     }
 
     virtual LRESULT CALLBACK

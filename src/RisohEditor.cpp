@@ -4256,7 +4256,31 @@ void MMainWnd::OnDestroy(HWND hwnd)
 {
     SaveSettings(hwnd);
 
-    DestroyIcon(m_hIcon);
+    if (IsWindow(m_rad_window))
+    {
+        DestroyWindow(m_rad_window);
+    }
+    if (IsWindow(m_hBinEdit))
+    {
+        DestroyWindow(m_hBinEdit);
+    }
+    if (IsWindow(m_hSrcEdit))
+    {
+        DestroyWindow(m_hSrcEdit);
+    }
+
+    m_hBmpView.DestroyView();
+    if (IsWindow(m_hBmpView))
+    {
+        DestroyWindow(m_hBmpView);
+    }
+
+    if (IsWindow(m_id_list_dlg))
+    {
+        DestroyWindow(m_id_list_dlg);
+    }
+
+    //DestroyIcon(m_hIcon);     // LR_SHARED
     DestroyIcon(m_hIconSm);
     DestroyAcceleratorTable(m_hAccel);
     ImageList_Destroy(m_hImageList);
@@ -4266,7 +4290,10 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DeleteObject(m_hLargeFont);
     DeleteObject(m_hSmallFont);
 
-    m_hBmpView.DestroyView();
+    //DestroyIcon(MRadCtrl::Icon());    // LR_SHARED
+    DeleteObject(MRadCtrl::Bitmap());
+    DestroyCursor(MSplitterWnd::CursorNS());
+    DestroyCursor(MSplitterWnd::CursorWE());
 
     DestroyWindow(m_hTreeView);
     DestroyWindow(m_hToolBar);
@@ -4842,6 +4869,15 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
     if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
         ChangeStatusText(IDS_READY);
+
+#if !defined(NDEBUG) && (WINVER >= 0x0500)
+    HANDLE hProcess = GetCurrentProcess();
+    TCHAR szText[64];
+    wsprintf(szText, TEXT("GDI:%ld, USER:%ld"), 
+             GetGuiResources(hProcess, GR_GDIOBJECTS),
+             GetGuiResources(hProcess, GR_USEROBJECTS));
+    ChangeStatusText(szText);
+#endif
 }
 
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
