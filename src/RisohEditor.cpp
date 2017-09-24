@@ -3501,8 +3501,12 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
         if (!DoImport(hwnd, Path, entries))
             return FALSE;
 
-        Entries = entries;
-        TV_RefreshInfo(m_hTreeView, Entries, TRUE);
+        m_bLoading = TRUE;
+        {
+            Entries = entries;
+            TV_RefreshInfo(m_hTreeView, Entries, TRUE);
+        }
+        m_bLoading = FALSE;
         SetFilePath(hwnd, Path);
         return TRUE;
     }
@@ -3596,6 +3600,9 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
             stream.ReadDwordAlignment();
             continue;
         }
+
+		if (header.DataSize >= 0x10000)
+			return FALSE;
 
         ResEntry entry;
         entry.data.resize(header.DataSize);
@@ -3916,6 +3923,9 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entri
 
         header.DataSize = Entry.size();
         header.HeaderSize = (DWORD)header.GetHeaderSize(Entry.type, Entry.name);
+		if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
+			return FALSE;
+
         header.Type = Entry.type;
         header.Name = Entry.name;
         header.DataVersion = 0;
@@ -4206,7 +4216,6 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         else if (lstrcmpiW(pch, L".res") == 0)
         {
             DoLoad(hwnd, m_Entries, File);
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
             ChangeStatusText(IDS_READY);
             return;
         }

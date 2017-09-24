@@ -113,8 +113,8 @@ struct ResourceHeader
 {
     DWORD           DataSize;
     DWORD           HeaderSize;
-    MIdOrString    Type;
-    MIdOrString    Name;
+    MIdOrString     Type;
+    MIdOrString     Name;
     DWORD           DataVersion;
     WORD            MemoryFlags;
     WORD            LanguageId;
