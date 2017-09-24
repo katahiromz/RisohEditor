@@ -1397,120 +1397,15 @@ public:
         return TEXT("katahiromz's RisohEditor");
     }
 
-    BOOL StartDx(INT nCmdShow)
-    {
-        MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
-        MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
-
-        m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
-        m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
-
-        if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
-            WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
-        {
-            ErrorBoxDx(TEXT("failure of CreateWindow"));
-            return FALSE;
-        }
-
-        if (m_settings.bResumeWindowPos && m_settings.bMaximized)
-        {
-            ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
-        }
-        else
-        {
-            ShowWindow(m_hwnd, nCmdShow);
-        }
-        UpdateWindow(m_hwnd);
-
-        return TRUE;
-    }
+    BOOL StartDx(INT nCmdShow);
 
     // message loop
-    INT_PTR RunDx()
-    {
-        MSG msg;
-        while (::GetMessage(&msg, NULL, 0, 0))
-        {
-            if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
-                continue;
-            if (::IsDialogMessage(m_id_list_dlg, &msg))
-                continue;
-            if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-                continue;
-            if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
-                continue;
+    INT_PTR RunDx();
 
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-        }
-        return INT(msg.wParam);
-    }
-
-    void UpdateMenu()
-    {
-        HMENU hMenu = GetMenu(m_hwnd);
-        HMENU hFileMenu = GetSubMenu(hMenu, 0);
-        HMENU hMruMenu = GetSubMenu(hFileMenu, GetMenuItemCount(hFileMenu) - 3);
-        assert(hMruMenu);
-        while (DeleteMenu(hMruMenu, 0, MF_BYPOSITION))
-            ;
-
-        INT i = 0;
-        TCHAR szText[MAX_PATH * 2];
-        static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
-        mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
-        for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
-        {
-#if 1
-            LPCTSTR pch = _tcsrchr(it->c_str(), TEXT('\\'));
-            if (pch == NULL)
-                pch = _tcsrchr(it->c_str(), TEXT('/'));
-            if (pch == NULL)
-                pch = it->c_str();
-            else
-                ++pch;
-            wsprintf(szText, TEXT("&%c  %s"), szPrefix[i], pch);
-            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, szText);
-#else
-            InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, it->c_str());
-#endif
-            ++i;
-        }
-
-        if (m_settings.vecRecentlyUsed.empty())
-        {
-            InsertMenu(hMruMenu, 0, MF_BYPOSITION | MF_STRING | MF_GRAYED, -1, LoadStringDx(IDS_NONE));
-        }
-    }
+    void UpdateMenu();
 
     virtual LRESULT CALLBACK
-    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        static UINT s_uFindMsg = RegisterWindowMessage(FINDMSGSTRING);
-        switch (uMsg)
-        {
-            DO_MSG(WM_CREATE, OnCreate);
-            DO_MSG(WM_COMMAND, OnCommand);
-            DO_MSG(WM_DESTROY, OnDestroy);
-            DO_MSG(WM_DROPFILES, OnDropFiles);
-            DO_MSG(WM_MOVE, OnMove);
-            DO_MSG(WM_SIZE, OnSize);
-            DO_MSG(WM_NOTIFY, OnNotify);
-            DO_MSG(WM_CONTEXTMENU, OnContextMenu);
-            DO_MSG(WM_INITMENU, OnInitMenu);
-            DO_MSG(WM_ACTIVATE, OnActivate);
-            DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
-            DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
-            DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
-            DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
-        default:
-            if (uMsg == s_uFindMsg)
-            {
-                return OnFindMsg(hwnd, wParam, lParam);
-            }
-            return DefaultProcDx();
-        }
-    }
+    WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     void OnSysColorChange(HWND hwnd)
     {
@@ -1556,140 +1451,7 @@ public:
         }
     }
 
-    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
-    {
-        m_id_list_dlg.m_hMainWnd = hwnd;
-
-        LoadLangInfo();
-
-        INT nRet = CheckData();
-        if (nRet)
-            return FALSE;
-
-        LoadSettings(hwnd);
-
-        if (m_settings.bResumeWindowPos)
-        {
-            if (m_settings.nWindowLeft != CW_USEDEFAULT)
-            {
-                POINT pt = { m_settings.nWindowLeft, m_settings.nWindowTop };
-                SetWindowPosDx(&pt);
-            }
-            if (m_settings.nWindowWidth != CW_USEDEFAULT)
-            {
-                SIZE siz = { m_settings.nWindowWidth, m_settings.nWindowHeight };
-                SetWindowPosDx(NULL, &siz);
-            }
-        }
-
-        m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
-        if (m_hImageList == NULL)
-            return FALSE;
-        m_hFileIcon = LoadSmallIconDx(100);
-        ImageList_AddIcon(m_hImageList, m_hFileIcon);
-        m_hFolderIcon = LoadSmallIconDx(101);
-        ImageList_AddIcon(m_hImageList, m_hFolderIcon);
-
-        m_hToolBar = ToolBar_Create(hwnd);
-        if (m_hToolBar == NULL)
-            return FALSE;
-
-        DWORD style, exstyle;
-
-        style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
-        if (!m_splitter1.CreateDx(hwnd, 2, style))
-            return FALSE;
-
-        style = WS_CHILD | WS_VISIBLE | SWS_VERT | SWS_BOTTOMALIGN;
-        if (!m_splitter2.CreateDx(m_splitter1, 2, style))
-            return FALSE;
-
-        style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
-        if (!m_splitter3.CreateDx(m_splitter2, 1, style))
-            return FALSE;
-
-        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
-            TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
-            TVS_LINESATROOT | TVS_SHOWSELALWAYS;
-        m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
-            WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
-            (HMENU)1, m_hInst, NULL);
-        if (m_hTreeView == NULL)
-            return FALSE;
-
-        TreeView_SetImageList(m_hTreeView, m_hImageList, TVSIL_NORMAL);
-
-        m_splitter1.SetPane(0, m_hTreeView);
-        m_splitter1.SetPane(1, m_splitter2);
-        m_splitter1.SetPaneExtent(0, m_settings.nTreeViewWidth);
-
-        style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
-            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-        exstyle = WS_EX_CLIENTEDGE;
-        m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
-        m_splitter2.SetPane(0, m_splitter3);
-        m_splitter2.SetPane(1, m_hBinEdit);
-        m_splitter2.SetPaneExtent(1, BE_HEIGHT);
-
-        style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
-            ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-            ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-        exstyle = WS_EX_CLIENTEDGE;
-        m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
-        if (!m_hBmpView.CreateDx(m_splitter3, 4))
-            return FALSE;
-
-        m_splitter3.SetPane(0, m_hSrcEdit);
-        //m_splitter3.SetPane(1, m_hBmpView);
-
-        style = WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP | CCS_BOTTOM;
-        m_hStatusBar = CreateStatusWindow(style, LoadStringDx(IDS_STARTING), hwnd, 8);
-        if (m_hStatusBar == NULL)
-            return FALSE;
-
-        INT anWidths[] = { -1 };
-        SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
-        ChangeStatusText(IDS_STARTING);
-
-        if (m_settings.bShowStatusBar)
-            ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
-        else
-            ShowWindow(m_hStatusBar, SW_HIDE);
-
-        LOGFONTW lf;
-        GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
-        lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
-        lf.lfFaceName[0] = 0;
-
-        lf.lfHeight = 11;
-        m_hSmallFont = CreateFontIndirectW(&lf);
-        assert(m_hSmallFont);
-
-        lf.lfHeight = 13;
-        m_hNormalFont = ::CreateFontIndirectW(&lf);
-        assert(m_hNormalFont);
-
-        lf.lfHeight = 15;
-        m_hLargeFont = ::CreateFontIndirectW(&lf);
-        assert(m_hLargeFont);
-
-        SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
-        SetWindowFont(m_hBinEdit, m_hSmallFont, TRUE);
-
-        if (m_argc >= 2)
-        {
-            DoLoad(hwnd, m_Entries, m_targv[1]);
-        }
-
-        DragAcceptFiles(hwnd, TRUE);
-        SetFocus(m_hTreeView);
-        UpdateMenu();
-
-        PostMessageDx(WM_COMMAND, CMDID_READY);
-
-        return TRUE;
-    }
+    BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
 
     VOID HidePreview(HWND hwnd)
     {
@@ -1706,34 +1468,7 @@ public:
         PostMessageDx(WM_SIZE);
     }
 
-    BOOL DoSetFile(HWND hwnd, LPCWSTR FileName)
-    {
-        if (FileName == 0 || FileName[0] == 0)
-        {
-            ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
-            return TRUE;
-        }
-
-        WCHAR Path[MAX_PATH], *pch;
-        GetFullPathNameW(FileName, _countof(Path), Path, &pch);
-        lstrcpynW(m_szFile, Path, _countof(m_szFile));
-
-        WCHAR sz[MAX_PATH];
-        pch = wcsrchr(Path, L'\\');
-        if (pch)
-        {
-            wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-            ::SetWindowTextW(hwnd, sz);
-        }
-        else
-        {
-            ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
-        }
-
-        m_settings.AddFile(m_szFile);
-        UpdateMenu();
-        return TRUE;
-    }
+    BOOL DoSetFile(HWND hwnd, LPCWSTR FileName);
 
     void OnDeleteRes(HWND hwnd)
     {
@@ -1753,52 +1488,6 @@ public:
         HidePreview(hwnd);
     }
 
-    void OnExtractBin(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) == I_NONE)
-            return;
-
-        UINT i = LOWORD(lParam);
-
-        WCHAR szFile[MAX_PATH] = L"";
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-        if (HIWORD(lParam) == I_LANG)
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
-        else
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-        ofn.lpstrFile = szFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        ofn.lpstrDefExt = L"res";
-        if (GetSaveFileNameW(&ofn))
-        {
-            if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
-            {
-                ResEntries selection;
-                INT count = TV_GetSelection(m_hTreeView, selection, m_Entries);
-                if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
-                {
-                    ErrorBoxDx(IDS_CANNOTSAVE);
-                }
-            }
-            else
-            {
-                if (!DoExtractBin(ofn.lpstrFile, m_Entries[i]))
-                {
-                    ErrorBoxDx(IDS_CANNOTSAVE);
-                }
-            }
-        }
-    }
-
     void OnPlay(HWND hwnd)
     {
         LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -1814,353 +1503,26 @@ public:
         }
     }
 
-    void OnExtractIcon(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
+    void OnAddBitmap(HWND hwnd);
+    void OnAddCursor(HWND hwnd);
+    void OnAddDialog(HWND hwnd);
+    void OnAddIcon(HWND hwnd);
+    void OnAddMenu(HWND hwnd);
+    void OnAddRes(HWND hwnd);
+    void OnAddVerInfo(HWND hwnd);
+    void OnExtractBin(HWND hwnd);
+    void OnExtractBitmap(HWND hwnd);
+    void OnExtractCursor(HWND hwnd);
+    void OnExtractIcon(HWND hwnd);
+    void OnReplaceBin(HWND hwnd);
+    void OnReplaceBitmap(HWND hwnd);
+    void OnReplaceCursor(HWND hwnd);
+    void OnReplaceIcon(HWND hwnd);
 
-        UINT i = LOWORD(lParam);
-        ResEntry& entry = m_Entries[i];
+    void OnOpen(HWND hwnd);
+    void OnSaveAs(HWND hwnd);
 
-        WCHAR szFile[MAX_PATH] = L"";
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
-        ofn.lpstrFile = szFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        if (entry.type == RT_ANIICON)
-        {
-            ofn.nFilterIndex = 2;
-            ofn.lpstrDefExt = L"ani";
-        }
-        else
-        {
-            ofn.nFilterIndex = 1;
-            ofn.lpstrDefExt = L"ico";
-        }
-        if (GetSaveFileNameW(&ofn))
-        {
-            if (!DoExtractIcon(ofn.lpstrFile, m_Entries[i]))
-            {
-                ErrorBoxDx(IDS_CANTEXTRACTICO);
-            }
-        }
-    }
-
-    void OnExtractCursor(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-        ResEntry& entry = m_Entries[i];
-
-        WCHAR szFile[MAX_PATH] = L"";
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
-        ofn.lpstrFile = szFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        if (entry.type == RT_ANICURSOR)
-        {
-            ofn.nFilterIndex = 2;
-            ofn.lpstrDefExt = L"ani";
-        }
-        else
-        {
-            ofn.nFilterIndex = 1;
-            ofn.lpstrDefExt = L"cur";
-        }
-        if (GetSaveFileNameW(&ofn))
-        {
-            if (!DoExtractCursor(ofn.lpstrFile, m_Entries[i]))
-            {
-                ErrorBoxDx(IDS_CANTEXTRACTCUR);
-            }
-        }
-    }
-
-    void OnExtractBitmap(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-
-        WCHAR szFile[MAX_PATH] = L"";
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
-        ofn.lpstrFile = szFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTBMP);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-        ofn.lpstrDefExt = L"bmp";
-        if (GetSaveFileNameW(&ofn))
-        {
-            BOOL PNG;
-            PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-            if (!DoExtractBitmap(ofn.lpstrFile, m_Entries[i], PNG))
-            {
-                ErrorBoxDx(IDS_CANTEXTRACTBMP);
-            }
-        }
-    }
-
-    void OnReplaceBin(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-        MReplaceBinDlg dialog(m_Entries, m_Entries[i], m_db);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnSaveAs(HWND hwnd)
-    {
-        if (!CompileIfNecessary(hwnd))
-            return;
-
-        WCHAR File[MAX_PATH];
-
-        lstrcpynW(File, m_szFile, _countof(File));
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        DWORD dwBinType;
-        if (m_szFile[0] == 0 || !GetBinaryType(m_szFile, &dwBinType))
-        {
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-            ofn.lpstrDefExt = L"res";
-        }
-        else
-        {
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-            ofn.lpstrDefExt = L"exe";
-        }
-        ofn.lpstrFile = File;
-        ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
-        if (GetSaveFileNameW(&ofn))
-        {
-            if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
-            {
-                if (!DoSaveResAs(hwnd, File))
-                {
-                    ErrorBoxDx(IDS_CANNOTSAVE);
-                }
-            }
-            else
-            {
-                if (!DoSaveAs(hwnd, File))
-                {
-                    ErrorBoxDx(IDS_CANNOTSAVE);
-                }
-            }
-        }
-    }
-
-    void OnTest(HWND hwnd)
-    {
-        HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
-        if (hItem == NULL)
-            return;
-
-        TV_ITEM Item;
-        ZeroMemory(&Item, sizeof(Item));
-        Item.mask = TVIF_PARAM;
-        Item.hItem = hItem;
-        TreeView_GetItem(m_hTreeView, &Item);
-
-        if (HIWORD(Item.lParam) != 3)
-            return;
-
-        UINT i = LOWORD(Item.lParam);
-        const ResEntry& Entry = m_Entries[i];
-        if (Entry.type == RT_DIALOG)
-        {
-            MTestDialog dialog;
-            dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
-        }
-        else if (Entry.type == RT_MENU)
-        {
-            HMENU hMenu = LoadMenuIndirect(&Entry[0]);
-            if (hMenu)
-            {
-                MTestMenuDlg dialog(hMenu);
-                dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
-                DestroyMenu(hMenu);
-            }
-        }
-    }
-
-    void OnAddIcon(HWND hwnd)
-    {
-        MAddIconDlg dialog(m_db, m_Entries);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnReplaceIcon(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-        MReplaceIconDlg dialog(m_db, m_Entries, m_Entries[i]);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnReplaceCursor(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-        MReplaceCursorDlg dialog(m_db, m_Entries, m_Entries[i]);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnOpen(HWND hwnd)
-    {
-        if (!CompileIfNecessary(hwnd))
-            return;
-
-        WCHAR File[MAX_PATH];
-        lstrcpynW(File, m_szFile, _countof(File));
-
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-        ofn.lpstrFile = File;
-        ofn.nMaxFile = _countof(File);
-        ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
-        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        ofn.lpstrDefExt = L"exe";
-        if (GetOpenFileNameW(&ofn))
-        {
-            DoLoad(hwnd, m_Entries, File);
-        }
-    }
-
-    void OnAddBitmap(HWND hwnd)
-    {
-        MAddBitmapDlg dialog(m_db, m_Entries);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnReplaceBitmap(HWND hwnd)
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        if (HIWORD(lParam) != I_LANG)
-            return;
-
-        UINT i = LOWORD(lParam);
-        MReplaceBitmapDlg dialog(m_db, m_Entries, m_Entries[i]);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnAddCursor(HWND hwnd)
-    {
-        MAddCursorDlg dialog(m_db, m_Entries);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnAddRes(HWND hwnd)
-    {
-        MAddResDlg dialog(m_Entries, m_db);
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnAddMenu(HWND hwnd)
-    {
-        MAddResDlg dialog(m_Entries, m_db);
-        dialog.m_type = RT_MENU;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnAddVerInfo(HWND hwnd)
-    {
-        MAddResDlg dialog(m_Entries, m_db);
-        dialog.m_type = RT_VERSION;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
-
-    void OnAddDialog(HWND hwnd)
-    {
-        MAddResDlg dialog(m_Entries, m_db);
-        dialog.m_type = RT_DIALOG;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
-        }
-    }
+    void OnTest(HWND hwnd);
 
     void OnAbout(HWND hwnd)
     {
@@ -5158,6 +4520,466 @@ public:
     }
 };
 
+void MMainWnd::UpdateMenu()
+{
+    HMENU hMenu = GetMenu(m_hwnd);
+    HMENU hFileMenu = GetSubMenu(hMenu, 0);
+    HMENU hMruMenu = GetSubMenu(hFileMenu, GetMenuItemCount(hFileMenu) - 3);
+    assert(hMruMenu);
+    while (DeleteMenu(hMruMenu, 0, MF_BYPOSITION))
+        ;
+
+    INT i = 0;
+    TCHAR szText[MAX_PATH * 2];
+    static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
+    mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
+    for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
+    {
+#if 1
+        LPCTSTR pch = _tcsrchr(it->c_str(), TEXT('\\'));
+        if (pch == NULL)
+            pch = _tcsrchr(it->c_str(), TEXT('/'));
+        if (pch == NULL)
+            pch = it->c_str();
+        else
+            ++pch;
+        wsprintf(szText, TEXT("&%c  %s"), szPrefix[i], pch);
+        InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, szText);
+#else
+        InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, it->c_str());
+#endif
+        ++i;
+    }
+
+    if (m_settings.vecRecentlyUsed.empty())
+    {
+        InsertMenu(hMruMenu, 0, MF_BYPOSITION | MF_STRING | MF_GRAYED, -1, LoadStringDx(IDS_NONE));
+    }
+}
+
+void MMainWnd::OnExtractBin(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) == I_NONE)
+        return;
+
+    UINT i = LOWORD(lParam);
+
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+    if (HIWORD(lParam) == I_LANG)
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
+    else
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"res";
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+        {
+            ResEntries selection;
+            INT count = TV_GetSelection(m_hTreeView, selection, m_Entries);
+            if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+        else
+        {
+            if (!DoExtractBin(ofn.lpstrFile, m_Entries[i]))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+    }
+}
+
+void MMainWnd::OnExtractIcon(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    ResEntry& entry = m_Entries[i];
+
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    if (entry.type == RT_ANIICON)
+    {
+        ofn.nFilterIndex = 2;
+        ofn.lpstrDefExt = L"ani";
+    }
+    else
+    {
+        ofn.nFilterIndex = 1;
+        ofn.lpstrDefExt = L"ico";
+    }
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (!DoExtractIcon(ofn.lpstrFile, m_Entries[i]))
+        {
+            ErrorBoxDx(IDS_CANTEXTRACTICO);
+        }
+    }
+}
+
+void MMainWnd::OnExtractCursor(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    ResEntry& entry = m_Entries[i];
+
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    if (entry.type == RT_ANICURSOR)
+    {
+        ofn.nFilterIndex = 2;
+        ofn.lpstrDefExt = L"ani";
+    }
+    else
+    {
+        ofn.nFilterIndex = 1;
+        ofn.lpstrDefExt = L"cur";
+    }
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (!DoExtractCursor(ofn.lpstrFile, m_Entries[i]))
+        {
+            ErrorBoxDx(IDS_CANTEXTRACTCUR);
+        }
+    }
+}
+
+void MMainWnd::OnExtractBitmap(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTBMP);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"bmp";
+    if (GetSaveFileNameW(&ofn))
+    {
+        BOOL PNG;
+        PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
+        if (!DoExtractBitmap(ofn.lpstrFile, m_Entries[i], PNG))
+        {
+            ErrorBoxDx(IDS_CANTEXTRACTBMP);
+        }
+    }
+}
+
+void MMainWnd::OnReplaceBin(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    MReplaceBinDlg dialog(m_Entries, m_Entries[i], m_db);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnOpen(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd))
+        return;
+
+    WCHAR File[MAX_PATH];
+    lstrcpynW(File, m_szFile, _countof(File));
+
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+    ofn.lpstrFile = File;
+    ofn.nMaxFile = _countof(File);
+    ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+    ofn.lpstrDefExt = L"exe";
+    if (GetOpenFileNameW(&ofn))
+    {
+        DoLoad(hwnd, m_Entries, File);
+    }
+}
+
+void MMainWnd::OnSaveAs(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd))
+        return;
+
+    WCHAR File[MAX_PATH];
+
+    lstrcpynW(File, m_szFile, _countof(File));
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    DWORD dwBinType;
+    if (m_szFile[0] == 0 || !GetBinaryType(m_szFile, &dwBinType))
+    {
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        ofn.lpstrDefExt = L"res";
+    }
+    else
+    {
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+        ofn.lpstrDefExt = L"exe";
+    }
+    ofn.lpstrFile = File;
+    ofn.nMaxFile = _countof(File);
+    ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+        OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+        {
+            if (!DoSaveResAs(hwnd, File))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+        else
+        {
+            if (!DoSaveAs(hwnd, File))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+    }
+}
+
+void MMainWnd::OnTest(HWND hwnd)
+{
+    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    if (hItem == NULL)
+        return;
+
+    TV_ITEM Item;
+    ZeroMemory(&Item, sizeof(Item));
+    Item.mask = TVIF_PARAM;
+    Item.hItem = hItem;
+    TreeView_GetItem(m_hTreeView, &Item);
+
+    if (HIWORD(Item.lParam) != 3)
+        return;
+
+    UINT i = LOWORD(Item.lParam);
+    const ResEntry& Entry = m_Entries[i];
+    if (Entry.type == RT_DIALOG)
+    {
+        MTestDialog dialog;
+        dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
+    }
+    else if (Entry.type == RT_MENU)
+    {
+        HMENU hMenu = LoadMenuIndirect(&Entry[0]);
+        if (hMenu)
+        {
+            MTestMenuDlg dialog(hMenu);
+            dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
+            DestroyMenu(hMenu);
+        }
+    }
+}
+
+void MMainWnd::OnAddIcon(HWND hwnd)
+{
+    MAddIconDlg dialog(m_db, m_Entries);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnReplaceIcon(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    MReplaceIconDlg dialog(m_db, m_Entries, m_Entries[i]);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnReplaceCursor(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    MReplaceCursorDlg dialog(m_db, m_Entries, m_Entries[i]);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddBitmap(HWND hwnd)
+{
+    MAddBitmapDlg dialog(m_db, m_Entries);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnReplaceBitmap(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    MReplaceBitmapDlg dialog(m_db, m_Entries, m_Entries[i]);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddCursor(HWND hwnd)
+{
+    MAddCursorDlg dialog(m_db, m_Entries);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddRes(HWND hwnd)
+{
+    MAddResDlg dialog(m_Entries, m_db);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddMenu(HWND hwnd)
+{
+    MAddResDlg dialog(m_Entries, m_db);
+    dialog.m_type = RT_MENU;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddVerInfo(HWND hwnd)
+{
+    MAddResDlg dialog(m_Entries, m_db);
+    dialog.m_type = RT_VERSION;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+void MMainWnd::OnAddDialog(HWND hwnd)
+{
+    MAddResDlg dialog(m_Entries, m_db);
+    dialog.m_type = RT_DIALOG;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+    }
+}
+
+BOOL MMainWnd::DoSetFile(HWND hwnd, LPCWSTR FileName)
+{
+    if (FileName == 0 || FileName[0] == 0)
+    {
+        ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        return TRUE;
+    }
+
+    WCHAR Path[MAX_PATH], *pch;
+    GetFullPathNameW(FileName, _countof(Path), Path, &pch);
+    lstrcpynW(m_szFile, Path, _countof(m_szFile));
+
+    WCHAR sz[MAX_PATH];
+    pch = wcsrchr(Path, L'\\');
+    if (pch)
+    {
+        wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
+        ::SetWindowTextW(hwnd, sz);
+    }
+    else
+    {
+        ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+    }
+
+    m_settings.AddFile(m_szFile);
+    UpdateMenu();
+    return TRUE;
+}
+
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
     m_settings.bShowBinEdit = TRUE;
@@ -5364,6 +5186,218 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     }
 
     return TRUE;
+}
+
+BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+{
+    m_id_list_dlg.m_hMainWnd = hwnd;
+
+    LoadLangInfo();
+
+    INT nRet = CheckData();
+    if (nRet)
+        return FALSE;
+
+    LoadSettings(hwnd);
+
+    if (m_settings.bResumeWindowPos)
+    {
+        if (m_settings.nWindowLeft != CW_USEDEFAULT)
+        {
+            POINT pt = { m_settings.nWindowLeft, m_settings.nWindowTop };
+            SetWindowPosDx(&pt);
+        }
+        if (m_settings.nWindowWidth != CW_USEDEFAULT)
+        {
+            SIZE siz = { m_settings.nWindowWidth, m_settings.nWindowHeight };
+            SetWindowPosDx(NULL, &siz);
+        }
+    }
+
+    m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
+    if (m_hImageList == NULL)
+        return FALSE;
+    m_hFileIcon = LoadSmallIconDx(100);
+    ImageList_AddIcon(m_hImageList, m_hFileIcon);
+    m_hFolderIcon = LoadSmallIconDx(101);
+    ImageList_AddIcon(m_hImageList, m_hFolderIcon);
+
+    m_hToolBar = ToolBar_Create(hwnd);
+    if (m_hToolBar == NULL)
+        return FALSE;
+
+    DWORD style, exstyle;
+
+    style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
+    if (!m_splitter1.CreateDx(hwnd, 2, style))
+        return FALSE;
+
+    style = WS_CHILD | WS_VISIBLE | SWS_VERT | SWS_BOTTOMALIGN;
+    if (!m_splitter2.CreateDx(m_splitter1, 2, style))
+        return FALSE;
+
+    style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
+    if (!m_splitter3.CreateDx(m_splitter2, 1, style))
+        return FALSE;
+
+    style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
+        TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
+        TVS_LINESATROOT | TVS_SHOWSELALWAYS;
+    m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
+        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
+        (HMENU)1, m_hInst, NULL);
+    if (m_hTreeView == NULL)
+        return FALSE;
+
+    TreeView_SetImageList(m_hTreeView, m_hImageList, TVSIL_NORMAL);
+
+    m_splitter1.SetPane(0, m_hTreeView);
+    m_splitter1.SetPane(1, m_splitter2);
+    m_splitter1.SetPaneExtent(0, m_settings.nTreeViewWidth);
+
+    style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
+        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+    exstyle = WS_EX_CLIENTEDGE;
+    m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
+    m_splitter2.SetPane(0, m_splitter3);
+    m_splitter2.SetPane(1, m_hBinEdit);
+    m_splitter2.SetPaneExtent(1, BE_HEIGHT);
+
+    style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
+        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+    exstyle = WS_EX_CLIENTEDGE;
+    m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
+    if (!m_hBmpView.CreateDx(m_splitter3, 4))
+        return FALSE;
+
+    m_splitter3.SetPane(0, m_hSrcEdit);
+    //m_splitter3.SetPane(1, m_hBmpView);
+
+    style = WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP | CCS_BOTTOM;
+    m_hStatusBar = CreateStatusWindow(style, LoadStringDx(IDS_STARTING), hwnd, 8);
+    if (m_hStatusBar == NULL)
+        return FALSE;
+
+    INT anWidths[] = { -1 };
+    SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
+    ChangeStatusText(IDS_STARTING);
+
+    if (m_settings.bShowStatusBar)
+        ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
+    else
+        ShowWindow(m_hStatusBar, SW_HIDE);
+
+    LOGFONTW lf;
+    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+    lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
+    lf.lfFaceName[0] = 0;
+
+    lf.lfHeight = 11;
+    m_hSmallFont = CreateFontIndirectW(&lf);
+    assert(m_hSmallFont);
+
+    lf.lfHeight = 13;
+    m_hNormalFont = ::CreateFontIndirectW(&lf);
+    assert(m_hNormalFont);
+
+    lf.lfHeight = 15;
+    m_hLargeFont = ::CreateFontIndirectW(&lf);
+    assert(m_hLargeFont);
+
+    SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
+    SetWindowFont(m_hBinEdit, m_hSmallFont, TRUE);
+
+    if (m_argc >= 2)
+    {
+        DoLoad(hwnd, m_Entries, m_targv[1]);
+    }
+
+    DragAcceptFiles(hwnd, TRUE);
+    SetFocus(m_hTreeView);
+    UpdateMenu();
+
+    PostMessageDx(WM_COMMAND, CMDID_READY);
+
+    return TRUE;
+}
+
+/*virtual*/ LRESULT CALLBACK
+MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static UINT s_uFindMsg = RegisterWindowMessage(FINDMSGSTRING);
+    switch (uMsg)
+    {
+        DO_MSG(WM_CREATE, OnCreate);
+        DO_MSG(WM_COMMAND, OnCommand);
+        DO_MSG(WM_DESTROY, OnDestroy);
+        DO_MSG(WM_DROPFILES, OnDropFiles);
+        DO_MSG(WM_MOVE, OnMove);
+        DO_MSG(WM_SIZE, OnSize);
+        DO_MSG(WM_NOTIFY, OnNotify);
+        DO_MSG(WM_CONTEXTMENU, OnContextMenu);
+        DO_MSG(WM_INITMENU, OnInitMenu);
+        DO_MSG(WM_ACTIVATE, OnActivate);
+        DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
+        DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
+        DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
+        DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
+    default:
+        if (uMsg == s_uFindMsg)
+        {
+            return OnFindMsg(hwnd, wParam, lParam);
+        }
+        return DefaultProcDx();
+    }
+}
+
+BOOL MMainWnd::StartDx(INT nCmdShow)
+{
+    MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
+    MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
+
+    m_hIcon = ::LoadIcon(m_hInst, MAKEINTRESOURCE(1));
+    m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
+
+    if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
+        WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
+    {
+        ErrorBoxDx(TEXT("failure of CreateWindow"));
+        return FALSE;
+    }
+
+    if (m_settings.bResumeWindowPos && m_settings.bMaximized)
+    {
+        ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
+    }
+    else
+    {
+        ShowWindow(m_hwnd, nCmdShow);
+    }
+    UpdateWindow(m_hwnd);
+
+    return TRUE;
+}
+
+INT_PTR MMainWnd::RunDx()
+{
+    MSG msg;
+    while (::GetMessage(&msg, NULL, 0, 0))
+    {
+        if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
+            continue;
+        if (::IsDialogMessage(m_id_list_dlg, &msg))
+            continue;
+        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            continue;
+        if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+            continue;
+
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+    }
+    return INT(msg.wParam);
 }
 
 INT WINAPI
