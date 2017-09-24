@@ -1557,49 +1557,49 @@ protected:
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd out-of-line functions
 
-    void MMainWnd::OnSysColorChange(HWND hwnd)
-    {
-        m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
-        m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
-    }
+void MMainWnd::OnSysColorChange(HWND hwnd)
+{
+    m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
+}
 
-    LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if (!CompileIfNecessary(hwnd))
     {
-        if (!CompileIfNecessary(hwnd))
-        {
-            return FALSE;
-        }
         return FALSE;
     }
+    return FALSE;
+}
 
-    LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    INT x = (SHORT)LOWORD(wParam);
+    INT y = (SHORT)HIWORD(wParam);
+    INT cx = (SHORT)LOWORD(lParam);
+    INT cy = (SHORT)HIWORD(lParam);
+
+    WCHAR szText[64];
+    wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
+    ChangeStatusText(szText);
+    return 0;
+}
+
+LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    ChangeStatusText(TEXT(""));
+    return 0;
+}
+
+void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+{
+    if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
     {
-        INT x = (SHORT)LOWORD(wParam);
-        INT y = (SHORT)HIWORD(wParam);
-        INT cx = (SHORT)LOWORD(lParam);
-        INT cy = (SHORT)HIWORD(lParam);
-
-        WCHAR szText[64];
-        wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
-        ChangeStatusText(szText);
-        return 0;
+        SetFocus(m_hTreeView);
     }
-
-    LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        ChangeStatusText(TEXT(""));
-        return 0;
-    }
-
-    void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
-    {
-        if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
-        {
-            SetFocus(m_hTreeView);
-        }
-    }
+}
 
 void MMainWnd::UpdateMenu()
 {
