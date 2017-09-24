@@ -4273,6 +4273,10 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
 
+    DestroyWindow(m_splitter1);
+    DestroyWindow(m_splitter2);
+    DestroyWindow(m_splitter3);
+
     PostQuitMessage(0);
 }
 
