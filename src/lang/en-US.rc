@@ -718,12 +718,12 @@ CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "&Always CONTROL Statement", chx1, 10, 10, 190, 14
-    AUTOCHECKBOX "Don't Use ID &Macros", chx2, 10, 30, 190, 14
-    AUTOCHECKBOX "Resume Previous Window &Position", chx3, 10, 50, 190, 14
-    AUTOCHECKBOX "Automatically Load Nearby ""&resource.h""", chx4, 10, 70, 190, 14
-    AUTOCHECKBOX "Automatically Show the &List of Resource IDs", chx5, 10, 90, 190, 14
-    AUTOCHECKBOX "Show &Dots On Dialog Edit", chx6, 10, 110, 190, 14
+    AUTOCHECKBOX "&Always CONTROL statement", chx1, 10, 10, 190, 14
+    AUTOCHECKBOX "Don't use ID &macros", chx2, 10, 30, 190, 14
+    AUTOCHECKBOX "Resume previous window &position", chx3, 10, 50, 190, 14
+    AUTOCHECKBOX "Automatically load nearby ""&resource.h""", chx4, 10, 70, 190, 14
+    AUTOCHECKBOX "Automatically show the &list of resource IDs", chx5, 10, 90, 190, 14
+    AUTOCHECKBOX "Show &dots on dialog edit", chx6, 10, 110, 190, 14
     RTEXT "Height of Combo&Box:", -1, 10, 134, 75, 12
     EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 80, 160, 60, 14
@@ -739,7 +739,7 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
     RTEXT "&Type of ID:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
-    RTEXT "&Integer Value:", -1, 10, 52, 50, 14
+    RTEXT "&Integer value:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 85, 70, 60, 14
@@ -754,19 +754,19 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
     RTEXT "&Type of ID:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
-    RTEXT "&Integer Value:", -1, 10, 52, 50, 14
+    RTEXT "&Integer value:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 85, 70, 60, 14
 }
 
 IDD_ADVICERESH DIALOG 0, 0, 209, 184
-CAPTION "Advice of Changing File ""resource.h"""
+CAPTION "Advice of modification of file ""resource.h"""
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Please modify File ""resource.h"" As Follows:", -1, 10, 10, 195, 20
+    LTEXT "Please modify the file ""resource.h"" As Follows:", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_MULTILINE | ES_READONLY
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
-    PUSHBUTTON "&Clear Modification", psh1, 10, 165, 90, 14
+    PUSHBUTTON "&Clear modification", psh1, 10, 165, 90, 14
 }
