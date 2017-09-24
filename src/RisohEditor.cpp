@@ -1404,6 +1404,87 @@ public:
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+    // status bar
+    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    void ChangeStatusText(INT nID)
+    {
+        ChangeStatusText(LoadStringDx(nID));
+    }
+    void ChangeStatusText(LPCTSTR pszText)
+    {
+        SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
+    }
+
+    void OnUpdateID(HWND hwnd)
+    {
+        SelectTV(hwnd, 0, FALSE);
+    }
+
+    BOOL SetFilePath(HWND hwnd, LPCWSTR FileName);
+    void UpdateMenu();
+    void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick);
+    BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
+    BOOL CompileIfNecessary(HWND hwnd);
+    BOOL CheckDataFolder(VOID);
+    INT CheckData(VOID);
+
+    // ID list
+    void UpdateIDList(HWND hwnd);
+    void OnIDList(HWND hwnd);
+    void OnIdAssoc(HWND hwnd);
+
+    // show/hide
+    void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
+    void ShowMovie(BOOL bShow = TRUE);
+    void ShowBmpView(BOOL bShow = TRUE);
+    void ShowStatusBar(BOOL bShow = TRUE);
+    void ShowBinEdit(BOOL bShow = TRUE);
+
+    // preview
+    VOID HidePreview(HWND hwnd);
+
+    // actions
+    BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
+    void DoLoadLangInfo(VOID);
+    BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName);
+    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
+    BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry);
+    BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry);
+    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries);
+    BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry);
+    BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
+    BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile);
+    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
+
+protected:
+    BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
+    BOOL CompileParts(HWND hwnd, const std::wstring& WideText);
+    BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
+    BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
+    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
+
+    // preview
+    BOOL Preview(HWND hwnd, const ResEntry& Entry);
+    void PreviewIcon(HWND hwnd, const ResEntry& Entry);
+    void PreviewCursor(HWND hwnd, const ResEntry& Entry);
+    void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry);
+    void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry);
+    void PreviewBitmap(HWND hwnd, const ResEntry& Entry);
+    void PreviewImage(HWND hwnd, const ResEntry& Entry);
+    void PreviewWAVE(HWND hwnd, const ResEntry& Entry);
+    void PreviewAVI(HWND hwnd, const ResEntry& Entry);
+    void PreviewAccel(HWND hwnd, const ResEntry& Entry);
+    void PreviewMessage(HWND hwnd, const ResEntry& Entry);
+    void PreviewString(HWND hwnd, const ResEntry& Entry);
+    void PreviewHtml(HWND hwnd, const ResEntry& Entry);
+    void PreviewMenu(HWND hwnd, const ResEntry& Entry);
+    void PreviewVersion(HWND hwnd, const ResEntry& Entry);
+    void PreviewDialog(HWND hwnd, const ResEntry& Entry);
+    void PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon);
+    void PreviewStringTable(HWND hwnd, const ResEntry& Entry);
+    void PreviewMessageTable(HWND hwnd, const ResEntry& Entry);
+
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
     void OnSysColorChange(HWND hwnd);
@@ -1413,15 +1494,17 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy);
     void OnInitMenu(HWND hwnd, HMENU hMenu);
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos);
-    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
     void OnDestroy(HWND hwnd);
 
+    void OnCancelEdit(HWND hwnd);
+    void OnCompile(HWND hwnd);
+    void OnGuiEdit(HWND hwnd);
+    void OnEdit(HWND hwnd);
+    void OnUpdateDlgRes(HWND hwnd);
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
-
-    BOOL DoSetFile(HWND hwnd, LPCWSTR FileName);
-    void UpdateMenu();
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -1454,87 +1537,6 @@ public:
     void OnUnloadResH(HWND hwnd);
     void OnHideIDMacros(HWND hwnd);
     void OnTest(HWND hwnd);
-
-    void OnCancelEdit(HWND hwnd);
-    void OnCompile(HWND hwnd);
-    void OnGuiEdit(HWND hwnd);
-    void OnEdit(HWND hwnd);
-    void OnUpdateDlgRes(HWND hwnd);
-
-    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
-    void ChangeStatusText(INT nID)
-    {
-        ChangeStatusText(LoadStringDx(nID));
-    }
-    void ChangeStatusText(LPCTSTR pszText)
-    {
-        SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
-    }
-
-    void OnUpdateID(HWND hwnd)
-    {
-        SelectTV(hwnd, 0, FALSE);
-    }
-
-    void UpdateIDList(HWND hwnd);
-    void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
-    void OnIDList(HWND hwnd);
-    void OnIdAssoc(HWND hwnd);
-
-    // show/hide
-    void ShowMovie(BOOL bShow = TRUE);
-    void ShowBmpView(BOOL bShow = TRUE);
-    void ShowStatusBar(BOOL bShow = TRUE);
-    void ShowBinEdit(BOOL bShow = TRUE);
-
-    // preview
-    VOID HidePreview(HWND hwnd);
-    void PreviewIcon(HWND hwnd, const ResEntry& Entry);
-    void PreviewCursor(HWND hwnd, const ResEntry& Entry);
-    void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry);
-    void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry);
-    void PreviewBitmap(HWND hwnd, const ResEntry& Entry);
-    void PreviewImage(HWND hwnd, const ResEntry& Entry);
-    void PreviewWAVE(HWND hwnd, const ResEntry& Entry);
-    void PreviewAVI(HWND hwnd, const ResEntry& Entry);
-    void PreviewAccel(HWND hwnd, const ResEntry& Entry);
-    void PreviewMessage(HWND hwnd, const ResEntry& Entry);
-    void PreviewString(HWND hwnd, const ResEntry& Entry);
-    void PreviewHtml(HWND hwnd, const ResEntry& Entry);
-    void PreviewMenu(HWND hwnd, const ResEntry& Entry);
-    void PreviewVersion(HWND hwnd, const ResEntry& Entry);
-    void PreviewDialog(HWND hwnd, const ResEntry& Entry);
-    void PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon);
-    void PreviewStringTable(HWND hwnd, const ResEntry& Entry);
-    void PreviewMessageTable(HWND hwnd, const ResEntry& Entry);
-    BOOL Preview(HWND hwnd, const ResEntry& Entry);
-
-    void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick);
-
-    BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
-
-    BOOL CompileIfNecessary(HWND hwnd);
-    BOOL DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
-    BOOL DoCompileParts(HWND hwnd, const std::wstring& WideText);
-
-    BOOL CheckDataFolder(VOID);
-    INT CheckData(VOID);
-
-    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
-    BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
-    BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
-    void DoLoadLangInfo(VOID);
-    BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName);
-    BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
-    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
-    BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry);
-    BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry);
-    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries);
-    BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry);
-    BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
-    BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile);
-    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
 
     // find/replace
     void OnFind(HWND hwnd);
@@ -1926,7 +1928,7 @@ void MMainWnd::OnOpen(HWND hwnd)
 void MMainWnd::OnNew(HWND hwnd)
 {
     OnUnloadResH(hwnd);
-    DoSetFile(hwnd, NULL);
+    SetFilePath(hwnd, NULL);
     m_Entries.clear();
     TV_RefreshInfo(m_hTreeView, m_Entries);
 }
@@ -2069,7 +2071,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (DoCompileParts(hwnd, WideText))
+    if (CompileParts(hwnd, WideText))
     {
         TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
         TV_SelectEntry(m_hTreeView, m_Entries, entry);
@@ -2187,7 +2189,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             std::wstring WideText = str_res.Dump(m_db);
             ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
 
-            if (DoCompileParts(hwnd, WideText))
+            if (CompileParts(hwnd, WideText))
             {
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
                 TV_SelectEntry(m_hTreeView, m_Entries, Entry);
@@ -3110,7 +3112,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
     return TRUE;
 }
 
-BOOL MMainWnd::DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
+BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3166,7 +3168,7 @@ BOOL MMainWnd::DoWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
-BOOL MMainWnd::DoCompileParts(HWND hwnd, const std::wstring& WideText)
+BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3294,7 +3296,7 @@ BOOL MMainWnd::DoCompileParts(HWND hwnd, const std::wstring& WideText)
             if (DoImport(hwnd, szPath3, entries))
             {
                 MStringA msg;
-                Success = DoWindresResult(hwnd, entries, msg);
+                Success = CareWindresResult(hwnd, entries, msg);
                 if (msg.size())
                 {
                     output.insert(output.end(), msg.begin(), msg.end());
@@ -3348,7 +3350,7 @@ BOOL MMainWnd::CompileIfNecessary(HWND hwnd)
                 WideText.resize(cchText);
                 ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
-                if (!DoCompileParts(hwnd, WideText))
+                if (!CompileParts(hwnd, WideText))
                 {
                     return FALSE;
                 }
@@ -3495,7 +3497,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
 
         Entries = entries;
         TV_RefreshInfo(m_hTreeView, Entries);
-        DoSetFile(hwnd, Path);
+        SetFilePath(hwnd, Path);
         return TRUE;
     }
 
@@ -3512,7 +3514,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
     FreeLibrary(hMod);
 
     TV_RefreshInfo(m_hTreeView, Entries);
-    DoSetFile(hwnd, Path);
+    SetFilePath(hwnd, Path);
 
     m_szResourceH[0] = 0;
     m_settings.added_ids.clear();
@@ -3940,7 +3942,7 @@ BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
     if (DoExtractRes(hwnd, ExeFile, m_Entries))
     {
         Res_Optimize(m_Entries);
-        DoSetFile(hwnd, ExeFile);
+        SetFilePath(hwnd, ExeFile);
         return TRUE;
     }
     return FALSE;
@@ -3973,7 +3975,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     {
         DeleteFileW(TempFile);
         Res_Optimize(m_Entries);
-        DoSetFile(hwnd, ExeFile);
+        SetFilePath(hwnd, ExeFile);
 
         return TRUE;
     }
@@ -5054,7 +5056,7 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::DoSetFile(HWND hwnd, LPCWSTR FileName)
+BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR FileName)
 {
     if (FileName == 0 || FileName[0] == 0)
     {
