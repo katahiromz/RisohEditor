@@ -3223,7 +3223,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
-	DWORD cbWrite = DWORD(TextUtf8.size() * sizeof(char));
+    DWORD cbWrite = DWORD(TextUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(TextUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
@@ -3506,12 +3506,13 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
     }
 
     m_bLoading = TRUE;
-    Entries.clear();
-    Res_GetListFromRes(hMod, (LPARAM)&Entries);
-    FreeLibrary(hMod);
+    {
+        Entries.clear();
+        Res_GetListFromRes(hMod, (LPARAM)&Entries);
+        FreeLibrary(hMod);
+        TV_RefreshInfo(m_hTreeView, Entries, TRUE);
+    }
     m_bLoading = FALSE;
-
-    TV_RefreshInfo(m_hTreeView, Entries);
     SetFilePath(hwnd, Path);
 
     m_szResourceH[0] = 0;
@@ -4228,7 +4229,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
 
     DoLoad(hwnd, m_Entries, File);
-    TV_RefreshInfo(m_hTreeView, m_Entries, TRUE, FALSE);
+    TV_RefreshInfo(m_hTreeView, m_Entries, TRUE);
     ChangeStatusText(IDS_READY);
 }
 

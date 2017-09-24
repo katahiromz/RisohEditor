@@ -973,8 +973,11 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 
 inline void
 TV_RefreshInfo(HWND hwnd, const ResEntries& Entries, BOOL bNewlyOpen = TRUE,
-               BOOL bSelect = TRUE)
+               BOOL bSelect = FALSE)
 {
+    if (bNewlyOpen)
+        bSelect = FALSE;
+
     ResEntry entry;
     LPARAM lParam = TV_GetParam(hwnd, NULL);
     if (lParam)

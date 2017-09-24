@@ -1107,10 +1107,10 @@ namespace MacroParser
                 if (ast)
                 {
                     if (type() == TOK_SYMBOL && str() == ")")
-					{
-						next();
+                    {
+                        next();
                         return ast;
-					}
+                    }
                     delete ast;
                     ast = NULL;
                 }
