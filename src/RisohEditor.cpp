@@ -1299,6 +1299,7 @@ class MMainWnd : public MWindowBase
 protected:
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
+    BOOL        m_bLoading;
 
     // handles
     HINSTANCE   m_hInst;        // the instance handle
@@ -1336,7 +1337,7 @@ protected:
 
 public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
-        m_argc(argc), m_targv(targv),
+        m_argc(argc), m_targv(targv), m_bLoading(FALSE),
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
         m_hNormalFont(NULL), m_hLargeFont(NULL), m_hSmallFont(NULL),
@@ -3503,9 +3504,11 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
         return FALSE;
     }
 
+    m_bLoading = TRUE;
     Entries.clear();
     Res_GetListFromRes(hMod, (LPARAM)&Entries);
     FreeLibrary(hMod);
+    m_bLoading = FALSE;
 
     TV_RefreshInfo(m_hTreeView, Entries);
     SetFilePath(hwnd, Path);
@@ -4904,21 +4907,27 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_SELCHANGING)
     {
-        if (m_rad_window)
+        if (!m_bLoading)
         {
-            DestroyWindow(m_rad_window);
-            return FALSE;
-        }
-        else
-        {
-            return !CompileIfNecessary(hwnd);
+            if (m_rad_window)
+            {
+                DestroyWindow(m_rad_window);
+                return FALSE;
+            }
+            else
+            {
+                return !CompileIfNecessary(hwnd);
+            }
         }
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
-        NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
-        LPARAM lParam = pTV->itemNew.lParam;
-        SelectTV(hwnd, lParam, FALSE);
+        if (!m_bLoading)
+        {
+            NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
+            LPARAM lParam = pTV->itemNew.lParam;
+            SelectTV(hwnd, lParam, FALSE);
+        }
     }
     else if (pnmhdr->code == NM_RETURN)
     {
