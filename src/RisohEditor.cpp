@@ -1318,6 +1318,14 @@ public:
     HWND        m_hTreeView, m_hToolBar, m_hStatusBar;
     HWND        m_hFindReplaceDlg;
 
+    // path strings
+    WCHAR       m_szDataFolder[MAX_PATH];
+    WCHAR       m_szConstantsFile[MAX_PATH];
+    WCHAR       m_szCppExe[MAX_PATH];
+    WCHAR       m_szWindresExe[MAX_PATH];
+    WCHAR       m_szFile[MAX_PATH];
+    WCHAR       m_szResourceH[MAX_PATH];
+
     RisohSettings   m_settings;
     ConstantsDB     m_db;
     MRadWindow      m_rad_window;
@@ -1325,22 +1333,16 @@ public:
     MBmpView        m_hBmpView;
     MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
     MIDListDlg      m_id_list_dlg;
+    ResEntries      m_Entries;
 
-    WCHAR       m_szDataFolder[MAX_PATH];
-    WCHAR       m_szConstantsFile[MAX_PATH];
-    WCHAR       m_szCppExe[MAX_PATH];
-    WCHAR       m_szWindresExe[MAX_PATH];
-    WCHAR       m_szFile[MAX_PATH];
-    WCHAR       m_szResourceH[MAX_PATH];
-    ResEntries  m_Entries;
-    TCHAR       m_szFindWhat[80];
-    TCHAR       m_szReplaceWith[80];
-    FINDREPLACE m_fr;
+    // find/replace
+    FINDREPLACE     m_fr;
+    TCHAR           m_szFindWhat[80];
+    TCHAR           m_szReplaceWith[80];
 
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv),
-        m_hInst(hInst),
-        m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
+        m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
         m_hNormalFont(NULL), m_hLargeFont(NULL), m_hSmallFont(NULL),
         m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
