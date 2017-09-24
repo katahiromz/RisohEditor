@@ -3499,10 +3499,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
         // .res files
         ResEntries entries;
         if (!DoImport(hwnd, Path, entries))
-		{
-			ErrorBoxDx(IDS_CANNOTOPEN);
+        {
+            ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
-		}
+        }
 
         m_bLoading = TRUE;
         {
@@ -3518,7 +3518,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
     HMODULE hMod = LoadLibraryExW(Path, NULL, LOAD_LIBRARY_AS_DATAFILE);
     if (hMod == NULL)
     {
-		ErrorBoxDx(IDS_CANNOTOPEN);
+        ErrorBoxDx(IDS_CANNOTOPEN);
         return FALSE;
     }
 
@@ -3595,11 +3595,11 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
     if (!stream.LoadFromFile(ResFile))
         return FALSE;
 
-	BOOL bAdded = FALSE;
+    BOOL bAdded = FALSE;
     ResourceHeader header;
     while (header.ReadFrom(stream))
     {
-		bAdded = TRUE;
+        bAdded = TRUE;
         if (header.DataSize == 0)
         {
             stream.ReadDwordAlignment();
@@ -3607,6 +3607,8 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
         }
 
         if (header.DataSize >= 0x10000)
+            return FALSE;
+        if (header.DataSize > stream.remainder())
             return FALSE;
 
         ResEntry entry;
