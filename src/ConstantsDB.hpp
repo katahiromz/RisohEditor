@@ -469,24 +469,37 @@ protected:
             return ret;
 
         const TableType& table = found->second;
-        TableType::const_iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (;;)
         {
-            if (it->value == 0)
-                continue;
-
-            if ((value & it->mask) == it->value)
+            ValueType max_value = 0;
+            TableType::const_iterator max_it = table.end();
+            TableType::const_iterator it, end = table.end();
+            for (it = table.begin(); it != end; ++it)
             {
-                if (!ret.empty())
-                    ret += L" | ";
+                if (it->value == 0)
+                    continue;
 
-                if (Not)
+                if ((value & it->mask) == it->value)
                 {
-                    ret += L"NOT ";
+                    if (it->value > max_value)
+                    {
+                        max_value = it->value;
+                        max_it = it;
+                    }
                 }
-                ret += it->name;
-                value &= ~it->value;
             }
+
+            if (max_it == end)
+                break;  // not found
+
+            if (!ret.empty())
+                ret += L" | ";
+            if (Not)
+            {
+                ret += L"NOT ";
+            }
+            ret += max_it->name;
+            value &= ~max_it->value;
         }
 
         return ret;
