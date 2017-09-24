@@ -1591,6 +1591,9 @@ public:
     LRESULT OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam);
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// MMainWnd out-of-line functions
+
 void MMainWnd::UpdateMenu()
 {
     HMENU hMenu = GetMenu(m_hwnd);
@@ -5500,6 +5503,8 @@ INT_PTR MMainWnd::RunDx()
     return INT(msg.wParam);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
@@ -5556,3 +5561,5 @@ WinMain(HINSTANCE   hInstance,
 
     return ret;
 }
+
+//////////////////////////////////////////////////////////////////////////////
