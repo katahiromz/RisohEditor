@@ -17,7 +17,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Load &Window Class Library...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", CMDID_IDASSOC
-        MENUITEM "Load &resource.h...\tCtrl+R", CMDID_LOADRESH
+        MENUITEM "Reload &resource.h...\tCtrl+R", CMDID_LOADRESH
         MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
         MENUITEM "Ad&vice resource.h Modification...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
