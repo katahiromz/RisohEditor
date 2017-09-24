@@ -30,23 +30,23 @@ FONT 9, "MS Shell Dlg"
     STATE3 "", -1, 85, 0, 5, 5
     CONTROL "", -1, "SysListView32", WS_TABSTOP, 90, 0, 5, 5
     // without text
-    AUTO3STATE -1, 0, 0, 5, 10
-    AUTOCHECKBOX -1, 5, 0, 5, 10
-    AUTORADIOBUTTON -1, 10, 0, 5, 10
-    CHECKBOX -1, 15, 0, 5, 10
-    COMBOBOX -1, 20, 0, 5, 10
-    CTEXT -1, 25, 0, 5, 10
-    DEFPUSHBUTTON -1, 30, 0, 5, 10
-    EDITTEXT -1, 35, 0, 5, 10
-    GROUPBOX -1, 40, 0, 5, 10
-    //ICON -1, 45, 0, 5, 10     // syntax error
-    LISTBOX -1, 50, 0, 5, 10
-    LTEXT -1, 55, 0, 5, 10
-    PUSHBOX -1, 60, 0, 5, 10
-    PUSHBUTTON -1, 65, 0, 5, 10
-    RADIOBUTTON -1, 70, 0, 5, 10
-    RTEXT -1, 75, 0, 5, 10
-    SCROLLBAR -1, 80, 0, 5, 10
-    STATE3 -1, 85, 0, 5, 10
-    CONTROL -1, "SysListView32", WS_TABSTOP, 90, 0, 5, 10
+    AUTO3STATE -1, 0, 5, 5, 5
+    AUTOCHECKBOX -1, 5, 5, 5, 5
+    AUTORADIOBUTTON -1, 10, 5, 5, 5
+    CHECKBOX -1, 15, 5, 5, 5
+    COMBOBOX -1, 20, 5, 5, 5
+    CTEXT -1, 25, 5, 5, 5
+    DEFPUSHBUTTON -1, 30, 5, 5, 5
+    EDITTEXT -1, 35, 5, 5, 5
+    GROUPBOX -1, 40, 5, 5, 5
+    //ICON -1, 45, 5, 5, 5     // syntax error
+    LISTBOX -1, 50, 5, 5, 5
+    LTEXT -1, 55, 5, 5, 5
+    PUSHBOX -1, 60, 5, 5, 5
+    PUSHBUTTON -1, 65, 5, 5, 5
+    RADIOBUTTON -1, 70, 5, 5, 5
+    RTEXT -1, 75, 5, 5, 5
+    SCROLLBAR -1, 80, 5, 5, 5
+    STATE3 -1, 85, 5, 5, 5
+    CONTROL -1, "SysListView32", WS_TABSTOP, 90, 5, 5, 5
 }
