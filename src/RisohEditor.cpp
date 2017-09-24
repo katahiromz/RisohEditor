@@ -1404,8 +1404,9 @@ public:
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+    //////////////////////////////////////////////////////////////////////
+
     // status bar
-    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void ChangeStatusText(INT nID)
     {
         ChangeStatusText(LoadStringDx(nID));
@@ -1415,18 +1416,14 @@ public:
         SendMessage(m_hStatusBar, SB_SETTEXT, 0, (LPARAM)pszText);
     }
 
-    void OnUpdateID(HWND hwnd)
-    {
-        SelectTV(hwnd, 0, FALSE);
-    }
-
+    // utilities
+    BOOL CheckDataFolder(VOID);
+    INT CheckData(VOID);
     BOOL SetFilePath(HWND hwnd, LPCWSTR FileName);
     void UpdateMenu();
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick);
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
     BOOL CompileIfNecessary(HWND hwnd);
-    BOOL CheckDataFolder(VOID);
-    INT CheckData(VOID);
 
     // ID list
     void UpdateIDList(HWND hwnd);
@@ -1442,6 +1439,7 @@ public:
 
     // preview
     VOID HidePreview(HWND hwnd);
+    BOOL Preview(HWND hwnd, const ResEntry& Entry);
 
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
@@ -1458,6 +1456,7 @@ public:
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
 
 protected:
+    // parsing resource IDs
     BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
     BOOL CompileParts(HWND hwnd, const std::wstring& WideText);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
@@ -1465,7 +1464,6 @@ protected:
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
 
     // preview
-    BOOL Preview(HWND hwnd, const ResEntry& Entry);
     void PreviewIcon(HWND hwnd, const ResEntry& Entry);
     void PreviewCursor(HWND hwnd, const ResEntry& Entry);
     void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry);
@@ -1503,8 +1501,15 @@ protected:
     void OnGuiEdit(HWND hwnd);
     void OnEdit(HWND hwnd);
     void OnUpdateDlgRes(HWND hwnd);
+
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
+
+    void OnUpdateID(HWND hwnd)
+    {
+        SelectTV(hwnd, 0, FALSE);
+    }
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
