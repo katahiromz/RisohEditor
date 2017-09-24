@@ -4227,7 +4227,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
 
     DoLoad(hwnd, m_Entries, File);
-    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE, FALSE);
+    TV_RefreshInfo(m_hTreeView, m_Entries, TRUE, FALSE);
     ChangeStatusText(IDS_READY);
 }
 
