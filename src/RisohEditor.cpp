@@ -1326,6 +1326,7 @@ protected:
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
 
+    // classes
     RisohSettings   m_settings;
     ConstantsDB     m_db;
     MRadWindow      m_rad_window;
