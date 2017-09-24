@@ -542,8 +542,7 @@ struct DialogItem
     std::wstring _do_COMBOBOX(const ConstantsDB& db)
     {
         assert(m_Title.empty());
-        return _do_CONTROL(FALSE, db, L"COMBOBOX", L"COMBOBOX",
-                           WS_TABSTOP | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(FALSE, db, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_ICON(const ConstantsDB& db)
     {

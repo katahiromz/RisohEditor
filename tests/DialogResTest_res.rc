@@ -1,10 +1,28 @@
+//////////////////////////////////////////////////////////////////////////////
+
 #include <windows.h>
 #include <commctrl.h>
 #include <dlgs.h>
+#include "resource.h"
+
+//////////////////////////////////////////////////////////////////////////////
+// Icons
 
 1 ICON "smily.ico"
 
-1 DIALOG 0, 0, 100, 50
+//////////////////////////////////////////////////////////////////////////////
+// Dialogs
+
+1 DIALOG 0, 0, 215, 135
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sample Dialog"
+FONT 9, "MS Shell Dlg"
+{
+    CONTROL "OK", IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 35, 115, 60, 14
+    CONTROL "Cancel", IDCANCEL, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 115, 115, 60, 14
+}
+
+2 DIALOG 0, 0, 100, 50
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Test Dialog"
 FONT 9, "MS Shell Dlg"
@@ -50,9 +68,11 @@ FONT 9, "MS Shell Dlg"
     SCROLLBAR 2016, 80, 5, 5, 5
     //STATE3 2017, 85, 5, 5, 5      // expected numerical dialog constants
     //CONTROL 2018, "SysListView32", WS_TABSTOP, 90, 5, 5, 5    // expected numerical dialog constant
+
+    PUSHBUTTON "Just Do It!", CMDID_JUSTDOIT, 5, 25, 50, 14
 }
 
-2 DIALOG 0, 0, 100, 50
+3 DIALOG 0, 0, 100, 50
 CAPTION "Test Dialog"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS Shell Dlg"
@@ -76,4 +96,80 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", 2007, "EDIT", WS_BORDER | WS_TABSTOP, 35, 5, 5, 5
     CONTROL "", 2010, "LISTBOX", LBS_NOTIFY | WS_BORDER, 50, 5, 5, 5
     CONTROL "", 2016, "SCROLLBAR", 0, 80, 5, 5, 5
+
+    PUSHBUTTON "Just Do It!", CMDID_JUSTDOIT, 5, 25, 50, 14
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Accelerators
+
+1 ACCELERATORS
+{
+    "N", 1, VIRTKEY, CONTROL
+    "O", 2, VIRTKEY, CONTROL
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// String Table
+
+STRINGTABLE
+{
+    1, "This is a sample text."
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Menu
+
+1 MENU
+{
+    POPUP "&File"
+    {
+        MENUITEM "E&xit", 1
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// HTML
+
+#ifndef HTML
+    #define HTML 23
+#endif
+1 HTML "html.html"
+
+//////////////////////////////////////////////////////////////////////////////
+// Manifest
+
+#ifndef MANIFEST
+    #define MANIFEST 24
+#endif
+1 MANIFEST "manifest.manifest"
+
+//////////////////////////////////////////////////////////////////////////////
+// Version Info
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0, 0, 0, 0
+PRODUCTVERSION  0, 0, 0, 0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+{
+    // English (U.S.)
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        {
+            VALUE "CompanyName", "Your Company\0"
+            VALUE "FileDescription", "Your Application\0"
+            VALUE "FileVersion", "0.0\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
+            VALUE "ProductName", "Your Product\0"
+            VALUE "ProductVersion", "0.0\0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 0x04E4
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
