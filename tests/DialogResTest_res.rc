@@ -142,7 +142,7 @@ STRINGTABLE
 #ifndef MANIFEST
     #define MANIFEST 24
 #endif
-1 MANIFEST "manifest.manifest"
+1 MANIFEST "DialogResTest.exe.manifest"
 
 //////////////////////////////////////////////////////////////////////////////
 // Version Info
