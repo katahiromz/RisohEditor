@@ -10,43 +10,44 @@ CAPTION "Test Dialog"
 FONT 9, "MS Shell Dlg"
 {
     // with text
-    AUTO3STATE "", -1, 0, 0, 5, 5
-    AUTOCHECKBOX "", -1, 5, 0, 5, 5
-    AUTORADIOBUTTON "", -1, 10, 0, 5, 5
-    CHECKBOX "", -1, 15, 0, 5, 5
-    //COMBOBOX "", -1, 20, 0, 5, 5  // syntax error
-    CTEXT "", -1, 25, 0, 5, 5
-    DEFPUSHBUTTON "", -1, 30, 0, 5, 5
-    //EDITTEXT "", -1, 35, 0, 5, 5  // syntax error
-    GROUPBOX "", -1, 40, 0, 5, 5
-    ICON "", -1, 45, 0, 5, 5
-    //LISTBOX "", -1, 50, 0, 5, 5   // syntax error
-    LTEXT "", -1, 55, 0, 5, 5
-    PUSHBOX "", -1, 60, 0, 5, 5
-    PUSHBUTTON "", -1, 65, 0, 5, 5
-    RADIOBUTTON "", -1, 70, 0, 5, 5
-    RTEXT "", -1, 75, 0, 5, 5
-    //SCROLLBAR "", -1, 80, 0, 5, 5 // syntax error
-    STATE3 "", -1, 85, 0, 5, 5
-    CONTROL "", -1, "SysListView32", WS_TABSTOP, 90, 0, 5, 5
+    AUTO3STATE "", 1000, 0, 0, 5, 5
+    AUTOCHECKBOX "", 1001, 5, 0, 5, 5
+    AUTORADIOBUTTON "", 1002, 10, 0, 5, 5
+    CHECKBOX "", 1003, 15, 0, 5, 5
+    //COMBOBOX "", 1004, 20, 0, 5, 5  // syntax error
+    CTEXT "", 1005, 25, 0, 5, 5
+    DEFPUSHBUTTON "", 1006, 30, 0, 5, 5
+    //EDITTEXT "", 1007, 35, 0, 5, 5  // syntax error
+    GROUPBOX "", 1008, 40, 0, 5, 5
+    ICON "", 1009, 45, 0, 5, 5
+    //LISTBOX "", 1010, 50, 0, 5, 5   // syntax error
+    LTEXT "", 1011, 55, 0, 5, 5
+    PUSHBOX "", 1012, 60, 0, 5, 5
+    PUSHBUTTON "", 1013, 65, 0, 5, 5
+    RADIOBUTTON "", 1014, 70, 0, 5, 5
+    RTEXT "", 1015, 75, 0, 5, 5
+    //SCROLLBAR "", 1016, 80, 0, 5, 5 // syntax error
+    STATE3 "", 1017, 85, 0, 5, 5
+    CONTROL "", 1018, "SysListView32", WS_TABSTOP, 90, 0, 5, 5
+    
     // without text
-    AUTO3STATE -1, 0, 5, 5, 5
-    AUTOCHECKBOX -1, 5, 5, 5, 5
-    AUTORADIOBUTTON -1, 10, 5, 5, 5
-    CHECKBOX -1, 15, 5, 5, 5
-    COMBOBOX -1, 20, 5, 5, 5
-    CTEXT -1, 25, 5, 5, 5
-    DEFPUSHBUTTON -1, 30, 5, 5, 5
-    EDITTEXT -1, 35, 5, 5, 5
-    GROUPBOX -1, 40, 5, 5, 5
-    //ICON -1, 45, 5, 5, 5     // syntax error
-    LISTBOX -1, 50, 5, 5, 5
-    LTEXT -1, 55, 5, 5, 5
-    PUSHBOX -1, 60, 5, 5, 5
-    PUSHBUTTON -1, 65, 5, 5, 5
-    RADIOBUTTON -1, 70, 5, 5, 5
-    RTEXT -1, 75, 5, 5, 5
-    SCROLLBAR -1, 80, 5, 5, 5
-    STATE3 -1, 85, 5, 5, 5
-    CONTROL -1, "SysListView32", WS_TABSTOP, 90, 5, 5, 5
+    //AUTO3STATE 2000, 0, 5, 5, 5       // expected numerical dialog constant
+    //AUTOCHECKBOX 2001, 5, 5, 5, 5 // expected numerical dialog constant
+    //AUTORADIOBUTTON 2002, 10, 5, 5, 5 // expected numerical dialog constant
+    //CHECKBOX 2003, 15, 5, 5, 5    // expected numerical dialog constant
+    COMBOBOX 2004, 20, 5, 5, 5
+    //CTEXT 2005, 25, 5, 5, 5       // expected numerical dialog constant
+    //DEFPUSHBUTTON 2006, 30, 5, 5, 5   // expected numerical dialog constant
+    EDITTEXT 2007, 35, 5, 5, 5
+    //GROUPBOX 2008, 40, 5, 5, 5        // expected numerical dialog constant
+    //ICON "", 2009, 45, 5, 5, 5     // syntax error
+    LISTBOX 2010, 50, 5, 5, 5
+    //LTEXT 2011, 55, 5, 5, 5       // expected numerical dialog constant
+    //PUSHBOX 2012, 60, 5, 5, 5     // expected numerical dialog constant
+    //PUSHBUTTON 2013, 65, 5, 5, 5  // expected numerical dialog constant
+    //RADIOBUTTON 2014, 70, 5, 5, 5 // expected numerical dialog constant
+    //RTEXT 2015, 75, 5, 5, 5           // expected numerical dialog constants
+    SCROLLBAR 2016, 80, 5, 5, 5
+    //STATE3 2017, 85, 5, 5, 5      // expected numerical dialog constants
+    //CONTROL 2018, "SysListView32", WS_TABSTOP, 90, 5, 5, 5    // expected numerical dialog constant
 }

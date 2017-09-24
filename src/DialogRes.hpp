@@ -296,7 +296,7 @@ struct DialogItem
 
     std::wstring Dump(const ConstantsDB& db, BOOL bAlwaysControl = FALSE)
     {
-        std::wstring ret, cls;
+        std::wstring cls;
 
         if (m_Class.is_int())
         {
@@ -342,20 +342,27 @@ struct DialogItem
                     return _do_CTEXT(db);
                 if ((m_Style & SS_TYPEMASK) == SS_RIGHT)
                     return _do_RTEXT(db);
-                if ((m_Style & SS_TYPEMASK) == SS_ICON)
+                if ((m_Style & SS_TYPEMASK) == SS_ICON && m_Title.empty())
                     return _do_ICON(db);
             }
-            if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
+            if (m_Title.empty())
             {
-                return _do_EDITTEXT(db);
+                if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
+                    return _do_EDITTEXT(db);
+                if (lstrcmpiW(cls.c_str(), L"COMBOBOX") == 0)
+                    return _do_COMBOBOX(db);
+                if (lstrcmpiW(cls.c_str(), L"LISTBOX") == 0)
+                    return _do_LISTBOX(db);
+                if (lstrcmpiW(cls.c_str(), L"SCROLLBAR") == 0)
+                    return _do_SCROLLBAR(db);
             }
-            if (lstrcmpiW(cls.c_str(), L"COMBOBOX") == 0)
-                return _do_COMBOBOX(db);
-            if (lstrcmpiW(cls.c_str(), L"LISTBOX") == 0)
-                return _do_LISTBOX(db);
-            if (lstrcmpiW(cls.c_str(), L"SCROLLBAR") == 0)
-                return _do_SCROLLBAR(db);
         }
+        return DumpControl(db, cls);
+    }
+
+    std::wstring DumpControl(const ConstantsDB& db, std::wstring& cls)
+    {
+        std::wstring ret;
 
         ret += L"CONTROL ";
         ret += m_Title.quoted_wstr();
@@ -405,7 +412,8 @@ struct DialogItem
         return ret;
     }
 
-    std::wstring _do_CONTROL(const ConstantsDB& db,
+    std::wstring _do_CONTROL(BOOL bNeedsText,
+                             const ConstantsDB& db,
                              const std::wstring& ctrl,
                              const std::wstring& cls,
                              DWORD DefStyle)
@@ -413,8 +421,11 @@ struct DialogItem
         std::wstring ret;
         ret += ctrl;
         ret += L" ";
-        ret += m_Title.quoted_wstr();
-        ret += L", ";
+        if (!m_Title.empty() || bNeedsText)
+        {
+            ret += m_Title.quoted_wstr();
+            ret += L", ";
+        }
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_ID);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.x);
@@ -447,13 +458,13 @@ struct DialogItem
     std::wstring _do_BUTTON(const ConstantsDB& db,
                             const std::wstring& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(db, ctrl, L"BUTTON", DefStyle);
+        return _do_CONTROL(TRUE, db, ctrl, L"BUTTON", DefStyle);
     }
 
     std::wstring _do_TEXT(const ConstantsDB& db,
                           const std::wstring& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(db, ctrl, L"STATIC", DefStyle);
+        return _do_CONTROL(TRUE, db, ctrl, L"STATIC", DefStyle);
     }
 
     std::wstring _do_AUTO3STATE(const ConstantsDB& db)
@@ -506,26 +517,31 @@ struct DialogItem
     }
     std::wstring _do_EDITTEXT(const ConstantsDB& db)
     {
-        return _do_CONTROL(db, L"EDITTEXT", L"EDIT",
+        assert(m_Title.empty());
+        return _do_CONTROL(0, db, L"EDITTEXT", L"EDIT",
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_COMBOBOX(const ConstantsDB& db)
     {
-        return _do_CONTROL(db, L"COMBOBOX", L"COMBOBOX",
+        assert(m_Title.empty());
+        return _do_CONTROL(0, db, L"COMBOBOX", L"COMBOBOX",
                            CBS_SIMPLE | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_ICON(const ConstantsDB& db)
     {
-        return _do_CONTROL(db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
+        assert(m_Title.empty());
+        return _do_CONTROL(0, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_LISTBOX(const ConstantsDB& db)
     {
-        return _do_CONTROL(db, L"LISTBOX", L"LISTBOX",
+        assert(m_Title.empty());
+        return _do_CONTROL(0, db, L"LISTBOX", L"LISTBOX",
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
     std::wstring _do_SCROLLBAR(const ConstantsDB& db)
     {
-        return _do_CONTROL(db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
+        assert(m_Title.empty());
+        return _do_CONTROL(0, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
     void Fixup(BOOL bRevert = FALSE)
