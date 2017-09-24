@@ -133,7 +133,7 @@ STRINGTABLE
 // HTML
 
 #ifndef HTML
-    #define HTML 23
+    #define HTML        23
 #endif
 1 HTML "html.html"
 
@@ -141,9 +141,12 @@ STRINGTABLE
 // Manifest
 
 #ifndef MANIFEST
-    #define MANIFEST 24
+    #define MANIFEST    24
 #endif
+
+#ifndef THIS_IS_MSVC
 1 MANIFEST "ResTest.exe.manifest"
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 // Version Info

@@ -6,6 +6,9 @@
 # CMake minimum version
 cmake_minimum_required(VERSION 2.4)
 
+# use new policy
+cmake_policy(SET CMP0054 NEW)
+
 # project name and language
 project(RisohEditor CXX)
 
@@ -24,12 +27,12 @@ if (NOT uppercase_CMAKE_BUILD_TYPE MATCHES "^(DEBUG|RELEASE|RELWITHDEBINFO|MINSI
 endif()
 
 # define NDEBUG
-string(CONCAT CMAKE_C_FLAGS_RELEASE "-DNDEBUG")
-string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-DNDEBUG")
-string(CONCAT CMAKE_C_FLAGS_MINSIZEREL "-DNDEBUG")
-string(CONCAT CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
-string(CONCAT CMAKE_CXX_FLAGS_RELWITHDEBINFO "-DNDEBUG")
-string(CONCAT CMAKE_CXX_FLAGS_MINSIZEREL "-DNDEBUG")
+string(CONCAT CMAKE_C_FLAGS_RELEASE " -DNDEBUG")
+string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO " -DNDEBUG")
+string(CONCAT CMAKE_C_FLAGS_MINSIZEREL " -DNDEBUG")
+string(CONCAT CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG")
+string(CONCAT CMAKE_CXX_FLAGS_RELWITHDEBINFO " -DNDEBUG")
+string(CONCAT CMAKE_CXX_FLAGS_MINSIZEREL " -DNDEBUG")
 
 # set output directory (build/)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
@@ -43,14 +46,17 @@ endif()
 
 # do statically link
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-SET(BUILD_SHARED_LIBRARIES OFF)
+set(BUILD_SHARED_LIBRARIES OFF)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    set(CMAKE_EXE_LINKER_FLAGS " -static -static-libgcc -static-libstdc++")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
-    SET(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    set(CMAKE_EXE_LINKER_FLAGS " -static -static-libgcc -static-libstdc++")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # using MSVC
+    add_definitions(-DTHIS_IS_MSVC)
 endif()
 
 # enable Win32 resource
