@@ -285,7 +285,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Icon File:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Browse...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "Resource &Name:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "Resource &Language:", -1, 5, 92, 70, 12
@@ -302,7 +302,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Icon File:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Browse...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "Resource &Name:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 13, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "Resource &Language:", -1, 5, 92, 70, 12
@@ -369,7 +369,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Cursor File:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Browse...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "Resource &Name:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "Resource &Language:", -1, 5, 92, 70, 12
@@ -386,7 +386,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Cursor File:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Browse...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "Resource &Name:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "Resource &Language:", -1, 5, 92, 70, 12
@@ -706,7 +706,7 @@ FONT 9, "MS Shell Dlg"
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
 CAPTION "List of Resource IDs"
-STYLE WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_GROUP | WS_TABSTOP
+STYLE WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"
 {

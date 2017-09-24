@@ -285,7 +285,7 @@ FONT 9, "MS UI Gothic"
     LTEXT "アイコン ファイル(&I):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
@@ -302,7 +302,7 @@ FONT 9, "MS UI Gothic"
     LTEXT "アイコン ファイル(&I):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
@@ -369,7 +369,7 @@ FONT 9, "MS UI Gothic"
     LTEXT "カーソル ファイル(&C):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
@@ -386,7 +386,7 @@ FONT 9, "MS UI Gothic"
     LTEXT "カーソル ファイル(&C):", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 35, 60, 14
-    ICON ico1, 5, 35, 20, 20, WS_GROUP
+    ICON ico1, 5, 35, 20, 20
     LTEXT "リソースの名前(&N):", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL
     LTEXT "リソースの言語(&L):", -1, 5, 92, 70, 12
