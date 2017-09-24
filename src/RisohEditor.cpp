@@ -1796,6 +1796,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 void MMainWnd::OnAbout(HWND hwnd)
 {
     MSGBOXPARAMSW params;
+
     ZeroMemory(&params, sizeof(params));
     params.cbSize = sizeof(params);
     params.hwndOwner = hwnd;
