@@ -498,6 +498,7 @@ protected:
             {
                 ret += L"NOT ";
             }
+
             ret += max_it->name;
             value &= ~max_it->value;
         }
