@@ -5506,23 +5506,28 @@ WinMain(HINSTANCE   hInstance,
 {
     int ret;
 
+    // get Unicode command line
     INT argc = 0;
     LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
+    // initialize the libraries
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     InitCommonControls();
-    MEditCtrl::SetCtrlAHookDx(TRUE);
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
+    // GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
     ULONG_PTR gp_token;
     Gdiplus::GdiplusStartup(&gp_token, &gp_startup_input, NULL);
 
+    // main process
+    MEditCtrl::SetCtrlAHookDx(TRUE);
     {
         MMainWnd app(argc, targv, hInstance);
 
         if (app.StartDx(nCmdShow))
         {
+            // main loop
             ret = INT(app.RunDx());
         }
         else
@@ -5530,13 +5535,19 @@ WinMain(HINSTANCE   hInstance,
             ret = 2;
         }
     }
+    MEditCtrl::SetCtrlAHookDx(FALSE);
 
+    // GDI+
     Gdiplus::GdiplusShutdown(gp_token);
 
+    // free the libraries
     FreeLibrary(hinstRichEdit);
-    MEditCtrl::SetCtrlAHookDx(FALSE);
     CoUninitialize();
 
+    // free command line
+    LocalFree(targv);
+
+    // check object counts
     assert(MacroParser::BaseAst::alive_count() == 0);
 
 #if (WINVER >= 0x0500)
