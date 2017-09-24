@@ -49,6 +49,7 @@
 #include "Res.hpp"
 #include "ConstantsDB.hpp"
 #include "MacroParser.hpp"
+#include "MWaitCursor.hpp"
 #include "resource.h"
 
 // RisohEditor.cpp

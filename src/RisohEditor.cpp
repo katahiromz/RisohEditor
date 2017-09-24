@@ -3482,6 +3482,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
 
 BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
 {
+    MWaitCursor wait;
     WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
 
     if (GetPathOfShortcutDx(hwnd, FileName, ResolvedPath))
@@ -3591,6 +3592,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR Path)
 
 BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
 {
+    MWaitCursor wait;
     MByteStreamEx stream;
     if (!stream.LoadFromFile(ResFile))
         return FALSE;
@@ -3606,8 +3608,6 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
             continue;
         }
 
-        if (header.DataSize >= 0x10000)
-            return FALSE;
         if (header.DataSize > stream.remainder())
             return FALSE;
 
@@ -3929,7 +3929,7 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entri
         const ResEntry& Entry = *it;
 
         header.DataSize = Entry.size();
-        header.HeaderSize = (DWORD)header.GetHeaderSize(Entry.type, Entry.name);
+        header.HeaderSize = header.GetHeaderSize(Entry.type, Entry.name);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;
 
@@ -4099,6 +4099,7 @@ BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL Wri
 
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
+    MWaitCursor wait;
     WCHAR File[MAX_PATH], *pch;
 
     ChangeStatusText(IDS_EXECUTINGCMD);

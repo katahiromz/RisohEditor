@@ -174,7 +174,7 @@ struct ResourceHeader
         return TRUE;
     }
 
-    size_t GetHeaderSize(MIdOrString type, MIdOrString name) const
+    DWORD GetHeaderSize(MIdOrString type, MIdOrString name) const
     {
         size_t size = 0;
         if (type.is_str())
@@ -190,7 +190,7 @@ struct ResourceHeader
         if (size & 3)
             size += 4 - (size & 3);
 
-        return sizeof(DWORD) * 6 + size;
+        return (DWORD)(sizeof(DWORD) * 6 + size);
     }
 };
 
