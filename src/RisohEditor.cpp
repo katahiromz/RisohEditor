@@ -1303,7 +1303,7 @@ Res_GetLangName(WORD Lang)
 
 class MMainWnd : public MWindowBase
 {
-public:
+protected:
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
 
@@ -1340,6 +1340,7 @@ public:
     TCHAR           m_szFindWhat[80];
     TCHAR           m_szReplaceWith[80];
 
+public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv),
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
