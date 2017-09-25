@@ -49,18 +49,18 @@ Source: "data\bin\libgmp-10.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversio
 Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\zlib1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\cc1.exe"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\libgmp-10.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\libwinpthread-1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\zlib1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.1.1\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.1\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\cc1.exe"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\libgmp-10.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\libwinpthread-1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\zlib1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.1.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.1.0\include"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
