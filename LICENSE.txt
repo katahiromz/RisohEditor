@@ -1,11 +1,11 @@
 ---------------------------------------------------
-RisouEditor is a Win32API Resource Editor by Katayama
-Hirofumi MZ (katahiromz). RisouEditor was released under
+RisohEditor is a Win32API Resource Editor by Katayama
+Hirofumi MZ (katahiromz). RisohEditor was released under
 the terms of GNU GENERAL PUBLIC LICENSE Version 3, 29
-June 2007. The source code of RisouEditor is available
+June 2007. The source code of RisohEditor is available
 at https://github.com/katahiromz/RisohEditor .
 
-RisouEditor --- Win32 Resource Editor
+RisohEditor --- Win32 Resource Editor
 Copyright (C) 2017 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.
 All rights reserved.
 ---------------------------------------------------
