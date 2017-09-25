@@ -40,6 +40,15 @@ RisohEditor by katahiromz
         Enable to resume the window maximized status.
         Fix interpretation of IDs.
         Fix the prefix of help IDs from "HELPID_" to "HID_".
+    2017.09.25 ver.1.0
+        Improvement of many UI.
+        We strictly confirmed whether compilation is necessary.
+        When heavy processing, hourglass is displayed.
+        It became strong against invalid data.
+        Error display at loading is always done.
+        Fixed manifest.
+        Supports BS_PUSHBOX style.
+        I brought the version information dialog to the center.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
