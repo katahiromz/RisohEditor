@@ -1812,6 +1812,13 @@ public:
             FitToGrid(&item.m_pt);
             FitToGrid(&item.m_siz);
 
+			POINT pt = item.m_pt;
+			SIZE siz = item.m_siz;
+			DialogToClient(&pt);
+			DialogToClient(&siz);
+
+			pCtrl->SetWindowPosDx(&pt, &siz);
+
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
