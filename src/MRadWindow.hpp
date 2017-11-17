@@ -1052,6 +1052,7 @@ public:
             ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
             ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
             ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
@@ -1061,6 +1062,7 @@ public:
             ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
             ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
             ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
+            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
         }
         else
         {
@@ -1070,6 +1072,7 @@ public:
             ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_ENABLED);
             ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
             ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
+            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
         }
 
         if (CanIndexTop())
