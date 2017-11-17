@@ -323,25 +323,28 @@ public:
             return;
         }
 
-        if (!m_bMoving)
-        {
-            POINT pt;
-            ::GetCursorPos(&pt);
-            MoveSelection(hwnd, pt.x - m_pt.x, pt.y - m_pt.y);
-            m_pt = pt;
-        }
+		if (!m_bLocking)
+		{
+			if (!m_bMoving)
+			{
+				POINT pt;
+				::GetCursorPos(&pt);
+				MoveSelection(hwnd, pt.x - m_pt.x, pt.y - m_pt.y);
+				m_pt = pt;
+			}
 
-        MRubberBand *band = GetRubberBand();
-        if (!m_bLocking && band)
-        {
-            band->FitToTarget();
-        }
+			MRubberBand *band = GetRubberBand();
+			if (band)
+			{
+				band->FitToTarget();
+			}
 
-        RECT rc;
-        ::GetClientRect(hwnd, &rc);
-        ::InvalidateRect(hwnd, &rc, TRUE);
+			RECT rc;
+			::GetClientRect(hwnd, &rc);
+			::InvalidateRect(hwnd, &rc, TRUE);
 
-        SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
+			SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
+		}
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -352,11 +355,14 @@ public:
             return;
         }
 
-        if (!m_bLocking && !m_bSizing)
-            ResizeSelection(hwnd, cx, cy);
+		if (!m_bLocking)
+		{
+			if (!m_bSizing)
+				ResizeSelection(hwnd, cx, cy);
 
-        SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
-        InvalidateRect(hwnd, NULL, TRUE);
+			SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
+			InvalidateRect(hwnd, NULL, TRUE);
+		}
     }
 
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
