@@ -470,7 +470,7 @@ public:
         INT iItem = ListView_GetItemCount(hCtl1);
 
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
-        str = m_entry.Caption;
+        str = mstr_quote(m_entry.Caption);
         if (str.empty() || wcsstr(m_entry.Flags, L"S ") != NULL)
             str = LoadStringDx(IDS_SEPARATOR);
         str = mstr_repeat(strIndent, m_entry.wDepth) + str;
