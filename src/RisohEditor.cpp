@@ -2080,6 +2080,8 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 
 void MMainWnd::OnCompile(HWND hwnd)
 {
+    BOOL bReopen = IsWindowVisible(m_rad_window);
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (!Edit_GetModify(m_hSrcEdit))
     {
@@ -2101,7 +2103,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (CompileParts(hwnd, WideText, TRUE))
+    if (CompileParts(hwnd, WideText, bReopen))
     {
         TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_Entries, entry);
