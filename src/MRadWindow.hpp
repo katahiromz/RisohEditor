@@ -454,12 +454,13 @@ public:
     POINT           m_ptClicked;
     MIndexLabels    m_labels;
     RisohSettings&  m_settings;
-    HBRUSH          m_hbrBack;
 	BOOL			m_bMovingSizing;
+	INT				m_xDialogBaseUnit;
+	INT				m_yDialogBaseUnit;
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
         : m_index_visible(FALSE), m_db(db), m_settings(settings),
-          m_hbrBack(NULL), m_bMovingSizing(FALSE)
+          m_bMovingSizing(FALSE), m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -473,11 +474,6 @@ public:
 
     ~MRadDialog()
     {
-        if (m_hbrBack)
-        {
-            DeleteObject(m_hbrBack);
-            m_hbrBack = NULL;
-        }
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
@@ -583,6 +579,34 @@ public:
         MRadCtrl::DeselectSelection();
     }
 
+	BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
+	{
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+
+        COLORREF rgb = GetSysColor(COLOR_3DFACE);
+        DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
+		rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
+
+		if (m_xDialogBaseUnit && m_yDialogBaseUnit)
+		{
+			DebugBreak();
+			INT dx = (GRID_SIZE * 4 / m_xDialogBaseUnit);
+			INT dy = (GRID_SIZE * 8 / m_yDialogBaseUnit);
+
+			for (INT y = 0; y < rc.bottom; y += dy)
+			{
+				for (INT x = 0; x < rc.right; x += dx)
+				{
+					::SetPixelV(hdc, x, y, rgb);
+				}
+			}
+		}
+
+		return TRUE;
+	}
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -597,24 +621,13 @@ public:
             HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
-            HANDLE_MSG(hwnd, WM_CTLCOLORDLG, OnCtlColor);
             HANDLE_MSG(hwnd, WM_SYSCOLORCHANGE, OnSysColorChange);
+            HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
-    }
-
-    HBRUSH OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
-    {
-        if (type == CTLCOLOR_DLG && m_settings.bShowDotsOnDialog)
-        {
-            SetTextColor(hdc, GetSysColor(COLOR_BTNTEXT));
-            SetBkColor(hdc, GetSysColor(COLOR_3DFACE));
-            return m_hbrBack;
-        }
-        return FORWARD_WM_CTLCOLORDLG(hwnd, hdc, hwndChild, CallWindowProcDx);
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -722,63 +735,8 @@ public:
         }
     }
 
-    HBRUSH CreateBackBrush()
-    {
-        BITMAPINFO bi;
-        ZeroMemory(&bi, sizeof(bi));
-        bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bi.bmiHeader.biWidth = 8;
-        bi.bmiHeader.biHeight = 8;
-        bi.bmiHeader.biPlanes = 1;
-        bi.bmiHeader.biBitCount = 24;
-
-        HDC hDC = CreateCompatibleDC(NULL);
-        LPVOID pvBits;
-        HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS, &pvBits, NULL, 0);
-        {
-            HGDIOBJ hbmOld = SelectObject(hDC, hbm);
-            RECT rc;
-            SetRect(&rc, 0, 0, 8, 8);
-            FillRect(hDC, &rc, (HBRUSH)(COLOR_3DFACE + 1));
-            COLORREF rgb = GetSysColor(COLOR_3DFACE);
-            DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
-            if (dwTotal < 255)
-            {
-                SetPixel(hDC, 0, 0, RGB(255, 255, 255));
-            }
-            else
-            {
-                SetPixel(hDC, 0, 0, RGB(0, 0, 0));
-            }
-            SelectObject(hDC, hbmOld);
-        }
-        DeleteDC(hDC);
-
-        std::vector<BYTE> data;
-        if (!PackedDIB_CreateFromHandle(data, hbm))
-        {
-            DeleteObject(hbm);
-            return GetSysColorBrush(COLOR_3DFACE);
-        }
-
-        LOGBRUSH lb;
-        lb.lbStyle = BS_DIBPATTERNPT;
-        lb.lbColor = DIB_RGB_COLORS;
-        lb.lbHatch = (ULONG_PTR)&data[0];
-        HBRUSH hbr = ::CreateBrushIndirect(&lb);
-        DeleteObject(hbm);
-        return hbr;
-    }
-
     void OnSysColorChange(HWND hwnd)
     {
-        if (m_hbrBack)
-        {
-            DeleteObject(m_hbrBack);
-            m_hbrBack = NULL;
-        }
-        m_hbrBack = CreateBackBrush();
-
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
@@ -1738,6 +1696,8 @@ public:
 
         xDialogBaseUnit = m_xDialogBaseUnit;
         yDialogBaseUnit = m_yDialogBaseUnit;
+		m_rad_dialog.m_xDialogBaseUnit = m_xDialogBaseUnit;
+		m_rad_dialog.m_yDialogBaseUnit = m_yDialogBaseUnit;
 
         return TRUE;
     }
@@ -1768,8 +1728,6 @@ public:
 		m_rad_dialog.m_bMovingSizing = TRUE;
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
 		m_rad_dialog.m_bMovingSizing = FALSE;
-
-		DebugBreak();
 
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
