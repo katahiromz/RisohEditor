@@ -49,6 +49,12 @@ RisohEditor by katahiromz
         Fixed manifest.
         Supports BS_PUSHBOX style.
         I brought the version information dialog to the center.
+    2017.11.18
+        When dialog resource is compiled, let the dialog displayed again if necessary.
+        Fixed handling of menu character string.
+        Flexible adjustment of dialog size.
+        I made it possible to align with the grid.
+        I tweaked the background dots of the dialog.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
