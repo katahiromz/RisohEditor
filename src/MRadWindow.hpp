@@ -41,6 +41,7 @@ public:
     HWND            m_hwndRubberBand;
     BOOL            m_bMoving;
     BOOL            m_bSizing;
+	BOOL			m_bLocking;
     INT             m_nIndex;
     ConstantsDB&    m_db;
     RisohSettings&  m_settings;
@@ -97,8 +98,8 @@ public:
 
     MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
         m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-        m_bMoving(FALSE), m_bSizing(FALSE), m_nIndex(-1), m_db(db),
-        m_settings(settings)
+        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
+		m_nIndex(-1), m_db(db), m_settings(settings)
     {
         m_pt.x = m_pt.y = -1;
     }
@@ -331,7 +332,7 @@ public:
         }
 
         MRubberBand *band = GetRubberBand();
-        if (band)
+        if (!m_bLocking && band)
         {
             band->FitToTarget();
         }
@@ -345,13 +346,13 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-        DefaultProcDx(hwnd, WM_SIZE, 0, MAKELPARAM(cx, cy));
+        DefaultProcDx(hwnd, WM_SIZE, state, MAKELPARAM(cx, cy));
         if (!m_bTopCtrl)
         {
             return;
         }
 
-        if (!m_bSizing)
+        if (!m_bLocking && !m_bSizing)
             ResizeSelection(hwnd, cx, cy);
 
         SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
@@ -593,14 +594,15 @@ public:
 		SendMessage(GetParent(hwnd), MYWM_GETUNITS, 0, 0);
 		if (m_xDialogBaseUnit && m_yDialogBaseUnit)
 		{
-			INT dx = (GRID_SIZE * m_xDialogBaseUnit / 4);
-			INT dy = (GRID_SIZE * m_yDialogBaseUnit / 8);
-
-			for (INT y = 0; y < rc.bottom; y += dy)
+			for (INT y = rc.top; y < rc.bottom; y += 4)
 			{
-				for (INT x = 0; x < rc.right; x += dx)
+				for (INT x = rc.left; x < rc.right; x += 4)
 				{
-					::SetPixelV(hdc, x, y, rgb);
+					INT qx = x * m_xDialogBaseUnit / 4;
+					INT qy = y * m_yDialogBaseUnit / 8;
+					INT rx = qx * 4 / m_xDialogBaseUnit;
+					INT ry = qy * 8 / m_yDialogBaseUnit;
+					::SetPixelV(hdc, rx, ry, rgb);
 				}
 			}
 		}
@@ -833,24 +835,24 @@ public:
     void DialogToClient(POINT *ppt)
     {
 		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        ppt->x = (ppt->x * m_xDialogBaseUnit) / 4;
-        ppt->y = (ppt->y * m_yDialogBaseUnit) / 8;
+        ppt->x = (ppt->x * m_xDialogBaseUnit + 2) / 4;
+        ppt->y = (ppt->y * m_yDialogBaseUnit + 4) / 8;
     }
 
     void DialogToClient(SIZE *psiz)
     {
 		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        psiz->cx = (psiz->cx * m_xDialogBaseUnit) / 4;
-        psiz->cy = (psiz->cy * m_yDialogBaseUnit) / 8;
+        psiz->cx = (psiz->cx * m_xDialogBaseUnit + 2) / 4;
+        psiz->cy = (psiz->cy * m_yDialogBaseUnit + 4) / 8;
     }
 
     void DialogToClient(RECT *prc)
     {
 		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        prc->left = (prc->left * m_xDialogBaseUnit) / 4;
-        prc->right = (prc->right * m_xDialogBaseUnit) / 4;
-        prc->top = (prc->top * m_yDialogBaseUnit) / 8;
-        prc->bottom = (prc->bottom * m_yDialogBaseUnit) / 8;
+        prc->left = (prc->left * m_xDialogBaseUnit + 2) / 4;
+        prc->right = (prc->right * m_xDialogBaseUnit + 2) / 4;
+        prc->top = (prc->top * m_yDialogBaseUnit + 4) / 8;
+        prc->bottom = (prc->bottom * m_yDialogBaseUnit + 4) / 8;
     }
 
     static HWND GetPrimaryControl(HWND hwnd, HWND hwndDialog)
@@ -1780,10 +1782,18 @@ public:
 
 			POINT pt = item.m_pt;
 			SIZE siz = item.m_siz;
+			DebugPrintDx("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
 			DialogToClient(&pt);
 			DialogToClient(&siz);
 
+			pCtrl->m_bLocking = TRUE;
 			pCtrl->SetWindowPosDx(&pt, &siz);
+			MRubberBand *pBand = pCtrl->GetRubberBand();
+			if (pBand)
+			{
+				pBand->FitToTarget();
+			}
+			pCtrl->m_bLocking = FALSE;
 
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
