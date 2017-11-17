@@ -455,10 +455,11 @@ public:
     MIndexLabels    m_labels;
     RisohSettings&  m_settings;
     HBRUSH          m_hbrBack;
+	BOOL			m_bMovingSizing;
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
         : m_index_visible(FALSE), m_db(db), m_settings(settings),
-          m_hbrBack(NULL)
+          m_hbrBack(NULL), m_bMovingSizing(FALSE)
     {
         m_ptClicked.x = m_ptClicked.y = -1;
 
@@ -618,6 +619,9 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+		if (m_bMovingSizing)
+			return;
+
         SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
     }
 
@@ -828,66 +832,62 @@ public:
     {
     }
 
-    void ClientToDialog(POINT *ppt, BOOL bRound = FALSE)
+	BOOL CreateDx(HWND hwndParent)
+	{
+		BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
+		m_rad_dialog.m_bMovingSizing = TRUE;
+        DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+        if (CreateWindowDx(hwndParent, MAKEINTRESOURCE(IDS_RADWINDOW), style))
+        {
+            ShowWindow(m_hwnd, SW_SHOWNORMAL);
+            UpdateWindow(m_hwnd);
+			m_rad_dialog.m_bMovingSizing = bMovingSizing;
+			return TRUE;
+        }
+		m_rad_dialog.m_bMovingSizing = bMovingSizing;
+		return FALSE;
+	}
+
+    void ClientToDialog(POINT *ppt)
     {
-        if (bRound)
-        {
-            ppt->x = (ppt->x * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
-            ppt->y = (ppt->y * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
-        }
-        else
-        {
-            ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
-            ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
-        }
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
+        ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
     }
 
-    void ClientToDialog(SIZE *psiz, BOOL bRound = FALSE)
+    void ClientToDialog(SIZE *psiz)
     {
-        if (bRound)
-        {
-            psiz->cx = (psiz->cx * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
-            psiz->cy = (psiz->cy * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
-        }
-        else
-        {
-            psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
-            psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
-        }
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
+        psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
     }
 
-    void ClientToDialog(RECT *prc, BOOL bRound = FALSE)
+    void ClientToDialog(RECT *prc)
     {
-        if (bRound)
-        {
-            prc->left = (prc->left * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
-            prc->right = (prc->right * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
-            prc->top = (prc->top * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
-            prc->bottom = (prc->bottom * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
-        }
-        else
-        {
-            prc->left = (prc->left * 4) / m_xDialogBaseUnit;
-            prc->right = (prc->right * 4) / m_xDialogBaseUnit;
-            prc->top = (prc->top * 8) / m_yDialogBaseUnit;
-            prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
-        }
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        prc->left = (prc->left * 4) / m_xDialogBaseUnit;
+        prc->right = (prc->right * 4) / m_xDialogBaseUnit;
+        prc->top = (prc->top * 8) / m_yDialogBaseUnit;
+        prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
     }
 
     void DialogToClient(POINT *ppt)
     {
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         ppt->x = (ppt->x * m_xDialogBaseUnit) / 4;
         ppt->y = (ppt->y * m_yDialogBaseUnit) / 8;
     }
 
     void DialogToClient(SIZE *psiz)
     {
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         psiz->cx = (psiz->cx * m_xDialogBaseUnit) / 4;
         psiz->cy = (psiz->cy * m_yDialogBaseUnit) / 8;
     }
 
     void DialogToClient(RECT *prc)
     {
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         prc->left = (prc->left * m_xDialogBaseUnit) / 4;
         prc->right = (prc->right * m_xDialogBaseUnit) / 4;
         prc->top = (prc->top * m_yDialogBaseUnit) / 8;
@@ -939,6 +939,8 @@ public:
     {
         assert(IsWindow(hwnd));
 
+		BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
+		m_rad_dialog.m_bMovingSizing = TRUE;
         if (m_rad_dialog)
         {
             DestroyWindow(m_rad_dialog);
@@ -955,6 +957,7 @@ public:
 
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
+			m_rad_dialog.m_bMovingSizing = bMovingSizing;
             return FALSE;
         }
         assert(IsWindow(m_rad_dialog));
@@ -965,6 +968,7 @@ public:
         UpdateWindow(m_rad_dialog);
 
         SetForegroundWindow(hwnd);
+		m_rad_dialog.m_bMovingSizing = bMovingSizing;
         return TRUE;
     }
 
@@ -1749,6 +1753,9 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+		if (m_rad_dialog.m_bMovingSizing)
+			return;
+
         m_dialog_res.Update();
 
         INT xDialogBaseUnit, yDialogBaseUnit;
@@ -1758,7 +1765,11 @@ public:
         RECT rc;
         GetClientRect(m_hwnd, &rc);
         SIZE siz = SizeFromRectDx(&rc);
+		m_rad_dialog.m_bMovingSizing = TRUE;
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
+		m_rad_dialog.m_bMovingSizing = FALSE;
+
+		DebugBreak();
 
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;

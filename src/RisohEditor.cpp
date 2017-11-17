@@ -1572,6 +1572,7 @@ LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     OnGuiEdit(hwnd);
+	return 0;
 }
 
 LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -2177,15 +2178,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_LangID = Entry.lang;
 
-        ChangeStatusText(IDS_EDITINGBYGUI);
-        DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
-        if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
-                                        style))
-        {
-            ShowWindow(m_rad_window, SW_SHOWNORMAL);
-            UpdateWindow(m_rad_window);
-        }
-        else
+        if (!m_rad_window.CreateDx(m_hwnd))
         {
             ErrorBoxDx(IDS_DLGFAIL);
         }
@@ -3409,14 +3402,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
             {
                 MByteStreamEx stream(entry.data);
                 m_rad_window.m_dialog_res.LoadFromStream(stream);
-
-                DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
-                if (m_rad_window.CreateWindowDx(m_hwnd, MAKEINTRESOURCE(IDS_RADWINDOW),
-                                                style))
-                {
-                    ShowWindow(m_rad_window, SW_SHOWNORMAL);
-                    UpdateWindow(m_rad_window);
-                }
+				m_rad_window.CreateDx(m_hwnd);
             }
         }
     }
