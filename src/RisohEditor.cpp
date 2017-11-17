@@ -1600,6 +1600,7 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
     {
         SetFocus(m_hTreeView);
     }
+    FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
 
 void MMainWnd::UpdateMenu()
@@ -5662,14 +5663,26 @@ INT_PTR MMainWnd::RunDx()
     MSG msg;
     while (::GetMessage(&msg, NULL, 0, 0))
     {
-        if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
-            continue;
-        if (::IsDialogMessage(m_id_list_dlg, &msg))
-            continue;
-        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-            continue;
-        if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
-            continue;
+        if (IsWindow(m_rad_window.m_rad_dialog))
+        {
+            if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
+                continue;
+        }
+        if (IsWindow(m_id_list_dlg))
+        {
+            if (::IsDialogMessage(m_id_list_dlg, &msg))
+                continue;
+        }
+        if (m_hAccel)
+        {
+            if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+                continue;
+        }
+        if (IsWindow(m_hFindReplaceDlg))
+        {
+            if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+                continue;
+        }
 
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
