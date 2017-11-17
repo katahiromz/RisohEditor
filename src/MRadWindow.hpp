@@ -31,6 +31,8 @@
 #define MYWM_COMPILECHECK       (WM_USER + 107)
 #define MYWM_REOPENRAD          (WM_USER + 108)
 
+#define GRID_SIZE 5
+
 class MRadCtrl : public MWindowBase
 {
 public:
@@ -826,24 +828,50 @@ public:
     {
     }
 
-    void ClientToDialog(POINT *ppt)
+    void ClientToDialog(POINT *ppt, BOOL bRound = FALSE)
     {
-        ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
-        ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
+        if (bRound)
+        {
+            ppt->x = (ppt->x * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
+            ppt->y = (ppt->y * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
+        }
+        else
+        {
+            ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
+            ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
+        }
     }
 
-    void ClientToDialog(SIZE *psiz)
+    void ClientToDialog(SIZE *psiz, BOOL bRound = FALSE)
     {
-        psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
-        psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
+        if (bRound)
+        {
+            psiz->cx = (psiz->cx * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
+            psiz->cy = (psiz->cy * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
+        }
+        else
+        {
+            psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
+            psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
+        }
     }
 
-    void ClientToDialog(RECT *prc)
+    void ClientToDialog(RECT *prc, BOOL bRound = FALSE)
     {
-        prc->left = (prc->left * 4) / m_xDialogBaseUnit;
-        prc->right = (prc->right * 4) / m_xDialogBaseUnit;
-        prc->top = (prc->top * 8) / m_yDialogBaseUnit;
-        prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
+        if (bRound)
+        {
+            prc->left = (prc->left * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
+            prc->right = (prc->right * 4 + m_xDialogBaseUnit / 2) / m_xDialogBaseUnit;
+            prc->top = (prc->top * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
+            prc->bottom = (prc->bottom * 8 + m_yDialogBaseUnit / 2) / m_yDialogBaseUnit;
+        }
+        else
+        {
+            prc->left = (prc->left * 4) / m_xDialogBaseUnit;
+            prc->right = (prc->right * 4) / m_xDialogBaseUnit;
+            prc->top = (prc->top * 8) / m_yDialogBaseUnit;
+            prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
+        }
     }
 
     void DialogToClient(POINT *ppt)
@@ -1734,6 +1762,51 @@ public:
 
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
+    }
+
+    void FitToGrid(POINT *ppt)
+    {
+        ppt->x = (ppt->x + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+        ppt->y = (ppt->y + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+    }
+    void FitToGrid(SIZE *psiz)
+    {
+        psiz->cx = (psiz->cx + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+        psiz->cy = (psiz->cy + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+    }
+    void FitToGrid(RECT *prc)
+    {
+        prc->left = (prc->left + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+        prc->top = (prc->top + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+        prc->right = (prc->right + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+        prc->bottom = (prc->bottom + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
+    }
+
+    void OnFitToGrid(HWND hwnd)
+    {
+        MRadCtrl::set_type::iterator it, end = MRadCtrl::GetTargets().end();
+        for (it = MRadCtrl::GetTargets().begin(); it != end; ++it)
+        {
+            if (*it == m_rad_dialog)
+                continue;
+
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            if (pCtrl == NULL)
+                continue;
+
+            if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
+                continue;
+
+            DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+            FitToGrid(&item.m_pt);
+            FitToGrid(&item.m_siz);
+
+            HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+                MAKEWPARAM(item.m_pt.x, item.m_pt.y),
+                MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+        }
+        UpdateRes();
     }
 };
 

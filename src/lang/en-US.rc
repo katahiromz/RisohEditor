@@ -128,6 +128,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             MENUITEM "&Bottom-Align", CMDID_BOTTOMALIGN
             MENUITEM "&Left-Align", CMDID_LEFTALIGN
             MENUITEM "&Right-Align", CMDID_RIGHTALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Fit To &Grid", CMDID_FITTOGRID
         END
         MENUITEM SEPARATOR
         MENUITEM "&Properties for Control...", CMDID_CTRLPROP

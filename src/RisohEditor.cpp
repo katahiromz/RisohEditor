@@ -4857,6 +4857,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_RIGHTALIGN:
         m_rad_window.OnRightAlign(m_rad_window);
         break;
+    case CMDID_FITTOGRID:
+        m_rad_window.OnFitToGrid(m_rad_window);
+        bUpdateStatus = FALSE;
+        break;
     case CMDID_STATUSBAR:
         m_settings.bShowStatusBar = !m_settings.bShowStatusBar;
         ShowStatusBar(m_settings.bShowStatusBar);
