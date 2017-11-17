@@ -1732,20 +1732,8 @@ public:
         SIZE siz = SizeFromRectDx(&rc);
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
 
-        GetClientRect(m_rad_dialog, &rc);
-        siz = SizeFromRectDx(&rc);
         ClientToDialog(&siz);
-
         m_dialog_res.m_siz = siz;
-        DialogToClient(&siz);
-        SetRect(&rc, 0, 0, siz.cx, siz.cy);
-
-        DWORD style = GetWindowStyle(m_rad_dialog);
-        DWORD exstyle = GetWindowExStyle(m_rad_dialog);
-        AdjustWindowRectEx(&rc, style, FALSE, exstyle);
-        siz = SizeFromRectDx(&rc);
-
-        MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
     }
 };
 
