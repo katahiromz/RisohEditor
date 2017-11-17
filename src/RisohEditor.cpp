@@ -1572,7 +1572,7 @@ LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     OnGuiEdit(hwnd);
-	return 0;
+    return 0;
 }
 
 LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -2177,18 +2177,18 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         MByteStreamEx stream(Entry.data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_LangID = Entry.lang;
-		if (::IsWindowVisible(m_rad_window) &&
-			::IsWindowVisible(m_rad_window.m_rad_dialog))
-		{
-			m_rad_window.ReCreateRadDialog(m_rad_window);
-		}
-		else
-		{
-			if (!m_rad_window.CreateDx(m_hwnd))
-			{
-				ErrorBoxDx(IDS_DLGFAIL);
-			}
-		}
+        if (::IsWindowVisible(m_rad_window) &&
+            ::IsWindowVisible(m_rad_window.m_rad_dialog))
+        {
+            m_rad_window.ReCreateRadDialog(m_rad_window);
+        }
+        else
+        {
+            if (!m_rad_window.CreateDx(m_hwnd))
+            {
+                ErrorBoxDx(IDS_DLGFAIL);
+            }
+        }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
     else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
@@ -3409,7 +3409,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
             {
                 MByteStreamEx stream(entry.data);
                 m_rad_window.m_dialog_res.LoadFromStream(stream);
-				m_rad_window.CreateDx(m_hwnd);
+                m_rad_window.CreateDx(m_hwnd);
             }
         }
     }

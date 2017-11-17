@@ -30,7 +30,7 @@
 #define MYWM_CLEARSTATUS        (WM_USER + 106)
 #define MYWM_COMPILECHECK       (WM_USER + 107)
 #define MYWM_REOPENRAD          (WM_USER + 108)
-#define MYWM_GETUNITS			(WM_USER + 109)
+#define MYWM_GETUNITS           (WM_USER + 109)
 
 #define GRID_SIZE 5
 
@@ -41,7 +41,7 @@ public:
     HWND            m_hwndRubberBand;
     BOOL            m_bMoving;
     BOOL            m_bSizing;
-	BOOL			m_bLocking;
+    BOOL            m_bLocking;
     INT             m_nIndex;
     ConstantsDB&    m_db;
     RisohSettings&  m_settings;
@@ -99,7 +99,7 @@ public:
     MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
         m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
         m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
-		m_nIndex(-1), m_db(db), m_settings(settings)
+        m_nIndex(-1), m_db(db), m_settings(settings)
     {
         m_pt.x = m_pt.y = -1;
     }
@@ -319,7 +319,7 @@ public:
     {
         if (!m_bTopCtrl)
         {
-	        DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
+            DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
             return;
         }
 
@@ -456,9 +456,9 @@ public:
     POINT           m_ptClicked;
     MIndexLabels    m_labels;
     RisohSettings&  m_settings;
-	BOOL			m_bMovingSizing;
-	INT				m_xDialogBaseUnit;
-	INT				m_yDialogBaseUnit;
+    BOOL            m_bMovingSizing;
+    INT             m_xDialogBaseUnit;
+    INT             m_yDialogBaseUnit;
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
         : m_index_visible(FALSE), m_db(db), m_settings(settings),
@@ -581,34 +581,34 @@ public:
         MRadCtrl::DeselectSelection();
     }
 
-	BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
-	{
-		RECT rc;
-		GetClientRect(hwnd, &rc);
-		FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+    BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
+    {
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
 
         COLORREF rgb = GetSysColor(COLOR_3DFACE);
         DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
-		rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
+        rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
 
-		SendMessage(GetParent(hwnd), MYWM_GETUNITS, 0, 0);
-		if (m_xDialogBaseUnit && m_yDialogBaseUnit)
-		{
-			for (INT y = rc.top; y < rc.bottom; y += 4)
-			{
-				for (INT x = rc.left; x < rc.right; x += 4)
-				{
-					INT qx = x * m_xDialogBaseUnit / 4;
-					INT qy = y * m_yDialogBaseUnit / 8;
-					INT rx = qx * 4 / m_xDialogBaseUnit;
-					INT ry = qy * 8 / m_yDialogBaseUnit;
-					::SetPixelV(hdc, rx, ry, rgb);
-				}
-			}
-		}
+        SendMessage(GetParent(hwnd), MYWM_GETUNITS, 0, 0);
+        if (m_xDialogBaseUnit && m_yDialogBaseUnit)
+        {
+            for (INT y = rc.top; y < rc.bottom; y += 4)
+            {
+                for (INT x = rc.left; x < rc.right; x += 4)
+                {
+                    INT qx = x * m_xDialogBaseUnit / 4;
+                    INT qy = y * m_yDialogBaseUnit / 8;
+                    INT rx = qx * 4 / m_xDialogBaseUnit;
+                    INT ry = qy * 8 / m_yDialogBaseUnit;
+                    ::SetPixelV(hdc, rx, ry, rgb);
+                }
+            }
+        }
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -635,8 +635,8 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-		if (m_bMovingSizing)
-			return;
+        if (m_bMovingSizing)
+            return;
 
         SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
     }
@@ -793,39 +793,39 @@ public:
     {
     }
 
-	BOOL CreateDx(HWND hwndParent)
-	{
-		BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
-		m_rad_dialog.m_bMovingSizing = TRUE;
+    BOOL CreateDx(HWND hwndParent)
+    {
+        BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
+        m_rad_dialog.m_bMovingSizing = TRUE;
         DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
         if (CreateWindowDx(hwndParent, MAKEINTRESOURCE(IDS_RADWINDOW), style))
         {
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
-			m_rad_dialog.m_bMovingSizing = bMovingSizing;
-			return TRUE;
+            m_rad_dialog.m_bMovingSizing = bMovingSizing;
+            return TRUE;
         }
-		m_rad_dialog.m_bMovingSizing = bMovingSizing;
-		return FALSE;
-	}
+        m_rad_dialog.m_bMovingSizing = bMovingSizing;
+        return FALSE;
+    }
 
     void ClientToDialog(POINT *ppt)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
         ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
     }
 
     void ClientToDialog(SIZE *psiz)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
         psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
     }
 
     void ClientToDialog(RECT *prc)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         prc->left = (prc->left * 4) / m_xDialogBaseUnit;
         prc->right = (prc->right * 4) / m_xDialogBaseUnit;
         prc->top = (prc->top * 8) / m_yDialogBaseUnit;
@@ -834,21 +834,21 @@ public:
 
     void DialogToClient(POINT *ppt)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         ppt->x = (ppt->x * m_xDialogBaseUnit + 2) / 4;
         ppt->y = (ppt->y * m_yDialogBaseUnit + 4) / 8;
     }
 
     void DialogToClient(SIZE *psiz)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         psiz->cx = (psiz->cx * m_xDialogBaseUnit + 2) / 4;
         psiz->cy = (psiz->cy * m_yDialogBaseUnit + 4) / 8;
     }
 
     void DialogToClient(RECT *prc)
     {
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         prc->left = (prc->left * m_xDialogBaseUnit + 2) / 4;
         prc->right = (prc->right * m_xDialogBaseUnit + 2) / 4;
         prc->top = (prc->top * m_yDialogBaseUnit + 4) / 8;
@@ -900,8 +900,8 @@ public:
     {
         assert(IsWindow(hwnd));
 
-		BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
-		m_rad_dialog.m_bMovingSizing = TRUE;
+        BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
+        m_rad_dialog.m_bMovingSizing = TRUE;
         if (m_rad_dialog)
         {
             DestroyWindow(m_rad_dialog);
@@ -918,7 +918,7 @@ public:
 
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
-			m_rad_dialog.m_bMovingSizing = bMovingSizing;
+            m_rad_dialog.m_bMovingSizing = bMovingSizing;
             return FALSE;
         }
         assert(IsWindow(m_rad_dialog));
@@ -929,7 +929,7 @@ public:
         UpdateWindow(m_rad_dialog);
 
         SetForegroundWindow(hwnd);
-		m_rad_dialog.m_bMovingSizing = bMovingSizing;
+        m_rad_dialog.m_bMovingSizing = bMovingSizing;
         return TRUE;
     }
 
@@ -992,10 +992,10 @@ public:
     }
 
     LRESULT OnGetUnits(HWND hwnd, WPARAM wParam, LPARAM lParam)
-	{
-		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-		return 0;
-	}
+    {
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+        return 0;
+    }
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
     {
@@ -1706,8 +1706,8 @@ public:
 
         xDialogBaseUnit = m_xDialogBaseUnit;
         yDialogBaseUnit = m_yDialogBaseUnit;
-		m_rad_dialog.m_xDialogBaseUnit = m_xDialogBaseUnit;
-		m_rad_dialog.m_yDialogBaseUnit = m_yDialogBaseUnit;
+        m_rad_dialog.m_xDialogBaseUnit = m_xDialogBaseUnit;
+        m_rad_dialog.m_yDialogBaseUnit = m_yDialogBaseUnit;
 
         return TRUE;
     }
@@ -1723,8 +1723,8 @@ public:
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
-		if (m_rad_dialog.m_bMovingSizing)
-			return;
+        if (m_rad_dialog.m_bMovingSizing)
+            return;
 
         m_dialog_res.Update();
 
@@ -1735,9 +1735,9 @@ public:
         RECT rc;
         GetClientRect(m_hwnd, &rc);
         SIZE siz = SizeFromRectDx(&rc);
-		m_rad_dialog.m_bMovingSizing = TRUE;
+        m_rad_dialog.m_bMovingSizing = TRUE;
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
-		m_rad_dialog.m_bMovingSizing = FALSE;
+        m_rad_dialog.m_bMovingSizing = FALSE;
 
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
@@ -1780,20 +1780,20 @@ public:
             FitToGrid(&item.m_pt);
             FitToGrid(&item.m_siz);
 
-			POINT pt = item.m_pt;
-			SIZE siz = item.m_siz;
-			DebugPrintDx("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
-			DialogToClient(&pt);
-			DialogToClient(&siz);
+            POINT pt = item.m_pt;
+            SIZE siz = item.m_siz;
+            DebugPrintDx("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
+            DialogToClient(&pt);
+            DialogToClient(&siz);
 
-			pCtrl->m_bLocking = TRUE;
-			pCtrl->SetWindowPosDx(&pt, &siz);
-			MRubberBand *pBand = pCtrl->GetRubberBand();
-			if (pBand)
-			{
-				pBand->FitToTarget();
-			}
-			pCtrl->m_bLocking = FALSE;
+            pCtrl->m_bLocking = TRUE;
+            pCtrl->SetWindowPosDx(&pt, &siz);
+            MRubberBand *pBand = pCtrl->GetRubberBand();
+            if (pBand)
+            {
+                pBand->FitToTarget();
+            }
+            pCtrl->m_bLocking = FALSE;
 
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
