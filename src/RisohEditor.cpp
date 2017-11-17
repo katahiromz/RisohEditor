@@ -1452,7 +1452,7 @@ public:
 protected:
     // parsing resource IDs
     BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
-    BOOL CompileParts(HWND hwnd, const std::wstring& WideText);
+    BOOL CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReopen = FALSE);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
@@ -1499,6 +1499,7 @@ protected:
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnUpdateID(HWND hwnd)
     {
@@ -1566,6 +1567,11 @@ LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
     return FALSE;
+}
+
+LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    OnGuiEdit(hwnd);
 }
 
 LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -2095,7 +2101,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (CompileParts(hwnd, WideText))
+    if (CompileParts(hwnd, WideText, TRUE))
     {
         TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_Entries, entry);
@@ -3193,7 +3199,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
-BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
+BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReopen)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3355,6 +3361,11 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText)
         ::DeleteFileW(szPath1);
         ::DeleteFileW(szPath2);
         ::DeleteFileW(szPath3);
+
+        if (bReopen && entry.type == RT_DIALOG)
+        {
+            PostMessage(hwnd, MYWM_REOPENRAD, 0, 0);
+        }
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -5608,6 +5619,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
         DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
+        DO_MESSAGE(MYWM_REOPENRAD, OnReopenRad);
     default:
         if (uMsg == s_uFindMsg)
         {

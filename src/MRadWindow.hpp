@@ -29,6 +29,7 @@
 #define MYWM_MOVESIZEREPORT     (WM_USER + 105)
 #define MYWM_CLEARSTATUS        (WM_USER + 106)
 #define MYWM_COMPILECHECK       (WM_USER + 107)
+#define MYWM_REOPENRAD          (WM_USER + 108)
 
 class MRadCtrl : public MWindowBase
 {
@@ -1005,6 +1006,7 @@ public:
             {
                 return;
             }
+            PostMessage(hwndOwner, MYWM_REOPENRAD, 0, 0);
         }
         FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, DefWindowProc);
     }
