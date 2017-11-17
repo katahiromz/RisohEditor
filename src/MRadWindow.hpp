@@ -30,6 +30,7 @@
 #define MYWM_CLEARSTATUS        (WM_USER + 106)
 #define MYWM_COMPILECHECK       (WM_USER + 107)
 #define MYWM_REOPENRAD          (WM_USER + 108)
+#define MYWM_GETUNITS			(WM_USER + 109)
 
 #define GRID_SIZE 5
 
@@ -317,7 +318,7 @@ public:
     {
         if (!m_bTopCtrl)
         {
-            DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
+	        DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
             return;
         }
 
@@ -589,11 +590,11 @@ public:
         DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
 		rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
 
+		SendMessage(GetParent(hwnd), MYWM_GETUNITS, 0, 0);
 		if (m_xDialogBaseUnit && m_yDialogBaseUnit)
 		{
-			DebugBreak();
-			INT dx = (GRID_SIZE * 4 / m_xDialogBaseUnit);
-			INT dy = (GRID_SIZE * 8 / m_yDialogBaseUnit);
+			INT dx = (GRID_SIZE * m_xDialogBaseUnit / 4);
+			INT dy = (GRID_SIZE * m_yDialogBaseUnit / 8);
 
 			for (INT y = 0; y < rc.bottom; y += dy)
 			{
@@ -974,8 +975,9 @@ public:
             DO_MESSAGE(MYWM_CTRLSIZE, OnCtrlSize);
             DO_MESSAGE(MYWM_DLGSIZE, OnDlgSize);
             DO_MESSAGE(MYWM_DELETESEL, OnDeleteSel);
-            DO_MSG(WM_INITMENUPOPUP, OnInitMenuPopup);
             DO_MESSAGE(MYWM_SELCHANGE, OnSelChange);
+            DO_MESSAGE(MYWM_GETUNITS, OnGetUnits);
+            DO_MSG(WM_INITMENUPOPUP, OnInitMenuPopup);
             DO_MSG(WM_ACTIVATE, OnActivate);
             DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
         }
@@ -986,6 +988,12 @@ public:
     {
         m_rad_dialog.SendMessageDx(WM_SYSCOLORCHANGE);
     }
+
+    LRESULT OnGetUnits(HWND hwnd, WPARAM wParam, LPARAM lParam)
+	{
+		GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+		return 0;
+	}
 
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
     {
