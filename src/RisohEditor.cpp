@@ -1453,6 +1453,7 @@ protected:
     BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
+    BOOL UnloadResourceH(HWND hwnd);
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& Entry);
@@ -3571,13 +3572,22 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
     m_bLoading = FALSE;
     SetFilePath(hwnd, Path);
 
-    m_szResourceH[0] = 0;
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
+    UnloadResourceH(hwnd);
     if (m_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, Path);
 
     return TRUE;
+}
+
+BOOL MMainWnd::UnloadResourceH(HWND hwnd)
+{
+    m_db.m_map[L"RESOURCE.ID"].clear();
+    m_settings.id_map.clear();
+    m_settings.added_ids.clear();
+    m_settings.removed_ids.clear();
+    m_szResourceH[0] = 0;
+    ShowIDList(hwnd, FALSE);
+	return TRUE;
 }
 
 BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR Path)
@@ -4643,12 +4653,7 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    m_db.m_map[L"RESOURCE.ID"].clear();
-    m_settings.id_map.clear();
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
-    m_szResourceH[0] = 0;
-    ShowIDList(hwnd, FALSE);
+    UnloadResourceH(hwnd);
 }
 
 void MMainWnd::OnConfig(HWND hwnd)
