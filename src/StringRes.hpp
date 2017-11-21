@@ -36,7 +36,7 @@ public:
     {
         for (WORD i = 0; i < 16; ++i)
         {
-            m_map[(wName - 1) * 16 + i].clear();
+            m_map.erase((wName - 1) * 16 + i);
         }
 
         WORD wLen;
