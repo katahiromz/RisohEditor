@@ -803,7 +803,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
 
 inline HTREEITEM
 _tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT iEntry, BOOL Expand)
+                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -812,19 +812,19 @@ _tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_LANG)
         {
-            if (Entries[LOWORD(lParam)].lang == Entries[iEntry].lang)
+            if (Entries[LOWORD(lParam)].lang == Entries[i].lang)
                 return hItem;
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(Entries[iEntry].lang);
+    std::wstring ResLang = Res_GetLangName(Entries[i].lang);
     return TV_MyInsert(hwnd, hParent, ResLang,
-                       MAKELPARAM(iEntry, I_LANG), Expand);
+                       MAKELPARAM(k, I_LANG), Expand);
 }   
 
 inline HTREEITEM
 _tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT iEntry, BOOL Expand)
+                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -833,19 +833,19 @@ _tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_NAME)
         {
-            if (Entries[LOWORD(lParam)].name == Entries[iEntry].name)
+            if (Entries[LOWORD(lParam)].name == Entries[i].name)
                 return hItem;
         }
     }
 
-    std::wstring ResName = Res_GetName(Entries[iEntry].name);
+    std::wstring ResName = Res_GetName(Entries[i].name);
     return TV_MyInsert(hwnd, hParent, ResName,
-                       MAKELPARAM(iEntry, I_NAME), Expand);
+                       MAKELPARAM(k, I_NAME), Expand);
 }
 
 inline HTREEITEM
 _tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT iEntry, BOOL Expand)
+                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -854,14 +854,14 @@ _tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_TYPE)
         {
-            if (Entries[LOWORD(lParam)].type == Entries[iEntry].type)
+            if (Entries[LOWORD(lParam)].type == Entries[i].type)
                 return hItem;
         }
     }
 
-    std::wstring ResType = Res_GetType(Entries[iEntry].type);
+    std::wstring ResType = Res_GetType(Entries[i].type);
     return TV_MyInsert(hwnd, hParent, ResType,
-                       MAKELPARAM(iEntry, I_TYPE), Expand);
+                       MAKELPARAM(k, I_TYPE), Expand);
 }
 
 inline void
@@ -990,7 +990,7 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, i, Expand);
 
         if (Entries[i].type == RT_STRING)
         {
@@ -1002,16 +1002,18 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
         }
     }
 
+	INT k = 0;
     for (INT i = 0; i < INT(Entries.size()); ++i)
     {
         if (Entries[i].empty())
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, Expand);
-        hItem = _tv_FindOrInsertDepth2(hwnd, hItem, Entries, i, Expand);
-        hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth2(hwnd, hItem, Entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, k, Expand);
         hItem = hItem;
+		++k;
     }
 
     for (size_t i = Entries.size(); i > 0; )
