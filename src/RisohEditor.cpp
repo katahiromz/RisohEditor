@@ -5557,8 +5557,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_splitter2.SetPane(1, m_hBinEdit);
     m_splitter2.SetPaneExtent(1, BE_HEIGHT);
 
-    style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
-        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+    style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
+        ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     exstyle = WS_EX_CLIENTEDGE;
     m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
