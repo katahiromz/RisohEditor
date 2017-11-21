@@ -399,7 +399,8 @@ Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
     for (i = 0; i < Count; ++i)
     {
         INT k = Res_Find(Entries, RT_ICON, DirEntries[i].nID, Entry.lang, TRUE);
-        Entries[k].clear_data();
+		if (k != -1)
+	        Entries[k].clear_data();
     }
 
     Entry.clear_data();
@@ -649,7 +650,7 @@ Res_GetName(const MIdOrString& id_or_str)
     std::wstring ret;
     if (id_or_str.m_ID != 0)
     {
-        ret = mstr_dec_short(id_or_str.m_ID);
+        ret = mstr_dec_word(id_or_str.m_ID);
     }
     else
     {

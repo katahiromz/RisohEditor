@@ -1228,7 +1228,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         LONG n = wcstol(str.c_str(), NULL, 0);
-        str = mstr_dec_short((SHORT)n);
+        str = mstr_dec_word(WORD(n));
     }
     else if (!db.HasResID(str))
     {

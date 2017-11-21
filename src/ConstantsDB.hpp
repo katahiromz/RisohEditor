@@ -166,10 +166,15 @@ public:
 
         if (nIDTYPE_ == IDTYPE_HELP)
         {
-            return mstr_dec(value);
+            return mstr_dec_dword(value);
         }
 
-        return mstr_dec_short((SHORT)value);
+        if (nIDTYPE_ == IDTYPE_STRING || nIDTYPE_ == IDTYPE_COMMAND)
+        {
+            return mstr_dec_word(WORD(value));
+        }
+
+        return mstr_dec_short(SHORT(value));
     }
 
     NameType GetName(CategoryType category, ValueType value) const

@@ -121,7 +121,7 @@ public:
             ret += L", ";
             if (0)
             {
-                ret += mstr_dec_short(it->wId);
+                ret += mstr_dec_word(it->wId);
             }
             else
             {

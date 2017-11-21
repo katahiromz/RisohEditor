@@ -424,7 +424,7 @@ public:
                     ret += L"\", ";
                     if (0)
                     {
-                        ret += mstr_dec_short(it->wMenuID);
+                        ret += mstr_dec_word(it->wMenuID);
                     }
                     else
                     {
@@ -482,7 +482,14 @@ public:
                 if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
-                    ret += mstr_dec_short((SHORT)it->menuId);
+                    if (0)
+                    {
+                        ret += mstr_dec_dword(it->menuId);
+                    }
+                    else
+                    {
+                        ret += db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
+                    }
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {
@@ -501,7 +508,7 @@ public:
                     ret += L", ";
                     if (0)
                     {
-                        ret += mstr_dec(it->dwHelpId);
+                        ret += mstr_dec_dword(it->dwHelpId);
                     }
                     else
                     {
@@ -528,7 +535,7 @@ public:
                         ret += L", ";
                         if (0)
                         {
-                            ret += mstr_dec(it->menuId);
+                            ret += mstr_dec_dword(it->menuId);
                         }
                         else
                         {

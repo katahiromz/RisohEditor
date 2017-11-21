@@ -92,7 +92,7 @@ public:
             ret += L"    ";
             if (0)
             {
-                ret += mstr_dec_short(i);
+                ret += mstr_dec_word(i);
             }
             else
             {
@@ -124,7 +124,7 @@ public:
             ret += L"    ";
             if (0)
             {
-                ret += mstr_dec(it->first);
+                ret += mstr_dec_word(it->first);
             }
             else
             {
