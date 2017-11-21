@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MREGKEY_HPP_
-#define MZC4_MREGKEY_HPP_       6   /* Version 6 */
+#define MZC4_MREGKEY_HPP_       7   /* Version 7 */
 
 #ifndef HKCR
     #define HKCR    HKEY_CLASSES_ROOT
@@ -160,7 +160,7 @@ template <typename T_STRUCT>
 inline LONG MRegKey::QueryStruct(LPCTSTR pszValueName, T_STRUCT& data)
 {
     assert(m_hKey);
-    const DWORD cbData = static_cast<DWORD>(sizeof(data));
+    DWORD cbData = static_cast<DWORD>(sizeof(data));
     LONG result = ::RegQueryValueEx(m_hKey, pszValueName, NULL, NULL,
         reinterpret_cast<LPBYTE>(&data), &cbData);
     if (result == ERROR_SUCCESS && cbData != sizeof(data))
