@@ -48,10 +48,7 @@ endif()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(BUILD_SHARED_LIBRARIES OFF)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    # using Clang
-    set(CMAKE_EXE_LINKER_FLAGS " -static -static-libgcc -static-libstdc++")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
     set(CMAKE_EXE_LINKER_FLAGS " -static -static-libgcc -static-libstdc++")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
