@@ -664,10 +664,9 @@ std::wstring Res_GetLangName(WORD Lang);
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
-Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& Entries,
-              BOOL CreateNew = FALSE)
+Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& Entries)
 {
-    HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, CreateNew);
+    HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
     if (hUpdate == NULL)
     {
         assert(0);
@@ -677,16 +676,8 @@ Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& Entries,
     for (DWORD i = 0; i < DWORD(Entries.size()); ++i)
     {
         const ResEntry& Entry = Entries[i];
-        if (CreateNew)
-        {
-            if (Entry.empty())
-                continue;
-        }
-        else
-        {
-            if (!Entry.updated)
-                continue;
-        }
+        if (Entry.empty())
+            continue;
 
         void *pv = NULL;
         DWORD size = 0;
