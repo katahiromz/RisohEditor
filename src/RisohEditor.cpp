@@ -4982,8 +4982,16 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (pnmhdr->hwndFrom == m_hTreeView)
         {
-            if (HIWORD(lParam) == I_LANG)
+            switch (HIWORD(lParam))
             {
+            case I_LANG:
+                OnEdit(hwnd);
+                if (m_settings.bGuiByDblClick)
+                {
+                    OnGuiEdit(hwnd);
+                }
+                return 1;
+            case I_STRING:
                 OnEdit(hwnd);
                 if (m_settings.bGuiByDblClick)
                 {
