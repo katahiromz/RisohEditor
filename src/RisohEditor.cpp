@@ -548,7 +548,6 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
             k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
-            assert(0);
             return NULL;
         }
         ResEntry& IconEntry = Entries[k];
@@ -582,7 +581,6 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
             k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
-            assert(0);
             DeleteObject(hbm);
             return NULL;
         }
@@ -642,7 +640,6 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
             k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
-            assert(0);
             return NULL;
         }
         ResEntry& CursorEntry = Entries[k];
