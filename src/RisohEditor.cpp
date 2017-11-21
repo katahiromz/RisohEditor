@@ -543,9 +543,9 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             assert(0);
@@ -577,9 +577,9 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             assert(0);
@@ -637,9 +637,9 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             assert(0);
@@ -675,9 +675,9 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang);
+            INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang, FALSE);
             if (k == -1)
-                k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF);
+                k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
             if (k == -1)
             {
                 assert(0);
@@ -1047,7 +1047,7 @@ std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& d
         WORD xHotSpot = 0;
         WORD yHotSpot = 0;
 
-        INT k = Res_Find(Entries, RT_CURSOR, nID, 0xFFFF);
+        INT k = Res_Find(Entries, RT_CURSOR, nID, 0xFFFF, FALSE);
         if (k != -1)
         {
             const ResEntry& CursorEntry = Entries[k];
@@ -2194,8 +2194,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
+		WORD lang = Entry.lang;
         ResEntries found;
-        Res_Search(found, m_Entries, RT_STRING, (WORD)0, Entry.lang);
+        Res_Search(found, m_Entries, RT_STRING, WORD(0), lang);
 
         StringRes str_res;
         ResEntries::iterator it, end = found.end();
@@ -2215,13 +2216,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (nID == IDOK)
         {
             std::wstring WideText = str_res.Dump(m_db);
-            ::SetWindowTextW(m_hSrcEdit, WideText.c_str());
-
             if (CompileParts(hwnd, WideText))
             {
+				ResEntry selection(RT_STRING, WORD(0), lang);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, Entry);
-                SelectTV(hwnd, lParam, FALSE);
+				TV_SelectEntry(m_hTreeView, m_Entries, selection);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -3175,7 +3174,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
     else if (HIWORD(lParam) == I_STRING)
     {
-        ResEntry& entry = m_Entries[i];
+        ResEntry entry = m_Entries[i];
 
         Res_DeleteNames(m_Entries, RT_STRING, entry.lang);
 

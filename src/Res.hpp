@@ -198,7 +198,7 @@ inline INT
 Res_Find(const ResEntries& Entries,
          const MIdOrString& Type, 
          const MIdOrString& Name,
-         WORD Lang)
+         WORD Lang, BOOL bEmptyOK)
 {
     size_t i, count = Entries.size();
     for (i = 0; i < count; ++i)
@@ -210,7 +210,7 @@ Res_Find(const ResEntries& Entries,
             continue;
         if (Lang != 0xFFFF && entry.lang != Lang)
             continue;
-        if (entry.empty())
+        if (entry.empty() && !bEmptyOK)
             continue;
         return INT(i);
     }
@@ -253,9 +253,9 @@ Res_Intersect(const ResEntries& entries1, const ResEntries& entries2)
 }
 
 inline INT
-Res_Find(const ResEntries& Entries, const ResEntry& Entry)
+Res_Find(const ResEntries& Entries, const ResEntry& Entry, BOOL bEmptyOK)
 {
-    return Res_Find(Entries, Entry.type, Entry.name, Entry.lang);
+    return Res_Find(Entries, Entry.type, Entry.name, Entry.lang, bEmptyOK);
 }
 
 inline void
@@ -349,10 +349,10 @@ inline BOOL
 Res_AddEntry(ResEntries& Entries, const ResEntry& Entry,
              BOOL Replace = FALSE)
 {
-    INT iEntry = Res_Find(Entries, Entry);
+    INT iEntry = Res_Find(Entries, Entry, TRUE);
     if (iEntry != -1)
     {
-        if (!Replace)
+        if (!Replace && !Entries[iEntry].empty())
         {
             return FALSE;
         }
@@ -398,7 +398,7 @@ Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
     DWORD i, Count = dir.idCount;
     for (i = 0; i < Count; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, DirEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_ICON, DirEntries[i].nID, Entry.lang, TRUE);
         Entries[k].clear_data();
     }
 
@@ -427,7 +427,7 @@ Res_DeleteGroupCursor(ResEntries& Entries, ResEntry& Entry)
     DWORD i, Count = dir.idCount;
     for (i = 0; i < Count; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, DirEntries[i].nID, Entry.lang);
+        INT k = Res_Find(Entries, RT_CURSOR, DirEntries[i].nID, Entry.lang, TRUE);
         Entries[k].clear_data();
     }
 
@@ -442,7 +442,7 @@ Res_DeleteEntries(ResEntries& Entries, const MIdOrString& Type,
     BOOL bFound = FALSE;
     for (;;)
     {
-        INT iEntry = Res_Find(Entries, Type, Name, Lang);
+        INT iEntry = Res_Find(Entries, Type, Name, Lang, FALSE);
         if (iEntry == -1)
             break;
 
@@ -1116,10 +1116,10 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
     for (WORD i = 0; i < dir.idCount; ++i)
     {
         INT k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID,
-                         GroupIconEntry.lang);
+                         GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
@@ -1158,10 +1158,10 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
     for (WORD i = 0; i < dir.idCount; ++i)
     {
         INT k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID,
-                         GroupIconEntry.lang);
+                         GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
@@ -1262,10 +1262,10 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
     for (WORD i = 0; i < dir.idCount; ++i)
     {
         INT k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID,
-                         GroupCursorEntry.lang);
+                         GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
@@ -1307,10 +1307,10 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
     for (WORD i = 0; i < dir.idCount; ++i)
     {
         INT k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID,
-                         GroupCursorEntry.lang);
+                         GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF);
+            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
@@ -1424,7 +1424,7 @@ Res_DeleteNames(ResEntries& entries, const MIdOrString& type, WORD lang)
     INT k;
     for (;;)
     {
-        k = Res_Find(entries, type, (WORD)0, lang);
+        k = Res_Find(entries, type, (WORD)0, lang, FALSE);
         if (k == -1)
             break;
 

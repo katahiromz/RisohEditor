@@ -81,7 +81,7 @@ public:
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, RT_BITMAP, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, RT_BITMAP, Name, Lang, FALSE);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);

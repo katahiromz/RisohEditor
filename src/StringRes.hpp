@@ -61,7 +61,7 @@ public:
     BOOL SaveToStream(MByteStreamEx& stream, WORD wName)
     {
         WORD first, last;
-        GetRange(wName, first, last);
+        GetIdRange(wName, first, last);
 
         for (WORD i = first; i <= last; ++i)
         {
@@ -83,7 +83,7 @@ public:
         ret += L"{\r\n";
 
         WORD first, last;
-        GetRange(wName, first, last);
+        GetIdRange(wName, first, last);
         for (WORD i = first; i <= last; ++i)
         {
             if (m_map[i].empty())
@@ -150,15 +150,15 @@ public:
         return m_map;
     }
 
-protected:
-    WORD        m_wName;
-    map_type    m_map;
-
-    void GetRange(WORD Name, WORD& first, WORD& last) const
+    void GetIdRange(WORD Name, WORD& first, WORD& last) const
     {
         first = (Name - 1) * 16;
         last = first + 16 - 1;
     }
+
+protected:
+    WORD        m_wName;
+    map_type    m_map;
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -143,7 +143,7 @@ public:
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, Type, Name, Lang);
+        INT iEntry = Res_Find(m_Entries, Type, Name, Lang, FALSE);
         if (iEntry != -1)
         {
             if (File.empty() && Res_HasSample(Type))
