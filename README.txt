@@ -55,7 +55,7 @@ RisohEditor by katahiromz
         Flexible adjustment of dialog size.
         I made it possible to align with the grid.
         I tweaked the background dots of the dialog.
-    2017.11.21 ver.1.2
+    2017.11.21 ver.1.2 ver.1.3
         Fixed string table edit.
 
 /////////////////////////////////////////////////////
