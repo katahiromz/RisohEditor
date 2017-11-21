@@ -14,49 +14,6 @@ RisohEditor by katahiromz
 [WARNING!]
     Please don't install in "C:\Program Files" or "C:\Program Files (x86)".
     Because the resource compiler hates spaces in the file path.
-[HISTORY]
-    2017.08.31 ver.0.6
-        First release.
-    2017.09.03 ver.0.7
-        Kill memory leaks.
-        Save the position of "Edit Dialog" Window.
-        Select All text by Ctrl+A.
-        Support of Find/Replace Text.
-        Fix the macro parser.
-        Open README/READMEJP.txt from "Help" menu.
-        The background of "Edit Dialog" displays dots.
-        Upgrade "cpp.exe" to version 7.1.0.
-        Upgrade "windres.exe" to version 2.28.
-        Support of loading window class libraries.
-    2017.09.10 ver.0.8
-        Use DLL file "gdiplus.dll".
-        Support GIF/PNG/JPEG/TIFF/AVI/WMF/EMF.
-        Correct display of icon information.
-        Correct dialog information.
-        Hide the dialog when the user delete the dialog resource.
-    2017.09.16 ver.0.9
-        Add installer.
-        Enrich the tool bar.
-        Enable to resume the window maximized status.
-        Fix interpretation of IDs.
-        Fix the prefix of help IDs from "HELPID_" to "HID_".
-    2017.09.25 ver.1.0
-        Improvement of many UI.
-        We strictly confirmed whether compilation is necessary.
-        When heavy processing, hourglass is displayed.
-        It became strong against invalid data.
-        Error display at loading is always done.
-        Fixed manifest.
-        Supports BS_PUSHBOX style.
-        I brought the version information dialog to the center.
-    2017.11.18
-        When dialog resource is compiled, let the dialog displayed again if necessary.
-        Fixed handling of menu character string.
-        Flexible adjustment of dialog size.
-        I made it possible to align with the grid.
-        I tweaked the background dots of the dialog.
-    2017.11.21 ver.1.2 ver.1.3
-        Fixed string table edit.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
