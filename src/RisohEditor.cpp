@@ -2194,7 +2194,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
-		WORD lang = Entry.lang;
+        WORD lang = Entry.lang;
         ResEntries found;
         Res_Search(found, m_Entries, RT_STRING, WORD(0), lang);
 
@@ -2218,9 +2218,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             std::wstring WideText = str_res.Dump(m_db);
             if (CompileParts(hwnd, WideText))
             {
-				ResEntry selection(RT_STRING, WORD(0), lang);
+                ResEntry selection(RT_STRING, WORD(0), lang);
                 TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-				TV_SelectEntry(m_hTreeView, m_Entries, selection);
+                TV_SelectEntry(m_hTreeView, m_Entries, selection);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
