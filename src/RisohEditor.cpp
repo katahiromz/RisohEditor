@@ -2043,15 +2043,19 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     if (hItem == NULL)
         return;
 
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    WORD i = LOWORD(lParam);
+    if (i >= m_Entries.size())
+        return;
+
+    ResEntry selection = m_Entries[i];
+
     TV_Delete(m_hTreeView, hItem, m_Entries);
     TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
     HidePreview(hwnd);
 
-    if (m_Entries.empty())
-    {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
-        SelectTV(hwnd, lParam, FALSE);
-    }
+    TV_SelectEntry(m_hTreeView, m_Entries, selection);
+    SelectTV(hwnd, lParam, FALSE);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)

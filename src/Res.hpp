@@ -730,24 +730,28 @@ TV_GetSelection(HWND hwnd, ResEntries& selection,
     selection.clear();
 
     LPARAM lParam = TV_GetParam(hwnd, hItem);
+    WORD i = LOWORD(lParam);
+    if (i >= entries.size())
+        return 0;
+
     ResEntry entry;
     switch (HIWORD(lParam))
     {
     case I_TYPE:
-        entry = entries[LOWORD(lParam)];
+        entry = entries[i];
         entry.name.clear();
         entry.lang = 0xFFFF;
         break;
     case I_NAME:
-        entry = entries[LOWORD(lParam)];
+        entry = entries[i];
         entry.lang = 0xFFFF;
         break;
     case I_LANG:
-        entry = entries[LOWORD(lParam)];
+        entry = entries[i];
         break;
     case I_STRING:
     case I_MESSAGE:
-        entry = entries[LOWORD(lParam)];
+        entry = entries[i];
         entry.name.clear();
         break;
     default:
