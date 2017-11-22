@@ -106,7 +106,16 @@ public:
         }
 
         CenterWindowDx();
-        return TRUE;
+
+        if (m_type == 0xFFFF)
+        {
+            SetFocus(GetDlgItem(hwnd, cmb1));
+        }
+        else
+        {
+            SetFocus(GetDlgItem(hwnd, cmb2));
+        }
+        return FALSE;
     }
 
     void OnOK(HWND hwnd)
