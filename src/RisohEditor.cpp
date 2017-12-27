@@ -5665,6 +5665,7 @@ BOOL MMainWnd::StartDx(INT nCmdShow)
         ErrorBoxDx(TEXT("failure of CreateWindow"));
         return FALSE;
     }
+    assert(IsWindow(m_hwnd));
 
     if (m_settings.bResumeWindowPos && m_settings.bMaximized)
     {
@@ -5694,7 +5695,7 @@ INT_PTR MMainWnd::RunDx()
             if (::IsDialogMessage(m_id_list_dlg, &msg))
                 continue;
         }
-        if (m_hAccel)
+        if (m_hAccel && IsWindow(m_hwnd))
         {
             if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
                 continue;
