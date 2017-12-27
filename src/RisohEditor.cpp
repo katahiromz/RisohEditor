@@ -5650,7 +5650,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-BOOL MMainWnd::StartDx(INT nCmdShow)
+BOOL MMainWnd::StartDx()
 {
     MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
     MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
@@ -5673,7 +5673,7 @@ BOOL MMainWnd::StartDx(INT nCmdShow)
     }
     else
     {
-        ShowWindow(m_hwnd, nCmdShow);
+        ShowWindow(m_hwnd, SW_SHOWNORMAL);
     }
     UpdateWindow(m_hwnd);
 
@@ -5752,7 +5752,7 @@ WinMain(HINSTANCE   hInstance,
     {
         MMainWnd app(argc, targv, hInstance);
 
-        if (app.StartDx(nCmdShow))
+        if (app.StartDx())
         {
             // main loop
             ret = INT(app.RunDx());
