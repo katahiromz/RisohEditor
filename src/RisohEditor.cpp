@@ -1388,7 +1388,7 @@ public:
         return TEXT("katahiromz's RisohEditor");
     }
 
-    BOOL StartDx(INT nCmdShow);
+    BOOL StartDx();
     INT_PTR RunDx();
 
     virtual LRESULT CALLBACK
@@ -2367,7 +2367,7 @@ void MMainWnd::OnMove(HWND hwnd, int x, int y)
 {
     RECT rc;
     GetWindowRect(hwnd, &rc);
-    if (!IsZoomed(hwnd))
+    if (!IsZoomed(hwnd) && !IsIconic(hwnd))
     {
         m_settings.nWindowLeft = rc.left;
         m_settings.nWindowTop = rc.top;
@@ -2385,7 +2385,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         m_settings.bMaximized = TRUE;
     }
-    else
+    else if (!IsIconic(hwnd))
     {
         GetWindowRect(hwnd, &rc);
         m_settings.nWindowWidth = rc.right - rc.left;
@@ -5684,12 +5684,8 @@ INT_PTR MMainWnd::RunDx()
 {
     MSG msg;
 
-    for (;;)
+    while (BOOL bGot = ::GetMessage(&msg, NULL, 0, 0))
     {
-        BOOL bGot = ::GetMessage(&msg, NULL, 0, 0);
-        if (!bGot)
-            break;
-
         if (bGot < 0)
         {
             DebugPrintDx(TEXT("Application fatal error: %ld\n"), GetLastError());
