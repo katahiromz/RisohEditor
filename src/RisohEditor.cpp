@@ -5683,8 +5683,20 @@ BOOL MMainWnd::StartDx(INT nCmdShow)
 INT_PTR MMainWnd::RunDx()
 {
     MSG msg;
-    while (::GetMessage(&msg, NULL, 0, 0))
+
+    for (;;)
     {
+        BOOL bGot = ::GetMessage(&msg, NULL, 0, 0);
+        if (!bGot)
+            break;
+
+        if (bGot < 0)
+        {
+            DebugPrintDx(TEXT("Application fatal error: %ld\n"), GetLastError());
+            DebugBreak();
+            return -1;
+        }
+
         if (IsWindow(m_rad_window.m_rad_dialog))
         {
             if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
