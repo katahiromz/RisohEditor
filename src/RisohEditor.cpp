@@ -4049,8 +4049,7 @@ BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
 
     DWORD dwBinType;
     LPCWSTR pch = wcsrchr(ExeFile, L'.');
-    if ((pch && lstrcmpiW(pch, L".res") == 0) ||
-        !GetBinaryType(m_szFile, &dwBinType))
+    if (pch && lstrcmpiW(pch, L".res") == 0)
     {
         return DoSaveResAs(hwnd, ExeFile);
     }
