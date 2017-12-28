@@ -1989,15 +1989,15 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    DWORD dwBinType;
-    if (m_szFile[0] == 0 || !GetBinaryType(m_szFile, &dwBinType))
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+    if (m_szFile[0] == 0 || GetFileAttributesW(m_szFile) == 0xFFFFFFFF)
     {
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"res";
     }
     else
     {
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+        ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = L"exe";
     }
     ofn.lpstrFile = File;
@@ -2007,7 +2007,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
     if (GetSaveFileNameW(&ofn))
     {
-        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+        if (ofn.nFilterIndex == 2)
         {
             if (!DoSaveResAs(hwnd, File))
             {
@@ -4051,13 +4051,6 @@ BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
     if (!CompileIfNecessary(hwnd, TRUE))
         return TRUE;
 
-    DWORD dwBinType;
-    LPCWSTR pch = wcsrchr(ExeFile, L'.');
-    if (pch && lstrcmpiW(pch, L".res") == 0)
-    {
-        return DoSaveResAs(hwnd, ExeFile);
-    }
-
     return DoSaveExeAs(hwnd, ExeFile);
 }
 
@@ -4065,19 +4058,32 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
 {
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
-    BOOL b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
-    BOOL b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_Entries);
-    BOOL b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
-    if (b3)
+    BOOL b1, b2, b3;
+    if (GetFileAttributesW(m_szFile) == 0xFFFFFFFF)
     {
+        b3 = Res_UpdateExe(hwnd, ExeFile, m_Entries);
+        if (b3)
+        {
+            Res_Optimize(m_Entries);
+            SetFilePath(hwnd, ExeFile);
+            return TRUE;
+        }
+    }
+    else
+    {
+        b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
+        b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_Entries);
+        b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
+        if (b3)
+        {
+            DeleteFileW(TempFile);
+            Res_Optimize(m_Entries);
+            SetFilePath(hwnd, ExeFile);
+            return TRUE;
+        }
         DeleteFileW(TempFile);
-        Res_Optimize(m_Entries);
-        SetFilePath(hwnd, ExeFile);
-
-        return TRUE;
     }
 
-    DeleteFileW(TempFile);
     return FALSE;
 }
 
