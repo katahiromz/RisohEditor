@@ -945,7 +945,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
     MStringW Str = szFile;
     mstr_trim(Str);
     lstrcpynW(szFile, Str.c_str(), _countof(szFile));
-    if (::GetFileAttributesW(szFile) == 0xFFFFFFFF)
+    if (::GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
     {
         Edit_SetSel(hEdt1, 0, -1);
         SetFocus(hEdt1);
@@ -1990,7 +1990,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-    if (m_szFile[0] == 0 || GetFileAttributesW(m_szFile) == 0xFFFFFFFF)
+    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
     {
         ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"res";
@@ -4059,7 +4059,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
     BOOL b1, b2, b3;
-    if (GetFileAttributesW(m_szFile) == 0xFFFFFFFF)
+    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
     {
         b3 = Res_UpdateExe(hwnd, ExeFile, m_Entries);
         if (b3)
