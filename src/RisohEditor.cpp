@@ -1881,7 +1881,8 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ofn.lpstrDefExt = L"dll";
     if (GetOpenFileNameW(&ofn))
     {
-        if (!LoadLibraryW(File))
+        if (!LoadLibraryW(File) &&
+            !LoadLibraryExW(File, NULL, LOAD_LIBRARY_AS_DATAFILE))
         {
             ErrorBoxDx(IDS_CANNOTLOAD);
         }
@@ -3578,8 +3579,12 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
     HMODULE hMod = LoadLibraryW(Path);
     if (hMod == NULL)
     {
-        ErrorBoxDx(IDS_CANNOTOPEN);
-        return FALSE;
+        hMod = LoadLibraryExW(Path, NULL, LOAD_LIBRARY_AS_DATAFILE);
+        if (hMod == NULL)
+        {
+            ErrorBoxDx(IDS_CANNOTOPEN);
+            return FALSE;
+        }
     }
 
     m_bLoading = TRUE;
