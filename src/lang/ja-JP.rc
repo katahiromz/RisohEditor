@@ -1,3 +1,19 @@
+// RisohEditor of Japanese translation, Win32API resource editor
+// Copyright (C) 2017 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 // UTF-8
 #pragma code_page(65001)
 
@@ -153,8 +169,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
 STRINGTABLE
 {
-    IDS_APPNAME, "リソーエディタ 1.7 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - リソーエディタ 1.7 by 片山博文MZ"
+    IDS_APPNAME, "リソーエディタ 1.8 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - リソーエディタ 1.8 by 片山博文MZ"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE, "保存できませんでした。"
@@ -180,7 +196,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "ビットマップの置き換えができませんでした。"
     IDS_REPLACEBMP, "ビットマップの置き換え"
     IDS_ERRORCODE, "エラーコード %dが発生しました。"
-    IDS_VERSIONINFO, "リソーエディタ Version 1.7"
+    IDS_VERSIONINFO, "リソーエディタ Version 1.8"
     IDS_ADDRES, "リソースの追加"
     IDS_CANNOTADDRES, "リソースの追加ができませんでした。"
     IDS_CANTADDBMP, "ビットマップの追加ができませんでした。"

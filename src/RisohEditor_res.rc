@@ -1,3 +1,20 @@
+// RisohEditor --- Win32API resource editor
+// Copyright (C) 2017 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//////////////////////////////////////////////////////////////////////////////
+
 #include <windows.h>
 #include <dlgs.h>
 #include "resource.h"
@@ -44,24 +61,11 @@
 }
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     1, 7, 0, 0
-PRODUCTVERSION  1, 7, 0, 0
+FILEVERSION     1, 8, 0, 0
+PRODUCTVERSION  1, 8, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
-    // Japanese
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "041103A4"
-        {
-            VALUE "CompanyName", "片山博文MZ\0"
-            VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "1.7\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017 片山博文MZ. All rights reserved.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "1.7\0"
-        }
-    }
     // English (U.S.)
     BLOCK "StringFileInfo"
     {
@@ -69,23 +73,53 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "1.7\0"
+            VALUE "FileVersion", "1.8\0"
             VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "1.7\0"
+            VALUE "ProductVersion", "1.8\0"
+        }
+    }
+    // Chinese (P.R.C.)
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "080404B0"
+        {
+            VALUE "CompanyName", "片山博文MZ\0"
+            VALUE "FileDescription", "RisohEditor\0"
+            VALUE "FileVersion", "1.8\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 片山博文MZ and 林鸿湘. 版权所有.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "1.8\0"
+        }
+    }
+    // Japanese
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "041103A4"
+        {
+            VALUE "CompanyName", "片山博文MZ\0"
+            VALUE "FileDescription", "リソーエディタ\0"
+            VALUE "FileVersion", "1.8\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 片山博文MZ. All rights reserved.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "1.8\0"
         }
     }
     BLOCK "VarFileInfo"
     {
 #if 1
-        // Japanese
-        VALUE "Translation", 0x0409, 0x04E4
-#else
         // English (U.S.)
+        VALUE "Translation", 0x0409, 0x04E4
+#elif 1
+        // Chinese (C.N.)
+        VALUE "Translation", 0x0804, 0x04B0
+#else
+        // Japanese
         VALUE "Translation", 0x0411, 0x03A4
 #endif
     }
 }
 
 #include "lang\\en-US.rc"
+#include "lang\\ch-CN.rc"
 #include "lang\\ja-JP.rc"

@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName=RisohEditor
-AppVerName=RisohEditor 1.7
+AppVerName=RisohEditor 1.8
 AppPublisher=Katayama Hirofumi MZ
 AppPublisherURL=http://katahiromz.web.fc2.com/
 AppSupportURL=http://katahiromz.web.fc2.com/
@@ -17,7 +17,7 @@ DefaultGroupName=RisohEditor
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=.
-OutputBaseFilename=risoheditor-1.7-setup
+OutputBaseFilename=risoheditor-1.8-setup
 SetupIconFile=src\res\RisohEditor.ico
 Compression=lzma
 SolidCompression=yes
@@ -26,9 +26,9 @@ VersionInfoCompany=Katayama Hirofumi MZ
 VersionInfoCopyright=Copyright (C) 2017 Katayama Hirofumi MZ.
 VersionInfoDescription=Win32API Resource Editor
 VersionInfoProductName=RisohEditor
-VersionInfoProductTextVersion=1.7
-VersionInfoProductVersion=1.7
-VersionInfoVersion=1.7
+VersionInfoProductTextVersion=1.8
+VersionInfoProductVersion=1.8
+VersionInfoVersion=1.8
 
 [Languages]
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
@@ -70,7 +70,7 @@ Name: "{group}\READMEJP.txt"; Filename: "{app}\READMEJP.txt"
 Name: "{group}\LICENSE.txt"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
 Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\RisohEditor 1.7"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
+Name: "{commondesktop}\RisohEditor 1.8"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
