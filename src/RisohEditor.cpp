@@ -1881,8 +1881,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ofn.lpstrDefExt = L"dll";
     if (GetOpenFileNameW(&ofn))
     {
-        if (!LoadLibraryW(File) &&
-            !LoadLibraryExW(File, NULL, LOAD_LIBRARY_AS_DATAFILE))
+        if (!LoadLibraryW(File))
         {
             ErrorBoxDx(IDS_CANNOTLOAD);
         }
