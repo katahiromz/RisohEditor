@@ -1766,6 +1766,7 @@ public:
 
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
+        UpdateRes();
     }
 
     void FitToGrid(POINT *ppt)
