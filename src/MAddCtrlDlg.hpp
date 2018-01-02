@@ -1,7 +1,7 @@
 // MAddCtrlDlg
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Win32API resource editor
-// Copyright (C) 2017 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
