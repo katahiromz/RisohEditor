@@ -922,7 +922,7 @@ public:
     {
         assert(IsWindow(hwnd));
 
-        BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
+        BOOL bMovingSizingOld = m_rad_dialog.m_bMovingSizing;
         m_rad_dialog.m_bMovingSizing = TRUE;
         if (m_rad_dialog)
         {
@@ -940,18 +940,18 @@ public:
 
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
-            m_rad_dialog.m_bMovingSizing = bMovingSizing;
+            m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
             return FALSE;
         }
         assert(IsWindow(m_rad_dialog));
 
         FitToRadDialog();
+        m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
 
         ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);
         UpdateWindow(m_rad_dialog);
 
         SetForegroundWindow(hwnd);
-        m_rad_dialog.m_bMovingSizing = bMovingSizing;
         return TRUE;
     }
 
