@@ -3184,7 +3184,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
             entries[0].name != name ||
             entries[0].lang != entry.lang)
         {
-            msg += MWideToAnsi(LoadStringDx(IDS_RESMISMATCH));
+            msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_RESMISMATCH));
             return FALSE;
         }
         entry = entries[0];
@@ -3200,7 +3200,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
         {
             if (!Res_AddEntry(m_Entries, entries[m], TRUE))
             {
-                msg += MWideToAnsi(LoadStringDx(IDS_CANNOTADDRES));
+                msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
                 return FALSE;
             }
         }
@@ -3229,7 +3229,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
     ResEntry& entry = m_Entries[i];
 
     MStringA TextUtf8;
-    TextUtf8 = MWideToUtf8(WideText);
+    TextUtf8 = MWideToAnsi(CP_UTF8, WideText);
     if (HIWORD(lParam) == I_LANG)
     {
         if (Res_IsPlainText(entry.type))
@@ -3244,7 +3244,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
             else
             {
                 MStringA TextAnsi;
-                TextAnsi = MWideToAnsi(WideText);
+                TextAnsi = MWideToAnsi(CP_ACP, WideText);
                 entry.data.assign(TextAnsi.begin(), TextAnsi.end());
             }
             SelectTV(hwnd, lParam, FALSE);
@@ -3272,7 +3272,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#include <dlgs.h>\r\n");
     if (m_szResourceH[0])
-        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(m_szResourceH).c_str());
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001)\r\n");
@@ -3300,7 +3300,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
 
     std::vector<BYTE> output;
     MStringA msg;
-    msg = MWideToAnsi(LoadStringDx(IDS_CANNOTSTARTUP));
+    msg = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
     BOOL Success = FALSE;
@@ -4463,8 +4463,8 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     id_map_type::iterator it, end = m_settings.id_map.end();
     for (it = m_settings.id_map.begin(); it != end; ++it)
     {
-        MStringW str1 = MAnsiToWide(it->first).c_str();
-        MStringW str2 = MAnsiToWide(it->second).c_str();
+        MStringW str1 = MAnsiToWide(CP_ACP, it->first).c_str();
+        MStringW str2 = MAnsiToWide(CP_ACP, it->second).c_str();
         DWORD value2 = wcstol(str2.c_str(), NULL, 0);
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
@@ -4518,7 +4518,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     WCHAR szFile[MAX_PATH];
     lstrcpyW(szFile, pszFile);
     ReplaceBackslash(szFile);
-    wsprintfA(buf, "#include \"%s\"\n", MTextToAnsi(szFile).c_str());
+    wsprintfA(buf, "#include \"%s\"\n", MTextToAnsi(CP_ACP, szFile).c_str());
     file1.WriteSzA(buf, &cbWritten);
     file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
     for (size_t i = 0; i < macros.size(); ++i)
@@ -4649,9 +4649,9 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         for (it = m_settings.removed_ids.begin(); it != end; ++it)
         {
             str += TEXT("#define ");
-            str += MAnsiToText(it->first).c_str();
+            str += MAnsiToText(CP_ACP, it->first).c_str();
             str += TEXT(" ");
-            str += MAnsiToText(it->second).c_str();
+            str += MAnsiToText(CP_ACP, it->second).c_str();
             str += TEXT("\r\n");
         }
         str += TEXT("\r\n");
@@ -4665,9 +4665,9 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         for (it = m_settings.added_ids.begin(); it != end; ++it)
         {
             str += TEXT("#define ");
-            str += MAnsiToText(it->first).c_str();
+            str += MAnsiToText(CP_ACP, it->first).c_str();
             str += TEXT(" ");
-            str += MAnsiToText(it->second).c_str();
+            str += MAnsiToText(CP_ACP, it->second).c_str();
             str += TEXT("\r\n");
         }
         str += TEXT("\r\n");

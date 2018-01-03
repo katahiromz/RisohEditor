@@ -81,7 +81,7 @@ public:
         }
         m_str2 = str3;
 
-        MStringA str1a = MTextToAnsi(str1).c_str();
+        MStringA str1a = MTextToAnsi(CP_ACP, str1).c_str();
         if (m_settings.id_map.find(str1a) != m_settings.id_map.end())
         {
             HWND hEdt1 = GetDlgItem(hwnd, edt1);

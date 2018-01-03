@@ -96,7 +96,7 @@ public:
                     if (data.size())
                     {
                         MStringA str((const char *)&data[0], data.size());
-                        MStringW wstr = MAnsiToWide(str).c_str();
+                        MStringW wstr = MAnsiToWide(CP_ACP, str).c_str();
                         m_map[k] = wstr;
                     }
                     else
@@ -157,7 +157,7 @@ public:
 
                     if (mstr_is_ascii(wstr))
                     {
-                        MWideToAnsi astr(wstr);
+                        MWideToAnsi astr(CP_ACP, wstr);
 
                         header.Flags = 0;
                         if (!stream.WriteRaw(header))

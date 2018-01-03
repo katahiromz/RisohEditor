@@ -132,7 +132,7 @@ public:
             {
                 std::string str;
                 str += (char)it->wAscii;
-                ret += MAnsiToWide(mstr_quote(str));
+                ret += MAnsiToWide(CP_ACP, mstr_quote(str));
             }
             ret += L", ";
             if (0)

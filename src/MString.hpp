@@ -403,7 +403,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
                 pType->bHasBOM = true;
             }
             std::string str(&pch[3], len - 3);
-            ret = MUtf8ToWide(str);
+            ret = MAnsiToWide(CP_UTF8, str);
         }
         else if (mstr_is_text_ascii((const char *)bin, len))
         {
@@ -414,7 +414,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
                 pType->bHasBOM = false;
             }
             std::string str(pch, len);
-            ret = MAnsiToWide(str);
+            ret = MAnsiToWide(CP_ACP, str);
         }
         else if (mstr_is_text_utf8((const char *)bin, len))
         {
@@ -424,7 +424,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
                 pType->nEncoding = MTENC_UTF8;
                 pType->bHasBOM = false;
             }
-            ret = MUtf8ToWide(pch, INT(len));
+            ret = MAnsiToWide(CP_UTF8, pch, INT(len));
         }
         else if (mstr_is_text_unicode(bin, int(len)))
         {
@@ -445,7 +445,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
                 pType->bHasBOM = false;
             }
             std::string str(pch, len);
-            ret = MAnsiToWide(str);
+            ret = MAnsiToWide(CP_ACP, str);
         }
     }
 
@@ -519,7 +519,7 @@ mbin_from_str(const std::wstring& str, const MTextType& type)
     case MTENC_ASCII:
     case MTENC_ANSI:
     default:
-        ret += MWideToAnsi(str2);
+        ret += MWideToAnsi(CP_ACP, str2);
         break;
     case MTENC_UNICODE_LE:
         if (type.bHasBOM)
@@ -541,7 +541,7 @@ mbin_from_str(const std::wstring& str, const MTextType& type)
         {
             ret += "\xEF\xBB\xBF";
         }
-        ret += MWideToUtf8(str2);
+        ret += MWideToAnsi(CP_UTF8, str2);
         break;
     }
 

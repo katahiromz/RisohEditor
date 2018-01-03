@@ -247,7 +247,7 @@ public:
         while (fgets(buf, MAX_PATH, fp))
         {
             MStringW line;
-            line = MAnsiToWide(buf);
+            line = MAnsiToWide(CP_ACP, buf);
 
             mstr_replace_all(line, L" |", L"|");
             mstr_replace_all(line, L"| ", L"|");

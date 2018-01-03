@@ -139,9 +139,9 @@ public:
         {
             LV_ITEM item;
 
-            MString text1 = MAnsiToText(it->first.c_str()).c_str();
+            MString text1 = MAnsiToText(CP_ACP, it->first.c_str()).c_str();
             MString text2 = GetAssoc(text1);
-            MString text3 = MAnsiToText(it->second.c_str()).c_str();
+            MString text3 = MAnsiToText(CP_ACP, it->second.c_str()).c_str();
             if (text2.empty())
                 continue;
 
@@ -265,8 +265,8 @@ public:
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
-                    MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
-                    MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
+                    MStringA stra1 = MTextToAnsi(CP_ACP, dialog.m_str1).c_str();
+                    MStringA stra2 = MTextToAnsi(CP_ACP, dialog.m_str2).c_str();
                     m_settings.id_map.insert(std::make_pair(stra1, stra2));
 
                     m_settings.added_ids.insert(std::make_pair(stra1, stra2));
@@ -301,10 +301,10 @@ public:
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
-                    MStringA stra1old = MTextToAnsi(str1).c_str();
-                    MStringA stra2old = MTextToAnsi(str2).c_str();
-                    MStringA stra1 = MTextToAnsi(dialog.m_str1).c_str();
-                    MStringA stra2 = MTextToAnsi(dialog.m_str2).c_str();
+                    MStringA stra1old = MTextToAnsi(CP_ACP, str1).c_str();
+                    MStringA stra2old = MTextToAnsi(CP_ACP, str2).c_str();
+                    MStringA stra1 = MTextToAnsi(CP_ACP, dialog.m_str1).c_str();
+                    MStringA stra2 = MTextToAnsi(CP_ACP, dialog.m_str2).c_str();
                     m_settings.id_map.erase(stra1old);
                     m_settings.id_map.insert(std::make_pair(stra1, stra2));
                     m_settings.added_ids.erase(stra1old);
@@ -326,9 +326,9 @@ public:
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
                 MString str1 = szText;
-                MStringA astr1 = MTextToAnsi(szText).c_str();
+                MStringA astr1 = MTextToAnsi(CP_ACP, szText).c_str();
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
-                MStringA astr2 = MTextToAnsi(szText).c_str();
+                MStringA astr2 = MTextToAnsi(CP_ACP, szText).c_str();
 
                 ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
                 ConstantsDB::TableType::iterator it, end = table.end();
