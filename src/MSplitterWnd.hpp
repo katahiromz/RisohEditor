@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSPLITTERWND_HPP_
-#define MZC4_MSPLITTERWND_HPP_      8   /* Version 8 */
+#define MZC4_MSPLITTERWND_HPP_      9   /* Version 9 */
 
 class MSplitterWnd;
 
@@ -24,6 +24,7 @@ class MSplitterWnd : public MWindowBase
 {
 public:
     enum { m_cxyBorder = 4, m_cxyMin = 8 };
+    enum { NOTIFY_CHANGED = 0x2934 };
 
     MSplitterWnd() : m_iDraggingBorder(-1), m_nPaneCount(0)
     {
@@ -236,6 +237,13 @@ public:
                 SWP_NOZORDER | SWP_NOACTIVATE);
         }
         EndDeferWindowPos(hDWP);
+
+        UINT nID = GetDlgCtrlID(m_hwnd);
+        NMHDR notify = { 0 };
+        notify.hwndFrom = m_hwnd;
+        notify.idFrom = nID;
+        notify.code = NOTIFY_CHANGED;
+        FORWARD_WM_NOTIFY(GetParent(m_hwnd), nID, &notify, SendMessage);
     }
 
     virtual LRESULT CALLBACK

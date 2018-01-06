@@ -5008,7 +5008,25 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
-    if (pnmhdr->code == NM_DBLCLK)
+    if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
+    {
+        if (pnmhdr->hwndFrom == m_splitter1)
+        {
+            if (m_splitter1.GetPaneCount() >= 1)
+                m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
+        }
+        else if (pnmhdr->hwndFrom == m_splitter2)
+        {
+            if (m_splitter2.GetPaneCount() >= 2)
+                m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+        }
+        else if (pnmhdr->hwndFrom == m_splitter3)
+        {
+            if (m_splitter3.GetPaneCount() >= 2)
+                m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+        }
+    }
+    else if (pnmhdr->code == NM_DBLCLK)
     {
         if (pnmhdr->hwndFrom == m_hTreeView)
         {
