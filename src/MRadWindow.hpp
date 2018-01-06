@@ -1244,11 +1244,9 @@ public:
     LRESULT OnDlgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         RECT rc;
-        GetClientRect(m_rad_dialog, &rc);
+        GetWindowRect(m_rad_dialog, &rc);
         ClientToDialog(&rc);
 
-        m_dialog_res.m_pt.x = rc.left;
-        m_dialog_res.m_pt.y = rc.top;
         m_dialog_res.m_siz.cx = rc.right - rc.left;
         m_dialog_res.m_siz.cy = rc.bottom - rc.top;
         UpdateRes();
@@ -1753,19 +1751,19 @@ public:
 
         m_dialog_res.Update();
 
-        INT xDialogBaseUnit, yDialogBaseUnit;
-        if (!GetBaseUnits(xDialogBaseUnit, yDialogBaseUnit))
-            return;
-
         RECT rc;
+
         GetClientRect(m_hwnd, &rc);
         SIZE siz = SizeFromRectDx(&rc);
         m_rad_dialog.m_bMovingSizing = TRUE;
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
         m_rad_dialog.m_bMovingSizing = FALSE;
 
+        GetClientRect(m_rad_dialog, &rc);
+        siz = SizeFromRectDx(&rc);
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
+
         UpdateRes();
     }
 
