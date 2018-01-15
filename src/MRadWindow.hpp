@@ -299,10 +299,21 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONDOWN, OnNCRButtonDown);
             HANDLE_MSG(hwnd, WM_NCRBUTTONDBLCLK, OnNCRButtonDown);
             HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
+            HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
             case WM_MOVING: case WM_SIZING:
                 return 0;
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
+    {
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+
+        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+
+        return TRUE;
     }
 
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
