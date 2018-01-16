@@ -71,11 +71,24 @@ public:
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
+    MToolBarCtrl            m_hTB;
+    HIMAGELIST              m_himlControls;
+    std::vector<std::wstring> m_vecControls;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
           m_bUpdating(FALSE), m_indeces(indeces), m_db(db)
     {
+        m_himlControls = NULL;
+    }
+
+    ~MCtrlPropDlg()
+    {
+        if (m_himlControls)
+        {
+            ImageList_Destroy(m_himlControls);
+            m_himlControls = NULL;
+        }
     }
 
     void GetInfo()
@@ -327,8 +340,42 @@ public:
         m_bUpdating = FALSE;
     }
 
+    void InitToolBar()
+    {
+        std::vector<TBBUTTON> buttons;
+
+        ConstantsDB::TableType table = m_db.GetTable(TEXT("CONTROLS.ICONS"));
+        size_t count = table.size();
+        INT nCount = INT(count);
+
+        m_vecControls.clear();
+        if (m_himlControls)
+        {
+            ImageList_Destroy(m_himlControls);
+            m_himlControls = NULL;
+        }
+        m_himlControls = ImageList_LoadBitmap(
+            GetModuleHandle(NULL), MAKEINTRESOURCE(2), 16, 0, RGB(255, 0, 255));
+        m_hTB.SetImageList(m_himlControls);
+
+        buttons.resize(nCount);
+        for (INT i = 0; i < nCount; ++i)
+        {
+            buttons[i].iBitmap = i;
+            buttons[i].idCommand = i + 1000;
+            buttons[i].fsState = TBSTATE_ENABLED;
+            buttons[i].fsStyle = TBSTYLE_BUTTON;
+            buttons[i].iString = 0;
+            m_vecControls.push_back(table[i].name);
+        }
+        m_hTB.AddButtons(nCount, &buttons[0]);
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        SubclassChildDx(m_hTB, ctl1);
+        InitToolBar();
+
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
 
@@ -647,7 +694,31 @@ public:
                 OnEdt7(hwnd);
             }
             break;
+		default:
+			if (size_t(id - 1000) < m_vecControls.size())
+			{
+				SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
+                MString text = GetDlgItemText(hwnd, cmb1);
+                mstr_trim(text);
+                InitTables(text.c_str());
+                UpdateClass(hwnd, hLst1, text);
+			}
+			break;
         }
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+    {
+        if (pnmhdr->code == TTN_NEEDTEXT)
+        {
+            TOOLTIPTEXT *ttt = (TOOLTIPTEXT *)pnmhdr;
+            INT nID = pnmhdr->idFrom - 1000;
+            if (size_t(nID) < m_vecControls.size())
+            {
+                lstrcpyW(ttt->szText, m_vecControls[nID].c_str());
+            }
+        }
+        return 0;
     }
 
     virtual INT_PTR CALLBACK
@@ -657,6 +728,7 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         }
         return DefaultProcDx();
     }
