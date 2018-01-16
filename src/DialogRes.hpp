@@ -411,7 +411,7 @@ struct DialogItem
         {
             DWORD value = m_Style;
             DWORD def_value = WS_CHILD | WS_VISIBLE;
-            ret += db.DumpBitField(cls.c_str(), L"STYLE", value, def_value);
+            ret += db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, def_value);
         }
 
         ret += L", ";
@@ -426,7 +426,7 @@ struct DialogItem
         {
             ret += L", ";
             DWORD value = m_ExStyle;
-            ret += db.DumpBitField(L"EXSTYLE", L"", value);
+            ret += db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
         }
         if (m_HelpID)
         {
@@ -469,13 +469,13 @@ struct DialogItem
                 value &= ~BS_TYPEMASK;
                 value |= BS_PUSHBOX;
             }
-            ret += db.DumpBitField(cls.c_str(), L"STYLE", value, DefStyle);
+            ret += db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, DefStyle);
         }
         if (m_ExStyle || m_HelpID)
         {
             ret += L", ";
             DWORD value = m_ExStyle;
-            ret += db.DumpBitField(L"EXSTYLE", L"", value);
+            ret += db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
         }
         if (m_HelpID)
         {
@@ -808,6 +808,11 @@ struct DialogRes
 
                 str = mstr_hex(value);
             }
+            else
+            {
+                if (str.empty())
+                    str += L"0";
+            }
             ret += L"STYLE ";
             ret += str;
             ret += L"\r\n";
@@ -823,6 +828,11 @@ struct DialogRes
                     str += L" | ";
 
                 str = mstr_hex(value);
+            }
+            else
+            {
+                if (str.empty())
+                    str += L"0";
             }
             ret += L"EXSTYLE ";
             ret += str;

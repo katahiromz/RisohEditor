@@ -511,13 +511,13 @@ public:
                 {
                     ret += L", ";
                     DWORD value = it->dwType;
-                    ret += db.DumpBitField(L"MFT_", value);
+                    ret += db.DumpBitFieldOrZero(L"MFT_", value);
                 }
                 if (it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
                     DWORD value = it->dwState;
-                    ret += db.DumpBitField(L"MFS_", value);
+                    ret += db.DumpBitFieldOrZero(L"MFS_", value);
                 }
                 if (it->dwHelpId)
                 {
@@ -562,13 +562,13 @@ public:
                     {
                         ret += L", ";
                         DWORD value = it->dwType;
-                        ret += db.DumpBitField(L"MFT_", value);
+                        ret += db.DumpBitFieldOrZero(L"MFT_", value);
                     }
                     if (it->dwState)
                     {
                         ret += L", ";
                         DWORD value = it->dwState;
-                        ret += db.DumpBitField(L"MFS_", value);
+                        ret += db.DumpBitFieldOrZero(L"MFS_", value);
                     }
                     ret += L"\r\n";
                 }

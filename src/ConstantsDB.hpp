@@ -365,10 +365,15 @@ public:
             ret += str3;
         }
 
+        return ret;
+    }
+
+    StringType DumpBitFieldOrZero(CategoryType cat1, ValueType& value,
+                                  ValueType default_value = 0) const
+    {
+        StringType ret = DumpBitField(cat1, value, default_value);
         if (ret.empty())
-        {
             ret = L"0";
-        }
         return ret;
     }
 
@@ -418,10 +423,15 @@ public:
             ret += str3;
         }
 
+        return ret;
+    }
+
+    StringType DumpBitFieldOrZero(CategoryType cat1, CategoryType cat2,
+                                  ValueType& value, ValueType default_value = 0) const
+    {
+        StringType ret = DumpBitField(cat1, cat2, value, default_value);
         if (ret.empty())
-        {
             ret = L"0";
-        }
         return ret;
     }
 
