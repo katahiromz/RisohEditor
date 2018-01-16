@@ -111,6 +111,19 @@ inline BOOL IDToPredefClass(WORD w, std::wstring& name)
     return FALSE;
 }
 
+inline void FixClassName(const ConstantsDB& db, std::wstring& cls)
+{
+    ConstantsDB::TableType table = db.GetTable(L"CONTROL.CLASSES");
+    for (size_t i = 0; i < table.size(); ++i)
+    {
+        if (lstrcmpiW(table[i].name.c_str(), cls.c_str()) == 0)
+        {
+            cls = table[i].name;
+            break;
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct DialogItem
@@ -404,7 +417,8 @@ struct DialogItem
         else
         {
             cls = m_Class.str();
-            ret += m_Class.quoted_wstr();
+            FixClassName(db, cls);
+            ret += mstr_quote(cls);
         }
 
         ret += L", ";
