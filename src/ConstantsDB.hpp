@@ -364,6 +364,11 @@ public:
                 ret += L" | ";
             ret += str3;
         }
+
+        if (ret.empty())
+        {
+            ret = L"0";
+        }
         return ret;
     }
 
@@ -411,6 +416,11 @@ public:
             else if (!ret.empty() && !str3.empty())
                 ret += L" | ";
             ret += str3;
+        }
+
+        if (ret.empty())
+        {
+            ret = L"0";
         }
         return ret;
     }

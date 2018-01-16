@@ -308,12 +308,19 @@ public:
 
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
     {
-        RECT rc;
-        GetClientRect(hwnd, &rc);
+        WCHAR szClass[64];
+        GetClassNameW(hwnd, szClass, 64);
+        if (lstrcmpiW(szClass, TOOLBARCLASSNAMEW) == 0 ||
+            lstrcmpiW(szClass, REBARCLASSNAMEW) == 0 ||
+            lstrcmpiW(szClass, WC_PAGESCROLLERW) == 0)
+        {
+            RECT rc;
+            GetClientRect(hwnd, &rc);
+            FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+            return TRUE;
+        }
 
-        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
-
-        return TRUE;
+        return DefaultProcDx();
     }
 
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
