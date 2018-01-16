@@ -24,6 +24,7 @@
 #include "DialogRes.hpp"
 #include "MString.hpp"
 #include "resource.h"
+#include "MToolBarCtrl.hpp"
 
 class MAddCtrlDlg;
 
