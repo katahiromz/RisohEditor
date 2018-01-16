@@ -1239,10 +1239,7 @@ public:
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
-        WCHAR szClass[64];
-        GetClassNameW(hwndCtrl, szClass, _countof(szClass));
-        if (lstrcmpiW(szClass, L"BUTTON") == 0)
-            InvalidateRect(m_rad_dialog, NULL, TRUE);
+        InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
@@ -1284,9 +1281,7 @@ public:
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
-        GetClassNameW(hwndCtrl, szClass, _countof(szClass));
-        if (lstrcmpiW(szClass, L"BUTTON") == 0)
-            InvalidateRect(m_rad_dialog, NULL, TRUE);
+        InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
