@@ -749,6 +749,19 @@ public:
 
         pCtrl->EndSubclass();
 
+        WCHAR szClass[64];
+        GetClassNameW(hCtrl, szClass, _countof(szClass));
+        if (lstrcmpiW(szClass, WC_IPADDRESSW) == 0)
+        {
+            hCtrl = GetTopWindow(hCtrl);
+            while (hCtrl)
+            {
+                ShowWindow(hCtrl, SW_HIDE);
+                hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
+            }
+            return;
+        }
+
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
 

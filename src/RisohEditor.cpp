@@ -5780,6 +5780,11 @@ WinMain(HINSTANCE   hInstance,
     InitCommonControls();
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
+    INITCOMMONCONTROLSEX iccx;
+    iccx.dwSize = sizeof(iccx);
+    iccx.dwICC = ICC_INTERNET_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_NATIVEFNTCTL_CLASS;
+    InitCommonControlsEx(&iccx);
+
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
     ULONG_PTR gp_token;
