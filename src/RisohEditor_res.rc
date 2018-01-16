@@ -36,6 +36,8 @@
 1 ANICURSOR "res\\bounce.ani"
 
 1 BITMAP "res\\bmp.bmp"
+2 BITMAP "res\\controls.bmp"
+
 1 WAVE "res\\wa.wav"
 1 GIF "res\\anime.gif"
 1 PNG "res\\RisohEditor.png"
