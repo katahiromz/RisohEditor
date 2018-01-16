@@ -796,6 +796,36 @@ public:
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
+    void GroupBoxDown(HWND hwnd)
+    {
+        HWND hwndFirstGroupBox = NULL;
+    retry:
+        for (HWND hCtrl = GetTopWindow(hwnd);
+             hCtrl;
+             hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
+        {
+            WCHAR szClass[64];
+            GetClassNameW(hCtrl, szClass, _countof(szClass));
+            if (lstrcmpiW(szClass, L"BUTTON") == 0)
+            {
+                if ((GetWindowStyle(hCtrl) & BS_TYPEMASK) == BS_GROUPBOX)
+                {
+                    if (hwndFirstGroupBox == NULL)
+                    {
+                        hwndFirstGroupBox = hCtrl;
+                    }
+                    else if (hwndFirstGroupBox == hCtrl)
+                    {
+                        break;
+                    }
+                    SetWindowPos(hCtrl, HWND_BOTTOM, 0, 0, 0, 0,
+                        SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
+                    goto retry;
+                }
+            }
+        }
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         OnSysColorChange(hwnd);
@@ -813,6 +843,8 @@ public:
             ShowHideLabels(TRUE);
 
         SubclassDx(hwnd);
+
+        GroupBoxDown(hwnd);
 
         return FALSE;
     }
@@ -1081,10 +1113,13 @@ public:
             return 0;
         }
 
-        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
-            MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+        if (size_t(pCtrl->m_nIndex) < m_dialog_res.Items.size())
+        {
+            DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
+                MAKEWPARAM(item.m_pt.x, item.m_pt.y),
+                MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+        }
         return 0;
     }
 
@@ -1204,6 +1239,11 @@ public:
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
+        WCHAR szClass[64];
+        GetClassNameW(hwndCtrl, szClass, _countof(szClass));
+        if (lstrcmpiW(szClass, L"BUTTON") == 0)
+            InvalidateRect(m_rad_dialog, NULL, TRUE);
+
         return 0;
     }
 
@@ -1243,6 +1283,10 @@ public:
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+
+        GetClassNameW(hwndCtrl, szClass, _countof(szClass));
+        if (lstrcmpiW(szClass, L"BUTTON") == 0)
+            InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
