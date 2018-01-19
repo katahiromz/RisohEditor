@@ -749,6 +749,7 @@ public:
 
         pCtrl->EndSubclass();
 
+#if 0
         WCHAR szClass[64];
         GetClassNameW(hCtrl, szClass, _countof(szClass));
         if (lstrcmpiW(szClass, WC_IPADDRESSW) == 0)
@@ -761,6 +762,7 @@ public:
             }
             return;
         }
+#endif
 
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
