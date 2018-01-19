@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    52     /* Version 52 */
+#define MZC4_MWINDOWBASE_HPP_    53     /* Version 53 */
 
 class MWindowBase;
 class MDialogBase;
@@ -32,6 +32,7 @@ class MDialogBase;
 #endif
 
 //#define MZC4_FAT_AND_RICH   1
+//#define MZC4_HANDLE_MAP     1
 
 //////////////////////////////////////////////////////////////////////////////
 // headers
@@ -58,6 +59,8 @@ class MDialogBase;
 // standard C/C++ library
 #include <cassert>          // assert
 #include <cstring>          // C string library
+
+#include <map>              // std::map
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -168,13 +171,45 @@ public:
         return (this ? m_hwnd : NULL);
     }
 
+#ifdef MZC4_HANDLE_MAP
+    typedef std::map<HWND, void *> handle_map_type;
+    static handle_map_type& GetHandleMap()
+    {
+        static handle_map_type s_map;
+        return s_map;
+    }
     static MWindowBase *GetUserData(HWND hwnd)
     {
-        return (MWindowBase *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        handle_map_type::iterator it = GetHandleMap().find(hwnd);
+        if (it == GetHandleMap().end())
+            return NULL;
+        return reinterpret_cast<MWindowBase *>(it->second);
     }
-    static VOID SetUserData(HWND hwnd, VOID *ptr)
+    static void SetUserData(HWND hwnd, void *ptr)
+    {
+        if (ptr)
+        {
+            GetHandleMap().insert(std::make_pair(hwnd, ptr));
+        }
+        else
+        {
+            GetHandleMap().erase(hwnd);
+        }
+    }
+#else
+    static MWindowBase *GetUserData(HWND hwnd)
+    {
+        return reinterpret_cast<MWindowBase *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    }
+    static void SetUserData(HWND hwnd, void *ptr)
     {
         SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)ptr);
+    }
+#endif
+    virtual void PostNcDestroy()
+    {
+        SetUserData(m_hwnd, NULL);
+        m_hwnd = NULL;
     }
 
     MWindowBase *GetUserData() const
@@ -453,11 +488,6 @@ public:
     {
         assert(::IsWindow(m_hwnd));
         return ::PostMessage(m_hwnd, uMsg, wParam, lParam);
-    }
-
-    virtual void PostNcDestroy()
-    {
-        m_hwnd = NULL;
     }
 
     static HHOOK HookCenterMsgBoxDx(BOOL bHook);
