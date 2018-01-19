@@ -64,7 +64,7 @@ public:
 
     virtual void PostNcDestroy()
     {
-        m_hwnd = NULL;
+        MWindowBase::PostNcDestroy();
         delete this;
     }
 

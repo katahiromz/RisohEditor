@@ -483,7 +483,7 @@ public:
         {
             DebugPrintDx("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
         }
-        m_hwnd = NULL;
+        MWindowBase::PostNcDestroy();
         delete this;
     }
 };
