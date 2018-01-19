@@ -186,6 +186,7 @@ public:
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
+        SetDlgItemText(hwnd, cmb3, TEXT("-1"));
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
         InitWndClassComboBox(hCmb4, m_db, TEXT(""));
