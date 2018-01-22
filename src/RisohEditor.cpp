@@ -1509,6 +1509,8 @@ protected:
     void OnGuiEdit(HWND hwnd);
     void OnEdit(HWND hwnd);
     void OnUpdateDlgRes(HWND hwnd);
+    void OnCopyAsNewName(HWND hwnd);
+    void OnCopyAsNewLang(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -2050,6 +2052,37 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     ::SetWindowTextW(m_hBinEdit, str.c_str());
 }
 
+void MMainWnd::OnCopyAsNewName(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_NAME && HIWORD(lParam) != I_STRING)
+        return;
+
+    UINT i = LOWORD(lParam);
+    ResEntry& Entry = m_Entries[i];
+
+    if (HIWORD(lParam) == I_NAME)
+    {
+        // TODO:
+    }
+    else if (HIWORD(lParam) != I_STRING)
+    {
+        // TODO:
+    }
+}
+
+void MMainWnd::OnCopyAsNewLang(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    ResEntry& Entry = m_Entries[i];
+
+    // TODO:
+}
+
 void MMainWnd::OnDeleteRes(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, FALSE))
@@ -2528,6 +2561,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         break;
     case I_NAME:
         EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
@@ -2540,6 +2575,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_ENABLED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         break;
     case I_LANG:
         if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON ||
@@ -2601,6 +2638,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_REPLACEBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_ENABLED);
         break;
     case I_STRING: case I_MESSAGE:
         EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
@@ -2613,6 +2652,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         break;
     default:
         EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
@@ -2624,6 +2665,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         break;
     }
 }
@@ -4985,6 +5028,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_ADDDIALOG:
         OnAddDialog(hwnd);
+        break;
+    case CMDID_COPYASNEWNAME:
+        OnCopyAsNewName(hwnd);
+        break;
+    case CMDID_COPYASNEWLANG:
+        OnCopyAsNewLang(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

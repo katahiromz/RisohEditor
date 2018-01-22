@@ -108,6 +108,8 @@
 #define CMDID_ADDVERINFO        185
 #define CMDID_ADDDIALOG         186
 #define CMDID_FITTOGRID         187
+#define CMDID_COPYASNEWNAME     188
+#define CMDID_COPYASNEWLANG     189
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

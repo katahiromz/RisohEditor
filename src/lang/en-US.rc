@@ -67,6 +67,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
+        MENUITEM "Copy As New &Name...", CMDID_COPYASNEWNAME
+        MENUITEM "Copy As New &Language...", CMDID_COPYASNEWLANG
+        MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
     POPUP "&Search"
@@ -119,6 +122,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST
+        MENUITEM SEPARATOR
+        MENUITEM "Copy As New &Name...", CMDID_COPYASNEWNAME
+        MENUITEM "Copy As New &Language...", CMDID_COPYASNEWLANG
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
