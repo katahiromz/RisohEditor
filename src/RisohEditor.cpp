@@ -3659,7 +3659,7 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     m_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
     ShowIDList(hwnd, FALSE);
-	return TRUE;
+    return TRUE;
 }
 
 BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR Path)

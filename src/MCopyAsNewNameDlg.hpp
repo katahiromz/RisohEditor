@@ -38,7 +38,7 @@ public:
     ResEntries& m_Entries;
     ResEntry& m_entry;
     ConstantsDB& m_db;
-	MIdOrString m_name;
+    MIdOrString m_name;
 
     MCopyAsNewNameDlg(ResEntries& Entries, ResEntry& entry, ConstantsDB& db)
         : MDialogBase(IDD_COPYASNEWNAME), m_Entries(Entries), m_entry(entry), m_db(db)

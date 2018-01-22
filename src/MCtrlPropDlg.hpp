@@ -694,16 +694,16 @@ public:
                 OnEdt7(hwnd);
             }
             break;
-		default:
-			if (size_t(id - 1000) < m_vecControls.size())
-			{
-				SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
+        default:
+            if (size_t(id - 1000) < m_vecControls.size())
+            {
+                SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
                 MString text = GetDlgItemText(hwnd, cmb1);
                 mstr_trim(text);
                 InitTables(text.c_str());
                 UpdateClass(hwnd, hLst1, text);
-			}
-			break;
+            }
+            break;
         }
     }
 

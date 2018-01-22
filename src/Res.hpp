@@ -415,8 +415,8 @@ Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
     for (i = 0; i < Count; ++i)
     {
         INT k = Res_Find(Entries, RT_ICON, DirEntries[i].nID, Entry.lang, TRUE);
-		if (k != -1)
-	        Entries[k].clear_data();
+        if (k != -1)
+            Entries[k].clear_data();
     }
 
     Entry.clear_data();
@@ -1014,7 +1014,7 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
         }
     }
 
-	INT k = 0;
+    INT k = 0;
     for (INT i = 0; i < INT(Entries.size()); ++i)
     {
         if (Entries[i].empty())
