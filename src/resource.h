@@ -139,6 +139,7 @@
 #define IDD_ADDRESID        125
 #define IDD_MODIFYRESID     126
 #define IDD_ADVICERESH      127
+#define IDD_COPYASNEWNAME   128
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2

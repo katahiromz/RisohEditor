@@ -1025,7 +1025,7 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
         hItem = _tv_FindOrInsertDepth2(hwnd, hItem, Entries, i, k, Expand);
         hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, k, Expand);
         hItem = hItem;
-		++k;
+        ++k;
     }
 
     for (size_t i = Entries.size(); i > 0; )

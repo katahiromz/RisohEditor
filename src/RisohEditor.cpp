@@ -2055,19 +2055,24 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
-    if (HIWORD(lParam) != I_NAME && HIWORD(lParam) != I_STRING)
+    if (HIWORD(lParam) != I_NAME)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& Entry = m_Entries[i];
+    ResEntry entry = m_Entries[i];
 
-    if (HIWORD(lParam) == I_NAME)
+    MCopyAsNewNameDlg dialog(m_Entries, entry, m_db);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        // TODO:
-    }
-    else if (HIWORD(lParam) != I_STRING)
-    {
-        // TODO:
+        ResEntries found;
+        Res_Search(found, m_Entries, dialog.m_entry);
+        for (size_t i = 0; i < found.size(); ++i)
+        {
+            found[i].name = dialog.m_name;
+            Res_AddEntry(m_Entries, found[i], TRUE);
+        }
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
     }
 }
 
@@ -2078,7 +2083,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& Entry = m_Entries[i];
+    ResEntry entry = m_Entries[i];
 
     // TODO:
 }
