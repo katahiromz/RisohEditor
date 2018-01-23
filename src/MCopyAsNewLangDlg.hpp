@@ -38,12 +38,12 @@ class MCopyAsNewLangDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
-    ResEntry& m_Entry;
+    ResEntry& m_entry;
     ConstantsDB& m_db;
     WORD m_lang;
 
     MCopyAsNewLangDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWLANG), m_entries(entries), m_Entry(entry), m_db(db)
+        : MDialogBase(IDD_COPYASNEWLANG), m_entries(entries), m_entry(entry), m_db(db)
     {
         m_lang = 0xFFFF;
     }
@@ -70,55 +70,55 @@ public:
             WCHAR sz[MAX_PATH];
             wsprintfW(sz, L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_Entry.type == WORD(table[i].value))
+            if (m_entry.type == WORD(table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
         k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_Entry.type == TEXT("WAVE"))
+        if (m_entry.type == TEXT("WAVE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_Entry.type == TEXT("PNG"))
+        if (m_entry.type == TEXT("PNG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_Entry.type == TEXT("GIF"))
+        if (m_entry.type == TEXT("GIF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_Entry.type == TEXT("JPEG"))
+        if (m_entry.type == TEXT("JPEG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_Entry.type == TEXT("TIFF"))
+        if (m_entry.type == TEXT("TIFF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_Entry.type == TEXT("AVI"))
+        if (m_entry.type == TEXT("AVI"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_Entry.type == TEXT("EMF"))
+        if (m_entry.type == TEXT("EMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_Entry.type == TEXT("WMF"))
+        if (m_entry.type == TEXT("WMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_Entry.lang);
+        InitLangComboBox(hCmb3, m_entry.lang);
 
         CenterWindowDx();
         return TRUE;
@@ -144,6 +144,14 @@ public:
         WORD lang;
         if (!CheckLangComboBox(hCmb3, lang))
             return;
+
+        if (Res_Find(m_entries, m_entry.type, m_entry.name, lang, FALSE) != -1)
+        {
+            if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
+            {
+                return;
+            }
+        }
 
         m_lang = lang;
 

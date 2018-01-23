@@ -142,6 +142,14 @@ public:
         if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
+        if (Res_Find(m_entries, m_entry.type, name, m_entry.lang, FALSE) != -1)
+        {
+            if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
+            {
+                return;
+            }
+        }
+
         m_name = name;
 
         EndDialog(IDOK);
