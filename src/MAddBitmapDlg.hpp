@@ -35,7 +35,7 @@ public:
     ResEntries& m_entries;
     LPCWSTR file;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MAddBitmapDlg(ConstantsDB& db, ResEntries& entries) :
         MDialogBase(IDD_ADDBITMAP), m_entries(entries), file(NULL),
@@ -127,7 +127,7 @@ public:
         }
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }

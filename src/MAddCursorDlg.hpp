@@ -36,7 +36,7 @@ public:
     LPCWSTR   m_file;
     HCURSOR   m_hCursor;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MAddCursorDlg(ConstantsDB& db, ResEntries& entries)
         : MDialogBase(IDD_ADDCURSOR), m_entries(entries), m_file(NULL),
@@ -134,7 +134,7 @@ public:
         }
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }

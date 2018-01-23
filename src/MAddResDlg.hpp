@@ -39,7 +39,7 @@ public:
     ConstantsDB& m_db;
     MIdOrString m_type;
     LPCTSTR m_file;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MAddResDlg(ResEntries& entries, ConstantsDB& db)
         : MDialogBase(IDD_ADDRES), m_entries(entries), m_db(db),
@@ -252,7 +252,7 @@ public:
             {
                 Res_AddEntry(m_entries, type, name, lang, stream.data(), FALSE);
                 ResEntry entry(type, name, lang);
-                m_entry = entry;
+                m_entry_copy = entry;
                 bAdded = TRUE;
             }
         }
@@ -270,7 +270,7 @@ public:
         {
             Res_AddEntry(m_entries, type, name, lang, bs.data(), bOverwrite);
             ResEntry entry(type, name, lang);
-            m_entry = entry;
+            m_entry_copy = entry;
         }
 
         EndDialog(IDOK);

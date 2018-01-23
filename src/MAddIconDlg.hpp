@@ -36,7 +36,7 @@ public:
     LPCWSTR file;
     HICON   m_hIcon;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MAddIconDlg(ConstantsDB& db, ResEntries& entries)
         : MDialogBase(IDD_ADDICON), m_entries(entries), file(NULL), m_hIcon(NULL),
@@ -124,7 +124,7 @@ public:
         }
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }
