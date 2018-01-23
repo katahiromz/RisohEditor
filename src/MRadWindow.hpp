@@ -1115,9 +1115,9 @@ public:
             return 0;
         }
 
-        if (size_t(pCtrl->m_nIndex) < m_dialog_res.Items.size())
+        if (size_t(pCtrl->m_nIndex) < m_dialog_res.m_items.size())
         {
-            DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+            DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
@@ -1202,7 +1202,7 @@ public:
         std::set<INT>::reverse_iterator rit, rend = indeces.rend();
         for (rit = indeces.rbegin(); rit != rend; ++rit)
         {
-            m_dialog_res.Items.erase(m_dialog_res.Items.begin() + *rit);
+            m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + *rit);
             m_dialog_res.m_cItems--;
         }
 
@@ -1230,7 +1230,7 @@ public:
 
         ClientToDialog(&rc);
 
-        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+        DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
         item.m_pt.x = rc.left;
         item.m_pt.y = rc.top;
 
@@ -1264,7 +1264,7 @@ public:
 
         ClientToDialog(&rc);
 
-        DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+        DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
         item.m_siz.cx = rc.right - rc.left;
         item.m_siz.cy = rc.bottom - rc.top;
 
@@ -1306,7 +1306,7 @@ public:
         if (pCtrl->m_nIndex == -1)
             return 0;
 
-        m_dialog_res.Items.erase(m_dialog_res.Items.begin() + pCtrl->m_nIndex);
+        m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + pCtrl->m_nIndex);
         m_dialog_res.m_cItems--;
         UpdateRes();
 
@@ -1537,15 +1537,15 @@ public:
         {
             if (indeces.find(i) == indeces.end())
             {
-                items1.push_back(m_dialog_res.Items[i]);
+                items1.push_back(m_dialog_res.m_items[i]);
             }
             else
             {
-                items2.push_back(m_dialog_res.Items[i]);
+                items2.push_back(m_dialog_res.m_items[i]);
             }
         }
-        m_dialog_res.Items = items1;
-        m_dialog_res.Items.insert(m_dialog_res.Items.begin(), items2.begin(), items2.end());
+        m_dialog_res.m_items = items1;
+        m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), items2.begin(), items2.end());
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
@@ -1588,15 +1588,15 @@ public:
         {
             if (indeces.find(i) == indeces.end())
             {
-                items1.push_back(m_dialog_res.Items[i]);
+                items1.push_back(m_dialog_res.m_items[i]);
             }
             else
             {
-                items2.push_back(m_dialog_res.Items[i]);
+                items2.push_back(m_dialog_res.m_items[i]);
             }
         }
-        m_dialog_res.Items = items1;
-        m_dialog_res.Items.insert(m_dialog_res.Items.end(), items2.begin(), items2.end());
+        m_dialog_res.m_items = items1;
+        m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), items2.begin(), items2.end());
 
         ReCreateRadDialog(hwnd);
         UpdateRes();
@@ -1621,7 +1621,7 @@ public:
         {
             if (indeces.find(i + 1) != indeces.end())
             {
-                std::swap(m_dialog_res.Items[i], m_dialog_res.Items[i + 1]);
+                std::swap(m_dialog_res.m_items[i], m_dialog_res.m_items[i + 1]);
             }
         }
 
@@ -1648,7 +1648,7 @@ public:
         {
             if (indeces.find(i - 1) != indeces.end())
             {
-                std::swap(m_dialog_res.Items[i], m_dialog_res.Items[i - 1]);
+                std::swap(m_dialog_res.m_items[i], m_dialog_res.m_items[i - 1]);
             }
         }
 
@@ -1872,7 +1872,7 @@ public:
             if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
                 continue;
 
-            DialogItem& item = m_dialog_res.Items[pCtrl->m_nIndex];
+            DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
             FitToGrid(&item.m_pt);
             FitToGrid(&item.m_siz);
 

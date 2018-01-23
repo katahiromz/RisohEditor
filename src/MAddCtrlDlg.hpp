@@ -304,7 +304,7 @@ public:
         item.m_title = strCaption.c_str();
 
         m_dialog_res.m_cItems++;
-        m_dialog_res.Items.push_back(item);
+        m_dialog_res.m_items.push_back(item);
 
         EndDialog(IDOK);
     }

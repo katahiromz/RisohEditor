@@ -100,12 +100,12 @@ public:
         std::set<INT>::iterator it, end = m_indeces.end();
         it = m_indeces.begin();
         {
-            DialogItem& item = m_dialog_res.Items[*it];
+            DialogItem& item = m_dialog_res.m_items[*it];
             m_item = item;
         }
         for (++it; it != end; ++it)
         {
-            DialogItem& item = m_dialog_res.Items[*it];
+            DialogItem& item = m_dialog_res.m_items[*it];
             if (m_item.m_help_id != item.m_help_id)
                 m_flags &= ~F_HELP;
             if (m_item.m_style != item.m_style)
@@ -245,7 +245,7 @@ public:
         std::set<INT>::iterator it, end = m_indeces.end();
         for (it = m_indeces.begin(); it != end; ++it)
         {
-            DialogItem& item = m_dialog_res.Items[*it];
+            DialogItem& item = m_dialog_res.m_items[*it];
             if ((m_flags & F_HELP) || (flags & F_HELP))
                 item.m_help_id = m_item.m_help_id;
             if ((m_flags & F_STYLE) || (flags & F_STYLE))

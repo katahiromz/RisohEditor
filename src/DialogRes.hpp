@@ -136,7 +136,7 @@ struct DialogItem
     WORD                m_id;
     MIdOrString         m_class;
     MIdOrString         m_title;
-    std::vector<BYTE>   Extra;
+    std::vector<BYTE>   m_extra;
     DWORD               m_old_style, m_old_ex_style;
     SIZE                m_sizOld;
 
@@ -152,25 +152,25 @@ struct DialogItem
         m_id = 0;
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream, BOOL Extended = FALSE)
+    BOOL LoadFromStream(const MByteStreamEx& stream, BOOL extended = FALSE)
     {
-        if (Extended)
+        if (extended)
             return LoadFromStreamEx(stream);
 
         stream.ReadDwordAlignment();
 
-        DLGITEMTEMPLATE Item;
-        if (!stream.ReadRaw(Item))
+        DLGITEMTEMPLATE item;
+        if (!stream.ReadRaw(item))
             return FALSE;
 
         m_help_id = 0;
-        m_style = Item.style;
-        m_ex_style = Item.dwExtendedStyle;
-        m_pt.x = Item.x;
-        m_pt.y = Item.y;
-        m_siz.cx = Item.cx;
-        m_siz.cy = Item.cy;
-        m_id = Item.id;
+        m_style = item.style;
+        m_ex_style = item.dwExtendedStyle;
+        m_pt.x = item.x;
+        m_pt.y = item.y;
+        m_siz.cx = item.cx;
+        m_siz.cy = item.cy;
+        m_id = item.id;
 
         if (!stream.ReadString(m_class) ||
             !stream.ReadString(m_title))
@@ -182,8 +182,8 @@ struct DialogItem
         if (!stream.ReadByte(b))
             return FALSE;
 
-        Extra.resize(b);
-        if (b && !stream.ReadData(&Extra[0], b))
+        m_extra.resize(b);
+        if (b && !stream.ReadData(&m_extra[0], b))
             return FALSE;
 
         return TRUE;
@@ -193,20 +193,20 @@ struct DialogItem
     {
         stream.ReadDwordAlignment();
 
-        DLGITEMTEMPLATEEXHEAD Item;
-        if (!stream.ReadRaw(Item))
+        DLGITEMTEMPLATEEXHEAD item;
+        if (!stream.ReadRaw(item))
         {
             return FALSE;
         }
 
-        m_help_id = Item.helpID;
-        m_style = Item.style;
-        m_ex_style = Item.exStyle;
-        m_pt.x = Item.x;
-        m_pt.y = Item.y;
-        m_siz.cx = Item.cx;
-        m_siz.cy = Item.cy;
-        m_id = Item.id;
+        m_help_id = item.helpID;
+        m_style = item.style;
+        m_ex_style = item.exStyle;
+        m_pt.x = item.x;
+        m_pt.y = item.y;
+        m_siz.cx = item.cx;
+        m_siz.cy = item.cy;
+        m_id = item.id;
 
         stream.ReadDwordAlignment();
 
@@ -222,32 +222,32 @@ struct DialogItem
         if (extraCount)
         {
             stream.ReadDwordAlignment();
-            Extra.resize(extraCount);
-            if (extraCount && !stream.ReadData(&Extra[0], extraCount))
+            m_extra.resize(extraCount);
+            if (extraCount && !stream.ReadData(&m_extra[0], extraCount))
                 return FALSE;
         }
 
         return TRUE;
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream, BOOL Extended = FALSE) const
+    BOOL SaveToStream(MByteStreamEx& stream, BOOL extended = FALSE) const
     {
-        if (Extended)
+        if (extended)
         {
             return SaveToStreamEx(stream);
         }
 
         stream.WriteDwordAlignment();
 
-        DLGITEMTEMPLATE Item;
-        Item.style = m_style;
-        Item.dwExtendedStyle = m_ex_style;
-        Item.x = (SHORT)m_pt.x;
-        Item.y = (SHORT)m_pt.y;
-        Item.cx = (SHORT)m_siz.cx;
-        Item.cy = (SHORT)m_siz.cy;
-        Item.id = m_id;
-        if (!stream.WriteData(&Item, sizeof(Item)))
+        DLGITEMTEMPLATE item;
+        item.style = m_style;
+        item.dwExtendedStyle = m_ex_style;
+        item.x = (SHORT)m_pt.x;
+        item.y = (SHORT)m_pt.y;
+        item.cx = (SHORT)m_siz.cx;
+        item.cy = (SHORT)m_siz.cy;
+        item.id = m_id;
+        if (!stream.WriteData(&item, sizeof(item)))
             return FALSE;
 
         WORD w;
@@ -266,14 +266,14 @@ struct DialogItem
         if (!stream.WriteString(m_title.ptr()))
             return FALSE;
 
-        BYTE b = BYTE(Extra.size());
+        BYTE b = BYTE(m_extra.size());
         if (!stream.WriteRaw(b))
             return FALSE;
 
         if (b)
         {
             stream.WriteDwordAlignment();
-            if (!stream.WriteData(&Extra[0], b))
+            if (!stream.WriteData(&m_extra[0], b))
                 return FALSE;
         }
 
@@ -312,16 +312,16 @@ struct DialogItem
         }
 
         if (!stream.WriteString(m_title.ptr()) ||
-            !stream.WriteWord(WORD(Extra.size())))
+            !stream.WriteWord(WORD(m_extra.size())))
         {
             return FALSE;
         }
 
-        if (Extra.size() > 0)
+        if (m_extra.size() > 0)
         {
             stream.WriteDwordAlignment();
-            WORD ExtraSize = WORD(Extra.size());
-            if (!stream.WriteData(&Extra[0], ExtraSize))
+            WORD ExtraSize = WORD(m_extra.size());
+            if (!stream.WriteData(&m_extra[0], ExtraSize))
                 return FALSE;
         }
         return TRUE;
@@ -642,7 +642,7 @@ struct DialogRes
     BYTE                        m_italic;
     BYTE                        m_charset;
     MIdOrString                 m_type_face;
-    DialogItems                 Items;
+    DialogItems                 m_items;
     DWORD                       m_old_style, m_old_ex_style;
     LANGID                      m_lang_id;
     MIdOrString                 m_old_menu;
@@ -685,10 +685,10 @@ struct DialogRes
             {
                 for (WORD i = 0; i < m_cItems; ++i)
                 {
-                    DialogItem Item;
-                    if (!Item.LoadFromStreamEx(stream))
+                    DialogItem item;
+                    if (!item.LoadFromStreamEx(stream))
                         return FALSE;
-                    Items.push_back(Item);
+                    m_items.push_back(item);
                 }
                 return TRUE;
             }
@@ -700,10 +700,10 @@ struct DialogRes
             {
                 for (WORD i = 0; i < m_cItems; ++i)
                 {
-                    DialogItem Item;
-                    if (!Item.LoadFromStream(stream))
+                    DialogItem item;
+                    if (!item.LoadFromStream(stream))
                         return FALSE;
-                    Items.push_back(Item);
+                    m_items.push_back(item);
                 }
                 return TRUE;
             }
@@ -717,10 +717,10 @@ struct DialogRes
         {
             if (_headerToStreamEx(stream))
             {
-                size_t i, count = Items.size();
+                size_t i, count = m_items.size();
                 for (i = 0; i < count; ++i)
                 {
-                    if (!Items[i].SaveToStreamEx(stream))
+                    if (!m_items[i].SaveToStreamEx(stream))
                         return FALSE;
                 }
                 return TRUE;
@@ -730,10 +730,10 @@ struct DialogRes
         {
             if (_headerToStream(stream))
             {
-                size_t i, count = Items.size();
+                size_t i, count = m_items.size();
                 for (i = 0; i < count; ++i)
                 {
-                    if (!Items[i].SaveToStream(stream))
+                    if (!m_items[i].SaveToStream(stream))
                         return FALSE;
                 }
                 return TRUE;
@@ -876,7 +876,7 @@ struct DialogRes
         for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
-            ret += Items[i].Dump(m_db, bAlwaysControl);
+            ret += m_items[i].Dump(m_db, bAlwaysControl);
             ret += L"\r\n";
         }
 
@@ -911,8 +911,8 @@ struct DialogRes
             m_class.clear();
         }
 
-        DialogItems::iterator it, end = Items.end();
-        for (it = Items.begin(); it != end; ++it)
+        DialogItems::iterator it, end = m_items.end();
+        for (it = m_items.begin(); it != end; ++it)
         {
             it->Fixup(bRevert);
         }
@@ -1028,7 +1028,7 @@ protected:
         m_weight = FW_NORMAL;
         m_italic = 0;
         m_type_face.clear();
-        Items.clear();
+        m_items.clear();
 
         if (m_style & (DS_SETFONT | DS_SHELLFONT))
         {
@@ -1083,7 +1083,7 @@ protected:
             }
         }
 
-        Items.clear();
+        m_items.clear();
         return TRUE;
     }
 
