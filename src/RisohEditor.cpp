@@ -309,11 +309,11 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
 struct LangEntry
 {
     WORD LangID;
-    std::wstring Str;
+    std::wstring str;
 
     bool operator<(const LangEntry& ent) const
     {
-        return Str < ent.Str;
+        return str < ent.str;
     }
 };
 std::vector<LangEntry> g_Langs;
@@ -835,7 +835,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     for (size_t i = 0; i < g_Langs.size(); ++i)
     {
         WCHAR sz[MAX_PATH];
-        wsprintfW(sz, L"%s (%u)", g_Langs[i].Str.c_str(), g_Langs[i].LangID);
+        wsprintfW(sz, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
         INT k = ComboBox_AddString(hCmb3, sz);
         if (langid == g_Langs[i].LangID)
         {
@@ -848,9 +848,9 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
-    MStringW Str = szType;
-    mstr_trim(Str);
-    lstrcpynW(szType, Str.c_str(), _countof(szType));
+    MStringW str = szType;
+    mstr_trim(str);
+    lstrcpynW(szType, str.c_str(), _countof(szType));
 
     if (szType[0] == 0)
     {
@@ -876,9 +876,9 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
-    MStringW Str = szName;
-    mstr_trim(Str);
-    lstrcpynW(szName, Str.c_str(), _countof(szName));
+    MStringW str = szName;
+    mstr_trim(str);
+    lstrcpynW(szName, str.c_str(), _countof(szName));
     if (szName[0] == 0)
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);
@@ -905,9 +905,9 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
-    MStringW Str = szLang;
-    mstr_trim(Str);
-    lstrcpynW(szLang, Str.c_str(), _countof(szLang));
+    MStringW str = szLang;
+    mstr_trim(str);
+    lstrcpynW(szLang, str.c_str(), _countof(szLang));
 
     if (szLang[0] == 0)
     {
@@ -942,9 +942,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file)
 {
     WCHAR szFile[MAX_PATH];
     GetWindowTextW(hEdt1, szFile, _countof(szFile));
-    MStringW Str = szFile;
-    mstr_trim(Str);
-    lstrcpynW(szFile, Str.c_str(), _countof(szFile));
+    MStringW str = szFile;
+    mstr_trim(str);
+    lstrcpynW(szFile, str.c_str(), _countof(szFile));
     if (::GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
     {
         Edit_SetSel(hEdt1, 0, -1);
@@ -1282,7 +1282,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
         return TRUE;
 
-    entry.Str = sz;
+    entry.str = sz;
     g_Langs.push_back(entry);
     return TRUE;
 }
@@ -1839,7 +1839,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -2383,7 +2383,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         MByteStreamEx stream(entry.data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
-        m_rad_window.m_dialog_res.m_LangID = entry.lang;
+        m_rad_window.m_dialog_res.m_lang_id = entry.lang;
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))
         {
@@ -2409,7 +2409,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         for (it = found.begin(); it != end; ++it)
         {
             MByteStreamEx stream(it->data);
-            if (!str_res.LoadFromStream(stream, it->name.m_ID))
+            if (!str_res.LoadFromStream(stream, it->name.m_id))
             {
                 ErrorBoxDx(IDS_CANNOTLOAD);
                 return;
@@ -3022,7 +3022,7 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
     StringRes str_res;
-    WORD nTableID = entry.name.m_ID;
+    WORD nTableID = entry.name.m_id;
     if (str_res.LoadFromStream(stream, nTableID))
     {
         std::wstring str = str_res.Dump(m_db, nTableID);
@@ -3124,7 +3124,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& entry)
     for (it = found.begin(); it != end; ++it)
     {
         MByteStreamEx stream(it->data);
-        if (!str_res.LoadFromStream(stream, it->name.m_ID))
+        if (!str_res.LoadFromStream(stream, it->name.m_id))
             return;
     }
 
@@ -3736,7 +3736,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     {
         LangEntry entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
-        entry.Str = LoadStringDx(IDS_NEUTRAL);
+        entry.str = LoadStringDx(IDS_NEUTRAL);
         g_Langs.push_back(entry);
     }
     std::sort(g_Langs.begin(), g_Langs.end());
@@ -4403,7 +4403,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
         {
             MAddCursorDlg dialog(m_db, m_entries);
-            dialog.m_File = file;
+            dialog.m_file = file;
             dialog.DialogBoxDx(hwnd);
             TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
@@ -5379,7 +5379,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -5397,7 +5397,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -5428,7 +5428,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
 

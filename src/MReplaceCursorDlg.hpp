@@ -36,12 +36,12 @@ protected:
     HCURSOR   m_hCursor;
 public:
     ResEntries& m_entries;
-    ResEntry& m_Entry;
+    ResEntry& m_entry;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MReplaceCursorDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry) :
-        MDialogBase(IDD_REPLACECUR), m_entries(entries), m_Entry(entry),
+        MDialogBase(IDD_REPLACECUR), m_entries(entries), m_entry(entry),
         m_db(db)
     {
         m_hCursor = NULL;
@@ -58,12 +58,12 @@ public:
 
         // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
+        InitCommandComboBox(hCmb2, m_db, m_entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_Entry.lang);
+        InitLangComboBox(hCmb3, m_entry.lang);
         ::EnableWindow(hCmb3, FALSE);
 
         CenterWindowDx();
@@ -72,7 +72,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString type = m_Entry.type;
+        MIdOrString type = m_entry.type;
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -114,7 +114,7 @@ public:
         }
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }
@@ -137,7 +137,7 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACECUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        if (m_Entry.type == RT_ANICURSOR)
+        if (m_entry.type == RT_ANICURSOR)
         {
             ofn.nFilterIndex = 2;
             ofn.lpstrDefExt = L"ani";

@@ -33,13 +33,13 @@ class MAddCursorDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
-    LPCWSTR   m_File;
+    LPCWSTR   m_file;
     HCURSOR   m_hCursor;
     ConstantsDB& m_db;
     ResEntry m_entry;
 
     MAddCursorDlg(ConstantsDB& db, ResEntries& entries)
-        : MDialogBase(IDD_ADDCURSOR), m_entries(entries), m_File(NULL),
+        : MDialogBase(IDD_ADDCURSOR), m_entries(entries), m_file(NULL),
           m_db(db)
     {
         m_hCursor = NULL;
@@ -52,10 +52,10 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, m_File);
+        SetDlgItemTextW(hwnd, edt1, m_file);
         if (m_hCursor)
             DestroyCursor(m_hCursor);
-        m_hCursor = LoadCursorFromFile(m_File);
+        m_hCursor = LoadCursorFromFile(m_file);
         SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
 
         DragAcceptFiles(hwnd, TRUE);

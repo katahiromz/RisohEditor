@@ -392,13 +392,13 @@ public:
 
         string_type ret;
 
-        if (name.m_ID == 0)
+        if (name.m_id == 0)
         {
             ret += name.str();
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_ID);
+            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENU\r\n";
@@ -467,13 +467,13 @@ public:
     {
         string_type ret;
 
-        if (name.m_ID == 0)
+        if (name.m_id == 0)
         {
             ret += name.str();
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_ID);
+            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENUEX\r\n";

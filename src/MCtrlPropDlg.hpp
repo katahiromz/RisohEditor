@@ -106,11 +106,11 @@ public:
         for (++it; it != end; ++it)
         {
             DialogItem& item = m_dialog_res.Items[*it];
-            if (m_item.m_HelpID != item.m_HelpID)
+            if (m_item.m_help_id != item.m_help_id)
                 m_flags &= ~F_HELP;
-            if (m_item.m_Style != item.m_Style)
+            if (m_item.m_style != item.m_style)
                 m_flags &= ~F_STYLE;
-            if (m_item.m_ExStyle != item.m_ExStyle)
+            if (m_item.m_ex_style != item.m_ex_style)
                 m_flags &= ~F_EXSTYLE;
             if (m_item.m_pt.x != item.m_pt.x)
                 m_flags &= ~F_X;
@@ -120,21 +120,21 @@ public:
                 m_flags &= ~F_CX;
             if (m_item.m_siz.cy != item.m_siz.cy)
                 m_flags &= ~F_CY;
-            if (m_item.m_ID != item.m_ID)
+            if (m_item.m_id != item.m_id)
                 m_flags &= ~F_ID;
-            if (m_item.m_Class != item.m_Class)
+            if (m_item.m_class != item.m_class)
                 m_flags &= ~F_CLASS;
-            if (m_item.m_Title  != item.m_Title)
+            if (m_item.m_title  != item.m_title)
                 m_flags &= ~F_TITLE;
         }
 
         if (m_flags & F_CLASS)
         {
-            if (m_item.m_Class.is_int())
+            if (m_item.m_class.is_int())
             {
                 std::wstring cls;
-                if (IDToPredefClass(m_item.m_Class.m_ID, cls))
-                    m_item.m_Class = cls.c_str();
+                if (IDToPredefClass(m_item.m_class.m_id, cls))
+                    m_item.m_class = cls.c_str();
             }
         }
     }
@@ -149,7 +149,7 @@ public:
             flags |= F_TITLE;
         if (strCaption[0] == TEXT('"'))
             mstr_unquote(strCaption);
-        item.m_Title = strCaption.c_str();
+        item.m_title = strCaption.c_str();
 
         MString strX = GetDlgItemText(edt1);
         mstr_trim(strX);
@@ -201,13 +201,13 @@ public:
             ErrorBoxDx(IDS_NOSUCHID);
             return 0xFFFFFFFF;
         }
-        item.m_ID = (WORD)id;
+        item.m_id = (WORD)id;
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
         if (!strClass.empty())
             flags |= F_CLASS;
-        item.m_Class = strClass.c_str();
+        item.m_class = strClass.c_str();
 
         MString strHelp = GetDlgItemText(cmb5);
         mstr_trim(strHelp);
@@ -215,24 +215,24 @@ public:
             flags |= F_HELP;
         if (m_db.HasResID(strHelp))
         {
-            item.m_HelpID = m_db.GetResIDValue(strHelp);
+            item.m_help_id = m_db.GetResIDValue(strHelp);
         }
         else
         {
-            item.m_HelpID = _tcstol(strHelp.c_str(), NULL, 0);
+            item.m_help_id = _tcstol(strHelp.c_str(), NULL, 0);
         }
 
         MString strStyle = GetDlgItemText(edt6);
         mstr_trim(strStyle);
         if (!strStyle.empty())
             flags |= F_STYLE;
-        item.m_Style = _tcstoul(strStyle.c_str(), NULL, 16);
+        item.m_style = _tcstoul(strStyle.c_str(), NULL, 16);
 
         MString strExStyle = GetDlgItemText(edt7);
         mstr_trim(strExStyle);
         if (!strExStyle.empty())
             flags |= F_EXSTYLE;
-        item.m_ExStyle = _tcstoul(strExStyle.c_str(), NULL, 16);
+        item.m_ex_style = _tcstoul(strExStyle.c_str(), NULL, 16);
 
         return flags;
     }
@@ -247,11 +247,11 @@ public:
         {
             DialogItem& item = m_dialog_res.Items[*it];
             if ((m_flags & F_HELP) || (flags & F_HELP))
-                item.m_HelpID = m_item.m_HelpID;
+                item.m_help_id = m_item.m_help_id;
             if ((m_flags & F_STYLE) || (flags & F_STYLE))
-                item.m_Style = m_item.m_Style;
+                item.m_style = m_item.m_style;
             if ((m_flags & F_EXSTYLE) || (flags & F_EXSTYLE))
-                item.m_ExStyle = m_item.m_ExStyle;
+                item.m_ex_style = m_item.m_ex_style;
             if ((m_flags & F_X) || (flags & F_X))
                 item.m_pt.x = m_item.m_pt.x;
             if ((m_flags & F_Y) || (flags & F_Y))
@@ -261,13 +261,13 @@ public:
             if ((m_flags & F_CY) || (flags & F_CY))
                 item.m_siz.cy = m_item.m_siz.cy;
             if ((m_flags & F_ID) || (flags & F_ID))
-                item.m_ID = m_item.m_ID;
+                item.m_id = m_item.m_id;
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
             {
-                item.m_Class = m_item.m_Class;
+                item.m_class = m_item.m_class;
                 WNDCLASSEX cls;
-                if (!item.m_Class.empty() &&
-                    !GetClassInfoEx(NULL, item.m_Class.str().c_str(), &cls))
+                if (!item.m_class.empty() &&
+                    !GetClassInfoEx(NULL, item.m_class.str().c_str(), &cls))
                 {
                     HWND hCmb4 = GetDlgItem(m_hwnd, cmb4);
                     ComboBox_SetEditSel(hCmb4, 0, -1);
@@ -277,7 +277,7 @@ public:
                 }
             }
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
-                item.m_Title = m_item.m_Title;
+                item.m_title = m_item.m_title;
         }
         return TRUE;
     }
@@ -386,7 +386,7 @@ public:
 
         if (m_flags & F_CLASS)
         {
-            InitTables(m_item.m_Class.c_str());
+            InitTables(m_item.m_class.c_str());
         }
         else
         {
@@ -394,13 +394,13 @@ public:
         }
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
-        InitWndClassComboBox(hCmb4, m_db, m_item.m_Class.c_str());
+        InitWndClassComboBox(hCmb4, m_db, m_item.m_class.c_str());
 
         TCHAR szText[64];
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         if (m_flags & F_STYLE)
-            m_dwStyle = m_item.m_Style;
+            m_dwStyle = m_item.m_style;
         else
             m_dwStyle = 0;
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
@@ -418,7 +418,7 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         if (m_flags & F_EXSTYLE)
-            m_dwExStyle = m_item.m_ExStyle;
+            m_dwExStyle = m_item.m_ex_style;
         else
             m_dwExStyle = 0;
         GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
@@ -436,7 +436,7 @@ public:
 
         if (m_flags & F_HELP)
         {
-            MStringW name = m_db.GetNameOfResID(IDTYPE_HELP, m_item.m_HelpID);
+            MStringW name = m_db.GetNameOfResID(IDTYPE_HELP, m_item.m_help_id);
             SetDlgItemTextW(hwnd, cmb5, name.c_str());
         }
         if (m_flags & F_X)
@@ -457,22 +457,22 @@ public:
         }
         if (m_flags & F_ID)
         {
-            MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_ID);
+            MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_id);
             SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
         if (m_flags & F_CLASS)
         {
-            SetDlgItemText(hwnd, cmb4, m_item.m_Class.c_str());
+            SetDlgItemText(hwnd, cmb4, m_item.m_class.c_str());
         }
         if (m_flags & F_TITLE)
         {
             MString strCaption;
-            if (!m_item.m_Title.empty())
+            if (!m_item.m_title.empty())
             {
-                if (m_item.m_Title.is_int())
-                    strCaption = m_item.m_Title.c_str();
+                if (m_item.m_title.is_int())
+                    strCaption = m_item.m_title.c_str();
                 else
-                    strCaption = m_item.m_Title.quoted_wstr();
+                    strCaption = m_item.m_title.quoted_wstr();
             }
             SetDlgItemText(hwnd, cmb2, strCaption.c_str());
         }

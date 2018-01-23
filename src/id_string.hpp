@@ -51,45 +51,45 @@ bool mstr_is_ascii(const T_STR& str);
 
 struct MIdOrString
 {
-    WORD m_ID;
-    std::wstring m_Str;
+    WORD m_id;
+    std::wstring m_str;
 
-    MIdOrString() : m_ID(0)
+    MIdOrString() : m_id(0)
     {
     }
 
-    MIdOrString(WORD ID) : m_ID(ID)
+    MIdOrString(WORD ID) : m_id(ID)
     {
     }
 
-    MIdOrString(LPCWSTR Str)
+    MIdOrString(LPCWSTR str)
     {
-        if (IS_INTRESOURCE(Str))
+        if (IS_INTRESOURCE(str))
         {
-            m_ID = LOWORD(Str);
+            m_id = LOWORD(str);
         }
-        else if ((L'0' <= Str[0] && Str[0] <= L'9') ||
-                 Str[0] == L'-' || Str[0] == L'+')
+        else if ((L'0' <= str[0] && str[0] <= L'9') ||
+                 str[0] == L'-' || str[0] == L'+')
         {
-            m_ID = (WORD)wcstol(Str, NULL, 0);
+            m_id = (WORD)wcstol(str, NULL, 0);
         }
         else
         {
-            m_ID = 0;
-            m_Str = Str;
+            m_id = 0;
+            m_str = str;
         }
     }
 
-    const WCHAR *Ptr() const
+    const WCHAR *ptr() const
     {
-        if (m_ID)
-            return MAKEINTRESOURCEW(m_ID);
-        return m_Str.c_str();
+        if (m_id)
+            return MAKEINTRESOURCEW(m_id);
+        return m_str.c_str();
     }
 
     bool is_zero() const
     {
-        return m_ID == 0 && m_Str.empty();
+        return m_id == 0 && m_str.empty();
     }
 
     bool is_null() const
@@ -104,7 +104,7 @@ struct MIdOrString
 
     bool is_str() const
     {
-        return (!m_ID && !m_Str.empty());
+        return (!m_id && !m_str.empty());
     }
 
     bool is_int() const
@@ -114,73 +114,73 @@ struct MIdOrString
 
     void clear()
     {
-        m_ID = 0;
-        m_Str.clear();
+        m_id = 0;
+        m_str.clear();
     }
 
     MIdOrString& operator=(WORD ID)
     {
-        m_ID = ID;
-        m_Str.clear();
+        m_id = ID;
+        m_str.clear();
         return *this;
     }
 
-    MIdOrString& operator=(const WCHAR *Str)
+    MIdOrString& operator=(const WCHAR *str)
     {
-        if (IS_INTRESOURCE(Str))
+        if (IS_INTRESOURCE(str))
         {
-            m_ID = LOWORD(Str);
-            m_Str.clear();
+            m_id = LOWORD(str);
+            m_str.clear();
         }
         else
         {
-            m_ID = 0;
-            m_Str = Str;
+            m_id = 0;
+            m_str = str;
         }
         return *this;
     }
 
     bool operator==(const MIdOrString& id_or_str) const
     {
-        if (id_or_str.m_ID != 0)
+        if (id_or_str.m_id != 0)
         {
-            if (m_ID != 0)
-                return id_or_str.m_ID == m_ID;
+            if (m_id != 0)
+                return id_or_str.m_id == m_id;
         }
         else
         {
-            if (m_ID == 0)
-                return m_Str == id_or_str.m_Str;
+            if (m_id == 0)
+                return m_str == id_or_str.m_str;
         }
         return false;
     }
     bool operator<(const MIdOrString& id_or_str) const
     {
-        if (id_or_str.m_ID != 0)
+        if (id_or_str.m_id != 0)
         {
-            if (m_ID != 0)
-                return m_ID < id_or_str.m_ID;
+            if (m_id != 0)
+                return m_id < id_or_str.m_id;
             return true;
         }
         else
         {
-            if (m_ID == 0)
-                return m_Str < id_or_str.m_Str;
+            if (m_id == 0)
+                return m_str < id_or_str.m_str;
             return false;
         }
     }
     bool operator>(const MIdOrString& id_or_str) const
     {
-        if (id_or_str.m_ID != 0)
+        if (id_or_str.m_id != 0)
         {
-            if (m_ID != 0)
-                return m_ID > id_or_str.m_ID;
+            if (m_id != 0)
+                return m_id > id_or_str.m_id;
             return false;
         }
         else
         {
-            if (m_ID == 0)
-                return m_Str > id_or_str.m_Str;
+            if (m_id == 0)
+                return m_str > id_or_str.m_str;
             return true;
         }
     }
@@ -189,23 +189,23 @@ struct MIdOrString
     {
         if (IS_INTRESOURCE(psz))
         {
-            if (m_ID != 0)
-                return LOWORD(psz) == m_ID;
+            if (m_id != 0)
+                return LOWORD(psz) == m_id;
         }
         else
         {
-            if (m_ID == 0)
-                return m_Str == psz;
+            if (m_id == 0)
+                return m_str == psz;
         }
         return false;
     }
-    bool operator==(const std::wstring& Str) const
+    bool operator==(const std::wstring& str) const
     {
-        return *this == Str.c_str();
+        return *this == str.c_str();
     }
     bool operator==(WORD w) const
     {
-        return m_ID == w;
+        return m_id == w;
     }
 
     bool operator!=(const MIdOrString& id_or_str) const
@@ -216,38 +216,38 @@ struct MIdOrString
     {
         return !(*this == psz);
     }
-    bool operator!=(const std::wstring& Str) const
+    bool operator!=(const std::wstring& str) const
     {
-        return !(*this == Str);
+        return !(*this == str);
     }
     bool operator!=(WORD w) const
     {
-        return m_ID != w;
+        return m_id != w;
     }
 
     std::wstring& str() const
     {
         static std::wstring s_str;
-        if (m_ID == 0)
+        if (m_id == 0)
         {
-            if (m_Str.size())
+            if (m_str.size())
             {
-                s_str = m_Str;
+                s_str = m_str;
                 return s_str;
             }
         }
-        s_str = mstr_dec_short(m_ID);
+        s_str = mstr_dec_short(m_id);
         return s_str;
     }
 
     std::wstring& str_or_empty() const
     {
         static std::wstring s_str;
-        if (m_ID == 0)
+        if (m_id == 0)
         {
-            if (m_Str.size())
+            if (m_str.size())
             {
-                s_str = m_Str;
+                s_str = m_str;
             }
             else
             {
@@ -256,7 +256,7 @@ struct MIdOrString
         }
         else
         {
-            s_str = mstr_dec_short(m_ID);
+            s_str = mstr_dec_short(m_id);
         }
         return s_str;
     }
@@ -274,12 +274,12 @@ struct MIdOrString
     std::wstring quoted_wstr() const
     {
         std::wstring ret;
-        if (m_ID == 0)
+        if (m_id == 0)
         {
-            if (m_Str.size())
+            if (m_str.size())
             {
                 ret += L"\"";
-                ret += mstr_escape(m_Str);
+                ret += mstr_escape(m_str);
                 ret += L"\"";
             }
             else
@@ -289,7 +289,7 @@ struct MIdOrString
         }
         else
         {
-            ret = mstr_dec_short(m_ID);
+            ret = mstr_dec_short(m_id);
         }
         return ret;
     }

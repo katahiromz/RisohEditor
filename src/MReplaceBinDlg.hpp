@@ -38,12 +38,12 @@ class MReplaceBinDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
-    ResEntry& m_Entry;
+    ResEntry& m_entry;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MReplaceBinDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_REPLACERES), m_entries(entries), m_Entry(entry), m_db(db)
+        : MDialogBase(IDD_REPLACERES), m_entries(entries), m_entry(entry), m_db(db)
     {
     }
 
@@ -72,60 +72,60 @@ public:
             WCHAR sz[MAX_PATH];
             wsprintfW(sz, L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_Entry.type == WORD(table[i].value))
+            if (m_entry.type == WORD(table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
         k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_Entry.type == TEXT("WAVE"))
+        if (m_entry.type == TEXT("WAVE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_Entry.type == TEXT("PNG"))
+        if (m_entry.type == TEXT("PNG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_Entry.type == TEXT("GIF"))
+        if (m_entry.type == TEXT("GIF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_Entry.type == TEXT("JPEG"))
+        if (m_entry.type == TEXT("JPEG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_Entry.type == TEXT("TIFF"))
+        if (m_entry.type == TEXT("TIFF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_Entry.type == TEXT("AVI"))
+        if (m_entry.type == TEXT("AVI"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_Entry.type == TEXT("EMF"))
+        if (m_entry.type == TEXT("EMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_Entry.type == TEXT("WMF"))
+        if (m_entry.type == TEXT("WMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
+        InitCommandComboBox(hCmb2, m_db, m_entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_Entry.lang);
+        InitLangComboBox(hCmb3, m_entry.lang);
         ::EnableWindow(hCmb3, FALSE);
 
         CenterWindowDx();
@@ -198,7 +198,7 @@ public:
         Res_AddEntry(m_entries, type, name, lang, bs.data(), TRUE);
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }

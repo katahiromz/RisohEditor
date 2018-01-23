@@ -34,12 +34,12 @@ class MReplaceBitmapDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
-    ResEntry& m_Entry;
+    ResEntry& m_entry;
     ConstantsDB& m_db;
-    ResEntry m_entry;
+    ResEntry m_entry_copy;
 
     MReplaceBitmapDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry)
-        : MDialogBase(IDD_REPLACEBMP), m_entries(entries), m_Entry(entry),
+        : MDialogBase(IDD_REPLACEBMP), m_entries(entries), m_entry(entry),
           m_db(db)
     {
     }
@@ -50,12 +50,12 @@ public:
 
         // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
+        InitCommandComboBox(hCmb2, m_db, m_entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_Entry.lang);
+        InitLangComboBox(hCmb3, m_entry.lang);
         ::EnableWindow(hCmb3, FALSE);
 
         CenterWindowDx();
@@ -88,7 +88,7 @@ public:
         }
 
         ResEntry entry(type, name, lang);
-        m_entry = entry;
+        m_entry_copy = entry;
 
         EndDialog(IDOK);
     }

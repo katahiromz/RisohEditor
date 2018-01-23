@@ -116,7 +116,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        MString strCaption = m_dialog_res.m_Title.c_str();
+        MString strCaption = m_dialog_res.m_title.c_str();
         if (strCaption.size())
         {
             strCaption = mstr_quote(strCaption);
@@ -134,11 +134,11 @@ public:
         InitFontComboBox(hCmb4);
 
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        InitCharSetComboBox(hCmb5, m_dialog_res.m_CharSet);
+        InitCharSetComboBox(hCmb5, m_dialog_res.m_charset);
 
-        if (m_dialog_res.m_Weight >= FW_BOLD)
+        if (m_dialog_res.m_weight >= FW_BOLD)
             CheckDlgButton(hwnd, chx2, BST_CHECKED);
-        if (m_dialog_res.m_Italic)
+        if (m_dialog_res.m_italic)
             CheckDlgButton(hwnd, chx3, BST_CHECKED);
 
         ::SetDlgItemInt(hwnd, edt1, m_dialog_res.m_pt.x, TRUE);
@@ -150,27 +150,27 @@ public:
         ::SendDlgItemMessage(hwnd, edt3, EM_SETLIMITTEXT, 12, 0);
         ::SendDlgItemMessage(hwnd, edt4, EM_SETLIMITTEXT, 12, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_Class.c_str_or_empty());
+        ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
-        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_HelpID);
+        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_help_id);
         ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 32, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_TypeFace.c_str_or_empty());
+        ::SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_type_face.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
-        ::SetDlgItemInt(hwnd, edt5, m_dialog_res.m_PointSize, TRUE);
+        ::SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
         ::SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb6, m_dialog_res.m_Menu.c_str_or_empty());
+        ::SetDlgItemTextW(hwnd, cmb6, m_dialog_res.m_menu.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
 
         InitTables(TEXT("DIALOG"));
 
         WCHAR Buf[32];
 
-        m_dwStyle = m_dialog_res.m_Style;
+        m_dwStyle = m_dialog_res.m_style;
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         GetSelection(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
@@ -182,7 +182,7 @@ public:
         ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
-        m_dwExStyle = m_dialog_res.m_ExStyle;
+        m_dwExStyle = m_dialog_res.m_ex_style;
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table);
@@ -253,36 +253,36 @@ public:
 
         if (bExtended)
         {
-            m_dialog_res.m_Version = 1;
-            m_dialog_res.m_Signature = 0xFFFF;
+            m_dialog_res.m_version = 1;
+            m_dialog_res.m_signature = 0xFFFF;
         }
         else
         {
-            m_dialog_res.m_Version = 0;
-            m_dialog_res.m_Signature = 0;
+            m_dialog_res.m_version = 0;
+            m_dialog_res.m_signature = 0;
         }
 
-        m_dialog_res.m_HelpID = help;
-        m_dialog_res.m_Style = style;
-        m_dialog_res.m_ExStyle = exstyle;
+        m_dialog_res.m_help_id = help;
+        m_dialog_res.m_style = style;
+        m_dialog_res.m_ex_style = exstyle;
         m_dialog_res.m_pt.x = x;
         m_dialog_res.m_pt.y = y;
         m_dialog_res.m_siz.cx = cx;
         m_dialog_res.m_siz.cy = cy;
-        m_dialog_res.m_Menu = strMenu.c_str();
-        m_dialog_res.m_Class = strClass.c_str();
-        m_dialog_res.m_Title = strCaption.c_str();
-        m_dialog_res.m_PointSize = (short)nFontSize;
-        m_dialog_res.m_Weight = FW_NORMAL;
-        m_dialog_res.m_Italic = FALSE;
-        m_dialog_res.m_CharSet = DEFAULT_CHARSET;
-        m_dialog_res.m_TypeFace = strFont.c_str();
+        m_dialog_res.m_menu = strMenu.c_str();
+        m_dialog_res.m_class = strClass.c_str();
+        m_dialog_res.m_title = strCaption.c_str();
+        m_dialog_res.m_point_size = (short)nFontSize;
+        m_dialog_res.m_weight = FW_NORMAL;
+        m_dialog_res.m_italic = FALSE;
+        m_dialog_res.m_charset = DEFAULT_CHARSET;
+        m_dialog_res.m_type_face = strFont.c_str();
 
-        m_dialog_res.m_Weight = (bBold ? FW_BOLD : FW_DONTCARE);
-        m_dialog_res.m_Italic = (bItalic ? TRUE : FALSE);
+        m_dialog_res.m_weight = (bBold ? FW_BOLD : FW_DONTCARE);
+        m_dialog_res.m_italic = (bItalic ? TRUE : FALSE);
 
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        m_dialog_res.m_CharSet = GetCharSetFromComboBox(hCmb5);
+        m_dialog_res.m_charset = GetCharSetFromComboBox(hCmb5);
 
         EndDialog(IDOK);
     }

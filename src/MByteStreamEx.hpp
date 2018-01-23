@@ -50,17 +50,17 @@ public:
             return FALSE;
         }
 
-        id_or_str.m_ID = 0;
-        return ReadSz(id_or_str.m_Str);
+        id_or_str.m_id = 0;
+        return ReadSz(id_or_str.m_str);
     }
 
     BOOL WriteID(const MIdOrString& id_or_str)
     {
         if (id_or_str.is_str())
         {
-            return WriteSz(id_or_str.m_Str);
+            return WriteSz(id_or_str.m_str);
         }
-        return WriteWord(0xFFFF) && WriteWord(id_or_str.m_ID);
+        return WriteWord(0xFFFF) && WriteWord(id_or_str.m_id);
     }
 
     BOOL ReadString(MIdOrString& id_or_str) const
@@ -85,8 +85,8 @@ public:
             return TRUE;
         }
 
-        id_or_str.m_ID = 0;
-        return ReadSz(id_or_str.m_Str);
+        id_or_str.m_id = 0;
+        return ReadSz(id_or_str.m_str);
     }
 
     BOOL WriteString(LPCWSTR psz)

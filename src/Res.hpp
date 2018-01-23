@@ -194,12 +194,12 @@ struct ResourceHeader
     {
         size_t size = 0;
         if (type.is_str())
-            size += (type.m_Str.size() + 1) * sizeof(WCHAR);
+            size += (type.m_str.size() + 1) * sizeof(WCHAR);
         else
             size += sizeof(WORD) * 2;
 
         if (name.is_str())
-            size += (name.m_Str.size() + 1) * sizeof(WCHAR);
+            size += (name.m_str.size() + 1) * sizeof(WCHAR);
         else
             size += sizeof(WORD) * 2;
 
@@ -317,8 +317,8 @@ Res_GetLastIconID(const ResEntries& entries)
         if (it->type != RT_ICON || !it->name.is_int() || it->name.is_zero())
             continue;
 
-        if (last_id < it->name.m_ID)
-            last_id = it->name.m_ID;
+        if (last_id < it->name.m_id)
+            last_id = it->name.m_id;
     }
     return last_id;
 }
@@ -334,8 +334,8 @@ Res_GetLastCursorID(const ResEntries& entries)
         if (it->type != RT_CURSOR || !it->name.is_int() || it->name.is_zero())
             continue;
 
-        if (last_id < it->name.m_ID)
-            last_id = it->name.m_ID;
+        if (last_id < it->name.m_id)
+            last_id = it->name.m_id;
     }
     return last_id;
 }
@@ -614,7 +614,7 @@ Res_GetType(const MIdOrString& id_or_str)
 {
     wchar_t sz[32];
     std::wstring ret, name;
-    switch (id_or_str.m_ID)
+    switch (id_or_str.m_id)
     {
     case 1: name = L"RT_CURSOR"; break;
     case 2: name = L"RT_BITMAP"; break;
@@ -641,19 +641,19 @@ Res_GetType(const MIdOrString& id_or_str)
     case 23: name = L"RT_HTML"; break;
     case 24: name = L"RT_MANIFEST"; break;
     default:
-        if (id_or_str.m_ID != 0)
+        if (id_or_str.m_id != 0)
         {
-            wsprintfW(sz, L"%u", id_or_str.m_ID);
+            wsprintfW(sz, L"%u", id_or_str.m_id);
             ret = sz;
         }
         else
         {
-            ret = id_or_str.m_Str;
+            ret = id_or_str.m_str;
         }
     }
     if (name.size())
     {
-        wsprintfW(sz, L" (%u)", id_or_str.m_ID);
+        wsprintfW(sz, L" (%u)", id_or_str.m_id);
         ret = name;
         ret += sz;
     }
@@ -664,13 +664,13 @@ inline std::wstring
 Res_GetName(const MIdOrString& id_or_str)
 {
     std::wstring ret;
-    if (id_or_str.m_ID != 0)
+    if (id_or_str.m_id != 0)
     {
-        ret = mstr_dec_word(id_or_str.m_ID);
+        ret = mstr_dec_word(id_or_str.m_id);
     }
     else
     {
-        ret = id_or_str.m_Str;
+        ret = id_or_str.m_str;
     }
     return ret;
 }
@@ -703,7 +703,7 @@ Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& entries)
             size = entry.size();
         }
         if (!::UpdateResourceW(hUpdate,
-                               entry.type.Ptr(), entry.name.Ptr(), entry.lang,
+                               entry.type.ptr(), entry.name.ptr(), entry.lang,
                                pv, size))
         {
             DWORD dwError = GetLastError();

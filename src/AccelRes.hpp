@@ -102,13 +102,13 @@ public:
     {
         std::wstring ret;
 
-        if (id_or_str.m_ID == 0)
+        if (id_or_str.m_id == 0)
         {
             ret += id_or_str.str();
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_ID);
+            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
         }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";

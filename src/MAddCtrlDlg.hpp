@@ -292,16 +292,16 @@ public:
         DWORD exstyle = _tcstoul(strExStyle.c_str(), NULL, 16);
 
         DialogItem item;
-        item.m_HelpID = help;
-        item.m_Style = style;
-        item.m_ExStyle = exstyle;
+        item.m_help_id = help;
+        item.m_style = style;
+        item.m_ex_style = exstyle;
         item.m_pt.x = x;
         item.m_pt.y = y;
         item.m_siz.cx = cx;
         item.m_siz.cy = cy;
-        item.m_ID = id;
-        item.m_Class = strClass.c_str();
-        item.m_Title = strCaption.c_str();
+        item.m_id = id;
+        item.m_class = strClass.c_str();
+        item.m_title = strCaption.c_str();
 
         m_dialog_res.m_cItems++;
         m_dialog_res.Items.push_back(item);
