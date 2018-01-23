@@ -566,10 +566,10 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
         {
             return NULL;
         }
-        ResEntry& IconEntry = entries[k];
+        ResEntry& icon_entry = entries[k];
 
         BITMAP bm;
-        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
 
         if (cx < bm.bmWidth)
             cx = bm.bmWidth;
@@ -600,9 +600,9 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
             DeleteObject(hbm);
             return NULL;
         }
-        ResEntry& IconEntry = entries[k];
+        ResEntry& icon_entry = entries[k];
 
-        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
 
         DrawBitmapDx(hbm, hbmIcon, 0, y);
         y += bm.bmHeight;
@@ -658,10 +658,10 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
         {
             return NULL;
         }
-        ResEntry& CursorEntry = entries[k];
+        ResEntry& cursor_entry = entries[k];
 
         BITMAP bm;
-        HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
+        HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
         assert(hbmCursor);
         assert(bm.bmWidth);
         assert(bm.bmHeight);
@@ -697,10 +697,10 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
                 DeleteObject(hbm);
                 return NULL;
             }
-            ResEntry& CursorEntry = entries[k];
+            ResEntry& cursor_entry = entries[k];
 
             BITMAP bm;
-            HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
+            HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
             assert(hbmCursor);
             assert(bm.bmWidth);
             assert(bm.bmHeight);
@@ -1063,11 +1063,11 @@ std::wstring DumpGroupCursorInfo(ResEntries& entries, const std::vector<BYTE>& d
         INT k = Res_Find(entries, RT_CURSOR, nID, 0xFFFF, FALSE);
         if (k != -1)
         {
-            const ResEntry& CursorEntry = entries[k];
+            const ResEntry& cursor_entry = entries[k];
             LOCALHEADER header;
-            if (CursorEntry.size() >= sizeof(header))
+            if (cursor_entry.size() >= sizeof(header))
             {
-                memcpy(&header, &CursorEntry[0], sizeof(header));
+                memcpy(&header, &cursor_entry[0], sizeof(header));
                 xHotSpot = header.xHotSpot;
                 yHotSpot = header.yHotSpot;
             }

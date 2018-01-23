@@ -54,13 +54,13 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
-        for (size_t i = 0; i < Table.size(); ++i)
+        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
-            wsprintfW(sz, L"%s (%lu)", Table[i].name.c_str(), Table[i].value);
+            wsprintfW(sz, L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_type == WORD(Table[i].value))
+            if (m_type == WORD(table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
@@ -138,11 +138,11 @@ public:
     {
         MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
+        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
-        if (iType != CB_ERR && iType < INT(Table.size()))
+        if (iType != CB_ERR && iType < INT(table.size()))
         {
-            type = WORD(Table[iType].value);
+            type = WORD(table[iType].value);
         }
         else
         {
