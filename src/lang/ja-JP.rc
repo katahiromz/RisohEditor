@@ -767,6 +767,7 @@ FONT 9, "MS UI Gothic"
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
     RTEXT "整数値(&I):", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
+    PUSHBUTTON "自動", psh1, 115, 50, 45, 14
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 85, 70, 60, 14
 }

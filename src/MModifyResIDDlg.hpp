@@ -29,11 +29,12 @@ class MModifyResIDDlg : public MDialogBase
 {
 public:
     ConstantsDB& m_db;
+    ResEntries& m_entries;
     MString m_str1;
     MString m_str2;
 
-    MModifyResIDDlg(ConstantsDB& db, MString str1, MString str2)
-        : MDialogBase(IDD_MODIFYRESID), m_db(db), m_str1(str1), m_str2(str2)
+    MModifyResIDDlg(ResEntries& entries, ConstantsDB& db, MString str1, MString str2)
+        : MDialogBase(IDD_MODIFYRESID), m_entries(entries), m_db(db), m_str1(str1), m_str2(str2)
     {
     }
 

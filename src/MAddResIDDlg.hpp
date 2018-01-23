@@ -29,12 +29,13 @@ class MAddResIDDlg : public MDialogBase
 {
 public:
     RisohSettings& m_settings;
+    ResEntries& m_entries;
     ConstantsDB& m_db;
     MString m_str1;
     MString m_str2;
 
-    MAddResIDDlg(RisohSettings& settings, ConstantsDB& db)
-        : MDialogBase(IDD_ADDRESID), m_settings(settings), m_db(db)
+    MAddResIDDlg(RisohSettings& settings, ResEntries& entries, ConstantsDB& db)
+        : MDialogBase(IDD_ADDRESID), m_settings(settings), m_entries(entries), m_db(db)
     {
     }
 
@@ -128,6 +129,45 @@ public:
                 if (i != -1)
                 {
                     SetDlgItemText(hwnd, edt2, NULL);
+                }
+            }
+            break;
+        case psh1:
+            {
+                MString text = GetDlgItemText(hwnd, edt1);
+                SetDlgItemTextW(hwnd, edt3, NULL);
+
+                ConstantsDB::TableType table;
+                table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+
+                INT i = 0;
+                MString prefix;
+                ConstantsDB::TableType::iterator it, end = table.end();
+                for (it = table.begin(); it != end; ++it)
+                {
+                    if (text.find(it->name) == 0)
+                    {
+                        prefix = it->name;
+                        break;
+                    }
+                    ++i;
+                }
+
+                if (prefix.size())
+                {
+                    UINT nLastID = 0;
+                    table = m_db.m_map[L"RESOURCE.ID"];
+                    end = table.end();
+                    for (it = table.begin(); it != end; ++it)
+                    {
+                        if (it->name.find(prefix) == 0)
+                        {
+                            if (nLastID < it->value)
+                                nLastID = it->value;
+                        }
+                    }
+                    UINT nNextID = nLastID + 1;
+                    SetDlgItemInt(hwnd, edt3, nNextID, TRUE);
                 }
             }
             break;

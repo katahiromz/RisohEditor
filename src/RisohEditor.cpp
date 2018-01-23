@@ -1374,7 +1374,7 @@ public:
         m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
         m_hFindReplaceDlg(NULL),
         m_rad_window(m_db, m_settings),
-        m_id_list_dlg(m_db, m_settings)
+        m_id_list_dlg(m_entries, m_db, m_settings)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;

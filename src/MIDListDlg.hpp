@@ -58,12 +58,13 @@ public:
     typedef std::map<MString, MString>      assoc_map_type;
     typedef std::map<MStringA, MStringA>    id_map_type;
     RisohSettings& m_settings;
+    ResEntries& m_entries;
     ConstantsDB& m_db;
     HWND m_hMainWnd;
     MSubclassedListView m_lv;
 
-    MIDListDlg(ConstantsDB& db, RisohSettings& settings)
-        : MDialogBase(IDD_IDLIST), m_db(db), m_settings(settings),
+    MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
+        : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
           m_hMainWnd(NULL)
     {
     }
@@ -257,7 +258,7 @@ public:
             break;
         case CMDID_ADDRESID:
             {
-                MAddResIDDlg dialog(m_settings, m_db);
+                MAddResIDDlg dialog(m_settings, m_entries, m_db);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
@@ -284,7 +285,7 @@ public:
             ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
             str2 = szText;
             {
-                MModifyResIDDlg dialog(m_db, str1, str2);
+                MModifyResIDDlg dialog(m_entries, m_db, str1, str2);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
