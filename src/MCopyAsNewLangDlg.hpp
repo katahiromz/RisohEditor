@@ -1,4 +1,4 @@
-// MCopyAsNewNameDlg
+// MCopyAsNewLangDlg
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Win32API resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -17,32 +17,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MCOPYASNEWNAMEDLG_HPP_
-#define MZC4_MCOPYASNEWNAMEDLG_HPP_
+#ifndef MZC4_MCOPYASNEWLANGDLG_HPP_
+#define MZC4_MCOPYASNEWLANGDLG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RisohEditor.hpp"
 #include "ConstantsDB.hpp"
-#include "id_string.hpp"
 
+void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
 BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MCopyAsNewNameDlg : public MDialogBase
+class MCopyAsNewLangDlg : public MDialogBase
 {
 public:
     ResEntries& m_Entries;
-    ResEntry& m_entry;
+    ResEntry& m_Entry;
     ConstantsDB& m_db;
-    MIdOrString m_name;
+    WORD m_lang;
 
-    MCopyAsNewNameDlg(ResEntries& Entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWNAME), m_Entries(Entries), m_entry(entry), m_db(db)
+    MCopyAsNewLangDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
+        : MDialogBase(IDD_COPYASNEWLANG), m_Entries(Entries), m_Entry(Entry), m_db(db)
     {
+        m_lang = 0xFFFF;
     }
 
     virtual INT_PTR CALLBACK
@@ -67,55 +70,55 @@ public:
             WCHAR sz[MAX_PATH];
             wsprintfW(sz, L"%s (%lu)", Table[i].name.c_str(), Table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_entry.type == WORD(Table[i].value))
+            if (m_Entry.type == WORD(Table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
         k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_entry.type == TEXT("WAVE"))
+        if (m_Entry.type == TEXT("WAVE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_entry.type == TEXT("PNG"))
+        if (m_Entry.type == TEXT("PNG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_entry.type == TEXT("GIF"))
+        if (m_Entry.type == TEXT("GIF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_entry.type == TEXT("JPEG"))
+        if (m_Entry.type == TEXT("JPEG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_entry.type == TEXT("TIFF"))
+        if (m_Entry.type == TEXT("TIFF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_entry.type == TEXT("AVI"))
+        if (m_Entry.type == TEXT("AVI"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_entry.type == TEXT("EMF"))
+        if (m_Entry.type == TEXT("EMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_entry.type == TEXT("WMF"))
+        if (m_Entry.type == TEXT("WMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
 
-        // for Names
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCommandComboBox(hCmb2, m_db, m_entry.name.str());
+        // for Langs
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        InitLangComboBox(hCmb3, m_Entry.lang);
 
         CenterWindowDx();
         return TRUE;
@@ -137,12 +140,12 @@ public:
                 return;
         }
 
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString Name;
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        WORD Lang;
+        if (!CheckLangComboBox(hCmb3, Lang))
             return;
 
-        m_name = Name;
+        m_lang = Lang;
 
         EndDialog(IDOK);
     }
@@ -163,4 +166,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MCOPYASNEWNAMEDLG_HPP_
+#endif  // ndef MZC4_MCOPYASNEWLANGDLG_HPP_

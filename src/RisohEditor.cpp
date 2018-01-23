@@ -2185,13 +2185,57 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
-    if (HIWORD(lParam) != I_LANG)
+    if (HIWORD(lParam) != I_LANG && HIWORD(lParam) != I_STRING)
         return;
 
     UINT i = LOWORD(lParam);
     ResEntry entry = m_Entries[i];
 
-    // TODO:
+    MCopyAsNewLangDlg dialog(m_Entries, entry, m_db);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        ResEntries found;
+        Res_Search(found, m_Entries, entry);
+        if (entry.type == RT_GROUP_ICON)
+        {
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].lang = dialog.m_lang;
+                DoCopyGroupIcon(found[i], found[i].name);
+            }
+        }
+        else if (entry.type == RT_GROUP_CURSOR)
+        {
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].lang = dialog.m_lang;
+                DoCopyGroupCursor(found[i], found[i].name);
+            }
+        }
+        else if (HIWORD(lParam) == I_STRING)
+        {
+            WORD lang = entry.lang;
+            ResEntries found;
+            Res_Search(found, m_Entries, RT_STRING, WORD(0), lang);
+
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].lang = dialog.m_lang;
+                Res_AddEntry(m_Entries, found[i], TRUE);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].lang = dialog.m_lang;
+                Res_AddEntry(m_Entries, found[i], TRUE);
+            }
+        }
+        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        entry.lang = dialog.m_lang;
+        TV_SelectEntry(m_hTreeView, m_Entries, entry);
+    }
 }
 
 void MMainWnd::OnDeleteRes(HWND hwnd)
@@ -2627,6 +2671,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_EDIT, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         return;
     }
 
@@ -2750,7 +2796,10 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
-        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_ENABLED);
+        if (Entry.type == RT_STRING || Entry.type == RT_MESSAGETABLE)
+            EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
+        else
+            EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_ENABLED);
         break;
     case I_STRING: case I_MESSAGE:
         EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
@@ -2764,7 +2813,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
-        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_ENABLED);
         break;
     default:
         EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
