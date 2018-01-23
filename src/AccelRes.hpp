@@ -165,11 +165,11 @@ public:
         return ret;
     }
 
-    entries_type& Entries()
+    entries_type& entries()
     {
         return m_entries;
     }
-    const entries_type& Entries() const
+    const entries_type& entries() const
     {
         return m_entries;
     }

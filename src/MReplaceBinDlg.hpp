@@ -42,8 +42,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MReplaceBinDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
-        : MDialogBase(IDD_REPLACERES), m_entries(Entries), m_Entry(Entry), m_db(db)
+    MReplaceBinDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
+        : MDialogBase(IDD_REPLACERES), m_entries(entries), m_Entry(entry), m_db(db)
     {
     }
 

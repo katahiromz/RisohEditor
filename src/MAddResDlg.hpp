@@ -41,8 +41,8 @@ public:
     LPCTSTR m_file;
     ResEntry m_entry;
 
-    MAddResDlg(ResEntries& Entries, ConstantsDB& db)
-        : MDialogBase(IDD_ADDRES), m_entries(Entries), m_db(db),
+    MAddResDlg(ResEntries& entries, ConstantsDB& db)
+        : MDialogBase(IDD_ADDRES), m_entries(entries), m_db(db),
           m_type(0xFFFF), m_file(NULL)
     {
     }

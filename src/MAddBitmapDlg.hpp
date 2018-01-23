@@ -37,8 +37,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MAddBitmapDlg(ConstantsDB& db, ResEntries& Entries) :
-        MDialogBase(IDD_ADDBITMAP), m_entries(Entries), file(NULL),
+    MAddBitmapDlg(ConstantsDB& db, ResEntries& entries) :
+        MDialogBase(IDD_ADDBITMAP), m_entries(entries), file(NULL),
         m_db(db)
     {
     }

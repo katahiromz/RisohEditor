@@ -408,7 +408,7 @@ public:
             return;
         }
 
-        m_accel_res.Entries().clear();
+        m_accel_res.entries().clear();
         for (i = 0; i < Count; ++i)
         {
             ACCEL_ENTRY a_entry;
@@ -440,7 +440,7 @@ public:
             }
             entry.wId = (WORD)m_db.GetResIDValue(a_entry.sz2);
 
-            m_accel_res.Entries().push_back(entry);
+            m_accel_res.entries().push_back(entry);
         }
 
         EndDialog(IDOK);
@@ -538,7 +538,7 @@ public:
         ListView_InsertColumn(hCtl1, 2, &column);
 
         typedef AccelRes::entries_type entries_type;
-        const entries_type& entries = m_accel_res.Entries();
+        const entries_type& entries = m_accel_res.entries();
 
         INT i = 0;
         entries_type::const_iterator it, end = entries.end();

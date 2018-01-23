@@ -38,8 +38,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MAddCursorDlg(ConstantsDB& db, ResEntries& Entries)
-        : MDialogBase(IDD_ADDCURSOR), m_entries(Entries), m_File(NULL),
+    MAddCursorDlg(ConstantsDB& db, ResEntries& entries)
+        : MDialogBase(IDD_ADDCURSOR), m_entries(entries), m_File(NULL),
           m_db(db)
     {
         m_hCursor = NULL;

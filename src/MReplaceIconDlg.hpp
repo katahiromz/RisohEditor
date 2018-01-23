@@ -40,8 +40,8 @@ public:
     ConstantsDB m_db;
     ResEntry m_entry;
 
-    MReplaceIconDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry)
-        : MDialogBase(IDD_REPLACEICON), m_entries(Entries), m_Entry(Entry),
+    MReplaceIconDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry)
+        : MDialogBase(IDD_REPLACEICON), m_entries(entries), m_Entry(entry),
           m_db(db)
     {
         m_hIcon = NULL;

@@ -38,8 +38,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MReplaceBitmapDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry)
-        : MDialogBase(IDD_REPLACEBMP), m_entries(Entries), m_Entry(Entry),
+    MReplaceBitmapDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry)
+        : MDialogBase(IDD_REPLACEBMP), m_entries(entries), m_Entry(entry),
           m_db(db)
     {
     }

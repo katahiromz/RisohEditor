@@ -42,8 +42,8 @@ public:
     ConstantsDB& m_db;
     WORD m_lang;
 
-    MCopyAsNewLangDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWLANG), m_entries(Entries), m_Entry(Entry), m_db(db)
+    MCopyAsNewLangDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
+        : MDialogBase(IDD_COPYASNEWLANG), m_entries(entries), m_Entry(entry), m_db(db)
     {
         m_lang = 0xFFFF;
     }

@@ -38,8 +38,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MAddIconDlg(ConstantsDB& db, ResEntries& Entries)
-        : MDialogBase(IDD_ADDICON), m_entries(Entries), file(NULL), m_hIcon(NULL),
+    MAddIconDlg(ConstantsDB& db, ResEntries& entries)
+        : MDialogBase(IDD_ADDICON), m_entries(entries), file(NULL), m_hIcon(NULL),
           m_db(db)
     {
     }

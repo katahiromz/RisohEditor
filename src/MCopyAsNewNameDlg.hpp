@@ -40,8 +40,8 @@ public:
     ConstantsDB& m_db;
     MIdOrString m_name;
 
-    MCopyAsNewNameDlg(ResEntries& Entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWNAME), m_entries(Entries), m_entry(entry), m_db(db)
+    MCopyAsNewNameDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
+        : MDialogBase(IDD_COPYASNEWNAME), m_entries(entries), m_entry(entry), m_db(db)
     {
     }
 

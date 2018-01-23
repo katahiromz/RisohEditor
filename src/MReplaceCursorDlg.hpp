@@ -40,8 +40,8 @@ public:
     ConstantsDB& m_db;
     ResEntry m_entry;
 
-    MReplaceCursorDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry) :
-        MDialogBase(IDD_REPLACECUR), m_entries(Entries), m_Entry(Entry),
+    MReplaceCursorDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry) :
+        MDialogBase(IDD_REPLACECUR), m_entries(entries), m_Entry(entry),
         m_db(db)
     {
         m_hCursor = NULL;
