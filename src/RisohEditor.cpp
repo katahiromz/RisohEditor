@@ -553,6 +553,12 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
         return NULL;
     }
 
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
+    {
+        assert(0);
+        return FALSE;
+    }
+
     const GRPICONDIRENTRY *pEntries;
     pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
 
@@ -643,6 +649,12 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     {
         assert(0);
         return NULL;
+    }
+
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
+    {
+        assert(0);
+        return FALSE;
     }
 
     const GRPCURSORDIRENTRY *pEntries;
@@ -2071,6 +2083,12 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
         return FALSE;
     }
 
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
+    {
+        assert(0);
+        return FALSE;
+    }
+
     const GRPICONDIRENTRY *pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
@@ -2109,6 +2127,12 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     memcpy(&dir, &entry[0], sizeof(dir));
 
     if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
     {
         assert(0);
         return FALSE;
