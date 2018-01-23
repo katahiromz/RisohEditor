@@ -955,20 +955,20 @@ public:
 
     void FitToRadDialog()
     {
-        RECT Rect;
-        GetWindowRect(m_rad_dialog, &Rect);
-        SIZE Size;
-        Size.cx = Rect.right - Rect.left;
-        Size.cy = Rect.bottom - Rect.top;
+        RECT rc;
+        GetWindowRect(m_rad_dialog, &rc);
+        SIZE siz;
+        siz.cx = rc.right - rc.left;
+        siz.cy = rc.bottom - rc.top;
 
         DWORD style = GetWindowLong(m_hwnd, GWL_STYLE);
         DWORD exstyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
-        SetRect(&Rect, 0, 0, Size.cx, Size.cy);
-        AdjustWindowRectEx(&Rect, style, FALSE, exstyle);
+        SetRect(&rc, 0, 0, siz.cx, siz.cy);
+        AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
-        Size.cx = Rect.right - Rect.left;
-        Size.cy = Rect.bottom - Rect.top;
-        SetWindowPosDx(NULL, &Size);
+        siz.cx = rc.right - rc.left;
+        siz.cy = rc.bottom - rc.top;
+        SetWindowPosDx(NULL, &siz);
     }
 
     virtual LPCTSTR GetWndClassNameDx() const

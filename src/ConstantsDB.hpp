@@ -499,7 +499,7 @@ public:
 
 protected:
     StringType _dumpBitField(CategoryType category, ValueType& value,
-                             BOOL Not = FALSE) const
+                             BOOL bNot = FALSE) const
     {
         StringType ret;
 
@@ -535,7 +535,7 @@ protected:
 
             if (!ret.empty())
                 ret += L" | ";
-            if (Not)
+            if (bNot)
             {
                 ret += L"NOT ";
             }

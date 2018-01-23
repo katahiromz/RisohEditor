@@ -184,45 +184,45 @@ static const BYTE abManifest[] = {
 
 //////////////////////////////////////////////////////////////////////////////
 
-const BYTE *GetAccelSample(DWORD& Size)
+const BYTE *GetAccelSample(DWORD& dwSize)
 {
-    Size = sizeof(abAccel);
+    dwSize = sizeof(abAccel);
     return abAccel;
 }
 
-const BYTE *GetDialogSample(DWORD& Size)
+const BYTE *GetDialogSample(DWORD& dwSize)
 {
-    Size = sizeof(abDialog);
+    dwSize = sizeof(abDialog);
     return abDialog;
 }
 
-const BYTE *GetMenuSample(DWORD& Size)
+const BYTE *GetMenuSample(DWORD& dwSize)
 {
-    Size = sizeof(abMenu);
+    dwSize = sizeof(abMenu);
     return abMenu;
 }
 
-const BYTE *GetStringSample(DWORD& Size)
+const BYTE *GetStringSample(DWORD& dwSize)
 {
-    Size = sizeof(abString);
+    dwSize = sizeof(abString);
     return abString;
 }
 
-const BYTE *GetVersionSample(DWORD& Size)
+const BYTE *GetVersionSample(DWORD& dwSize)
 {
-    Size = sizeof(abVersion);
+    dwSize = sizeof(abVersion);
     return abVersion;
 }
 
-const BYTE *GetHtmlSample(DWORD& Size)
+const BYTE *GetHtmlSample(DWORD& dwSize)
 {
-    Size = sizeof(abHtml);
+    dwSize = sizeof(abHtml);
     return abHtml;
 }
 
-const BYTE *GetManifestSample(DWORD& Size)
+const BYTE *GetManifestSample(DWORD& dwSize)
 {
-    Size = sizeof(abManifest);
+    dwSize = sizeof(abManifest);
     return abManifest;
 }
 

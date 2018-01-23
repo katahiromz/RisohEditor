@@ -210,8 +210,8 @@ public:
         const DWORD SizeOfEntries = GetImageCount() * sizeof(EntryType);
         offset += SizeOfEntries;
 
-        const DWORD Count = GetImageCount();
-        for (DWORD i = 0; i < Count; ++i)
+        const DWORD nCount = GetImageCount();
+        for (DWORD i = 0; i < nCount; ++i)
         {
             m_entries[i].dwImageOffset = offset;
             offset += m_entries[i].dwBytesInRes;
@@ -223,7 +223,7 @@ public:
             return FALSE;
         }
 
-        for (DWORD i = 0; i < Count; ++i)
+        for (DWORD i = 0; i < nCount; ++i)
         {
             if (!stream.WriteData(GetImagePtr(i), GetImageSize(i)))
                 return FALSE;
@@ -434,8 +434,8 @@ public:
         const DWORD SizeOfEntries = GetImageCount() * sizeof(EntryType);
         offset += SizeOfEntries;
 
-        const DWORD Count = GetImageCount();
-        for (DWORD i = 0; i < Count; ++i)
+        const DWORD nCount = GetImageCount();
+        for (DWORD i = 0; i < nCount; ++i)
         {
             m_entries[i].dwImageOffset = offset;
             offset += m_entries[i].dwBytesInRes;
@@ -447,7 +447,7 @@ public:
             return FALSE;
         }
 
-        for (DWORD i = 0; i < Count; ++i)
+        for (DWORD i = 0; i < nCount; ++i)
         {
             LPBYTE pb = GetImagePtr(i) + sizeof(LOCALHEADER);
             DWORD size = GetImageSize(i) - sizeof(LOCALHEADER);

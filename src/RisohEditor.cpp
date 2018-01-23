@@ -1915,7 +1915,7 @@ void MMainWnd::OnImport(HWND hwnd)
         ResEntries entries;
         if (DoImport(hwnd, file, entries))
         {
-            BOOL Overwrite = TRUE;
+            BOOL bOverwrite = TRUE;
             if (Res_Intersect(m_entries, entries))
             {
                 INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE,
@@ -1925,7 +1925,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 case IDYES:
                     break;
                 case IDNO:
-                    Overwrite = FALSE;
+                    bOverwrite = FALSE;
                     break;
                 case IDCANCEL:
                     return;
@@ -1935,7 +1935,7 @@ void MMainWnd::OnImport(HWND hwnd)
             size_t i, count = entries.size();
             for (i = 0; i < count; ++i)
             {
-                Res_AddEntry(m_entries, entries[i], Overwrite);
+                Res_AddEntry(m_entries, entries[i], bOverwrite);
             }
 
             TV_RefreshInfo(m_hTreeView, m_entries, FALSE);

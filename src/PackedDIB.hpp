@@ -25,11 +25,11 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-DWORD PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD Size);
-BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm);
-HBITMAP PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD Size);
-HICON PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon);
-BOOL PackedDIB_CreateFromHandle(std::vector<BYTE>& Data, HBITMAP hbm);
+DWORD PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize);
+BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
+HBITMAP PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize);
+HICON PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIcon);
+BOOL PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm);
 
 //////////////////////////////////////////////////////////////////////////////
 

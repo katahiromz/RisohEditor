@@ -53,16 +53,16 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
-        mstr_trim(m_entry.Caption);
-        if (m_entry.Caption[0] == L'"')
+        ::GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
+        mstr_trim(m_entry.szCaption);
+        if (m_entry.szCaption[0] == L'"')
         {
-            mstr_unquote(m_entry.Caption);
+            mstr_unquote(m_entry.szCaption);
         }
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
-        mstr_trim(m_entry.CommandID);
-        if (!CheckCommand(m_db, m_entry.CommandID))
+        ::GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        mstr_trim(m_entry.szCommandID);
+        if (!CheckCommand(m_db, m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -95,19 +95,19 @@ public:
             dwType |= MFT_RIGHTJUSTIFY;
 
         std::wstring str = GetMenuTypeAndState(dwType, dwState);
-        if (m_entry.Caption[0] == 0 ||
-            lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0)
+        if (m_entry.szCaption[0] == 0 ||
+            lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0)
         {
-            m_entry.Caption[0] = 0;
+            m_entry.szCaption[0] = 0;
             dwType |= MFT_SEPARATOR;
             str = GetMenuTypeAndState(dwType, dwState);
         }
-        lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
+        lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
-        DWORD help = m_db.GetResIDValue(m_entry.HelpID);
+        ::GetDlgItemTextW(hwnd, edt1, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
-        lstrcpynW(m_entry.HelpID, strHelp.c_str(), _countof(m_entry.HelpID));
+        lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
 
         EndDialog(IDOK);
     }
@@ -160,17 +160,17 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.Caption).c_str());
+        SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
-        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, m_entry.CommandID);
-        SetDlgItemTextW(hwnd, edt1, m_entry.HelpID);
+        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, m_entry.szCommandID);
+        SetDlgItemTextW(hwnd, edt1, m_entry.szHelpID);
 
         DWORD dwType, dwState;
         dwType = dwState = 0;
-        SetMenuTypeAndState(dwType, dwState, m_entry.Flags);
+        SetMenuTypeAndState(dwType, dwState, m_entry.szFlags);
 
-        if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
-            m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
+        if (lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
+            m_entry.szCaption[0] == 0 || (dwType & MFT_SEPARATOR))
         {
             dwType |= MFT_SEPARATOR;
             SetDlgItemTextW(hwnd, cmb1, NULL);
@@ -207,16 +207,16 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ::GetDlgItemTextW(hwnd, cmb1, m_entry.Caption, _countof(m_entry.Caption));
-        mstr_trim(m_entry.Caption);
-        if (m_entry.Caption[0] == L'"')
+        ::GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
+        mstr_trim(m_entry.szCaption);
+        if (m_entry.szCaption[0] == L'"')
         {
-            mstr_unquote(m_entry.Caption);
+            mstr_unquote(m_entry.szCaption);
         }
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.CommandID, _countof(m_entry.CommandID));
-        mstr_trim(m_entry.CommandID);
-        if (!CheckCommand(m_db, m_entry.CommandID))
+        ::GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        mstr_trim(m_entry.szCommandID);
+        if (!CheckCommand(m_db, m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -248,20 +248,20 @@ public:
         if (IsDlgButtonChecked(hwnd, chx13) == BST_CHECKED)
             dwType |= MFT_RIGHTJUSTIFY;
 
-        if (lstrcmpiW(m_entry.Caption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
-            m_entry.Caption[0] == 0 || (dwType & MFT_SEPARATOR))
+        if (lstrcmpiW(m_entry.szCaption, LoadStringDx(IDS_SEPARATOR)) == 0 ||
+            m_entry.szCaption[0] == 0 || (dwType & MFT_SEPARATOR))
         {
-            m_entry.Caption[0] = 0;
+            m_entry.szCaption[0] = 0;
             dwType |= MFT_SEPARATOR;
         }
 
         std::wstring str = GetMenuTypeAndState(dwType, dwState);
-        lstrcpynW(m_entry.Flags, str.c_str(), _countof(m_entry.Flags));
+        lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, edt1, m_entry.HelpID, _countof(m_entry.HelpID));
-        DWORD help = m_db.GetResIDValue(m_entry.HelpID);
+        ::GetDlgItemTextW(hwnd, edt1, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
-        lstrcpynW(m_entry.HelpID, strHelp.c_str(), _countof(m_entry.HelpID));
+        lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
 
         EndDialog(IDOK);
     }
@@ -486,8 +486,8 @@ public:
         INT iItem = ListView_GetItemCount(hCtl1);
 
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
-        str = mstr_quote(m_entry.Caption);
-        if (str.empty() || wcsstr(m_entry.Flags, L"S ") != NULL)
+        str = mstr_quote(m_entry.szCaption);
+        if (str.empty() || wcsstr(m_entry.szFlags, L"S ") != NULL)
             str = LoadStringDx(IDS_SEPARATOR);
         str = mstr_repeat(strIndent, m_entry.wDepth) + str;
 
@@ -504,21 +504,21 @@ public:
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
-        item.pszText = m_entry.Flags;
+        item.pszText = m_entry.szFlags;
         ListView_SetItem(hCtl1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 2;
-        item.pszText = m_entry.CommandID;
+        item.pszText = m_entry.szCommandID;
         ListView_SetItem(hCtl1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 3;
-        item.pszText = m_entry.HelpID;
+        item.pszText = m_entry.szHelpID;
         ListView_SetItem(hCtl1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -527,11 +527,11 @@ public:
 
     BOOL GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
     {
-        WCHAR Caption[256];
-        ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+        WCHAR szCaption[256];
+        ListView_GetItemText(hCtl1, iItem, 0, szCaption, _countof(szCaption));
 
         entry.wDepth = 0;
-        MStringW str = Caption, strIndent = LoadStringDx(IDS_INDENT);
+        MStringW str = szCaption, strIndent = LoadStringDx(IDS_INDENT);
         while (str.find(strIndent) == 0)
         {
             str = str.substr(strIndent.size());
@@ -547,11 +547,11 @@ public:
             str.clear();
         }
 
-        lstrcpynW(entry.Caption, str.c_str(), _countof(entry.Caption));
+        lstrcpynW(entry.szCaption, str.c_str(), _countof(entry.szCaption));
 
-        ListView_GetItemText(hCtl1, iItem, 1, entry.Flags, _countof(entry.Flags));
-        ListView_GetItemText(hCtl1, iItem, 2, entry.CommandID, _countof(entry.CommandID));
-        ListView_GetItemText(hCtl1, iItem, 3, entry.HelpID, _countof(entry.HelpID));
+        ListView_GetItemText(hCtl1, iItem, 1, entry.szFlags, _countof(entry.szFlags));
+        ListView_GetItemText(hCtl1, iItem, 2, entry.szCommandID, _countof(entry.szCommandID));
+        ListView_GetItemText(hCtl1, iItem, 3, entry.szHelpID, _countof(entry.szHelpID));
         return TRUE;
     }
 
@@ -560,15 +560,15 @@ public:
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = mstr_repeat(strIndent, entry.wDepth);
 
-        if (entry.Caption[0] == 0 || wcsstr(entry.Flags, L"S ") != NULL)
+        if (entry.szCaption[0] == 0 || wcsstr(entry.szFlags, L"S ") != NULL)
             str += LoadStringDx(IDS_SEPARATOR);
         else
-            str += mstr_quote(entry.Caption);
+            str += mstr_quote(entry.szCaption);
 
         ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
-        ListView_SetItemText(hCtl1, iItem, 1, entry.Flags);
-        ListView_SetItemText(hCtl1, iItem, 2, entry.CommandID);
-        ListView_SetItemText(hCtl1, iItem, 3, entry.HelpID);
+        ListView_SetItemText(hCtl1, iItem, 1, entry.szFlags);
+        ListView_SetItemText(hCtl1, iItem, 2, entry.szCommandID);
+        ListView_SetItemText(hCtl1, iItem, 3, entry.szHelpID);
         return TRUE;
     }
 
@@ -632,8 +632,8 @@ public:
         if (iItem < 0)
             return;
 
-        INT Count = ListView_GetItemCount(hCtl1);
-        if (iItem + 1 >= Count)
+        INT nCount = ListView_GetItemCount(hCtl1);
+        if (iItem + 1 >= nCount)
             return;
 
         MENU_ENTRY entry0, entry1;
@@ -656,12 +656,12 @@ public:
         if (iItem < 0)
             return;
 
-        WCHAR Caption[128];
-        ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+        WCHAR szCaption[128];
+        ListView_GetItemText(hCtl1, iItem, 0, szCaption, _countof(szCaption));
 
         std::wstring strIndent = LoadStringDx(IDS_INDENT);
 
-        std::wstring str = Caption;
+        std::wstring str = szCaption;
         if (str.find(strIndent) == 0)
         {
             str = str.substr(strIndent.size());
@@ -683,17 +683,17 @@ public:
 
         WCHAR CaptionUp[128];
         ListView_GetItemText(hCtl1, iItem - 1, 0, CaptionUp, _countof(CaptionUp));
-        WCHAR Caption[128];
-        ListView_GetItemText(hCtl1, iItem, 0, Caption, _countof(Caption));
+        WCHAR szCaption[128];
+        ListView_GetItemText(hCtl1, iItem, 0, szCaption, _countof(szCaption));
 
         std::wstring strIndent = LoadStringDx(IDS_INDENT);
         INT depth_up = mstr_repeat_count(CaptionUp, strIndent);
-        INT depth = mstr_repeat_count(Caption, strIndent);
+        INT depth = mstr_repeat_count(szCaption, strIndent);
 
         if (depth_up < depth)
             return;
 
-        std::wstring str = strIndent + Caption;
+        std::wstring str = strIndent + szCaption;
         ListView_SetItemText(hCtl1, iItem, 0, &str[0]);
     }
 
@@ -701,9 +701,9 @@ public:
     {
         MENU_ENTRY entry;
         HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-        INT iItem, Count = ListView_GetItemCount(hCtl1);
+        INT iItem, nCount = ListView_GetItemCount(hCtl1);
 
-        if (Count == 0)
+        if (nCount == 0)
         {
             ErrorBoxDx(IDS_DATAISEMPTY);
             return;
@@ -716,17 +716,17 @@ public:
             m_menu_res.header().wOffset = 4;
             m_menu_res.header().dwHelpId = 0;
             m_menu_res.exitems().clear();
-            for (iItem = 0; iItem < Count; ++iItem)
+            for (iItem = 0; iItem < nCount; ++iItem)
             {
                 GetEntry(hwnd, hCtl1, entry, iItem);
 
                 MenuRes::ExMenuItem exitem;
 
-                SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.Flags);
-                exitem.menuId = m_db.GetResIDValue(entry.CommandID);
+                SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.szFlags);
+                exitem.menuId = m_db.GetResIDValue(entry.szCommandID);
                 exitem.bResInfo = 0;
-                exitem.text = entry.Caption;
-                exitem.dwHelpId = m_db.GetResIDValue(entry.HelpID);
+                exitem.text = entry.szCaption;
+                exitem.dwHelpId = m_db.GetResIDValue(entry.szHelpID);
                 exitem.wDepth = entry.wDepth;
 
                 m_menu_res.exitems().push_back(exitem);
@@ -738,16 +738,16 @@ public:
             m_menu_res.header().wOffset = 4;
             m_menu_res.header().dwHelpId = 0;
             m_menu_res.items().clear();
-            for (iItem = 0; iItem < Count; ++iItem)
+            for (iItem = 0; iItem < nCount; ++iItem)
             {
                 GetEntry(hwnd, hCtl1, entry, iItem);
 
                 MenuRes::MenuItem item;
 
-                SetMenuFlags(item.fItemFlags, entry.Flags);
-                item.wMenuID = (WORD)m_db.GetResIDValue(entry.CommandID);
+                SetMenuFlags(item.fItemFlags, entry.szFlags);
+                item.wMenuID = (WORD)m_db.GetResIDValue(entry.szCommandID);
                 item.wDepth = entry.wDepth;
-                item.text = entry.Caption;
+                item.text = entry.szCaption;
 
                 m_menu_res.items().push_back(item);
             }

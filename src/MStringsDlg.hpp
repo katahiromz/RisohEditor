@@ -345,8 +345,8 @@ public:
     {
         HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
-        INT iItem, Count = ListView_GetItemCount(hCtl1);
-        if (Count == 0)
+        INT iItem, nCount = ListView_GetItemCount(hCtl1);
+        if (nCount == 0)
         {
             ErrorBoxDx(IDS_DATAISEMPTY);
             return;
@@ -355,7 +355,7 @@ public:
         m_str_res.map().clear();
 
         STRING_ENTRY s_entry;
-        for (iItem = 0; iItem < Count; ++iItem)
+        for (iItem = 0; iItem < nCount; ++iItem)
         {
             GetEntry(hwnd, hCtl1, iItem, s_entry);
 

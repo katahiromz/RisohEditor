@@ -24,13 +24,13 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-const BYTE *GetAccelSample(DWORD& Size);
-const BYTE *GetDialogSample(DWORD& Size);
-const BYTE *GetMenuSample(DWORD& Size);
-const BYTE *GetStringSample(DWORD& Size);
-const BYTE *GetVersionSample(DWORD& Size);
-const BYTE *GetHtmlSample(DWORD& Size);
-const BYTE *GetManifestSample(DWORD& Size);
+const BYTE *GetAccelSample(DWORD& dwSize);
+const BYTE *GetDialogSample(DWORD& dwSize);
+const BYTE *GetMenuSample(DWORD& dwSize);
+const BYTE *GetStringSample(DWORD& dwSize);
+const BYTE *GetVersionSample(DWORD& dwSize);
+const BYTE *GetHtmlSample(DWORD& dwSize);
+const BYTE *GetManifestSample(DWORD& dwSize);
 
 //////////////////////////////////////////////////////////////////////////////
 

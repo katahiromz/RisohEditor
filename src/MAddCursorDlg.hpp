@@ -92,7 +92,7 @@ public:
         if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
             bAni = TRUE;
 
-        BOOL Overwrite = FALSE;
+        BOOL bOverwrite = FALSE;
         INT iEntry = Res_Find(m_entries, (bAni ? RT_ANICURSOR : RT_GROUP_CURSOR), name, lang, FALSE);
         if (iEntry != -1)
         {
@@ -100,7 +100,7 @@ public:
             switch (id)
             {
             case IDYES:
-                Overwrite = TRUE;
+                bOverwrite = TRUE;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -112,9 +112,9 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, bs.data(), Overwrite))
+                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, bs.data(), bOverwrite))
             {
-                if (Overwrite)
+                if (bOverwrite)
                     ErrorBoxDx(IDS_CANTREPLACECUR);
                 else
                     ErrorBoxDx(IDS_CANNOTADDCUR);
@@ -123,9 +123,9 @@ public:
         }
         else
         {
-            if (!Res_AddGroupCursor(m_entries, name, lang, file, Overwrite))
+            if (!Res_AddGroupCursor(m_entries, name, lang, file, bOverwrite))
             {
-                if (Overwrite)
+                if (bOverwrite)
                     ErrorBoxDx(IDS_CANTREPLACECUR);
                 else
                     ErrorBoxDx(IDS_CANNOTADDCUR);

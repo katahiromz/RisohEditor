@@ -96,7 +96,7 @@ public:
         if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        BOOL Overwrite = FALSE;
+        BOOL bOverwrite = FALSE;
         INT iEntry = Res_Find(m_entries, RT_BITMAP, name, lang, FALSE);
         if (iEntry != -1)
         {
@@ -104,7 +104,7 @@ public:
             switch (id)
             {
             case IDYES:
-                Overwrite = TRUE;
+                bOverwrite = TRUE;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -117,9 +117,9 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!Res_AddBitmap(m_entries, name, lang, file, Overwrite))
+        if (!Res_AddBitmap(m_entries, name, lang, file, bOverwrite))
         {
-            if (Overwrite)
+            if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
             else
                 ErrorBoxDx(IDS_CANTADDBMP);

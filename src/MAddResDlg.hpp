@@ -167,7 +167,7 @@ public:
         if (!Res_HasSample(type) && !Edt1_CheckFile(hEdt1, file))
             return;
 
-        BOOL Overwrite = FALSE;
+        BOOL bOverwrite = FALSE;
         INT iEntry = Res_Find(m_entries, type, name, lang, FALSE);
         if (iEntry != -1)
         {
@@ -181,7 +181,7 @@ public:
             switch (id)
             {
             case IDYES:
-                Overwrite = TRUE;
+                bOverwrite = TRUE;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -202,46 +202,46 @@ public:
             MByteStreamEx stream;
             if (type == RT_ACCELERATOR)
             {
-                DWORD Size;
-                const BYTE *pb = GetAccelSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetAccelSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else if (type == RT_DIALOG)
             {
-                DWORD Size;
-                const BYTE *pb = GetDialogSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetDialogSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else if (type == RT_MENU)
             {
-                DWORD Size;
-                const BYTE *pb = GetMenuSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetMenuSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else if (type == RT_STRING)
             {
-                DWORD Size;
-                const BYTE *pb = GetStringSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetStringSample(dwSize);
+                stream.assign(pb, dwSize);
                 name = 1;
             }
             else if (type == RT_VERSION)
             {
-                DWORD Size;
-                const BYTE *pb = GetVersionSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetVersionSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else if (type == RT_HTML)
             {
-                DWORD Size;
-                const BYTE *pb = GetHtmlSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetHtmlSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else if (type == RT_MANIFEST)
             {
-                DWORD Size;
-                const BYTE *pb = GetManifestSample(Size);
-                stream.assign(pb, Size);
+                DWORD dwSize;
+                const BYTE *pb = GetManifestSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else
             {
@@ -260,7 +260,7 @@ public:
         MByteStreamEx bs;
         if (!bOK && !bs.LoadFromFile(file.c_str()))
         {
-            if (Overwrite)
+            if (bOverwrite)
                 ErrorBoxDx(IDS_CANNOTREPLACE);
             else
                 ErrorBoxDx(IDS_CANNOTADDRES);
@@ -268,7 +268,7 @@ public:
         }
         if (!bAdded)
         {
-            Res_AddEntry(m_entries, type, name, lang, bs.data(), Overwrite);
+            Res_AddEntry(m_entries, type, name, lang, bs.data(), bOverwrite);
             ResEntry entry(type, name, lang);
             m_entry = entry;
         }

@@ -24,13 +24,13 @@
 //////////////////////////////////////////////////////////////////////////////
 
 DWORD
-PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD Size)
+PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
 {
     BITMAPCOREHEADER bc;
     BITMAPINFOHEADER bi;
     DWORD Ret;
 
-    if (pPackedDIB == NULL || Size < sizeof(bc))
+    if (pPackedDIB == NULL || dwSize < sizeof(bc))
     {
         assert(0);
         return 0;   // failure
@@ -54,7 +54,7 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD Size)
         }
 
         Ret = bc.bcSize + ColorCount * sizeof(RGBTRIPLE);
-        return (Ret <= Size) ? Ret : 0;
+        return (Ret <= dwSize) ? Ret : 0;
     }
 
     if (HeaderSize < sizeof(bi))
@@ -90,7 +90,7 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD Size)
     }
 
     Ret = bi.biSize + ColorCount * sizeof(RGBQUAD);
-    if (Ret > Size)
+    if (Ret > dwSize)
     {
         assert(0);
         Ret = 0;
@@ -99,9 +99,9 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD Size)
 }
 
 BOOL
-PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm)
+PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm)
 {
-    DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, Size);
+    DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
     if (Offset == 0)
     {
         assert(0);
@@ -141,14 +141,14 @@ PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm)
 }
 
 HBITMAP
-PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD Size)
+PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
 {
-    DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, Size);
+    DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
     if (Offset == 0)
         return NULL;
 
     LPBYTE pb = (LPBYTE)pPackedDIB + Offset;
-    Size -= Offset;
+    dwSize -= Offset;
 
     BITMAPINFO bi = *(const BITMAPINFO *)pPackedDIB;
     //BITMAPINFOHEADER *pbmih = &bi.bmiHeader;
@@ -162,14 +162,14 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD Size)
     // FIXME: BI_RLE4 and BI_RLE8
     if (hbm)
     {
-        CopyMemory(pBits, pb, Size);
+        CopyMemory(pBits, pb, dwSize);
     }
 
     return hbm;
 }
 
 HICON
-PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon)
+PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIcon)
 {
     LPBYTE pb = (LPBYTE)(void *)pPackedDIB;
 
@@ -179,10 +179,10 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon)
         //xHotSpot = ((LPWORD)pb)[0];
         //yHotSpot = ((LPWORD)pb)[1];
         pb += 2 * sizeof(WORD);
-        Size -= 2 * sizeof(WORD);
+        dwSize -= 2 * sizeof(WORD);
     }
 
-    if (!PackedDIB_GetInfo(pb, Size, bm))
+    if (!PackedDIB_GetInfo(pb, dwSize, bm))
     {
         assert(0);
         return NULL;
@@ -192,11 +192,11 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD Size, BITMAP& bm, BOOL bIcon)
     if (!bIcon)
     {
         pb -= 2 * sizeof(WORD);
-        Size += 2 * sizeof(WORD);
+        dwSize += 2 * sizeof(WORD);
     }
 
     HICON hIcon;
-    hIcon = CreateIconFromResourceEx(pb, Size, bIcon, 0x00030000,
+    hIcon = CreateIconFromResourceEx(pb, dwSize, bIcon, 0x00030000,
                                      bm.bmWidth, bm.bmHeight, 0);
     assert(hIcon);
     return hIcon;
@@ -209,9 +209,9 @@ typedef struct tagBITMAPINFOEX
 } BITMAPINFOEX, FAR * LPBITMAPINFOEX;
 
 BOOL
-PackedDIB_CreateFromHandle(std::vector<BYTE>& Data, HBITMAP hbm)
+PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
 {
-    Data.clear();
+    vecData.clear();
 
     BITMAP bm;
     if (!GetObject(hbm, sizeof(bm), &bm))
@@ -256,7 +256,7 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& Data, HBITMAP hbm)
         bs.WriteData(bi.bmiColors, cbColors) &&
         bs.WriteData(&Bits[0], Bits.size()))
     {
-        Data = bs.data();
+        vecData = bs.data();
         return TRUE;
     }
     return FALSE;

@@ -104,12 +104,12 @@ public:
         return data[index];
     }
 
-    void assign(const void *ptr, size_type Size)
+    void assign(const void *ptr, size_type nSize)
     {
-        if (ptr && Size)
+        if (ptr && nSize)
         {
-            data.resize(Size);
-            memcpy(&data[0], ptr, Size);
+            data.resize(nSize);
+            memcpy(&data[0], ptr, nSize);
         }
         else
         {
@@ -349,12 +349,12 @@ Res_AddEntryFromRes(HMODULE hMod, ResEntries& entries,
     HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
     if (hResInfo)
     {
-        DWORD Size = SizeofResource(hMod, hResInfo);
+        DWORD dwSize = SizeofResource(hMod, hResInfo);
         HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
         LPVOID pv = LockResource(hGlobal);
-        if (pv && Size)
+        if (pv && dwSize)
         {
-            entry.assign(pv, Size);
+            entry.assign(pv, dwSize);
         }
     }
 
@@ -386,10 +386,10 @@ Res_AddEntry(ResEntries& entries, const ResEntry& entry,
 inline BOOL
 Res_AddEntry(ResEntries& entries, const MIdOrString& type,
              const MIdOrString& name, WORD lang,
-             const ResEntry::DataType& Data, BOOL Replace = FALSE)
+             const ResEntry::DataType& vecData, BOOL Replace = FALSE)
 {
     ResEntry entry(type, name, lang);
-    entry.data = Data;
+    entry.data = vecData;
     return Res_AddEntry(entries, entry, Replace);
 }
 
@@ -411,8 +411,8 @@ Res_DeleteGroupIcon(ResEntries& entries, ResEntry& entry)
         return FALSE;
     }
 
-    DWORD i, Count = dir.idCount;
-    for (i = 0; i < Count; ++i)
+    DWORD i, nCount = dir.idCount;
+    for (i = 0; i < nCount; ++i)
     {
         INT k = Res_Find(entries, RT_ICON, DirEntries[i].nID, entry.lang, TRUE);
         if (k != -1)
@@ -441,8 +441,8 @@ Res_DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
         return FALSE;
     }
 
-    DWORD i, Count = dir.idCount;
-    for (i = 0; i < Count; ++i)
+    DWORD i, nCount = dir.idCount;
+    for (i = 0; i < nCount; ++i)
     {
         INT k = Res_Find(entries, RT_CURSOR, DirEntries[i].nID, entry.lang, TRUE);
         entries[k].clear_data();
@@ -504,8 +504,8 @@ Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
     IconFile::DataType group(icon.GetIconGroup(NextIconID));
     Res_AddEntry(entries, RT_GROUP_ICON, name, lang, group, Replace);
 
-    int i, Count = icon.GetImageCount();
-    for (i = 0; i < Count; ++i)
+    int i, nCount = icon.GetImageCount();
+    for (i = 0; i < nCount; ++i)
     {
         Res_AddEntry(entries, RT_ICON, WORD(NextIconID + i), lang,
                      icon.GetImage(i));
@@ -527,8 +527,8 @@ Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
     CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
     Res_AddEntry(entries, RT_GROUP_CURSOR, name, lang, group, Replace);
 
-    int i, Count = cur.GetImageCount();
-    for (i = 0; i < Count; ++i)
+    int i, nCount = cur.GetImageCount();
+    for (i = 0; i < nCount; ++i)
     {
         Res_AddEntry(entries, RT_CURSOR, WORD(NextCursorID + i), lang,
                      cur.GetImage(i));
@@ -1194,7 +1194,7 @@ Res_ExtractGroupIcon(const ResEntries& entries,
     return stream.SaveToFile(OutputFileName);
 }
 
-BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm);
+BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 inline BOOL
 Res_ExtractIcon(const ResEntries& entries,

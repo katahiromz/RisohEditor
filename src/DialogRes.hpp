@@ -1002,20 +1002,20 @@ protected:
     {
         stream.ReadDwordAlignment();
 
-        DLGTEMPLATE Template;
-        if (!stream.ReadRaw(Template))
+        DLGTEMPLATE tmp;
+        if (!stream.ReadRaw(tmp))
             return FALSE;
 
         m_version = 0;
         m_signature = 0;
         m_help_id = 0;
-        m_style = Template.style;
-        m_ex_style = Template.dwExtendedStyle;
-        m_cItems = Template.cdit;
-        m_pt.x = Template.x;
-        m_pt.y = Template.y;
-        m_siz.cx = Template.cx;
-        m_siz.cy = Template.cy;
+        m_style = tmp.style;
+        m_ex_style = tmp.dwExtendedStyle;
+        m_cItems = tmp.cdit;
+        m_pt.x = tmp.x;
+        m_pt.y = tmp.y;
+        m_siz.cx = tmp.cx;
+        m_siz.cy = tmp.cy;
 
         if (!stream.ReadString(m_menu) ||
             !stream.ReadString(m_class) || 
@@ -1091,16 +1091,16 @@ protected:
     {
         stream.WriteDwordAlignment();
 
-        DLGTEMPLATE Template;
+        DLGTEMPLATE tmp;
 
-        Template.style = m_style;
-        Template.dwExtendedStyle = m_ex_style;
-        Template.cdit = m_cItems;
-        Template.x = (SHORT)m_pt.x;
-        Template.y = (SHORT)m_pt.y;
-        Template.cx = (SHORT)m_siz.cx;
-        Template.cy = (SHORT)m_siz.cy;
-        if (!stream.WriteRaw(Template) ||
+        tmp.style = m_style;
+        tmp.dwExtendedStyle = m_ex_style;
+        tmp.cdit = m_cItems;
+        tmp.x = (SHORT)m_pt.x;
+        tmp.y = (SHORT)m_pt.y;
+        tmp.cx = (SHORT)m_siz.cx;
+        tmp.cy = (SHORT)m_siz.cy;
+        if (!stream.WriteRaw(tmp) ||
             !stream.WriteString(m_menu.ptr()) ||
             !stream.WriteString(m_class.ptr()) ||
             !stream.WriteString(m_title.ptr()))
@@ -1108,7 +1108,7 @@ protected:
             return FALSE;
         }
 
-        if (Template.style & (DS_SETFONT | DS_SHELLFONT))
+        if (tmp.style & (DS_SETFONT | DS_SHELLFONT))
         {
             if (!stream.WriteWord(m_point_size) ||
                 !stream.WriteString(m_type_face.ptr()))

@@ -98,7 +98,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        BOOL Overwrite = FALSE;
+        BOOL bOverwrite = FALSE;
         INT iEntry = Res_Find(m_entries, RT_GROUP_ICON, name, lang, FALSE);
         if (iEntry != -1)
         {
@@ -106,7 +106,7 @@ public:
             switch (id)
             {
             case IDYES:
-                Overwrite = TRUE;
+                bOverwrite = TRUE;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -114,9 +114,9 @@ public:
             }
         }
 
-        if (!Res_AddGroupIcon(m_entries, name, lang, file, Overwrite))
+        if (!Res_AddGroupIcon(m_entries, name, lang, file, bOverwrite))
         {
-            if (Overwrite)
+            if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEICO);
             else
                 ErrorBoxDx(IDS_CANNOTADDICON);

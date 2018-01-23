@@ -149,20 +149,20 @@ public:
 
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
 
-        WORD Flags;
-        SetKeyFlags(Flags, m_entry.sz1);
-        if (Flags & FVIRTKEY)
+        WORD wFlags;
+        SetKeyFlags(wFlags, m_entry.sz1);
+        if (wFlags & FVIRTKEY)
             CheckDlgButton(hwnd, chx1, BST_CHECKED);
-        if (Flags & FNOINVERT)
+        if (wFlags & FNOINVERT)
             CheckDlgButton(hwnd, chx2, BST_CHECKED);
-        if (Flags & FCONTROL)
+        if (wFlags & FCONTROL)
             CheckDlgButton(hwnd, chx3, BST_CHECKED);
-        if (Flags & FSHIFT)
+        if (wFlags & FSHIFT)
             CheckDlgButton(hwnd, chx4, BST_CHECKED);
-        if (Flags & FALT)
+        if (wFlags & FALT)
             CheckDlgButton(hwnd, chx5, BST_CHECKED);
 
-        if (Flags & FVIRTKEY)
+        if (wFlags & FVIRTKEY)
         {
             HWND hCmb1 = GetDlgItem(hwnd, cmb1);
             Cmb1_InitVirtualKeys(hCmb1, m_db);
@@ -400,28 +400,28 @@ public:
     {
         HWND hCtl1 = GetDlgItem(hwnd, ctl1);
 
-        INT i, Count = ListView_GetItemCount(hCtl1);
+        INT i, nCount = ListView_GetItemCount(hCtl1);
 
-        if (Count == 0)
+        if (nCount == 0)
         {
             ErrorBoxDx(IDS_DATAISEMPTY);
             return;
         }
 
         m_accel_res.entries().clear();
-        for (i = 0; i < Count; ++i)
+        for (i = 0; i < nCount; ++i)
         {
             ACCEL_ENTRY a_entry;
             ListView_GetItemText(hCtl1, i, 0, a_entry.sz0, _countof(a_entry.sz0));
             ListView_GetItemText(hCtl1, i, 1, a_entry.sz1, _countof(a_entry.sz1));
             ListView_GetItemText(hCtl1, i, 2, a_entry.sz2, _countof(a_entry.sz2));
 
-            WORD Flags;
-            SetKeyFlags(Flags, a_entry.sz1);
+            WORD wFlags;
+            SetKeyFlags(wFlags, a_entry.sz1);
 
             AccelTableEntry entry;
-            entry.fFlags = Flags;
-            if (Flags & FVIRTKEY)
+            entry.fFlags = wFlags;
+            if (wFlags & FVIRTKEY)
             {
                 entry.wAscii = (WORD)m_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
             }

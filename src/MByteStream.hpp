@@ -130,13 +130,13 @@ public:
         return WriteData(&data, sizeof(T));
     }
 
-    BOOL WriteData(const void *data, size_t Size)
+    BOOL WriteData(const void *data, size_t nSize)
     {
-        if (data && Size)
+        if (data && nSize)
         {
             size_t old_size = size();
-            m_data.resize(old_size + Size);
-            memcpy(&m_data[old_size], data, Size);
+            m_data.resize(old_size + nSize);
+            memcpy(&m_data[old_size], data, nSize);
         }
         return TRUE;
     }
@@ -180,14 +180,14 @@ public:
         return ReadData(&value, sizeof(T));
     }
 
-    BOOL ReadData(void *data, size_t Size) const
+    BOOL ReadData(void *data, size_t nSize) const
     {
-        if (m_pos + Size <= size())
+        if (m_pos + nSize <= size())
         {
-            if (Size)
+            if (nSize)
             {
-                memcpy(data, &m_data[m_pos], Size);
-                m_pos += Size;
+                memcpy(data, &m_data[m_pos], nSize);
+                m_pos += nSize;
             }
             return TRUE;
         }
@@ -226,10 +226,10 @@ public:
 
     BOOL PeekWord(WORD& w) const
     {
-        size_t Size = sizeof(WORD);
-        if (m_pos + Size <= size())
+        size_t nSize = sizeof(WORD);
+        if (m_pos + nSize <= size())
         {
-            memcpy(&w, &m_data[m_pos], Size);
+            memcpy(&w, &m_data[m_pos], nSize);
             return TRUE;
         }
         return FALSE;
@@ -237,10 +237,10 @@ public:
 
     BOOL PeekByte(BYTE& b) const
     {
-        size_t Size = sizeof(BYTE);
-        if (m_pos + Size <= size())
+        size_t nSize = sizeof(BYTE);
+        if (m_pos + nSize <= size())
         {
-            memcpy(&b, &m_data[m_pos], Size);
+            memcpy(&b, &m_data[m_pos], nSize);
             return TRUE;
         }
         return FALSE;
