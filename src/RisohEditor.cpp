@@ -1461,6 +1461,8 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
+    BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
+    BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
 
 protected:
     // parsing resource IDs
@@ -2052,6 +2054,92 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     ::SetWindowTextW(m_hBinEdit, str.c_str());
 }
 
+BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
+{
+    ICONDIR dir;
+    if (entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    memcpy(&dir, &entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    const GRPICONDIRENTRY *pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(m_Entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        if (k == -1)
+            k = Res_Find(m_Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        if (k == -1)
+        {
+            return FALSE;
+        }
+        ResEntry icon_entry = m_Entries[k];
+
+        UINT nLastID = Res_GetLastIconID(m_Entries);
+        UINT nNextID = nLastID + 1;
+
+        icon_entry.name = WORD(nNextID);
+
+        Res_AddEntry(m_Entries, icon_entry, TRUE);
+    }
+
+    entry.name = name;
+    return Res_AddEntry(m_Entries, entry, TRUE);
+}
+
+BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
+{
+    ICONDIR dir;
+    if (entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    memcpy(&dir, &entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    const GRPCURSORDIRENTRY *pEntries = (const GRPCURSORDIRENTRY *)&entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(m_Entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+        if (k == -1)
+            k = Res_Find(m_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+        if (k == -1)
+        {
+            return FALSE;
+        }
+        ResEntry cursor_entry = m_Entries[k];
+
+        UINT nLastID = Res_GetLastCursorID(m_Entries);
+        UINT nNextID = nLastID + 1;
+
+        cursor_entry.name = WORD(nNextID);
+
+        Res_AddEntry(m_Entries, cursor_entry, TRUE);
+    }
+
+    entry.name = name;
+    return Res_AddEntry(m_Entries, entry, TRUE);
+}
+
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -2065,14 +2153,32 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
-        Res_Search(found, m_Entries, dialog.m_entry);
-        for (size_t i = 0; i < found.size(); ++i)
+        Res_Search(found, m_Entries, entry);
+        if (entry.type == RT_GROUP_ICON)
         {
-            found[i].name = dialog.m_name;
-            Res_AddEntry(m_Entries, found[i], TRUE);
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                DoCopyGroupIcon(found[i], dialog.m_name);
+            }
+        }
+        else if (entry.type == RT_GROUP_CURSOR)
+        {
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                DoCopyGroupCursor(found[i], dialog.m_name);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].name = dialog.m_name;
+                Res_AddEntry(m_Entries, found[i], TRUE);
+            }
         }
         TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        entry.name = dialog.m_name;
+        TV_SelectEntry(m_hTreeView, m_Entries, entry);
     }
 }
 
