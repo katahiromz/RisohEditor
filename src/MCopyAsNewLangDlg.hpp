@@ -26,10 +26,10 @@
 #include "ConstantsDB.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -37,13 +37,13 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 class MCopyAsNewLangDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
+    ResEntries& m_entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
     WORD m_lang;
 
     MCopyAsNewLangDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWLANG), m_Entries(Entries), m_Entry(Entry), m_db(db)
+        : MDialogBase(IDD_COPYASNEWLANG), m_entries(Entries), m_Entry(Entry), m_db(db)
     {
         m_lang = 0xFFFF;
     }
@@ -126,26 +126,26 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type;
+        MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(Table.size()))
         {
-            Type = WORD(Table[iType].value);
+            type = WORD(Table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, Type))
+            if (!CheckTypeComboBox(hCmb1, type))
                 return;
         }
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        m_lang = Lang;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }

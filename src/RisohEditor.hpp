@@ -77,16 +77,16 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 HBITMAP
-CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm);
+CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
 
 HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry);
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
 
 HBITMAP
-CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm);
+CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
 
 HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry);
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
 
 ////////////////////////////////////////////////////////////////////////////
 

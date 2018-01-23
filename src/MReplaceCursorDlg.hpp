@@ -23,9 +23,9 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -35,13 +35,13 @@ class MReplaceCursorDlg : public MDialogBase
 protected:
     HCURSOR   m_hCursor;
 public:
-    ResEntries& m_Entries;
+    ResEntries& m_entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
     ResEntry m_entry;
 
     MReplaceCursorDlg(ConstantsDB& db, ResEntries& Entries, ResEntry& Entry) :
-        MDialogBase(IDD_REPLACECUR), m_Entries(Entries), m_Entry(Entry),
+        MDialogBase(IDD_REPLACECUR), m_entries(Entries), m_Entry(Entry),
         m_db(db)
     {
         m_hCursor = NULL;
@@ -56,7 +56,7 @@ public:
     {
         DragAcceptFiles(hwnd, TRUE);
 
-        // for Name
+        // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitCommandComboBox(hCmb2, m_db, m_Entry.name.str());
         ::EnableWindow(hCmb2, FALSE);
@@ -72,33 +72,33 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type = m_Entry.type;
+        MIdOrString type = m_Entry.type;
 
-        MIdOrString Name;
+        MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        std::wstring File;
+        std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Edt1_CheckFile(hEdt1, File))
+        if (!Edt1_CheckFile(hEdt1, file))
             return;
 
         BOOL bAni = FALSE;
-        size_t ich = File.find(L'.');
-        if (ich != std::wstring::npos && lstrcmpiW(&File[ich], L".ani") == 0)
+        size_t ich = file.find(L'.');
+        if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
             bAni = TRUE;
 
         if (bAni)
         {
             MByteStream bs;
-            if (!bs.LoadFromFile(File.c_str()) ||
-                !Res_AddEntry(m_Entries, RT_ANICURSOR, Name, Lang, bs.data(), TRUE))
+            if (!bs.LoadFromFile(file.c_str()) ||
+                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, bs.data(), TRUE))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
@@ -106,14 +106,14 @@ public:
         }
         else
         {
-            if (!Res_AddGroupCursor(m_Entries, Name, Lang, File, TRUE))
+            if (!Res_AddGroupCursor(m_entries, name, lang, file, TRUE))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
             }
         }
 
-        ResEntry entry(Type, Name, Lang);
+        ResEntry entry(type, name, lang);
         m_entry = entry;
 
         EndDialog(IDOK);
@@ -175,13 +175,13 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        WCHAR File[MAX_PATH];
-        DragQueryFileW(hdrop, 0, File, _countof(File));
-        SetDlgItemTextW(hwnd, edt1, File);
+        WCHAR file[MAX_PATH];
+        DragQueryFileW(hdrop, 0, file, _countof(file));
+        SetDlgItemTextW(hwnd, edt1, file);
 
         if (m_hCursor)
             DestroyCursor(m_hCursor);
-        m_hCursor = LoadCursorFromFile(File);
+        m_hCursor = LoadCursorFromFile(file);
         SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
         DragFinish(hdrop);
     }

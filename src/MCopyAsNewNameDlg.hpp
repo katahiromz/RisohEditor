@@ -26,8 +26,8 @@
 #include "ConstantsDB.hpp"
 #include "id_string.hpp"
 
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -35,13 +35,13 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 class MCopyAsNewNameDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
+    ResEntries& m_entries;
     ResEntry& m_entry;
     ConstantsDB& m_db;
     MIdOrString m_name;
 
     MCopyAsNewNameDlg(ResEntries& Entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWNAME), m_Entries(Entries), m_entry(entry), m_db(db)
+        : MDialogBase(IDD_COPYASNEWNAME), m_entries(Entries), m_entry(entry), m_db(db)
     {
     }
 
@@ -123,26 +123,26 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type;
+        MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(Table.size()))
         {
-            Type = WORD(Table[iType].value);
+            type = WORD(Table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, Type))
+            if (!CheckTypeComboBox(hCmb1, type))
                 return;
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString Name;
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        MIdOrString name;
+        if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
-        m_name = Name;
+        m_name = name;
 
         EndDialog(IDOK);
     }

@@ -116,7 +116,7 @@ void InitFontComboBox(HWND hCmb)
 typedef struct CharSetInfo
 {
     BYTE CharSet;
-    LPCTSTR Name;
+    LPCTSTR name;
 } CharSetInfo;
 
 static const CharSetInfo s_charset_entries[] =
@@ -149,7 +149,7 @@ void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
 
     for (UINT i = 0; i < _countof(s_charset_entries); ++i)
     {
-        ComboBox_AddString(hCmb, s_charset_entries[i].Name);
+        ComboBox_AddString(hCmb, s_charset_entries[i].name);
     }
     for (UINT i = 0; i < _countof(s_charset_entries); ++i)
     {
@@ -471,15 +471,15 @@ PremultiplyDx(HBITMAP hbm32bpp)
 }
 
 HBITMAP
-CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
 {
     HBITMAP hbmIcon;
 
-    if (Entry.size() >= 4 &&
-        memcmp(&Entry[0], "\x89\x50\x4E\x47", 4) == 0)
+    if (entry.size() >= 4 &&
+        memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
     {
         MBitmapDx bitmap;
-        bitmap.CreateFromMemory(&Entry[0], Entry.size());
+        bitmap.CreateFromMemory(&entry[0], entry.size());
         LONG cx, cy;
         hbmIcon = bitmap.GetHBITMAP32(cx, cy);
     }
@@ -487,7 +487,7 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
     {
         HICON hIcon;
         BITMAP bm;
-        hIcon = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, TRUE);
+        hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
         assert(hIcon);
         hbmIcon = CreateBitmapFromIconDx(hIcon,
                                          bm.bmWidth, bm.bmHeight, FALSE);
@@ -536,16 +536,16 @@ void DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
 }
 
 HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
 {
     ICONDIR dir;
-    if (Entry.size() < sizeof(dir))
+    if (entry.size() < sizeof(dir))
     {
         assert(0);
         return NULL;
     }
 
-    memcpy(&dir, &Entry[0], sizeof(dir));
+    memcpy(&dir, &entry[0], sizeof(dir));
 
     if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
     {
@@ -554,19 +554,19 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     }
 
     const GRPICONDIRENTRY *pEntries;
-    pEntries = (const GRPICONDIRENTRY *)&Entry[sizeof(dir)];
+    pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang, FALSE);
+        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             return NULL;
         }
-        ResEntry& IconEntry = Entries[k];
+        ResEntry& IconEntry = entries[k];
 
         BITMAP bm;
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
@@ -592,15 +592,15 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, pEntries[i].nID, Entry.lang, FALSE);
+        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             DeleteObject(hbm);
             return NULL;
         }
-        ResEntry& IconEntry = Entries[k];
+        ResEntry& IconEntry = entries[k];
 
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, IconEntry, bm);
 
@@ -612,12 +612,12 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
 }
 
 HBITMAP
-CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
+CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
 {
     HBITMAP hbmCursor;
 
     HICON hCursor;
-    hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+    hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
     assert(hCursor);
     hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
     DestroyCursor(hCursor);
@@ -628,16 +628,16 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& Entry, BITMAP& bm)
 }
 
 HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
 {
     ICONDIR dir;
-    if (Entry.size() < sizeof(dir))
+    if (entry.size() < sizeof(dir))
     {
         assert(0);
         return NULL;
     }
 
-    memcpy(&dir, &Entry[0], sizeof(dir));
+    memcpy(&dir, &entry[0], sizeof(dir));
 
     if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
     {
@@ -646,19 +646,19 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
     }
 
     const GRPCURSORDIRENTRY *pEntries;
-    pEntries = (const GRPCURSORDIRENTRY *)&Entry[sizeof(dir)];
+    pEntries = (const GRPCURSORDIRENTRY *)&entry[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang, FALSE);
+        INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             return NULL;
         }
-        ResEntry& CursorEntry = Entries[k];
+        ResEntry& CursorEntry = entries[k];
 
         BITMAP bm;
         HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
@@ -688,16 +688,16 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& Entries, const ResEntry& Entry)
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, Entry.lang, FALSE);
+            INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
             if (k == -1)
-                k = Res_Find(Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+                k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
             if (k == -1)
             {
                 assert(0);
                 DeleteObject(hbm);
                 return NULL;
             }
-            ResEntry& CursorEntry = Entries[k];
+            ResEntry& CursorEntry = entries[k];
 
             BITMAP bm;
             HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, CursorEntry, bm);
@@ -844,7 +844,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     }
 }
 
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
@@ -862,17 +862,17 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type)
     }
     else if (iswdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
     {
-        Type = WORD(wcstol(szType, NULL, 0));
+        type = WORD(wcstol(szType, NULL, 0));
     }
     else
     {
-        Type = szType;
+        type = szType;
     }
 
     return TRUE;
 }
 
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name)
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
@@ -889,19 +889,19 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name)
     }
     else if (iswdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
     {
-        Name = WORD(wcstol(szName, NULL, 0));
+        name = WORD(wcstol(szName, NULL, 0));
     }
     else
     {
         if (db.HasResID(szName))
-            Name = (WORD)db.GetResIDValue(szName);
+            name = (WORD)db.GetResIDValue(szName);
         else
-            Name = szName;
+            name = szName;
     }
     return TRUE;
 }
 
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
@@ -919,7 +919,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
     }
     else if (iswdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
     {
-        Lang = WORD(wcstol(szLang, NULL, 0));
+        lang = WORD(wcstol(szLang, NULL, 0));
     }
     else
     {
@@ -932,13 +932,13 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang)
                         NULL, MB_ICONERROR);
             return FALSE;
         }
-        Lang = g_Langs[i].LangID;
+        lang = g_Langs[i].LangID;
     }
 
     return TRUE;
 }
 
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file)
 {
     WCHAR szFile[MAX_PATH];
     GetWindowTextW(hEdt1, szFile, _countof(szFile));
@@ -953,7 +953,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    File = szFile;
+    file = szFile;
     return TRUE;
 }
 
@@ -1028,7 +1028,7 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
     return ret;
 }
 
-std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& data)
+std::wstring DumpGroupCursorInfo(ResEntries& entries, const std::vector<BYTE>& data)
 {
     std::wstring ret;
     WCHAR sz[128];
@@ -1060,10 +1060,10 @@ std::wstring DumpGroupCursorInfo(ResEntries& Entries, const std::vector<BYTE>& d
         WORD xHotSpot = 0;
         WORD yHotSpot = 0;
 
-        INT k = Res_Find(Entries, RT_CURSOR, nID, 0xFFFF, FALSE);
+        INT k = Res_Find(entries, RT_CURSOR, nID, 0xFFFF, FALSE);
         if (k != -1)
         {
-            const ResEntry& CursorEntry = Entries[k];
+            const ResEntry& CursorEntry = entries[k];
             LOCALHEADER header;
             if (CursorEntry.size() >= sizeof(header))
             {
@@ -1272,9 +1272,9 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
 {
-    LangEntry Entry;
+    LangEntry entry;
     LCID lcid = wcstoul(lpLocaleString, NULL, 16);
-    Entry.LangID = LANGIDFROMLCID(lcid);
+    entry.LangID = LANGIDFROMLCID(lcid);
 
     WCHAR sz[MAX_PATH] = L"";
     if (lcid == 0)
@@ -1282,16 +1282,16 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
         return TRUE;
 
-    Entry.Str = sz;
-    g_Langs.push_back(Entry);
+    entry.Str = sz;
+    g_Langs.push_back(entry);
     return TRUE;
 }
 
 std::wstring
-Res_GetLangName(WORD Lang)
+Res_GetLangName(WORD lang)
 {
     WCHAR sz[64], szLoc[64];
-    LCID lcid = MAKELCID(Lang, SORT_DEFAULT);
+    LCID lcid = MAKELCID(lang, SORT_DEFAULT);
     if (lcid == 0)
     {
         wsprintfW(sz, L"%s (0)", LoadStringDx(IDS_NEUTRAL));
@@ -1299,7 +1299,7 @@ Res_GetLangName(WORD Lang)
     else
     {
         GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64);
-        wsprintfW(sz, L"%s (%u)", szLoc, Lang);
+        wsprintfW(sz, L"%s (%u)", szLoc, lang);
     }
     return std::wstring(sz);
 }
@@ -1346,7 +1346,7 @@ protected:
     MBmpView        m_hBmpView;
     MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
     MIDListDlg      m_id_list_dlg;
-    ResEntries      m_Entries;
+    ResEntries      m_entries;
 
     // find/replace
     FINDREPLACE     m_fr;
@@ -1446,18 +1446,18 @@ public:
 
     // preview
     VOID HidePreview(HWND hwnd);
-    BOOL Preview(HWND hwnd, const ResEntry& Entry);
+    BOOL Preview(HWND hwnd, const ResEntry& entry);
 
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
-    BOOL DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName);
+    BOOL DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
-    BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry);
-    BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry);
-    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries);
-    BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& Entry);
+    BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
+    BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& entry);
+    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& entry, BOOL WritePNG);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries);
+    BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
@@ -1474,24 +1474,24 @@ protected:
     BOOL UnloadResourceH(HWND hwnd);
 
     // preview
-    void PreviewIcon(HWND hwnd, const ResEntry& Entry);
-    void PreviewCursor(HWND hwnd, const ResEntry& Entry);
-    void PreviewGroupIcon(HWND hwnd, const ResEntry& Entry);
-    void PreviewGroupCursor(HWND hwnd, const ResEntry& Entry);
-    void PreviewBitmap(HWND hwnd, const ResEntry& Entry);
-    void PreviewImage(HWND hwnd, const ResEntry& Entry);
-    void PreviewWAVE(HWND hwnd, const ResEntry& Entry);
-    void PreviewAVI(HWND hwnd, const ResEntry& Entry);
-    void PreviewAccel(HWND hwnd, const ResEntry& Entry);
-    void PreviewMessage(HWND hwnd, const ResEntry& Entry);
-    void PreviewString(HWND hwnd, const ResEntry& Entry);
-    void PreviewHtml(HWND hwnd, const ResEntry& Entry);
-    void PreviewMenu(HWND hwnd, const ResEntry& Entry);
-    void PreviewVersion(HWND hwnd, const ResEntry& Entry);
-    void PreviewDialog(HWND hwnd, const ResEntry& Entry);
-    void PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon);
-    void PreviewStringTable(HWND hwnd, const ResEntry& Entry);
-    void PreviewMessageTable(HWND hwnd, const ResEntry& Entry);
+    void PreviewIcon(HWND hwnd, const ResEntry& entry);
+    void PreviewCursor(HWND hwnd, const ResEntry& entry);
+    void PreviewGroupIcon(HWND hwnd, const ResEntry& entry);
+    void PreviewGroupCursor(HWND hwnd, const ResEntry& entry);
+    void PreviewBitmap(HWND hwnd, const ResEntry& entry);
+    void PreviewImage(HWND hwnd, const ResEntry& entry);
+    void PreviewWAVE(HWND hwnd, const ResEntry& entry);
+    void PreviewAVI(HWND hwnd, const ResEntry& entry);
+    void PreviewAccel(HWND hwnd, const ResEntry& entry);
+    void PreviewMessage(HWND hwnd, const ResEntry& entry);
+    void PreviewString(HWND hwnd, const ResEntry& entry);
+    void PreviewHtml(HWND hwnd, const ResEntry& entry);
+    void PreviewMenu(HWND hwnd, const ResEntry& entry);
+    void PreviewVersion(HWND hwnd, const ResEntry& entry);
+    void PreviewDialog(HWND hwnd, const ResEntry& entry);
+    void PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon);
+    void PreviewStringTable(HWND hwnd, const ResEntry& entry);
+    void PreviewMessageTable(HWND hwnd, const ResEntry& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
@@ -1691,7 +1691,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
         {
             ResEntries selection;
-            INT count = TV_GetSelection(m_hTreeView, selection, m_Entries);
+            INT count = TV_GetSelection(m_hTreeView, selection, m_entries);
             if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
@@ -1699,7 +1699,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         }
         else
         {
-            if (!DoExtractBin(ofn.lpstrFile, m_Entries[i]))
+            if (!DoExtractBin(ofn.lpstrFile, m_entries[i]))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -1717,7 +1717,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& entry = m_Entries[i];
+    ResEntry& entry = m_entries[i];
 
     WCHAR szFile[MAX_PATH] = L"";
     OPENFILENAMEW ofn;
@@ -1742,7 +1742,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractIcon(ofn.lpstrFile, m_Entries[i]))
+        if (!DoExtractIcon(ofn.lpstrFile, m_entries[i]))
         {
             ErrorBoxDx(IDS_CANTEXTRACTICO);
         }
@@ -1759,7 +1759,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& entry = m_Entries[i];
+    ResEntry& entry = m_entries[i];
 
     WCHAR szFile[MAX_PATH] = L"";
     OPENFILENAMEW ofn;
@@ -1784,7 +1784,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractCursor(ofn.lpstrFile, m_Entries[i]))
+        if (!DoExtractCursor(ofn.lpstrFile, m_entries[i]))
         {
             ErrorBoxDx(IDS_CANTEXTRACTCUR);
         }
@@ -1818,7 +1818,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     {
         BOOL PNG;
         PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-        if (!DoExtractBitmap(ofn.lpstrFile, m_Entries[i], PNG))
+        if (!DoExtractBitmap(ofn.lpstrFile, m_entries[i], PNG))
         {
             ErrorBoxDx(IDS_CANTEXTRACTBMP);
         }
@@ -1835,11 +1835,11 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceBinDlg dialog(m_Entries, m_Entries[i], m_db);
+    MReplaceBinDlg dialog(m_entries, m_entries[i], m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -1870,22 +1870,22 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    WCHAR File[MAX_PATH] = TEXT("");
+    WCHAR file[MAX_PATH] = TEXT("");
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
+    ofn.lpstrFile = file;
+    ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"dll";
     if (GetOpenFileNameW(&ofn))
     {
-        if (!LoadLibraryW(File))
+        if (!LoadLibraryW(file))
         {
             ErrorBoxDx(IDS_CANNOTLOAD);
         }
@@ -1897,15 +1897,15 @@ void MMainWnd::OnImport(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    WCHAR File[MAX_PATH] = TEXT("");
+    WCHAR file[MAX_PATH] = TEXT("");
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
+    ofn.lpstrFile = file;
+    ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_IMPORTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
@@ -1913,10 +1913,10 @@ void MMainWnd::OnImport(HWND hwnd)
     if (GetOpenFileNameW(&ofn))
     {
         ResEntries entries;
-        if (DoImport(hwnd, File, entries))
+        if (DoImport(hwnd, file, entries))
         {
             BOOL Overwrite = TRUE;
-            if (Res_Intersect(m_Entries, entries))
+            if (Res_Intersect(m_entries, entries))
             {
                 INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE,
                                    MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -1935,10 +1935,10 @@ void MMainWnd::OnImport(HWND hwnd)
             size_t i, count = entries.size();
             for (i = 0; i < count; ++i)
             {
-                Res_AddEntry(m_Entries, entries[i], Overwrite);
+                Res_AddEntry(m_entries, entries[i], Overwrite);
             }
 
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
         }
         else
         {
@@ -1952,23 +1952,23 @@ void MMainWnd::OnOpen(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    WCHAR File[MAX_PATH];
-    lstrcpynW(File, m_szFile, _countof(File));
+    WCHAR file[MAX_PATH];
+    lstrcpynW(file, m_szFile, _countof(file));
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
+    ofn.lpstrFile = file;
+    ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"exe";
     if (GetOpenFileNameW(&ofn))
     {
-        DoLoad(hwnd, m_Entries, File);
+        DoLoad(hwnd, m_entries, file);
     }
 }
 
@@ -1977,8 +1977,8 @@ void MMainWnd::OnNew(HWND hwnd)
     HidePreview(hwnd);
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL);
-    m_Entries.clear();
-    TV_RefreshInfo(m_hTreeView, m_Entries, TRUE);
+    m_entries.clear();
+    TV_RefreshInfo(m_hTreeView, m_entries, TRUE);
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -1986,9 +1986,9 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    WCHAR File[MAX_PATH];
+    WCHAR file[MAX_PATH];
 
-    lstrcpynW(File, m_szFile, _countof(File));
+    lstrcpynW(file, m_szFile, _countof(file));
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2004,8 +2004,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = L"exe";
     }
-    ofn.lpstrFile = File;
-    ofn.nMaxFile = _countof(File);
+    ofn.lpstrFile = file;
+    ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
@@ -2013,14 +2013,14 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     {
         if (ofn.nFilterIndex == 2)
         {
-            if (!DoSaveResAs(hwnd, File))
+            if (!DoSaveResAs(hwnd, file))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
         }
         else
         {
-            if (!DoSaveAs(hwnd, File))
+            if (!DoSaveAs(hwnd, file))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -2035,8 +2035,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& Entry = m_Entries[i];
-    if (Entry.type != RT_DIALOG)
+    ResEntry& entry = m_entries[i];
+    if (entry.type != RT_DIALOG)
     {
         return;
     }
@@ -2045,12 +2045,12 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
     MByteStreamEx stream;
     dialog_res.SaveToStream(stream);
-    Entry.data = stream.data();
+    entry.data = stream.data();
 
-    std::wstring str = dialog_res.Dump(Entry.name);
+    std::wstring str = dialog_res.Dump(entry.name);
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    str = DumpDataAsString(Entry.data);
+    str = DumpDataAsString(entry.data);
     ::SetWindowTextW(m_hBinEdit, str.c_str());
 }
 
@@ -2076,25 +2076,25 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(m_Entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find(m_entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(m_Entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(m_entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             return FALSE;
         }
-        ResEntry icon_entry = m_Entries[k];
+        ResEntry icon_entry = m_entries[k];
 
-        UINT nLastID = Res_GetLastIconID(m_Entries);
+        UINT nLastID = Res_GetLastIconID(m_entries);
         UINT nNextID = nLastID + 1;
 
         icon_entry.name = WORD(nNextID);
 
-        Res_AddEntry(m_Entries, icon_entry, TRUE);
+        Res_AddEntry(m_entries, icon_entry, TRUE);
     }
 
     entry.name = name;
-    return Res_AddEntry(m_Entries, entry, TRUE);
+    return Res_AddEntry(m_entries, entry, TRUE);
 }
 
 BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
@@ -2119,25 +2119,25 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(m_Entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find(m_entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
-            k = Res_Find(m_Entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(m_entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
         if (k == -1)
         {
             return FALSE;
         }
-        ResEntry cursor_entry = m_Entries[k];
+        ResEntry cursor_entry = m_entries[k];
 
-        UINT nLastID = Res_GetLastCursorID(m_Entries);
+        UINT nLastID = Res_GetLastCursorID(m_entries);
         UINT nNextID = nLastID + 1;
 
         cursor_entry.name = WORD(nNextID);
 
-        Res_AddEntry(m_Entries, cursor_entry, TRUE);
+        Res_AddEntry(m_entries, cursor_entry, TRUE);
     }
 
     entry.name = name;
-    return Res_AddEntry(m_Entries, entry, TRUE);
+    return Res_AddEntry(m_entries, entry, TRUE);
 }
 
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
@@ -2147,13 +2147,13 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry entry = m_Entries[i];
+    ResEntry entry = m_entries[i];
 
-    MCopyAsNewNameDlg dialog(m_Entries, entry, m_db);
+    MCopyAsNewNameDlg dialog(m_entries, entry, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
-        Res_Search(found, m_Entries, entry);
+        Res_Search(found, m_entries, entry);
         if (entry.type == RT_GROUP_ICON)
         {
             for (size_t i = 0; i < found.size(); ++i)
@@ -2173,12 +2173,12 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].name = dialog.m_name;
-                Res_AddEntry(m_Entries, found[i], TRUE);
+                Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
         entry.name = dialog.m_name;
-        TV_SelectEntry(m_hTreeView, m_Entries, entry);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
 }
 
@@ -2189,13 +2189,13 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry entry = m_Entries[i];
+    ResEntry entry = m_entries[i];
 
-    MCopyAsNewLangDlg dialog(m_Entries, entry, m_db);
+    MCopyAsNewLangDlg dialog(m_entries, entry, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
-        Res_Search(found, m_Entries, entry);
+        Res_Search(found, m_entries, entry);
         if (entry.type == RT_GROUP_ICON)
         {
             for (size_t i = 0; i < found.size(); ++i)
@@ -2216,12 +2216,12 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         {
             WORD lang = entry.lang;
             ResEntries found;
-            Res_Search(found, m_Entries, RT_STRING, WORD(0), lang);
+            Res_Search(found, m_entries, RT_STRING, WORD(0), lang);
 
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].lang = dialog.m_lang;
-                Res_AddEntry(m_Entries, found[i], TRUE);
+                Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
         else
@@ -2229,12 +2229,12 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].lang = dialog.m_lang;
-                Res_AddEntry(m_Entries, found[i], TRUE);
+                Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
         entry.lang = dialog.m_lang;
-        TV_SelectEntry(m_hTreeView, m_Entries, entry);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
 }
 
@@ -2249,16 +2249,16 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
-    if (i >= m_Entries.size())
+    if (i >= m_entries.size())
         return;
 
-    ResEntry selection = m_Entries[i];
+    ResEntry selection = m_entries[i];
 
-    TV_Delete(m_hTreeView, hItem, m_Entries);
-    TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
+    TV_Delete(m_hTreeView, hItem, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
     HidePreview(hwnd);
 
-    TV_SelectEntry(m_hTreeView, m_Entries, selection);
+    TV_SelectEntry(m_hTreeView, m_entries, selection);
     SelectTV(hwnd, lParam, FALSE);
 }
 
@@ -2269,7 +2269,7 @@ void MMainWnd::OnPlay(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    ResEntry& entry = m_Entries[i];
+    ResEntry& entry = m_entries[i];
 
     if (entry.type == L"WAVE")
     {
@@ -2298,10 +2298,10 @@ void MMainWnd::OnCompile(HWND hwnd)
     }
 
     WORD i = LOWORD(lParam);
-    if (i >= m_Entries.size())
+    if (i >= m_entries.size())
         return;
 
-    ResEntry& entry = m_Entries[i];
+    ResEntry& entry = m_entries[i];
 
     ChangeStatusText(IDS_COMPILING);
 
@@ -2313,8 +2313,8 @@ void MMainWnd::OnCompile(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, WideText, bReopen))
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
 }
 
@@ -2325,11 +2325,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
 
     WORD i = LOWORD(lParam);
-    if (i >= m_Entries.size())
+    if (i >= m_entries.size())
         return;
 
-    ResEntry& Entry = m_Entries[i];
-    if (!Res_CanGuiEdit(Entry.type))
+    ResEntry& entry = m_entries[i];
+    if (!Res_CanGuiEdit(entry.type))
     {
         return;
     }
@@ -2339,9 +2339,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    const ResEntry::DataType& data = Entry.data;
+    const ResEntry::DataType& data = entry.data;
     MByteStreamEx stream(data);
-    if (Entry.type == RT_ACCELERATOR)
+    if (entry.type == RT_ACCELERATOR)
     {
         AccelRes accel_res(m_db);
         MEditAccelDlg dialog(accel_res, m_db);
@@ -2352,15 +2352,15 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (nID == IDOK)
             {
                 accel_res.Update();
-                Entry.data = accel_res.data();
+                entry.data = accel_res.data();
                 SelectTV(hwnd, lParam, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, Entry);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (Entry.type == RT_MENU)
+    else if (entry.type == RT_MENU)
     {
         MenuRes menu_res;
         if (menu_res.LoadFromStream(stream))
@@ -2371,19 +2371,19 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (nID == IDOK)
             {
                 menu_res.Update();
-                Entry.data = menu_res.data();
+                entry.data = menu_res.data();
                 SelectTV(hwnd, lParam, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, Entry);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (Entry.type == RT_DIALOG)
+    else if (entry.type == RT_DIALOG)
     {
-        MByteStreamEx stream(Entry.data);
+        MByteStreamEx stream(entry.data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
-        m_rad_window.m_dialog_res.m_LangID = Entry.lang;
+        m_rad_window.m_dialog_res.m_LangID = entry.lang;
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))
         {
@@ -2398,11 +2398,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
-    else if (Entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
+    else if (entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
-        WORD lang = Entry.lang;
+        WORD lang = entry.lang;
         ResEntries found;
-        Res_Search(found, m_Entries, RT_STRING, WORD(0), lang);
+        Res_Search(found, m_entries, RT_STRING, WORD(0), lang);
 
         StringRes str_res;
         ResEntries::iterator it, end = found.end();
@@ -2425,8 +2425,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (CompileParts(hwnd, WideText))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, selection);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, selection);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2683,14 +2683,14 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     TreeView_GetItem(m_hTreeView, &Item);
 
     UINT i = LOWORD(Item.lParam);
-    const ResEntry& Entry = m_Entries[i];
+    const ResEntry& entry = m_entries[i];
 
     LPARAM lParam = TV_GetParam(m_hTreeView);
     BOOL bEditable = IsEditableEntry(hwnd, lParam);
     if (bEditable)
     {
         EnableMenuItem(hMenu, CMDID_EDIT, MF_ENABLED);
-        if (Res_CanGuiEdit(Entry.type))
+        if (Res_CanGuiEdit(entry.type))
         {
             EnableMenuItem(hMenu, CMDID_GUIEDIT, MF_ENABLED);
         }
@@ -2736,8 +2736,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         break;
     case I_LANG:
-        if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ICON ||
-            Entry.type == RT_ANIICON)
+        if (entry.type == RT_GROUP_ICON || entry.type == RT_ICON ||
+            entry.type == RT_ANIICON)
         {
             EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_ENABLED);
         }
@@ -2745,7 +2745,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         {
             EnableMenuItem(hMenu, CMDID_EXTRACTICON, MF_GRAYED);
         }
-        if (Entry.type == RT_GROUP_ICON || Entry.type == RT_ANIICON)
+        if (entry.type == RT_GROUP_ICON || entry.type == RT_ANIICON)
         {
             EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_ENABLED);
         }
@@ -2754,7 +2754,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, CMDID_REPLACEICON, MF_GRAYED);
         }
 
-        if (Entry.type == RT_BITMAP)
+        if (entry.type == RT_BITMAP)
         {
             EnableMenuItem(hMenu, CMDID_EXTRACTBITMAP, MF_ENABLED);
             EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_ENABLED);
@@ -2765,8 +2765,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, CMDID_REPLACEBITMAP, MF_GRAYED);
         }
 
-        if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_CURSOR ||
-            Entry.type == RT_ANICURSOR)
+        if (entry.type == RT_GROUP_CURSOR || entry.type == RT_CURSOR ||
+            entry.type == RT_ANICURSOR)
         {
             EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_ENABLED);
         }
@@ -2774,7 +2774,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         {
             EnableMenuItem(hMenu, CMDID_EXTRACTCURSOR, MF_GRAYED);
         }
-        if (Entry.type == RT_GROUP_CURSOR || Entry.type == RT_ANICURSOR)
+        if (entry.type == RT_GROUP_CURSOR || entry.type == RT_ANICURSOR)
         {
             EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_ENABLED);
         }
@@ -2783,7 +2783,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, CMDID_REPLACECURSOR, MF_GRAYED);
         }
 
-        if (Entry.type == RT_DIALOG || Entry.type == RT_MENU)
+        if (entry.type == RT_DIALOG || entry.type == RT_MENU)
         {
             EnableMenuItem(hMenu, CMDID_TEST, MF_ENABLED);
         }
@@ -2796,7 +2796,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, CMDID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, CMDID_COPYASNEWNAME, MF_GRAYED);
-        if (Entry.type == RT_STRING || Entry.type == RT_MESSAGETABLE)
+        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
             EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_GRAYED);
         else
             EnableMenuItem(hMenu, CMDID_COPYASNEWLANG, MF_ENABLED);
@@ -2888,13 +2888,13 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     }
 }
 
-void MMainWnd::PreviewIcon(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewIcon(HWND hwnd, const ResEntry& entry)
 {
     BITMAP bm;
-    m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, Entry, bm));
+    m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, entry, bm));
 
     std::wstring str;
-    HICON hIcon = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, TRUE);
+    HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
     if (hIcon)
     {
         str = DumpIconInfo(bm, TRUE);
@@ -2910,10 +2910,10 @@ void MMainWnd::PreviewIcon(HWND hwnd, const ResEntry& Entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewCursor(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewCursor(HWND hwnd, const ResEntry& entry)
 {
     BITMAP bm;
-    HCURSOR hCursor = PackedDIB_CreateIcon(&Entry[0], Entry.size(), bm, FALSE);
+    HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
     m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
     std::wstring str = DumpIconInfo(bm, FALSE);
     DestroyCursor(hCursor);
@@ -2923,31 +2923,31 @@ void MMainWnd::PreviewCursor(HWND hwnd, const ResEntry& Entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& entry)
 {
-    m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_Entries, Entry));
+    m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
-    std::wstring str = DumpGroupIconInfo(Entry.data);
+    std::wstring str = DumpGroupIconInfo(entry.data);
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
 {
-    m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_Entries, Entry));
+    m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_entries, entry));
     assert(m_hBmpView);
 
-    std::wstring str = DumpGroupCursorInfo(m_Entries, Entry.data);
+    std::wstring str = DumpGroupCursorInfo(m_entries, entry.data);
     assert(str.size());
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
 {
-    HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+    HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
     if (hbm == NULL)
     {
         // Try a dirty hack for BI_RLE4, BI_RLE8, ...
@@ -2955,7 +2955,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& Entry)
         GetTempPathW(_countof(szPath), szPath);
         GetTempFileNameW(szPath, L"reb", 0, szTempFile);
 
-        if (DoExtractBitmap(szTempFile, Entry, FALSE))
+        if (DoExtractBitmap(szTempFile, entry, FALSE))
         {
             hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
                 LR_CREATEDIBSECTION | LR_LOADFROMFILE);
@@ -2970,9 +2970,9 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& Entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
 {
-    m_hBmpView.SetImage(&Entry[0], Entry.size());
+    m_hBmpView.SetImage(&entry[0], entry.size());
 
     std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -2980,7 +2980,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& Entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 {
     ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_WAVESOUND));
 
@@ -2988,28 +2988,28 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& Entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& entry)
 {
     ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
 
-    m_hBmpView.SetMedia(&Entry[0], Entry.size());
+    m_hBmpView.SetMedia(&entry[0], entry.size());
     ShowMovie(TRUE);
 }
 
-void MMainWnd::PreviewAccel(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewAccel(HWND hwnd, const ResEntry& entry)
 {
-    MByteStreamEx stream(Entry.data);
+    MByteStreamEx stream(entry.data);
     AccelRes accel(m_db);
     if (accel.LoadFromStream(stream))
     {
-        std::wstring str = accel.Dump(Entry.name);
+        std::wstring str = accel.Dump(entry.name);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
-void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& entry)
 {
-    MByteStreamEx stream(Entry.data);
+    MByteStreamEx stream(entry.data);
     MessageRes mes;
     if (mes.LoadFromStream(stream))
     {
@@ -3018,11 +3018,11 @@ void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& Entry)
     }
 }
 
-void MMainWnd::PreviewString(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
 {
-    MByteStreamEx stream(Entry.data);
+    MByteStreamEx stream(entry.data);
     StringRes str_res;
-    WORD nTableID = Entry.name.m_ID;
+    WORD nTableID = entry.name.m_ID;
     if (str_res.LoadFromStream(stream, nTableID))
     {
         std::wstring str = str_res.Dump(m_db, nTableID);
@@ -3030,47 +3030,47 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& Entry)
     }
 }
 
-void MMainWnd::PreviewHtml(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewHtml(HWND hwnd, const ResEntry& entry)
 {
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
-    std::wstring str = mstr_from_bin(&Entry.data[0], Entry.data.size(), &type);
+    std::wstring str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewMenu(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewMenu(HWND hwnd, const ResEntry& entry)
 {
-    MByteStreamEx stream(Entry.data);
+    MByteStreamEx stream(entry.data);
     MenuRes menu_res;
     if (menu_res.LoadFromStream(stream))
     {
-        std::wstring str = menu_res.Dump(Entry.name, m_db);
+        std::wstring str = menu_res.Dump(entry.name, m_db);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
-void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& entry)
 {
     VersionRes ver_res;
-    if (ver_res.LoadFromData(Entry.data))
+    if (ver_res.LoadFromData(entry.data))
     {
-        std::wstring str = ver_res.Dump(Entry.name);
+        std::wstring str = ver_res.Dump(entry.name);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
-void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& entry)
 {
-    MByteStreamEx stream(Entry.data);
+    MByteStreamEx stream(entry.data);
     DialogRes dialog_res(m_db);
     if (dialog_res.LoadFromStream(stream))
     {
-        std::wstring str = dialog_res.Dump(Entry.name, m_settings.bAlwaysControl);
+        std::wstring str = dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
         ::SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
-void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon)
+void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon)
 {
     HICON hIcon = NULL;
 
@@ -3082,7 +3082,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon)
         MFile file;
         DWORD cbWritten = 0;
         if (file.OpenFileForOutput(szTempFile) &&
-            file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
             file.CloseHandle();
             if (bIcon)
@@ -3114,10 +3114,10 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& Entry, BOOL bIcon)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& entry)
 {
     ResEntries found;
-    Res_Search(found, m_Entries, RT_STRING, (WORD)0, Entry.lang);
+    Res_Search(found, m_entries, RT_STRING, (WORD)0, entry.lang);
 
     StringRes str_res;
     ResEntries::iterator it, end = found.end();
@@ -3132,7 +3132,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& Entry)
     ::SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& Entry)
+void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
 {
     assert(0);
 }
@@ -3152,100 +3152,100 @@ VOID MMainWnd::HidePreview(HWND hwnd)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& Entry)
+BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
 {
     HidePreview(hwnd);
 
-    std::wstring str = DumpDataAsString(Entry.data);
+    std::wstring str = DumpDataAsString(entry.data);
     ::SetWindowTextW(m_hBinEdit, str.c_str());
 
     BOOL bEditable = FALSE;
-    if (Entry.type == RT_ICON)
+    if (entry.type == RT_ICON)
     {
-        PreviewIcon(hwnd, Entry);
+        PreviewIcon(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_CURSOR)
+    else if (entry.type == RT_CURSOR)
     {
-        PreviewCursor(hwnd, Entry);
+        PreviewCursor(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_GROUP_ICON)
+    else if (entry.type == RT_GROUP_ICON)
     {
-        PreviewGroupIcon(hwnd, Entry);
+        PreviewGroupIcon(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_GROUP_CURSOR)
+    else if (entry.type == RT_GROUP_CURSOR)
     {
-        PreviewGroupCursor(hwnd, Entry);
+        PreviewGroupCursor(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_BITMAP)
+    else if (entry.type == RT_BITMAP)
     {
-        PreviewBitmap(hwnd, Entry);
+        PreviewBitmap(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_ACCELERATOR)
+    else if (entry.type == RT_ACCELERATOR)
     {
-        PreviewAccel(hwnd, Entry);
+        PreviewAccel(hwnd, entry);
         bEditable = TRUE;
     }
-    else if (Entry.type == RT_STRING)
+    else if (entry.type == RT_STRING)
     {
-        PreviewString(hwnd, Entry);
+        PreviewString(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_MENU)
+    else if (entry.type == RT_MENU)
     {
-        PreviewMenu(hwnd, Entry);
+        PreviewMenu(hwnd, entry);
         bEditable = TRUE;
     }
-    else if (Entry.type == RT_DIALOG)
+    else if (entry.type == RT_DIALOG)
     {
-        PreviewDialog(hwnd, Entry);
+        PreviewDialog(hwnd, entry);
         bEditable = TRUE;
     }
-    else if (Entry.type == RT_ANIICON)
+    else if (entry.type == RT_ANIICON)
     {
-        PreviewAniIcon(hwnd, Entry, TRUE);
+        PreviewAniIcon(hwnd, entry, TRUE);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_ANICURSOR)
+    else if (entry.type == RT_ANICURSOR)
     {
-        PreviewAniIcon(hwnd, Entry, FALSE);
+        PreviewAniIcon(hwnd, entry, FALSE);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_MESSAGETABLE)
+    else if (entry.type == RT_MESSAGETABLE)
     {
-        PreviewMessage(hwnd, Entry);
+        PreviewMessage(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == RT_MANIFEST || Entry.type == RT_HTML)
+    else if (entry.type == RT_MANIFEST || entry.type == RT_HTML)
     {
-        PreviewHtml(hwnd, Entry);
+        PreviewHtml(hwnd, entry);
         bEditable = TRUE;
     }
-    else if (Entry.type == RT_VERSION)
+    else if (entry.type == RT_VERSION)
     {
-        PreviewVersion(hwnd, Entry);
+        PreviewVersion(hwnd, entry);
         bEditable = TRUE;
     }
-    else if (Entry.type == L"PNG" || Entry.type == L"GIF" ||
-             Entry.type == L"JPEG" || Entry.type == L"TIFF" ||
-             Entry.type == L"JPG" || Entry.type == L"TIF" ||
-             Entry.type == L"EMF" || Entry.type == L"WMF")
+    else if (entry.type == L"PNG" || entry.type == L"GIF" ||
+             entry.type == L"JPEG" || entry.type == L"TIFF" ||
+             entry.type == L"JPG" || entry.type == L"TIF" ||
+             entry.type == L"EMF" || entry.type == L"WMF")
     {
-        PreviewImage(hwnd, Entry);
+        PreviewImage(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == L"WAVE")
+    else if (entry.type == L"WAVE")
     {
-        PreviewWAVE(hwnd, Entry);
+        PreviewWAVE(hwnd, entry);
         bEditable = FALSE;
     }
-    else if (Entry.type == L"AVI")
+    else if (entry.type == L"AVI")
     {
-        PreviewAVI(hwnd, Entry);
+        PreviewAVI(hwnd, entry);
         bEditable = FALSE;
     }
 
@@ -3261,28 +3261,28 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         lParam = TV_GetParam(m_hTreeView);
 
     WORD i = LOWORD(lParam);
-    if (m_Entries.size() <= i)
+    if (m_entries.size() <= i)
     {
         ToolBar_Update(m_hToolBar, 3);
         return;
     }
 
-    ResEntry& Entry = m_Entries[i];
-    m_type = Entry.type;
-    m_name = Entry.name;
-    m_lang = Entry.lang;
+    ResEntry& entry = m_entries[i];
+    m_type = entry.type;
+    m_name = entry.name;
+    m_lang = entry.lang;
 
     BOOL bEditable, bSelectNone = FALSE;
     if (HIWORD(lParam) == I_LANG)
     {
-        bEditable = Preview(hwnd, Entry);
+        bEditable = Preview(hwnd, entry);
         ShowBinEdit(TRUE);
     }
     else if (HIWORD(lParam) == I_STRING)
     {
         m_hBmpView.DestroyView();
         ::SetWindowTextW(m_hBinEdit, NULL);
-        PreviewStringTable(hwnd, Entry);
+        PreviewStringTable(hwnd, entry);
         ShowBinEdit(FALSE);
         bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
@@ -3291,7 +3291,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     {
         m_hBmpView.DestroyView();
         ::SetWindowTextW(m_hBinEdit, NULL);
-        PreviewMessageTable(hwnd, Entry);
+        PreviewMessageTable(hwnd, entry);
         ShowBinEdit(FALSE);
         bEditable = FALSE;
         m_hBmpView.DeleteTempFile();
@@ -3313,11 +3313,11 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         {
             ToolBar_Update(m_hToolBar, 2);
         }
-        else if (Res_IsTestable(Entry.type))
+        else if (Res_IsTestable(entry.type))
         {
             ToolBar_Update(m_hToolBar, 0);
         }
-        else if (Res_CanGuiEdit(Entry.type))
+        else if (Res_CanGuiEdit(entry.type))
         {
             ToolBar_Update(m_hToolBar, 4);
         }
@@ -3340,11 +3340,11 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
 {
     const WORD i = LOWORD(lParam);
-    if (m_Entries.size() <= i)
+    if (m_entries.size() <= i)
         return FALSE;
 
-    const ResEntry& Entry = m_Entries[i];
-    const MIdOrString& type = Entry.type;
+    const ResEntry& entry = m_entries[i];
+    const MIdOrString& type = entry.type;
     switch (HIWORD(lParam))
     {
     case I_LANG:
@@ -3370,12 +3370,12 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
-    if (m_Entries.size() <= i)
+    if (m_entries.size() <= i)
         return FALSE;
 
     if (HIWORD(lParam) == I_LANG)
     {
-        ResEntry& entry = m_Entries[i];
+        ResEntry& entry = m_entries[i];
 
         MIdOrString name = entry.name;
         if (name.is_str())
@@ -3395,13 +3395,13 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
     else if (HIWORD(lParam) == I_STRING)
     {
-        ResEntry entry = m_Entries[i];
+        ResEntry entry = m_entries[i];
 
-        Res_DeleteNames(m_Entries, RT_STRING, entry.lang);
+        Res_DeleteNames(m_entries, RT_STRING, entry.lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
-            if (!Res_AddEntry(m_Entries, entries[m], TRUE))
+            if (!Res_AddEntry(m_entries, entries[m], TRUE))
             {
                 msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
                 return FALSE;
@@ -3426,10 +3426,10 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
-    if (m_Entries.size() <= i)
+    if (m_entries.size() <= i)
         return FALSE;
 
-    ResEntry& entry = m_Entries[i];
+    ResEntry& entry = m_entries[i];
 
     MStringA TextUtf8;
     TextUtf8 = MWideToAnsi(CP_UTF8, WideText);
@@ -3610,7 +3610,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
 
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
-    if (m_Entries.size() <= i)
+    if (m_entries.size() <= i)
         return FALSE;
 
     Edit_SetModify(m_hSrcEdit, FALSE);
@@ -3622,7 +3622,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
 
     if (bReopen)
     {
-        ResEntry& entry = m_Entries[i];
+        ResEntry& entry = m_entries[i];
         if (m_type == entry.type && m_name == entry.name &&
             m_lang == entry.lang)
         {
@@ -3742,7 +3742,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
+BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
 {
     MWaitCursor wait;
     WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
@@ -3769,8 +3769,8 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
 
         m_bLoading = TRUE;
         {
-            Entries = entries;
-            TV_RefreshInfo(m_hTreeView, Entries, TRUE);
+            entries = entries;
+            TV_RefreshInfo(m_hTreeView, entries, TRUE);
         }
         m_bLoading = FALSE;
         SetFilePath(hwnd, Path);
@@ -3791,10 +3791,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& Entries, LPCWSTR FileName)
 
     m_bLoading = TRUE;
     {
-        Entries.clear();
-        Res_GetListFromRes(hMod, (LPARAM)&Entries);
+        entries.clear();
+        Res_GetListFromRes(hMod, (LPARAM)&entries);
         FreeLibrary(hMod);
-        TV_RefreshInfo(m_hTreeView, Entries, TRUE);
+        TV_RefreshInfo(m_hTreeView, entries, TRUE);
     }
     m_bLoading = FALSE;
     SetFilePath(hwnd, Path);
@@ -3895,8 +3895,8 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
 
         entry.lang = header.LanguageId;
         entry.updated = TRUE;
-        entry.type = header.Type;
-        entry.name = header.Name;
+        entry.type = header.type;
+        entry.name = header.name;
         entries.push_back(entry);
 
         stream.ReadDwordAlignment();
@@ -4191,36 +4191,36 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entries)
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries)
 {
     MByteStreamEx bs;
     ResourceHeader header;
     if (!header.WriteTo(bs))
         return FALSE;
 
-    ResEntries::const_iterator it, end = Entries.end();
-    for (it = Entries.begin(); it != end; ++it)
+    ResEntries::const_iterator it, end = entries.end();
+    for (it = entries.begin(); it != end; ++it)
     {
-        const ResEntry& Entry = *it;
+        const ResEntry& entry = *it;
 
-        header.DataSize = Entry.size();
-        header.HeaderSize = header.GetHeaderSize(Entry.type, Entry.name);
+        header.DataSize = entry.size();
+        header.HeaderSize = header.GetHeaderSize(entry.type, entry.name);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;
 
-        header.Type = Entry.type;
-        header.Name = Entry.name;
+        header.type = entry.type;
+        header.name = entry.name;
         header.DataVersion = 0;
         header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
                              MEMORYFLAG_MOVEABLE;
-        header.LanguageId = Entry.lang;
+        header.LanguageId = entry.lang;
         header.Version = 0;
         header.Characteristics = 0;
 
         if (!header.WriteTo(bs))
             return FALSE;
 
-        if (!bs.WriteData(&Entry[0], Entry.size()))
+        if (!bs.WriteData(&entry[0], entry.size()))
             return FALSE;
 
         bs.WriteDwordAlignment();
@@ -4229,9 +4229,9 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& Entri
     return bs.SaveToFile(FileName);
 }
 
-BOOL MMainWnd::DoExtractBin(LPCWSTR FileName, const ResEntry& Entry)
+BOOL MMainWnd::DoExtractBin(LPCWSTR FileName, const ResEntry& entry)
 {
-    MByteStreamEx bs(Entry.data);
+    MByteStreamEx bs(entry.data);
     return bs.SaveToFile(FileName);
 }
 
@@ -4240,9 +4240,9 @@ BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
     if (!CompileIfNecessary(hwnd, TRUE))
         return FALSE;
 
-    if (DoExtractRes(hwnd, ExeFile, m_Entries))
+    if (DoExtractRes(hwnd, ExeFile, m_entries))
     {
-        Res_Optimize(m_Entries);
+        Res_Optimize(m_entries);
         SetFilePath(hwnd, ExeFile);
         return TRUE;
     }
@@ -4264,10 +4264,10 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     BOOL b1, b2, b3;
     if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
     {
-        b3 = Res_UpdateExe(hwnd, ExeFile, m_Entries);
+        b3 = Res_UpdateExe(hwnd, ExeFile, m_entries);
         if (b3)
         {
-            Res_Optimize(m_Entries);
+            Res_Optimize(m_entries);
             SetFilePath(hwnd, ExeFile);
             return TRUE;
         }
@@ -4275,12 +4275,12 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     else
     {
         b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
-        b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_Entries);
+        b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_entries);
         b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
         if (b3)
         {
             DeleteFileW(TempFile);
-            Res_Optimize(m_Entries);
+            Res_Optimize(m_entries);
             SetFilePath(hwnd, ExeFile);
             return TRUE;
         }
@@ -4290,22 +4290,22 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry)
+BOOL MMainWnd::DoExtractIcon(LPCWSTR FileName, const ResEntry& entry)
 {
-    if (Entry.type == RT_GROUP_ICON)
+    if (entry.type == RT_GROUP_ICON)
     {
-        return Res_ExtractGroupIcon(m_Entries, Entry, FileName);
+        return Res_ExtractGroupIcon(m_entries, entry, FileName);
     }
-    else if (Entry.type == RT_ICON)
+    else if (entry.type == RT_ICON)
     {
-        return Res_ExtractIcon(m_Entries, Entry, FileName);
+        return Res_ExtractIcon(m_entries, entry, FileName);
     }
-    else if (Entry.type == RT_ANIICON)
+    else if (entry.type == RT_ANIICON)
     {
         MFile file;
         DWORD cbWritten = 0;
         if (file.OpenFileForOutput(FileName) &&
-            file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
             file.CloseHandle();
             return TRUE;
@@ -4314,22 +4314,22 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR FileName, const ResEntry& Entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry)
+BOOL MMainWnd::DoExtractCursor(LPCWSTR FileName, const ResEntry& entry)
 {
-    if (Entry.type == RT_GROUP_CURSOR)
+    if (entry.type == RT_GROUP_CURSOR)
     {
-        return Res_ExtractGroupCursor(m_Entries, Entry, FileName);
+        return Res_ExtractGroupCursor(m_entries, entry, FileName);
     }
-    else if (Entry.type == RT_CURSOR)
+    else if (entry.type == RT_CURSOR)
     {
-        return Res_ExtractCursor(m_Entries, Entry, FileName);
+        return Res_ExtractCursor(m_entries, entry, FileName);
     }
-    else if (Entry.type == RT_ANICURSOR)
+    else if (entry.type == RT_ANICURSOR)
     {
         MFile file;
         DWORD cbWritten = 0;
         if (file.OpenFileForOutput(FileName) &&
-            file.WriteFile(&Entry[0], Entry.size(), &cbWritten))
+            file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
             file.CloseHandle();
             return TRUE;
@@ -4338,14 +4338,14 @@ BOOL MMainWnd::DoExtractCursor(LPCWSTR FileName, const ResEntry& Entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL WritePNG)
+BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& entry, BOOL WritePNG)
 {
     BITMAPFILEHEADER FileHeader;
 
     if (WritePNG)
     {
         BOOL ret = FALSE;
-        HBITMAP hbm = PackedDIB_CreateBitmap(&Entry[0], Entry.size());
+        HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
         Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
         if (pBitmap)
         {
@@ -4360,18 +4360,18 @@ BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL Wri
     }
 
     FileHeader.bfType = 0x4d42;
-    FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + Entry.size());
+    FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + entry.size());
     FileHeader.bfReserved1 = 0;
     FileHeader.bfReserved2 = 0;
 
-    DWORD Offset = PackedDIB_GetBitsOffset(&Entry[0], Entry.size());
+    DWORD Offset = PackedDIB_GetBitsOffset(&entry[0], entry.size());
     if (Offset == 0)
         return FALSE;
 
     FileHeader.bfOffBits = sizeof(FileHeader) + Offset;
 
     MByteStreamEx bs;
-    if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&Entry[0], Entry.size()))
+    if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&entry[0], entry.size()))
         return FALSE;
 
     return bs.SaveToFile(FileName);
@@ -4380,83 +4380,83 @@ BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& Entry, BOOL Wri
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
-    WCHAR File[MAX_PATH], *pch;
+    WCHAR file[MAX_PATH], *pch;
 
     ChangeStatusText(IDS_EXECUTINGCMD);
 
-    DragQueryFileW(hdrop, 0, File, _countof(File));
+    DragQueryFileW(hdrop, 0, file, _countof(file));
     DragFinish(hdrop);
 
-    pch = wcsrchr(File, L'.');
+    pch = wcsrchr(file, L'.');
     if (pch)
     {
         if (lstrcmpiW(pch, L".ico") == 0)
         {
-            MAddIconDlg dialog(m_db, m_Entries);
-            dialog.File = File;
+            MAddIconDlg dialog(m_db, m_entries);
+            dialog.file = file;
             dialog.DialogBoxDx(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
         {
-            MAddCursorDlg dialog(m_db, m_Entries);
-            dialog.m_File = File;
+            MAddCursorDlg dialog(m_db, m_entries);
+            dialog.m_File = file;
             dialog.DialogBoxDx(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-            TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".wav") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
+            MAddResDlg dialog(m_entries, m_db);
             dialog.m_type = L"WAVE";
-            dialog.m_file = File;
+            dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
         {
-            MAddBitmapDlg dialog(m_db, m_Entries);
-            dialog.File = File;
+            MAddBitmapDlg dialog(m_db, m_entries);
+            dialog.file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".png") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"PNG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".gif") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"GIF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -4464,79 +4464,79 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
                  lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"JPEG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"TIFF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".avi") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"AVI";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".res") == 0)
         {
-            DoLoad(hwnd, m_Entries, File);
+            DoLoad(hwnd, m_entries, file);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".wmf") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"WMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
         else if (lstrcmpiW(pch, L".emf") == 0)
         {
-            MAddResDlg dialog(m_Entries, m_db);
-            dialog.m_file = File;
+            MAddResDlg dialog(m_entries, m_db);
+            dialog.m_file = file;
             dialog.m_type = L"EMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-                TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
                 ChangeStatusText(IDS_READY);
             }
             return;
         }
     }
 
-    DoLoad(hwnd, m_Entries, File);
-    TV_RefreshInfo(m_hTreeView, m_Entries, TRUE);
+    DoLoad(hwnd, m_entries, file);
+    TV_RefreshInfo(m_hTreeView, m_entries, TRUE);
     ChangeStatusText(IDS_READY);
 }
 
@@ -5126,7 +5126,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             DWORD i = id - CMDID_MRUFILE0;
             if (i < m_settings.vecRecentlyUsed.size())
             {
-                DoLoad(hwnd, m_Entries, m_settings.vecRecentlyUsed[i].c_str());
+                DoLoad(hwnd, m_entries, m_settings.vecRecentlyUsed[i].c_str());
             }
         }
         break;
@@ -5334,15 +5334,15 @@ void MMainWnd::OnTest(HWND hwnd)
         return;
 
     UINT i = LOWORD(Item.lParam);
-    const ResEntry& Entry = m_Entries[i];
-    if (Entry.type == RT_DIALOG)
+    const ResEntry& entry = m_entries[i];
+    if (entry.type == RT_DIALOG)
     {
         MTestDialog dialog;
-        dialog.DialogBoxIndirectDx(hwnd, Entry.ptr());
+        dialog.DialogBoxIndirectDx(hwnd, entry.ptr());
     }
-    else if (Entry.type == RT_MENU)
+    else if (entry.type == RT_MENU)
     {
-        HMENU hMenu = LoadMenuIndirect(&Entry[0]);
+        HMENU hMenu = LoadMenuIndirect(&entry[0]);
         if (hMenu)
         {
             MTestMenuDlg dialog(hMenu);
@@ -5357,11 +5357,11 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddIconDlg dialog(m_db, m_Entries);
+    MAddIconDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5375,11 +5375,11 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceIconDlg dialog(m_db, m_Entries, m_Entries[i]);
+    MReplaceIconDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5393,11 +5393,11 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceCursorDlg dialog(m_db, m_Entries, m_Entries[i]);
+    MReplaceCursorDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5406,11 +5406,11 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddBitmapDlg dialog(m_db, m_Entries);
+    MAddBitmapDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5424,11 +5424,11 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceBitmapDlg dialog(m_db, m_Entries, m_Entries[i]);
+    MReplaceBitmapDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5437,11 +5437,11 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddCursorDlg dialog(m_db, m_Entries);
+    MAddCursorDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5450,11 +5450,11 @@ void MMainWnd::OnAddRes(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_Entries, m_db);
+    MAddResDlg dialog(m_entries, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5463,12 +5463,12 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_Entries, m_db);
+    MAddResDlg dialog(m_entries, m_db);
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5477,12 +5477,12 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_Entries, m_db);
+    MAddResDlg dialog(m_entries, m_db);
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5491,12 +5491,12 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_Entries, m_db);
+    MAddResDlg dialog(m_entries, m_db);
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_Entries, FALSE);
-        TV_SelectEntry(m_hTreeView, m_Entries, dialog.m_entry);
+        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry);
     }
 }
 
@@ -5860,7 +5860,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     if (m_argc >= 2)
     {
-        DoLoad(hwnd, m_Entries, m_targv[1]);
+        DoLoad(hwnd, m_entries, m_targv[1]);
     }
 
     DragAcceptFiles(hwnd, TRUE);

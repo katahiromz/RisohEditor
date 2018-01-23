@@ -23,23 +23,23 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddIconDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
-    LPCWSTR File;
+    ResEntries& m_entries;
+    LPCWSTR file;
     HICON   m_hIcon;
     ConstantsDB& m_db;
     ResEntry m_entry;
 
     MAddIconDlg(ConstantsDB& db, ResEntries& Entries)
-        : MDialogBase(IDD_ADDICON), m_Entries(Entries), File(NULL), m_hIcon(NULL),
+        : MDialogBase(IDD_ADDICON), m_entries(Entries), file(NULL), m_hIcon(NULL),
           m_db(db)
     {
     }
@@ -51,10 +51,10 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, File);
+        SetDlgItemTextW(hwnd, edt1, file);
         if (m_hIcon)
             DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
         Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
 
         DragAcceptFiles(hwnd, TRUE);
@@ -81,25 +81,25 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type = RT_GROUP_ICON;
+        MIdOrString type = RT_GROUP_ICON;
 
-        MIdOrString Name;
+        MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        std::wstring File;
+        std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Edt1_CheckFile(hEdt1, File))
+        if (!Edt1_CheckFile(hEdt1, file))
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, RT_GROUP_ICON, Name, Lang, FALSE);
+        INT iEntry = Res_Find(m_entries, RT_GROUP_ICON, name, lang, FALSE);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -114,7 +114,7 @@ public:
             }
         }
 
-        if (!Res_AddGroupIcon(m_Entries, Name, Lang, File, Overwrite))
+        if (!Res_AddGroupIcon(m_entries, name, lang, file, Overwrite))
         {
             if (Overwrite)
                 ErrorBoxDx(IDS_CANTREPLACEICO);
@@ -123,7 +123,7 @@ public:
             return;
         }
 
-        ResEntry entry(Type, Name, Lang);
+        ResEntry entry(type, name, lang);
         m_entry = entry;
 
         EndDialog(IDOK);
@@ -176,13 +176,13 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        WCHAR File[MAX_PATH];
-        DragQueryFileW(hdrop, 0, File, _countof(File));
-        SetDlgItemTextW(hwnd, edt1, File);
+        WCHAR file[MAX_PATH];
+        DragQueryFileW(hdrop, 0, file, _countof(file));
+        SetDlgItemTextW(hwnd, edt1, file);
 
         if (m_hIcon)
             DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), File, 0);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
         Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
     }
 };

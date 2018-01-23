@@ -26,10 +26,10 @@
 #include "ConstantsDB.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -37,13 +37,13 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
 class MReplaceBinDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
+    ResEntries& m_entries;
     ResEntry& m_Entry;
     ConstantsDB& m_db;
     ResEntry m_entry;
 
     MReplaceBinDlg(ResEntries& Entries, ResEntry& Entry, ConstantsDB& db)
-        : MDialogBase(IDD_REPLACERES), m_Entries(Entries), m_Entry(Entry), m_db(db)
+        : MDialogBase(IDD_REPLACERES), m_entries(Entries), m_Entry(Entry), m_db(db)
     {
     }
 
@@ -159,45 +159,45 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type;
+        MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(Table.size()))
         {
-            Type = WORD(Table[iType].value);
+            type = WORD(Table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, Type))
+            if (!CheckTypeComboBox(hCmb1, type))
                 return;
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString Name;
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        MIdOrString name;
+        if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        std::wstring File;
+        std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Edt1_CheckFile(hEdt1, File))
+        if (!Edt1_CheckFile(hEdt1, file))
             return;
 
         MByteStreamEx bs;
-        if (!bs.LoadFromFile(File.c_str()))
+        if (!bs.LoadFromFile(file.c_str()))
         {
             ErrorBoxDx(IDS_CANNOTREPLACE);
             return;
         }
 
-        Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), TRUE);
+        Res_AddEntry(m_entries, type, name, lang, bs.data(), TRUE);
 
-        ResEntry entry(Type, Name, Lang);
+        ResEntry entry(type, name, lang);
         m_entry = entry;
 
         EndDialog(IDOK);
@@ -221,9 +221,9 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        WCHAR File[MAX_PATH];
-        DragQueryFileW(hdrop, 0, File, _countof(File));
-        SetDlgItemTextW(hwnd, edt1, File);
+        WCHAR file[MAX_PATH];
+        DragQueryFileW(hdrop, 0, file, _countof(file));
+        SetDlgItemTextW(hwnd, edt1, file);
     }
 };
 

@@ -25,24 +25,24 @@
 #include "Samples.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& Type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddResDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
+    ResEntries& m_entries;
     ConstantsDB& m_db;
     MIdOrString m_type;
     LPCTSTR m_file;
     ResEntry m_entry;
 
     MAddResDlg(ResEntries& Entries, ConstantsDB& db)
-        : MDialogBase(IDD_ADDRES), m_Entries(Entries), m_db(db),
+        : MDialogBase(IDD_ADDRES), m_entries(Entries), m_db(db),
           m_type(0xFFFF), m_file(NULL)
     {
     }
@@ -115,7 +115,7 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());
 
-        // for File
+        // for file
         if (m_file)
         {
             SetDlgItemTextW(hwnd, edt1, m_file);
@@ -136,42 +136,42 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type;
+        MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         const ConstantsDB::TableType& Table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(Table.size()))
         {
-            Type = WORD(Table[iType].value);
+            type = WORD(Table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, Type))
+            if (!CheckTypeComboBox(hCmb1, type))
             {
                 return;
             }
         }
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString Name;
-        if (!Res_HasNoName(Type) && !CheckNameComboBox(m_db, hCmb2, Name))
+        MIdOrString name;
+        if (!Res_HasNoName(type) && !CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        std::wstring File;
+        std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Res_HasSample(Type) && !Edt1_CheckFile(hEdt1, File))
+        if (!Res_HasSample(type) && !Edt1_CheckFile(hEdt1, file))
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, Type, Name, Lang, FALSE);
+        INT iEntry = Res_Find(m_entries, type, name, lang, FALSE);
         if (iEntry != -1)
         {
-            if (File.empty() && Res_HasSample(Type))
+            if (file.empty() && Res_HasSample(type))
             {
                 ErrorBoxDx(IDS_ALREADYEXISTS);
                 return;
@@ -191,53 +191,53 @@ public:
 
         BOOL bOK = FALSE;
         BOOL bAdded = FALSE;
-        if (File.empty() && Res_HasSample(Type))
+        if (file.empty() && Res_HasSample(type))
         {
             bOK = TRUE;
-            if (Res_HasNoName(Type))
+            if (Res_HasNoName(type))
             {
-                Res_DeleteNames(m_Entries, Type, Lang);
+                Res_DeleteNames(m_entries, type, lang);
             }
 
             MByteStreamEx stream;
-            if (Type == RT_ACCELERATOR)
+            if (type == RT_ACCELERATOR)
             {
                 DWORD Size;
                 const BYTE *pb = GetAccelSample(Size);
                 stream.assign(pb, Size);
             }
-            else if (Type == RT_DIALOG)
+            else if (type == RT_DIALOG)
             {
                 DWORD Size;
                 const BYTE *pb = GetDialogSample(Size);
                 stream.assign(pb, Size);
             }
-            else if (Type == RT_MENU)
+            else if (type == RT_MENU)
             {
                 DWORD Size;
                 const BYTE *pb = GetMenuSample(Size);
                 stream.assign(pb, Size);
             }
-            else if (Type == RT_STRING)
+            else if (type == RT_STRING)
             {
                 DWORD Size;
                 const BYTE *pb = GetStringSample(Size);
                 stream.assign(pb, Size);
-                Name = 1;
+                name = 1;
             }
-            else if (Type == RT_VERSION)
+            else if (type == RT_VERSION)
             {
                 DWORD Size;
                 const BYTE *pb = GetVersionSample(Size);
                 stream.assign(pb, Size);
             }
-            else if (Type == RT_HTML)
+            else if (type == RT_HTML)
             {
                 DWORD Size;
                 const BYTE *pb = GetHtmlSample(Size);
                 stream.assign(pb, Size);
             }
-            else if (Type == RT_MANIFEST)
+            else if (type == RT_MANIFEST)
             {
                 DWORD Size;
                 const BYTE *pb = GetManifestSample(Size);
@@ -250,15 +250,15 @@ public:
 
             if (bOK)
             {
-                Res_AddEntry(m_Entries, Type, Name, Lang, stream.data(), FALSE);
-                ResEntry entry(Type, Name, Lang);
+                Res_AddEntry(m_entries, type, name, lang, stream.data(), FALSE);
+                ResEntry entry(type, name, lang);
                 m_entry = entry;
                 bAdded = TRUE;
             }
         }
 
         MByteStreamEx bs;
-        if (!bOK && !bs.LoadFromFile(File.c_str()))
+        if (!bOK && !bs.LoadFromFile(file.c_str()))
         {
             if (Overwrite)
                 ErrorBoxDx(IDS_CANNOTREPLACE);
@@ -268,8 +268,8 @@ public:
         }
         if (!bAdded)
         {
-            Res_AddEntry(m_Entries, Type, Name, Lang, bs.data(), Overwrite);
-            ResEntry entry(Type, Name, Lang);
+            Res_AddEntry(m_entries, type, name, lang, bs.data(), Overwrite);
+            ResEntry entry(type, name, lang);
             m_entry = entry;
         }
 
@@ -325,9 +325,9 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        WCHAR File[MAX_PATH];
-        DragQueryFileW(hdrop, 0, File, _countof(File));
-        SetDlgItemTextW(hwnd, edt1, File);
+        WCHAR file[MAX_PATH];
+        DragQueryFileW(hdrop, 0, file, _countof(file));
+        SetDlgItemTextW(hwnd, edt1, file);
     }
 
     virtual INT_PTR CALLBACK

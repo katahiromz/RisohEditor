@@ -23,29 +23,29 @@
 #include "RisohEditor.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& Name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& Lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& File);
+BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
+BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddBitmapDlg : public MDialogBase
 {
 public:
-    ResEntries& m_Entries;
-    LPCWSTR File;
+    ResEntries& m_entries;
+    LPCWSTR file;
     ConstantsDB& m_db;
     ResEntry m_entry;
 
     MAddBitmapDlg(ConstantsDB& db, ResEntries& Entries) :
-        MDialogBase(IDD_ADDBITMAP), m_Entries(Entries), File(NULL),
+        MDialogBase(IDD_ADDBITMAP), m_entries(Entries), file(NULL),
         m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, File);
+        SetDlgItemTextW(hwnd, edt1, file);
 
         DragAcceptFiles(hwnd, TRUE);
 
@@ -84,20 +84,20 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString Type = RT_BITMAP;
+        MIdOrString type = RT_BITMAP;
 
-        MIdOrString Name;
+        MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, Name))
+        if (!CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        WORD Lang;
-        if (!CheckLangComboBox(hCmb3, Lang))
+        WORD lang;
+        if (!CheckLangComboBox(hCmb3, lang))
             return;
 
         BOOL Overwrite = FALSE;
-        INT iEntry = Res_Find(m_Entries, RT_BITMAP, Name, Lang, FALSE);
+        INT iEntry = Res_Find(m_entries, RT_BITMAP, name, lang, FALSE);
         if (iEntry != -1)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -112,12 +112,12 @@ public:
             }
         }
 
-        std::wstring File;
+        std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Edt1_CheckFile(hEdt1, File))
+        if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!Res_AddBitmap(m_Entries, Name, Lang, File, Overwrite))
+        if (!Res_AddBitmap(m_entries, name, lang, file, Overwrite))
         {
             if (Overwrite)
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
@@ -126,7 +126,7 @@ public:
             return;
         }
 
-        ResEntry entry(Type, Name, Lang);
+        ResEntry entry(type, name, lang);
         m_entry = entry;
 
         EndDialog(IDOK);
@@ -150,9 +150,9 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
-        WCHAR File[MAX_PATH];
-        DragQueryFileW(hdrop, 0, File, _countof(File));
-        SetDlgItemTextW(hwnd, edt1, File);
+        WCHAR file[MAX_PATH];
+        DragQueryFileW(hdrop, 0, file, _countof(file));
+        SetDlgItemTextW(hwnd, edt1, file);
     }
 
     virtual INT_PTR CALLBACK

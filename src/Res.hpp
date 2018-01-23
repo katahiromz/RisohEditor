@@ -63,9 +63,9 @@ public:
     {
     }
 
-    ResEntry(const MIdOrString& Type, const MIdOrString& Name, WORD Lang,
+    ResEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
              BOOL Updated = TRUE)
-     : type(Type), name(Name), lang(Lang), updated(Updated)
+     : type(type), name(name), lang(lang), updated(Updated)
     {
     }
 
@@ -129,8 +129,8 @@ struct ResourceHeader
 {
     DWORD           DataSize;
     DWORD           HeaderSize;
-    MIdOrString     Type;
-    MIdOrString     Name;
+    MIdOrString     type;
+    MIdOrString     name;
     DWORD           DataVersion;
     WORD            MemoryFlags;
     WORD            LanguageId;
@@ -141,8 +141,8 @@ struct ResourceHeader
     {
         DataSize = 0;
         HeaderSize = 0x20;
-        Type = (WORD)0;
-        Name = (WORD)0;
+        type = (WORD)0;
+        name = (WORD)0;
         DataVersion = 0;
         MemoryFlags = 0;
         LanguageId = 0;
@@ -153,7 +153,7 @@ struct ResourceHeader
     BOOL ReadFrom(const MByteStreamEx& bs)
     {
         if (!bs.ReadRaw(DataSize) || !bs.ReadRaw(HeaderSize) ||
-            !bs.ReadID(Type) || !bs.ReadID(Name))
+            !bs.ReadID(type) || !bs.ReadID(name))
         {
             return FALSE;
         }
@@ -173,7 +173,7 @@ struct ResourceHeader
     BOOL WriteTo(MByteStreamEx& bs) const
     {
         if (!bs.WriteRaw(DataSize) || !bs.WriteRaw(HeaderSize) ||
-            !bs.WriteID(Type) || !bs.WriteID(Name))
+            !bs.WriteID(type) || !bs.WriteID(name))
         {
             return FALSE;
         }
@@ -211,20 +211,20 @@ struct ResourceHeader
 };
 
 inline INT
-Res_Find(const ResEntries& Entries,
-         const MIdOrString& Type, 
-         const MIdOrString& Name,
-         WORD Lang, BOOL bEmptyOK)
+Res_Find(const ResEntries& entries,
+         const MIdOrString& type, 
+         const MIdOrString& name,
+         WORD lang, BOOL bEmptyOK)
 {
-    size_t i, count = Entries.size();
+    size_t i, count = entries.size();
     for (i = 0; i < count; ++i)
     {
-        const ResEntry& entry = Entries[i];
-        if (!Type.is_zero() && entry.type != Type)
+        const ResEntry& entry = entries[i];
+        if (!type.is_zero() && entry.type != type)
             continue;
-        if (!Name.is_zero() && entry.name != Name)
+        if (!name.is_zero() && entry.name != name)
             continue;
-        if (Lang != 0xFFFF && entry.lang != Lang)
+        if (lang != 0xFFFF && entry.lang != lang)
             continue;
         if (entry.empty() && !bEmptyOK)
             continue;
@@ -269,29 +269,29 @@ Res_Intersect(const ResEntries& entries1, const ResEntries& entries2)
 }
 
 inline INT
-Res_Find(const ResEntries& Entries, const ResEntry& Entry, BOOL bEmptyOK)
+Res_Find(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
 {
-    return Res_Find(Entries, Entry.type, Entry.name, Entry.lang, bEmptyOK);
+    return Res_Find(entries, entry.type, entry.name, entry.lang, bEmptyOK);
 }
 
 inline void
 Res_Search(ResEntries& Found,
-           const ResEntries& Entries,
-           const MIdOrString& Type, 
-           const MIdOrString& Name,
-           WORD Lang)
+           const ResEntries& entries,
+           const MIdOrString& type, 
+           const MIdOrString& name,
+           WORD lang)
 {
     Found.clear();
 
-    size_t i, count = Entries.size();
+    size_t i, count = entries.size();
     for (i = 0; i < count; ++i)
     {
-        const ResEntry& entry = Entries[i];
-        if (!Type.is_zero() && entry.type != Type)
+        const ResEntry& entry = entries[i];
+        if (!type.is_zero() && entry.type != type)
             continue;
-        if (!Name.is_zero() && entry.name != Name)
+        if (!name.is_zero() && entry.name != name)
             continue;
-        if (Lang != 0xFFFF && entry.lang != Lang)
+        if (lang != 0xFFFF && entry.lang != lang)
             continue;
         if (entry.empty())
             continue;
@@ -301,18 +301,18 @@ Res_Search(ResEntries& Found,
 }
 
 inline void
-Res_Search(ResEntries& Found, const ResEntries& Entries, const ResEntry& Entry)
+Res_Search(ResEntries& Found, const ResEntries& entries, const ResEntry& entry)
 {
-    Res_Search(Found, Entries, Entry.type, Entry.name, Entry.lang);
+    Res_Search(Found, entries, entry.type, entry.name, entry.lang);
 }
 
 inline UINT
-Res_GetLastIconID(const ResEntries& Entries)
+Res_GetLastIconID(const ResEntries& entries)
 {
     WORD last_id = 0;
 
-    ResEntries::const_iterator it, end = Entries.end();
-    for (it = Entries.begin(); it != end; ++it)
+    ResEntries::const_iterator it, end = entries.end();
+    for (it = entries.begin(); it != end; ++it)
     {
         if (it->type != RT_ICON || !it->name.is_int() || it->name.is_zero())
             continue;
@@ -324,12 +324,12 @@ Res_GetLastIconID(const ResEntries& Entries)
 }
 
 inline UINT
-Res_GetLastCursorID(const ResEntries& Entries)
+Res_GetLastCursorID(const ResEntries& entries)
 {
     WORD last_id = 0;
 
-    ResEntries::const_iterator it, end = Entries.end();
-    for (it = Entries.begin(); it != end; ++it)
+    ResEntries::const_iterator it, end = entries.end();
+    for (it = entries.begin(); it != end; ++it)
     {
         if (it->type != RT_CURSOR || !it->name.is_int() || it->name.is_zero())
             continue;
@@ -341,12 +341,12 @@ Res_GetLastCursorID(const ResEntries& Entries)
 }
 
 inline void
-Res_AddEntryFromRes(HMODULE hMod, ResEntries& Entries,
-                    LPCWSTR Type, LPCWSTR Name, WORD Lang)
+Res_AddEntryFromRes(HMODULE hMod, ResEntries& entries,
+                    LPCWSTR type, LPCWSTR name, WORD lang)
 {
-    ResEntry Entry(Type, Name, Lang);
+    ResEntry entry(type, name, lang);
 
-    HRSRC hResInfo = FindResourceExW(hMod, Type, Name, Lang);
+    HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
     if (hResInfo)
     {
         DWORD Size = SizeofResource(hMod, hResInfo);
@@ -354,51 +354,51 @@ Res_AddEntryFromRes(HMODULE hMod, ResEntries& Entries,
         LPVOID pv = LockResource(hGlobal);
         if (pv && Size)
         {
-            Entry.assign(pv, Size);
+            entry.assign(pv, Size);
         }
     }
 
-    Entries.push_back(Entry);
+    entries.push_back(entry);
 }
 
 inline BOOL
-Res_AddEntry(ResEntries& Entries, const ResEntry& Entry,
+Res_AddEntry(ResEntries& entries, const ResEntry& entry,
              BOOL Replace = FALSE)
 {
-    INT iEntry = Res_Find(Entries, Entry, TRUE);
+    INT iEntry = Res_Find(entries, entry, TRUE);
     if (iEntry != -1)
     {
-        if (!Replace && !Entries[iEntry].empty())
+        if (!Replace && !entries[iEntry].empty())
         {
             return FALSE;
         }
 
-        Entries[iEntry] = Entry;
+        entries[iEntry] = entry;
     }
     else
     {
-        Entries.push_back(Entry);
+        entries.push_back(entry);
     }
 
     return TRUE;
 }
 
 inline BOOL
-Res_AddEntry(ResEntries& Entries, const MIdOrString& Type,
-             const MIdOrString& Name, WORD Lang,
+Res_AddEntry(ResEntries& entries, const MIdOrString& type,
+             const MIdOrString& name, WORD lang,
              const ResEntry::DataType& Data, BOOL Replace = FALSE)
 {
-    ResEntry Entry(Type, Name, Lang);
-    Entry.data = Data;
-    return Res_AddEntry(Entries, Entry, Replace);
+    ResEntry entry(type, name, lang);
+    entry.data = Data;
+    return Res_AddEntry(entries, entry, Replace);
 }
 
 inline BOOL
-Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
+Res_DeleteGroupIcon(ResEntries& entries, ResEntry& entry)
 {
-    assert(Entry.type == RT_GROUP_ICON);
+    assert(entry.type == RT_GROUP_ICON);
 
-    MByteStreamEx bs(Entry.data);
+    MByteStreamEx bs(entry.data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -414,21 +414,21 @@ Res_DeleteGroupIcon(ResEntries& Entries, ResEntry& Entry)
     DWORD i, Count = dir.idCount;
     for (i = 0; i < Count; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, DirEntries[i].nID, Entry.lang, TRUE);
+        INT k = Res_Find(entries, RT_ICON, DirEntries[i].nID, entry.lang, TRUE);
         if (k != -1)
-            Entries[k].clear_data();
+            entries[k].clear_data();
     }
 
-    Entry.clear_data();
+    entry.clear_data();
     return TRUE;
 }
 
 inline BOOL
-Res_DeleteGroupCursor(ResEntries& Entries, ResEntry& Entry)
+Res_DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
 {
-    assert(Entry.type == RT_GROUP_CURSOR);
+    assert(entry.type == RT_GROUP_CURSOR);
 
-    MByteStreamEx bs(Entry.data);
+    MByteStreamEx bs(entry.data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -444,38 +444,38 @@ Res_DeleteGroupCursor(ResEntries& Entries, ResEntry& Entry)
     DWORD i, Count = dir.idCount;
     for (i = 0; i < Count; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, DirEntries[i].nID, Entry.lang, TRUE);
-        Entries[k].clear_data();
+        INT k = Res_Find(entries, RT_CURSOR, DirEntries[i].nID, entry.lang, TRUE);
+        entries[k].clear_data();
     }
 
-    Entry.clear_data();
+    entry.clear_data();
     return TRUE;
 }
 
 inline BOOL
-Res_DeleteEntries(ResEntries& Entries, const MIdOrString& Type,
-                  const MIdOrString& Name, WORD Lang)
+Res_DeleteEntries(ResEntries& entries, const MIdOrString& type,
+                  const MIdOrString& name, WORD lang)
 {
     BOOL bFound = FALSE;
     for (;;)
     {
-        INT iEntry = Res_Find(Entries, Type, Name, Lang, FALSE);
+        INT iEntry = Res_Find(entries, type, name, lang, FALSE);
         if (iEntry == -1)
             break;
 
-        ResEntry& Entry = Entries[iEntry];
+        ResEntry& entry = entries[iEntry];
 
-        if (Entry.type == RT_GROUP_ICON)
+        if (entry.type == RT_GROUP_ICON)
         {
-            Res_DeleteGroupIcon(Entries, Entry);
+            Res_DeleteGroupIcon(entries, entry);
         }
-        if (Entry.type == RT_GROUP_CURSOR)
+        if (entry.type == RT_GROUP_CURSOR)
         {
-            Res_DeleteGroupCursor(Entries, Entry);
+            Res_DeleteGroupCursor(entries, entry);
         }
         else
         {
-            Entry.clear_data();
+            entry.clear_data();
         }
 
         bFound = TRUE;
@@ -485,60 +485,60 @@ Res_DeleteEntries(ResEntries& Entries, const MIdOrString& Type,
 }
 
 inline BOOL
-Res_DeleteEntries(ResEntries& Entries, const ResEntry& Entry)
+Res_DeleteEntries(ResEntries& entries, const ResEntry& entry)
 {
-    return Res_DeleteEntries(Entries, Entry.type, Entry.name, Entry.lang);
+    return Res_DeleteEntries(entries, entry.type, entry.name, entry.lang);
 }
 
 inline BOOL
-Res_AddGroupIcon(ResEntries& Entries, const MIdOrString& Name,
-                 WORD Lang, const std::wstring& FileName,
+Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
+                 WORD lang, const std::wstring& FileName,
                  BOOL Replace = FALSE)
 {
     IconFile icon;
     if (!icon.LoadFromFile(FileName.c_str()) || icon.type() != RES_ICON)
         return FALSE;
 
-    UINT LastIconID = Res_GetLastIconID(Entries);
+    UINT LastIconID = Res_GetLastIconID(entries);
     UINT NextIconID = LastIconID + 1;
     IconFile::DataType group(icon.GetIconGroup(NextIconID));
-    Res_AddEntry(Entries, RT_GROUP_ICON, Name, Lang, group, Replace);
+    Res_AddEntry(entries, RT_GROUP_ICON, name, lang, group, Replace);
 
     int i, Count = icon.GetImageCount();
     for (i = 0; i < Count; ++i)
     {
-        Res_AddEntry(Entries, RT_ICON, WORD(NextIconID + i), Lang,
+        Res_AddEntry(entries, RT_ICON, WORD(NextIconID + i), lang,
                      icon.GetImage(i));
     }
     return TRUE;
 }
 
 inline BOOL
-Res_AddGroupCursor(ResEntries& Entries, const MIdOrString& Name,
-                   WORD Lang, const std::wstring& FileName,
+Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
+                   WORD lang, const std::wstring& FileName,
                    BOOL Replace = FALSE)
 {
     CursorFile cur;
     if (!cur.LoadFromFile(FileName.c_str()) || cur.type() != RES_CURSOR)
         return FALSE;
 
-    UINT LastCursorID = Res_GetLastCursorID(Entries);
+    UINT LastCursorID = Res_GetLastCursorID(entries);
     UINT NextCursorID = LastCursorID + 1;
     CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
-    Res_AddEntry(Entries, RT_GROUP_CURSOR, Name, Lang, group, Replace);
+    Res_AddEntry(entries, RT_GROUP_CURSOR, name, lang, group, Replace);
 
     int i, Count = cur.GetImageCount();
     for (i = 0; i < Count; ++i)
     {
-        Res_AddEntry(Entries, RT_CURSOR, WORD(NextCursorID + i), Lang,
+        Res_AddEntry(entries, RT_CURSOR, WORD(NextCursorID + i), lang,
                      cur.GetImage(i));
     }
     return TRUE;
 }
 
 inline BOOL
-Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
-              WORD Lang, const std::wstring& BitmapFile, BOOL Replace = FALSE)
+Res_AddBitmap(ResEntries& entries, const MIdOrString& name,
+              WORD lang, const std::wstring& BitmapFile, BOOL Replace = FALSE)
 {
     MByteStreamEx stream;
     if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
@@ -564,7 +564,7 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
         }
         DeleteObject(hbm);
 
-        Res_AddEntry(Entries, RT_BITMAP, Name, Lang, PackedDIB, Replace);
+        Res_AddEntry(entries, RT_BITMAP, name, lang, PackedDIB, Replace);
     }
     else
     {
@@ -574,7 +574,7 @@ Res_AddBitmap(ResEntries& Entries, const MIdOrString& Name,
 
         size_t i0 = FileHeadSize, i1 = stream.size();
         ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-        Res_AddEntry(Entries, RT_BITMAP, Name, Lang, HeadLess, Replace);
+        Res_AddEntry(entries, RT_BITMAP, name, lang, HeadLess, Replace);
     }
 
     return TRUE;
@@ -584,8 +584,8 @@ inline BOOL CALLBACK
 EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                 WORD wIDLanguage, LPARAM lParam)
 {
-    ResEntries& Entries = *(ResEntries *)lParam;
-    Res_AddEntryFromRes(hMod, Entries, lpszType, lpszName, wIDLanguage);
+    ResEntries& entries = *(ResEntries *)lParam;
+    Res_AddEntryFromRes(hMod, entries, lpszType, lpszName, wIDLanguage);
     return TRUE;
 }
 
@@ -675,12 +675,12 @@ Res_GetName(const MIdOrString& id_or_str)
     return ret;
 }
 
-std::wstring Res_GetLangName(WORD Lang);
+std::wstring Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
-Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& Entries)
+Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& entries)
 {
     HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
     if (hUpdate == NULL)
@@ -689,21 +689,21 @@ Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& Entries)
         return FALSE;
     }
 
-    for (DWORD i = 0; i < DWORD(Entries.size()); ++i)
+    for (DWORD i = 0; i < DWORD(entries.size()); ++i)
     {
-        const ResEntry& Entry = Entries[i];
-        if (Entry.empty())
+        const ResEntry& entry = entries[i];
+        if (entry.empty())
             continue;
 
         void *pv = NULL;
         DWORD size = 0;
-        if (!Entry.empty())
+        if (!entry.empty())
         {
-            pv = const_cast<void *>(Entry.ptr());
-            size = Entry.size();
+            pv = const_cast<void *>(entry.ptr());
+            size = entry.size();
         }
         if (!::UpdateResourceW(hUpdate,
-                               Entry.type.Ptr(), Entry.name.Ptr(), Entry.lang,
+                               entry.type.Ptr(), entry.name.Ptr(), entry.lang,
                                pv, size))
         {
             DWORD dwError = GetLastError();
@@ -815,7 +815,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
 
 inline HTREEITEM
 _tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -824,19 +824,19 @@ _tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_LANG)
         {
-            if (Entries[LOWORD(lParam)].lang == Entries[i].lang)
+            if (entries[LOWORD(lParam)].lang == entries[i].lang)
                 return hItem;
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(Entries[i].lang);
+    std::wstring ResLang = Res_GetLangName(entries[i].lang);
     return TV_MyInsert(hwnd, hParent, ResLang,
                        MAKELPARAM(k, I_LANG), Expand);
 }   
 
 inline HTREEITEM
 _tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -845,19 +845,19 @@ _tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_NAME)
         {
-            if (Entries[LOWORD(lParam)].name == Entries[i].name)
+            if (entries[LOWORD(lParam)].name == entries[i].name)
                 return hItem;
         }
     }
 
-    std::wstring ResName = Res_GetName(Entries[i].name);
+    std::wstring ResName = Res_GetName(entries[i].name);
     return TV_MyInsert(hwnd, hParent, ResName,
                        MAKELPARAM(k, I_NAME), Expand);
 }
 
 inline HTREEITEM
 _tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -866,18 +866,18 @@ _tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_TYPE)
         {
-            if (Entries[LOWORD(lParam)].type == Entries[i].type)
+            if (entries[LOWORD(lParam)].type == entries[i].type)
                 return hItem;
         }
     }
 
-    std::wstring ResType = Res_GetType(Entries[i].type);
+    std::wstring ResType = Res_GetType(entries[i].type);
     return TV_MyInsert(hwnd, hParent, ResType,
                        MAKELPARAM(k, I_TYPE), Expand);
 }
 
 inline void
-TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
+TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 {
     HTREEITEM hParent = NULL;
 
@@ -888,7 +888,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_TYPE)
         {
-            if (Entries[LOWORD(lParam)].type == entry.type)
+            if (entries[LOWORD(lParam)].type == entry.type)
             {
                 hParent = hItem;
                 break;
@@ -903,8 +903,8 @@ TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_NAME)
         {
-            if (Entries[LOWORD(lParam)].type == entry.type &&
-                Entries[LOWORD(lParam)].name == entry.name)
+            if (entries[LOWORD(lParam)].type == entry.type &&
+                entries[LOWORD(lParam)].name == entry.name)
             {
                 hParent = hItem;
                 break;
@@ -912,7 +912,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
         }
         else if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
         {
-            if (Entries[LOWORD(lParam)].lang == entry.lang)
+            if (entries[LOWORD(lParam)].lang == entry.lang)
             {
                 hParent = hItem;
                 TreeView_SelectItem(hwnd, hParent);
@@ -928,9 +928,9 @@ TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_LANG)
         {
-            if (Entries[LOWORD(lParam)].type == entry.type &&
-                Entries[LOWORD(lParam)].name == entry.name &&
-                Entries[LOWORD(lParam)].lang == entry.lang)
+            if (entries[LOWORD(lParam)].type == entry.type &&
+                entries[LOWORD(lParam)].name == entry.name &&
+                entries[LOWORD(lParam)].lang == entry.lang)
             {
                 hParent = hItem;
                 break;
@@ -943,7 +943,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& Entries, const ResEntry& entry)
 
 inline HTREEITEM
 _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT iEntry, BOOL Expand)
+                       const ResEntries& entries, INT iEntry, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -952,19 +952,19 @@ _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_STRING)
         {
-            if (Entries[LOWORD(lParam)].lang == Entries[iEntry].lang)
+            if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
                 return hItem;
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(Entries[iEntry].lang);
+    std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
     return TV_MyInsert(hwnd, hParent, ResLang,
                        MAKELPARAM(iEntry, I_STRING), Expand);
 }
 
 inline HTREEITEM
 _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& Entries, INT iEntry, BOOL Expand)
+                       const ResEntries& entries, INT iEntry, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -973,18 +973,18 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
         LPARAM lParam = TV_GetParam(hwnd, hItem);
         if (HIWORD(lParam) == I_MESSAGE)
         {
-            if (Entries[LOWORD(lParam)].lang == Entries[iEntry].lang)
+            if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
                 return hItem;
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(Entries[iEntry].lang);
+    std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
     return TV_MyInsert(hwnd, hParent, ResLang,
                        MAKELPARAM(iEntry, I_MESSAGE), Expand);
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
+TV_RefreshInfo(HWND hwnd, ResEntries& entries, BOOL bNewlyOpen)
 {
     TreeView_DeleteAllItems(hwnd);
 
@@ -992,111 +992,111 @@ TV_RefreshInfo(HWND hwnd, ResEntries& Entries, BOOL bNewlyOpen)
     if (bNewlyOpen)
     {
         Expand = TRUE;
-        if (Entries.size() >= 24)
+        if (entries.size() >= 24)
             Expand = FALSE;
     }
 
-    for (INT i = 0; i < INT(Entries.size()); ++i)
+    for (INT i = 0; i < INT(entries.size()); ++i)
     {
-        if (Entries[i].empty())
+        if (entries[i].empty())
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, i, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, entries, i, i, Expand);
 
-        if (Entries[i].type == RT_STRING)
+        if (entries[i].type == RT_STRING)
         {
-            _tv_FindOrInsertString(hwnd, hItem, Entries, i, Expand);
+            _tv_FindOrInsertString(hwnd, hItem, entries, i, Expand);
         }
-        if (Entries[i].type == RT_MESSAGETABLE)
+        if (entries[i].type == RT_MESSAGETABLE)
         {
-            _tv_FindOrInsertMessage(hwnd, hItem, Entries, i, Expand);
+            _tv_FindOrInsertMessage(hwnd, hItem, entries, i, Expand);
         }
     }
 
     INT k = 0;
-    for (INT i = 0; i < INT(Entries.size()); ++i)
+    for (INT i = 0; i < INT(entries.size()); ++i)
     {
-        if (Entries[i].empty())
+        if (entries[i].empty())
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, Entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth2(hwnd, hItem, Entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth3(hwnd, hItem, Entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth2(hwnd, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth3(hwnd, hItem, entries, i, k, Expand);
         hItem = hItem;
         ++k;
     }
 
-    for (size_t i = Entries.size(); i > 0; )
+    for (size_t i = entries.size(); i > 0; )
     {
         --i;
-        if (Entries[i].empty())
+        if (entries[i].empty())
         {
-            Entries.erase(Entries.begin() + i);
+            entries.erase(entries.begin() + i);
             continue;
         }
     }
 }
 
-inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& Entries)
+inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& entries)
 {
     LPARAM lParam = TV_GetParam(hwnd, hItem);
 
     WORD i = LOWORD(lParam);
-    ResEntry Entry = Entries[i];
+    ResEntry entry = entries[i];
 
     INT nPos = GetScrollPos(hwnd, SB_VERT);
 
     switch (HIWORD(lParam))
     {
     case I_TYPE:
-        Entry.name.clear();
-        Entry.lang = 0xFFFF;
-        Res_DeleteEntries(Entries, Entry);
+        entry.name.clear();
+        entry.lang = 0xFFFF;
+        Res_DeleteEntries(entries, entry);
         break;
     case I_NAME:
-        Entry.lang = 0xFFFF;
-        Res_DeleteEntries(Entries, Entry);
+        entry.lang = 0xFFFF;
+        Res_DeleteEntries(entries, entry);
         break;
     case I_LANG:
-        Res_DeleteEntries(Entries, Entry);
+        Res_DeleteEntries(entries, entry);
         break;
     case I_STRING:
     case I_MESSAGE:
-        Entry.name.clear();
-        Res_DeleteEntries(Entries, Entry);
+        entry.name.clear();
+        Res_DeleteEntries(entries, entry);
         break;
     }
 
-    TV_RefreshInfo(hwnd, Entries, FALSE);
+    TV_RefreshInfo(hwnd, entries, FALSE);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
 }
 
 inline BOOL
-Res_Optimize(ResEntries& Entries)
+Res_Optimize(ResEntries& entries)
 {
-    size_t count = Entries.size();
+    size_t count = entries.size();
     while (count-- > 0)
     {
-        if (Entries[count].empty())
+        if (entries[count].empty())
         {
-            Entries.erase(Entries.begin() + count);
+            entries.erase(entries.begin() + count);
         }
     }
 
-    count = Entries.size();
+    count = entries.size();
     for (size_t i = 0; i < count; ++i)
     {
-        Entries[i].updated = FALSE;
+        entries[i].updated = FALSE;
     }
 
     return TRUE;
 }
 
 inline BOOL
-Res_ExtractGroupIcon(const ResEntries& Entries,
+Res_ExtractGroupIcon(const ResEntries& entries,
                      const ResEntry& GroupIconEntry,
                      const wchar_t *OutputFileName)
 {
@@ -1129,17 +1129,17 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID,
+        INT k = Res_Find(entries, RT_ICON, GroupEntries[i].nID,
                          GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
             continue;
         }
-        const ResEntry& IconEntry = Entries[k];
+        const ResEntry& IconEntry = entries[k];
 
         DirEntries[i].bWidth = GroupEntries[i].bWidth;
         DirEntries[i].bHeight = GroupEntries[i].bHeight;
@@ -1171,17 +1171,17 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
 
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID,
+        INT k = Res_Find(entries, RT_ICON, GroupEntries[i].nID,
                          GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
             continue;
         }
-        const ResEntry& IconEntry = Entries[k];
+        const ResEntry& IconEntry = entries[k];
 
         DWORD dwSize = IconEntry.size();
         if (!stream.WriteData(&IconEntry[0], dwSize))
@@ -1197,7 +1197,7 @@ Res_ExtractGroupIcon(const ResEntries& Entries,
 BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD Size, BITMAP& bm);
 
 inline BOOL
-Res_ExtractIcon(const ResEntries& Entries,
+Res_ExtractIcon(const ResEntries& entries,
                 const ResEntry& IconEntry,
                 const wchar_t *OutputFileName)
 {
@@ -1241,7 +1241,7 @@ Res_ExtractIcon(const ResEntries& Entries,
 }
 
 inline BOOL
-Res_ExtractGroupCursor(const ResEntries& Entries,
+Res_ExtractGroupCursor(const ResEntries& entries,
                        const ResEntry& GroupCursorEntry,
                        const wchar_t *OutputFileName)
 {
@@ -1275,17 +1275,17 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID,
+        INT k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID,
                          GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
             continue;
         }
-        const ResEntry& CursorEntry = Entries[k];
+        const ResEntry& CursorEntry = entries[k];
         LOCALHEADER local;
         if (CursorEntry.size() >= sizeof(local))
             memcpy(&local, &CursorEntry[0], sizeof(local));
@@ -1320,17 +1320,17 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
 
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID,
+        INT k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID,
                          GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
-            k = Res_Find(Entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
+            k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
         }
         if (k == -1)
         {
             continue;
         }
-        const ResEntry& CursorEntry = Entries[k];
+        const ResEntry& CursorEntry = entries[k];
 
         DWORD cbLocal = sizeof(LOCALHEADER);
         DWORD dwSize = CursorEntry.size() - cbLocal;
@@ -1346,7 +1346,7 @@ Res_ExtractGroupCursor(const ResEntries& Entries,
 }
 
 inline BOOL
-Res_ExtractCursor(const ResEntries& Entries,
+Res_ExtractCursor(const ResEntries& entries,
                   const ResEntry& CursorEntry,
                   const wchar_t *OutputFileName)
 {
