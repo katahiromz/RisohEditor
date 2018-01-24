@@ -270,6 +270,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nID
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
         nIDTYPE_ != IDTYPE_HELP)
     {
+	    table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
         table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         end = table.end();

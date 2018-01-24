@@ -24,6 +24,8 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include <cctype>
+#include <cwchar>
 #include "id_string.hpp"
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
@@ -755,7 +757,8 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 
         if (ret.size())
         {
-            if (!std::iswdigit(ret[0]))
+			using namespace std;
+            if (!iswdigit(ret[0]))
             {
                 ret += L" (";
                 ret += mstr_dec_word(entry.name.m_id);
