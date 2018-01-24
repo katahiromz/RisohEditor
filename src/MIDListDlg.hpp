@@ -318,6 +318,8 @@ public:
                     ListView_SetItemText(m_hLst1, iItem, 1, &assoc[0]);
                     ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
 
+                    SetItems();
+
                     SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
                 }
             }
