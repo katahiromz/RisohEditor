@@ -242,7 +242,7 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nIDTYPE_)
 {
     SetWindowText(hCmb, strCommand.c_str());
 
@@ -251,7 +251,7 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
 
     ConstantsDB::TableType table;
     table = db.GetTable(L"RESOURCE.ID.PREFIX");
-    MStringW prefix = table[IDTYPE_COMMAND].name;
+    MStringW prefix = table[nIDTYPE_].name;
     if (prefix.empty())
         return;
 
@@ -263,6 +263,23 @@ void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand)
         if (it->name == strCommand)
         {
             ComboBox_SetCurSel(hCmb, i);
+        }
+    }
+
+    if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
+        nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
+        nIDTYPE_ != IDTYPE_HELP)
+    {
+        prefix = table[IDTYPE_RESOURCE].name;
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            INT i = ComboBox_AddString(hCmb, it->name.c_str());
+            if (it->name == strCommand)
+            {
+                ComboBox_SetCurSel(hCmb, i);
+            }
         }
     }
 }
@@ -1850,7 +1867,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     MReplaceBinDlg dialog(m_entries, m_entries[i], m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -1950,7 +1967,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 Res_AddEntry(m_entries, entries[i], bOverwrite);
             }
 
-            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         }
         else
         {
@@ -1990,7 +2007,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL);
     m_entries.clear();
-    TV_RefreshInfo(m_hTreeView, m_entries, TRUE);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -2200,7 +2217,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
                 Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         entry.name = dialog.m_name;
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
@@ -2256,7 +2273,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         entry.lang = dialog.m_lang;
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
@@ -2278,8 +2295,8 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 
     ResEntry selection = m_entries[i];
 
-    TV_Delete(m_hTreeView, hItem, m_entries);
-    TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+    TV_Delete(m_hTreeView, m_db, hItem, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
     HidePreview(hwnd);
 
     TV_SelectEntry(m_hTreeView, m_entries, selection);
@@ -2337,7 +2354,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, WideText, bReopen))
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
 }
@@ -2449,7 +2466,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (CompileParts(hwnd, WideText))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, selection);
             }
         }
@@ -3794,7 +3811,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
         m_bLoading = TRUE;
         {
             entries = entries;
-            TV_RefreshInfo(m_hTreeView, entries, TRUE);
+            TV_RefreshInfo(m_hTreeView, m_db, entries, TRUE);
         }
         m_bLoading = FALSE;
         SetFilePath(hwnd, Path);
@@ -3818,7 +3835,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
         entries.clear();
         Res_GetListFromRes(hMod, (LPARAM)&entries);
         FreeLibrary(hMod);
-        TV_RefreshInfo(m_hTreeView, entries, TRUE);
+        TV_RefreshInfo(m_hTreeView, m_db, entries, TRUE);
     }
     m_bLoading = FALSE;
     SetFilePath(hwnd, Path);
@@ -4419,7 +4436,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             MAddIconDlg dialog(m_db, m_entries);
             dialog.file = file;
             dialog.DialogBoxDx(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
@@ -4429,7 +4446,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             MAddCursorDlg dialog(m_db, m_entries);
             dialog.m_file = file;
             dialog.DialogBoxDx(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
@@ -4441,7 +4458,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4453,7 +4470,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4466,7 +4483,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"PNG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4479,7 +4496,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"GIF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4493,7 +4510,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"JPEG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4506,7 +4523,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"TIFF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4519,7 +4536,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"AVI";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4538,7 +4555,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"WMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4551,7 +4568,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"EMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -4560,7 +4577,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
 
     DoLoad(hwnd, m_entries, file);
-    TV_RefreshInfo(m_hTreeView, m_entries, TRUE);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
     ChangeStatusText(IDS_READY);
 }
 
@@ -5384,7 +5401,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     MAddIconDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5402,7 +5419,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     MReplaceIconDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5420,7 +5437,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     MReplaceCursorDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5433,7 +5450,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     MAddBitmapDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5451,7 +5468,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     MReplaceBitmapDlg dialog(m_db, m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5464,7 +5481,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     MAddCursorDlg dialog(m_db, m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5477,7 +5494,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
     MAddResDlg dialog(m_entries, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5491,7 +5508,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5505,7 +5522,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -5519,7 +5536,7 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_entries, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }

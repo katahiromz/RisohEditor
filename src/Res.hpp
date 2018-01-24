@@ -30,6 +30,7 @@
 #include "MString.hpp"
 #include "PackedDIB.hpp"
 #include "MBitmapDx.hpp"
+#include "ConstantsDB.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -661,16 +662,114 @@ Res_GetType(const MIdOrString& id_or_str)
 }
 
 inline std::wstring
-Res_GetName(const MIdOrString& id_or_str)
+Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 {
     std::wstring ret;
-    if (id_or_str.m_id != 0)
+    if (entry.name.m_id != 0)
     {
-        ret = mstr_dec_word(id_or_str.m_id);
+        WORD id = entry.name.m_id;
+        if (entry.type == RT_CURSOR)
+        {
+            ;
+        }
+        else if (entry.type == RT_BITMAP)
+        {
+            ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
+        }
+        else if (entry.type == RT_ICON)
+        {
+            ;
+        }
+        else if (entry.type == RT_MENU)
+        {
+            ret += db.GetNameOfResID(IDTYPE_MENU, id);
+        }
+        else if (entry.type == RT_DIALOG)
+        {
+            ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
+        }
+        else if (entry.type == RT_STRING)
+        {
+            ;
+        }
+        else if (entry.type == RT_FONTDIR)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_FONT)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_ACCELERATOR)
+        {
+            ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
+        }
+        else if (entry.type == RT_RCDATA)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_MESSAGETABLE)
+        {
+            ;
+        }
+        else if (entry.type == RT_GROUP_CURSOR)
+        {
+            ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
+        }
+        else if (entry.type == RT_GROUP_ICON)
+        {
+            ret += db.GetNameOfResID(IDTYPE_ICON, id);
+        }
+        else if (entry.type == RT_VERSION)
+        {
+            ;
+        }
+        else if (entry.type == RT_DLGINCLUDE)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_PLUGPLAY)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_VXD)
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
+        else if (entry.type == RT_ANICURSOR)
+        {
+            ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
+        }
+        else if (entry.type == RT_ANIICON)
+        {
+            ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
+        }
+        else if (entry.type == RT_HTML)
+        {
+            ret += db.GetNameOfResID(IDTYPE_HTML, id);
+        }
+        else if (entry.type == RT_MANIFEST)
+        {
+            ;
+        }
+
+        if (ret.size())
+        {
+            if (!std::iswdigit(ret[0]))
+            {
+                ret += L" (";
+                ret += mstr_dec_word(entry.name.m_id);
+                ret += L")";
+            }
+        }
+        else
+        {
+            ret += mstr_dec_word(entry.name.m_id);
+        }
     }
     else
     {
-        ret = id_or_str.m_str;
+        ret = entry.name.m_str;
     }
     return ret;
 }
@@ -814,7 +913,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
 }
 
 inline HTREEITEM
-_tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
+_tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
                        const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -835,7 +934,7 @@ _tv_FindOrInsertDepth3(HWND hwnd, HTREEITEM hParent,
 }   
 
 inline HTREEITEM
-_tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
+_tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
                        const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -850,13 +949,13 @@ _tv_FindOrInsertDepth2(HWND hwnd, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResName = Res_GetName(entries[i].name);
+    std::wstring ResName = Res_GetName(db, entries[i]);
     return TV_MyInsert(hwnd, hParent, ResName,
                        MAKELPARAM(k, I_NAME), Expand);
 }
 
 inline HTREEITEM
-_tv_FindOrInsertDepth1(HWND hwnd, HTREEITEM hParent,
+_tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
                        const ResEntries& entries, INT i, INT k, BOOL Expand)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -983,8 +1082,30 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
                        MAKELPARAM(iEntry, I_MESSAGE), Expand);
 }
 
+inline bool Res_Less(const ResEntry& entry1, const ResEntry& entry2)
+{
+    if (entry1.type < entry2.type)
+        return true;
+    if (entry1.type > entry2.type)
+        return false;
+    if (entry1.name < entry2.name)
+        return true;
+    if (entry1.name > entry2.name)
+        return false;
+    if (entry1.lang < entry2.lang)
+        return true;
+    if (entry1.lang > entry2.lang)
+        return false;
+    return false;
+}
+
+inline void Res_Sort(ResEntries& entries)
+{
+    std::sort(entries.begin(), entries.end(), Res_Less);
+}
+
 inline void
-TV_RefreshInfo(HWND hwnd, ResEntries& entries, BOOL bNewlyOpen)
+TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries, BOOL bNewlyOpen)
 {
     TreeView_DeleteAllItems(hwnd);
 
@@ -996,13 +1117,15 @@ TV_RefreshInfo(HWND hwnd, ResEntries& entries, BOOL bNewlyOpen)
             Expand = FALSE;
     }
 
+    Res_Sort(entries);
+
     for (INT i = 0; i < INT(entries.size()); ++i)
     {
         if (entries[i].empty())
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, entries, i, i, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i, Expand);
 
         if (entries[i].type == RT_STRING)
         {
@@ -1021,9 +1144,9 @@ TV_RefreshInfo(HWND hwnd, ResEntries& entries, BOOL bNewlyOpen)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, hItem, entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth2(hwnd, hItem, entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth3(hwnd, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k, Expand);
         hItem = hItem;
         ++k;
     }
@@ -1039,7 +1162,7 @@ TV_RefreshInfo(HWND hwnd, ResEntries& entries, BOOL bNewlyOpen)
     }
 }
 
-inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& entries)
+inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& entries)
 {
     LPARAM lParam = TV_GetParam(hwnd, hItem);
 
@@ -1069,7 +1192,7 @@ inline void TV_Delete(HWND hwnd, HTREEITEM hItem, ResEntries& entries)
         break;
     }
 
-    TV_RefreshInfo(hwnd, entries, FALSE);
+    TV_RefreshInfo(hwnd, db, entries, FALSE);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
 }

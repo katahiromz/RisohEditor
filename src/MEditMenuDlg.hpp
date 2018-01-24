@@ -28,7 +28,7 @@ class MModifyMItemDlg;
 class MEditMenuDlg;
 
 BOOL CheckCommand(ConstantsDB& db, MString strCommand);
-void InitCommandComboBox(HWND hCmb, ConstantsDB& db, MString strCommand);
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +45,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, L"");
+        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, L"", IDTYPE_COMMAND);
         SetDlgItemInt(hwnd, edt1, 0, TRUE);
         CenterWindowDx();
         return TRUE;
@@ -162,7 +162,7 @@ public:
     {
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
-        InitCommandComboBox(GetDlgItem(hwnd, cmb2), m_db, m_entry.szCommandID);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, m_entry.szCommandID, IDTYPE_COMMAND);
         SetDlgItemTextW(hwnd, edt1, m_entry.szHelpID);
 
         DWORD dwType, dwState;
