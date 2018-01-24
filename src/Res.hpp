@@ -757,7 +757,7 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 
         if (ret.size())
         {
-			using namespace std;
+            using namespace std;
             if (!iswdigit(ret[0]))
             {
                 ret += L" (";
