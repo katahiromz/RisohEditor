@@ -3856,6 +3856,8 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     m_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
     ShowIDList(hwnd, FALSE);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
+
     return TRUE;
 }
 
