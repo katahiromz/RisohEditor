@@ -39,7 +39,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-void GetSelection(HWND hLst, std::vector<BYTE>& sel)
+void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
 {
     for (size_t i = 0; i < sel.size(); ++i)
     {
@@ -47,8 +47,8 @@ void GetSelection(HWND hLst, std::vector<BYTE>& sel)
     }
 }
 
-void GetSelection(std::vector<BYTE>& sel,
-                  const ConstantsDB::TableType& table, DWORD dwValue)
+void GetStyleSelect(std::vector<BYTE>& sel,
+                    const ConstantsDB::TableType& table, DWORD dwValue)
 {
     sel.resize(table.size());
     for (size_t i = 0; i < table.size(); ++i)
@@ -60,7 +60,7 @@ void GetSelection(std::vector<BYTE>& sel,
     }
 }
 
-DWORD AnalyseDifference(
+DWORD AnalyseStyleDiff(
     DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
 {

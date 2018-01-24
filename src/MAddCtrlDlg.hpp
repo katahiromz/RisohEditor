@@ -30,10 +30,10 @@ class MAddCtrlDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-void GetSelection(HWND hLst, std::vector<BYTE>& sel);
-void GetSelection(std::vector<BYTE>& sel,
+void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
+void GetStyleSelect(std::vector<BYTE>& sel,
                   const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseDifference(DWORD dwValue, ConstantsDB::TableType& table,
+DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
@@ -197,7 +197,7 @@ public:
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = WS_VISIBLE | WS_CHILD;
-        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        GetStyleSelect(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
@@ -209,7 +209,7 @@ public:
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = 0;
-        GetSelection(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
+        GetStyleSelect(m_exstyle_selection, m_exstyle_table, m_dwExStyle);
         InitStyleListBox(hLst2, m_exstyle_table);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
@@ -317,10 +317,10 @@ public:
         HWND hLst1 = GetDlgItem(hwnd, lst1);
 
         std::vector<BYTE> old_style_selection = m_style_selection;
-        GetSelection(hLst1, m_style_selection);
+        GetStyleSelect(hLst1, m_style_selection);
 
-        m_dwStyle = AnalyseDifference(m_dwStyle, m_style_table,
-                                      old_style_selection, m_style_selection);
+        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
+                                     old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
         m_bUpdating = TRUE;
@@ -338,10 +338,10 @@ public:
         HWND hLst2 = GetDlgItem(hwnd, lst2);
 
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
-        GetSelection(hLst2, m_exstyle_selection);
+        GetStyleSelect(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = AnalyseDifference(m_dwExStyle, m_exstyle_table,
-                                        old_exstyle_selection, m_exstyle_selection);
+        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table,
+                                       old_exstyle_selection, m_exstyle_selection);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
         m_bUpdating = TRUE;
@@ -361,7 +361,7 @@ public:
         DWORD dwStyle = _tcstoul(text.c_str(), NULL, 16);
 
         std::vector<BYTE> old_style_selection = m_style_selection;
-        GetSelection(m_style_selection, m_style_table, dwStyle);
+        GetStyleSelect(m_style_selection, m_style_table, dwStyle);
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
         m_dwStyle = dwStyle;
@@ -378,7 +378,7 @@ public:
         DWORD dwExStyle = _tcstoul(text.c_str(), NULL, 16);
 
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
-        GetSelection(m_exstyle_selection, m_exstyle_table, dwExStyle);
+        GetStyleSelect(m_exstyle_selection, m_exstyle_table, dwExStyle);
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);
         m_dwExStyle = dwExStyle;
@@ -407,7 +407,7 @@ public:
         MString str = strClass + TEXT(".DEFAULT.STYLE");
         m_dwStyle = m_db.GetValue(str, TEXT("STYLE"));
 
-        GetSelection(m_style_selection, m_style_table, m_dwStyle);
+        GetStyleSelect(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
