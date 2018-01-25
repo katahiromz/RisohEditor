@@ -5135,7 +5135,7 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
     {
         DestroyWindow(m_id_list_dlg);
         m_id_list_dlg.CreateDialogDx(NULL);
-        ShowWindow(m_id_list_dlg, SW_SHOWNORMAL);
+        ShowWindow(m_id_list_dlg, SW_SHOWNOACTIVATE);
         UpdateWindow(m_id_list_dlg);
         UpdateIDList(hwnd);
     }
