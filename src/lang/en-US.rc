@@ -823,3 +823,19 @@ FONT 9, "MS Shell Dlg"
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 115, 150, 60, 14
 }
+
+IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
+CAPTION "Item Search"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "&String To Search:", -1, 5, 7, 55, 12
+    EDITTEXT edt1, 65, 5, 100, 14
+    AUTOCHECKBOX "&Case sensitive", chx1, 5, 25, 119, 14
+    AUTOCHECKBOX "&Internal text", chx2, 5, 45, 120, 14, WS_DISABLED
+    GROUPBOX "Direction", -1, 5, 65, 160, 42
+    AUTORADIOBUTTON "&Upward", rad1, 15, 80, 60, 14
+    AUTORADIOBUTTON "&Downward", rad2, 90, 80, 60, 14
+    DEFPUSHBUTTON "&Find", IDOK, 40, 115, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 105, 115, 60, 14
+}

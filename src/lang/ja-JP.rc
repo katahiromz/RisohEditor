@@ -823,3 +823,19 @@ FONT 9, "MS UI Gothic"
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 150, 60, 14
 }
+
+IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
+CAPTION "項目検索"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "検索文字列(&S):", -1, 5, 7, 55, 12
+    EDITTEXT edt1, 65, 5, 100, 14
+    AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 5, 25, 119, 14
+    AUTOCHECKBOX "内部テキストも検索する(&I)", chx2, 5, 45, 120, 14, WS_DISABLED
+    GROUPBOX "検索する方向", -1, 5, 65, 160, 42
+    AUTORADIOBUTTON "上向き(&U)", rad1, 15, 80, 60, 14
+    AUTORADIOBUTTON "下向き(&D)", rad2, 90, 80, 60, 14
+    DEFPUSHBUTTON "検索(&F)", IDOK, 40, 115, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 105, 115, 60, 14
+}
