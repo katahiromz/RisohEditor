@@ -1495,6 +1495,7 @@ public:
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
     BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext);
     HTREEITEM GetLastItem(HTREEITEM hItem);
+    HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
 protected:
     // parsing resource IDs
@@ -2194,6 +2195,24 @@ HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
         hItem = hNext;
         hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
     } while (hNext);
+    return hItem;
+}
+
+HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
+{
+    HTREEITEM hNext, hChild;
+    for (;;)
+    {
+        hNext = GetLastItem(hItem);
+        if (!hNext)
+            break;
+
+        hChild = TreeView_GetChild(m_hTreeView, hNext);
+        if (!hChild)
+            break;
+
+        hItem = hChild;
+    }
     return hItem;
 }
 
