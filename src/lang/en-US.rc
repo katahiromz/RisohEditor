@@ -81,7 +81,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Replace...\tCtrl+H", CMDID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "&Item Search...\tCtrl+E", CMDID_ITEMSEARCH
+        MENUITEM "&Item Search...\tCtrl+M", CMDID_ITEMSEARCH
     }
     POPUP "&View"
     {

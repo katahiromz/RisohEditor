@@ -81,7 +81,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "置換(&R)...\tCtrl+H", CMDID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "項目検索(&I)...\tCtrl+E", CMDID_ITEMSEARCH
+        MENUITEM "項目検索(&I)...\tCtrl+M", CMDID_ITEMSEARCH
     }
     POPUP "表示(&V)"
     {
