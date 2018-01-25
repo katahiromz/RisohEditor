@@ -160,29 +160,18 @@ struct MIdOrString
         {
             if (m_id != 0)
                 return m_id < id_or_str.m_id;
-            return true;
+            return false;
         }
         else
         {
             if (m_id == 0)
                 return m_str < id_or_str.m_str;
-            return false;
+            return true;
         }
     }
     bool operator>(const MIdOrString& id_or_str) const
     {
-        if (id_or_str.m_id != 0)
-        {
-            if (m_id != 0)
-                return m_id > id_or_str.m_id;
-            return false;
-        }
-        else
-        {
-            if (m_id == 0)
-                return m_str > id_or_str.m_str;
-            return true;
-        }
+        return !(*this < id_or_str) && !(*this == id_or_str);
     }
 
     bool operator==(const WCHAR *psz) const
