@@ -270,7 +270,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nID
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
         nIDTYPE_ != IDTYPE_HELP)
     {
-	    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
         table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         end = table.end();
@@ -1494,7 +1494,7 @@ public:
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
     BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext);
-    HTREEITEM DoGetLastItem(HTREEITEM hItem);
+    HTREEITEM GetLastItem(HTREEITEM hItem);
 
 protected:
     // parsing resource IDs
@@ -2186,13 +2186,13 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     return Res_AddEntry(m_entries, entry, TRUE);
 }
 
-HTREEITEM MMainWnd::DoGetLastItem(HTREEITEM hItem)
+HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
 {
     HTREEITEM hNext = hItem;
     do
     {
         hItem = hNext;
-        hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_NEXT);
+        hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
     } while (hNext);
     return hItem;
 }
@@ -2214,14 +2214,14 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, 
                     if (DoItemSearch(hChild, bIgnoreCases, bDownward, strText, FALSE))
                         return TRUE;
                 }
-                hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_NEXT);
+                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
                 if (!hNext)
                 {
                     hParent = hItem;
                     do
                     {
                         hParent = TreeView_GetParent(m_hTreeView, hParent);
-                        hNext = TreeView_GetNextItem(m_hTreeView, hParent, TVGN_NEXT);
+                        hNext = TreeView_GetNextSibling(m_hTreeView, hParent);
                     } while (hParent && !hNext);
                     if (!hNext)
                         return FALSE;
@@ -2229,25 +2229,21 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, 
             }
             else
             {
-                // FIXME
-                hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_PREVIOUS);
-                if (!hNext)
+                hNext = TreeView_GetPrevSibling(m_hTreeView, hItem);
+                if (hNext)
                 {
-                    hParent = hItem;
-                    do
+                    for (;;)
                     {
-                        hParent = TreeView_GetParent(m_hTreeView, hParent);
-                        hNext = TreeView_GetNextItem(m_hTreeView, hParent, TVGN_PREVIOUS);
-                    } while (hParent && !hNext);
-                    if (!hNext)
-                        return FALSE;
+                        hChild = TreeView_GetChild(m_hTreeView, hNext);
+                        if (!hChild)
+                            break;
 
-                    hChild = TreeView_GetChild(m_hTreeView, hNext);
-                    if (hChild)
-                    {
-                        if (DoItemSearch(hChild, bIgnoreCases, bDownward, strText, FALSE))
-                            return TRUE;
+                        hNext = GetLastItem(hChild);
                     }
+                }
+                else
+                {
+                    hNext = TreeView_GetParent(m_hTreeView, hItem);
                 }
             }
             hItem = hNext;
@@ -2388,9 +2384,17 @@ void MMainWnd::OnItemSearch(HWND hwnd)
 
 void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
+    BOOL bIgnoreCases = pDialog->m_bIgnoreCases;
+    BOOL bDownward = pDialog->m_bDownward;
+    MString strText = pDialog->m_strText;
+
     HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
     if (!hItem)
+    {
         hItem = TreeView_GetRoot(m_hTreeView);
+        if (!bDownward)
+            hItem = GetLastLeaf(hItem);
+    }
 
     if (!IsWindow(pDialog->m_hwnd))
     {
@@ -2398,9 +2402,6 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
-    BOOL bIgnoreCases = pDialog->m_bIgnoreCases;
-    BOOL bDownward = pDialog->m_bDownward;
-    MString strText = pDialog->m_strText;
     if (bIgnoreCases)
     {
         _tcsupr(&strText[0]);
