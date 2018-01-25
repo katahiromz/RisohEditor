@@ -81,7 +81,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM SEPARATOR
         MENUITEM "置換(&R)...\tCtrl+H", CMDID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "項目検索(&I)...", CMDID_ITEMSEARCH
+        MENUITEM "項目検索(&I)...\tCtrl+E", CMDID_ITEMSEARCH
     }
     POPUP "表示(&V)"
     {
@@ -283,6 +283,7 @@ STRINGTABLE
     IDS_ADDMENU, "メニューの追加"
     IDS_ADDVERINFO, "バージョン情報の追加"
     IDS_ADDCURSOR, "カーソルの追加"
+    IDS_NOMOREITEM, "項目はこれ以上ありません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

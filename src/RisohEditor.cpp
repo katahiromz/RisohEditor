@@ -2426,7 +2426,11 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         _tcsupr(&strText[0]);
     }
 
-    DoItemSearch(hItem, bIgnoreCases, bDownward, strText, TRUE);
+    if (!DoItemSearch(hItem, bIgnoreCases, bDownward, strText, TRUE))
+    {
+        MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
+        SetFocus(*pDialog);
+    }
 }
 
 void MMainWnd::OnDeleteRes(HWND hwnd)

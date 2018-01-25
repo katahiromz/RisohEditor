@@ -81,7 +81,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM SEPARATOR
         MENUITEM "&Replace...\tCtrl+H", CMDID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "&Item Search...", CMDID_ITEMSEARCH
+        MENUITEM "&Item Search...\tCtrl+E", CMDID_ITEMSEARCH
     }
     POPUP "&View"
     {
@@ -283,6 +283,7 @@ STRINGTABLE
     IDS_ADDMENU, "Add Menu"
     IDS_ADDVERINFO, "Add VerInfo"
     IDS_ADDCURSOR, "Add Cursor"
+    IDS_NOMOREITEM, "No more items."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
