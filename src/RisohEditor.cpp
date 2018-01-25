@@ -2418,9 +2418,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         _tcsupr(&strText[0]);
     }
 
-    ITEM_SEARCH search;
-    ZeroMemory(&search, sizeof(search));
-
+    ITEM_SEARCH search = { 0 };
     search.bIgnoreCases = bIgnoreCases;
     search.bDownward = bDownward;
     search.strText = strText;

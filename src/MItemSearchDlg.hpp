@@ -101,7 +101,7 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(IDCANCEL);
+            DestroyWindow(hwnd);
             break;
         }
     }
