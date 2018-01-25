@@ -1493,9 +1493,22 @@ public:
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
-    BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bSelf);
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
+
+    struct ITEM_SEARCH
+    {
+        BOOL        bIgnoreCases;
+        BOOL        bDownward;
+        MString     strText;
+        BOOL        bFindFirst;
+        BOOL        bValid;
+        HTREEITEM   hCurrent;
+        HTREEITEM   hFound;
+        TV_ITEM     item;
+        TCHAR       szText[80];
+    };
+    BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
 
 protected:
     // parsing resource IDs
@@ -2216,76 +2229,61 @@ HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
     return hItem;
 }
 
-BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bSelf)
+BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 {
-    TV_ITEM item;
-    HTREEITEM hSelf = hItem, hChild, hNext;
-    TCHAR szText[80];
-
-    std::deque<HTREEITEM> item_stack;
-
-    hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
-    item_stack.push_front(hNext);
-
-    for (HTREEITEM hParent = TreeView_GetParent(m_hTreeView, hItem);
-         hParent;
-         hParent = TreeView_GetParent(m_hTreeView, hParent))
-    {
-        hNext = TreeView_GetPrevSibling(m_hTreeView, hParent);
-        item_stack.push_front(hNext);
-    }
+    HTREEITEM hNext, hChild;
+    TV_ITEM& item = search.item;
 
     while (hItem)
     {
+        if (!search.bDownward && hItem == search.hCurrent)
+        {
+            search.bValid = FALSE;
+        }
+
         ZeroMemory(&item, sizeof(item));
         item.mask = TVIF_HANDLE | TVIF_TEXT;
         item.hItem = hItem;
-        item.pszText = szText;
-        item.cchTextMax = _countof(szText);
+        item.pszText = search.szText;
+        item.cchTextMax = _countof(search.szText);
         TreeView_GetItem(m_hTreeView, &item);
 
-        if (bIgnoreCases)
+        if (search.bIgnoreCases)
         {
-            _tcsupr(szText);
+            _tcsupr(search.szText);
         }
 
-        if (_tcsstr(szText, strText.c_str()) != NULL)
+        if (_tcsstr(search.szText, search.strText.c_str()) != NULL)
         {
-            TreeView_SelectItem(m_hTreeView, hItem);
-            TreeView_EnsureVisible(m_hTreeView, hItem);
-            if (bSelf || hSelf != hItem)
-                return TRUE;
-        }
-
-        if (bDownward)
-        {
-            hChild = TreeView_GetChild(m_hTreeView, hItem);
-            if (hChild)
+            if (search.bValid)
             {
-                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
-                item_stack.push_back(hNext);
-                hItem = hChild;
-            }
-            else
-            {
-                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
-                while (!hNext)
+                if (search.bFindFirst)
                 {
-                    if (item_stack.empty())
-                        return FALSE;
-
-                    hNext = item_stack.back();
-                    item_stack.pop_back();
+                    if (search.hFound == NULL)
+                        search.hFound = hItem;
                 }
-                hItem = hNext;
+                else
+                {
+                    search.hFound = hItem;
+                }
             }
         }
-        else
+
+        if (search.bDownward && hItem == search.hCurrent)
         {
-            // FIXME:
+            search.bValid = TRUE;
         }
+
+        hChild = TreeView_GetChild(m_hTreeView, hItem);
+        if (hChild)
+        {
+            DoItemSearch(hChild, search);
+        }
+        hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hItem = hNext;
     }
-    return FALSE;
+
+    return search.hFound != NULL;
 }
 
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
@@ -2400,10 +2398,11 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     BOOL bDownward = pDialog->m_bDownward;
     MString strText = pDialog->m_strText;
 
+    HTREEITEM hRoot = TreeView_GetRoot(m_hTreeView);
     HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
     if (!hItem)
     {
-        hItem = TreeView_GetRoot(m_hTreeView);
+        hItem = hRoot;
         if (!bDownward)
             hItem = GetLastLeaf(hItem);
     }
@@ -2419,7 +2418,32 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         _tcsupr(&strText[0]);
     }
 
-    if (!DoItemSearch(hItem, bIgnoreCases, bDownward, strText, FALSE))
+    ITEM_SEARCH search;
+    ZeroMemory(&search, sizeof(search));
+
+    search.bIgnoreCases = bIgnoreCases;
+    search.bDownward = bDownward;
+    search.strText = strText;
+    search.hFound = NULL;
+    search.hCurrent = hItem;
+
+    if (bDownward)
+    {
+        search.bFindFirst = TRUE;
+        search.bValid = FALSE;
+    }
+    else
+    {
+        search.bFindFirst = FALSE;
+        search.bValid = TRUE;
+    }
+
+    if (DoItemSearch(hRoot, search))
+    {
+        TreeView_SelectItem(m_hTreeView, search.hFound);
+        TreeView_EnsureVisible(m_hTreeView, search.hFound);
+    }
+    else
     {
         MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
         SetFocus(*pDialog);
