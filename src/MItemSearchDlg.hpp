@@ -33,10 +33,20 @@ public:
     BOOL m_bIgnoreCases;
     BOOL m_bDownward;
     MString m_strText;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MItemSearchDlg() : MDialogBase(IDD_ITEMSEARCH),
                        m_bIgnoreCases(TRUE), m_bDownward(TRUE)
     {
+        m_hIcon = LoadIconDx(4);
+        m_hIconSm = LoadSmallIconDx(4);
+    }
+
+    virtual ~MItemSearchDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     typedef std::set<MItemSearchDlg *> dialogs_type;
@@ -67,6 +77,9 @@ public:
             CheckRadioButton(hwnd, rad1, rad2, rad2);
         else
             CheckRadioButton(hwnd, rad1, rad2, rad1);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         CenterWindowDx();
         return TRUE;
