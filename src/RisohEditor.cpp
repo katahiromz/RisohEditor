@@ -2394,16 +2394,17 @@ void MMainWnd::OnItemSearch(HWND hwnd)
 
 void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
-    BOOL bIgnoreCases = pDialog->m_bIgnoreCases;
-    BOOL bDownward = pDialog->m_bDownward;
-    MString strText = pDialog->m_strText;
+    ITEM_SEARCH search = { 0 };
+    search.bIgnoreCases = pDialog->m_bIgnoreCases;
+    search.bDownward = pDialog->m_bDownward;
+    search.strText = pDialog->m_strText;
 
     HTREEITEM hRoot = TreeView_GetRoot(m_hTreeView);
     HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
     if (!hItem)
     {
         hItem = hRoot;
-        if (!bDownward)
+        if (!search.bDownward)
             hItem = GetLastLeaf(hItem);
     }
 
@@ -2413,19 +2414,15 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
-    if (bIgnoreCases)
+    if (search.bIgnoreCases)
     {
-        _tcsupr(&strText[0]);
+        _tcsupr(&search.strText[0]);
     }
 
-    ITEM_SEARCH search = { 0 };
-    search.bIgnoreCases = bIgnoreCases;
-    search.bDownward = bDownward;
-    search.strText = strText;
     search.hFound = NULL;
     search.hCurrent = hItem;
 
-    if (bDownward)
+    if (search.bDownward)
     {
         search.bFindFirst = TRUE;
         search.bValid = FALSE;
