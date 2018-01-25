@@ -2242,7 +2242,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, 
                         hParent = TreeView_GetParent(m_hTreeView, hParent);
                         hNext = TreeView_GetNextSibling(m_hTreeView, hParent);
                     } while (hParent && !hNext);
-                    if (!hNext)
+                    if (!hParent || !hNext)
                         return FALSE;
                 }
             }
