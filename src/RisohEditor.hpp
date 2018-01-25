@@ -53,6 +53,7 @@
 #include <cassert>      // for assert macro
 #include <vector>       // for std::vector
 #include <map>          // for std::map
+#include <deque>        // for std::deque
 #include <cstdio>
 
 ////////////////////////////////////////////////////////////////////////////

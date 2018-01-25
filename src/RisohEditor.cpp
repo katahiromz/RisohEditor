@@ -1493,7 +1493,7 @@ public:
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
-    BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext);
+    BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bSelf);
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
@@ -2216,61 +2216,27 @@ HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
     return hItem;
 }
 
-BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext)
+BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bSelf)
 {
     TV_ITEM item;
-    HTREEITEM hNext, hParent, hChild;
+    HTREEITEM hSelf = hItem, hChild, hNext;
     TCHAR szText[80];
-    for (;;)
+
+    std::deque<HTREEITEM> item_stack;
+
+    hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+    item_stack.push_front(hNext);
+
+    for (HTREEITEM hParent = TreeView_GetParent(m_hTreeView, hItem);
+         hParent;
+         hParent = TreeView_GetParent(m_hTreeView, hParent))
     {
-        if (bDoNext)
-        {
-            if (bDownward)
-            {
-                hChild = TreeView_GetChild(m_hTreeView, hItem);
-                if (hChild)
-                {
-                    if (DoItemSearch(hChild, bIgnoreCases, bDownward, strText, FALSE))
-                        return TRUE;
-                }
-                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
-                if (!hNext)
-                {
-                    hParent = hItem;
-                    do
-                    {
-                        hParent = TreeView_GetParent(m_hTreeView, hParent);
-                        hNext = TreeView_GetNextSibling(m_hTreeView, hParent);
-                    } while (hParent && !hNext);
-                    if (!hParent || !hNext)
-                        return FALSE;
-                }
-            }
-            else
-            {
-                hNext = TreeView_GetPrevSibling(m_hTreeView, hItem);
-                if (hNext)
-                {
-                    for (;;)
-                    {
-                        hChild = TreeView_GetChild(m_hTreeView, hNext);
-                        if (!hChild)
-                            break;
+        hNext = TreeView_GetPrevSibling(m_hTreeView, hParent);
+        item_stack.push_front(hNext);
+    }
 
-                        hNext = GetLastItem(hChild);
-                    }
-                }
-                else
-                {
-                    hNext = TreeView_GetParent(m_hTreeView, hItem);
-                }
-            }
-            hItem = hNext;
-        }
-
-        if (hItem == NULL)
-            break;
-
+    while (hItem)
+    {
         ZeroMemory(&item, sizeof(item));
         item.mask = TVIF_HANDLE | TVIF_TEXT;
         item.hItem = hItem;
@@ -2287,10 +2253,37 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, 
         {
             TreeView_SelectItem(m_hTreeView, hItem);
             TreeView_EnsureVisible(m_hTreeView, hItem);
-            return TRUE;
+            if (bSelf || hSelf != hItem)
+                return TRUE;
         }
 
-        bDoNext = TRUE;
+        if (bDownward)
+        {
+            hChild = TreeView_GetChild(m_hTreeView, hItem);
+            if (hChild)
+            {
+                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+                item_stack.push_back(hNext);
+                hItem = hChild;
+            }
+            else
+            {
+                hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+                while (!hNext)
+                {
+                    if (item_stack.empty())
+                        return FALSE;
+
+                    hNext = item_stack.back();
+                    item_stack.pop_back();
+                }
+                hItem = hNext;
+            }
+        }
+        else
+        {
+            // FIXME:
+        }
     }
     return FALSE;
 }
@@ -2426,7 +2419,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         _tcsupr(&strText[0]);
     }
 
-    if (!DoItemSearch(hItem, bIgnoreCases, bDownward, strText, TRUE))
+    if (!DoItemSearch(hItem, bIgnoreCases, bDownward, strText, FALSE))
     {
         MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
         SetFocus(*pDialog);
