@@ -1493,6 +1493,8 @@ public:
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
+    BOOL DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext);
+    HTREEITEM DoGetLastItem(HTREEITEM hItem);
 
 protected:
     // parsing resource IDs
@@ -1543,6 +1545,8 @@ protected:
     void OnUpdateDlgRes(HWND hwnd);
     void OnCopyAsNewName(HWND hwnd);
     void OnCopyAsNewLang(HWND hwnd);
+    void OnItemSearch(HWND hwnd);
+    void OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -2182,6 +2186,100 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     return Res_AddEntry(m_entries, entry, TRUE);
 }
 
+HTREEITEM MMainWnd::DoGetLastItem(HTREEITEM hItem)
+{
+    HTREEITEM hNext = hItem;
+    do
+    {
+        hItem = hNext;
+        hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_NEXT);
+    } while (hNext);
+    return hItem;
+}
+
+BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, BOOL bIgnoreCases, BOOL bDownward, const MString& strText, BOOL bDoNext)
+{
+    TV_ITEM item;
+    HTREEITEM hNext, hParent, hChild;
+    TCHAR szText[80];
+    for (;;)
+    {
+        if (bDoNext)
+        {
+            if (bDownward)
+            {
+                hChild = TreeView_GetChild(m_hTreeView, hItem);
+                if (hChild)
+                {
+                    if (DoItemSearch(hChild, bIgnoreCases, bDownward, strText, FALSE))
+                        return TRUE;
+                }
+                hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_NEXT);
+                if (!hNext)
+                {
+                    hParent = hItem;
+                    do
+                    {
+                        hParent = TreeView_GetParent(m_hTreeView, hParent);
+                        hNext = TreeView_GetNextItem(m_hTreeView, hParent, TVGN_NEXT);
+                    } while (hParent && !hNext);
+                    if (!hNext)
+                        return FALSE;
+                }
+            }
+            else
+            {
+                // FIXME
+                hNext = TreeView_GetNextItem(m_hTreeView, hItem, TVGN_PREVIOUS);
+                if (!hNext)
+                {
+                    hParent = hItem;
+                    do
+                    {
+                        hParent = TreeView_GetParent(m_hTreeView, hParent);
+                        hNext = TreeView_GetNextItem(m_hTreeView, hParent, TVGN_PREVIOUS);
+                    } while (hParent && !hNext);
+                    if (!hNext)
+                        return FALSE;
+
+                    hChild = TreeView_GetChild(m_hTreeView, hNext);
+                    if (hChild)
+                    {
+                        if (DoItemSearch(hChild, bIgnoreCases, bDownward, strText, FALSE))
+                            return TRUE;
+                    }
+                }
+            }
+            hItem = hNext;
+        }
+
+        if (hItem == NULL)
+            break;
+
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_HANDLE | TVIF_TEXT;
+        item.hItem = hItem;
+        item.pszText = szText;
+        item.cchTextMax = _countof(szText);
+        TreeView_GetItem(m_hTreeView, &item);
+
+        if (bIgnoreCases)
+        {
+            _tcsupr(szText);
+        }
+
+        if (_tcsstr(szText, strText.c_str()) != NULL)
+        {
+            TreeView_SelectItem(m_hTreeView, hItem);
+            TreeView_EnsureVisible(m_hTreeView, hItem);
+            return TRUE;
+        }
+
+        bDoNext = TRUE;
+    }
+    return FALSE;
+}
+
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -2278,6 +2376,37 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         entry.lang = dialog.m_lang;
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
+}
+
+void MMainWnd::OnItemSearch(HWND hwnd)
+{
+    MItemSearchDlg *pDialog = new MItemSearchDlg;
+    pDialog->CreateDialogDx(hwnd);
+    ShowWindow(*pDialog, SW_SHOWNORMAL);
+    UpdateWindow(*pDialog);
+}
+
+void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
+{
+    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    if (!hItem)
+        hItem = TreeView_GetRoot(m_hTreeView);
+
+    if (!IsWindow(pDialog->m_hwnd))
+    {
+        assert(0);
+        return;
+    }
+
+    BOOL bIgnoreCases = pDialog->m_bIgnoreCases;
+    BOOL bDownward = pDialog->m_bDownward;
+    MString strText = pDialog->m_strText;
+    if (bIgnoreCases)
+    {
+        _tcsupr(&strText[0]);
+    }
+
+    DoItemSearch(hItem, bIgnoreCases, bDownward, strText, TRUE);
 }
 
 void MMainWnd::OnDeleteRes(HWND hwnd)
@@ -5239,6 +5368,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_COPYASNEWLANG:
         OnCopyAsNewLang(hwnd);
         break;
+    case CMDID_ITEMSEARCH:
+        OnItemSearch(hwnd);
+        break;
+    case CMDID_ITEMSEARCHBANG:
+        OnItemSearchBang(hwnd, reinterpret_cast<MItemSearchDlg *>(hwndCtl));
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -6007,6 +6142,22 @@ INT_PTR MMainWnd::RunDx()
         if (IsWindow(m_hFindReplaceDlg))
         {
             if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+                continue;
+        }
+        if (MItemSearchDlg::Dialogs().size())
+        {
+            typedef MItemSearchDlg::dialogs_type dialogs_type;
+            dialogs_type::iterator it, end = MItemSearchDlg::Dialogs().end();
+            BOOL bProcessed = FALSE;
+            for (it = MItemSearchDlg::Dialogs().begin(); it != end; ++it)
+            {
+                if (IsDialogMessage(**it, &msg))
+                {
+                    bProcessed = TRUE;
+                    break;
+                }
+            }
+            if (bProcessed)
                 continue;
         }
 

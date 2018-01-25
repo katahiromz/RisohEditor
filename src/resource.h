@@ -110,6 +110,8 @@
 #define CMDID_FITTOGRID         187
 #define CMDID_COPYASNEWNAME     188
 #define CMDID_COPYASNEWLANG     189
+#define CMDID_ITEMSEARCH        190
+#define CMDID_ITEMSEARCHBANG    191
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

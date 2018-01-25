@@ -171,6 +171,7 @@ struct RisohSettings
 #include "MAdviceResHDlg.hpp"
 #include "MCopyAsNewNameDlg.hpp"
 #include "MCopyAsNewLangDlg.hpp"
+#include "MItemSearchDlg.hpp"
 
 #include "id_string.hpp"
 #include "MString.hpp"
