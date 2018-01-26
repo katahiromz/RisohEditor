@@ -625,7 +625,7 @@ typedef std::vector<DialogItem> DialogItems;
 
 struct DialogRes
 {
-    ConstantsDB&                m_db;
+    const ConstantsDB&          m_db;
     WORD                        m_version;
     WORD                        m_signature;
     DWORD                       m_help_id;
@@ -648,7 +648,7 @@ struct DialogRes
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
 
-    DialogRes(ConstantsDB& db) : m_db(db)
+    DialogRes(const ConstantsDB& db) : m_db(db)
     {
         m_version = 0;
         m_signature = 0;

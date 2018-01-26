@@ -1003,7 +1003,7 @@ std::wstring DumpBitmapInfo(HBITMAP hbm)
     return ret;
 }
 
-std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE)
+std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
 {
     std::wstring ret;
 
@@ -1058,7 +1058,7 @@ std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data)
     return ret;
 }
 
-std::wstring DumpGroupCursorInfo(ResEntries& entries, const std::vector<BYTE>& data)
+std::wstring DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
 {
     std::wstring ret;
     WCHAR sz[128];
@@ -1377,6 +1377,7 @@ protected:
     MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
     MIDListDlg      m_id_list_dlg;
     ResEntries      m_entries;
+    ITEM_SEARCH     m_search;
 
     // find/replace
     FINDREPLACE     m_fr;
@@ -1392,7 +1393,8 @@ public:
         m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
         m_hFindReplaceDlg(NULL),
         m_rad_window(m_db, m_settings),
-        m_id_list_dlg(m_entries, m_db, m_settings)
+        m_id_list_dlg(m_entries, m_db, m_settings),
+        m_search(m_settings, m_db, m_entries)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1436,6 +1438,8 @@ public:
 
     BOOL StartDx();
     INT_PTR RunDx();
+    void DoEvents();
+    void DoMsg(MSG& msg);
 
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -1496,18 +1500,6 @@ public:
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
-    struct ITEM_SEARCH
-    {
-        BOOL        bIgnoreCases;
-        BOOL        bDownward;
-        MString     strText;
-        BOOL        bFindFirst;
-        BOOL        bValid;
-        HTREEITEM   hCurrent;
-        HTREEITEM   hFound;
-        TV_ITEM     item;
-        TCHAR       szText[80];
-    };
     BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
 
 protected:
@@ -2236,6 +2228,11 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 
     while (hItem)
     {
+        if (search.bCancelled || !IsWindow(search.res2text.m_hwndDialog))
+            break;
+
+        DoEvents();
+
         if (!search.bDownward && hItem == search.hCurrent)
         {
             search.bValid = FALSE;
@@ -2253,7 +2250,35 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             _tcsupr(search.szText);
         }
 
+        BOOL bFound = FALSE;
         if (_tcsstr(search.szText, search.strText.c_str()) != NULL)
+        {
+            bFound = TRUE;
+        }
+        else
+        {
+            if (search.bInternalText)
+            {
+                LPARAM lParam = TV_GetParam(m_hTreeView, hItem);
+                if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING)
+                {
+                    UINT i = LOWORD(lParam);
+                    const ResEntry& entry = m_entries[i];
+
+                    MString text = search.res2text.DumpEntry(entry);
+
+                    if (search.bIgnoreCases)
+                    {
+                        _tcsupr(&text[0]);
+                    }
+                    if (_tcsstr(text.c_str(), search.strText.c_str()) != NULL)
+                    {
+                        bFound = TRUE;
+                    }
+                }
+            }
+        }
+        if (bFound)
         {
             if (search.bValid)
             {
@@ -2386,61 +2411,71 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
-    MItemSearchDlg *pDialog = new MItemSearchDlg;
+    if (!MItemSearchDlg::Dialogs().empty())
+    {
+        HWND hDlg = **MItemSearchDlg::Dialogs().begin();
+        SetForegroundWindow(hDlg);
+        SetFocus(hDlg);
+        return;
+    }
+    MItemSearchDlg *pDialog = new MItemSearchDlg(m_search);
     pDialog->CreateDialogDx(hwnd);
+    m_search.res2text.m_hwnd = hwnd;
+    m_search.res2text.m_hwndDialog = *pDialog;
     ShowWindow(*pDialog, SW_SHOWNORMAL);
     UpdateWindow(*pDialog);
 }
 
 void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
-    ITEM_SEARCH search = { 0 };
-    search.bIgnoreCases = pDialog->m_bIgnoreCases;
-    search.bDownward = pDialog->m_bDownward;
-    search.strText = pDialog->m_strText;
-
-    HTREEITEM hRoot = TreeView_GetRoot(m_hTreeView);
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
-    if (!hItem)
-    {
-        hItem = hRoot;
-        if (!search.bDownward)
-            hItem = GetLastLeaf(hItem);
-    }
-
     if (!IsWindow(pDialog->m_hwnd))
     {
         assert(0);
         return;
     }
 
-    if (search.bIgnoreCases)
+    HTREEITEM hRoot = TreeView_GetRoot(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    if (!hItem)
     {
-        _tcsupr(&search.strText[0]);
+        hItem = hRoot;
+        if (!m_search.bDownward)
+            hItem = GetLastLeaf(hItem);
     }
 
-    search.hFound = NULL;
-    search.hCurrent = hItem;
-
-    if (search.bDownward)
+    if (m_search.bIgnoreCases)
     {
-        search.bFindFirst = TRUE;
-        search.bValid = FALSE;
+        _tcsupr(&m_search.strText[0]);
+    }
+
+    m_search.bCancelled = FALSE;
+    m_search.hFound = NULL;
+    m_search.hCurrent = hItem;
+
+    if (m_search.bDownward)
+    {
+        m_search.bFindFirst = TRUE;
+        m_search.bValid = FALSE;
     }
     else
     {
-        search.bFindFirst = FALSE;
-        search.bValid = TRUE;
+        m_search.bFindFirst = FALSE;
+        m_search.bValid = TRUE;
     }
 
-    if (DoItemSearch(hRoot, search))
+    if (DoItemSearch(hRoot, m_search))
     {
-        TreeView_SelectItem(m_hTreeView, search.hFound);
-        TreeView_EnsureVisible(m_hTreeView, search.hFound);
+        pDialog->Done();
+        TreeView_SelectItem(m_hTreeView, m_search.hFound);
+        TreeView_EnsureVisible(m_hTreeView, m_search.hFound);
     }
     else
     {
-        MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
+        pDialog->Done();
+        if (!m_search.hFound && !m_search.bCancelled)
+        {
+            MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
+        }
         SetFocus(*pDialog);
     }
 }
@@ -6147,6 +6182,58 @@ BOOL MMainWnd::StartDx()
     return TRUE;
 }
 
+void MMainWnd::DoEvents()
+{
+    MSG msg;
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+        DoMsg(msg);
+    }
+}
+
+void MMainWnd::DoMsg(MSG& msg)
+{
+    if (IsWindow(m_rad_window.m_rad_dialog))
+    {
+        if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
+            return;
+    }
+    if (IsWindow(m_id_list_dlg))
+    {
+        if (::IsDialogMessage(m_id_list_dlg, &msg))
+            return;
+    }
+    if (m_hAccel && IsWindow(m_hwnd))
+    {
+        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            return;
+    }
+    if (IsWindow(m_hFindReplaceDlg))
+    {
+        if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
+            return;
+    }
+    if (MItemSearchDlg::Dialogs().size())
+    {
+        typedef MItemSearchDlg::dialogs_type dialogs_type;
+        dialogs_type::iterator it, end = MItemSearchDlg::Dialogs().end();
+        BOOL bProcessed = FALSE;
+        for (it = MItemSearchDlg::Dialogs().begin(); it != end; ++it)
+        {
+            if (IsDialogMessage(**it, &msg))
+            {
+                bProcessed = TRUE;
+                break;
+            }
+        }
+        if (bProcessed)
+            return;
+    }
+
+    ::TranslateMessage(&msg);
+    ::DispatchMessage(&msg);
+}
+
 INT_PTR MMainWnd::RunDx()
 {
     MSG msg;
@@ -6159,46 +6246,7 @@ INT_PTR MMainWnd::RunDx()
             DebugBreak();
             return -1;
         }
-
-        if (IsWindow(m_rad_window.m_rad_dialog))
-        {
-            if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
-                continue;
-        }
-        if (IsWindow(m_id_list_dlg))
-        {
-            if (::IsDialogMessage(m_id_list_dlg, &msg))
-                continue;
-        }
-        if (m_hAccel && IsWindow(m_hwnd))
-        {
-            if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-                continue;
-        }
-        if (IsWindow(m_hFindReplaceDlg))
-        {
-            if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
-                continue;
-        }
-        if (MItemSearchDlg::Dialogs().size())
-        {
-            typedef MItemSearchDlg::dialogs_type dialogs_type;
-            dialogs_type::iterator it, end = MItemSearchDlg::Dialogs().end();
-            BOOL bProcessed = FALSE;
-            for (it = MItemSearchDlg::Dialogs().begin(); it != end; ++it)
-            {
-                if (IsDialogMessage(**it, &msg))
-                {
-                    bProcessed = TRUE;
-                    break;
-                }
-            }
-            if (bProcessed)
-                continue;
-        }
-
-        ::TranslateMessage(&msg);
-        ::DispatchMessage(&msg);
+        DoMsg(msg);
     }
     return INT(msg.wParam);
 }

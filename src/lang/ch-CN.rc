@@ -835,7 +835,7 @@ FONT 9, "MS UI Gothic"
     LTEXT "搜索字符串(&S):", -1, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14
     AUTOCHECKBOX "区分大小写(&C)", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "内部文本(&I)", chx2, 5, 45, 120, 14, WS_DISABLED
+    AUTOCHECKBOX "内部文本(&I)", chx2, 5, 45, 120, 14
     GROUPBOX "方向", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "向上(&U)", rad1, 15, 80, 60, 14
     AUTORADIOBUTTON "向下(&D)", rad2, 90, 80, 60, 14

@@ -75,6 +75,10 @@ HBITMAP Create24BppBitmapDx(INT width, INT height);
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
+std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
+std::wstring DumpBitmapInfo(HBITMAP hbm);
+std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data);
+std::wstring DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
 
 HBITMAP
 CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
@@ -196,6 +200,8 @@ struct RisohSettings
 #pragma comment(lib, "ole32.lib")
 #pragma comment(lib, "shell32.lib")
 #pragma comment(lib, "uuid.lib")
+
+#include "ResToText.hpp"
 
 ////////////////////////////////////////////////////////////////////////////
 

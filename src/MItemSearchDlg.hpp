@@ -21,23 +21,49 @@
 #define MZC4_MITEMSEARCHDLG_HPP_
 
 #include "RisohEditor.hpp"
+#include "ResToText.hpp"
 #include <set>
 
+struct ITEM_SEARCH;
 class MItemSearchDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
+struct ITEM_SEARCH
+{
+    ResToText   res2text;
+    BOOL        bIgnoreCases;
+    BOOL        bDownward;
+    BOOL        bInternalText;
+    BOOL        bRunning;
+    BOOL        bCancelled;
+    MString     strText;
+    BOOL        bFindFirst;
+    BOOL        bValid;
+    HTREEITEM   hCurrent;
+    HTREEITEM   hFound;
+    TV_ITEM     item;
+    TCHAR       szText[80];
+    ITEM_SEARCH(const RisohSettings& settings, const ConstantsDB& db,
+                const ResEntries& entries) : res2text(settings, db, entries)
+    {
+        bIgnoreCases = TRUE;
+        bDownward = TRUE;
+        bInternalText = FALSE;
+        bRunning = FALSE;
+        bCancelled = FALSE;
+    }
+};
+
 class MItemSearchDlg : public MDialogBase
 {
 public:
-    BOOL m_bIgnoreCases;
-    BOOL m_bDownward;
-    MString m_strText;
     HICON m_hIcon;
     HICON m_hIconSm;
+    ITEM_SEARCH& m_search;
 
-    MItemSearchDlg() : MDialogBase(IDD_ITEMSEARCH),
-                       m_bIgnoreCases(TRUE), m_bDownward(TRUE)
+    MItemSearchDlg(ITEM_SEARCH& search) 
+        : MDialogBase(IDD_ITEMSEARCH), m_search(search)
     {
         m_hIcon = LoadIconDx(4);
         m_hIconSm = LoadSmallIconDx(4);
@@ -64,19 +90,17 @@ public:
         delete this;
     }
 
+    void Done()
+    {
+        m_search.bRunning = FALSE;
+        EnableWindow(GetDlgItem(m_hwnd, IDOK), TRUE);
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         Dialogs().insert(this);
 
-        if (m_bIgnoreCases)
-            CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
-        else
-            CheckDlgButton(hwnd, chx1, BST_CHECKED);
-
-        if (m_bDownward)
-            CheckRadioButton(hwnd, rad1, rad2, rad2);
-        else
-            CheckRadioButton(hwnd, rad1, rad2, rad1);
+        CheckRadioButton(hwnd, rad1, rad2, rad2);
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
@@ -87,9 +111,14 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        m_strText = GetDlgItemText(edt1);
-        m_bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
-        m_bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
+        if (m_search.bRunning)
+            return;
+        m_search.strText = GetDlgItemText(edt1);
+        m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
+        m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
+        m_search.bInternalText = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
+        m_search.bRunning = TRUE;
+        EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
         SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_ITEMSEARCHBANG, (WPARAM)this);
     }
 
@@ -101,6 +130,17 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
+            if (!m_search.bRunning)
+            {
+                PostMessageDx(WM_COMMAND, 999);
+            }
+            else if (!m_search.bCancelled)
+            {
+                m_search.bRunning = FALSE;
+                m_search.bCancelled = TRUE;
+            }
+            break;
+        case 999:
             DestroyWindow(hwnd);
             break;
         }

@@ -52,8 +52,8 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    ConstantsDB& m_db;
-    AccelRes(ConstantsDB& db) : m_db(db) { }
+    const ConstantsDB& m_db;
+    AccelRes(const ConstantsDB& db) : m_db(db) { }
 
     BOOL LoadFromStream(const MByteStreamEx& stream)
     {
