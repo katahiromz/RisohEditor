@@ -231,47 +231,47 @@ ResToText::DumpEntry(const ResEntry& entry)
     {
         switch (entry.type.m_id)
         {
-        case (WORD)(INT_PTR)RT_CURSOR:
+        case 1: // RT_CURSOR
             return DoCursor(entry);
-        case (WORD)(INT_PTR)RT_BITMAP:
+        case 2: // RT_BITMAP
             return DoBitmap(entry);
-        case (WORD)(INT_PTR)RT_ICON:
+        case 3: // RT_ICON
             return DoIcon(entry);
-        case (WORD)(INT_PTR)RT_MENU:
+        case 4: // RT_MENU
             return DoMenu(entry);
-        case (WORD)(INT_PTR)RT_DIALOG:
+        case 5: // RT_DIALOG
             return DoDialog(entry);
-        case (WORD)(INT_PTR)RT_STRING:
+        case 6: // RT_STRING
             return DoString(entry);
-        case (WORD)(INT_PTR)RT_FONTDIR:
+        case 7: // RT_FONTDIR
             break;
-        case (WORD)(INT_PTR)RT_FONT:
+        case 8: // RT_FONT
             break;
-        case (WORD)(INT_PTR)RT_ACCELERATOR:
+        case 9: // RT_ACCELERATOR
             return DoAccel(entry);
-        case (WORD)(INT_PTR)RT_RCDATA:
+        case 10: // RT_RCDATA
             return DoText(entry);
-        case (WORD)(INT_PTR)RT_MESSAGETABLE:
+        case 11: // RT_MESSAGETABLE
             break;
-        case (WORD)(INT_PTR)RT_GROUP_CURSOR:
+        case 12: // RT_GROUP_CURSOR
             return DoGroupCursor(entry);
-        case (WORD)(INT_PTR)RT_GROUP_ICON:
+        case 14: // RT_GROUP_ICON
             return DoGroupIcon(entry);
-        case (WORD)(INT_PTR)RT_VERSION:
+        case 16: // RT_VERSION
             return DoVersion(entry);
-        case (WORD)(INT_PTR)RT_DLGINCLUDE:
+        case 17: // RT_DLGINCLUDE
             break;
-        case (WORD)(INT_PTR)RT_PLUGPLAY:
+        case 19: // RT_PLUGPLAY
             break;
-        case (WORD)(INT_PTR)RT_VXD:
+        case 20: // RT_VXD
             break;
-        case (WORD)(INT_PTR)RT_ANICURSOR:
+        case 21: // RT_ANICURSOR
             return DoAniCursor(entry);
-        case (WORD)(INT_PTR)RT_ANIICON:
+        case 22: // RT_ANIICON
             return DoAniIcon(entry);
-        case (WORD)(INT_PTR)RT_HTML:
+        case 23: // RT_HTML
             return DoText(entry);
-        case (WORD)(INT_PTR)RT_MANIFEST:
+        case 24: // RT_MANIFEST
             return DoText(entry);
         default:
             return DoText(entry);
