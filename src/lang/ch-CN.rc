@@ -284,6 +284,7 @@ STRINGTABLE
     IDS_ADDVERINFO, "添加版本信息"
     IDS_ADDCURSOR, "添加光标"
     IDS_NOMOREITEM, "没有更多的项目."
+    IDS_INVALIDDATA, "(Invalid Data)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -284,6 +284,7 @@ STRINGTABLE
     IDS_ADDVERINFO, "バージョン情報の追加"
     IDS_ADDCURSOR, "カーソルの追加"
     IDS_NOMOREITEM, "項目はこれ以上ありません。"
+    IDS_INVALIDDATA, "(無効なデータ)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

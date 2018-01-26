@@ -252,5 +252,6 @@
 #define IDS_ADDVERINFO      106
 #define IDS_ADDCURSOR       107
 #define IDS_NOMOREITEM      108
+#define IDS_INVALIDDATA     109
 
 #endif  // ndef RESOURCE_H_

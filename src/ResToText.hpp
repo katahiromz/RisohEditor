@@ -119,7 +119,7 @@ ResToText::DoMenu(const ResEntry& entry)
     {
         return menu_res.Dump(entry.name, m_db);
     }
-    return L"Invalid data";
+    return LoadStringDx(IDS_INVALIDDATA);
 }
 
 inline MString
@@ -131,7 +131,7 @@ ResToText::DoDialog(const ResEntry& entry)
     {
         return dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
     }
-    return L"Invalid data";
+    return LoadStringDx(IDS_INVALIDDATA);
 }
 
 inline MString
@@ -146,7 +146,7 @@ ResToText::DoString(const ResEntry& entry)
     {
         MByteStreamEx stream(it->data);
         if (!str_res.LoadFromStream(stream, it->name.m_id))
-            return L"Invalid data";
+            return LoadStringDx(IDS_INVALIDDATA);
     }
 
     return str_res.Dump(m_db);
@@ -161,7 +161,7 @@ ResToText::DoAccel(const ResEntry& entry)
     {
         return accel.Dump(entry.name);
     }
-    return L"Invalid data";
+    return LoadStringDx(IDS_INVALIDDATA);
 }
 
 inline MString
@@ -184,7 +184,7 @@ ResToText::DoVersion(const ResEntry& entry)
     {
         return ver_res.Dump(entry.name);
     }
-    return L"Invalid data";
+    return LoadStringDx(IDS_INVALIDDATA);
 }
 
 inline MString

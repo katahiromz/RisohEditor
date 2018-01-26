@@ -284,6 +284,7 @@ STRINGTABLE
     IDS_ADDVERINFO, "Add VerInfo"
     IDS_ADDCURSOR, "Add Cursor"
     IDS_NOMOREITEM, "No more items."
+    IDS_INVALIDDATA, "(Invalid Data)"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

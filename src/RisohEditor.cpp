@@ -2231,6 +2231,11 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
         if (search.bCancelled || !IsWindow(search.res2text.m_hwndDialog))
             break;
 
+        if (search.bFindFirst && search.hFound)
+        {
+            return TRUE;
+        }
+
         DoEvents();
 
         if (!search.bDownward && hItem == search.hCurrent)
@@ -2238,58 +2243,64 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             search.bValid = FALSE;
         }
 
-        ZeroMemory(&item, sizeof(item));
-        item.mask = TVIF_HANDLE | TVIF_TEXT;
-        item.hItem = hItem;
-        item.pszText = search.szText;
-        item.cchTextMax = _countof(search.szText);
-        TreeView_GetItem(m_hTreeView, &item);
+        if (search.bValid)
+        {
+            ZeroMemory(&item, sizeof(item));
+            item.mask = TVIF_HANDLE | TVIF_TEXT;
+            item.hItem = hItem;
+            item.pszText = search.szText;
+            item.cchTextMax = _countof(search.szText);
+            TreeView_GetItem(m_hTreeView, &item);
 
-        if (search.bIgnoreCases)
-        {
-            _tcsupr(search.szText);
-        }
-
-        BOOL bFound = FALSE;
-        if (_tcsstr(search.szText, search.strText.c_str()) != NULL)
-        {
-            bFound = TRUE;
-        }
-        else
-        {
-            if (search.bInternalText)
+            if (search.bIgnoreCases)
             {
-                LPARAM lParam = TV_GetParam(m_hTreeView, hItem);
-                if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING)
+                _tcsupr(search.szText);
+            }
+
+            BOOL bFound = FALSE;
+            if (_tcsstr(search.szText, search.strText.c_str()) != NULL)
+            {
+                bFound = TRUE;
+            }
+            else
+            {
+                if (search.bInternalText)
                 {
-                    UINT i = LOWORD(lParam);
-                    const ResEntry& entry = m_entries[i];
-
-                    MString text = search.res2text.DumpEntry(entry);
-
-                    if (search.bIgnoreCases)
+                    LPARAM lParam = TV_GetParam(m_hTreeView, hItem);
+                    if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING)
                     {
-                        _tcsupr(&text[0]);
-                    }
-                    if (_tcsstr(text.c_str(), search.strText.c_str()) != NULL)
-                    {
-                        bFound = TRUE;
+                        UINT i = LOWORD(lParam);
+                        const ResEntry& entry = m_entries[i];
+
+                        MString text = search.res2text.DumpEntry(entry);
+
+                        if (search.bIgnoreCases)
+                        {
+                            _tcsupr(&text[0]);
+                        }
+                        if (_tcsstr(text.c_str(), search.strText.c_str()) != NULL)
+                        {
+                            bFound = TRUE;
+                        }
                     }
                 }
             }
-        }
-        if (bFound)
-        {
-            if (search.bValid)
+            if (bFound)
             {
-                if (search.bFindFirst)
+                if (search.bValid)
                 {
-                    if (search.hFound == NULL)
+                    if (search.bFindFirst)
+                    {
+                        if (search.hFound == NULL)
+                        {
+                            search.hFound = hItem;
+                            return TRUE;
+                        }
+                    }
+                    else
+                    {
                         search.hFound = hItem;
-                }
-                else
-                {
-                    search.hFound = hItem;
+                    }
                 }
             }
         }
@@ -2474,7 +2485,9 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         pDialog->Done();
         if (!m_search.hFound && !m_search.bCancelled)
         {
+            EnableWindow(*pDialog, FALSE);
             MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
+            EnableWindow(*pDialog, TRUE);
         }
         SetFocus(*pDialog);
     }
