@@ -37,6 +37,8 @@
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
 
+#define MYWM_POSTSEARCH (WM_USER + 200)
+
 //////////////////////////////////////////////////////////////////////////////
 
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
@@ -1558,6 +1560,7 @@ protected:
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnUpdateID(HWND hwnd)
     {
@@ -2479,6 +2482,8 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         pDialog->Done();
         TreeView_SelectItem(m_hTreeView, m_search.hFound);
         TreeView_EnsureVisible(m_hTreeView, m_search.hFound);
+
+        PostMessageDx(MYWM_POSTSEARCH);
     }
     else
     {
@@ -6156,6 +6161,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
         DO_MESSAGE(MYWM_REOPENRAD, OnReopenRad);
+        DO_MESSAGE(MYWM_POSTSEARCH, OnPostSearch);
     default:
         if (uMsg == s_uFindMsg)
         {
@@ -6163,6 +6169,21 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         return DefaultProcDx();
     }
+}
+
+LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    m_fr.Flags = FR_DOWN;
+    if (m_search.bInternalText)
+    {
+        lstrcpyn(m_szFindWhat, m_search.strText.c_str(), _countof(m_szFindWhat));
+        if (!m_search.bIgnoreCases)
+        {
+            m_fr.Flags |= FR_MATCHCASE;
+        }
+        OnFindNext(hwnd);
+    }
+	return 0;
 }
 
 BOOL MMainWnd::StartDx()
