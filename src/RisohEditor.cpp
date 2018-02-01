@@ -5823,6 +5823,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nIDListHeight = 490;
     m_settings.nRadLeft = CW_USEDEFAULT;
     m_settings.nRadTop = CW_USEDEFAULT;
+    m_settings.bUpdateResH = FALSE;
 
     ConstantsDB::TableType table1, table2;
     table1 = m_db.GetTable(L"RESOURCE.ID.TYPE");
@@ -5910,6 +5911,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)m_settings.nIDListHeight);
     keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)m_settings.nRadLeft);
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
+    keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
@@ -5983,6 +5985,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nIDListHeight"), m_settings.nIDListHeight);
     keyRisoh.SetDword(TEXT("nRadLeft"), m_settings.nRadLeft);
     keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
+    keyRisoh.SetDword(TEXT("bUpdateResH"), m_settings.bUpdateResH);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)
