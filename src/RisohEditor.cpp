@@ -5732,18 +5732,18 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             }
         }
 
-        if (iEndIf != (size_t)-1)
+        if (iEndIf == (size_t)-1)
+            iEndIf = lines.size();
+
+        std::string str;
+        id_map_type::iterator it, end = m_settings.added_ids.end();
+        for (it = m_settings.added_ids.begin(); it != end; ++it)
         {
-            std::string str;
-            id_map_type::iterator it, end = m_settings.added_ids.end();
-            for (it = m_settings.added_ids.begin(); it != end; ++it)
-            {
-                std::string line = "#define ";
-                line += it->first;
-                line += " ";
-                line += it->second;
-                lines.insert(lines.begin() + iEndIf, line);
-            }
+            std::string line = "#define ";
+            line += it->first;
+            line += " ";
+            line += it->second;
+            lines.insert(lines.begin() + iEndIf, line);
         }
 
         fp = _wfopen(m_szResourceH, L"w");
