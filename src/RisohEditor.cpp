@@ -2881,6 +2881,11 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    if (m_settings.bUpdateResH)
+        EnableMenuItem(hMenu, CMDID_UPDATERESHBANG, MF_BYCOMMAND | MF_ENABLED);
+    else
+        EnableMenuItem(hMenu, CMDID_UPDATERESHBANG, MF_BYCOMMAND | MF_GRAYED);
+
     if (IsWindowVisible(m_hStatusBar))
         CheckMenuItem(hMenu, CMDID_STATUSBAR, MF_CHECKED);
     else
