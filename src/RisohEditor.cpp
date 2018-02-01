@@ -1583,6 +1583,7 @@ protected:
     void OnReplaceBitmap(HWND hwnd);
     void OnReplaceCursor(HWND hwnd);
     void OnReplaceIcon(HWND hwnd);
+    void OnUpdateResHBang(HWND hwnd);
 
     void OnNew(HWND hwnd);
     void OnOpen(HWND hwnd);
@@ -5463,6 +5464,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_ITEMSEARCHBANG:
         OnItemSearchBang(hwnd, reinterpret_cast<MItemSearchDlg *>(hwndCtl));
         break;
+    case CMDID_UPDATERESHBANG:
+        OnUpdateResHBang(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -5618,6 +5622,144 @@ void MMainWnd::OnTest(HWND hwnd)
             DestroyMenu(hMenu);
         }
     }
+}
+
+void MMainWnd::OnUpdateResHBang(HWND hwnd)
+{
+    if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
+        return;
+
+    if (!m_settings.bUpdateResH)
+        return;
+
+    if (m_szFile[0] == 0)
+        return;
+
+    if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
+        return;
+
+    if (m_szResourceH[0] == 0)
+    {
+        WCHAR szResH[MAX_PATH];
+        lstrcpyW(szResH, m_szFile);
+        WCHAR *pch = wcsrchr(szResH, L'\\');
+        lstrcpyW(pch, L"\\resource.h");
+
+        FILE *fp = _wfopen(szResH, L"wb");
+        if (!fp)
+        {
+            ErrorBoxDx(IDS_CANTWRITERESH);
+            return;
+        }
+
+        id_map_type& add = m_settings.added_ids;
+        id_map_type::iterator it, end = add.end();
+        for (it = add.begin(); it != end; ++it)
+        {
+            fprintf(fp, "#define %s %s\r\n", it->first, it->second);
+        }
+
+        fclose(fp);
+        lstrcpynW(m_szResourceH, szResH, MAX_PATH);
+    }
+    else
+    {
+        FILE *fp = _wfopen(m_szResourceH, L"r");
+        if (!fp)
+        {
+            ErrorBoxDx(IDS_CANTWRITERESH);
+            return;
+        }
+        CHAR buf[512];
+        std::vector<std::string> lines;
+        while (fgets(buf, _countof(buf), fp) != NULL)
+        {
+            size_t len = std::strlen(buf);
+            if (len == 0)
+                break;
+            if (buf[len - 1] == '\n')
+                buf[len - 1] = 0;
+            lines.push_back(buf);
+        }
+        fclose(fp);
+
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            std::string& line = lines[i];
+            if (line.size())
+            {
+                if (line[line.size() - 1] == '\\')
+                {
+                    line = line.substr(0, line.size() - 1);
+                    lines[i] = line + lines[i + 1];
+                    --i;
+                }
+            }
+        }
+
+        size_t iEndIf = (size_t)-1;
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            std::string& line = lines[i];
+            const char *pch = skip_space(&line[0]);
+            if (*pch == '#')
+            {
+                ++pch;
+                pch = skip_space(pch);
+                if (memcmp(pch, "define", 6) == 0 && std::isspace(pch[6]))
+                {
+                    // #define
+                    pch += 6;
+                    const char *pch0 = pch = skip_space(pch);
+                    while (std::isalnum(*pch))
+                    {
+                        ++pch;
+                    }
+                    std::string name(pch0, pch);
+
+                    id_map_type::iterator it = m_settings.removed_ids.find(name);
+                    if (it != m_settings.removed_ids.end())
+                    {
+                        line = std::string("#define ") + name + it->second;
+                    }
+                }
+                else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
+                {
+                    // #endif
+                    iEndIf = i;
+                }
+            }
+        }
+
+        if (iEndIf != (size_t)-1)
+        {
+            std::string str;
+            id_map_type::iterator it, end = m_settings.added_ids.end();
+            for (it = m_settings.added_ids.begin(); it != end; ++it)
+            {
+                std::string line = "#define ";
+                line += it->first;
+                line += " ";
+                line += it->second;
+                lines.insert(lines.begin() + iEndIf, line);
+            }
+        }
+
+        fp = _wfopen(m_szResourceH, L"w");
+        if (!fp)
+        {
+            ErrorBoxDx(IDS_CANTWRITERESH);
+            return;
+        }
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            fprintf(fp, "%s\n", lines[i].c_str());
+        }
+        fclose(fp);
+    }
+
+    m_settings.added_ids.clear();
+    m_settings.removed_ids.clear();
 }
 
 void MMainWnd::OnAddIcon(HWND hwnd)

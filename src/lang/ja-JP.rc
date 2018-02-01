@@ -285,6 +285,8 @@ STRINGTABLE
     IDS_ADDCURSOR, "カーソルの追加"
     IDS_NOMOREITEM, "項目はこれ以上ありません。"
     IDS_INVALIDDATA, "(無効なデータ)"
+    IDS_UPDATERESH, """resource.h"" を更新しますか？"
+    IDS_CANTWRITERESH, """resource.h"" を書き込めませんでした。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

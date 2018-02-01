@@ -62,6 +62,7 @@ public:
     ConstantsDB& m_db;
     HWND m_hMainWnd;
     MSubclassedListView m_lv;
+    LPWSTR m_pszResH;
 
     MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
@@ -246,6 +247,19 @@ public:
         return FALSE;
     }
 
+    BOOL UpdateResH()
+    {
+        if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
+            return TRUE;
+
+        if (!m_settings.bUpdateResH)
+            return TRUE;
+
+        SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
+
+        return FALSE;
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         INT iItem;
@@ -275,6 +289,8 @@ public:
 
                     SetItems();
                     SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+
+                    UpdateResH();
                 }
             }
             break;
@@ -321,6 +337,8 @@ public:
                     SetItems();
 
                     SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+
+                    UpdateResH();
                 }
             }
             break;
@@ -352,6 +370,8 @@ public:
 
                 ListView_DeleteItem(m_hLst1, iItem);
                 SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+
+                UpdateResH();
             }
             break;
         case CMDID_COPYRESIDNAME:

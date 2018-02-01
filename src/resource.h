@@ -112,6 +112,7 @@
 #define CMDID_COPYASNEWLANG     189
 #define CMDID_ITEMSEARCH        190
 #define CMDID_ITEMSEARCHBANG    191
+#define CMDID_UPDATERESHBANG    192
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -253,5 +254,7 @@
 #define IDS_ADDCURSOR       107
 #define IDS_NOMOREITEM      108
 #define IDS_INVALIDDATA     109
+#define IDS_UPDATERESH      110
+#define IDS_CANTWRITERESH   111
 
 #endif  // ndef RESOURCE_H_

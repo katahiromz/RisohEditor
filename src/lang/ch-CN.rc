@@ -285,6 +285,8 @@ STRINGTABLE
     IDS_ADDCURSOR, "添加光标"
     IDS_NOMOREITEM, "没有更多的项目."
     IDS_INVALIDDATA, "(Invalid Data)"
+    IDS_UPDATERESH, "你想更新 ""resource.h"" 吗?"
+    IDS_CANTWRITERESH, "无法写入 ""resource.h""."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

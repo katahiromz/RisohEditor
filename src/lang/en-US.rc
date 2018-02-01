@@ -285,6 +285,8 @@ STRINGTABLE
     IDS_ADDCURSOR, "Add Cursor"
     IDS_NOMOREITEM, "No more items."
     IDS_INVALIDDATA, "(Invalid Data)"
+    IDS_UPDATERESH, "Update ""resource.h""?"
+    IDS_CANTWRITERESH, "Unable to write ""resource.h""."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
