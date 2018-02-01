@@ -5711,7 +5711,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
                     // #define
                     pch += 6;
                     const char *pch0 = pch = skip_space(pch);
-                    while (std::isalnum(*pch))
+                    while (std::isalnum(*pch) || *pch == '_')
                     {
                         ++pch;
                     }
@@ -5720,7 +5720,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
                     id_map_type::iterator it = m_settings.removed_ids.find(name);
                     if (it != m_settings.removed_ids.end())
                     {
-                        line = std::string("#define ") + name + it->second;
+                        lines.erase(lines.begin() + i);
+                        --i;
                     }
                 }
                 else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
