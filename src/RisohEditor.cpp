@@ -5187,7 +5187,8 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
 {
     if (bShow)
     {
-        DestroyWindow(m_id_list_dlg);
+        if (IsWindow(m_id_list_dlg))
+            DestroyWindow(m_id_list_dlg);
         m_id_list_dlg.CreateDialogDx(NULL);
         ShowWindow(m_id_list_dlg, SW_SHOWNOACTIVATE);
         UpdateWindow(m_id_list_dlg);
@@ -5626,6 +5627,8 @@ void MMainWnd::OnTest(HWND hwnd)
 
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
+    BOOL bListOpen = IsWindow(m_id_list_dlg);
+
     if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
         return;
 
@@ -5634,6 +5637,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 
     if (m_szFile[0] == 0)
         return;
+
+    DestroyWindow(m_id_list_dlg);
 
     if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
         return;
@@ -5649,6 +5654,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
+            ShowIDList(hwnd, bListOpen);
             return;
         }
 
@@ -5668,6 +5674,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
+            ShowIDList(hwnd, bListOpen);
             return;
         }
         CHAR buf[512];
@@ -5750,6 +5757,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
+            ShowIDList(hwnd, bListOpen);
             return;
         }
         for (size_t i = 0; i < lines.size(); ++i)
@@ -5761,6 +5769,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
+    ShowIDList(hwnd, bListOpen);
 }
 
 void MMainWnd::OnAddIcon(HWND hwnd)
