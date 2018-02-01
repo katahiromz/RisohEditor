@@ -113,6 +113,7 @@
 #define CMDID_ITEMSEARCH        190
 #define CMDID_ITEMSEARCHBANG    191
 #define CMDID_UPDATERESHBANG    192
+#define CMDID_OPENLICENSE       193
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

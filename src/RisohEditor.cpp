@@ -1595,6 +1595,7 @@ protected:
     void OnConfig(HWND hwnd);
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
+    void OnOpenLicense(HWND hwnd);
     void OnAdviceResH(HWND hwnd);
     void OnUnloadResH(HWND hwnd);
     void OnHideIDMacros(HWND hwnd);
@@ -2753,6 +2754,35 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
                 lstrcpyW(pch, L"../../../READMEJP.txt");
+                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    return;
+                }
+            }
+        }
+    }
+    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+void MMainWnd::OnOpenLicense(HWND hwnd)
+{
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        return;
+
+    ++pch;
+    lstrcpyW(pch, L"LICENSE.txt");
+    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpyW(pch, L"../LICENSE.txt");
+        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"../../LICENSE.txt");
+            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"../../../LICENSE.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -5472,6 +5502,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_UPDATERESHBANG:
         OnUpdateResHBang(hwnd);
+        break;
+    case CMDID_OPENLICENSE:
+        OnOpenLicense(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
