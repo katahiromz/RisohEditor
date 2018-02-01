@@ -247,17 +247,15 @@ public:
         return FALSE;
     }
 
-    BOOL UpdateResH()
+    void UpdateResH()
     {
         if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
-            return TRUE;
+            return;
 
         if (!m_settings.bUpdateResH)
-            return TRUE;
+            return;
 
         SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
-
-        return FALSE;
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -418,19 +416,26 @@ public:
     void OnMove(HWND hwnd, int x, int y)
     {
         assert(m_hwnd);
-        RECT rc;
-        GetWindowRect(hwnd, &rc);
-        m_settings.nIDListLeft = rc.left;
-        m_settings.nIDListTop = rc.top;
+        if (!IsZoomed(hwnd) && !IsIconic(hwnd))
+        {
+            RECT rc;
+            GetWindowRect(hwnd, &rc);
+            m_settings.nIDListLeft = rc.left;
+            m_settings.nIDListTop = rc.top;
+        }
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         assert(m_hwnd);
-        RECT rc;
-        GetWindowRect(hwnd, &rc);
-        m_settings.nIDListWidth = rc.right - rc.left;
-        m_settings.nIDListHeight = rc.bottom - rc.top;
+
+        if (!IsZoomed(hwnd) && !IsIconic(hwnd))
+        {
+            RECT rc;
+            GetWindowRect(hwnd, &rc);
+            m_settings.nIDListWidth = rc.right - rc.left;
+            m_settings.nIDListHeight = rc.bottom - rc.top;
+        }
 
         MoveWindow(m_hLst1, 0, 0, cx, cy, TRUE);
     }
