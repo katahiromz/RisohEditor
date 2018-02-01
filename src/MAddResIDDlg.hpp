@@ -46,17 +46,26 @@ public:
         ConstantsDB::TableType table;
         table = m_db.GetTable(L"RESOURCE.ID.TYPE");
 
+        const INT IDTYPE_default = IDTYPE_COMMAND;
+
         INT i = 0;
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             INT k = (INT)SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)it->name.c_str());
-            if (k == IDTYPE_COMMAND)
+            if (k == IDTYPE_default)
             {
+                m_bChanging = TRUE;
                 SendDlgItemMessage(hwnd, cmb1, CB_SETCURSEL, k, 0);
+                m_bChanging = FALSE;
             }
             ++i;
         }
+
+        table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+        m_bChanging = TRUE;
+        SetDlgItemTextW(hwnd, edt1, table[IDTYPE_default].name.c_str());
+        m_bChanging = FALSE;
 
         CenterWindowDx();
         return TRUE;
