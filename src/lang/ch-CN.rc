@@ -206,7 +206,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "位图打开失败！"
     IDS_REPLACEBMP, "替换位图"
     IDS_ERRORCODE, "错误码 %d"
-    IDS_VERSIONINFO, "RisohEditor 版本 2.6\r\n片山博文MZ"
+    IDS_VERSIONINFO, "RisohEditor 版本 2.6\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nhttp://katahiromz.web.fc2.com"
     IDS_ADDRES, "增加资源"
     IDS_CANNOTADDRES, "添加资源失败."
     IDS_CANTADDBMP, "添加位图失败."
