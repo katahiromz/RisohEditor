@@ -37,6 +37,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
         MENUITEM "resource.h のアンロード(&U)", CMDID_UNLOADRESH
         MENUITEM "resource.h の変更を助言する(&V)...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
+        MENUITEM "resource.h を更新する(&P)", CMDID_UPDATERESHBANG
+        MENUITEM SEPARATOR
         MENUITEM "設定(&C)", CMDID_CONFIG
         MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"

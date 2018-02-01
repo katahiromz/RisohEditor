@@ -37,6 +37,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
         MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
         MENUITEM "Ad&vice resource.h Modification...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
+        MENUITEM "U&pdate resource.h", CMDID_UPDATERESHBANG
+        MENUITEM SEPARATOR
         MENUITEM "&Configuration", CMDID_CONFIG
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"

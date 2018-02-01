@@ -5641,7 +5641,10 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     DestroyWindow(m_id_list_dlg);
 
     if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
+    {
+        ShowIDList(hwnd, bListOpen);
         return;
+    }
 
     if (m_szResourceH[0] == 0)
     {
