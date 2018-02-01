@@ -416,6 +416,7 @@ public:
     void OnMove(HWND hwnd, int x, int y)
     {
         assert(m_hwnd);
+
         if (!IsZoomed(hwnd) && !IsIconic(hwnd))
         {
             RECT rc;
