@@ -5691,6 +5691,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         WCHAR *pch = wcsrchr(szResH, L'\\');
         lstrcpyW(pch, L"\\resource.h");
 
+        // create new
         FILE *fp = _wfopen(szResH, L"wb");
         if (!fp)
         {
@@ -5711,6 +5712,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     }
     else
     {
+        // open file
         FILE *fp = _wfopen(m_szResourceH, L"r");
         if (!fp)
         {
@@ -5718,6 +5720,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             ShowIDList(hwnd, bListOpen);
             return;
         }
+
+        // read lines
         CHAR buf[512];
         std::vector<std::string> lines;
         while (fgets(buf, _countof(buf), fp) != NULL)
@@ -5731,6 +5735,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
         fclose(fp);
 
+        // join by '\\'
         for (size_t i = 0; i < lines.size(); ++i)
         {
             std::string& line = lines[i];
@@ -5746,6 +5751,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             }
         }
 
+        // scan and convert lines
         size_t iEndIf = (size_t)-1;
         for (size_t i = 0; i < lines.size(); ++i)
         {
@@ -5786,6 +5792,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         if (iEndIf == (size_t)-1)
             iEndIf = lines.size();
 
+        // add lines
         std::string str;
         id_map_type::iterator it, end = m_settings.added_ids.end();
         for (it = m_settings.added_ids.begin(); it != end; ++it)
@@ -5797,6 +5804,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             lines.insert(lines.begin() + iEndIf, line);
         }
 
+        // write now
         fp = _wfopen(m_szResourceH, L"w");
         if (!fp)
         {
@@ -5811,8 +5819,10 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         fclose(fp);
     }
 
+    // clear modification
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
+
     ShowIDList(hwnd, bListOpen);
 }
 
