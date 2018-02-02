@@ -104,7 +104,8 @@ EnumFontFamProc(
     LPARAM lParam)
 {
     HWND hCmb = HWND(lParam);
-    ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
+    if (lpelf->elfLogFont.lfFaceName[0] != TEXT('@'))
+        ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
     return TRUE;
 }
 
