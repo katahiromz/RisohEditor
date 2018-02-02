@@ -291,6 +291,7 @@ STRINGTABLE
     IDS_INVALIDDATA, "(Invalid Data)"
     IDS_UPDATERESH, "你想更新 ""resource.h"" 吗?"
     IDS_CANTWRITERESH, "无法写入 ""resource.h""."
+    IDS_SAVERESH, "保存 ""resource.h"" 文件"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

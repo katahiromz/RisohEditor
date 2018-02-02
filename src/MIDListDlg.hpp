@@ -249,12 +249,6 @@ public:
 
     void UpdateResH()
     {
-        if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
-            return;
-
-        if (!m_settings.bUpdateResH)
-            return;
-
         SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
     }
 

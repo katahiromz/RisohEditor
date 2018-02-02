@@ -291,6 +291,7 @@ STRINGTABLE
     IDS_INVALIDDATA, "(Invalid Data)"
     IDS_UPDATERESH, "Update ""resource.h""?"
     IDS_CANTWRITERESH, "Unable to write ""resource.h""."
+    IDS_SAVERESH, "Save ""resource.h"" File"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

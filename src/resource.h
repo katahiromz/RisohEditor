@@ -257,6 +257,7 @@
 #define IDS_INVALIDDATA     109
 #define IDS_UPDATERESH      110
 #define IDS_CANTWRITERESH   111
+#define IDS_SAVERESH        112
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

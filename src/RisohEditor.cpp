@@ -5685,9 +5685,6 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     if (!m_settings.bUpdateResH)
         return;
 
-    if (m_szFile[0] == 0)
-        return;
-
     DestroyWindow(m_id_list_dlg);
 
     if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
@@ -5699,9 +5696,32 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     if (m_szResourceH[0] == 0)
     {
         WCHAR szResH[MAX_PATH];
-        lstrcpyW(szResH, m_szFile);
-        WCHAR *pch = wcsrchr(szResH, L'\\');
-        lstrcpyW(pch, L"\\resource.h");
+        if (m_szFile[0])
+        {
+            lstrcpyW(szResH, m_szFile);
+            WCHAR *pch = wcsrchr(szResH, L'\\');
+            lstrcpyW(pch, L"\\resource.h");
+        }
+        else
+        {
+            szResH[0] = 0;
+        }
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
+        ofn.lpstrFile = szResH;
+        ofn.nMaxFile = _countof(szResH);
+        ofn.lpstrTitle = LoadStringDx(IDS_SAVERESH);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+        ofn.lpstrDefExt = L"h";
+        if (!GetSaveFileNameW(&ofn))
+        {
+            return;
+        }
 
         // create new
         FILE *fp = _wfopen(szResH, L"wb");
@@ -5716,7 +5736,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         id_map_type::iterator it, end = add.end();
         for (it = add.begin(); it != end; ++it)
         {
-            fprintf(fp, "#define %s %s\r\n", it->first, it->second);
+            fprintf(fp, "#define %s %s\r\n", it->first.c_str(), it->second.c_str());
         }
 
         fclose(fp);
