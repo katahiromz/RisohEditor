@@ -88,6 +88,25 @@ public:
         m_exstyle_selection.resize(m_exstyle_table.size());
     }
 
+    void InitMenuComboBox(HWND hCmb)
+    {
+        ComboBox_ResetContent(hCmb);
+
+        ConstantsDB::TableType table;
+
+        table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+        MStringW prefix = table[IDTYPE_MENU].name;
+
+        table = m_db.GetTable(L"RESOURCE.ID");
+        for (size_t i = 0; i < table.size(); ++i)
+        {
+            if (table[i].name.find(prefix) == 0)
+            {
+                ComboBox_AddString(hCmb, table[i].name.c_str());
+            }
+        }
+    }
+
     void ApplySelection(HWND hLst, std::vector<BYTE>& sel)
     {
         m_bUpdating = TRUE;
@@ -136,6 +155,9 @@ public:
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
         InitCharSetComboBox(hCmb5, m_dialog_res.m_charset);
 
+        HWND hCmb6 = GetDlgItem(hwnd, cmb6);
+        InitMenuComboBox(hCmb6);
+
         if (m_dialog_res.m_weight >= FW_BOLD)
             CheckDlgButton(hwnd, chx2, BST_CHECKED);
         if (m_dialog_res.m_italic)
@@ -163,7 +185,14 @@ public:
         ::SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
         ::SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb6, m_dialog_res.m_menu.c_str_or_empty());
+        MString strMenu;
+        if (m_dialog_res.m_menu.empty())
+            ;
+        else if (m_dialog_res.m_menu.is_int())
+            strMenu = m_db.GetNameOfResID(IDTYPE_MENU, m_dialog_res.m_menu.m_id);
+        else
+            strMenu = m_dialog_res.m_menu.str();
+        ::SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
         ::SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
 
         InitTables(TEXT("DIALOG"));
@@ -235,6 +264,11 @@ public:
 
         MString strMenu = GetDlgItemText(cmb6);
         mstr_trim(strMenu);
+        MIdOrString menu(strMenu.c_str());
+        if (menu.is_str() && m_db.HasResID(menu.c_str()))
+        {
+            menu = (WORD)m_db.GetResIDValue(menu.c_str());
+        }
 
         MString strStyle = GetDlgItemText(edt6);
         mstr_trim(strStyle);
@@ -269,7 +303,7 @@ public:
         m_dialog_res.m_pt.y = y;
         m_dialog_res.m_siz.cx = cx;
         m_dialog_res.m_siz.cy = cy;
-        m_dialog_res.m_menu = strMenu.c_str();
+        m_dialog_res.m_menu = menu;
         m_dialog_res.m_class = strClass.c_str();
         m_dialog_res.m_title = strCaption.c_str();
         m_dialog_res.m_point_size = (short)nFontSize;

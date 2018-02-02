@@ -5649,8 +5649,19 @@ void MMainWnd::OnTest(HWND hwnd)
     const ResEntry& entry = m_entries[i];
     if (entry.type == RT_DIALOG)
     {
-        MTestDialog dialog;
-        dialog.DialogBoxIndirectDx(hwnd, entry.ptr());
+        MByteStreamEx stream(entry.data);
+
+        // detach menu
+        DialogRes dialog_res(m_db);
+        dialog_res.LoadFromStream(stream);
+        MIdOrString menu = dialog_res.m_menu;
+        dialog_res.m_menu.clear();
+        stream.clear();
+        dialog_res.SaveToStream(stream);
+
+        // show test dialog
+        MTestDialog dialog(m_entries, menu, entry.lang);
+        dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
     }
     else if (entry.type == RT_MENU)
     {

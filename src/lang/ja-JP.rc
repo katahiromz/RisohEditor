@@ -20,7 +20,7 @@
 // Japanese
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
-1 MENU
+IDM_MAIN MENU
 {
     POPUP "ファイル(&F)"
     {
@@ -106,7 +106,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
     }
 }
 
-2 MENU
+IDM_POPUPS MENU
 {
     POPUP "ポップアップ #0"
     {

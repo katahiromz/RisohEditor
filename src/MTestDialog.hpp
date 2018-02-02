@@ -21,14 +21,30 @@
 #define MZC4_MTESTDIALOG_HPP_
 
 #include "MWindowBase.hpp"
+#include "MenuRes.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MTestDialog : public MDialogBase
 {
 public:
-    MTestDialog()
+    ResEntries& m_entries;
+    MIdOrString m_menu;
+    WORD m_lang;
+    HMENU m_hMenu;
+
+    MTestDialog(ResEntries& entries, MIdOrString menu, WORD lang)
+        : m_entries(entries), m_menu(menu), m_lang(lang), m_hMenu(NULL)
     {
+    }
+
+    virtual ~MTestDialog()
+    {
+        if (m_hMenu)
+        {
+            DestroyMenu(m_hMenu);
+            m_hMenu = NULL;
+        }
     }
 
     virtual INT_PTR CALLBACK
@@ -38,6 +54,33 @@ public:
         switch (uMsg)
         {
         case WM_INITDIALOG:
+            if (m_hMenu)
+            {
+                SetMenu(hwnd, NULL);
+                DestroyMenu(m_hMenu);
+                m_hMenu = NULL;
+            }
+            if (!m_menu.empty())
+            {
+                INT i = Res_Find(m_entries, RT_MENU, m_menu, m_lang, FALSE);
+                if (i == -1)
+                {
+                    i = Res_Find(m_entries, RT_MENU, m_menu, 0xFFFF, FALSE);
+                }
+                if (i != -1)
+                {
+                    ResEntry& entry = m_entries[i];
+                    m_hMenu = LoadMenuIndirect(&entry[0]);
+                    SetMenu(hwnd, m_hMenu);
+
+                    INT cyMenu = GetSystemMetrics(SM_CYMENU);
+                    RECT rc;
+                    GetWindowRect(hwnd, &rc);
+                    rc.bottom += cyMenu;
+                    SIZE siz = SizeFromRectDx(&rc);
+                    SetWindowPosDx(NULL, &siz);
+                }
+            }
             CenterWindowDx();
             return TRUE;
         case WM_LBUTTONDOWN:
