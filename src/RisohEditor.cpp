@@ -5740,6 +5740,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
                 {
                     line = line.substr(0, line.size() - 1);
                     lines[i] = line + lines[i + 1];
+                    lines.erase(lines.begin() + (i + 1));
                     --i;
                 }
             }
@@ -5771,6 +5772,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
                         lines.erase(lines.begin() + i);
                         --i;
                     }
+
+                    iEndIf = (size_t)-1;
                 }
                 else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
                 {
