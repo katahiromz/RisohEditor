@@ -1597,6 +1597,7 @@ protected:
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
+    void OnDebugTreeNode(HWND hwnd);
     void OnAdviceResH(HWND hwnd);
     void OnUnloadResH(HWND hwnd);
     void OnHideIDMacros(HWND hwnd);
@@ -2792,6 +2793,27 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
         }
     }
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+void MMainWnd::OnDebugTreeNode(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    WORD i = LOWORD(lParam);
+    WORD k = HIWORD(lParam);
+
+    static LPCWSTR apszI_[] =
+    {
+        L"I_NONE",
+        L"I_TYPE",
+        L"I_NAME",
+        L"I_LANG",
+        L"I_STRING",
+        L"I_MESSAGE"
+    };
+
+    WCHAR sz[64];
+    wsprintfW(sz, L"%d, %s", i, apszI_[k]);
+    MsgBoxDx(sz, MB_ICONINFORMATION);
 }
 
 void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
@@ -5506,6 +5528,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_OPENLICENSE:
         OnOpenLicense(hwnd);
+        break;
+    case CMDID_DEBUGTREENODE:
+        OnDebugTreeNode(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
