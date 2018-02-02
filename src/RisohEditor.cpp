@@ -2277,7 +2277,10 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
                     if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING)
                     {
                         UINT i = LOWORD(lParam);
-                        const ResEntry& entry = m_entries[i];
+                        ResEntry entry = m_entries[i];
+
+                        if (HIWORD(lParam) == I_STRING)
+                            entry.name.clear();
 
                         MString text = search.res2text.DumpEntry(entry);
 
