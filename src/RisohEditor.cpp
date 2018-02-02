@@ -5696,6 +5696,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     if (m_szResourceH[0] == 0)
     {
         WCHAR szResH[MAX_PATH];
+
+        // build file path
         if (m_szFile[0])
         {
             lstrcpyW(szResH, m_szFile);
@@ -5704,9 +5706,10 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
         else
         {
-            szResH[0] = 0;
+            lstrcpyW(szResH, L"resource.h");
         }
 
+        // query file name
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
