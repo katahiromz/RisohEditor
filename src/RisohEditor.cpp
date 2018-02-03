@@ -1727,6 +1727,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     UINT i = LOWORD(lParam);
 
     WCHAR szFile[MAX_PATH] = L"";
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2016,6 +2017,9 @@ void MMainWnd::OnOpen(HWND hwnd)
     mstr_replace_all(str, L"/", L"\\");
     lstrcpynW(file, str.c_str(), _countof(file));
 
+    if (GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES)
+        file[0] = 0;
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2054,6 +2058,9 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     MStringW str = file;
     mstr_replace_all(str, L"/", L"\\");
     lstrcpynW(file, str.c_str(), _countof(file));
+
+    if (GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES)
+        file[0] = 0;
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
@@ -4901,6 +4908,9 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     mstr_replace_all(str, L"/", L"\\");
     lstrcpynW(szFile, str.c_str(), _countof(szFile));
 
+    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+        szFile[0] = 0;
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -5783,6 +5793,9 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         MStringW str = szResH;
         mstr_replace_all(str, L"/", L"\\");
         lstrcpynW(szResH, str.c_str(), _countof(szResH));
+
+        if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)
+            szResH[0] = 0;
 
         // query file name
         OPENFILENAMEW ofn;
