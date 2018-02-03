@@ -295,7 +295,7 @@ STRINGTABLE
     IDS_CANTWRITERESH, """resource.h"" を書き込めませんでした。"
     IDS_SAVERESH, """resource.h"" ファイルの保存"
     IDS_DLLFILTER, "DLL ファイル (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|すべてのファイル (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|バイナリ リソース (*.res)|*.res|リソース ファイル (*.rc)|*.rc|すべてのファイル (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "読み込めるファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|バイナリ リソース (*.res)|*.res|リソース ファイル (*.rc)|*.rc|すべてのファイル (*.*)|*.*|"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

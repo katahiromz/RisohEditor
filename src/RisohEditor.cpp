@@ -4111,15 +4111,15 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
     }
 
     LPWSTR pch = wcsrchr(szPath, L'.');
-    if (nFilterIndex == 0)
+    if (nFilterIndex == 0 || nFilterIndex == 1)
     {
         if (pch && lstrcmpiW(pch, L".res") == 0)
-            nFilterIndex = 2;
-        else if (pch && lstrcmpiW(pch, L".rc") == 0)
             nFilterIndex = 3;
+        else if (pch && lstrcmpiW(pch, L".rc") == 0)
+            nFilterIndex = 4;
     }
 
-    if (nFilterIndex == 2)
+    if (nFilterIndex == 3)
     {
         // .res files
         ResEntries entries;
@@ -4139,7 +4139,7 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
         return TRUE;
     }
 
-    if (nFilterIndex == 3)
+    if (nFilterIndex == 4)
     {
         // .rc files
         ResEntries entries;
