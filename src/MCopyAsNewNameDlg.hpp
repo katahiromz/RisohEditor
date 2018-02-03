@@ -28,7 +28,7 @@
 
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -114,8 +114,9 @@ public:
         }
 
         // for Names
+        INT nIDTYPE_ = m_db.IDTypeFromRes(m_entry.type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, m_entry.name.str(), IDTYPE_RESOURCE);
+        InitResNameComboBox(hCmb2, m_db, m_entry.name, nIDTYPE_);
 
         CenterWindowDx();
         return TRUE;

@@ -245,44 +245,53 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MString strCommand, INT nIDTYPE_)
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_)
 {
-    SetWindowText(hCmb, strCommand.c_str());
+    SetWindowTextW(hCmb, id.c_str());
 
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
         return;
 
+    INT k = -1;
+    MStringW prefix;
     ConstantsDB::TableType table;
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
-    MStringW prefix = table[nIDTYPE_].name;
-    if (prefix.empty())
-        return;
-
-    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    if (nIDTYPE_ != IDTYPE_INVALID)
     {
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == strCommand)
+        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        prefix = table[nIDTYPE_].name;
+        if (prefix.empty())
+            return;
+
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
         {
-            ComboBox_SetCurSel(hCmb, i);
+            INT i = ComboBox_AddString(hCmb, it->name.c_str());
+            if (it->value == id.m_id)
+            {
+                k = i;
+                ComboBox_SetCurSel(hCmb, i);
+                SetWindowTextW(hCmb, it->name.c_str());
+            }
         }
     }
 
-    if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
+    if (k == -1 &&
+        nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-        nIDTYPE_ != IDTYPE_HELP)
+        nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_INVALID)
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
         table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        end = table.end();
+        ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->name == strCommand)
+            if (it->value == id.m_id)
             {
                 ComboBox_SetCurSel(hCmb, i);
+                SetWindowTextW(hCmb, it->name.c_str());
             }
         }
     }

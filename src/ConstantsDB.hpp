@@ -46,6 +46,7 @@
 #define IDTYPE_COMMAND      11  // Command.ID
 #define IDTYPE_CONTROL      12  // Control.ID
 #define IDTYPE_RESOURCE     13  // Resource.ID
+#define IDTYPE_INVALID      -1
 
 class ConstantsDB
 {
@@ -495,6 +496,67 @@ public:
         }
 
         return value;
+    }
+
+    INT IDTypeFromRes(const MIdOrString& id) const
+    {
+        if (id == RT_CURSOR)
+        {
+            return IDTYPE_RESOURCE;
+        }
+        if (id == RT_BITMAP)
+        {
+            return IDTYPE_BITMAP;
+        }
+        if (id == RT_ICON)
+        {
+            return IDTYPE_RESOURCE;
+        }
+        if (id == RT_MENU)
+        {
+            return IDTYPE_MENU;
+        }
+        if (id == RT_DIALOG)
+        {
+            return IDTYPE_DIALOG;
+        }
+        if (id == RT_STRING)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_ACCELERATOR)
+        {
+            return IDTYPE_ACCEL;
+        }
+        if (id == RT_GROUP_CURSOR)
+        {
+            return IDTYPE_CURSOR;
+        }
+        if (id == RT_GROUP_ICON)
+        {
+            return IDTYPE_ICON;
+        }
+        if (id == RT_VERSION)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_DLGINCLUDE)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_ANICURSOR)
+        {
+            return IDTYPE_ANICURSOR;
+        }
+        if (id == RT_ANIICON)
+        {
+            return IDTYPE_ANIICON;
+        }
+        if (id == RT_HTML)
+        {
+            return IDTYPE_HTML;
+        }
+        return IDTYPE_RESOURCE;
     }
 
 protected:
