@@ -39,7 +39,7 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         MENUITEM "U&pdate resource.h", CMDID_UPDATERESHBANG
         MENUITEM SEPARATOR
-        MENUITEM "&Configuration", CMDID_CONFIG
+        MENUITEM "&Configuration...", CMDID_CONFIG
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
