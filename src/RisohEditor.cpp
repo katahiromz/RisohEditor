@@ -2011,6 +2011,10 @@ void MMainWnd::OnOpen(HWND hwnd)
     WCHAR file[MAX_PATH];
     lstrcpynW(file, m_szFile, _countof(file));
 
+    MStringW str = file;
+    mstr_replace_all(str, L"/", L"\\");
+    lstrcpynW(file, str.c_str(), _countof(file));
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2045,6 +2049,11 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     WCHAR file[MAX_PATH];
 
     lstrcpynW(file, m_szFile, _countof(file));
+
+    MStringW str = file;
+    mstr_replace_all(str, L"/", L"\\");
+    lstrcpynW(file, str.c_str(), _countof(file));
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -4877,13 +4886,19 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
+    {
         return;
+    }
 
     WCHAR szFile[MAX_PATH];
     if (m_szResourceH[0])
         lstrcpynW(szFile, m_szResourceH, _countof(szFile));
     else
         lstrcpyW(szFile, L"resource.h");
+
+    MStringW str = szFile;
+    mstr_replace_all(str, L"/", L"\\");
+    lstrcpynW(szFile, str.c_str(), _countof(szFile));
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
@@ -5043,7 +5058,9 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     }
 
     if (macros.empty())
+    {
         return TRUE;
+    }
 
     WCHAR szTempFile1[MAX_PATH];
     lstrcpynW(szTempFile1, GetTempFileNameDx(L"R1"), MAX_PATH);
@@ -5069,6 +5086,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     wsprintfW(szCmdLine, L"\"%s\" -Wp,-E \"%s\"", m_szCppExe, szTempFile1);
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
+    BOOL bOK = FALSE;
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     MFile hInputWrite, hOutputRead;
@@ -5110,12 +5128,12 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         {
             DeleteFileW(szTempFile1);
             str = str.substr(pragma_found);
-            return ParseMacros(hwnd, pszFile, macros, str);
+            bOK = ParseMacros(hwnd, pszFile, macros, str);
         }
     }
 
     DeleteFileW(szTempFile1);
-    return FALSE;
+    return bOK;
 }
 
 BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
@@ -5132,6 +5150,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
         L"-E -dM -DRC_INVOKED -o \"%s\" -x none \"%s\"", szTempFile, pszFile);
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
+    BOOL bOK = FALSE;
     SHELLEXECUTEINFOW info;
     ZeroMemory(&info, sizeof(info));
     info.cbSize = sizeof(info);
@@ -5156,12 +5175,12 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
             file.CloseHandle();
             DeleteFileW(szTempFile);
             data.push_back(0);
-            return ParseResH(hwnd, pszFile, &data[0], (DWORD)(data.size() - 1));
+            bOK = ParseResH(hwnd, pszFile, &data[0], (DWORD)(data.size() - 1));
         }
     }
     DeleteFileW(szTempFile);
 
-    return FALSE;
+    return bOK;
 }
 
 void MMainWnd::OnAdviceResH(HWND hwnd)
@@ -5746,6 +5765,10 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         {
             lstrcpyW(szResH, L"resource.h");
         }
+
+        MStringW str = szResH;
+        mstr_replace_all(str, L"/", L"\\");
+        lstrcpynW(szResH, str.c_str(), _countof(szResH));
 
         // query file name
         OPENFILENAMEW ofn;
@@ -6465,7 +6488,7 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         OnFindNext(hwnd);
     }
-	return 0;
+    return 0;
 }
 
 BOOL MMainWnd::StartDx()
