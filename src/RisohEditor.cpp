@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.hpp"
+#include "RisohEditor.hpp"
 
 #pragma comment(lib, "msimg32.lib")
 
