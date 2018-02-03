@@ -5057,6 +5057,8 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         macros.push_back(line.substr(0, found1));
     }
 
+    m_settings.id_map.clear();
+
     if (macros.empty())
     {
         return TRUE;
