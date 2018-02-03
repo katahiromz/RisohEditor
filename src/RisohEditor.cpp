@@ -4156,6 +4156,11 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
         }
         m_bLoading = FALSE;
         SetFilePath(hwnd, szPath);
+
+        UnloadResourceH(hwnd);
+        if (m_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, szPath);
+
         return TRUE;
     }
 
@@ -4271,7 +4276,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
         m_szWindresExe, szPath3, m_szCppExe, szRCFile);
 #endif
-    MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
     std::vector<BYTE> output;
     MStringA msg;
