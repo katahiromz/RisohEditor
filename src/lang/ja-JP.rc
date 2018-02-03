@@ -176,6 +176,8 @@ IDM_POPUPS MENU
         MENUITEM "定義をコピー(&D)\tCtrl+C", CMDID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "削除(&D)\tDel", CMDID_DELETERESID
+        MENUITEM SEPARATOR
+        MENUITEM "再読み込み(&R)", CMDID_LOADRESH
     }
 }
 

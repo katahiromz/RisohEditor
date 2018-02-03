@@ -1600,6 +1600,7 @@ protected:
     void OnSaveAs(HWND hwnd);
     void OnImport(HWND hwnd);
     void OnLoadResH(HWND hwnd);
+    void OnLoadResHBang(HWND hwnd);
     void OnLoadWCLib(HWND hwnd);
     void OnAbout(HWND hwnd);
     void OnConfig(HWND hwnd);
@@ -4917,6 +4918,14 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     }
 }
 
+void MMainWnd::OnLoadResHBang(HWND hwnd)
+{
+    if (m_szResourceH[0])
+    {
+        DoLoadResH(hwnd, m_szResourceH);
+    }
+}
+
 void MMainWnd::OnDestroy(HWND hwnd)
 {
     SaveSettings(hwnd);
@@ -5565,6 +5574,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_DEBUGTREENODE:
         OnDebugTreeNode(hwnd);
+        break;
+    case CMDID_LOADRESHBANG:
+        OnLoadResHBang(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

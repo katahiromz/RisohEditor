@@ -388,6 +388,9 @@ public:
                 CopyText(hwnd, text);
             }
             break;
+        case CMDID_LOADRESH:
+            SendMessage(m_hMainWnd, WM_COMMAND, CMDID_LOADRESHBANG, 0);
+            break;
         }
     }
 

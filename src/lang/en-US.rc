@@ -176,6 +176,8 @@ IDM_POPUPS MENU
         MENUITEM "Copy &Definition\tCtrl+C", CMDID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Delete ID\tDel", CMDID_DELETERESID
+        MENUITEM SEPARATOR
+        MENUITEM "&Reload", CMDID_LOADRESH
     }
 }
 
