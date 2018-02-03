@@ -2367,7 +2367,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     UINT i = LOWORD(lParam);
     ResEntry entry = m_entries[i];
 
-    MCopyAsNewNameDlg dialog(m_entries, entry, m_db);
+    MCloneInNewNameDlg dialog(m_entries, entry, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
@@ -2410,7 +2410,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     UINT i = LOWORD(lParam);
     ResEntry entry = m_entries[i];
 
-    MCopyAsNewLangDlg dialog(m_entries, entry, m_db);
+    MCloneInNewLangDlg dialog(m_entries, entry, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;

@@ -1,4 +1,4 @@
-// MCopyAsNewLangDlg
+// MCloneInNewLangDlg
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Win32API resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MCOPYASNEWLANGDLG_HPP_
-#define MZC4_MCOPYASNEWLANGDLG_HPP_
+#ifndef MZC4_MCLONEINNEWLANGDLG_HPP_
+#define MZC4_MCLONEINNEWLANGDLG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MCopyAsNewLangDlg : public MDialogBase
+class MCloneInNewLangDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
@@ -42,8 +42,8 @@ public:
     ConstantsDB& m_db;
     WORD m_lang;
 
-    MCopyAsNewLangDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWLANG), m_entries(entries), m_entry(entry), m_db(db)
+    MCloneInNewLangDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
+        : MDialogBase(IDD_CLONEINNEWLANG), m_entries(entries), m_entry(entry), m_db(db)
     {
         m_lang = 0xFFFF;
     }
@@ -179,4 +179,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MCOPYASNEWLANGDLG_HPP_
+#endif  // ndef MZC4_MCLONEINNEWLANGDLG_HPP_

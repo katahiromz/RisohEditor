@@ -174,8 +174,8 @@ struct RisohSettings
 #include "MIDListDlg.hpp"
 #include "MConfigDlg.hpp"
 #include "MAdviceResHDlg.hpp"
-#include "MCopyAsNewNameDlg.hpp"
-#include "MCopyAsNewLangDlg.hpp"
+#include "MCloneInNewNameDlg.hpp"
+#include "MCloneInNewLangDlg.hpp"
 #include "MItemSearchDlg.hpp"
 
 #include "id_string.hpp"

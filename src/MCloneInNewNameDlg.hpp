@@ -1,4 +1,4 @@
-// MCopyAsNewNameDlg
+// MCloneInNewNameDlg
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Win32API resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MCOPYASNEWNAMEDLG_HPP_
-#define MZC4_MCOPYASNEWNAMEDLG_HPP_
+#ifndef MZC4_MCLONEINNEWNAMEDLG_HPP_
+#define MZC4_MCLONEINNEWNAMEDLG_HPP_
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +32,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MCopyAsNewNameDlg : public MDialogBase
+class MCloneInNewNameDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
@@ -40,8 +40,8 @@ public:
     ConstantsDB& m_db;
     MIdOrString m_name;
 
-    MCopyAsNewNameDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_COPYASNEWNAME), m_entries(entries), m_entry(entry), m_db(db)
+    MCloneInNewNameDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
+        : MDialogBase(IDD_CLONEINNEWNAME), m_entries(entries), m_entry(entry), m_db(db)
     {
     }
 
@@ -181,4 +181,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MCOPYASNEWNAMEDLG_HPP_
+#endif  // ndef MZC4_MCLONEINNEWNAMEDLG_HPP_
