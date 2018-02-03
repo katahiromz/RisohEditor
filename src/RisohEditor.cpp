@@ -4333,13 +4333,13 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         if (output.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+            ShowBinEdit(FALSE);
         }
         else
         {
             output.insert(output.end(), 0);
             ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+            ShowBinEdit(TRUE);
         }
 #ifdef NDEBUG
         ::DeleteFileW(szPath3);
