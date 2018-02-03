@@ -1497,8 +1497,9 @@ public:
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
-    BOOL DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName);
+    BOOL DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName, DWORD nFilterIndex = 0);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
+    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& entry, BOOL WritePNG);
@@ -1517,8 +1518,8 @@ public:
 protected:
     // parsing resource IDs
     BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
-    BOOL CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReopen = FALSE);
-    BOOL CheckResourceH(HWND hwnd, LPCTSTR Path);
+    BOOL CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen = FALSE);
+    BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
@@ -2024,7 +2025,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESRCFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
@@ -2033,7 +2034,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ofn.lpstrDefExt = L"exe";
     if (GetOpenFileNameW(&ofn))
     {
-        DoLoad(hwnd, m_entries, file);
+        DoLoad(hwnd, m_entries, file, ofn.nFilterIndex);
     }
 }
 
@@ -2060,6 +2061,10 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     lstrcpynW(file, str.c_str(), _countof(file));
 
     if (GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES)
+        file[0] = 0;
+
+    LPWSTR pch = wcsrchr(file, L'.');
+    if (lstrcmpiW(pch, L".rc") == 0)
         file[0] = 0;
 
     OPENFILENAMEW ofn;
@@ -2600,12 +2605,12 @@ void MMainWnd::OnCompile(HWND hwnd)
     ChangeStatusText(IDS_COMPILING);
 
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    std::wstring WideText;
-    WideText.resize(cchText);
-    ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
+    std::wstring strWide;
+    strWide.resize(cchText);
+    ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (CompileParts(hwnd, WideText, bReopen))
+    if (CompileParts(hwnd, strWide, bReopen))
     {
         TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
         TV_SelectEntry(m_hTreeView, m_entries, entry);
@@ -2715,8 +2720,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
-            std::wstring WideText = str_res.Dump(m_db);
-            if (CompileParts(hwnd, WideText))
+            std::wstring strWide = str_res.Dump(m_db);
+            if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
                 TV_RefreshInfo(m_hTreeView, m_db, m_entries, FALSE);
@@ -3771,7 +3776,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
-BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReopen)
+BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3780,15 +3785,15 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
 
     ResEntry& entry = m_entries[i];
 
-    MStringA TextUtf8;
-    TextUtf8 = MWideToAnsi(CP_UTF8, WideText);
+    MStringA strUtf8;
+    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
     if (HIWORD(lParam) == I_LANG)
     {
         if (Res_IsPlainText(entry.type))
         {
-            if (WideText.find(L"\"UTF-8\"") != std::wstring::npos)
+            if (strWide.find(L"\"UTF-8\"") != std::wstring::npos)
             {
-                entry.data.assign(TextUtf8.begin(), TextUtf8.end());
+                entry.data.assign(strUtf8.begin(), strUtf8.end());
 
                 static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
                 entry.data.insert(entry.data.begin(), &bom[0], &bom[3]);
@@ -3796,7 +3801,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
             else
             {
                 MStringA TextAnsi;
-                TextAnsi = MWideToAnsi(CP_ACP, WideText);
+                TextAnsi = MWideToAnsi(CP_ACP, strWide);
                 entry.data.assign(TextAnsi.begin(), TextAnsi.end());
             }
             SelectTV(hwnd, lParam, FALSE);
@@ -3831,9 +3836,9 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
-    DWORD cbWrite = DWORD(TextUtf8.size() * sizeof(char));
+    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
-    r2.WriteFile(TextUtf8.c_str(), cbWrite, &cbWritten);
+    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
 
     WCHAR szCmdLine[512];
@@ -3855,7 +3860,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
     msg = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
-    BOOL Success = FALSE;
+    BOOL bSuccess = FALSE;
     MByteStreamEx stream;
 
     MProcessMaker pmaker;
@@ -3900,7 +3905,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
             if (DoImport(hwnd, szPath3, entries))
             {
                 MStringA msg;
-                Success = CareWindresResult(hwnd, entries, msg);
+                bSuccess = CareWindresResult(hwnd, entries, msg);
                 if (msg.size())
                 {
                     output.insert(output.end(), msg.begin(), msg.end());
@@ -3909,7 +3914,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
         }
     }
 
-    if (!Success)
+    if (!bSuccess)
     {
         if (output.empty())
         {
@@ -3942,17 +3947,17 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
-    return Success;
+    return bSuccess;
 }
 
 BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
 {
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    std::wstring WideText;
-    WideText.resize(cchText);
-    ::GetWindowTextW(m_hSrcEdit, &WideText[0], cchText + 1);
+    std::wstring strWide;
+    strWide.resize(cchText);
+    ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
-    if (!CompileParts(hwnd, WideText))
+    if (!CompileParts(hwnd, strWide))
     {
         return FALSE;
     }
@@ -4091,26 +4096,34 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
+BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName, DWORD nFilterIndex)
 {
     MWaitCursor wait;
-    WCHAR Path[MAX_PATH], ResolvedPath[MAX_PATH], *pchPart;
+    WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
 
-    if (GetPathOfShortcutDx(hwnd, FileName, ResolvedPath))
+    if (GetPathOfShortcutDx(hwnd, FileName, szResolvedPath))
     {
-        GetFullPathNameW(ResolvedPath, _countof(Path), Path, &pchPart);
+        GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
     }
     else
     {
-        GetFullPathNameW(FileName, _countof(Path), Path, &pchPart);
+        GetFullPathNameW(FileName, _countof(szPath), szPath, &pchPart);
     }
 
-    LPWSTR pch = wcsrchr(Path, L'.');
-    if (pch && lstrcmpiW(pch, L".res") == 0)
+    LPWSTR pch = wcsrchr(szPath, L'.');
+    if (nFilterIndex == 0)
+    {
+        if (pch && lstrcmpiW(pch, L".res") == 0)
+            nFilterIndex = 2;
+        else if (pch && lstrcmpiW(pch, L".rc") == 0)
+            nFilterIndex = 3;
+    }
+
+    if (nFilterIndex == 2)
     {
         // .res files
         ResEntries entries;
-        if (!DoImport(hwnd, Path, entries))
+        if (!DoImport(hwnd, szPath, entries))
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
@@ -4118,19 +4131,39 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
 
         m_bLoading = TRUE;
         {
-            entries = entries;
-            TV_RefreshInfo(m_hTreeView, m_db, entries, TRUE);
+            m_entries = entries;
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
         }
         m_bLoading = FALSE;
-        SetFilePath(hwnd, Path);
+        SetFilePath(hwnd, szPath);
+        return TRUE;
+    }
+
+    if (nFilterIndex == 3)
+    {
+        // .rc files
+        ResEntries entries;
+        if (!DoLoadRC(hwnd, szPath, entries))
+        {
+            ErrorBoxDx(IDS_CANNOTOPEN);
+            return FALSE;
+        }
+
+        m_bLoading = TRUE;
+        {
+            m_entries = entries;
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
+        }
+        m_bLoading = FALSE;
+        SetFilePath(hwnd, szPath);
         return TRUE;
     }
 
     // executable files
-    HMODULE hMod = LoadLibraryW(Path);
+    HMODULE hMod = LoadLibraryW(szPath);
     if (hMod == NULL)
     {
-        hMod = LoadLibraryExW(Path, NULL, LOAD_LIBRARY_AS_DATAFILE);
+        hMod = LoadLibraryExW(szPath, NULL, LOAD_LIBRARY_AS_DATAFILE);
         if (hMod == NULL)
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
@@ -4146,11 +4179,11 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName)
         TV_RefreshInfo(m_hTreeView, m_db, entries, TRUE);
     }
     m_bLoading = FALSE;
-    SetFilePath(hwnd, Path);
+    SetFilePath(hwnd, szPath);
 
     UnloadResourceH(hwnd);
     if (m_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, Path);
+        CheckResourceH(hwnd, szPath);
 
     return TRUE;
 }
@@ -4168,14 +4201,14 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     return TRUE;
 }
 
-BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR Path)
+BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 {
     m_szResourceH[0] = 0;
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
 
     TCHAR szPath[MAX_PATH];
-    lstrcpyn(szPath, Path, _countof(szPath));
+    lstrcpyn(szPath, pszPath, _countof(szPath));
     ReplaceBackslash(szPath);
 
     TCHAR *pch = _tcsrchr(szPath, TEXT('/'));
@@ -4214,6 +4247,107 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR Path)
     }
 
     return DoLoadResH(hwnd, szPath);
+}
+
+BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
+{
+    MWaitCursor wait;
+
+    WCHAR szPath3[MAX_PATH];
+    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    ReplaceBackslash(szPath3);
+    MFile r3(szPath3, TRUE);
+    r3.CloseHandle();
+
+    WCHAR szCmdLine[512];
+#if 1
+    wsprintfW(szCmdLine,
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
+        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
+        m_szWindresExe, szPath3, m_szCppExe, szRCFile);
+#else
+    wsprintfW(szCmdLine,
+        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
+        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
+        m_szWindresExe, szPath3, m_szCppExe, szRCFile);
+#endif
+    MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    std::vector<BYTE> output;
+    MStringA msg;
+    msg = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
+
+    BOOL bSuccess = FALSE;
+    MByteStreamEx stream;
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        DWORD cbAvail;
+        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+        {
+            if (cbAvail == 0)
+            {
+                if (!pmaker.IsRunning())
+                    break;
+
+                pmaker.WaitForSingleObject(500);
+                continue;
+            }
+
+            CHAR szBuf[256];
+            DWORD cbRead;
+            if (cbAvail > sizeof(szBuf))
+                cbAvail = sizeof(szBuf);
+            else if (cbAvail == 0)
+                continue;
+
+            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+            {
+                if (cbRead == 0)
+                    continue;
+
+                stream.WriteData(szBuf, cbRead);
+            }
+        }
+
+        output = stream.data();
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            bSuccess = DoImport(hwnd, szPath3, entries);
+        }
+    }
+
+    if (!bSuccess)
+    {
+        if (output.empty())
+        {
+            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+        }
+        else
+        {
+            output.insert(output.end(), 0);
+            ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
+            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+        }
+#ifdef NDEBUG
+        ::DeleteFileW(szPath3);
+#endif
+    }
+    else
+    {
+        ::DeleteFileW(szPath3);
+    }
+
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+    return bSuccess;
 }
 
 BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
@@ -6097,20 +6231,20 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR FileName)
+BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszFileName)
 {
-    if (FileName == 0 || FileName[0] == 0)
+    if (pszFileName == 0 || pszFileName[0] == 0)
     {
         SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
 
-    WCHAR Path[MAX_PATH], *pch;
-    GetFullPathNameW(FileName, _countof(Path), Path, &pch);
-    lstrcpynW(m_szFile, Path, _countof(m_szFile));
+    WCHAR szPath[MAX_PATH], *pch;
+    GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pch);
+    lstrcpynW(m_szFile, szPath, _countof(m_szFile));
 
     WCHAR sz[MAX_PATH];
-    pch = wcsrchr(Path, L'\\');
+    pch = wcsrchr(szPath, L'\\');
     if (pch)
     {
         wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);

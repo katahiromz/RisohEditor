@@ -261,6 +261,7 @@
 #define IDS_CANTWRITERESH   111
 #define IDS_SAVERESH        112
 #define IDS_DLLFILTER       113
+#define IDS_EXERESRCFILTER  114
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2
