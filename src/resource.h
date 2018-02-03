@@ -161,7 +161,7 @@
 #define IDS_ENTERLANG       10
 #define IDS_FILENOTFOUND    11
 #define IDS_CANNOTREPLACE   12
-#define IDS_EXEFILTER       13
+#define IDS_EXERESFILTER    13
 #define IDS_SAVEAS          14
 #define IDS_CANNOTADDICON   15
 #define IDS_ADDICON         16

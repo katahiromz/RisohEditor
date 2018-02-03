@@ -2024,7 +2024,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
@@ -2066,7 +2066,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
     if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
     {
         ofn.nFilterIndex = 2;

@@ -195,7 +195,7 @@ STRINGTABLE
     IDS_ENTERLANG, "请输入资源语言类型"
     IDS_FILENOTFOUND, "未找到文件"
     IDS_CANNOTREPLACE, "替换失败"
-    IDS_EXEFILTER, "资源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|二进制文件 (*.res)|*.res|全部文件 (*.*)|*.*|"
+    IDS_EXERESFILTER, "资源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|二进制文件 (*.res)|*.res|全部文件 (*.*)|*.*|"
     IDS_SAVEAS, "另存为"
     IDS_CANNOTADDICON, "加载图标失败."
     IDS_ADDICON, "加图标"
