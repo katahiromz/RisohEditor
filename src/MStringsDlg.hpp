@@ -91,7 +91,15 @@ public:
         case IDCANCEL:
             EndDialog(IDCANCEL);
             break;
+        case psh1:
+            OnPsh1(hwnd);
+            break;
         }
+    }
+
+    void OnPsh1(HWND hwnd)
+    {
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
     }
 
     virtual INT_PTR CALLBACK
