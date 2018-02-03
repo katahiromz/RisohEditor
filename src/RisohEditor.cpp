@@ -1497,7 +1497,7 @@ public:
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
-    BOOL DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName, DWORD nFilterIndex = 0);
+    BOOL DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
@@ -2034,7 +2034,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ofn.lpstrDefExt = L"exe";
     if (GetOpenFileNameW(&ofn))
     {
-        DoLoad(hwnd, m_entries, file, ofn.nFilterIndex);
+        DoLoad(hwnd, file, ofn.nFilterIndex);
     }
 }
 
@@ -4096,7 +4096,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName, DWORD nFilterIndex)
+BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
 {
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
@@ -4173,10 +4173,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, ResEntries& entries, LPCWSTR FileName, DWORD nF
 
     m_bLoading = TRUE;
     {
-        entries.clear();
-        Res_GetListFromRes(hMod, (LPARAM)&entries);
+        m_entries.clear();
+        Res_GetListFromRes(hMod, (LPARAM)&m_entries);
         FreeLibrary(hMod);
-        TV_RefreshInfo(m_hTreeView, m_db, entries, TRUE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
     }
     m_bLoading = FALSE;
     SetFilePath(hwnd, szPath);
@@ -4988,7 +4988,13 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".res") == 0)
         {
-            DoLoad(hwnd, m_entries, file);
+            DoLoad(hwnd, file);
+            ChangeStatusText(IDS_READY);
+            return;
+        }
+        else if (lstrcmpiW(pch, L".rc") == 0)
+        {
+            DoLoad(hwnd, file);
             ChangeStatusText(IDS_READY);
             return;
         }
@@ -5020,7 +5026,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
     }
 
-    DoLoad(hwnd, m_entries, file);
+    DoLoad(hwnd, file);
     TV_RefreshInfo(m_hTreeView, m_db, m_entries, TRUE);
     ChangeStatusText(IDS_READY);
 }
@@ -5635,7 +5641,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             DWORD i = id - CMDID_MRUFILE0;
             if (i < m_settings.vecRecentlyUsed.size())
             {
-                DoLoad(hwnd, m_entries, m_settings.vecRecentlyUsed[i].c_str());
+                DoLoad(hwnd, m_settings.vecRecentlyUsed[i].c_str());
             }
         }
         break;
@@ -6617,7 +6623,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     if (m_argc >= 2)
     {
-        DoLoad(hwnd, m_entries, m_targv[1]);
+        DoLoad(hwnd, m_targv[1]);
     }
 
     DragAcceptFiles(hwnd, TRUE);
