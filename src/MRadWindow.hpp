@@ -869,15 +869,27 @@ public:
     MRadDialog  m_rad_dialog;
     DialogRes   m_dialog_res;
     RisohSettings& m_settings;
+    HICON       m_hIcon;
+    HICON       m_hIconSm;
 
     MRadWindow(ConstantsDB& db, RisohSettings& settings)
         : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
-          m_dialog_res(db), m_settings(settings)
+          m_dialog_res(db), m_settings(settings), m_hIcon(NULL), m_hIconSm(NULL)
     {
     }
 
     ~MRadWindow()
     {
+        if (m_hIcon)
+        {
+            DestroyIcon(m_hIcon);
+            m_hIcon = NULL;
+        }
+        if (m_hIconSm)
+        {
+            DestroyIcon(m_hIconSm);
+            m_hIconSm = NULL;
+        }
     }
 
     BOOL CreateDx(HWND hwndParent)
@@ -893,6 +905,7 @@ public:
             return TRUE;
         }
         m_rad_dialog.m_bMovingSizing = bMovingSizing;
+
         return FALSE;
     }
 
@@ -1022,6 +1035,12 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        m_hIcon = LoadIconDx(3);
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+
+        m_hIconSm = LoadSmallIconDx(3);
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+
         if (m_settings.bResumeWindowPos)
         {
             if (m_settings.nRadLeft != CW_USEDEFAULT)
@@ -1046,6 +1065,17 @@ public:
     {
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, CMDID_DESTROYRAD, 0);
+
+        if (m_hIcon)
+        {
+            DestroyIcon(m_hIcon);
+            m_hIcon = NULL;
+        }
+        if (m_hIconSm)
+        {
+            DestroyIcon(m_hIconSm);
+            m_hIconSm = NULL;
+        }
     }
 
     virtual LRESULT CALLBACK
