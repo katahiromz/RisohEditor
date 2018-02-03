@@ -104,6 +104,11 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnPsh1(HWND hwnd)
+    {
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -113,6 +118,9 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
             break;
         }
     }
