@@ -1934,7 +1934,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_DLLFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);

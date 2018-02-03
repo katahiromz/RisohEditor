@@ -294,6 +294,7 @@ STRINGTABLE
     IDS_UPDATERESH, "你想更新 ""resource.h"" 吗?"
     IDS_CANTWRITERESH, "无法写入 ""resource.h""."
     IDS_SAVERESH, "保存 ""resource.h"" 文件"
+    IDS_DLLFILTER, "DLL 文件 (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|全部文件 (*.*)|*.*|"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
