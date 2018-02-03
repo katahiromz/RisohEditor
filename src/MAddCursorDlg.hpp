@@ -181,7 +181,15 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case psh2:
+            OnPsh2(hwnd);
+            break;
         }
+    }
+
+    void OnPsh2(HWND hwnd)
+    {
+        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_IDLIST, 0);
     }
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
