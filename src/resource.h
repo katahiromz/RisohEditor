@@ -264,4 +264,7 @@
 #define IDM_MAIN            1
 #define IDM_POPUPS          2
 
+#define CID_DUMMYCONTROLID1 1000
+#define CID_DUMMYCONTROLID2 1001
+
 #endif  // ndef RESOURCE_H_
