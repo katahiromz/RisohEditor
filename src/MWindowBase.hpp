@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    53     /* Version 53 */
+#define MZC4_MWINDOWBASE_HPP_    54     /* Version 54 */
 
 class MWindowBase;
 class MDialogBase;
@@ -363,6 +363,7 @@ public:
 
     static MString GetDlgItemText(HWND hwnd, INT nCtrlID)
     {
+        assert(::IsWindow(hwnd));
         return GetWindowText(::GetDlgItem(hwnd, nCtrlID));
     }
     MString GetDlgItemText(INT nCtrlID) const
@@ -370,10 +371,14 @@ public:
         return GetWindowText(::GetDlgItem(m_hwnd, nCtrlID));
     }
 
+    static BOOL SetWindowText(HWND hwnd, LPCTSTR pszText = NULL)
+    {
+        assert(::IsWindow(hwnd));
+        ::SetWindowText(hwnd, pszText);
+    }
     BOOL SetWindowText(LPCTSTR pszText = NULL)
     {
-        assert(::IsWindow(Handle()));
-        return ::SetWindowText(Handle(), pszText);
+        return SetWindowText(Handle(), pszText);
     }
 
     static VOID CenterWindowDx(HWND hwnd);

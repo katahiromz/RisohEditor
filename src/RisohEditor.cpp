@@ -2121,10 +2121,10 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     entry.data = stream.data();
 
     std::wstring str = dialog_res.Dump(entry.name);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     str = DumpDataAsString(entry.data);
-    ::SetWindowTextW(m_hBinEdit, str.c_str());
+    SetWindowTextW(m_hBinEdit, str.c_str());
 }
 
 BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
@@ -3254,7 +3254,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const ResEntry& entry)
     }
     DestroyIcon(hIcon);
 
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
@@ -3267,7 +3267,7 @@ void MMainWnd::PreviewCursor(HWND hwnd, const ResEntry& entry)
     std::wstring str = DumpIconInfo(bm, FALSE);
     DestroyCursor(hCursor);
 
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
@@ -3277,7 +3277,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
     std::wstring str = DumpGroupIconInfo(entry.data);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
@@ -3289,7 +3289,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
 
     std::wstring str = DumpGroupCursorInfo(m_entries, entry.data);
     assert(str.size());
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
@@ -3314,7 +3314,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(hbm);
 
     std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
@@ -3324,14 +3324,14 @@ void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetImage(&entry[0], entry.size());
 
     std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
 }
 
 void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 {
-    ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_WAVESOUND));
+    SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_WAVESOUND));
 
     m_hBmpView.SetPlay();
     ShowBmpView(TRUE);
@@ -3339,7 +3339,7 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& entry)
 {
-    ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
+    SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
 
     m_hBmpView.SetMedia(&entry[0], entry.size());
     ShowMovie(TRUE);
@@ -3352,7 +3352,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const ResEntry& entry)
     if (accel.LoadFromStream(stream))
     {
         std::wstring str = accel.Dump(entry.name);
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3363,7 +3363,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& entry)
     if (mes.LoadFromStream(stream))
     {
         std::wstring str = mes.Dump();
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3375,7 +3375,7 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
     if (str_res.LoadFromStream(stream, nTableID))
     {
         std::wstring str = str_res.Dump(m_db, nTableID);
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3384,7 +3384,7 @@ void MMainWnd::PreviewHtml(HWND hwnd, const ResEntry& entry)
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
     std::wstring str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewMenu(HWND hwnd, const ResEntry& entry)
@@ -3394,7 +3394,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const ResEntry& entry)
     if (menu_res.LoadFromStream(stream))
     {
         std::wstring str = menu_res.Dump(entry.name, m_db);
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3404,7 +3404,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& entry)
     if (ver_res.LoadFromData(entry.data))
     {
         std::wstring str = ver_res.Dump(entry.name);
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3415,7 +3415,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& entry)
     if (dialog_res.LoadFromStream(stream))
     {
         std::wstring str = dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
-        ::SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
 
@@ -3452,9 +3452,9 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon)
     {
         m_hBmpView.SetIcon(hIcon, bIcon);
         if (bIcon)
-            ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANIICON));
+            SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANIICON));
         else
-            ::SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANICURSOR));
+            SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANICURSOR));
     }
     else
     {
@@ -3478,7 +3478,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& entry)
     }
 
     std::wstring str = str_res.Dump(m_db);
-    ::SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
@@ -3490,10 +3490,10 @@ VOID MMainWnd::HidePreview(HWND hwnd)
 {
     m_hBmpView.DestroyView();
 
-    ::SetWindowTextW(m_hBinEdit, NULL);
+    SetWindowTextW(m_hBinEdit, NULL);
     Edit_SetModify(m_hBinEdit, FALSE);
 
-    ::SetWindowTextW(m_hSrcEdit, NULL);
+    SetWindowTextW(m_hSrcEdit, NULL);
     Edit_SetModify(m_hSrcEdit, FALSE);
 
     ShowBmpView(FALSE);
@@ -3506,7 +3506,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     HidePreview(hwnd);
 
     std::wstring str = DumpDataAsString(entry.data);
-    ::SetWindowTextW(m_hBinEdit, str.c_str());
+    SetWindowTextW(m_hBinEdit, str.c_str());
 
     BOOL bEditable = FALSE;
     if (entry.type == RT_ICON)
@@ -3630,7 +3630,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     else if (HIWORD(lParam) == I_STRING)
     {
         m_hBmpView.DestroyView();
-        ::SetWindowTextW(m_hBinEdit, NULL);
+        SetWindowTextW(m_hBinEdit, NULL);
         PreviewStringTable(hwnd, entry);
         ShowBinEdit(FALSE);
         bEditable = TRUE;
@@ -3639,7 +3639,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     else if (HIWORD(lParam) == I_MESSAGE)
     {
         m_hBmpView.DestroyView();
-        ::SetWindowTextW(m_hBinEdit, NULL);
+        SetWindowTextW(m_hBinEdit, NULL);
         PreviewMessageTable(hwnd, entry);
         ShowBinEdit(FALSE);
         bEditable = FALSE;
@@ -3913,7 +3913,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& WideText, BOOL bReope
     {
         if (output.empty())
         {
-            ::SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
             ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
         else
@@ -6101,7 +6101,7 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR FileName)
 {
     if (FileName == 0 || FileName[0] == 0)
     {
-        ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
 
@@ -6114,11 +6114,11 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR FileName)
     if (pch)
     {
         wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-        ::SetWindowTextW(hwnd, sz);
+        SetWindowTextW(hwnd, sz);
     }
     else
     {
-        ::SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
     }
 
     m_settings.AddFile(m_szFile);
