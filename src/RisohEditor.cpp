@@ -2354,6 +2354,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
+        entry.lang = 0xFFFF;
         Res_Search(found, m_entries, entry);
         if (entry.type == RT_GROUP_ICON)
         {
