@@ -5003,6 +5003,13 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             ChangeStatusText(IDS_READY);
             return;
         }
+        else if (lstrcmpiW(pch, L".h") == 0)
+        {
+            UnloadResourceH(hwnd);
+            CheckResourceH(hwnd, file);
+            ChangeStatusText(IDS_READY);
+            return;
+        }
         else if (lstrcmpiW(pch, L".wmf") == 0)
         {
             MAddResDlg dialog(m_entries, m_db);
