@@ -17,7 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.hpp"
+#include "id_string.hpp"
+#include "MByteStreamEx.hpp"
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)
 
