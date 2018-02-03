@@ -138,6 +138,7 @@ public:
                 return;
         }
 
+        // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
         if (!CheckNameComboBox(m_db, hCmb2, name))

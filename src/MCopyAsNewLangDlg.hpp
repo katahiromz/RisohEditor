@@ -116,6 +116,11 @@ public:
             ComboBox_SetCurSel(hCmb1, k);
         }
 
+        // for Names
+        INT nIDTYPE_ = m_db.IDTypeFromRes(m_entry.type);
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitResNameComboBox(hCmb2, m_db, m_entry.name, nIDTYPE_);
+
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, m_entry.lang);
