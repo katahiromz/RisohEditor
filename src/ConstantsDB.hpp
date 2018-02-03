@@ -556,6 +556,10 @@ public:
         {
             return IDTYPE_HTML;
         }
+        if (id == RT_MANIFEST)
+        {
+            return IDTYPE_INVALID;
+        }
         return IDTYPE_RESOURCE;
     }
 
