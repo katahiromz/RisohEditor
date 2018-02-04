@@ -6,17 +6,13 @@
 #define MZC4_MBITMAPDX_HPP_     5   /* Version 5 */
 
 #include <initguid.h>
-
 #ifndef _INC_WINDOWS
     #include <windows.h>
 #endif
-
-#include <gdiplus.h>
-#pragma comment (lib, "gdiplus.lib")
-
 #include <vector>
 
-INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid);
+#include "PackedDIB.hpp"
+
 class MBitmapDx;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -70,37 +66,6 @@ private:
     MBitmapDx(const MBitmapDx&);
     MBitmapDx& operator=(const MBitmapDx&);
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-inline INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
-{
-    UINT nCount = 0, cbItem = 0;
-
-    Gdiplus::GetImageEncodersSize(&nCount, &cbItem);
-    if (cbItem == 0)
-        return -1;  // Failure
-
-    Gdiplus::ImageCodecInfo *pInfo = NULL;
-    pInfo = (Gdiplus::ImageCodecInfo *)std::malloc(cbItem);
-    if (pInfo == NULL)
-        return -1;  // Failure
-
-    GetImageEncoders(nCount, cbItem, pInfo);
-
-    for (UINT k = 0; k < nCount; ++k)
-    {
-        if (lstrcmpW(pInfo[k].MimeType, format) == 0)
-        {
-            *pClsid = pInfo[k].Clsid;
-            free(pInfo);
-            return k;  // Success
-        }
-    }
-
-    std::free(pInfo);
-    return -1;  // Failure
-}
 
 //////////////////////////////////////////////////////////////////////////////
 

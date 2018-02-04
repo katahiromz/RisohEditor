@@ -17,12 +17,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "PackedDIB.hpp"
 #include "MIdOrString.hpp"
 #include "MByteStreamEx.hpp"
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)
 
 //////////////////////////////////////////////////////////////////////////////
+
+inline INT GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
+{
+    UINT nCount = 0, cbItem = 0;
+
+    Gdiplus::GetImageEncodersSize(&nCount, &cbItem);
+    if (cbItem == 0)
+        return -1;  // Failure
+
+    Gdiplus::ImageCodecInfo *pInfo = NULL;
+    pInfo = (Gdiplus::ImageCodecInfo *)std::malloc(cbItem);
+    if (pInfo == NULL)
+        return -1;  // Failure
+
+    GetImageEncoders(nCount, cbItem, pInfo);
+
+    for (UINT k = 0; k < nCount; ++k)
+    {
+        if (lstrcmpW(pInfo[k].MimeType, format) == 0)
+        {
+            *pClsid = pInfo[k].Clsid;
+            free(pInfo);
+            return k;  // Success
+        }
+    }
+
+    std::free(pInfo);
+    return -1;  // Failure
+}
 
 DWORD
 PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
@@ -261,6 +291,46 @@ PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm)
         return TRUE;
     }
     return FALSE;
+}
+
+BOOL
+PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
+{
+    BITMAPFILEHEADER FileHeader;
+
+    if (WritePNG)
+    {
+        BOOL ret = FALSE;
+        HBITMAP hbm = PackedDIB_CreateBitmap(ptr, siz);
+        Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
+        if (pBitmap)
+        {
+            CLSID cls;
+            if (GetEncoderClsid(L"image/png", &cls) != -1)
+            {
+                ret = pBitmap->Save(FileName, &cls, NULL) == Gdiplus::Ok;
+            }
+        }
+        DeleteObject(hbm);
+        return ret;
+    }
+
+    FileHeader.bfType = 0x4d42;
+    FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + siz);
+    FileHeader.bfReserved1 = 0;
+    FileHeader.bfReserved2 = 0;
+
+    DWORD dwOffset = PackedDIB_GetBitsOffset(ptr, siz);
+    if (dwOffset == 0)
+        return FALSE;
+
+    FileHeader.bfOffBits = sizeof(FileHeader) + dwOffset;
+
+    MByteStreamEx bs;
+    if (!bs.WriteRaw(FileHeader) || !bs.WriteData(ptr, siz))
+        return FALSE;
+
+    return bs.SaveToFile(FileName);
 }
 
 //////////////////////////////////////////////////////////////////////////////

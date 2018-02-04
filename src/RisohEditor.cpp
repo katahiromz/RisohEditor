@@ -1015,7 +1015,6 @@ public:
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& entry);
-    BOOL DoExtractBitmap(LPCWSTR FileName, const ResEntry& entry, BOOL WritePNG);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries);
     BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
@@ -1390,7 +1389,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     {
         BOOL PNG;
         PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-        if (!DoExtractBitmap(ofn.lpstrFile, m_entries[i], PNG))
+        if (!PackedDIB_Extract(ofn.lpstrFile, &m_entries[i][0], m_entries[i].size(), PNG))
         {
             ErrorBoxDx(IDS_CANTEXTRACTBMP);
         }
@@ -2822,7 +2821,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
         GetTempPathW(_countof(szPath), szPath);
         GetTempFileNameW(szPath, L"reb", 0, szTempFile);
 
-        if (DoExtractBitmap(szTempFile, entry, FALSE))
+        if (PackedDIB_Extract(szTempFile, &entry[0], entry.size(), FALSE))
         {
             hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
                 LR_CREATEDIBSECTION | LR_LOADFROMFILE);
@@ -4345,44 +4344,6 @@ BOOL MMainWnd::DoExtractCursor(LPCWSTR FileName, const ResEntry& entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractBitmap(LPCWSTR FileName, const ResEntry& entry, BOOL WritePNG)
-{
-    BITMAPFILEHEADER FileHeader;
-
-    if (WritePNG)
-    {
-        BOOL ret = FALSE;
-        HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
-        Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
-        if (pBitmap)
-        {
-            CLSID cls;
-            if (GetEncoderClsid(L"image/png", &cls) != -1)
-            {
-                ret = pBitmap->Save(FileName, &cls, NULL) == Gdiplus::Ok;
-            }
-        }
-        DeleteObject(hbm);
-        return ret;
-    }
-
-    FileHeader.bfType = 0x4d42;
-    FileHeader.bfSize = (DWORD)(sizeof(FileHeader) + entry.size());
-    FileHeader.bfReserved1 = 0;
-    FileHeader.bfReserved2 = 0;
-
-    DWORD dwOffset = PackedDIB_GetBitsOffset(&entry[0], entry.size());
-    if (dwOffset == 0)
-        return FALSE;
-
-    FileHeader.bfOffBits = sizeof(FileHeader) + dwOffset;
-
-    MByteStreamEx bs;
-    if (!bs.WriteRaw(FileHeader) || !bs.WriteData(&entry[0], entry.size()))
-        return FALSE;
-
-    return bs.SaveToFile(FileName);
-}
 
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
