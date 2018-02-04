@@ -5877,7 +5877,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
     INT cxVirtualScreen = GetSystemMetrics(SM_CXVIRTUALSCREEN);
     INT cyVirtualScreen = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    INT cxMin = 200, cyMin = 200;
+    INT cxMin = 200, cyMin = 180;
 
     if (m_settings.nWindowLeft < xVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
