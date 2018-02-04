@@ -5887,10 +5887,12 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.nWindowWidth = 760;
     if (m_settings.nWindowHeight <= cyMin)
         m_settings.nWindowHeight = 480;
-    if (m_settings.nWindowLeft >= xVirtualScreen + cxVirtualScreen)
+    if (m_settings.nWindowLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
-    if (m_settings.nWindowTop >= yVirtualScreen + cyVirtualScreen)
+    if (m_settings.nWindowTop + cyMin >= yVirtualScreen + cyVirtualScreen)
         m_settings.nWindowTop = CW_USEDEFAULT;
+    if (m_settings.nWindowTop == CW_USEDEFAULT)
+        m_settings.nWindowLeft = CW_USEDEFAULT;
 
     if (m_settings.nIDListLeft < xVirtualScreen)
         m_settings.nIDListLeft = CW_USEDEFAULT;
@@ -5900,19 +5902,23 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.nIDListWidth = 366;
     if (m_settings.nIDListHeight <= cyMin)
         m_settings.nIDListHeight = 490;
-    if (m_settings.nIDListLeft >= xVirtualScreen + cxVirtualScreen)
+    if (m_settings.nIDListLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
         m_settings.nIDListLeft = CW_USEDEFAULT;
-    if (m_settings.nIDListTop >= yVirtualScreen + cyVirtualScreen)
+    if (m_settings.nIDListTop + cyMin >= yVirtualScreen + cyVirtualScreen)
         m_settings.nIDListTop = CW_USEDEFAULT;
+    if (m_settings.nIDListTop == CW_USEDEFAULT)
+        m_settings.nIDListLeft = CW_USEDEFAULT;
 
     if (m_settings.nRadLeft < xVirtualScreen)
         m_settings.nRadLeft = CW_USEDEFAULT;
     if (m_settings.nRadTop < yVirtualScreen)
         m_settings.nRadTop = CW_USEDEFAULT;
-    if (m_settings.nRadLeft >= xVirtualScreen + cxVirtualScreen)
+    if (m_settings.nRadLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
         m_settings.nRadLeft = CW_USEDEFAULT;
-    if (m_settings.nRadTop >= yVirtualScreen + cyVirtualScreen)
+    if (m_settings.nRadTop + cyMin >= yVirtualScreen + cyVirtualScreen)
         m_settings.nRadTop = CW_USEDEFAULT;
+    if (m_settings.nRadTop == CW_USEDEFAULT)
+        m_settings.nRadLeft = CW_USEDEFAULT;
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
