@@ -333,4 +333,28 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
     return bs.SaveToFile(FileName);
 }
 
+HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
+{
+    HBITMAP hbm = NULL;
+
+    // Try a dirty hack for BI_RLE4, BI_RLE8, ...
+    WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
+    GetTempPathW(_countof(szPath), szPath);
+    GetTempFileNameW(szPath, L"reb", 0, szTempFile);
+
+    if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
+    {
+        hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
+                                  LR_LOADFROMFILE | LR_COLOR);
+        MessageBoxA(NULL, "OK", NULL, 0);
+    }
+
+    DeleteFileW(szTempFile);
+
+    if (hbm == NULL)
+        hbm = PackedDIB_CreateBitmap(ptr, siz);
+
+    return hbm;
+}
+
 //////////////////////////////////////////////////////////////////////////////

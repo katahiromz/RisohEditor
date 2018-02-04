@@ -2813,21 +2813,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
 {
-    HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
-    if (hbm == NULL)
-    {
-        // Try a dirty hack for BI_RLE4, BI_RLE8, ...
-        WCHAR szPath[MAX_PATH], szTempFile[MAX_PATH];
-        GetTempPathW(_countof(szPath), szPath);
-        GetTempFileNameW(szPath, L"reb", 0, szTempFile);
-
-        if (PackedDIB_Extract(szTempFile, &entry[0], entry.size(), FALSE))
-        {
-            hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
-                LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-        }
-        DeleteFileW(szTempFile);
-    }
+    HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
 
     std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
