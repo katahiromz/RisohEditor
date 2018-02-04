@@ -346,7 +346,6 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
     {
         hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
                                   LR_LOADFROMFILE | LR_COLOR);
-        MessageBoxA(NULL, "OK", NULL, 0);
     }
 
     DeleteFileW(szTempFile);
