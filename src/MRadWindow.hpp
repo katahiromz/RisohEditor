@@ -864,13 +864,13 @@ public:
 class MRadWindow : public MWindowBase
 {
 public:
-    INT         m_xDialogBaseUnit;
-    INT         m_yDialogBaseUnit;
-    MRadDialog  m_rad_dialog;
-    DialogRes   m_dialog_res;
-    RisohSettings& m_settings;
-    HICON       m_hIcon;
-    HICON       m_hIconSm;
+    INT             m_xDialogBaseUnit;
+    INT             m_yDialogBaseUnit;
+    MRadDialog      m_rad_dialog;
+    DialogRes       m_dialog_res;
+    RisohSettings&  m_settings;
+    HICON           m_hIcon;
+    HICON           m_hIconSm;
 
     MRadWindow(ConstantsDB& db, RisohSettings& settings)
         : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
