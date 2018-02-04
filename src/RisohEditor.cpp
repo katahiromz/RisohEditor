@@ -5406,14 +5406,26 @@ void MMainWnd::OnTest(HWND hwnd)
         // detach menu
         DialogRes dialog_res(m_db);
         dialog_res.LoadFromStream(stream);
-        MIdOrString menu = dialog_res.m_menu;
-        dialog_res.m_menu.clear();
-        stream.clear();
-        dialog_res.SaveToStream(stream);
 
-        // show test dialog
-        MTestDialog dialog(m_entries, menu, entry.lang);
-        dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
+        if (dialog_res.m_style & WS_CHILD)
+        {
+            ErrorBoxDx(IDS_CANTTESTCHILDWND);
+        }
+        else if (!dialog_res.m_class.empty())
+        {
+            ErrorBoxDx(IDS_CANTTESTCLASSDLG);
+        }
+        else
+        {
+            MIdOrString menu = dialog_res.m_menu;
+            dialog_res.m_menu.clear();
+            stream.clear();
+            dialog_res.SaveToStream(stream);
+
+            // show test dialog
+            MTestDialog dialog(m_entries, menu, entry.lang);
+            dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
+        }
     }
     else if (entry.type == RT_MENU)
     {

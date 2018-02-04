@@ -296,6 +296,8 @@ STRINGTABLE
     IDS_SAVERESH, "保存 ""resource.h"" 文件"
     IDS_DLLFILTER, "DLL 文件 (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|全部文件 (*.*)|*.*|"
     IDS_EXERESRCFILTER, "可读文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|资源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|二进制文件 (*.res)|*.res|资源文件 (*.rc)|*.rc|全部文件 (*.*)|*.*|"
+    IDS_CANTTESTCHILDWND, "无法测试对话框, 因为它是一个子窗口."
+    IDS_CANTTESTCLASSDLG, "由于对话被分类, 所以不能被测试."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
