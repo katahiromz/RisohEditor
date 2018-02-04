@@ -5882,9 +5882,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.nWindowLeft = CW_USEDEFAULT;
     if (m_settings.nWindowTop < yVirtualScreen)
         m_settings.nWindowTop = CW_USEDEFAULT;
-    if (m_settings.nWindowWidth <= 0)
+    if (m_settings.nWindowWidth <= 200)
         m_settings.nWindowWidth = 760;
-    if (m_settings.nWindowHeight <= 0)
+    if (m_settings.nWindowHeight <= 200)
         m_settings.nWindowHeight = 480;
     if (m_settings.nWindowLeft >= xVirtualScreen + cxVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
@@ -5895,9 +5895,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.nIDListLeft = CW_USEDEFAULT;
     if (m_settings.nIDListTop < yVirtualScreen)
         m_settings.nIDListTop = CW_USEDEFAULT;
-    if (m_settings.nIDListWidth <= 0)
+    if (m_settings.nIDListWidth <= 200)
         m_settings.nIDListWidth = 366;
-    if (m_settings.nIDListHeight <= 0)
+    if (m_settings.nIDListHeight <= 200)
         m_settings.nIDListHeight = 490;
     if (m_settings.nIDListLeft >= xVirtualScreen + cxVirtualScreen)
         m_settings.nIDListLeft = CW_USEDEFAULT;
