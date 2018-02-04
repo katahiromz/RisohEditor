@@ -129,12 +129,10 @@ public:
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_db, m_entry.name, IDTYPE_RESOURCE);
-        ::EnableWindow(hCmb2, FALSE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, m_entry.lang);
-        ::EnableWindow(hCmb3, FALSE);
 
         CenterWindowDx();
         return TRUE;
