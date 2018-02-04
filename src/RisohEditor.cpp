@@ -4390,6 +4390,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     DragQueryFileW(hdrop, 0, file, _countof(file));
     DragFinish(hdrop);
 
+    SetForegroundWindow(hwnd);
+
     pch = wcsrchr(file, L'.');
     if (pch)
     {
