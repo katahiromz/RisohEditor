@@ -5877,14 +5877,15 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
     INT cxVirtualScreen = GetSystemMetrics(SM_CXVIRTUALSCREEN);
     INT cyVirtualScreen = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    INT cxMin = 200, cyMin = 200;
 
     if (m_settings.nWindowLeft < xVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
     if (m_settings.nWindowTop < yVirtualScreen)
         m_settings.nWindowTop = CW_USEDEFAULT;
-    if (m_settings.nWindowWidth <= 200)
+    if (m_settings.nWindowWidth <= cxMin)
         m_settings.nWindowWidth = 760;
-    if (m_settings.nWindowHeight <= 200)
+    if (m_settings.nWindowHeight <= cyMin)
         m_settings.nWindowHeight = 480;
     if (m_settings.nWindowLeft >= xVirtualScreen + cxVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
@@ -5895,9 +5896,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.nIDListLeft = CW_USEDEFAULT;
     if (m_settings.nIDListTop < yVirtualScreen)
         m_settings.nIDListTop = CW_USEDEFAULT;
-    if (m_settings.nIDListWidth <= 200)
+    if (m_settings.nIDListWidth <= cxMin)
         m_settings.nIDListWidth = 366;
-    if (m_settings.nIDListHeight <= 200)
+    if (m_settings.nIDListHeight <= cyMin)
         m_settings.nIDListHeight = 490;
     if (m_settings.nIDListLeft >= xVirtualScreen + cxVirtualScreen)
         m_settings.nIDListLeft = CW_USEDEFAULT;
