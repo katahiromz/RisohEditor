@@ -1,4 +1,4 @@
-// is_string.hpp --- ID and Strings
+// MIdOrString.hpp --- ID and String
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Win32API resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
