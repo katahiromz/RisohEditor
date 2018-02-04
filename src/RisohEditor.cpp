@@ -5873,27 +5873,44 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
 
-    if (m_settings.nWindowLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
+    INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
+    INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    INT cxVirtualScreen = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    INT cyVirtualScreen = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+
+    if (m_settings.nWindowLeft < xVirtualScreen)
         m_settings.nWindowLeft = CW_USEDEFAULT;
-    if (m_settings.nWindowTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
+    if (m_settings.nWindowTop < yVirtualScreen)
         m_settings.nWindowTop = CW_USEDEFAULT;
     if (m_settings.nWindowWidth <= 0)
         m_settings.nWindowWidth = 760;
     if (m_settings.nWindowHeight <= 0)
         m_settings.nWindowHeight = 480;
+    if (m_settings.nWindowLeft >= xVirtualScreen + cxVirtualScreen)
+        m_settings.nWindowLeft = CW_USEDEFAULT;
+    if (m_settings.nWindowTop >= yVirtualScreen + cyVirtualScreen)
+        m_settings.nWindowTop = CW_USEDEFAULT;
 
-    if (m_settings.nIDListLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
+    if (m_settings.nIDListLeft < xVirtualScreen)
         m_settings.nIDListLeft = CW_USEDEFAULT;
-    if (m_settings.nIDListTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
+    if (m_settings.nIDListTop < yVirtualScreen)
         m_settings.nIDListTop = CW_USEDEFAULT;
     if (m_settings.nIDListWidth <= 0)
         m_settings.nIDListWidth = 366;
     if (m_settings.nIDListHeight <= 0)
         m_settings.nIDListHeight = 490;
+    if (m_settings.nIDListLeft >= xVirtualScreen + cxVirtualScreen)
+        m_settings.nIDListLeft = CW_USEDEFAULT;
+    if (m_settings.nIDListTop >= yVirtualScreen + cyVirtualScreen)
+        m_settings.nIDListTop = CW_USEDEFAULT;
 
-    if (m_settings.nRadLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
+    if (m_settings.nRadLeft < xVirtualScreen)
         m_settings.nRadLeft = CW_USEDEFAULT;
-    if (m_settings.nRadTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
+    if (m_settings.nRadTop < yVirtualScreen)
+        m_settings.nRadTop = CW_USEDEFAULT;
+    if (m_settings.nRadLeft >= xVirtualScreen + cxVirtualScreen)
+        m_settings.nRadLeft = CW_USEDEFAULT;
+    if (m_settings.nRadTop >= yVirtualScreen + cyVirtualScreen)
         m_settings.nRadTop = CW_USEDEFAULT;
 
     DWORD i, dwCount;
