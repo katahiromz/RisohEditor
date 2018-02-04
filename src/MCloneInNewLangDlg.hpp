@@ -22,8 +22,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
+#include "Res.hpp"
+#include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);

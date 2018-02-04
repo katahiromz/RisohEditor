@@ -20,8 +20,11 @@
 #ifndef MZC4_MEDITACCELDLG_HPP_
 #define MZC4_MEDITACCELDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "resource.h"
+
 #include "AccelRes.hpp"
 
 //////////////////////////////////////////////////////////////////////////////

@@ -26,6 +26,8 @@
 #include <commctrl.h>
 #include <cctype>
 #include <cwchar>
+#include <algorithm>    // for std::sort
+
 #include "id_string.hpp"
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"

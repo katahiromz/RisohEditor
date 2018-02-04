@@ -22,9 +22,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
-#include "id_string.hpp"
+#include "Res.hpp"
+#include "resource.h"
 
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);

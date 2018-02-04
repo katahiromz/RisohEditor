@@ -20,7 +20,10 @@
 #ifndef MZC4_MBMPVIEW_HPP_
 #define MZC4_MBMPVIEW_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "ConstantsDB.hpp"
+#include "Res.hpp"
+#include "resource.h"
 #include "MBitmapDx.hpp"
 
 #ifndef _INC_VFW

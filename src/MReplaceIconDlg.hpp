@@ -20,7 +20,11 @@
 #ifndef MZC4_MREPLACEICONDLG_HPP_
 #define MZC4_MREPLACEICONDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
+#include "Res.hpp"
+#include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);

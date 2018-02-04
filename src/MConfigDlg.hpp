@@ -20,7 +20,9 @@
 #ifndef MZC4_MCONFIGDLG_HPP_
 #define MZC4_MCONFIGDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

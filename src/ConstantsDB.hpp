@@ -20,6 +20,8 @@
 #ifndef CONSTANTS_DB_HPP_
 #define CONSTANTS_DB_HPP_
 
+#pragma once
+
 #include <string>
 #include <vector>
 #include <map>

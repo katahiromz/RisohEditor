@@ -20,7 +20,11 @@
 #ifndef MZC4_MEDITMENUDLG_HPP_
 #define MZC4_MEDITMENUDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
+#include "resource.h"
+
 #include "MenuRes.hpp"
 
 class MAddMItemDlg;

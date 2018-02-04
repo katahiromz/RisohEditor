@@ -20,7 +20,11 @@
 #ifndef MZC4_MADVICERESHDLG_HPP_
 #define MZC4_MADVICERESHDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "ConstantsDB.hpp"
+#include "Res.hpp"
+#include "resource.h"
+#include "RisohSettings.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

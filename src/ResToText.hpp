@@ -20,10 +20,36 @@
 #ifndef RES_TO_TEXT_HPP_
 #define RES_TO_TEXT_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
+#include "Res.hpp"
+
 #include "DialogRes.hpp"
 #include "MenuRes.hpp"
 #include "VersionRes.hpp"
+#include "StringRes.hpp"
+#include "AccelRes.hpp"
+
+#include "resource.h"
+
+HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
+std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
+std::wstring DumpBitmapInfo(HBITMAP hbm);
+std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data);
+std::wstring DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
+
+HBITMAP
+CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
+
+HBITMAP
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
+
+HBITMAP
+CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
+
+HBITMAP
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -297,6 +323,426 @@ ResToText::DumpEntry(const ResEntry& entry)
         }
     }
     return DoText(entry);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+inline HBITMAP
+CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
+{
+    HBITMAP hbm = Create24BppBitmapDx(width, height);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+    {
+        HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
+        DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
+    }
+    SelectObject(hDC, hbmOld);
+    DeleteDC(hDC);
+
+    return hbm;
+}
+
+inline std::wstring
+DumpBitmapInfo(HBITMAP hbm)
+{
+    std::wstring ret;
+    BITMAP bm;
+    if (!GetObjectW(hbm, sizeof(bm), &bm))
+        return ret;
+
+    WCHAR sz[64];
+    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
+              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
+    ret = sz;
+    return ret;
+}
+
+inline std::wstring
+DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
+{
+    std::wstring ret;
+
+    using namespace std;
+    WCHAR sz[128];
+    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
+              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
+    ret = sz;
+
+    return ret;
+}
+
+inline std::wstring
+DumpGroupIconInfo(const std::vector<BYTE>& data)
+{
+    std::wstring ret;
+    WCHAR sz[128];
+
+    ICONDIR dir;
+    if (data.size() < sizeof(dir))
+        return ret;
+
+    memcpy(&dir, &data[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != 1 || dir.idCount == 0)
+    {
+        return ret;
+    }
+
+    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
+    ret += sz;
+    ret += L"-------\r\n";
+
+    const GRPICONDIRENTRY *pEntries;
+    pEntries = (const GRPICONDIRENTRY *)&data[sizeof(dir)];
+
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        WORD Width = pEntries[i].bWidth;
+        WORD Height = pEntries[i].bHeight;
+        WORD nID = pEntries[i].nID;
+
+        if (Width == 0)
+            Width = 256;
+        if (Height == 0)
+            Height = 256;
+
+        wsprintfW(sz, LoadStringDx(IDS_ICONINFO),
+                  i, Width, Height, pEntries[i].wBitCount, nID);
+        ret += sz;
+    }
+
+    return ret;
+}
+
+inline std::wstring
+DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
+{
+    std::wstring ret;
+    WCHAR sz[128];
+
+    ICONDIR dir;
+    if (data.size() < sizeof(dir))
+        return ret;
+
+    memcpy(&dir, &data[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+    {
+        return ret;
+    }
+
+    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
+    ret += sz;
+    ret += L"-------\r\n";
+
+    const GRPCURSORDIRENTRY *pEntries;
+    pEntries = (const GRPCURSORDIRENTRY *)&data[sizeof(dir)];
+
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        WORD Width = pEntries[i].wWidth;
+        WORD Height = pEntries[i].wHeight / 2;
+        WORD BitCount = pEntries[i].wBitCount;
+        WORD nID = pEntries[i].nID;
+        WORD xHotSpot = 0;
+        WORD yHotSpot = 0;
+
+        INT k = Res_Find(entries, RT_CURSOR, nID, 0xFFFF, FALSE);
+        if (k != -1)
+        {
+            const ResEntry& cursor_entry = entries[k];
+            LOCALHEADER header;
+            if (cursor_entry.size() >= sizeof(header))
+            {
+                memcpy(&header, &cursor_entry[0], sizeof(header));
+                xHotSpot = header.xHotSpot;
+                yHotSpot = header.yHotSpot;
+            }
+        }
+
+        if (Width == 0)
+            Width = 256;
+        if (Height == 0)
+            Height = 256;
+
+        wsprintfW(sz, LoadStringDx(IDS_CURSORINFO),
+                  i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
+        ret += sz;
+    }
+
+    return ret;
+}
+
+inline HBITMAP
+CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
+{
+    HBITMAP hbmIcon;
+
+    if (entry.size() >= 4 &&
+        memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
+    {
+        MBitmapDx bitmap;
+        bitmap.CreateFromMemory(&entry[0], entry.size());
+        LONG cx, cy;
+        hbmIcon = bitmap.GetHBITMAP32(cx, cy);
+    }
+    else
+    {
+        HICON hIcon;
+        BITMAP bm;
+        hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
+        assert(hIcon);
+        hbmIcon = CreateBitmapFromIconDx(hIcon,
+                                         bm.bmWidth, bm.bmHeight, FALSE);
+        DestroyIcon(hIcon);
+    }
+
+    GetObject(hbmIcon, sizeof(bm), &bm);
+    if (bm.bmBitsPixel == 32)
+    {
+        PremultiplyDx(hbmIcon);
+    }
+
+    return hbmIcon;
+}
+
+inline void
+DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
+{
+    BITMAP bmSrc;
+    GetObject(hbmSrc, sizeof(bmSrc), &bmSrc);
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HDC hDC2 = CreateCompatibleDC(NULL);
+    {
+        HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+        HGDIOBJ hbm2Old = SelectObject(hDC2, hbmSrc);
+        if (bmSrc.bmBitsPixel == 32)
+        {
+            BLENDFUNCTION bf;
+            bf.BlendOp = AC_SRC_OVER;
+            bf.BlendFlags = 0;
+            bf.SourceConstantAlpha = 0xFF;
+            bf.AlphaFormat = AC_SRC_ALPHA;
+            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+                       hDC2, 0, 0, bmSrc.bmWidth, bmSrc.bmHeight, bf);
+        }
+        else
+        {
+            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+                   hDC2, 0, 0, SRCCOPY);
+        }
+        SelectObject(hDC, hbm2Old);
+        SelectObject(hDC, hbmOld);
+    }
+    DeleteDC(hDC2);
+    DeleteDC(hDC);
+}
+
+inline HBITMAP
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
+{
+    ICONDIR dir;
+    if (entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return NULL;
+    }
+
+    memcpy(&dir, &entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
+    {
+        assert(0);
+        return NULL;
+    }
+
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    const GRPICONDIRENTRY *pEntries;
+    pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        if (k == -1)
+            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        if (k == -1)
+        {
+            return NULL;
+        }
+        ResEntry& icon_entry = entries[k];
+
+        BITMAP bm;
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
+
+        if (cx < bm.bmWidth)
+            cx = bm.bmWidth;
+        cy += bm.bmHeight;
+
+        DeleteObject(hbmIcon);
+    }
+
+    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
+    
+    BITMAP bm;
+    GetObject(hbm, sizeof(bm), &bm);
+
+    INT y = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        if (k == -1)
+            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        if (k == -1)
+        {
+            DeleteObject(hbm);
+            return NULL;
+        }
+        ResEntry& icon_entry = entries[k];
+
+        HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
+
+        DrawBitmapDx(hbm, hbmIcon, 0, y);
+        y += bm.bmHeight;
+    }
+
+    return hbm;
+}
+
+inline HBITMAP
+CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
+{
+    HBITMAP hbmCursor;
+
+    HICON hCursor;
+    hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
+    assert(hCursor);
+    hbmCursor = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+    DestroyCursor(hCursor);
+
+    GetObject(hbmCursor, sizeof(bm), &bm);
+    assert(hbmCursor);
+    return hbmCursor;
+}
+
+inline HBITMAP
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
+{
+    ICONDIR dir;
+    if (entry.size() < sizeof(dir))
+    {
+        assert(0);
+        return NULL;
+    }
+
+    memcpy(&dir, &entry[0], sizeof(dir));
+
+    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+    {
+        assert(0);
+        return NULL;
+    }
+
+    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    const GRPCURSORDIRENTRY *pEntries;
+    pEntries = (const GRPCURSORDIRENTRY *)&entry[sizeof(dir)];
+
+    LONG cx = 0, cy = 0;
+    for (WORD i = 0; i < dir.idCount; ++i)
+    {
+        INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+        if (k == -1)
+            k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+        if (k == -1)
+        {
+            return NULL;
+        }
+        ResEntry& cursor_entry = entries[k];
+
+        BITMAP bm;
+        HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
+        assert(hbmCursor);
+        assert(bm.bmWidth);
+        assert(bm.bmHeight);
+
+        if (cx < bm.bmWidth)
+            cx = bm.bmWidth;
+        cy += bm.bmHeight;
+
+        DeleteObject(hbmCursor);
+    }
+
+    HBITMAP hbm = Create24BppBitmapDx(cx, cy);
+    if (hbm == NULL)
+    {
+        assert(0);
+        return NULL;
+    }
+    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    HDC hDC2 = CreateCompatibleDC(NULL);
+    HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+    {
+        INT y = 0;
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+            if (k == -1)
+                k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+            if (k == -1)
+            {
+                assert(0);
+                DeleteObject(hbm);
+                return NULL;
+            }
+            ResEntry& cursor_entry = entries[k];
+
+            BITMAP bm;
+            HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
+            assert(hbmCursor);
+            assert(bm.bmWidth);
+            assert(bm.bmHeight);
+            {
+                HGDIOBJ hbm2Old = SelectObject(hDC2, hbmCursor);
+                BitBlt(hDC, 0, y, bm.bmWidth, bm.bmHeight, hDC2, 0, 0, SRCCOPY);
+                SelectObject(hDC2, hbm2Old);
+            }
+            DeleteObject(hbmCursor);
+
+            y += bm.bmHeight;
+        }
+    }
+    SelectObject(hDC, hbmOld);
+    DeleteDC(hDC2);
+    DeleteDC(hDC);
+
+    return hbm;
 }
 
 //////////////////////////////////////////////////////////////////////////////

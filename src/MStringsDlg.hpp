@@ -20,7 +20,12 @@
 #ifndef MZC4_MSTRINGSDLG_HPP_
 #define MZC4_MSTRINGSDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
+#include "Res.hpp"
+#include "resource.h"
+
 #include "StringRes.hpp"
 
 class MAddStrDlg;

@@ -67,91 +67,13 @@
 #include "MacroParser.hpp"
 #include "MWaitCursor.hpp"
 #include "resource.h"
+#include "RisohSettings.hpp"
 
 // RisohEditor.cpp
-LPWSTR MakeFilterDx(LPWSTR psz);
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
-HBITMAP Create24BppBitmapDx(INT width, INT height);
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
 LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
-std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
-std::wstring DumpBitmapInfo(HBITMAP hbm);
-std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data);
-std::wstring DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
-
-HBITMAP
-CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
-
-HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
-
-HBITMAP
-CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
-
-HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
-
-////////////////////////////////////////////////////////////////////////////
-
-#define MAX_MRU         5       // the number of most recently used files
-
-typedef std::vector<MString>            mru_type;
-typedef std::map<MString, MString>      assoc_map_type;
-typedef std::map<MStringA, MStringA>    id_map_type;
-
-struct RisohSettings
-{
-    BOOL        bShowBinEdit;
-    BOOL        bAlwaysControl;
-    BOOL        bShowStatusBar;
-    INT         nTreeViewWidth;
-    INT         nBmpViewWidth;
-    INT         nBinEditHeight;
-    BOOL        bGuiByDblClick;
-    BOOL        bResumeWindowPos;
-    BOOL        bAutoLoadNearbyResH;
-    BOOL        bAutoShowIDList;
-    BOOL        bHideID;
-    BOOL        bShowDotsOnDialog;
-    INT         nComboHeight;
-    mru_type    vecRecentlyUsed;
-    INT         nWindowLeft;
-    INT         nWindowTop;
-    INT         nWindowWidth;
-    INT         nWindowHeight;
-    BOOL        bMaximized;
-    INT         nIDListLeft;
-    INT         nIDListTop;
-    INT         nIDListWidth;
-    INT         nIDListHeight;
-    INT         nRadLeft;
-    INT         nRadTop;
-    BOOL        bUpdateResH;
-    assoc_map_type      assoc_map;
-    id_map_type         id_map;
-    id_map_type         added_ids;
-    id_map_type         removed_ids;
-
-    RisohSettings()
-    {
-    }
-
-    void AddFile(LPCTSTR pszFile)
-    {
-        for (size_t i = 0; i < vecRecentlyUsed.size(); ++i)
-        {
-            if (vecRecentlyUsed[i] == pszFile)
-            {
-                vecRecentlyUsed.erase(vecRecentlyUsed.begin() + i);
-                break;
-            }
-        }
-        vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
-        if (vecRecentlyUsed.size() > MAX_MRU)
-            vecRecentlyUsed.resize(MAX_MRU);
-    }
-};
 
 ////////////////////////////////////////////////////////////////////////////
 

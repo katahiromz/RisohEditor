@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    54     /* Version 54 */
+#define MZC4_MWINDOWBASE_HPP_    57     /* Version 57 */
 
 class MWindowBase;
 class MDialogBase;
@@ -117,6 +117,11 @@ BOOL MZCAPI SetWindowPosDx(HWND hwnd, LPPOINT ppt = NULL, LPSIZE psiz = NULL,
     HWND hwndInsertAfter = NULL,
     UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 BOOL MZCAPI SetWindowPosDx(HWND hwnd, const RECT *prc);
+LPSTR MakeFilterDx(LPSTR psz);
+LPWSTR MakeFilterDx(LPWSTR psz);
+HBITMAP Create24BppBitmapDx(INT width, INT height);
+void FillBitmapDx(HBITMAP hbm, HBRUSH hbr);
+void PremultiplyDx(HBITMAP hbm32bpp);
 
 //////////////////////////////////////////////////////////////////////////////
 // Messaging
@@ -853,6 +858,87 @@ SetWindowPosDx(HWND hwnd, const RECT *prc)
     siz.cx = prc->right - prc->left;
     siz.cy = prc->bottom - prc->top;
     return ::SetWindowPosDx(hwnd, &pt, &siz);
+}
+
+inline LPSTR MakeFilterDx(LPSTR psz)
+{
+    for (LPSTR pch = psz; *pch; ++pch)
+    {
+        if (*pch == '|')
+            *pch = 0;
+    }
+    return psz;
+}
+
+inline LPWSTR MakeFilterDx(LPWSTR psz)
+{
+    for (LPWSTR pch = psz; *pch; ++pch)
+    {
+        if (*pch == L'|')
+            *pch = 0;
+    }
+    return psz;
+}
+
+inline HBITMAP Create24BppBitmapDx(INT width, INT height)
+{
+    BITMAPINFO bi;
+    ZeroMemory(&bi, sizeof(bi));
+    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bi.bmiHeader.biWidth = width;
+    bi.bmiHeader.biHeight = height;
+    bi.bmiHeader.biPlanes = 1;
+    bi.bmiHeader.biBitCount = 24;
+    bi.bmiHeader.biCompression = BI_RGB;
+    HDC hDC = CreateCompatibleDC(NULL);
+    LPVOID pvBits;
+    HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS,
+                                   &pvBits, NULL, 0);
+    DeleteDC(hDC);
+    return hbm;
+}
+
+inline void FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
+{
+    BITMAP bm;
+    if (!GetObject(hbm, sizeof(bm), &bm))
+        return;
+
+    HDC hDC = CreateCompatibleDC(NULL);
+    {
+        HGDIOBJ hbmOld = SelectObject(hDC, hbm);
+        {
+            RECT rc;
+            SetRect(&rc, 0, 0, bm.bmWidth, bm.bmHeight);
+            FillRect(hDC, &rc, hbr);
+            DeleteObject(hbr);
+        }
+        SelectObject(hDC, hbmOld);
+    }
+    DeleteDC(hDC);
+}
+
+inline void
+PremultiplyDx(HBITMAP hbm32bpp)
+{
+    BITMAP bm;
+    DWORD cdw;
+    LPBYTE pb;
+    BYTE alpha;
+    GetObject(hbm32bpp, sizeof(bm), &bm);
+    if (bm.bmBitsPixel == 32)
+    {
+        cdw = bm.bmWidth * bm.bmHeight;
+        pb = (LPBYTE) bm.bmBits;
+        while (cdw--)
+        {
+            alpha = pb[3];
+            pb[0] = (BYTE) ((DWORD) pb[0] * alpha / 255);
+            pb[1] = (BYTE) ((DWORD) pb[1] * alpha / 255);
+            pb[2] = (BYTE) ((DWORD) pb[2] * alpha / 255);
+            pb += 4;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

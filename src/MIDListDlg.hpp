@@ -20,7 +20,6 @@
 #ifndef MZC4_MIDLISTDLG_HPP_
 #define MZC4_MIDLISTDLG_HPP_
 
-#include "RisohEditor.hpp"
 #include "MWindowBase.hpp"
 #include "MTextToText.hpp"
 #include "id_string.hpp"

@@ -20,9 +20,12 @@
 #ifndef MZC4_MDLGPROPDLG_HPP_
 #define MZC4_MDLGPROPDLG_HPP_
 
-#include "RisohEditor.hpp"
-#include "DialogRes.hpp"
+#include "MWindowBase.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
 #include "resource.h"
+
+#include "DialogRes.hpp"
 
 void InitFontComboBox(HWND hCmb);
 

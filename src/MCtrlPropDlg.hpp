@@ -20,11 +20,15 @@
 #ifndef MZC4_MCTRLPROPDLG_HPP_
 #define MZC4_MCTRLPROPDLG_HPP_
 
-#include "RisohEditor.hpp"
+#include "MToolBarCtrl.hpp"
+#include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
+#include "resource.h"
+
 #include "DialogRes.hpp"
 #include "MString.hpp"
 #include "resource.h"
-#include "MToolBarCtrl.hpp"
+
 #include <set>
 
 //////////////////////////////////////////////////////////////////////////////
