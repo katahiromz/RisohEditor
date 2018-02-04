@@ -3662,6 +3662,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
             return FALSE;
         }
 
+        UnloadResourceH(hwnd);
+        if (m_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, szPath);
+
         m_bLoading = TRUE;
         {
             m_entries = entries;
@@ -3669,10 +3673,6 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
         }
         m_bLoading = FALSE;
         SetFilePath(hwnd, szPath);
-
-        UnloadResourceH(hwnd);
-        if (m_settings.bAutoLoadNearbyResH)
-            CheckResourceH(hwnd, szPath);
 
         return TRUE;
     }
@@ -3689,6 +3689,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
         }
     }
 
+    UnloadResourceH(hwnd);
+    if (m_settings.bAutoLoadNearbyResH)
+        CheckResourceH(hwnd, szPath);
+
     m_bLoading = TRUE;
     {
         m_entries.clear();
@@ -3698,10 +3702,6 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
     }
     m_bLoading = FALSE;
     SetFilePath(hwnd, szPath);
-
-    UnloadResourceH(hwnd);
-    if (m_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, szPath);
 
     return TRUE;
 }
