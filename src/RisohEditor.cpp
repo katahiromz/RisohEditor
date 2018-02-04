@@ -3642,6 +3642,8 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
             return FALSE;
         }
 
+        UnloadResourceH(hwnd);
+
         m_bLoading = TRUE;
         {
             m_entries = entries;
