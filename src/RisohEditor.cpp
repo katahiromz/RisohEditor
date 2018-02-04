@@ -3642,6 +3642,10 @@ BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
             return FALSE;
         }
 
+        UnloadResourceH(hwnd);
+        if (m_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, szPath);
+
         m_bLoading = TRUE;
         {
             m_entries = entries;
