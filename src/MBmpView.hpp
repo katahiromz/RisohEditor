@@ -435,6 +435,36 @@ public:
         }
     }
 
+    void OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys)
+    {
+        if (fwKeys & MK_SHIFT)
+        {
+            if (zDelta < 0)
+            {
+                for (INT i = 0; i < -zDelta; i += WHEEL_DELTA)
+                    FORWARD_WM_HSCROLL(hwnd, NULL, SB_LINEDOWN, 0, SendMessage);
+            }
+            else
+            {
+                for (INT i = 0; i < zDelta; i += WHEEL_DELTA)
+                    FORWARD_WM_HSCROLL(hwnd, NULL, SB_LINEUP, 0, SendMessage);
+            }
+        }
+        else
+        {
+            if (zDelta < 0)
+            {
+                for (INT i = 0; i < -zDelta; i += WHEEL_DELTA)
+                    FORWARD_WM_VSCROLL(hwnd, NULL, SB_LINEDOWN, 0, SendMessage);
+            }
+            else
+            {
+                for (INT i = 0; i < zDelta; i += WHEEL_DELTA)
+                    FORWARD_WM_VSCROLL(hwnd, NULL, SB_LINEUP, 0, SendMessage);
+            }
+        }
+    }
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -449,6 +479,7 @@ public:
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_TIMER, OnTimer);
             HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
+            HANDLE_MSG(hwnd, WM_MOUSEWHEEL, OnMouseWheel);
         default:
             if (uMsg == MCIWNDM_NOTIFYMODE)
             {
