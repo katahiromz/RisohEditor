@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "id_string.hpp"
+#include "MIdOrString.hpp"
 #include "MByteStreamEx.hpp"
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)

@@ -22,7 +22,6 @@
 
 #include <windows.h>
 #include <vector>
-#include "id_string.hpp"
 #include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
 

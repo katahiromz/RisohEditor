@@ -22,7 +22,7 @@
 
 #include "MWindowBase.hpp"
 #include "MTextToText.hpp"
-#include "id_string.hpp"
+#include "MIdOrString.hpp"
 #include "resource.h"
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"

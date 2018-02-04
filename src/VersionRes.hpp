@@ -27,7 +27,7 @@
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
-#include "id_string.hpp"
+#include "MIdOrString.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

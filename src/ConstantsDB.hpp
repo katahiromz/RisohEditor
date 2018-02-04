@@ -30,7 +30,7 @@
 #include <iostream>
 
 #include "MString.hpp"
-#include "id_string.hpp"
+#include "MIdOrString.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
