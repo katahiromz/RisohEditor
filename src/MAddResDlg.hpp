@@ -77,6 +77,11 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        k = ComboBox_AddString(hCmb1, TEXT("IMAGE"));
+        if (m_type == TEXT("IMAGE"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
         k = ComboBox_AddString(hCmb1, TEXT("GIF"));
         if (m_type == TEXT("GIF"))
         {

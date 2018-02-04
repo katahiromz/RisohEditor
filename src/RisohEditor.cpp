@@ -3085,7 +3085,8 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     else if (entry.type == L"PNG" || entry.type == L"GIF" ||
              entry.type == L"JPEG" || entry.type == L"TIFF" ||
              entry.type == L"JPG" || entry.type == L"TIF" ||
-             entry.type == L"EMF" || entry.type == L"WMF")
+             entry.type == L"EMF" || entry.type == L"WMF" ||
+             entry.type == L"IMAGE")
     {
         PreviewImage(hwnd, entry);
         bEditable = FALSE;
