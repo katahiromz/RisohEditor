@@ -5873,27 +5873,27 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
 
-    if (m_settings.nWindowLeft < -100)
+    if (m_settings.nWindowLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
         m_settings.nWindowLeft = CW_USEDEFAULT;
-    if (m_settings.nWindowTop < -100)
+    if (m_settings.nWindowTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
         m_settings.nWindowTop = CW_USEDEFAULT;
     if (m_settings.nWindowWidth <= 0)
         m_settings.nWindowWidth = 760;
     if (m_settings.nWindowHeight <= 0)
         m_settings.nWindowHeight = 480;
 
-    if (m_settings.nIDListLeft < -100)
+    if (m_settings.nIDListLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
         m_settings.nIDListLeft = CW_USEDEFAULT;
-    if (m_settings.nIDListTop < -100)
+    if (m_settings.nIDListTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
         m_settings.nIDListTop = CW_USEDEFAULT;
     if (m_settings.nIDListWidth <= 0)
         m_settings.nIDListWidth = 366;
     if (m_settings.nIDListHeight <= 0)
         m_settings.nIDListHeight = 490;
 
-    if (m_settings.nRadLeft < -100)
+    if (m_settings.nRadLeft < GetSystemMetrics(SM_XVIRTUALSCREEN))
         m_settings.nRadLeft = CW_USEDEFAULT;
-    if (m_settings.nRadTop < -100)
+    if (m_settings.nRadTop < GetSystemMetrics(SM_YVIRTUALSCREEN))
         m_settings.nRadTop = CW_USEDEFAULT;
 
     DWORD i, dwCount;
