@@ -882,8 +882,7 @@ TV_GetSelection(HWND hwnd, ResEntries& selection,
 }
 
 inline HTREEITEM
-TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
-            LPARAM lParam, BOOL Expand)
+TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text, LPARAM lParam)
 {
     TV_INSERTSTRUCTW Insert;
     ZeroMemory(&Insert, sizeof(Insert));
@@ -891,16 +890,8 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
     Insert.hInsertAfter = TVI_LAST;
     Insert.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
                        TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-    if (Expand)
-    {
-        Insert.item.state = TVIS_EXPANDED;
-        Insert.item.stateMask = TVIS_EXPANDED;
-    }
-    else
-    {
-        Insert.item.state = 0;
-        Insert.item.stateMask = 0;
-    }
+    Insert.item.state = 0;
+    Insert.item.stateMask = 0;
     Insert.item.pszText = &Text[0];
     Insert.item.lParam = lParam;
     if (HIWORD(lParam) < I_LANG)
@@ -918,7 +909,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text,
 
 inline HTREEITEM
 _tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                       const ResEntries& entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -933,13 +924,12 @@ _tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     std::wstring ResLang = Res_GetLangName(entries[i].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang,
-                       MAKELPARAM(k, I_LANG), Expand);
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, I_LANG));
 }   
 
 inline HTREEITEM
 _tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                       const ResEntries& entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -954,13 +944,12 @@ _tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     std::wstring ResName = Res_GetName(db, entries[i]);
-    return TV_MyInsert(hwnd, hParent, ResName,
-                       MAKELPARAM(k, I_NAME), Expand);
+    return TV_MyInsert(hwnd, hParent, ResName, MAKELPARAM(k, I_NAME));
 }
 
 inline HTREEITEM
 _tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
-                       const ResEntries& entries, INT i, INT k, BOOL Expand)
+                       const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -975,8 +964,7 @@ _tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     std::wstring ResType = Res_GetType(entries[i].type);
-    return TV_MyInsert(hwnd, hParent, ResType,
-                       MAKELPARAM(k, I_TYPE), Expand);
+    return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
 }
 
 inline void
@@ -1046,7 +1034,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 
 inline HTREEITEM
 _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& entries, INT iEntry, BOOL Expand)
+                       const ResEntries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -1061,13 +1049,12 @@ _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
     }
 
     std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang,
-                       MAKELPARAM(iEntry, I_STRING), Expand);
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_STRING));
 }
 
 inline HTREEITEM
 _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& entries, INT iEntry, BOOL Expand)
+                        const ResEntries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -1082,8 +1069,7 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
     }
 
     std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang,
-                       MAKELPARAM(iEntry, I_MESSAGE), Expand);
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
 }
 
 inline bool Res_Less(const ResEntry& entry1, const ResEntry& entry2)
@@ -1109,17 +1095,9 @@ inline void Res_Sort(ResEntries& entries)
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries, BOOL bNewlyOpen)
+TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
 {
     TreeView_DeleteAllItems(hwnd);
-
-    BOOL Expand = FALSE;
-    if (bNewlyOpen)
-    {
-        Expand = TRUE;
-        if (entries.size() >= 24)
-            Expand = FALSE;
-    }
 
     Res_Sort(entries);
 
@@ -1129,15 +1107,15 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries, BOOL bNewlyOpen)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i);
 
         if (entries[i].type == RT_STRING)
         {
-            _tv_FindOrInsertString(hwnd, hItem, entries, i, Expand);
+            _tv_FindOrInsertString(hwnd, hItem, entries, i);
         }
         if (entries[i].type == RT_MESSAGETABLE)
         {
-            _tv_FindOrInsertMessage(hwnd, hItem, entries, i, Expand);
+            _tv_FindOrInsertMessage(hwnd, hItem, entries, i);
         }
     }
 
@@ -1148,9 +1126,9 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries, BOOL bNewlyOpen)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k, Expand);
-        hItem = _tv_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k, Expand);
+        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k);
+        hItem = _tv_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k);
+        hItem = _tv_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k);
         hItem = hItem;
         ++k;
     }
@@ -1196,7 +1174,7 @@ inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& e
         break;
     }
 
-    TV_RefreshInfo(hwnd, db, entries, FALSE);
+    TV_RefreshInfo(hwnd, db, entries);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
 }
