@@ -916,18 +916,18 @@ public:
         ICONDIR& dir = (ICONDIR&)entry[0];
         GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&entry[sizeof(ICONDIR)];
 
-		int cx = 0, cy = 0, bits = 0, n = 0;
+        int cx = 0, cy = 0, bits = 0, n = 0;
         for (int m = 0; m < dir.idCount; ++m)
         {
-			if (cx < pGroupIcon[m].bWidth ||
-				cy < pGroupIcon[m].bHeight ||
-				bits < pGroupIcon[m].wBitCount)
-			{
-				cx = pGroupIcon[m].bWidth;
-				cy = pGroupIcon[m].bHeight;
-				bits = pGroupIcon[m].wBitCount;
-				n = m;
-			}
+            if (cx < pGroupIcon[m].bWidth ||
+                cy < pGroupIcon[m].bHeight ||
+                bits < pGroupIcon[m].wBitCount)
+            {
+                cx = pGroupIcon[m].bWidth;
+                cy = pGroupIcon[m].bHeight;
+                bits = pGroupIcon[m].wBitCount;
+                n = m;
+            }
         }
 
         type = RT_ICON;
