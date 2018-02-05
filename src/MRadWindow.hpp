@@ -104,15 +104,17 @@ public:
             DWORD style = GetWindowStyle(m_hwnd);
             if ((style & SS_TYPEMASK) == SS_ICON)
             {
-                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
-                SetWindowPosDx(m_hwnd, NULL, &siz);
                 m_nImageType = 1;   // icon
+                HICON hIcon = Icon();
+                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             else if ((style & SS_TYPEMASK) == SS_BITMAP)
             {
-                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
-                SetWindowPosDx(m_hwnd, NULL, &siz);
                 m_nImageType = 2;   // bitmap
+                HBITMAP hbm = Bitmap();
+                SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                SetWindowPosDx(m_hwnd, NULL, &siz);
             }
             return;
         }
@@ -1156,7 +1158,7 @@ public:
                     {
                         SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
                         DWORD style = GetWindowStyle(hCtrl);
-                        if ((style & SS_REALSIZEIMAGE) == SS_REALSIZEIMAGE)
+                        if (style & SS_REALSIZEIMAGE)
                         {
                             ICONINFO info;
                             GetIconInfo(hIcon, &info);
@@ -1165,7 +1167,7 @@ public:
                             siz.cx = bm.bmWidth;
                             siz.cy = bm.bmHeight;
                         }
-                        else if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                        else if (style & SS_REALSIZECONTROL)
                         {
                             siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
                             siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
@@ -1181,7 +1183,7 @@ public:
                     {
                         SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
                         DWORD style = GetWindowStyle(hCtrl);
-                        if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                        if (style & SS_REALSIZECONTROL)
                         {
                             siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
                             siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;

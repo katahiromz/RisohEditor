@@ -231,7 +231,7 @@ public:
                 {
                     HICON hIcon = m_title_to_icon[id];
                     SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
-                    if ((style & SS_REALSIZEIMAGE) == SS_REALSIZEIMAGE)
+                    if (style & SS_REALSIZEIMAGE)
                     {
                         ICONINFO info;
                         GetIconInfo(hIcon, &info);
@@ -240,7 +240,7 @@ public:
                         siz.cx = bm.bmWidth;
                         siz.cy = bm.bmHeight;
                     }
-                    else if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                    else if (style & SS_REALSIZECONTROL)
                     {
                         siz.cx = m_dialog_res[i].m_siz.cx * m_xDialogBaseUnit / 4;
                         siz.cy = m_dialog_res[i].m_siz.cy * m_yDialogBaseUnit / 8;
@@ -251,7 +251,7 @@ public:
                 {
                     HBITMAP hbm = m_title_to_bitmap[id];
                     SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
-                    if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                    if (style & SS_REALSIZECONTROL)
                     {
                         siz.cx = m_dialog_res[i].m_siz.cx * m_xDialogBaseUnit / 4;
                         siz.cy = m_dialog_res[i].m_siz.cy * m_yDialogBaseUnit / 8;
