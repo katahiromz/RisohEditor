@@ -1418,6 +1418,10 @@ void MMainWnd::OnAbout(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
+#if 1
+    MVersionInfoDlg dialog;
+    dialog.DialogBoxDx(hwnd);
+#else
     MSGBOXPARAMSW params;
 
     ZeroMemory(&params, sizeof(params));
@@ -1433,6 +1437,7 @@ void MMainWnd::OnAbout(HWND hwnd)
     MWindowBase::HookCenterMsgBoxDx(TRUE);
     MessageBoxIndirectW(&params);
     MWindowBase::HookCenterMsgBoxDx(FALSE);
+#endif
 }
 
 void MMainWnd::OnLoadWCLib(HWND hwnd)
