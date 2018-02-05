@@ -939,10 +939,12 @@ public:
         HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
         if (hIcon)
         {
-            WORD id = item.m_title.m_id;
-            if (m_title_to_icon[id])
-                DestroyIcon(m_title_to_icon[id]);
-            m_title_to_icon[id] = hIcon;
+            if (WORD id = item.m_title.m_id)
+            {
+                if (m_title_to_icon[id])
+                    DestroyIcon(m_title_to_icon[id]);
+                m_title_to_icon[id] = hIcon;
+            }
         }
     }
 
@@ -957,10 +959,12 @@ public:
         HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
         if (hbm)
         {
-            WORD id = item.m_title.m_id;
-            if (m_title_to_bitmap[id])
-                DeleteObject(m_title_to_bitmap[id]);
-            m_title_to_bitmap[id] = hbm;
+            if (WORD id = item.m_title.m_id)
+            {
+                if (m_title_to_bitmap[id])
+                    DeleteObject(m_title_to_bitmap[id]);
+                m_title_to_bitmap[id] = hbm;
+            }
         }
     }
 
@@ -1194,30 +1198,38 @@ public:
                     if (pCtrl->m_nImageType == 1)
                     {
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        HICON hIcon = m_title_to_icon[wID];
-                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
-                        SetWindowPosDx(hCtrl, NULL, &siz);
+                        if (HICON hIcon = m_title_to_icon[wID])
+                        {
+                            SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                            SetWindowPosDx(hCtrl, NULL, &siz);
+                        }
                     }
                     if (pCtrl->m_nImageType == 2)
                     {
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        HBITMAP hbm = m_title_to_bitmap[wID];
-                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
-                        SetWindowPosDx(hCtrl, NULL, &siz);
+                        if (HBITMAP hbm = m_title_to_bitmap[wID])
+                        {
+                            SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                            SetWindowPosDx(hCtrl, NULL, &siz);
+                        }
                     }
                     if (pCtrl->m_nImageType == 3)
                     {
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        HICON hIcon = m_title_to_icon[wID];
-                        SendMessage(hCtrl, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
-                        SetWindowPosDx(hCtrl, NULL, &siz);
+                        if (HICON hIcon = m_title_to_icon[wID])
+                        {
+                            SendMessage(hCtrl, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                            SetWindowPosDx(hCtrl, NULL, &siz);
+                        }
                     }
                     if (pCtrl->m_nImageType == 4)
                     {
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        HBITMAP hbm = m_title_to_bitmap[wID];
-                        SendMessage(hCtrl, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
-                        SetWindowPosDx(hCtrl, NULL, &siz);
+                        if (HBITMAP hbm = m_title_to_bitmap[wID])
+                        {
+                            SendMessage(hCtrl, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                            SetWindowPosDx(hCtrl, NULL, &siz);
+                        }
                     }
                 }
 

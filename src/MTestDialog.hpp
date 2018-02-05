@@ -114,10 +114,12 @@ public:
         HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
         if (hIcon)
         {
-            WORD id = item.m_title.m_id;
-            if (m_title_to_icon[id])
-                DestroyIcon(m_title_to_icon[id]);
-            m_title_to_icon[id] = hIcon;
+            if (WORD id = item.m_title.m_id)
+            {
+                if (m_title_to_icon[id])
+                    DestroyIcon(m_title_to_icon[id]);
+                m_title_to_icon[id] = hIcon;
+            }
         }
     }
 
@@ -132,10 +134,12 @@ public:
         HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
         if (hbm)
         {
-            WORD id = item.m_title.m_id;
-            if (m_title_to_bitmap[id])
-                DeleteObject(m_title_to_bitmap[id]);
-            m_title_to_bitmap[id] = hbm;
+            if (WORD id = item.m_title.m_id)
+            {
+                if (m_title_to_bitmap[id])
+                    DeleteObject(m_title_to_bitmap[id]);
+                m_title_to_bitmap[id] = hbm;
+            }
         }
     }
 
