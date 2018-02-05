@@ -309,7 +309,7 @@ ResToText::DumpEntry(const ResEntry& entry)
         if (type == L"PNG" || type == L"GIF" ||
             type == L"JPEG" || type == L"TIFF" ||
             type == L"JPG" || type == L"TIF" ||
-            type == L"EMF" || type == L"WMF" ||
+            type == L"EMF" || type == L"ENHMETAFILE" || type == L"WMF" ||
             type == L"IMAGE")
         {
             return DoImage(entry);

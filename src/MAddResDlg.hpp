@@ -107,6 +107,11 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        k = ComboBox_AddString(hCmb1, TEXT("ENHMETAFILE"));
+        if (m_type == TEXT("ENHMETAFILE"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
         if (m_type == TEXT("WMF"))
         {
