@@ -885,6 +885,7 @@ protected:
     WCHAR       m_szConstantsFile[MAX_PATH];
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
+    WCHAR       m_szUpxExe[MAX_PATH];
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
 
@@ -924,6 +925,7 @@ public:
         m_szConstantsFile[0] = 0;
         m_szCppExe[0] = 0;
         m_szWindresExe[0] = 0;
+        m_szUpxExe[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
 
@@ -3583,6 +3585,16 @@ INT MMainWnd::CheckData(VOID)
         return -4;  // failure
     }
     ReplaceBackslash(m_szWindresExe);
+
+    // upx.exe
+    lstrcpyW(m_szUpxExe, m_szDataFolder);
+    lstrcatW(m_szUpxExe, L"\\bin\\windres.exe");
+    if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
+    {
+        ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
+        return -5;  // failure
+    }
+    ReplaceBackslash(m_szUpxExe);
 
     return 0;   // success
 }
