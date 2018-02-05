@@ -244,7 +244,7 @@ Res_Find2(const ResEntries& entries,
           WORD lang, BOOL bEmptyOK = FALSE)
 {
     INT ret = Res_Find(entries, type, name, lang, bEmptyOK);
-    if (ret == -1)
+    if (ret == -1 && lang != 0xFFFF)
         ret = Res_Find(entries, type, name, 0xFFFF, bEmptyOK);
     return ret;
 }

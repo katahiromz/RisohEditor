@@ -968,9 +968,9 @@ public:
     {
         WORD lang = entry.lang;
 
-        for (size_t i = 0; i < m_dialog_res.m_items.size(); ++i)
+        for (size_t i = 0; i < m_dialog_res.size(); ++i)
         {
-            DialogItem& item = m_dialog_res.m_items[i];
+            DialogItem& item = m_dialog_res[i];
             if (item.m_class == 0x0080 ||
                 lstrcmpiW(item.m_class.c_str(), L"BUTTON") == 0)
             {

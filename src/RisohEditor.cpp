@@ -5370,7 +5370,7 @@ void MMainWnd::OnTest(HWND hwnd)
             dialog_res.SaveToStream(stream);
 
             // show test dialog
-            MTestDialog dialog(m_entries, menu, entry.lang);
+            MTestDialog dialog(m_entries, dialog_res, menu, entry.lang);
             dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
         }
     }

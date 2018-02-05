@@ -22,6 +22,12 @@
 
 #include "MWindowBase.hpp"
 #include "MenuRes.hpp"
+#include "DialogRes.hpp"
+
+#include <map>
+
+typedef std::map<WORD, HBITMAP> MTitleToBitmap;
+typedef std::map<WORD, HICON> MTitleToIcon;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -29,13 +35,36 @@ class MTestDialog : public MDialogBase
 {
 public:
     ResEntries& m_entries;
+    DialogRes& m_dialog_res;
     MIdOrString m_menu;
     WORD m_lang;
     HMENU m_hMenu;
+    MTitleToBitmap  m_title_to_bitmap;
+    MTitleToIcon    m_title_to_icon;
 
-    MTestDialog(ResEntries& entries, MIdOrString menu, WORD lang)
-        : m_entries(entries), m_menu(menu), m_lang(lang), m_hMenu(NULL)
+    MTestDialog(ResEntries& entries, DialogRes& dialog_res, MIdOrString menu, WORD lang)
+        : m_entries(entries), m_dialog_res(dialog_res), m_menu(menu), m_lang(lang), m_hMenu(NULL)
     {
+    }
+
+    void clear_maps()
+    {
+        {
+            MTitleToBitmap::iterator it, end = m_title_to_bitmap.end();
+            for (it = m_title_to_bitmap.begin(); it != end; ++it)
+            {
+                DeleteObject(it->second);
+            }
+            m_title_to_bitmap.clear();
+        }
+        {
+            MTitleToIcon::iterator it, end = m_title_to_icon.end();
+            for (it = m_title_to_icon.begin(); it != end; ++it)
+            {
+                DestroyIcon(it->second);
+            }
+            m_title_to_icon.clear();
+        }
     }
 
     virtual ~MTestDialog()
@@ -45,6 +74,183 @@ public:
             DestroyMenu(m_hMenu);
             m_hMenu = NULL;
         }
+        clear_maps();
+    }
+
+    void DoIcon(DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_GROUP_ICON;
+        INT k = Res_Find2(m_entries, type, item.m_title, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        ResEntry entry = m_entries[k];
+        if (entry.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+            return;
+
+        ICONDIR& dir = (ICONDIR&)entry[0];
+        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&entry[sizeof(ICONDIR)];
+
+        int cx = 0, cy = 0, bits = 0, n = 0;
+        for (int m = 0; m < dir.idCount; ++m)
+        {
+            if (cx < pGroupIcon[m].bWidth ||
+                cy < pGroupIcon[m].bHeight ||
+                bits < pGroupIcon[m].wBitCount)
+            {
+                cx = pGroupIcon[m].bWidth;
+                cy = pGroupIcon[m].bHeight;
+                bits = pGroupIcon[m].wBitCount;
+                n = m;
+            }
+        }
+
+        type = RT_ICON;
+        k = Res_Find2(m_entries, type, pGroupIcon[n].nID, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        entry = m_entries[k];
+        HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
+        if (hIcon)
+        {
+            WORD id = item.m_title.m_id;
+            if (m_title_to_icon[id])
+                DestroyIcon(m_title_to_icon[id]);
+            m_title_to_icon[id] = hIcon;
+        }
+    }
+
+    void DoBitmap(DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_BITMAP;
+        INT k = Res_Find2(m_entries, type, item.m_title, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        ResEntry& entry = m_entries[k];
+        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
+        if (hbm)
+        {
+            WORD id = item.m_title.m_id;
+            if (m_title_to_bitmap[id])
+                DeleteObject(m_title_to_bitmap[id]);
+            m_title_to_bitmap[id] = hbm;
+        }
+    }
+
+    void create_maps()
+    {
+        WORD lang = 0xFFFF;
+
+        for (size_t i = 0; i < m_dialog_res.size(); ++i)
+        {
+            DialogItem& item = m_dialog_res[i];
+            if (item.m_class == 0x0080 ||
+                lstrcmpiW(item.m_class.c_str(), L"BUTTON") == 0)
+            {
+                // button
+                if (item.m_style & BS_ICON)
+                {
+                    DoIcon(item, lang);
+                }
+                else if (item.m_style & BS_BITMAP)
+                {
+                    DoBitmap(item, lang);
+                }
+            }
+            if (item.m_class == 0x0082 ||
+                lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+            {
+                // static
+                if ((item.m_style & SS_TYPEMASK) == SS_ICON)
+                {
+                    DoIcon(item, lang);
+                }
+                else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
+                {
+                    DoBitmap(item, lang);
+                }
+            }
+        }
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        if (m_hMenu)
+        {
+            SetMenu(hwnd, NULL);
+            DestroyMenu(m_hMenu);
+            m_hMenu = NULL;
+        }
+        if (!m_menu.empty())
+        {
+            INT i = Res_Find(m_entries, RT_MENU, m_menu, m_lang, FALSE);
+            if (i == -1)
+            {
+                i = Res_Find(m_entries, RT_MENU, m_menu, 0xFFFF, FALSE);
+            }
+            if (i != -1)
+            {
+                ResEntry& entry = m_entries[i];
+                m_hMenu = LoadMenuIndirect(&entry[0]);
+                SetMenu(hwnd, m_hMenu);
+
+                INT cyMenu = GetSystemMetrics(SM_CYMENU);
+                RECT rc;
+                GetWindowRect(hwnd, &rc);
+                rc.bottom += cyMenu;
+                SIZE siz = SizeFromRectDx(&rc);
+                SetWindowPosDx(NULL, &siz);
+            }
+        }
+
+        create_maps();
+
+        INT i = 0;
+        for (HWND hCtrl = GetTopWindow(hwnd);
+             hCtrl; hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT))
+        {
+            DWORD style = GetWindowStyle(hCtrl);
+            SIZE siz;
+            GetWindowPosDx(hCtrl, NULL, &siz);
+
+            WCHAR szClass[32];
+            GetClassNameW(hCtrl, szClass, 32);
+            if (lstrcmpiW(szClass, L"BUTTON") == 0)
+            {
+                WORD id = m_dialog_res[i].m_title.m_id;
+                if (style & BS_ICON)
+                {
+                    SendMessage(hCtrl, BM_SETIMAGE, IMAGE_ICON, (LPARAM)m_title_to_icon[id]);
+                    SetWindowPosDx(hCtrl, NULL, &siz);
+                }
+                else if (style & BS_BITMAP)
+                {
+                    SendMessage(hCtrl, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)m_title_to_bitmap[id]);
+                    SetWindowPosDx(hCtrl, NULL, &siz);
+                }
+            }
+            else if (lstrcmpiW(szClass, L"STATIC") == 0)
+            {
+                WORD id = m_dialog_res[i].m_title.m_id;
+                if ((style & SS_TYPEMASK) == SS_ICON)
+                {
+                    SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)m_title_to_icon[id]);
+                    SetWindowPosDx(hCtrl, NULL, &siz);
+                }
+                else if ((style & SS_TYPEMASK) == SS_BITMAP)
+                {
+                    SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)m_title_to_bitmap[id]);
+                    SetWindowPosDx(hCtrl, NULL, &siz);
+                }
+            }
+
+            ++i;
+        }
+
+        CenterWindowDx();
+        return TRUE;
     }
 
     virtual INT_PTR CALLBACK
@@ -53,36 +259,7 @@ public:
         DWORD dwStyle;
         switch (uMsg)
         {
-        case WM_INITDIALOG:
-            if (m_hMenu)
-            {
-                SetMenu(hwnd, NULL);
-                DestroyMenu(m_hMenu);
-                m_hMenu = NULL;
-            }
-            if (!m_menu.empty())
-            {
-                INT i = Res_Find(m_entries, RT_MENU, m_menu, m_lang, FALSE);
-                if (i == -1)
-                {
-                    i = Res_Find(m_entries, RT_MENU, m_menu, 0xFFFF, FALSE);
-                }
-                if (i != -1)
-                {
-                    ResEntry& entry = m_entries[i];
-                    m_hMenu = LoadMenuIndirect(&entry[0]);
-                    SetMenu(hwnd, m_hMenu);
-
-                    INT cyMenu = GetSystemMetrics(SM_CYMENU);
-                    RECT rc;
-                    GetWindowRect(hwnd, &rc);
-                    rc.bottom += cyMenu;
-                    SIZE siz = SizeFromRectDx(&rc);
-                    SetWindowPosDx(NULL, &siz);
-                }
-            }
-            CenterWindowDx();
-            return TRUE;
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         case WM_LBUTTONDOWN:
             dwStyle = GetWindowStyle(hwnd);
             if (!(dwStyle & WS_SYSMENU))
