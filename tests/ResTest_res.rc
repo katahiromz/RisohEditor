@@ -7,15 +7,13 @@
 #include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
-// Icons
 
 1 ICON "smily.ico"
 2 ICON "dummy.ico"
 
-//////////////////////////////////////////////////////////////////////////////
-// Bitmaps
-
 2 BITMAP "dummy.bmp"
+
+2 EMF "emf.emf"
 
 //////////////////////////////////////////////////////////////////////////////
 // Dialogs
@@ -122,6 +120,7 @@ FONT 9, "MS Shell Dlg"
     CONTROL 0, stc4, "STATIC", SS_BLACKRECT, 165, 90, 20, 20
     CONTROL 2, psh1, "BUTTON", BS_PUSHBUTTON | BS_BITMAP, 10, 150, 40, 20
     CONTROL 2, psh2, "BUTTON", BS_PUSHBUTTON | BS_ICON, 115, 150, 40, 20
+    CONTROL 2, stc5, "STATIC", SS_ENHMETAFILE, 211, 90, 32, 32
     DEFPUSHBUTTON "OK", IDOK, 35, 185, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 115, 185, 60, 14
     PUSHBUTTON "&Do It!", CMDID_JUSTDOIT, 193, 185, 60, 14
