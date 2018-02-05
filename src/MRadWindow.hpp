@@ -1172,6 +1172,10 @@ public:
                             siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
                             siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
                         }
+                        if (siz.cx <= 8)
+                            siz.cx = 8;
+                        if (siz.cy <= 8)
+                            siz.cy = 8;
                         SetWindowPosDx(hCtrl, NULL, &siz);
                     }
                 }
@@ -1195,6 +1199,10 @@ public:
                             siz.cx = bm.bmWidth;
                             siz.cy = bm.bmHeight;
                         }
+                        if (siz.cx <= 8)
+                            siz.cx = 8;
+                        if (siz.cy <= 8)
+                            siz.cy = 8;
                         SetWindowPosDx(hCtrl, NULL, &siz);
                     }
                 }
