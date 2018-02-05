@@ -28,10 +28,19 @@
 #include "MCtrlPropDlg.hpp"
 #include "DialogRes.hpp"
 #include "PackedDIB.hpp"
+#include "Res.hpp"
+#include "IconRes.hpp"
 #include "resource.h"
 #include <map>
 #include <set>
 #include <climits>
+
+class MRadCtrl;
+class MRadDialog;
+class MRadWindow;
+
+typedef std::map<WORD, HBITMAP> MTitleToBitmap;
+typedef std::map<WORD, HICON> MTitleToIcon;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -62,6 +71,16 @@ public:
     ConstantsDB&    m_db;
     RisohSettings&  m_settings;
     POINT           m_pt;
+    INT             m_nImageType;
+
+    MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
+        m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
+        m_nIndex(-1), m_db(db), m_settings(settings)
+    {
+        m_pt.x = m_pt.y = -1;
+        m_nImageType = 0;
+    }
 
     static HICON& Icon()
     {
@@ -87,11 +106,13 @@ public:
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
+                m_nImageType = 1;
             }
             else if ((style & SS_TYPEMASK) == SS_BITMAP)
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
+                m_nImageType = 2;
             }
             return;
         }
@@ -102,22 +123,16 @@ public:
             {
                 SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
+                m_nImageType = 3;
             }
             else if (style & BS_BITMAP)
             {
                 SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
+                m_nImageType = 4;
             }
             return;
         }
-    }
-
-    MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
-        m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
-        m_nIndex(-1), m_db(db), m_settings(settings)
-    {
-        m_pt.x = m_pt.y = -1;
     }
 
     typedef std::set<HWND> set_type;
@@ -749,21 +764,6 @@ public:
 
         pCtrl->EndSubclass();
 
-#if 0
-        WCHAR szClass[64];
-        GetClassNameW(hCtrl, szClass, _countof(szClass));
-        if (lstrcmpiW(szClass, WC_IPADDRESSW) == 0)
-        {
-            hCtrl = GetTopWindow(hCtrl);
-            while (hCtrl)
-            {
-                ShowWindow(hCtrl, SW_HIDE);
-                hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
-            }
-            return;
-        }
-#endif
-
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
 
@@ -864,6 +864,7 @@ public:
 class MRadWindow : public MWindowBase
 {
 public:
+    ResEntries&     m_entries;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
     MRadDialog      m_rad_dialog;
@@ -871,11 +872,132 @@ public:
     RisohSettings&  m_settings;
     HICON           m_hIcon;
     HICON           m_hIconSm;
+    MTitleToBitmap  m_title_to_bitmap;
+    MTitleToIcon    m_title_to_icon;
 
-    MRadWindow(ConstantsDB& db, RisohSettings& settings)
-        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
+    MRadWindow(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
+        : m_entries(entries),
+          m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
           m_dialog_res(db), m_settings(settings), m_hIcon(NULL), m_hIconSm(NULL)
     {
+    }
+
+    void clear_maps()
+    {
+        {
+            MTitleToBitmap::iterator it, end = m_title_to_bitmap.end();
+            for (it = m_title_to_bitmap.begin(); it != end; ++it)
+            {
+                DeleteObject(it->second);
+            }
+            m_title_to_bitmap.clear();
+        }
+        {
+            MTitleToIcon::iterator it, end = m_title_to_icon.end();
+            for (it = m_title_to_icon.begin(); it != end; ++it)
+            {
+                DestroyIcon(it->second);
+            }
+            m_title_to_icon.clear();
+        }
+    }
+
+    void DoIcon(DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_GROUP_ICON;
+        INT k = Res_Find2(m_entries, type, item.m_title, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        ResEntry entry = m_entries[k];
+        if (entry.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+            return;
+
+        ICONDIR& dir = (ICONDIR&)entry[0];
+        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&entry[sizeof(ICONDIR)];
+
+		int cx = 0, cy = 0, bits = 0, n = 0;
+        for (int m = 0; m < dir.idCount; ++m)
+        {
+			if (cx < pGroupIcon[m].bWidth ||
+				cy < pGroupIcon[m].bHeight ||
+				bits < pGroupIcon[m].wBitCount)
+			{
+				cx = pGroupIcon[m].bWidth;
+				cy = pGroupIcon[m].bHeight;
+				bits = pGroupIcon[m].wBitCount;
+				n = m;
+			}
+        }
+
+        type = RT_ICON;
+        k = Res_Find2(m_entries, type, pGroupIcon[n].nID, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        entry = m_entries[k];
+        HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
+        if (hIcon)
+        {
+            WORD id = item.m_title.m_id;
+            if (m_title_to_icon[id])
+                DestroyIcon(m_title_to_icon[id]);
+            m_title_to_icon[id] = hIcon;
+        }
+    }
+
+    void DoBitmap(DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_BITMAP;
+        INT k = Res_Find2(m_entries, type, item.m_title, lang);
+        if (k < 0 || k >= (INT)m_entries.size())
+            return;
+
+        ResEntry& entry = m_entries[k];
+        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
+        if (hbm)
+        {
+            WORD id = item.m_title.m_id;
+            if (m_title_to_bitmap[id])
+                DeleteObject(m_title_to_bitmap[id]);
+            m_title_to_bitmap[id] = hbm;
+        }
+    }
+
+    void create_maps(const ResEntry& entry)
+    {
+        WORD lang = entry.lang;
+
+        for (size_t i = 0; i < m_dialog_res.m_items.size(); ++i)
+        {
+            DialogItem& item = m_dialog_res.m_items[i];
+            if (item.m_class == 0x0080 ||
+                lstrcmpiW(item.m_class.c_str(), L"BUTTON") == 0)
+            {
+                // button
+                if (item.m_style & BS_ICON)
+                {
+                    DoIcon(item, lang);
+                }
+                else if (item.m_style & BS_BITMAP)
+                {
+                    DoBitmap(item, lang);
+                }
+            }
+            if (item.m_class == 0x0082 ||
+                lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+            {
+                // static
+                if ((item.m_style & SS_TYPEMASK) == SS_ICON)
+                {
+                    DoIcon(item, lang);
+                }
+                else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
+                {
+                    DoBitmap(item, lang);
+                }
+            }
+        }
     }
 
     ~MRadWindow()
@@ -890,6 +1012,7 @@ public:
             DestroyIcon(m_hIconSm);
             m_hIconSm = NULL;
         }
+        clear_maps();
     }
 
     BOOL CreateDx(HWND hwndParent)
@@ -1058,7 +1181,52 @@ public:
             CenterWindowDx(hwnd);
         }
 
-        return ReCreateRadDialog(hwnd);
+        if (ReCreateRadDialog(hwnd))
+        {
+            HWND hCtrl = GetTopWindow(m_rad_dialog);
+            while (hCtrl)
+            {
+                if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
+                {
+                    SIZE siz;
+                    GetWindowPosDx(hCtrl, NULL, &siz);
+
+                    if (pCtrl->m_nImageType == 1)
+                    {
+                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                        HICON hIcon = m_title_to_icon[wID];
+                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                    if (pCtrl->m_nImageType == 2)
+                    {
+                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                        HBITMAP hbm = m_title_to_bitmap[wID];
+                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                    if (pCtrl->m_nImageType == 3)
+                    {
+                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                        HICON hIcon = m_title_to_icon[wID];
+                        SendMessage(hCtrl, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                    if (pCtrl->m_nImageType == 4)
+                    {
+                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                        HBITMAP hbm = m_title_to_bitmap[wID];
+                        SendMessage(hCtrl, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                }
+
+                hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT);
+            }
+
+            return TRUE;
+        }
+        return FALSE;
     }
 
     void OnDestroy(HWND hwnd)

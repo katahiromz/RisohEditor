@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    57     /* Version 57 */
+#define MZC4_MWINDOWBASE_HPP_    58     /* Version 58 */
 
 class MWindowBase;
 class MDialogBase;
@@ -379,7 +379,7 @@ public:
     static BOOL SetWindowText(HWND hwnd, LPCTSTR pszText = NULL)
     {
         assert(::IsWindow(hwnd));
-        ::SetWindowText(hwnd, pszText);
+        return ::SetWindowText(hwnd, pszText);
     }
     BOOL SetWindowText(LPCTSTR pszText = NULL)
     {

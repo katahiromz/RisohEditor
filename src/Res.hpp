@@ -218,7 +218,7 @@ inline INT
 Res_Find(const ResEntries& entries,
          const MIdOrString& type, 
          const MIdOrString& name,
-         WORD lang, BOOL bEmptyOK)
+         WORD lang, BOOL bEmptyOK = FALSE)
 {
     size_t i, count = entries.size();
     for (i = 0; i < count; ++i)
@@ -235,6 +235,18 @@ Res_Find(const ResEntries& entries,
         return INT(i);
     }
     return -1;
+}
+
+inline INT
+Res_Find2(const ResEntries& entries,
+          const MIdOrString& type, 
+          const MIdOrString& name,
+          WORD lang, BOOL bEmptyOK = FALSE)
+{
+    INT ret = Res_Find(entries, type, name, lang, bEmptyOK);
+    if (ret == -1)
+        ret = Res_Find(entries, type, name, 0xFFFF, bEmptyOK);
+    return ret;
 }
 
 inline bool
@@ -276,6 +288,12 @@ inline INT
 Res_Find(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
 {
     return Res_Find(entries, entry.type, entry.name, entry.lang, bEmptyOK);
+}
+
+inline INT
+Res_Find2(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
+{
+    return Res_Find2(entries, entry.type, entry.name, entry.lang, bEmptyOK);
 }
 
 inline void

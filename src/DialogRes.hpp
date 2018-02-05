@@ -666,6 +666,19 @@ struct DialogRes
         m_lang_id = 0;
     }
 
+    DialogItem& operator[](size_t i)
+    {
+        return m_items[i];
+    }
+    const DialogItem& operator[](size_t i) const
+    {
+        return m_items[i];
+    }
+    size_t size() const
+    {
+        return m_items.size();
+    }
+
     BOOL IsExtended() const
     {
         return m_signature == 0xFFFF;

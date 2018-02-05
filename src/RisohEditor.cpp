@@ -916,8 +916,7 @@ public:
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
         m_hNormalFont(NULL), m_hLargeFont(NULL), m_hSmallFont(NULL),
         m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
-        m_hFindReplaceDlg(NULL),
-        m_rad_window(m_db, m_settings),
+        m_hFindReplaceDlg(NULL), m_rad_window(m_entries, m_db, m_settings),
         m_id_list_dlg(m_entries, m_db, m_settings),
         m_search(m_settings, m_db, m_entries)
     {
@@ -1672,9 +1671,7 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(m_entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
-        if (k == -1)
-            k = Res_Find(m_entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        INT k = Res_Find2(m_entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return FALSE;
@@ -1721,9 +1718,7 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(m_entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
-        if (k == -1)
-            k = Res_Find(m_entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+        INT k = Res_Find2(m_entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return FALSE;
@@ -2193,8 +2188,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     else if (entry.type == RT_DIALOG)
     {
         MByteStreamEx stream(entry.data);
+
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_lang_id = entry.lang;
+        m_rad_window.clear_maps();
+        m_rad_window.create_maps(entry);
+
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))
         {
