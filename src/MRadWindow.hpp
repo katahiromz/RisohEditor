@@ -106,30 +106,13 @@ public:
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
-                m_nImageType = 1;
+                m_nImageType = 1;   // icon
             }
             else if ((style & SS_TYPEMASK) == SS_BITMAP)
             {
                 SendMessage(m_hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
                 SetWindowPosDx(m_hwnd, NULL, &siz);
-                m_nImageType = 2;
-            }
-            return;
-        }
-        else if (lstrcmpi(szClass, TEXT("BUTTON")) == 0)
-        {
-            DWORD style = GetWindowStyle(m_hwnd);
-            if (style & BS_ICON)
-            {
-                SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)Icon());
-                SetWindowPosDx(m_hwnd, NULL, &siz);
-                m_nImageType = 3;
-            }
-            else if (style & BS_BITMAP)
-            {
-                SendMessage(m_hwnd, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)Bitmap());
-                SetWindowPosDx(m_hwnd, NULL, &siz);
-                m_nImageType = 4;
+                m_nImageType = 2;   // bitmap
             }
             return;
         }
@@ -517,8 +500,11 @@ public:
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
         : m_index_visible(FALSE), m_db(db), m_settings(settings),
-          m_bMovingSizing(FALSE), m_xDialogBaseUnit(0), m_yDialogBaseUnit(0)
+          m_bMovingSizing(FALSE)
     {
+        m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
+        m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
+
         m_ptClicked.x = m_ptClicked.y = -1;
 
         HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
@@ -975,19 +961,6 @@ public:
         for (size_t i = 0; i < m_dialog_res.size(); ++i)
         {
             DialogItem& item = m_dialog_res[i];
-            if (item.m_class == 0x0080 ||
-                lstrcmpiW(item.m_class.c_str(), L"BUTTON") == 0)
-            {
-                // button
-                if (item.m_style & BS_ICON)
-                {
-                    DoIcon(item, lang);
-                }
-                else if (item.m_style & BS_BITMAP)
-                {
-                    DoBitmap(item, lang);
-                }
-            }
             if (item.m_class == 0x0082 ||
                 lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
             {
@@ -1187,6 +1160,8 @@ public:
 
         if (ReCreateRadDialog(hwnd))
         {
+            GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+
             HWND hCtrl = GetTopWindow(m_rad_dialog);
             while (hCtrl)
             {
@@ -1197,37 +1172,49 @@ public:
 
                     if (pCtrl->m_nImageType == 1)
                     {
+                        // icon
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
                         if (HICON hIcon = m_title_to_icon[wID])
                         {
                             SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                            DWORD style = GetWindowStyle(hCtrl);
+                            if ((style & SS_REALSIZEIMAGE) == SS_REALSIZEIMAGE)
+                            {
+                                ICONINFO info;
+                                GetIconInfo(hIcon, &info);
+                                BITMAP bm;
+                                GetObject(info.hbmColor, sizeof(BITMAP), &bm);
+                                siz.cx = bm.bmWidth;
+                                siz.cy = bm.bmHeight;
+                            }
+                            else if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                            {
+                                siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
+                                siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
+                            }
                             SetWindowPosDx(hCtrl, NULL, &siz);
                         }
                     }
                     if (pCtrl->m_nImageType == 2)
                     {
+                        // bitmap
                         WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
                         if (HBITMAP hbm = m_title_to_bitmap[wID])
                         {
                             SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
-                            SetWindowPosDx(hCtrl, NULL, &siz);
-                        }
-                    }
-                    if (pCtrl->m_nImageType == 3)
-                    {
-                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        if (HICON hIcon = m_title_to_icon[wID])
-                        {
-                            SendMessage(hCtrl, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
-                            SetWindowPosDx(hCtrl, NULL, &siz);
-                        }
-                    }
-                    if (pCtrl->m_nImageType == 4)
-                    {
-                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        if (HBITMAP hbm = m_title_to_bitmap[wID])
-                        {
-                            SendMessage(hCtrl, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                            DWORD style = GetWindowStyle(hCtrl);
+                            if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                            {
+                                siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
+                                siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
+                            }
+                            else
+                            {
+                                BITMAP bm;
+                                GetObject(hbm, sizeof(BITMAP), &bm);
+                                siz.cx = bm.bmWidth;
+                                siz.cy = bm.bmHeight;
+                            }
                             SetWindowPosDx(hCtrl, NULL, &siz);
                         }
                     }
