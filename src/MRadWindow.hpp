@@ -1130,7 +1130,76 @@ public:
         UpdateWindow(m_rad_dialog);
 
         SetForegroundWindow(hwnd);
+
+        update_maps();
+
         return TRUE;
+    }
+
+    void update_maps()
+    {
+        GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
+
+        HWND hCtrl = GetTopWindow(m_rad_dialog);
+        while (hCtrl)
+        {
+            if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
+            {
+                SIZE siz;
+                GetWindowPosDx(hCtrl, NULL, &siz);
+
+                if (pCtrl->m_nImageType == 1)
+                {
+                    // icon
+                    WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                    if (HICON hIcon = m_title_to_icon[wID])
+                    {
+                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                        DWORD style = GetWindowStyle(hCtrl);
+                        if ((style & SS_REALSIZEIMAGE) == SS_REALSIZEIMAGE)
+                        {
+                            ICONINFO info;
+                            GetIconInfo(hIcon, &info);
+                            BITMAP bm;
+                            GetObject(info.hbmColor, sizeof(BITMAP), &bm);
+                            siz.cx = bm.bmWidth;
+                            siz.cy = bm.bmHeight;
+                        }
+                        else if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                        {
+                            siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
+                            siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
+                        }
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                }
+                if (pCtrl->m_nImageType == 2)
+                {
+                    // bitmap
+                    WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
+                    if (HBITMAP hbm = m_title_to_bitmap[wID])
+                    {
+                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                        DWORD style = GetWindowStyle(hCtrl);
+                        if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
+                        {
+                            siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
+                            siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
+                        }
+                        else
+                        {
+                            BITMAP bm;
+                            GetObject(hbm, sizeof(BITMAP), &bm);
+                            siz.cx = bm.bmWidth;
+                            siz.cy = bm.bmHeight;
+                        }
+                        SetWindowPosDx(hCtrl, NULL, &siz);
+                    }
+                }
+            }
+
+            hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT);
+        }
     }
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
@@ -1158,74 +1227,7 @@ public:
             CenterWindowDx(hwnd);
         }
 
-        if (ReCreateRadDialog(hwnd))
-        {
-            GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-
-            HWND hCtrl = GetTopWindow(m_rad_dialog);
-            while (hCtrl)
-            {
-                if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
-                {
-                    SIZE siz;
-                    GetWindowPosDx(hCtrl, NULL, &siz);
-
-                    if (pCtrl->m_nImageType == 1)
-                    {
-                        // icon
-                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        if (HICON hIcon = m_title_to_icon[wID])
-                        {
-                            SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
-                            DWORD style = GetWindowStyle(hCtrl);
-                            if ((style & SS_REALSIZEIMAGE) == SS_REALSIZEIMAGE)
-                            {
-                                ICONINFO info;
-                                GetIconInfo(hIcon, &info);
-                                BITMAP bm;
-                                GetObject(info.hbmColor, sizeof(BITMAP), &bm);
-                                siz.cx = bm.bmWidth;
-                                siz.cy = bm.bmHeight;
-                            }
-                            else if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
-                            {
-                                siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
-                                siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
-                            }
-                            SetWindowPosDx(hCtrl, NULL, &siz);
-                        }
-                    }
-                    if (pCtrl->m_nImageType == 2)
-                    {
-                        // bitmap
-                        WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                        if (HBITMAP hbm = m_title_to_bitmap[wID])
-                        {
-                            SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
-                            DWORD style = GetWindowStyle(hCtrl);
-                            if ((style & SS_REALSIZECONTROL) == SS_REALSIZECONTROL)
-                            {
-                                siz.cx = m_dialog_res[pCtrl->m_nIndex].m_siz.cx * m_xDialogBaseUnit / 4;
-                                siz.cy = m_dialog_res[pCtrl->m_nIndex].m_siz.cy * m_yDialogBaseUnit / 8;
-                            }
-                            else
-                            {
-                                BITMAP bm;
-                                GetObject(hbm, sizeof(BITMAP), &bm);
-                                siz.cx = bm.bmWidth;
-                                siz.cy = bm.bmHeight;
-                            }
-                            SetWindowPosDx(hCtrl, NULL, &siz);
-                        }
-                    }
-                }
-
-                hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT);
-            }
-
-            return TRUE;
-        }
-        return FALSE;
+        return ReCreateRadDialog(hwnd);
     }
 
     void OnDestroy(HWND hwnd)
