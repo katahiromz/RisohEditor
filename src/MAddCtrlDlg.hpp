@@ -303,6 +303,19 @@ public:
         item.m_class = strClass.c_str();
         item.m_title = strCaption.c_str();
 
+        if (lstrcmpiW(strClass.c_str(), L"STATIC") == 0)
+        {
+            if ((style & SS_TYPEMASK) == SS_ICON ||
+                (style & SS_TYPEMASK) == SS_BITMAP)
+            {
+                if (std::iswdigit(strCaption[0]))
+                {
+                    LONG n = wcstol(strCaption.c_str(), NULL, 0);
+                    item.m_title = WORD(n);
+                }
+            }
+        }
+
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
 

@@ -281,7 +281,22 @@ public:
                 }
             }
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
+            {
                 item.m_title = m_item.m_title;
+            }
+            if (lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
+            {
+                DWORD style = item.m_style;
+                if ((style & SS_TYPEMASK) == SS_ICON ||
+                    (style & SS_TYPEMASK) == SS_BITMAP)
+                {
+                    if (std::iswdigit(item.m_title.str()[0]))
+                    {
+                        LONG n = wcstol(item.m_title.c_str(), NULL, 0);
+                        item.m_title = WORD(n);
+                    }
+                }
+            }
         }
         return TRUE;
     }
