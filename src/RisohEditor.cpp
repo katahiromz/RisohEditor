@@ -2192,7 +2192,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_lang_id = entry.lang;
         m_rad_window.clear_maps();
-        m_rad_window.create_maps(entry);
+        m_rad_window.create_maps(entry.lang);
 
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))

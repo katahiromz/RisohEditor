@@ -34,6 +34,13 @@
 #include "PackedDIB.hpp"
 #include "MBitmapDx.hpp"
 #include "ConstantsDB.hpp"
+#include "DialogRes.hpp"
+
+class ResEntry;
+// class ResEntries;
+
+typedef std::map<WORD, HBITMAP> MTitleToBitmap;
+typedef std::map<WORD, HICON> MTitleToIcon;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1555,5 +1562,96 @@ Res_DeleteNames(ResEntries& entries, const MIdOrString& type, WORD lang)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+inline void
+Res_DoIcon(ResEntries& entries, MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
+{
+    MIdOrString type = RT_GROUP_ICON;
+    INT k = Res_Find2(entries, type, item.m_title, lang);
+    if (k < 0 || k >= (INT)entries.size())
+        return;
+
+    ResEntry entry = entries[k];
+    if (entry.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+        return;
+
+    ICONDIR& dir = (ICONDIR&)entry[0];
+    GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&entry[sizeof(ICONDIR)];
+
+    int cx = 0, cy = 0, bits = 0, n = 0;
+    for (int m = 0; m < dir.idCount; ++m)
+    {
+        if (cx < pGroupIcon[m].bWidth ||
+            cy < pGroupIcon[m].bHeight ||
+            bits < pGroupIcon[m].wBitCount)
+        {
+            cx = pGroupIcon[m].bWidth;
+            cy = pGroupIcon[m].bHeight;
+            bits = pGroupIcon[m].wBitCount;
+            n = m;
+        }
+    }
+
+    type = RT_ICON;
+    k = Res_Find2(entries, type, pGroupIcon[n].nID, lang);
+    if (k < 0 || k >= (INT)entries.size())
+        return;
+
+    entry = entries[k];
+    HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
+    if (hIcon)
+    {
+        if (WORD id = item.m_title.m_id)
+        {
+            if (title_to_icon[id])
+                DestroyIcon(title_to_icon[id]);
+            title_to_icon[id] = hIcon;
+        }
+    }
+}
+
+inline void
+Res_DoBitmap(ResEntries& entries, MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
+{
+    MIdOrString type = RT_BITMAP;
+    INT k = Res_Find2(entries, type, item.m_title, lang);
+    if (k < 0 || k >= (INT)entries.size())
+        return;
+
+    ResEntry& entry = entries[k];
+    HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
+    if (hbm)
+    {
+        if (WORD id = item.m_title.m_id)
+        {
+            if (title_to_bitmap[id])
+                DeleteObject(title_to_bitmap[id]);
+            title_to_bitmap[id] = hbm;
+        }
+    }
+}
+
+inline void
+ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
+{
+    {
+        MTitleToBitmap::iterator it, end = title_to_bitmap.end();
+        for (it = title_to_bitmap.begin(); it != end; ++it)
+        {
+            DeleteObject(it->second);
+        }
+        title_to_bitmap.clear();
+    }
+    {
+        MTitleToIcon::iterator it, end = title_to_icon.end();
+        for (it = title_to_icon.begin(); it != end; ++it)
+        {
+            DestroyIcon(it->second);
+        }
+        title_to_icon.clear();
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 #endif  // ndef RES_HPP_
