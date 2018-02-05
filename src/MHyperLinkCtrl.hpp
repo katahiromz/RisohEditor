@@ -18,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MHYPERLINKCTRL_HPP_
-#define MZC4_MHYPERLINKCTRL_HPP_        2   /* Version 2 */
+#define MZC4_MHYPERLINKCTRL_HPP_        3   /* Version 3 */
 
 #include "MWindowBase.hpp"
 
@@ -29,10 +29,10 @@ class MHyperLinkCtrl;
 class MHyperLinkCtrl : public MWindowBase
 {
 public:
-    MHyperLinkCtrl()
+    MHyperLinkCtrl() :
+        m_bGotFocus(FALSE),
+        m_hHandCursor(LoadCursor(NULL, IDC_HAND))
     {
-        m_bGotFocus = FALSE;
-        m_hHandCursor = LoadCursor(NULL, IDC_HAND);
     }
 
     virtual ~MHyperLinkCtrl()
@@ -40,9 +40,11 @@ public:
         DestroyCursor(m_hHandCursor);
     }
 
-    virtual LPCTSTR GetWndClassNameDx() const
+    virtual void OnJump(HWND hwnd)
     {
-        return TEXT("STATIC");
+        WPARAM wParam = MAKEWPARAM(GetDlgCtrlID(hwnd), STN_CLICKED);
+        LPARAM lParam = (LPARAM)hwnd;
+        SendMessage(GetParent(hwnd), WM_COMMAND, wParam, lParam);
     }
 
     void OnPaint(HWND hwnd)
@@ -88,14 +90,14 @@ public:
 
                 FillRect(hDC, &rcClient, (HBRUSH)(COLOR_3DFACE + 1));
 
-                UINT uFormat = DT_SINGLELINE | DT_NOPREFIX;
+                UINT uFormat = DT_NOPREFIX;
                 DWORD style = GetStyleDx();
                 if (style & SS_CENTER)
                     uFormat |= DT_CENTER;
                 if (style & SS_RIGHT)
                     uFormat |= DT_RIGHT;
                 if (style & SS_CENTERIMAGE)
-                    uFormat |= DT_VCENTER;
+                    uFormat |= DT_VCENTER | DT_SINGLELINE;
 
                 MString text = GetWindowText();
                 DrawText(hDC, text.c_str(), text.size(), &rcClient, uFormat);
@@ -153,8 +155,13 @@ public:
     {
         if (vk == VK_SPACE)
         {
-            SendMessage(GetParent(hwnd), WM_COMMAND, GetDlgCtrlID(hwnd), 0);
+            OnJump(hwnd);
         }
+    }
+
+    void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
+    {
+        OnJump(hwnd);
     }
 
     virtual LRESULT CALLBACK
@@ -168,6 +175,7 @@ public:
         HANDLE_MSG(hwnd, WM_SETFOCUS, OnSetFocus);
         HANDLE_MSG(hwnd, WM_KILLFOCUS, OnKillFocus);
         HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
+        HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
         default:
             return DefaultProcDx();
         }
