@@ -877,6 +877,6 @@ FONT 12, "MS Shell Dlg"
 {
     CONTROL 1, -1, "STATIC", SS_ICON, 5, 5, 20, 20
     LTEXT "(Version Text)", stc1, 30, 5, 140, 50
-    CTEXT "http://katahiromz.web.fc2.com", stc2, 22, 62, 119, 12, SS_CENTERIMAGE | SS_NOTIFY
+    CTEXT "http://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
 }
