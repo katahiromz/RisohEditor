@@ -18,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MHYPERLINKCTRL_HPP_
-#define MZC4_MHYPERLINKCTRL_HPP_        1   /* Version 1 */
+#define MZC4_MHYPERLINKCTRL_HPP_        2   /* Version 2 */
 
 #include "MWindowBase.hpp"
 
@@ -32,15 +32,17 @@ public:
     MHyperLinkCtrl()
     {
         m_bGotFocus = FALSE;
+        m_hHandCursor = LoadCursor(NULL, IDC_HAND);
     }
 
     virtual ~MHyperLinkCtrl()
     {
+        DestroyCursor(m_hHandCursor);
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
     {
-        return TEXT("MZC4 MWindowClass Class");
+        return TEXT("STATIC");
     }
 
     void OnPaint(HWND hwnd)
@@ -54,8 +56,10 @@ public:
         PAINTSTRUCT ps;
         if (HDC hDC = BeginPaint(hwnd, &ps))
         {
+            HFONT hDefaultFont = (HFONT)SendMessageDx(WM_GETFONT, 0, 0);
+
             LOGFONT lf;
-            GetObject(GetStockFont(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+            GetObject(hDefaultFont, sizeof(lf), &lf);
             lf.lfUnderline = TRUE;
 
             HFONT hFont = CreateFontIndirect(&lf);
@@ -70,7 +74,7 @@ public:
                 POINT pt;
                 GetCursorPos(&pt);
 
-                if (PtInRect(&rcWindow, pt))
+                if (m_bGotFocus || PtInRect(&rcWindow, pt))
                 {
                     SetTextColor(hDC, RGB(255, 0, 0));
                     SetBkColor(hDC, RGB(255, 255, 0));
@@ -113,7 +117,8 @@ public:
     void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
     {
         InvalidateRect(hwnd, NULL, TRUE);
-        SetTimer(hwnd, 999, 200, NULL);
+        SetTimer(hwnd, 999, 100, NULL);
+        SetCursor(m_hHandCursor);
     }
 
     void OnTimer(HWND hwnd, UINT id)
@@ -128,6 +133,7 @@ public:
         {
             InvalidateRect(hwnd, NULL, TRUE);
             KillTimer(hwnd, 999);
+            SetCursor(LoadCursor(NULL, IDC_ARROW));
         }
     }
 
@@ -169,6 +175,7 @@ public:
 
 protected:
     BOOL m_bGotFocus;
+    HCURSOR m_hHandCursor;
 };
 
 //////////////////////////////////////////////////////////////////////////////

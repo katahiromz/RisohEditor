@@ -210,7 +210,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "位图打开失败！"
     IDS_REPLACEBMP, "替换位图"
     IDS_ERRORCODE, "错误码 %d"
-    IDS_VERSIONINFO, "RisohEditor 版本 2.8\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3"
+    IDS_VERSIONINFO, "RisohEditor 版本 2.8\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3"
     IDS_ADDRES, "增加资源"
     IDS_CANNOTADDRES, "添加资源失败."
     IDS_CANTADDBMP, "添加位图失败."
@@ -873,7 +873,7 @@ FONT 9, "宋体"
 IDD_VERSIONINFO DIALOG 0, 0, 174, 100
 CAPTION "关于 RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
-FONT 9, "宋体"
+FONT 12, "宋体"
 {
     CONTROL 1, -1, "STATIC", SS_ICON, 5, 5, 20, 20
     LTEXT "(Version Text)", stc1, 30, 5, 140, 50

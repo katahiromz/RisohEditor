@@ -210,7 +210,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Unable to replace bitmap."
     IDS_REPLACEBMP, "Replace Bitmap"
     IDS_ERRORCODE, "Error Code %d"
-    IDS_VERSIONINFO, "RisohEditor Version 2.8\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3"
+    IDS_VERSIONINFO, "RisohEditor Version 2.8\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3"
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."
@@ -873,7 +873,7 @@ FONT 9, "MS Shell Dlg"
 IDD_VERSIONINFO DIALOG 0, 0, 174, 100
 CAPTION "About RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
-FONT 9, "MS UI Gothic"
+FONT 12, "MS Shell Dlg"
 {
     CONTROL 1, -1, "STATIC", SS_ICON, 5, 5, 20, 20
     LTEXT "(Version Text)", stc1, 30, 5, 140, 50
