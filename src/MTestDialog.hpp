@@ -189,11 +189,7 @@ public:
         }
         if (!m_menu.empty())
         {
-            INT i = Res_Find(m_entries, RT_MENU, m_menu, m_lang, FALSE);
-            if (i == -1)
-            {
-                i = Res_Find(m_entries, RT_MENU, m_menu, 0xFFFF, FALSE);
-            }
+            INT i = Res_Find2(m_entries, RT_MENU, m_menu, m_lang, FALSE);
             if (i != -1)
             {
                 ResEntry& entry = m_entries[i];

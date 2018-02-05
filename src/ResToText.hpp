@@ -578,9 +578,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
-        if (k == -1)
-            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return NULL;
@@ -611,9 +609,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
-        if (k == -1)
-            k = Res_Find(entries, RT_ICON, pEntries[i].nID, 0xFFFF, FALSE);
+        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             DeleteObject(hbm);
@@ -676,9 +672,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
-        if (k == -1)
-            k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+        INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return NULL;
@@ -713,9 +707,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
-            if (k == -1)
-                k = Res_Find(entries, RT_CURSOR, pEntries[i].nID, 0xFFFF, FALSE);
+            INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
             if (k == -1)
             {
                 assert(0);

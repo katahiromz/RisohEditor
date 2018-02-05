@@ -1252,12 +1252,8 @@ Res_ExtractGroupIcon(const ResEntries& entries,
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_ICON, GroupEntries[i].nID,
-                         GroupIconEntry.lang, FALSE);
-        if (k == -1)
-        {
-            k = Res_Find(entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
-        }
+        INT k = Res_Find2(entries, RT_ICON, GroupEntries[i].nID,
+                          GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
             continue;
@@ -1294,12 +1290,8 @@ Res_ExtractGroupIcon(const ResEntries& entries,
 
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_ICON, GroupEntries[i].nID,
-                         GroupIconEntry.lang, FALSE);
-        if (k == -1)
-        {
-            k = Res_Find(entries, RT_ICON, GroupEntries[i].nID, 0xFFFF, FALSE);
-        }
+        INT k = Res_Find2(entries, RT_ICON, GroupEntries[i].nID,
+                          GroupIconEntry.lang, FALSE);
         if (k == -1)
         {
             continue;
@@ -1398,12 +1390,8 @@ Res_ExtractGroupCursor(const ResEntries& entries,
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID,
-                         GroupCursorEntry.lang, FALSE);
-        if (k == -1)
-        {
-            k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
-        }
+        INT k = Res_Find2(entries, RT_CURSOR, GroupEntries[i].nID,
+                          GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
             continue;
@@ -1443,12 +1431,8 @@ Res_ExtractGroupCursor(const ResEntries& entries,
 
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID,
-                         GroupCursorEntry.lang, FALSE);
-        if (k == -1)
-        {
-            k = Res_Find(entries, RT_CURSOR, GroupEntries[i].nID, 0xFFFF, FALSE);
-        }
+        INT k = Res_Find2(entries, RT_CURSOR, GroupEntries[i].nID,
+                          GroupCursorEntry.lang, FALSE);
         if (k == -1)
         {
             continue;
