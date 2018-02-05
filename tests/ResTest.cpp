@@ -123,7 +123,9 @@ _tWinMain(HINSTANCE   hInstance,
           INT         nCmdShow)
 {
     InitCommonControls();
-    DialogBox(hInstance, MAKEINTRESOURCE(2), NULL, DialogProc);
+    //DialogBox(hInstance, MAKEINTRESOURCE(2), NULL, DialogProc);
+    DialogBox(hInstance, MAKEINTRESOURCE(4), NULL, DialogProc);
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////

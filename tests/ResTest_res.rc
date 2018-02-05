@@ -10,6 +10,12 @@
 // Icons
 
 1 ICON "smily.ico"
+2 ICON "dummy.ico"
+
+//////////////////////////////////////////////////////////////////////////////
+// Bitmaps
+
+2 BITMAP "dummy.bmp"
 
 //////////////////////////////////////////////////////////////////////////////
 // Dialogs
@@ -99,6 +105,26 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", 2016, "SCROLLBAR", 0, 80, 5, 5, 5
 
     PUSHBUTTON "Just Do It!", CMDID_JUSTDOIT, 5, 25, 50, 14
+}
+
+4 DIALOG 0, 0, 280, 205
+CAPTION "Sample Dialog"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS Shell Dlg"
+{
+    ICON 2, ico1, 15, 10, 20, 20
+    ICON 2, ico2, 65, 10, 20, 20, SS_REALSIZECONTROL
+    ICON 2, ico3, 115, 10, 20, 20, SS_REALSIZEIMAGE
+    CONTROL 0, ico4, "STATIC", SS_BLACKRECT, 165, 10, 20, 20
+    CONTROL 2, stc1, "STATIC", SS_BITMAP | WS_GROUP, 10, 90, 20, 20
+    CONTROL 2, stc2, "STATIC", SS_REALSIZECONTROL | SS_BITMAP | WS_GROUP, 65, 90, 20, 20
+    CONTROL 2, stc3, "STATIC", SS_REALSIZEIMAGE | SS_BITMAP | WS_GROUP, 115, 90, 20, 20
+    CONTROL 0, stc4, "STATIC", SS_BLACKRECT, 165, 90, 20, 20
+    CONTROL 2, psh1, "BUTTON", BS_PUSHBUTTON | BS_BITMAP, 10, 150, 40, 20
+    CONTROL 2, psh2, "BUTTON", BS_PUSHBUTTON | BS_ICON, 115, 150, 40, 20
+    DEFPUSHBUTTON "OK", IDOK, 35, 185, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 115, 185, 60, 14
+    PUSHBUTTON "&Do It!", CMDID_JUSTDOIT, 193, 185, 60, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
