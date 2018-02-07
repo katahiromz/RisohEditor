@@ -888,6 +888,7 @@ protected:
     WCHAR       m_szUpxExe[MAX_PATH];
     WCHAR       m_szFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
+    WCHAR       m_szUpxTempFile[MAX_PATH];
 
     // selection
     MIdOrString     m_type;
@@ -928,6 +929,7 @@ public:
         m_szUpxExe[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
+        m_szUpxTempFile[0] = 0;
 
         m_lang = 0xFFFF;
 
@@ -3718,6 +3720,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
         return TRUE;
     }
 
+    if (m_szUpxTempFile[0])
+    {
+        DeleteFileW(m_szUpxTempFile);
+        m_szUpxTempFile[0] = 0;
+    }
+
     if (DoUpxTest(m_szUpxExe, szPath))
     {
         LPWSTR szFormat = LoadStringDx(IDS_FILEISUPXED);
@@ -3745,6 +3753,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
                 return FALSE;
             }
 
+            lstrcpynW(m_szUpxTempFile, szTempFile, _countof(szPath));
             lstrcpynW(szPath, szTempFile, _countof(szPath));
         }
     }
@@ -4613,6 +4622,12 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    if (m_szUpxTempFile[0])
+    {
+        DeleteFileW(m_szUpxTempFile);
+        m_szUpxTempFile[0] = 0;
+    }
+    
     SaveSettings(hwnd);
 
     if (IsWindow(m_rad_window))
