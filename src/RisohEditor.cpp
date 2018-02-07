@@ -1023,6 +1023,8 @@ public:
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
+    BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
+
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
@@ -2348,6 +2350,65 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
+BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
+{
+    WCHAR szCmdLine[MAX_PATH * 2];
+    wsprintfW(szCmdLine, L"\"%s\" -t \"%s\"", pszUpx, pszFile);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    BOOL bSuccess = FALSE;
+    MByteStreamEx stream;
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        DWORD cbAvail;
+        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+        {
+            if (cbAvail == 0)
+            {
+                if (!pmaker.IsRunning())
+                    break;
+
+                pmaker.WaitForSingleObject(500);
+                continue;
+            }
+
+            CHAR szBuf[256];
+            DWORD cbRead;
+            if (cbAvail > sizeof(szBuf))
+                cbAvail = sizeof(szBuf);
+            else if (cbAvail == 0)
+                continue;
+
+            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+            {
+                if (cbRead == 0)
+                    continue;
+
+                stream.WriteData(szBuf, cbRead);
+            }
+        }
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            char *ptr = (char *)&stream[0];
+            std::string output(ptr, ptr + stream.size());
+            if (output.find("[OK]") != std::string::npos)
+            {
+                bSuccess = TRUE;
+            }
+        }
+    }
+
+    return bSuccess;
+}
+
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -3588,7 +3649,7 @@ INT MMainWnd::CheckData(VOID)
 
     // upx.exe
     lstrcpyW(m_szUpxExe, m_szDataFolder);
-    lstrcatW(m_szUpxExe, L"\\bin\\windres.exe");
+    lstrcatW(m_szUpxExe, L"\\bin\\upx.exe");
     if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
     {
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
