@@ -1011,7 +1011,7 @@ public:
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
-    BOOL DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0);
+    BOOL DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
@@ -1554,7 +1554,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ofn.lpstrDefExt = L"exe";
     if (GetOpenFileNameW(&ofn))
     {
-        DoLoad(hwnd, file, ofn.nFilterIndex);
+        DoLoadFile(hwnd, file, ofn.nFilterIndex);
     }
 }
 
@@ -3616,7 +3616,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoad(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
+BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
 {
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
@@ -4455,13 +4455,13 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".res") == 0)
         {
-            DoLoad(hwnd, file);
+            DoLoadFile(hwnd, file);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".rc") == 0)
         {
-            DoLoad(hwnd, file);
+            DoLoadFile(hwnd, file);
             ChangeStatusText(IDS_READY);
             return;
         }
@@ -4500,7 +4500,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
     }
 
-    DoLoad(hwnd, file);
+    DoLoadFile(hwnd, file);
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     ChangeStatusText(IDS_READY);
 }
@@ -5092,7 +5092,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             DWORD i = id - CMDID_MRUFILE0;
             if (i < m_settings.vecRecentlyUsed.size())
             {
-                DoLoad(hwnd, m_settings.vecRecentlyUsed[i].c_str());
+                DoLoadFile(hwnd, m_settings.vecRecentlyUsed[i].c_str());
             }
         }
         break;
@@ -6110,7 +6110,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     if (m_argc >= 2)
     {
-        DoLoad(hwnd, m_targv[1]);
+        DoLoadFile(hwnd, m_targv[1]);
     }
 
     DragAcceptFiles(hwnd, TRUE);
