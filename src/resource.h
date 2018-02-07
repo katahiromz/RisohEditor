@@ -265,6 +265,8 @@
 #define IDS_EXERESRCFILTER  114
 #define IDS_CANTTESTCHILDWND    115
 #define IDS_CANTTESTCLASSDLG    116
+#define IDS_FILEISUPXED     117
+#define IDS_CANTUPXEXTRACT  118
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

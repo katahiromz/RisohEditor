@@ -1024,6 +1024,7 @@ public:
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
+    BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
 
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
@@ -2381,6 +2382,35 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     return bSuccess;
 }
 
+BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
+{
+    WCHAR szCmdLine[MAX_PATH * 2];
+    wsprintfW(szCmdLine, L"\"%s\" -d \"%s\"", pszUpx, pszFile);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        std::string strOutput;
+        pmaker.ReadAll(strOutput, hOutputRead);
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            if (strOutput.find("Unpacked") != std::string::npos)
+                bSuccess = TRUE;
+        }
+    }
+
+    return bSuccess;
+}
+
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -3616,18 +3646,18 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
+BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
 {
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
 
-    if (GetPathOfShortcutDx(hwnd, FileName, szResolvedPath))
+    if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
     {
         GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
     }
     else
     {
-        GetFullPathNameW(FileName, _countof(szPath), szPath, &pchPart);
+        GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pchPart);
     }
 
     LPWSTR pch = wcsrchr(szPath, L'.');
@@ -3686,6 +3716,37 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex)
         SetFilePath(hwnd, szPath);
 
         return TRUE;
+    }
+
+    if (DoUpxTest(m_szUpxExe, szPath))
+    {
+        LPWSTR szFormat = LoadStringDx(IDS_FILEISUPXED);
+
+        WCHAR szMsg[MAX_PATH + 128];
+        wsprintfW(szMsg, szFormat, szPath);
+
+        INT nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
+        if (nID == IDCANCEL)
+            return FALSE;
+
+        if (nID == IDYES)
+        {
+            WCHAR szTempPath[MAX_PATH];
+            GetTempPathW(_countof(szTempPath), szTempPath);
+
+            WCHAR szTempFile[MAX_PATH];
+            GetTempFileNameW(szTempPath, L"UPX", 0, szTempFile);
+
+            if (!CopyFileW(szPath, szTempFile, FALSE) ||
+                !DoUpxExtract(m_szUpxExe, szTempFile))
+            {
+                DeleteFileW(szTempFile);
+                ErrorBoxDx(IDS_CANTUPXEXTRACT);
+                return FALSE;
+            }
+
+            lstrcpynW(szPath, szTempFile, _countof(szPath));
+        }
     }
 
     // executable files
@@ -4179,7 +4240,7 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries)
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries)
 {
     MByteStreamEx bs;
     ResourceHeader header;
@@ -4214,13 +4275,13 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entri
         bs.WriteDwordAlignment();
     }
 
-    return bs.SaveToFile(FileName);
+    return bs.SaveToFile(pszFileName);
 }
 
-BOOL MMainWnd::DoExtractBin(LPCWSTR FileName, const ResEntry& entry)
+BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry)
 {
     MByteStreamEx bs(entry.data);
-    return bs.SaveToFile(FileName);
+    return bs.SaveToFile(pszFileName);
 }
 
 BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
@@ -4278,21 +4339,21 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractIcon(LPCWSTR FileName, const ResEntry& entry)
+BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const ResEntry& entry)
 {
     if (entry.type == RT_GROUP_ICON)
     {
-        return Res_ExtractGroupIcon(m_entries, entry, FileName);
+        return Res_ExtractGroupIcon(m_entries, entry, pszFileName);
     }
     else if (entry.type == RT_ICON)
     {
-        return Res_ExtractIcon(m_entries, entry, FileName);
+        return Res_ExtractIcon(m_entries, entry, pszFileName);
     }
     else if (entry.type == RT_ANIICON)
     {
         MFile file;
         DWORD cbWritten = 0;
-        if (file.OpenFileForOutput(FileName) &&
+        if (file.OpenFileForOutput(pszFileName) &&
             file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
             file.CloseHandle();
@@ -4302,21 +4363,21 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR FileName, const ResEntry& entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractCursor(LPCWSTR FileName, const ResEntry& entry)
+BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const ResEntry& entry)
 {
     if (entry.type == RT_GROUP_CURSOR)
     {
-        return Res_ExtractGroupCursor(m_entries, entry, FileName);
+        return Res_ExtractGroupCursor(m_entries, entry, pszFileName);
     }
     else if (entry.type == RT_CURSOR)
     {
-        return Res_ExtractCursor(m_entries, entry, FileName);
+        return Res_ExtractCursor(m_entries, entry, pszFileName);
     }
     else if (entry.type == RT_ANICURSOR)
     {
         MFile file;
         DWORD cbWritten = 0;
-        if (file.OpenFileForOutput(FileName) &&
+        if (file.OpenFileForOutput(pszFileName) &&
             file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
             file.CloseHandle();
