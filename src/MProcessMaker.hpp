@@ -3,10 +3,11 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     8   /* Version 8 */
+#define MZC4_MPROCESSMAKER_HPP_     9   /* Version 9 */
 
 #include "MFile.hpp"
 #include <tchar.h>
+#include <string>
 #include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -30,19 +31,19 @@ public:
     DWORD   GetExitCode() const;
 
     // set attributes for child process
-    VOID SetShowWindow(INT nCmdShow = SW_HIDE);
-    VOID SetCreationFlags(DWORD dwFlags = CREATE_NEW_CONSOLE);
-    VOID SetCurrentDirectory(LPCTSTR pszCurDir);
-    VOID SetDesktop(LPTSTR lpDesktop);
-    VOID SetTitle(LPTSTR lpTitle);
-    VOID SetPosition(DWORD dwX, DWORD dwY);
-    VOID SetSize(DWORD dwXSize, DWORD dwYSize);
-    VOID SetCountChars(DWORD dwXCountChars, DWORD dwYCountChars);
-    VOID SetFillAttirbutes(DWORD dwFillAttribute);
+    void SetShowWindow(INT nCmdShow = SW_HIDE);
+    void SetCreationFlags(DWORD dwFlags = CREATE_NEW_CONSOLE);
+    void SetCurrentDirectory(LPCTSTR pszCurDir);
+    void SetDesktop(LPTSTR lpDesktop);
+    void SetTitle(LPTSTR lpTitle);
+    void SetPosition(DWORD dwX, DWORD dwY);
+    void SetSize(DWORD dwXSize, DWORD dwYSize);
+    void SetCountChars(DWORD dwXCountChars, DWORD dwYCountChars);
+    void SetFillAttirbutes(DWORD dwFillAttribute);
 
-    VOID SetStdInput(HANDLE hStdIn);
-    VOID SetStdOutput(HANDLE hStdOut);
-    VOID SetStdError(HANDLE hStdErr);
+    void SetStdInput(HANDLE hStdIn);
+    void SetStdOutput(HANDLE hStdOut);
+    void SetStdError(HANDLE hStdErr);
 
     BOOL PrepareForRedirect(PHANDLE phInputWrite, PHANDLE phOutputRead);
     BOOL PrepareForRedirect(PHANDLE phInputWrite, PHANDLE phOutputRead,
@@ -64,18 +65,20 @@ public:
     BOOL TerminateProcess(UINT uExitCode);
     BOOL IsRunning() const;
 
-    VOID CloseProcessHandle();
-    VOID CloseThreadHandle();
-    VOID CloseStdInput();
-    VOID CloseStdOutput();
-    VOID CloseStdError();
+    void CloseProcessHandle();
+    void CloseThreadHandle();
+    void CloseStdInput();
+    void CloseStdOutput();
+    void CloseStdError();
 
-    VOID CloseAll();
+    void CloseAll();
 
           PROCESS_INFORMATION& ProcessInfo();
     const PROCESS_INFORMATION& ProcessInfo() const;
           STARTUPINFO& StartupInfo();
     const STARTUPINFO& StartupInfo() const;
+
+    void ReadAll(std::string& strOutput, MFile& hOutputRead);
 
 protected:
     PROCESS_INFORMATION     m_pi;
@@ -83,7 +86,7 @@ protected:
     DWORD                   m_dwCreationFlags;
     LPCTSTR                 m_pszCurDir;
 
-    VOID Init();
+    void Init();
 
 private:
     // NOTE: MProcessMaker is not copyable.
@@ -118,69 +121,69 @@ inline BOOL MProcessMaker::TerminateProcess(UINT uExitCode)
     return ::TerminateProcess(m_pi.hProcess, uExitCode);
 }
 
-inline VOID MProcessMaker::SetStdInput(HANDLE hStdIn)
+inline void MProcessMaker::SetStdInput(HANDLE hStdIn)
 {
     m_si.hStdInput = hStdIn;
     if (hStdIn)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
 }
 
-inline VOID MProcessMaker::SetStdOutput(HANDLE hStdOut)
+inline void MProcessMaker::SetStdOutput(HANDLE hStdOut)
 {
     m_si.hStdOutput = hStdOut;
     if (hStdOut)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
 }
 
-inline VOID MProcessMaker::SetStdError(HANDLE hStdErr)
+inline void MProcessMaker::SetStdError(HANDLE hStdErr)
 {
     m_si.hStdError = hStdErr;
     if (hStdErr)
         m_si.dwFlags |= STARTF_USESTDHANDLES;
 }
 
-inline VOID MProcessMaker::SetShowWindow(INT nCmdShow/* = SW_HIDE*/)
+inline void MProcessMaker::SetShowWindow(INT nCmdShow/* = SW_HIDE*/)
 {
     m_si.wShowWindow = static_cast<WORD>(nCmdShow);
     m_si.dwFlags |= STARTF_USESHOWWINDOW;
 }
 
-inline VOID MProcessMaker::SetCreationFlags(
+inline void MProcessMaker::SetCreationFlags(
     DWORD dwFlags/* = CREATE_NEW_CONSOLE*/)
 {
     m_dwCreationFlags = dwFlags;
 }
 
-inline VOID MProcessMaker::SetCurrentDirectory(LPCTSTR pszCurDir)
+inline void MProcessMaker::SetCurrentDirectory(LPCTSTR pszCurDir)
 {
     m_pszCurDir = pszCurDir;
 }
 
-inline VOID MProcessMaker::SetDesktop(LPTSTR lpDesktop)
+inline void MProcessMaker::SetDesktop(LPTSTR lpDesktop)
 {
     m_si.lpDesktop = lpDesktop;
 }
 
-inline VOID MProcessMaker::SetTitle(LPTSTR lpTitle)
+inline void MProcessMaker::SetTitle(LPTSTR lpTitle)
 {
     m_si.lpTitle = lpTitle;
 }
 
-inline VOID MProcessMaker::SetPosition(DWORD dwX, DWORD dwY)
+inline void MProcessMaker::SetPosition(DWORD dwX, DWORD dwY)
 {
     m_si.dwX = dwX;
     m_si.dwY = dwY;
     m_si.dwFlags |= STARTF_USEPOSITION;
 }
 
-inline VOID MProcessMaker::SetSize(DWORD dwXSize, DWORD dwYSize)
+inline void MProcessMaker::SetSize(DWORD dwXSize, DWORD dwYSize)
 {
     m_si.dwXSize = dwXSize;
     m_si.dwYSize = dwYSize;
     m_si.dwFlags |= STARTF_USESIZE;
 }
 
-inline VOID MProcessMaker::SetCountChars(
+inline void MProcessMaker::SetCountChars(
     DWORD dwXCountChars, DWORD dwYCountChars)
 {
     m_si.dwXCountChars = dwXCountChars;
@@ -188,7 +191,7 @@ inline VOID MProcessMaker::SetCountChars(
     m_si.dwFlags |= STARTF_USECOUNTCHARS;
 }
 
-inline VOID MProcessMaker::SetFillAttirbutes(DWORD dwFillAttribute)
+inline void MProcessMaker::SetFillAttirbutes(DWORD dwFillAttribute)
 {
     m_si.dwFillAttribute = dwFillAttribute;
     m_si.dwFlags |= STARTF_USEFILLATTRIBUTE;
@@ -256,7 +259,7 @@ inline const STARTUPINFO& MProcessMaker::StartupInfo() const
     return m_si;
 }
 
-inline VOID MProcessMaker::CloseProcessHandle()
+inline void MProcessMaker::CloseProcessHandle()
 {
     if (m_pi.hProcess != NULL)
     {
@@ -265,7 +268,7 @@ inline VOID MProcessMaker::CloseProcessHandle()
     }
 }
 
-inline VOID MProcessMaker::CloseThreadHandle()
+inline void MProcessMaker::CloseThreadHandle()
 {
     if (m_pi.hThread != NULL)
     {
@@ -274,7 +277,7 @@ inline VOID MProcessMaker::CloseThreadHandle()
     }
 }
 
-inline VOID MProcessMaker::CloseStdInput()
+inline void MProcessMaker::CloseStdInput()
 {
     HANDLE hStdInput = ::GetStdHandle(STD_INPUT_HANDLE);
     if (m_si.hStdInput != hStdInput)
@@ -284,7 +287,7 @@ inline VOID MProcessMaker::CloseStdInput()
     }
 }
 
-inline VOID MProcessMaker::CloseStdOutput()
+inline void MProcessMaker::CloseStdOutput()
 {
     HANDLE hStdOutput = ::GetStdHandle(STD_OUTPUT_HANDLE);
     if (m_si.hStdOutput != hStdOutput)
@@ -294,7 +297,7 @@ inline VOID MProcessMaker::CloseStdOutput()
     }
 }
 
-inline VOID MProcessMaker::CloseStdError()
+inline void MProcessMaker::CloseStdError()
 {
     HANDLE hStdError = ::GetStdHandle(STD_ERROR_HANDLE);
     if (m_si.hStdError != hStdError)
@@ -304,7 +307,7 @@ inline VOID MProcessMaker::CloseStdError()
     }
 }
 
-inline VOID MProcessMaker::CloseAll()
+inline void MProcessMaker::CloseAll()
 {
     CloseProcessHandle();
     CloseThreadHandle();
@@ -321,7 +324,7 @@ inline BOOL MProcessMaker::PrepareForRedirect(
 
 ////////////////////////////////////////////////////////////////////////////
 
-inline VOID MProcessMaker::Init()
+inline void MProcessMaker::Init()
 {
     ZeroMemory(&m_si, sizeof(m_si));
     m_si.cb = sizeof(STARTUPINFO);
@@ -498,6 +501,40 @@ inline BOOL MProcessMaker::PrepareForRedirect(
         SetStdError(hErrorWrite.Detach());
 
     return TRUE;
+}
+
+inline void
+MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
+{
+    strOutput.clear();
+
+    DWORD cbAvail;
+    while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
+    {
+        if (cbAvail == 0)
+        {
+            if (!IsRunning())
+                break;
+
+            WaitForSingleObject(500);
+            continue;
+        }
+
+        CHAR szBuf[256];
+        DWORD cbRead;
+        if (cbAvail > sizeof(szBuf))
+            cbAvail = sizeof(szBuf);
+        else if (cbAvail == 0)
+            continue;
+
+        if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
+        {
+            if (cbRead == 0)
+                continue;
+
+            strOutput.append(szBuf, cbRead);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////

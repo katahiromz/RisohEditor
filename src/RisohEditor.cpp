@@ -2357,7 +2357,6 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
     BOOL bSuccess = FALSE;
-    MByteStreamEx stream;
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -2367,39 +2366,12 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, szCmdLine))
     {
-        DWORD cbAvail;
-        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
-        {
-            if (cbAvail == 0)
-            {
-                if (!pmaker.IsRunning())
-                    break;
-
-                pmaker.WaitForSingleObject(500);
-                continue;
-            }
-
-            CHAR szBuf[256];
-            DWORD cbRead;
-            if (cbAvail > sizeof(szBuf))
-                cbAvail = sizeof(szBuf);
-            else if (cbAvail == 0)
-                continue;
-
-            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
-            {
-                if (cbRead == 0)
-                    continue;
-
-                stream.WriteData(szBuf, cbRead);
-            }
-        }
+        std::string strOutput;
+        pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
-            char *ptr = (char *)&stream[0];
-            std::string output(ptr, ptr + stream.size());
-            if (output.find("[OK]") != std::string::npos)
+            if (strOutput.find("[OK]") != std::string::npos)
             {
                 bSuccess = TRUE;
             }
@@ -3421,49 +3393,17 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
 #endif
     // MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
-    std::vector<BYTE> output;
-    MStringA msg;
-    msg = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
-    output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
-
-    BOOL bSuccess = FALSE;
-    MByteStreamEx stream;
-
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    BOOL bSuccess = FALSE;
+    std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, szCmdLine))
     {
-        DWORD cbAvail;
-        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
-        {
-            if (cbAvail == 0)
-            {
-                if (!pmaker.IsRunning())
-                    break;
-
-                pmaker.WaitForSingleObject(500);
-                continue;
-            }
-
-            CHAR szBuf[256];
-            DWORD cbRead;
-            if (cbAvail > sizeof(szBuf))
-                cbAvail = sizeof(szBuf);
-            else if (cbAvail == 0)
-                continue;
-
-            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
-            {
-                if (cbRead == 0)
-                    continue;
-
-                stream.WriteData(szBuf, cbRead);
-            }
-        }
-
-        output = stream.data();
+        pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -3474,23 +3414,27 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
                 bSuccess = CareWindresResult(hwnd, entries, msg);
                 if (msg.size())
                 {
-                    output.insert(output.end(), msg.begin(), msg.end());
+                    strOutput.append(msg);
                 }
             }
         }
     }
+    else
+    {
+        MStringA msg;
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    }
 
     if (!bSuccess)
     {
-        if (output.empty())
+        if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
             ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
         else
         {
-            output.insert(output.end(), 0);
-            ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
+            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
             ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
 #ifdef NDEBUG
@@ -3858,67 +3802,41 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 #endif
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
-    std::vector<BYTE> output;
-    MStringA msg;
-    msg = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
-    output.assign((LPBYTE)msg.c_str(), (LPBYTE)msg.c_str() + msg.size());
 
     BOOL bSuccess = FALSE;
-    MByteStreamEx stream;
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, szCmdLine))
     {
-        DWORD cbAvail;
-        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
-        {
-            if (cbAvail == 0)
-            {
-                if (!pmaker.IsRunning())
-                    break;
-
-                pmaker.WaitForSingleObject(500);
-                continue;
-            }
-
-            CHAR szBuf[256];
-            DWORD cbRead;
-            if (cbAvail > sizeof(szBuf))
-                cbAvail = sizeof(szBuf);
-            else if (cbAvail == 0)
-                continue;
-
-            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
-            {
-                if (cbRead == 0)
-                    continue;
-
-                stream.WriteData(szBuf, cbRead);
-            }
-        }
-
-        output = stream.data();
+        pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
             bSuccess = DoImport(hwnd, szPath3, entries);
         }
     }
+    else
+    {
+        MStringA msg;
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    }
 
     if (!bSuccess)
     {
-        if (output.empty())
+        if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
             ShowBinEdit(FALSE);
         }
         else
         {
-            output.insert(output.end(), 0);
-            ::SetWindowTextA(m_hBinEdit, (char *)&output[0]);
+            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
             ShowBinEdit(TRUE);
         }
 #ifdef NDEBUG
