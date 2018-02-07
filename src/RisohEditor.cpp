@@ -4722,48 +4722,25 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
     BOOL bOK = FALSE;
+
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, szCmdLine))
     {
-        std::vector<char> data;
-        DWORD cbAvail, cbRead;
-        CHAR szBuf[256];
-        while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
-        {
-            if (cbAvail == 0)
-            {
-                if (!pmaker.IsRunning())
-                    break;
-
-                pmaker.WaitForSingleObject(500);
-                continue;
-            }
-
-            if (cbAvail > sizeof(szBuf))
-                cbAvail = sizeof(szBuf);
-            else if (cbAvail == 0)
-                continue;
-
-            if (hOutputRead.ReadFile(szBuf, cbAvail, &cbRead))
-            {
-                if (cbRead == 0)
-                    continue;
-
-                data.insert(data.end(), &szBuf[0], &szBuf[cbRead]);
-            }
-        }
+        pmaker.ReadAll(strOutput, hOutputRead);
         pmaker.CloseAll();
 
-        MStringA str((char *)&data[0], data.size());
-        size_t pragma_found = str.find("#pragma RisohEditor");
+        size_t pragma_found = strOutput.find("#pragma RisohEditor");
         if (pragma_found != MStringA::npos)
         {
             DeleteFileW(szTempFile1);
-            str = str.substr(pragma_found);
-            bOK = ParseMacros(hwnd, pszFile, macros, str);
+            strOutput = strOutput.substr(pragma_found);
+            bOK = ParseMacros(hwnd, pszFile, macros, strOutput);
         }
     }
 
