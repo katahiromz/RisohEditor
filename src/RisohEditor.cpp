@@ -4323,8 +4323,17 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
         return FALSE;
     }
 
+    MFile file(m_szRealFile);
+    CHAR sz[2] = { 0 };
+    DWORD dwSize;
+    BOOL bOK = file.ReadFile(sz, sizeof(sz), &dwSize);
+    file.CloseHandle();
+
+    if (!bOK || memcmp(sz, "MZ", 2) != 0)
+        bOK = FALSE;
+
     BOOL b1, b2, b3;
-    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
+    if (!bOK || GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
         b3 = Res_UpdateExe(hwnd, pszExeFile, m_entries);
         if (b3)
