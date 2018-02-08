@@ -886,7 +886,7 @@ protected:
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
     WCHAR       m_szUpxExe[MAX_PATH];
-    WCHAR       m_szFile[MAX_PATH];
+    WCHAR       m_szRealFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
     WCHAR       m_szUpxTempFile[MAX_PATH];
 
@@ -927,7 +927,7 @@ public:
         m_szCppExe[0] = 0;
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
-        m_szFile[0] = 0;
+        m_szRealFile[0] = 0;
         m_szResourceH[0] = 0;
         m_szUpxTempFile[0] = 0;
 
@@ -1536,7 +1536,7 @@ void MMainWnd::OnOpen(HWND hwnd)
         return;
 
     WCHAR file[MAX_PATH];
-    lstrcpynW(file, m_szFile, _countof(file));
+    lstrcpynW(file, m_szRealFile, _countof(file));
 
     MStringW str = file;
     mstr_replace_all(str, L"/", L"\\");
@@ -1578,7 +1578,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
     WCHAR file[MAX_PATH];
 
-    lstrcpynW(file, m_szFile, _countof(file));
+    lstrcpynW(file, m_szRealFile, _countof(file));
 
     MStringW str = file;
     mstr_replace_all(str, L"/", L"\\");
@@ -1596,7 +1596,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
-    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
         ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"res";
@@ -4321,7 +4321,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
     BOOL b1, b2, b3;
-    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
         b3 = Res_UpdateExe(hwnd, pszExeFile, m_entries);
         if (b3)
@@ -4333,7 +4333,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
     }
     else
     {
-        b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
+        b1 = ::CopyFileW(m_szRealFile, TempFile, FALSE);
         b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_entries);
         b3 = b2 && ::CopyFileW(TempFile, pszExeFile, FALSE);
         if (b3)
@@ -5492,9 +5492,9 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         WCHAR szResH[MAX_PATH];
 
         // build file path
-        if (m_szFile[0])
+        if (m_szRealFile[0])
         {
-            lstrcpyW(szResH, m_szFile);
+            lstrcpyW(szResH, m_szRealFile);
             WCHAR *pch = wcsrchr(szResH, L'\\');
             lstrcpyW(pch, L"\\resource.h");
         }
@@ -5820,7 +5820,7 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszFileName)
 
     WCHAR szPath[MAX_PATH], *pch;
     GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pch);
-    lstrcpynW(m_szFile, szPath, _countof(m_szFile));
+    lstrcpynW(m_szRealFile, szPath, _countof(m_szRealFile));
 
     WCHAR sz[MAX_PATH];
     pch = wcsrchr(szPath, L'\\');
@@ -5834,7 +5834,7 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszFileName)
         SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
     }
 
-    m_settings.AddFile(m_szFile);
+    m_settings.AddFile(m_szRealFile);
     UpdateMenu();
     return TRUE;
 }
