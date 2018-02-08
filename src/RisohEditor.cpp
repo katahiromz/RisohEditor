@@ -715,15 +715,6 @@ std::wstring DumpDataAsString(const std::vector<BYTE>& data)
     return ret;
 }
 
-void ReplaceBackslash(LPWSTR szPath)
-{
-    for (WCHAR *pch = szPath; *pch; ++pch)
-    {
-        if (*pch == L'\\')
-            *pch = L'/';
-    }
-}
-
 std::wstring GetKeyID(ConstantsDB& db, UINT wId)
 {
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
@@ -1535,30 +1526,26 @@ void MMainWnd::OnOpen(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    WCHAR file[MAX_PATH];
-    lstrcpynW(file, m_szRealFile, _countof(file));
+    WCHAR szFile[MAX_PATH];
+    lstrcpynW(szFile, m_szRealFile, _countof(szFile));
 
-    MStringW str = file;
-    mstr_replace_all(str, L"/", L"\\");
-    lstrcpynW(file, str.c_str(), _countof(file));
-
-    if (GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES)
-        file[0] = 0;
+    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+        szFile[0] = 0;
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESRCFILTER));
-    ofn.lpstrFile = file;
-    ofn.nMaxFile = _countof(file);
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"exe";
     if (GetOpenFileNameW(&ofn))
     {
-        DoLoadFile(hwnd, file, ofn.nFilterIndex);
+        DoLoadFile(hwnd, szFile, ofn.nFilterIndex);
     }
 }
 
@@ -1576,20 +1563,16 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    WCHAR file[MAX_PATH];
+    WCHAR szFile[MAX_PATH];
 
-    lstrcpynW(file, m_szRealFile, _countof(file));
+    lstrcpynW(szFile, m_szRealFile, _countof(szFile));
 
-    MStringW str = file;
-    mstr_replace_all(str, L"/", L"\\");
-    lstrcpynW(file, str.c_str(), _countof(file));
+    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+        szFile[0] = 0;
 
-    if (GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES)
-        file[0] = 0;
-
-    LPWSTR pch = wcsrchr(file, L'.');
+    LPWSTR pch = wcsrchr(szFile, L'.');
     if (lstrcmpiW(pch, L".rc") == 0)
-        file[0] = 0;
+        szFile[0] = 0;
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
@@ -1606,8 +1589,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = L"exe";
     }
-    ofn.lpstrFile = file;
-    ofn.nMaxFile = _countof(file);
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
@@ -1615,14 +1598,14 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     {
         if (ofn.nFilterIndex == 2)
         {
-            if (!DoSaveResAs(hwnd, file))
+            if (!DoSaveResAs(hwnd, szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
         }
         else
         {
-            if (!DoSaveAs(hwnd, file))
+            if (!DoSaveAs(hwnd, szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -2279,13 +2262,13 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
     lstrcpyW(pch, L"README.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"../README.txt");
+        lstrcpyW(pch, L"..\\README.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"../../README.txt");
+            lstrcpyW(pch, L"..\\..\\README.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"../../../README.txt");
+                lstrcpyW(pch, L"..\\..\\..\\README.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -2308,13 +2291,13 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
     lstrcpyW(pch, L"READMEJP.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"../READMEJP.txt");
+        lstrcpyW(pch, L"..\\READMEJP.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"../../READMEJP.txt");
+            lstrcpyW(pch, L"..\\..\\READMEJP.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"../../../READMEJP.txt");
+                lstrcpyW(pch, L"..\\..\\..\\READMEJP.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -2337,13 +2320,13 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     lstrcpyW(pch, L"LICENSE.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"../LICENSE.txt");
+        lstrcpyW(pch, L"..\\LICENSE.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"../../LICENSE.txt");
+            lstrcpyW(pch, L"..\\..\\LICENSE.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"../../../LICENSE.txt");
+                lstrcpyW(pch, L"..\\..\\..\\LICENSE.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -3384,15 +3367,12 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
-    ReplaceBackslash(szPath1);
     MFile r1(szPath1, TRUE);
 
     lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
-    ReplaceBackslash(szPath2);
     MFile r2(szPath2, TRUE);
 
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    ReplaceBackslash(szPath3);
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
@@ -3602,7 +3582,6 @@ INT MMainWnd::CheckData(VOID)
         ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
         return -2;  // failure
     }
-    ReplaceBackslash(m_szConstantsFile);
 
     // cpp.exe
     lstrcpyW(m_szCppExe, m_szDataFolder);
@@ -3612,7 +3591,6 @@ INT MMainWnd::CheckData(VOID)
         ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
         return -3;  // failure
     }
-    ReplaceBackslash(m_szCppExe);
 
     // windres.exe
     lstrcpyW(m_szWindresExe, m_szDataFolder);
@@ -3622,7 +3600,6 @@ INT MMainWnd::CheckData(VOID)
         ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
         return -4;  // failure
     }
-    ReplaceBackslash(m_szWindresExe);
 
     // upx.exe
     lstrcpyW(m_szUpxExe, m_szDataFolder);
@@ -3632,7 +3609,6 @@ INT MMainWnd::CheckData(VOID)
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
         return -5;  // failure
     }
-    ReplaceBackslash(m_szUpxExe);
 
     return 0;   // success
 }
@@ -3809,32 +3785,37 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 
     TCHAR szPath[MAX_PATH];
     lstrcpyn(szPath, pszPath, _countof(szPath));
-    ReplaceBackslash(szPath);
 
-    TCHAR *pch = _tcsrchr(szPath, TEXT('/'));
+    TCHAR *pch = _tcsrchr(szPath, TEXT('\\'));
     if (pch == NULL)
+    {
+        pch = _tcsrchr(szPath, TEXT('/'));
+    }
+    if (pch == NULL)
+    {
         return FALSE;
+    }
 
     ++pch;
     lstrcpy(pch, TEXT("resource.h"));
     if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpy(pch, TEXT("../resource.h"));
+        lstrcpy(pch, TEXT("..\\resource.h"));
         if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpy(pch, TEXT("../../resource.h"));
+            lstrcpy(pch, TEXT("..\\..\\resource.h"));
             if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpy(pch, TEXT("../../../resource.h"));
+                lstrcpy(pch, TEXT("..\\..\\..\\resource.h"));
                 if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpy(pch, TEXT("../src/resource.h"));
+                    lstrcpy(pch, TEXT("..\\src\\resource.h"));
                     if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
-                        lstrcpy(pch, TEXT("../../src/resource.h"));
+                        lstrcpy(pch, TEXT("..\\..\\src\\resource.h"));
                         if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                         {
-                            lstrcpy(pch, TEXT("../../../src/resource.h"));
+                            lstrcpy(pch, TEXT("..\\..\\..\\src\\resource.h"));
                             if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                             {
                                 return FALSE;
@@ -3855,7 +3836,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 
     WCHAR szPath3[MAX_PATH];
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    ReplaceBackslash(szPath3);
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
@@ -4622,10 +4602,6 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     else
         lstrcpyW(szFile, L"resource.h");
 
-    MStringW str = szFile;
-    mstr_replace_all(str, L"/", L"\\");
-    lstrcpynW(szFile, str.c_str(), _countof(szFile));
-
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
@@ -4809,14 +4785,12 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
     WCHAR szTempFile1[MAX_PATH];
     lstrcpynW(szTempFile1, GetTempFileNameDx(L"R1"), MAX_PATH);
-    ReplaceBackslash(szTempFile1);
 
     DWORD cbWritten;
     MFile file1(szTempFile1, TRUE);
     char buf[MAX_PATH + 64];
     WCHAR szFile[MAX_PATH];
     lstrcpyW(szFile, pszFile);
-    ReplaceBackslash(szFile);
     wsprintfA(buf, "#include \"%s\"\n", MTextToAnsi(CP_ACP, szFile).c_str());
     file1.WriteSzA(buf, &cbWritten);
     file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
@@ -4862,7 +4836,6 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 {
     WCHAR szTempFile[MAX_PATH];
     lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
-    ReplaceBackslash(szTempFile);
 
     MFile file(szTempFile, TRUE);
     file.CloseHandle();
@@ -5502,10 +5475,6 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         {
             lstrcpyW(szResH, L"resource.h");
         }
-
-        MStringW str = szResH;
-        mstr_replace_all(str, L"/", L"\\");
-        lstrcpynW(szResH, str.c_str(), _countof(szResH));
 
         if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)
             szResH[0] = 0;
