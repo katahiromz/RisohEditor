@@ -1020,13 +1020,14 @@ public:
     BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries);
     BOOL DoExtractBin(LPCWSTR FileName, const ResEntry& entry);
-    BOOL DoSaveResAs(HWND hwnd, LPCWSTR ExeFile);
-    BOOL DoSaveAs(HWND hwnd, LPCWSTR ExeFile);
-    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile);
+    BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
+    BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
+    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
     BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
+    BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
 
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
@@ -4293,40 +4294,40 @@ BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry)
     return bs.SaveToFile(pszFileName);
 }
 
-BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
         return FALSE;
 
-    if (DoExtractRes(hwnd, ExeFile, m_entries))
+    if (DoExtractRes(hwnd, pszExeFile, m_entries))
     {
         Res_Optimize(m_entries);
-        SetFilePath(hwnd, ExeFile);
+        SetFilePath(hwnd, pszExeFile);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR pszExeFile)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
         return TRUE;
 
-    return DoSaveExeAs(hwnd, ExeFile);
+    return DoSaveExeAs(hwnd, pszExeFile);
 }
 
-BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
+BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
 {
     LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
     BOOL b1, b2, b3;
     if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES)
     {
-        b3 = Res_UpdateExe(hwnd, ExeFile, m_entries);
+        b3 = Res_UpdateExe(hwnd, pszExeFile, m_entries);
         if (b3)
         {
             Res_Optimize(m_entries);
-            SetFilePath(hwnd, ExeFile);
+            SetFilePath(hwnd, pszExeFile);
             return TRUE;
         }
     }
@@ -4334,18 +4335,51 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR ExeFile)
     {
         b1 = ::CopyFileW(m_szFile, TempFile, FALSE);
         b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_entries);
-        b3 = b2 && ::CopyFileW(TempFile, ExeFile, FALSE);
+        b3 = b2 && ::CopyFileW(TempFile, pszExeFile, FALSE);
         if (b3)
         {
             DeleteFileW(TempFile);
             Res_Optimize(m_entries);
-            SetFilePath(hwnd, ExeFile);
+            SetFilePath(hwnd, pszExeFile);
+            if (m_settings.bCompressByUPX)
+            {
+                DoUpxCompress(m_szUpxExe, pszExeFile);
+            }
             return TRUE;
         }
         DeleteFileW(TempFile);
     }
 
     return FALSE;
+}
+
+BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
+{
+    WCHAR szCmdLine[MAX_PATH * 2];
+    wsprintfW(szCmdLine, L"\"%s\" -9 \"%s\"", pszUpx, pszExeFile);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        std::string strOutput;
+        pmaker.ReadAll(strOutput, hOutputRead);
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            if (strOutput.find("Packed") != std::string::npos)
+                bSuccess = TRUE;
+        }
+    }
+
+    return bSuccess;
 }
 
 BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const ResEntry& entry)
@@ -5832,6 +5866,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nRadLeft = CW_USEDEFAULT;
     m_settings.nRadTop = CW_USEDEFAULT;
     m_settings.bUpdateResH = FALSE;
+    m_settings.bCompressByUPX = FALSE;
 
     ConstantsDB::TableType table1, table2;
     table1 = m_db.GetTable(L"RESOURCE.ID.TYPE");
@@ -5892,7 +5927,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         table.clear();
         ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
         table.push_back(entry);
-
     }
     m_settings.bHideID = bHideID;
 
@@ -5920,6 +5954,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)m_settings.nRadLeft);
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
+    keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)m_settings.bCompressByUPX);
 
     INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
     INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -6041,6 +6076,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nRadLeft"), m_settings.nRadLeft);
     keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
     keyRisoh.SetDword(TEXT("bUpdateResH"), m_settings.bUpdateResH);
+    keyRisoh.SetDword(TEXT("bCompressByUPX"), m_settings.bCompressByUPX);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)

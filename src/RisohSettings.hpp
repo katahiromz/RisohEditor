@@ -62,6 +62,7 @@ struct RisohSettings
     INT         nRadLeft;
     INT         nRadTop;
     BOOL        bUpdateResH;
+    BOOL        bCompressByUPX;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
     id_map_type         added_ids;
