@@ -878,8 +878,10 @@ protected:
     WCHAR       m_szWindresExe[MAX_PATH];
     WCHAR       m_szUpxExe[MAX_PATH];
     WCHAR       m_szRealFile[MAX_PATH];
+    WCHAR       m_szNominalFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
     WCHAR       m_szUpxTempFile[MAX_PATH];
+    BOOL        m_bUpxCompressed;
 
     // selection
     MIdOrString     m_type;
@@ -919,8 +921,11 @@ public:
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
         m_szRealFile[0] = 0;
+        m_szNominalFile[0] = 0;
         m_szResourceH[0] = 0;
         m_szUpxTempFile[0] = 0;
+
+        m_bUpxCompressed = FALSE;
 
         m_lang = 0xFFFF;
 
@@ -978,7 +983,8 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL SetFilePath(HWND hwnd, LPCWSTR FileName);
+    BOOL SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
+
     void UpdateMenu();
     void SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick);
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
@@ -1004,7 +1010,7 @@ public:
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
-    BOOL DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0);
+    BOOL DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
@@ -1527,7 +1533,7 @@ void MMainWnd::OnOpen(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH];
-    lstrcpynW(szFile, m_szRealFile, _countof(szFile));
+    lstrcpynW(szFile, m_szNominalFile, _countof(szFile));
 
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
@@ -1553,7 +1559,7 @@ void MMainWnd::OnNew(HWND hwnd)
 {
     HidePreview(hwnd);
     OnUnloadResH(hwnd);
-    SetFilePath(hwnd, NULL);
+    SetFilePath(hwnd, NULL, NULL);
     m_entries.clear();
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 }
@@ -1565,7 +1571,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
     WCHAR szFile[MAX_PATH];
 
-    lstrcpynW(szFile, m_szRealFile, _countof(szFile));
+    lstrcpynW(szFile, m_szNominalFile, _countof(szFile));
 
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
@@ -3625,7 +3631,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
-BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
+BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BOOL bForceDecompress)
 {
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
@@ -3664,11 +3670,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
 
         m_bLoading = TRUE;
         {
+            m_bUpxCompressed = FALSE;
             m_entries = entries;
             TV_RefreshInfo(m_hTreeView, m_db, m_entries);
         }
         m_bLoading = FALSE;
-        SetFilePath(hwnd, szPath);
+        SetFilePath(hwnd, szPath, NULL);
         return TRUE;
     }
 
@@ -3688,11 +3695,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
 
         m_bLoading = TRUE;
         {
+            m_bUpxCompressed = FALSE;
             m_entries = entries;
             TV_RefreshInfo(m_hTreeView, m_db, m_entries);
         }
         m_bLoading = FALSE;
-        SetFilePath(hwnd, szPath);
+        SetFilePath(hwnd, szPath, NULL);
 
         return TRUE;
     }
@@ -3703,16 +3711,27 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
         m_szUpxTempFile[0] = 0;
     }
 
-    if (DoUpxTest(m_szUpxExe, szPath))
+    LPWSTR pszReal = szPath;
+    LPWSTR pszNominal = szPath;
+    m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszReal);
+    if (m_bUpxCompressed)
     {
         LPWSTR szFormat = LoadStringDx(IDS_FILEISUPXED);
 
         WCHAR szMsg[MAX_PATH + 128];
-        wsprintfW(szMsg, szFormat, szPath);
+        wsprintfW(szMsg, szFormat, pszReal);
 
-        INT nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
-        if (nID == IDCANCEL)
-            return FALSE;
+        INT nID;
+        if (bForceDecompress)
+        {
+            nID = IDYES;
+        }
+        else
+        {
+            nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
+            if (nID == IDCANCEL)
+                return FALSE;
+        }
 
         if (nID == IDYES)
         {
@@ -3722,7 +3741,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
             WCHAR szTempFile[MAX_PATH];
             GetTempFileNameW(szTempPath, L"UPX", 0, szTempFile);
 
-            if (!CopyFileW(szPath, szTempFile, FALSE) ||
+            if (!CopyFileW(pszReal, szTempFile, FALSE) ||
                 !DoUpxExtract(m_szUpxExe, szTempFile))
             {
                 DeleteFileW(szTempFile);
@@ -3730,16 +3749,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
                 return FALSE;
             }
 
-            lstrcpynW(m_szUpxTempFile, szTempFile, _countof(szPath));
-            lstrcpynW(szPath, szTempFile, _countof(szPath));
+            lstrcpynW(m_szUpxTempFile, szTempFile, _countof(m_szUpxTempFile));
+            pszReal = m_szUpxTempFile;
         }
     }
 
     // executable files
-    HMODULE hMod = LoadLibraryW(szPath);
+    HMODULE hMod = LoadLibraryW(pszReal);
     if (hMod == NULL)
     {
-        hMod = LoadLibraryExW(szPath, NULL, LOAD_LIBRARY_AS_DATAFILE);
+        hMod = LoadLibraryExW(pszReal, NULL, LOAD_LIBRARY_AS_DATAFILE);
         if (hMod == NULL)
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
@@ -3749,7 +3768,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
 
     UnloadResourceH(hwnd);
     if (m_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, szPath);
+        CheckResourceH(hwnd, pszNominal);
 
     m_bLoading = TRUE;
     {
@@ -3759,7 +3778,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex)
         TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     }
     m_bLoading = FALSE;
-    SetFilePath(hwnd, szPath);
+    SetFilePath(hwnd, pszReal, pszNominal);
 
     return TRUE;
 }
@@ -4282,7 +4301,7 @@ BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile)
     if (DoExtractRes(hwnd, pszExeFile, m_entries))
     {
         Res_Optimize(m_entries);
-        SetFilePath(hwnd, pszExeFile);
+        SetFilePath(hwnd, pszExeFile, NULL);
         return TRUE;
     }
     return FALSE;
@@ -4298,7 +4317,16 @@ BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR pszExeFile)
 
 BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
 {
-    LPWSTR TempFile = GetTempFileNameDx(L"ERE");
+    if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
+    {
+        // unload and force decompress
+        HidePreview(hwnd);
+        OnUnloadResH(hwnd);
+        SetFilePath(hwnd, NULL, NULL);
+        m_entries.clear();
+        DoLoadFile(hwnd, m_szNominalFile, 1, TRUE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    }
 
     BOOL b1, b2, b3;
     if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
@@ -4307,12 +4335,13 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
         if (b3)
         {
             Res_Optimize(m_entries);
-            SetFilePath(hwnd, pszExeFile);
+            SetFilePath(hwnd, pszExeFile, NULL);
             return TRUE;
         }
     }
     else
     {
+        LPWSTR TempFile = GetTempFileNameDx(L"ERE");
         b1 = ::CopyFileW(m_szRealFile, TempFile, FALSE);
         b2 = b1 && Res_UpdateExe(hwnd, TempFile, m_entries);
         b3 = b2 && ::CopyFileW(TempFile, pszExeFile, FALSE);
@@ -4320,7 +4349,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
         {
             DeleteFileW(TempFile);
             Res_Optimize(m_entries);
-            SetFilePath(hwnd, pszExeFile);
+            SetFilePath(hwnd, pszExeFile, NULL);
             if (m_settings.bCompressByUPX)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
@@ -5465,9 +5494,9 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         WCHAR szResH[MAX_PATH];
 
         // build file path
-        if (m_szRealFile[0])
+        if (m_szNominalFile[0])
         {
-            lstrcpyW(szResH, m_szRealFile);
+            lstrcpyW(szResH, m_szNominalFile);
             WCHAR *pch = wcsrchr(szResH, L'\\');
             lstrcpyW(pch, L"\\resource.h");
         }
@@ -5779,20 +5808,29 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszFileName)
+BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
-    if (pszFileName == 0 || pszFileName[0] == 0)
+    if (pszRealFile == 0 || pszRealFile[0] == 0)
     {
         SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
 
+    if (pszNominal == NULL)
+        pszNominal = pszRealFile;
+
     WCHAR szPath[MAX_PATH], *pch;
-    GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pch);
+
+    GetFullPathNameW(pszRealFile, _countof(szPath), szPath, &pch);
     lstrcpynW(m_szRealFile, szPath, _countof(m_szRealFile));
+
+    GetFullPathNameW(pszNominal, _countof(szPath), szPath, &pch);
+    lstrcpynW(m_szNominalFile, szPath, _countof(m_szNominalFile));
 
     WCHAR sz[MAX_PATH];
     pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
     if (pch)
     {
         wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
@@ -5803,7 +5841,7 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszFileName)
         SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
     }
 
-    m_settings.AddFile(m_szRealFile);
+    m_settings.AddFile(m_szNominalFile);
     UpdateMenu();
     return TRUE;
 }
