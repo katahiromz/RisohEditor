@@ -267,6 +267,7 @@
 #define IDS_CANTTESTCLASSDLG    116
 #define IDS_FILEISUPXED     117
 #define IDS_CANTUPXEXTRACT  118
+#define IDS_CANTSAVEUPXED   119
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

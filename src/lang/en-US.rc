@@ -300,6 +300,7 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG, "Unable to test the dialog because it is classed."
     IDS_FILEISUPXED, "File\r\n\r\n'%s'\r\n\r\nis compressed by UPX. Do you want to extract it by using a temporary file?\r\n\r\nIf you didn't expand it, reading might be failed."
     IDS_CANTUPXEXTRACT, "Unable to extract by UPX."
+    IDS_CANTSAVEUPXED, "Unable to save the file because it was compressed by UPX."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

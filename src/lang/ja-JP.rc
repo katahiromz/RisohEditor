@@ -300,6 +300,7 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG, "ダイアログがクラス付きのため、テストできません。"
     IDS_FILEISUPXED, "ファイル\r\n\r\n'%s'\r\n\r\nは、UPXで圧縮されています。一時ファイルを使って展開しますか？\r\n\r\n展開しなければ正しく読み込めないことがあります。"
     IDS_CANTUPXEXTRACT, "UPXで展開できませんでした。"
+    IDS_CANTSAVEUPXED, "UPXで圧縮されたデータがあるので、保存できません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

@@ -4319,13 +4319,8 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
 {
     if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
     {
-        // unload and force decompress
-        HidePreview(hwnd);
-        OnUnloadResH(hwnd);
-        SetFilePath(hwnd, NULL, NULL);
-        m_entries.clear();
-        DoLoadFile(hwnd, m_szNominalFile, 1, TRUE);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        ErrorBoxDx(IDS_CANTSAVEUPXED);
+        return FALSE;
     }
 
     BOOL b1, b2, b3;

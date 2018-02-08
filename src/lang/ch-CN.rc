@@ -300,6 +300,7 @@ STRINGTABLE
     IDS_CANTTESTCLASSDLG, "由于对话被分类, 所以不能被测试."
     IDS_FILEISUPXED, "文件\r\n\r\n'%s'\r\n\r\n被UPX压缩. 你想使用临时文件解压缩吗?\r\n\r\n如果你没有扩展它, 阅读可能会失败."
     IDS_CANTUPXEXTRACT, "无法由UPX提取."
+    IDS_CANTSAVEUPXED, "无法保存文件, 因为它是由UPX压缩的."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170
