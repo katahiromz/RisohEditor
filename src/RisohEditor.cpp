@@ -4324,12 +4324,12 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
     }
 
     MFile file(m_szRealFile);
-    CHAR sz[2] = { 0 };
+    BYTE ab[2] = { 0 };
     DWORD dwSize;
-    BOOL bOK = file.ReadFile(sz, sizeof(sz), &dwSize);
+    BOOL bOK = file.ReadFile(ab, sizeof(ab), &dwSize);
     file.CloseHandle();
 
-    if (!bOK || memcmp(sz, "MZ", 2) != 0)
+    if (memcmp(ab, "MZ", 2) != 0)
         bOK = FALSE;
 
     BOOL b1, b2, b3;
