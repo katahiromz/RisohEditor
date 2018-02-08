@@ -298,7 +298,7 @@ STRINGTABLE
     IDS_EXERESRCFILTER, "可读文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|资源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|二进制文件 (*.res)|*.res|资源文件 (*.rc)|*.rc|全部文件 (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "无法测试对话框, 因为它是一个子窗口."
     IDS_CANTTESTCLASSDLG, "由于对话被分类, 所以不能被测试."
-    IDS_FILEISUPXED, "文件\r\n\r\n'%s'\r\n\r\n被UPX压缩. 你想使用临时文件解压缩吗?"
+    IDS_FILEISUPXED, "文件\r\n\r\n'%s'\r\n\r\n被UPX压缩. 你想使用临时文件解压缩吗?\r\n\r\n如果你没有扩展它, 阅读可能会失败."
     IDS_CANTUPXEXTRACT, "无法由UPX提取."
 }
 

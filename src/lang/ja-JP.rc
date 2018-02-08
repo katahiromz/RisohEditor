@@ -298,7 +298,7 @@ STRINGTABLE
     IDS_EXERESRCFILTER, "読み込めるファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|バイナリ リソース (*.res)|*.res|リソース ファイル (*.rc)|*.rc|すべてのファイル (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "ダイアログが子ウィンドウのため、テストできません。"
     IDS_CANTTESTCLASSDLG, "ダイアログがクラス付きのため、テストできません。"
-    IDS_FILEISUPXED, "ファイル\r\n\r\n'%s'\r\n\r\nは、UPXで圧縮されています。一時ファイルを使って展開しますか？"
+    IDS_FILEISUPXED, "ファイル\r\n\r\n'%s'\r\n\r\nは、UPXで圧縮されています。一時ファイルを使って展開しますか？\r\n\r\n展開しなければ正しく読み込めないことがあります。"
     IDS_CANTUPXEXTRACT, "UPXで展開できませんでした。"
 }
 
