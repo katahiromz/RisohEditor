@@ -20,13 +20,10 @@
 #ifndef MESSAGE_RES_HPP_
 #define MESSAGE_RES_HPP_
 
-#include <windows.h>
-#include <cassert>
-#include <vector>
-#include <map>
-
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
+#include "ConstantsDB.hpp"
+#include <map>
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -41,9 +38,12 @@ struct MESSAGE_RESOURCE_ENTRY_HEADER
 class MessageRes
 {
 public:
-    typedef std::map<ULONG, std::wstring> map_type;
+    typedef std::wstring string_type;
+    typedef std::map<ULONG, string_type> map_type;
 
-    MessageRes() { }
+    MessageRes()
+    {
+    }
 
     BOOL LoadFromStream(const MByteStreamEx& stream)
     {
