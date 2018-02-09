@@ -3755,10 +3755,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     }
 
     // executable files
-    HMODULE hMod = LoadLibraryW(pszReal);
+    HMODULE hMod = LoadLibraryExW(pszReal, NULL, LOAD_LIBRARY_AS_DATAFILE);
     if (hMod == NULL)
     {
-        hMod = LoadLibraryExW(pszReal, NULL, LOAD_LIBRARY_AS_DATAFILE);
+        hMod = LoadLibraryW(pszReal);
         if (hMod == NULL)
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
