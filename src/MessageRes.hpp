@@ -115,7 +115,6 @@ public:
                     str.resize(len);
                     if (!stream.ReadData(&str[0], len * sizeof(char)))
                     {
-                        std::cout << "OK2\n";
                         return FALSE;
                     }
                     str.resize(std::strlen(str.c_str()));
