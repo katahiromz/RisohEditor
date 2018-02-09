@@ -231,7 +231,7 @@ public:
 
     string_type Dump(const ConstantsDB& db)
     {
-        return Dump(db, 0);
+        return Dump(db, 1);
     }
 
 protected:
