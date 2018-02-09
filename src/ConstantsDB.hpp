@@ -48,6 +48,7 @@
 #define IDTYPE_COMMAND      11  // Command.ID
 #define IDTYPE_CONTROL      12  // Control.ID
 #define IDTYPE_RESOURCE     13  // Resource.ID
+#define IDTYPE_MESSAGE      14  // Message.ID
 #define IDTYPE_INVALID      -1
 
 class ConstantsDB
@@ -153,6 +154,8 @@ public:
         {
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
+            else if (nIDTYPE_ == IDTYPE_MESSAGE)
+                return mstr_dec_long((LONG)value);
             else
                 return mstr_dec_word((WORD)value);
         }
@@ -168,6 +171,8 @@ public:
         {
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
+            else if (nIDTYPE_ == IDTYPE_MESSAGE)
+                return mstr_dec_long((LONG)value);
             else
                 return mstr_dec_word((WORD)value);
         }
@@ -190,7 +195,7 @@ public:
 
         if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
             nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-            nIDTYPE_ != IDTYPE_HELP)
+            nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE)
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
@@ -198,6 +203,11 @@ public:
         if (nIDTYPE_ == IDTYPE_HELP)
         {
             return mstr_dec_dword(value);
+        }
+
+        if (nIDTYPE_ == IDTYPE_MESSAGE)
+        {
+            return mstr_dec_long(value);
         }
 
         return mstr_dec_word(WORD(value));

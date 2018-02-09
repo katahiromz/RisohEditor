@@ -204,7 +204,6 @@ public:
     string_type Dump(const ConstantsDB& db, WORD wName)
     {
         std::wstring ret;
-        WCHAR sz[64];
 
         ret += L"MESSAGETABLEDX\r\n";
         ret += L"{\r\n";
@@ -212,8 +211,15 @@ public:
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)
         {
-            wsprintfW(sz, L"%u", it->first);
             ret += L"    ";
+            if (0)
+            {
+                ret += mstr_dec_long(i);
+            }
+            else
+            {
+                ret += db.GetNameOfResID(IDTYPE_MESSAGE, i);
+            }
             ret += sz;
             ret += L", \"";
             ret += mstr_escape(it->second);

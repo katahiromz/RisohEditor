@@ -29,6 +29,7 @@ struct MIdOrString;
 std::wstring mstr_dec_short(SHORT nID);
 std::wstring mstr_dec_word(WORD nID);
 std::wstring mstr_dec_dword(DWORD nID);
+std::wstring mstr_dec_long(LONG nID);
 std::wstring mstr_dec(LONG nID);
 std::wstring mstr_hex(INT nID);
 bool mstr_unquote(std::string& str);
@@ -532,6 +533,15 @@ inline std::wstring mstr_dec_dword(DWORD nID)
     using namespace std;
     wchar_t sz[32];
     wsprintfW(sz, L"%lu", nID);
+    std::wstring ret(sz);
+    return ret;
+}
+
+inline std::wstring mstr_dec_long(LONG nID)
+{
+    using namespace std;
+    wchar_t sz[32];
+    wsprintfW(sz, L"%ld", nID);
     std::wstring ret(sz);
     return ret;
 }

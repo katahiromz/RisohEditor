@@ -36,6 +36,7 @@ Help.ID, 10
 Command.ID, 11
 Control.ID, 12
 Resource.ID, 13
+Message.ID, 14
 
 [RESOURCE.ID.PREFIX]
 IDC_, 0
@@ -52,6 +53,7 @@ HID_, 10
 CMDID_, 11
 CID_, 12
 IDR_, 13
+MSGID_, 14
 
 [HIDE.ID]
 HIDE.ID, 0

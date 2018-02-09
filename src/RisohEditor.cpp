@@ -279,7 +279,8 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     if (k == -1 &&
         nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-        nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_INVALID)
+        nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
+        nIDTYPE_ != IDTYPE_INVALID)
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
@@ -5960,6 +5961,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
         m_settings.assoc_map[L"Command.ID"] = L"CMDID_";
         m_settings.assoc_map[L"Control.ID"] = L"CID_";
         m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
+        m_settings.assoc_map[L"Message.ID"] = L"MSGID_";
     }
 
     m_settings.id_map.clear();
