@@ -120,6 +120,7 @@ public:
                     str.resize(std::strlen(str.c_str()));
                     m_map[dwID] = MAnsiToWide(CP_ACP, str.c_str()).c_str();
                 }
+
                 stream.pos(pos + entry_head.Length);
             }
         }
