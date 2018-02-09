@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName=RisohEditor
-AppVerName=RisohEditor 2.9
+AppVerName=RisohEditor 3.0
 AppPublisher=Katayama Hirofumi MZ
 AppPublisherURL=http://katahiromz.web.fc2.com/
 AppSupportURL=http://katahiromz.web.fc2.com/
@@ -17,7 +17,7 @@ DefaultGroupName=RisohEditor
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=.
-OutputBaseFilename=risoheditor-2.9-setup
+OutputBaseFilename=risoheditor-3.0-setup
 SetupIconFile=src\res\RisohEditor.ico
 Compression=lzma
 SolidCompression=yes
@@ -26,9 +26,9 @@ VersionInfoCompany=Katayama Hirofumi MZ
 VersionInfoCopyright=Copyright (C) 2017-2018 Katayama Hirofumi MZ.
 VersionInfoDescription=Win32 Resource Editor
 VersionInfoProductName=RisohEditor
-VersionInfoProductTextVersion=2.9
-VersionInfoProductVersion=2.9
-VersionInfoVersion=2.9
+VersionInfoProductTextVersion=3.0
+VersionInfoProductVersion=3.0
+VersionInfoVersion=3.0
 
 [Languages]
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
