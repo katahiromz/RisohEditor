@@ -214,7 +214,7 @@ public:
             ret += L"    ";
             if (0)
             {
-                ret += mstr_dec_long(it->first);
+                ret += mstr_hex(it->first);
             }
             else
             {

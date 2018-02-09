@@ -155,7 +155,7 @@ public:
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
             else if (nIDTYPE_ == IDTYPE_MESSAGE)
-                return mstr_dec_long((LONG)value);
+                return mstr_hex(value);
             else
                 return mstr_dec_word((WORD)value);
         }
@@ -172,7 +172,7 @@ public:
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
             else if (nIDTYPE_ == IDTYPE_MESSAGE)
-                return mstr_dec_long((LONG)value);
+                return mstr_hex(value);
             else
                 return mstr_dec_word((WORD)value);
         }
@@ -207,7 +207,7 @@ public:
 
         if (nIDTYPE_ == IDTYPE_MESSAGE)
         {
-            return mstr_dec_long(value);
+            return mstr_hex(value);
         }
 
         return mstr_dec_word(WORD(value));
