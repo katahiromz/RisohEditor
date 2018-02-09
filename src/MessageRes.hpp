@@ -202,7 +202,7 @@ public:
         return TRUE;
     }
 
-    string_type Dump(const ConstantsDB& db, WORD wName)
+    string_type Dump(const ConstantsDB& db, WORD wName) const
     {
         std::wstring ret;
 
@@ -230,7 +230,7 @@ public:
         return ret;
     }
 
-    string_type Dump(const ConstantsDB& db)
+    string_type Dump(const ConstantsDB& db) const
     {
         return Dump(db, 1);
     }
