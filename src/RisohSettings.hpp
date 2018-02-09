@@ -1,6 +1,6 @@
-// RisohEditor.hpp
+// RisohEditor.hpp --- RisohEditor settings
 //////////////////////////////////////////////////////////////////////////////
-// RisohEditor --- Win32API resource editor
+// RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // 
 // This program is free software: you can redistribute it and/or modify
