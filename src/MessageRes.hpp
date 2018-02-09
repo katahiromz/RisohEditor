@@ -214,13 +214,12 @@ public:
             ret += L"    ";
             if (0)
             {
-                ret += mstr_dec_long(i);
+                ret += mstr_dec_long(it->first);
             }
             else
             {
-                ret += db.GetNameOfResID(IDTYPE_MESSAGE, i);
+                ret += db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
             }
-            ret += sz;
             ret += L", \"";
             ret += mstr_escape(it->second);
             ret += L"\"\r\n";
