@@ -1957,6 +1957,18 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 Res_AddEntry(m_entries, found[i], TRUE);
             }
         }
+        else if (HIWORD(lParam) == I_MESSAGE)
+        {
+            WORD lang = entry.lang;
+            ResEntries found;
+            Res_Search(found, m_entries, RT_MESSAGETABLE, WORD(0), lang);
+
+            for (size_t i = 0; i < found.size(); ++i)
+            {
+                found[i].lang = dialog.m_lang;
+                Res_AddEntry(m_entries, found[i], TRUE);
+            }
+        }
         else
         {
             for (size_t i = 0; i < found.size(); ++i)
@@ -2924,9 +2936,10 @@ void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
     MessageRes mes;
-    if (mes.LoadFromStream(stream))
+    WORD nNameID = entry.name.m_id;
+    if (mes.LoadFromStream(stream, nNameID))
     {
-        std::wstring str = mes.Dump();
+        std::wstring str = mes.Dump(m_db, nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -2935,10 +2948,10 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
     StringRes str_res;
-    WORD nTableID = entry.name.m_id;
-    if (str_res.LoadFromStream(stream, nTableID))
+    WORD nNameID = entry.name.m_id;
+    if (str_res.LoadFromStream(stream, nNameID))
     {
-        std::wstring str = str_res.Dump(m_db, nTableID);
+        std::wstring str = str_res.Dump(m_db, nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3047,7 +3060,20 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
 {
-    assert(0);
+    ResEntries found;
+    Res_Search(found, m_entries, RT_MESSAGETABLE, (WORD)0, entry.lang);
+
+    MessageRes msg_res;
+    ResEntries::iterator it, end = found.end();
+    for (it = found.begin(); it != end; ++it)
+    {
+        MByteStreamEx stream(it->data);
+        if (!msg_res.LoadFromStream(stream, it->name.m_id))
+            return;
+    }
+
+    std::wstring str = msg_res.Dump(m_db);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 VOID MMainWnd::HidePreview(HWND hwnd)
@@ -3207,7 +3233,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         SetWindowTextW(m_hBinEdit, NULL);
         PreviewMessageTable(hwnd, entry);
         ShowBinEdit(FALSE);
-        bEditable = FALSE;
+        bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
     }
     else
@@ -3326,7 +3352,19 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
     else if (HIWORD(lParam) == I_MESSAGE)
     {
-        // FIXME
+        ResEntry entry = m_entries[i];
+
+        Res_DeleteNames(m_entries, RT_MESSAGETABLE, entry.lang);
+
+        for (size_t m = 0; m < entries.size(); ++m)
+        {
+            if (!Res_AddEntry(m_entries, entries[m], TRUE))
+            {
+                msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
+                return FALSE;
+            }
+        }
+
         return TRUE;
     }
     else
@@ -5355,6 +5393,13 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     OnGuiEdit(hwnd);
                 }
                 return 1;
+            case I_MESSAGE:
+                OnEdit(hwnd);
+                if (m_settings.bGuiByDblClick)
+                {
+                    OnGuiEdit(hwnd);
+                }
+                return 1;
             }
         }
     }
@@ -5393,6 +5438,13 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
                 return 1;
             case I_STRING:
+                OnEdit(hwnd);
+                if (m_settings.bGuiByDblClick)
+                {
+                    OnGuiEdit(hwnd);
+                }
+                return 1;
+            case I_MESSAGE:
                 OnEdit(hwnd);
                 if (m_settings.bGuiByDblClick)
                 {

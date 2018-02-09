@@ -308,7 +308,8 @@ public:
             if ((style & SS_TYPEMASK) == SS_ICON ||
                 (style & SS_TYPEMASK) == SS_BITMAP)
             {
-                if (std::iswdigit(strCaption[0]))
+				using namespace std;
+                if (iswdigit(strCaption[0]))
                 {
                     LONG n = wcstol(strCaption.c_str(), NULL, 0);
                     item.m_title = WORD(n);

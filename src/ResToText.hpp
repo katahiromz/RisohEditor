@@ -87,6 +87,7 @@ protected:
     MString DoAniIcon(const ResEntry& entry);
     MString DoText(const ResEntry& entry);
     MString DoImage(const ResEntry& entry);
+    MString DoMessage(const ResEntry& entry);
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -162,6 +163,24 @@ ResToText::DoDialog(const ResEntry& entry)
 
 inline MString
 ResToText::DoString(const ResEntry& entry)
+{
+    ResEntries found;
+    Res_Search(found, m_entries, RT_STRING, entry.name, entry.lang);
+
+    StringRes str_res;
+    ResEntries::iterator it, end = found.end();
+    for (it = found.begin(); it != end; ++it)
+    {
+        MByteStreamEx stream(it->data);
+        if (!str_res.LoadFromStream(stream, it->name.m_id))
+            return LoadStringDx(IDS_INVALIDDATA);
+    }
+
+    return str_res.Dump(m_db);
+}
+
+inline MString
+ResToText::DoMessage(const ResEntry& entry)
 {
     ResEntries found;
     Res_Search(found, m_entries, RT_STRING, entry.name, entry.lang);

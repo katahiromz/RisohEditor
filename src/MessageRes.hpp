@@ -22,16 +22,36 @@
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
+#include "MTextToText.hpp"
 #include "ConstantsDB.hpp"
 #include <map>
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct MESSAGE_RESOURCE_ENTRY_HEADER
-{
-    USHORT  Length;
-    USHORT  Flags;
-};
+// These structures are defined in <winnt.h>:
+//     typedef struct _MESSAGE_RESOURCE_BLOCK {
+//         DWORD    LowId;
+//         DWORD    HighId;
+//         DWORD    OffsetToEntries;        // from this structure
+//     } MESSAGE_RESOURCE_BLOCK, *PMESSAGE_RESOURCE_BLOCK;
+//     typedef struct _MESSAGE_RESOURCE_DATA {
+//         DWORD                    NumberOfBlocks;
+//         MESSAGE_RESOURCE_BLOCK   Blocks[1];
+//     } MESSAGE_RESOURCE_DATA, *PMESSAGE_RESOURCE_DATA;
+//     typedef struct _MESSAGE_RESOURCE_ENTRY {
+//         WORD   Length;
+//         WORD   Flags;        // 0 for ANSI, 1 for Unicode
+//         BYTE   Text[1];
+//     } MESSAGE_RESOURCE_ENTRY, *PMESSAGE_RESOURCE_ENTRY;
+
+typedef struct _MESSAGE_RESOURCE_DATA_HEADER {
+    DWORD                    NumberOfBlocks;
+} MESSAGE_RESOURCE_DATA_HEADER, *PMESSAGE_RESOURCE_DATA_HEADER;
+
+typedef struct _MESSAGE_RESOURCE_ENTRY_HEADER {
+    WORD   Length;
+    WORD   Flags;        // 0 for ANSI, 1 for Unicode
+} MESSAGE_RESOURCE_ENTRY_HEADER, *PMESSAGE_RESOURCE_ENTRY_HEADER;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -45,65 +65,63 @@ public:
     {
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    BOOL LoadFromStream(const MByteStreamEx& stream, WORD wName)
     {
         m_map.clear();
-        if (stream.size() < 4)
+        if (stream.size() < sizeof(MESSAGE_RESOURCE_DATA))
             return FALSE;
 
-        ULONG NumberOfBlocks;
-        if (!stream.ReadRaw(NumberOfBlocks) || NumberOfBlocks == 0)
+        MESSAGE_RESOURCE_DATA_HEADER data;
+        if (!stream.ReadRaw(data) || data.NumberOfBlocks == 0)
             return FALSE;
 
-        std::vector<MESSAGE_RESOURCE_BLOCK> Blocks(NumberOfBlocks);
-        DWORD SizeOfBlocks = sizeof(MESSAGE_RESOURCE_BLOCK) * NumberOfBlocks;
-        if (!stream.ReadData(&Blocks[0], SizeOfBlocks))
+        std::vector<MESSAGE_RESOURCE_BLOCK> blocks(data.NumberOfBlocks);
+        DWORD dwSizeOfBlocks = sizeof(MESSAGE_RESOURCE_BLOCK) * data.NumberOfBlocks;
+        if (!stream.ReadData(&blocks[0], dwSizeOfBlocks))
             return FALSE;
 
-        for (DWORD i = 0; i < NumberOfBlocks; ++i)
+        for (DWORD i = 0; i < data.NumberOfBlocks; ++i)
         {
-            const MESSAGE_RESOURCE_BLOCK& Block = Blocks[i];
-            DWORD Offset = Block.OffsetToEntries;
-            stream.pos(Offset);
-            for (DWORD k = Block.LowId; k <= Block.HighId; ++k)
+            const MESSAGE_RESOURCE_BLOCK& block = blocks[i];
+
+            DWORD dwOffset = block.OffsetToEntries;
+            stream.pos(dwOffset);
+
+            for (DWORD dwID = block.LowId; dwID <= block.HighId; ++dwID)
             {
-                MESSAGE_RESOURCE_ENTRY_HEADER header;
-                if (!stream.ReadRaw(header))
+                DWORD pos = stream.pos();
+
+                MESSAGE_RESOURCE_ENTRY_HEADER entry_head;
+                if (!stream.ReadRaw(entry_head))
                     return FALSE;
 
-                std::vector<BYTE> data(header.Length);
-                if (header.Length)
+                std::wstring wstr = (const WCHAR *)&stream[stream.pos()];
+                if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
                 {
-                    if (!stream.ReadData(&data[0], header.Length))
+                    size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(wchar_t);
+                    std::wstring str;
+                    str.resize(len);
+                    if (!stream.ReadData(&str[0], len * sizeof(wchar_t)))
+                    {
                         return FALSE;
-                }
-
-                if (header.Flags == MESSAGE_RESOURCE_UNICODE)
-                {
-                    size_t len = data.size() / sizeof(wchar_t);
-                    if (len)
-                    {
-                        std::wstring str((const wchar_t *)&data[0], len);
-                        m_map[k] = str;
                     }
-                    else
-                    {
-                        m_map[k].clear();
-                    }
+                    str.resize(std::wcslen(str.c_str()));
+                    m_map[dwID] = str;
                 }
                 else
                 {
-                    if (data.size())
+                    size_t len = entry_head.Length - sizeof(entry_head);
+                    std::string str;
+                    str.resize(len);
+                    if (!stream.ReadData(&str[0], len * sizeof(char)))
                     {
-                        MStringA str((const char *)&data[0], data.size());
-                        MStringW wstr = MAnsiToWide(CP_ACP, str).c_str();
-                        m_map[k] = wstr;
+                        std::cout << "OK2\n";
+                        return FALSE;
                     }
-                    else
-                    {
-                        m_map[k].clear();
-                    }
+                    str.resize(std::strlen(str.c_str()));
+                    m_map[dwID] = MAnsiToWide(CP_ACP, str.c_str()).c_str();
                 }
+                stream.pos(pos + entry_head.Length);
             }
         }
 
@@ -184,12 +202,12 @@ public:
         return TRUE;
     }
 
-    std::wstring Dump() const
+    string_type Dump(const ConstantsDB& db, WORD wName)
     {
         std::wstring ret;
         WCHAR sz[64];
 
-        ret += L"MESSAGETABLE\r\n";
+        ret += L"MESSAGETABLEDX\r\n";
         ret += L"{\r\n";
 
         map_type::const_iterator it, end = m_map.end();
@@ -205,6 +223,11 @@ public:
 
         ret += L"}\r\n";
         return ret;
+    }
+
+    string_type Dump(const ConstantsDB& db)
+    {
+        return Dump(db, 0);
     }
 
 protected:
