@@ -341,38 +341,6 @@ std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
 
-BOOL check_bin_dir(VOID)
-{
-    WCHAR szPath[MAX_PATH], *pch;
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\cpp.exe");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-    {
-        lstrcpyW(pch, L"\\data\\bin\\cpp.exe");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-        {
-            lstrcpyW(pch, L"\\..\\data\\bin\\cpp.exe");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-            {
-                lstrcpyW(pch, L"\\..\\..\\data\\bin\\cpp.exe");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                {
-                    lstrcpyW(pch, L"\\..\\..\\..\\data\\bin\\cpp.exe");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
-                    {
-                        return FALSE;
-                    }
-                }
-            }
-        }
-    }
-    pch = wcsrchr(szPath, L'\\');
-	*pch = 0;
-    lstrcpynW(g_szBinDir, szPath, MAX_PATH);
-    return TRUE;
-}
-
 BOOL check_cpp_exe(VOID)
 {
     WCHAR szPath[MAX_PATH], *pch;
@@ -400,6 +368,9 @@ BOOL check_cpp_exe(VOID)
         }
     }
     lstrcpynW(g_szCppExe, szPath, MAX_PATH);
+    pch = wcsrchr(szPath, L'\\');
+	*pch = 0;
+    lstrcpynW(g_szBinDir, szPath, MAX_PATH);
     return TRUE;
 }
 
@@ -479,18 +450,30 @@ int eat_output(const std::string& strOutput)
             bMsgTableDx = FALSE;
             continue;
         }
+        else if (bMsgTableDx && !bInBrace)
+		{
+			if (line[0] == '{')
+			{
+				bInBrace = TRUE;
+			}
+			else if (memcmp("BEGIN", &line[0], 5) == 0)
+			{
+				bInBrace = TRUE;
+			}
+		}
         else if (bMsgTableDx && bInBrace)
         {
             if (std::isdigit(line[0]))
             {
                 // get number string
-                char *ptr = &line[0];
+                char *ptr0 = &line[0];
+				char *ptr = ptr0;
                 while (*ptr && *ptr != ',')
                 {
                     ++ptr;
                 }
-                char *ptr0 = ptr;
-                MStringA str(ptr, ptr0);
+                char *ptr1 = ptr;
+                MStringA str(ptr0, ptr1);
 
                 // parse
                 using namespace MacroParser;
@@ -518,7 +501,11 @@ int eat_output(const std::string& strOutput)
                 }
 
                 // get string value
-                str = ptr0;
+				while (*ptr1 == ',' || std::isspace(*ptr1))
+				{
+					++ptr1;
+				}
+                str = ptr1;
                 mstr_unquote(str);
 
                 //MStringW wstr(MAnsiToWide(CP_UTF8, str.c_str()).c_str());
@@ -770,8 +757,6 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-
-	check_bin_dir();
 
     if (!check_cpp_exe())
     {
