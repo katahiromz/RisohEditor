@@ -3,11 +3,12 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     9   /* Version 9 */
+#define MZC4_MFILE_HPP_     10      /* Version 10 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
 #endif
+#include <cassert>
 
 class MFile;
 
