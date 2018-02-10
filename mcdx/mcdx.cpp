@@ -1,5 +1,6 @@
 #include "MProcessMaker.hpp"
 #include "MString.hpp"
+#include "MacroParser.hpp"
 
 #ifndef _countof
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
@@ -141,7 +142,15 @@ int eat_output(const std::string& strOutput)
         }
         else if (line[0] == '\"')
         {
-            ;
+            if (bInBrace)
+            {
+                
+            }
+            else
+            {
+                fprintf(stderr, "ERROR: Invalid statement\n");
+                return 8;
+            }
         }
         else if (memcmp("END", &line[0], 3) == 0 || line[0] == '}')
         {
@@ -192,6 +201,7 @@ extern "C"
 int wmain(int argc, wchar_t **wargv)
 {
     g_definitions.push_back(L"-DRC_INVOKED");
+    g_definitions.push_back(L"-DMC_INVOKED");
 
     static const wchar_t *include_dir_equal = L"--include-dir=";
     size_t include_dir_equal_len = lstrlenW(include_dir_equal);
@@ -331,6 +341,11 @@ int wmain(int argc, wchar_t **wargv)
                 fprintf(stderr, "ERROR: -D requires an argument\n");
                 return 1;
             }
+        }
+        if (memcmp(wargv[i], L"-D", 2) == 0)
+        {
+            g_definitions.push_back(&wargv[i][2]);
+            continue;
         }
         // undefine?
         if (lstrcmpW(wargv[i], L"-U") == 0 ||
