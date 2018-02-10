@@ -695,7 +695,8 @@ int main(int argc, char **argv)
             }
         }
         // include directory?
-        if (lstrcmpW(wargv[i], L"-I") == 0)
+        if (lstrcmpW(wargv[i], L"-I") == 0 ||
+            lstrcmpW(wargv[i], L"--include-dir") == 0)
         {
             ++i;
             if (i < argc)
@@ -715,7 +716,8 @@ int main(int argc, char **argv)
             continue;
         }
         // definition?
-        if (lstrcmpW(wargv[i], L"-D") == 0)
+        if (lstrcmpW(wargv[i], L"-D") == 0 ||
+            lstrcmpW(wargv[i], L"--define") == 0)
         {
             ++i;
             if (i < argc)
@@ -736,7 +738,7 @@ int main(int argc, char **argv)
         }
         // undefine?
         if (lstrcmpW(wargv[i], L"-U") == 0 ||
-            lstrcmpiW(wargv[i], L"-undefine") == 0)
+            lstrcmpiW(wargv[i], L"--undefine") == 0)
         {
             ++i;
             if (i < argc)
@@ -756,7 +758,8 @@ int main(int argc, char **argv)
             continue;
         }
         // codepage?
-        if (lstrcmpiW(wargv[i], L"-c") == 0)
+        if (lstrcmpiW(wargv[i], L"-c") == 0 ||
+            lstrcmpiW(wargv[i], L"--codepage") == 0)
         {
             ++i;
             if (i < argc)
