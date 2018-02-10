@@ -24,13 +24,14 @@ void show_help(void)
     printf("\n");
     printf("Usage: mcdx [option(s)] [input-file] [output-file]\n");
     printf("Options:\n");
-    printf("  -i --input=<file>             Name input file\n");
-    printf("  -o --output=<file>            Name output file\n");
-    printf("  -J --input-format=<format>    Specify input format\n");
-    printf("  -O --output-format=<format>   Specify output format\n");
-    printf("  -I --include-dir=<dir>        Include directory when preprocessing rc file\n");
-    printf("  -D --define=<sym>[=<val>]     Define SYM when preprocessing rc file\n");
-    printf("  -U --undefine <sym>           Undefine SYM when preprocessing rc file\n");
+    printf("  -i --input=<file>            Name input file\n");
+    printf("  -o --output=<file>           Name output file\n");
+    printf("  -J --input-format=<format>   Specify input format\n");
+    printf("  -O --output-format=<format>  Specify output format\n");
+    printf("  -I --include-dir=<dir>       Include directory when preprocessing rc file\n");
+    printf("  -D --define=<sym>[=<val>]    Define SYM when preprocessing rc file\n");
+    printf("  -U --undefine <sym>          Undefine SYM when preprocessing rc file\n");
+    printf("  -c --codepage=<codepage>     Specify default codepage\n");
     printf("FORMAT is one of rc, res or bin, and is deduced from the file name\n");
     printf("Report bugs to <katayama.hirofumi.mz@gmail.com>\n");
 }
@@ -754,7 +755,26 @@ int main(int argc, char **argv)
             g_include_directories.push_back(&wargv[i][define_equal_len]);
             continue;
         }
-
+        // codepage?
+        if (lstrcmpiW(wargv[i], L"-c") == 0)
+        {
+            ++i;
+            if (i < argc)
+            {
+                g_wCodePage = (WORD)wcstol(wargv[i], NULL, 0);
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "ERROR: -c requires an argument\n");
+                return 1;
+            }
+        }
+        if (memcmp(wargv[i], L"--codepage=", 11 * sizeof(wchar_t)) == 0)
+        {
+            g_wCodePage = (WORD)wcstol(&wargv[i][11], NULL, 0);
+            continue;
+        }
         // otherwise...
         if (g_input_file == NULL)
         {
