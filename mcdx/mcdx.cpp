@@ -32,6 +32,7 @@ void show_help(void)
     printf("  -D --define=<sym>[=<val>]    Define SYM when preprocessing rc file\n");
     printf("  -U --undefine <sym>          Undefine SYM when preprocessing rc file\n");
     printf("  -c --codepage=<codepage>     Specify default codepage\n");
+    printf("  -l --language=<val>          Set language when reading rc file\n");
     printf("FORMAT is one of rc, res or bin, and is deduced from the file name\n");
     printf("Report bugs to <katayama.hirofumi.mz@gmail.com>\n");
 }
@@ -776,6 +777,33 @@ int main(int argc, char **argv)
         if (memcmp(wargv[i], L"--codepage=", 11 * sizeof(wchar_t)) == 0)
         {
             g_wCodePage = (WORD)wcstol(&wargv[i][11], NULL, 0);
+            continue;
+        }
+        // language?
+        if (lstrcmpiW(wargv[i], L"-l") == 0 ||
+            lstrcmpiW(wargv[i], L"--language") == 0)
+        {
+            ++i;
+            if (i < argc)
+            {
+                WORD w = (WORD)wcstol(wargv[i], NULL, 0);
+                BYTE bPrim = LOBYTE(w);
+                BYTE bSub = HIBYTE(w);
+                g_langid = MAKELANGID(bPrim, bSub);
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "ERROR: -c requires an argument\n");
+                return 1;
+            }
+        }
+        if (memcmp(wargv[i], L"--language=", 11 * sizeof(wchar_t)) == 0)
+        {
+            WORD w = (WORD)wcstol(&wargv[i][11], NULL, 0);
+            BYTE bPrim = LOBYTE(w);
+            BYTE bSub = HIBYTE(w);
+            g_langid = MAKELANGID(bPrim, bSub);
             continue;
         }
         // otherwise...
