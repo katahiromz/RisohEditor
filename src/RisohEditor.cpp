@@ -3970,7 +3970,7 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
         return FALSE;
 
     BOOL bAdded = FALSE;
-    ResourceHeader header;
+    ResHeader header;
     while (header.ReadFrom(stream))
     {
         bAdded = TRUE;
@@ -4291,7 +4291,7 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
 BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries)
 {
     MByteStreamEx bs;
-    ResourceHeader header;
+    ResHeader header;
     if (!header.WriteTo(bs))
         return FALSE;
 

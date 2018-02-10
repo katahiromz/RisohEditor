@@ -108,6 +108,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "ConstantsDB.hpp"
 #include "PackedDIB.hpp"
 #include "Res.hpp"
+#include "ResHeader.hpp"
 
 #include "MFile.hpp"
 #include "MProcessMaker.hpp"
