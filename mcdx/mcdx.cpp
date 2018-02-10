@@ -6,6 +6,7 @@
 #include "MString.hpp"
 #include "MacroParser.hpp"
 #include "MessageRes0.hpp"
+#include "ResHeader.hpp"
 #include <cctype>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -31,7 +32,6 @@ void show_help(void)
     printf("  -D --define=<sym>[=<val>]     Define SYM when preprocessing rc file\n");
     printf("  -U --undefine <sym>           Undefine SYM when preprocessing rc file\n");
     printf("FORMAT is one of rc, res or bin, and is deduced from the file name\n");
-    printf("No input-file is stdin, default rc.  No output-file is stdout, default res.\n");
     printf("Report bugs to <katayama.hirofumi.mz@gmail.com>\n");
 }
 
@@ -54,9 +54,11 @@ std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
 
+LANGID g_langid = 0;
 WORD g_wCodePage = CP_UTF8;
 
-MessageRes g_msg_res;
+typedef std::map<LANGID, MessageRes> msg_tables_type;
+msg_tables_type g_msg_tables;
 
 BOOL check_cpp_exe(VOID)
 {
@@ -194,14 +196,14 @@ int do_entry(char*& ptr)
     mstr_unquote(str);
 
     MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
-    g_msg_res.m_map[(DWORD)value] = wstr;
+    g_msg_tables[g_langid].m_map[(DWORD)value] = wstr;
 
     return 0;
 }
 
 int eat_output(const std::string& strOutput)
 {
-    g_msg_res.clear();
+    g_msg_tables.clear();
 
     std::vector<std::string> lines;
     mstr_split(lines, strOutput, "\n");
@@ -212,10 +214,8 @@ int eat_output(const std::string& strOutput)
     }
 
     INT nMode = 0;
-    LANGID langid = 0;
     std::string strFile = "(anonymous)";
     int nLineNo = 1;
-    WORD g_wCodePage = CP_UTF8;
     for (size_t i = 0; i < lines.size(); ++i, ++nLineNo)
     {
         std::string& line = lines[i];
@@ -251,7 +251,7 @@ int eat_output(const std::string& strOutput)
         {
             // LANGUAGE (primary), (sublang)
             char *ptr = &line[8];
-            langid = do_language(ptr);
+            g_langid = do_language(ptr);
             continue;
         }
         else 
@@ -271,7 +271,7 @@ int eat_output(const std::string& strOutput)
             }
             if (nMode == 1) // after MESSAGETABLEDX
             {
-                if (*ptr == '{')
+                if (*ptr == '{')    // }
                 {
                     nMode = 2;
                     ++ptr;
@@ -300,7 +300,7 @@ int eat_output(const std::string& strOutput)
                 }
                 else
                 {
-					;
+                    ;
                 }
             }
         }
@@ -308,15 +308,122 @@ int eat_output(const std::string& strOutput)
     return 0;
 }
 
-int do_emit(void)
+int save_rc(void)
 {
-    std::wstring wstr = g_msg_res.Dump();
-	std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
-    printf("%s\n", str.c_str());
+    FILE *fp = _wfopen(g_output_file, L"w");
+    if (!fp)
+    {
+        fprintf(stderr, "ERROR: Unable to open output file.\n");
+        return 1434;
+    }
+
+    msg_tables_type::iterator it, end = g_msg_tables.end();
+    for (it = g_msg_tables.begin(); it != end; ++it)
+    {
+        fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\n",
+                PRIMARYLANGID(it->first), SUBLANGID(it->first));
+
+        std::wstring wstr = it->second.Dump();
+        std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
+
+        fprintf(fp, "%s\n", str.c_str());
+    }
+    fclose(fp);
+
+    if (ferror(fp))
+    {
+        DeleteFile(g_output_file);
+        fprintf(stderr, "ERROR: Unable to write output file.\n");
+        return 555;
+    }
+
     return 0;
 }
 
-int just_do_it(void)
+int save_res(void)
+{
+    MByteStreamEx bs;
+    ResHeader header;
+    if (!header.WriteTo(bs))
+        return 34323;
+
+    msg_tables_type::iterator it, end = g_msg_tables.end();
+    for (it = g_msg_tables.begin(); it != end; ++it)
+    {
+        MByteStreamEx stream;
+        it->second.SaveToStream(stream);
+
+        header.DataSize = stream.size();
+        header.HeaderSize = header.GetHeaderSize(RT_MESSAGETABLE, 1);
+        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
+            return FALSE;
+
+        header.type = RT_MESSAGETABLE;
+        header.name = 1;
+        header.DataVersion = 0;
+        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
+                             MEMORYFLAG_MOVEABLE;
+        header.LanguageId = it->first;
+        header.Version = 0;
+        header.Characteristics = 0;
+
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        if (!bs.WriteData(&stream[0], stream.size()))
+            return FALSE;
+
+        bs.WriteDwordAlignment();
+    }
+
+    FILE *fp = _wfopen(g_output_file, L"wb");
+    if (!fp)
+    {
+        fprintf(stderr, "ERROR: Unable to open output file.\n");
+        return 1434;
+    }
+
+    fwrite(&bs[0], bs.size(), 1, fp);
+    fclose(fp);
+
+    if (ferror(fp))
+    {
+        DeleteFile(g_output_file);
+        fprintf(stderr, "ERROR: Unable to write output file.\n");
+        return 555;
+    }
+
+    return 0;
+}
+
+int save_bin(void)
+{
+    MessageRes msg_res = g_msg_tables.begin()->second;
+
+    MByteStreamEx stream;
+    msg_res.SaveToStream(stream);
+
+    FILE *fp = _wfopen(g_output_file, L"wb");
+    if (!fp)
+    {
+        fprintf(stderr, "ERROR: Unable to open output file.\n");
+        return 1434;
+    }
+
+    fwrite(&stream[0], stream.size(), 1, fp);
+    fclose(fp);
+
+    if (ferror(fp))
+    {
+        DeleteFile(g_output_file);
+        fprintf(stderr, "ERROR: Unable to write output file.\n");
+        return 555;
+    }
+
+    return 0;
+}
+
+int load_rc(void)
 {
     // build up command line
     MStringW strCommandLine;
@@ -331,9 +438,6 @@ int just_do_it(void)
     strCommandLine += L" \"";
     strCommandLine += g_input_file;
     strCommandLine += L"\"";
-
-    printf("%s\n", 
-    MWideToAnsi(CP_ACP, strCommandLine.c_str()).c_str());
 
     // create a process
     MProcessMaker maker;
@@ -353,7 +457,7 @@ int just_do_it(void)
             if (int ret = eat_output(strOutput))
                 return ret;
 
-            return do_emit();
+            return 0;
         }
 
         fputs(strOutput.c_str(), stdout);
@@ -361,6 +465,121 @@ int just_do_it(void)
     DWORD dwError = GetLastError();
     printf("%ld, %ld\n", dwError, GetFileAttributesW(g_input_file));
     return -1;
+}
+
+int load_bin(void)
+{
+    MFile file(g_input_file);
+    if (!file)
+    {
+        fprintf(stderr, "ERROR: Unable to open input file.\n");
+        return 12;
+    }
+    char buf[256];
+    DWORD dwSize;
+    std::string strContents;
+    while (file.ReadFile(buf, sizeof(buf), &dwSize))
+    {
+        strContents.append(buf, dwSize);
+    }
+    file.CloseHandle();
+
+    MByteStreamEx stream(&strContents[0], strContents.size());
+    if (!g_msg_tables[0].LoadFromStream(stream))
+    {
+        return 2435;
+    }
+
+    return 0;
+}
+
+int load_res(void)
+{
+    MFile file(g_input_file);
+    if (!file)
+    {
+        fprintf(stderr, "ERROR: Unable to open input file.\n");
+        return 12;
+    }
+    char buf[256];
+    DWORD dwSize;
+    std::string strContents;
+    while (file.ReadFile(buf, sizeof(buf), &dwSize))
+    {
+        strContents.append(buf, dwSize);
+    }
+    file.CloseHandle();
+
+    MByteStreamEx stream(&strContents[0], strContents.size());
+    ResHeader header;
+    while (header.ReadFrom(stream))
+    {
+        if (header.DataSize == 0)
+        {
+            stream.ReadDwordAlignment();
+            continue;
+        }
+
+        if (header.DataSize > stream.remainder())
+            return FALSE;
+
+        MByteStreamEx bs(header.DataSize);
+        if (!stream.ReadData(&bs[0], header.DataSize))
+        {
+            break;
+        }
+        if (!g_msg_tables[header.LanguageId].LoadFromStream(bs))
+        {
+            fprintf(stderr, "ERROR: Data is broken or not supported.\n");
+            return 23423;
+        }
+
+        stream.ReadDwordAlignment();
+    }
+
+    return 0;
+}
+
+int just_do_it(void)
+{
+    if (lstrcmpiW(g_inp_format, L"rc") == 0)
+    {
+        if (int ret = load_rc())
+            return ret;
+    }
+    else if (lstrcmpiW(g_inp_format, L"res") == 0)
+    {
+        if (int ret = load_res())
+            return ret;
+    }
+    else if (lstrcmpiW(g_inp_format, L"bin") == 0)
+    {
+        if (int ret = load_bin())
+            return ret;
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: invalid input format\n");
+        return 14235;
+    }
+
+    if (lstrcmpiW(g_out_format, L"rc") == 0)
+    {
+        return save_rc();
+    }
+    else if (lstrcmpiW(g_out_format, L"res") == 0)
+    {
+        return save_res();
+    }
+    else if (lstrcmpiW(g_out_format, L"bin") == 0)
+    {
+        return save_bin();
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: invalid output format\n");
+        return 2434;
+    }
 }
 
 int main(int argc, char **argv)
@@ -549,6 +768,48 @@ int main(int argc, char **argv)
         {
             fprintf(stderr, "ERROR: Too many arguments\n");
             return 1;
+        }
+    }
+
+    if (g_inp_format == NULL)
+    {
+        LPWSTR pch = wcsrchr(g_input_file, L'.');
+        if (lstrcmpiW(pch, L".rc") == 0)
+        {
+            g_inp_format = L".rc";
+        }
+        else if (lstrcmpiW(pch, L".res") == 0)
+        {
+            g_inp_format = L".res";
+        }
+        else if (lstrcmpiW(pch, L".bin") == 0)
+        {
+            g_inp_format = L".bin";
+        }
+        else
+        {
+            g_inp_format = L".rc";
+        }
+    }
+
+    if (g_out_format == NULL)
+    {
+        LPWSTR pch = wcsrchr(g_output_file, L'.');
+        if (lstrcmpiW(pch, L".rc") == 0)
+        {
+            g_out_format = L".rc";
+        }
+        else if (lstrcmpiW(pch, L".res") == 0)
+        {
+            g_out_format = L".res";
+        }
+        else if (lstrcmpiW(pch, L".bin") == 0)
+        {
+            g_out_format = L".bin";
+        }
+        else
+        {
+            g_out_format = L".bin";
         }
     }
 
