@@ -1,8 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "MProcessMaker.hpp"
 #include "MString.hpp"
 #include "MacroParser.hpp"
+#include <cctype>
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -326,6 +329,7 @@ bool guts_quote(std::wstring& str, const wchar_t*& pch)
 
 ////////////////////////////////////////////////////////////////////////////
 
+WCHAR g_szBinDir[MAX_PATH] = L"";
 WCHAR g_szCppExe[MAX_PATH] = L"";
 
 wchar_t *g_input_file = NULL;
@@ -336,6 +340,38 @@ const wchar_t *g_out_format = L"res";
 std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
+
+BOOL check_bin_dir(VOID)
+{
+    WCHAR szPath[MAX_PATH], *pch;
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    pch = wcsrchr(szPath, L'\\');
+    lstrcpyW(pch, L"\\cpp.exe");
+    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpyW(pch, L"\\data\\bin\\cpp.exe");
+        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"\\..\\data\\bin\\cpp.exe");
+            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"\\..\\..\\data\\bin\\cpp.exe");
+                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"\\..\\..\\..\\data\\bin\\cpp.exe");
+                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+    }
+    pch = wcsrchr(szPath, L'\\');
+	*pch = 0;
+    lstrcpynW(g_szBinDir, szPath, MAX_PATH);
+    return TRUE;
+}
 
 BOOL check_cpp_exe(VOID)
 {
@@ -413,8 +449,8 @@ int eat_output(const std::string& strOutput)
                 ++ptr;
             }
             *ptr1 = 0;
-            WORD wPrimaryLang = strtoul(ptr0, NULL, 0);
-            WORD wSubLang = strtoul(ptr2, NULL, 0);
+            WORD wPrimaryLang = (WORD)strtoul(ptr0, NULL, 0);
+            WORD wSubLang = (WORD)strtoul(ptr2, NULL, 0);
             langid = MAKELANGID(wPrimaryLang, wSubLang);
             continue;
         }
@@ -499,30 +535,36 @@ int eat_output(const std::string& strOutput)
             ;
         }
     }
+	return 0;
 }
 
 int just_do_it(void)
 {
     // build up command line
     MStringW strCommandLine;
-    strCommandLine += L"\"";
-    strCommandLine += g_szCppExe;
-    strCommandLine += L"\" -P";
+	strCommandLine += L"\"";
+	strCommandLine += g_szCppExe;
+	strCommandLine += L"\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
-        strCommandLine += L' ';
+        strCommandLine += L" ";
         strCommandLine += g_definitions[i];
     }
-    strCommandLine += L' ';
+    strCommandLine += L" \"";
     strCommandLine += g_input_file;
+    strCommandLine += L"\"";
+
+	printf("%s\n", 
+	MWideToAnsi(CP_ACP, strCommandLine.c_str()).c_str());
 
     // create a process
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
+	maker.SetCurrentDirectoryW(g_szBinDir);
     MFile hInputWrite, hOutputRead;
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        maker.CreateProcessDx(NULL, g_input_file))
+        maker.CreateProcessDx(NULL, strCommandLine.c_str()))
     {
         std::string strOutput;
         maker.ReadAll(strOutput, hOutputRead);
@@ -535,6 +577,8 @@ int just_do_it(void)
 
         fputs(strOutput.c_str(), stdout);
     }
+	DWORD dwError = GetLastError();
+	printf("%ld, %ld\n", dwError, GetFileAttributesW(g_input_file));
     return -1;
 }
 
@@ -726,6 +770,8 @@ int main(int argc, char **argv)
             return 1;
         }
     }
+
+	check_bin_dir();
 
     if (!check_cpp_exe())
     {

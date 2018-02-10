@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.8)
 
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
