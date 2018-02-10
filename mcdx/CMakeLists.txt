@@ -1,8 +1,10 @@
+cmake_minimum_required(VERSION 3.10)
+
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
 # executable
-add_executable(mcdx WIN32 mcdx.cpp)
+add_executable(mcdx mcdx.cpp)
 target_compile_definitions(mcdx PRIVATE -DUNICODE -D_UNICODE)
 
 # do statically link

@@ -1,10 +1,27 @@
+////////////////////////////////////////////////////////////////////////////
+
 #include "MProcessMaker.hpp"
 #include "MString.hpp"
 #include "MacroParser.hpp"
 
+////////////////////////////////////////////////////////////////////////////
+
 #ifndef _countof
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
 #endif
+
+bool mstr_unquote(std::string& str);
+bool mstr_unquote(std::wstring& str);
+bool mstr_unquote(char *str);
+bool mstr_unquote(wchar_t *str);
+bool guts_escape(std::string& str, const char*& pch);
+bool guts_escape(std::wstring& str, const wchar_t*& pch);
+bool guts_quote(std::string& str, const char*& pch);
+bool guts_quote(std::wstring& str, const wchar_t*& pch);
+const char *skip_space(const char *pch);
+const wchar_t *skip_space(const wchar_t *pch);
+
+////////////////////////////////////////////////////////////////////////////
 
 void show_help(void)
 {
@@ -30,6 +47,285 @@ void show_version(void)
     printf("mcdx ver.0.0\n");
 }
 
+////////////////////////////////////////////////////////////////////////////
+
+inline bool mstr_unquote(std::string& str)
+{
+    std::string str2 = str;
+    const char *pch = str2.c_str();
+    return guts_quote(str, pch);
+}
+
+inline bool mstr_unquote(std::wstring& str)
+{
+    std::wstring str2 = str;
+    const wchar_t *pch = str2.c_str();
+    return guts_quote(str, pch);
+}
+
+inline bool mstr_unquote(char *str)
+{
+    std::string s = str;
+    bool ret = mstr_unquote(s);
+    std::strcpy(str, s.c_str());
+    return ret;
+}
+
+inline bool mstr_unquote(wchar_t *str)
+{
+    std::wstring s = str;
+    bool ret = mstr_unquote(s);
+    std::wcscpy(str, s.c_str());
+    return ret;
+}
+
+bool guts_escape(std::string& str, const char*& pch)
+{
+    using namespace std;
+    switch (*pch)
+    {
+    case '\\': str += '\\'; ++pch; break;
+    case '"': str += '\"'; ++pch; break;
+    case 'a': str += '\a'; ++pch; break;
+    case 'b': str += '\b'; ++pch; break;
+    case 'f': str += '\f'; ++pch; break;
+    case 'n': str += '\n'; ++pch; break;
+    case 'r': str += '\r'; ++pch; break;
+    case 't': str += '\t'; ++pch; break;
+    case 'v': str += '\v'; ++pch; break;
+    case 'x':
+        {
+            ++pch;
+            std::string strNum;
+            if (isxdigit(*pch))
+            {
+                strNum += *pch;
+                ++pch;
+                if (isxdigit(*pch))
+                {
+                    strNum += *pch;
+                    ++pch;
+                }
+            }
+            str += (char)strtoul(strNum.c_str(), NULL, 16);
+        }
+        break;
+    case '0': case '1': case '2': case '3':
+    case '4': case '5': case '6': case '7':
+        {
+            std::string strNum;
+            if ('0' <= *pch && *pch <= '7')
+            {
+                strNum += *pch;
+                ++pch;
+                if ('0' <= *pch && *pch <= '7')
+                {
+                    strNum += *pch;
+                    ++pch;
+                    if ('0' <= *pch && *pch <= '7')
+                    {
+                        strNum += *pch;
+                        ++pch;
+                    }
+                }
+            }
+            str += (char)strtoul(strNum.c_str(), NULL, 8);
+        }
+        break;
+    default:
+        str += *pch;
+        ++pch;
+        return false;
+    }
+    return true;
+}
+
+bool guts_escape(std::wstring& str, const wchar_t*& pch)
+{
+    using namespace std;
+    switch (*pch)
+    {
+    case L'\\': str += L'\\'; ++pch; break;
+    case L'"': str += L'\"'; ++pch; break;
+    case L'a': str += L'\a'; ++pch; break;
+    case L'b': str += L'\b'; ++pch; break;
+    case L'f': str += L'\f'; ++pch; break;
+    case L'n': str += L'\n'; ++pch; break;
+    case L'r': str += L'\r'; ++pch; break;
+    case L't': str += L'\t'; ++pch; break;
+    case L'v': str += L'\v'; ++pch; break;
+    case L'x':
+        {
+            ++pch;
+            std::wstring strNum;
+            if (iswxdigit(*pch))
+            {
+                strNum += *pch;
+                ++pch;
+                if (iswxdigit(*pch))
+                {
+                    strNum += *pch;
+                    ++pch;
+                }
+            }
+            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
+        }
+        break;
+    case L'0': case L'1': case L'2': case L'3':
+    case L'4': case L'5': case L'6': case L'7':
+        {
+            std::wstring strNum;
+            if (L'0' <= *pch && *pch <= L'7')
+            {
+                strNum += *pch;
+                ++pch;
+                if (L'0' <= *pch && *pch <= L'7')
+                {
+                    strNum += *pch;
+                    ++pch;
+                    if (L'0' <= *pch && *pch <= L'7')
+                    {
+                        strNum += *pch;
+                        ++pch;
+                    }
+                }
+            }
+            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 8);
+        }
+        break;
+    case 'u':
+        {
+            ++pch;
+            std::wstring strNum;
+            if (iswxdigit(*pch))
+            {
+                strNum += *pch;
+                ++pch;
+                if (iswxdigit(*pch))
+                {
+                    strNum += *pch;
+                    ++pch;
+                    if (iswxdigit(*pch))
+                    {
+                        strNum += *pch;
+                        ++pch;
+                        if (iswxdigit(*pch))
+                        {
+                            strNum += *pch;
+                            ++pch;
+                        }
+                    }
+                }
+            }
+            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
+        }
+        break;
+    default:
+        str += *pch;
+        ++pch;
+        return false;
+    }
+    return true;
+}
+
+inline const char *skip_space(const char *pch)
+{
+    using namespace std;
+    while (*pch && isspace(*pch))
+    {
+        ++pch;
+    }
+    return pch;
+}
+
+inline const wchar_t *skip_space(const wchar_t *pch)
+{
+    using namespace std;
+    while (*pch && iswspace(*pch))
+    {
+        ++pch;
+    }
+    return pch;
+}
+
+bool guts_quote(std::string& str, const char*& pch)
+{
+    using namespace std;
+    str.clear();
+
+    pch = skip_space(pch);
+    if (*pch != L'\"')
+        return false;
+
+    for (++pch; *pch; ++pch)
+    {
+        if (*pch == L'\\')
+        {
+            ++pch;
+            guts_escape(str, pch);
+            --pch;
+        }
+        else if (*pch == L'\"')
+        {
+            ++pch;
+            if (*pch == L'\"')
+            {
+                str += L'\"';
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            str += *pch;
+        }
+    }
+
+    return true;
+}
+
+bool guts_quote(std::wstring& str, const wchar_t*& pch)
+{
+    using namespace std;
+    str.clear();
+
+    pch = skip_space(pch);
+    if (*pch != L'\"')
+        return false;
+
+    for (++pch; *pch; ++pch)
+    {
+        if (*pch == L'\\')
+        {
+            ++pch;
+            guts_escape(str, pch);
+            --pch;
+        }
+        else if (*pch == L'\"')
+        {
+            ++pch;
+            if (*pch == L'\"')
+            {
+                str += L'\"';
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            str += *pch;
+        }
+    }
+
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 WCHAR g_szCppExe[MAX_PATH] = L"";
 
 wchar_t *g_input_file = NULL;
@@ -41,7 +337,7 @@ std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
 
-BOOL check_cpp_exe(VOID);
+BOOL check_cpp_exe(VOID)
 {
     WCHAR szPath[MAX_PATH], *pch;
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
@@ -89,7 +385,7 @@ int eat_output(const std::string& strOutput)
         }
     }
 
-    BOOL bInBrace = FALSE;
+    BOOL bMsgTableDx = FALSE, bInBrace = FALSE;
     LANGID langid = 0;
     for (size_t i = 0; i < lines.size(); ++i)
     {
@@ -124,6 +420,7 @@ int eat_output(const std::string& strOutput)
         }
         else if (memcmp("MESSAGETABLEDX", &line[0], 14) == 0)
         {
+            bMsgTableDx = TRUE;
             char *ptr = &line[14];
             while (std::isspace(*ptr))
             {
@@ -140,55 +437,99 @@ int eat_output(const std::string& strOutput)
                 continue;
             }
         }
-        else if (line[0] == '\"')
-        {
-            if (bInBrace)
-            {
-                
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: Invalid statement\n");
-                return 8;
-            }
-        }
         else if (memcmp("END", &line[0], 3) == 0 || line[0] == '}')
         {
             bInBrace = FALSE;
+            bMsgTableDx = FALSE;
             continue;
+        }
+        else if (bMsgTableDx && bInBrace)
+        {
+            if (std::isdigit(line[0]))
+            {
+                // get number string
+                char *ptr = &line[0];
+                while (*ptr && *ptr != ',')
+                {
+                    ++ptr;
+                }
+                char *ptr0 = ptr;
+                MStringA str(ptr, ptr0);
+
+                // parse
+                using namespace MacroParser;
+                StringScanner scanner(str);
+                TokenStream stream(scanner);
+                stream.read_tokens();
+                Parser parser(stream);
+                int value = 0;
+                if (parser.parse())
+                {
+                    if (eval_ast(parser.ast(), value))
+                    {
+                        ;
+                    }
+                    else
+                    {
+                        fprintf(stderr, "ERROR: Parse error\n");
+                        return 9;
+                    }
+                }
+                else
+                {
+                    fprintf(stderr, "ERROR: Syntax error\n");
+                    return 8;
+                }
+
+                // get string value
+                str = ptr0;
+                mstr_unquote(str);
+
+                //MStringW wstr(MAnsiToWide(CP_UTF8, str.c_str()).c_str());
+                printf("%d, %s\n", value, str.c_str());
+            }
+            else
+            {
+                fprintf(stderr, "ERROR: Syntax error\n");
+                return 8;
+            }
+        }
+        else
+        {
+            ;
         }
     }
 }
 
 int just_do_it(void)
 {
+    // build up command line
     MStringW strCommandLine;
     strCommandLine += L"\"";
     strCommandLine += g_szCppExe;
     strCommandLine += L"\" -P";
-
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
         strCommandLine += L' ';
         strCommandLine += g_definitions[i];
     }
-
     strCommandLine += L' ';
     strCommandLine += g_input_file;
 
+    // create a process
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
     MFile hInputWrite, hOutputRead;
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        maker.CreateProcessDx(NULL, g_input_file.c_str()))
+        maker.CreateProcessDx(NULL, g_input_file))
     {
         std::string strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead);
+        maker.ReadAll(strOutput, hOutputRead);
 
-        if (pmaker.GetExitCode() == 0)
+        if (maker.GetExitCode() == 0)
         {
+            // eat the output
             return eat_output(strOutput);
         }
 
@@ -197,9 +538,10 @@ int just_do_it(void)
     return -1;
 }
 
-extern "C"
-int wmain(int argc, wchar_t **wargv)
+int main(int argc, char **argv)
 {
+    LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
     g_definitions.push_back(L"-DRC_INVOKED");
     g_definitions.push_back(L"-DMC_INVOKED");
 
@@ -322,7 +664,7 @@ int wmain(int argc, wchar_t **wargv)
                 return 1;
             }
         }
-        if (memcmp(wargv[i], include_dir, include_dir_equal_size) == 0)
+        if (memcmp(wargv[i], include_dir_equal, include_dir_equal_size) == 0)
         {
             g_include_directories.push_back(&wargv[i][include_dir_equal_len]);
             continue;
