@@ -621,7 +621,7 @@ namespace MacroParser
                     }
                     str += ch;
                 }
-                int i = strtol(str.c_str(), NULL, 0);
+                int i = strtoul(str.c_str(), NULL, 0);
                 Token token(str, TOK_INTEGER, i);
                 m_tokens.push_back(token);
             }

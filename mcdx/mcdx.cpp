@@ -5,6 +5,7 @@
 #include "MProcessMaker.hpp"
 #include "MString.hpp"
 #include "MacroParser.hpp"
+#include "MessageRes0.hpp"
 #include <cctype>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -12,17 +13,6 @@
 #ifndef _countof
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
 #endif
-
-bool mstr_unquote(std::string& str);
-bool mstr_unquote(std::wstring& str);
-bool mstr_unquote(char *str);
-bool mstr_unquote(wchar_t *str);
-bool guts_escape(std::string& str, const char*& pch);
-bool guts_escape(std::wstring& str, const wchar_t*& pch);
-bool guts_quote(std::string& str, const char*& pch);
-bool guts_quote(std::wstring& str, const wchar_t*& pch);
-const char *skip_space(const char *pch);
-const wchar_t *skip_space(const wchar_t *pch);
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -52,283 +42,6 @@ void show_version(void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-inline bool mstr_unquote(std::string& str)
-{
-    std::string str2 = str;
-    const char *pch = str2.c_str();
-    return guts_quote(str, pch);
-}
-
-inline bool mstr_unquote(std::wstring& str)
-{
-    std::wstring str2 = str;
-    const wchar_t *pch = str2.c_str();
-    return guts_quote(str, pch);
-}
-
-inline bool mstr_unquote(char *str)
-{
-    std::string s = str;
-    bool ret = mstr_unquote(s);
-    std::strcpy(str, s.c_str());
-    return ret;
-}
-
-inline bool mstr_unquote(wchar_t *str)
-{
-    std::wstring s = str;
-    bool ret = mstr_unquote(s);
-    std::wcscpy(str, s.c_str());
-    return ret;
-}
-
-bool guts_escape(std::string& str, const char*& pch)
-{
-    using namespace std;
-    switch (*pch)
-    {
-    case '\\': str += '\\'; ++pch; break;
-    case '"': str += '\"'; ++pch; break;
-    case 'a': str += '\a'; ++pch; break;
-    case 'b': str += '\b'; ++pch; break;
-    case 'f': str += '\f'; ++pch; break;
-    case 'n': str += '\n'; ++pch; break;
-    case 'r': str += '\r'; ++pch; break;
-    case 't': str += '\t'; ++pch; break;
-    case 'v': str += '\v'; ++pch; break;
-    case 'x':
-        {
-            ++pch;
-            std::string strNum;
-            if (isxdigit(*pch))
-            {
-                strNum += *pch;
-                ++pch;
-                if (isxdigit(*pch))
-                {
-                    strNum += *pch;
-                    ++pch;
-                }
-            }
-            str += (char)strtoul(strNum.c_str(), NULL, 16);
-        }
-        break;
-    case '0': case '1': case '2': case '3':
-    case '4': case '5': case '6': case '7':
-        {
-            std::string strNum;
-            if ('0' <= *pch && *pch <= '7')
-            {
-                strNum += *pch;
-                ++pch;
-                if ('0' <= *pch && *pch <= '7')
-                {
-                    strNum += *pch;
-                    ++pch;
-                    if ('0' <= *pch && *pch <= '7')
-                    {
-                        strNum += *pch;
-                        ++pch;
-                    }
-                }
-            }
-            str += (char)strtoul(strNum.c_str(), NULL, 8);
-        }
-        break;
-    default:
-        str += *pch;
-        ++pch;
-        return false;
-    }
-    return true;
-}
-
-bool guts_escape(std::wstring& str, const wchar_t*& pch)
-{
-    using namespace std;
-    switch (*pch)
-    {
-    case L'\\': str += L'\\'; ++pch; break;
-    case L'"': str += L'\"'; ++pch; break;
-    case L'a': str += L'\a'; ++pch; break;
-    case L'b': str += L'\b'; ++pch; break;
-    case L'f': str += L'\f'; ++pch; break;
-    case L'n': str += L'\n'; ++pch; break;
-    case L'r': str += L'\r'; ++pch; break;
-    case L't': str += L'\t'; ++pch; break;
-    case L'v': str += L'\v'; ++pch; break;
-    case L'x':
-        {
-            ++pch;
-            std::wstring strNum;
-            if (iswxdigit(*pch))
-            {
-                strNum += *pch;
-                ++pch;
-                if (iswxdigit(*pch))
-                {
-                    strNum += *pch;
-                    ++pch;
-                }
-            }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
-        }
-        break;
-    case L'0': case L'1': case L'2': case L'3':
-    case L'4': case L'5': case L'6': case L'7':
-        {
-            std::wstring strNum;
-            if (L'0' <= *pch && *pch <= L'7')
-            {
-                strNum += *pch;
-                ++pch;
-                if (L'0' <= *pch && *pch <= L'7')
-                {
-                    strNum += *pch;
-                    ++pch;
-                    if (L'0' <= *pch && *pch <= L'7')
-                    {
-                        strNum += *pch;
-                        ++pch;
-                    }
-                }
-            }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 8);
-        }
-        break;
-    case 'u':
-        {
-            ++pch;
-            std::wstring strNum;
-            if (iswxdigit(*pch))
-            {
-                strNum += *pch;
-                ++pch;
-                if (iswxdigit(*pch))
-                {
-                    strNum += *pch;
-                    ++pch;
-                    if (iswxdigit(*pch))
-                    {
-                        strNum += *pch;
-                        ++pch;
-                        if (iswxdigit(*pch))
-                        {
-                            strNum += *pch;
-                            ++pch;
-                        }
-                    }
-                }
-            }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
-        }
-        break;
-    default:
-        str += *pch;
-        ++pch;
-        return false;
-    }
-    return true;
-}
-
-inline const char *skip_space(const char *pch)
-{
-    using namespace std;
-    while (*pch && isspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
-}
-
-inline const wchar_t *skip_space(const wchar_t *pch)
-{
-    using namespace std;
-    while (*pch && iswspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
-}
-
-bool guts_quote(std::string& str, const char*& pch)
-{
-    using namespace std;
-    str.clear();
-
-    pch = skip_space(pch);
-    if (*pch != L'\"')
-        return false;
-
-    for (++pch; *pch; ++pch)
-    {
-        if (*pch == L'\\')
-        {
-            ++pch;
-            guts_escape(str, pch);
-            --pch;
-        }
-        else if (*pch == L'\"')
-        {
-            ++pch;
-            if (*pch == L'\"')
-            {
-                str += L'\"';
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            str += *pch;
-        }
-    }
-
-    return true;
-}
-
-bool guts_quote(std::wstring& str, const wchar_t*& pch)
-{
-    using namespace std;
-    str.clear();
-
-    pch = skip_space(pch);
-    if (*pch != L'\"')
-        return false;
-
-    for (++pch; *pch; ++pch)
-    {
-        if (*pch == L'\\')
-        {
-            ++pch;
-            guts_escape(str, pch);
-            --pch;
-        }
-        else if (*pch == L'\"')
-        {
-            ++pch;
-            if (*pch == L'\"')
-            {
-                str += L'\"';
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            str += *pch;
-        }
-    }
-
-    return true;
-}
-
-////////////////////////////////////////////////////////////////////////////
-
 WCHAR g_szBinDir[MAX_PATH] = L"";
 WCHAR g_szCppExe[MAX_PATH] = L"";
 
@@ -340,6 +53,10 @@ const wchar_t *g_out_format = L"res";
 std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
+
+WORD g_wCodePage = CP_UTF8;
+
+MessageRes g_msg_res;
 
 BOOL check_cpp_exe(VOID)
 {
@@ -369,13 +86,123 @@ BOOL check_cpp_exe(VOID)
     }
     lstrcpynW(g_szCppExe, szPath, MAX_PATH);
     pch = wcsrchr(szPath, L'\\');
-	*pch = 0;
+    *pch = 0;
     lstrcpynW(g_szBinDir, szPath, MAX_PATH);
     return TRUE;
 }
 
+bool do_pragma_line(char*& ptr, std::string& strFile, int& nLineNo)
+{
+    // # line "file"
+    char *ptr1 = ptr;
+    while (std::isdigit(*ptr))
+    {
+        ++ptr;
+    }
+    char *ptr2 = ptr;
+    while (std::isspace(*ptr))
+    {
+        ++ptr;
+    }
+    char *ptr3 = ptr;
+    while (*ptr)
+    {
+        ++ptr;
+    }
+    *ptr2 = 0;
+
+    nLineNo = strtol(ptr1, NULL, 0);
+
+    std::string file = ptr3;
+    mstr_unquote(file);
+    strFile = file;
+
+    return true;
+}
+
+LANGID do_language(char*& ptr)
+{
+    // LANGUAGE (primary), (sublang)
+    while (std::isspace(*ptr))
+    {
+        ++ptr;
+    }
+    char *ptr0 = ptr;
+    while (std::isalnum(*ptr))
+    {
+        ++ptr;
+    }
+    char *ptr1 = ptr;
+    while (std::isspace(*ptr))
+    {
+        ++ptr;
+    }
+    char *ptr2 = ptr;
+    while (std::isalnum(*ptr))
+    {
+        ++ptr;
+    }
+    *ptr1 = 0;
+    WORD wPrimaryLang = (WORD)strtoul(ptr0, NULL, 0);
+    WORD wSubLang = (WORD)strtoul(ptr2, NULL, 0);
+    return MAKELANGID(wPrimaryLang, wSubLang);
+}
+
+int do_entry(char*& ptr)
+{
+    // get number string
+    char *ptr0 = ptr;
+    while (*ptr && *ptr != ',')
+    {
+        ++ptr;
+    }
+    char *ptr1 = ptr;
+    MStringA str(ptr0, ptr1);
+
+    // parse
+    using namespace MacroParser;
+    StringScanner scanner(str);
+    TokenStream stream(scanner);
+    stream.read_tokens();
+    Parser parser(stream);
+
+    int value = 0;
+    if (parser.parse())
+    {
+        if (eval_ast(parser.ast(), value))
+        {
+            ;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: Parse error\n");
+            return 9;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: Syntax error\n");
+        return 8;
+    }
+
+    // get string value
+    while (*ptr1 == ',' || std::isspace(*ptr1))
+    {
+        ++ptr1;
+    }
+    str = ptr1;
+    mstr_unquote(str);
+
+    MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
+    g_msg_res.m_map[(DWORD)value] = wstr;
+
+    return 0;
+}
+
 int eat_output(const std::string& strOutput)
 {
+    g_msg_res.clear();
+
     std::vector<std::string> lines;
     mstr_split(lines, strOutput, "\n");
 
@@ -384,195 +211,118 @@ int eat_output(const std::string& strOutput)
         mstr_trim(lines[i]);
     }
 
-    BOOL bMsgTableDx = FALSE, bInBrace = FALSE;
+    INT nMode = 0;
     LANGID langid = 0;
-	std::string strFile = "(anonymous)";
-	WORD wCodePage = CP_UTF8;
-    for (size_t i = 0; i < lines.size(); ++i)
+    std::string strFile = "(anonymous)";
+    int nLineNo = 1;
+    WORD g_wCodePage = CP_UTF8;
+    for (size_t i = 0; i < lines.size(); ++i, ++nLineNo)
     {
         std::string& line = lines[i];
         if (line[0] == '#')
-		{
-			// # line "file"
-			char *ptr0 = &line[1];
-			while (std::isspace(*ptr))
-			{
-				++ptr;
-			}
-			if (std::isdigit(*ptr))
-			{
-				char *ptr1 = ptr;
-				while (std::isdigit(*ptr))
-				{
-					++ptr;
-				}
-				char *ptr2 = ptr;
-				while (std::isspace(*ptr))
-				{
-					++ptr;
-				}
-				char *ptr3 = ptr;
-				while (*ptr)
-				{
-					++ptr;
-				}
-				*ptr2 = 0;
-				int line = strtol(ptr1, NULL, 0);
-				std::string file = ptr3;
-				mstr_unquote(file);
-				strFile = file;
-			}
-			else if (memcmp(ptr, "pragma", 6) == 0)
-			{
-				// #pragma
-				char *ptr1 = ptr + 6;
-				while (std::isspace(*ptr))
-				{
-					++ptr;
-				}
-				char *ptr2 = ptr;
-				if (memcmp(ptr, "code_page(", 10) == 0)
-				{
-					ptr += 10;
-					wCodePage = strtol(ptr, NULL, 0);
-					// #pragma code_page(...)
-				}
-			}
-		}
-        else if (memcmp("LANGUAGE", &line[0], 8) == 0)
         {
-            char *ptr = &line[8];
+            char *ptr = &line[1];
             while (std::isspace(*ptr))
             {
                 ++ptr;
             }
-            char *ptr0 = ptr;
-            while (std::isalnum(*ptr))
+            if (std::isdigit(*ptr))
             {
-                ++ptr;
+                do_pragma_line(ptr, strFile, nLineNo);
             }
-            char *ptr1 = ptr;
-            while (std::isspace(*ptr))
+            else if (memcmp(ptr, "pragma", 6) == 0)
             {
-                ++ptr;
-            }
-            char *ptr2 = ptr;
-            while (std::isalnum(*ptr))
-            {
-                ++ptr;
-            }
-            *ptr1 = 0;
-            WORD wPrimaryLang = (WORD)strtoul(ptr0, NULL, 0);
-            WORD wSubLang = (WORD)strtoul(ptr2, NULL, 0);
-            langid = MAKELANGID(wPrimaryLang, wSubLang);
-            continue;
-        }
-        else if (memcmp("MESSAGETABLEDX", &line[0], 14) == 0)
-        {
-            bMsgTableDx = TRUE;
-            char *ptr = &line[14];
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
-            if (*ptr == '{')
-            {
-                bInBrace = TRUE;
-                continue;
-            }
-            if (memcmp(ptr, "BEGIN", 5) == 0)
-            {
-                bInBrace = TRUE;
-                continue;
-            }
-        }
-        else if (memcmp("END", &line[0], 3) == 0 || line[0] == '}')
-        {
-            bInBrace = FALSE;
-            bMsgTableDx = FALSE;
-            continue;
-        }
-        else if (bMsgTableDx && !bInBrace)
-		{
-			if (line[0] == '{')
-			{
-				bInBrace = TRUE;
-			}
-			else if (memcmp("BEGIN", &line[0], 5) == 0)
-			{
-				bInBrace = TRUE;
-			}
-		}
-        else if (bMsgTableDx && bInBrace)
-        {
-            if (std::isdigit(line[0]))
-            {
-                // get number string
-                char *ptr0 = &line[0];
-				char *ptr = ptr0;
-                while (*ptr && *ptr != ',')
+                // #pragma
+                char *ptr1 = ptr + 6;
+                while (std::isspace(*ptr))
                 {
                     ++ptr;
                 }
-                char *ptr1 = ptr;
-                MStringA str(ptr0, ptr1);
-
-                // parse
-                using namespace MacroParser;
-                StringScanner scanner(str);
-                TokenStream stream(scanner);
-                stream.read_tokens();
-                Parser parser(stream);
-                int value = 0;
-                if (parser.parse())
+                char *ptr2 = ptr;
+                if (memcmp(ptr, "code_page(", 10) == 0) // ')'
                 {
-                    if (eval_ast(parser.ast(), value))
+                    // #pragma code_page(...)
+                    ptr += 10;
+                    g_wCodePage = WORD(strtol(ptr, NULL, 0));
+                }
+            }
+        }
+        else if (memcmp("LANGUAGE", &line[0], 8) == 0)
+        {
+            // LANGUAGE (primary), (sublang)
+            char *ptr = &line[8];
+            langid = do_language(ptr);
+            continue;
+        }
+        else 
+        {
+            char *ptr = &line[0];
+            if (nMode == 0) // out of MESSAGETABLEDX { ... }
+            {
+                if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
+                {
+                    nMode = 1;
+                    ptr += 14;
+                    while (std::isspace(*ptr))
                     {
-                        ;
+                        ++ptr;
                     }
-                    else
-                    {
-                        fprintf(stderr, "ERROR: Parse error\n");
-                        return 9;
-                    }
+                }
+            }
+            if (nMode == 1) // after MESSAGETABLEDX
+            {
+                if (*ptr == '{')
+                {
+                    nMode = 2;
+                    ++ptr;
+                }
+                else if (memcmp(ptr, "BEGIN", 5) == 0)
+                {
+                    nMode = 2;
+                    ptr += 5;
+                }
+                while (std::isspace(*ptr))
+                {
+                    ++ptr;
+                }
+            }
+            if (nMode == 2) // in MESSAGETABLEDX { ... }
+            {
+                if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
+                {
+                    nMode = 0;
+                    continue;
+                }
+                if (std::isdigit(*ptr))
+                {
+                    if (int ret = do_entry(ptr))
+                        return ret;
                 }
                 else
                 {
-                    fprintf(stderr, "ERROR: Syntax error\n");
-                    return 8;
+					;
                 }
-
-                // get string value
-				while (*ptr1 == ',' || std::isspace(*ptr1))
-				{
-					++ptr1;
-				}
-                str = ptr1;
-                mstr_unquote(str);
-
-                MStringW wstr(MAnsiToWide(wCodePage, str.c_str()).c_str());
             }
-            else
-            {
-                fprintf(stderr, "ERROR: Syntax error\n");
-                return 8;
-            }
-        }
-        else
-        {
-            ;
         }
     }
-	return 0;
+    return 0;
+}
+
+int do_emit(void)
+{
+    std::wstring wstr = g_msg_res.Dump();
+	std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
+    printf("%s\n", str.c_str());
+    return 0;
 }
 
 int just_do_it(void)
 {
     // build up command line
     MStringW strCommandLine;
-	strCommandLine += L"\"";
-	strCommandLine += g_szCppExe;
-	strCommandLine += L"\" ";
+    strCommandLine += L"\"";
+    strCommandLine += g_szCppExe;
+    strCommandLine += L"\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
         strCommandLine += L" ";
@@ -582,14 +332,14 @@ int just_do_it(void)
     strCommandLine += g_input_file;
     strCommandLine += L"\"";
 
-	printf("%s\n", 
-	MWideToAnsi(CP_ACP, strCommandLine.c_str()).c_str());
+    printf("%s\n", 
+    MWideToAnsi(CP_ACP, strCommandLine.c_str()).c_str());
 
     // create a process
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
-	maker.SetCurrentDirectoryW(g_szBinDir);
+    maker.SetCurrentDirectoryW(g_szBinDir);
     MFile hInputWrite, hOutputRead;
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         maker.CreateProcessDx(NULL, strCommandLine.c_str()))
@@ -600,13 +350,16 @@ int just_do_it(void)
         if (maker.GetExitCode() == 0)
         {
             // eat the output
-            return eat_output(strOutput);
+            if (int ret = eat_output(strOutput))
+                return ret;
+
+            return do_emit();
         }
 
         fputs(strOutput.c_str(), stdout);
     }
-	DWORD dwError = GetLastError();
-	printf("%ld, %ld\n", dwError, GetFileAttributesW(g_input_file));
+    DWORD dwError = GetLastError();
+    printf("%ld, %ld\n", dwError, GetFileAttributesW(g_input_file));
     return -1;
 }
 
