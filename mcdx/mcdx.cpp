@@ -381,23 +381,65 @@ int eat_output(const std::string& strOutput)
 
     for (size_t i = 0; i < lines.size(); ++i)
     {
-        if (lines[i][0] == '#')
-        {
-            lines.erase(lines.begin() + i);
-            --i;
-        }
-        else
-        {
-            mstr_trim(lines[i]);
-        }
+        mstr_trim(lines[i]);
     }
 
     BOOL bMsgTableDx = FALSE, bInBrace = FALSE;
     LANGID langid = 0;
+	std::string strFile = "(anonymous)";
+	WORD wCodePage = CP_UTF8;
     for (size_t i = 0; i < lines.size(); ++i)
     {
         std::string& line = lines[i];
-        if (memcmp("LANGUAGE", &line[0], 8) == 0)
+        if (line[0] == '#')
+		{
+			// # line "file"
+			char *ptr0 = &line[1];
+			while (std::isspace(*ptr))
+			{
+				++ptr;
+			}
+			if (std::isdigit(*ptr))
+			{
+				char *ptr1 = ptr;
+				while (std::isdigit(*ptr))
+				{
+					++ptr;
+				}
+				char *ptr2 = ptr;
+				while (std::isspace(*ptr))
+				{
+					++ptr;
+				}
+				char *ptr3 = ptr;
+				while (*ptr)
+				{
+					++ptr;
+				}
+				*ptr2 = 0;
+				int line = strtol(ptr1, NULL, 0);
+				std::string file = ptr3;
+				mstr_unquote(file);
+				strFile = file;
+			}
+			else if (memcmp(ptr, "pragma", 6) == 0)
+			{
+				// #pragma
+				char *ptr1 = ptr + 6;
+				while (std::isspace(*ptr))
+				{
+					++ptr;
+				}
+				char *ptr2 = ptr;
+				if (memcmp(ptr, "code_page(", 10) == 0)
+				{
+					ptr += 10;
+					wCodePage = strtol(ptr, NULL, 0);
+					// #pragma code_page(...)
+				}
+			}
+		}
+        else if (memcmp("LANGUAGE", &line[0], 8) == 0)
         {
             char *ptr = &line[8];
             while (std::isspace(*ptr))
@@ -508,8 +550,7 @@ int eat_output(const std::string& strOutput)
                 str = ptr1;
                 mstr_unquote(str);
 
-                //MStringW wstr(MAnsiToWide(CP_UTF8, str.c_str()).c_str());
-                printf("%d, %s\n", value, str.c_str());
+                MStringW wstr(MAnsiToWide(wCodePage, str.c_str()).c_str());
             }
             else
             {
