@@ -47,8 +47,8 @@ WCHAR g_szCppExe[MAX_PATH] = L"";
 
 wchar_t *g_input_file = NULL;
 wchar_t *g_output_file = NULL;
-const wchar_t *g_inp_format = L"rc";
-const wchar_t *g_out_format = L"res";
+const wchar_t *g_inp_format = NULL;
+const wchar_t *g_out_format = NULL;
 
 std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
@@ -310,7 +310,7 @@ int eat_output(const std::string& strOutput)
 
 int save_rc(void)
 {
-    FILE *fp = _wfopen(g_output_file, L"w");
+    FILE *fp = _wfopen(g_output_file, L"wb");
     if (!fp)
     {
         fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -320,13 +320,13 @@ int save_rc(void)
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
     {
-        fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\n",
+        fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\r\n",
                 PRIMARYLANGID(it->first), SUBLANGID(it->first));
 
         std::wstring wstr = it->second.Dump();
         std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
 
-        fprintf(fp, "%s\n", str.c_str());
+        fprintf(fp, "%s\r\n", str.c_str());
     }
     fclose(fp);
 
@@ -776,19 +776,19 @@ int main(int argc, char **argv)
         LPWSTR pch = wcsrchr(g_input_file, L'.');
         if (lstrcmpiW(pch, L".rc") == 0)
         {
-            g_inp_format = L".rc";
+            g_inp_format = L"rc";
         }
         else if (lstrcmpiW(pch, L".res") == 0)
         {
-            g_inp_format = L".res";
+            g_inp_format = L"res";
         }
         else if (lstrcmpiW(pch, L".bin") == 0)
         {
-            g_inp_format = L".bin";
+            g_inp_format = L"bin";
         }
         else
         {
-            g_inp_format = L".rc";
+            g_inp_format = L"rc";
         }
     }
 
@@ -797,19 +797,19 @@ int main(int argc, char **argv)
         LPWSTR pch = wcsrchr(g_output_file, L'.');
         if (lstrcmpiW(pch, L".rc") == 0)
         {
-            g_out_format = L".rc";
+            g_out_format = L"rc";
         }
         else if (lstrcmpiW(pch, L".res") == 0)
         {
-            g_out_format = L".res";
+            g_out_format = L"res";
         }
         else if (lstrcmpiW(pch, L".bin") == 0)
         {
-            g_out_format = L".bin";
+            g_out_format = L"bin";
         }
         else
         {
-            g_out_format = L".bin";
+            g_out_format = L"bin";
         }
     }
 

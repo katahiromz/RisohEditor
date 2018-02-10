@@ -176,31 +176,16 @@ public:
                 for (DWORD k = it->FirstId; k <= it->LastId; ++k)
                 {
                     std::wstring& wstr = m_map[k];
+
                     MESSAGE_RESOURCE_ENTRY_HEADER header;
-                    header.Length = (WORD)(wstr.size() * sizeof(WCHAR));
+                    header.Length = (WORD)(sizeof(header) + wstr.size() * sizeof(WCHAR));
+                    header.Flags = MESSAGE_RESOURCE_UNICODE;
+                    if (!stream.WriteRaw(header))
+                        return FALSE;
 
-                    if (mstr_is_ascii(wstr))
-                    {
-                        MWideToAnsi astr(CP_ACP, wstr);
-
-                        header.Flags = 0;
-                        if (!stream.WriteRaw(header))
-                            return FALSE;
-
-                        size_t size = astr.size() * sizeof(char);
-                        if (!stream.WriteData(&astr[0], size))
-                            return FALSE;
-                    }
-                    else
-                    {
-                        header.Flags = MESSAGE_RESOURCE_UNICODE;
-                        if (!stream.WriteRaw(header))
-                            return FALSE;
-
-                        size_t size = wstr.size() * sizeof(WCHAR);
-                        if (!stream.WriteData(&wstr[0], size))
-                            return FALSE;
-                    }
+                    size_t size = wstr.size() * sizeof(WCHAR);
+                    if (!stream.WriteData(&wstr[0], size))
+                        return FALSE;
                 }
             }
         }
@@ -277,7 +262,7 @@ protected:
             offsets.push_back(offset);
             for (DWORD k = it->FirstId; k <= it->LastId; ++k)
             {
-                offset += sizeof(USHORT) * 2;
+                offset += sizeof(MESSAGE_RESOURCE_ENTRY_HEADER);
                 offset += m_map[k].size() * sizeof(WCHAR);
             }
         }
