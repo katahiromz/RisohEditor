@@ -88,8 +88,66 @@ int eat_output(const std::string& strOutput)
         }
     }
 
+    BOOL bInBrace = FALSE;
+    LANGID langid = 0;
     for (size_t i = 0; i < lines.size(); ++i)
     {
+        std::string& line = lines[i];
+        if (memcmp("LANGUAGE", &line[0], 8) == 0)
+        {
+            char *ptr = &line[8];
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            char *ptr0 = ptr;
+            while (std::isalnum(*ptr))
+            {
+                ++ptr;
+            }
+            char *ptr1 = ptr;
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            char *ptr2 = ptr;
+            while (std::isalnum(*ptr))
+            {
+                ++ptr;
+            }
+            *ptr1 = 0;
+            WORD wPrimaryLang = strtoul(ptr0, NULL, 0);
+            WORD wSubLang = strtoul(ptr2, NULL, 0);
+            langid = MAKELANGID(wPrimaryLang, wSubLang);
+            continue;
+        }
+        else if (memcmp("MESSAGETABLEDX", &line[0], 14) == 0)
+        {
+            char *ptr = &line[14];
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            if (*ptr == '{')
+            {
+                bInBrace = TRUE;
+                continue;
+            }
+            if (memcmp(ptr, "BEGIN", 5) == 0)
+            {
+                bInBrace = TRUE;
+                continue;
+            }
+        }
+        else if (line[0] == '\"')
+        {
+            ;
+        }
+        else if (memcmp("END", &line[0], 3) == 0 || line[0] == '}')
+        {
+            bInBrace = FALSE;
+            continue;
+        }
     }
 }
 
