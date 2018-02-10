@@ -201,20 +201,24 @@ int wmain(int argc, wchar_t **wargv)
     size_t define_equal_len = lstrlenW(define_equal);
     size_t define_equal_size = define_equal_len * sizeof(wchar_t);
 
+    // parse command line
     for (int i = 1; i < argc; ++i)
     {
+        // show help?
         if (lstrcmpiW(wargv[i], L"--help") == 0 ||
             lstrcmpiW(wargv[i], L"/?") == 0)
         {
             show_help();
             return 0;
         }
+        // show version?
         if (lstrcmpiW(wargv[i], L"--version") == 0)
         {
             show_version();
             return 0;
         }
-        if (lstrcmpiW(wargv[i], L"--g_input_file") == 0 ||
+        // input file?
+        if (lstrcmpiW(wargv[i], L"--input_file") == 0 ||
             lstrcmpW(wargv[i], L"-i") == 0)
         {
             ++i;
@@ -233,10 +237,11 @@ int wmain(int argc, wchar_t **wargv)
             }
             else
             {
-                fprintf(stderr, "ERROR: -i or --g_input_file requires an argument\n");
+                fprintf(stderr, "ERROR: -i or --input_file requires an argument\n");
                 return 1;
             }
         }
+        // output file?
         if (lstrcmpiW(wargv[i], L"--output") == 0 ||
             lstrcmpW(wargv[i], L"-o") == 0)
         {
@@ -260,7 +265,8 @@ int wmain(int argc, wchar_t **wargv)
                 return 1;
             }
         }
-        if (lstrcmpiW(wargv[i], L"--g_input_file-format") == 0 ||
+        // input format?
+        if (lstrcmpiW(wargv[i], L"--input-format") == 0 ||
             lstrcmpW(wargv[i], L"-J") == 0)
         {
             ++i;
@@ -271,10 +277,11 @@ int wmain(int argc, wchar_t **wargv)
             }
             else
             {
-                fprintf(stderr, "ERROR: -J or --g_input_file-format requires an argument\n");
+                fprintf(stderr, "ERROR: -J or --input-format requires an argument\n");
                 return 1;
             }
         }
+        // output format?
         if (lstrcmpiW(wargv[i], L"--output-format") == 0 ||
             lstrcmpW(wargv[i], L"-O") == 0)
         {
@@ -290,6 +297,7 @@ int wmain(int argc, wchar_t **wargv)
                 return 1;
             }
         }
+        // include directory?
         if (lstrcmpW(wargv[i], L"-I") == 0)
         {
             ++i;
@@ -309,6 +317,7 @@ int wmain(int argc, wchar_t **wargv)
             g_include_directories.push_back(&wargv[i][include_dir_equal_len]);
             continue;
         }
+        // definition?
         if (lstrcmpW(wargv[i], L"-D") == 0)
         {
             ++i;
@@ -323,6 +332,7 @@ int wmain(int argc, wchar_t **wargv)
                 return 1;
             }
         }
+        // undefine?
         if (lstrcmpW(wargv[i], L"-U") == 0 ||
             lstrcmpiW(wargv[i], L"-undefine") == 0)
         {
@@ -343,6 +353,8 @@ int wmain(int argc, wchar_t **wargv)
             g_include_directories.push_back(&wargv[i][define_equal_len]);
             continue;
         }
+
+        // otherwise...
         if (g_input_file == NULL)
         {
             g_input_file = wargv[i];
