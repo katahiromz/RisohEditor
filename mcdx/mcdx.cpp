@@ -73,8 +73,24 @@ BOOL check_cpp_exe(VOID);
 int eat_output(const std::string& strOutput)
 {
     std::vector<std::string> lines;
+    mstr_split(lines, strOutput, "\n");
 
-    mstr_split();
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        if (lines[i][0] == '#')
+        {
+            lines.erase(lines.begin() + i);
+            --i;
+        }
+        else
+        {
+            mstr_trim(lines[i]);
+        }
+    }
+
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+    }
 }
 
 int just_do_it(void)
