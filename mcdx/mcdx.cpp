@@ -56,7 +56,6 @@ void show_version(void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-WCHAR g_szBinDir[MAX_PATH] = L"";
 WCHAR g_szCppExe[MAX_PATH] = L"";
 
 wchar_t *g_input_file = NULL;
@@ -86,7 +85,15 @@ int syntax_error(void)
 
 BOOL check_cpp_exe(VOID)
 {
-    WCHAR szPath[MAX_PATH], *pch;
+    WCHAR szPath[MAX_PATH + 64], *pch;
+
+    SearchPathW(NULL, L"cpp.exe", NULL, _countof(szPath), szPath, &pch);
+    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpynW(g_szCppExe, szPath, MAX_PATH);
+        return TRUE;
+    }
+
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
     pch = wcsrchr(szPath, L'\\');
     lstrcpyW(pch, L"\\cpp.exe");
@@ -111,9 +118,6 @@ BOOL check_cpp_exe(VOID)
         }
     }
     lstrcpynW(g_szCppExe, szPath, MAX_PATH);
-    pch = wcsrchr(szPath, L'\\');
-    *pch = 0;
-    lstrcpynW(g_szBinDir, szPath, MAX_PATH);
     return TRUE;
 }
 
@@ -141,59 +145,6 @@ bool do_pragma_line(char*& ptr)
     g_strFile = file;
 
     return true;
-}
-
-int do_entry(char*& ptr)
-{
-    // get number string
-    char *ptr0 = ptr;
-    while (*ptr && *ptr != ',' && *ptr != '\"')
-    {
-        ++ptr;
-    }
-    char *ptr1 = ptr;
-    MStringA str(ptr0, ptr1);
-
-    // parse
-    using namespace MacroParser;
-    StringScanner scanner(str);
-    TokenStream stream(scanner);
-    stream.read_tokens();
-    Parser parser(stream);
-
-    g_value = 0;
-    if (parser.parse())
-    {
-        if (eval_ast(parser.ast(), g_value))
-        {
-            ;
-        }
-        else
-        {
-            return syntax_error();
-        }
-    }
-    else
-    {
-        return syntax_error();
-    }
-
-    // get string value
-    while (*ptr1 == ',' || std::isspace(*ptr1))
-    {
-        ++ptr1;
-    }
-    if (*ptr1 != '\"')
-    {
-        return syntax_error();
-    }
-    str = ptr1;
-    mstr_unquote(str);
-
-    MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
-    g_msg_tables[g_langid].m_map[(DWORD)g_value] = wstr;
-
-    return EXITCODE_SUCCESS;
 }
 
 int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
@@ -491,7 +442,6 @@ retry:
 int save_rc(void)
 {
     FILE *fp;
-
     if (g_output_file)
     {
         fp = _wfopen(g_output_file, L"wb");
@@ -523,7 +473,8 @@ int save_rc(void)
 
     if (ferror(fp))
     {
-        DeleteFile(g_output_file);
+        if (g_output_file)
+            DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -589,7 +540,8 @@ int save_res(void)
 
     if (ferror(fp))
     {
-        DeleteFile(g_output_file);
+        if (g_output_file)
+            DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -626,7 +578,8 @@ int save_bin(void)
 
     if (ferror(fp))
     {
-        DeleteFile(g_output_file);
+        if (g_output_file)
+            DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -1102,7 +1055,7 @@ int main(int argc, char **argv)
 
     if (!check_cpp_exe())
     {
-        printf("ERROR: Unable to find cpp.exe\n");
+        fprintf(stderr, "ERROR: Unable to find cpp.exe\n");
         return EXITCODE_NOT_FOUND_CPP;
     }
 
