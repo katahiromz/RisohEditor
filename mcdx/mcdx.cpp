@@ -476,7 +476,6 @@ int load_rc(void)
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
-    maker.SetCurrentDirectoryW(g_szBinDir);
     MFile hInputWrite, hOutputRead;
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         maker.CreateProcessDx(NULL, strCommandLine.c_str()))
@@ -495,8 +494,7 @@ int load_rc(void)
 
         fputs(strOutput.c_str(), stdout);
     }
-    DWORD dwError = GetLastError();
-    printf("%ld, %ld\n", dwError, GetFileAttributesW(g_input_file));
+    fprintf(stderr, "ERROR: Failed to preprocess\n");
     return -1;
 }
 
@@ -901,18 +899,25 @@ int main(int argc, char **argv)
 
     if (g_out_format == NULL)
     {
-        LPWSTR pch = wcsrchr(g_output_file, L'.');
-        if (lstrcmpiW(pch, L".rc") == 0)
+        if (g_output_file)
         {
-            g_out_format = L"rc";
-        }
-        else if (lstrcmpiW(pch, L".res") == 0)
-        {
-            g_out_format = L"res";
-        }
-        else if (lstrcmpiW(pch, L".bin") == 0)
-        {
-            g_out_format = L"bin";
+            LPWSTR pch = wcsrchr(g_output_file, L'.');
+            if (lstrcmpiW(pch, L".rc") == 0)
+            {
+                g_out_format = L"rc";
+            }
+            else if (lstrcmpiW(pch, L".res") == 0)
+            {
+                g_out_format = L"res";
+            }
+            else if (lstrcmpiW(pch, L".bin") == 0)
+            {
+                g_out_format = L"bin";
+            }
+            else
+            {
+                g_out_format = L"rc";
+            }
         }
         else
         {
