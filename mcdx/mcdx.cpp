@@ -156,7 +156,7 @@ int do_entry(char*& ptr)
 {
     // get number string
     char *ptr0 = ptr;
-    while (*ptr && *ptr != ',')
+    while (*ptr && *ptr != ',' && *ptr != '\"')
     {
         ++ptr;
     }
