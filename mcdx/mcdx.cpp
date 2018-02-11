@@ -73,6 +73,7 @@ int g_nLineNo = 0;
 
 LANGID g_langid = 0;
 WORD g_wCodePage = CP_UTF8;
+int g_value = 0;
 
 typedef std::map<LANGID, MessageRes> msg_tables_type;
 msg_tables_type g_msg_tables;
@@ -160,10 +161,10 @@ int do_entry(char*& ptr)
     stream.read_tokens();
     Parser parser(stream);
 
-    int value = 0;
+    g_value = 0;
     if (parser.parse())
     {
-        if (eval_ast(parser.ast(), value))
+        if (eval_ast(parser.ast(), g_value))
         {
             ;
         }
@@ -190,7 +191,174 @@ int do_entry(char*& ptr)
     mstr_unquote(str);
 
     MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
-    g_msg_tables[g_langid].m_map[(DWORD)value] = wstr;
+    g_msg_tables[g_langid].m_map[(DWORD)g_value] = wstr;
+
+    return EXITCODE_SUCCESS;
+}
+
+int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
+{
+    ptr = skip_space(ptr);
+    if (*ptr == '{')
+    {
+        nMode = 2;
+        ++ptr;
+    }
+    else if (*ptr == '}')
+    {
+        return syntax_error();
+    }
+    else if (memcmp(ptr, "BEGIN", 5) == 0)
+    {
+        nMode = 2;
+        ptr += 5;
+    }
+    ptr = skip_space(ptr);
+    if (nMode != 2)
+    {
+        if (*ptr && !std::isdigit(*ptr))
+        {
+            return syntax_error();
+        }
+    }
+    return EXITCODE_SUCCESS;
+}
+
+int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
+{
+    ptr = skip_space(ptr);
+    if (*ptr == '{')
+    {
+        return syntax_error();
+    }
+    else if (*ptr == '}')
+    {
+        ++ptr;
+        nMode = 0;
+        do_retry = true;
+        return EXITCODE_SUCCESS;
+    }
+    else if (memcmp(ptr, "END", 3) == 0 &&
+             (std::isspace(ptr[3]) || ptr[3] == 0))
+    {
+        ptr += 3;
+        nMode = 0;
+        do_retry = true;
+        return EXITCODE_SUCCESS;
+    }
+    if (*ptr)
+    {
+        // get number string
+        char *ptr0 = ptr;
+        while (*ptr && *ptr != ',' && *ptr != '\"')
+        {
+            ++ptr;
+        }
+        char *ptr1 = ptr;
+        MStringA str(ptr0, ptr1);
+
+        // parse
+        using namespace MacroParser;
+        StringScanner scanner(str);
+        TokenStream stream(scanner);
+        stream.read_tokens();
+        Parser parser(stream);
+        if (parser.parse())
+        {
+            if (!eval_ast(parser.ast(), g_value))
+            {
+                return syntax_error();
+            }
+        }
+        else
+        {
+            return syntax_error();
+        }
+
+        if (*ptr == ',')
+        {
+            ++ptr;
+            nMode = 3;
+            do_retry = true;
+            return EXITCODE_SUCCESS;
+        }
+        else if (*ptr == '\"')
+        {
+            nMode = 3;
+            do_retry = true;
+            return EXITCODE_SUCCESS;
+        }
+        else if (*ptr == 0)
+        {
+            nMode = 3;
+        }
+        else
+        {
+            return syntax_error();
+        }
+    }
+
+    return EXITCODE_SUCCESS;
+}
+
+int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
+{
+    ptr = skip_space(ptr);
+    if (*ptr == ',')
+    {
+        ++ptr;
+    }
+    ptr = skip_space(ptr);
+    if (*ptr == '"')
+    {
+        MStringA str = ptr;
+        mstr_unquote(str);
+
+        MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
+        g_msg_tables[g_langid].m_map[(DWORD)g_value] = wstr;
+
+        const char *ptr0 = ptr;
+        guts_quote(str, ptr0);
+        ptr = const_cast<char *>(ptr0);
+
+        nMode = 2;
+        do_retry = true;
+        return EXITCODE_SUCCESS;
+    }
+
+    if (*ptr != 0)
+    {
+        return syntax_error();
+    }
+
+    return EXITCODE_SUCCESS;
+}
+
+int do_directive(char*& ptr)
+{
+    ++ptr;
+    ptr = skip_space(ptr);
+    if (std::isdigit(*ptr))
+    {
+        do_pragma_line(ptr);
+    }
+    else if (memcmp(ptr, "pragma", 6) == 0)
+    {
+        // #pragma
+        char *ptr1 = ptr + 6;
+        ptr = skip_space(ptr);
+        char *ptr2 = ptr;
+        if (memcmp(ptr, "code_page(", 10) == 0) // ')'
+        {
+            // #pragma code_page(...)
+            ptr += 10;
+            g_wCodePage = WORD(strtol(ptr, NULL, 0));
+        }
+        else
+        {
+            fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
+        }
+    }
 
     return EXITCODE_SUCCESS;
 }
@@ -216,30 +384,9 @@ int eat_output(const std::string& strOutput)
         char *ptr = &line[0];
         if (line[0] == '#')
         {
-            // directive
-            ++ptr;
-            ptr = skip_space(ptr);
-            if (std::isdigit(*ptr))
-            {
-                do_pragma_line(ptr);
-            }
-            else if (memcmp(ptr, "pragma", 6) == 0)
-            {
-                // #pragma
-                char *ptr1 = ptr + 6;
-                ptr = skip_space(ptr);
-                char *ptr2 = ptr;
-                if (memcmp(ptr, "code_page(", 10) == 0) // ')'
-                {
-                    // #pragma code_page(...)
-                    ptr += 10;
-                    g_wCodePage = WORD(strtol(ptr, NULL, 0));
-                }
-                else
-                {
-                    fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
-                }
-            }
+            if (int ret = do_directive(ptr))
+                return ret;
+
             continue;
         }
         else if (memcmp("LANGUAGE", &line[0], 8) == 0)
@@ -249,8 +396,6 @@ int eat_output(const std::string& strOutput)
             nMode = -1;
         }
 retry:
-        int value = 0;
-        ptr = skip_space(ptr);
         if (nMode == -1 && *ptr)    // after LANGUAGE
         {
             ptr = skip_space(ptr);
@@ -302,6 +447,7 @@ retry:
         }
         if (nMode == 0 && *ptr) // out of MESSAGETABLEDX { ... }
         {
+            ptr = skip_space(ptr);
             if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
             {
                 nMode = 1;
@@ -311,126 +457,27 @@ retry:
         }
         if (nMode == 1 && *ptr) // after MESSAGETABLEDX
         {
-            if (*ptr == '{')
-            {
-                nMode = 2;
-                ++ptr;
-            }
-            else if (*ptr == '}')
-            {
-                return syntax_error();
-            }
-            else if (memcmp(ptr, "BEGIN", 5) == 0)
-            {
-                nMode = 2;
-                ptr += 5;
-            }
-            ptr = skip_space(ptr);
-            if (nMode != 2)
-            {
-                if (*ptr && !std::isdigit(*ptr))
-                {
-                    return syntax_error();
-                }
-            }
+            bool do_retry = false;
+            if (int ret = do_mode_1(ptr, nMode, do_retry))
+                return ret;
+            if (do_retry)
+                goto retry;
         }
         if (nMode == 2 && *ptr) // in MESSAGETABLEDX { ... }
         {
-            if (*ptr == '{')
-            {
-                return syntax_error();
-            }
-            else if (*ptr == '}')
-            {
-                ++ptr;
-                nMode = 0;
+            bool do_retry = false;
+            if (int ret = do_mode_2(ptr, nMode, do_retry))
+                return ret;
+            if (do_retry)
                 goto retry;
-            }
-            else if (memcmp(ptr, "END", 3) == 0 &&
-                     (std::isspace(ptr[3]) || ptr[3] == 0))
-            {
-                ptr += 3;
-                nMode = 0;
-                goto retry;
-            }
-            if (*ptr)
-            {
-                // get number string
-                char *ptr0 = ptr;
-                while (*ptr && *ptr != ',' && *ptr != '\"')
-                {
-                    ++ptr;
-                }
-                char *ptr1 = ptr;
-                MStringA str(ptr0, ptr1);
-
-                // parse
-                value = 0;
-                using namespace MacroParser;
-                StringScanner scanner(str);
-                TokenStream stream(scanner);
-                stream.read_tokens();
-                Parser parser(stream);
-                if (parser.parse())
-                {
-                    if (!eval_ast(parser.ast(), value))
-                    {
-                        return syntax_error();
-                    }
-                }
-                else
-                {
-                    return syntax_error();
-                }
-
-                if (*ptr == ',')
-                {
-                    ++ptr;
-                    nMode = 3;
-                    goto retry;
-                }
-                else if (*ptr == '\"')
-                {
-                    nMode = 3;
-                    goto retry;
-                }
-                else if (*ptr == 0)
-                {
-                    nMode = 3;
-                }
-                else
-                {
-                    return syntax_error();
-                }
-            }
         }
         if (nMode == 3 && *ptr)
         {
-            ptr = skip_space(ptr);
-            if (*ptr == ',')
-            {
-                ++ptr;
-            }
-            ptr = skip_space(ptr);
-            if (*ptr == '"')
-            {
-                MStringA str = ptr;
-                mstr_unquote(str);
-
-                MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
-                g_msg_tables[g_langid].m_map[(DWORD)value] = wstr;
-
-                const char *ptr0 = ptr;
-                guts_quote(str, ptr0);
-                ptr = const_cast<char *>(ptr0);
-
-                nMode = 2;
+            bool do_retry = false;
+            if (int ret = do_mode_3(ptr, nMode, do_retry))
+                return ret;
+            if (do_retry)
                 goto retry;
-            }
-            if (*ptr != 0)
-            {
-                return syntax_error();
-            }
         }
     }
     if (nMode != 0)
@@ -1038,14 +1085,14 @@ int main(int argc, char **argv)
 
     if (g_inp_format == NULL)
     {
-		g_inp_format = get_format(g_input_file);
+        g_inp_format = get_format(g_input_file);
     }
 
     if (g_out_format == NULL)
     {
         if (g_output_file)
         {
-			g_out_format = get_format(g_output_file);
+            g_out_format = get_format(g_output_file);
         }
         else
         {
