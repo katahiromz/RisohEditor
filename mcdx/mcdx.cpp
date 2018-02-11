@@ -406,6 +406,8 @@ int save_rc(void)
         fp = stdout;
     }
 
+    fprintf(fp, "#include <windows.h>\r\n\r\n");
+
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
     {
