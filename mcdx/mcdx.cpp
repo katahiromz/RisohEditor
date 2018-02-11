@@ -256,7 +256,7 @@ int eat_output(const std::string& strOutput)
             ptr = &line[8];
             nMode = -1;
         }
-        if (nMode == -1)
+        if (nMode == -1)    // after LANGUAGE
         {
             while (std::isspace(*ptr))
             {
@@ -267,7 +267,7 @@ int eat_output(const std::string& strOutput)
                 nMode = -2;
             }
         }
-        if (nMode == -2)
+        if (nMode == -2)    // expect PRIMARYLANGID
         {
             while (std::isspace(*ptr))
             {
@@ -288,7 +288,7 @@ int eat_output(const std::string& strOutput)
                 return syntax_error();
             }
         }
-        if (nMode == -3)
+        if (nMode == -3)    // expect comma
         {
             while (std::isspace(*ptr))
             {
@@ -300,7 +300,7 @@ int eat_output(const std::string& strOutput)
                 nMode = -4;
             }
         }
-        if (nMode == -4)
+        if (nMode == -4)    // expect SUBLANGID
         {
             while (std::isspace(*ptr))
             {
