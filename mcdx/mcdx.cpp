@@ -211,7 +211,7 @@ int eat_output(const std::string& strOutput)
     }
 
     INT nMode = 0;
-	BYTE bPrimLang = 0, bSubLang = 0;
+    BYTE bPrimLang = 0, bSubLang = 0;
     for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
     {
         std::string& line = lines[i];
@@ -248,76 +248,76 @@ int eat_output(const std::string& strOutput)
                     fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
                 }
             }
-			continue;
+            continue;
         }
         else if (memcmp("LANGUAGE", &line[0], 8) == 0)
         {
             // LANGUAGE (primary), (sublang)
             ptr = &line[8];
-			nMode = -1;
+            nMode = -1;
         }
-		if (nMode == -1)
-		{
-			while (std::isspace(*ptr))
-			{
-				++ptr;
-			}
-			if (std::isdigit(*ptr))
-			{
-				nMode = -2;
-			}
-		}
-		if (nMode == -2)
-		{
-			while (std::isspace(*ptr))
-			{
-				++ptr;
-			}
-			char *ptr0 = ptr;
-			while (std::isalnum(*ptr))
-			{
-				++ptr;
-			}
-			if (std::isdigit(*ptr0))
-			{
-				bPrimLang = (BYTE)strtoul(ptr0, NULL, 0);
-				nMode = -3;
-			}
-			else if (*ptr)
-			{
-				return syntax_error();
-			}
-		}
-		if (nMode == -3)
-		{
-			while (std::isspace(*ptr))
-			{
-				++ptr;
-			}
-			if (*ptr == ',')
-			{
-				++ptr;
-				nMode = -4;
-			}
-		}
-		if (nMode == -4)
-		{
-			while (std::isspace(*ptr))
-			{
-				++ptr;
-			}
-			if (std::isdigit(*ptr))
-			{
-				bSubLang = (BYTE)strtoul(ptr, NULL, 0);
-				g_langid = MAKELANGID(bPrimLang, bSubLang);
-				nMode = 0;
-				continue;
-			}
-			else if (*ptr)
-			{
-				return syntax_error();
-			}
-		}
+        if (nMode == -1)
+        {
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            if (std::isdigit(*ptr))
+            {
+                nMode = -2;
+            }
+        }
+        if (nMode == -2)
+        {
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            char *ptr0 = ptr;
+            while (std::isalnum(*ptr))
+            {
+                ++ptr;
+            }
+            if (std::isdigit(*ptr0))
+            {
+                bPrimLang = (BYTE)strtoul(ptr0, NULL, 0);
+                nMode = -3;
+            }
+            else if (*ptr)
+            {
+                return syntax_error();
+            }
+        }
+        if (nMode == -3)
+        {
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            if (*ptr == ',')
+            {
+                ++ptr;
+                nMode = -4;
+            }
+        }
+        if (nMode == -4)
+        {
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            if (std::isdigit(*ptr))
+            {
+                bSubLang = (BYTE)strtoul(ptr, NULL, 0);
+                g_langid = MAKELANGID(bPrimLang, bSubLang);
+                nMode = 0;
+                continue;
+            }
+            else if (*ptr)
+            {
+                return syntax_error();
+            }
+        }
         if (nMode == 0) // out of MESSAGETABLEDX { ... }
         {
             if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
@@ -585,7 +585,7 @@ int load_bin(void)
     if (!file)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
-		return EXITCODE_CANNOT_OPEN;
+        return EXITCODE_CANNOT_OPEN;
     }
     char buf[256];
     DWORD dwSize;

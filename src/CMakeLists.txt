@@ -1,6 +1,9 @@
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
+# include directories
+include_directories(../include)
+
 add_executable(RisohEditor WIN32 
     PackedDIB.cpp
     RisohEditor.cpp
