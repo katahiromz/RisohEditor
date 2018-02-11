@@ -312,11 +312,20 @@ int eat_output(const std::string& strOutput)
 
 int save_rc(void)
 {
-    FILE *fp = _wfopen(g_output_file, L"wb");
-    if (!fp)
+    FILE *fp;
+
+    if (g_output_file)
     {
-        fprintf(stderr, "ERROR: Unable to open output file.\n");
-        return 1434;
+        fp = _wfopen(g_output_file, L"wb");
+        if (!fp)
+        {
+            fprintf(stderr, "ERROR: Unable to open output file.\n");
+            return 1434;
+        }
+    }
+    else
+    {
+        fp = stdout;
     }
 
     msg_tables_type::iterator it, end = g_msg_tables.end();
@@ -330,7 +339,9 @@ int save_rc(void)
 
         fprintf(fp, "%s\r\n", str.c_str());
     }
-    fclose(fp);
+
+    if (g_output_file)
+        fclose(fp);
 
     if (ferror(fp))
     {
@@ -378,15 +389,25 @@ int save_res(void)
         bs.WriteDwordAlignment();
     }
 
-    FILE *fp = _wfopen(g_output_file, L"wb");
-    if (!fp)
+    FILE *fp;
+    if (g_output_file)
     {
-        fprintf(stderr, "ERROR: Unable to open output file.\n");
-        return 1434;
+        fp = _wfopen(g_output_file, L"wb");
+        if (!fp)
+        {
+            fprintf(stderr, "ERROR: Unable to open output file.\n");
+            return 1434;
+        }
+    }
+    else
+    {
+        fp = stdout;
     }
 
     fwrite(&bs[0], bs.size(), 1, fp);
-    fclose(fp);
+
+    if (g_output_file)
+        fclose(fp);
 
     if (ferror(fp))
     {
@@ -405,15 +426,25 @@ int save_bin(void)
     MByteStreamEx stream;
     msg_res.SaveToStream(stream);
 
-    FILE *fp = _wfopen(g_output_file, L"wb");
-    if (!fp)
+    FILE *fp;
+    if (g_output_file)
     {
-        fprintf(stderr, "ERROR: Unable to open output file.\n");
-        return 1434;
+        fp = _wfopen(g_output_file, L"wb");
+        if (!fp)
+        {
+            fprintf(stderr, "ERROR: Unable to open output file.\n");
+            return 1434;
+        }
+    }
+    else
+    {
+        fp = stdout;
     }
 
     fwrite(&stream[0], stream.size(), 1, fp);
-    fclose(fp);
+
+    if (g_output_file)
+        fclose(fp);
 
     if (ferror(fp))
     {
@@ -822,6 +853,31 @@ int main(int argc, char **argv)
         }
     }
 
+    static TCHAR s_szTempFile[MAX_PATH] = TEXT("");
+    if (g_input_file == NULL)
+    {
+        TCHAR szTempPath[MAX_PATH];
+        GetTempPath(MAX_PATH, szTempPath);
+        GetTempFileName(szTempPath, L"inp", 0, s_szTempFile);
+
+        FILE *fp = _wfopen(s_szTempFile, L"w");
+        if (fp == NULL)
+        {
+            DeleteFile(s_szTempFile);
+            fprintf(stderr, "ERROR: Cannot write to temporary file\n");
+            return 1232;
+        }
+
+        char buf[512];
+        while (fgets(buf, 512, stdin) != NULL)
+        {
+            fputs(buf, fp);
+        }
+        fclose(fp);
+
+        g_input_file = s_szTempFile;
+    }
+
     if (g_inp_format == NULL)
     {
         LPWSTR pch = wcsrchr(g_input_file, L'.');
@@ -860,7 +916,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            g_out_format = L"bin";
+            g_out_format = L"rc";
         }
     }
 
@@ -870,5 +926,10 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    return just_do_it();
+    int ret = just_do_it();
+
+    if (s_szTempFile[0])
+        DeleteFile(s_szTempFile);
+
+    return ret;
 }
