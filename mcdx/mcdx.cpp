@@ -542,7 +542,7 @@ int load_rc(void)
         fputs(strOutput.c_str(), stderr);
     }
     fprintf(stderr, "ERROR: Failed to preprocess\n");
-    return -1;
+    return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
 int load_bin(void)
