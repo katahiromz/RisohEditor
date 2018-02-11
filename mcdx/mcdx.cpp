@@ -68,7 +68,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.1\n");
+    printf("mcdx ver.0.2\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -317,18 +317,43 @@ int do_directive(char*& ptr)
     else if (memcmp(ptr, "pragma", 6) == 0)
     {
         // #pragma
-        char *ptr1 = ptr + 6;
+        ptr += 6;
+        char *ptr1 = ptr;
         ptr = skip_space(ptr);
         char *ptr2 = ptr;
-        if (memcmp(ptr, "code_page(", 10) == 0) // ')'
+        if (memcmp(ptr, "code_page", 9) == 0)
         {
-            // #pragma code_page(...)
-            ptr += 10;
-            g_wCodePage = WORD(strtol(ptr, NULL, 0));
+            ptr += 9;
+            ptr = skip_space(ptr);
+            if (*ptr == '(')
+            {
+                ++ptr;
+                ptr = skip_space(ptr);
+                // #pragma code_page(...)
+                WORD wCodePage = 0;
+                if (std::isdigit(*ptr))
+                {
+                    wCodePage = WORD(strtol(ptr, NULL, 0));
+                }
+                while (std::isalnum(*ptr))
+                {
+                    ++ptr;
+                }
+                ptr = skip_space(ptr);
+                if (*ptr == ')')
+                {
+                    ++ptr;
+                    g_wCodePage = wCodePage;
+                }
+                else
+                {
+                    fprintf(stderr, "%s (%d): WARNING: Invalid pragma: %s\n", g_strFile.c_str(), g_nLineNo, ptr2);
+                }
+            }
         }
         else
         {
-            fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
+            fprintf(stderr, "%s (%d): WARNING: Unknown pragma: %s\n", g_strFile.c_str(), g_nLineNo, ptr2);
         }
     }
 
