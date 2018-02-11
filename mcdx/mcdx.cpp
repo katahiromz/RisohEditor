@@ -337,7 +337,7 @@ int eat_output(const std::string& strOutput)
                     if (int ret = do_entry(ptr))
                         return ret;
                 }
-                else if (std::isalpha(*ptr) || *ptr == '_')
+                else if (*ptr)
                 {
                     fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
                     return EXITCODE_SYNTAX_ERROR;
