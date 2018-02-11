@@ -317,7 +317,7 @@ public:
             return TRUE;
         }
 
-        return DefaultProcDx();
+        return (BOOL)DefaultProcDx();
     }
 
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)

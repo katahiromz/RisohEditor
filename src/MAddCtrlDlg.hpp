@@ -552,7 +552,7 @@ public:
         if (pnmhdr->code == TTN_NEEDTEXT)
         {
             TOOLTIPTEXT *ttt = (TOOLTIPTEXT *)pnmhdr;
-            INT nID = pnmhdr->idFrom - 1000;
+            UINT nID = UINT(pnmhdr->idFrom - 1000);
             if (size_t(nID) < m_vecControls.size())
             {
                 lstrcpyW(ttt->szText, m_vecControls[nID].c_str());

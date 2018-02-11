@@ -545,7 +545,7 @@ int save_res(void)
         MByteStreamEx stream;
         it->second.SaveToStream(stream);
 
-        header.DataSize = stream.size();
+        header.DataSize = DWORD(stream.size());
         header.HeaderSize = header.GetHeaderSize(RT_MESSAGETABLE, 1);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;

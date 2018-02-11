@@ -157,7 +157,7 @@ public:
             if (codeNotify == CBN_SELCHANGE && !m_bChanging)
             {
                 HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-                INT k = SendMessage(hCmb1, CB_GETCURSEL, 0, 0);
+                INT k = INT(SendMessage(hCmb1, CB_GETCURSEL, 0, 0));
                 if (k != -1)
                 {
                     ConstantsDB::TableType table;

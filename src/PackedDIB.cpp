@@ -301,7 +301,7 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
     if (WritePNG)
     {
         BOOL ret = FALSE;
-        HBITMAP hbm = PackedDIB_CreateBitmap(ptr, siz);
+        HBITMAP hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
         Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
         if (pBitmap)
         {
@@ -320,7 +320,7 @@ PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG)
     FileHeader.bfReserved1 = 0;
     FileHeader.bfReserved2 = 0;
 
-    DWORD dwOffset = PackedDIB_GetBitsOffset(ptr, siz);
+    DWORD dwOffset = PackedDIB_GetBitsOffset(ptr, DWORD(siz));
     if (dwOffset == 0)
         return FALSE;
 
@@ -351,7 +351,7 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
     DeleteFileW(szTempFile);
 
     if (hbm == NULL)
-        hbm = PackedDIB_CreateBitmap(ptr, siz);
+        hbm = PackedDIB_CreateBitmap(ptr, DWORD(siz));
 
     return hbm;
 }

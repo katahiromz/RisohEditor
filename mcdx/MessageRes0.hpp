@@ -95,7 +95,7 @@ public:
 
             for (DWORD dwID = block.LowId; dwID <= block.HighId; ++dwID)
             {
-                DWORD pos = stream.pos();
+                size_t pos = stream.pos();
 
                 MESSAGE_RESOURCE_ENTRY_HEADER entry_head;
                 if (!stream.ReadRaw(entry_head))

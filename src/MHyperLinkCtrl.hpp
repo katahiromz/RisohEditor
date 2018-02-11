@@ -85,7 +85,7 @@ public:
                     uFormat |= DT_VCENTER | DT_SINGLELINE;
 
                 MString text = GetWindowText();
-                DrawText(hDC, text.c_str(), text.size(), &rcClient, uFormat);
+                DrawText(hDC, text.c_str(), int(text.size()), &rcClient, uFormat);
 
                 if (m_bGotFocus)
                 {
