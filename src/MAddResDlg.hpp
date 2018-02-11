@@ -166,7 +166,7 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
-        if (!Res_HasNoName(type) && !CheckNameComboBox(m_db, hCmb2, name))
+        if (!Res_HasNoName(type) || !CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);

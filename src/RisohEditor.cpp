@@ -5355,6 +5355,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
+	MWaitCursor wait;
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
