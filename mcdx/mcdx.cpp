@@ -492,7 +492,7 @@ int load_rc(void)
             return 0;
         }
 
-        fputs(strOutput.c_str(), stdout);
+        fputs(strOutput.c_str(), stderr);
     }
     fprintf(stderr, "ERROR: Failed to preprocess\n");
     return -1;
