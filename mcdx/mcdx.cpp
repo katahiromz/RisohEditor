@@ -15,6 +15,18 @@
     #define _countof(array)     (sizeof(array) / sizeof(array[0]))
 #endif
 
+enum EXITCODE
+{
+    EXITCODE_SUCCESS = 0,
+    EXITCODE_INVALID_ARGUMENT,
+    EXITCODE_FAIL_TO_PREPROCESS,
+    EXITCODE_SYNTAX_ERROR,
+    EXITCODE_CANNOT_OPEN,
+    EXITCODE_CANNOT_WRITE,
+    EXITCODE_INVALID_DATA,
+    EXITCODE_NOT_FOUND_CPP
+};
+
 ////////////////////////////////////////////////////////////////////////////
 
 void show_help(void)
@@ -56,6 +68,9 @@ std::vector<MStringW> g_include_directories;
 std::vector<MStringW> g_definitions;
 std::vector<MStringW> g_undefinitions;
 
+std::string g_strFile = "(anonymous)";
+int g_nLineNo = 0;
+
 LANGID g_langid = 0;
 WORD g_wCodePage = CP_UTF8;
 
@@ -95,7 +110,7 @@ BOOL check_cpp_exe(VOID)
     return TRUE;
 }
 
-bool do_pragma_line(char*& ptr, std::string& strFile, int& nLineNo)
+bool do_pragma_line(char*& ptr)
 {
     // # line "file"
     char *ptr1 = ptr;
@@ -115,11 +130,11 @@ bool do_pragma_line(char*& ptr, std::string& strFile, int& nLineNo)
     }
     *ptr2 = 0;
 
-    nLineNo = strtol(ptr1, NULL, 0);
+    g_nLineNo = strtol(ptr1, NULL, 0) - 1;
 
     std::string file = ptr3;
     mstr_unquote(file);
-    strFile = file;
+    g_strFile = file;
 
     return true;
 }
@@ -179,14 +194,14 @@ int do_entry(char*& ptr)
         }
         else
         {
-            fprintf(stderr, "ERROR: Parse error\n");
-            return 9;
+            fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+            return EXITCODE_SYNTAX_ERROR;
         }
     }
     else
     {
-        fprintf(stderr, "ERROR: Syntax error\n");
-        return 8;
+        fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+        return EXITCODE_SYNTAX_ERROR;
     }
 
     // get string value
@@ -200,7 +215,7 @@ int do_entry(char*& ptr)
     MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
     g_msg_tables[g_langid].m_map[(DWORD)value] = wstr;
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int eat_output(const std::string& strOutput)
@@ -216,13 +231,12 @@ int eat_output(const std::string& strOutput)
     }
 
     INT nMode = 0;
-    std::string strFile = "(anonymous)";
-    int nLineNo = 1;
-    for (size_t i = 0; i < lines.size(); ++i, ++nLineNo)
+    for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
     {
         std::string& line = lines[i];
         if (line[0] == '#')
         {
+            // directive
             char *ptr = &line[1];
             while (std::isspace(*ptr))
             {
@@ -230,7 +244,7 @@ int eat_output(const std::string& strOutput)
             }
             if (std::isdigit(*ptr))
             {
-                do_pragma_line(ptr, strFile, nLineNo);
+                do_pragma_line(ptr);
             }
             else if (memcmp(ptr, "pragma", 6) == 0)
             {
@@ -247,6 +261,10 @@ int eat_output(const std::string& strOutput)
                     ptr += 10;
                     g_wCodePage = WORD(strtol(ptr, NULL, 0));
                 }
+                else
+                {
+                    fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
+                }
             }
         }
         else if (memcmp("LANGUAGE", &line[0], 8) == 0)
@@ -256,8 +274,9 @@ int eat_output(const std::string& strOutput)
             g_langid = do_language(ptr);
             continue;
         }
-        else 
+        else
         {
+            // otherwise
             char *ptr = &line[0];
             if (nMode == 0) // out of MESSAGETABLEDX { ... }
             {
@@ -273,10 +292,15 @@ int eat_output(const std::string& strOutput)
             }
             if (nMode == 1) // after MESSAGETABLEDX
             {
-                if (*ptr == '{')    // }
+                if (*ptr == '{')
                 {
                     nMode = 2;
                     ++ptr;
+                }
+                else if (*ptr == '}')
+                {
+                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+                    return EXITCODE_SYNTAX_ERROR;
                 }
                 else if (memcmp(ptr, "BEGIN", 5) == 0)
                 {
@@ -290,7 +314,12 @@ int eat_output(const std::string& strOutput)
             }
             if (nMode == 2) // in MESSAGETABLEDX { ... }
             {
-                if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
+                if (*ptr == '{')
+                {
+                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+                    return EXITCODE_SYNTAX_ERROR;
+                }
+                else if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
                 {
                     nMode = 0;
                     continue;
@@ -302,12 +331,19 @@ int eat_output(const std::string& strOutput)
                 }
                 else
                 {
-                    ;
+                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+                    return EXITCODE_SYNTAX_ERROR;
                 }
             }
         }
     }
-    return 0;
+    if (nMode != 0)
+    {
+        fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+        return EXITCODE_SYNTAX_ERROR;
+    }
+
+    return EXITCODE_SUCCESS;
 }
 
 int save_rc(void)
@@ -320,7 +356,7 @@ int save_rc(void)
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
-            return 1434;
+            return EXITCODE_CANNOT_OPEN;
         }
     }
     else
@@ -347,10 +383,10 @@ int save_rc(void)
     {
         DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
-        return 555;
+        return EXITCODE_CANNOT_OPEN;
     }
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int save_res(void)
@@ -358,7 +394,7 @@ int save_res(void)
     MByteStreamEx bs;
     ResHeader header;
     if (!header.WriteTo(bs))
-        return 34323;
+        return EXITCODE_INVALID_DATA;
 
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
@@ -396,7 +432,7 @@ int save_res(void)
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
-            return 1434;
+            return EXITCODE_CANNOT_OPEN;
         }
     }
     else
@@ -413,10 +449,10 @@ int save_res(void)
     {
         DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
-        return 555;
+        return EXITCODE_CANNOT_OPEN;
     }
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int save_bin(void)
@@ -433,7 +469,7 @@ int save_bin(void)
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
-            return 1434;
+            return EXITCODE_CANNOT_OPEN;
         }
     }
     else
@@ -450,10 +486,10 @@ int save_bin(void)
     {
         DeleteFile(g_output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
-        return 555;
+        return EXITCODE_CANNOT_OPEN;
     }
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int load_rc(void)
@@ -472,6 +508,9 @@ int load_rc(void)
     strCommandLine += g_input_file;
     strCommandLine += L"\"";
 
+    g_strFile = MWideToAnsi(CP_ACP, g_input_file).c_str();
+    g_nLineNo = 1;
+
     // create a process
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
@@ -489,7 +528,7 @@ int load_rc(void)
             if (int ret = eat_output(strOutput))
                 return ret;
 
-            return 0;
+            return EXITCODE_SUCCESS;
         }
 
         fputs(strOutput.c_str(), stderr);
@@ -504,7 +543,7 @@ int load_bin(void)
     if (!file)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
-        return 12;
+		return EXITCODE_CANNOT_OPEN;
     }
     char buf[256];
     DWORD dwSize;
@@ -516,12 +555,13 @@ int load_bin(void)
     file.CloseHandle();
 
     MByteStreamEx stream(&strContents[0], strContents.size());
-    if (!g_msg_tables[0].LoadFromStream(stream))
+    if (!g_msg_tables[g_langid].LoadFromStream(stream))
     {
-        return 2435;
+        fprintf(stderr, "ERROR: Invalid data.\n");
+        return EXITCODE_INVALID_DATA;
     }
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int load_res(void)
@@ -530,8 +570,9 @@ int load_res(void)
     if (!file)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
-        return 12;
+        return EXITCODE_CANNOT_OPEN;
     }
+
     char buf[256];
     DWORD dwSize;
     std::string strContents;
@@ -552,7 +593,10 @@ int load_res(void)
         }
 
         if (header.DataSize > stream.remainder())
-            return FALSE;
+        {
+            fprintf(stderr, "ERROR: Data is broken, invalid, or not supported.\n");
+            return EXITCODE_INVALID_DATA;
+        }
 
         MByteStreamEx bs(header.DataSize);
         if (!stream.ReadData(&bs[0], header.DataSize))
@@ -561,14 +605,14 @@ int load_res(void)
         }
         if (!g_msg_tables[header.LanguageId].LoadFromStream(bs))
         {
-            fprintf(stderr, "ERROR: Data is broken or not supported.\n");
-            return 23423;
+            fprintf(stderr, "ERROR: Data is broken, invalid, or not supported.\n");
+            return EXITCODE_INVALID_DATA;
         }
 
         stream.ReadDwordAlignment();
     }
 
-    return 0;
+    return EXITCODE_SUCCESS;
 }
 
 int just_do_it(void)
@@ -591,7 +635,7 @@ int just_do_it(void)
     else
     {
         fprintf(stderr, "ERROR: invalid input format\n");
-        return 14235;
+        return EXITCODE_INVALID_ARGUMENT;
     }
 
     if (lstrcmpiW(g_out_format, L"rc") == 0)
@@ -609,7 +653,7 @@ int just_do_it(void)
     else
     {
         fprintf(stderr, "ERROR: invalid output format\n");
-        return 2434;
+        return EXITCODE_INVALID_ARGUMENT;
     }
 }
 
@@ -636,13 +680,13 @@ int main(int argc, char **argv)
             lstrcmpiW(wargv[i], L"/?") == 0)
         {
             show_help();
-            return 0;
+            return EXITCODE_SUCCESS;
         }
         // show version?
         if (lstrcmpiW(wargv[i], L"--version") == 0)
         {
             show_version();
-            return 0;
+            return EXITCODE_SUCCESS;
         }
         // input file?
         if (lstrcmpiW(wargv[i], L"--input_file") == 0 ||
@@ -654,7 +698,7 @@ int main(int argc, char **argv)
                 if (g_input_file)
                 {
                     fprintf(stderr, "ERROR: Too many input files\n");
-                    return 1;
+                    return EXITCODE_INVALID_ARGUMENT;
                 }
                 else
                 {
@@ -665,7 +709,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -i or --input_file requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         // output file?
@@ -678,7 +722,7 @@ int main(int argc, char **argv)
                 if (g_output_file)
                 {
                     fprintf(stderr, "ERROR: Too many output files\n");
-                    return 1;
+                    return EXITCODE_INVALID_ARGUMENT;
                 }
                 else
                 {
@@ -689,7 +733,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -o or --output requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         // input format?
@@ -705,7 +749,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -J or --input-format requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         // output format?
@@ -721,7 +765,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -O or --output-format requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         // include directory?
@@ -737,7 +781,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -I requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         if (memcmp(wargv[i], include_dir_equal, include_dir_equal_size) == 0)
@@ -758,7 +802,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -D requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         if (memcmp(wargv[i], L"-D", 2) == 0)
@@ -779,7 +823,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -U requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         if (memcmp(wargv[i], define_equal, define_equal_size) == 0)
@@ -800,7 +844,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -c requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         if (memcmp(wargv[i], L"--codepage=", 11 * sizeof(wchar_t)) == 0)
@@ -824,7 +868,7 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: -c requires an argument\n");
-                return 1;
+                return EXITCODE_INVALID_ARGUMENT;
             }
         }
         if (memcmp(wargv[i], L"--language=", 11 * sizeof(wchar_t)) == 0)
@@ -847,7 +891,7 @@ int main(int argc, char **argv)
         else
         {
             fprintf(stderr, "ERROR: Too many arguments\n");
-            return 1;
+            return EXITCODE_INVALID_ARGUMENT;
         }
     }
 
@@ -863,7 +907,7 @@ int main(int argc, char **argv)
         {
             DeleteFile(s_szTempFile);
             fprintf(stderr, "ERROR: Cannot write to temporary file\n");
-            return 1232;
+            return EXITCODE_CANNOT_WRITE;
         }
 
         char buf[512];
@@ -928,7 +972,7 @@ int main(int argc, char **argv)
     if (!check_cpp_exe())
     {
         printf("ERROR: Unable to find cpp.exe\n");
-        return 2;
+        return EXITCODE_NOT_FOUND_CPP;
     }
 
     int ret = just_do_it();
