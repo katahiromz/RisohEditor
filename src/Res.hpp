@@ -1447,7 +1447,7 @@ Res_HasSample(const MIdOrString& type)
 {
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
            type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
-           type == RT_HTML || type == RT_MANIFEST;
+           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE;
 }
 
 inline BOOL
