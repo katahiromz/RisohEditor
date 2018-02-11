@@ -1,4 +1,21 @@
-////////////////////////////////////////////////////////////////////////////
+// mcdx.hpp --- Message Compiler by katahiromz
+//////////////////////////////////////////////////////////////////////////////
+// RisohEditor --- Another free Win32 resource editor
+// Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//////////////////////////////////////////////////////////////////////////////
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -773,6 +790,8 @@ const wchar_t *get_format(const wchar_t *file_path)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 int main(int argc, char **argv)
 {
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -995,6 +1014,13 @@ int main(int argc, char **argv)
             g_langid = MAKELANGID(bPrim, bSub);
             continue;
         }
+        if (wargv[i][0] == L'-' || wargv[i][0] == L'/')
+        {
+            MStringA str = MWideToAnsi(CP_ACP, wargv[i]).c_str();
+            fprintf(stderr, "ERROR: Invalid argument --- '%s'\n", str.c_str());
+            show_help();
+            return EXITCODE_INVALID_ARGUMENT;
+        }
         // otherwise...
         if (g_input_file == NULL)
         {
@@ -1066,3 +1092,5 @@ int main(int argc, char **argv)
 
     return ret;
 }
+
+//////////////////////////////////////////////////////////////////////////////
