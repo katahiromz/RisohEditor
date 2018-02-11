@@ -22,6 +22,7 @@ add_custom_target(messagetables ALL
 add_dependencies(RisohEditor messagetables)
 add_dependencies(messagetables mcdx)
 if (MSVC)
+    message(STATUS "<> ${PROJECT_BINARY_DIR}")
     set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.res)
 else()
     add_custom_target(res2obj ALL
