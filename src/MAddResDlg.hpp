@@ -255,6 +255,12 @@ public:
                 const BYTE *pb = GetManifestSample(dwSize);
                 stream.assign(pb, dwSize);
             }
+            else if (type == RT_MESSAGETABLE)
+            {
+                DWORD dwSize;
+                const BYTE *pb = GetMessageTableSample(dwSize);
+                stream.assign(pb, dwSize);
+            }
             else
             {
                 bOK = FALSE;
