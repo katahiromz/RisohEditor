@@ -77,6 +77,12 @@ WORD g_wCodePage = CP_UTF8;
 typedef std::map<LANGID, MessageRes> msg_tables_type;
 msg_tables_type g_msg_tables;
 
+int syntax_error(void)
+{
+    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+    return EXITCODE_SYNTAX_ERROR;
+}
+
 BOOL check_cpp_exe(VOID)
 {
     WCHAR szPath[MAX_PATH], *pch;
@@ -139,34 +145,6 @@ bool do_pragma_line(char*& ptr)
     return true;
 }
 
-LANGID do_language(char*& ptr)
-{
-    // LANGUAGE (primary), (sublang)
-    while (std::isspace(*ptr))
-    {
-        ++ptr;
-    }
-    char *ptr0 = ptr;
-    while (std::isalnum(*ptr))
-    {
-        ++ptr;
-    }
-    char *ptr1 = ptr;
-    while (std::isspace(*ptr))
-    {
-        ++ptr;
-    }
-    char *ptr2 = ptr;
-    while (std::isalnum(*ptr))
-    {
-        ++ptr;
-    }
-    *ptr1 = 0;
-    WORD wPrimaryLang = (WORD)strtoul(ptr0, NULL, 0);
-    WORD wSubLang = (WORD)strtoul(ptr2, NULL, 0);
-    return MAKELANGID(wPrimaryLang, wSubLang);
-}
-
 int do_entry(char*& ptr)
 {
     // get number string
@@ -194,20 +172,22 @@ int do_entry(char*& ptr)
         }
         else
         {
-            fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-            return EXITCODE_SYNTAX_ERROR;
+            return syntax_error();
         }
     }
     else
     {
-        fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-        return EXITCODE_SYNTAX_ERROR;
+        return syntax_error();
     }
 
     // get string value
     while (*ptr1 == ',' || std::isspace(*ptr1))
     {
         ++ptr1;
+    }
+    if (*ptr1 != '\"')
+    {
+        return syntax_error();
     }
     str = ptr1;
     mstr_unquote(str);
@@ -231,13 +211,15 @@ int eat_output(const std::string& strOutput)
     }
 
     INT nMode = 0;
+	BYTE bPrimLang = 0, bSubLang = 0;
     for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
     {
         std::string& line = lines[i];
+        char *ptr = &line[0];
         if (line[0] == '#')
         {
             // directive
-            char *ptr = &line[1];
+            ++ptr;
             while (std::isspace(*ptr))
             {
                 ++ptr;
@@ -266,89 +248,141 @@ int eat_output(const std::string& strOutput)
                     fprintf(stderr, "%s (%d): WARNING: Unknown pragma\n", g_strFile.c_str(), g_nLineNo);
                 }
             }
+			continue;
         }
         else if (memcmp("LANGUAGE", &line[0], 8) == 0)
         {
             // LANGUAGE (primary), (sublang)
-            char *ptr = &line[8];
-            g_langid = do_language(ptr);
-            continue;
+            ptr = &line[8];
+			nMode = -1;
         }
-        else
+		if (nMode == -1)
+		{
+			while (std::isspace(*ptr))
+			{
+				++ptr;
+			}
+			if (std::isdigit(*ptr))
+			{
+				nMode = -2;
+			}
+		}
+		if (nMode == -2)
+		{
+			while (std::isspace(*ptr))
+			{
+				++ptr;
+			}
+			char *ptr0 = ptr;
+			while (std::isalnum(*ptr))
+			{
+				++ptr;
+			}
+			if (std::isdigit(*ptr0))
+			{
+				bPrimLang = (BYTE)strtoul(ptr0, NULL, 0);
+				nMode = -3;
+			}
+			else if (*ptr)
+			{
+				return syntax_error();
+			}
+		}
+		if (nMode == -3)
+		{
+			while (std::isspace(*ptr))
+			{
+				++ptr;
+			}
+			if (*ptr == ',')
+			{
+				++ptr;
+				nMode = -4;
+			}
+		}
+		if (nMode == -4)
+		{
+			while (std::isspace(*ptr))
+			{
+				++ptr;
+			}
+			if (std::isdigit(*ptr))
+			{
+				bSubLang = (BYTE)strtoul(ptr, NULL, 0);
+				g_langid = MAKELANGID(bPrimLang, bSubLang);
+				nMode = 0;
+				continue;
+			}
+			else if (*ptr)
+			{
+				return syntax_error();
+			}
+		}
+        if (nMode == 0) // out of MESSAGETABLEDX { ... }
         {
-            // otherwise
-            char *ptr = &line[0];
-            if (nMode == 0) // out of MESSAGETABLEDX { ... }
+            if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
             {
-                if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
-                {
-                    nMode = 1;
-                    ptr += 14;
-                    while (std::isspace(*ptr))
-                    {
-                        ++ptr;
-                    }
-                }
-            }
-            if (nMode == 1) // after MESSAGETABLEDX
-            {
-                if (*ptr == '{')
-                {
-                    nMode = 2;
-                    ++ptr;
-                }
-                else if (*ptr == '}')
-                {
-                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-                    return EXITCODE_SYNTAX_ERROR;
-                }
-                else if (memcmp(ptr, "BEGIN", 5) == 0)
-                {
-                    nMode = 2;
-                    ptr += 5;
-                }
+                nMode = 1;
+                ptr += 14;
                 while (std::isspace(*ptr))
                 {
                     ++ptr;
                 }
-                if (nMode != 2)
+            }
+        }
+        if (nMode == 1) // after MESSAGETABLEDX
+        {
+            if (*ptr == '{')
+            {
+                nMode = 2;
+                ++ptr;
+            }
+            else if (*ptr == '}')
+            {
+                return syntax_error();
+            }
+            else if (memcmp(ptr, "BEGIN", 5) == 0)
+            {
+                nMode = 2;
+                ptr += 5;
+            }
+            while (std::isspace(*ptr))
+            {
+                ++ptr;
+            }
+            if (nMode != 2)
+            {
+                if (*ptr && !std::isdigit(*ptr))
                 {
-                    if (*ptr && !std::isdigit(*ptr))
-                    {
-                        fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-                        return EXITCODE_SYNTAX_ERROR;
-                    }
+                    return syntax_error();
                 }
             }
-            if (nMode == 2) // in MESSAGETABLEDX { ... }
+        }
+        if (nMode == 2) // in MESSAGETABLEDX { ... }
+        {
+            if (*ptr == '{')
             {
-                if (*ptr == '{')
-                {
-                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-                    return EXITCODE_SYNTAX_ERROR;
-                }
-                else if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
-                {
-                    nMode = 0;
-                    continue;
-                }
-                if (std::isdigit(*ptr))
-                {
-                    if (int ret = do_entry(ptr))
-                        return ret;
-                }
-                else if (*ptr)
-                {
-                    fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-                    return EXITCODE_SYNTAX_ERROR;
-                }
+                return syntax_error();
+            }
+            else if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
+            {
+                nMode = 0;
+                continue;
+            }
+            if (std::isdigit(*ptr))
+            {
+                if (int ret = do_entry(ptr))
+                    return ret;
+            }
+            else if (*ptr)
+            {
+                return syntax_error();
             }
         }
     }
     if (nMode != 0)
     {
-        fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
-        return EXITCODE_SYNTAX_ERROR;
+        return syntax_error();
     }
 
     return EXITCODE_SUCCESS;
