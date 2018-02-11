@@ -125,10 +125,7 @@ bool do_pragma_line(char*& ptr)
         ++ptr;
     }
     char *ptr2 = ptr;
-    while (std::isspace(*ptr))
-    {
-        ++ptr;
-    }
+    ptr = skip_space(ptr);
     char *ptr3 = ptr;
     while (*ptr)
     {
@@ -210,6 +207,7 @@ int eat_output(const std::string& strOutput)
         mstr_trim(lines[i]);
     }
 
+    // parse lines
     INT nMode = 0;
     BYTE bPrimLang = 0, bSubLang = 0;
     for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
@@ -220,10 +218,7 @@ int eat_output(const std::string& strOutput)
         {
             // directive
             ++ptr;
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             if (std::isdigit(*ptr))
             {
                 do_pragma_line(ptr);
@@ -232,10 +227,7 @@ int eat_output(const std::string& strOutput)
             {
                 // #pragma
                 char *ptr1 = ptr + 6;
-                while (std::isspace(*ptr))
-                {
-                    ++ptr;
-                }
+                ptr = skip_space(ptr);
                 char *ptr2 = ptr;
                 if (memcmp(ptr, "code_page(", 10) == 0) // ')'
                 {
@@ -257,23 +249,19 @@ int eat_output(const std::string& strOutput)
             nMode = -1;
         }
 retry:
-        if (nMode == -1)    // after LANGUAGE
+        int value = 0;
+        ptr = skip_space(ptr);
+        if (nMode == -1 && *ptr)    // after LANGUAGE
         {
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             if (std::isdigit(*ptr))
             {
                 nMode = -2;
             }
         }
-        if (nMode == -2)    // expect PRIMARYLANGID
+        if (nMode == -2 && *ptr)    // expect PRIMARYLANGID
         {
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             char *ptr0 = ptr;
             while (std::isalnum(*ptr))
             {
@@ -289,24 +277,18 @@ retry:
                 return syntax_error();
             }
         }
-        if (nMode == -3)    // expect comma
+        if (nMode == -3 && *ptr)    // expect comma
         {
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             if (*ptr == ',')
             {
                 ++ptr;
                 nMode = -4;
             }
         }
-        if (nMode == -4)    // expect SUBLANGID
+        if (nMode == -4 && *ptr)    // expect SUBLANGID
         {
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             if (std::isdigit(*ptr))
             {
                 bSubLang = (BYTE)strtoul(ptr, NULL, 0);
@@ -318,19 +300,16 @@ retry:
                 return syntax_error();
             }
         }
-        if (nMode == 0) // out of MESSAGETABLEDX { ... }
+        if (nMode == 0 && *ptr) // out of MESSAGETABLEDX { ... }
         {
             if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
             {
                 nMode = 1;
                 ptr += 14;
-                while (std::isspace(*ptr))
-                {
-                    ++ptr;
-                }
+                ptr = skip_space(ptr);
             }
         }
-        if (nMode == 1) // after MESSAGETABLEDX
+        if (nMode == 1 && *ptr) // after MESSAGETABLEDX
         {
             if (*ptr == '{')
             {
@@ -346,10 +325,7 @@ retry:
                 nMode = 2;
                 ptr += 5;
             }
-            while (std::isspace(*ptr))
-            {
-                ++ptr;
-            }
+            ptr = skip_space(ptr);
             if (nMode != 2)
             {
                 if (*ptr && !std::isdigit(*ptr))
@@ -358,23 +334,95 @@ retry:
                 }
             }
         }
-        if (nMode == 2) // in MESSAGETABLEDX { ... }
+        if (nMode == 2 && *ptr) // in MESSAGETABLEDX { ... }
         {
             if (*ptr == '{')
             {
                 return syntax_error();
             }
-            else if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
+            else if (*ptr == '}')
             {
+                ++ptr;
                 nMode = 0;
                 goto retry;
             }
-            if (std::isdigit(*ptr))
+            else if (memcmp(ptr, "END", 3) == 0 &&
+                     (std::isspace(ptr[3]) || ptr[3] == 0))
             {
-                if (int ret = do_entry(ptr))
-                    return ret;
+                ptr += 3;
+                nMode = 0;
+                goto retry;
             }
-            else if (*ptr)
+            if (*ptr)
+            {
+                // get number string
+                char *ptr0 = ptr;
+                while (*ptr && *ptr != ',' && *ptr != '\"')
+                {
+                    ++ptr;
+                }
+                char *ptr1 = ptr;
+                MStringA str(ptr0, ptr1);
+
+                // parse
+                value = 0;
+                using namespace MacroParser;
+                StringScanner scanner(str);
+                TokenStream stream(scanner);
+                stream.read_tokens();
+                Parser parser(stream);
+                if (parser.parse())
+                {
+                    if (!eval_ast(parser.ast(), value))
+                    {
+                        return syntax_error();
+                    }
+                }
+                else
+                {
+                    return syntax_error();
+                }
+
+                if (*ptr == ',')
+                {
+                    ++ptr;
+                    nMode = 3;
+                    goto retry;
+                }
+                else if (*ptr == '\"')
+                {
+                    nMode = 3;
+                    goto retry;
+                }
+                else if (*ptr == 0)
+                {
+                    nMode = 3;
+                }
+                else
+                {
+                    return syntax_error();
+                }
+            }
+        }
+        if (nMode == 3 && *ptr)
+        {
+            ptr = skip_space(ptr);
+            if (*ptr == '"')
+            {
+                MStringA str = ptr;
+                mstr_unquote(str);
+
+                MStringW wstr(MAnsiToWide(g_wCodePage, str.c_str()).c_str());
+                g_msg_tables[g_langid].m_map[(DWORD)value] = wstr;
+
+                const char *ptr0 = ptr;
+                guts_quote(str, ptr0);
+                ptr = const_cast<char *>(ptr0);
+
+                nMode = 2;
+                goto retry;
+            }
+            if (*ptr != 0)
             {
                 return syntax_error();
             }
@@ -405,8 +453,6 @@ int save_rc(void)
     {
         fp = stdout;
     }
-
-    fprintf(fp, "#include <windows.h>\r\n\r\n");
 
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
