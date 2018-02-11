@@ -39,6 +39,7 @@ else()
         COMMENT "windres ../build/messagetables.res ../build/messagetables.o"
         VERBATIM)
     add_dependencies(RisohEditor res2obj)
+    add_dependencies(res2obj messagetables)
     set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.o)
 endif()
 
