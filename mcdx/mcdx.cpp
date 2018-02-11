@@ -752,6 +752,27 @@ int just_do_it(void)
     }
 }
 
+const wchar_t *get_format(const wchar_t *file_path)
+{
+    LPCWSTR pch = wcsrchr(file_path, L'.');
+    if (lstrcmpiW(pch, L".rc") == 0)
+    {
+        return L"rc";
+    }
+    else if (lstrcmpiW(pch, L".res") == 0)
+    {
+        return L"res";
+    }
+    else if (lstrcmpiW(pch, L".bin") == 0)
+    {
+        return L"bin";
+    }
+    else
+    {
+        return L"rc";
+    }
+}
+
 int main(int argc, char **argv)
 {
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -1017,46 +1038,14 @@ int main(int argc, char **argv)
 
     if (g_inp_format == NULL)
     {
-        LPWSTR pch = wcsrchr(g_input_file, L'.');
-        if (lstrcmpiW(pch, L".rc") == 0)
-        {
-            g_inp_format = L"rc";
-        }
-        else if (lstrcmpiW(pch, L".res") == 0)
-        {
-            g_inp_format = L"res";
-        }
-        else if (lstrcmpiW(pch, L".bin") == 0)
-        {
-            g_inp_format = L"bin";
-        }
-        else
-        {
-            g_inp_format = L"rc";
-        }
+		g_inp_format = get_format(g_input_file);
     }
 
     if (g_out_format == NULL)
     {
         if (g_output_file)
         {
-            LPWSTR pch = wcsrchr(g_output_file, L'.');
-            if (lstrcmpiW(pch, L".rc") == 0)
-            {
-                g_out_format = L"rc";
-            }
-            else if (lstrcmpiW(pch, L".res") == 0)
-            {
-                g_out_format = L"res";
-            }
-            else if (lstrcmpiW(pch, L".bin") == 0)
-            {
-                g_out_format = L"bin";
-            }
-            else
-            {
-                g_out_format = L"rc";
-            }
+			g_out_format = get_format(g_output_file);
         }
         else
         {
