@@ -246,6 +246,8 @@ protected:
                 range.FirstId = range.LastId = it->first;
             }
         }
+        if (range.FirstId == range.LastId)
+            ranges.push_back(range);
 
         return TRUE;
     }
