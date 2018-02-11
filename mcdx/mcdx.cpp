@@ -407,6 +407,11 @@ retry:
         if (nMode == 3 && *ptr)
         {
             ptr = skip_space(ptr);
+            if (*ptr == ',')
+            {
+                ++ptr;
+            }
+            ptr = skip_space(ptr);
             if (*ptr == '"')
             {
                 MStringA str = ptr;
