@@ -884,3 +884,11 @@ FONT 12, "MS UI Gothic"
     CTEXT "http://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
 }
+
+#ifdef MC_INVOKED
+MESSAGETABLEDX
+{
+    MSGID_HELLO, "こんにちは世界!\r\n"
+    MSGID_SAMPLE "これはサンプルです。"
+}
+#endif

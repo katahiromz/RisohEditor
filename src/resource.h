@@ -276,4 +276,7 @@
 #define CID_DUMMYCONTROLID1 1000
 #define CID_DUMMYCONTROLID2 1001
 
+#define MSGID_HELLO         1
+#define MSGID_SAMPLE        2
+
 #endif  // ndef RESOURCE_H_
