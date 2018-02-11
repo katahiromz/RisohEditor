@@ -14,14 +14,14 @@ target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32)
 
 # messagetables.res
 add_custom_target(messagetables ALL
-    mcdx RisohEditor_res.rc messagetables.res
+    mcdx RisohEditor_res.rc ../build/messagetables.res
     DEPENDS mcdx 
-    BYPRODUCTS messagetables.res
-    COMMENT [[ mcdx RisohEditor_res.rc messagetables.res ]]
+    BYPRODUCTS ../build/messagetables.res
+    COMMENT [[ mcdx RisohEditor_res.rc ../build/messagetables.res ]]
     VERBATIM)
 add_dependencies(RisohEditor messagetables)
 add_dependencies(messagetables mcdx)
-set_target_properties(RisohEditor PROPERTIES LINK_FLAGS messagetables.res)
+set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.res)
 
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
