@@ -256,6 +256,7 @@ int eat_output(const std::string& strOutput)
             ptr = &line[8];
             nMode = -1;
         }
+retry:
         if (nMode == -1)    // after LANGUAGE
         {
             while (std::isspace(*ptr))
@@ -311,7 +312,6 @@ int eat_output(const std::string& strOutput)
                 bSubLang = (BYTE)strtoul(ptr, NULL, 0);
                 g_langid = MAKELANGID(bPrimLang, bSubLang);
                 nMode = 0;
-                continue;
             }
             else if (*ptr)
             {
@@ -367,7 +367,7 @@ int eat_output(const std::string& strOutput)
             else if (*ptr == '}' || memcmp(ptr, "END", 3) == 0)
             {
                 nMode = 0;
-                continue;
+                goto retry;
             }
             if (std::isdigit(*ptr))
             {
