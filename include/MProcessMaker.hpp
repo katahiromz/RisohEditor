@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     9   /* Version 9 */
+#define MZC4_MPROCESSMAKER_HPP_     10   /* Version 10 */
 
 #include "MFile.hpp"
 #include <tchar.h>
@@ -508,7 +508,8 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
 {
     strOutput.clear();
 
-    DWORD cbAvail;
+    DWORD cbAvail, cbRead;
+    CHAR szBuf[1024];
     while (hOutputRead.PeekNamedPipe(NULL, 0, NULL, &cbAvail))
     {
         if (cbAvail == 0)
@@ -516,12 +517,9 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
             if (!IsRunning())
                 break;
 
-            WaitForSingleObject(500);
             continue;
         }
 
-        CHAR szBuf[256];
-        DWORD cbRead;
         if (cbAvail > sizeof(szBuf))
             cbAvail = sizeof(szBuf);
         else if (cbAvail == 0)
