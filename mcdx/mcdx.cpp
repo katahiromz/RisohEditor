@@ -1014,6 +1014,7 @@ int main(int argc, char **argv)
             g_langid = MAKELANGID(bPrim, bSub);
             continue;
         }
+        // invalid argument?
         if (wargv[i][0] == L'-' || wargv[i][0] == L'/')
         {
             MStringA str = MWideToAnsi(CP_ACP, wargv[i]).c_str();
