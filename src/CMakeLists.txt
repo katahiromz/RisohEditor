@@ -17,11 +17,22 @@ add_custom_target(messagetables ALL
     mcdx RisohEditor_res.rc ../build/messagetables.res
     DEPENDS mcdx 
     BYPRODUCTS ../build/messagetables.res
-    COMMENT [[ mcdx RisohEditor_res.rc ../build/messagetables.res ]]
+    COMMENT [[mcdx RisohEditor_res.rc ../build/messagetables.res]]
     VERBATIM)
 add_dependencies(RisohEditor messagetables)
 add_dependencies(messagetables mcdx)
-set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.res)
+if (MSVC)
+    set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.res)
+else()
+    add_custom_target(res2obj ALL
+        windres ../build/messagetables.res ../build/messagetables.o
+        DEPENDS messagetables
+        BYPRODUCTS ../build/messagetables.o
+        COMMENT [[windres ../build/messagetables.res ../build/messagetables.o]]
+        VERBATIM)
+    add_dependencies(RisohEditor res2obj)
+    set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.o)
+endif()
 
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
