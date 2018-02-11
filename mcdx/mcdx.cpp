@@ -350,6 +350,10 @@ int do_directive(char*& ptr)
                     fprintf(stderr, "%s (%d): WARNING: Invalid pragma: %s\n", g_strFile.c_str(), g_nLineNo, ptr2);
                 }
             }
+            else
+            {
+                fprintf(stderr, "%s (%d): WARNING: Invalid pragma: %s\n", g_strFile.c_str(), g_nLineNo, ptr2);
+            }
         }
         else
         {
