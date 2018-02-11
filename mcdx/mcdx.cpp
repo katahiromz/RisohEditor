@@ -68,7 +68,11 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.0\n");
+    printf("mcdx ver.0.1\n");
+    printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
+    printf("This program is free software; you may redistribute it under the terms of\n");
+    printf("the GNU General Public License version 3 or (at your option) any later version.\n");
+    printf("This program has absolutely no warranty.\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////
