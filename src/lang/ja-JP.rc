@@ -885,7 +885,7 @@ FONT 12, "MS UI Gothic"
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
 }
 
-#ifdef MC_INVOKED
+#ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {
     MSGID_HELLO, "こんにちは世界!\r\n"

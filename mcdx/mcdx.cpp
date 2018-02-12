@@ -830,7 +830,7 @@ int main(int argc, char **argv)
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
     g_definitions.push_back(L"-DRC_INVOKED");
-    g_definitions.push_back(L"-DMC_INVOKED");
+    g_definitions.push_back(L"-DMCDX_INVOKED");
 
     static const wchar_t *include_dir_equal = L"--include-dir=";
     size_t include_dir_equal_len = lstrlenW(include_dir_equal);

@@ -885,7 +885,7 @@ FONT 12, "宋体"
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
 }
 
-#ifdef MC_INVOKED
+#ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {
     MSGID_HELLO, "你好, 世界!\r\n"
