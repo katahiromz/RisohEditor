@@ -178,12 +178,12 @@ public:
                     std::wstring& wstr = m_map[k];
 
                     MESSAGE_RESOURCE_ENTRY_HEADER header;
-                    header.Length = (WORD)(sizeof(header) + wstr.size() * sizeof(WCHAR));
+                    header.Length = (WORD)(sizeof(header) + (wstr.size() + 1) * sizeof(WCHAR));
                     header.Flags = MESSAGE_RESOURCE_UNICODE;
                     if (!stream.WriteRaw(header))
                         return FALSE;
 
-                    size_t size = wstr.size() * sizeof(WCHAR);
+                    size_t size = (wstr.size() + 1) * sizeof(WCHAR);
                     if (!stream.WriteData(&wstr[0], size))
                         return FALSE;
                 }
@@ -264,7 +264,7 @@ protected:
             for (DWORD k = it->FirstId; k <= it->LastId; ++k)
             {
                 offset += sizeof(MESSAGE_RESOURCE_ENTRY_HEADER);
-                offset += m_map[k].size() * sizeof(WCHAR);
+                offset += (m_map[k].size() + 1) * sizeof(WCHAR);
             }
         }
         return TRUE;

@@ -2418,23 +2418,42 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
 
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
-    WORD i = LOWORD(lParam);
-    WORD k = HIWORD(lParam);
-
-    static LPCWSTR apszI_[] =
+    if (1)
     {
-        L"I_NONE",
-        L"I_TYPE",
-        L"I_NAME",
-        L"I_LANG",
-        L"I_STRING",
-        L"I_MESSAGE"
-    };
+        TCHAR szMsg[256];
+        FormatMessage(
+            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS,
+            GetModuleHandle(NULL),
+            MSGID_HELLO, 0,
+            szMsg, _countof(szMsg), NULL);
+        MessageBox(hwnd, szMsg, TEXT("MSGID_HELLO"), MB_ICONINFORMATION);
+        FormatMessage(
+            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS,
+            GetModuleHandle(NULL),
+            MSGID_SAMPLE, 0,
+            szMsg, _countof(szMsg), NULL);
+        MessageBox(hwnd, szMsg, TEXT("MSGID_SAMPLE"), MB_ICONINFORMATION);
+    }
+    else
+    {
+        LPARAM lParam = TV_GetParam(m_hTreeView);
+        WORD i = LOWORD(lParam);
+        WORD k = HIWORD(lParam);
 
-    WCHAR sz[64];
-    wsprintfW(sz, L"%d, %s", i, apszI_[k]);
-    MsgBoxDx(sz, MB_ICONINFORMATION);
+        static LPCWSTR apszI_[] =
+        {
+            L"I_NONE",
+            L"I_TYPE",
+            L"I_NAME",
+            L"I_LANG",
+            L"I_STRING",
+            L"I_MESSAGE"
+        };
+
+        WCHAR sz[64];
+        wsprintfW(sz, L"%d, %s", i, apszI_[k]);
+        MsgBoxDx(sz, MB_ICONINFORMATION);
+    }
 }
 
 void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
