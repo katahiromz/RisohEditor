@@ -69,7 +69,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.5\n");
+    printf("mcdx ver.0.6\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -182,7 +182,7 @@ BOOL check_windres_exe(VOID)
     return TRUE;
 }
 
-bool do_pragma_line(char*& ptr)
+bool do_directive_line(char*& ptr)
 {
     // # line "file"
     char *ptr1 = ptr;
@@ -352,7 +352,7 @@ int do_directive(char*& ptr)
     ptr = skip_space(ptr);
     if (std::isdigit(*ptr))
     {
-        do_pragma_line(ptr);
+        do_directive_line(ptr);
     }
     else if (memcmp(ptr, "pragma", 6) == 0)
     {
@@ -744,7 +744,7 @@ int load_rc(wchar_t *input_file)
     strCommandLine += L"\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
-        strCommandLine += L" ";
+        strCommandLine += L" -D";
         strCommandLine += g_definitions[i];
     }
     strCommandLine += L" \"";
@@ -912,7 +912,11 @@ int just_do_it(void)
 const wchar_t *get_format(const wchar_t *file_path)
 {
     LPCWSTR pch = wcsrchr(file_path, L'.');
-    if (lstrcmpiW(pch, L".rc") == 0)
+    if (pch == NULL)
+    {
+        return L"rc";
+    }
+    else if (lstrcmpiW(pch, L".rc") == 0)
     {
         return L"rc";
     }
@@ -942,8 +946,8 @@ int main(int argc, char **argv)
 {
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
-    g_definitions.push_back(L"-DRC_INVOKED");
-    g_definitions.push_back(L"-DMCDX_INVOKED");
+    g_definitions.push_back(L"RC_INVOKED");
+    g_definitions.push_back(L"MCDX_INVOKED");
 
     static const wchar_t *include_dir_equal = L"--include-dir=";
     size_t include_dir_equal_len = lstrlenW(include_dir_equal);
@@ -1086,7 +1090,7 @@ int main(int argc, char **argv)
                 return EXITCODE_INVALID_ARGUMENT;
             }
         }
-        if (memcmp(wargv[i], L"-D", 2) == 0)
+        if (memcmp(wargv[i], L"-D", 2 * sizeof(wchar_t)) == 0)
         {
             g_definitions.push_back(&wargv[i][2]);
             continue;
@@ -1106,6 +1110,11 @@ int main(int argc, char **argv)
                 fprintf(stderr, "ERROR: -U requires an argument\n");
                 return EXITCODE_INVALID_ARGUMENT;
             }
+        }
+        if (memcmp(wargv[i], L"-U", 2 * sizeof(wchar_t)) == 0)
+        {
+            g_undefinitions.push_back(&wargv[i][2]);
+            continue;
         }
         if (memcmp(wargv[i], define_equal, define_equal_size) == 0)
         {
