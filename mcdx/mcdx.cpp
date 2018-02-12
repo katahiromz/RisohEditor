@@ -670,7 +670,7 @@ int save_coff(wchar_t *output_file)
     }
     else
     {
-        strCommandLine += L"\"";
+        strCommandLine += L"\" -O coff";
     }
 
     // create a process
