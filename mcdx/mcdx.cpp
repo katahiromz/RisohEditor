@@ -314,10 +314,6 @@ int do_directive(char*& ptr)
     {
         do_pragma_line(ptr);
     }
-    else if (memcmp(ptr, "pack", 4) == 0)
-    {
-        ;
-    }
     else if (memcmp(ptr, "pragma", 6) == 0)
     {
         // #pragma
@@ -325,7 +321,12 @@ int do_directive(char*& ptr)
         char *ptr1 = ptr;
         ptr = skip_space(ptr);
         char *ptr2 = ptr;
-        if (memcmp(ptr, "code_page", 9) == 0)
+        if (memcmp(ptr, "pack", 4) == 0)
+        {
+            // #pragma pack...
+            ;
+        }
+        else if (memcmp(ptr, "code_page", 9) == 0)
         {
             ptr += 9;
             ptr = skip_space(ptr);
