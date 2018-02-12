@@ -878,6 +878,7 @@ protected:
     WCHAR       m_szCppExe[MAX_PATH];
     WCHAR       m_szWindresExe[MAX_PATH];
     WCHAR       m_szUpxExe[MAX_PATH];
+    WCHAR       m_szMcdxExe[MAX_PATH];
     WCHAR       m_szRealFile[MAX_PATH];
     WCHAR       m_szNominalFile[MAX_PATH];
     WCHAR       m_szResourceH[MAX_PATH];
@@ -921,6 +922,7 @@ public:
         m_szCppExe[0] = 0;
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
+        m_szMcdxExe[0] = 0;
         m_szRealFile[0] = 0;
         m_szNominalFile[0] = 0;
         m_szResourceH[0] = 0;
@@ -1036,6 +1038,7 @@ protected:
     // parsing resource IDs
     BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
     BOOL CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen = FALSE);
+    BOOL CompileMessageTable(HWND hwnd, const std::wstring& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
@@ -3394,6 +3397,116 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
+BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    WORD i = LOWORD(lParam);
+    if (m_entries.size() <= i)
+        return FALSE;
+
+    ResEntry& entry = m_entries[i];
+    if (entry.type != RT_MESSAGETABLE)
+        return FALSE;
+
+    MStringA strUtf8;
+    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
+
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+
+    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    MFile r1(szPath1, TRUE);
+
+    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    MFile r2(szPath2, TRUE);
+
+    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    MFile r3(szPath3, TRUE);
+    r3.CloseHandle();
+
+    r1.WriteFormatA("#include <windows.h>\r\n");
+    r1.WriteFormatA("#include <commctrl.h>\r\n");
+    r1.WriteFormatA("#include <dlgs.h>\r\n");
+    if (m_szResourceH[0])
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+                    PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
+    r1.WriteFormatA("#pragma code_page(65001)\r\n");
+    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    r1.CloseHandle();
+
+    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
+    DWORD cbWritten;
+    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.CloseHandle();
+
+    WCHAR szCmdLine[MAX_PATH * 2 + 64];
+    wsprintfW(szCmdLine,
+        L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
+        m_szMcdxExe, szPath3, szPath1);
+    // MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    BOOL bSuccess = FALSE;
+    std::string strOutput;
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        pmaker.ReadAll(strOutput, hOutputRead);
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            ResEntries entries;
+            if (DoImport(hwnd, szPath3, entries))
+            {
+                MStringA msg;
+                bSuccess = CareWindresResult(hwnd, entries, msg);
+                if (msg.size())
+                {
+                    strOutput.append(msg);
+                }
+            }
+        }
+    }
+    else
+    {
+        MStringA msg;
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    }
+
+    if (!bSuccess)
+    {
+        if (strOutput.empty())
+        {
+            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+        }
+        else
+        {
+            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+        }
+#ifdef NDEBUG
+        ::DeleteFileW(szPath1);
+        ::DeleteFileW(szPath2);
+        ::DeleteFileW(szPath3);
+#endif
+    }
+    else
+    {
+        ::DeleteFileW(szPath1);
+        ::DeleteFileW(szPath2);
+        ::DeleteFileW(szPath3);
+    }
+
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+    return bSuccess;
+}
+
 BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -3402,6 +3515,10 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
         return FALSE;
 
     ResEntry& entry = m_entries[i];
+    if (entry.type == RT_MESSAGETABLE)
+    {
+        return CompileMessageTable(hwnd, strWide);
+    }
 
     MStringA strUtf8;
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
@@ -3672,6 +3789,25 @@ INT MMainWnd::CheckData(VOID)
     {
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
         return -5;  // failure
+    }
+
+    // mcdx.exe
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    lstrcpyW(wcsrchr(szPath, L'\\'), L"\\mcdx.exe");
+    if (::GetFileAttributesW(m_szUpxExe) != INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpynW(m_szMcdxExe, szPath, _countof(m_szMcdxExe));
+    }
+    else
+    {
+        lstrcpyW(m_szMcdxExe, m_szDataFolder);
+        lstrcatW(m_szMcdxExe, L"\\bin\\mcdx.exe");
+        if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
+        {
+            ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
+            return -6;  // failure
+        }
     }
 
     return 0;   // success
