@@ -12,36 +12,22 @@ add_executable(RisohEditor WIN32
     RisohEditor_res.rc)
 target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32)
 
-# messagetables.res and messagetables.o
 if (MSVC)
-    add_custom_target(messagetables ALL
-        mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables.res
-        DEPENDS mcdx RisohEditor_res.rc
-        BYPRODUCTS ../build/${CMAKE_CFG_INTDIR}/messagetables.res
-        COMMENT "mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables.res"
-        VERBATIM)
-    add_dependencies(RisohEditor messagetables)
-    add_dependencies(messagetables mcdx)
-    set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/${CMAKE_CFG_INTDIR}/messagetables.res)
+    set(RES_TYPE ".res")
 else()
-    add_custom_target(messagetables ALL
-        mcdx RisohEditor_res.rc ../build/messagetables.res
-        DEPENDS mcdx RisohEditor_res.rc
-        BYPRODUCTS ../build/messagetables.res
-        COMMENT [[mcdx RisohEditor_res.rc ../build/messagetables.res]]
-        VERBATIM)
-    add_dependencies(RisohEditor messagetables)
-    add_dependencies(messagetables mcdx)
-    add_custom_target(res2obj ALL
-        windres ../build/messagetables.res ../build/messagetables.o
-        DEPENDS messagetables
-        BYPRODUCTS ../build/messagetables.o
-        COMMENT "windres ../build/messagetables.res ../build/messagetables.o"
-        VERBATIM)
-    add_dependencies(RisohEditor res2obj)
-    add_dependencies(res2obj messagetables)
-    set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/messagetables.o)
+    set(RES_TYPE ".o")
 endif()
+
+# messagetables.res or messagetables.o
+add_custom_target(messagetables ALL
+    mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables${RES_TYPE}
+    DEPENDS mcdx RisohEditor_res.rc
+    BYPRODUCTS ../build/${CMAKE_CFG_INTDIR}/messagetables${RES_TYPE}
+    COMMENT "mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables${RES_TYPE}"
+    VERBATIM)
+add_dependencies(RisohEditor messagetables)
+add_dependencies(messagetables mcdx)
+set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ../build/${CMAKE_CFG_INTDIR}/messagetables${RES_TYPE})
 
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
