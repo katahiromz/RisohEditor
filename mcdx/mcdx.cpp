@@ -387,14 +387,14 @@ int eat_output(const std::string& strOutput)
     {
         std::string& line = lines[i];
         char *ptr = &line[0];
-        if (line[0] == '#')
+        if (*ptr == '#')
         {
             if (int ret = do_directive(ptr))
                 return ret;
 
             continue;
         }
-        else if (memcmp("LANGUAGE", &line[0], 8) == 0)
+        else if (memcmp("LANGUAGE", ptr, 8) == 0)
         {
             // LANGUAGE (primary), (sublang)
             ptr = &line[8];
@@ -699,7 +699,7 @@ int load_bin(wchar_t *input_file)
     char buf[256];
     DWORD dwSize;
     std::string strContents;
-    while (file.ReadFile(buf, sizeof(buf), &dwSize))
+    while (file.ReadFile(buf, sizeof(buf), &dwSize) && dwSize)
     {
         strContents.append(buf, dwSize);
     }
@@ -724,10 +724,10 @@ int load_res(wchar_t *input_file)
         return EXITCODE_CANNOT_OPEN;
     }
 
-    char buf[256];
+    char buf[512];
     DWORD dwSize;
     std::string strContents;
-    while (file.ReadFile(buf, sizeof(buf), &dwSize))
+    while (file.ReadFile(buf, sizeof(buf), &dwSize) && dwSize)
     {
         strContents.append(buf, dwSize);
     }
