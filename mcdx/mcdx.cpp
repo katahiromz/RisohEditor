@@ -62,13 +62,13 @@ void show_help(void)
     printf("  -U --undefine <sym>          Undefine SYM when preprocessing rc file\n");
     printf("  -c --codepage=<codepage>     Specify default codepage\n");
     printf("  -l --language=<val>          Set language when reading rc file\n");
-    printf("FORMAT is one of rc, res or bin, and is deduced from the file name\n");
+    printf("FORMAT is one of rc, res, bin or coff, and is deduced from the file name\n");
     printf("Report bugs to <katayama.hirofumi.mz@gmail.com>\n");
 }
 
 void show_version(void)
 {
-    printf("mcdx ver.0.3\n");
+    printf("mcdx ver.0.4\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -493,12 +493,12 @@ retry:
     return EXITCODE_SUCCESS;
 }
 
-int save_rc(void)
+int save_rc(wchar_t *output_file)
 {
     FILE *fp;
-    if (g_output_file)
+    if (output_file)
     {
-        fp = _wfopen(g_output_file, L"wb");
+        fp = _wfopen(output_file, L"wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -524,13 +524,13 @@ int save_rc(void)
         fprintf(fp, "#endif\r\n");
     }
 
-    if (g_output_file)
+    if (output_file)
         fclose(fp);
 
     if (ferror(fp))
     {
-        if (g_output_file)
-            DeleteFile(g_output_file);
+        if (output_file)
+            DeleteFile(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -538,7 +538,7 @@ int save_rc(void)
     return EXITCODE_SUCCESS;
 }
 
-int save_res(void)
+int save_res(wchar_t *output_file)
 {
     MByteStreamEx bs;
     ResHeader header;
@@ -575,9 +575,9 @@ int save_res(void)
     }
 
     FILE *fp;
-    if (g_output_file)
+    if (output_file)
     {
-        fp = _wfopen(g_output_file, L"wb");
+        fp = _wfopen(output_file, L"wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -591,13 +591,13 @@ int save_res(void)
 
     fwrite(&bs[0], bs.size(), 1, fp);
 
-    if (g_output_file)
+    if (output_file)
         fclose(fp);
 
     if (ferror(fp))
     {
-        if (g_output_file)
-            DeleteFile(g_output_file);
+        if (output_file)
+            DeleteFile(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -605,7 +605,7 @@ int save_res(void)
     return EXITCODE_SUCCESS;
 }
 
-int save_bin(void)
+int save_bin(wchar_t *output_file)
 {
     MessageRes msg_res = g_msg_tables.begin()->second;
 
@@ -613,9 +613,9 @@ int save_bin(void)
     msg_res.SaveToStream(stream);
 
     FILE *fp;
-    if (g_output_file)
+    if (output_file)
     {
-        fp = _wfopen(g_output_file, L"wb");
+        fp = _wfopen(output_file, L"wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -629,13 +629,13 @@ int save_bin(void)
 
     fwrite(&stream[0], stream.size(), 1, fp);
 
-    if (g_output_file)
+    if (output_file)
         fclose(fp);
 
     if (ferror(fp))
     {
-        if (g_output_file)
-            DeleteFile(g_output_file);
+        if (output_file)
+            DeleteFile(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -643,7 +643,7 @@ int save_bin(void)
     return EXITCODE_SUCCESS;
 }
 
-int load_rc(void)
+int load_rc(wchar_t *input_file)
 {
     // build up command line
     MStringW strCommandLine;
@@ -656,10 +656,10 @@ int load_rc(void)
         strCommandLine += g_definitions[i];
     }
     strCommandLine += L" \"";
-    strCommandLine += g_input_file;
+    strCommandLine += input_file;
     strCommandLine += L"\"";
 
-    g_strFile = MWideToAnsi(CP_ACP, g_input_file).c_str();
+    g_strFile = MWideToAnsi(CP_ACP, input_file).c_str();
     g_nLineNo = 1;
 
     // create a process
@@ -688,9 +688,9 @@ int load_rc(void)
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
-int load_bin(void)
+int load_bin(wchar_t *input_file)
 {
-    MFile file(g_input_file);
+    MFile file(input_file);
     if (!file)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
@@ -715,9 +715,9 @@ int load_bin(void)
     return EXITCODE_SUCCESS;
 }
 
-int load_res(void)
+int load_res(wchar_t *input_file)
 {
-    MFile file(g_input_file);
+    MFile file(input_file);
     if (!file)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
@@ -770,17 +770,17 @@ int just_do_it(void)
 {
     if (lstrcmpiW(g_inp_format, L"rc") == 0)
     {
-        if (int ret = load_rc())
+        if (int ret = load_rc(g_input_file))
             return ret;
     }
     else if (lstrcmpiW(g_inp_format, L"res") == 0)
     {
-        if (int ret = load_res())
+        if (int ret = load_res(g_input_file))
             return ret;
     }
     else if (lstrcmpiW(g_inp_format, L"bin") == 0)
     {
-        if (int ret = load_bin())
+        if (int ret = load_bin(g_input_file))
             return ret;
     }
     else
@@ -791,15 +791,15 @@ int just_do_it(void)
 
     if (lstrcmpiW(g_out_format, L"rc") == 0)
     {
-        return save_rc();
+        return save_rc(g_output_file);
     }
     else if (lstrcmpiW(g_out_format, L"res") == 0)
     {
-        return save_res();
+        return save_res(g_output_file);
     }
     else if (lstrcmpiW(g_out_format, L"bin") == 0)
     {
-        return save_bin();
+        return save_bin(g_output_file);
     }
     else
     {
