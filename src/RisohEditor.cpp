@@ -2418,7 +2418,7 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
 
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
-    if (1)
+    if (0)
     {
         TCHAR szMsg[256];
         FormatMessage(
