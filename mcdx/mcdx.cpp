@@ -314,6 +314,10 @@ int do_directive(char*& ptr)
     {
         do_pragma_line(ptr);
     }
+    else if (memcmp(ptr, "pack", 4) == 0)
+    {
+        ;
+    }
     else if (memcmp(ptr, "pragma", 6) == 0)
     {
         // #pragma
