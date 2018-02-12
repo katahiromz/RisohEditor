@@ -3439,7 +3439,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
 
-    WCHAR szCmdLine[MAX_PATH * 2 + 64];
+    WCHAR szCmdLine[MAX_PATH * 3 + 64];
     wsprintfW(szCmdLine,
         L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
         m_szMcdxExe, szPath3, szPath1);
