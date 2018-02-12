@@ -68,7 +68,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.2\n");
+    printf("mcdx ver.0.3\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -509,13 +509,15 @@ int save_rc(void)
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
     {
+        fprintf(fp, "#ifdef MCDX_INVOKED\r\n");
         fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\r\n",
                 PRIMARYLANGID(it->first), SUBLANGID(it->first));
 
         std::wstring wstr = it->second.Dump();
         std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
 
-        fprintf(fp, "%s\r\n", str.c_str());
+        fputs(str.c_str(), fp);
+        fprintf(fp, "#endif\r\n");
     }
 
     if (g_output_file)
