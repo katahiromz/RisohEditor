@@ -1016,6 +1016,7 @@ public:
     BOOL DoLoadFile(HWND hwnd, LPCWSTR FileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
+    BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries, MStringA& strOutput);
     BOOL DoExtractIcon(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractCursor(LPCWSTR FileName, const ResEntry& entry);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR FileName, const ResEntries& entries);
@@ -4049,6 +4050,50 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     return DoLoadResH(hwnd, szPath);
 }
 
+BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries, MStringA& strOutput)
+{
+    MWaitCursor wait;
+
+    WCHAR szPath3[MAX_PATH];
+    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    MFile r3(szPath3, TRUE);
+    r3.CloseHandle();
+
+    WCHAR szCmdLine[MAX_PATH * 3];
+    wsprintfW(szCmdLine,
+        L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
+        m_szMcdxExe, szPath3, szRCFile);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MFile hInputWrite, hOutputRead;
+    SetEnvironmentVariableW(L"LANG", L"en_US");
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, szCmdLine))
+    {
+        pmaker.ReadAll(strOutput, hOutputRead);
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            bSuccess = DoImport(hwnd, szPath3, entries);
+        }
+    }
+    else
+    {
+        MStringA msg;
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    }
+
+    ::DeleteFileW(szPath3);
+
+    return bSuccess;
+}
+
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 {
     MWaitCursor wait;
@@ -4072,7 +4117,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 #endif
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
-
     BOOL bSuccess = FALSE;
 
     MProcessMaker pmaker;
@@ -4081,6 +4125,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 
     std::string strOutput;
     MFile hInputWrite, hOutputRead;
+    SetEnvironmentVariableW(L"LANG", L"en_US");
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, szCmdLine))
     {
@@ -4090,6 +4135,11 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         {
             bSuccess = DoImport(hwnd, szPath3, entries);
         }
+        else if (strOutput.find(": no resources") != std::string::npos)
+        {
+            bSuccess = TRUE;
+            strOutput.clear();
+        }
     }
     else
     {
@@ -4097,27 +4147,27 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
-    if (!bSuccess)
+    if (bSuccess)
     {
-        if (strOutput.empty())
-        {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ShowBinEdit(FALSE);
-        }
-        else
-        {
-            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-            ShowBinEdit(TRUE);
-        }
-#ifdef NDEBUG
         ::DeleteFileW(szPath3);
-#endif
+        bSuccess = DoLoadMsgTables(hwnd, szRCFile, entries, strOutput);
+    }
+
+    if (strOutput.empty())
+    {
+        SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+        ShowBinEdit(FALSE);
     }
     else
     {
-        ::DeleteFileW(szPath3);
+        ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+        ShowBinEdit(TRUE);
     }
+#ifdef NDEBUG
+    ::DeleteFileW(szPath3);
+#endif
 
+    HidePreview(hwnd);
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
     return bSuccess;
@@ -5516,7 +5566,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
-	MWaitCursor wait;
+    MWaitCursor wait;
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
