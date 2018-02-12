@@ -3413,12 +3413,15 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
+    // Source file #1
     lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
     MFile r1(szPath1, TRUE);
 
+    // Source file #2 (#included)
     lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
     MFile r2(szPath2, TRUE);
 
+    // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
@@ -3547,12 +3550,15 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
+    // Source file #1
     lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
     MFile r1(szPath1, TRUE);
 
+    // Source file #2 (#included)
     lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
     MFile r2(szPath2, TRUE);
 
+    // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
