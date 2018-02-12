@@ -737,6 +737,24 @@ int save_bin(wchar_t *output_file)
 
 int load_rc(wchar_t *input_file)
 {
+    // definitions minus undefinitions
+    for (size_t i = 0; i < g_undefinitions.size(); ++i)
+    {
+        for (size_t k = 0; k < g_definitions.size(); ++k)
+        {
+            if (g_definitions[k].find(g_undefinitions[i]) == 0)
+            {
+                size_t len = g_undefinitions[i].size();
+                if (g_definitions[k].c_str()[len] == 0 ||
+                    g_definitions[k].c_str()[len] == L'=')
+                {
+                    g_definitions.erase(g_definitions.begin() + k);
+                    --k;
+                }
+            }
+        }
+    }
+
     // build up command line
     MStringW strCommandLine;
     strCommandLine += L"\"";
