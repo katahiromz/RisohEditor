@@ -41,7 +41,8 @@ enum EXITCODE
     EXITCODE_CANNOT_OPEN,
     EXITCODE_CANNOT_WRITE,
     EXITCODE_INVALID_DATA,
-    EXITCODE_NOT_FOUND_CPP
+    EXITCODE_NOT_FOUND_CPP,
+    EXITCODE_NOT_SUPPORTED_YET
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.4\n");
+    printf("mcdx ver.0.5\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -78,6 +79,7 @@ void show_version(void)
 ////////////////////////////////////////////////////////////////////////////
 
 WCHAR g_szCppExe[MAX_PATH] = L"";
+WCHAR g_szWindResExe[MAX_PATH] = L"";
 
 wchar_t *g_input_file = NULL;
 wchar_t *g_output_file = NULL;
@@ -139,6 +141,44 @@ BOOL check_cpp_exe(VOID)
         }
     }
     lstrcpynW(g_szCppExe, szPath, MAX_PATH);
+    return TRUE;
+}
+
+BOOL check_windres_exe(VOID)
+{
+    WCHAR szPath[MAX_PATH + 64], *pch;
+
+    SearchPathW(NULL, L"windres.exe", NULL, _countof(szPath), szPath, &pch);
+    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpynW(g_szWindResExe, szPath, MAX_PATH);
+        return TRUE;
+    }
+
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    pch = wcsrchr(szPath, L'\\');
+    lstrcpyW(pch, L"\\windres.exe");
+    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        lstrcpyW(pch, L"\\data\\bin\\windres.exe");
+        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            lstrcpyW(pch, L"\\..\\data\\bin\\windres.exe");
+            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                lstrcpyW(pch, L"\\..\\..\\data\\bin\\windres.exe");
+                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    lstrcpyW(pch, L"\\..\\..\\..\\data\\bin\\windres.exe");
+                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    {
+                        return FALSE;
+                    }
+                }
+            }
+        }
+    }
+    lstrcpynW(g_szWindResExe, szPath, MAX_PATH);
     return TRUE;
 }
 
@@ -605,6 +645,58 @@ int save_res(wchar_t *output_file)
     return EXITCODE_SUCCESS;
 }
 
+int save_coff(wchar_t *output_file)
+{
+    TCHAR szTempPath[MAX_PATH], szTempFile[MAX_PATH];
+    GetTempPath(_countof(szTempPath), szTempPath);
+    GetTempFileName(szTempPath, TEXT("res"), 0, szTempFile);
+
+    if (int ret = save_res(szTempFile))
+    {
+        DeleteFile(szTempFile);
+        return ret;
+    }
+
+    MStringW strCommandLine;
+    strCommandLine += L"\"";
+    strCommandLine += g_szWindResExe;
+    strCommandLine += L"\" \"";
+    strCommandLine += szTempFile;
+    if (output_file)
+    {
+        strCommandLine += L"\" \"";
+        strCommandLine += output_file;
+        strCommandLine += L"\"";
+    }
+    else
+    {
+        strCommandLine += L"\"";
+    }
+
+    // create a process
+    MProcessMaker maker;
+    maker.SetShowWindow(SW_HIDE);
+    maker.SetCreationFlags(CREATE_NEW_CONSOLE);
+    MFile hInputWrite, hOutputRead;
+    if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        maker.CreateProcessDx(NULL, strCommandLine.c_str()))
+    {
+        std::string strOutput;
+        maker.ReadAll(strOutput, hOutputRead);
+
+        if (maker.GetExitCode() == 0)
+        {
+            DeleteFile(szTempFile);
+            return EXITCODE_SUCCESS;
+        }
+
+        fputs(strOutput.c_str(), stderr);
+    }
+    fprintf(stderr, "ERROR: Failed to create process\n");
+    DeleteFile(szTempFile);
+    return EXITCODE_FAIL_TO_PREPROCESS;
+}
+
 int save_bin(wchar_t *output_file)
 {
     MessageRes msg_res = g_msg_tables.begin()->second;
@@ -783,6 +875,11 @@ int just_do_it(void)
         if (int ret = load_bin(g_input_file))
             return ret;
     }
+    else if (lstrcmpiW(g_inp_format, L"coff") == 0)
+    {
+        fprintf(stderr, "ERROR: COFF input format is not supported yet.\n");
+        return EXITCODE_NOT_SUPPORTED_YET;
+    }
     else
     {
         fprintf(stderr, "ERROR: invalid input format\n");
@@ -800,6 +897,10 @@ int just_do_it(void)
     else if (lstrcmpiW(g_out_format, L"bin") == 0)
     {
         return save_bin(g_output_file);
+    }
+    else if (lstrcmpiW(g_out_format, L"coff") == 0)
+    {
+        return save_coff(g_output_file);
     }
     else
     {
@@ -822,6 +923,12 @@ const wchar_t *get_format(const wchar_t *file_path)
     else if (lstrcmpiW(pch, L".bin") == 0)
     {
         return L"bin";
+    }
+    else if (lstrcmpiW(pch, L".o") == 0 ||
+             lstrcmpiW(pch, L".obj") == 0 ||
+             lstrcmpiW(pch, L".coff") == 0)
+    {
+        return L"coff";
     }
     else
     {
@@ -1122,6 +1229,12 @@ int main(int argc, char **argv)
     if (!check_cpp_exe())
     {
         fprintf(stderr, "ERROR: Unable to find cpp.exe\n");
+        return EXITCODE_NOT_FOUND_CPP;
+    }
+
+    if (!check_windres_exe())
+    {
+        fprintf(stderr, "ERROR: Unable to find windres.exe\n");
         return EXITCODE_NOT_FOUND_CPP;
     }
 
