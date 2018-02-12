@@ -324,7 +324,6 @@ int do_directive(char*& ptr)
         if (memcmp(ptr, "pack", 4) == 0)
         {
             // #pragma pack...
-            ;
         }
         else if (memcmp(ptr, "code_page", 9) == 0)
         {
