@@ -52,6 +52,9 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        InitMessageComboBox(hCmb1, m_db, L"");
+
         CenterWindowDx();
         return TRUE;
     }
