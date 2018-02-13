@@ -198,10 +198,20 @@ public:
     StringRes& m_str_res;
     ConstantsDB& m_db;
     MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MStringsDlg(ConstantsDB& db, StringRes& str_res)
         : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db)
     {
+        m_hIcon = LoadIconDx(3);
+        m_hIconSm = LoadSmallIconDx(3);
+    }
+
+    ~MStringsDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     void InitCtl1(HWND hCtl1)
@@ -277,6 +287,9 @@ public:
         m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         CenterWindowDx();
         return TRUE;
