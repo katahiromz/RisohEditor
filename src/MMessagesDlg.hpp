@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MResizable.hpp"
 #include "resource.h"
 
 #include "MessageRes.hpp"
@@ -196,10 +197,21 @@ class MMessagesDlg : public MDialogBase
 public:
     MessageRes& m_msg_res;
     ConstantsDB& m_db;
+    MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MMessagesDlg(ConstantsDB& db, MessageRes& msg_res)
         : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res), m_db(db)
     {
+        m_hIcon = LoadIconDx(3);
+        m_hIconSm = LoadSmallIconDx(3);
+    }
+
+    ~MMessagesDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     void InitCtl1(HWND hCtl1)
@@ -207,7 +219,7 @@ public:
         ListView_DeleteAllItems(hCtl1);
 
         typedef MessageRes::map_type map_type;
-		const map_type& map = m_msg_res.map();
+        const map_type& map = m_msg_res.map();
 
         INT i = 0;
         map_type::const_iterator it, end = map.end();
@@ -266,6 +278,18 @@ public:
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, 0, state, state);
         SetFocus(hCtl1);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(ctl1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         CenterWindowDx();
         return TRUE;
@@ -436,6 +460,11 @@ public:
         return 0;
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -444,6 +473,7 @@ public:
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         }
         return DefaultProcDx();
     }
