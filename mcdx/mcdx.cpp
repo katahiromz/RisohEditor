@@ -69,7 +69,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.6\n");
+    printf("mcdx ver.0.7\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -678,6 +678,7 @@ int save_coff(wchar_t *output_file)
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
     MFile hInputWrite, hOutputRead;
+    SetEnvironmentVariableW(L"LANG", L"en_US");
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         maker.CreateProcessDx(NULL, strCommandLine.c_str()))
     {
@@ -686,6 +687,12 @@ int save_coff(wchar_t *output_file)
 
         if (maker.GetExitCode() == 0)
         {
+            DeleteFile(szTempFile);
+            return EXITCODE_SUCCESS;
+        }
+        else if (strOutput.find(": no resources") != std::string::npos)
+        {
+            strOutput.clear();
             DeleteFile(szTempFile);
             return EXITCODE_SUCCESS;
         }
