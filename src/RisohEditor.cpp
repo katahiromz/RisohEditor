@@ -7750,7 +7750,7 @@ MString GetLanguageStatement(WORD langid)
     str += strPrim;
     str += TEXT(", ");
     str += strSub;
-    str += TEXT("\r\n");
+    str += TEXT("\r\n\r\n");
     return str;
 }
 
