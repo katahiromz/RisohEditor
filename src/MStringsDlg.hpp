@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MResizable.hpp"
 #include "resource.h"
 
 #include "StringRes.hpp"
@@ -196,6 +197,7 @@ class MStringsDlg : public MDialogBase
 public:
     StringRes& m_str_res;
     ConstantsDB& m_db;
+    MResizable m_resizable;
 
     MStringsDlg(ConstantsDB& db, StringRes& str_res)
         : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db)
@@ -266,6 +268,15 @@ public:
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, 0, state, state);
         SetFocus(hCtl1);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(ctl1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
 
         CenterWindowDx();
         return TRUE;
@@ -436,6 +447,11 @@ public:
         return 0;
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -444,6 +460,7 @@ public:
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         }
         return DefaultProcDx();
     }
