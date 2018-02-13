@@ -173,6 +173,11 @@ public:
                 SetDlgItemTextW(hwnd, cmb2, L"1");
         }
 
+        if (type == RT_VERSION)
+        {
+            SetDlgItemTextW(hwnd, cmb2, L"1");
+        }
+
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
         if (!Res_HasNoName(type) && !CheckNameComboBox(m_db, hCmb2, name))
