@@ -3548,7 +3548,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
     wsprintfW(szCmdLine,
         L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
         m_szMcdxExe, szPath3, szPath1);
-    // MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -3903,7 +3903,7 @@ INT MMainWnd::CheckData(VOID)
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
     lstrcpyW(wcsrchr(szPath, L'\\'), L"\\mcdx.exe");
-    if (::GetFileAttributesW(m_szUpxExe) != INVALID_FILE_ATTRIBUTES)
+    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
     {
         lstrcpynW(m_szMcdxExe, szPath, _countof(m_szMcdxExe));
     }
@@ -3911,7 +3911,7 @@ INT MMainWnd::CheckData(VOID)
     {
         lstrcpyW(m_szMcdxExe, m_szDataFolder);
         lstrcatW(m_szMcdxExe, L"\\bin\\mcdx.exe");
-        if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
+        if (::GetFileAttributesW(m_szMcdxExe) == INVALID_FILE_ATTRIBUTES)
         {
             ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
             return -6;  // failure
