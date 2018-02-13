@@ -167,7 +167,7 @@ public:
         if (type == RT_STRING || type == RT_MESSAGETABLE)
         {
             WCHAR sz[16];
-			::GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            ::GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
             if (sz[0] == 0)
                 SetDlgItemTextW(hwnd, cmb2, L"1");
@@ -175,7 +175,7 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
-        if (!Res_HasNoName(type) || !CheckNameComboBox(m_db, hCmb2, name))
+        if (!Res_HasNoName(type) && !CheckNameComboBox(m_db, hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
