@@ -327,10 +327,21 @@ class MEditMenuDlg : public MDialogBase
 public:
     MenuRes& m_menu_res;
     ConstantsDB& m_db;
+    MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MEditMenuDlg(ConstantsDB& db, MenuRes& menu_res)
         : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res), m_db(db)
     {
+        m_hIcon = LoadIconDx(3);
+        m_hIconSm = LoadSmallIconDx(3);
+    }
+
+    ~MEditMenuDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -367,7 +378,7 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 70;
+        column.cx = 180;
         column.pszText = LoadStringDx(IDS_HELPID);
         column.iSubItem = 3;
         ListView_InsertColumn(hCtl1, 3, &column);
@@ -486,6 +497,23 @@ public:
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, 0, state, state);
         SetFocus(hCtl1);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(ctl1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(chx1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh4, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(psh5, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(psh7, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         CenterWindowDx();
         return TRUE;
@@ -841,8 +869,14 @@ public:
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         }
         return DefaultProcDx();
+    }
+
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
     }
 };
 
