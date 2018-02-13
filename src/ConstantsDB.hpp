@@ -579,6 +579,10 @@ public:
         {
             return IDTYPE_INVALID;
         }
+        if (id == RT_MESSAGETABLE)
+        {
+            return IDTYPE_MESSAGE;
+        }
         return IDTYPE_RESOURCE;
     }
 
