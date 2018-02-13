@@ -627,32 +627,12 @@ public:
 
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
     {
+        if (m_hbrBack == NULL)
+            CreateBackBrush();
+
         RECT rc;
         GetClientRect(hwnd, &rc);
         FillRect(hdc, &rc, m_hbrBack);
-
-        #if 0
-        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
-        COLORREF rgb = GetSysColor(COLOR_3DFACE);
-        DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
-        rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
-
-        SendMessage(GetParent(hwnd), MYWM_GETUNITS, 0, 0);
-        if (m_xDialogBaseUnit && m_yDialogBaseUnit)
-        {
-            for (INT y = rc.top; y < rc.bottom; y += 4)
-            {
-                for (INT x = rc.left; x < rc.right; x += 4)
-                {
-                    INT qx = x * m_xDialogBaseUnit / 4;
-                    INT qy = y * m_yDialogBaseUnit / 8;
-                    INT rx = qx * 4 / m_xDialogBaseUnit;
-                    INT ry = qy * 8 / m_yDialogBaseUnit;
-                    ::SetPixelV(hdc, rx, ry, rgb);
-                }
-            }
-        }
-        #endif
 
         return TRUE;
     }
