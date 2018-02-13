@@ -269,6 +269,7 @@ public:
                 DWORD dwSize;
                 const BYTE *pb = GetMessageTableSample(dwSize);
                 stream.assign(pb, dwSize);
+                name = 1;
             }
             else
             {
