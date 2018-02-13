@@ -150,6 +150,7 @@
 #define IDD_CLONEINNEWLANG  129
 #define IDD_ITEMSEARCH      130
 #define IDD_VERSIONINFO     140
+#define IDD_ADDMSG          141
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
