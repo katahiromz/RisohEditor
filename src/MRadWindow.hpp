@@ -496,6 +496,7 @@ public:
     BOOL            m_bMovingSizing;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
+    HBRUSH          m_hbrBack;
 
     MRadDialog(RisohSettings& settings, ConstantsDB& db)
         : m_index_visible(FALSE), m_db(db), m_settings(settings),
@@ -512,6 +513,9 @@ public:
         lf.lfHeight = 14;
         hFont = ::CreateFontIndirect(&lf);
         m_labels.m_hFont = hFont;
+
+        m_hbrBack = NULL;
+        CreateBackBrush();
     }
 
     ~MRadDialog()
@@ -625,8 +629,10 @@ public:
     {
         RECT rc;
         GetClientRect(hwnd, &rc);
-        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
+        FillRect(hdc, &rc, m_hbrBack);
 
+        #if 0
+        FillRect(hdc, &rc, (HBRUSH)(COLOR_3DFACE + 1));
         COLORREF rgb = GetSysColor(COLOR_3DFACE);
         DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
         rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
@@ -646,6 +652,7 @@ public:
                 }
             }
         }
+        #endif
 
         return TRUE;
     }
@@ -776,6 +783,42 @@ public:
                 hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
             }
         }
+    }
+
+    BOOL CreateBackBrush()
+    {
+        if (m_hbrBack)
+        {
+            DeleteObject(m_hbrBack);
+            m_hbrBack = NULL;
+        }
+
+        COLORREF rgb = GetSysColor(COLOR_3DFACE);
+        DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
+        rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
+
+        RECT rc8x8 = { 0, 0, 8, 8 };
+
+        HBITMAP hbm8x8 = Create24BppBitmapDx(8, 8);
+        HDC hDC = CreateCompatibleDC(NULL);
+        HGDIOBJ hbmOld = SelectObject(hDC, hbm8x8);
+        {
+            FillRect(hDC, &rc8x8, (HBRUSH)(COLOR_3DFACE + 1));
+            for (int y = 0; y < 8; y += 4)
+            {
+                for (int x = 0; x < 8; x += 4)
+                {
+                    SetPixelV(hDC, x, y, rgb);
+                }
+            }
+        }
+        SelectObject(hDC, hbmOld);
+        std::vector<BYTE> data;
+        PackedDIB_CreateFromHandle(data, hbm8x8);
+        DeleteObject(hbm8x8);
+
+        m_hbrBack = CreateDIBPatternBrushPt(&data[0], DIB_RGB_COLORS);
+        return m_hbrBack != NULL;
     }
 
     void OnSysColorChange(HWND hwnd)
