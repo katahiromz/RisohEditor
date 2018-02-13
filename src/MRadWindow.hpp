@@ -515,11 +515,12 @@ public:
         m_labels.m_hFont = hFont;
 
         m_hbrBack = NULL;
-        CreateBackBrush();
+        ReCreateBackBrush();
     }
 
     ~MRadDialog()
     {
+        DeleteObject(m_hbrBack);
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
@@ -628,7 +629,7 @@ public:
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
     {
         if (m_hbrBack == NULL)
-            CreateBackBrush();
+            ReCreateBackBrush();
 
         RECT rc;
         GetClientRect(hwnd, &rc);
@@ -765,7 +766,7 @@ public:
         }
     }
 
-    BOOL CreateBackBrush()
+    BOOL ReCreateBackBrush()
     {
         if (m_hbrBack)
         {
@@ -803,6 +804,7 @@ public:
 
     void OnSysColorChange(HWND hwnd)
     {
+        ReCreateBackBrush();
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
