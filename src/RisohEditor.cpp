@@ -1710,7 +1710,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     dialog_res.SaveToStream(stream);
     entry.data = stream.data();
 
-    std::wstring str = dialog_res.Dump(entry.name);
+    MString str = GetLanguageStatement(entry.lang);
+    str += dialog_res.Dump(entry.name);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     str = DumpDataAsString(entry.data);
