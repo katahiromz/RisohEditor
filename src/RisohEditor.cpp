@@ -334,6 +334,31 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
     }
 }
 
+void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString)
+{
+    SetWindowText(hCmb, strString.c_str());
+
+    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+        return;
+
+    ConstantsDB::TableType table;
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    MStringW prefix = table[IDTYPE_MESSAGE].name;
+    if (prefix.empty())
+        return;
+
+    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    ConstantsDB::TableType::iterator it, end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == strString)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // languages
 
@@ -815,6 +840,46 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// MESSAGE_ENTRY
+
+BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
+{
+    MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
+    mstr_trim(str);
+    if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
+    {
+        LONG n = wcstol(str.c_str(), NULL, 0);
+        str = mstr_dec_word(WORD(n));
+    }
+    else if (!db.HasResID(str))
+    {
+        return FALSE;
+    }
+    lstrcpynW(entry.MessageID, str.c_str(), _countof(entry.MessageID));
+
+    str = MWindowBase::GetDlgItemText(hwnd, edt1);
+    mstr_trim(str);
+    if (str[0] == L'"')
+    {
+        mstr_unquote(str);
+    }
+    lstrcpynW(entry.MessageValue, str.c_str(), _countof(entry.MessageValue));
+    return TRUE;
+}
+
+void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
+{
+    SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
+
+    std::wstring str = entry.MessageValue;
+    str = mstr_quote(str);
+
+    SetDlgItemTextW(hwnd, edt1, str.c_str());
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
@@ -2261,6 +2326,40 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
         ChangeStatusText(IDS_READY);
     }
+    else if (entry.type == RT_MESSAGETABLE && HIWORD(lParam) == I_MESSAGE)
+    {
+        WORD lang = entry.lang;
+        ResEntries found;
+        Res_Search(found, m_entries, RT_MESSAGETABLE, WORD(0), lang);
+
+        MessageRes msg_res;
+        ResEntries::iterator it, end = found.end();
+        for (it = found.begin(); it != end; ++it)
+        {
+            MByteStreamEx stream(it->data);
+            if (!msg_res.LoadFromStream(stream, it->name.m_id))
+            {
+                ErrorBoxDx(IDS_CANNOTLOAD);
+                return;
+            }
+        }
+
+        ChangeStatusText(IDS_EDITINGBYGUI);
+        MMessagesDlg dialog(m_db, msg_res);
+        INT nID = (INT)dialog.DialogBoxDx(hwnd);
+        if (nID == IDOK)
+        {
+            std::wstring strWide = msg_res.Dump(m_db);
+            if (CompileParts(hwnd, strWide))
+            {
+                ResEntry selection(RT_MESSAGETABLE, WORD(0), lang);
+                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+                TV_SelectEntry(m_hTreeView, m_entries, selection);
+            }
+        }
+        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        ChangeStatusText(IDS_READY);
+    }
 }
 
 void MMainWnd::OnEdit(HWND hwnd)
@@ -3096,7 +3195,9 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
             return;
     }
 
-    std::wstring str = msg_res.Dump(m_db);
+    std::wstring str = L"#ifdef MCDX_INVOKED\r\n";
+    str += msg_res.Dump(m_db);
+    str += L"#endif";
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 

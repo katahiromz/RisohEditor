@@ -151,6 +151,8 @@
 #define IDD_ITEMSEARCH      130
 #define IDD_VERSIONINFO     140
 #define IDD_ADDMSG          141
+#define IDD_MODIFYMSG       142
+#define IDD_MESSAGES        143
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
@@ -270,6 +272,8 @@
 #define IDS_FILEISUPXED     117
 #define IDS_CANTUPXEXTRACT  118
 #define IDS_CANTSAVEUPXED   119
+#define IDS_MESSAGEID       120
+#define IDS_MESSAGEVALUE    121
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

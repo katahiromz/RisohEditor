@@ -55,12 +55,31 @@ typedef struct _MESSAGE_RESOURCE_ENTRY_HEADER {
 
 //////////////////////////////////////////////////////////////////////////////
 
+struct MESSAGE_ENTRY
+{
+    WCHAR MessageID[128];
+    WCHAR MessageValue[512];
+};
+
+BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
+void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
+
+//////////////////////////////////////////////////////////////////////////////
+
 class MessageRes
 {
 public:
     typedef std::wstring string_type;
     typedef std::map<ULONG, string_type> map_type;
-    map_type    m_map;
+
+    map_type& map()
+    {
+        return m_map;
+    }
+    const map_type& map() const
+    {
+        return m_map;
+    }
 
     MessageRes()
     {
@@ -231,6 +250,7 @@ public:
     }
 
 protected:
+    map_type    m_map;
     struct RANGE_OF_ID
     {
         ULONG FirstId;
