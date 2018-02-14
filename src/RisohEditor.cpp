@@ -1993,8 +1993,12 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
-    if (HIWORD(lParam) != I_LANG && HIWORD(lParam) != I_STRING)
+    if (HIWORD(lParam) != I_LANG && 
+        HIWORD(lParam) != I_STRING &&
+        HIWORD(lParam) != I_MESSAGE)
+    {
         return;
+    }
 
     UINT i = LOWORD(lParam);
     ResEntry entry = m_entries[i];
