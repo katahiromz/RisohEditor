@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "MString.hpp"
 #include "Res.hpp"
 
 #include "DialogRes.hpp"
@@ -50,6 +51,8 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
 
 HBITMAP
 CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
+
+MString GetLanguageStatement(WORD langid);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -144,7 +147,9 @@ ResToText::DoMenu(const ResEntry& entry)
     MenuRes menu_res;
     if (menu_res.LoadFromStream(stream))
     {
-        return menu_res.Dump(entry.name, m_db);
+        MString str = GetLanguageStatement(entry.lang);
+        str += menu_res.Dump(entry.name, m_db);
+        return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
 }
@@ -156,7 +161,9 @@ ResToText::DoDialog(const ResEntry& entry)
     DialogRes dialog_res(m_db);
     if (dialog_res.LoadFromStream(stream))
     {
-        return dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
+        MString str = GetLanguageStatement(entry.lang);
+        str += dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
+        return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
 }
@@ -204,7 +211,9 @@ ResToText::DoAccel(const ResEntry& entry)
     AccelRes accel(m_db);
     if (accel.LoadFromStream(stream))
     {
-        return accel.Dump(entry.name);
+        MString str = GetLanguageStatement(entry.lang);
+        str += accel.Dump(entry.name);
+        return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
 }
@@ -227,7 +236,9 @@ ResToText::DoVersion(const ResEntry& entry)
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.data))
     {
-        return ver_res.Dump(entry.name);
+        MString str = GetLanguageStatement(entry.lang);
+        str += ver_res.Dump(entry.name);
+        return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
 }
