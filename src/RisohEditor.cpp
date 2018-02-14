@@ -7016,8 +7016,8 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_ENGLISH_AUS: strSub = TEXT("SUBLANG_ENGLISH_AUS"); break;
         case SUBLANG_ENGLISH_CAN: strSub = TEXT("SUBLANG_ENGLISH_CAN"); break;
         case SUBLANG_ENGLISH_NZ: strSub = TEXT("SUBLANG_ENGLISH_NZ"); break;
-        case SUBLANG_ENGLISH_IRELAND: strSub = TEXT("SUBLANG_ENGLISH_IRELAND"); break;
-        //case SUBLANG_ENGLISH_EIRE: strSub = TEXT("SUBLANG_ENGLISH_EIRE"); break; // same as SUBLANG_ENGLISH_IRELAND
+        //case SUBLANG_ENGLISH_IRELAND: strSub = TEXT("SUBLANG_ENGLISH_IRELAND"); break; // same as SUBLANG_ENGLISH_EIRE
+        case SUBLANG_ENGLISH_EIRE: strSub = TEXT("SUBLANG_ENGLISH_EIRE"); break;
         case SUBLANG_ENGLISH_SOUTH_AFRICA: strSub = TEXT("SUBLANG_ENGLISH_SOUTH_AFRICA"); break;
         case SUBLANG_ENGLISH_JAMAICA: strSub = TEXT("SUBLANG_ENGLISH_JAMAICA"); break;
         case SUBLANG_ENGLISH_CARIBBEAN: strSub = TEXT("SUBLANG_ENGLISH_CARIBBEAN"); break;
@@ -7255,7 +7255,7 @@ MString GetLanguageStatement(WORD langid)
         }
         break;
     case LANG_LITHUANIAN: strPrim = TEXT("LANG_LITHUANIAN");
-#if (WINVER >= 0x0600)
+#if (WINVER >= 0x0600) && defined(ENABLE_NEW_LANGS)
         SWITCH_SUBLANG()
         {
         case SUBLANG_LITHUANIAN_LITHUANIA: strSub = TEXT("SUBLANG_LITHUANIAN_LITHUANIA"); break;
@@ -7555,10 +7555,12 @@ MString GetLanguageStatement(WORD langid)
         }
         break;
     case LANG_SYRIAC: strPrim = TEXT("LANG_SYRIAC");
+#if defined(ENABLE_NEW_LANGS)
         SWITCH_SUBLANG()
         {
         case SUBLANG_SYRIAC: strSub = TEXT("SUBLANG_SYRIAC"); break;
         }
+#endif
         break;
     case LANG_TAJIK: strPrim = TEXT("LANG_TAJIK");
         SWITCH_SUBLANG()
@@ -7602,7 +7604,9 @@ MString GetLanguageStatement(WORD langid)
         SWITCH_SUBLANG()
         {
         case SUBLANG_TIBETAN_PRC: strSub = TEXT("SUBLANG_TIBETAN_PRC"); break;
+#if defined(ENABLE_NEW_LANGS)
         case SUBLANG_TIBETAN_BHUTAN: strSub = TEXT("SUBLANG_TIBETAN_BHUTAN"); break;
+#endif
         }
         break;
     //case LANG_TIGRIGNA: strPrim = TEXT("LANG_TIGRIGNA"); // same as LANG_TIGRINYA
