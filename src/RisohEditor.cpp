@@ -2546,7 +2546,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         WORD i = LOWORD(lParam);
         WORD k = HIWORD(lParam);
 
-        static LPCWSTR apszI_[] =
+        static const LPCWSTR apszI_[] =
         {
             L"I_NONE",
             L"I_TYPE",
@@ -2556,8 +2556,13 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
             L"I_MESSAGE"
         };
 
+        const ResEntry& entry = m_entries[i];
+
         WCHAR sz[64];
-        wsprintfW(sz, L"%d, %s", i, apszI_[k]);
+        MStringW type = entry.type.str();
+        MStringW name = entry.name.str();
+        wsprintfW(sz, L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k],
+                  type.c_str(), name.c_str(), entry.lang);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
 }
