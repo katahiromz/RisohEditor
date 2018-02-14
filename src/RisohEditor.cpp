@@ -3603,13 +3603,12 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
         if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
         else
         {
             ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
+        ShowBinEdit(TRUE);
 #ifdef NDEBUG
         ::DeleteFileW(szPath1);
         ::DeleteFileW(szPath2);
@@ -3748,13 +3747,12 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
         if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
         else
         {
             ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-            ::ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         }
+        ShowBinEdit(TRUE);
 #ifdef NDEBUG
         ::DeleteFileW(szPath1);
         ::DeleteFileW(szPath2);
