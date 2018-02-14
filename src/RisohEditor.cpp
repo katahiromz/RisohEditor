@@ -6858,13 +6858,13 @@ MString GetLanguageStatement(WORD langid)
     //        case SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC: strSub = TEXT("SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC"); break;
     //    }
     //    break;
-    case LANG_BANGLA: strPrim = TEXT("LANG_BANGLA");
-        SWITCH_SUBLANG()
-        {
-        case SUBLANG_BANGLA_INDIA: strSub = TEXT("SUBLANG_BANGLA_INDIA"); break;
-        case SUBLANG_BANGLA_BANGLADESH: strSub = TEXT("SUBLANG_BANGLA_BANGLADESH"); break;
-        }
-        break;
+    //case LANG_BANGLA: strPrim = TEXT("LANG_BANGLA"); // same as LANG_BENGALI
+    //    SWITCH_SUBLANG()
+    //    {
+    //    case SUBLANG_BANGLA_INDIA: strSub = TEXT("SUBLANG_BANGLA_INDIA"); break;
+    //    case SUBLANG_BANGLA_BANGLADESH: strSub = TEXT("SUBLANG_BANGLA_BANGLADESH"); break;
+    //    }
+    //    break;
     case LANG_BASHKIR: strPrim = TEXT("LANG_BASHKIR");
         SWITCH_SUBLANG()
         {
@@ -6883,13 +6883,13 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_BELARUSIAN_BELARUS: strSub = TEXT("SUBLANG_BELARUSIAN_BELARUS"); break;
         }
         break;
-    //case LANG_BENGALI: strPrim = TEXT("LANG_BENGALI");    // same as LANG_BANGLA
-    //    SWITCH_SUBLANG()
-    //    {
-    //        case SUBLANG_BENGALI_INDIA: strSub = TEXT("SUBLANG_BENGALI_INDIA"); break;
-    //        case SUBLANG_BENGALI_BANGLADESH: strSub = TEXT("SUBLANG_BENGALI_BANGLADESH"); break;
-    //    }
-    //    break;
+    case LANG_BENGALI: strPrim = TEXT("LANG_BENGALI");
+        SWITCH_SUBLANG()
+        {
+            case SUBLANG_BENGALI_INDIA: strSub = TEXT("SUBLANG_BENGALI_INDIA"); break;
+            case SUBLANG_BENGALI_BANGLADESH: strSub = TEXT("SUBLANG_BENGALI_BANGLADESH"); break;
+        }
+        break;
     case LANG_BRETON: strPrim = TEXT("LANG_BRETON");
         SWITCH_SUBLANG()
         {
@@ -6922,18 +6922,22 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_CATALAN_CATALAN: strSub = TEXT("SUBLANG_CATALAN_CATALAN"); break;
         }
         break;
+#ifdef ENABLE_NEW_LANGS
     case LANG_CENTRAL_KURDISH: strPrim = TEXT("LANG_CENTRAL_KURDISH");
         SWITCH_SUBLANG()
         {
         case SUBLANG_CENTRAL_KURDISH_IRAQ: strSub = TEXT("SUBLANG_CENTRAL_KURDISH_IRAQ"); break;
         }
         break;
+#endif
+#ifdef ENABLE_NEW_LANGS
     case LANG_CHEROKEE: strPrim = TEXT("LANG_CHEROKEE");
         SWITCH_SUBLANG()
         {
         case SUBLANG_CHEROKEE_CHEROKEE: strSub = TEXT("SUBLANG_CHEROKEE_CHEROKEE"); break;
         }
         break;
+#endif
     case LANG_CHINESE: strPrim = TEXT("LANG_CHINESE");
         SWITCH_SUBLANG()
         {
@@ -7073,12 +7077,12 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_FRISIAN_NETHERLANDS: strSub = TEXT("SUBLANG_FRISIAN_NETHERLANDS"); break;
         }
         break;
-    case LANG_FULAH: strPrim = TEXT("LANG_FULAH");
-        SWITCH_SUBLANG()
-        {
-        case SUBLANG_FULAH_SENEGAL: strSub = TEXT("SUBLANG_FULAH_SENEGAL"); break;
-        }
-        break;
+    //case LANG_FULAH: strPrim = TEXT("LANG_FULAH"); // same as LANG_PULAR
+    //    SWITCH_SUBLANG()
+    //    {
+    //    case SUBLANG_FULAH_SENEGAL: strSub = TEXT("SUBLANG_FULAH_SENEGAL"); break;
+    //    }
+    //    break;
     case LANG_GALICIAN: strPrim = TEXT("LANG_GALICIAN");
         SWITCH_SUBLANG()
         {
@@ -7385,17 +7389,23 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_PORTUGUESE_BRAZILIAN: strSub = TEXT("SUBLANG_PORTUGUESE_BRAZILIAN"); break;
         }
         break;
-    //case LANG_PULAR: strPrim = TEXT("LANG_PULAR"); // same as LANG_FULAH
-    //    SWITCH_SUBLANG()
-    //    {
-    //    case SUBLANG_PULAR_SENEGAL: strSub = TEXT("SUBLANG_PULAR_SENEGAL"); break;
-    //    }
-    //    break;
+#ifdef ENABLE_NEW_LANGS
+    case LANG_PULAR: strPrim = TEXT("LANG_PULAR"); // same as LANG_FULAH
+        SWITCH_SUBLANG()
+        {
+        case SUBLANG_PULAR_SENEGAL: strSub = TEXT("SUBLANG_PULAR_SENEGAL"); break;
+        default: break;
+        }
+#endif
+        break;
     case LANG_PUNJABI: strPrim = TEXT("LANG_PUNJABI");
         SWITCH_SUBLANG()
         {
         case SUBLANG_PUNJABI_INDIA: strSub = TEXT("SUBLANG_PUNJABI_INDIA"); break;
+#ifdef ENABLE_NEW_LANGS
         case SUBLANG_PUNJABI_PAKISTAN: strSub = TEXT("SUBLANG_PUNJABI_PAKISTAN"); break;
+#endif
+        default: break;
         }
         break;
     case LANG_QUECHUA: strPrim = TEXT("LANG_QUECHUA");
@@ -7424,12 +7434,15 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_RUSSIAN_RUSSIA: strSub = TEXT("SUBLANG_RUSSIAN_RUSSIA"); break;
         }
         break;
+#ifdef ENABLE_NEW_LANGS
     case LANG_SAKHA: strPrim = TEXT("LANG_SAKHA");
         SWITCH_SUBLANG()
         {
         case SUBLANG_SAKHA_RUSSIA: strSub = TEXT("SUBLANG_SAKHA_RUSSIA"); break;
+        default: break;
         }
         break;
+#endif
     case LANG_SAMI: strPrim = TEXT("LANG_SAMI");
         SWITCH_SUBLANG()
         {
@@ -7450,12 +7463,15 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_SANSKRIT_INDIA: strSub = TEXT("SUBLANG_SANSKRIT_INDIA"); break;
         }
         break;
+#ifdef ENABLE_NEW_LANGS
     case LANG_SCOTTISH_GAELIC: strPrim = TEXT("LANG_SCOTTISH_GAELIC");
         SWITCH_SUBLANG()
         {
         case SUBLANG_SCOTTISH_GAELIC: strSub = TEXT("SUBLANG_SCOTTISH_GAELIC"); break;
+        default: break;
         }
         break;
+#endif
     //case LANG_SERBIAN: strPrim = TEXT("LANG_SERBIAN"); // same as LANG_BOSNIAN
     //    SWITCH_SUBLANG()
     //    {
@@ -7476,10 +7492,12 @@ MString GetLanguageStatement(WORD langid)
         case SUBLANG_SERBIAN_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_CYRILLIC"); break;
         case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN"); break;
         case SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC"); break;
+#ifdef ENABLE_NEW_LANGS
         case SUBLANG_SERBIAN_MONTENEGRO_LATIN: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_LATIN"); break;
         case SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC"); break;
         case SUBLANG_SERBIAN_SERBIA_LATIN: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_LATIN"); break;
         case SUBLANG_SERBIAN_SERBIA_CYRILLIC: strSub = TEXT("SUBLANG_SERBIAN_SERBIA_CYRILLIC"); break;
+#endif
         }
         break;
     case LANG_SINDHI: strPrim = TEXT("LANG_SINDHI");
@@ -7572,14 +7590,19 @@ MString GetLanguageStatement(WORD langid)
         SWITCH_SUBLANG()
         {
         case SUBLANG_TAMAZIGHT_ALGERIA_LATIN   : strSub = TEXT("SUBLANG_TAMAZIGHT_ALGERIA_LATIN   "); break;
+#ifdef ENABLE_NEW_LANGS
         case SUBLANG_TAMAZIGHT_MOROCCO_TIFINAGH: strSub = TEXT("SUBLANG_TAMAZIGHT_MOROCCO_TIFINAGH"); break;
+#endif
         }
         break;
     case LANG_TAMIL: strPrim = TEXT("LANG_TAMIL");
         SWITCH_SUBLANG()
         {
         case SUBLANG_TAMIL_INDIA: strSub = TEXT("SUBLANG_TAMIL_INDIA"); break;
+#ifdef ENABLE_NEW_LANGS
         case SUBLANG_TAMIL_SRI_LANKA: strSub = TEXT("SUBLANG_TAMIL_SRI_LANKA"); break;
+#endif
+        default: break;
         }
         break;
     case LANG_TATAR: strPrim = TEXT("LANG_TATAR");
@@ -7609,23 +7632,26 @@ MString GetLanguageStatement(WORD langid)
 #endif
         }
         break;
-    //case LANG_TIGRIGNA: strPrim = TEXT("LANG_TIGRIGNA"); // same as LANG_TIGRINYA
-    //    SWITCH_SUBLANG()
-    //    {
-    //    case SUBLANG_TIGRIGNA_ERITREA: strSub = TEXT("SUBLANG_TIGRIGNA_ERITREA"); break;
-    //    }
-    //    break;
-    case LANG_TIGRINYA: strPrim = TEXT("LANG_TIGRINYA");
+    case LANG_TIGRIGNA: strPrim = TEXT("LANG_TIGRIGNA"); // same as LANG_TIGRINYA
         SWITCH_SUBLANG()
         {
-        case SUBLANG_TIGRINYA_ERITREA: strSub = TEXT("SUBLANG_TIGRINYA_ERITREA"); break;
-        case SUBLANG_TIGRINYA_ETHIOPIA: strSub = TEXT("SUBLANG_TIGRINYA_ETHIOPIA"); break;
+        case SUBLANG_TIGRIGNA_ERITREA: strSub = TEXT("SUBLANG_TIGRIGNA_ERITREA"); break;
+        default: break;
         }
         break;
+    //case LANG_TIGRINYA: strPrim = TEXT("LANG_TIGRINYA"); // same as LANG_TIGRIGNA
+    //    SWITCH_SUBLANG()
+    //    {
+    //    case SUBLANG_TIGRINYA_ERITREA: strSub = TEXT("SUBLANG_TIGRINYA_ERITREA"); break;
+    //    case SUBLANG_TIGRINYA_ETHIOPIA: strSub = TEXT("SUBLANG_TIGRINYA_ETHIOPIA"); break;
+    //    }
+    //    break;
     case LANG_TSWANA: strPrim = TEXT("LANG_TSWANA");
         SWITCH_SUBLANG()
         {
+#ifdef ENABLE_NEW_LANGS
         case SUBLANG_TSWANA_BOTSWANA: strSub = TEXT("SUBLANG_TSWANA_BOTSWANA"); break;
+#endif
         case SUBLANG_TSWANA_SOUTH_AFRICA: strSub = TEXT("SUBLANG_TSWANA_SOUTH_AFRICA"); break;
         }
         break;
