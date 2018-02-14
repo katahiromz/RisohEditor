@@ -183,25 +183,33 @@ ResToText::DoString(const ResEntry& entry)
             return LoadStringDx(IDS_INVALIDDATA);
     }
 
-    return str_res.Dump(m_db);
+    MString str;
+    if (entry.name.empty())
+        str += GetLanguageStatement(entry.lang);
+    str += str_res.Dump(m_db);
+    return str;
 }
 
 inline MString
 ResToText::DoMessage(const ResEntry& entry)
 {
     ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, entry.name, entry.lang);
+    Res_Search(found, m_entries, RT_MESSAGETABLE, entry.name, entry.lang);
 
-    StringRes str_res;
+    MessageRes msg_res;
     ResEntries::iterator it, end = found.end();
     for (it = found.begin(); it != end; ++it)
     {
         MByteStreamEx stream(it->data);
-        if (!str_res.LoadFromStream(stream, it->name.m_id))
+        if (!msg_res.LoadFromStream(stream, it->name.m_id))
             return LoadStringDx(IDS_INVALIDDATA);
     }
 
-    return str_res.Dump(m_db);
+    MString str;
+    if (entry.name.empty())
+        str += GetLanguageStatement(entry.lang);
+    str += msg_res.Dump(m_db);
+    return str;
 }
 
 inline MString
@@ -308,7 +316,7 @@ ResToText::DumpEntry(const ResEntry& entry)
         case 10: // RT_RCDATA
             return DoText(entry);
         case 11: // RT_MESSAGETABLE
-            break;
+            return DoMessage(entry);
         case 12: // RT_GROUP_CURSOR
             return DoGroupCursor(entry);
         case 14: // RT_GROUP_ICON

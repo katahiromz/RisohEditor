@@ -1887,12 +1887,14 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
                 if (search.bInternalText)
                 {
                     LPARAM lParam = TV_GetParam(m_hTreeView, hItem);
-                    if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING)
+                    if (HIWORD(lParam) == I_LANG ||
+                        HIWORD(lParam) == I_STRING ||
+                        HIWORD(lParam) == I_MESSAGE)
                     {
                         UINT i = LOWORD(lParam);
                         ResEntry entry = m_entries[i];
 
-                        if (HIWORD(lParam) == I_STRING)
+                        if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
                             entry.name.clear();
 
                         MString text = search.res2text.DumpEntry(entry);
