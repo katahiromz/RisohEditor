@@ -191,7 +191,7 @@ bool do_directive_line(char*& ptr)
         ++ptr;
     }
     char *ptr2 = ptr;
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     char *ptr3 = ptr;
     while (*ptr)
     {
@@ -210,7 +210,7 @@ bool do_directive_line(char*& ptr)
 
 int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
 {
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (*ptr == '{')
     {
         nMode = 2;
@@ -225,7 +225,7 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
         nMode = 2;
         ptr += 5;
     }
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (nMode != 2)
     {
         if (*ptr && !std::isdigit(*ptr))
@@ -238,7 +238,7 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
 
 int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
 {
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (*ptr == '{')
     {
         return syntax_error();
@@ -315,12 +315,12 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
 
 int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
 {
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (*ptr == ',')
     {
         ++ptr;
     }
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (*ptr == '"')
     {
         MStringA str = ptr;
@@ -349,7 +349,7 @@ int do_mode_3(char*& ptr, int& nMode, bool& do_retry)
 int do_directive(char*& ptr)
 {
     ++ptr;
-    ptr = skip_space(ptr);
+    ptr = mstr_skip_space(ptr);
     if (std::isdigit(*ptr))
     {
         do_directive_line(ptr);
@@ -359,7 +359,7 @@ int do_directive(char*& ptr)
         // #pragma
         ptr += 6;
         char *ptr1 = ptr;
-        ptr = skip_space(ptr);
+        ptr = mstr_skip_space(ptr);
         char *ptr2 = ptr;
         if (memcmp(ptr, "pack", 4) == 0)
         {
@@ -368,11 +368,11 @@ int do_directive(char*& ptr)
         else if (memcmp(ptr, "code_page", 9) == 0)
         {
             ptr += 9;
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             if (*ptr == '(')
             {
                 ++ptr;
-                ptr = skip_space(ptr);
+                ptr = mstr_skip_space(ptr);
                 // #pragma code_page(...)
                 WORD wCodePage = 0;
                 if (std::isdigit(*ptr))
@@ -383,7 +383,7 @@ int do_directive(char*& ptr)
                 {
                     ++ptr;
                 }
-                ptr = skip_space(ptr);
+                ptr = mstr_skip_space(ptr);
                 if (*ptr == ')')
                 {
                     ++ptr;
@@ -443,7 +443,7 @@ int eat_output(const std::string& strOutput)
 retry:
         if (nMode == -1 && *ptr)    // after LANGUAGE
         {
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             if (std::isdigit(*ptr))
             {
                 nMode = -2;
@@ -451,7 +451,7 @@ retry:
         }
         if (nMode == -2 && *ptr)    // expect PRIMARYLANGID
         {
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             char *ptr0 = ptr;
             while (std::isalnum(*ptr))
             {
@@ -469,7 +469,7 @@ retry:
         }
         if (nMode == -3 && *ptr)    // expect comma
         {
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             if (*ptr == ',')
             {
                 ++ptr;
@@ -478,7 +478,7 @@ retry:
         }
         if (nMode == -4 && *ptr)    // expect SUBLANGID
         {
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             if (std::isdigit(*ptr))
             {
                 bSubLang = (BYTE)strtoul(ptr, NULL, 0);
@@ -492,12 +492,12 @@ retry:
         }
         if (nMode == 0 && *ptr) // out of MESSAGETABLEDX { ... }
         {
-            ptr = skip_space(ptr);
+            ptr = mstr_skip_space(ptr);
             if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
             {
                 nMode = 1;
                 ptr += 14;
-                ptr = skip_space(ptr);
+                ptr = mstr_skip_space(ptr);
             }
         }
         if (nMode == 1 && *ptr) // after MESSAGETABLEDX

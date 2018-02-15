@@ -41,10 +41,6 @@ bool guts_quote(std::string& str, const char*& pch);
 bool guts_quote(MStringW& str, const wchar_t*& pch);
 int mstr_repeat_count(const std::string& str1, const std::string& str2);
 int mstr_repeat_count(const MStringW& str1, const MStringW& str2);
-char *skip_space(char *pch);
-wchar_t *skip_space(wchar_t *pch);;
-const char *skip_space(const char *pch);
-const wchar_t *skip_space(const wchar_t *pch);;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -437,7 +433,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
     using namespace std;
     str.clear();
 
-    pch = skip_space(pch);
+    pch = mstr_skip_space(pch);
     if (*pch != L'\"')
         return false;
 
@@ -475,7 +471,7 @@ inline bool guts_quote(MStringW& str, const wchar_t*& pch)
     using namespace std;
     str.clear();
 
-    pch = skip_space(pch);
+    pch = mstr_skip_space(pch);
     if (*pch != L'\"')
         return false;
 
@@ -606,46 +602,6 @@ inline int mstr_repeat_count(const MStringW& str1, const MStringW& str2)
         ++count;
     }
     return count;
-}
-
-inline char *skip_space(char *pch)
-{
-    using namespace std;
-    while (*pch && isspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
-}
-
-inline wchar_t *skip_space(wchar_t *pch)
-{
-    using namespace std;
-    while (*pch && iswspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
-}
-
-inline const char *skip_space(const char *pch)
-{
-    using namespace std;
-    while (*pch && isspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
-}
-
-inline const wchar_t *skip_space(const wchar_t *pch)
-{
-    using namespace std;
-    while (*pch && iswspace(*pch))
-    {
-        ++pch;
-    }
-    return pch;
 }
 
 //////////////////////////////////////////////////////////////////////////////

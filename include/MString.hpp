@@ -161,6 +161,29 @@ inline void mstr_trim(WCHAR *str)
 }
 
 template <typename T_CHAR>
+T_CHAR *mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces);
+
+template <typename T_CHAR>
+const T_CHAR *mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces);
+
+inline char *mstr_skip_space(char *pch)
+{
+    return mstr_skip_space(pch, " \t\n\r\f\v");
+}
+inline const char *mstr_skip_space(const char *pch)
+{
+    return mstr_skip_space(pch, " \t\n\r\f\v");
+}
+inline WCHAR *mstr_skip_space(WCHAR *pch)
+{
+    return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
+}
+inline const WCHAR *mstr_skip_space(const WCHAR *pch)
+{
+    return mstr_skip_space(pch, WIDE(" \t\n\r\f\v"));
+}
+
+template <typename T_CHAR>
 std::basic_string<T_CHAR>
 mstr_repeat(const std::basic_string<T_CHAR>& str, size_t count);
 template <typename T_CHAR>
@@ -738,6 +761,52 @@ mstr_join(const T_STR_CONTAINER& container,
         }
     }
     return result;
+}
+
+template <typename T_CHAR>
+inline T_CHAR *
+mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces)
+{
+    const T_CHAR *ptr;
+    while (*pch)
+    {
+        for (ptr = spaces; *ptr; ++ptr)
+        {
+            if (*ptr == *pch)
+            {
+                ptr = NULL;
+                break;
+            }
+        }
+        if (ptr)
+            return pch;
+
+        ++pch;
+    }
+    return pch;
+}
+
+template <typename T_CHAR>
+inline const T_CHAR *
+mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces)
+{
+    const T_CHAR *ptr;
+    while (*pch)
+    {
+        for (ptr = spaces; *ptr; ++ptr)
+        {
+            if (*ptr == *pch)
+            {
+                ptr = NULL;
+                break;
+            }
+        }
+        if (ptr)
+            return pch;
+
+        ++pch;
+    }
+    return pch;
 }
 
 ////////////////////////////////////////////////////////////////////////////

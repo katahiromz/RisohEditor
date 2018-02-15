@@ -5978,16 +5978,16 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         for (size_t i = 0; i < lines.size(); ++i)
         {
             std::string& line = lines[i];
-            const char *pch = skip_space(&line[0]);
+            const char *pch = mstr_skip_space(&line[0]);
             if (*pch == '#')
             {
                 ++pch;
-                pch = skip_space(pch);
+                pch = mstr_skip_space(pch);
                 if (memcmp(pch, "define", 6) == 0 && std::isspace(pch[6]))
                 {
                     // #define
                     pch += 6;
-                    const char *pch0 = pch = skip_space(pch);
+                    const char *pch0 = pch = mstr_skip_space(pch);
                     while (std::isalnum(*pch) || *pch == '_')
                     {
                         ++pch;
