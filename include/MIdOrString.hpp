@@ -26,21 +26,21 @@
 
 struct MIdOrString;
 
-std::wstring mstr_dec_short(SHORT nID);
-std::wstring mstr_dec_word(WORD nID);
-std::wstring mstr_dec_dword(DWORD nID);
-std::wstring mstr_dec(LONG nID);
-std::wstring mstr_hex(INT nID);
+MStringW mstr_dec_short(SHORT value);
+MStringW mstr_dec_word(WORD value);
+MStringW mstr_dec_dword(DWORD value);
+MStringW mstr_dec(int value);
+MStringW mstr_hex(int value);
 bool mstr_unquote(std::string& str);
-bool mstr_unquote(std::wstring& str);
+bool mstr_unquote(MStringW& str);
 bool mstr_unquote(char *str);
 bool mstr_unquote(wchar_t *str);
 bool guts_escape(std::string& str, const char*& pch);
-bool guts_escape(std::wstring& str, const wchar_t*& pch);
+bool guts_escape(MStringW& str, const wchar_t*& pch);
 bool guts_quote(std::string& str, const char*& pch);
-bool guts_quote(std::wstring& str, const wchar_t*& pch);
+bool guts_quote(MStringW& str, const wchar_t*& pch);
 int mstr_repeat_count(const std::string& str1, const std::string& str2);
-int mstr_repeat_count(const std::wstring& str1, const std::wstring& str2);
+int mstr_repeat_count(const MStringW& str1, const MStringW& str2);
 char *skip_space(char *pch);
 wchar_t *skip_space(wchar_t *pch);;
 const char *skip_space(const char *pch);
@@ -54,7 +54,7 @@ bool mstr_is_ascii(const T_STR& str);
 struct MIdOrString
 {
     WORD m_id;
-    std::wstring m_str;
+    MStringW m_str;
 
     MIdOrString() : m_id(0)
     {
@@ -190,7 +190,7 @@ struct MIdOrString
         }
         return false;
     }
-    bool operator==(const std::wstring& str) const
+    bool operator==(const MStringW& str) const
     {
         return *this == str.c_str();
     }
@@ -207,7 +207,7 @@ struct MIdOrString
     {
         return !(*this == psz);
     }
-    bool operator!=(const std::wstring& str) const
+    bool operator!=(const MStringW& str) const
     {
         return !(*this == str);
     }
@@ -216,9 +216,9 @@ struct MIdOrString
         return m_id != w;
     }
 
-    std::wstring& str() const
+    MStringW& str() const
     {
-        static std::wstring s_str;
+        static MStringW s_str;
         if (m_id == 0)
         {
             if (m_str.size())
@@ -231,9 +231,9 @@ struct MIdOrString
         return s_str;
     }
 
-    std::wstring& str_or_empty() const
+    MStringW& str_or_empty() const
     {
-        static std::wstring s_str;
+        static MStringW s_str;
         if (m_id == 0)
         {
             if (m_str.size())
@@ -262,9 +262,9 @@ struct MIdOrString
         return str_or_empty().c_str();
     }
 
-    std::wstring quoted_wstr() const
+    MStringW quoted_wstr() const
     {
-        std::wstring ret;
+        MStringW ret;
         if (m_id == 0)
         {
             if (m_str.size())
@@ -347,7 +347,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
     return true;
 }
 
-inline bool guts_escape(std::wstring& str, const wchar_t*& pch)
+inline bool guts_escape(MStringW& str, const wchar_t*& pch)
 {
     using namespace std;
     switch (*pch)
@@ -364,7 +364,7 @@ inline bool guts_escape(std::wstring& str, const wchar_t*& pch)
     case L'x':
         {
             ++pch;
-            std::wstring strNum;
+            MStringW strNum;
             if (iswxdigit(*pch))
             {
                 strNum += *pch;
@@ -381,7 +381,7 @@ inline bool guts_escape(std::wstring& str, const wchar_t*& pch)
     case L'0': case L'1': case L'2': case L'3':
     case L'4': case L'5': case L'6': case L'7':
         {
-            std::wstring strNum;
+            MStringW strNum;
             if (L'0' <= *pch && *pch <= L'7')
             {
                 strNum += *pch;
@@ -403,7 +403,7 @@ inline bool guts_escape(std::wstring& str, const wchar_t*& pch)
     case 'u':
         {
             ++pch;
-            std::wstring strNum;
+            MStringW strNum;
             if (iswxdigit(*pch))
             {
                 strNum += *pch;
@@ -473,7 +473,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
     return true;
 }
 
-inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
+inline bool guts_quote(MStringW& str, const wchar_t*& pch)
 {
     using namespace std;
     str.clear();
@@ -511,55 +511,46 @@ inline bool guts_quote(std::wstring& str, const wchar_t*& pch)
     return true;
 }
 
-inline std::wstring mstr_dec_short(SHORT nID)
+inline MStringW mstr_dec_short(SHORT value)
 {
-    using namespace std;
-    wchar_t sz[32];
-    wsprintfW(sz, L"%d", nID);
-    std::wstring ret(sz);
+    MStringW ret;
+    mstr_to_dec(ret, (short)value);
     return ret;
 }
 
-inline std::wstring mstr_dec_word(WORD nID)
+inline MStringW mstr_dec_word(WORD value)
 {
-    using namespace std;
-    wchar_t sz[32];
-    wsprintfW(sz, L"%u", nID);
-    std::wstring ret(sz);
+    MStringW ret;
+    mstr_to_hex(ret, (WORD)value);
     return ret;
 }
 
-inline std::wstring mstr_dec_dword(DWORD nID)
+inline MStringW mstr_dec_dword(DWORD value)
 {
-    using namespace std;
-    wchar_t sz[32];
-    wsprintfW(sz, L"%lu", nID);
-    std::wstring ret(sz);
+    MStringW ret;
+    mstr_to_hex(ret, (DWORD)value);
     return ret;
 }
 
-inline std::wstring mstr_dec(LONG nID)
+inline MStringW mstr_dec(int value)
 {
-    using namespace std;
-    wchar_t sz[32];
-    wsprintfW(sz, L"%ld", nID);
-    std::wstring ret(sz);
+    MStringW ret;
+    mstr_to_dec(ret, value);
     return ret;
 }
 
-inline std::wstring mstr_hex(INT nID)
+inline MStringW mstr_hex(int value)
 {
-    std::wstring ret;
-    if (nID == 0)
+    MStringW ret, str;
+    if (value == 0)
     {
         ret = L"0";
     }
     else
     {
-        using namespace std;
-        wchar_t sz[32];
-        wsprintfW(sz, L"0x%X", nID);
-        ret = sz;
+        ret += WIDE("0x");
+        mstr_to_hex(str, value);
+        ret += str;
     }
     return ret;
 }
@@ -571,9 +562,9 @@ inline bool mstr_unquote(std::string& str)
     return guts_quote(str, pch);
 }
 
-inline bool mstr_unquote(std::wstring& str)
+inline bool mstr_unquote(MStringW& str)
 {
-    std::wstring str2 = str;
+    MStringW str2 = str;
     const wchar_t *pch = str2.c_str();
     return guts_quote(str, pch);
 }
@@ -588,7 +579,7 @@ inline bool mstr_unquote(char *str)
 
 inline bool mstr_unquote(wchar_t *str)
 {
-    std::wstring s = str;
+    MStringW s = str;
     bool ret = mstr_unquote(s);
     std::wcscpy(str, s.c_str());
     return ret;
@@ -620,7 +611,7 @@ inline int mstr_repeat_count(const std::string& str1, const std::string& str2)
     return count;
 }
 
-inline int mstr_repeat_count(const std::wstring& str1, const std::wstring& str2)
+inline int mstr_repeat_count(const MStringW& str1, const MStringW& str2)
 {
     int count = 0;
     for (size_t i = 0; i < str1.size(); i += str2.size())

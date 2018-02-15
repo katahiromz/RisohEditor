@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       9   /* Version 9 */
+#define MZC4_MSTRING_HPP_       10   /* Version 10 */
 
 #include <algorithm>    // for std::reverse
 
@@ -117,13 +117,12 @@ struct MTextType
 // string
 
 template <typename T_CHAR>
-std::basic_string<T_CHAR>
-mchr_to_hex(T_CHAR ch, size_t num_digits);
+std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
 
 template <typename T_CHAR>
-void mstr_to_hex(std::basic_string<T_CHAR>& str, size_t num_digits);
+void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
 template <typename T_CHAR>
-void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value, size_t num_digits);
+void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
 
 template <typename T_CHAR>
 void mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed = true);
@@ -275,24 +274,28 @@ inline const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch)
 
 template <typename T_CHAR>
 inline std::basic_string<T_CHAR>
-mchr_to_hex(T_CHAR value, size_t num_digits)
+mchr_to_hex(T_CHAR value)
 {
     std::basic_string<T_CHAR> ret;
-    mstr_to_hex(ret, value, num_digits);
+    if (sizeof(T_CHAR) == 1)
+        mstr_to_hex(ret, (value & 0xFF));
+    else if (sizeof(T_CHAR) == 2)
+        mstr_to_hex(ret, (value & 0xFFFF));
+    else if (sizeof(T_CHAR) == 4)
+        mstr_to_hex(ret, (value & 0xFFFFFFFF));
     return ret;
 }
 
 template <typename T_CHAR>
 inline void
-mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value, size_t num_digits)
+mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value)
 {
     static const char hex[] = "0123456789ABCDEF";
-    size_t i = 0;
-    while (value && i < num_digits)
+    str.clear();
+    while (value)
     {
         str += T_CHAR(hex[value & 0xF]);
         value >>= 4;
-        ++i;
     }
     std::reverse(str.begin(), str.end());
     if (str.empty())
@@ -304,6 +307,7 @@ inline void
 mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed)
 {
     static const char dec[] = "0123456789";
+    str.clear();
     bool is_minus = false;
     if (is_signed && value < 0)
     {
@@ -428,7 +432,7 @@ mstr_escape(const std::basic_string<T_CHAR>& str)
             {
                 ret += T_CHAR('\\');
                 ret += T_CHAR('x');
-                ret += mchr_to_hex(ch, sizeof(T_CHAR));
+                ret += mchr_to_hex(ch);
             }
             else
             {
