@@ -713,8 +713,7 @@ mstr_join(const T_STR_CONTAINER& container,
         if (len == 0)
             return true;
 
-        uint32_t state = UTF8_ACCEPT;
-        return UTF8_validate(&state, str, len) == UTF8_ACCEPT;
+        return UTF8_validate(str, len);
     }
 #endif
 

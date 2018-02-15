@@ -25,7 +25,7 @@
  */
 
 #ifndef MZC4_UTF8_VALIDATOR_H_
-#define MZC4_UTF8_VALIDATOR_H_      1   /* Version 1 */
+#define MZC4_UTF8_VALIDATOR_H_      2   /* Version 2 */
 
 #if __cplusplus >= 201103L          /* C++11 */
     #include <cstdint>
@@ -95,7 +95,7 @@ UTF8_count_code_points(const char *str, size_t *count)
 }
 
 inline uint32_t
-UTF8_validate(uint32_t *state, const char *str, size_t len)
+UTF8_validate_state(uint32_t *state, const char *str, size_t len)
 {
     size_t i;
     uint32_t type;
@@ -110,6 +110,13 @@ UTF8_validate(uint32_t *state, const char *str, size_t len)
     }
 
     return *state;
+}
+
+inline bool
+UTF8_validate(const char *str, size_t len)
+{
+    uint32_t state = UTF8_ACCEPT;
+    return UTF8_validate_state(&state, str, len) == UTF8_ACCEPT;
 }
 
 /****************************************************************************/
