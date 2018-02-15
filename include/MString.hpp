@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       8   /* Version 8 */
+#define MZC4_MSTRING_HPP_       9   /* Version 9 */
 
 #include <algorithm>    // for std::reverse
 
@@ -302,15 +302,6 @@ template <typename T_CHAR>
 inline bool mstr_is_text_ascii(const std::basic_string<T_CHAR>& str)
 {
     return mstr_is_text_ascii(&str[0], str.size());
-}
-
-inline bool mstr_is_text_utf8(const char *str, size_t len)
-{
-    if (len == 0)
-        return true;
-
-    len = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, int(len), NULL, 0);
-    return len != 0;
 }
 
 inline bool mstr_is_text_utf8(const std::string& str)
@@ -702,6 +693,30 @@ mstr_join(const T_STR_CONTAINER& container,
     }
     return result;
 }
+
+////////////////////////////////////////////////////////////////////////////
+// UTF-8 checking
+
+#ifdef _WIN32
+    inline bool mstr_is_text_utf8(const char *str, size_t len)
+    {
+        if (len == 0)
+            return true;
+
+        len = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, int(len), NULL, 0);
+        return len != 0;
+    }
+#else
+    #include "UTF8_validator.h"
+    inline bool mstr_is_text_utf8(const char *str, size_t len)
+    {
+        if (len == 0)
+            return true;
+
+        uint32_t state = UTF8_ACCEPT;
+        return UTF8_validate(&state, str, len) == UTF8_ACCEPT;
+    }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////
 
