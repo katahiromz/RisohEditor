@@ -117,7 +117,16 @@ struct MTextType
 // string
 
 template <typename T_CHAR>
-std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
+std::basic_string<T_CHAR>
+mchr_to_hex(T_CHAR ch, size_t num_digits);
+
+template <typename T_CHAR>
+void mstr_to_hex(std::basic_string<T_CHAR>& str, size_t num_digits);
+template <typename T_CHAR>
+void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value, size_t num_digits);
+
+template <typename T_CHAR>
+void mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed = true);
 
 template <typename T_CHAR>
 bool mstr_is_text_ascii(const T_CHAR *str, size_t len);
@@ -265,22 +274,55 @@ inline const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch)
 ////////////////////////////////////////////////////////////////////////////
 
 template <typename T_CHAR>
-inline std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch)
+inline std::basic_string<T_CHAR>
+mchr_to_hex(T_CHAR value, size_t num_digits)
 {
-    T_CHAR sz[32];
     std::basic_string<T_CHAR> ret;
+    mstr_to_hex(ret, value, num_digits);
+    return ret;
+}
+
+template <typename T_CHAR>
+inline void
+mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value, size_t num_digits)
+{
     static const char hex[] = "0123456789ABCDEF";
-    int i = 0;
-    while (ch && i < sizeof(T_CHAR))
+    size_t i = 0;
+    while (value && i < num_digits)
     {
-        ret += T_CHAR(hex[ch & 0xF]);
-        ch >>= 4;
+        str += T_CHAR(hex[value & 0xF]);
+        value >>= 4;
         ++i;
     }
-    if (ret.empty())
-        ret += T_CHAR('0');
-    std::reverse(ret.begin(), ret.end());
-    return ret;
+    std::reverse(str.begin(), str.end());
+    if (str.empty())
+        str += T_CHAR('0');
+}
+
+template <typename T_CHAR>
+inline void
+mstr_to_dec(std::basic_string<T_CHAR>& str, int value, bool is_signed)
+{
+    static const char dec[] = "0123456789";
+    bool is_minus = false;
+    if (is_signed && value < 0)
+    {
+        is_minus = true;
+        value = -value;
+    }
+    size_t i = 0;
+    unsigned int uvalue = value;
+    while (uvalue)
+    {
+        str += T_CHAR(dec[uvalue % 10]);
+        uvalue /= 10;
+        ++i;
+    }
+    if (is_minus)
+        str += T_CHAR('-');
+    std::reverse(str.begin(), str.end());
+    if (str.empty())
+        str += T_CHAR('0');
 }
 
 template <typename T_CHAR>
@@ -386,7 +428,7 @@ mstr_escape(const std::basic_string<T_CHAR>& str)
             {
                 ret += T_CHAR('\\');
                 ret += T_CHAR('x');
-                ret += mchr_to_hex(ch);
+                ret += mchr_to_hex(ch, sizeof(T_CHAR));
             }
             else
             {
