@@ -39,8 +39,10 @@ bool guts_escape(std::string& str, const char*& pch);
 bool guts_escape(MStringW& str, const wchar_t*& pch);
 bool guts_quote(std::string& str, const char*& pch);
 bool guts_quote(MStringW& str, const wchar_t*& pch);
-int mstr_repeat_count(const std::string& str1, const std::string& str2);
-int mstr_repeat_count(const MStringW& str1, const MStringW& str2);
+
+template <typename T_CHAR>
+size_t
+mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const std::basic_string<T_CHAR>& str2);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -578,9 +580,11 @@ inline bool mstr_unquote(wchar_t *str)
     return ret;
 }
 
-inline int mstr_repeat_count(const std::string& str1, const std::string& str2)
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const std::basic_string<T_CHAR>& str2)
 {
-    int count = 0;
+    size_t count = 0;
     for (size_t i = 0; i < str1.size(); i += str2.size())
     {
         if (str1.find(str2, i) != i)
@@ -591,17 +595,20 @@ inline int mstr_repeat_count(const std::string& str1, const std::string& str2)
     return count;
 }
 
-inline int mstr_repeat_count(const MStringW& str1, const MStringW& str2)
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const T_CHAR *str1, const std::basic_string<T_CHAR>& str2)
 {
-    int count = 0;
-    for (size_t i = 0; i < str1.size(); i += str2.size())
-    {
-        if (str1.find(str2, i) != i)
-            break;
+    std::basic_string<T_CHAR> s1(str1);
+    return mstr_repeat_count(s1, str2);
+}
 
-        ++count;
-    }
-    return count;
+template <typename T_CHAR>
+inline size_t
+mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const T_CHAR *str2)
+{
+    std::basic_string<T_CHAR> s2(str2);
+    return mstr_repeat_count(str1, s2);
 }
 
 //////////////////////////////////////////////////////////////////////////////

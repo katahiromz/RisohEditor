@@ -735,9 +735,9 @@ public:
         WCHAR szCaption[128];
         ListView_GetItemText(hCtl1, iItem, 0, szCaption, _countof(szCaption));
 
-        std::wstring strIndent = LoadStringDx(IDS_INDENT);
-        INT depth_up = mstr_repeat_count(CaptionUp, strIndent);
-        INT depth = mstr_repeat_count(szCaption, strIndent);
+        MStringW strIndent = LoadStringDx(IDS_INDENT);
+        size_t depth_up = mstr_repeat_count(CaptionUp, strIndent);
+        size_t depth = mstr_repeat_count(szCaption, strIndent);
 
         if (depth_up < depth)
             return;
