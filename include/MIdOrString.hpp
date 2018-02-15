@@ -46,9 +46,6 @@ wchar_t *skip_space(wchar_t *pch);;
 const char *skip_space(const char *pch);
 const wchar_t *skip_space(const wchar_t *pch);;
 
-template <typename T_STR>
-bool mstr_is_ascii(const T_STR& str);
-
 //////////////////////////////////////////////////////////////////////////////
 
 struct MIdOrString
@@ -583,19 +580,6 @@ inline bool mstr_unquote(wchar_t *str)
     bool ret = mstr_unquote(s);
     std::wcscpy(str, s.c_str());
     return ret;
-}
-
-template <typename T_STR>
-inline bool mstr_is_ascii(const T_STR& str)
-{
-    size_t i, count = str.size();
-    for (i = 0; i < count; ++i)
-    {
-        typename T_STR::value_type ch = str[i];
-        if (ch < 0x20 || 0x7F < ch)
-            return false;
-    }
-    return true;
 }
 
 inline int mstr_repeat_count(const std::string& str1, const std::string& str2)
