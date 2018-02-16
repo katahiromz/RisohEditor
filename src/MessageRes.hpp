@@ -20,7 +20,7 @@
 #ifndef MESSAGE_RES_HPP_
 #define MESSAGE_RES_HPP_
 
-#include "MByteStreamEx.hpp"
+#include "MByteStream.hpp"
 #include "MString.hpp"
 #include "MTextToText.hpp"
 #include "ConstantsDB.hpp"
@@ -90,7 +90,7 @@ public:
         m_map.clear();
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream, WORD wName)
+    BOOL LoadFromStream(const MByteStream& stream, WORD wName)
     {
         m_map.clear();
         if (stream.size() < sizeof(MESSAGE_RESOURCE_DATA))
@@ -153,7 +153,7 @@ public:
         return TRUE;
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream)
+    BOOL SaveToStream(MByteStream& stream)
     {
         if (m_map.empty())
             return TRUE;
