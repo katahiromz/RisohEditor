@@ -29,23 +29,6 @@
     #define BS_PUSHBOX  0x0000000A
 #endif
 
-inline bool
-ByteStream_WriteString(MByteStream& stream, const WCHAR *psz)
-{
-    if (psz == NULL)
-    {
-        return stream.WriteWord(0);
-    }
-    if (IS_INTRESOURCE(psz))
-    {
-        WORD aw[2];
-        aw[0] = 0xFFFF;
-        aw[1] = LOWORD(psz);
-        return stream.WriteRaw(aw);
-    }
-    return stream.WriteData(psz, (lstrlenW(psz) + 1) * sizeof(WCHAR));
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 #include <pshpack2.h>
@@ -270,16 +253,16 @@ struct DialogItem
         if (!IS_INTRESOURCE(m_class.ptr()) && 
             PredefClassToID(m_class.ptr(), w))
         {
-            if (!ByteStream_WriteString(stream, MAKEINTRESOURCEW(w)))
+            if (!stream.WriteString(MAKEINTRESOURCEW(w)))
                 return FALSE;
         }
         else
         {
-            if (!ByteStream_WriteString(stream, m_class.ptr()))
+            if (!stream.WriteString(m_class.ptr()))
                 return FALSE;
         }
 
-        if (!ByteStream_WriteString(stream, m_title.ptr()))
+        if (!stream.WriteString(m_title.ptr()))
             return FALSE;
 
         BYTE b = BYTE(m_extra.size());
@@ -318,16 +301,16 @@ struct DialogItem
         if (!IS_INTRESOURCE(m_class.ptr()) && 
             PredefClassToID(m_class.ptr(), w))
         {
-            if (!ByteStream_WriteString(stream, MAKEINTRESOURCEW(w)))
+            if (!stream.WriteString(MAKEINTRESOURCEW(w)))
                 return FALSE;
         }
         else
         {
-            if (!ByteStream_WriteString(stream, m_class.ptr()))
+            if (!stream.WriteString(m_class.ptr()))
                 return FALSE;
         }
 
-        if (!ByteStream_WriteString(stream, m_title.ptr()) ||
+        if (!stream.WriteString(m_title.ptr()) ||
             !stream.WriteWord(WORD(m_extra.size())))
         {
             return FALSE;
@@ -1130,9 +1113,9 @@ protected:
         tmp.cx = (SHORT)m_siz.cx;
         tmp.cy = (SHORT)m_siz.cy;
         if (!stream.WriteRaw(tmp) ||
-            !ByteStream_WriteString(stream, m_menu.ptr()) ||
-            !ByteStream_WriteString(stream, m_class.ptr()) ||
-            !ByteStream_WriteString(stream, m_title.ptr()))
+            !stream.WriteString(m_menu.ptr()) ||
+            !stream.WriteString(m_class.ptr()) ||
+            !stream.WriteString(m_title.ptr()))
         {
             return FALSE;
         }
@@ -1140,7 +1123,7 @@ protected:
         if (tmp.style & (DS_SETFONT | DS_SHELLFONT))
         {
             if (!stream.WriteWord(m_point_size) ||
-                !ByteStream_WriteString(stream, m_type_face.ptr()))
+                !stream.WriteString(m_type_face.ptr()))
             {
                 return FALSE;
             }
@@ -1165,9 +1148,9 @@ protected:
         TemplateEx.cx = (short)m_siz.cx;
         TemplateEx.cy = (short)m_siz.cy;
         if (!stream.WriteRaw(TemplateEx) ||
-            !ByteStream_WriteString(stream, m_menu.ptr()) ||
-            !ByteStream_WriteString(stream, m_class.ptr()) ||
-            !ByteStream_WriteString(stream, m_title.ptr()))
+            !stream.WriteString(m_menu.ptr()) ||
+            !stream.WriteString(m_class.ptr()) ||
+            !stream.WriteString(m_title.ptr()))
         {
             return FALSE;
         }
@@ -1178,7 +1161,7 @@ protected:
                 !stream.WriteWord(m_weight) ||
                 !stream.WriteByte(m_italic) ||
                 !stream.WriteByte(m_charset) ||
-                !ByteStream_WriteString(stream, m_type_face.ptr()))
+                !stream.WriteString(m_type_face.ptr()))
             {
                 return FALSE;
             }
