@@ -3,26 +3,52 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAM_HPP_
-#define MZC4_MBYTESTREAM_HPP_       4       /* Version 4 */
+#define MZC4_MBYTESTREAM_HPP_       5       /* Version 5 */
 
 class MByteStream;
 
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef _INC_WINDOWS
-    #include <windows.h>    // Win32API
+#ifdef _WIN32
+    #ifndef _INC_WINDOWS
+        #include <windows.h>
+    #endif
+#else
+    #include "wondef.h"         // Wonders API
 #endif
-#include <cassert>          // assert
 
+#include <cstdio>           // C standard I/O
+#include <cstring>          // C string
+#include <cassert>          // assert
 #include <vector>           // for std::vector
 #include <string>           // for std::string and std::wstring
+
+// MString
+#ifndef MString
+    #include <string>       // for std::basic_string, std::string, ...
+    typedef std::string MStringA;
+    #ifdef _WIN32
+        #include <tchar.h>      // Windows generic text mapping
+        #ifdef _MBCS
+            #include <mbstring.h>   // for _mbsrchr
+        #endif
+        typedef std::wstring MStringW;
+    #else
+        typedef std::u16string MStringW;
+    #endif
+    #ifdef UNICODE
+        #define MString     MStringW
+    #else
+        #define MString     MStringA
+    #endif
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MByteStream
 {
 public:
-    typedef std::vector<BYTE> data_type;
+    typedef std::vector<uint8_t> data_type;
     typedef std::size_t size_type;
 
     MByteStream() : m_pos(0)
@@ -39,7 +65,7 @@ public:
     }
 
     MByteStream(const void *ptr, size_t size) :
-        m_pos(0), m_data((const BYTE *)ptr, (const BYTE *)ptr + size)
+        m_pos(0), m_data((const uint8_t *)ptr, (const uint8_t *)ptr + size)
     {
     }
 
@@ -49,12 +75,12 @@ public:
 
     void assign(const void *ptr, size_t size)
     {
-        m_data.assign((const BYTE *)ptr, (const BYTE *)ptr + size);
+        m_data.assign((const uint8_t *)ptr, (const uint8_t *)ptr + size);
     }
 
     void assign(const void *ptr1, const void *ptr2)
     {
-        m_data.assign((const BYTE *)ptr1, (const BYTE *)ptr2);
+        m_data.assign((const uint8_t *)ptr1, (const uint8_t *)ptr2);
     }
 
     void clear()
@@ -103,7 +129,7 @@ public:
         m_pos = pos_;
     }
 
-    bool seek(LONG delta) const
+    bool seek(int16_t delta) const
     {
         if (delta > 0)
         {
@@ -125,12 +151,12 @@ public:
     }
 
     template <typename T>
-    BOOL WriteRaw(const T& data)
+    bool WriteRaw(const T& data)
     {
         return WriteData(&data, sizeof(T));
     }
 
-    BOOL WriteData(const void *data, size_t nSize)
+    bool WriteData(const void *data, size_t nSize)
     {
         if (data && nSize)
         {
@@ -138,18 +164,18 @@ public:
             m_data.resize(old_size + nSize);
             memcpy(&m_data[old_size], data, nSize);
         }
-        return TRUE;
+        return true;
     }
 
-    BOOL WriteByte(BYTE value)
+    bool WriteByte(uint8_t value)
     {
-        BYTE b = value;
+        uint8_t b = value;
         return WriteData(&b, sizeof(b));
     }
 
-    BOOL WriteWord(WORD value)
+    bool WriteWord(uint16_t value)
     {
-        WORD w = value;
+        uint16_t w = value;
         return WriteData(&w, sizeof(w));
     }
 
@@ -159,9 +185,9 @@ public:
             m_data.resize(m_data.size() + 1);
     }
 
-    BOOL WriteDword(DWORD value)
+    bool WriteDword(uint32_t value)
     {
-        DWORD dw = value;
+        uint32_t dw = value;
         return WriteData(&dw, sizeof(dw));
     }
 
@@ -175,12 +201,12 @@ public:
     }
 
     template <typename T>
-    BOOL ReadRaw(T& value) const
+    bool ReadRaw(T& value) const
     {
         return ReadData(&value, sizeof(T));
     }
 
-    BOOL ReadData(void *data, size_t nSize) const
+    bool ReadData(void *data, size_t nSize) const
     {
         if (m_pos + nSize <= size())
         {
@@ -189,61 +215,61 @@ public:
                 memcpy(data, &m_data[m_pos], nSize);
                 m_pos += nSize;
             }
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL ReadByte(BYTE& b) const
+    bool ReadByte(uint8_t& b) const
     {
         return ReadData(&b, sizeof(b));
     }
 
-    BOOL ReadByte(char& b) const
+    bool ReadByte(char& b) const
     {
         return ReadData(&b, sizeof(b));
     }
 
-    BOOL ReadWord(WORD& w) const
+    bool ReadWord(uint16_t& w) const
     {
         return ReadData(&w, sizeof(w));
     }
 
-    BOOL ReadWord(short& w) const
+    bool ReadWord(int16_t& w) const
     {
         return ReadData(&w, sizeof(w));
     }
 
-    BOOL ReadDword(DWORD& dw) const
+    bool ReadDword(uint32_t& dw) const
     {
         return ReadData(&dw, sizeof(dw));
     }
 
-    BOOL ReadDword(LONG& n) const
+    bool ReadDword(int32_t& n) const
     {
         return ReadData(&n, sizeof(n));
     }
 
-    BOOL PeekWord(WORD& w) const
+    bool PeekWord(uint16_t& w) const
     {
-        size_t nSize = sizeof(WORD);
+        size_t nSize = sizeof(uint16_t);
         if (m_pos + nSize <= size())
         {
             memcpy(&w, &m_data[m_pos], nSize);
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL PeekByte(BYTE& b) const
+    bool PeekByte(uint8_t& b) const
     {
-        size_t nSize = sizeof(BYTE);
+        size_t nSize = sizeof(uint8_t);
         if (m_pos + nSize <= size())
         {
             memcpy(&b, &m_data[m_pos], nSize);
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     void ReadWordAlignment() const
@@ -259,100 +285,90 @@ public:
             m_pos += 4 - mod;
     }
 
-    BOOL LoadFromFile(LPCWSTR FileName)
+    bool LoadFromFile(const TCHAR *FileName)
     {
-        HANDLE hFile = ::CreateFileW(FileName, GENERIC_READ,
-            FILE_SHARE_READ, NULL, OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return FALSE;
-
-        DWORD dwSize = ::GetFileSize(hFile, NULL);
-        if (dwSize == 0xFFFFFFFF)
-        {
-            ::CloseHandle(hFile);
-            return FALSE;
-        }
-
         m_pos = 0;
-        m_data.resize(dwSize);
-        DWORD dwRead;
-        if (!::ReadFile(hFile, &m_data[0], dwSize, &dwRead, NULL) ||
-            dwRead != dwSize)
+        m_data.clear();
+
+        FILE *fp;
+#ifdef _WIN32
+        fp = _wfopen(FileName, L"rb");
+#else
+        fp = fopen(FileName, "rb");
+#endif
+        if (!fp)
+            return false;
+
+        bool ok = true;
+        uint8_t buf[512];
+        for (;;)
         {
-            m_data.clear();
-            ::CloseHandle(hFile);
-            return FALSE;
+            size_t size = fread(buf, 1, 512, fp);
+            if (size == 0)
+            {
+                if (ferror(fp))
+                    ok = false;
+                break;
+            }
+
+            m_data.insert(m_data.end(), &buf[0], &buf[size]);
         }
-        return ::CloseHandle(hFile);
+
+        fclose(fp);
+
+        return ok;
     }
 
-    BOOL SaveToFile(LPCWSTR FileName) const
+    bool SaveToFile(const TCHAR *FileName) const
     {
-        HANDLE hFile = ::CreateFileW(FileName, GENERIC_WRITE,
-            FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return FALSE;
+        FILE *fp;
+#ifdef _WIN32
+        fp = _wfopen(FileName, L"wb");
+#else
+        fp = fopen(FileName, "wb");
+#endif
+        if (!fp)
+            return false;
 
-        DWORD dwWritten;
-        if (!::WriteFile(hFile, &m_data[0], DWORD(m_data.size()),
-                         &dwWritten, NULL))
+        int n = fwrite(&m_data[0], m_data.size(), 1, fp);
+        fclose(fp);
+
+        if (!n)
         {
-            ::CloseHandle(hFile);
-            ::DeleteFileW(FileName);
-            return FALSE;
+#ifdef _WIN32
+            _wremove(FileName);
+#else
+            unlink(FileName);
+#endif
         }
 
-        if (!::CloseHandle(hFile))
-        {
-            ::DeleteFileW(FileName);
-            return FALSE;
-        }
-
-        return TRUE;
+        return n != 0;
     }
 
-    BYTE& operator[](size_t index)
+    uint8_t& operator[](size_t index)
     {
         return m_data[index];
     }
-    const BYTE& operator[](size_t index) const
+    const uint8_t& operator[](size_t index) const
     {
         return m_data[index];
     }
 
-    BOOL ReadSz(std::wstring& str) const
+    bool ReadSz(MStringW& str) const
     {
         str.clear();
-        WORD w;
+        uint16_t w;
         while (ReadWord(w))
         {
             if (w == 0)
-                return TRUE;
+                return true;
             str += (WCHAR)w;
         }
-        return FALSE;
+        return false;
     }
-    BOOL WriteSz(const std::wstring& str)
+    bool WriteSz(const MStringW& str)
     {
         return WriteData(&str[0], (str.size() + 1) * sizeof(WCHAR));
-    }
-
-    BOOL WriteString(LPCWSTR psz)
-    {
-        if (psz == NULL)
-        {
-            return WriteWord(0);
-        }
-        if (IS_INTRESOURCE(psz))
-        {
-            WORD aw[2];
-            aw[0] = 0xFFFF;
-            aw[1] = LOWORD(psz);
-            return WriteRaw(aw);
-        }
-        return WriteData(psz, (lstrlenW(psz) + 1) * sizeof(WCHAR));
     }
 
 protected:
