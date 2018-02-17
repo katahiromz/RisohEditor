@@ -838,21 +838,23 @@ int load_bin(const char *input_file)
 
 int load_res(const char *input_file)
 {
-    MFile file(input_file);
-    if (!file)
+    FILE *fp = fopen(input_file, "rb");
+    if (!fp)
     {
         fprintf(stderr, "ERROR: Unable to open input file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
 
-    char buf[512];
-    DWORD dwSize;
     std::string strContents;
-    while (file.ReadFile(buf, sizeof(buf), &dwSize) && dwSize)
+    char buf[256];
+    for (;;)
     {
-        strContents.append(buf, dwSize);
+        size_t len = fread(buf, 1, 256, fp);
+        if (!len)
+            break;
+        strContents.append(buf, len);
     }
-    file.CloseHandle();
+    fclose(fp);
 
     MByteStreamEx stream(&strContents[0], strContents.size());
     ResHeader header;
