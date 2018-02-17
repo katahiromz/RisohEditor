@@ -24,6 +24,7 @@
 #include "MacroParser.hpp"
 #include "MessageRes0.hpp"
 #include "ResHeader.hpp"
+#include "getoptwin.h"
 #include <cctype>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -69,7 +70,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.7\n");
+    printf("mcdx ver.0.8\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -78,17 +79,17 @@ void show_version(void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-WCHAR g_szCppExe[MAX_PATH] = L"";
-WCHAR g_szWindResExe[MAX_PATH] = L"";
+char g_szCppExe[MAX_PATH] = "";
+char g_szWindResExe[MAX_PATH] = "";
 
-wchar_t *g_input_file = NULL;
-wchar_t *g_output_file = NULL;
-const wchar_t *g_inp_format = NULL;
-const wchar_t *g_out_format = NULL;
+char *g_input_file = NULL;
+char *g_output_file = NULL;
+const char *g_inp_format = NULL;
+const char *g_out_format = NULL;
 
-std::vector<MStringW> g_include_directories;
-std::vector<MStringW> g_definitions;
-std::vector<MStringW> g_undefinitions;
+std::vector<MStringA> g_include_directories;
+std::vector<MStringA> g_definitions;
+std::vector<MStringA> g_undefinitions;
 
 std::string g_strFile = "(anonymous)";
 int g_nLineNo = 0;
@@ -108,31 +109,31 @@ int syntax_error(void)
 
 BOOL check_cpp_exe(VOID)
 {
-    WCHAR szPath[MAX_PATH + 64], *pch;
+    TCHAR szPath[MAX_PATH + 64], *pch;
 
-    SearchPathW(NULL, L"cpp.exe", NULL, _countof(szPath), szPath, &pch);
-    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
+    SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
+    if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpynW(g_szCppExe, szPath, MAX_PATH);
+        lstrcpyn(g_szCppExe, szPath, MAX_PATH);
         return TRUE;
     }
 
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\cpp.exe");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    GetModuleFileName(NULL, szPath, _countof(szPath));
+    pch = _tcsrchr(szPath, L'\\');
+    lstrcpy(pch, TEXT("\\cpp.exe"));
+    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"\\data\\bin\\cpp.exe");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        lstrcpy(pch, TEXT("\\data\\bin\\cpp.exe"));
+        if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"\\..\\data\\bin\\cpp.exe");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            lstrcpy(pch, TEXT("\\..\\data\\bin\\cpp.exe"));
+            if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"\\..\\..\\data\\bin\\cpp.exe");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                lstrcpy(pch, TEXT("\\..\\..\\data\\bin\\cpp.exe"));
+                if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpyW(pch, L"\\..\\..\\..\\data\\bin\\cpp.exe");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    lstrcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\cpp.exe"));
+                    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
                     }
@@ -140,37 +141,37 @@ BOOL check_cpp_exe(VOID)
             }
         }
     }
-    lstrcpynW(g_szCppExe, szPath, MAX_PATH);
+    lstrcpyn(g_szCppExe, szPath, MAX_PATH);
     return TRUE;
 }
 
 BOOL check_windres_exe(VOID)
 {
-    WCHAR szPath[MAX_PATH + 64], *pch;
+    TCHAR szPath[MAX_PATH + 64], *pch;
 
-    SearchPathW(NULL, L"windres.exe", NULL, _countof(szPath), szPath, &pch);
-    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
+    SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
+    if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpynW(g_szWindResExe, szPath, MAX_PATH);
+        lstrcpyn(g_szWindResExe, szPath, MAX_PATH);
         return TRUE;
     }
 
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\windres.exe");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    GetModuleFileName(NULL, szPath, _countof(szPath));
+    pch = _tcsrchr(szPath, TEXT('\\'));
+    lstrcpy(pch, TEXT("\\windres.exe"));
+    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"\\data\\bin\\windres.exe");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        lstrcpy(pch, TEXT("\\data\\bin\\windres.exe"));
+        if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"\\..\\data\\bin\\windres.exe");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            lstrcpy(pch, TEXT("\\..\\data\\bin\\windres.exe"));
+            if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"\\..\\..\\data\\bin\\windres.exe");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                lstrcpy(pch, TEXT("\\..\\..\\data\\bin\\windres.exe"));
+                if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpyW(pch, L"\\..\\..\\..\\data\\bin\\windres.exe");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    lstrcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\windres.exe"));
+                    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
                     }
@@ -178,7 +179,7 @@ BOOL check_windres_exe(VOID)
             }
         }
     }
-    lstrcpynW(g_szWindResExe, szPath, MAX_PATH);
+    lstrcpyn(g_szWindResExe, szPath, MAX_PATH);
     return TRUE;
 }
 
@@ -533,12 +534,12 @@ retry:
     return EXITCODE_SUCCESS;
 }
 
-int save_rc(wchar_t *output_file)
+int save_rc(const char *output_file)
 {
     FILE *fp;
     if (output_file)
     {
-        fp = _wfopen(output_file, L"wb");
+        fp = fopen(output_file, "wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -570,7 +571,7 @@ int save_rc(wchar_t *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            DeleteFile(output_file);
+            unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -578,7 +579,7 @@ int save_rc(wchar_t *output_file)
     return EXITCODE_SUCCESS;
 }
 
-int save_res(wchar_t *output_file)
+int save_res(const char *output_file)
 {
     MByteStreamEx bs;
     ResHeader header;
@@ -617,7 +618,7 @@ int save_res(wchar_t *output_file)
     FILE *fp;
     if (output_file)
     {
-        fp = _wfopen(output_file, L"wb");
+        fp = fopen(output_file, "wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -637,7 +638,7 @@ int save_res(wchar_t *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            DeleteFile(output_file);
+            unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -645,32 +646,32 @@ int save_res(wchar_t *output_file)
     return EXITCODE_SUCCESS;
 }
 
-int save_coff(wchar_t *output_file)
+int save_coff(const char *output_file)
 {
-    TCHAR szTempPath[MAX_PATH], szTempFile[MAX_PATH];
-    GetTempPath(_countof(szTempPath), szTempPath);
-    GetTempFileName(szTempPath, TEXT("res"), 0, szTempFile);
+    char szTempPath[MAX_PATH], szTempFile[MAX_PATH];
+    GetTempPathA(_countof(szTempPath), szTempPath);
+    GetTempFileNameA(szTempPath, "res", 0, szTempFile);
 
     if (int ret = save_res(szTempFile))
     {
-        DeleteFile(szTempFile);
+        unlink(szTempFile);
         return ret;
     }
 
-    MStringW strCommandLine;
-    strCommandLine += L"\"";
+    MStringA strCommandLine;
+    strCommandLine += "\"";
     strCommandLine += g_szWindResExe;
-    strCommandLine += L"\" \"";
+    strCommandLine += "\" \"";
     strCommandLine += szTempFile;
     if (output_file)
     {
-        strCommandLine += L"\" \"";
+        strCommandLine += "\" \"";
         strCommandLine += output_file;
-        strCommandLine += L"\"";
+        strCommandLine += "\"";
     }
     else
     {
-        strCommandLine += L"\" -O coff";
+        strCommandLine += "\" -O coff";
     }
 
     // create a process
@@ -678,7 +679,7 @@ int save_coff(wchar_t *output_file)
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
     MFile hInputWrite, hOutputRead;
-    SetEnvironmentVariableW(L"LANG", L"en_US");
+    SetEnvironmentVariableA("LANG", "en_US");
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         maker.CreateProcessDx(NULL, strCommandLine.c_str()))
     {
@@ -704,7 +705,7 @@ int save_coff(wchar_t *output_file)
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
-int save_bin(wchar_t *output_file)
+int save_bin(const char *output_file)
 {
     MessageRes msg_res = g_msg_tables.begin()->second;
 
@@ -714,7 +715,7 @@ int save_bin(wchar_t *output_file)
     FILE *fp;
     if (output_file)
     {
-        fp = _wfopen(output_file, L"wb");
+        fp = fopen(output_file, "wb");
         if (!fp)
         {
             fprintf(stderr, "ERROR: Unable to open output file.\n");
@@ -742,7 +743,7 @@ int save_bin(wchar_t *output_file)
     return EXITCODE_SUCCESS;
 }
 
-int load_rc(wchar_t *input_file)
+int load_rc(const char *input_file)
 {
     // definitions minus undefinitions
     for (size_t i = 0; i < g_undefinitions.size(); ++i)
@@ -763,20 +764,20 @@ int load_rc(wchar_t *input_file)
     }
 
     // build up command line
-    MStringW strCommandLine;
-    strCommandLine += L"\"";
+    MString strCommandLine;
+    strCommandLine += "\"";
     strCommandLine += g_szCppExe;
-    strCommandLine += L"\" ";
+    strCommandLine += "\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
-        strCommandLine += L" -D";
+        strCommandLine += " -D";
         strCommandLine += g_definitions[i];
     }
-    strCommandLine += L" \"";
+    strCommandLine += " \"";
     strCommandLine += input_file;
-    strCommandLine += L"\"";
+    strCommandLine += "\"";
 
-    g_strFile = MWideToAnsi(CP_ACP, input_file).c_str();
+    g_strFile = input_file;
     g_nLineNo = 1;
 
     // create a process
@@ -805,7 +806,7 @@ int load_rc(wchar_t *input_file)
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
-int load_bin(wchar_t *input_file)
+int load_bin(const char *input_file)
 {
     MFile file(input_file);
     if (!file)
@@ -832,7 +833,7 @@ int load_bin(wchar_t *input_file)
     return EXITCODE_SUCCESS;
 }
 
-int load_res(wchar_t *input_file)
+int load_res(const char *input_file)
 {
     MFile file(input_file);
     if (!file)
@@ -885,22 +886,22 @@ int load_res(wchar_t *input_file)
 
 int just_do_it(void)
 {
-    if (lstrcmpiW(g_inp_format, L"rc") == 0)
+    if (strcmp(g_inp_format, "rc") == 0)
     {
         if (int ret = load_rc(g_input_file))
             return ret;
     }
-    else if (lstrcmpiW(g_inp_format, L"res") == 0)
+    else if (strcmp(g_inp_format, "res") == 0)
     {
         if (int ret = load_res(g_input_file))
             return ret;
     }
-    else if (lstrcmpiW(g_inp_format, L"bin") == 0)
+    else if (strcmp(g_inp_format, "bin") == 0)
     {
         if (int ret = load_bin(g_input_file))
             return ret;
     }
-    else if (lstrcmpiW(g_inp_format, L"coff") == 0)
+    else if (strcmp(g_inp_format, "coff") == 0)
     {
         fprintf(stderr, "ERROR: COFF input format is not supported yet.\n");
         return EXITCODE_NOT_SUPPORTED_YET;
@@ -911,19 +912,19 @@ int just_do_it(void)
         return EXITCODE_INVALID_ARGUMENT;
     }
 
-    if (lstrcmpiW(g_out_format, L"rc") == 0)
+    if (strcmp(g_out_format, "rc") == 0)
     {
         return save_rc(g_output_file);
     }
-    else if (lstrcmpiW(g_out_format, L"res") == 0)
+    else if (strcmp(g_out_format, "res") == 0)
     {
         return save_res(g_output_file);
     }
-    else if (lstrcmpiW(g_out_format, L"bin") == 0)
+    else if (strcmp(g_out_format, "bin") == 0)
     {
         return save_bin(g_output_file);
     }
-    else if (lstrcmpiW(g_out_format, L"coff") == 0)
+    else if (strcmp(g_out_format, "coff") == 0)
     {
         return save_coff(g_output_file);
     }
@@ -934,34 +935,34 @@ int just_do_it(void)
     }
 }
 
-const wchar_t *get_format(const wchar_t *file_path)
+const char *get_format(const char *file_path)
 {
-    LPCWSTR pch = wcsrchr(file_path, L'.');
+    TCHAR *pch = _tcsrchr(file_path, '.');
     if (pch == NULL)
     {
-        return L"rc";
+        return "rc";
     }
-    else if (lstrcmpiW(pch, L".rc") == 0)
+    else if (strcmp(pch, ".rc") == 0)
     {
-        return L"rc";
+        return "rc";
     }
-    else if (lstrcmpiW(pch, L".res") == 0)
+    else if (strcmp(pch, ".res") == 0)
     {
-        return L"res";
+        return "res";
     }
-    else if (lstrcmpiW(pch, L".bin") == 0)
+    else if (strcmp(pch, ".bin") == 0)
     {
-        return L"bin";
+        return "bin";
     }
-    else if (lstrcmpiW(pch, L".o") == 0 ||
-             lstrcmpiW(pch, L".obj") == 0 ||
-             lstrcmpiW(pch, L".coff") == 0)
+    else if (strcmp(pch, ".o") == 0 ||
+             strcmp(pch, ".obj") == 0 ||
+             strcmp(pch, ".coff") == 0)
     {
-        return L"coff";
+        return "coff";
     }
     else
     {
-        return L"rc";
+        return "rc";
     }
 }
 
@@ -969,252 +970,113 @@ const wchar_t *get_format(const wchar_t *file_path)
 
 int main(int argc, char **argv)
 {
-    LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    static const struct option long_options[] =
+    {
+        {"help",            required_argument, 0, 'h' },
+        {"version",         no_argument,       0, 'V' },
+        {"input",           required_argument, 0, 'i' },
+        {"output",          required_argument, 0, 'o' },
+        {"input-format",    required_argument, 0, 'J' },
+        {"output-format",   required_argument, 0, 'O' },
+        {"include-dir",     required_argument, 0, 'I' },
+        {"define",          required_argument, 0, 'D' },
+        {"undefine",        required_argument, 0, 'U' },
+        {"codepage",        required_argument, 0, 'c' },
+        {"language",        required_argument, 0, 'l' },
+        {0,                 0,                 0, 0   }
+    };
 
-    g_definitions.push_back(L"RC_INVOKED");
-    g_definitions.push_back(L"MCDX_INVOKED");
-
-    static const wchar_t *include_dir_equal = L"--include-dir=";
-    size_t include_dir_equal_len = lstrlenW(include_dir_equal);
-    size_t include_dir_equal_size = include_dir_equal_len * sizeof(wchar_t);
-
-    static const wchar_t *define_equal = L"--define=";
-    size_t define_equal_len = lstrlenW(define_equal);
-    size_t define_equal_size = define_equal_len * sizeof(wchar_t);
+    g_definitions.push_back("RC_INVOKED");
+    g_definitions.push_back("MCDX_INVOKED");
 
     // parse command line
-    for (int i = 1; i < argc; ++i)
+    while (1)
     {
-        // show help?
-        if (lstrcmpiW(wargv[i], L"--help") == 0 ||
-            lstrcmpiW(wargv[i], L"/?") == 0)
-        {
+        int this_option_optind = optind ? optind : 1;
+        int option_index = 0;
+        int c = getopt_long(argc, argv, "hVi:o:J:O:I:D:U:c:l:",
+                            long_options, &option_index);
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'h':
             show_help();
             return EXITCODE_SUCCESS;
-        }
-        // show version?
-        if (lstrcmpiW(wargv[i], L"--version") == 0)
-        {
+        case 'V':
             show_version();
             return EXITCODE_SUCCESS;
-        }
-        // input file?
-        if (lstrcmpiW(wargv[i], L"--input_file") == 0 ||
-            lstrcmpW(wargv[i], L"-i") == 0)
-        {
-            ++i;
-            if (i < argc)
+        case 'i':
+            if (g_input_file)
             {
-                if (g_input_file)
-                {
-                    fprintf(stderr, "ERROR: Too many input files\n");
-                    return EXITCODE_INVALID_ARGUMENT;
-                }
-                else
-                {
-                    g_input_file = wargv[i];
-                    continue;
-                }
+                fprintf(stderr, "ERROR: Too many input files\n");
+                return EXITCODE_INVALID_ARGUMENT;
             }
             else
             {
-                fprintf(stderr, "ERROR: -i or --input_file requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
+                g_input_file = optarg;
             }
-        }
-        // output file?
-        if (lstrcmpiW(wargv[i], L"--output") == 0 ||
-            lstrcmpW(wargv[i], L"-o") == 0)
-        {
-            ++i;
-            if (i < argc)
+            break;
+        case 'o':
+            if (g_output_file)
             {
-                if (g_output_file)
-                {
-                    fprintf(stderr, "ERROR: Too many output files\n");
-                    return EXITCODE_INVALID_ARGUMENT;
-                }
-                else
-                {
-                    g_output_file = wargv[i];
-                    continue;
-                }
+                fprintf(stderr, "ERROR: Too many output files\n");
+                return EXITCODE_INVALID_ARGUMENT;
             }
             else
             {
-                fprintf(stderr, "ERROR: -o or --output requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
+                g_output_file = optarg;
             }
-        }
-        // input format?
-        if (lstrcmpiW(wargv[i], L"--input-format") == 0 ||
-            lstrcmpW(wargv[i], L"-J") == 0)
-        {
-            ++i;
-            if (i < argc)
+            break;
+        case 'J':
+            g_inp_format = optarg;
+            break;
+        case 'O':
+            g_out_format = optarg;
+            break;
+        case 'I':
+            g_include_directories.push_back(optarg);
+            break;
+        case 'D':
+            g_definitions.push_back(optarg);
+            break;
+        case 'U':
+            g_undefinitions.push_back(optarg);
+            break;
+        case 'c':
+            g_wCodePage = (WORD)_tcstol(optarg, NULL, 0);
+            break;
+        case 'l':
             {
-                g_inp_format = wargv[i];
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -J or --input-format requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        // output format?
-        if (lstrcmpiW(wargv[i], L"--output-format") == 0 ||
-            lstrcmpW(wargv[i], L"-O") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                g_out_format = wargv[i];
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -O or --output-format requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        // include directory?
-        if (lstrcmpW(wargv[i], L"-I") == 0 ||
-            lstrcmpW(wargv[i], L"--include-dir") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                g_include_directories.push_back(wargv[i]);
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -I requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        if (memcmp(wargv[i], include_dir_equal, include_dir_equal_size) == 0)
-        {
-            g_include_directories.push_back(&wargv[i][include_dir_equal_len]);
-            continue;
-        }
-        // definition?
-        if (lstrcmpW(wargv[i], L"-D") == 0 ||
-            lstrcmpW(wargv[i], L"--define") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                g_definitions.push_back(wargv[i]);
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -D requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        if (memcmp(wargv[i], L"-D", 2 * sizeof(wchar_t)) == 0)
-        {
-            g_definitions.push_back(&wargv[i][2]);
-            continue;
-        }
-        // undefine?
-        if (lstrcmpW(wargv[i], L"-U") == 0 ||
-            lstrcmpiW(wargv[i], L"--undefine") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                g_undefinitions.push_back(wargv[i]);
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -U requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        if (memcmp(wargv[i], L"-U", 2 * sizeof(wchar_t)) == 0)
-        {
-            g_undefinitions.push_back(&wargv[i][2]);
-            continue;
-        }
-        if (memcmp(wargv[i], define_equal, define_equal_size) == 0)
-        {
-            g_include_directories.push_back(&wargv[i][define_equal_len]);
-            continue;
-        }
-        // codepage?
-        if (lstrcmpiW(wargv[i], L"-c") == 0 ||
-            lstrcmpiW(wargv[i], L"--codepage") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                g_wCodePage = (WORD)wcstol(wargv[i], NULL, 0);
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "ERROR: -c requires an argument\n");
-                return EXITCODE_INVALID_ARGUMENT;
-            }
-        }
-        if (memcmp(wargv[i], L"--codepage=", 11 * sizeof(wchar_t)) == 0)
-        {
-            g_wCodePage = (WORD)wcstol(&wargv[i][11], NULL, 0);
-            continue;
-        }
-        // language?
-        if (lstrcmpiW(wargv[i], L"-l") == 0 ||
-            lstrcmpiW(wargv[i], L"--language") == 0)
-        {
-            ++i;
-            if (i < argc)
-            {
-                WORD w = (WORD)wcstol(wargv[i], NULL, 0);
+                WORD w = (WORD)_tcstol(optarg, NULL, 0);
                 BYTE bPrim = LOBYTE(w);
                 BYTE bSub = HIBYTE(w);
                 g_langid = MAKELANGID(bPrim, bSub);
-                continue;
+            }
+            break;
+        default:
+            assert(0);
+            break;
+        }
+    }
+
+    if (optind < argc)
+    {
+        while (optind < argc)
+        {
+            if (g_input_file == NULL)
+            {
+                g_input_file = argv[optind++];
+            }
+            else if (g_output_file == NULL)
+            {
+                g_output_file = argv[optind++];
             }
             else
             {
-                fprintf(stderr, "ERROR: -c requires an argument\n");
+                fprintf(stderr, "ERROR: Too many arguments\n");
                 return EXITCODE_INVALID_ARGUMENT;
             }
-        }
-        if (memcmp(wargv[i], L"--language=", 11 * sizeof(wchar_t)) == 0)
-        {
-            WORD w = (WORD)wcstol(&wargv[i][11], NULL, 0);
-            BYTE bPrim = LOBYTE(w);
-            BYTE bSub = HIBYTE(w);
-            g_langid = MAKELANGID(bPrim, bSub);
-            continue;
-        }
-        // invalid argument?
-        if (wargv[i][0] == L'-' || wargv[i][0] == L'/')
-        {
-            MStringA str = MWideToAnsi(CP_ACP, wargv[i]).c_str();
-            fprintf(stderr, "ERROR: Invalid argument --- '%s'\n", str.c_str());
-            show_help();
-            return EXITCODE_INVALID_ARGUMENT;
-        }
-        // otherwise...
-        if (g_input_file == NULL)
-        {
-            g_input_file = wargv[i];
-        }
-        else if (g_output_file == NULL)
-        {
-            g_output_file = wargv[i];
-        }
-        else
-        {
-            fprintf(stderr, "ERROR: Too many arguments\n");
-            return EXITCODE_INVALID_ARGUMENT;
         }
     }
 
@@ -1223,9 +1085,9 @@ int main(int argc, char **argv)
     {
         TCHAR szTempPath[MAX_PATH];
         GetTempPath(MAX_PATH, szTempPath);
-        GetTempFileName(szTempPath, L"inp", 0, s_szTempFile);
+        GetTempFileName(szTempPath, "inp", 0, s_szTempFile);
 
-        FILE *fp = _wfopen(s_szTempFile, L"w");
+        FILE *fp = fopen(s_szTempFile, "w");
         if (fp == NULL)
         {
             DeleteFile(s_szTempFile);
@@ -1256,7 +1118,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            g_out_format = L"rc";
+            g_out_format = "rc";
         }
     }
 

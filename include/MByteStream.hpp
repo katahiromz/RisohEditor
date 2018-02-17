@@ -291,7 +291,7 @@ public:
         m_data.clear();
 
         FILE *fp;
-#ifdef _WIN32
+#ifdef UNICODE
         fp = _wfopen(FileName, L"rb");
 #else
         fp = fopen(FileName, "rb");
@@ -322,7 +322,7 @@ public:
     bool SaveToFile(const TCHAR *FileName) const
     {
         FILE *fp;
-#ifdef _WIN32
+#ifdef UNICODE
         fp = _wfopen(FileName, L"wb");
 #else
         fp = fopen(FileName, "wb");
@@ -335,7 +335,7 @@ public:
 
         if (!n)
         {
-#ifdef _WIN32
+#ifdef UNICODE
             _wremove(FileName);
 #else
             unlink(FileName);
@@ -352,6 +352,23 @@ public:
     const uint8_t& operator[](size_t index) const
     {
         return m_data[index];
+    }
+
+    bool ReadSz(MStringA& str) const
+    {
+        str.clear();
+        uint8_t b;
+        while (ReadByte(b))
+        {
+            if (b == 0)
+                return true;
+            str += b;
+        }
+        return false;
+    }
+    bool WriteSz(const MStringA& str)
+    {
+        return WriteData(&str[0], (str.size() + 1) * sizeof(char));
     }
 
     bool ReadSz(MStringW& str) const

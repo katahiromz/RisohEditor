@@ -26,11 +26,11 @@
 
 struct MIdOrString;
 
-MStringW mstr_dec_short(SHORT value);
-MStringW mstr_dec_word(WORD value);
-MStringW mstr_dec_dword(DWORD value);
-MStringW mstr_dec(int value);
-MStringW mstr_hex(int value);
+MString mstr_dec_short(SHORT value);
+MString mstr_dec_word(WORD value);
+MString mstr_dec_dword(DWORD value);
+MString mstr_dec(int value);
+MString mstr_hex(int value);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(MStringW& str);
 bool mstr_unquote(char *str);
@@ -49,7 +49,7 @@ mstr_repeat_count(const std::basic_string<T_CHAR>& str1, const std::basic_string
 struct MIdOrString
 {
     WORD m_id;
-    MStringW m_str;
+    MString m_str;
 
     MIdOrString() : m_id(0)
     {
@@ -59,7 +59,7 @@ struct MIdOrString
     {
     }
 
-    MIdOrString(LPCWSTR str)
+    MIdOrString(const TCHAR *str)
     {
         if (IS_INTRESOURCE(str))
         {
@@ -68,7 +68,7 @@ struct MIdOrString
         else if ((L'0' <= str[0] && str[0] <= L'9') ||
                  str[0] == L'-' || str[0] == L'+')
         {
-            m_id = (WORD)wcstol(str, NULL, 0);
+            m_id = (WORD)_tcstol(str, NULL, 0);
         }
         else
         {
@@ -77,10 +77,10 @@ struct MIdOrString
         }
     }
 
-    const WCHAR *ptr() const
+    const TCHAR *ptr() const
     {
         if (m_id)
-            return MAKEINTRESOURCEW(m_id);
+            return MAKEINTRESOURCE(m_id);
         return m_str.c_str();
     }
 
@@ -122,7 +122,7 @@ struct MIdOrString
         return *this;
     }
 
-    MIdOrString& operator=(const WCHAR *str)
+    MIdOrString& operator=(const TCHAR *str)
     {
         if (IS_INTRESOURCE(str))
         {
@@ -171,7 +171,7 @@ struct MIdOrString
         return !(*this < id_or_str) && !(*this == id_or_str);
     }
 
-    bool operator==(const WCHAR *psz) const
+    bool operator==(const TCHAR *psz) const
     {
         if (IS_INTRESOURCE(psz))
         {
@@ -211,9 +211,9 @@ struct MIdOrString
         return m_id != w;
     }
 
-    MStringW& str() const
+    MString& str() const
     {
-        static MStringW s_str;
+        static MString s_str;
         if (m_id == 0)
         {
             if (m_str.size())
@@ -226,9 +226,9 @@ struct MIdOrString
         return s_str;
     }
 
-    MStringW& str_or_empty() const
+    MString& str_or_empty() const
     {
-        static MStringW s_str;
+        static MString s_str;
         if (m_id == 0)
         {
             if (m_str.size())
@@ -247,30 +247,30 @@ struct MIdOrString
         return s_str;
     }
 
-    LPCWSTR c_str() const
+    const TCHAR *c_str() const
     {
         return str().c_str();
     }
 
-    LPCWSTR c_str_or_empty() const
+    const TCHAR *c_str_or_empty() const
     {
         return str_or_empty().c_str();
     }
 
-    MStringW quoted_wstr() const
+    MString quoted_wstr() const
     {
-        MStringW ret;
+        MString ret;
         if (m_id == 0)
         {
             if (m_str.size())
             {
-                ret += L"\"";
+                ret += TEXT("\"");
                 ret += mstr_escape(m_str);
-                ret += L"\"";
+                ret += TEXT("\"");
             }
             else
             {
-                ret = L"\"\"";
+                ret += TEXT("\"\"");
             }
         }
         else
@@ -506,44 +506,44 @@ inline bool guts_quote(MStringW& str, const wchar_t*& pch)
     return true;
 }
 
-inline MStringW mstr_dec_short(SHORT value)
+inline MString mstr_dec_short(SHORT value)
 {
-    MStringW ret;
+    MString ret;
     mstr_to_dec(ret, (short)value);
     return ret;
 }
 
-inline MStringW mstr_dec_word(WORD value)
+inline MString mstr_dec_word(WORD value)
 {
-    MStringW ret;
+    MString ret;
     mstr_to_hex(ret, (WORD)value);
     return ret;
 }
 
-inline MStringW mstr_dec_dword(DWORD value)
+inline MString mstr_dec_dword(DWORD value)
 {
-    MStringW ret;
+    MString ret;
     mstr_to_hex(ret, (DWORD)value);
     return ret;
 }
 
-inline MStringW mstr_dec(int value)
+inline MString mstr_dec(int value)
 {
-    MStringW ret;
+    MString ret;
     mstr_to_dec(ret, value);
     return ret;
 }
 
-inline MStringW mstr_hex(int value)
+inline MString mstr_hex(int value)
 {
-    MStringW ret, str;
+    MString ret, str;
     if (value == 0)
     {
-        ret = L"0";
+        ret = TEXT("0");
     }
     else
     {
-        ret += WIDE("0x");
+        ret += TEXT("0x");
         mstr_to_hex(str, value);
         ret += str;
     }
