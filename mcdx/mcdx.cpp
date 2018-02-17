@@ -972,18 +972,18 @@ int main(int argc, char **argv)
 {
     static const struct option long_options[] =
     {
-        {"help",            required_argument, 0, 'h' },
-        {"version",         no_argument,       0, 'V' },
-        {"input",           required_argument, 0, 'i' },
-        {"output",          required_argument, 0, 'o' },
-        {"input-format",    required_argument, 0, 'J' },
-        {"output-format",   required_argument, 0, 'O' },
-        {"include-dir",     required_argument, 0, 'I' },
-        {"define",          required_argument, 0, 'D' },
-        {"undefine",        required_argument, 0, 'U' },
-        {"codepage",        required_argument, 0, 'c' },
-        {"language",        required_argument, 0, 'l' },
-        {0,                 0,                 0, 0   }
+        {"help",            required_argument, NULL, 'h' },
+        {"version",         no_argument,       NULL, 'V' },
+        {"input",           required_argument, NULL, 'i' },
+        {"output",          required_argument, NULL, 'o' },
+        {"input-format",    required_argument, NULL, 'J' },
+        {"output-format",   required_argument, NULL, 'O' },
+        {"include-dir",     required_argument, NULL, 'I' },
+        {"define",          required_argument, NULL, 'D' },
+        {"undefine",        required_argument, NULL, 'U' },
+        {"codepage",        required_argument, NULL, 'c' },
+        {"language",        required_argument, NULL, 'l' },
+        {0,                 0,                 NULL, 0   }
     };
 
     g_definitions.push_back("RC_INVOKED");
