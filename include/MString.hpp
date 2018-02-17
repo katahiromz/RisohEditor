@@ -15,6 +15,12 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
+#if __cplusplus >= 201103L          /* C++11 */
+    #include <cstdint>
+#else
+    #include "pstdint.h"
+#endif
+
 // MString
 #ifndef MString
     #include <string>       // for std::basic_string, std::string, ...
@@ -26,7 +32,11 @@
         #endif
         typedef std::wstring MStringW;
     #else
-        typedef std::u16string MStringW;
+        #if __cplusplus >= 201103L
+            typedef std::u16string MStringW;
+        #else
+            typedef std::basic_string<uint16_t> MStringW;
+        #endif
     #endif
     #ifdef UNICODE
         #define MString     MStringW
@@ -59,7 +69,11 @@
     #ifdef _WIN32
         typedef wchar_t WCHAR;
     #else
-        typedef char16_t WCHAR;
+        #if __cplusplus >= 201103L
+            typedef char16_t WCHAR;
+        #else
+            typedef uint16_t WCHAR;
+        #endif
     #endif
 #endif
 
