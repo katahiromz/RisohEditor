@@ -107,6 +107,8 @@ int syntax_error(void)
     return EXITCODE_SYNTAX_ERROR;
 }
 
+const char *g_progname = "mcdx";
+
 BOOL check_cpp(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
@@ -119,7 +121,7 @@ BOOL check_cpp(VOID)
     }
 
     GetModuleFileName(NULL, szPath, _countof(szPath));
-    pch = _tcsrchr(szPath, L'\\');
+    pch = strrchr(szPath, '\\');
     lstrcpy(pch, TEXT("\\cpp.exe"));
     if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
@@ -990,6 +992,13 @@ int main(int argc, char **argv)
         {"language",        required_argument, NULL, 'l' },
         {0,                 0,                 NULL, 0   }
     };
+
+#ifdef __CYGWIN__
+    extern char __declspec(dllimport) *__progname;
+    g_progname = __progname;
+#else
+    g_progname = argv[0];
+#endif
 
     g_definitions.push_back("RC_INVOKED");
     g_definitions.push_back("MCDX_INVOKED");
