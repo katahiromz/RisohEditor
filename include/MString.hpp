@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       10   /* Version 10 */
+#define MZC4_MSTRING_HPP_       11   /* Version 11 */
 
 #include <algorithm>    // for std::reverse
 
@@ -205,6 +205,10 @@ template <typename T_CHAR>
 std::basic_string<T_CHAR>
 mstr_quote(const std::basic_string<T_CHAR>& str);
 
+template <typename T_CHAR>
+std::basic_string<T_CHAR>
+mstr_quote(const T_CHAR *str);
+
 template <typename T_STR_CONTAINER>
 void mstr_split(T_STR_CONTAINER& container,
                 const typename T_STR_CONTAINER::value_type& str,
@@ -221,12 +225,12 @@ mstr_join(const T_STR_CONTAINER& container,
 void mbin_swap_endian(void *ptr, size_t len);
 void mbin_swap_endian(std::string& bin);
 
-std::wstring
+MStringW
 mstr_from_bin(const void *bin, size_t len, MTextType *pType = NULL);
-std::wstring
+MStringW
 mstr_from_bin(const std::string& bin, MTextType *pType = NULL);
 
-std::string mbin_from_str(const std::wstring& str, const MTextType& type);
+std::string mbin_from_str(const MStringW& str, const MTextType& type);
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -512,10 +516,10 @@ inline void mbin_swap_endian(std::string& bin)
     mbin_swap_endian(&bin[0], bin.size());
 }
 
-inline std::wstring
+inline MStringW
 mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
 {
-    std::wstring ret;
+    MStringW ret;
 
     if (bin == NULL || len == 0)
     {
@@ -613,21 +617,21 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
         {
             pType->nNewLine = MNEWLINE_UNKNOWN;
         }
-        if (mstr_replace_all(ret, L"\r\n", L"\n"))
+        if (mstr_replace_all(ret, WIDE("\r\n"), WIDE("\n")))
         {
             if (pType)
             {
                 pType->nNewLine = MNEWLINE_CRLF;
             }
         }
-        if (mstr_replace_all(ret, L"\r", L"\n"))
+        if (mstr_replace_all(ret, WIDE("\r"), WIDE("\n")))
         {
             if (pType && pType->nNewLine != MNEWLINE_CRLF)
             {
                 pType->nNewLine = MNEWLINE_CR;
             }
         }
-        if (mstr_replace_all(ret, L"\n", L"\r\n"))
+        if (mstr_replace_all(ret, WIDE("\n"), WIDE("\r\n")))
         {
             if (pType && pType->nNewLine != MNEWLINE_CRLF)
             {
@@ -639,17 +643,17 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
     return ret;
 }
 
-inline std::wstring
+inline MStringW
 mstr_from_bin(const std::string& bin, MTextType *pType/* = NULL*/)
 {
     return mstr_from_bin(&bin[0], bin.size(), pType);
 }
 
 inline std::string
-mbin_from_str(const std::wstring& str, const MTextType& type)
+mbin_from_str(const MStringW& str, const MTextType& type)
 {
     std::string ret;
-    std::wstring str2 = str;
+    MStringW str2 = str;
 
     switch (type.nNewLine)
     {
@@ -657,17 +661,17 @@ mbin_from_str(const std::wstring& str, const MTextType& type)
     case MNEWLINE_NOCHANGE:
         break;
     case MNEWLINE_CRLF:
-        mstr_replace_all(str2, L"\r\n", L"\n");
-        mstr_replace_all(str2, L"\r", L"\r\n");
-        mstr_replace_all(str2, L"\n", L"\r\n");
+        mstr_replace_all(str2, WIDE("\r\n"), WIDE("\n"));
+        mstr_replace_all(str2, WIDE("\r"), WIDE("\r\n"));
+        mstr_replace_all(str2, WIDE("\n"), WIDE("\r\n"));
         break;
     case MNEWLINE_LF:
-        mstr_replace_all(str2, L"\r\n", L"\n");
-        mstr_replace_all(str2, L"\r", L"\n");
+        mstr_replace_all(str2, WIDE("\r\n"), WIDE("\n"));
+        mstr_replace_all(str2, WIDE("\r"), WIDE("\n"));
         break;
     case MNEWLINE_CR:
-        mstr_replace_all(str2, L"\r\n", L"\r");
-        mstr_replace_all(str2, L"\n", L"\r");
+        mstr_replace_all(str2, WIDE("\r\n"), WIDE("\r"));
+        mstr_replace_all(str2, WIDE("\n"), WIDE("\r"));
         break;
     }
 
@@ -717,12 +721,12 @@ mstr_quote(const std::basic_string<T_CHAR>& str)
     return ret;
 }
 
-inline std::wstring mstr_quote(const std::wstring& str)
+template <typename T_CHAR>
+inline std::basic_string<T_CHAR>
+mstr_quote(const T_CHAR *str)
 {
-    std::wstring ret = L"\"";
-    ret += mstr_escape(str);
-    ret += L"\"";
-    return ret;
+    std::basic_string<T_CHAR> ret = str;
+    return mstr_quote(ret);
 }
 
 template <typename T_STR_CONTAINER>
