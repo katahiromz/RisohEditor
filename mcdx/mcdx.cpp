@@ -1083,7 +1083,9 @@ int main(int argc, char **argv)
     static TCHAR s_szTempFile[MAX_PATH] = TEXT("");
     if (g_input_file == NULL)
     {
-        tmpnam(s_szTempFile);
+        char szTempPath[MAX_PATH], szTempFile[MAX_PATH];
+        GetTempPathA(_countof(szTempPath), szTempPath);
+        GetTempFileNameA(szTempPath, "res", 0, szTempFile);
 
         FILE *fp = fopen(s_szTempFile, "r");
         if (fp == NULL)
@@ -1094,7 +1096,7 @@ int main(int argc, char **argv)
         }
 
         char buf[512];
-        while (fgets(buf, 512, stdin) != NULL)
+        while (fgets(buf, _countof(buf), stdin) != NULL)
         {
             fputs(buf, fp);
         }
