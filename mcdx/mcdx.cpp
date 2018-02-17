@@ -688,20 +688,20 @@ int save_coff(const char *output_file)
 
         if (maker.GetExitCode() == 0)
         {
-            DeleteFile(szTempFile);
+            unlink(szTempFile);
             return EXITCODE_SUCCESS;
         }
         else if (strOutput.find(": no resources") != std::string::npos)
         {
             strOutput.clear();
-            DeleteFile(szTempFile);
+            unlink(szTempFile);
             return EXITCODE_SUCCESS;
         }
 
         fputs(strOutput.c_str(), stderr);
     }
     fprintf(stderr, "ERROR: Failed to create process\n");
-    DeleteFile(szTempFile);
+    unlink(szTempFile);
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
@@ -735,7 +735,7 @@ int save_bin(const char *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            DeleteFile(output_file);
+            unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -1083,14 +1083,12 @@ int main(int argc, char **argv)
     static TCHAR s_szTempFile[MAX_PATH] = TEXT("");
     if (g_input_file == NULL)
     {
-        TCHAR szTempPath[MAX_PATH];
-        GetTempPath(MAX_PATH, szTempPath);
-        GetTempFileName(szTempPath, "inp", 0, s_szTempFile);
+        tmpnam(s_szTempFile);
 
-        FILE *fp = fopen(s_szTempFile, "w");
+        FILE *fp = fopen(s_szTempFile, "r");
         if (fp == NULL)
         {
-            DeleteFile(s_szTempFile);
+            unlink(s_szTempFile);
             fprintf(stderr, "ERROR: Cannot write to temporary file\n");
             return EXITCODE_CANNOT_WRITE;
         }
