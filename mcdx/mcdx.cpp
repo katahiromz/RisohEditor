@@ -79,8 +79,8 @@ void show_version(void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-char g_szCppExe[MAX_PATH] = "";
-char g_szWindResExe[MAX_PATH] = "";
+char g_szCpp[MAX_PATH] = "";
+char g_szWindRes[MAX_PATH] = "";
 
 char *g_input_file = NULL;
 char *g_output_file = NULL;
@@ -107,14 +107,14 @@ int syntax_error(void)
     return EXITCODE_SYNTAX_ERROR;
 }
 
-BOOL check_cpp_exe(VOID)
+BOOL check_cpp(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
 
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
     if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyn(g_szCppExe, szPath, MAX_PATH);
+        lstrcpyn(g_szCpp, szPath, MAX_PATH);
         return TRUE;
     }
 
@@ -141,18 +141,18 @@ BOOL check_cpp_exe(VOID)
             }
         }
     }
-    lstrcpyn(g_szCppExe, szPath, MAX_PATH);
+    lstrcpyn(g_szCpp, szPath, MAX_PATH);
     return TRUE;
 }
 
-BOOL check_windres_exe(VOID)
+BOOL check_windres(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
 
     SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
     if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyn(g_szWindResExe, szPath, MAX_PATH);
+        lstrcpyn(g_szWindRes, szPath, MAX_PATH);
         return TRUE;
     }
 
@@ -179,7 +179,7 @@ BOOL check_windres_exe(VOID)
             }
         }
     }
-    lstrcpyn(g_szWindResExe, szPath, MAX_PATH);
+    lstrcpyn(g_szWindRes, szPath, MAX_PATH);
     return TRUE;
 }
 
@@ -660,7 +660,7 @@ int save_coff(const char *output_file)
 
     MStringA strCommandLine;
     strCommandLine += "\"";
-    strCommandLine += g_szWindResExe;
+    strCommandLine += g_szWindRes;
     strCommandLine += "\" \"";
     strCommandLine += szTempFile;
     if (output_file)
@@ -766,7 +766,7 @@ int load_rc(const char *input_file)
     // build up command line
     MString strCommandLine;
     strCommandLine += "\"";
-    strCommandLine += g_szCppExe;
+    strCommandLine += g_szCpp;
     strCommandLine += "\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
@@ -1122,15 +1122,15 @@ int main(int argc, char **argv)
         }
     }
 
-    if (!check_cpp_exe())
+    if (!check_cpp())
     {
-        fprintf(stderr, "ERROR: Unable to find cpp.exe\n");
+        fprintf(stderr, "ERROR: Unable to find cpp\n");
         return EXITCODE_NOT_FOUND_CPP;
     }
 
-    if (!check_windres_exe())
+    if (!check_windres())
     {
-        fprintf(stderr, "ERROR: Unable to find windres.exe\n");
+        fprintf(stderr, "ERROR: Unable to find windres\n");
         return EXITCODE_NOT_FOUND_CPP;
     }
 
