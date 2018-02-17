@@ -1137,7 +1137,7 @@ int main(int argc, char **argv)
     int ret = just_do_it();
 
     if (s_szTempFile[0])
-        DeleteFile(s_szTempFile);
+        unlink(s_szTempFile);
 
     return ret;
 }
