@@ -95,7 +95,7 @@ std::string g_strFile = "(anonymous)";
 int g_nLineNo = 0;
 
 LANGID g_langid = 0;
-WORD g_wCodePage = CP_UTF8;
+uint16_t g_wCodePage = CP_UTF8;
 int g_value = 0;
 
 typedef std::map<LANGID, MessageRes> msg_tables_type;
@@ -112,7 +112,6 @@ const char *g_progname = "mcdx";
 BOOL check_cpp(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
-
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
     if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
     {
@@ -122,19 +121,19 @@ BOOL check_cpp(VOID)
 
     GetModuleFileName(NULL, szPath, _countof(szPath));
     pch = strrchr(szPath, '\\');
-    lstrcpy(pch, TEXT("\\cpp.exe"));
+    strcpy(pch, TEXT("\\cpp.exe"));
     if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpy(pch, TEXT("\\data\\bin\\cpp.exe"));
+        strcpy(pch, TEXT("\\data\\bin\\cpp.exe"));
         if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpy(pch, TEXT("\\..\\data\\bin\\cpp.exe"));
+            strcpy(pch, TEXT("\\..\\data\\bin\\cpp.exe"));
             if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpy(pch, TEXT("\\..\\..\\data\\bin\\cpp.exe"));
+                strcpy(pch, TEXT("\\..\\..\\data\\bin\\cpp.exe"));
                 if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\cpp.exe"));
+                    strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\cpp.exe"));
                     if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
@@ -160,19 +159,19 @@ BOOL check_windres(VOID)
 
     GetModuleFileName(NULL, szPath, _countof(szPath));
     pch = _tcsrchr(szPath, TEXT('\\'));
-    lstrcpy(pch, TEXT("\\windres.exe"));
+    strcpy(pch, TEXT("\\windres.exe"));
     if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpy(pch, TEXT("\\data\\bin\\windres.exe"));
+        strcpy(pch, TEXT("\\data\\bin\\windres.exe"));
         if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpy(pch, TEXT("\\..\\data\\bin\\windres.exe"));
+            strcpy(pch, TEXT("\\..\\data\\bin\\windres.exe"));
             if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpy(pch, TEXT("\\..\\..\\data\\bin\\windres.exe"));
+                strcpy(pch, TEXT("\\..\\..\\data\\bin\\windres.exe"));
                 if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\windres.exe"));
+                    strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\windres.exe"));
                     if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
@@ -377,10 +376,10 @@ int do_directive(char*& ptr)
                 ++ptr;
                 ptr = mstr_skip_space(ptr);
                 // #pragma code_page(...)
-                WORD wCodePage = 0;
+                uint16_t wCodePage = 0;
                 if (std::isdigit(*ptr))
                 {
-                    wCodePage = WORD(strtol(ptr, NULL, 0));
+                    wCodePage = uint16_t(strtol(ptr, NULL, 0));
                 }
                 while (std::isalnum(*ptr))
                 {
@@ -424,8 +423,8 @@ int eat_output(const std::string& strOutput)
     }
 
     // parse lines
-    INT nMode = 0;
-    BYTE bPrimLang = 0, bSubLang = 0;
+    int nMode = 0;
+    uint8_t bPrimLang = 0, bSubLang = 0;
     for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
     {
         std::string& line = lines[i];
@@ -462,7 +461,7 @@ retry:
             }
             if (std::isdigit(*ptr0))
             {
-                bPrimLang = (BYTE)strtoul(ptr0, NULL, 0);
+                bPrimLang = (uint8_t)strtoul(ptr0, NULL, 0);
                 nMode = -3;
             }
             else if (*ptr)
@@ -484,7 +483,7 @@ retry:
             ptr = mstr_skip_space(ptr);
             if (std::isdigit(*ptr))
             {
-                bSubLang = (BYTE)strtoul(ptr, NULL, 0);
+                bSubLang = (uint8_t)strtoul(ptr, NULL, 0);
                 g_langid = MAKELANGID(bPrimLang, bSubLang);
                 nMode = 0;
             }
@@ -1058,13 +1057,13 @@ int main(int argc, char **argv)
             g_undefinitions.push_back(optarg);
             break;
         case 'c':
-            g_wCodePage = (WORD)_tcstol(optarg, NULL, 0);
+            g_wCodePage = (uint16_t)_tcstol(optarg, NULL, 0);
             break;
         case 'l':
             {
-                WORD w = (WORD)_tcstol(optarg, NULL, 0);
-                BYTE bPrim = LOBYTE(w);
-                BYTE bSub = HIBYTE(w);
+                uint16_t w = (uint16_t)_tcstol(optarg, NULL, 0);
+                uint8_t bPrim = LOBYTE(w);
+                uint8_t bSub = HIBYTE(w);
                 g_langid = MAKELANGID(bPrim, bSub);
             }
             break;
