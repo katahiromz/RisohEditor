@@ -71,20 +71,20 @@ public:
         m_map.clear();
     }
 
-    BOOL LoadFromStream(const MByteStream& stream)
+    bool LoadFromStream(const MByteStream& stream)
     {
         m_map.clear();
         if (stream.size() < sizeof(MESSAGE_RESOURCE_DATA))
-            return FALSE;
+            return false;
 
         MESSAGE_RESOURCE_DATA_HEADER data;
         if (!stream.ReadRaw(data) || data.NumberOfBlocks == 0)
-            return FALSE;
+            return false;
 
         std::vector<MESSAGE_RESOURCE_BLOCK> blocks(data.NumberOfBlocks);
         DWORD dwSizeOfBlocks = sizeof(MESSAGE_RESOURCE_BLOCK) * data.NumberOfBlocks;
         if (!stream.ReadData(&blocks[0], dwSizeOfBlocks))
-            return FALSE;
+            return false;
 
         for (DWORD i = 0; i < data.NumberOfBlocks; ++i)
         {
@@ -99,7 +99,7 @@ public:
 
                 MESSAGE_RESOURCE_ENTRY_HEADER entry_head;
                 if (!stream.ReadRaw(entry_head))
-                    return FALSE;
+                    return false;
 
                 std::wstring wstr = (const WCHAR *)&stream[stream.pos()];
                 if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
@@ -109,7 +109,7 @@ public:
                     str.resize(len);
                     if (!stream.ReadData(&str[0], len * sizeof(wchar_t)))
                     {
-                        return FALSE;
+                        return false;
                     }
                     str.resize(std::wcslen(str.c_str()));
                     m_map[dwID] = str;
@@ -121,7 +121,7 @@ public:
                     str.resize(len);
                     if (!stream.ReadData(&str[0], len * sizeof(char)))
                     {
-                        return FALSE;
+                        return false;
                     }
                     str.resize(std::strlen(str.c_str()));
                     m_map[dwID] = MAnsiToWide(CP_ACP, str.c_str()).c_str();
@@ -131,25 +131,25 @@ public:
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToStream(MByteStream& stream)
+    bool SaveToStream(MByteStream& stream)
     {
         if (m_map.empty())
-            return TRUE;
+            return true;
 
         ranges_type ranges;
         if (!GetRanges(ranges))
-            return FALSE;
+            return false;
 
         offsets_type offsets;
         if (!OffsetsFromRanges(offsets, ranges))
-            return FALSE;
+            return false;
 
         ULONG NumberOfBlocks = DWORD(ranges.size());
         if (!stream.WriteRaw(NumberOfBlocks))
-            return FALSE;
+            return false;
 
         std::vector<MESSAGE_RESOURCE_BLOCK> Blocks;
         {
@@ -167,7 +167,7 @@ public:
 
         size_t SizeOfBlocks = Blocks.size() * sizeof(MESSAGE_RESOURCE_BLOCK);
         if (!stream.WriteData(&Blocks[0], SizeOfBlocks))
-            return FALSE;
+            return false;
 
         {
             ranges_type::iterator it, end = ranges.end();
@@ -181,16 +181,16 @@ public:
                     header.Length = (WORD)(sizeof(header) + (wstr.size() + 1) * sizeof(WCHAR));
                     header.Flags = MESSAGE_RESOURCE_UNICODE;
                     if (!stream.WriteRaw(header))
-                        return FALSE;
+                        return false;
 
                     size_t size = (wstr.size() + 1) * sizeof(WCHAR);
                     if (!stream.WriteData(&wstr[0], size))
-                        return FALSE;
+                        return false;
                 }
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     string_type Dump() const
@@ -225,7 +225,7 @@ protected:
     typedef RANGE_OF_ID range_type;
     typedef std::vector<range_type> ranges_type;
 
-    BOOL GetRanges(ranges_type& ranges) const
+    bool GetRanges(ranges_type& ranges) const
     {
         RANGE_OF_ID range = { 0xFFFFFFFF, 0xFFFFFFFF };
 
@@ -248,11 +248,11 @@ protected:
         }
         ranges.push_back(range);
 
-        return TRUE;
+        return true;
     }
 
     typedef std::vector<size_t> offsets_type;
-    BOOL OffsetsFromRanges(offsets_type& offsets, const ranges_type& ranges)
+    bool OffsetsFromRanges(offsets_type& offsets, const ranges_type& ranges)
     {
         size_t offset = sizeof(ULONG);
         offset += sizeof(MESSAGE_RESOURCE_BLOCK) * ranges.size();
@@ -267,7 +267,7 @@ protected:
                 offset += (m_map[k].size() + 1) * sizeof(WCHAR);
             }
         }
-        return TRUE;
+        return true;
     }
 };
 
