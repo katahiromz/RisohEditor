@@ -19,7 +19,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WONVER)
     #include "MProcessMaker.hpp"
 #endif
 #include "MString.hpp"
@@ -47,6 +47,7 @@ enum EXITCODE
     EXITCODE_CANNOT_WRITE,
     EXITCODE_INVALID_DATA,
     EXITCODE_NOT_FOUND_CPP,
+    EXITCODE_NOT_FOUND_WINDRES,
     EXITCODE_NOT_SUPPORTED_YET
 };
 
@@ -174,8 +175,8 @@ FILE *tmpfilenam(char *pathname)
 
 ////////////////////////////////////////////////////////////////////////////
 
-char g_szCpp[MAX_PATH] = "cpp";
-char g_szWindRes[MAX_PATH] = "windres";
+char g_cpp[MAX_PATH] = "cpp";
+char g_windres[MAX_PATH] = "windres";
 
 char *g_input_file = NULL;
 char *g_output_file = NULL;
@@ -211,7 +212,7 @@ BOOL check_cpp(VOID)
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
     if (file_exists(szPath))
     {
-        lstrcpyn(g_szCpp, szPath, MAX_PATH);
+        lstrcpyn(g_cpp, szPath, MAX_PATH);
         return TRUE;
     }
 
@@ -238,7 +239,7 @@ BOOL check_cpp(VOID)
             }
         }
     }
-    lstrcpyn(g_szCpp, szPath, MAX_PATH);
+    lstrcpyn(g_cpp, szPath, MAX_PATH);
     return TRUE;
 }
 #endif
@@ -251,7 +252,7 @@ BOOL check_windres(VOID)
     SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
     if (file_exists(szPath))
     {
-        lstrcpyn(g_szWindRes, szPath, MAX_PATH);
+        lstrcpyn(g_windres, szPath, MAX_PATH);
         return TRUE;
     }
 
@@ -278,7 +279,7 @@ BOOL check_windres(VOID)
             }
         }
     }
-    lstrcpyn(g_szWindRes, szPath, MAX_PATH);
+    lstrcpyn(g_windres, szPath, MAX_PATH);
     return TRUE;
 }
 #endif
@@ -748,20 +749,19 @@ int save_res(const char *output_file)
 
 int save_coff(const char *output_file)
 {
-    char szTempFile[MAX_PATH];
+    char temp_file[MAX_PATH];
 
-    fclose(tmpfilenam(szTempFile));
+    fclose(tmpfilenam(temp_file));
 
-    if (int ret = save_res(szTempFile))
+    if (int ret = save_res(temp_file))
     {
         return ret;
     }
 
     MStringA command_line;
-    command_line += "\"";
-    command_line += g_szWindRes;
-    command_line += "\" \"";
-    command_line += szTempFile;
+    command_line += g_windres;
+    command_line += " \"";
+    command_line += temp_file;
     if (output_file)
     {
         command_line += "\" \"";
@@ -774,7 +774,7 @@ int save_coff(const char *output_file)
     }
 
     // create a process
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WONVER)
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -890,9 +890,8 @@ int load_rc(const char *input_file)
 
     // build up command line
     MString command_line;
-    command_line += "\"";
-    command_line += g_szCpp;
-    command_line += "\" ";
+    command_line += g_cpp;
+    command_line += ' ';
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
         command_line += " -D";
@@ -906,7 +905,7 @@ int load_rc(const char *input_file)
     g_nLineNo = 1;
 
     // create a process
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WONVER)
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -944,6 +943,10 @@ int load_rc(const char *input_file)
         }
         if (pclose(fp) == 0)
         {
+            // eat the output
+            if (int ret = eat_output(output))
+                return ret;
+
             return EXITCODE_SUCCESS;
         }
 
@@ -1288,7 +1291,7 @@ int main(int argc, char **argv)
     if (!check_windres())
     {
         fprintf(stderr, "ERROR: Unable to find windres\n");
-        return EXITCODE_NOT_FOUND_CPP;
+        return EXITCODE_NOT_FOUND_WINDRES;
     }
 #endif
 
