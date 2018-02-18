@@ -48,7 +48,8 @@ enum EXITCODE
     EXITCODE_INVALID_DATA,
     EXITCODE_NOT_FOUND_CPP,
     EXITCODE_NOT_FOUND_WINDRES,
-    EXITCODE_NOT_SUPPORTED_YET
+    EXITCODE_NOT_SUPPORTED_YET,
+    EXITCODE_CANT_MAKE_TEMP
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -752,8 +753,16 @@ int save_coff(const char *output_file)
 {
     char temp_file[MAX_PATH];
 
-    fclose(tmpfilenam(temp_file));
-
+    if (FILE *fp = tmpfilenam(temp_file))
+    {
+        fclose(fp);
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: Unable to create temporary file.\n");
+        return EXITCODE_CANT_MAKE_TEMP;
+    }
+    
     if (int ret = save_res(temp_file))
     {
         return ret;
@@ -1251,8 +1260,8 @@ int main(int argc, char **argv)
         FILE *fp = tmpfilenam(s_szTempFile);
         if (fp == NULL)
         {
-            fprintf(stderr, "ERROR: Cannot write to temporary file\n");
-            return EXITCODE_CANNOT_WRITE;
+            fprintf(stderr, "ERROR: Unable to create temporary file\n");
+            return EXITCODE_CANT_MAKE_TEMP;
         }
 
         char buf[512];
