@@ -212,7 +212,7 @@ BOOL check_cpp(VOID)
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
     if (file_exists(szPath))
     {
-        lstrcpyn(g_cpp, szPath, MAX_PATH);
+        strcpy(g_cpp, szPath);
         return TRUE;
     }
 
@@ -239,7 +239,7 @@ BOOL check_cpp(VOID)
             }
         }
     }
-    lstrcpyn(g_cpp, szPath, MAX_PATH);
+    strcpy(g_cpp, szPath);
     return TRUE;
 }
 #endif
@@ -252,7 +252,7 @@ BOOL check_windres(VOID)
     SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
     if (file_exists(szPath))
     {
-        lstrcpyn(g_windres, szPath, MAX_PATH);
+        strcpy(g_windres, szPath);
         return TRUE;
     }
 
@@ -279,7 +279,7 @@ BOOL check_windres(VOID)
             }
         }
     }
-    lstrcpyn(g_windres, szPath, MAX_PATH);
+    strcpy(g_windres, szPath);
     return TRUE;
 }
 #endif
