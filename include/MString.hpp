@@ -157,22 +157,15 @@ void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
 template <typename T_CHAR>
 void mstr_trim(T_CHAR *str, const T_CHAR *spaces);
 
-inline void mstr_trim(MStringA& str)
-{
-    mstr_trim(str, " \t\n\r\f\v");
-}
-inline void mstr_trim(MStringW& str)
-{
-    mstr_trim(str, WIDE(" \t\n\r\f\v"));
-}
-inline void mstr_trim(char *str)
-{
-    mstr_trim(str, " \t\n\r\f\v");
-}
-inline void mstr_trim(WCHAR *str)
-{
-    mstr_trim(str, WIDE(" \t\n\r\f\v"));
-}
+template <typename T_CHAR>
+void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
+template <typename T_CHAR>
+void mstr_trim_left(T_CHAR *str, const T_CHAR *spaces);
+
+template <typename T_CHAR>
+void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
+template <typename T_CHAR>
+void mstr_trim_right(T_CHAR *str, const T_CHAR *spaces);
 
 template <typename T_CHAR>
 T_CHAR *mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces);
@@ -425,6 +418,54 @@ inline void mstr_trim(T_CHAR *str, const T_CHAR *spaces)
     typedef std::basic_string<T_CHAR> string_type;
     string_type s = str;
     mstr_trim(s, spaces);
+    mstrcpy(str, s.c_str());
+}
+
+template <typename T_CHAR>
+inline void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
+{
+    typedef std::basic_string<T_CHAR> string_type;
+    size_t i = str.find_first_not_of(spaces);
+    if (i == string_type::npos)
+    {
+        str.clear();
+    }
+    else
+    {
+        str = str.substr(i);
+    }
+}
+
+template <typename T_CHAR>
+inline void mstr_trim_left(T_CHAR *str, const T_CHAR *spaces)
+{
+    typedef std::basic_string<T_CHAR> string_type;
+    string_type s = str;
+    mstr_trim_left(s, spaces);
+    mstrcpy(str, s.c_str());
+}
+
+template <typename T_CHAR>
+inline void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
+{
+    typedef std::basic_string<T_CHAR> string_type;
+    size_t j = str.find_last_not_of(spaces);
+    if (j == string_type::npos)
+    {
+        str.clear();
+    }
+    else
+    {
+        str = str.substr(0, j + 1);
+    }
+}
+
+template <typename T_CHAR>
+inline void mstr_trim_right(T_CHAR *str, const T_CHAR *spaces)
+{
+    typedef std::basic_string<T_CHAR> string_type;
+    string_type s = str;
+    mstr_trim_right(s, spaces);
     mstrcpy(str, s.c_str());
 }
 
@@ -825,6 +866,59 @@ mstr_skip_space(const T_CHAR *pch, const T_CHAR *spaces)
         ++pch;
     }
     return pch;
+}
+
+////////////////////////////////////////////////////////////////////////////
+
+inline void mstr_trim(MStringA& str)
+{
+    mstr_trim(str, " \t\n\r\f\v");
+}
+inline void mstr_trim(MStringW& str)
+{
+    mstr_trim(str, WIDE(" \t\n\r\f\v"));
+}
+inline void mstr_trim(char *str)
+{
+    mstr_trim(str, " \t\n\r\f\v");
+}
+inline void mstr_trim(WCHAR *str)
+{
+    mstr_trim(str, WIDE(" \t\n\r\f\v"));
+}
+
+inline void mstr_trim_left(MStringA& str)
+{
+    mstr_trim_left(str, " \t\n\r\f\v");
+}
+inline void mstr_trim_left(MStringW& str)
+{
+    mstr_trim_left(str, WIDE(" \t\n\r\f\v"));
+}
+inline void mstr_trim_left(char *str)
+{
+    mstr_trim_left(str, " \t\n\r\f\v");
+}
+inline void mstr_trim_left(WCHAR *str)
+{
+    mstr_trim_left(str, WIDE(" \t\n\r\f\v"));
+}
+
+inline void mstr_trim_right(MStringA& str)
+{
+    mstr_trim_right(str, " \t\n\r\f\v");
+}
+inline void mstr_trim_right(MStringW& str)
+{
+    mstr_trim_right(str, WIDE(" \t\n\r\f\v"));
+}
+inline void mstr_trim_right(char *str)
+{
+    mstr_trim_right(str, " \t\n\r\f\v");
+}
+inline void mstr_trim_right(WCHAR *str)
+{
+    mstr_trim_right(str, WIDE(" \t\n\r\f\v"));
 }
 
 ////////////////////////////////////////////////////////////////////////////
