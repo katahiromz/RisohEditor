@@ -26,6 +26,8 @@
 #include "ResHeader.hpp"
 #include "getoptwin.h"
 #include <cctype>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -75,6 +77,92 @@ void show_version(void)
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
     printf("This program has absolutely no warranty.\n");
+}
+
+////////////////////////////////////////////////////////////////////////////
+// tmpfilenam
+
+struct DeleteTempFiles
+{
+    std::vector<std::string> m_files;
+    DeleteTempFiles()
+    {
+    }
+    void push_back(const std::string& file)
+    {
+        m_files.push_back(file);
+    }
+    ~DeleteTempFiles()
+    {
+        for (size_t i = 0; i < m_files.size(); ++i)
+        {
+            unlink(m_files[i].c_str());
+        }
+        m_files.clear();
+    }
+};
+DeleteTempFiles g_delete_temp_files;
+
+FILE *tmpfilenam(char *pathname)
+{
+    FILE *fp;
+    int i, k;
+    struct stat st;
+    char tmp[MAX_PATH], name[16], file[MAX_PATH];
+    char *ptr = getenv("TMP");
+
+    if (!ptr)
+        ptr = getenv("TEMP");
+
+    if (ptr)
+    {
+        strcpy(tmp, ptr);
+        mstr_trim_right(tmp, "/\\");
+    }
+    else
+    {
+        strcpy(tmp, ".");
+    }
+
+    k = 0;
+    do
+    {
+        do
+        {
+            for (i = 0; i < 6; ++i)
+            {
+                name[i] = (char)('A' + rand() % ('Z' - 'A' + 1));
+            }
+            name[i++] = '.';
+            name[i++] = 't';
+            name[i++] = 'm';
+            name[i++] = 'p';
+            name[i] = 0;
+
+            strcpy(file, tmp);
+            #ifdef _WIN32
+                strcat(file, "\\");
+            #else
+                strcat(file, "/");
+            #endif
+            strcat(file, name);
+        } while (stat(file, &st) == 0);
+    
+        fp = fopen(file, "w+b");
+        ++k;
+    } while (fp == NULL && k <= 32);
+
+    if (fp)
+    {
+        g_delete_temp_files.push_back(file);
+        strcpy(pathname, file);
+    }
+    else
+    {
+        pathname[0] = 0;
+    }
+
+    return fp;
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -649,13 +737,12 @@ int save_res(const char *output_file)
 
 int save_coff(const char *output_file)
 {
-    char szTempPath[MAX_PATH], szTempFile[MAX_PATH];
-    GetTempPathA(_countof(szTempPath), szTempPath);
-    GetTempFileNameA(szTempPath, "res", 0, szTempFile);
+    char szTempFile[MAX_PATH];
+
+    fclose(tmpfilenam(szTempFile));
 
     if (int ret = save_res(szTempFile))
     {
-        unlink(szTempFile);
         return ret;
     }
 
@@ -689,20 +776,17 @@ int save_coff(const char *output_file)
 
         if (maker.GetExitCode() == 0)
         {
-            unlink(szTempFile);
             return EXITCODE_SUCCESS;
         }
         else if (strOutput.find(": no resources") != std::string::npos)
         {
             strOutput.clear();
-            unlink(szTempFile);
             return EXITCODE_SUCCESS;
         }
 
         fputs(strOutput.c_str(), stderr);
     }
     fprintf(stderr, "ERROR: Failed to create process\n");
-    unlink(szTempFile);
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
 
@@ -1093,17 +1177,12 @@ int main(int argc, char **argv)
         }
     }
 
-    static TCHAR s_szTempFile[MAX_PATH] = TEXT("");
     if (g_input_file == NULL)
     {
-        char szTempPath[MAX_PATH], szTempFile[MAX_PATH];
-        GetTempPathA(_countof(szTempPath), szTempPath);
-        GetTempFileNameA(szTempPath, "res", 0, szTempFile);
-
-        FILE *fp = fopen(s_szTempFile, "r");
+        static TCHAR s_szTempFile[MAX_PATH] = TEXT("");
+        FILE *fp = tmpfilenam(s_szTempFile);
         if (fp == NULL)
         {
-            unlink(s_szTempFile);
             fprintf(stderr, "ERROR: Cannot write to temporary file\n");
             return EXITCODE_CANNOT_WRITE;
         }
@@ -1148,10 +1227,6 @@ int main(int argc, char **argv)
     }
 
     int ret = just_do_it();
-
-    if (s_szTempFile[0])
-        unlink(s_szTempFile);
-
     return ret;
 }
 
