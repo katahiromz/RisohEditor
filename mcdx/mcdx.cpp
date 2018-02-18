@@ -19,7 +19,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "MProcessMaker.hpp"
+#ifdef _WIN32
+    #include "MProcessMaker.hpp"
+#endif
 #include "MString.hpp"
 #include "MacroParser.hpp"
 #include "MessageRes0.hpp"
@@ -72,7 +74,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.8\n");
+    printf("mcdx ver.0.8.1\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -505,12 +507,12 @@ int do_directive(char*& ptr)
     return EXITCODE_SUCCESS;
 }
 
-int eat_output(const std::string& strOutput)
+int eat_output(const std::string& output)
 {
     g_msg_tables.clear();
 
     std::vector<std::string> lines;
-    mstr_split(lines, strOutput, "\n");
+    mstr_split(lines, output, "\n");
 
     for (size_t i = 0; i < lines.size(); ++i)
     {
@@ -753,46 +755,75 @@ int save_coff(const char *output_file)
         return ret;
     }
 
-    MStringA strCommandLine;
-    strCommandLine += "\"";
-    strCommandLine += g_szWindRes;
-    strCommandLine += "\" \"";
-    strCommandLine += szTempFile;
+    MStringA command_line;
+    command_line += "\"";
+    command_line += g_szWindRes;
+    command_line += "\" \"";
+    command_line += szTempFile;
     if (output_file)
     {
-        strCommandLine += "\" \"";
-        strCommandLine += output_file;
-        strCommandLine += "\"";
+        command_line += "\" \"";
+        command_line += output_file;
+        command_line += "\"";
     }
     else
     {
-        strCommandLine += "\" -O coff";
+        command_line += "\" -O coff";
     }
 
     // create a process
+#ifdef _WIN32
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
     MFile hInputWrite, hOutputRead;
     SetEnvironmentVariableA("LANG", "en_US");
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        maker.CreateProcessDx(NULL, strCommandLine.c_str()))
+        maker.CreateProcessDx(NULL, command_line.c_str()))
     {
-        std::string strOutput;
-        maker.ReadAll(strOutput, hOutputRead);
+        std::string output;
+        maker.ReadAll(output, hOutputRead);
 
         if (maker.GetExitCode() == 0)
         {
             return EXITCODE_SUCCESS;
         }
-        else if (strOutput.find(": no resources") != std::string::npos)
+        else if (output.find(": no resources") != std::string::npos)
         {
-            strOutput.clear();
+            output.clear();
             return EXITCODE_SUCCESS;
         }
 
-        fputs(strOutput.c_str(), stderr);
+        fputs(output.c_str(), stderr);
     }
+#else
+    putenv("LANG=en_US");
+    if (FILE *fp = popen(command_line.c_str(), "r"))
+    {
+        std::string output;
+
+        char buf[256];
+        for (;;)
+        {
+            size_t count = fread(buf, 1, _countof(buf), fp);
+            if (!count)
+                break;
+            output.append(buf, count);
+        }
+        if (pclose(fp) == 0)
+        {
+            return EXITCODE_SUCCESS;
+        }
+        else if (output.find(": no resources") != std::string::npos)
+        {
+            output.clear();
+            return EXITCODE_SUCCESS;
+        }
+
+        fputs(output.c_str(), stderr);
+    }
+#endif
+
     fprintf(stderr, "ERROR: Failed to create process\n");
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
@@ -856,44 +887,68 @@ int load_rc(const char *input_file)
     }
 
     // build up command line
-    MString strCommandLine;
-    strCommandLine += "\"";
-    strCommandLine += g_szCpp;
-    strCommandLine += "\" ";
+    MString command_line;
+    command_line += "\"";
+    command_line += g_szCpp;
+    command_line += "\" ";
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
-        strCommandLine += " -D";
-        strCommandLine += g_definitions[i];
+        command_line += " -D";
+        command_line += g_definitions[i];
     }
-    strCommandLine += " \"";
-    strCommandLine += input_file;
-    strCommandLine += "\"";
+    command_line += " \"";
+    command_line += input_file;
+    command_line += "\"";
 
     g_strFile = input_file;
     g_nLineNo = 1;
 
     // create a process
+#ifdef _WIN32
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
     MFile hInputWrite, hOutputRead;
     if (maker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        maker.CreateProcessDx(NULL, strCommandLine.c_str()))
+        maker.CreateProcessDx(NULL, command_line.c_str()))
     {
-        std::string strOutput;
-        maker.ReadAll(strOutput, hOutputRead);
+        std::string output;
+        maker.ReadAll(output, hOutputRead);
 
         if (maker.GetExitCode() == 0)
         {
             // eat the output
-            if (int ret = eat_output(strOutput))
+            if (int ret = eat_output(output))
                 return ret;
 
             return EXITCODE_SUCCESS;
         }
 
-        fputs(strOutput.c_str(), stderr);
+        fputs(output.c_str(), stderr);
     }
+#else
+    putenv("LANG=en_US");
+    if (FILE *fp = popen(command_line.c_str(), "r"))
+    {
+        std::string output;
+
+        char buf[256];
+        for (;;)
+        {
+            size_t count = fread(buf, 1, _countof(buf), fp);
+            if (!count)
+                break;
+            output.append(buf, count);
+        }
+        if (pclose(fp) == 0)
+        {
+            return EXITCODE_SUCCESS;
+        }
+
+        fputs(output.c_str(), stderr);
+    }
+#endif
+
     fprintf(stderr, "ERROR: Failed to preprocess\n");
     return EXITCODE_FAIL_TO_PREPROCESS;
 }
