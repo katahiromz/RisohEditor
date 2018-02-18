@@ -80,7 +80,13 @@ void show_version(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////
-// tmpfilenam
+// file_exists and tmpfilenam
+
+inline bool file_exists(const char *file)
+{
+    struct stat st;
+    return stat(file, &st) == 0;
+}
 
 struct DeleteTempFiles
 {
@@ -107,7 +113,6 @@ FILE *tmpfilenam(char *pathname)
 {
     FILE *fp;
     int i, k;
-    struct stat st;
     char tmp[MAX_PATH], name[16], file[MAX_PATH];
     char *ptr = getenv("TMP");
 
@@ -146,8 +151,8 @@ FILE *tmpfilenam(char *pathname)
                 strcat(file, "/");
             #endif
             strcat(file, name);
-        } while (stat(file, &st) == 0);
-    
+        } while (file_exists(file));
+
         fp = fopen(file, "w+b");
         ++k;
     } while (fp == NULL && k <= 32);
@@ -167,8 +172,8 @@ FILE *tmpfilenam(char *pathname)
 
 ////////////////////////////////////////////////////////////////////////////
 
-char g_szCpp[MAX_PATH] = "";
-char g_szWindRes[MAX_PATH] = "";
+char g_szCpp[MAX_PATH] = "cpp";
+char g_szWindRes[MAX_PATH] = "windres";
 
 char *g_input_file = NULL;
 char *g_output_file = NULL;
@@ -197,11 +202,12 @@ int syntax_error(void)
 
 const char *g_progname = "mcdx";
 
+#ifdef _WIN32
 BOOL check_cpp(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
-    if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
+    if (file_exists(szPath))
     {
         lstrcpyn(g_szCpp, szPath, MAX_PATH);
         return TRUE;
@@ -210,19 +216,19 @@ BOOL check_cpp(VOID)
     GetModuleFileName(NULL, szPath, _countof(szPath));
     pch = strrchr(szPath, '\\');
     strcpy(pch, TEXT("\\cpp.exe"));
-    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!file_exists(szPath))
     {
         strcpy(pch, TEXT("\\data\\bin\\cpp.exe"));
-        if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!file_exists(szPath))
         {
             strcpy(pch, TEXT("\\..\\data\\bin\\cpp.exe"));
-            if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!file_exists(szPath))
             {
                 strcpy(pch, TEXT("\\..\\..\\data\\bin\\cpp.exe"));
-                if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!file_exists(szPath))
                 {
                     strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\cpp.exe"));
-                    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                    if (!file_exists(szPath))
                     {
                         return FALSE;
                     }
@@ -239,7 +245,7 @@ BOOL check_windres(VOID)
     TCHAR szPath[MAX_PATH + 64], *pch;
 
     SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
-    if (::GetFileAttributes(szPath) != INVALID_FILE_ATTRIBUTES)
+    if (file_exists(szPath))
     {
         lstrcpyn(g_szWindRes, szPath, MAX_PATH);
         return TRUE;
@@ -248,19 +254,19 @@ BOOL check_windres(VOID)
     GetModuleFileName(NULL, szPath, _countof(szPath));
     pch = _tcsrchr(szPath, TEXT('\\'));
     strcpy(pch, TEXT("\\windres.exe"));
-    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!file_exists(szPath))
     {
         strcpy(pch, TEXT("\\data\\bin\\windres.exe"));
-        if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!file_exists(szPath))
         {
             strcpy(pch, TEXT("\\..\\data\\bin\\windres.exe"));
-            if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!file_exists(szPath))
             {
                 strcpy(pch, TEXT("\\..\\..\\data\\bin\\windres.exe"));
-                if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!file_exists(szPath))
                 {
                     strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\windres.exe"));
-                    if (::GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                    if (!file_exists(szPath))
                     {
                         return FALSE;
                     }
@@ -271,6 +277,7 @@ BOOL check_windres(VOID)
     lstrcpyn(g_szWindRes, szPath, MAX_PATH);
     return TRUE;
 }
+#endif
 
 bool do_directive_line(char*& ptr)
 {
@@ -1214,6 +1221,7 @@ int main(int argc, char **argv)
         }
     }
 
+#ifdef _WIN32
     if (!check_cpp())
     {
         fprintf(stderr, "ERROR: Unable to find cpp\n");
@@ -1225,6 +1233,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "ERROR: Unable to find windres\n");
         return EXITCODE_NOT_FOUND_CPP;
     }
+#endif
 
     int ret = just_do_it();
     return ret;
