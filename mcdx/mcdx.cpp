@@ -116,6 +116,7 @@ FILE *tmpfilenam(char *pathname)
 {
     FILE *fp;
     int i, k;
+    const int retry_count = 64;
     char tmp[MAX_PATH], name[16], file[MAX_PATH];
     char *ptr = getenv("TMP");
 
@@ -137,7 +138,7 @@ FILE *tmpfilenam(char *pathname)
     {
         do
         {
-            for (i = 0; i < 6; ++i)
+            for (i = 0; i < 8; ++i)
             {
                 name[i] = (char)('A' + rand() % ('Z' - 'A' + 1));
             }
@@ -154,11 +155,11 @@ FILE *tmpfilenam(char *pathname)
                 strcat(file, "/");
             #endif
             strcat(file, name);
-        } while (file_exists(file));
+            ++k;
+        } while (file_exists(file) && k < retry_count);
 
         fp = fopen(file, "w+b");
-        ++k;
-    } while (fp == NULL && k <= 32);
+    } while (fp == NULL && k < retry_count);
 
     if (fp)
     {
