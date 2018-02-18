@@ -907,18 +907,18 @@ int load_bin(const char *input_file)
         return EXITCODE_CANNOT_OPEN;
     }
 
-    std::string strContents;
+    std::string contents;
     char buf[256];
     for (;;)
     {
         size_t len = fread(buf, 1, 256, fp);
         if (!len)
             break;
-        strContents.append(buf, len);
+        contents.append(buf, len);
     }
     fclose(fp);
 
-    MByteStreamEx stream(&strContents[0], strContents.size());
+    MByteStreamEx stream(&contents[0], contents.size());
     if (!g_msg_tables[g_langid].LoadFromStream(stream))
     {
         fprintf(stderr, "ERROR: Invalid data.\n");
@@ -937,18 +937,18 @@ int load_res(const char *input_file)
         return EXITCODE_CANNOT_OPEN;
     }
 
-    std::string strContents;
+    std::string contents;
     char buf[256];
     for (;;)
     {
         size_t len = fread(buf, 1, 256, fp);
         if (!len)
             break;
-        strContents.append(buf, len);
+        contents.append(buf, len);
     }
     fclose(fp);
 
-    MByteStreamEx stream(&strContents[0], strContents.size());
+    MByteStreamEx stream(&contents[0], contents.size());
     ResHeader header;
     while (header.ReadFrom(stream))
     {
