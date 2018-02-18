@@ -241,7 +241,9 @@ BOOL check_cpp(VOID)
     lstrcpyn(g_szCpp, szPath, MAX_PATH);
     return TRUE;
 }
+#endif
 
+#ifdef _WIN32
 BOOL check_windres(VOID)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
