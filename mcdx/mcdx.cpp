@@ -19,7 +19,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(WONVER)
     #include "MProcessMaker.hpp"
 #endif
 #include "MString.hpp"
@@ -784,7 +784,7 @@ int save_coff(const char *output_file)
     }
 
     // create a process
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(WONVER)
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -915,7 +915,7 @@ int load_rc(const char *input_file)
     g_nLineNo = 1;
 
     // create a process
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(WONVER)
     MProcessMaker maker;
     maker.SetShowWindow(SW_HIDE);
     maker.SetCreationFlags(CREATE_NEW_CONSOLE);
