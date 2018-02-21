@@ -86,7 +86,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("mcdx ver.0.8.1\n");
+    printf("mcdx ver.0.8.2\n");
     printf("Copyright (C) 2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.\n");
     printf("This program is free software; you may redistribute it under the terms of\n");
     printf("the GNU General Public License version 3 or (at your option) any later version.\n");
@@ -585,6 +585,8 @@ int save_rc(const char *output_file)
         fp = stdout;
     }
 
+    fprintf(fp, "#pragma code_page(65001) /* UTF-8 */\r\n");
+
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
     {
@@ -593,7 +595,7 @@ int save_rc(const char *output_file)
                 PRIMARYLANGID(it->first), SUBLANGID(it->first));
 
         MStringW wstr = it->second.Dump();
-        MStringA str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
+        MStringA str = MWideToAnsi(CP_UTF8, wstr.c_str()).c_str();
 
         fputs(str.c_str(), fp);
         fprintf(fp, "#endif\r\n");
