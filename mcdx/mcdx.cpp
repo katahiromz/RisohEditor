@@ -592,8 +592,8 @@ int save_rc(const char *output_file)
         fprintf(fp, "LANGUAGE 0x%02X, 0x%02X\r\n",
                 PRIMARYLANGID(it->first), SUBLANGID(it->first));
 
-        std::wstring wstr = it->second.Dump();
-        std::string str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
+        MStringW wstr = it->second.Dump();
+        MStringA str = MWideToAnsi(CP_ACP, wstr.c_str()).c_str();
 
         fputs(str.c_str(), fp);
         fprintf(fp, "#endif\r\n");

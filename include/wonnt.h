@@ -55,7 +55,7 @@ typedef uint64_t ULONGLONG, DWORDLONG;
     #endif
 #endif
 
-#ifdef _WIN64
+#if defined(_WIN64) || defined(__LP64__) || defined(_LP64)
     typedef int64_t LONG_PTR;
     typedef uint64_t ULONG_PTR, DWORD_PTR;
 #else
@@ -101,7 +101,7 @@ C_ASSERT(sizeof(BOOLEAN) == 1);
 
 C_ASSERT(sizeof(HANDLE) == sizeof(void *));
 
-C_ASSERT(sizeof(WCHAR) == sizeof(wchar_t));
+C_ASSERT(sizeof(WCHAR) == 2);
 
 typedef WORD LANGID;
 

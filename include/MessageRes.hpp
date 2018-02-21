@@ -140,7 +140,7 @@ public:
                     {
                         return false;
                     }
-                    str.resize(std::wcslen(str.c_str()));
+                    str.resize(mstrlen(str.c_str()));
                     m_map[dwID] = str;
                 }
                 else

@@ -130,8 +130,12 @@ struct MTextType
 template <typename T_CHAR>
 std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
 
+
 template <typename T_CHAR>
-int mstr_parse_int(const T_CHAR *str, bool is_signed = true);
+bool mchr_is_xdigit(T_CHAR ch);
+
+template <typename T_CHAR>
+int mstr_parse_int(const T_CHAR *str, bool is_signed = true, int base = 0);
 
 template <typename T_CHAR>
 void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
@@ -325,7 +329,19 @@ mchr_to_hex(T_CHAR value)
 }
 
 template <typename T_CHAR>
-inline int mstr_parse_int(const T_CHAR *str, bool is_signed)
+inline bool mchr_is_xdigit(T_CHAR ch)
+{
+    if (T_CHAR('0') <= ch && ch <= T_CHAR('9'))
+        return true;
+    if (T_CHAR('A') <= ch && ch <= T_CHAR('F'))
+        return true;
+    if (T_CHAR('a') <= ch && ch <= T_CHAR('f'))
+        return true;
+    return false;
+}
+
+template <typename T_CHAR>
+inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
 {
     str = mstr_skip_space(str);
 
@@ -339,20 +355,31 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed)
         ++str;
     }
 
-    int base = 10;
     if (str[0] == T_CHAR('0'))
     {
         if (str[1] == T_CHAR('x') || str[1] == T_CHAR('X'))
         {
-            base = 16;
-            str += 2;
+            if (base == 0)
+            {
+                base = 16;
+                str += 2;
+            }
         }
         else
         {
-            base = 8;
-            ++str;
+            if (base == 0)
+            {
+                base = 8;
+                ++str;
+            }
         }
     }
+
+    if (base == 0)
+    {
+        base = 10;
+    }
+    assert(base == 10 || base == 8 || base == 16);
 
 	int num;
     for (num = 0; ; ++str)

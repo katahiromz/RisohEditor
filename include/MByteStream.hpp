@@ -15,6 +15,7 @@ class MByteStream;
     #endif
 #else
     #include "wondef.h"         // Wonders API
+    #define _unlink     unlink
 #endif
 
 #if __cplusplus >= 201103L          /* C++11 */
@@ -23,6 +24,11 @@ class MByteStream;
     #include "pstdint.h"
 #endif
 
+#ifndef _WIN32
+    #include <unistd.h>     // for unlink
+#endif
+
+#include <cstdlib>          // C standard library
 #include <cstdio>           // C standard I/O
 #include <cstring>          // C string
 #include <cassert>          // assert

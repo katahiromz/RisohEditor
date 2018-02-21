@@ -323,7 +323,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
                     ++pch;
                 }
             }
-            str += (char)strtoul(strNum.c_str(), NULL, 16);
+            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
         }
         break;
     case '0': case '1': case '2': case '3':
@@ -345,7 +345,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
                     }
                 }
             }
-            str += (char)strtoul(strNum.c_str(), NULL, 8);
+            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 8);
         }
         break;
     default:
@@ -374,17 +374,17 @@ inline bool guts_escape(MStringW& str, const WCHAR*& pch)
         {
             ++pch;
             MStringW strNum;
-            if (iswxdigit(*pch))
+            if (mchr_is_xdigit(*pch))
             {
                 strNum += *pch;
                 ++pch;
-                if (iswxdigit(*pch))
+                if (mchr_is_xdigit(*pch))
                 {
                     strNum += *pch;
                     ++pch;
                 }
             }
-            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 16);
+            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
         }
         break;
     case L'0': case L'1': case L'2': case L'3':
@@ -406,26 +406,26 @@ inline bool guts_escape(MStringW& str, const WCHAR*& pch)
                     }
                 }
             }
-            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 8);
+            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 8);
         }
         break;
     case 'u':
         {
             ++pch;
             MStringW strNum;
-            if (iswxdigit(*pch))
+            if (mchr_is_xdigit(*pch))
             {
                 strNum += *pch;
                 ++pch;
-                if (iswxdigit(*pch))
+                if (mchr_is_xdigit(*pch))
                 {
                     strNum += *pch;
                     ++pch;
-                    if (iswxdigit(*pch))
+                    if (mchr_is_xdigit(*pch))
                     {
                         strNum += *pch;
                         ++pch;
-                        if (iswxdigit(*pch))
+                        if (mchr_is_xdigit(*pch))
                         {
                             strNum += *pch;
                             ++pch;
@@ -433,7 +433,7 @@ inline bool guts_escape(MStringW& str, const WCHAR*& pch)
                     }
                 }
             }
-            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 16);
+            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
         }
         break;
     default:
@@ -582,7 +582,7 @@ inline bool mstr_unquote(char *str)
 {
     std::string s = str;
     bool ret = mstr_unquote(s);
-    std::strcpy(str, s.c_str());
+    mstrcpy(str, s.c_str());
     return ret;
 }
 
@@ -590,7 +590,7 @@ inline bool mstr_unquote(WCHAR *str)
 {
     MStringW s = str;
     bool ret = mstr_unquote(s);
-    std::wcscpy(str, s.c_str());
+    mstrcpy(str, s.c_str());
     return ret;
 }
 
