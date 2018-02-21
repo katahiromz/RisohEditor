@@ -47,11 +47,7 @@
         #endif
         typedef std::wstring MStringW;
     #else
-        #if __cplusplus >= 201103L
-            typedef std::basic_string<WCHAR> MStringW;
-        #else
-            typedef std::basic_string<uint16_t> MStringW;
-        #endif
+        typedef std::basic_string<WCHAR> MStringW;
     #endif
     #ifdef UNICODE
         #define MString     MStringW
