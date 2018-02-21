@@ -290,7 +290,7 @@ public:
                 if ((style & SS_TYPEMASK) == SS_ICON ||
                     (style & SS_TYPEMASK) == SS_BITMAP)
                 {
-					using namespace std;
+                    using namespace std;
                     if (iswdigit(item.m_title.str()[0]))
                     {
                         LONG n = wcstol(item.m_title.c_str(), NULL, 0);
