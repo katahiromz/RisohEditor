@@ -22,6 +22,20 @@
 
 #include "MString.hpp"
 
+#ifndef IS_INTRESOURCE
+    #define IS_INTRESOURCE(_r) (((ULONG_PTR)(_r) >> 16) == 0)
+#endif
+
+#ifndef MAKEINTRESOURCEA
+    #define MAKEINTRESOURCEA(i) (char *)((ULONG_PTR)((WORD)(i)))
+    #define MAKEINTRESOURCEW(i) (WCHAR *)((ULONG_PTR)((WORD)(i)))
+    #ifdef UNICODE
+        #define MAKEINTRESOURCE  MAKEINTRESOURCEW
+    #else
+        #define MAKEINTRESOURCE  MAKEINTRESOURCEA
+    #endif
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct MIdOrString;
@@ -34,11 +48,11 @@ MString mstr_hex(int value);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(MStringW& str);
 bool mstr_unquote(char *str);
-bool mstr_unquote(wchar_t *str);
+bool mstr_unquote(WCHAR *str);
 bool guts_escape(std::string& str, const char*& pch);
-bool guts_escape(MStringW& str, const wchar_t*& pch);
+bool guts_escape(MStringW& str, const WCHAR*& pch);
 bool guts_quote(std::string& str, const char*& pch);
-bool guts_quote(MStringW& str, const wchar_t*& pch);
+bool guts_quote(MStringW& str, const WCHAR*& pch);
 
 template <typename T_CHAR>
 size_t
@@ -68,7 +82,7 @@ struct MIdOrString
         else if ((L'0' <= str[0] && str[0] <= L'9') ||
                  str[0] == L'-' || str[0] == L'+')
         {
-            m_id = (WORD)_tcstol(str, NULL, 0);
+            m_id = (WORD)mstr_parse_int(str);
         }
         else
         {
@@ -342,7 +356,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
     return true;
 }
 
-inline bool guts_escape(MStringW& str, const wchar_t*& pch)
+inline bool guts_escape(MStringW& str, const WCHAR*& pch)
 {
     using namespace std;
     switch (*pch)
@@ -370,7 +384,7 @@ inline bool guts_escape(MStringW& str, const wchar_t*& pch)
                     ++pch;
                 }
             }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
+            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 16);
         }
         break;
     case L'0': case L'1': case L'2': case L'3':
@@ -392,7 +406,7 @@ inline bool guts_escape(MStringW& str, const wchar_t*& pch)
                     }
                 }
             }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 8);
+            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 8);
         }
         break;
     case 'u':
@@ -419,7 +433,7 @@ inline bool guts_escape(MStringW& str, const wchar_t*& pch)
                     }
                 }
             }
-            str += (wchar_t)wcstoul(strNum.c_str(), NULL, 16);
+            str += (WCHAR)wcstoul(strNum.c_str(), NULL, 16);
         }
         break;
     default:
@@ -468,7 +482,7 @@ inline bool guts_quote(std::string& str, const char*& pch)
     return true;
 }
 
-inline bool guts_quote(MStringW& str, const wchar_t*& pch)
+inline bool guts_quote(MStringW& str, const WCHAR*& pch)
 {
     using namespace std;
     str.clear();
@@ -560,7 +574,7 @@ inline bool mstr_unquote(std::string& str)
 inline bool mstr_unquote(MStringW& str)
 {
     MStringW str2 = str;
-    const wchar_t *pch = str2.c_str();
+    const WCHAR *pch = str2.c_str();
     return guts_quote(str, pch);
 }
 
@@ -572,7 +586,7 @@ inline bool mstr_unquote(char *str)
     return ret;
 }
 
-inline bool mstr_unquote(wchar_t *str)
+inline bool mstr_unquote(WCHAR *str)
 {
     MStringW s = str;
     bool ret = mstr_unquote(s);

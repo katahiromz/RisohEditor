@@ -2,9 +2,9 @@
 /**************************************************************************/
 
 #ifndef WONDEF_H
-#define WONDEF_H    1  /* Version 1 */
+#define WONDEF_H    2  /* Version 2 */
 
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(WONVER)
     #include <windows.h>
 #else
 
@@ -41,5 +41,5 @@
     #define HIBYTE(w) ((BYTE) ((((DWORD_PTR) (w)) >> 8) & 0xff))
 #endif
 
-#endif  /* !(defined(_WIN32) && !defined(_WONVER)) */
+#endif  /* !(defined(_WIN32) && !defined(WONVER)) */
 #endif  /* ndef WONDEF_H */

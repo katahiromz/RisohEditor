@@ -30,21 +30,26 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-// These structures are defined in <winnt.h>:
-//     typedef struct _MESSAGE_RESOURCE_BLOCK {
-//         DWORD    LowId;
-//         DWORD    HighId;
-//         DWORD    OffsetToEntries;        // from this structure
-//     } MESSAGE_RESOURCE_BLOCK, *PMESSAGE_RESOURCE_BLOCK;
-//     typedef struct _MESSAGE_RESOURCE_DATA {
-//         DWORD                    NumberOfBlocks;
-//         MESSAGE_RESOURCE_BLOCK   Blocks[1];
-//     } MESSAGE_RESOURCE_DATA, *PMESSAGE_RESOURCE_DATA;
-//     typedef struct _MESSAGE_RESOURCE_ENTRY {
-//         WORD   Length;
-//         WORD   Flags;        // 0 for ANSI, 1 for Unicode
-//         BYTE   Text[1];
-//     } MESSAGE_RESOURCE_ENTRY, *PMESSAGE_RESOURCE_ENTRY;
+#if !defined(_WIN32) || defined(WONVER)
+    typedef struct _MESSAGE_RESOURCE_BLOCK {
+        DWORD    LowId;
+        DWORD    HighId;
+        DWORD    OffsetToEntries;        // from this structure
+    } MESSAGE_RESOURCE_BLOCK, *PMESSAGE_RESOURCE_BLOCK;
+
+    typedef struct _MESSAGE_RESOURCE_DATA {
+        DWORD                    NumberOfBlocks;
+        MESSAGE_RESOURCE_BLOCK   Blocks[1];
+    } MESSAGE_RESOURCE_DATA, *PMESSAGE_RESOURCE_DATA;
+
+    typedef struct _MESSAGE_RESOURCE_ENTRY {
+        WORD   Length;
+        WORD   Flags;        // 0 for ANSI, 1 for Unicode
+        BYTE   Text[1];
+    } MESSAGE_RESOURCE_ENTRY, *PMESSAGE_RESOURCE_ENTRY;
+
+    #define MESSAGE_RESOURCE_UNICODE 0x0001
+#endif
 
 typedef struct _MESSAGE_RESOURCE_DATA_HEADER {
     DWORD                    NumberOfBlocks;
@@ -73,7 +78,7 @@ typedef struct _MESSAGE_RESOURCE_ENTRY_HEADER {
 class MessageRes
 {
 public:
-    typedef std::wstring string_type;
+    typedef MStringW string_type;
     typedef std::map<ULONG, string_type> map_type;
     map_type    m_map;
 
@@ -128,10 +133,10 @@ public:
                 MStringW wstr = (const WCHAR *)&stream[stream.pos()];
                 if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
                 {
-                    size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(wchar_t);
-                    std::wstring str;
+                    size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(WCHAR);
+                    MStringW str;
                     str.resize(len);
-                    if (!stream.ReadData(&str[0], len * sizeof(wchar_t)))
+                    if (!stream.ReadData(&str[0], len * sizeof(WCHAR)))
                     {
                         return false;
                     }
@@ -199,7 +204,7 @@ public:
             {
                 for (DWORD k = it->FirstId; k <= it->LastId; ++k)
                 {
-                    std::wstring& wstr = m_map[k];
+                    MStringW& wstr = m_map[k];
 
                     MESSAGE_RESOURCE_ENTRY_HEADER header;
                     header.Length = (WORD)(sizeof(header) + (wstr.size() + 1) * sizeof(WCHAR));
@@ -220,45 +225,47 @@ public:
 #ifdef NO_CONSTANTS_DB
     string_type Dump() const
     {
-        std::wstring ret;
+        MStringW ret, str;
 
-        ret += L"MESSAGETABLEDX\r\n";
-        ret += L"{\r\n";
+        ret += WIDE("MESSAGETABLEDX\r\n");
+        ret += WIDE("{\r\n");
 
-        wchar_t sz[32];
+        WCHAR sz[32];
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)
         {
-            ret += L"    ";
-            wsprintfW(sz, L"0x%X", it->first);
-            ret += sz;
-            ret += L", \"";
+            ret += WIDE("    0x");
+            {
+                mstr_to_hex(str, it->first);
+                ret += str;
+            }
+            ret += WIDE(", \"");
             ret += mstr_escape(it->second);
-            ret += L"\"\r\n";
+            ret += WIDE("\"\r\n");
         }
 
-        ret += L"}\r\n";
+        ret += WIDE("}\r\n");
         return ret;
     }
 #else
     string_type Dump(const ConstantsDB& db, WORD wName) const
     {
-        std::wstring ret;
+        MStringW ret;
 
-        ret += L"MESSAGETABLEDX\r\n";
-        ret += L"{\r\n";
+        ret += WIDE("MESSAGETABLEDX\r\n");
+        ret += WIDE("{\r\n");
 
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)
         {
-            ret += L"    ";
+            ret += WIDE("    ");
             ret += db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
-            ret += L", \"";
+            ret += WIDE(", \"");
             ret += mstr_escape(it->second);
-            ret += L"\"\r\n";
+            ret += WIDE("\"\r\n");
         }
 
-        ret += L"}\r\n";
+        ret += WIDE("}\r\n");
         return ret;
     }
     string_type Dump(const ConstantsDB& db) const

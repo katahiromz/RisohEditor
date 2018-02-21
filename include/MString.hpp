@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       12  /* Version 12 */
+#define MZC4_MSTRING_HPP_       13  /* Version 13 */
 
 // class MString;
 // class MStringA;
@@ -22,11 +22,25 @@
 #include <algorithm>    // for std::reverse
 #include <cstring>      // for std::memcmp
 
+// WCHAR
+#ifndef __WCHAR_DEFINED
+    #define __WCHAR_DEFINED
+    #ifdef _WIN32
+        typedef wchar_t WCHAR;
+    #else
+        #if __cplusplus >= 201103L
+            typedef char16_t WCHAR;
+        #else
+            typedef uint16_t WCHAR;
+        #endif
+    #endif
+#endif
+
 // MString
 #ifndef MString
     #include <string>       // for std::basic_string, std::string, ...
     typedef std::string MStringA;
-    #ifdef _WIN32
+    #if defined(_WIN32) && !defined(WONVER)
         #include <tchar.h>      // Windows generic text mapping
         #ifdef _MBCS
             #include <mbstring.h>   // for _mbsrchr
@@ -34,7 +48,7 @@
         typedef std::wstring MStringW;
     #else
         #if __cplusplus >= 201103L
-            typedef std::u16string MStringW;
+            typedef std::basic_string<WCHAR> MStringW;
         #else
             typedef std::basic_string<uint16_t> MStringW;
         #endif
@@ -61,20 +75,6 @@
         #define TEXT(sz)   WIDE(sz)
     #else
         #define TEXT(sz)   sz
-    #endif
-#endif
-
-// WCHAR
-#ifndef __WCHAR_DEFINED
-    #define __WCHAR_DEFINED
-    #ifdef _WIN32
-        typedef wchar_t WCHAR;
-    #else
-        #if __cplusplus >= 201103L
-            typedef char16_t WCHAR;
-        #else
-            typedef uint16_t WCHAR;
-        #endif
     #endif
 #endif
 
@@ -129,6 +129,9 @@ struct MTextType
 
 template <typename T_CHAR>
 std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
+
+template <typename T_CHAR>
+int mstr_parse_int(const T_CHAR *str, bool is_signed = true);
 
 template <typename T_CHAR>
 void mstr_to_hex(std::basic_string<T_CHAR>& str, unsigned int value);
@@ -299,7 +302,7 @@ inline const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch)
     while (*str)
     {
         if (*str == ch)
-            ptr = ch;
+            ptr = str;
         ++str;
     }
     return ptr;
@@ -319,6 +322,87 @@ mchr_to_hex(T_CHAR value)
     else if (sizeof(T_CHAR) == 4)
         mstr_to_hex(ret, (value & 0xFFFFFFFF));
     return ret;
+}
+
+template <typename T_CHAR>
+inline int mstr_parse_int(const T_CHAR *str, bool is_signed)
+{
+    str = mstr_skip_space(str);
+
+    if (*str == T_CHAR('+'))
+        ++str;
+
+    bool minus = false;
+    if (is_signed && *str == T_CHAR('-'))
+    {
+        minus = true;
+        ++str;
+    }
+
+    bool base = 10;
+    if (str[0] == T_CHAR('0'))
+    {
+        if (str[1] == T_CHAR('x') || str[1] == T_CHAR('X'))
+        {
+            base = 16;
+            str += 2;
+        }
+        else
+        {
+            base = 8;
+            ++str;
+        }
+    }
+
+    int num = 0;
+    for (;;)
+    {
+        num *= base;
+
+        if (base == 8)
+        {
+            if (T_CHAR('0') <= *str && *str <= T_CHAR('7'))
+            {
+                num += *str - T_CHAR('0');
+            }
+            else
+            {
+                break;
+            }
+        }
+        else if (base == 16)
+        {
+            if (T_CHAR('0') <= *str && *str <= T_CHAR('9'))
+            {
+                num += *str - T_CHAR('0');
+            }
+            else if (T_CHAR('A') <= *str && *str <= T_CHAR('F'))
+            {
+                num += *str - T_CHAR('A') + 10;
+            }
+            else if (T_CHAR('a') <= *str && *str <= T_CHAR('f'))
+            {
+                num += *str - T_CHAR('a') + 10;
+            }
+            else
+            {
+                break;
+            }
+        }
+        else if (base == 10)
+        {
+            if (T_CHAR('0') <= *str && *str <= T_CHAR('9'))
+            {
+                num += *str - T_CHAR('0');
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    return num;
 }
 
 template <typename T_CHAR>
@@ -746,14 +830,14 @@ mbin_from_str(const MStringW& str, const MTextType& type)
         {
             ret += "\xFF\xFE";
         }
-        ret.append((const char *)str2.c_str(), str2.size() * sizeof(wchar_t));
+        ret.append((const char *)str2.c_str(), str2.size() * sizeof(WCHAR));
         break;
     case MTENC_UNICODE_BE:
         if (type.bHasBOM)
         {
             ret += "\xFF\xFE";
         }
-        ret.append((const char *)str2.c_str(), str2.size() * sizeof(wchar_t));
+        ret.append((const char *)str2.c_str(), str2.size() * sizeof(WCHAR));
         mbin_swap_endian(ret);
         break;
     case MTENC_UTF8:

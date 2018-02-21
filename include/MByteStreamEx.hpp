@@ -90,7 +90,7 @@ public:
         return ReadSz(id_or_str.m_str);
     }
 
-    BOOL WriteString(LPCWSTR psz)
+    BOOL WriteString(const WCHAR *psz)
     {
         if (psz == NULL)
         {
@@ -103,7 +103,7 @@ public:
             aw[1] = LOWORD(psz);
             return WriteRaw(aw);
         }
-        return WriteData(psz, (lstrlenW(psz) + 1) * sizeof(WCHAR));
+        return WriteData(psz, (mstrlen(psz) + 1) * sizeof(WCHAR));
     }
 };
 

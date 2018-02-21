@@ -27,11 +27,16 @@
 #include "MString.hpp"
 #include "MacroParser.hpp"
 #include "MessageRes.hpp"
+
 #include "ResHeader.hpp"
 #include "getoptwin.h"
 #include <cctype>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#ifndef RT_MESSAGETABLE
+    #define RT_MESSAGETABLE     MAKEINTRESOURCE(11)
+#endif
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -209,8 +214,8 @@ int syntax_error(void)
 
 const char *g_progname = "mcdx";
 
-#ifdef _WIN32
-BOOL check_cpp(VOID)
+#if defined(_WIN32) && !defined(WONVER)
+BOOL check_cpp(void)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
     SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
@@ -248,8 +253,8 @@ BOOL check_cpp(VOID)
 }
 #endif
 
-#ifdef _WIN32
-BOOL check_windres(VOID)
+#if defined(_WIN32) && !defined(WONVER)
+BOOL check_windres(void)
 {
     TCHAR szPath[MAX_PATH + 64], *pch;
 
@@ -261,7 +266,7 @@ BOOL check_windres(VOID)
     }
 
     GetModuleFileName(NULL, szPath, _countof(szPath));
-    pch = _tcsrchr(szPath, TEXT('\\'));
+    pch = mstrrchr(szPath, TEXT('\\'));
     strcpy(pch, TEXT("\\windres.exe"));
     if (!file_exists(szPath))
     {
@@ -1106,7 +1111,7 @@ int just_do_it(void)
 
 const char *get_format(const char *file_path)
 {
-    TCHAR *pch = _tcsrchr(file_path, '.');
+    const char *pch = mstrrchr(file_path, '.');
     if (pch == NULL)
     {
         return "rc";
@@ -1293,7 +1298,7 @@ int main(int argc, char **argv)
         }
     }
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(WONVER)
     if (!check_cpp())
     {
         fprintf(stderr, "ERROR: Unable to find cpp\n");

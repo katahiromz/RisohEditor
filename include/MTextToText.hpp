@@ -11,6 +11,7 @@ class MWideToAnsi;
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MString.hpp"
+
 #include <cassert>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -23,7 +24,7 @@ public:
     }
     MAnsiToWide(int codepage, const char *str)
     {
-        do_it(codepage, str, std::char_traits<char>::length(str));
+        do_it(codepage, str, mstrlen(str));
     }
     MAnsiToWide(int codepage, const char *str, size_t count)
     {
@@ -33,11 +34,11 @@ public:
     {
         do_it(codepage, str.c_str(), str.size());
     }
-    MAnsiToWide(int codepage, const MAnsiToWide& str) : m_str(str) { }
+    MAnsiToWide(int codepage, const MAnsiToWide& str) : m_str(str.m_str) { }
 
     MAnsiToWide& operator=(const MAnsiToWide& str)
     {
-        m_str = str;
+        m_str = str.m_str;
         return *this;
     }
 
@@ -81,7 +82,7 @@ public:
     }
     MWideToAnsi(int codepage, const WCHAR *str)
     {
-        do_it(codepage, str, std::char_traits<WCHAR>::length(str));
+        do_it(codepage, str, mstrlen(str));
     }
     MWideToAnsi(int codepage, const WCHAR *str, size_t count)
     {
@@ -91,11 +92,11 @@ public:
     {
         do_it(codepage, str.c_str(), str.size());
     }
-    MWideToAnsi(int codepage, const MWideToAnsi& str) : m_str(str) { }
+    MWideToAnsi(int codepage, const MWideToAnsi& str) : m_str(str.m_str) { }
 
     MWideToAnsi& operator=(const MWideToAnsi& str)
     {
-        m_str = str;
+        m_str = str.m_str;
         return *this;
     }
 
@@ -287,7 +288,7 @@ protected:
         if ((iconv_t)-1 == ic)
             return;
 
-        size_t wide_len = count * sizeof(wchar_t);
+        size_t wide_len = count * sizeof(WCHAR);
         #ifdef ICONV_SECOND_ARGUMENT_IS_CONST
             const char *wide_ptr  = reinterpret_cast<const char *>(str);
         #else

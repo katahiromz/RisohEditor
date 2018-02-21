@@ -2,9 +2,9 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     13  /* Version 13 */
+#define WONNT_H     14  /* Version 14 */
 
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(WONVER)
     #include <windows.h>
 #else
 
@@ -102,6 +102,12 @@ C_ASSERT(sizeof(BOOLEAN) == 1);
 C_ASSERT(sizeof(HANDLE) == sizeof(void *));
 
 C_ASSERT(sizeof(WCHAR) == sizeof(wchar_t));
+
+typedef WORD LANGID;
+
+#define MAKELANGID(p, s)       ((((WORD)(s)) << 10) | (WORD)(p))
+#define PRIMARYLANGID(lgid)    ((WORD)(lgid) & 0x3ff)
+#define SUBLANGID(lgid)        ((WORD)(lgid) >> 10)
 
 /**************************************************************************/
 
