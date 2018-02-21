@@ -18,6 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 
 #define NO_CONSTANTS_DB
 
@@ -113,7 +114,7 @@ struct DeleteTempFiles
     {
         for (size_t i = 0; i < m_files.size(); ++i)
         {
-            unlink(m_files[i].c_str());
+            _unlink(m_files[i].c_str());
         }
         m_files.clear();
     }
@@ -681,7 +682,7 @@ int save_rc(const char *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            unlink(output_file);
+            _unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -748,7 +749,7 @@ int save_res(const char *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            unlink(output_file);
+            _unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }
@@ -877,7 +878,7 @@ int save_bin(const char *output_file)
     if (ferror(fp))
     {
         if (output_file)
-            unlink(output_file);
+            _unlink(output_file);
         fprintf(stderr, "ERROR: Unable to write output file.\n");
         return EXITCODE_CANNOT_OPEN;
     }

@@ -17,6 +17,12 @@ class MByteStream;
     #include "wondef.h"         // Wonders API
 #endif
 
+#if __cplusplus >= 201103L          /* C++11 */
+    #include <cstdint>
+#else
+    #include "pstdint.h"
+#endif
+
 #include <cstdio>           // C standard I/O
 #include <cstring>          // C string
 #include <cassert>          // assert
@@ -338,7 +344,7 @@ public:
 #ifdef UNICODE
             _wremove(FileName);
 #else
-            unlink(FileName);
+            _unlink(FileName);
 #endif
         }
 

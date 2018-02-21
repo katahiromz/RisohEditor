@@ -7,13 +7,13 @@ ENABLE_LANGUAGE(RC)
 include_directories(../include)
 
 # executable
-add_executable(mcdx mcdx.cpp)
+add_executable(mcdx mcdx.cpp getoptwin.c)
 
 # do statically link
 set_target_properties(mcdx PROPERTIES LINK_SEARCH_START_STATIC 1)
 set_target_properties(mcdx PROPERTIES LINK_SEARCH_END_STATIC 1)
 
-option(USE_WONAPI "Use Wonders API" ON)
+option(USE_WONAPI "Use Wonders API" OFF)
 option(USE_ICONV "Use Iconv" OFF)
 
 if(USE_WONAPI)

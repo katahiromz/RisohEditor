@@ -283,7 +283,7 @@ inline T_CHAR *mstrrchr(T_CHAR *str, T_CHAR ch)
     while (*str)
     {
         if (*str == ch)
-            ptr = ch;
+            ptr = str;
         ++str;
     }
     return ptr;
@@ -339,7 +339,7 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed)
         ++str;
     }
 
-    bool base = 10;
+    int base = 10;
     if (str[0] == T_CHAR('0'))
     {
         if (str[1] == T_CHAR('x') || str[1] == T_CHAR('X'))

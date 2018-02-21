@@ -230,7 +230,6 @@ public:
         ret += WIDE("MESSAGETABLEDX\r\n");
         ret += WIDE("{\r\n");
 
-        WCHAR sz[32];
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)
         {

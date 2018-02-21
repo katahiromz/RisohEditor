@@ -508,7 +508,7 @@ int getopt_parse( int mode, getopt_std_args, ... )
     /*
      * we use `this_arg' to store these temporarily.
      */
-    char **this_arg = alloca(optspan * sizeof(char *));
+    char **this_arg = (char **)alloca(optspan * sizeof(char *));
     /*
      * we cannot manipulate `argv' directly, since the `getopt'
      * API prototypes it as `read-only'; this cast to `arglist'
