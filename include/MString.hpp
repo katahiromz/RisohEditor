@@ -358,16 +358,16 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
             if (base == 0)
             {
                 base = 16;
-                str += 2;
             }
+            str += 2;
         }
         else
         {
             if (base == 0)
             {
                 base = 8;
-                ++str;
             }
+            ++str;
         }
     }
 
