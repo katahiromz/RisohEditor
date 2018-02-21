@@ -1,9 +1,8 @@
 // ResTest.cpp
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef _CRT_SECURE_NO_WARNINGS
-    #define _CRT_SECURE_NO_WARNINGS
-#endif
+#define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 
 #include <windows.h>
 #include <windowsx.h>

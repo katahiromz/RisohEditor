@@ -354,8 +354,8 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed)
         }
     }
 
-    int num = 0;
-    for (;;)
+	int num;
+    for (num = 0; ; ++str)
     {
         num *= base;
 
