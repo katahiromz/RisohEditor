@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 
-# enable Win32 resource
-ENABLE_LANGUAGE(RC)
-
 # include directories
 include_directories(../include)
 
