@@ -19,12 +19,14 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#define NO_CONSTANTS_DB
+
 #if defined(_WIN32) && !defined(WONVER)
     #include "MProcessMaker.hpp"
 #endif
 #include "MString.hpp"
 #include "MacroParser.hpp"
-#include "MessageRes0.hpp"
+#include "MessageRes.hpp"
 #include "ResHeader.hpp"
 #include "getoptwin.h"
 #include <cctype>
@@ -989,7 +991,7 @@ int load_bin(const char *input_file)
     fclose(fp);
 
     MByteStreamEx stream(&contents[0], contents.size());
-    if (!g_msg_tables[g_langid].LoadFromStream(stream))
+    if (!g_msg_tables[g_langid].LoadFromStream(stream, 1))
     {
         fprintf(stderr, "ERROR: Invalid data.\n");
         return EXITCODE_INVALID_DATA;
@@ -1039,7 +1041,7 @@ int load_res(const char *input_file)
         {
             break;
         }
-        if (!g_msg_tables[header.LanguageId].LoadFromStream(bs))
+        if (!g_msg_tables[header.LanguageId].LoadFromStream(bs, 1))
         {
             fprintf(stderr, "ERROR: Data is broken, invalid, or not supported.\n");
             return EXITCODE_INVALID_DATA;
