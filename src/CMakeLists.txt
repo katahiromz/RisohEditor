@@ -22,10 +22,10 @@ endif()
 
 # messagetables.res or messagetables.o
 add_custom_target(messagetables ALL
-    mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
+    mcdx RisohEditor_res.rc --preprocessor=..\\data\\bin\\cpp.exe ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
     DEPENDS mcdx RisohEditor_res.rc
     BYPRODUCTS ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
-    COMMENT "mcdx RisohEditor_res.rc ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}"
+    COMMENT "mcdx RisohEditor_res.rc --preprocessor=..\\data\\bin\\cpp.exe ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}"
     VERBATIM)
 add_dependencies(RisohEditor messagetables)
 add_dependencies(messagetables mcdx)

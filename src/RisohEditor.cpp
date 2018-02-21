@@ -3870,6 +3870,19 @@ BOOL MMainWnd::CheckDataFolder(VOID)
         }
     }
     lstrcpynW(m_szDataFolder, szPath, MAX_PATH);
+
+    DWORD cch = GetEnvironmentVariableW(L"PATH", NULL, 0);
+
+    MStringW env, str;
+    env.resize(cch);
+    GetEnvironmentVariableW(L"PATH", &env[0], cch);
+
+    str = m_szDataFolder;
+    str += L"\\bin;";
+    str += env;
+
+    SetEnvironmentVariableW(L"PATH", str.c_str());
+
     return TRUE;
 }
 

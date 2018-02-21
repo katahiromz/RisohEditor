@@ -78,6 +78,8 @@ void show_help(void)
     printf("  -U --undefine <sym>          Undefine SYM when preprocessing rc file\n");
     printf("  -c --codepage=<codepage>     Specify default codepage\n");
     printf("  -l --language=<val>          Set language when reading rc file\n");
+    printf("  --preprocessor=<path>        Set preprocessor path\n");
+    printf("  --windres=<path>             Set windres path\n");
     printf("FORMAT is one of rc, res, bin or coff, and is deduced from the file name\n");
     printf("Report bugs to <katayama.hirofumi.mz@gmail.com>\n");
 }
@@ -185,8 +187,8 @@ FILE *tmpfilenam(char *pathname)
 
 ////////////////////////////////////////////////////////////////////////////
 
-char g_cpp[MAX_PATH] = "cpp";
-char g_windres[MAX_PATH] = "windres";
+const char *g_cpp = "cpp";
+const char *g_windres = "windres";
 
 char *g_input_file = NULL;
 char *g_output_file = NULL;
@@ -214,85 +216,6 @@ int syntax_error(void)
 }
 
 const char *g_progname = "mcdx";
-
-#if defined(_WIN32) && !defined(WONVER)
-BOOL check_cpp(void)
-{
-    TCHAR szPath[MAX_PATH + 64], *pch;
-    SearchPath(NULL, TEXT("cpp.exe"), NULL, _countof(szPath), szPath, &pch);
-    if (file_exists(szPath))
-    {
-        strcpy(g_cpp, szPath);
-        return TRUE;
-    }
-
-    GetModuleFileName(NULL, szPath, _countof(szPath));
-    pch = strrchr(szPath, '\\');
-    strcpy(pch, TEXT("\\cpp.exe"));
-    if (!file_exists(szPath))
-    {
-        strcpy(pch, TEXT("\\data\\bin\\cpp.exe"));
-        if (!file_exists(szPath))
-        {
-            strcpy(pch, TEXT("\\..\\data\\bin\\cpp.exe"));
-            if (!file_exists(szPath))
-            {
-                strcpy(pch, TEXT("\\..\\..\\data\\bin\\cpp.exe"));
-                if (!file_exists(szPath))
-                {
-                    strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\cpp.exe"));
-                    if (!file_exists(szPath))
-                    {
-                        return FALSE;
-                    }
-                }
-            }
-        }
-    }
-    strcpy(g_cpp, szPath);
-    return TRUE;
-}
-#endif
-
-#if defined(_WIN32) && !defined(WONVER)
-BOOL check_windres(void)
-{
-    TCHAR szPath[MAX_PATH + 64], *pch;
-
-    SearchPath(NULL, TEXT("windres.exe"), NULL, _countof(szPath), szPath, &pch);
-    if (file_exists(szPath))
-    {
-        strcpy(g_windres, szPath);
-        return TRUE;
-    }
-
-    GetModuleFileName(NULL, szPath, _countof(szPath));
-    pch = mstrrchr(szPath, TEXT('\\'));
-    strcpy(pch, TEXT("\\windres.exe"));
-    if (!file_exists(szPath))
-    {
-        strcpy(pch, TEXT("\\data\\bin\\windres.exe"));
-        if (!file_exists(szPath))
-        {
-            strcpy(pch, TEXT("\\..\\data\\bin\\windres.exe"));
-            if (!file_exists(szPath))
-            {
-                strcpy(pch, TEXT("\\..\\..\\data\\bin\\windres.exe"));
-                if (!file_exists(szPath))
-                {
-                    strcpy(pch, TEXT("\\..\\..\\..\\data\\bin\\windres.exe"));
-                    if (!file_exists(szPath))
-                    {
-                        return FALSE;
-                    }
-                }
-            }
-        }
-    }
-    strcpy(g_windres, szPath);
-    return TRUE;
-}
-#endif
 
 bool do_directive_line(char*& ptr)
 {
@@ -1158,6 +1081,8 @@ int main(int argc, char **argv)
         {"undefine",        required_argument, NULL, 'U' },
         {"codepage",        required_argument, NULL, 'c' },
         {"language",        required_argument, NULL, 'l' },
+        {"preprocessor",    required_argument, NULL, 'p' },
+        {"windres",         required_argument, NULL, 'w' },
         {0,                 0,                 NULL, 0   }
     };
 
@@ -1236,6 +1161,12 @@ int main(int argc, char **argv)
                 g_langid = MAKELANGID(bPrim, bSub);
             }
             break;
+        case 'p':
+            g_cpp = optarg;
+            break;
+        case 'w':
+            g_windres = optarg;
+            break;
         default:
             assert(0);
             break;
@@ -1298,20 +1229,6 @@ int main(int argc, char **argv)
             g_out_format = "rc";
         }
     }
-
-#if defined(_WIN32) && !defined(WONVER)
-    if (!check_cpp())
-    {
-        fprintf(stderr, "ERROR: Unable to find cpp\n");
-        return EXITCODE_NOT_FOUND_CPP;
-    }
-
-    if (!check_windres())
-    {
-        fprintf(stderr, "ERROR: Unable to find windres\n");
-        return EXITCODE_NOT_FOUND_WINDRES;
-    }
-#endif
 
     int ret = just_do_it();
     return ret;
