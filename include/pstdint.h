@@ -9,7 +9,7 @@
     #include <cstdint>
 #elif __STDC_VERSION__ >= 199901L
     #include <stdint.h>
-#elif defined(_WIN32)
+#elif defined(_WIN32) && !defined(WONVER)
     #ifndef _INC_WINDOWS
         #include <windows.h>
     #endif

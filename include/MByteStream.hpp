@@ -9,7 +9,7 @@ class MByteStream;
 
 //////////////////////////////////////////////////////////////////////////////
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(WONVER)
     #ifndef _INC_WINDOWS
         #include <windows.h>
     #endif
@@ -27,7 +27,7 @@ class MByteStream;
 #ifndef MString
     #include <string>       // for std::basic_string, std::string, ...
     typedef std::string MStringA;
-    #ifdef _WIN32
+    #if defined(_WIN32) && !defined(WONVER)
         #include <tchar.h>      // Windows generic text mapping
         #ifdef _MBCS
             #include <mbstring.h>   // for _mbsrchr

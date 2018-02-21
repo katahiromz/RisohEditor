@@ -101,7 +101,7 @@ public:
                 if (!stream.ReadRaw(entry_head))
                     return false;
 
-                std::wstring wstr = (const WCHAR *)&stream[stream.pos()];
+                MStringW wstr = (const WCHAR *)&stream[stream.pos()];
                 if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
                 {
                     size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(wchar_t);
@@ -117,7 +117,7 @@ public:
                 else
                 {
                     size_t len = entry_head.Length - sizeof(entry_head);
-                    std::string str;
+                    MStringA str;
                     str.resize(len);
                     if (!stream.ReadData(&str[0], len * sizeof(char)))
                     {

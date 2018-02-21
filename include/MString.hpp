@@ -3,9 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       11   /* Version 11 */
-
-#include <algorithm>    // for std::reverse
+#define MZC4_MSTRING_HPP_       12  /* Version 12 */
 
 // class MString;
 // class MStringA;
@@ -20,6 +18,9 @@
 #else
     #include "pstdint.h"
 #endif
+
+#include <algorithm>    // for std::reverse
+#include <cstring>      // for std::memcmp
 
 // MString
 #ifndef MString
@@ -93,10 +94,6 @@ template <typename T_CHAR>
 T_CHAR *mstrrchr(T_CHAR *str, T_CHAR ch);
 template <typename T_CHAR>
 const T_CHAR *mstrrchr(const T_CHAR *str, T_CHAR ch);
-
-////////////////////////////////////////////////////////////////////////////
-
-#include "MTextToText.hpp"
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -238,6 +235,10 @@ MStringW
 mstr_from_bin(const std::string& bin, MTextType *pType = NULL);
 
 std::string mbin_from_str(const MStringW& str, const MTextType& type);
+
+////////////////////////////////////////////////////////////////////////////
+
+#include "MTextToText.hpp"
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -391,9 +392,11 @@ inline bool mstr_is_text_utf8(const std::string& str)
 
 inline bool mstr_is_text_unicode(const void *ptr, size_t len)
 {
-    if (::IsTextUnicode(const_cast<void *>(ptr), int(len), NULL))
-        return true;
-    return false;
+    assert(0);
+    //if (::IsTextUnicode(const_cast<void *>(ptr), int(len), NULL))
+    //    return true;
+    //return false;
+    return true;    // ...
 }
 
 template <typename T_CHAR>
@@ -587,7 +590,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
         return ret;
     }
 
-    if (len >= 2 && memcmp(bin, "\xFF\xFE", 2) == 0)
+    if (len >= 2 && std::memcmp(bin, "\xFF\xFE", 2) == 0)
     {
         // UTF-16 LE
         if (pType)
@@ -597,7 +600,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
         }
         ret.assign((const WCHAR *)bin, len / sizeof(WCHAR));
     }
-    else if (len >= 2 && memcmp(bin, "\xFE\xFF", 2) == 0)
+    else if (len >= 2 && std::memcmp(bin, "\xFE\xFF", 2) == 0)
     {
         // UTF-16 BE
         if (pType)
@@ -611,7 +614,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
     else
     {
         const char *pch = (const char *)bin;
-        if (len >= 3 && memcmp(bin, "\xEF\xBB\xBF", 3) == 0)
+        if (len >= 3 && std::memcmp(bin, "\xEF\xBB\xBF", 3) == 0)
         {
             // UTF-8
             if (pType)
@@ -641,7 +644,7 @@ mstr_from_bin(const void *bin, size_t len, MTextType *pType/* = NULL*/)
                 pType->nEncoding = MTENC_UTF8;
                 pType->bHasBOM = false;
             }
-            ret = MAnsiToWide(CP_UTF8, pch, INT(len));
+            ret = MAnsiToWide(CP_UTF8, pch, int(len));
         }
         else if (mstr_is_text_unicode(bin, int(len)))
         {
@@ -924,7 +927,7 @@ inline void mstr_trim_right(WCHAR *str)
 ////////////////////////////////////////////////////////////////////////////
 // UTF-8 checking
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(WONVER)
     inline bool mstr_is_text_utf8(const char *str, size_t len)
     {
         if (len == 0)

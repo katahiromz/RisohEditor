@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     12  /* Version 12 */
+#define WONNT_H     13  /* Version 13 */
 
 #if defined(_WIN32) && !defined(_WONVER)
     #include <windows.h>
@@ -41,8 +41,19 @@ typedef uint32_t UINT;
 typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG, DWORDLONG;
 
-/* NOTE: Please think the case of sizeof(wchar_t) != 2. */
-typedef wchar_t WCHAR;
+/* WCHAR */
+#ifndef __WCHAR_DEFINED
+    #define __WCHAR_DEFINED
+    #ifdef _WIN32
+        typedef wchar_t WCHAR;
+    #else
+        #if __cplusplus >= 201103L
+            typedef char16_t WCHAR;
+        #else
+            typedef uint16_t WCHAR;
+        #endif
+    #endif
+#endif
 
 #ifdef _WIN64
     typedef int64_t LONG_PTR;
