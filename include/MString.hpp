@@ -425,7 +425,7 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
         }
     }
 
-    return num;
+    return (minus ? -num : num);
 }
 
 template <typename T_CHAR>
