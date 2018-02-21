@@ -284,4 +284,7 @@
 #define MSGID_HELLO         1
 #define MSGID_SAMPLE        2
 
+#define HID_TEST1           1
+#define HID_TEST2           0x7FFFFFFF
+
 #endif  // ndef RESOURCE_H_

@@ -149,7 +149,21 @@ public:
 
         if (m_dialog_res.IsExtended())
         {
-            ::CheckDlgButton(hwnd, chx1, BST_CHECKED);
+            CheckDlgButton(hwnd, chx1, BST_CHECKED);
+            EnableWindow(GetDlgItem(hwnd, cmb3), TRUE);
+            EnableWindow(GetDlgItem(hwnd, cmb6), TRUE);
+            EnableWindow(GetDlgItem(hwnd, chx2), TRUE);
+            EnableWindow(GetDlgItem(hwnd, chx3), TRUE);
+            EnableWindow(GetDlgItem(hwnd, cmb5), TRUE);
+        }
+        else
+        {
+            CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
+            EnableWindow(GetDlgItem(hwnd, cmb3), FALSE);
+            EnableWindow(GetDlgItem(hwnd, cmb6), FALSE);
+            EnableWindow(GetDlgItem(hwnd, chx2), FALSE);
+            EnableWindow(GetDlgItem(hwnd, chx3), FALSE);
+            EnableWindow(GetDlgItem(hwnd, cmb5), FALSE);
         }
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
@@ -432,6 +446,23 @@ public:
             if (codeNotify == EN_CHANGE)
             {
                 OnEdt7(hwnd);
+            }
+        case chx1:
+            if (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+            {
+                EnableWindow(GetDlgItem(hwnd, cmb3), TRUE);
+                EnableWindow(GetDlgItem(hwnd, cmb6), TRUE);
+                EnableWindow(GetDlgItem(hwnd, chx2), TRUE);
+                EnableWindow(GetDlgItem(hwnd, chx3), TRUE);
+                EnableWindow(GetDlgItem(hwnd, cmb5), TRUE);
+            }
+            else
+            {
+                EnableWindow(GetDlgItem(hwnd, cmb3), FALSE);
+                EnableWindow(GetDlgItem(hwnd, cmb6), FALSE);
+                EnableWindow(GetDlgItem(hwnd, chx2), FALSE);
+                EnableWindow(GetDlgItem(hwnd, chx3), FALSE);
+                EnableWindow(GetDlgItem(hwnd, cmb5), FALSE);
             }
             break;
         }
