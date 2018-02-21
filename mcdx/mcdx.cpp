@@ -585,7 +585,7 @@ int save_rc(const char *output_file)
         fp = stdout;
     }
 
-    fprintf(fp, "#pragma code_page(65001) /* UTF-8 */\r\n");
+    fprintf(fp, "#pragma code_page(65001) /* UTF-8 */\r\n\r\n");
 
     msg_tables_type::iterator it, end = g_msg_tables.end();
     for (it = g_msg_tables.begin(); it != end; ++it)
@@ -598,7 +598,7 @@ int save_rc(const char *output_file)
         MStringA str = MWideToAnsi(CP_UTF8, wstr.c_str()).c_str();
 
         fputs(str.c_str(), fp);
-        fprintf(fp, "#endif\r\n");
+        fprintf(fp, "#endif\r\n\r\n");
     }
 
     if (output_file)
