@@ -192,7 +192,7 @@ public:
         ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
-        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_COMMAND, m_dialog_res.m_help_id);
+        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
         ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
         ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 32, 0);
 

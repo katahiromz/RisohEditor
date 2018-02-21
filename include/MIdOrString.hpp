@@ -323,7 +323,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
                     ++pch;
                 }
             }
-            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 16);
+            str += mstr_parse_int(strNum.c_str(), false, 16);
         }
         break;
     case '0': case '1': case '2': case '3':
@@ -345,7 +345,7 @@ inline bool guts_escape(std::string& str, const char*& pch)
                     }
                 }
             }
-            str += (WCHAR)mstr_parse_int(strNum.c_str(), false, 8);
+            str += (char)mstr_parse_int(strNum.c_str(), false, 8);
         }
         break;
     default:
