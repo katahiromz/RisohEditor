@@ -159,25 +159,25 @@ public:
         mstr_trim(strX);
         if (!strX.empty())
             flags |= F_X;
-        item.m_pt.x = _tcstol(strX.c_str(), NULL, 0);
+        item.m_pt.x = mstr_parse_int(strX.c_str());
 
         MString strY = GetDlgItemText(edt2);
         mstr_trim(strY);
         if (!strY.empty())
             flags |= F_Y;
-        item.m_pt.y = _tcstol(strY.c_str(), NULL, 0);
+        item.m_pt.y = mstr_parse_int(strY.c_str());
 
         MString strCX = GetDlgItemText(edt3);
         mstr_trim(strCX);
         if (!strCX.empty())
             flags |= F_CX;
-        item.m_siz.cx = _tcstol(strCX.c_str(), NULL, 0);
+        item.m_siz.cx = mstr_parse_int(strCX.c_str());
 
         MString strCY = GetDlgItemText(edt4);
         mstr_trim(strCY);
         if (!strCY.empty())
             flags |= F_CY;
-        item.m_siz.cy = _tcstol(strCY.c_str(), NULL, 0);
+        item.m_siz.cy = mstr_parse_int(strCY.c_str());
 
         MString strID = GetDlgItemText(cmb3);
         mstr_trim(strID);
@@ -187,7 +187,7 @@ public:
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
             strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
-            id = _tcstol(strID.c_str(), NULL, 0);
+            id = mstr_parse_int(strID.c_str());
         }
         else if (m_db.HasCtrlID(strID))
         {
@@ -223,7 +223,7 @@ public:
         }
         else
         {
-            item.m_help_id = _tcstol(strHelp.c_str(), NULL, 0);
+            item.m_help_id = mstr_parse_int(strHelp.c_str());
         }
 
         MString strStyle = GetDlgItemText(edt6);

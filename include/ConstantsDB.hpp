@@ -322,7 +322,7 @@ public:
             ValueType value;
             if (iswdigit(value_str[0]))
             {
-                value = wcstoul(value_str.c_str(), NULL, 0);
+                value = mstr_parse_int(value_str.c_str(), false);
             }
             else
             {
@@ -332,7 +332,7 @@ public:
             ValueType mask;
             if (iswdigit(mask_str[0]))
             {
-                mask = wcstoul(mask_str.c_str(), NULL, 0);
+                mask = mstr_parse_int(mask_str.c_str(), false);
             }
             else
             {
@@ -497,7 +497,7 @@ public:
 
             if (iswdigit((*it)[0]))
             {
-                value |= wcstoul(it->c_str(), NULL, 0);
+                value |= mstr_parse_int(it->c_str(), false);
             }
             else
             {

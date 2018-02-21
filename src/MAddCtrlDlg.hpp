@@ -242,7 +242,7 @@ public:
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
             strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
-            id = (WORD)_tcstol(strID.c_str(), NULL, 0);
+            id = (WORD)mstr_parse_int(strID.c_str());
         }
         else if (m_db.HasResID(strID))
         {
