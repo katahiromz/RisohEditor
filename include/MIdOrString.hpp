@@ -530,14 +530,14 @@ inline MString mstr_dec_short(SHORT value)
 inline MString mstr_dec_word(WORD value)
 {
     MString ret;
-    mstr_to_hex(ret, (WORD)value);
+    mstr_to_dec(ret, value);
     return ret;
 }
 
 inline MString mstr_dec_dword(DWORD value)
 {
     MString ret;
-    mstr_to_hex(ret, (DWORD)value);
+    mstr_to_dec(ret, value);
     return ret;
 }
 
