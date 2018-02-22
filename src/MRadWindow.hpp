@@ -90,6 +90,20 @@ public:
         return s_hbm;
     }
 
+    static BOOL IsGroupBox(HWND hCtrl)
+    {
+        WCHAR szClass[8];
+        GetClassNameW(hCtrl, szClass, _countof(szClass));
+        if (lstrcmpiW(szClass, L"BUTTON") == 0)
+        {
+            if ((GetWindowStyle(hCtrl) & BS_TYPEMASK) == BS_GROUPBOX)
+            {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
     void EndSubclass()
     {
         SIZE siz;
@@ -98,6 +112,7 @@ public:
         GetClassName(m_hwnd, szClass, _countof(szClass));
         if (lstrcmpi(szClass, TEXT("STATIC")) == 0)
         {
+            // static control
             DWORD style = GetWindowStyle(m_hwnd);
             if ((style & SS_TYPEMASK) == SS_ICON)
             {
@@ -812,28 +827,22 @@ public:
     {
         HWND hwndFirstGroupBox = NULL;
     retry:
-        for (HWND hCtrl = GetTopWindow(hwnd);
-             hCtrl;
+        for (HWND hCtrl = GetTopWindow(hwnd); hCtrl;
              hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
         {
-            WCHAR szClass[64];
-            GetClassNameW(hCtrl, szClass, _countof(szClass));
-            if (lstrcmpiW(szClass, L"BUTTON") == 0)
+            if (MRadCtrl::IsGroupBox(hCtrl))
             {
-                if ((GetWindowStyle(hCtrl) & BS_TYPEMASK) == BS_GROUPBOX)
+                if (hwndFirstGroupBox == NULL)
                 {
-                    if (hwndFirstGroupBox == NULL)
-                    {
-                        hwndFirstGroupBox = hCtrl;
-                    }
-                    else if (hwndFirstGroupBox == hCtrl)
-                    {
-                        break;
-                    }
-                    SetWindowPos(hCtrl, HWND_BOTTOM, 0, 0, 0, 0,
-                        SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
-                    goto retry;
+                    hwndFirstGroupBox = hCtrl;
                 }
+                else if (hwndFirstGroupBox == hCtrl)
+                {
+                    break;
+                }
+                SetWindowPos(hCtrl, HWND_BOTTOM, 0, 0, 0, 0,
+                    SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
+                goto retry;
             }
         }
     }
@@ -900,7 +909,7 @@ public:
             if (item.m_class == 0x0082 ||
                 lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
             {
-                // static
+                // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
                     Res_DoIcon(m_entries, m_title_to_icon, item, lang);
