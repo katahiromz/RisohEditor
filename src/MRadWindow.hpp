@@ -96,10 +96,7 @@ public:
         GetClassNameW(hCtrl, szClass, _countof(szClass));
         if (lstrcmpiW(szClass, L"BUTTON") == 0)
         {
-            if ((GetWindowStyle(hCtrl) & BS_TYPEMASK) == BS_GROUPBOX)
-            {
-                return TRUE;
-            }
+            return (GetWindowStyle(hCtrl) & BS_TYPEMASK) == BS_GROUPBOX;
         }
         return FALSE;
     }
