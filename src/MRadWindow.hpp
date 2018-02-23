@@ -235,6 +235,11 @@ public:
         MRubberBand *band = new MRubberBand;
         band->CreateDx(GetParent(hwnd), hwnd, TRUE);
 
+        if (!MRadCtrl::IsGroupBox(hwnd))
+        {
+            SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+        }
+
         pCtrl->m_hwndRubberBand = *band;
         GetTargets().insert(hwnd);
         GetLastSel() = hwnd;
@@ -477,11 +482,60 @@ public:
         ::DefWindowProc(hwnd, WM_NCLBUTTONUP, codeHitTest, MAKELPARAM(x, y));
     }
 
+    struct MYHITTEST
+    {
+        HWND hParent;
+        HWND hCandidate;
+        HWND hLast;
+        POINT pt;
+    };
+
+    static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
+    {
+        MYHITTEST *pmht = (MYHITTEST *)lParam;
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+        if (PtInRect(&rc, pmht->pt))
+        {
+            // NOTE: EnumChildWindows scans not only children but descendants.
+            if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+            {
+                if (pCtrl->m_bTopCtrl)
+                {
+                    pmht->hLast = hwnd;
+                    if (!IsGroupBox(hwnd))
+                    {
+                        pmht->hCandidate = hwnd;
+                    }
+                }
+            }
+        }
+        return TRUE;
+    }
+
     UINT OnNCHitTest(HWND hwnd, int x, int y)
     {
         if (m_bTopCtrl)
         {
-            return HTCAPTION;
+            RECT rc;
+            GetWindowRect(hwnd, &rc);
+
+            POINT pt = { x, y };
+            if (m_hwndRubberBand && PtInRect(&rc, pt))
+                return HTCAPTION;
+
+            MYHITTEST mht;
+            mht.hParent = GetParent(hwnd);
+            mht.hCandidate = NULL;
+            mht.hLast = NULL;
+            mht.pt = pt;
+            EnumChildWindows(mht.hParent, EnumChildProc, (LPARAM)&mht);
+
+            if (mht.hCandidate == hwnd ||
+                (!mht.hCandidate && mht.hLast == hwnd))
+            {
+                return HTCAPTION;
+            }
         }
         return HTTRANSPARENT;
     }
