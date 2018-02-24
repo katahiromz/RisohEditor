@@ -5677,6 +5677,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_LOADRESHBANG:
         OnLoadResHBang(hwnd);
         break;
+    case CMDID_REFRESHDIALOG:
+        m_rad_window.OnRefresh(m_rad_window);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;

@@ -160,6 +160,8 @@ IDM_POPUPS MENU
             MENUITEM "适应网格(&G)", CMDID_FITTOGRID
         END
         MENUITEM SEPARATOR
+        MENUITEM "刷新(&R)", CMDID_REFRESHDIALOG
+        MENUITEM SEPARATOR
         MENUITEM "控件属性(&P)...", CMDID_CTRLPROP
         MENUITEM "对话框属性(&O)...", CMDID_DLGPROP
     }

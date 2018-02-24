@@ -782,14 +782,8 @@ public:
             HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
             HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
             HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
-            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         }
         return 0;
-    }
-
-    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
-    {
-        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwndContext, xPos, yPos, SendMessage);
     }
 
     void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
@@ -1808,6 +1802,12 @@ public:
         }
     }
 
+    void OnRefresh(HWND hwnd)
+    {
+        ReCreateRadDialog(hwnd);
+        UpdateRes();
+    }
+
     void OnShowHideIndex(HWND hwnd)
     {
         m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
@@ -1816,7 +1816,7 @@ public:
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
-        HWND hwndOwner = ::GetWindow(hwnd, GW_OWNER);
+        HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, SendMessage);
     }
 

@@ -117,6 +117,7 @@
 #define CMDID_OPENLICENSE       193
 #define CMDID_DEBUGTREENODE     194
 #define CMDID_LOADRESHBANG      195
+#define CMDID_REFRESHDIALOG     196
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

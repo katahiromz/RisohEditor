@@ -160,6 +160,8 @@ IDM_POPUPS MENU
             MENUITEM "グリッドに合わせる(&G)", CMDID_FITTOGRID
         }
         MENUITEM SEPARATOR
+        MENUITEM "再描画(&R)", CMDID_REFRESHDIALOG
+        MENUITEM SEPARATOR
         MENUITEM "コントロールのプロパティ(&P)...", CMDID_CTRLPROP
         MENUITEM "ダイアログのプロパティ(&O)...", CMDID_DLGPROP
     }

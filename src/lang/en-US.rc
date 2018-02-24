@@ -160,6 +160,8 @@ IDM_POPUPS MENU
             MENUITEM "Fit To &Grid", CMDID_FITTOGRID
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Refresh", CMDID_REFRESHDIALOG
+        MENUITEM SEPARATOR
         MENUITEM "&Properties for Control...", CMDID_CTRLPROP
         MENUITEM "Pr&operties for Dialog...", CMDID_DLGPROP
     }
