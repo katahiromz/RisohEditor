@@ -25,6 +25,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
@@ -40,6 +41,7 @@ public:
     ResEntry& m_entry;
     ConstantsDB& m_db;
     MIdOrString m_name;
+    MComboBoxAutoComplete m_cmb2;
 
     MCloneInNewNameDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
         : MDialogBase(IDD_CLONEINNEWNAME), m_entries(entries), m_entry(entry), m_db(db)
@@ -128,6 +130,7 @@ public:
         INT nIDTYPE_ = m_db.IDTypeFromRes(m_entry.type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_db, m_entry.name, nIDTYPE_);
+        SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
         return TRUE;
@@ -180,6 +183,12 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
             break;
         }
     }
