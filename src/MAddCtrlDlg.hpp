@@ -25,6 +25,7 @@
 #include "MString.hpp"
 #include "resource.h"
 #include "MToolBarCtrl.hpp"
+#include "MComboBoxAutoComplete.hpp"
 
 class MAddCtrlDlg;
 
@@ -39,6 +40,7 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
 void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +61,9 @@ public:
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
+    MComboBoxAutoComplete m_cmb3;
+    MComboBoxAutoComplete m_cmb4;
+    MComboBoxAutoComplete m_cmb5;
 
     MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt,
                 RisohSettings& settings)
@@ -187,9 +192,15 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
         SetDlgItemText(hwnd, cmb3, TEXT("-1"));
+        SubclassChildDx(m_cmb3, cmb3);
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
         InitWndClassComboBox(hCmb4, m_db, TEXT(""));
+        SubclassChildDx(m_cmb4, cmb4);
+
+        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
+        InitResNameComboBox(hCmb5, m_db, WORD(0), IDTYPE_HELP);
+        SubclassChildDx(m_cmb5, cmb5);
 
         InitTables(NULL);
 
@@ -401,8 +412,11 @@ public:
 
     void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
-        MString strSuper;
         DWORD dwType = m_db.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        if (dwType == 0)
+            return;
+
+        MString strSuper;
         if (dwType >= 3)
         {
             ConstantsDB::TableType table;
@@ -493,6 +507,12 @@ public:
                 UpdateClass(hwnd, hLst1, text);
             }
             break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
+            }
+            break;
         case cmb4:
             if (codeNotify == CBN_SELCHANGE)
             {
@@ -504,10 +524,19 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
+                DWORD dwPos = m_cmb4.GetEditSel();
+                m_cmb4.OnEditChange();
                 MString text = GetDlgItemText(hwnd, cmb4);
                 mstr_trim(text);
                 InitTables(text.c_str());
                 UpdateClass(hwnd, hLst1, text);
+                m_cmb4.SetEditSel(LOWORD(dwPos), -1);
+            }
+            break;
+        case cmb5:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb5.OnEditChange();
             }
             break;
         case lst1:

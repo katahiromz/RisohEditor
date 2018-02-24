@@ -78,6 +78,8 @@ public:
             return;
 
         MString strInput = GetWindowText();
+        MString strInputUpper = strInput;
+        _wcsupr(&strInputUpper[0]);
 
         INT iItem = FindString(-1, strInput.c_str());
         if (iItem == CB_ERR)
@@ -92,8 +94,8 @@ public:
         {
             GetLBText(i, szText);
             MString strText = szText;
-
-            if (strText.find(strInput) == 0)
+            _wcsupr(&strText[0]);
+            if (strText.find(strInputUpper) == 0)
             {
                 return;
             }
@@ -101,7 +103,7 @@ public:
 
         m_edit.m_bAutoComplete = FALSE;
         SetWindowText(strCandidate.c_str());
-        SetEditSel(cch, -1);
+        SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
     }
 
 public:
