@@ -577,7 +577,15 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     }
     else
     {
-        type = szType;
+		MStringW str = szType;
+		if (size_t i = str.find(L'('))
+		{
+	        type = WORD(wcstol(&str[i + 1], NULL, 0));
+		}
+		else
+		{
+	        type = szType;
+		}
     }
 
     return TRUE;

@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 #include "Samples.hpp"
 
@@ -42,6 +43,9 @@ public:
     MIdOrString m_type;
     LPCTSTR m_file;
     ResEntry m_entry_copy;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
+    MComboBoxAutoComplete m_cmb3;
 
     MAddResDlg(ResEntries& entries, ConstantsDB& db)
         : MDialogBase(IDD_ADDRES), m_entries(entries), m_db(db),
@@ -117,6 +121,7 @@ public:
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
+        SubclassChildDx(m_cmb1, cmb1);
 
         if (m_type == RT_VERSION)
         {
@@ -126,6 +131,7 @@ public:
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());
+        SubclassChildDx(m_cmb3, cmb3);
 
         // for file
         if (m_file)
@@ -359,6 +365,22 @@ public:
             if (codeNotify == CBN_SELCHANGE)
             {
                 ;
+            }
+            else if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
             }
             break;
         }
