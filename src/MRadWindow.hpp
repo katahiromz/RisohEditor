@@ -59,6 +59,7 @@ class MRadWindow;
 class MRadCtrl : public MWindowBase
 {
 public:
+    DWORD           m_dwMagic;
     BOOL            m_bTopCtrl;
     HWND            m_hwndRubberBand;
     BOOL            m_bMoving;
@@ -71,7 +72,7 @@ public:
     INT             m_nImageType;
 
     MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
-        m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+        m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
         m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
         m_nIndex(-1), m_db(db), m_settings(settings)
     {
@@ -181,13 +182,21 @@ public:
         {
             MRadCtrl *pCtrl;
             pCtrl = static_cast<MRadCtrl *>(base);
-            return pCtrl;
+            if (pCtrl->m_dwMagic == 0xDEADFACE)
+                return pCtrl;
         }
         return NULL;
     }
 
-    static void DeselectSelection()
+    static BOOL& GetRangeSelect(void)
     {
+        static BOOL s_bRangeSelect = FALSE;
+        return s_bRangeSelect;
+    }
+
+    static BOOL DeselectSelection()
+    {
+        BOOL bFound = FALSE;
         set_type::iterator it, end = GetTargets().end();
         for (it = GetTargets().begin(); it != end; ++it)
         {
@@ -196,10 +205,12 @@ public:
             {
                 ::DestroyWindow(pCtrl->m_hwndRubberBand);
                 pCtrl->m_hwndRubberBand = NULL;
+                bFound = TRUE;
             }
         }
         GetTargets().clear();
         GetLastSel() = NULL;
+        return bFound;
     }
 
     static void DeleteSelection()
@@ -223,6 +234,11 @@ public:
         GetLastSel() = NULL;
     }
 
+    BOOL IsSelected()
+    {
+        return IsWindow(m_hwndRubberBand);
+    }
+
     static void Select(HWND hwnd)
     {
         if (hwnd == NULL)
@@ -234,13 +250,13 @@ public:
 
         MRubberBand *band = new MRubberBand;
         band->CreateDx(GetParent(hwnd), hwnd, TRUE);
+        pCtrl->m_hwndRubberBand = *band;
 
         if (!MRadCtrl::IsGroupBox(hwnd))
         {
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
         }
 
-        pCtrl->m_hwndRubberBand = *band;
         GetTargets().insert(hwnd);
         GetLastSel() = hwnd;
     }
@@ -291,6 +307,60 @@ public:
                 }
             }
         }
+    }
+
+    struct RANGE_SELECT
+    {
+        RECT rc;
+        BOOL bCtrlDown;
+    };
+
+    static BOOL CALLBACK
+    RangeSelectProc(HWND hwnd, LPARAM lParam)
+    {
+        RANGE_SELECT *prs = (RANGE_SELECT *)lParam;
+        RECT *prc = &prs->rc;
+        RECT rc;
+
+        if (MRadCtrl *pCtrl = GetRadCtrl(hwnd))
+        {
+            if (pCtrl->m_bTopCtrl)
+            {
+                GetWindowRect(*pCtrl, &rc);
+
+                if (prc->left <= rc.left && prc->top <= rc.top &&
+                    rc.right <= prc->right && rc.bottom <= prc->bottom)
+                {
+                    if (prs->bCtrlDown)
+                    {
+                        if (pCtrl->IsSelected())
+                        {
+                            pCtrl->Deselect();
+                        }
+                        else
+                        {
+                            MRadCtrl::Select(*pCtrl);
+                        }
+                    }
+                    else
+                    {
+                        if (!pCtrl->IsSelected())
+                        {
+                            MRadCtrl::Select(*pCtrl);
+                        }
+                    }
+                }
+            }
+        }
+        return TRUE;
+    }
+
+    static void DoRangeSelect(HWND hwndParent, const RECT *prc, BOOL bCtrlDown)
+    {
+        RANGE_SELECT rs;
+        rs.rc = *prc;
+        rs.bCtrlDown = bCtrlDown;
+        EnumChildWindows(hwndParent, RangeSelectProc, (LPARAM)&rs);
     }
 
     virtual LRESULT CALLBACK
@@ -463,10 +533,9 @@ public:
             Select(hwnd);
         }
 
-        HWND hwndPrev = GetWindow(hwnd, GW_HWNDPREV);
         ::DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
-        if (IsWindow(m_hwnd))
-            SetWindowPosDx(NULL, NULL, hwndPrev);
+        if (!IsGroupBox(hwnd))
+            SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
     }
 
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
@@ -557,6 +626,7 @@ public:
     BOOL            m_index_visible;
     ConstantsDB&    m_db;
     POINT           m_ptClicked;
+    POINT           m_ptDragging;
     MIndexLabels    m_labels;
     RisohSettings&  m_settings;
     BOOL            m_bMovingSizing;
@@ -681,15 +751,108 @@ public:
         return 0;
     }
 
+    void NormalizeRect(RECT *prc, POINT pt0, POINT pt1)
+    {
+        if (pt0.x < pt1.x)
+        {
+            prc->left = pt0.x;
+            prc->right = pt1.x;
+        }
+        else
+        {
+            prc->left = pt1.x;
+            prc->right = pt0.x;
+        }
+
+        if (pt0.y < pt1.y)
+        {
+            prc->top = pt0.y;
+            prc->bottom = pt1.y;
+        }
+        else
+        {
+            prc->top = pt1.y;
+            prc->bottom = pt0.y;
+        }
+    }
+
+    void DrawDragSelect(HWND hwnd)
+    {
+        if (HDC hDC = GetDC(hwnd))
+        {
+            RECT rc;
+            NormalizeRect(&rc, m_ptClicked, m_ptDragging);
+
+            DrawFocusRect(hDC, &rc);
+
+            ReleaseDC(hwnd, hDC);
+        }
+    }
+
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
-        if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
-            return;
-
         m_ptClicked.x = x;
         m_ptClicked.y = y;
 
-        MRadCtrl::DeselectSelection();
+        if (::GetKeyState(VK_SHIFT) >= 0 && ::GetKeyState(VK_CONTROL) >= 0)
+        {
+            MRadCtrl::DeselectSelection();
+        }
+
+        if (!MRadCtrl::GetRangeSelect())
+        {
+            m_ptDragging = m_ptClicked;
+
+            DrawDragSelect(hwnd);
+
+            MRadCtrl::GetRangeSelect() = TRUE;
+            ::SetCapture(hwnd);
+        }
+    }
+
+    void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
+    {
+        if (MRadCtrl::GetRangeSelect())
+        {
+            DrawDragSelect(hwnd);
+
+            m_ptDragging.x = x;
+            m_ptDragging.y = y;
+
+            DrawDragSelect(hwnd);
+        }
+    }
+
+    void OnCaptureChanged(HWND hwnd)
+    {
+        if (MRadCtrl::GetRangeSelect())
+        {
+            DrawDragSelect(hwnd);
+            MRadCtrl::GetRangeSelect() = FALSE;
+        }
+    }
+
+    void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
+    {
+        if (MRadCtrl::GetRangeSelect())
+        {
+            RECT rc;
+            NormalizeRect(&rc, m_ptClicked, m_ptDragging);
+
+            MapWindowRect(hwnd, NULL, &rc);
+
+            if (GetAsyncKeyState(VK_SHIFT) >= 0 &&
+                GetAsyncKeyState(VK_CONTROL) >= 0)
+            {
+                MRadCtrl::DeselectSelection();
+            }
+
+            ReleaseCapture();
+            MRadCtrl::GetRangeSelect() = FALSE;
+
+            BOOL bCtrlDown = GetAsyncKeyState(VK_CONTROL) < 0;
+            MRadCtrl::DoRangeSelect(hwnd, &rc, bCtrlDown);
+        }
     }
 
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
@@ -716,6 +879,8 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONDOWN, OnNCRButtonDown);
             HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
             HANDLE_MSG(hwnd, WM_NCMOUSEMOVE, OnNCMouseMove);
+            HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
+            HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
             HANDLE_MSG(hwnd, WM_KEYDOWN, OnKey);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_SYSCOLORCHANGE, OnSysColorChange);
@@ -723,6 +888,9 @@ public:
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
+            case WM_CAPTURECHANGED:
+                OnCaptureChanged(hwnd);
+                break;
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
     }
