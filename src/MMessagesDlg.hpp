@@ -25,6 +25,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MResizable.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "MessageRes.hpp"
@@ -45,6 +46,7 @@ public:
     MESSAGE_ENTRY& m_entry;
     ConstantsDB& m_db;
     MessageRes& m_msg_res;
+    MComboBoxAutoComplete m_cmb1;
 
     MAddMsgDlg(ConstantsDB& db, MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_ADDMSG), m_entry(entry), m_db(db), m_msg_res(msg_res)
@@ -55,6 +57,7 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitMessageComboBox(hCmb1, m_db, L"");
+        SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
         return TRUE;
@@ -103,6 +106,12 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
         }
     }
 
@@ -131,6 +140,7 @@ public:
     MESSAGE_ENTRY& m_entry;
     ConstantsDB& m_db;
     MessageRes& m_msg_res;
+    MComboBoxAutoComplete m_cmb1;
 
     MModifyMsgDlg(ConstantsDB& db, MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_MODIFYMSG), m_entry(entry), m_db(db), m_msg_res(msg_res)
@@ -141,6 +151,7 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitMessageComboBox(hCmb1, m_db, L"");
+        SubclassChildDx(m_cmb1, cmb1);
 
         MsgDlg_SetEntry(hwnd, m_entry, m_db);
         CenterWindowDx();
@@ -169,6 +180,12 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
             break;
         }
     }
