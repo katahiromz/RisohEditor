@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "DialogRes.hpp"
@@ -37,6 +38,7 @@ DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -52,6 +54,8 @@ public:
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
+    MComboBoxAutoComplete m_cmb3;
+    MComboBoxAutoComplete m_cmb6;
 
     MDlgPropDlg(DialogRes& dialog_res, ConstantsDB& db) :
         MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE),
@@ -194,7 +198,9 @@ public:
 
         MStringW strHelp = m_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
         ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
-        ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 32, 0);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, L"", IDTYPE_HELP);
+        SubclassChildDx(m_cmb3, cmb3);
+        ::SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
 
         ::SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_type_face.c_str_or_empty());
         ::SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
@@ -211,6 +217,7 @@ public:
             strMenu = m_dialog_res.m_menu.str();
         ::SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
         ::SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
+        SubclassChildDx(m_cmb6, cmb6);
 
         InitTables(TEXT("DIALOG"));
 
@@ -463,6 +470,18 @@ public:
                 EnableWindow(GetDlgItem(hwnd, chx2), FALSE);
                 EnableWindow(GetDlgItem(hwnd, chx3), FALSE);
                 EnableWindow(GetDlgItem(hwnd, cmb5), FALSE);
+            }
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
+            }
+            break;
+        case cmb6:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb6.OnEditChange();
             }
             break;
         }
