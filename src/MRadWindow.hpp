@@ -727,7 +727,7 @@ public:
         {
             GET_TARGET get_target;
             get_target.target = TARGET_NEXT;
-            get_target.hwndTarget = hwndCtrl;
+            get_target.hwndTarget = NULL;
             get_target.m_nIndex = 0x7FFFFFFF;
             get_target.m_nCurrentIndex = pCtrl->m_nIndex;
             EnumChildWindows(GetParent(hwndCtrl), GetTargetProc, (LPARAM)&get_target);
@@ -742,7 +742,7 @@ public:
         {
             GET_TARGET get_target;
             get_target.target = TARGET_PREV;
-            get_target.hwndTarget = hwndCtrl;
+            get_target.hwndTarget = NULL;
             get_target.m_nIndex = -1;
             get_target.m_nCurrentIndex = pCtrl->m_nIndex;
             EnumChildWindows(GetParent(hwndCtrl), GetTargetProc, (LPARAM)&get_target);
@@ -2118,7 +2118,7 @@ public:
                 {
                     hwndNext = m_rad_dialog.GetPrevCtrl(hwndTarget);
                 }
-                if (hwndNext == hwndTarget || !hwndNext)
+                if (!hwndNext)
                 {
                     hwndNext = MRadDialog::GetLastCtrl(hwnd);
                 }
@@ -2136,7 +2136,7 @@ public:
                 {
                     hwndNext = m_rad_dialog.GetNextCtrl(hwndTarget);
                 }
-                if (hwndNext == hwndTarget || !hwndNext)
+                if (!hwndNext)
                 {
                     hwndNext = MRadDialog::GetFirstCtrl(hwnd);
                 }
