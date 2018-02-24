@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MResizable.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "AccelRes.hpp"
@@ -48,6 +49,8 @@ class MAddKeyDlg : public MDialogBase
 public:
     ACCEL_ENTRY& m_entry;
     ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
 
     MAddKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
         MDialogBase(IDD_ADDKEY), m_entry(entry), m_db(db)
@@ -60,9 +63,11 @@ public:
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1, m_db);
+        SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_db, MIdOrString(L""), IDTYPE_COMMAND);
+        SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
         return TRUE;
@@ -126,6 +131,18 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
         }
     }
 
@@ -148,6 +165,8 @@ class MModifyKeyDlg : public MDialogBase
 public:
     ACCEL_ENTRY& m_entry;
     ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
 
     MModifyKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
         MDialogBase(IDD_MODIFYKEY), m_entry(entry), m_db(db)
@@ -159,8 +178,12 @@ public:
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString id(m_entry.sz2);
         InitResNameComboBox(hCmb2, m_db, id, IDTYPE_COMMAND);
+        SubclassChildDx(m_cmb2, cmb2);
 
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        Cmb1_InitVirtualKeys(hCmb1, m_db);
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
+        SubclassChildDx(m_cmb1, cmb1);
 
         WORD wFlags;
         SetKeyFlags(wFlags, m_entry.sz1);
@@ -253,6 +276,18 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
             break;
         }
     }
