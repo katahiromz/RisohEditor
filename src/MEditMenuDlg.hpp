@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "MenuRes.hpp"
@@ -41,6 +42,7 @@ class MAddMItemDlg : public MDialogBase
 public:
     MENU_ENTRY& m_entry;
     ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb2;
 
     MAddMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
         : MDialogBase(IDD_ADDMITEM), m_entry(entry), m_db(db)
@@ -50,7 +52,10 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND);
+        SubclassChildDx(m_cmb2, cmb2);
+
         SetDlgItemInt(hwnd, edt1, 0, TRUE);
+
         CenterWindowDx();
         return TRUE;
     }
@@ -137,6 +142,12 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
         }
     }
 
@@ -164,6 +175,7 @@ class MModifyMItemDlg : public MDialogBase
 public:
     MENU_ENTRY& m_entry;
     ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb2;
 
     MModifyMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
         : MDialogBase(IDD_MODIFYMITEM), m_entry(entry), m_db(db)
@@ -176,6 +188,8 @@ public:
 
         MIdOrString id(m_entry.szCommandID);
         InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, id, IDTYPE_COMMAND);
+        SubclassChildDx(m_cmb2, cmb2);
+
         SetDlgItemTextW(hwnd, edt1, m_entry.szHelpID);
 
         DWORD dwType, dwState;
@@ -299,6 +313,12 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
             break;
         }
     }
