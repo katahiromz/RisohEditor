@@ -25,6 +25,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
@@ -43,6 +44,7 @@ public:
     ResEntry& m_entry;
     ConstantsDB& m_db;
     WORD m_lang;
+    MComboBoxAutoComplete m_cmb3;
 
     MCloneInNewLangDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
         : MDialogBase(IDD_CLONEINNEWLANG), m_entries(entries), m_entry(entry), m_db(db)
@@ -136,6 +138,7 @@ public:
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, m_entry.lang);
+        SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
         return TRUE;
@@ -184,6 +187,12 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
+            }
             break;
         }
     }

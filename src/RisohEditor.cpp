@@ -645,11 +645,15 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
         INT i = ComboBox_GetCurSel(hCmb3);
         if (i == CB_ERR || i >= INT(g_Langs.size()))
         {
-            ComboBox_SetEditSel(hCmb3, 0, -1);
-            SetFocus(hCmb3);
-            MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
-                        NULL, MB_ICONERROR);
-            return FALSE;
+            i = ComboBox_FindStringExact(hCmb3, -1, szLang);
+            if (i == CB_ERR || i >= INT(g_Langs.size()))
+            {
+                ComboBox_SetEditSel(hCmb3, 0, -1);
+                SetFocus(hCmb3);
+                MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                            NULL, MB_ICONERROR);
+                return FALSE;
+            }
         }
         lang = g_Langs[i].LangID;
     }
