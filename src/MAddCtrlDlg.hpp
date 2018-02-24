@@ -61,6 +61,7 @@ public:
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
+    MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
@@ -188,6 +189,7 @@ public:
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
+        SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
@@ -501,10 +503,15 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                MString text = GetDlgItemText(hwnd, cmb1);
-                mstr_trim(text);
-                InitTables(text.c_str());
-                UpdateClass(hwnd, hLst1, text);
+                DWORD dwPos = m_cmb1.GetEditSel();
+                m_cmb1.OnEditChange();
+                {
+                    MString text = GetDlgItemText(hwnd, cmb1);
+                    mstr_trim(text);
+                    InitTables(text.c_str());
+                    UpdateClass(hwnd, hLst1, text);
+                }
+                m_cmb1.SetEditSel(LOWORD(dwPos), -1);
             }
             break;
         case cmb3:
@@ -526,10 +533,12 @@ public:
             {
                 DWORD dwPos = m_cmb4.GetEditSel();
                 m_cmb4.OnEditChange();
-                MString text = GetDlgItemText(hwnd, cmb4);
-                mstr_trim(text);
-                InitTables(text.c_str());
-                UpdateClass(hwnd, hLst1, text);
+                {
+                    MString text = GetDlgItemText(hwnd, cmb4);
+                    mstr_trim(text);
+                    InitTables(text.c_str());
+                    UpdateClass(hwnd, hLst1, text);
+                }
                 m_cmb4.SetEditSel(LOWORD(dwPos), -1);
             }
             break;

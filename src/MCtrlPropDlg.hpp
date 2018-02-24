@@ -23,6 +23,7 @@
 #include "MToolBarCtrl.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "DialogRes.hpp"
@@ -78,6 +79,10 @@ public:
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb3;
+    MComboBoxAutoComplete m_cmb4;
+    MComboBoxAutoComplete m_cmb5;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
@@ -398,9 +403,11 @@ public:
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
+        SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
+        SubclassChildDx(m_cmb3, cmb3);
 
         GetInfo();
 
@@ -415,6 +422,7 @@ public:
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
         InitWndClassComboBox(hCmb4, m_db, m_item.m_class.c_str());
+        SubclassChildDx(m_cmb4, cmb4);
 
         TCHAR szText[64];
 
@@ -458,6 +466,7 @@ public:
         {
             MStringW name = m_db.GetNameOfResID(IDTYPE_HELP, m_item.m_help_id);
             SetDlgItemTextW(hwnd, cmb5, name.c_str());
+            SubclassChildDx(m_cmb5, cmb5);
         }
         if (m_flags & F_X)
         {
@@ -667,10 +676,21 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                MString text = GetDlgItemText(hwnd, cmb1);
-                mstr_trim(text);
-                InitTables(text.c_str());
-                UpdateClass(hwnd, hLst1, text);
+                DWORD dwPos = m_cmb1.GetEditSel();
+                m_cmb1.OnEditChange();
+                {
+                    MString text = GetDlgItemText(hwnd, cmb1);
+                    mstr_trim(text);
+                    InitTables(text.c_str());
+                    UpdateClass(hwnd, hLst1, text);
+                }
+                m_cmb1.SetEditSel(LOWORD(dwPos), -1);
+            }
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
             }
             break;
         case cmb4:
@@ -684,10 +704,21 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                MString text = GetDlgItemText(hwnd, cmb4);
-                mstr_trim(text);
-                InitTables(text.c_str());
-                UpdateClass(hwnd, hLst1, text);
+                DWORD dwPos = m_cmb4.GetEditSel();
+                m_cmb4.OnEditChange();
+                {
+                    MString text = GetDlgItemText(hwnd, cmb4);
+                    mstr_trim(text);
+                    InitTables(text.c_str());
+                    UpdateClass(hwnd, hLst1, text);
+                }
+                m_cmb4.SetEditSel(LOWORD(dwPos), -1);
+            }
+            break;
+        case cmb5:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb5.OnEditChange();
             }
             break;
         case lst1:
