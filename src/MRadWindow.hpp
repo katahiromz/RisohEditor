@@ -659,58 +659,116 @@ public:
         DeleteObject(m_hbrBack);
     }
 
+    enum TARGET
+    {
+        TARGET_NEXT,
+        TARGET_PREV,
+        TARGET_FIRST,
+        TARGET_LAST
+    };
+
+    struct GET_TARGET
+    {
+        TARGET target;
+        HWND hwndTarget;
+        INT m_nIndex;
+        INT m_nCurrentIndex;
+    };
+
+    static BOOL CALLBACK GetTargetProc(HWND hwnd, LPARAM lParam)
+    {
+        GET_TARGET *get_target = (GET_TARGET *)lParam;
+        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+        {
+            if (pCtrl->m_dwMagic != 0xDEADFACE || !pCtrl->m_bTopCtrl)
+            {
+                return TRUE;
+            }
+            switch (get_target->target)
+            {
+            case TARGET_PREV:
+                if (get_target->m_nCurrentIndex > pCtrl->m_nIndex &&
+                    pCtrl->m_nIndex > get_target->m_nIndex)
+                {
+                    get_target->m_nIndex = pCtrl->m_nIndex;
+                    get_target->hwndTarget = pCtrl->m_hwnd;
+                }
+                break;
+            case TARGET_NEXT:
+                if (get_target->m_nCurrentIndex < pCtrl->m_nIndex &&
+                    pCtrl->m_nIndex < get_target->m_nIndex)
+                {
+                    get_target->m_nIndex = pCtrl->m_nIndex;
+                    get_target->hwndTarget = pCtrl->m_hwnd;
+                }
+                break;
+            case TARGET_FIRST:
+                if (pCtrl->m_nIndex < get_target->m_nIndex)
+                {
+                    get_target->m_nIndex = pCtrl->m_nIndex;
+                    get_target->hwndTarget = pCtrl->m_hwnd;
+                }
+                break;
+            case TARGET_LAST:
+                if (pCtrl->m_nIndex > get_target->m_nIndex)
+                {
+                    get_target->m_nIndex = pCtrl->m_nIndex;
+                    get_target->hwndTarget = pCtrl->m_hwnd;
+                }
+                break;
+            }
+        }
+        return TRUE;
+    }
+
     HWND GetNextCtrl(HWND hwndCtrl) const
     {
-        HWND hwnd = hwndCtrl;
-
-        TCHAR szClass[64];
-        for (;;)
+        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
         {
-            HWND hwndNext = GetNextWindow(hwnd, GW_HWNDNEXT);
-            if (hwndNext == NULL)
-            {
-                hwndNext = GetNextWindow(hwnd, GW_HWNDFIRST);
-            }
-
-            if (hwndNext == hwndCtrl)
-                return NULL;
-
-            hwnd = hwndNext;
-
-            ::GetClassName(hwndNext, szClass, _countof(szClass));
-            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0 &&
-                lstrcmpi(szClass, MIndexLabels().GetWndClassNameDx()) != 0)
-                break;
+            GET_TARGET get_target;
+            get_target.target = TARGET_NEXT;
+            get_target.hwndTarget = hwndCtrl;
+            get_target.m_nIndex = 0x7FFFFFFF;
+            get_target.m_nCurrentIndex = pCtrl->m_nIndex;
+            EnumChildWindows(GetParent(hwndCtrl), GetTargetProc, (LPARAM)&get_target);
+            return get_target.hwndTarget;
         }
-
-        return hwnd;
+        return NULL;
     }
 
     HWND GetPrevCtrl(HWND hwndCtrl) const
     {
-        HWND hwnd = hwndCtrl;
-
-        TCHAR szClass[64];
-        for (;;)
+        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
         {
-            HWND hwndPrev = GetNextWindow(hwnd, GW_HWNDPREV);
-            if (hwndPrev == NULL)
-            {
-                hwndPrev = GetNextWindow(hwnd, GW_HWNDLAST);
-            }
-
-            if (hwndPrev == hwndCtrl)
-                return NULL;
-
-            hwnd = hwndPrev;
-
-            ::GetClassName(hwndPrev, szClass, _countof(szClass));
-            if (lstrcmpi(szClass, MRubberBand().GetWndClassNameDx()) != 0 &&
-                lstrcmpi(szClass, MIndexLabels().GetWndClassNameDx()) != 0)
-                break;
+            GET_TARGET get_target;
+            get_target.target = TARGET_PREV;
+            get_target.hwndTarget = hwndCtrl;
+            get_target.m_nIndex = -1;
+            get_target.m_nCurrentIndex = pCtrl->m_nIndex;
+            EnumChildWindows(GetParent(hwndCtrl), GetTargetProc, (LPARAM)&get_target);
+            return get_target.hwndTarget;
         }
+        return NULL;
+    }
 
-        return hwnd;
+    static HWND GetFirstCtrl(HWND hwndParent)
+    {
+        GET_TARGET get_target;
+        get_target.target = TARGET_FIRST;
+        get_target.hwndTarget = NULL;
+        get_target.m_nIndex = 0x7FFFFFFF;
+        EnumChildWindows(hwndParent, GetTargetProc, (LPARAM)&get_target);
+        return get_target.hwndTarget;
+    }
+
+    static HWND GetLastCtrl(HWND hwndParent)
+    {
+        GET_TARGET get_target;
+        get_target.target = TARGET_LAST;
+        get_target.hwndTarget = NULL;
+        get_target.m_nIndex = -1;
+        EnumChildWindows(hwndParent, GetTargetProc, (LPARAM)&get_target);
+        return get_target.hwndTarget;
     }
 
     virtual INT_PTR CALLBACK
@@ -2051,29 +2109,39 @@ public:
         case VK_TAB:
             if (GetKeyState(VK_SHIFT) < 0)
             {
-                if (hwndTarget == NULL)
+                HWND hwndNext = NULL;
+                if (!hwndTarget)
                 {
-                    hwndTarget = GetWindow(m_rad_dialog, GW_HWNDLAST);
+                    hwndNext = MRadDialog::GetLastCtrl(hwnd);
                 }
                 else
                 {
-                    hwndTarget = m_rad_dialog.GetPrevCtrl(hwndTarget);
+                    hwndNext = m_rad_dialog.GetPrevCtrl(hwndTarget);
+                }
+                if (hwndNext == hwndTarget || !hwndNext)
+                {
+                    hwndNext = MRadDialog::GetLastCtrl(hwnd);
                 }
                 MRadCtrl::DeselectSelection();
-                MRadCtrl::Select(hwndTarget);
+                MRadCtrl::Select(hwndNext);
             }
             else
             {
-                if (hwndTarget == NULL)
+                HWND hwndNext = NULL;
+                if (!hwndTarget)
                 {
-                    hwndTarget = GetWindow(m_rad_dialog, GW_HWNDFIRST);
+                    hwndNext = MRadDialog::GetFirstCtrl(hwnd);
                 }
                 else
                 {
-                    hwndTarget = m_rad_dialog.GetNextCtrl(hwndTarget);
+                    hwndNext = m_rad_dialog.GetNextCtrl(hwndTarget);
+                }
+                if (hwndNext == hwndTarget || !hwndNext)
+                {
+                    hwndNext = MRadDialog::GetFirstCtrl(hwnd);
                 }
                 MRadCtrl::DeselectSelection();
-                MRadCtrl::Select(hwndTarget);
+                MRadCtrl::Select(hwndNext);
             }
             break;
         case VK_UP:
