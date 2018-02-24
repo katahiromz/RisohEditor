@@ -25,6 +25,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MResizable.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 #include "StringRes.hpp"
@@ -45,6 +46,7 @@ public:
     STRING_ENTRY& m_entry;
     ConstantsDB& m_db;
     StringRes& m_str_res;
+    MComboBoxAutoComplete m_cmb1;
 
     MAddStrDlg(ConstantsDB& db, STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_ADDSTR), m_entry(entry), m_db(db), m_str_res(str_res)
@@ -55,6 +57,7 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitStringComboBox(hCmb1, m_db, L"");
+        SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
         return TRUE;
@@ -102,6 +105,12 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
             break;
         }
     }

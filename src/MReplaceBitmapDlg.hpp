@@ -52,7 +52,7 @@ public:
     {
         DragAcceptFiles(hwnd, TRUE);
 
-        // for name
+        // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_db, m_entry.name, IDTYPE_BITMAP);
 
