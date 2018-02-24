@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    58     /* Version 58 */
+#define MZC4_MWINDOWBASE_HPP_    59     /* Version 59 */
 
 class MWindowBase;
 class MDialogBase;
@@ -291,10 +291,18 @@ public:
         return hwnd;
     }
 
+    virtual void PostSubclassDx(HWND hwnd)
+    {
+    }
+
     BOOL SubclassDx(HWND hwnd)
     {
         Attach(hwnd);
         m_fnOldProc = SubclassWindow(hwnd, MWindowBase::WindowProc);
+        if (m_fnOldProc)
+        {
+            PostSubclassDx(hwnd);
+        }
         return m_fnOldProc != NULL;
     }
 

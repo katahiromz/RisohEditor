@@ -22,6 +22,9 @@
 
 #define IDR_MAINFRAME           (1-0)
 
+#define IDB_BMP                 1
+#define IDB_CONTROLS            2
+
 #define CMDID_NEW               100
 #define CMDID_OPEN              101
 #define CMDID_SAVEAS            102

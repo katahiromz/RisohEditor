@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
@@ -39,6 +40,8 @@ public:
     LPCWSTR file;
     ConstantsDB& m_db;
     ResEntry m_entry_copy;
+    MComboBoxAutoComplete m_cmb2;
+    MComboBoxAutoComplete m_cmb3;
 
     MAddBitmapDlg(ConstantsDB& db, ResEntries& entries) :
         MDialogBase(IDD_ADDBITMAP), m_entries(entries), file(NULL),
@@ -52,9 +55,16 @@ public:
 
         DragAcceptFiles(hwnd, TRUE);
 
+        // for Names
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_BITMAP);
+        SetWindowText(hCmb2, L"");
+        SubclassChildDx(m_cmb2, cmb2);
+
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, GetUserDefaultLangID());
+        SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
         return TRUE;
@@ -155,6 +165,18 @@ public:
             break;
         case psh2:
             OnPsh2(hwnd);
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
+            }
             break;
         }
     }
