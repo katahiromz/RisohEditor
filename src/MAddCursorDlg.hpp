@@ -68,7 +68,7 @@ public:
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_BITMAP);
+        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_CURSOR);
         SetWindowText(hCmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
