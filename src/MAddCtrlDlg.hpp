@@ -324,7 +324,7 @@ public:
                 using namespace std;
                 if (iswdigit(strCaption[0]))
                 {
-                    LONG n = wcstol(strCaption.c_str(), NULL, 0);
+                    LONG n = mstr_parse_int(strCaption.c_str());
                     item.m_title = WORD(n);
                 }
             }

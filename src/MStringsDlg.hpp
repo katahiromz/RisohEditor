@@ -80,7 +80,7 @@ public:
         }
         else
         {
-            value = wcstol(m_entry.StringID, NULL, 0);
+            value = mstr_parse_int(m_entry.StringID);
         }
         if (m_str_res.map().find((WORD)value) != m_str_res.map().end())
         {

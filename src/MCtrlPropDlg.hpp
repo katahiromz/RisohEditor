@@ -298,7 +298,7 @@ public:
                     using namespace std;
                     if (iswdigit(item.m_title.str()[0]))
                     {
-                        LONG n = wcstol(item.m_title.c_str(), NULL, 0);
+                        LONG n = mstr_parse_int(item.m_title.c_str());
                         item.m_title = WORD(n);
                     }
                 }

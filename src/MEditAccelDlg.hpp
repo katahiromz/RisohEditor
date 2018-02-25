@@ -502,7 +502,7 @@ public:
                 }
                 else
                 {
-                    entry.wAscii = (WORD)wcstol(a_entry.sz0, NULL, 0);
+                    entry.wAscii = (WORD)mstr_parse_int(a_entry.sz0);
                 }
             }
             entry.wId = (WORD)m_db.GetResIDValue(a_entry.sz2);

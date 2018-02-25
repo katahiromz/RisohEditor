@@ -573,7 +573,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     }
     else if (iswdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
     {
-        type = WORD(wcstol(szType, NULL, 0));
+        type = WORD(mstr_parse_int(szType));
     }
     else
     {
@@ -581,7 +581,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos)
         {
-            type = WORD(wcstol(&str[i + 1], NULL, 0));
+            type = WORD(mstr_parse_int(&str[i + 1]));
         }
         else
         {
@@ -609,7 +609,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
     }
     else if (iswdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
     {
-        name = WORD(wcstol(szName, NULL, 0));
+        name = WORD(mstr_parse_int(szName));
     }
     else
     {
@@ -639,7 +639,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     }
     else if (iswdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
     {
-        lang = WORD(wcstol(szLang, NULL, 0));
+        lang = WORD(mstr_parse_int(szLang));
     }
     else
     {
@@ -827,7 +827,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
     mstr_trim(str);
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
-        LONG n = wcstol(str.c_str(), NULL, 0);
+        LONG n = mstr_parse_int(str.c_str());
         str = mstr_dec_word(WORD(n));
     }
     else if (!db.HasResID(str))
@@ -865,7 +865,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
     mstr_trim(str);
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
-        LONG n = wcstol(str.c_str(), NULL, 0);
+        LONG n = mstr_parse_int(str.c_str());
         str = mstr_dec_word(WORD(n));
     }
     else if (!db.HasResID(str))
@@ -5163,7 +5163,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     {
         MStringW str1 = MAnsiToWide(CP_ACP, it->first).c_str();
         MStringW str2 = MAnsiToWide(CP_ACP, it->second).c_str();
-        DWORD value2 = wcstol(str2.c_str(), NULL, 0);
+        DWORD value2 = mstr_parse_int(str2.c_str());
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
     }
@@ -5735,7 +5735,7 @@ WORD GetLangFromText(const WCHAR *pszLang)
     }
     else if (iswdigit(pszLang[0]) || pszLang[0] == L'-' || pszLang[0] == L'+')
     {
-        return WORD(wcstol(pszLang, NULL, 0));
+        return WORD(mstr_parse_int(pszLang));
     }
     else
     {
@@ -5743,7 +5743,7 @@ WORD GetLangFromText(const WCHAR *pszLang)
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos)
         {
-            return WORD(wcstol(&str[i + 1], NULL, 0));
+            return WORD(mstr_parse_int(&str[i + 1]));
         }
         for (size_t i = 0; i < g_Langs.size(); ++i)
         {
@@ -5771,7 +5771,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     }
     else if (iswdigit(pszText[0]) || pszText[0] == L'-' || pszText[0] == L'+')
     {
-        return WORD(wcstol(pszText, NULL, 0));
+        return WORD(mstr_parse_int(pszText));
     }
     else
     {
@@ -5779,7 +5779,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos)
         {
-            return WORD(wcstol(&str[i + 1], NULL, 0));
+            return WORD(mstr_parse_int(&str[i + 1]));
         }
         MIdOrString id(str.c_str());
         return id;

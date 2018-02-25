@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       15  /* Version 15 */
+#define MZC4_MSTRING_HPP_       16  /* Version 16 */
 
 // class MString;
 // class MStringA;
@@ -380,12 +380,11 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
 	int num;
     for (num = 0; *str; ++str)
     {
-        num *= base;
-
         if (base == 8)
         {
             if (T_CHAR('0') <= *str && *str <= T_CHAR('7'))
             {
+                num *= base;
                 num += *str - T_CHAR('0');
                 continue;
             }
@@ -394,16 +393,19 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
         {
             if (T_CHAR('0') <= *str && *str <= T_CHAR('9'))
             {
+                num *= base;
                 num += *str - T_CHAR('0');
                 continue;
             }
             else if (T_CHAR('A') <= *str && *str <= T_CHAR('F'))
             {
+                num *= base;
                 num += *str - T_CHAR('A') + 10;
                 continue;
             }
             else if (T_CHAR('a') <= *str && *str <= T_CHAR('f'))
             {
+                num *= base;
                 num += *str - T_CHAR('a') + 10;
                 continue;
             }
@@ -412,6 +414,7 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
         {
             if (T_CHAR('0') <= *str && *str <= T_CHAR('9'))
             {
+                num *= base;
                 num += *str - T_CHAR('0');
                 continue;
             }

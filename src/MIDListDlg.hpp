@@ -269,7 +269,7 @@ public:
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
-                    INT value = wcstol(dialog.m_str2.c_str(), NULL, 0);
+                    INT value = mstr_parse_int(dialog.m_str2.c_str());
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
@@ -307,7 +307,7 @@ public:
                             break;
                         }
                     }
-                    INT value = wcstol(dialog.m_str2.c_str(), NULL, 0);
+                    INT value = mstr_parse_int(dialog.m_str2.c_str());
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 

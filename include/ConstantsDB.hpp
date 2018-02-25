@@ -234,7 +234,7 @@ public:
             if (it->name == name)
                 return it->value;
         }
-        return (ValueType)wcstol(name.c_str(), NULL, 0);
+        return (ValueType)mstr_parse_int(name.c_str());
     }
 
     template <typename T_STR_CONTAINER>
