@@ -126,7 +126,6 @@ struct MTextType
 template <typename T_CHAR>
 std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
 
-
 template <typename T_CHAR>
 bool mchr_is_xdigit(T_CHAR ch);
 

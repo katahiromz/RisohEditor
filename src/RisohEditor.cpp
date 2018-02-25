@@ -3015,7 +3015,8 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
-    MStringW str = DumpGroupIconInfo(entry.data);
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
@@ -3026,8 +3027,8 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_entries, entry));
     assert(m_hBmpView);
 
-    MStringW str = DumpGroupCursorInfo(m_entries, entry.data);
-    assert(str.size());
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
@@ -3037,26 +3038,30 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
 {
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
-
-    MStringW str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
-
     ShowBmpView(TRUE);
+
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
 {
-    m_hBmpView.SetImage(&entry[0], entry.size());
+    MStringW str;
 
-    MStringW str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
+    ResToText res2text(m_settings, m_db, m_entries);
+    str += res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    m_hBmpView.SetImage(&entry[0], entry.size());
     ShowBmpView(TRUE);
 }
 
 void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 {
-    SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_WAVESOUND));
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     m_hBmpView.SetPlay();
     ShowBmpView(TRUE);
@@ -3064,7 +3069,9 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& entry)
 {
-    SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_AVIMOVIE));
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
 
     m_hBmpView.SetMedia(&entry[0], entry.size());
     ShowMovie(TRUE);
@@ -3181,10 +3188,10 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon)
     if (hIcon)
     {
         m_hBmpView.SetIcon(hIcon, bIcon);
-        if (bIcon)
-            SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANIICON));
-        else
-            SetWindowTextW(m_hSrcEdit, LoadStringDx(IDS_ANICURSOR));
+
+        ResToText res2text(m_settings, m_db, m_entries);
+        MString str = res2text.DumpEntry(entry);
+        SetWindowTextW(m_hSrcEdit, str.c_str());
     }
     else
     {

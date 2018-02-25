@@ -62,7 +62,8 @@ public:
     typedef std::vector<BYTE> data_type;
 
     ResToText(const RisohSettings& settings, const ConstantsDB& db, const ResEntries& entries)
-        : m_hwnd(NULL), m_hwndDialog(NULL), m_settings(settings), m_db(db), m_entries(entries)
+        : m_hwnd(NULL), m_hwndDialog(NULL), m_settings(settings), m_db(db), m_entries(entries),
+          m_bHumanReadable(TRUE)
     {
     }
 
@@ -75,6 +76,8 @@ protected:
     const RisohSettings& m_settings;
     const ConstantsDB& m_db;
     const ResEntries& m_entries;
+public:
+    BOOL m_bHumanReadable;
 
     MString DoCursor(const ResEntry& entry);
     MString DoBitmap(const ResEntry& entry);
@@ -91,6 +94,11 @@ protected:
     MString DoText(const ResEntry& entry);
     MString DoImage(const ResEntry& entry);
     MString DoMessage(const ResEntry& entry);
+    MString DoWave(const ResEntry& entry);
+    MString DoAVI(const ResEntry& entry);
+
+    MString DumpName(const MIdOrString& type, const MIdOrString& name);
+    MString DumpEscapedName(const MIdOrString& name);
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -98,13 +106,17 @@ protected:
 inline MString
 ResToText::DoCursor(const ResEntry& entry)
 {
-    BITMAP bm;
+    MString str;
 
-    HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
-    HBITMAP hbm = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
-    MString str = DumpIconInfo(bm, FALSE);
-    DestroyCursor(hCursor);
-    DeleteObject(hbm);
+    if (m_bHumanReadable)
+    {
+        BITMAP bm;
+        HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
+        HBITMAP hbm = CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE);
+        str += DumpIconInfo(bm, FALSE);
+        DestroyCursor(hCursor);
+        DeleteObject(hbm);
+    }
 
     return str;
 }
@@ -113,7 +125,22 @@ inline MString
 ResToText::DoBitmap(const ResEntry& entry)
 {
     HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
-    MString str = DumpBitmapInfo(hbm);
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += DumpBitmapInfo(hbm);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"Bitmap_(name).bmp\""
+    str += DumpName(entry.type, entry.name);
+    str += L" BITMAP \"Bitmap_";
+    str += DumpEscapedName(entry.name);
+    str += L".bmp\"\r\n";
+
     DeleteObject(hbm);
     return str;
 }
@@ -121,21 +148,25 @@ ResToText::DoBitmap(const ResEntry& entry)
 inline MString
 ResToText::DoIcon(const ResEntry& entry)
 {
-    BITMAP bm;
-    HBITMAP hbm = CreateBitmapFromIconOrPngDx(m_hwnd, entry, bm);
-
     MString str;
-    HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
-    if (hIcon)
+
+    if (m_bHumanReadable)
     {
-        str = DumpIconInfo(bm, TRUE);
+        BITMAP bm;
+        HBITMAP hbm = CreateBitmapFromIconOrPngDx(m_hwnd, entry, bm);
+
+        HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
+        if (hIcon)
+        {
+            str += DumpIconInfo(bm, TRUE);
+        }
+        else
+        {
+            str += DumpBitmapInfo(hbm);
+        }
+        DestroyIcon(hIcon);
+        DeleteObject(hbm);
     }
-    else
-    {
-        str = DumpBitmapInfo(hbm);
-    }
-    DestroyIcon(hIcon);
-    DeleteObject(hbm);
 
     return str;
 }
@@ -229,13 +260,45 @@ ResToText::DoAccel(const ResEntry& entry)
 inline MString
 ResToText::DoGroupCursor(const ResEntry& entry)
 {
-    return DumpGroupCursorInfo(m_entries, entry.data);
+    MStringW str;
+
+    if (m_bHumanReadable)
+    {
+        str += DumpGroupCursorInfo(m_entries, entry.data);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"Cursor_(name).cur\""
+    str += DumpName(entry.type, entry.name);
+    str += L" CURSOR \"Cursor_";
+    str += DumpEscapedName(entry.name);
+    str += L".cur\"\r\n";
+
+    return str;
 }
 
 inline MString
 ResToText::DoGroupIcon(const ResEntry& entry)
 {
-    return DumpGroupIconInfo(entry.data);
+    MStringW str;
+
+    if (m_bHumanReadable)
+    {
+        str += DumpGroupIconInfo(entry.data);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"Icon_(name).ico\""
+    str += DumpName(entry.type, entry.name);
+    str += L" ICON \"Icon_";
+    str += DumpEscapedName(entry.name);
+    str += L".ico\"\r\n";
+
+    return str;
 }
 
 inline MString
@@ -254,13 +317,45 @@ ResToText::DoVersion(const ResEntry& entry)
 inline MString
 ResToText::DoAniCursor(const ResEntry& entry)
 {
-    return LoadStringDx(IDS_ANICURSOR);
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += LoadStringDx(IDS_ANICURSOR);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"AniCursor_(name).ani\""
+    str += DumpName(entry.type, entry.name);
+    str += L" ANICURSOR \"AniCursor_";
+    str += DumpEscapedName(entry.name);
+    str += L".ani\"\r\n";
+
+    return str;
 }
 
 inline MString
 ResToText::DoAniIcon(const ResEntry& entry)
 {
-    return LoadStringDx(IDS_ANIICON);
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += LoadStringDx(IDS_ANIICON);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"AniIcon_(name).ani\""
+    str += DumpName(entry.type, entry.name);
+    str += L" ANIICON \"AniIcon_";
+    str += DumpEscapedName(entry.name);
+    str += L".ani\"\r\n";
+
+    return str;
 }
 
 inline MString
@@ -275,16 +370,147 @@ ResToText::DoText(const ResEntry& entry)
 inline MString
 ResToText::DoImage(const ResEntry& entry)
 {
-    HBITMAP hbm = NULL;
-    MBitmapDx bitmap;
-    if (bitmap.CreateFromMemory(&entry[0], entry.size()))
+    MString str;
+
+    if (m_bHumanReadable)
     {
-        LONG cx, cy;
-        hbm = bitmap.GetHBITMAP(cx, cy);
+        HBITMAP hbm = NULL;
+
+        MBitmapDx bitmap;
+        if (bitmap.CreateFromMemory(&entry[0], entry.size()))
+        {
+            LONG cx, cy;
+            hbm = bitmap.GetHBITMAP(cx, cy);
+        }
+
+        str += DumpBitmapInfo(hbm);
+        DeleteObject(hbm);
     }
 
-    MString str = DumpBitmapInfo(hbm);
-    DeleteObject(hbm);
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+
+    if (entry.type == L"PNG")
+    {
+        // "(name) \"Png_(name).png\""
+        str += DumpName(entry.type, entry.name);
+        str += L" PNG \"Png_";
+        str += DumpEscapedName(entry.name);
+        str += L".png\"\r\n";
+    }
+    else if (entry.type == L"GIF")
+    {
+        // "(name) \"Gif_(name).gif\""
+        str += DumpName(entry.type, entry.name);
+        str += L" GIF \"Gif_";
+        str += DumpEscapedName(entry.name);
+        str += L".gif\"\r\n";
+    }
+    else if (entry.type == L"JPEG")
+    {
+        // "(name) \"Jpeg_(name).jpg\""
+        str += DumpName(entry.type, entry.name);
+        str += L" JPEG \"Jpeg_";
+        str += DumpEscapedName(entry.name);
+        str += L".jpg\"\r\n";
+    }
+    else if (entry.type == L"JPG")
+    {
+        // "(name) \"Jpeg_(name).jpg\""
+        str += DumpName(entry.type, entry.name);
+        str += L" JPG \"Jpg_";
+        str += DumpEscapedName(entry.name);
+        str += L".jpg\"\r\n";
+    }
+    else if (entry.type == L"TIFF")
+    {
+        // "(name) \"Tiff_(name).tif\""
+        str += DumpName(entry.type, entry.name);
+        str += L" TIFF \"Tiff_";
+        str += DumpEscapedName(entry.name);
+        str += L".tif\"\r\n";
+    }
+    else if (entry.type == L"TIF")
+    {
+        // "(name) \"Tif_(name).tif\""
+        str += DumpName(entry.type, entry.name);
+        str += L" TIF \"Tif_";
+        str += DumpEscapedName(entry.name);
+        str += L".tif\"\r\n";
+    }
+    else if (entry.type == L"EMF")
+    {
+        // "(name) \"Emf_(name).emf\""
+        str += DumpName(entry.type, entry.name);
+        str += L" EMF \"Emf_";
+        str += DumpEscapedName(entry.name);
+        str += L".emf\"\r\n";
+    }
+    else if (entry.type == L"ENHMETAFILE")
+    {
+        // "(name) \"EnhMetaFile_(name).emf\""
+        str += DumpName(entry.type, entry.name);
+        str += L" ENHMETAFILE \"EnhMetaFile_";
+        str += DumpEscapedName(entry.name);
+        str += L".emf\"\r\n";
+    }
+    else if (entry.type == L"WMF")
+    {
+        // "(name) \"Wmf_(name).wmf\""
+        str += DumpName(entry.type, entry.name);
+        str += L" WMF \"Wmf_";
+        str += DumpEscapedName(entry.name);
+        str += L".wmf\"\r\n";
+    }
+    else if (entry.type == L"IMAGE")
+    {
+        if (entry.size() >= 4)
+        {
+            if (memcmp(&entry[0], "BM", 2) == 0)
+            {
+                // "(name) \"Image_(name).bmp\""
+                str += DumpName(entry.type, entry.name);
+                str += L" IMAGE \"Image_";
+                str += DumpEscapedName(entry.name);
+                str += L".bmp\"\r\n";
+            }
+            else if (memcmp(&entry[0], "GIF", 3) == 0)
+            {
+                // "(name) \"Image_(name).gif\""
+                str += DumpName(entry.type, entry.name);
+                str += L" IMAGE \"Image_";
+                str += DumpEscapedName(entry.name);
+                str += L".gif\"\r\n";
+            }
+            else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
+            {
+                // "(name) \"Image_(name).png\""
+                str += DumpName(entry.type, entry.name);
+                str += L" IMAGE \"Image_";
+                str += DumpEscapedName(entry.name);
+                str += L".png\"\r\n";
+            }
+            else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
+            {
+                // "(name) \"Image_(name).jpg\""
+                str += DumpName(entry.type, entry.name);
+                str += L" IMAGE \"Image_";
+                str += DumpEscapedName(entry.name);
+                str += L".jpg\"\r\n";
+            }
+            else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
+                     memcmp(&entry[0], "\x49\x49", 2) == 0)
+            {
+                // "(name) \"Image_(name).tif\""
+                str += DumpName(entry.type, entry.name);
+                str += L" IMAGE \"Image_";
+                str += DumpEscapedName(entry.name);
+                str += L".tif\"\r\n";
+            }
+        }
+    }
+
     return str;
 }
 
@@ -354,14 +580,79 @@ ResToText::DumpEntry(const ResEntry& entry)
         }
         else if (type == L"WAVE")
         {
-            return LoadStringDx(IDS_WAVESOUND);
+            return DoWave(entry);
         }
         else if (entry.type == L"AVI")
         {
-            return LoadStringDx(IDS_AVIMOVIE);
+            return DoAVI(entry);
         }
     }
     return DoText(entry);
+}
+
+inline MString ResToText::DoWave(const ResEntry& entry)
+{
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += LoadStringDx(IDS_WAVESOUND);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"Movie_(name).avi\""
+    str += DumpName(entry.type, entry.name);
+    str += L" AVI \"Movie_";
+    str += DumpEscapedName(entry.name);
+    str += L".avi\"\r\n";
+
+    return str;
+}
+
+inline MString ResToText::DoAVI(const ResEntry& entry)
+{
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += LoadStringDx(IDS_AVIMOVIE);
+    }
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+    // "(name) \"Movie_(name).avi\""
+    DumpName(entry.type, entry.name);
+    str += L" AVI \"Movie_";
+    str += DumpEscapedName(entry.name);
+    str += L".avi\"\r\n";
+
+    return str;
+}
+
+inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& name)
+{
+    MString ret;
+    if (name.is_str())
+    {
+        ret += L"\"";
+        ret += name.str();
+        ret += L"\"";
+    }
+    else
+    {
+        ret += m_db.GetNameOfResID(m_db.IDTypeFromRes(type), name.m_id);
+    }
+    return ret;
+}
+
+inline MString ResToText::DumpEscapedName(const MIdOrString& name)
+{
+    MString ret = name.str();
+    mstr_escape(ret);
+    return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////////
