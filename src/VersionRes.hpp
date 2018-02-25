@@ -194,7 +194,6 @@ public:
             ret += name.str();
         }
 
-        ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
         wsprintfW(line, L"FILEVERSION\t%u, %u, %u, %u\r\n",
