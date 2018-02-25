@@ -95,7 +95,7 @@ IDM_MAIN MENU
         MENUITEM "常に&CONTROL文", CMDID_ALWAYSCONTROL
         MENUITEM "&IDマクロを使用しない", CMDID_HIDEIDMACROS
         MENUITEM SEPARATOR
-        MENUITEM "最新の情報に更新(&F)", CMDID_UPDATEID
+        MENUITEM "最新の情報に更新(&F)", CMDID_REFRESHALL
     }
     POPUP "ヘルプ(&H)"
     {

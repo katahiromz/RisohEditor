@@ -131,6 +131,7 @@
 #define CMDID_LOADRESHBANG      195
 #define CMDID_REFRESHDIALOG     196
 #define CMDID_IDJUMP            197
+#define CMDID_REFRESHALL        198
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

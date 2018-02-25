@@ -95,7 +95,7 @@ IDM_MAIN MENU
         MENUITEM "使用&CONTROL语句 ", CMDID_ALWAYSCONTROL
         MENUITEM "不使用&ID宏定义", CMDID_HIDEIDMACROS
         MENUITEM SEPARATOR
-        MENUITEM "更新到最新信息(&F)", CMDID_UPDATEID
+        MENUITEM "更新到最新信息(&F)", CMDID_REFRESHALL
     }
     POPUP "帮助(&H)"
     {

@@ -1177,7 +1177,7 @@ protected:
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
-    void DoRefreshAll(HWND hwnd);
+    void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
     void OnAddDialog(HWND hwnd);
@@ -5174,12 +5174,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         ShowIDList(hwnd, TRUE);
     }
 
-    // refresh treeview
-    LPARAM lParam = TV_GetParam(m_hTreeView);
-    UINT i = LOWORD(lParam);
-    ResEntry& selection = m_entries[i];
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-    TV_SelectEntry(m_hTreeView, m_entries, selection);
+    DoRefresh(hwnd);
 
     return TRUE;
 }
@@ -5313,13 +5308,19 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     return bOK;
 }
 
-void MMainWnd::DoRefreshAll(HWND hwnd)
+void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
 {
+    if (bRefreshAll)
+    {
+        ShowIDList(hwnd, IsWindow(m_id_list_dlg));
+    }
+
     LPARAM lParam = TV_GetParam(m_hTreeView);
     UINT i = LOWORD(lParam);
-    ResEntry& selection = m_entries[i];
+    ResEntry selection;
+    if (0 <= i && i < m_entries.size())
+        selection = m_entries[i];
 
-    SelectTV(hwnd, 0, FALSE);
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     TV_SelectEntry(m_hTreeView, m_entries, selection);
 }
@@ -5390,8 +5391,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog(m_settings);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, 0, FALSE);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        DoRefresh(hwnd);
     }
 }
 
@@ -5654,7 +5654,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnAdviceResH(hwnd);
         break;
     case CMDID_UPDATEID:
-        DoRefreshAll(hwnd);
+        DoRefresh(hwnd, FALSE);
         break;
     case CMDID_OPENREADME:
         OnOpenReadMe(hwnd);
@@ -5712,6 +5712,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_REFRESHDIALOG:
         m_rad_window.OnRefresh(m_rad_window);
+        break;
+    case CMDID_REFRESHALL:
+        DoRefresh(hwnd, TRUE);
         break;
     default:
         bUpdateStatus = FALSE;
