@@ -900,7 +900,7 @@ BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
 {
     LangEntry entry;
-    LCID lcid = wcstoul(lpLocaleString, NULL, 16);
+    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
     entry.LangID = LANGIDFROMLCID(lcid);
 
     WCHAR sz[MAX_PATH] = L"";

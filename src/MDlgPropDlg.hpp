@@ -296,11 +296,11 @@ public:
 
         MString strStyle = GetDlgItemText(edt6);
         mstr_trim(strStyle);
-        DWORD style = _tcstoul(strStyle.c_str(), NULL, 16);
+        DWORD style = mstr_parse_int(strStyle.c_str(), false, 16);
 
         MString strExStyle = GetDlgItemText(edt7);
         mstr_trim(strExStyle);
-        DWORD exstyle = _tcstoul(strExStyle.c_str(), NULL, 16);
+        DWORD exstyle = mstr_parse_int(strExStyle.c_str(), false, 16);
 
         MString strFont = GetDlgItemText(cmb4);
         mstr_trim(strFont);
@@ -394,7 +394,7 @@ public:
 
         MString text = GetDlgItemText(hwnd, edt6);
         mstr_trim(text);
-        DWORD dwStyle = _tcstoul(text.c_str(), NULL, 16);
+        DWORD dwStyle = mstr_parse_int(text.c_str(), false, 16);
 
         std::vector<BYTE> old_style_selection = m_style_selection;
         GetStyleSelect(m_style_selection, m_style_table, dwStyle);
@@ -411,7 +411,7 @@ public:
 
         MString text = GetDlgItemText(hwnd, edt7);
         mstr_trim(text);
-        DWORD dwExStyle = _tcstoul(text.c_str(), NULL, 16);
+        DWORD dwExStyle = mstr_parse_int(text.c_str(), false, 16);
 
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(m_exstyle_selection, m_exstyle_table, dwExStyle);
