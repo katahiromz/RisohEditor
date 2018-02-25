@@ -410,6 +410,10 @@ public:
         InitCtrlIDComboBox(hCmb3, m_db);
         SubclassChildDx(m_cmb3, cmb3);
 
+        HWND hCmb5 = GetDlgItem(hwnd, cmb5);
+        InitResNameComboBox(hCmb5, m_db, WORD(0), IDTYPE_HELP);
+        SubclassChildDx(m_cmb5, cmb5);
+
         GetInfo();
 
         if (m_flags & F_CLASS)
@@ -467,7 +471,6 @@ public:
         {
             MStringW name = m_db.GetNameOfResID(IDTYPE_HELP, m_item.m_help_id);
             SetDlgItemTextW(hwnd, cmb5, name.c_str());
-            SubclassChildDx(m_cmb5, cmb5);
         }
         if (m_flags & F_X)
         {

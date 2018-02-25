@@ -186,8 +186,6 @@ public:
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
         SetDlgItemInt(hwnd, edt4, cy, FALSE);
 
-        SetDlgItemInt(hwnd, cmb5, 0, FALSE);
-
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
         SubclassChildDx(m_cmb1, cmb1);
@@ -203,6 +201,7 @@ public:
 
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
         InitResNameComboBox(hCmb5, m_db, WORD(0), IDTYPE_HELP);
+        SetDlgItemInt(hwnd, cmb5, 0, FALSE);
         SubclassChildDx(m_cmb5, cmb5);
 
         InitTables(NULL);
