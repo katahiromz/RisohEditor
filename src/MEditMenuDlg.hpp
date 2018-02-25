@@ -43,6 +43,7 @@ public:
     MENU_ENTRY& m_entry;
     ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb2;
+    MComboBoxAutoComplete m_cmb3;
 
     MAddMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
         : MDialogBase(IDD_ADDMITEM), m_entry(entry), m_db(db)
@@ -54,7 +55,9 @@ public:
         InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND);
         SubclassChildDx(m_cmb2, cmb2);
 
-        SetDlgItemInt(hwnd, edt1, 0, TRUE);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, MIdOrString(L""), IDTYPE_HELP);
+        SetDlgItemInt(hwnd, cmb3, 0, TRUE);
+        SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
         return TRUE;
@@ -113,7 +116,7 @@ public:
         }
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, edt1, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        ::GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
@@ -148,6 +151,12 @@ public:
                 m_cmb2.OnEditChange();
             }
             break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
+            }
+            break;
         }
     }
 
@@ -176,6 +185,7 @@ public:
     MENU_ENTRY& m_entry;
     ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb2;
+    MComboBoxAutoComplete m_cmb3;
 
     MModifyMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
         : MDialogBase(IDD_MODIFYMITEM), m_entry(entry), m_db(db)
@@ -186,11 +196,13 @@ public:
     {
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
-        MIdOrString id(m_entry.szCommandID);
-        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, id, IDTYPE_COMMAND);
+        MIdOrString cmd_id(m_entry.szCommandID);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, cmd_id, IDTYPE_COMMAND);
         SubclassChildDx(m_cmb2, cmb2);
 
-        SetDlgItemTextW(hwnd, edt1, m_entry.szHelpID);
+        MIdOrString help_id(m_entry.szHelpID);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, help_id, IDTYPE_HELP);
+        SubclassChildDx(m_cmb3, cmb3);
 
         DWORD dwType, dwState;
         dwType = dwState = 0;
@@ -285,7 +297,7 @@ public:
         std::wstring str = GetMenuTypeAndState(dwType, dwState);
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, edt1, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        ::GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
@@ -308,7 +320,7 @@ public:
             {
                 SetDlgItemTextW(hwnd, cmb1, NULL);
                 SetDlgItemInt(hwnd, cmb2, 0, FALSE);
-                SetDlgItemInt(hwnd, edt1, 0, FALSE);
+                SetDlgItemInt(hwnd, cmb3, 0, FALSE);
             }
             break;
         case psh1:
@@ -318,6 +330,12 @@ public:
             if (codeNotify == CBN_EDITCHANGE)
             {
                 m_cmb2.OnEditChange();
+            }
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();
             }
             break;
         }
