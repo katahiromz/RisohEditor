@@ -6066,9 +6066,9 @@ void MMainWnd::DoRenameEntry(ResEntry entry, const MIdOrString& old_name, const 
 
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 
-    entry.name = new_name;
-    entry.lang = 0xFFFF;
-    TV_SelectEntry(m_hTreeView, m_entries, entry);
+    size_t i = 0;
+    found[i].name = new_name;
+    TV_SelectEntry(m_hTreeView, m_entries, found[i]);
 }
 
 void MMainWnd::DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang)
@@ -6091,8 +6091,9 @@ void MMainWnd::DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang)
 
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 
-    entry.lang = new_lang;
-    TV_SelectEntry(m_hTreeView, m_entries, entry);
+    size_t i = 0;
+    found[i].lang = new_lang;
+    TV_SelectEntry(m_hTreeView, m_entries, found[i]);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
