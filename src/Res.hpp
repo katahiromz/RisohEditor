@@ -128,6 +128,17 @@ public:
         }
         updated = TRUE;
     }
+
+    bool operator==(const ResEntry& entry) const
+    {
+        return lang == entry.lang &&
+               type == entry.type &&
+               name == entry.name;
+    }
+    bool operator!=(const ResEntry& entry) const
+    {
+        return !(*this == entry);
+    }
 };
 typedef std::vector<ResEntry> ResEntries;
 
@@ -311,7 +322,6 @@ Res_AddEntry(ResEntries& entries, const ResEntry& entry,
         {
             return FALSE;
         }
-
         entries[iEntry] = entry;
     }
     else
@@ -1027,6 +1037,7 @@ inline bool Res_Less(const ResEntry& entry1, const ResEntry& entry2)
 inline void Res_Sort(ResEntries& entries)
 {
     std::sort(entries.begin(), entries.end(), Res_Less);
+    std::unique(entries.begin(), entries.end());
 }
 
 inline void

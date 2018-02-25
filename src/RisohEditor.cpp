@@ -5998,12 +5998,14 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
             }
 
-            mstr_trim(pszNewText);
+            WCHAR szNewText[128];
+            lstrcpyW(szNewText, pszNewText);
+            mstr_trim(szNewText);
 
             if (HIWORD(lParam) == I_NAME)
             {
                 MIdOrString old_name = GetNameFromText(szOldText);
-                MIdOrString new_name = GetNameFromText(pszNewText);
+                MIdOrString new_name = GetNameFromText(szNewText);
 
                 if (old_name.empty())
                     return FALSE;   // reject
@@ -6024,7 +6026,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (old_lang == 0xFFFF)
                     return FALSE;   // reject
 
-                WORD new_lang = GetLangFromText(pszNewText);
+                WORD new_lang = GetLangFromText(szNewText);
                 if (new_lang == 0xFFFF)
                     return FALSE;   // reject
 
@@ -6044,56 +6046,44 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
-void MMainWnd::DoRenameEntry(ResEntry entry, const MIdOrString& old_name, const MIdOrString& new_name)
+void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, const MIdOrString& new_name)
 {
-    entry.lang = 0xFFFF;
+    selector.lang = 0xFFFF;
 
-    ResEntries found;
-    Res_Search(found, m_entries, entry);
-    if (found.empty())
-        return;
-
-    for (size_t i = 0; i < found.size(); ++i)
+    for (;;)
     {
-        assert(found[i].name == old_name);
+        INT iEntry = Res_Find2(m_entries, selector, FALSE);
+        if (iEntry == -1)
+            break;
 
-        found[i].name = new_name;
-        Res_AddEntry(m_entries, found[i], TRUE);
-
-        found[i].name = old_name;
-        Res_DeleteEntries(m_entries, found[i]);
+        ResEntry& entry = m_entries[iEntry];
+        assert(entry.name == old_name);
+        entry.name = new_name;
     }
 
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 
-    size_t i = 0;
-    found[i].name = new_name;
-    TV_SelectEntry(m_hTreeView, m_entries, found[i]);
+    selector.name = new_name;
+    TV_SelectEntry(m_hTreeView, m_entries, selector);
 }
 
-void MMainWnd::DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang)
+void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, entry);
-    if (found.empty())
-        return;
-
-    for (size_t i = 0; i < found.size(); ++i)
+    for (;;)
     {
-        assert(found[i].lang == old_lang);
+        INT iEntry = Res_Find(m_entries, selector, FALSE);
+        if (iEntry == -1)
+            break;
 
-        found[i].lang = new_lang;
-        Res_AddEntry(m_entries, found[i], TRUE);
-
-        found[i].lang = old_lang;
-        Res_DeleteEntries(m_entries, found[i]);
+        ResEntry& entry = m_entries[iEntry];
+        assert(entry.lang == old_lang);
+        entry.lang = new_lang;
     }
 
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 
-    size_t i = 0;
-    found[i].lang = new_lang;
-    TV_SelectEntry(m_hTreeView, m_entries, found[i]);
+    selector.lang = new_lang;
+    TV_SelectEntry(m_hTreeView, m_entries, selector);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
