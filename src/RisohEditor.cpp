@@ -1177,7 +1177,7 @@ protected:
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
-    void OnUpdateID(HWND hwnd);
+    void DoRefreshAll(HWND hwnd);
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
     void OnAddDialog(HWND hwnd);
@@ -5173,6 +5173,14 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     {
         ShowIDList(hwnd, TRUE);
     }
+
+    // refresh treeview
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    UINT i = LOWORD(lParam);
+    ResEntry& selection = m_entries[i];
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_SelectEntry(m_hTreeView, m_entries, selection);
+
     return TRUE;
 }
 
@@ -5305,12 +5313,9 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     return bOK;
 }
 
-void MMainWnd::OnUpdateID(HWND hwnd)
+void MMainWnd::DoRefreshAll(HWND hwnd)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
-    if (HIWORD(lParam) != I_LANG)
-        return;
-
     UINT i = LOWORD(lParam);
     ResEntry& selection = m_entries[i];
 
@@ -5649,7 +5654,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnAdviceResH(hwnd);
         break;
     case CMDID_UPDATEID:
-        OnUpdateID(hwnd);
+        DoRefreshAll(hwnd);
         break;
     case CMDID_OPENREADME:
         OnOpenReadMe(hwnd);

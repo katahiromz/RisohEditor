@@ -94,6 +94,8 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         MENUITEM "Always &CONTROL statement", CMDID_ALWAYSCONTROL
         MENUITEM "Don't Use &ID Macros", CMDID_HIDEIDMACROS
+        MENUITEM SEPARATOR
+        MENUITEM "Re&fresh", CMDID_UPDATEID
     }
     POPUP "&Help"
     {

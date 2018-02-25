@@ -330,7 +330,6 @@ public:
                     SetItems();
 
                     SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
-
                     UpdateResH();
                 }
             }
