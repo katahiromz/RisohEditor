@@ -41,7 +41,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
 class StringRes
 {
 public:
-    typedef std::wstring string_type;
+    typedef MStringW string_type;
     typedef std::map<WORD, string_type> map_type;
 
     StringRes()

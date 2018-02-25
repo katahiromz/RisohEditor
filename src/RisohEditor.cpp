@@ -367,7 +367,7 @@ void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString)
 struct LangEntry
 {
     WORD LangID;
-    std::wstring str;
+    MStringW str;
 
     bool operator<(const LangEntry& ent) const
     {
@@ -662,7 +662,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     return TRUE;
 }
 
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file)
+BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 {
     WCHAR szFile[MAX_PATH];
     GetWindowTextW(hEdt1, szFile, _countof(szFile));
@@ -683,9 +683,9 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file)
 
 //////////////////////////////////////////////////////////////////////////////
 
-std::wstring DumpDataAsString(const std::vector<BYTE>& data)
+MStringW DumpDataAsString(const std::vector<BYTE>& data)
 {
-    std::wstring ret;
+    MStringW ret;
     WCHAR sz[64];
     DWORD addr, size = DWORD(data.size());
 
@@ -756,7 +756,7 @@ std::wstring DumpDataAsString(const std::vector<BYTE>& data)
     return ret;
 }
 
-std::wstring GetKeyID(ConstantsDB& db, UINT wId)
+MStringW GetKeyID(ConstantsDB& db, UINT wId)
 {
     if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
         return mstr_dec_short((SHORT)wId);
@@ -779,7 +779,7 @@ void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)
     }
 }
 
-BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
+BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 {
     if (bVirtKey)
     {
@@ -802,7 +802,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str)
         if (!bOK)
         {
             LPCWSTR pch = str.c_str();
-            std::wstring str2;
+            MStringW str2;
             if (!guts_quote(str2, pch) || str2.size() != 1)
             {
                 return FALSE;
@@ -850,7 +850,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
 
-    std::wstring str = entry.StringValue;
+    MStringW str = entry.StringValue;
     str = mstr_quote(str);
 
     SetDlgItemTextW(hwnd, edt1, str.c_str());
@@ -888,7 +888,7 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
 
-    std::wstring str = entry.MessageValue;
+    MStringW str = entry.MessageValue;
     str = mstr_quote(str);
 
     SetDlgItemTextW(hwnd, edt1, str.c_str());
@@ -914,7 +914,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     return TRUE;
 }
 
-std::wstring
+MStringW
 Res_GetLangName(WORD lang)
 {
     WCHAR sz[64], szLoc[64];
@@ -928,7 +928,7 @@ Res_GetLangName(WORD lang)
         GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64);
         wsprintfW(sz, L"%s (%u)", szLoc, lang);
     }
-    return std::wstring(sz);
+    return MStringW(sz);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1120,8 +1120,8 @@ public:
 protected:
     // parsing resource IDs
     BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
-    BOOL CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen = FALSE);
-    BOOL CompileMessageTable(HWND hwnd, const std::wstring& strWide);
+    BOOL CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen = FALSE);
+    BOOL CompileMessageTable(HWND hwnd, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
@@ -2217,7 +2217,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     ChangeStatusText(IDS_COMPILING);
 
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    std::wstring strWide;
+    MStringW strWide;
     strWide.resize(cchText);
     ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
@@ -2336,7 +2336,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
-            std::wstring strWide = str_res.Dump(m_db);
+            MStringW strWide = str_res.Dump(m_db);
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
@@ -2370,7 +2370,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
-            std::wstring strWide = msg_res.Dump(m_db);
+            MStringW strWide = msg_res.Dump(m_db);
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_MESSAGETABLE, WORD(0), lang);
@@ -2981,7 +2981,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const ResEntry& entry)
     BITMAP bm;
     m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, entry, bm));
 
-    std::wstring str;
+    MStringW str;
     HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
     if (hIcon)
     {
@@ -3003,7 +3003,7 @@ void MMainWnd::PreviewCursor(HWND hwnd, const ResEntry& entry)
     BITMAP bm;
     HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
     m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
-    std::wstring str = DumpIconInfo(bm, FALSE);
+    MStringW str = DumpIconInfo(bm, FALSE);
     DestroyCursor(hCursor);
 
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -3015,7 +3015,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
-    std::wstring str = DumpGroupIconInfo(entry.data);
+    MStringW str = DumpGroupIconInfo(entry.data);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
@@ -3026,7 +3026,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_entries, entry));
     assert(m_hBmpView);
 
-    std::wstring str = DumpGroupCursorInfo(m_entries, entry.data);
+    MStringW str = DumpGroupCursorInfo(m_entries, entry.data);
     assert(str.size());
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3038,7 +3038,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
 
-    std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
+    MStringW str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
@@ -3048,7 +3048,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
 {
     m_hBmpView.SetImage(&entry[0], entry.size());
 
-    std::wstring str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
+    MStringW str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     ShowBmpView(TRUE);
@@ -3089,7 +3089,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& entry)
     WORD nNameID = entry.name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
     {
-        std::wstring str = mes.Dump(m_db, nNameID);
+        MStringW str = mes.Dump(m_db, nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3101,7 +3101,7 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
     WORD nNameID = entry.name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
     {
-        std::wstring str = str_res.Dump(m_db, nNameID);
+        MStringW str = str_res.Dump(m_db, nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3110,7 +3110,7 @@ void MMainWnd::PreviewHtml(HWND hwnd, const ResEntry& entry)
 {
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
-    std::wstring str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+    MStringW str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
@@ -3252,7 +3252,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
 {
     HidePreview(hwnd);
 
-    std::wstring str = DumpDataAsString(entry.data);
+    MStringW str = DumpDataAsString(entry.data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     BOOL bEditable = FALSE;
@@ -3531,7 +3531,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
-BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
+BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3643,7 +3643,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const std::wstring& strWide)
     return bSuccess;
 }
 
-BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen)
+BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
     WORD i = LOWORD(lParam);
@@ -3662,7 +3662,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
     {
         if (Res_IsPlainText(entry.type))
         {
-            if (strWide.find(L"\"UTF-8\"") != std::wstring::npos)
+            if (strWide.find(L"\"UTF-8\"") != MStringW::npos)
             {
                 entry.data.assign(strUtf8.begin(), strUtf8.end());
 
@@ -3795,7 +3795,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const std::wstring& strWide, BOOL bReopen
 BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
 {
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    std::wstring strWide;
+    MStringW strWide;
     strWide.resize(cchText);
     ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 

@@ -36,7 +36,7 @@ Question 3. I can't find my resource IDs in [List of Resource IDs]
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-// Homepage     http://katahiromz.web.fc2.com/
-// BBS          http://katahiromz.bbs.fc2.com/
+// Homepage     http://katahiromz.web.fc2.com
+// BBS          http://katahiromz.bbs.fc2.com
 // E-Mail       katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////

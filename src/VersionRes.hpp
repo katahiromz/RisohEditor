@@ -41,7 +41,7 @@ typedef struct VarInfoHead
 struct Var
 {
     VarInfoHead             head;
-    std::wstring            key;
+    MStringW                key;
     std::vector<BYTE>       value;
     std::vector<BYTE>       children;
     std::vector<Var>        vars;
@@ -115,7 +115,7 @@ public:
 
     MStringW DumpValue(WORD wType, const Var& value, int depth = 0) const
     {
-        MStringW ret = std::wstring(depth * 4, L' ');
+        MStringW ret = MStringW(depth * 4, L' ');
         ret += L"VALUE ";
         ret += mstr_quote(value.key);
 
@@ -134,7 +134,7 @@ public:
             else
             {
                 WCHAR *pch = (WCHAR *)(&value.value[0]);
-                std::wstring str(pch, value.value.size() / 2);
+                MStringW str(pch, value.value.size() / 2);
                 ret += L", ";
                 ret += mstr_quote(str);
             }
@@ -148,15 +148,15 @@ public:
         return ret;
     }
 
-    std::wstring DumpBlock(const Var& var, int depth = 0) const
+    MStringW DumpBlock(const Var& var, int depth = 0) const
     {
-        std::wstring ret;
+        MStringW ret;
 
-        ret += std::wstring(depth * 4, L' ');
+        ret += MStringW(depth * 4, L' ');
         ret += L"BLOCK \"";
         ret += var.key;
         ret += L"\"\r\n";
-        ret += std::wstring(depth * 4, L' ');
+        ret += MStringW(depth * 4, L' ');
         ret += L"{\r\n";
 
         Vars::const_iterator it, end = var.vars.end();
@@ -172,15 +172,15 @@ public:
             }
         }
 
-        ret += std::wstring(depth * 4, L' ');
+        ret += MStringW(depth * 4, L' ');
         ret += L"}\r\n";
 
         return ret;
     }
 
-    std::wstring Dump(const MIdOrString& name) const
+    MStringW Dump(const MIdOrString& name) const
     {
-        std::wstring ret;
+        MStringW ret;
         WCHAR line[MAX_PATH];
 
         if (name.m_id == 0)

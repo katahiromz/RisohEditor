@@ -65,7 +65,7 @@ typedef struct DLGITEMTEMPLATEEXHEAD
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline BOOL PredefClassToID(std::wstring name, WORD& w)
+inline BOOL PredefClassToID(MStringW name, WORD& w)
 {
     w = 0;
     CharUpperW(&name[0]);
@@ -84,7 +84,7 @@ inline BOOL PredefClassToID(std::wstring name, WORD& w)
     return w != 0;
 }
 
-inline BOOL IDToPredefClass(WORD w, std::wstring& name)
+inline BOOL IDToPredefClass(WORD w, MStringW& name)
 {
     switch (w)
     {
@@ -110,7 +110,7 @@ inline BOOL IDToPredefClass(WORD w, std::wstring& name)
     return FALSE;
 }
 
-inline void FixClassName(const ConstantsDB& db, std::wstring& cls)
+inline void FixClassName(const ConstantsDB& db, MStringW& cls)
 {
     ConstantsDB::TableType table = db.GetTable(L"CONTROL.CLASSES");
     for (size_t i = 0; i < table.size(); ++i)
@@ -326,9 +326,9 @@ struct DialogItem
         return TRUE;
     }
 
-    std::wstring Dump(const ConstantsDB& db, BOOL bAlwaysControl = FALSE)
+    MStringW Dump(const ConstantsDB& db, BOOL bAlwaysControl = FALSE)
     {
-        std::wstring cls;
+        MStringW cls;
 
         if (m_class.is_int())
         {
@@ -397,9 +397,9 @@ struct DialogItem
         return DumpControl(db, cls);
     }
 
-    std::wstring DumpControl(const ConstantsDB& db, std::wstring& cls)
+    MStringW DumpControl(const ConstantsDB& db, MStringW& cls)
     {
-        std::wstring ret;
+        MStringW ret;
 
         ret += L"CONTROL ";
         ret += m_title.quoted_wstr();
@@ -450,13 +450,13 @@ struct DialogItem
         return ret;
     }
 
-    std::wstring _do_CONTROL(BOOL bNeedsText,
+    MStringW _do_CONTROL(BOOL bNeedsText,
                              const ConstantsDB& db,
-                             const std::wstring& ctrl,
-                             const std::wstring& cls,
+                             const MStringW& ctrl,
+                             const MStringW& cls,
                              DWORD DefStyle)
     {
-        std::wstring ret;
+        MStringW ret;
         ret += ctrl;
         ret += L" ";
         if (!m_title.empty() || bNeedsText)
@@ -498,93 +498,93 @@ struct DialogItem
         return ret;
     }
 
-    std::wstring _do_BUTTON(const ConstantsDB& db,
-                            const std::wstring& ctrl, DWORD DefStyle)
+    MStringW _do_BUTTON(const ConstantsDB& db,
+                            const MStringW& ctrl, DWORD DefStyle)
     {
         return _do_CONTROL(TRUE, db, ctrl, L"BUTTON", DefStyle);
     }
 
-    std::wstring _do_TEXT(const ConstantsDB& db,
-                          const std::wstring& ctrl, DWORD DefStyle)
+    MStringW _do_TEXT(const ConstantsDB& db,
+                          const MStringW& ctrl, DWORD DefStyle)
     {
         return _do_CONTROL(TRUE, db, ctrl, L"STATIC", DefStyle);
     }
 
-    std::wstring _do_AUTO3STATE(const ConstantsDB& db)
+    MStringW _do_AUTO3STATE(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"AUTO3STATE", (BS_AUTO3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_AUTOCHECKBOX(const ConstantsDB& db)
+    MStringW _do_AUTOCHECKBOX(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"AUTOCHECKBOX", (BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_AUTORADIOBUTTON(const ConstantsDB& db)
+    MStringW _do_AUTORADIOBUTTON(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"AUTORADIOBUTTON", (BS_AUTORADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_CHECKBOX(const ConstantsDB& db)
+    MStringW _do_CHECKBOX(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"CHECKBOX", (BS_CHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_DEFPUSHBUTTON(const ConstantsDB& db)
+    MStringW _do_DEFPUSHBUTTON(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"DEFPUSHBUTTON", (BS_DEFPUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_GROUPBOX(const ConstantsDB& db)
+    MStringW _do_GROUPBOX(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"GROUPBOX", (BS_GROUPBOX | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_PUSHBUTTON(const ConstantsDB& db)
+    MStringW _do_PUSHBUTTON(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"PUSHBUTTON", (BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_PUSHBOX(const ConstantsDB& db)
+    MStringW _do_PUSHBOX(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"PUSHBOX", (BS_PUSHBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_RADIOBUTTON(const ConstantsDB& db)
+    MStringW _do_RADIOBUTTON(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"RADIOBUTTON", (BS_RADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_STATE3(const ConstantsDB& db)
+    MStringW _do_STATE3(const ConstantsDB& db)
     {
         return _do_BUTTON(db, L"STATE3", (BS_3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_LTEXT(const ConstantsDB& db)
+    MStringW _do_LTEXT(const ConstantsDB& db)
     {
         return _do_TEXT(db, L"LTEXT", (SS_LEFT | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_CTEXT(const ConstantsDB& db)
+    MStringW _do_CTEXT(const ConstantsDB& db)
     {
         return _do_TEXT(db, L"CTEXT", (SS_CENTER | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_RTEXT(const ConstantsDB& db)
+    MStringW _do_RTEXT(const ConstantsDB& db)
     {
         return _do_TEXT(db, L"RTEXT", (SS_RIGHT | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    std::wstring _do_EDITTEXT(const ConstantsDB& db)
+    MStringW _do_EDITTEXT(const ConstantsDB& db)
     {
         assert(m_title.empty());
         return _do_CONTROL(FALSE, db, L"EDITTEXT", L"EDIT",
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
-    std::wstring _do_COMBOBOX(const ConstantsDB& db)
+    MStringW _do_COMBOBOX(const ConstantsDB& db)
     {
         assert(m_title.empty());
         return _do_CONTROL(FALSE, db, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
     }
-    std::wstring _do_ICON(const ConstantsDB& db)
+    MStringW _do_ICON(const ConstantsDB& db)
     {
         assert(m_title.empty());
         return _do_CONTROL(TRUE, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
-    std::wstring _do_LISTBOX(const ConstantsDB& db)
+    MStringW _do_LISTBOX(const ConstantsDB& db)
     {
         assert(m_title.empty());
         return _do_CONTROL(FALSE, db, L"LISTBOX", L"LISTBOX",
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
-    std::wstring _do_SCROLLBAR(const ConstantsDB& db)
+    MStringW _do_SCROLLBAR(const ConstantsDB& db)
     {
         assert(m_title.empty());
         return _do_CONTROL(FALSE, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
@@ -769,9 +769,9 @@ struct DialogRes
         return stream.data();
     }
 
-    std::wstring Dump(const MIdOrString& id_or_str, BOOL bAlwaysControl = FALSE)
+    MStringW Dump(const MIdOrString& id_or_str, BOOL bAlwaysControl = FALSE)
     {
-        std::wstring ret;
+        MStringW ret;
 
         if (id_or_str.is_str())
         {
@@ -828,7 +828,7 @@ struct DialogRes
 
         {
             DWORD value = (m_style & ~DS_SETFONT);
-            std::wstring str = m_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
+            MStringW str = m_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
             if (value)
             {
                 if (!str.empty())
@@ -849,7 +849,7 @@ struct DialogRes
         if (m_ex_style)
         {
             DWORD value = m_ex_style;
-            std::wstring str = m_db.DumpBitField(L"EXSTYLE", L"", value);
+            MStringW str = m_db.DumpBitField(L"EXSTYLE", L"", value);
             if (value)
             {
                 if (!str.empty())

@@ -98,9 +98,9 @@ public:
         return std::vector<BYTE>(pb, pb + size);
     }
 
-    std::wstring Dump(const MIdOrString &id_or_str) const
+    MStringW Dump(const MIdOrString &id_or_str) const
     {
-        std::wstring ret;
+        MStringW ret;
 
         if (id_or_str.m_id == 0)
         {
@@ -182,9 +182,9 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline std::wstring GetKeyFlags(WORD fFlags)
+inline MStringW GetKeyFlags(WORD fFlags)
 {
-    std::wstring str;
+    MStringW str;
 
     if (fFlags & FVIRTKEY)
         str += L"V ";
@@ -204,18 +204,18 @@ inline std::wstring GetKeyFlags(WORD fFlags)
     return str;
 }
 
-inline void SetKeyFlags(WORD& fFlags, const std::wstring& str)
+inline void SetKeyFlags(WORD& fFlags, const MStringW& str)
 {
     fFlags = 0;
-    if (str.find(L"V") != std::wstring::npos)
+    if (str.find(L"V") != MStringW::npos)
         fFlags |= FVIRTKEY;
-    if (str.find(L"N") != std::wstring::npos)
+    if (str.find(L"N") != MStringW::npos)
         fFlags |= FNOINVERT;
-    if (str.find(L"C") != std::wstring::npos)
+    if (str.find(L"C") != MStringW::npos)
         fFlags |= FCONTROL;
-    if (str.find(L"S") != std::wstring::npos)
+    if (str.find(L"S") != MStringW::npos)
         fFlags |= FSHIFT;
-    if (str.find(L"A") != std::wstring::npos)
+    if (str.find(L"A") != MStringW::npos)
         fFlags |= FALT;
 }
 

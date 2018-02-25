@@ -35,10 +35,10 @@
 #include "resource.h"
 
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
-std::wstring DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
-std::wstring DumpBitmapInfo(HBITMAP hbm);
-std::wstring DumpGroupIconInfo(const std::vector<BYTE>& data);
-std::wstring DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
+MStringW DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
+MStringW DumpBitmapInfo(HBITMAP hbm);
+MStringW DumpGroupIconInfo(const std::vector<BYTE>& data);
+MStringW DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
 
 HBITMAP
 CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
@@ -389,10 +389,10 @@ CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
     return hbm;
 }
 
-inline std::wstring
+inline MStringW
 DumpBitmapInfo(HBITMAP hbm)
 {
-    std::wstring ret;
+    MStringW ret;
     BITMAP bm;
     if (!GetObjectW(hbm, sizeof(bm), &bm))
         return ret;
@@ -404,10 +404,10 @@ DumpBitmapInfo(HBITMAP hbm)
     return ret;
 }
 
-inline std::wstring
+inline MStringW
 DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
 {
-    std::wstring ret;
+    MStringW ret;
 
     using namespace std;
     WCHAR sz[128];
@@ -418,10 +418,10 @@ DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
     return ret;
 }
 
-inline std::wstring
+inline MStringW
 DumpGroupIconInfo(const std::vector<BYTE>& data)
 {
-    std::wstring ret;
+    MStringW ret;
     WCHAR sz[128];
 
     ICONDIR dir;
@@ -461,10 +461,10 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
     return ret;
 }
 
-inline std::wstring
+inline MStringW
 DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
 {
-    std::wstring ret;
+    MStringW ret;
     WCHAR sz[128];
 
     ICONDIR dir;

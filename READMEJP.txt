@@ -177,7 +177,7 @@
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]
-// ホームページ http://katahiromz.web.fc2.com/
-// 掲示板       http://katahiromz.bbs.fc2.com/
+// ホームページ http://katahiromz.web.fc2.com
+// 掲示板       http://katahiromz.bbs.fc2.com
 // メール       katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////

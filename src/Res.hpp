@@ -441,7 +441,7 @@ Res_DeleteEntries(ResEntries& entries, const ResEntry& entry)
 
 inline BOOL
 Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
-                 WORD lang, const std::wstring& FileName,
+                 WORD lang, const MStringW& FileName,
                  BOOL Replace = FALSE)
 {
     IconFile icon;
@@ -464,7 +464,7 @@ Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
 
 inline BOOL
 Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
-                   WORD lang, const std::wstring& FileName,
+                   WORD lang, const MStringW& FileName,
                    BOOL Replace = FALSE)
 {
     CursorFile cur;
@@ -487,7 +487,7 @@ Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
 
 inline BOOL
 Res_AddBitmap(ResEntries& entries, const MIdOrString& name,
-              WORD lang, const std::wstring& BitmapFile, BOOL Replace = FALSE)
+              WORD lang, const MStringW& BitmapFile, BOOL Replace = FALSE)
 {
     MByteStreamEx stream;
     if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
@@ -558,11 +558,11 @@ Res_GetListFromRes(HMODULE hMod, LPARAM lParam)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline std::wstring
+inline MStringW
 Res_GetType(const MIdOrString& id_or_str)
 {
     wchar_t sz[32];
-    std::wstring ret, name;
+    MStringW ret, name;
     switch (id_or_str.m_id)
     {
     case 1: name = L"RT_CURSOR"; break;
@@ -609,10 +609,10 @@ Res_GetType(const MIdOrString& id_or_str)
     return ret;
 }
 
-inline std::wstring
+inline MStringW
 Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 {
-    std::wstring ret;
+    MStringW ret;
     if (entry.name.m_id != 0)
     {
         WORD id = entry.name.m_id;
@@ -723,7 +723,7 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
     return ret;
 }
 
-std::wstring Res_GetLangName(WORD lang);
+MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -827,7 +827,7 @@ TV_GetSelection(HWND hwnd, ResEntries& selection,
 }
 
 inline HTREEITEM
-TV_MyInsert(HWND hwnd, HTREEITEM hParent, std::wstring Text, LPARAM lParam)
+TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam)
 {
     TV_INSERTSTRUCTW Insert;
     ZeroMemory(&Insert, sizeof(Insert));
@@ -868,7 +868,7 @@ _tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(entries[i].lang);
+    MStringW ResLang = Res_GetLangName(entries[i].lang);
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, I_LANG));
 }   
 
@@ -888,7 +888,7 @@ _tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResName = Res_GetName(db, entries[i]);
+    MStringW ResName = Res_GetName(db, entries[i]);
     return TV_MyInsert(hwnd, hParent, ResName, MAKELPARAM(k, I_NAME));
 }
 
@@ -908,7 +908,7 @@ _tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResType = Res_GetType(entries[i].type);
+    MStringW ResType = Res_GetType(entries[i].type);
     return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
 }
 
@@ -993,7 +993,7 @@ _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
+    MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_STRING));
 }
 
@@ -1013,7 +1013,7 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
         }
     }
 
-    std::wstring ResLang = Res_GetLangName(entries[iEntry].lang);
+    MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
 }
 
