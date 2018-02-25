@@ -1034,6 +1034,15 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
 {
     TreeView_DeleteAllItems(hwnd);
 
+    for (size_t i = entries.size(); i > 0;)
+    {
+        --i;
+        if (entries[i].empty())
+        {
+            entries.erase(entries.begin() + i);
+        }
+    }
+
     Res_Sort(entries);
 
     for (INT i = 0; i < INT(entries.size()); ++i)

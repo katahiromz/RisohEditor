@@ -578,7 +578,8 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     else
     {
         MStringW str = szType;
-        if (size_t i = str.find(L'(')) // ')'
+        size_t i = str.rfind(L'('); // ')'
+        if (i != MStringW::npos)
         {
             type = WORD(wcstol(&str[i + 1], NULL, 0));
         }
@@ -1108,6 +1109,8 @@ public:
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
+    void DoRenameEntry(ResEntry entry, const MIdOrString& old_name, const MIdOrString& new_name);
+    void DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang);
 
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
@@ -5724,6 +5727,65 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #endif
 }
 
+WORD GetLangFromText(const WCHAR *pszLang)
+{
+    if (pszLang[0] == 0)
+    {
+        return 0;
+    }
+    else if (iswdigit(pszLang[0]) || pszLang[0] == L'-' || pszLang[0] == L'+')
+    {
+        return WORD(wcstol(pszLang, NULL, 0));
+    }
+    else
+    {
+        MStringW str = pszLang;
+        size_t i = str.rfind(L'('); // ')'
+        if (i != MStringW::npos)
+        {
+            return WORD(wcstol(&str[i + 1], NULL, 0));
+        }
+        for (size_t i = 0; i < g_Langs.size(); ++i)
+        {
+            WCHAR sz[MAX_PATH];
+            wsprintfW(sz, L"%s", g_Langs[i].str.c_str());
+            if (lstrcmpiW(sz, pszLang) == 0)
+            {
+                return g_Langs[i].LangID;
+            }
+            wsprintfW(sz, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
+            if (lstrcmpiW(sz, pszLang) == 0)
+            {
+                return g_Langs[i].LangID;
+            }
+        }
+    }
+    return WORD(0xFFFF);
+}
+
+MIdOrString GetNameFromText(const WCHAR *pszText)
+{
+    if (pszText[0] == 0)
+    {
+        return (WORD)0;
+    }
+    else if (iswdigit(pszText[0]) || pszText[0] == L'-' || pszText[0] == L'+')
+    {
+        return WORD(wcstol(pszText, NULL, 0));
+    }
+    else
+    {
+        MStringW str = pszText;
+        size_t i = str.rfind(L'('); // ')'
+        if (i != MStringW::npos)
+        {
+            return WORD(wcstol(&str[i + 1], NULL, 0));
+        }
+        MIdOrString id(str.c_str());
+        return id;
+    }
+}
+
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
@@ -5834,10 +5896,197 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
         case VK_DELETE:
             PostMessageW(hwnd, WM_COMMAND, CMDID_DELETERES, 0);
-            return 1;
+            return TRUE;
+        case VK_F2:
+            {
+                LPARAM lParam = TV_GetParam(m_hTreeView);
+                if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
+                    HIWORD(lParam) == I_MESSAGE)
+                {
+                    return TRUE;
+                }
+
+                UINT i = LOWORD(lParam);
+                ResEntry& entry = m_entries[i];
+
+                if (HIWORD(lParam) == I_LANG)
+                {
+                    if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                    {
+                        return TRUE;
+                    }
+                }
+
+                HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+                TreeView_EditLabel(m_hTreeView, hItem);
+            }
+            return TRUE;
+        }
+    }
+    else
+    {
+        static WORD old_lang = 0xFFFF;
+        static WCHAR szOldText[128] = L"";
+
+        if (pnmhdr->code == TVN_BEGINLABELEDIT)
+        {
+            TV_DISPINFO *pInfo = (TV_DISPINFO *)pnmhdr;
+            LPARAM lParam = pInfo->item.lParam;
+            HTREEITEM hItem = pInfo->item.hItem;
+            LPWSTR pszOldText = pInfo->item.pszText;
+
+            if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
+                HIWORD(lParam) == I_MESSAGE)
+            {
+                return TRUE;    // prevent
+            }
+
+            UINT i = LOWORD(lParam);
+            ResEntry& entry = m_entries[i];
+
+            if (HIWORD(lParam) == I_LANG)
+            {
+                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                {
+                    return TRUE;    // prevent
+                }
+            }
+
+            lstrcpyW(szOldText, pszOldText);
+            mstr_trim(szOldText);
+
+            if (HIWORD(lParam) == I_LANG)
+            {
+                old_lang = GetLangFromText(szOldText);
+                if (old_lang == 0xFFFF)
+                {
+                    return TRUE;    // prevent
+                }
+            }
+
+            return FALSE;       // accept
+        }
+        else if (pnmhdr->code == TVN_ENDLABELEDIT)
+        {
+            TV_DISPINFO *pInfo = (TV_DISPINFO *)pnmhdr;
+            LPARAM lParam = pInfo->item.lParam;
+            HTREEITEM hItem = pInfo->item.hItem;
+            LPWSTR pszNewText = pInfo->item.pszText;
+            if (pszNewText == NULL)
+                return FALSE;   // reject
+
+            if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
+                HIWORD(lParam) == I_MESSAGE)
+            {
+                return FALSE;   // reject
+            }
+
+            UINT i = LOWORD(lParam);
+            ResEntry& entry = m_entries[i];
+
+            if (HIWORD(lParam) == I_LANG)
+            {
+                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                {
+                    return FALSE;   // reject
+                }
+            }
+
+            mstr_trim(pszNewText);
+
+            if (HIWORD(lParam) == I_NAME)
+            {
+                MIdOrString old_name = GetNameFromText(szOldText);
+                MIdOrString new_name = GetNameFromText(pszNewText);
+
+                if (old_name.empty())
+                    return FALSE;   // reject
+
+                if (new_name.empty())
+                    return FALSE;   // reject
+
+                if (old_name == new_name)
+                    return FALSE;   // reject
+
+                DoRenameEntry(entry, old_name, new_name);
+                return TRUE;   // accept
+            }
+            else if (HIWORD(lParam) == I_LANG)
+            {
+                old_lang = GetLangFromText(szOldText);
+                if (old_lang == 0xFFFF)
+                {
+                    return FALSE;   // reject
+                }
+
+                WORD new_lang = GetLangFromText(pszNewText);
+                if (new_lang == 0xFFFF)
+                {
+                    return FALSE;   // reject
+                }
+
+                if (old_lang == new_lang)
+                    return FALSE;   // reject
+
+                DoRelangEntry(entry, old_lang, new_lang);
+                return TRUE;   // accept
+            }
+
+            return FALSE;   // reject
         }
     }
     return 0;
+}
+
+void MMainWnd::DoRenameEntry(ResEntry entry, const MIdOrString& old_name, const MIdOrString& new_name)
+{
+    entry.lang = 0xFFFF;
+
+    ResEntries found;
+    Res_Search(found, m_entries, entry);
+    if (found.empty())
+        return;
+
+    for (size_t i = 0; i < found.size(); ++i)
+    {
+        assert(found[i].name == old_name);
+
+        found[i].name = new_name;
+        Res_AddEntry(m_entries, found[i], TRUE);
+
+        found[i].name = old_name;
+        Res_DeleteEntries(m_entries, found[i]);
+    }
+
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+
+    entry.name = new_name;
+    entry.lang = 0xFFFF;
+    TV_SelectEntry(m_hTreeView, m_entries, entry);
+}
+
+void MMainWnd::DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang)
+{
+    ResEntries found;
+    Res_Search(found, m_entries, entry);
+    if (found.empty())
+        return;
+
+    for (size_t i = 0; i < found.size(); ++i)
+    {
+        assert(found[i].lang == old_lang);
+
+        found[i].lang = new_lang;
+        Res_AddEntry(m_entries, found[i], TRUE);
+
+        found[i].lang = old_lang;
+        Res_DeleteEntries(m_entries, found[i]);
+    }
+
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+
+    entry.lang = new_lang;
+    TV_SelectEntry(m_hTreeView, m_entries, entry);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
@@ -6590,7 +6839,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
-        TVS_LINESATROOT | TVS_SHOWSELALWAYS;
+        TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_EDITLABELS;
     m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
         WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
         (HMENU)1, m_hInst, NULL);
