@@ -5900,8 +5900,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         case VK_F2:
             {
                 LPARAM lParam = TV_GetParam(m_hTreeView);
-                if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
-                    HIWORD(lParam) == I_MESSAGE)
+                if (HIWORD(lParam) == I_TYPE)
                 {
                     return TRUE;
                 }
@@ -5909,7 +5908,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 UINT i = LOWORD(lParam);
                 ResEntry& entry = m_entries[i];
 
-                if (HIWORD(lParam) == I_LANG)
+                if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
                 {
                     if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
                     {
@@ -5935,16 +5934,15 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszOldText = pInfo->item.pszText;
 
-            if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
-                HIWORD(lParam) == I_MESSAGE)
+            if (HIWORD(lParam) == I_TYPE)
             {
                 return TRUE;    // prevent
             }
 
             UINT i = LOWORD(lParam);
-            ResEntry& entry = m_entries[i];
+            ResEntry entry = m_entries[i];
 
-            if (HIWORD(lParam) == I_LANG)
+            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
                 if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
                 {
@@ -5955,7 +5953,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             lstrcpyW(szOldText, pszOldText);
             mstr_trim(szOldText);
 
-            if (HIWORD(lParam) == I_LANG)
+            if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING ||
+                HIWORD(lParam) == I_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -5975,16 +5974,15 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             if (pszNewText == NULL)
                 return FALSE;   // reject
 
-            if (HIWORD(lParam) == I_TYPE || HIWORD(lParam) == I_STRING ||
-                HIWORD(lParam) == I_MESSAGE)
+            if (HIWORD(lParam) == I_TYPE)
             {
                 return FALSE;   // reject
             }
 
             UINT i = LOWORD(lParam);
-            ResEntry& entry = m_entries[i];
+            ResEntry entry = m_entries[i];
 
-            if (HIWORD(lParam) == I_LANG)
+            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
                 if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
                 {
@@ -6011,7 +6009,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 DoRenameEntry(entry, old_name, new_name);
                 return TRUE;   // accept
             }
-            else if (HIWORD(lParam) == I_LANG)
+            else if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING ||
+                     HIWORD(lParam) == I_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -6027,6 +6026,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
                 if (old_lang == new_lang)
                     return FALSE;   // reject
+
+                if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+                {
+                    entry.name.clear();
+                }
 
                 DoRelangEntry(entry, old_lang, new_lang);
                 return TRUE;   // accept
