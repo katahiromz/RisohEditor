@@ -3475,7 +3475,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
         ResEntry& entry = m_entries[i];
 
         MIdOrString name = entry.name;
-        if (name.is_str())
+        if (name.is_str() && m_db.HasResID(name.str()))
         {
             name = (WORD)m_db.GetResIDValue(name.c_str());
         }

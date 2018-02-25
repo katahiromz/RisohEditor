@@ -393,7 +393,9 @@ public:
 
         if (name.m_id == 0)
         {
+            ret += L"\"";
             ret += name.str();
+            ret += L"\"";
         }
         else
         {
@@ -468,7 +470,9 @@ public:
 
         if (name.m_id == 0)
         {
+            ret += L"\"";
             ret += name.str();
+            ret += L"\"";
         }
         else
         {

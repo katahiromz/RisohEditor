@@ -773,9 +773,11 @@ struct DialogRes
     {
         std::wstring ret;
 
-        if (id_or_str.m_id == 0)
+        if (id_or_str.is_str())
         {
+            ret += L"\"";
             ret += id_or_str.str();
+            ret += L"\"";
         }
         else
         {
