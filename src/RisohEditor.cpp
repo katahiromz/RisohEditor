@@ -1174,11 +1174,7 @@ protected:
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
-    void OnUpdateID(HWND hwnd)
-    {
-        SelectTV(hwnd, 0, FALSE);
-    }
-
+    void OnUpdateID(HWND hwnd);
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
     void OnAddDialog(HWND hwnd);
@@ -5306,6 +5302,20 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     return bOK;
 }
 
+void MMainWnd::OnUpdateID(HWND hwnd)
+{
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) != I_LANG)
+        return;
+
+    UINT i = LOWORD(lParam);
+    ResEntry& selection = m_entries[i];
+
+    SelectTV(hwnd, 0, FALSE);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_SelectEntry(m_hTreeView, m_entries, selection);
+}
+
 void MMainWnd::OnAdviceResH(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -5373,6 +5383,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         SelectTV(hwnd, 0, FALSE);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     }
 }
 
@@ -5386,6 +5397,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
     ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
     table.push_back(entry);
     SelectTV(hwnd, 0, FALSE);
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 }
 
 void MMainWnd::UpdateIDList(HWND hwnd)

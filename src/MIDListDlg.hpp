@@ -250,7 +250,7 @@ public:
 
     void UpdateResH()
     {
-        SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
+        PostMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -336,8 +336,12 @@ public:
             }
             break;
         case CMDID_DELETERESID:
+            for (;;)
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1)
+                    break;
+
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
                 MString str1 = szText;
                 MStringA astr1 = MTextToAnsi(CP_ACP, szText).c_str();
@@ -362,10 +366,9 @@ public:
                 }
 
                 ListView_DeleteItem(m_hLst1, iItem);
-                SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
-
-                UpdateResH();
             }
+            SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+            UpdateResH();
             break;
         case CMDID_COPYRESIDNAME:
             {
@@ -390,7 +393,7 @@ public:
             }
             break;
         case CMDID_LOADRESH:
-            SendMessage(m_hMainWnd, WM_COMMAND, CMDID_LOADRESHBANG, 0);
+            PostMessage(m_hMainWnd, WM_COMMAND, CMDID_LOADRESHBANG, 0);
             break;
         case CMDID_IDJUMP:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -402,7 +405,7 @@ public:
                 ConstantsDB::TableType table;
                 int nIDTYPE_ = m_db.GetValue(L"RESOURCE.ID.TYPE", str1.c_str());
                 int nID = mstr_parse_int(str2.c_str());
-                SendMessage(m_hMainWnd, MYWM_IDJUMPBANG, nIDTYPE_, nID);
+                PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, nIDTYPE_, nID);
             }
             break;
         }
@@ -487,7 +490,7 @@ public:
     {
         if (pnmhdr->code == NM_DBLCLK)
         {
-            PostMessageDx(WM_COMMAND, CMDID_MODIFYRESID);
+            PostMessageDx(WM_COMMAND, CMDID_IDJUMP);
             return 1;
         }
         if (pnmhdr->code == LVN_KEYDOWN)
