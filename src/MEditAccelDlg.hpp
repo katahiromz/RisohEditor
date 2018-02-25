@@ -323,8 +323,8 @@ public:
     MEditAccelDlg(AccelRes& accel_res, ConstantsDB& db)
         : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_db(db)
     {
-        m_hIcon = LoadIconDx(3);
-        m_hIconSm = LoadSmallIconDx(3);
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
     }
 
     ~MEditAccelDlg()

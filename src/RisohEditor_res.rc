@@ -24,22 +24,22 @@
 // UTF-8
 #pragma code_page(65001)
 
-1 ICON "res\\RisohEditor.ico"
-2 ICON "res\\ico.ico"
-3 ICON "res\\smily.ico"
-4 ICON "res\\find.ico"
+IDI_MAIN    ICON "res\\RisohEditor.ico"
+IDI_ICO     ICON "res\\ico.ico"
+IDI_SMILY   ICON "res\\smily.ico"
+IDI_FIND    ICON "res\\find.ico"
 
-100 ICON "res\\file.ico"
-101 ICON "res\\folder.ico"
-102 ICON "res\\play.ico"
+IDI_FILE    ICON "res\\file.ico"
+IDI_FOLDER  ICON "res\\folder.ico"
+IDI_PLAY    ICON "res\\play.ico"
 
 1 CURSOR "res\\cursor-ns.cur"
 2 CURSOR "res\\cursor-we.cur"
 
 1 ANICURSOR "res\\bounce.ani"
 
-1 BITMAP "res\\bmp.bmp"
-2 BITMAP "res\\controls.bmp"
+IDB_BMP BITMAP "res\\bmp.bmp"
+IDB_CONTROLS BITMAP "res\\controls.bmp"
 
 1 WAVE "res\\wa.wav"
 1 GIF "res\\anime.gif"

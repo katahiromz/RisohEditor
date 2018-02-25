@@ -221,8 +221,8 @@ public:
     MMessagesDlg(ConstantsDB& db, MessageRes& msg_res)
         : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res), m_db(db)
     {
-        m_hIcon = LoadIconDx(3);
-        m_hIconSm = LoadSmallIconDx(3);
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
     }
 
     ~MMessagesDlg()

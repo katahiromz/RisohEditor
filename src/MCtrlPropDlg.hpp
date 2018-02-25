@@ -380,7 +380,8 @@ public:
             m_himlControls = NULL;
         }
         m_himlControls = ImageList_LoadBitmap(
-            GetModuleHandle(NULL), MAKEINTRESOURCE(2), 16, 0, RGB(255, 0, 255));
+            GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CONTROLS),
+            16, 0, RGB(255, 0, 255));
         m_hTB.SetImageList(m_himlControls);
 
         buttons.resize(nCount);

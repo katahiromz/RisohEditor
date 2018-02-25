@@ -99,7 +99,7 @@ public:
         if (m_hPlayButton == NULL)
             return FALSE;
 
-        HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(102));
+        HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_PLAY));
         SendMessage(m_hPlayButton, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
         SetWindowFont(m_hPlayButton, GetStockFont(DEFAULT_GUI_FONT), TRUE);
         return TRUE;

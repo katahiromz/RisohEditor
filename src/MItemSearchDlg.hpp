@@ -68,8 +68,8 @@ public:
     MItemSearchDlg(ITEM_SEARCH& search) 
         : MDialogBase(IDD_ITEMSEARCH), m_search(search)
     {
-        m_hIcon = LoadIconDx(4);
-        m_hIconSm = LoadSmallIconDx(4);
+        m_hIcon = LoadIconDx(IDI_FIND);
+        m_hIconSm = LoadSmallIconDx(IDI_FIND);
     }
 
     virtual ~MItemSearchDlg()

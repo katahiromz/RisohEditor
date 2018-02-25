@@ -1520,7 +1520,7 @@ void MMainWnd::OnAbout(HWND hwnd)
     params.lpszText = LoadStringDx(IDS_VERSIONINFO);
     params.lpszCaption = LoadStringDx(IDS_APPNAME);
     params.dwStyle = MB_OK | MB_USERICON;
-    params.lpszIcon = MAKEINTRESOURCEW(1);
+    params.lpszIcon = MAKEINTRESOURCEW(IDI_MAIN);
     params.dwLanguageId = LANG_USER_DEFAULT;
 
     MWindowBase::HookCenterMsgBoxDx(TRUE);
@@ -6552,9 +6552,9 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
     if (m_hImageList == NULL)
         return FALSE;
-    m_hFileIcon = LoadSmallIconDx(100);
+    m_hFileIcon = LoadSmallIconDx(IDI_FILE);
+    m_hFolderIcon = LoadSmallIconDx(IDI_FOLDER);
     ImageList_AddIcon(m_hImageList, m_hFileIcon);
-    m_hFolderIcon = LoadSmallIconDx(101);
     ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
     m_hToolBar = ToolBar_Create(hwnd);
@@ -6709,8 +6709,8 @@ BOOL MMainWnd::StartDx()
     MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
     MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
 
-    m_hIcon = LoadIconDx(1);
-    m_hIconSm = LoadSmallIconDx(1);
+    m_hIcon = LoadIconDx(IDI_MAIN);
+    m_hIconSm = LoadSmallIconDx(IDI_MAIN);
     m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
 
     if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),

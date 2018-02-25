@@ -82,12 +82,14 @@ public:
 
     static HICON& Icon()
     {
-        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL),
+                                        MAKEINTRESOURCE(IDI_ICO));
         return s_hIcon;
     }
     static HBITMAP& Bitmap()
     {
-        static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+        static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL),
+                                          MAKEINTRESOURCE(IDB_BMP));
         return s_hbm;
     }
 
@@ -1433,10 +1435,9 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
-        m_hIcon = LoadIconDx(3);
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
         SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
-
-        m_hIconSm = LoadSmallIconDx(3);
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         if (m_settings.bResumeWindowPos)

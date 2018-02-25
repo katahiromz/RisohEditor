@@ -22,6 +22,15 @@
 
 #define IDR_MAINFRAME           (1-0)
 
+#define IDI_MAIN                1
+#define IDI_ICO                 2
+#define IDI_SMILY               3
+#define IDI_FIND                4
+
+#define IDI_FILE                100
+#define IDI_FOLDER              101
+#define IDI_PLAY                102
+
 #define IDB_BMP                 1
 #define IDB_CONTROLS            2
 
