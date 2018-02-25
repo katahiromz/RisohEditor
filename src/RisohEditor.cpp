@@ -6014,23 +6014,17 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
-                {
                     return FALSE;   // reject
-                }
 
                 WORD new_lang = GetLangFromText(pszNewText);
                 if (new_lang == 0xFFFF)
-                {
                     return FALSE;   // reject
-                }
 
                 if (old_lang == new_lang)
                     return FALSE;   // reject
 
                 if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
-                {
                     entry.name.clear();
-                }
 
                 DoRelangEntry(entry, old_lang, new_lang);
                 return TRUE;   // accept
