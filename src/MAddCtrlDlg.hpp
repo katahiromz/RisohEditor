@@ -503,8 +503,8 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                DWORD dwPos = m_cmb1.GetEditSel();
-                m_cmb1.OnEditChange();
+                DWORD dwPos;
+                m_cmb1.OnEditChange(dwPos);
                 {
                     MString text = GetDlgItemText(hwnd, cmb1);
                     mstr_trim(text);
@@ -531,8 +531,8 @@ public:
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                DWORD dwPos = m_cmb4.GetEditSel();
-                m_cmb4.OnEditChange();
+                DWORD dwPos;
+                m_cmb4.OnEditChange(dwPos);
                 {
                     MString text = GetDlgItemText(hwnd, cmb4);
                     mstr_trim(text);

@@ -66,18 +66,26 @@ public:
 
     void OnEditChange()
     {
+        DWORD dwPos;
+        OnEditChange(dwPos);
+    }
+
+    void OnEditChange(DWORD& dwPos)
+    {
         if (!m_edit.m_bAutoComplete)
         {
             return;
         }
 
-        INT cch = GetWindowTextLength();
+        MString strInput = GetWindowText();
 
-        DWORD sel = GetEditSel();
-        if (LOWORD(sel) != cch || HIWORD(sel) != cch)
+        dwPos = GetEditSel();
+        MString strRight = strInput.substr(HIWORD(dwPos));
+        mstr_trim(strRight);
+        if (!strRight.empty())
             return;
 
-        MString strInput = GetWindowText();
+        mstr_trim(strInput);
         MString strInputUpper = strInput;
         _wcsupr(&strInputUpper[0]);
 
@@ -104,6 +112,7 @@ public:
         m_edit.m_bAutoComplete = FALSE;
         SetWindowText(strCandidate.c_str());
         SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
+        dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
     }
 
 public:
