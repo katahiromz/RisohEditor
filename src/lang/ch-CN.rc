@@ -171,6 +171,8 @@ IDM_POPUPS MENU
     }
     POPUP "Popup #3"
     {
+        MENUITEM "跳转(&J)!", CMDID_IDJUMP
+        MENUITEM SEPARATOR
         MENUITEM "增加ID(&A)...", CMDID_ADDRESID
         MENUITEM "修改ID(&M)...\tEnter", CMDID_MODIFYRESID
         MENUITEM SEPARATOR

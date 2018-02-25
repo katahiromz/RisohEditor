@@ -1172,6 +1172,7 @@ protected:
     LRESULT OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnUpdateID(HWND hwnd)
     {
@@ -6680,6 +6681,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
         DO_MESSAGE(MYWM_REOPENRAD, OnReopenRad);
         DO_MESSAGE(MYWM_POSTSEARCH, OnPostSearch);
+        DO_MESSAGE(MYWM_IDJUMPBANG, OnIDJumpBang);
     default:
         if (uMsg == s_uFindMsg)
         {
@@ -6687,6 +6689,80 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         return DefaultProcDx();
     }
+}
+
+LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    int nIDTYPE_ = (int)wParam;
+    int nID = (int)lParam;
+
+    MIdOrString type, name = (WORD)nID;
+    switch (nIDTYPE_)
+    {
+    case IDTYPE_CURSOR:
+        type = RT_GROUP_CURSOR;
+        break;
+    case IDTYPE_BITMAP:
+        type = RT_BITMAP;
+        break;
+    case IDTYPE_MENU:
+        type = RT_MENU;
+        break;
+    case IDTYPE_DIALOG:
+        type = RT_DIALOG;
+        break;
+    case IDTYPE_STRING:
+        type = RT_STRING;
+        name.clear();
+        break;
+    case IDTYPE_ACCEL:
+        type = RT_ACCELERATOR;
+        break;
+    case IDTYPE_ICON:
+        type = RT_GROUP_ICON;
+        break;
+    case IDTYPE_ANICURSOR:
+        type = RT_ANICURSOR;
+        break;
+    case IDTYPE_ANIICON:
+        type = RT_ANIICON;
+        break;
+    case IDTYPE_HTML:
+        type = RT_HTML;
+        break;
+    case IDTYPE_HELP:
+        return 0;
+    case IDTYPE_COMMAND:
+        return 0;
+    case IDTYPE_CONTROL:
+        return 0;
+    case IDTYPE_RESOURCE:
+        break;
+    case IDTYPE_MESSAGE:
+        type = RT_MESSAGETABLE;
+        name.clear();
+        break;
+    case IDTYPE_INVALID:
+        return 0;
+    }
+
+    ResEntry entry;
+    entry.type = type;
+    entry.name = name;
+    entry.lang = 0xFFFF;
+    INT iFound = Res_Find2(m_entries, entry, FALSE);
+
+    if (iFound < 0 || iFound >= INT(m_entries.size()))
+        return 0;
+
+    entry = m_entries[iFound];
+    TV_SelectEntry(m_hTreeView, m_entries, entry);
+
+    SetForegroundWindow(m_hwnd);
+    BringWindowToTop(m_hwnd);
+    SetFocus(m_hwnd);
+
+    return 0;
 }
 
 LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)

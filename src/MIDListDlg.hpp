@@ -30,6 +30,8 @@
 class MSubclassedListView;
 class MIDListDlg;
 
+#define MYWM_IDJUMPBANG (WM_USER + 238)
+
 //////////////////////////////////////////////////////////////////////////////
 
 // Let the listview subclassed to get Enter key
@@ -389,6 +391,19 @@ public:
             break;
         case CMDID_LOADRESH:
             SendMessage(m_hMainWnd, WM_COMMAND, CMDID_LOADRESHBANG, 0);
+            break;
+        case CMDID_IDJUMP:
+            iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+            ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+            str1 = szText;
+            ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+            str2 = szText;
+            {
+                ConstantsDB::TableType table;
+                int nIDTYPE_ = m_db.GetValue(L"RESOURCE.ID.TYPE", str1.c_str());
+                int nID = mstr_parse_int(str2.c_str());
+                SendMessage(m_hMainWnd, MYWM_IDJUMPBANG, nIDTYPE_, nID);
+            }
             break;
         }
     }
