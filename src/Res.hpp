@@ -711,7 +711,7 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 
         if (ret.size())
         {
-            if (!mchr_is_xdigit(ret[0]))
+            if (!mchr_is_digit(ret[0]))
             {
                 ret += L" (";
                 ret += mstr_dec_word(entry.name.m_id);

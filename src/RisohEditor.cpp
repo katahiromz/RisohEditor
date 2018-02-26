@@ -571,7 +571,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (mchr_is_xdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
+    else if (mchr_is_digit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
     {
         type = WORD(mstr_parse_int(szType));
     }
@@ -579,7 +579,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     {
         MStringW str = szType;
         size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos)
+        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
         {
             type = WORD(mstr_parse_int(&str[i + 1]));
         }
@@ -607,7 +607,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (mchr_is_xdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
+    else if (mchr_is_digit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
     {
         name = WORD(mstr_parse_int(szName));
     }
@@ -637,7 +637,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (mchr_is_xdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
+    else if (mchr_is_digit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
     {
         lang = WORD(mstr_parse_int(szLang));
     }
@@ -6191,7 +6191,7 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
     {
         return 0;
     }
-    else if (mchr_is_xdigit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
+    else if (mchr_is_digit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
     {
         return WORD(mstr_parse_int(szText));
     }
@@ -6252,7 +6252,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     {
         MStringW str = szText;
         size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos && mchr_is_xdigit(str[i + 1]))
+        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
         {
             return WORD(mstr_parse_int(&str[i + 1]));
         }

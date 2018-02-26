@@ -321,7 +321,7 @@ public:
             if ((style & SS_TYPEMASK) == SS_ICON ||
                 (style & SS_TYPEMASK) == SS_BITMAP)
             {
-                if (mchr_is_xdigit(strCaption[0]))
+                if (mchr_is_digit(strCaption[0]))
                 {
                     LONG n = mstr_parse_int(strCaption.c_str());
                     item.m_title = WORD(n);

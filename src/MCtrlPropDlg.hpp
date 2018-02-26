@@ -295,7 +295,7 @@ public:
                 if ((style & SS_TYPEMASK) == SS_ICON ||
                     (style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    if (mchr_is_xdigit(item.m_title.str()[0]))
+                    if (mchr_is_digit(item.m_title.str()[0]))
                     {
                         LONG n = mstr_parse_int(item.m_title.c_str());
                         item.m_title = WORD(n);
