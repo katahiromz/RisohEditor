@@ -189,8 +189,8 @@ IDM_POPUPS MENU
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 3.4 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 3.4 by Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor 3.5 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 3.5 by Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Extract Resource"
     IDS_RESBINFILTER, "Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_CANNOTSAVE, "Unable to save."
@@ -216,7 +216,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Unable to replace bitmap."
     IDS_REPLACEBMP, "Replace Bitmap"
     IDS_ERRORCODE, "Error Code %d"
-    IDS_VERSIONINFO, "RisohEditor Version 3.4\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Version 3.5\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."

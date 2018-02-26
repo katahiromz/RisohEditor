@@ -68,8 +68,8 @@ IDB_CONTROLS BITMAP "res\\controls.bmp"
 }
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     3, 4, 0, 0
-PRODUCTVERSION  3, 4, 0, 0
+FILEVERSION     3, 5, 0, 0
+PRODUCTVERSION  3, 5, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
@@ -80,10 +80,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "3.4\0"
+            VALUE "FileVersion", "3.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "3.4\0"
+            VALUE "ProductVersion", "3.5\0"
         }
     }
     // Chinese (P.R.C.)
@@ -93,10 +93,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "3.4\0"
+            VALUE "FileVersion", "3.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "3.4\0"
+            VALUE "ProductVersion", "3.5\0"
         }
     }
     // Japanese
@@ -106,10 +106,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "3.4\0"
+            VALUE "FileVersion", "3.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 片山博文MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "3.4\0"
+            VALUE "ProductVersion", "3.5\0"
         }
     }
     BLOCK "VarFileInfo"
