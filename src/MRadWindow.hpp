@@ -2245,6 +2245,13 @@ public:
                 SelectAll(hwnd);
             }
             break;
+        case 'D':
+            if (GetKeyState(VK_CONTROL) < 0)
+            {
+                // Ctrl+D
+                PostMessageDx(WM_COMMAND, CMDID_SHOWHIDEINDEX);
+            }
+            break;
         default:
             return;
         }

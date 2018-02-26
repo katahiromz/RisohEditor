@@ -52,7 +52,6 @@ IDB_CONTROLS BITMAP "res\\controls.bmp"
     "N",            CMDID_NEW, VIRTKEY, CONTROL
     "O",            CMDID_OPEN, VIRTKEY, CONTROL
     "S",            CMDID_SAVEAS, VIRTKEY, CONTROL
-    "D",            CMDID_DELETERES, VIRTKEY, CONTROL
     "I",            CMDID_IMPORT, VIRTKEY, CONTROL
     "E",            CMDID_CANCELEDIT, VIRTKEY, CONTROL
     "G",            CMDID_GUIEDIT, VIRTKEY, CONTROL
