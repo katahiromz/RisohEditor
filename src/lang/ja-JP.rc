@@ -30,6 +30,8 @@ IDM_MAIN MENU
         MENUITEM "名前を付けて保存(&A)...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "インポート(&I)...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "エクスポート(&E)...", CMDID_EXPORT
+        MENUITEM SEPARATOR
         MENUITEM "ウィンドウ クラス ライブラリを読み込む(&W)...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", CMDID_IDASSOC
@@ -309,6 +311,10 @@ STRINGTABLE
     IDS_CANTSAVEUPXED, "UPXで圧縮されたデータがあるので、保存できません。"
     IDS_MESSAGEID, "メッセージID"
     IDS_MESSAGEVALUE, "メッセージの値"
+    IDS_RCFILTER, "RC ファイル (*.rc)|*.rc|"
+    IDS_EXPORT, "エクスポート"
+    IDS_CANTEXPORT, "エクスポートできませんでした。"
+    IDS_MUSTBEEMPTYDIR, "エクスポート先は空フォルダでなければなりません。"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

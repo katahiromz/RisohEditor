@@ -30,6 +30,8 @@ IDM_MAIN MENU
         MENUITEM "Save &As...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "&Export...", CMDID_EXPORT
+        MENUITEM SEPARATOR
         MENUITEM "Load &Window Class Library...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", CMDID_IDASSOC
@@ -309,6 +311,10 @@ STRINGTABLE
     IDS_CANTSAVEUPXED, "Unable to save the file because it was compressed by UPX."
     IDS_MESSAGEID, "Message ID"
     IDS_MESSAGEVALUE, "Message Value"
+    IDS_RCFILTER, "RC Files (*.rc)|*.rc|"
+    IDS_EXPORT, "Export"
+    IDS_CANTEXPORT, "Export failed."
+    IDS_MUSTBEEMPTYDIR, "The export destination must be an empty folder."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

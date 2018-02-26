@@ -132,6 +132,7 @@
 #define CMDID_REFRESHDIALOG     196
 #define CMDID_IDJUMP            197
 #define CMDID_REFRESHALL        198
+#define CMDID_EXPORT            199
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -289,6 +290,10 @@
 #define IDS_CANTSAVEUPXED   119
 #define IDS_MESSAGEID       120
 #define IDS_MESSAGEVALUE    121
+#define IDS_RCFILTER        122
+#define IDS_EXPORT          123
+#define IDS_CANTEXPORT      124
+#define IDS_MUSTBEEMPTYDIR  125
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

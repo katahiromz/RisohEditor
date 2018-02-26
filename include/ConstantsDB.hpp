@@ -161,7 +161,7 @@ public:
         }
 
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
-        if (nIDTYPE_ >= (INT)table.size())
+        if (nIDTYPE_ < 0 || nIDTYPE_ >= INT(table.size()))
         {
             return mstr_dec_word((WORD)value);
         }

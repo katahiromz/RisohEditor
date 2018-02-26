@@ -30,6 +30,8 @@ IDM_MAIN MENU
         MENUITEM "另存为(&A)...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "加载(&I)...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "出口(&E)...", CMDID_EXPORT
+        MENUITEM SEPARATOR
         MENUITEM "加载窗口类DLL(&W)...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "&ID 关联...", CMDID_IDASSOC
@@ -309,6 +311,10 @@ STRINGTABLE
     IDS_CANTSAVEUPXED, "无法保存文件, 因为它是由UPX压缩的."
     IDS_MESSAGEID, "消息 ID"
     IDS_MESSAGEVALUE, "消息值"
+    IDS_RCFILTER, "RC 文件 (*.rc)|*.rc|"
+    IDS_EXPORT, "出口"
+    IDS_CANTEXPORT, "出口失败."
+    IDS_MUSTBEEMPTYDIR, "出口目标必须是空文件夹."
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

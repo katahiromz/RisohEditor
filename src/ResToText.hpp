@@ -96,12 +96,233 @@ public:
     MString DoMessage(const ResEntry& entry);
     MString DoWave(const ResEntry& entry);
     MString DoAVI(const ResEntry& entry);
+    MString DoRCData(const ResEntry& entry);
+    MString DoUnknown(const ResEntry& entry);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
     MString DumpEscapedName(const MIdOrString& name);
+
+    MString GetEntryFileName(const ResEntry& entry);
 };
 
 //////////////////////////////////////////////////////////////////////////////
+
+inline MString
+ResToText::GetEntryFileName(const ResEntry& entry)
+{
+    MString ret;
+    
+    if (entry.type == RT_CURSOR)
+    {
+    }
+    else if (entry.type == RT_BITMAP)
+    {
+        ret += L"Bitmap_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".bmp";
+    }
+    else if (entry.type == RT_ICON)
+    {
+    }
+    else if (entry.type == RT_MENU)
+    {
+    }
+    else if (entry.type == RT_DIALOG)
+    {
+    }
+    else if (entry.type == RT_STRING)
+    {
+    }
+    else if (entry.type == RT_FONTDIR)
+    {
+        ret += L"FontDir_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".bin";
+    }
+    else if (entry.type == RT_FONT)
+    {
+        ret += L"Font_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".bin";
+    }
+    else if (entry.type == RT_ACCELERATOR)
+    {
+    }
+    else if (entry.type == RT_RCDATA)
+    {
+        ret += L"RCData_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".bin\"\r\n";
+    }
+    else if (entry.type == RT_MESSAGETABLE)
+    {
+    }
+    else if (entry.type == RT_GROUP_CURSOR)
+    {
+        ret += L"Cursor_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".cur";
+    }
+    else if (entry.type == RT_GROUP_ICON)
+    {
+        ret += L"Icon_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".ico";
+    }
+    else if (entry.type == RT_VERSION)
+    {
+    }
+    else if (entry.type == RT_DLGINCLUDE)
+    {
+        // TODO:
+    }
+    else if (entry.type == RT_PLUGPLAY)
+    {
+        // TODO:
+    }
+    else if (entry.type == RT_VXD)
+    {
+        // TODO:
+    }
+    else if (entry.type == RT_ANICURSOR)
+    {
+        ret += L"AniCursor_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".ani";
+    }
+    else if (entry.type == RT_ANIICON)
+    {
+        ret += L"AniIcon_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".ani";
+    }
+    else if (entry.type == RT_HTML)
+    {
+        ret += L"Html_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".html";
+    }
+    else if (entry.type == RT_MANIFEST)
+    {
+        ret += L"Manifest_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".manifest";
+    }
+    else if (entry.type == L"AVI")
+    {
+        ret += L"Avi_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".avi";
+    }
+    else if (entry.type == L"PNG")
+    {
+        ret += L"Png_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".png";
+    }
+    else if (entry.type == L"GIF")
+    {
+        ret += L"Gif_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".gif";
+    }
+    else if (entry.type == L"JPEG")
+    {
+        ret += L"Jpeg_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".jpg";
+    }
+    else if (entry.type == L"JPG")
+    {
+        ret += L"Jpg_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".jpg";
+    }
+    else if (entry.type == L"TIFF")
+    {
+        ret += L"Tiff_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".tif";
+    }
+    else if (entry.type == L"TIF")
+    {
+        ret += L"Tif_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".tif";
+    }
+    else if (entry.type == L"EMF")
+    {
+        ret += L"Emf_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".emf";
+    }
+    else if (entry.type == L"ENHMETAFILE")
+    {
+        ret += L"EnhMetaFile_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".emf";
+    }
+    else if (entry.type == L"WMF")
+    {
+        ret += L"Wmf_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".wmf";
+    }
+    else if (entry.type == L"WAVE")
+    {
+        ret += L"Wave_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".wav";
+    }
+    else if (entry.type == L"IMAGE")
+    {
+        if (entry.size() >= 4)
+        {
+            if (memcmp(&entry[0], "BM", 2) == 0)
+            {
+                ret += L"Image_";
+                ret += DumpEscapedName(entry.name);
+                ret += L".bmp";
+            }
+            else if (memcmp(&entry[0], "GIF", 3) == 0)
+            {
+                ret += L"Image_";
+                ret += DumpEscapedName(entry.name);
+                ret += L".gif";
+            }
+            else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
+            {
+                ret += L"Image_";
+                ret += DumpEscapedName(entry.name);
+                ret += L".png";
+            }
+            else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
+            {
+                ret += L"Image_";
+                ret += DumpEscapedName(entry.name);
+                ret += L".jpg";
+            }
+            else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
+                     memcmp(&entry[0], "\x49\x49", 2) == 0)
+            {
+                ret += L"Image_";
+                ret += DumpEscapedName(entry.name);
+                ret += L".tif";
+            }
+        }
+    }
+    else
+    {
+        if (entry.type.is_str())
+        {
+            ret += entry.type.str();
+            ret += DumpEscapedName(entry.name);
+            ret += L".bin";
+        }
+    }
+
+    return ret;
+}
 
 inline MString
 ResToText::DoCursor(const ResEntry& entry)
@@ -135,11 +356,11 @@ ResToText::DoBitmap(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"Bitmap_(name).bmp\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" BITMAP \"Bitmap_";
-    str += DumpEscapedName(entry.name);
-    str += L".bmp\"\r\n";
+    str += L" BITMAP \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     DeleteObject(hbm);
     return str;
@@ -239,7 +460,10 @@ ResToText::DoMessage(const ResEntry& entry)
     MString str;
     if (entry.name.empty())
         str += GetLanguageStatement(entry.lang);
+
+    str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump(m_db);
+    str += L"#endif\r\n";
     return str;
 }
 
@@ -270,11 +494,11 @@ ResToText::DoGroupCursor(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"Cursor_(name).cur\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" CURSOR \"Cursor_";
-    str += DumpEscapedName(entry.name);
-    str += L".cur\"\r\n";
+    str += L" CURSOR \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
@@ -292,11 +516,11 @@ ResToText::DoGroupIcon(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"Icon_(name).ico\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" ICON \"Icon_";
-    str += DumpEscapedName(entry.name);
-    str += L".ico\"\r\n";
+    str += L" ICON \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
@@ -327,11 +551,11 @@ ResToText::DoAniCursor(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"AniCursor_(name).ani\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" ANICURSOR \"AniCursor_";
-    str += DumpEscapedName(entry.name);
-    str += L".ani\"\r\n";
+    str += L" ANICURSOR \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
@@ -349,11 +573,11 @@ ResToText::DoAniIcon(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"AniIcon_(name).ani\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" ANIICON \"AniIcon_";
-    str += DumpEscapedName(entry.name);
-    str += L".ani\"\r\n";
+    str += L" ANIICON \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
@@ -361,9 +585,22 @@ ResToText::DoAniIcon(const ResEntry& entry)
 inline MString
 ResToText::DoText(const ResEntry& entry)
 {
-    MTextType type;
-    type.nNewLine = MNEWLINE_CRLF;
-    MString str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+    MString str;
+    if (m_bHumanReadable)
+    {
+        MTextType type;
+        type.nNewLine = MNEWLINE_CRLF;
+        str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+    }
+    else
+    {
+        str += DumpName(entry.type, entry.name);
+        str += L" ";
+        str += DumpEscapedName(entry.type);
+        str += L" \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
+    }
     return str;
 }
 
@@ -393,75 +630,66 @@ ResToText::DoImage(const ResEntry& entry)
 
     if (entry.type == L"PNG")
     {
-        // "(name) \"Png_(name).png\""
         str += DumpName(entry.type, entry.name);
-        str += L" PNG \"Png_";
-        str += DumpEscapedName(entry.name);
-        str += L".png\"\r\n";
+        str += L" PNG \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"GIF")
     {
-        // "(name) \"Gif_(name).gif\""
         str += DumpName(entry.type, entry.name);
-        str += L" GIF \"Gif_";
-        str += DumpEscapedName(entry.name);
-        str += L".gif\"\r\n";
+        str += L" GIF \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"JPEG")
     {
-        // "(name) \"Jpeg_(name).jpg\""
         str += DumpName(entry.type, entry.name);
-        str += L" JPEG \"Jpeg_";
-        str += DumpEscapedName(entry.name);
-        str += L".jpg\"\r\n";
+        str += L" JPEG \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"JPG")
     {
-        // "(name) \"Jpeg_(name).jpg\""
         str += DumpName(entry.type, entry.name);
-        str += L" JPG \"Jpg_";
-        str += DumpEscapedName(entry.name);
-        str += L".jpg\"\r\n";
+        str += L" JPG \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"TIFF")
     {
-        // "(name) \"Tiff_(name).tif\""
         str += DumpName(entry.type, entry.name);
-        str += L" TIFF \"Tiff_";
-        str += DumpEscapedName(entry.name);
-        str += L".tif\"\r\n";
+        str += L" TIFF \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"TIF")
     {
-        // "(name) \"Tif_(name).tif\""
         str += DumpName(entry.type, entry.name);
-        str += L" TIF \"Tif_";
-        str += DumpEscapedName(entry.name);
-        str += L".tif\"\r\n";
+        str += L" TIF \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"EMF")
     {
-        // "(name) \"Emf_(name).emf\""
         str += DumpName(entry.type, entry.name);
-        str += L" EMF \"Emf_";
-        str += DumpEscapedName(entry.name);
-        str += L".emf\"\r\n";
+        str += L" EMF \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"ENHMETAFILE")
     {
-        // "(name) \"EnhMetaFile_(name).emf\""
         str += DumpName(entry.type, entry.name);
-        str += L" ENHMETAFILE \"EnhMetaFile_";
-        str += DumpEscapedName(entry.name);
-        str += L".emf\"\r\n";
+        str += L" ENHMETAFILE \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"WMF")
     {
-        // "(name) \"Wmf_(name).wmf\""
         str += DumpName(entry.type, entry.name);
-        str += L" WMF \"Wmf_";
-        str += DumpEscapedName(entry.name);
-        str += L".wmf\"\r\n";
+        str += L" WMF \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
     }
     else if (entry.type == L"IMAGE")
     {
@@ -469,44 +697,39 @@ ResToText::DoImage(const ResEntry& entry)
         {
             if (memcmp(&entry[0], "BM", 2) == 0)
             {
-                // "(name) \"Image_(name).bmp\""
                 str += DumpName(entry.type, entry.name);
-                str += L" IMAGE \"Image_";
-                str += DumpEscapedName(entry.name);
-                str += L".bmp\"\r\n";
+                str += L" IMAGE \"";
+                str += GetEntryFileName(entry);
+                str += L"\"\r\n";
             }
             else if (memcmp(&entry[0], "GIF", 3) == 0)
             {
-                // "(name) \"Image_(name).gif\""
                 str += DumpName(entry.type, entry.name);
-                str += L" IMAGE \"Image_";
-                str += DumpEscapedName(entry.name);
-                str += L".gif\"\r\n";
+                str += L" IMAGE \"";
+                str += GetEntryFileName(entry);
+                str += L"\"\r\n";
             }
             else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
             {
-                // "(name) \"Image_(name).png\""
                 str += DumpName(entry.type, entry.name);
-                str += L" IMAGE \"Image_";
-                str += DumpEscapedName(entry.name);
-                str += L".png\"\r\n";
+                str += L" IMAGE \"";
+                str += GetEntryFileName(entry);
+                str += L"\"\r\n";
             }
             else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
             {
-                // "(name) \"Image_(name).jpg\""
                 str += DumpName(entry.type, entry.name);
-                str += L" IMAGE \"Image_";
-                str += DumpEscapedName(entry.name);
-                str += L".jpg\"\r\n";
+                str += L" IMAGE \"";
+                str += GetEntryFileName(entry);
+                str += L"\"\r\n";
             }
             else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
                      memcmp(&entry[0], "\x49\x49", 2) == 0)
             {
-                // "(name) \"Image_(name).tif\""
                 str += DumpName(entry.type, entry.name);
-                str += L" IMAGE \"Image_";
-                str += DumpEscapedName(entry.name);
-                str += L".tif\"\r\n";
+                str += L" IMAGE \"";
+                str += GetEntryFileName(entry);
+                str += L"\"\r\n";
             }
         }
     }
@@ -540,7 +763,7 @@ ResToText::DumpEntry(const ResEntry& entry)
         case 9: // RT_ACCELERATOR
             return DoAccel(entry);
         case 10: // RT_RCDATA
-            return DoText(entry);
+            return DoRCData(entry);
         case 11: // RT_MESSAGETABLE
             return DoMessage(entry);
         case 12: // RT_GROUP_CURSOR
@@ -564,7 +787,7 @@ ResToText::DumpEntry(const ResEntry& entry)
         case 24: // RT_MANIFEST
             return DoText(entry);
         default:
-            return DoText(entry);
+            return DoUnknown(entry);
         }
     }
     else
@@ -602,11 +825,11 @@ inline MString ResToText::DoWave(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"Movie_(name).avi\""
+
     str += DumpName(entry.type, entry.name);
-    str += L" AVI \"Movie_";
-    str += DumpEscapedName(entry.name);
-    str += L".avi\"\r\n";
+    str += L" WAVE \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
@@ -623,11 +846,45 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     // LANGUAGE ..., ...
     str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
-    // "(name) \"Movie_(name).avi\""
-    DumpName(entry.type, entry.name);
-    str += L" AVI \"Movie_";
-    str += DumpEscapedName(entry.name);
-    str += L".avi\"\r\n";
+
+    str += DumpName(entry.type, entry.name);
+    str += L" AVI \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
+
+    return str;
+}
+
+inline MString ResToText::DoRCData(const ResEntry& entry)
+{
+    MString str;
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+
+    str += DumpName(entry.type, entry.name);
+    str += L" RCDATA \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
+
+    return str;
+}
+
+inline MString ResToText::DoUnknown(const ResEntry& entry)
+{
+    MString str;
+
+    // LANGUAGE ..., ...
+    str += L"\r\n";
+    str += GetLanguageStatement(entry.lang);
+
+    str += DumpName(entry.type, entry.name);
+    str += L" ";
+    str += entry.type.str();
+    str += L" \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n";
 
     return str;
 }
