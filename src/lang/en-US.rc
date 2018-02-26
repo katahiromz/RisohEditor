@@ -150,7 +150,7 @@ IDM_POPUPS MENU
             MENUITEM SEPARATOR
             MENUITEM "To &Bottom", CMDID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "&Switch Visibility", CMDID_SHOWHIDEINDEX
+            MENUITEM "Show/Hide Indeces\tCtrl+D", CMDID_SHOWHIDEINDEX
         END
         POPUP "&Alignment"
         BEGIN

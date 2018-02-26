@@ -150,7 +150,7 @@ IDM_POPUPS MENU
             MENUITEM SEPARATOR
             MENUITEM "末尾へ(&B)", CMDID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "表示の切り替え(&S)", CMDID_SHOWHIDEINDEX
+            MENUITEM "表示の切り替え(&S)\tCtrl+D", CMDID_SHOWHIDEINDEX
         }
         POPUP "位置そろえ(&A)"
         {

@@ -150,7 +150,7 @@ IDM_POPUPS MENU
             MENUITEM SEPARATOR
             MENUITEM "置底(&B)", CMDID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "切换显示模式(&S)", CMDID_SHOWHIDEINDEX
+            MENUITEM "切换显示模式(&S)\tCtrl+D", CMDID_SHOWHIDEINDEX
         END
         POPUP "排列方式(&A)"
         BEGIN
