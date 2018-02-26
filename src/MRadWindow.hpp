@@ -2118,6 +2118,7 @@ public:
         case VK_TAB:
             if (GetKeyState(VK_SHIFT) < 0)
             {
+                // Shift+Tab
                 HWND hwndNext = NULL;
                 if (!hwndTarget)
                 {
@@ -2136,6 +2137,7 @@ public:
             }
             else
             {
+                // Tab
                 HWND hwndNext = NULL;
                 if (!hwndTarget)
                 {
@@ -2160,6 +2162,7 @@ public:
             }
             if (GetKeyState(VK_SHIFT) < 0)
             {
+                // Shift+Up
                 GetWindowRect(*pCtrl, &rc);
                 MapWindowRect(NULL, m_rad_dialog, &rc);
                 SIZE siz = SizeFromRectDx(&rc);
@@ -2168,6 +2171,7 @@ public:
             }
             else
             {
+                // Up
                 MRadCtrl::MoveSelection(NULL, 0, -1);
             }
             break;
@@ -2178,6 +2182,7 @@ public:
             }
             if (GetKeyState(VK_SHIFT) < 0)
             {
+                // Shift+Down
                 GetWindowRect(*pCtrl, &rc);
                 MapWindowRect(NULL, m_rad_dialog, &rc);
                 SIZE siz = SizeFromRectDx(&rc);
@@ -2186,6 +2191,7 @@ public:
             }
             else
             {
+                // Down
                 MRadCtrl::MoveSelection(NULL, 0, +1);
             }
             break;
@@ -2196,6 +2202,7 @@ public:
             }
             if (GetKeyState(VK_SHIFT) < 0)
             {
+                // Shift+Left
                 GetWindowRect(*pCtrl, &rc);
                 MapWindowRect(NULL, m_rad_dialog, &rc);
                 SIZE siz = SizeFromRectDx(&rc);
@@ -2204,6 +2211,7 @@ public:
             }
             else
             {
+                // Left
                 MRadCtrl::MoveSelection(NULL, -1, 0);
             }
             break;
@@ -2214,6 +2222,7 @@ public:
             }
             if (GetKeyState(VK_SHIFT) < 0)
             {
+                // Shift+Right
                 GetWindowRect(*pCtrl, &rc);
                 MapWindowRect(NULL, m_rad_dialog, &rc);
                 SIZE siz = SizeFromRectDx(&rc);
@@ -2222,14 +2231,33 @@ public:
             }
             else
             {
+                // Right
                 MRadCtrl::MoveSelection(NULL, +1, 0);
             }
             break;
-        case VK_DELETE:
+        case VK_DELETE: // Del
             MRadCtrl::DeleteSelection();
+            break;
+        case 'A':
+            if (GetKeyState(VK_CONTROL) < 0)
+            {
+                // Ctrl+A
+                SelectAll(hwnd);
+            }
             break;
         default:
             return;
+        }
+    }
+
+    void SelectAll(HWND hwnd)
+    {
+        MRadCtrl::DeselectSelection();
+        HWND hwndNext = MRadDialog::GetFirstCtrl(hwnd);
+        while (hwndNext)
+        {
+            MRadCtrl::Select(hwndNext);
+            hwndNext = m_rad_dialog.GetNextCtrl(hwndNext);
         }
     }
 
