@@ -1073,11 +1073,14 @@ public:
         HGDIOBJ hbmOld = SelectObject(hDC, hbm8x8);
         {
             FillRect(hDC, &rc8x8, (HBRUSH)(COLOR_3DFACE + 1));
-            for (int y = 0; y < 8; y += 4)
+            if (m_settings.bShowDotsOnDialog)
             {
-                for (int x = 0; x < 8; x += 4)
+                for (int y = 0; y < 8; y += 4)
                 {
-                    SetPixelV(hDC, x, y, rgb);
+                    for (int x = 0; x < 8; x += 4)
+                    {
+                        SetPixelV(hDC, x, y, rgb);
+                    }
                 }
             }
         }
