@@ -3273,10 +3273,11 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
             return;
     }
 
-    MString str = GetLanguageStatement(entry.lang);
+    MString str;
+    str += GetLanguageStatement(entry.lang);
     str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump(m_db);
-    str += L"#endif\r\n";
+    str += L"#endif\r\n\r\n";
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
@@ -4821,8 +4822,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                     return FALSE;
             }
 
-            MString str = GetLanguageStatement(*lang_it);
+            MString str;
+            str += GetLanguageStatement(*lang_it);
             str += str_res.Dump(m_db);
+            str += L"\r\n\r\n";
 
             MTextToAnsi t2a(CP_UTF8, str.c_str());
             file.WriteSzA(t2a.c_str());
@@ -4852,10 +4855,11 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                     return FALSE;
             }
 
-            MString str = GetLanguageStatement(*lang_it);
+            MString str;
+            str += GetLanguageStatement(*lang_it);
             str += L"#ifdef MCDX_INVOKED\r\n";
             str += msg_res.Dump(m_db);
-            str += L"#endif\r\n";
+            str += L"#endif\r\n\r\n";
 
             MTextToAnsi t2a(CP_UTF8, str.c_str());
             file.WriteSzA(t2a.c_str());

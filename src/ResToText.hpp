@@ -354,13 +354,12 @@ ResToText::DoBitmap(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" BITMAP \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     DeleteObject(hbm);
     return str;
@@ -399,8 +398,10 @@ ResToText::DoMenu(const ResEntry& entry)
     MenuRes menu_res;
     if (menu_res.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
+        MString str;
+        str += GetLanguageStatement(entry.lang);
         str += menu_res.Dump(entry.name, m_db);
+        str += L"\r\n";
         return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
@@ -413,8 +414,10 @@ ResToText::DoDialog(const ResEntry& entry)
     DialogRes dialog_res(m_db);
     if (dialog_res.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
+        MString str;
+        str += GetLanguageStatement(entry.lang);
         str += dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
+        str += L"\r\n";
         return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
@@ -439,6 +442,7 @@ ResToText::DoString(const ResEntry& entry)
     if (entry.name.empty())
         str += GetLanguageStatement(entry.lang);
     str += str_res.Dump(m_db);
+    str += L"\r\n\r\n";
     return str;
 }
 
@@ -463,7 +467,7 @@ ResToText::DoMessage(const ResEntry& entry)
 
     str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump(m_db);
-    str += L"#endif\r\n";
+    str += L"#endif\r\n\r\n";
     return str;
 }
 
@@ -474,8 +478,10 @@ ResToText::DoAccel(const ResEntry& entry)
     AccelRes accel(m_db);
     if (accel.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
+        MString str;
+        str += GetLanguageStatement(entry.lang);
         str += accel.Dump(entry.name);
+        str += L"\r\n\r\n";
         return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
@@ -492,13 +498,12 @@ ResToText::DoGroupCursor(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" CURSOR \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -514,13 +519,12 @@ ResToText::DoGroupIcon(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" ICON \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -531,8 +535,10 @@ ResToText::DoVersion(const ResEntry& entry)
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.data))
     {
-        MString str = GetLanguageStatement(entry.lang);
+        MString str;
+        str += GetLanguageStatement(entry.lang);
         str += ver_res.Dump(entry.name);
+        str += L"\r\n";
         return str;
     }
     return LoadStringDx(IDS_INVALIDDATA);
@@ -549,13 +555,12 @@ ResToText::DoAniCursor(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" ANICURSOR \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -571,13 +576,12 @@ ResToText::DoAniIcon(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" ANIICON \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -600,7 +604,7 @@ ResToText::DoText(const ResEntry& entry)
         str += DumpEscapedName(entry.type);
         str += L" \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     return str;
 }
@@ -626,7 +630,6 @@ ResToText::DoImage(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     if (entry.type == L"PNG")
@@ -634,63 +637,63 @@ ResToText::DoImage(const ResEntry& entry)
         str += DumpName(entry.type, entry.name);
         str += L" PNG \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"GIF")
     {
         str += DumpName(entry.type, entry.name);
         str += L" GIF \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"JPEG")
     {
         str += DumpName(entry.type, entry.name);
         str += L" JPEG \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"JPG")
     {
         str += DumpName(entry.type, entry.name);
         str += L" JPG \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"TIFF")
     {
         str += DumpName(entry.type, entry.name);
         str += L" TIFF \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"TIF")
     {
         str += DumpName(entry.type, entry.name);
         str += L" TIF \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"EMF")
     {
         str += DumpName(entry.type, entry.name);
         str += L" EMF \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"ENHMETAFILE")
     {
         str += DumpName(entry.type, entry.name);
         str += L" ENHMETAFILE \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"WMF")
     {
         str += DumpName(entry.type, entry.name);
         str += L" WMF \"";
         str += GetEntryFileName(entry);
-        str += L"\"\r\n";
+        str += L"\"\r\n\r\n";
     }
     else if (entry.type == L"IMAGE")
     {
@@ -701,28 +704,28 @@ ResToText::DoImage(const ResEntry& entry)
                 str += DumpName(entry.type, entry.name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
-                str += L"\"\r\n";
+                str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "GIF", 3) == 0)
             {
                 str += DumpName(entry.type, entry.name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
-                str += L"\"\r\n";
+                str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
             {
                 str += DumpName(entry.type, entry.name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
-                str += L"\"\r\n";
+                str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
             {
                 str += DumpName(entry.type, entry.name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
-                str += L"\"\r\n";
+                str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
                      memcmp(&entry[0], "\x49\x49", 2) == 0)
@@ -730,7 +733,7 @@ ResToText::DoImage(const ResEntry& entry)
                 str += DumpName(entry.type, entry.name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
-                str += L"\"\r\n";
+                str += L"\"\r\n\r\n";
             }
         }
     }
@@ -824,13 +827,12 @@ inline MString ResToText::DoWave(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" WAVE \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -845,13 +847,12 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" AVI \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -861,13 +862,12 @@ inline MString ResToText::DoRCData(const ResEntry& entry)
     MString str;
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
     str += L" RCDATA \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
@@ -877,7 +877,6 @@ inline MString ResToText::DoUnknown(const ResEntry& entry)
     MString str;
 
     // LANGUAGE ..., ...
-    str += L"\r\n";
     str += GetLanguageStatement(entry.lang);
 
     str += DumpName(entry.type, entry.name);
@@ -885,7 +884,7 @@ inline MString ResToText::DoUnknown(const ResEntry& entry)
     str += entry.type.str();
     str += L" \"";
     str += GetEntryFileName(entry);
-    str += L"\"\r\n";
+    str += L"\"\r\n\r\n";
 
     return str;
 }
