@@ -294,6 +294,8 @@
 #define IDS_EXPORT          123
 #define IDS_CANTEXPORT      124
 #define IDS_MUSTBEEMPTYDIR  125
+#define IDS_FULLWIDTH       126
+#define IDS_HALFWIDTH       127
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

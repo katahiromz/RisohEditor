@@ -315,6 +315,8 @@ STRINGTABLE
     IDS_EXPORT, "出口"
     IDS_CANTEXPORT, "出口失败."
     IDS_MUSTBEEMPTYDIR, "出口目标必须是空文件夹."
+    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）"
+    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_()"
 }
 
 IDD_REPLACERES DIALOG 0, 0, 215, 170

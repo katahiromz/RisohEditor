@@ -315,8 +315,9 @@ STRINGTABLE
     IDS_EXPORT, "エクスポート"
     IDS_CANTEXPORT, "エクスポートできませんでした。"
     IDS_MUSTBEEMPTYDIR, "エクスポート先は空フォルダでなければなりません。"
+    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）"
+    IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_()"
 }
-
 IDD_REPLACERES DIALOG 0, 0, 215, 170
 CAPTION "リソースの置き換え"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU

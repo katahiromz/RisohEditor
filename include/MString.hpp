@@ -127,6 +127,9 @@ template <typename T_CHAR>
 std::basic_string<T_CHAR> mchr_to_hex(T_CHAR ch);
 
 template <typename T_CHAR>
+bool mchr_is_digit(T_CHAR ch);
+
+template <typename T_CHAR>
 bool mchr_is_xdigit(T_CHAR ch);
 
 template <typename T_CHAR>
@@ -321,6 +324,12 @@ mchr_to_hex(T_CHAR value)
     else if (sizeof(T_CHAR) == 4)
         mstr_to_hex(ret, (value & 0xFFFFFFFF));
     return ret;
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_digit(T_CHAR ch)
+{
+    return (T_CHAR('0') <= ch && ch <= T_CHAR('9'));
 }
 
 template <typename T_CHAR>

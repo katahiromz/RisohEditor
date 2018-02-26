@@ -6172,19 +6172,34 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 {
-    if (pszLang[0] == 0)
+    WCHAR szText[128];
+    mstrcpy(szText, pszLang);
+
+    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
+    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+
+    for (DWORD i = 0; szText[i]; ++i)
+    {
+        size_t k = strFullWidth.find(szText[i]);
+        if (k != MStringW::npos)
+        {
+            szText[i] = strHalfWidth[k];
+        }
+    }
+
+    if (szText[0] == 0)
     {
         return 0;
     }
-    else if (mchr_is_xdigit(pszLang[0]) || pszLang[0] == L'-' || pszLang[0] == L'+')
+    else if (mchr_is_xdigit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
     {
-        return WORD(mstr_parse_int(pszLang));
+        return WORD(mstr_parse_int(szText));
     }
     else
     {
-        MStringW str = pszLang;
+        MStringW str = szText;
         size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos && mchr_is_xdigit(str[i + 1]))
+        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
         {
             return WORD(mstr_parse_int(&str[i + 1]));
         }
@@ -6193,12 +6208,12 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
             WCHAR szText[MAX_PATH];
 
             mstrcpy(szText, g_Langs[i].str.c_str());
-            if (lstrcmpiW(szText, pszLang) == 0)
+            if (lstrcmpiW(szText, szText) == 0)
             {
                 return g_Langs[i].LangID;
             }
             wsprintfW(szText, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
-            if (lstrcmpiW(szText, pszLang) == 0)
+            if (lstrcmpiW(szText, szText) == 0)
             {
                 return g_Langs[i].LangID;
             }
@@ -6210,24 +6225,39 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
-    if (pszText[0] == 0)
+    WCHAR szText[128];
+    mstrcpy(szText, pszText);
+
+    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
+    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+
+    for (DWORD i = 0; szText[i]; ++i)
+    {
+        size_t k = strFullWidth.find(szText[i]);
+        if (k != MStringW::npos)
+        {
+            szText[i] = strHalfWidth[k];
+        }
+    }
+
+    if (szText[0] == 0)
     {
         return (WORD)0;
     }
-    else if (mchr_is_xdigit(pszText[0]) || pszText[0] == L'-' || pszText[0] == L'+')
+    else if (mchr_is_digit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
     {
-        return WORD(mstr_parse_int(pszText));
+        return WORD(mstr_parse_int(szText));
     }
     else
     {
-        MStringW str = pszText;
+        MStringW str = szText;
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos && mchr_is_xdigit(str[i + 1]))
         {
             return WORD(mstr_parse_int(&str[i + 1]));
         }
 
-        MIdOrString id(pszText);
+        MIdOrString id(szText);
         return id;
     }
 }
