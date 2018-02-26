@@ -711,8 +711,7 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
 
         if (ret.size())
         {
-            using namespace std;
-            if (!iswdigit(ret[0]))
+            if (!mchr_is_xdigit(ret[0]))
             {
                 ret += L" (";
                 ret += mstr_dec_word(entry.name.m_id);

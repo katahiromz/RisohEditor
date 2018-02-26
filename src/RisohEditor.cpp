@@ -571,7 +571,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
+    else if (mchr_is_xdigit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
     {
         type = WORD(mstr_parse_int(szType));
     }
@@ -607,7 +607,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
+    else if (mchr_is_xdigit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
     {
         name = WORD(mstr_parse_int(szName));
     }
@@ -637,7 +637,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
                     NULL, MB_ICONERROR);
         return FALSE;
     }
-    else if (iswdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
+    else if (mchr_is_xdigit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
     {
         lang = WORD(mstr_parse_int(szLang));
     }
@@ -6163,13 +6163,13 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #endif
 }
 
-WORD GetLangFromText(const WCHAR *pszLang)
+WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 {
     if (pszLang[0] == 0)
     {
         return 0;
     }
-    else if (iswdigit(pszLang[0]) || pszLang[0] == L'-' || pszLang[0] == L'+')
+    else if (mchr_is_xdigit(pszLang[0]) || pszLang[0] == L'-' || pszLang[0] == L'+')
     {
         return WORD(mstr_parse_int(pszLang));
     }
@@ -6177,25 +6177,27 @@ WORD GetLangFromText(const WCHAR *pszLang)
     {
         MStringW str = pszLang;
         size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos)
+        if (i != MStringW::npos && mchr_is_xdigit(str[i + 1]))
         {
             return WORD(mstr_parse_int(&str[i + 1]));
         }
         for (size_t i = 0; i < g_Langs.size(); ++i)
         {
-            WCHAR sz[MAX_PATH];
-            wsprintfW(sz, L"%s", g_Langs[i].str.c_str());
-            if (lstrcmpiW(sz, pszLang) == 0)
+            WCHAR szText[MAX_PATH];
+
+            mstrcpy(szText, g_Langs[i].str.c_str());
+            if (lstrcmpiW(szText, pszLang) == 0)
             {
                 return g_Langs[i].LangID;
             }
-            wsprintfW(sz, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
-            if (lstrcmpiW(sz, pszLang) == 0)
+            wsprintfW(szText, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
+            if (lstrcmpiW(szText, pszLang) == 0)
             {
                 return g_Langs[i].LangID;
             }
         }
     }
+
     return WORD(0xFFFF);
 }
 
@@ -6205,7 +6207,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     {
         return (WORD)0;
     }
-    else if (iswdigit(pszText[0]) || pszText[0] == L'-' || pszText[0] == L'+')
+    else if (mchr_is_xdigit(pszText[0]) || pszText[0] == L'-' || pszText[0] == L'+')
     {
         return WORD(mstr_parse_int(pszText));
     }
@@ -6213,11 +6215,12 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     {
         MStringW str = pszText;
         size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos)
+        if (i != MStringW::npos && mchr_is_xdigit(str[i + 1]))
         {
             return WORD(mstr_parse_int(&str[i + 1]));
         }
-        MIdOrString id(str.c_str());
+
+        MIdOrString id(pszText);
         return id;
     }
 }
