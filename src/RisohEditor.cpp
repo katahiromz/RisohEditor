@@ -4791,6 +4791,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         MString str = res2text.DumpEntry(m_entries[i]);
         if (!str.empty())
         {
+            file.WriteSzA("\r\n");
             MTextToAnsi t2a(CP_UTF8, str.c_str());
             file.WriteSzA(t2a.c_str());
         }
@@ -4888,6 +4889,8 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszFileName)
 
 BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 {
+    MWaitCursor wait;
+
     if (m_entries.empty())
     {
         ErrorBoxDx(IDS_DATAISEMPTY);
