@@ -40,7 +40,9 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
         echo Copying No.3...
         if cp build/mcdx.exe "$RE_BIN_DIR/data/bin"; then
             echo Zipping...
-            if zip -9 -r -q "$RE_TARGET" "$RE_BIN_DIR"; then
+            cd build
+            if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
+                cd ..
                 if [ -e "$RE_TARGET" ]; then
                     echo Success. "$RE_TARGET" was generated.
                 else
@@ -48,6 +50,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                     exit 9
                 fi
             else
+                cd ..
                 echo ERROR: Zipping failed.
                 exit 8
             fi
