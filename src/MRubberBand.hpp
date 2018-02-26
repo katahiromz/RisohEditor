@@ -33,12 +33,26 @@ class MRubberBand;
 class MRubberBand : public MWindowBase
 {
 public:
+    DWORD m_dwMagic;
     HRGN m_hRgn;
     HWND m_hwndTarget;
     enum { m_nGripSize = 3 };
 
-    MRubberBand() : m_hRgn(NULL), m_hwndTarget(NULL)
+    MRubberBand() : m_dwMagic(0x20110311), m_hRgn(NULL), m_hwndTarget(NULL)
     {
+    }
+
+    static MRubberBand* GetRubberBand(HWND hwnd)
+    {
+        MWindowBase *base = GetUserData(hwnd);
+        if (base)
+        {
+            MRubberBand *pBand;
+            pBand = static_cast<MRubberBand *>(base);
+            if (pBand->m_dwMagic == 0x20110311)
+                return pBand;
+        }
+        return NULL;
     }
 
     BOOL CreateDx(HWND hwndParent, HWND hwndTarget, BOOL bVisible = FALSE,

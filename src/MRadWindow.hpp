@@ -569,7 +569,12 @@ public:
         if (PtInRect(&rc, pmht->pt))
         {
             // NOTE: EnumChildWindows scans not only children but descendants.
-            if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+            if (MRubberBand *pBand = MRubberBand::GetRubberBand(hwnd))
+            {
+                pmht->hLast = NULL;
+                pmht->hCandidate = NULL;
+            }
+            else if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
             {
                 if (pCtrl->m_bTopCtrl)
                 {
