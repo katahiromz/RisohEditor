@@ -23,6 +23,11 @@ RE_BIN_DIR="build/re-$RE_VERSION-bin"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt src/resource.h build/RisohEditor.exe"
 RE_TARGET="build/re-$RE_VERSION-bin.zip"
 
+if ! which zip > /dev/null 2>&1; then
+    echo ERROR: there is no executable zip.
+    exit 10
+fi
+
 if [ ! -d build ]; then
     echo ERROR: the build directory doesn't exists.
     exit 1
