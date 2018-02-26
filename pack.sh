@@ -23,6 +23,8 @@ RE_BIN_DIR="build/re-$RE_VERSION-bin"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt src/resource.h build/RisohEditor.exe"
 RE_TARGET="build/re-$RE_VERSION-bin.zip"
 
+################################################################################
+
 if ! which zip > /dev/null 2>&1; then
     echo ERROR: there is no executable zip.
     exit 10
@@ -55,6 +57,8 @@ if [ -e "$RE_BIN_DIR" ]; then
 else
     mkdir "$RE_BIN_DIR"
 fi
+
+################################################################################
 
 echo Copying No.1...
 if cp $RE_FILES "$RE_BIN_DIR"; then
@@ -91,3 +95,5 @@ else
 fi
 
 exit 0
+
+################################################################################
