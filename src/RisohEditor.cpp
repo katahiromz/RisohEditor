@@ -4784,8 +4784,12 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     for (size_t i = 0; i < m_entries.size(); ++i)
     {
         MString str = res2text.DumpEntry(m_entries[i]);
-        MTextToAnsi t2a(CP_UTF8, str.c_str());
-        file.WriteSzA(t2a.c_str());
+        if (!str.empty())
+        {
+            MTextToAnsi t2a(CP_UTF8, str.c_str());
+            file.WriteSzA("\r\n");
+            file.WriteSzA(t2a.c_str());
+        }
     }
 
     return TRUE;
@@ -5043,7 +5047,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
     }
     if (entry.type == RT_HTML)
     {
-        return TRUE;
+        return DoExtractBin(filename.c_str(), entry);
     }
     if (entry.type == RT_MANIFEST)
     {

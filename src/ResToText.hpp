@@ -594,6 +594,7 @@ ResToText::DoText(const ResEntry& entry)
     }
     else
     {
+        str += GetLanguageStatement(entry.lang);
         str += DumpName(entry.type, entry.name);
         str += L" ";
         str += DumpEscapedName(entry.type);
