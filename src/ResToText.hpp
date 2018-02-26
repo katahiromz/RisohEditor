@@ -152,7 +152,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     {
         ret += L"RCData_";
         ret += DumpEscapedName(entry.name);
-        ret += L".bin\"\r\n";
+        ret += L".bin";
     }
     else if (entry.type == RT_MESSAGETABLE)
     {

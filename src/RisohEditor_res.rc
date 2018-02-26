@@ -46,6 +46,7 @@ IDB_CONTROLS BITMAP "res\\controls.bmp"
 1 PNG "res\\RisohEditor.png"
 1 AVI "res\\trash.avi"
 1 EMF "res\\emf.emf"
+1 RCDATA "res\\RCDATA.bin"
 
 1 ACCELERATORS
 {
