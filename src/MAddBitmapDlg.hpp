@@ -37,21 +37,21 @@ class MAddBitmapDlg : public MDialogBase
 {
 public:
     ResEntries& m_entries;
-    LPCWSTR file;
+    LPCWSTR m_file;
     ConstantsDB& m_db;
     ResEntry m_entry_copy;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
     MAddBitmapDlg(ConstantsDB& db, ResEntries& entries) :
-        MDialogBase(IDD_ADDBITMAP), m_entries(entries), file(NULL),
+        MDialogBase(IDD_ADDBITMAP), m_entries(entries), m_file(NULL),
         m_db(db)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, file);
+        SetDlgItemTextW(hwnd, edt1, m_file);
 
         DragAcceptFiles(hwnd, TRUE);
 

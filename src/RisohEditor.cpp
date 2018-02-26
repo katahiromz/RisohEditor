@@ -4896,7 +4896,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
         {
             MAddBitmapDlg dialog(m_db, m_entries);
-            dialog.file = file;
+            dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
                 TV_RefreshInfo(m_hTreeView, m_db, m_entries);
