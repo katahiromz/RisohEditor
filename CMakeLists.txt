@@ -32,7 +32,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
 # Win32 or not?
-if (NOT CMAKE_HOST_WIN32)
+if (NOT WIN32)
     message(FATAL_ERROR "You must use a Win32 compiler")
 endif()
 
