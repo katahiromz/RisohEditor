@@ -5324,12 +5324,35 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
 
     LPARAM lParam = TV_GetParam(m_hTreeView);
     UINT i = LOWORD(lParam);
+
     ResEntry selection;
-    if (0 <= i && i < m_entries.size())
+    if (i < m_entries.size())
         selection = m_entries[i];
 
+    switch (HIWORD(lParam))
+    {
+    case I_NONE:
+        selection.clear();
+        break;
+    case I_TYPE:
+        selection.name.clear();
+        selection.lang = 0xFFFF;
+        break;
+    case I_NAME:
+        selection.lang = 0xFFFF;
+        break;
+    case I_LANG:
+        break;
+    case I_STRING:
+    case I_MESSAGE:
+        selection.name.clear();
+        break;
+    }
+
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-    TV_SelectEntry(m_hTreeView, m_entries, selection);
+
+    if (HIWORD(lParam) != I_NONE)
+        TV_SelectEntry(m_hTreeView, m_entries, selection);
 }
 
 void MMainWnd::OnAdviceResH(HWND hwnd)

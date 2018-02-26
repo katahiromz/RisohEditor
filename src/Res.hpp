@@ -80,6 +80,14 @@ public:
     {
     }
 
+    void clear()
+    {
+        clear_data();
+        lang = 0xFFFF;
+        name = (WORD)0;
+        type = (WORD)0;
+    }
+
     void clear_data()
     {
         data.clear();
@@ -779,12 +787,13 @@ TV_GetParam(HWND hwnd, HTREEITEM hItem = NULL)
         hItem = TreeView_GetSelection(hwnd);
     }
 
-    TV_ITEM Item;
-    ZeroMemory(&Item, sizeof(Item));
-    Item.mask = TVIF_PARAM;
-    Item.hItem = hItem;
-    TreeView_GetItem(hwnd, &Item);
-    return Item.lParam;
+    TV_ITEM item;
+    ZeroMemory(&item, sizeof(item));
+    item.mask = TVIF_PARAM;
+    item.hItem = hItem;
+    TreeView_GetItem(hwnd, &item);
+
+    return item.lParam;
 }
 
 inline INT
