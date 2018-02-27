@@ -134,6 +134,7 @@
 #define CMDID_REFRESHALL        198
 #define CMDID_EXPORT            199
 #define CMDID_FONTS             200
+#define CMDID_REFRESH           201
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

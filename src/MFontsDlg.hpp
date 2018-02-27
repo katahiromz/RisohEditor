@@ -33,13 +33,49 @@ class MFontsDlg : public MDialogBase
 {
 public:
     RisohSettings& m_settings;
+    HFONT m_hSrcFont;
+    HFONT m_hBinFont;
 
-    MFontsDlg(RisohSettings& settings) : MDialogBase(IDD_FONTS), m_settings(settings)
+    MFontsDlg(RisohSettings& settings) :
+        MDialogBase(IDD_FONTS), m_settings(settings),
+        m_hSrcFont(NULL), m_hBinFont(NULL)
     {
     }
 
     virtual ~MFontsDlg()
     {
+        DestroySrcFont();
+        DestroyBinFont();
+    }
+
+    HFONT DetachSrcFont()
+    {
+        HFONT hFont = m_hSrcFont;
+        m_hSrcFont = NULL;
+        return hFont;
+    }
+    HFONT DetachBinFont()
+    {
+        HFONT hFont = m_hBinFont;
+        m_hBinFont = NULL;
+        return hFont;
+    }
+
+    void DestroySrcFont()
+    {
+        if (m_hSrcFont)
+        {
+            DeleteObject(m_hSrcFont);
+            m_hSrcFont = NULL;
+        }
+    }
+    void DestroyBinFont()
+    {
+        if (m_hBinFont)
+        {
+            DeleteObject(m_hBinFont);
+            m_hBinFont = NULL;
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -51,12 +87,16 @@ public:
         str += mstr_dec_short(m_settings.nSrcFontSize);
         str += L"pt";
         SetDlgItemText(hwnd, edt1, str.c_str());
+        m_hSrcFont = CreateMyFont(m_settings.strSrcFont.c_str(), m_settings.nSrcFontSize);
+        SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
 
         str = m_settings.strBinFont;
         str += L", ";
         str += mstr_dec_short(m_settings.nBinFontSize);
         str += L"pt";
         SetDlgItemText(hwnd, edt2, str.c_str());
+        m_hBinFont = CreateMyFont(m_settings.strBinFont.c_str(), m_settings.nBinFontSize);
+        SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
 
         CenterWindowDx();
         return TRUE;
@@ -83,10 +123,30 @@ public:
 
         m_settings.strSrcFont = str1.substr(0, k1);
         m_settings.nSrcFontSize = mstr_parse_int(str1.substr(k1 + 2).c_str());
-        m_settings.strBinFont = str1.substr(0, k2);
-        m_settings.nBinFontSize = mstr_parse_int(str1.substr(k2 + 2).c_str());
+        DestroySrcFont();
+        m_hSrcFont = CreateMyFont(m_settings.strSrcFont.c_str(), m_settings.nSrcFontSize);
+
+        m_settings.strBinFont = str2.substr(0, k2);
+        m_settings.nBinFontSize = mstr_parse_int(str2.substr(k2 + 2).c_str());
+        DestroyBinFont();
+        m_hBinFont = CreateMyFont(m_settings.strBinFont.c_str(), m_settings.nBinFontSize);
 
         EndDialog(IDOK);
+    }
+
+    HFONT CreateMyFont(const TCHAR *pszName, INT nPointSize)
+    {
+        HFONT hFont = NULL;
+        LOGFONT lf;
+        ZeroMemory(&lf, sizeof(lf));
+        if (HDC hDC = CreateCompatibleDC(NULL))
+        {
+            lf.lfHeight = -MulDiv(nPointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+            lstrcpy(lf.lfFaceName, pszName);
+            hFont = CreateFontIndirect(&lf);
+            DeleteDC(hDC);
+        }
+        return hFont;
     }
 
     void OnPsh1(HWND hwnd)
@@ -115,19 +175,22 @@ public:
         cf.lStructSize = sizeof(cf);
         cf.hwndOwner = hwnd;
         cf.lpLogFont = &lf;
-        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_NOSTYLESEL |
-                   CF_NOVERTFONTS | CF_SCREENFONTS;
+        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL |
+                   CF_NOVERTFONTS | CF_SCREENFONTS | CF_FIXEDPITCHONLY;
         if (ChooseFont(&cf))
         {
-            HDC hDC = CreateCompatibleDC(NULL);
-            INT nPointSize = MulDiv(lf.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-            DeleteDC(hDC);
+            INT nPointSize = (cf.iPointSize + 5) / 10;
 
             str1 = lf.lfFaceName;
             str1 += L", ";
-            str1 += mstr_dec_short(m_settings.nBinFontSize);
+            str1 += mstr_dec_short(nPointSize);
             str1 += L"pt";
             SetDlgItemText(hwnd, edt1, str1.c_str());
+
+            DestroySrcFont();
+            m_hSrcFont = CreateMyFont(lf.lfFaceName, nPointSize);
+
+            SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
         }
     }
 
@@ -157,19 +220,22 @@ public:
         cf.lStructSize = sizeof(cf);
         cf.hwndOwner = hwnd;
         cf.lpLogFont = &lf;
-        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_NOSTYLESEL |
-                   CF_NOVERTFONTS | CF_SCREENFONTS;
+        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL |
+                   CF_NOVERTFONTS | CF_SCREENFONTS | CF_FIXEDPITCHONLY;
         if (ChooseFont(&cf))
         {
-            HDC hDC = CreateCompatibleDC(NULL);
-            INT nPointSize = MulDiv(lf.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
-            DeleteDC(hDC);
+            INT nPointSize = (cf.iPointSize + 5) / 10;
 
             str2 = lf.lfFaceName;
             str2 += L", ";
-            str2 += mstr_dec_short(m_settings.nBinFontSize);
+            str2 += mstr_dec_short(nPointSize);
             str2 += L"pt";
             SetDlgItemText(hwnd, edt2, str2.c_str());
+
+            DestroyBinFont();
+            m_hBinFont = CreateMyFont(lf.lfFaceName, nPointSize);
+
+            SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
         }
     }
 

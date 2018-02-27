@@ -1542,7 +1542,16 @@ void MMainWnd::OnFonts(HWND hwnd)
         return;
 
     MFontsDlg dialog(m_settings);
-    dialog.DialogBoxDx(hwnd);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        DeleteObject(m_hBinFont);
+        m_hBinFont = dialog.DetachBinFont();
+        SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
+
+        DeleteObject(m_hSrcFont);
+        m_hSrcFont = dialog.DetachSrcFont();
+        SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
+    }
 }
 
 void MMainWnd::OnExport(HWND hwnd)
@@ -6162,6 +6171,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_FONTS:
         OnFonts(hwnd);
+        break;
+    case CMDID_REFRESH:
+        DoRefresh(hwnd, FALSE);
         break;
     default:
         bUpdateStatus = FALSE;

@@ -957,7 +957,7 @@ FONT 9, "MS UI Gothic"
     GROUPBOX "プレビュー", -1, 5, 45, 185, 39
     CTEXT "ソース", stc1, 30, 60, 50, 12, SS_CENTERIMAGE
     CTEXT "バイナリー", stc2, 100, 60, 50, 12, SS_CENTERIMAGE
-    DEFPUSHBUTTON "OK", -1, 65, 90, 60, 14
+    DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 130, 90, 60, 14
 }
 
