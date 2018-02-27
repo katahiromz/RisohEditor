@@ -956,8 +956,8 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
     GROUPBOX "Preview", -1, 5, 45, 185, 39
-    CTEXT "Source", stc1, 30, 60, 50, 12, SS_CENTERIMAGE
-    CTEXT "Binary", stc2, 100, 60, 50, 12, SS_CENTERIMAGE
+    CTEXT "Source", stc1, 15, 55, 80, 25, SS_CENTERIMAGE
+    CTEXT "Binary", stc2, 100, 55, 85, 25, SS_CENTERIMAGE
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 130, 90, 60, 14
 }

@@ -955,8 +955,8 @@ FONT 9, "MS UI Gothic"
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
     GROUPBOX "プレビュー", -1, 5, 45, 185, 39
-    CTEXT "ソース", stc1, 30, 60, 50, 12, SS_CENTERIMAGE
-    CTEXT "バイナリー", stc2, 100, 60, 50, 12, SS_CENTERIMAGE
+    CTEXT "ソース", stc1, 15, 55, 80, 25, SS_CENTERIMAGE
+    CTEXT "バイナリー", stc2, 100, 55, 85, 25, SS_CENTERIMAGE
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 130, 90, 60, 14
 }
