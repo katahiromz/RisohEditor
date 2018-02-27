@@ -558,31 +558,43 @@ public:
         HWND hParent;
         HWND hCandidate;
         HWND hLast;
+        HWND hGroupBox;
         POINT pt;
     };
 
     static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
     {
+        // NOTE: EnumChildWindows scans not only children but descendants.
         MYHITTEST *pmht = (MYHITTEST *)lParam;
         RECT rc;
         GetWindowRect(hwnd, &rc);
-        if (PtInRect(&rc, pmht->pt))
+        if (!PtInRect(&rc, pmht->pt))
+            return TRUE;
+
+        if (MRubberBand *pBand = MRubberBand::GetRubberBand(hwnd))
         {
-            // NOTE: EnumChildWindows scans not only children but descendants.
-            if (MRubberBand *pBand = MRubberBand::GetRubberBand(hwnd))
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(pBand->m_hwndTarget);
+            if (pCtrl && pCtrl->m_bTopCtrl)
             {
-                pmht->hLast = NULL;
                 pmht->hCandidate = NULL;
-            }
-            else if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
-            {
-                if (pCtrl->m_bTopCtrl)
+                if (IsGroupBox(*pCtrl))
                 {
-                    pmht->hLast = hwnd;
-                    if (!IsGroupBox(hwnd))
-                    {
-                        pmht->hCandidate = hwnd;
-                    }
+                    pmht->hGroupBox = *pCtrl;
+                }
+                else
+                {
+                    pmht->hLast = pBand->m_hwndTarget;
+                }
+            }
+        }
+        else if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+        {
+            if (pCtrl->m_bTopCtrl)
+            {
+                pmht->hLast = hwnd;
+                if (!IsGroupBox(hwnd))
+                {
+                    pmht->hCandidate = hwnd;
                 }
             }
         }
@@ -597,18 +609,46 @@ public:
             GetWindowRect(hwnd, &rc);
 
             POINT pt = { x, y };
-            if (m_hwndRubberBand && PtInRect(&rc, pt))
-                return HTCAPTION;
+            if (!PtInRect(&rc, pt))
+                return HTTRANSPARENT;
+
+            if (m_hwndRubberBand)
+            {
+                RECT rcBand;
+                GetWindowRect(m_hwndRubberBand, &rcBand);
+
+                HRGN hRgn = CreateRectRgn(0, 0, 0, 0);
+                GetWindowRgn(m_hwndRubberBand, hRgn);
+                OffsetRgn(hRgn, rcBand.left, rcBand.top);
+
+                if (PtInRegion(hRgn, x, y))
+                {
+                    DeleteObject(hRgn);
+                    return HTTRANSPARENT;
+                }
+                DeleteObject(hRgn);
+            }
 
             MYHITTEST mht;
             mht.hParent = GetParent(hwnd);
             mht.hCandidate = NULL;
             mht.hLast = NULL;
+            mht.hGroupBox = NULL;
             mht.pt = pt;
             EnumChildWindows(mht.hParent, EnumChildProc, (LPARAM)&mht);
 
-            if (mht.hCandidate == hwnd ||
-                (!mht.hCandidate && mht.hLast == hwnd))
+            //if (GetAsyncKeyState(VK_RBUTTON) < 0)
+            //    DebugBreak();
+
+            if (mht.hCandidate == hwnd && hwnd != mht.hGroupBox)
+            {
+                return HTCAPTION;
+            }
+            if (!mht.hCandidate && mht.hLast == hwnd)
+            {
+                return HTCAPTION;
+            }
+            if (mht.hCandidate == hwnd)
             {
                 return HTCAPTION;
             }
@@ -1104,30 +1144,6 @@ public:
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
-    void GroupBoxDown(HWND hwnd)
-    {
-        HWND hwndFirstGroupBox = NULL;
-    retry:
-        for (HWND hCtrl = GetTopWindow(hwnd); hCtrl;
-             hCtrl = GetWindow(hCtrl, GW_HWNDNEXT))
-        {
-            if (MRadCtrl::IsGroupBox(hCtrl))
-            {
-                if (hwndFirstGroupBox == NULL)
-                {
-                    hwndFirstGroupBox = hCtrl;
-                }
-                else if (hwndFirstGroupBox == hCtrl)
-                {
-                    break;
-                }
-                SetWindowPos(hCtrl, HWND_BOTTOM, 0, 0, 0, 0,
-                    SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
-                goto retry;
-            }
-        }
-    }
-
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         OnSysColorChange(hwnd);
@@ -1145,8 +1161,6 @@ public:
             ShowHideLabels(TRUE);
 
         SubclassDx(hwnd);
-
-        GroupBoxDown(hwnd);
 
         return FALSE;
     }
