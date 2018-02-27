@@ -948,7 +948,7 @@ protected:
     HACCEL      m_hAccel;       // the accelerator handle
     HIMAGELIST  m_hImageList;   // the image list for m_hTreeView
     HICON       m_hFileIcon, m_hFolderIcon;
-    HFONT       m_hNormalFont, m_hLargeFont, m_hSmallFont;
+    HFONT       m_hSrcFont, m_hBinFont;
     HWND        m_hTreeView, m_hToolBar, m_hStatusBar;
     HWND        m_hFindReplaceDlg;
 
@@ -991,7 +991,7 @@ public:
         m_argc(argc), m_targv(targv), m_bLoading(FALSE),
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
-        m_hNormalFont(NULL), m_hLargeFont(NULL), m_hSmallFont(NULL),
+        m_hSrcFont(NULL), m_hBinFont(NULL),
         m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
         m_hFindReplaceDlg(NULL), m_rad_window(m_entries, m_db, m_settings),
         m_id_list_dlg(m_entries, m_db, m_settings),
@@ -1209,6 +1209,7 @@ protected:
     void OnLoadResHBang(HWND hwnd);
     void OnLoadWCLib(HWND hwnd);
     void OnExport(HWND hwnd);
+    void OnFonts(HWND hwnd);
     void OnAbout(HWND hwnd);
     void OnConfig(HWND hwnd);
     void OnOpenReadMe(HWND hwnd);
@@ -1533,6 +1534,15 @@ void MMainWnd::OnAbout(HWND hwnd)
     MessageBoxIndirectW(&params);
     MWindowBase::HookCenterMsgBoxDx(FALSE);
 #endif
+}
+
+void MMainWnd::OnFonts(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    MFontsDlg dialog(m_settings);
+    dialog.DialogBoxDx(hwnd);
 }
 
 void MMainWnd::OnExport(HWND hwnd)
@@ -5506,9 +5516,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
     ImageList_Destroy(m_hImageList);
     DestroyIcon(m_hFileIcon);
     DestroyIcon(m_hFolderIcon);
-    DeleteObject(m_hNormalFont);
-    DeleteObject(m_hLargeFont);
-    DeleteObject(m_hSmallFont);
+    DeleteObject(m_hSrcFont);
+    DeleteObject(m_hBinFont);
 
     //DestroyIcon(MRadCtrl::Icon());    // LR_SHARED
     DeleteObject(MRadCtrl::Bitmap());
@@ -6150,6 +6159,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_EXPORT:
         OnExport(hwnd);
+        break;
+    case CMDID_FONTS:
+        OnFonts(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -7018,6 +7030,67 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bUpdateResH = FALSE;
     m_settings.bCompressByUPX = FALSE;
 
+    HFONT hFont;
+    LOGFONTW lf, lfBin, lfSrc;
+    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
+
+    ZeroMemory(&lfBin, sizeof(lfBin));
+    lfBin.lfHeight = 10;
+    lfBin.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+    lfBin.lfCharSet = lf.lfCharSet;
+    hFont = CreateFontIndirectW(&lfBin);
+    GetObject(hFont, sizeof(lfBin), &lfBin);
+    if (HDC hDC = CreateCompatibleDC(NULL))
+    {
+        SelectObject(hDC, hFont);
+        GetTextFace(hDC, LF_FACESIZE, lfBin.lfFaceName);
+        DeleteDC(hDC);
+    }
+    DeleteObject(hFont);
+
+    ZeroMemory(&lfSrc, sizeof(lfSrc));
+    lfSrc.lfHeight = 13;
+    lfSrc.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+    lfSrc.lfCharSet = lf.lfCharSet;
+    hFont = CreateFontIndirectW(&lfSrc);
+    GetObject(hFont, sizeof(lfSrc), &lfSrc);
+    if (HDC hDC = CreateCompatibleDC(NULL))
+    {
+        SelectObject(hDC, hFont);
+        GetTextFace(hDC, LF_FACESIZE, lfSrc.lfFaceName);
+        DeleteDC(hDC);
+    }
+    DeleteObject(hFont);
+
+    m_settings.strSrcFont = lfSrc.lfFaceName;
+    m_settings.strBinFont = lfBin.lfFaceName;
+
+    m_settings.nSrcFontSize = 12;
+    m_settings.nBinFontSize = 9;
+
+    if (HDC hDC = CreateCompatibleDC(NULL))
+    {
+        if (lfBin.lfHeight < 0)
+        {
+            m_settings.nBinFontSize = -MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+        }
+        else
+        {
+            m_settings.nBinFontSize = MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+        }
+
+        if (lfSrc.lfHeight < 0)
+        {
+            m_settings.nSrcFontSize = -MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+        }
+        else
+        {
+            m_settings.nSrcFontSize = MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+        }
+
+        DeleteDC(hDC);
+    }
+
     ConstantsDB::TableType table1, table2;
     table1 = m_db.GetTable(L"RESOURCE.ID.TYPE");
     table2 = m_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -7106,6 +7179,15 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)m_settings.bCompressByUPX);
+
+    TCHAR szText[128];
+    if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
+        m_settings.strSrcFont = szText;
+    keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)m_settings.nSrcFontSize);
+
+    if (keyRisoh.QuerySz(TEXT("strBinFont"), szText, _countof(szText)) == ERROR_SUCCESS)
+        m_settings.strBinFont = szText;
+    keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)m_settings.nBinFontSize);
 
     INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
     INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -7228,6 +7310,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
     keyRisoh.SetDword(TEXT("bUpdateResH"), m_settings.bUpdateResH);
     keyRisoh.SetDword(TEXT("bCompressByUPX"), m_settings.bCompressByUPX);
+    keyRisoh.SetSz(TEXT("strSrcFont"), m_settings.strSrcFont.c_str());
+    keyRisoh.SetDword(TEXT("nSrcFontSize"), m_settings.nSrcFontSize);
+    keyRisoh.SetSz(TEXT("strBinFont"), m_settings.strBinFont.c_str());
+    keyRisoh.SetDword(TEXT("nBinFontSize"), m_settings.nBinFontSize);
 
     DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)
@@ -7351,25 +7437,28 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     else
         ShowWindow(m_hStatusBar, SW_HIDE);
 
-    LOGFONTW lf;
-    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
-    lf.lfPitchAndFamily = FIXED_PITCH | FF_DONTCARE;
-    lf.lfFaceName[0] = 0;
+    LOGFONTW lfBin, lfSrc;
+    ZeroMemory(&lfBin, sizeof(lfBin));
+    ZeroMemory(&lfSrc, sizeof(lfSrc));
 
-    lf.lfHeight = 11;
-    m_hSmallFont = CreateFontIndirectW(&lf);
-    assert(m_hSmallFont);
+    lstrcpy(lfBin.lfFaceName, m_settings.strBinFont.c_str());
+    lstrcpy(lfSrc.lfFaceName, m_settings.strSrcFont.c_str());
 
-    lf.lfHeight = 13;
-    m_hNormalFont = ::CreateFontIndirectW(&lf);
-    assert(m_hNormalFont);
+    if (HDC hDC = CreateCompatibleDC(NULL))
+    {
+        lfBin.lfHeight = -MulDiv(m_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        lfSrc.lfHeight = -MulDiv(m_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        DeleteDC(hDC);
+    }
 
-    lf.lfHeight = 15;
-    m_hLargeFont = ::CreateFontIndirectW(&lf);
-    assert(m_hLargeFont);
+    m_hBinFont = CreateFontIndirectW(&lfBin);
+    assert(m_hBinFont);
 
-    SetWindowFont(m_hSrcEdit, m_hNormalFont, TRUE);
-    SetWindowFont(m_hBinEdit, m_hSmallFont, TRUE);
+    m_hSrcFont = ::CreateFontIndirectW(&lfSrc);
+    assert(m_hSrcFont);
+
+    SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
+    SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
 
     if (m_argc >= 2)
     {

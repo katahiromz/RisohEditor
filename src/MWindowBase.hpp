@@ -374,6 +374,11 @@ public:
         return GetWindowText(m_hwnd);
     }
 
+    static UINT GetDlgItemText(HWND hwnd, INT nCtrlID, LPTSTR psz, INT cchMax)
+    {
+        assert(::IsWindow(hwnd));
+        return ::GetDlgItemText(hwnd, nCtrlID, psz, cchMax);
+    }
     static MString GetDlgItemText(HWND hwnd, INT nCtrlID)
     {
         assert(::IsWindow(hwnd));

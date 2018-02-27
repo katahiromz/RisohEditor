@@ -63,6 +63,10 @@ struct RisohSettings
     INT         nRadTop;
     BOOL        bUpdateResH;
     BOOL        bCompressByUPX;
+    MString     strSrcFont;
+    INT         nSrcFontSize;
+    MString     strBinFont;
+    INT         nBinFontSize;
     assoc_map_type      assoc_map;
     id_map_type         id_map;
     id_map_type         added_ids;

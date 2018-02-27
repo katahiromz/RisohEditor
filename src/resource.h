@@ -133,6 +133,7 @@
 #define CMDID_IDJUMP            197
 #define CMDID_REFRESHALL        198
 #define CMDID_EXPORT            199
+#define CMDID_FONTS             200
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -169,6 +170,7 @@
 #define IDD_ADDMSG          141
 #define IDD_MODIFYMSG       142
 #define IDD_MESSAGES        143
+#define IDD_FONTS           144
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
