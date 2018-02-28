@@ -77,10 +77,7 @@ public:
         m_settings.bUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
         m_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
 
-        ConstantsDB::TableType& table = m_db.m_map[L"HIDE.ID"];
-        table.clear();
-        ConstantsDB::EntryType entry(L"HIDE.ID", m_settings.bHideID);
-        table.push_back(entry);
+        m_db.ShowMacroID(!m_settings.bHideID);
 
         EndDialog(IDOK);
     }

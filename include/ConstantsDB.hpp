@@ -148,9 +148,22 @@ public:
         return FALSE;
     }
 
+    BOOL AreMacroIDShown() const
+    {
+        return !GetValue(L"HIDE.ID", L"HIDE.ID");
+    }
+
+    void ShowMacroID(BOOL bShown = TRUE)
+    {
+        TableType& table = m_map[L"HIDE.ID"];
+        table.clear();
+        EntryType entry(L"HIDE.ID", !bShown);
+        table.push_back(entry);
+    }
+
     StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
     {
-        if ((BOOL)GetValue(L"HIDE.ID", L"HIDE.ID"))
+        if (!AreMacroIDShown())
         {
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);

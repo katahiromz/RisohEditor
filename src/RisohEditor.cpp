@@ -231,7 +231,7 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
         ComboBox_AddString(hCmb, it->name.c_str());
     }
 
-    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!db.AreMacroIDShown())
         return;
 
     table = db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -251,7 +251,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
 {
     SetWindowTextW(hCmb, id.c_str());
 
-    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!db.AreMacroIDShown())
         return;
 
     INT k = -1;
@@ -315,7 +315,7 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!db.AreMacroIDShown())
         return;
 
     ConstantsDB::TableType table;
@@ -340,7 +340,7 @@ void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!db.AreMacroIDShown())
         return;
 
     ConstantsDB::TableType table;
@@ -758,7 +758,7 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
 
 MStringW GetKeyID(ConstantsDB& db, UINT wId)
 {
-    if ((BOOL)db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!db.AreMacroIDShown())
         return mstr_dec_short((SHORT)wId);
 
     return db.GetNameOfResID(IDTYPE_COMMAND, wId);
@@ -2775,7 +2775,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, CMDID_ALWAYSCONTROL, MF_UNCHECKED);
 
-    if ((BOOL)m_db.GetValue(L"HIDE.ID", L"HIDE.ID"))
+    if (!m_db.AreMacroIDShown())
         CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_CHECKED);
     else
         CheckMenuItem(hMenu, CMDID_HIDEIDMACROS, MF_UNCHECKED);
@@ -5851,13 +5851,12 @@ void MMainWnd::OnConfig(HWND hwnd)
 
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
-    BOOL bHideID = (BOOL)m_db.GetValue(L"HIDE.ID", L"HIDE.ID");
+    BOOL bHideID = !m_db.AreMacroIDShown();
     bHideID = !bHideID;
     m_settings.bHideID = bHideID;
-    ConstantsDB::TableType& table = m_db.m_map[L"HIDE.ID"];
-    table.clear();
-    ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
-    table.push_back(entry);
+
+    m_db.ShowMacroID(!m_settings.bHideID);
+
     DoRefresh(hwnd);
 }
 
@@ -7159,14 +7158,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
-    BOOL bHideID = (BOOL)m_db.GetValue(L"HIDE.ID", L"HIDE.ID");
+    BOOL bHideID = !m_db.AreMacroIDShown();
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHideID);
-    {
-        ConstantsDB::TableType& table = m_db.m_map[L"HIDE.ID"];
-        table.clear();
-        ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
-        table.push_back(entry);
-    }
+    m_db.ShowMacroID(!bHideID);
     m_settings.bHideID = bHideID;
 
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
@@ -7297,7 +7291,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (m_splitter1.GetPaneCount() >= 1)
         m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
-    BOOL bHideID = (BOOL)m_db.GetValue(L"HIDE.ID", L"HIDE.ID");
+    BOOL bHideID = !m_db.AreMacroIDShown();
     m_settings.bHideID = bHideID;
     keyRisoh.SetDword(TEXT("HIDE.ID"), m_settings.bHideID);
     keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
