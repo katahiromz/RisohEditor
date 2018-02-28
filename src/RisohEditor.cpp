@@ -5772,7 +5772,11 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
 
     if (HIWORD(lParam) != I_NONE)
+    {
         TV_SelectEntry(m_hTreeView, m_entries, selection);
+        lParam = TV_GetParam(m_hTreeView);
+        SelectTV(hwnd, lParam, FALSE);
+    }
 }
 
 void MMainWnd::OnAdviceResH(HWND hwnd)
@@ -5838,7 +5842,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MConfigDlg dialog(m_settings);
+    MConfigDlg dialog(m_settings, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefresh(hwnd);
@@ -5854,8 +5858,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
     table.clear();
     ConstantsDB::EntryType entry(L"HIDE.ID", bHideID);
     table.push_back(entry);
-    SelectTV(hwnd, 0, FALSE);
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    DoRefresh(hwnd);
 }
 
 void MMainWnd::UpdateIDList(HWND hwnd)

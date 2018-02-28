@@ -22,6 +22,7 @@
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
+#include "ConstantsDB.hpp"
 #include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -30,9 +31,10 @@ class MConfigDlg : public MDialogBase
 {
 public:
     RisohSettings& m_settings;
+    ConstantsDB& m_db;
 
-    MConfigDlg(RisohSettings& settings)
-        : MDialogBase(IDD_CONFIG), m_settings(settings)
+    MConfigDlg(RisohSettings& settings, ConstantsDB& db)
+        : MDialogBase(IDD_CONFIG), m_settings(settings), m_db(db)
     {
     }
 
@@ -74,6 +76,11 @@ public:
         m_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
         m_settings.bUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
         m_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+
+        ConstantsDB::TableType& table = m_db.m_map[L"HIDE.ID"];
+        table.clear();
+        ConstantsDB::EntryType entry(L"HIDE.ID", m_settings.bHideID);
+        table.push_back(entry);
 
         EndDialog(IDOK);
     }
