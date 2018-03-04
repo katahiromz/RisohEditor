@@ -7140,6 +7140,40 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.id_map.clear();
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
+
+    m_settings.macros.clear();
+#define DEF_LANG(lang) m_settings.macros.insert(std::make_pair(TEXT(lang), TEXT("")))
+    DEF_LANG("LANGUAGE_BG_BG");
+    DEF_LANG("LANGUAGE_CA_ES");
+    DEF_LANG("LANGUAGE_CS_CZ");
+    DEF_LANG("LANGUAGE_DA_DK");
+    DEF_LANG("LANGUAGE_DE_DE");
+    DEF_LANG("LANGUAGE_EL_GR");
+    DEF_LANG("LANGUAGE_ES_ES");
+    DEF_LANG("LANGUAGE_ET_EE");
+    DEF_LANG("LANGUAGE_FI_FI");
+    DEF_LANG("LANGUAGE_FR_FR");
+    DEF_LANG("LANGUAGE_HE_IL");
+    DEF_LANG("LANGUAGE_HU_HU");
+    DEF_LANG("LANGUAGE_IT_IT");
+    DEF_LANG("LANGUAGE_JA_JP");
+    DEF_LANG("LANGUAGE_KO_KR");
+    DEF_LANG("LANGUAGE_NL_NL");
+    DEF_LANG("LANGUAGE_NB_NO");
+    DEF_LANG("LANGUAGE_PL_PL");
+    DEF_LANG("LANGUAGE_PT_BR");
+    DEF_LANG("LANGUAGE_PT_PT");
+    DEF_LANG("LANGUAGE_RO_RO");
+    DEF_LANG("LANGUAGE_RU_RU");
+    DEF_LANG("LANGUAGE_SK_SK");
+    DEF_LANG("LANGUAGE_SL_SI");
+    DEF_LANG("LANGUAGE_SQ_AL");
+    DEF_LANG("LANGUAGE_SV_SE");
+    DEF_LANG("LANGUAGE_TR_TR");
+    DEF_LANG("LANGUAGE_UK_UA");
+    DEF_LANG("LANGUAGE_ZH_CN");
+    DEF_LANG("LANGUAGE_ZH_TW");
+#undef DEF_LANG
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -7190,6 +7224,26 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)m_settings.bCompressByUPX);
 
     TCHAR szText[128];
+    TCHAR szValueName[128];
+
+    m_settings.macros.clear();
+    DWORD dwMacroCount = 0;
+    keyRisoh.QueryDword(TEXT("dwMacroCount"), (DWORD&)dwMacroCount);
+
+    for (DWORD i = 0; i < dwMacroCount; ++i)
+    {
+        MString key, value;
+        wsprintf(szValueName, TEXT("MacroName%lu"), i);
+        if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+            key = szText;
+        wsprintf(szValueName, TEXT("MacroValue%lu"), i);
+        if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+            value = szText;
+
+        if (key.size())
+            m_settings.macros.insert(std::make_pair(key, value));
+    }
+
     if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
         m_settings.strSrcFont = szText;
     keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)m_settings.nSrcFontSize);
@@ -7329,17 +7383,38 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         dwCount = MAX_MRU;
     keyRisoh.SetDword(TEXT("FileCount"), dwCount);
 
-    TCHAR szFormat[32];
+    TCHAR szValueName[128];
+
     for (i = 0; i < dwCount; ++i)
     {
-        wsprintf(szFormat, TEXT("File%lu"), i);
-        keyRisoh.SetSz(szFormat, m_settings.vecRecentlyUsed[i].c_str());
+        wsprintf(szValueName, TEXT("File%lu"), i);
+        keyRisoh.SetSz(szValueName, m_settings.vecRecentlyUsed[i].c_str());
     }
 
-    assoc_map_type::iterator it, end = m_settings.assoc_map.end();
-    for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
-        keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
+        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
+        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        {
+            keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
+        }
+    }
+
+    DWORD dwMacroCount = DWORD(m_settings.macros.size());
+    keyRisoh.SetDword(TEXT("dwMacroCount"), dwMacroCount);
+
+    {
+        macro_map_type::const_iterator it, end = m_settings.macros.end();
+        for (it = m_settings.macros.begin(); it != end; ++it)
+        {
+            const MString& key = it->first;
+            const MString& value = it->second;
+
+            wsprintf(szValueName, TEXT("MacroName%lu"), i);
+            keyRisoh.SetSz(szValueName, key.c_str());
+
+            wsprintf(szValueName, TEXT("MacroValue%lu"), i);
+            keyRisoh.SetSz(szValueName, value.c_str());
+        }
     }
 
     return TRUE;

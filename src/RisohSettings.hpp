@@ -31,6 +31,7 @@
 typedef std::vector<MString>            mru_type;
 typedef std::map<MString, MString>      assoc_map_type;
 typedef std::map<MStringA, MStringA>    id_map_type;
+typedef std::map<MString, MString>      macro_map_type;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -71,6 +72,7 @@ struct RisohSettings
     id_map_type         id_map;
     id_map_type         added_ids;
     id_map_type         removed_ids;
+    macro_map_type      macros;
 
     RisohSettings()
     {
