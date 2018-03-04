@@ -143,6 +143,17 @@ public:
             return;
         }
 
+        MACRO_ENTRY m_entry;
+
+        m_map.clear();
+        for (i = 0; i < nCount; ++i)
+        {
+            ListView_GetItemText(m_hLst1, iItem, 0, m_entry.szKey, _countof(m_entry.szKey));
+            ListView_GetItemText(m_hLst1, iItem, 1, m_entry.szValue, _countof(m_entry.szValue));
+
+            m_map[m_entry.szKey] = m_entry.szValue;
+        }
+
         EndDialog(IDOK);
     }
 
