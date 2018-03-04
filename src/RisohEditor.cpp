@@ -7233,9 +7233,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     for (DWORD i = 0; i < dwMacroCount; ++i)
     {
         MString key, value;
+
         wsprintf(szValueName, TEXT("MacroName%lu"), i);
         if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
             key = szText;
+
         wsprintf(szValueName, TEXT("MacroValue%lu"), i);
         if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
             value = szText;
