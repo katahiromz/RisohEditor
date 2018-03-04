@@ -976,7 +976,7 @@ FONT 9, "宋体"
     PUSHBUTTON "编辑(&E)...", psh2, 200, 35, 60, 14
     PUSHBUTTON "删除(&D)", psh3, 200, 55, 60, 14
     PUSHBUTTON "上(&U)", psh4, 200, 105, 60, 14
-    PUSHBUTTON "下(&D)", psh5, 200, 125, 60, 14
+    PUSHBUTTON "下(&O)", psh5, 200, 125, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 145, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 135, 145, 60, 14
 }

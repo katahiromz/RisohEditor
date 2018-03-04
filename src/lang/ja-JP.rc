@@ -976,7 +976,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "変更(&E)...", psh2, 200, 35, 60, 14
     PUSHBUTTON "削除(&D)", psh3, 200, 55, 60, 14
     PUSHBUTTON "↑(&U)", psh4, 200, 105, 60, 14
-    PUSHBUTTON "↓(&D)", psh5, 200, 125, 60, 14
+    PUSHBUTTON "↓(&O)", psh5, 200, 125, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 145, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 135, 145, 60, 14
 }
