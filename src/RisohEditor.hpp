@@ -94,6 +94,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MItemSearchDlg.hpp"
 #include "MVersionInfoDlg.hpp"
 #include "MFontsDlg.hpp"
+#include "MMacrosDlg.hpp"
 
 #include "MString.hpp"
 #include "MByteStream.hpp"

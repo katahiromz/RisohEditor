@@ -135,6 +135,7 @@
 #define CMDID_EXPORT            199
 #define CMDID_FONTS             200
 #define CMDID_REFRESH           201
+#define CMDID_PREDEFMACROS      202
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -300,6 +301,8 @@
 #define IDS_MUSTBEEMPTYDIR  125
 #define IDS_FULLWIDTH       126
 #define IDS_HALFWIDTH       127
+#define IDS_MACRONAME       128
+#define IDS_MACROVALUE      129
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

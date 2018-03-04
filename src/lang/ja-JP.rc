@@ -99,6 +99,7 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         MENUITEM "最新の情報に更新(&F)", CMDID_REFRESHALL
         MENUITEM SEPARATOR
+        MENUITEM "定義済みマクロ(&M)...", CMDID_PREDEFMACROS
         MENUITEM "フォント設定(&F)...", CMDID_FONTS
     }
     POPUP "ヘルプ(&H)"
@@ -319,7 +320,10 @@ STRINGTABLE
     IDS_MUSTBEEMPTYDIR, "エクスポート先は空フォルダでなければなりません。"
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_()."
+    IDS_MACRONAME, "マクロ名"
+    IDS_MACROVALUE, "マクロ値"
 }
+
 IDD_REPLACERES DIALOG 0, 0, 215, 170
 CAPTION "リソースの置き換え"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -963,7 +967,7 @@ FONT 9, "MS UI Gothic"
 
 IDD_MACROS DIALOG 0, 0, 265, 165
 CAPTION "定義済みマクロの一覧"
-STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+STYLE WS_THICKFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS UI Gothic"
 {
     LTEXT "定義済みマクロ(&M):", -1, 5, 0, 100, 15, SS_CENTERIMAGE

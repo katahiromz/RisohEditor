@@ -1078,6 +1078,7 @@ public:
     void UpdateIDList(HWND hwnd);
     void OnIDList(HWND hwnd);
     void OnIdAssoc(HWND hwnd);
+    void OnPredefMacros(HWND hwnd);
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
@@ -5899,6 +5900,15 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::OnPredefMacros(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    MMacrosDlg dialog(m_settings.macros, m_db);
+    dialog.DialogBoxDx(hwnd);
+}
+
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     MWaitCursor wait;
@@ -6176,6 +6186,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_REFRESH:
         DoRefresh(hwnd, FALSE);
+        break;
+    case CMDID_PREDEFMACROS:
+        OnPredefMacros(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
