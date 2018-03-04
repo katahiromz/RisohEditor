@@ -7242,7 +7242,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
             value = szText;
 
-        if (key.size())
+        if (!key.empty())
             m_settings.macros.insert(std::make_pair(key, value));
     }
 
