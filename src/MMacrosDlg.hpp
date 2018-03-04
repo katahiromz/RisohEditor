@@ -79,6 +79,8 @@ public:
 
         if (m_entry.szKey[0] == 0)
         {
+            ComboBox_SetEditSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
             ErrorBoxDx(IDS_EMPTYSTR);
             return;
         }
@@ -242,6 +244,34 @@ public:
         MACRO_ENTRY entry;
         ListView_GetItemText(m_hLst1, iItem, 0, entry.szKey, _countof(entry.szKey));
         ListView_GetItemText(m_hLst1, iItem, 1, entry.szValue, _countof(entry.szValue));
+
+        mstr_trim(entry.szKey);
+        mstr_trim(entry.szValue);
+
+        if (entry.szKey[0] == 0)
+        {
+            HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+            ComboBox_SetEditSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_EMPTYSTR);
+            return;
+        }
+
+        LV_ITEM item;
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = entry.szKey;
+        ListView_SetItem(m_hLst1, &item);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = entry.szValue;
+        ListView_SetItem(m_hLst1, &item);
     }
 
     void OnOK(HWND hwnd)
