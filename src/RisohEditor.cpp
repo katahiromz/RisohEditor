@@ -7406,14 +7406,11 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         macro_map_type::const_iterator it, end = m_settings.macros.end();
         for (it = m_settings.macros.begin(); it != end; ++it)
         {
-            const MString& key = it->first;
-            const MString& value = it->second;
-
             wsprintf(szValueName, TEXT("MacroName%lu"), i);
-            keyRisoh.SetSz(szValueName, key.c_str());
+            keyRisoh.SetSz(szValueName, it->first.c_str());
 
             wsprintf(szValueName, TEXT("MacroValue%lu"), i);
-            keyRisoh.SetSz(szValueName, value.c_str());
+            keyRisoh.SetSz(szValueName, it->second.c_str());
         }
     }
 
