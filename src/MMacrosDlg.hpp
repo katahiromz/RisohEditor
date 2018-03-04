@@ -27,6 +27,8 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
+struct MACRO_ENTRY;
+class MAddMacroDlg;
 class MMacrosDlg;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -35,6 +37,90 @@ struct MACRO_ENTRY
 {
     TCHAR szKey[128];
     TCHAR szValue[256];
+};
+
+class MAddMacroDlg : public MDialogBase
+{
+public:
+    MACRO_ENTRY& m_entry;
+    ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
+
+    MAddMacroDlg(MACRO_ENTRY& entry, ConstantsDB& db) :
+        MDialogBase(IDD_ADDMACRO), m_entry(entry), m_db(db)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        CheckDlgButton(hwnd, chx1, BST_CHECKED);
+
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        SubclassChildDx(m_cmb1, cmb1);
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        SubclassChildDx(m_cmb2, cmb2);
+
+        CenterWindowDx();
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+
+        ::GetWindowText(hCmb1, m_entry.szKey, _countof(m_entry.szKey));
+        ::GetWindowText(hCmb2, m_entry.szValue, _countof(m_entry.szValue));
+
+        mstr_trim(m_entry.szKey);
+        mstr_trim(m_entry.szValue);
+
+        if (m_entry.szKey[0] == 0)
+        {
+            ErrorBoxDx(IDS_EMPTYSTR);
+            return;
+        }
+
+        EndDialog(IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
 };
 
 class MMacrosDlg : public MDialogBase
@@ -118,6 +204,31 @@ public:
         {
             return;
         }
+
+        MACRO_ENTRY entry;
+        MAddMacroDlg dialog(entry, m_db);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            INT iItem = ListView_GetItemCount(m_hLst1);
+            LV_ITEM item;
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = entry.szKey;
+            ListView_InsertItem(m_hLst1, &item);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = entry.szValue;
+            ListView_SetItem(m_hLst1, &item);
+
+            UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+            ListView_SetItemState(m_hLst1, iItem, state, state);
+        }
     }
 
     void OnModify(HWND hwnd)
@@ -128,9 +239,9 @@ public:
             return;
         }
 
-        MACRO_ENTRY m_entry;
-        ListView_GetItemText(m_hLst1, iItem, 0, m_entry.szKey, _countof(m_entry.szKey));
-        ListView_GetItemText(m_hLst1, iItem, 1, m_entry.szValue, _countof(m_entry.szValue));
+        MACRO_ENTRY entry;
+        ListView_GetItemText(m_hLst1, iItem, 0, entry.szKey, _countof(entry.szKey));
+        ListView_GetItemText(m_hLst1, iItem, 1, entry.szValue, _countof(entry.szValue));
     }
 
     void OnOK(HWND hwnd)
@@ -143,15 +254,14 @@ public:
             return;
         }
 
-        MACRO_ENTRY m_entry;
+        MACRO_ENTRY entry;
 
         m_map.clear();
         for (i = 0; i < nCount; ++i)
         {
-            ListView_GetItemText(m_hLst1, iItem, 0, m_entry.szKey, _countof(m_entry.szKey));
-            ListView_GetItemText(m_hLst1, iItem, 1, m_entry.szValue, _countof(m_entry.szValue));
-
-            m_map[m_entry.szKey] = m_entry.szValue;
+            ListView_GetItemText(m_hLst1, i, 0, entry.szKey, _countof(entry.szKey));
+            ListView_GetItemText(m_hLst1, i, 1, entry.szValue, _countof(entry.szValue));
+            m_map[entry.szKey] = entry.szValue;
         }
 
         EndDialog(IDOK);
@@ -286,6 +396,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, 0, state, state);
+
         SetFocus(m_hLst1);
 
         CenterWindowDx();
