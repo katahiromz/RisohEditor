@@ -7239,24 +7239,26 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     TCHAR szText[128];
     TCHAR szValueName[128];
 
-    m_settings.macros.clear();
     DWORD dwMacroCount = 0;
-    keyRisoh.QueryDword(TEXT("dwMacroCount"), (DWORD&)dwMacroCount);
-
-    for (DWORD i = 0; i < dwMacroCount; ++i)
+    if (keyRisoh.QueryDword(TEXT("dwMacroCount"), dwMacroCount) == ERROR_SUCCESS)
     {
-        MString key, value;
+        m_settings.macros.clear();
 
-        wsprintf(szValueName, TEXT("MacroName%lu"), i);
-        if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
-            key = szText;
+        for (DWORD i = 0; i < dwMacroCount; ++i)
+        {
+            MString key, value;
 
-        wsprintf(szValueName, TEXT("MacroValue%lu"), i);
-        if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
-            value = szText;
+            wsprintf(szValueName, TEXT("MacroName%lu"), i);
+            if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+                key = szText;
 
-        if (!key.empty())
-            m_settings.macros.insert(std::make_pair(key, value));
+            wsprintf(szValueName, TEXT("MacroValue%lu"), i);
+            if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+                value = szText;
+
+            if (!key.empty())
+                m_settings.macros.insert(std::make_pair(key, value));
+        }
     }
 
     if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
@@ -7418,8 +7420,9 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("dwMacroCount"), dwMacroCount);
 
     {
+        i = 0;
         macro_map_type::const_iterator it, end = m_settings.macros.end();
-        for (it = m_settings.macros.begin(); it != end; ++it)
+        for (it = m_settings.macros.begin(); it != end; ++it, ++i)
         {
             wsprintf(szValueName, TEXT("MacroName%lu"), i);
             keyRisoh.SetSz(szValueName, it->first.c_str());
