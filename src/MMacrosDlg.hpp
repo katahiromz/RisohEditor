@@ -167,6 +167,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem - 1, state, state);
+        ListView_EnsureVisible(m_hLst1, iItem - 1, FALSE);
     }
 
     void OnDown(HWND hwnd)
@@ -188,6 +189,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem + 1, state, state);
+        ListView_EnsureVisible(m_hLst1, iItem + 1, FALSE);
     }
 
     void OnDelete(HWND hwnd)
@@ -230,6 +232,7 @@ public:
 
             UINT state = LVIS_SELECTED | LVIS_FOCUSED;
             ListView_SetItemState(m_hLst1, iItem, state, state);
+            ListView_EnsureVisible(m_hLst1, iItem, FALSE);
         }
     }
 
@@ -426,6 +429,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, 0, state, state);
+        ListView_EnsureVisible(m_hLst1, 0, FALSE);
 
         SetFocus(m_hLst1);
 
