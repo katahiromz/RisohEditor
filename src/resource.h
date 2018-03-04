@@ -172,6 +172,7 @@
 #define IDD_MODIFYMSG       142
 #define IDD_MESSAGES        143
 #define IDD_FONTS           144
+#define IDD_MACROS          145
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
