@@ -1131,6 +1131,7 @@ protected:
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
+    MStringW GetMacroDump();
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -3604,6 +3605,24 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
 }
 
+MStringW MMainWnd::GetMacroDump()
+{
+    MStringW ret;
+    macro_map_type::const_iterator it, end = m_settings.macros.end();
+    for (it = m_settings.macros.begin(); it != end; ++it)
+    {
+        ret += L" -D";
+        ret += it->first;
+        if (it->second.size())
+        {
+            ret += L"=";
+            ret += it->second;
+        }
+    }
+    ret += L" ";
+    return ret;
+}
+
 BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -3649,11 +3668,17 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
 
-    WCHAR szCmdLine[MAX_PATH * 3 + 64];
-    wsprintfW(szCmdLine,
-        L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
-        m_szMcdxExe, szPath3, szPath1);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szMcdxExe;
+    strCmdLine += L"\" ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -o \"";
+    strCmdLine += szPath3;
+    strCmdLine += L"\" -J rc -O res \"";
+    strCmdLine += szPath1;
+    strCmdLine += L'\"';
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -3663,7 +3688,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
     std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         pmaker.ReadAll(strOutput, hOutputRead);
 
@@ -3785,19 +3810,19 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r2.CloseHandle();
 
-    WCHAR szCmdLine[512];
-#if 1
-    wsprintfW(szCmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
-        m_szWindresExe, szPath3, m_szCppExe, szPath1);
-#else
-    wsprintfW(szCmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
-        m_szWindresExe, szPath3, m_szCppExe, szPath1);
-#endif
-    // MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szWindresExe;
+    strCmdLine += L"\" -DRC_INVOKED ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -o \"";
+    strCmdLine += szPath3;
+    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+    strCmdLine += m_szCppExe;
+    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+    strCmdLine += szPath1;
+    strCmdLine += '\"';
+    // MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -3807,7 +3832,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         pmaker.ReadAll(strOutput, hOutputRead);
 
@@ -4276,11 +4301,17 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries,
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
-    WCHAR szCmdLine[MAX_PATH * 3];
-    wsprintfW(szCmdLine,
-        L"\"%s\" -o \"%s\" -J rc -O res \"%s\"",
-        m_szMcdxExe, szPath3, szRCFile);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szMcdxExe;
+    strCmdLine += L"\" ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -o \"";
+    strCmdLine += szPath3;
+    strCmdLine += L"\" -J rc -O res \"";
+    strCmdLine += szRCFile;
+    strCmdLine += L'\"';
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
@@ -4291,7 +4322,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries,
     MFile hInputWrite, hOutputRead;
     SetEnvironmentVariableW(L"LANG", L"en_US");
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         pmaker.ReadAll(strOutput, hOutputRead);
 
@@ -4320,19 +4351,19 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
-    WCHAR szCmdLine[512];
-#if 1
-    wsprintfW(szCmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"\" \"%s\"",
-        m_szWindresExe, szPath3, m_szCppExe, szRCFile);
-#else
-    wsprintfW(szCmdLine,
-        L"\"%s\" -DRC_INVOKED -o \"%s\" -J rc -O res "
-        L"-F pe-i386 --preprocessor=\"%s\" --preprocessor-arg=\"-v\" \"%s\"",
-        m_szWindresExe, szPath3, m_szCppExe, szRCFile);
-#endif
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szWindresExe;
+    strCmdLine += L"\" -DRC_INVOKED ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -o \"";
+    strCmdLine += szPath3;
+    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+    strCmdLine += m_szCppExe;
+    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+    strCmdLine += szRCFile;
+    strCmdLine += L'\"';
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
@@ -4344,7 +4375,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
     MFile hInputWrite, hOutputRead;
     SetEnvironmentVariableW(L"LANG", L"en_US");
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         pmaker.ReadAll(strOutput, hOutputRead);
 
@@ -5659,9 +5690,15 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     }
     file1.CloseHandle();
 
-    WCHAR szCmdLine[512];
-    wsprintfW(szCmdLine, L"\"%s\" -Wp,-E \"%s\"", m_szCppExe, szTempFile1);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MString strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szCppExe;
+    strCmdLine += L"\" ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -Wp,-E \"";
+    strCmdLine += szTempFile1;
+    strCmdLine += L'\"';
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -5672,7 +5709,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         pmaker.ReadAll(strOutput, hOutputRead);
         pmaker.CloseAll();
