@@ -378,7 +378,7 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 200;
+        column.cx = 150;
         column.pszText = LoadStringDx(IDS_MACRONAME);
         column.iSubItem = 0;
         ListView_InsertColumn(m_hLst1, 0, &column);
