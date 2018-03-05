@@ -177,13 +177,18 @@ struct DialogItem
             return FALSE;
         }
 
+        stream.ReadDwordAlignment();
+
         BYTE b;
         if (!stream.ReadByte(b))
             return FALSE;
 
-        m_extra.resize(b);
-        if (b && !stream.ReadData(&m_extra[0], b))
-            return FALSE;
+        if (b)
+        {
+            m_extra.resize(b);
+            if (!stream.ReadData(&m_extra[0], b))
+                return FALSE;
+        }
 
         return TRUE;
     }
@@ -220,9 +225,8 @@ struct DialogItem
 
         if (extraCount)
         {
-            stream.ReadDwordAlignment();
             m_extra.resize(extraCount);
-            if (extraCount && !stream.ReadData(&m_extra[0], extraCount))
+            if (!stream.ReadData(&m_extra[0], extraCount))
                 return FALSE;
         }
 
@@ -318,7 +322,6 @@ struct DialogItem
 
         if (m_extra.size() > 0)
         {
-            stream.WriteDwordAlignment();
             WORD ExtraSize = WORD(m_extra.size());
             if (!stream.WriteData(&m_extra[0], ExtraSize))
                 return FALSE;
@@ -446,6 +449,19 @@ struct DialogItem
             ret += L", ";
             ret += db.GetNameOfResID(IDTYPE_HELP, m_help_id);
         }
+        if (m_extra.size() && m_extra.size() % 2 == 0)
+        {
+            size_t count = m_extra.size() / sizeof(WORD);
+            const WORD *pw = (const WORD *)&m_extra[0];
+            ret += L"\r\n    {\r\n        ";
+            ret += mstr_hex(pw[0]);
+            for (size_t i = 1; i < count; ++i)
+            {
+                ret += L", ";
+                ret += mstr_hex(pw[i]);
+            }
+            ret += L"\r\n    }";
+        }
 
         return ret;
     }
@@ -494,6 +510,19 @@ struct DialogItem
         {
             ret += L", ";
             ret += db.GetNameOfResID(IDTYPE_HELP, m_help_id);
+        }
+        if (m_extra.size() && m_extra.size() % 2 == 0)
+        {
+            size_t count = m_extra.size() / sizeof(WORD);
+            const WORD *pw = (const WORD *)&m_extra[0];
+            ret += L"\r\n    {\r\n        ";
+            ret += mstr_hex(pw[0]);
+            for (size_t i = 1; i < count; ++i)
+            {
+                ret += L", ";
+                ret += mstr_hex(pw[i]);
+            }
+            ret += L"\r\n    }";
         }
         return ret;
     }
