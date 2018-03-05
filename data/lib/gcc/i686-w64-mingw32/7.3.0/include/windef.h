@@ -1,8 +1,6 @@
 #ifndef _WINDEF_
 #define _WINDEF_
 
-#ifndef _WINNT_
-    #include "winnt.h"
-#endif
+#include "winnt.h"
 
 #endif  /* ndef _WINDEF_ */
