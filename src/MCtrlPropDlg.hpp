@@ -521,6 +521,9 @@ public:
             SetDlgItemText(hwnd, cmb2, strCaption.c_str());
         }
 
+        if (!m_dialog_res.IsExtended())
+            EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
+
         CenterWindowDx();
         return TRUE;
     }

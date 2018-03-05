@@ -234,6 +234,9 @@ public:
         ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
+        if (!m_dialog_res.IsExtended())
+            EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
+
         CenterWindowDx();
         return TRUE;
     }
