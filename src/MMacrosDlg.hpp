@@ -247,6 +247,7 @@ public:
     HWND m_hLst1;
     HICON m_hIcon;
     HICON m_hIconSm;
+	MString m_strTemp;
 
     MMacrosDlg(macro_map_type& map, ConstantsDB& db)
         : MDialogBase(IDD_MACROS), m_map(map), m_db(db)
@@ -398,19 +399,36 @@ public:
         case CMDID_DELETE:
             OnDelete(hwnd);
             break;
+        case CMDID_RENAME:
+            OnRename(hwnd);
+            break;
         case IDOK:
-            OnOK(hwnd);
+			if (codeNotify == 0 || codeNotify == BN_CLICKED)
+	            OnOK(hwnd);
             break;
         case IDCANCEL:
-            EndDialog(IDCANCEL);
+			if (codeNotify == 0 || codeNotify == BN_CLICKED)
+	            EndDialog(IDCANCEL);
             break;
         case psh6:
-            EndDialog(psh6);
+			if (codeNotify == 0 || codeNotify == BN_CLICKED)
+	            EndDialog(psh6);
             break;
         case psh7:
             ListView_DeleteAllItems(m_hLst1);
             break;
         }
+    }
+
+    void OnRename(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem < 0)
+        {
+            return;
+        }
+
+        ListView_EditLabel(m_hLst1, iItem);
     }
 
     LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
@@ -431,6 +449,49 @@ public:
                 OnModify(hwnd);
                 return 0;
             }
+            if (pnmhdr->code == LVN_BEGINLABELEDIT)
+            {
+                INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1)
+                    return TRUE;
+                LV_DISPINFO *pInfo = (LV_DISPINFO *)pnmhdr;
+                pInfo->item.iItem = iItem;
+				if (pInfo->item.pszText)
+					m_strTemp = pInfo->item.pszText;
+				else
+					m_strTemp.clear();
+                return 0;
+            }
+            if (pnmhdr->code == LVN_ENDLABELEDIT)
+            {
+                INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem < 0)
+                    return TRUE;
+
+                LV_DISPINFO *pInfo = (LV_DISPINFO *)pnmhdr;
+
+				if (pInfo->item.pszText == NULL)
+					return TRUE;
+
+				macro_map_type::const_iterator it;
+				it = m_map.find(pInfo->item.pszText);
+				if (it != m_map.end())
+				{
+					return TRUE;
+				}
+
+				MString strValue = m_map[m_strTemp];
+				m_map.erase(m_strTemp);
+				m_map[pInfo->item.pszText] = strValue;
+
+				LV_ITEM item;
+				ZeroMemory(&item, sizeof(item));
+				item.iItem = iItem;
+				item.mask = LVIF_TEXT;
+				item.iSubItem = 0;
+				item.pszText = pInfo->item.pszText;
+				ListView_SetItem(m_hLst1, &item);
+			}
         }
         return 0;
     }
@@ -442,11 +503,13 @@ public:
         {
             EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
             EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_RENAME, MF_BYCOMMAND | MF_ENABLED);
         }
         else
         {
             EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_RENAME, MF_BYCOMMAND | MF_GRAYED);
         }
     }
 

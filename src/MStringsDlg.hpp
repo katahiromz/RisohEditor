@@ -500,6 +500,7 @@ public:
             EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_GRAYED);
         }
+        EnableMenuItem(hMenu, CMDID_RENAME, MF_BYCOMMAND | MF_GRAYED);
     }
 
     virtual INT_PTR CALLBACK
