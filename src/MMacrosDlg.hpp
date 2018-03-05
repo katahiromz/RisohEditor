@@ -512,6 +512,7 @@ public:
         m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh7, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
