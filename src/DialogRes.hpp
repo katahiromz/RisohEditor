@@ -177,8 +177,6 @@ struct DialogItem
             return FALSE;
         }
 
-        stream.ReadDwordAlignment();
-
         BYTE b;
         if (!stream.ReadByte(b))
             return FALSE;
