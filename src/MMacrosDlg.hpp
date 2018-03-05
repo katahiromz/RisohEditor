@@ -308,10 +308,15 @@ public:
     void OnDelete(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem >= 0)
-        {
-            ListView_DeleteItem(m_hLst1, iItem);
-        }
+        if (iItem < 0)
+            return;
+
+        ListView_DeleteItem(m_hLst1, iItem);
+
+        MACRO_ENTRY entry;
+        ListView_GetItemText(m_hLst1, iItem, 0, entry.szKey, _countof(entry.szKey));
+
+        m_map.erase(entry.szKey);
     }
 
     void OnAdd(HWND hwnd)
