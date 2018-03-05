@@ -261,50 +261,6 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    void OnUp(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem == 0)
-            return;
-
-        MACRO_ENTRY me0, me1;
-        ListView_GetItemText(m_hLst1, iItem - 1, 0, me0.szKey, _countof(me0.szKey));
-        ListView_GetItemText(m_hLst1, iItem - 1, 1, me0.szValue, _countof(me0.szValue));
-        ListView_GetItemText(m_hLst1, iItem, 0, me1.szKey, _countof(me1.szKey));
-        ListView_GetItemText(m_hLst1, iItem, 1, me1.szValue, _countof(me1.szValue));
-
-        ListView_SetItemText(m_hLst1, iItem - 1, 0, me1.szKey);
-        ListView_SetItemText(m_hLst1, iItem - 1, 1, me1.szValue);
-        ListView_SetItemText(m_hLst1, iItem, 0, me0.szKey);
-        ListView_SetItemText(m_hLst1, iItem, 1, me0.szValue);
-
-        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(m_hLst1, iItem - 1, state, state);
-        ListView_EnsureVisible(m_hLst1, iItem - 1, FALSE);
-    }
-
-    void OnDown(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem + 1 == ListView_GetItemCount(m_hLst1))
-            return;
-
-        MACRO_ENTRY me0, me1;
-        ListView_GetItemText(m_hLst1, iItem, 0, me0.szKey, _countof(me0.szKey));
-        ListView_GetItemText(m_hLst1, iItem, 1, me0.szValue, _countof(me0.szValue));
-        ListView_GetItemText(m_hLst1, iItem + 1, 0, me1.szKey, _countof(me1.szKey));
-        ListView_GetItemText(m_hLst1, iItem + 1, 1, me1.szValue, _countof(me1.szValue));
-
-        ListView_SetItemText(m_hLst1, iItem, 0, me1.szKey);
-        ListView_SetItemText(m_hLst1, iItem, 1, me1.szValue);
-        ListView_SetItemText(m_hLst1, iItem + 1, 0, me0.szKey);
-        ListView_SetItemText(m_hLst1, iItem + 1, 1, me0.szValue);
-
-        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(m_hLst1, iItem + 1, state, state);
-        ListView_EnsureVisible(m_hLst1, iItem + 1, FALSE);
-    }
-
     void OnDelete(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -423,12 +379,6 @@ public:
             break;
         case psh3:
             OnDelete(hwnd);
-            break;
-        case psh4:
-            OnUp(hwnd);
-            break;
-        case psh5:
-            OnDown(hwnd);
             break;
         case IDOK:
             OnOK(hwnd);
