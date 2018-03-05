@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
+#include "MMacrosDlg.hpp"
 #include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -82,6 +83,15 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnPsh1(HWND hwnd)
+    {
+        MMacrosDlg dialog(m_settings.macros, m_db);
+        if (dialog.DialogBoxDx(hwnd) == psh6)
+        {
+            m_settings.ResetMacros();
+        }
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -91,6 +101,9 @@ public:
             break;
         case IDCANCEL:
             EndDialog(hwnd, IDCANCEL);
+            break;
+        case psh1:
+            OnPsh1(hwnd);
             break;
         }
     }

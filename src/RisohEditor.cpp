@@ -1132,7 +1132,6 @@ protected:
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
     MStringW GetMacroDump();
-    void ResetMacros();
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -5946,45 +5945,8 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     MMacrosDlg dialog(m_settings.macros, m_db);
     if (dialog.DialogBoxDx(hwnd) == psh6)
     {
-        ResetMacros();
+        m_settings.ResetMacros();
     }
-}
-
-void MMainWnd::ResetMacros()
-{
-    m_settings.macros.clear();
-#define DEF_LANG(lang) m_settings.macros.insert(std::make_pair(TEXT(lang), TEXT("")))
-    DEF_LANG("LANGUAGE_BG_BG");
-    DEF_LANG("LANGUAGE_CA_ES");
-    DEF_LANG("LANGUAGE_CS_CZ");
-    DEF_LANG("LANGUAGE_DA_DK");
-    DEF_LANG("LANGUAGE_DE_DE");
-    DEF_LANG("LANGUAGE_EL_GR");
-    DEF_LANG("LANGUAGE_ES_ES");
-    DEF_LANG("LANGUAGE_ET_EE");
-    DEF_LANG("LANGUAGE_FI_FI");
-    DEF_LANG("LANGUAGE_FR_FR");
-    DEF_LANG("LANGUAGE_HE_IL");
-    DEF_LANG("LANGUAGE_HU_HU");
-    DEF_LANG("LANGUAGE_IT_IT");
-    DEF_LANG("LANGUAGE_JA_JP");
-    DEF_LANG("LANGUAGE_KO_KR");
-    DEF_LANG("LANGUAGE_NL_NL");
-    DEF_LANG("LANGUAGE_NB_NO");
-    DEF_LANG("LANGUAGE_PL_PL");
-    DEF_LANG("LANGUAGE_PT_BR");
-    DEF_LANG("LANGUAGE_PT_PT");
-    DEF_LANG("LANGUAGE_RO_RO");
-    DEF_LANG("LANGUAGE_RU_RU");
-    DEF_LANG("LANGUAGE_SK_SK");
-    DEF_LANG("LANGUAGE_SL_SI");
-    DEF_LANG("LANGUAGE_SQ_AL");
-    DEF_LANG("LANGUAGE_SV_SE");
-    DEF_LANG("LANGUAGE_TR_TR");
-    DEF_LANG("LANGUAGE_UK_UA");
-    DEF_LANG("LANGUAGE_ZH_CN");
-    DEF_LANG("LANGUAGE_ZH_TW");
-#undef DEF_LANG
 }
 
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -7232,7 +7194,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
 
-    ResetMacros();
+    m_settings.ResetMacros();
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
