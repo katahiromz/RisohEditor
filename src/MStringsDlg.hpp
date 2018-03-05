@@ -68,7 +68,7 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
         {
-            Edit_SetSel(hCmb1, 0, -1);
+            ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -84,7 +84,7 @@ public:
         }
         if (m_str_res.map().find((WORD)value) != m_str_res.map().end())
         {
-            Edit_SetSel(hCmb1, 0, -1);
+            ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
             ErrorBoxDx(IDS_ALREADYEXISTS);
             return;

@@ -205,7 +205,7 @@ public:
         else
         {
             HWND hCmb3 = GetDlgItem(m_hwnd, cmb3);
-            Edit_SetSel(hCmb3, 0, -1);
+            ComboBox_SetEditSel(hCmb3, 0, -1);
             SetFocus(hCmb3);
             ErrorBoxDx(IDS_NOSUCHID);
             return 0xFFFFFFFF;

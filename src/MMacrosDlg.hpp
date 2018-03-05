@@ -40,16 +40,19 @@ struct MACRO_ENTRY
     TCHAR szValue[256];
 };
 
+//////////////////////////////////////////////////////////////////////////////
+
 class MAddMacroDlg : public MDialogBase
 {
 public:
+    macro_map_type& m_map;
     MACRO_ENTRY& m_entry;
     ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MAddMacroDlg(MACRO_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_ADDMACRO), m_entry(entry), m_db(db)
+    MAddMacroDlg(macro_map_type& map, MACRO_ENTRY& entry, ConstantsDB& db) :
+        MDialogBase(IDD_ADDMACRO), m_map(map), m_entry(entry), m_db(db)
     {
     }
 
@@ -72,19 +75,31 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 
-        ::GetWindowText(hCmb1, m_entry.szKey, _countof(m_entry.szKey));
-        ::GetWindowText(hCmb2, m_entry.szValue, _countof(m_entry.szValue));
+        MACRO_ENTRY entry;
 
-        mstr_trim(m_entry.szKey);
-        mstr_trim(m_entry.szValue);
+        ::GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
+        ::GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
 
-        if (m_entry.szKey[0] == 0)
+        mstr_trim(entry.szKey);
+        mstr_trim(entry.szValue);
+
+        if (entry.szKey[0] == 0)
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
             ErrorBoxDx(IDS_EMPTYSTR);
             return;
         }
+
+        if (m_map.find(entry.szKey) != m_map.end())
+        {
+            ComboBox_SetEditSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_ALREADYEXISTS);
+            return;
+        }
+
+        m_entry = entry;
 
         EndDialog(IDOK);
     }
@@ -125,6 +140,8 @@ public:
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
 
 class MEditMacroDlg : public MDialogBase
 {
@@ -161,19 +178,23 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
 
-        ::GetWindowText(hCmb1, m_entry.szKey, _countof(m_entry.szKey));
-        ::GetWindowText(hCmb2, m_entry.szValue, _countof(m_entry.szValue));
+        MACRO_ENTRY entry;
 
-        mstr_trim(m_entry.szKey);
-        mstr_trim(m_entry.szValue);
+        ::GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
+        ::GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
 
-        if (m_entry.szKey[0] == 0)
+        mstr_trim(entry.szKey);
+        mstr_trim(entry.szValue);
+
+        if (entry.szKey[0] == 0)
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
             ErrorBoxDx(IDS_EMPTYSTR);
             return;
         }
+
+        m_entry = entry;
 
         EndDialog(IDOK);
     }
@@ -214,6 +235,8 @@ public:
         return DefaultProcDx();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
 
 class MMacrosDlg : public MDialogBase
 {
@@ -300,9 +323,11 @@ public:
         }
 
         MACRO_ENTRY entry;
-        MAddMacroDlg dialog(entry, m_db);
+        MAddMacroDlg dialog(m_map, entry, m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            m_map[dialog.m_entry.szKey] = dialog.m_entry.szValue;
+
             INT iItem = ListView_GetItemCount(m_hLst1);
             LV_ITEM item;
 
@@ -344,6 +369,8 @@ public:
         MEditMacroDlg dialog(entry, m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            m_map[dialog.m_entry.szKey] = dialog.m_entry.szValue;
+
             LV_ITEM item;
 
             ZeroMemory(&item, sizeof(item));
