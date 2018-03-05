@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MCtrlDataDlg.hpp"
 #include "resource.h"
 
 #include "DialogRes.hpp"
@@ -62,7 +63,8 @@ public:
         F_ID = 0x0080,
         F_CLASS = 0x0100,
         F_TITLE = 0x0200,
-        F_ALL = 0x03FF
+        F_EXTRA = 0x400,
+        F_ALL = 0x07FF
     };
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
@@ -133,7 +135,7 @@ public:
                 m_flags &= ~F_ID;
             if (m_item.m_class != item.m_class)
                 m_flags &= ~F_CLASS;
-            if (m_item.m_title  != item.m_title)
+            if (m_item.m_title != item.m_title)
                 m_flags &= ~F_TITLE;
         }
 
@@ -186,23 +188,24 @@ public:
 
         MString strID = GetDlgItemText(cmb3);
         mstr_trim(strID);
-        if (!strID.empty())
-            flags |= F_ID;
         UINT id;
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
             strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
             id = mstr_parse_int(strID.c_str());
+            flags |= F_ID;
         }
         else if (m_db.HasCtrlID(strID))
         {
             id = m_db.GetCtrlIDValue(strID);
+            flags |= F_ID;
         }
         else if (m_db.HasResID(strID))
         {
             id = m_db.GetResIDValue(strID);
+            flags |= F_ID;
         }
-        else
+        else if (!strID.empty() && m_indeces.size() <= 1)
         {
             HWND hCmb3 = GetDlgItem(m_hwnd, cmb3);
             ComboBox_SetEditSel(hCmb3, 0, -1);
@@ -210,7 +213,10 @@ public:
             ErrorBoxDx(IDS_NOSUCHID);
             return 0xFFFFFFFF;
         }
-        item.m_id = (WORD)id;
+        if (flags & F_ID)
+            item.m_id = (WORD)id;
+        else
+            item.m_id = 0;
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
@@ -242,6 +248,8 @@ public:
         if (!strExStyle.empty())
             flags |= F_EXSTYLE;
         item.m_ex_style = mstr_parse_int(strExStyle.c_str(), false, 16);
+
+        flags |= F_EXTRA;
 
         return flags;
     }
@@ -288,6 +296,10 @@ public:
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
             {
                 item.m_title = m_item.m_title;
+            }
+            if ((m_flags & F_EXTRA) || (flags & F_EXTRA))
+            {
+                item.m_extra = m_item.m_extra;
             }
             if (lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
             {
@@ -654,6 +666,12 @@ public:
             SetDlgItemText(hwnd, cmb4, strClass.c_str());
     }
 
+    void OnPsh1(HWND hwnd)
+    {
+        MCtrlDataDlg dialog(m_item.m_extra);
+        dialog.DialogBoxDx(hwnd);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -747,6 +765,9 @@ public:
             {
                 OnEdt7(hwnd);
             }
+            break;
+        case psh1:
+            OnPsh1(hwnd);
             break;
         default:
             if (size_t(id - 1000) < m_vecControls.size())

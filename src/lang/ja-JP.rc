@@ -1021,6 +1021,18 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "キャンセル", IDCANCEL, 125, 60, 60, 14
 }
 
+IDD_CTRLDATA DIALOG 0, 0, 190, 130
+CAPTION "コントロール データの編集"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "バイナリーデータ(&B):", -1, 5, 2, 87, 12
+    EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
+    LTEXT "コントロール データをスペース区切りの2バイトの16進数の並びで入力して下さい。""0x""を追加する必要はありません。", -1, 5, 80, 180, 25
+    DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 125, 110, 60, 14
+}
+
 #ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {

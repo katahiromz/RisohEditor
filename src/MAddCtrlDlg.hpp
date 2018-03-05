@@ -26,6 +26,7 @@
 #include "resource.h"
 #include "MToolBarCtrl.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MCtrlDataDlg.hpp"
 
 class MAddCtrlDlg;
 
@@ -65,6 +66,7 @@ public:
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
+    std::vector<BYTE> m_data;
 
     MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt,
                 RisohSettings& settings)
@@ -315,6 +317,7 @@ public:
         item.m_id = id;
         item.m_class = strClass.c_str();
         item.m_title = strCaption.c_str();
+        item.m_extra = m_data;
 
         if (lstrcmpiW(strClass.c_str(), L"STATIC") == 0)
         {
@@ -477,6 +480,12 @@ public:
             SetDlgItemText(hwnd, cmb4, strClass.c_str());
     }
 
+    void OnPsh1(HWND hwnd)
+    {
+        MCtrlDataDlg dialog(m_data);
+        dialog.DialogBoxDx(hwnd);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -570,6 +579,9 @@ public:
             {
                 OnEdt7(hwnd);
             }
+            break;
+        case psh1:
+            OnPsh1(hwnd);
             break;
         default:
             if (size_t(id - 1000) < m_vecControls.size())

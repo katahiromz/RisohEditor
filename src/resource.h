@@ -179,6 +179,7 @@
 #define IDD_MACROS          145
 #define IDD_ADDMACRO        146
 #define IDD_EDITMACRO       147
+#define IDD_CTRLDATA        148
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
