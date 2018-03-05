@@ -17,6 +17,8 @@ MESSAGETABLEDX
 #endif
 ```
 
+*MESSAGETABLEDX* contains one or more *message-statement*'s.
+
 message-statement
 -----------------
 
