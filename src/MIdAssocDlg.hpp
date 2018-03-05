@@ -181,6 +181,7 @@ public:
             TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
                 xPos, yPos, 0, hwnd, NULL);
             PostMessage(hwnd, WM_NULL, 0, 0);
+            DestroyMenu(hMenu);
         }
     }
 

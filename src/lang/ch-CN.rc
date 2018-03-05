@@ -190,6 +190,12 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         MENUITEM "重新加载(&R)", CMDID_LOADRESH
     }
+    POPUP "Popup #4"
+    {
+        MENUITEM "增加(&A)...", CMDID_ADD
+        MENUITEM "修改(&M)...", CMDID_MODIFY
+        MENUITEM "删除(&D)\tDel", CMDID_DELETE
+    }
 }
 
 STRINGTABLE

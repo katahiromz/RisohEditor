@@ -367,17 +367,35 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext == m_hLst1)
+        {
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hSubMenu = GetSubMenu(hMenu, 4);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                xPos, yPos, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+            DestroyMenu(hMenu);
+        }
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case psh1:
+        case CMDID_ADD:
             OnAdd(hwnd);
             break;
         case psh2:
+        case CMDID_MODIFY:
             OnModify(hwnd);
             break;
         case psh3:
+        case CMDID_DELETE:
             OnDelete(hwnd);
             break;
         case IDOK:
@@ -417,6 +435,21 @@ public:
         return 0;
     }
 
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_GRAYED);
+        }
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -426,6 +459,8 @@ public:
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx();
     }

@@ -217,6 +217,7 @@ public:
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
+    HWND m_hCtl1;
 
     MMessagesDlg(ConstantsDB& db, MessageRes& msg_res)
         : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res), m_db(db)
@@ -233,7 +234,7 @@ public:
 
     void InitCtl1(HWND hCtl1)
     {
-        ListView_DeleteAllItems(hCtl1);
+        ListView_DeleteAllItems(m_hCtl1);
 
         typedef MessageRes::map_type map_type;
         const map_type& map = m_msg_res.map();
@@ -253,7 +254,7 @@ public:
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
             item.pszText = &str[0];
-            ListView_InsertItem(hCtl1, &item);
+            ListView_InsertItem(m_hCtl1, &item);
 
             str = mstr_quote(it->second);
 
@@ -262,7 +263,7 @@ public:
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
             item.pszText = &str[0];
-            ListView_SetItem(hCtl1, &item);
+            ListView_SetItem(m_hCtl1, &item);
 
             ++i;
         }
@@ -270,8 +271,8 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-        ListView_SetExtendedListViewStyle(hCtl1, LVS_EX_FULLROWSELECT);
+        m_hCtl1 = GetDlgItem(hwnd, ctl1);
+        ListView_SetExtendedListViewStyle(m_hCtl1, LVS_EX_FULLROWSELECT);
 
         LV_COLUMN column;
         ZeroMemory(&column, sizeof(column));
@@ -281,20 +282,20 @@ public:
         column.cx = 140;
         column.pszText = LoadStringDx(IDS_MESSAGEID);
         column.iSubItem = 0;
-        ListView_InsertColumn(hCtl1, 0, &column);
+        ListView_InsertColumn(m_hCtl1, 0, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
         column.cx = 500;
         column.pszText = LoadStringDx(IDS_MESSAGEVALUE);
         column.iSubItem = 1;
-        ListView_InsertColumn(hCtl1, 1, &column);
+        ListView_InsertColumn(m_hCtl1, 1, &column);
 
-        InitCtl1(hCtl1);
+        InitCtl1(m_hCtl1);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hCtl1, 0, state, state);
-        SetFocus(hCtl1);
+        ListView_SetItemState(m_hCtl1, 0, state, state);
+        SetFocus(m_hCtl1);
 
         m_resizable.OnParentCreate(hwnd);
 
@@ -314,8 +315,6 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
         MESSAGE_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
         MAddMsgDlg dialog(m_db, s_entry, m_msg_res);
@@ -332,21 +331,21 @@ public:
         ZeroMemory(&find, sizeof(find));
         find.flags = LVFI_STRING;
         find.psz = sz;
-        iItem = ListView_FindItem(hCtl1, -1, &find);
+        iItem = ListView_FindItem(m_hCtl1, -1, &find);
         if (iItem != -1)
         {
-            ListView_DeleteItem(hCtl1, iItem);
+            ListView_DeleteItem(m_hCtl1, iItem);
         }
 
         LV_ITEM item;
-        iItem = ListView_GetItemCount(hCtl1);
+        iItem = ListView_GetItemCount(m_hCtl1);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
         item.pszText = s_entry.MessageID;
-        ListView_InsertItem(hCtl1, &item);
+        ListView_InsertItem(m_hCtl1, &item);
 
         std::wstring str = s_entry.MessageValue;
         str = mstr_quote(str);
@@ -356,30 +355,28 @@ public:
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
         item.pszText = &str[0];
-        ListView_SetItem(hCtl1, &item);
+        ListView_SetItem(m_hCtl1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hCtl1, iItem, state, state);
-        ListView_EnsureVisible(hCtl1, iItem, FALSE);
+        ListView_SetItemState(m_hCtl1, iItem, state, state);
+        ListView_EnsureVisible(m_hCtl1, iItem, FALSE);
     }
 
     void OnDelete(HWND hwnd)
     {
-        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem >= 0)
         {
-            ListView_DeleteItem(hCtl1, iItem);
+            ListView_DeleteItem(m_hCtl1, iItem);
         }
     }
 
-    void GetEntry(HWND hwnd, HWND hCtl1, INT iItem, MESSAGE_ENTRY& entry)
+    void GetEntry(HWND hwnd, INT iItem, MESSAGE_ENTRY& entry)
     {
-        ListView_GetItemText(hCtl1, iItem, 0, entry.MessageID, _countof(entry.MessageID));
+        ListView_GetItemText(m_hCtl1, iItem, 0, entry.MessageID, _countof(entry.MessageID));
         mstr_trim(entry.MessageID);
 
-        ListView_GetItemText(hCtl1, iItem, 1, entry.MessageValue, _countof(entry.MessageValue));
+        ListView_GetItemText(m_hCtl1, iItem, 1, entry.MessageValue, _countof(entry.MessageValue));
         mstr_trim(entry.MessageValue);
         if (entry.MessageValue[0] == L'"')
         {
@@ -389,30 +386,26 @@ public:
 
     void OnModify(HWND hwnd)
     {
-        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-        INT iItem = ListView_GetNextItem(hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem < 0)
         {
             return;
         }
 
         MESSAGE_ENTRY s_entry;
-        GetEntry(hwnd, hCtl1, iItem, s_entry);
+        GetEntry(hwnd, iItem, s_entry);
 
         MModifyMsgDlg dialog(m_db, s_entry, m_msg_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             MString str = mstr_quote(s_entry.MessageValue);
-            ListView_SetItemText(hCtl1, iItem, 1, &str[0]);
+            ListView_SetItemText(m_hCtl1, iItem, 1, &str[0]);
         }
     }
 
     void OnOK(HWND hwnd)
     {
-        HWND hCtl1 = GetDlgItem(hwnd, ctl1);
-
-        INT iItem, nCount = ListView_GetItemCount(hCtl1);
+        INT iItem, nCount = ListView_GetItemCount(m_hCtl1);
         if (nCount == 0)
         {
             ErrorBoxDx(IDS_DATAISEMPTY);
@@ -424,7 +417,7 @@ public:
         MESSAGE_ENTRY s_entry;
         for (iItem = 0; iItem < nCount; ++iItem)
         {
-            GetEntry(hwnd, hCtl1, iItem, s_entry);
+            GetEntry(hwnd, iItem, s_entry);
 
             WORD wID = (WORD)m_db.GetResIDValue(s_entry.MessageID);
             std::wstring str = s_entry.MessageValue;
@@ -435,17 +428,35 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext == GetDlgItem(hwnd, ctl1))
+        {
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hSubMenu = GetSubMenu(hMenu, 4);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                xPos, yPos, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+            DestroyMenu(hMenu);
+        }
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
         {
         case psh1:
+        case CMDID_ADD:
             OnAdd(hwnd);
             break;
         case psh2:
+        case CMDID_MODIFY:
             OnModify(hwnd);
             break;
         case psh3:
+        case CMDID_DELETE:
             OnDelete(hwnd);
             break;
         case IDOK:
@@ -484,6 +495,21 @@ public:
         m_resizable.OnSize();
     }
 
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        INT iItem = ListView_GetNextItem(m_hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_GRAYED);
+        }
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -493,6 +519,8 @@ public:
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx();
     }

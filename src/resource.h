@@ -136,6 +136,9 @@
 #define CMDID_FONTS             200
 #define CMDID_REFRESH           201
 #define CMDID_PREDEFMACROS      202
+#define CMDID_ADD               203
+#define CMDID_MODIFY            204
+#define CMDID_DELETE            205
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

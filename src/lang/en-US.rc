@@ -190,6 +190,12 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Reload", CMDID_LOADRESH
     }
+    POPUP "Popup #4"
+    {
+        MENUITEM "&Add...", CMDID_ADD
+        MENUITEM "&Modify...", CMDID_MODIFY
+        MENUITEM "&Delete\tDel", CMDID_DELETE
+    }
 }
 
 STRINGTABLE
