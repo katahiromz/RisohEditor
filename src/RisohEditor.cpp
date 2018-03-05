@@ -1192,6 +1192,10 @@ protected:
     void OnAddMenu(HWND hwnd);
     void OnAddRes(HWND hwnd);
     void OnAddVerInfo(HWND hwnd);
+    void OnAddStringTable(HWND hwnd);
+    void OnAddMessageTable(HWND hwnd);
+    void OnAddHtml(HWND hwnd);
+    void OnAddAccel(HWND hwnd);
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
@@ -6188,6 +6192,18 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_ADDDIALOG:
         OnAddDialog(hwnd);
         break;
+    case CMDID_ADDSTRINGTABLE:
+        OnAddStringTable(hwnd);
+        break;
+    case CMDID_ADDMESSAGETABLE:
+        OnAddMessageTable(hwnd);
+        break;
+    case CMDID_ADDHTML:
+        OnAddHtml(hwnd);
+        break;
+    case CMDID_ADDACCEL:
+        OnAddAccel(hwnd);
+        break;
     case CMDID_COPYASNEWNAME:
         OnCopyAsNewName(hwnd);
         break;
@@ -6995,6 +7011,62 @@ void MMainWnd::OnAddMenu(HWND hwnd)
 
     MAddResDlg dialog(m_entries, m_db);
     dialog.m_type = RT_MENU;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+    }
+}
+
+void MMainWnd::OnAddStringTable(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
+    MAddResDlg dialog(m_entries, m_db);
+    dialog.m_type = RT_STRING;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+    }
+}
+
+void MMainWnd::OnAddMessageTable(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
+    MAddResDlg dialog(m_entries, m_db);
+    dialog.m_type = RT_MESSAGETABLE;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+    }
+}
+
+void MMainWnd::OnAddHtml(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
+    MAddResDlg dialog(m_entries, m_db);
+    dialog.m_type = RT_HTML;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+    }
+}
+
+void MMainWnd::OnAddAccel(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
+    MAddResDlg dialog(m_entries, m_db);
+    dialog.m_type = RT_ACCELERATOR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_db, m_entries);

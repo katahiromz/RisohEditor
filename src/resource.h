@@ -140,6 +140,10 @@
 #define CMDID_MODIFY            204
 #define CMDID_DELETE            205
 #define CMDID_RENAME            206
+#define CMDID_ADDSTRINGTABLE    207
+#define CMDID_ADDMESSAGETABLE   208
+#define CMDID_ADDHTML           209
+#define CMDID_ADDACCEL          210
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

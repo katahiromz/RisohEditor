@@ -61,6 +61,10 @@ IDM_MAIN MENU
             MENUITEM "添加位图...", CMDID_ADDBITMAP
             MENUITEM "添加对话...", CMDID_ADDDIALOG
             MENUITEM "添加菜单...", CMDID_ADDMENU
+            MENUITEM "添加字符串表...", CMDID_ADDSTRINGTABLE
+            MENUITEM "添加消息表...", CMDID_ADDMESSAGETABLE
+            MENUITEM "添加HTML...", CMDID_ADDHTML
+            MENUITEM "添加加速器...", CMDID_ADDACCEL
             MENUITEM "添加版本信息...", CMDID_ADDVERINFO
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
@@ -136,6 +140,10 @@ IDM_POPUPS MENU
             MENUITEM "添加位图...", CMDID_ADDBITMAP
             MENUITEM "添加对话...", CMDID_ADDDIALOG
             MENUITEM "添加菜单...", CMDID_ADDMENU
+            MENUITEM "添加字符串表...", CMDID_ADDSTRINGTABLE
+            MENUITEM "添加消息表...", CMDID_ADDMESSAGETABLE
+            MENUITEM "添加HTML...", CMDID_ADDHTML
+            MENUITEM "添加加速器...", CMDID_ADDACCEL
             MENUITEM "添加版本信息...", CMDID_ADDVERINFO
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }

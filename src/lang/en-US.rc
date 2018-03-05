@@ -61,6 +61,10 @@ IDM_MAIN MENU
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
             MENUITEM "Add Dialog...", CMDID_ADDDIALOG
             MENUITEM "Add Menu...", CMDID_ADDMENU
+            MENUITEM "Add String Table...", CMDID_ADDSTRINGTABLE
+            MENUITEM "Add Message Table...", CMDID_ADDMESSAGETABLE
+            MENUITEM "Add HTML Table...", CMDID_ADDHTML
+            MENUITEM "Add Accelerators...", CMDID_ADDACCEL
             MENUITEM "Add Version Info...", CMDID_ADDVERINFO
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
@@ -136,6 +140,10 @@ IDM_POPUPS MENU
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
             MENUITEM "Add Dialog...", CMDID_ADDDIALOG
             MENUITEM "Add Menu...", CMDID_ADDMENU
+            MENUITEM "Add String Table...", CMDID_ADDSTRINGTABLE
+            MENUITEM "Add Message Table...", CMDID_ADDMESSAGETABLE
+            MENUITEM "Add HTML Table...", CMDID_ADDHTML
+            MENUITEM "Add Accelerators...", CMDID_ADDACCEL
             MENUITEM "Add Version Info...", CMDID_ADDVERINFO
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
