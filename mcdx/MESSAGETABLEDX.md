@@ -5,6 +5,7 @@ The *MESSAGETABLEDX* resource is a dirty extension of Win32 *MESSAGETABLE* resou
 It can be compiled by the [mcdx](https://github.com/katahiromz/RisohEditor/tree/master/mcdx) program, created by Katayama Hirofumi MZ.
 The compiled binary data is compatible to Win32 *MESSAGETABLE* resource.
 
+
 Syntax
 ------
 
@@ -20,6 +21,7 @@ MESSAGETABLEDX
 
 *MESSAGETABLEDX* contains one or more *message-statement*'s.
 
+
 message-statement
 -----------------
 
@@ -31,6 +33,7 @@ message-id, "text"
 
 A *message-id* is a 32-bit integer value.
 
+
 Why do we use MESSAGETABLEDX resources?
 ---------------------------------------
 
@@ -39,6 +42,9 @@ Our *MESSAGETABLEDX* resource is simple.
 You can embed the *MESSAGETABLEDX* resources in your resource file (.rc).
 To build the resource file with the *MESSAGETABLEDX* resources,
 please see [RisohEditor's CMakeList.txt file](https://github.com/katahiromz/RisohEditor/blob/master/src/CMakeLists.txt).
+
+The mcdx program is executable on both of Windows and Linux.
+
 
 See Also
 --------
