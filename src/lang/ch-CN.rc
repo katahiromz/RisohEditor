@@ -348,7 +348,8 @@ FONT 9, "宋体"
     PUSHBUTTON "取消", IDCANCEL, 115, 150, 60, 14
     { // control data for DIALOGEX
         0x1234,
-        0x5678
+        0x5678,
+        0x0011
     }
 }
 

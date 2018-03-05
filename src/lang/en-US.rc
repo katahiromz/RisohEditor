@@ -348,7 +348,8 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Cancel", IDCANCEL, 115, 150, 60, 14
     { // control data for DIALOGEX
         0x1234,
-        0x5678
+        0x5678,
+        0x0011
     }
 }
 

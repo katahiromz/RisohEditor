@@ -572,7 +572,7 @@ inline MString mstr_hex_word(WORD value)
     mstr_to_hex(str, value);
     if (str.size() < 4)
     {
-        ret += MString(str.size() - 4, TEXT('0'));
+        ret += MString(4 - str.size(), TEXT('0'));
     }
     ret += str;
     return ret;
