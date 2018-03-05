@@ -52,13 +52,14 @@ IDM_MAIN MENU
     }
     POPUP "編集(&E)"
     {
-        MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
             MENUITEM "アイコンを追加...", CMDID_ADDICON
             MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+            MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
@@ -124,13 +125,14 @@ IDM_POPUPS MENU
 {
     POPUP "ポップアップ #0"
     {
-        MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
             MENUITEM "アイコンを追加...", CMDID_ADDICON
             MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+            MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"

@@ -52,13 +52,14 @@ IDM_MAIN MENU
     }
     POPUP "编辑(&E)"
     {
-        MENUITEM "GUI模式编辑...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI模式编辑...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
             MENUITEM "添加图标...", CMDID_ADDICON
             MENUITEM "添加光标...", CMDID_ADDCURSOR
-            MENUITEM "添加Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "添加位图...", CMDID_ADDBITMAP
+            MENUITEM "添加对话...", CMDID_ADDDIALOG
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"
@@ -124,13 +125,14 @@ IDM_POPUPS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "GUI模式...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI模式...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
             MENUITEM "添加图标...", CMDID_ADDICON
             MENUITEM "添加光标...", CMDID_ADDCURSOR
-            MENUITEM "添加Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "添加位图...", CMDID_ADDBITMAP
+            MENUITEM "添加对话...", CMDID_ADDDIALOG
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"

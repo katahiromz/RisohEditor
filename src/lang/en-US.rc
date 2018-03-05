@@ -52,13 +52,14 @@ IDM_MAIN MENU
     }
     POPUP "&Edit"
     {
-        MENUITEM "GUI Edit...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "Edit by &GUI...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
             MENUITEM "Add Icon...", CMDID_ADDICON
             MENUITEM "Add Cursor...", CMDID_ADDCURSOR
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add Dialog...", CMDID_ADDDIALOG
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
@@ -124,13 +125,14 @@ IDM_POPUPS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Edit by GUI...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "Edit by &GUI...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
             MENUITEM "Add Icon...", CMDID_ADDICON
             MENUITEM "Add Cursor...", CMDID_ADDCURSOR
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add Dialog...", CMDID_ADDDIALOG
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
