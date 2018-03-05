@@ -410,6 +410,12 @@ public:
         case IDCANCEL:
             EndDialog(IDCANCEL);
             break;
+        case psh6:
+            EndDialog(psh6);
+            break;
+        case psh7:
+            ListView_DeleteAllItems(m_hLst1);
+            break;
         }
     }
 
@@ -508,6 +514,7 @@ public:
         m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);

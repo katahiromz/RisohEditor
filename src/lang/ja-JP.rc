@@ -975,8 +975,10 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "追加(&A)...", psh1, 200, 15, 60, 14
     PUSHBUTTON "編集(&E)...", psh2, 200, 35, 60, 14
     PUSHBUTTON "削除(&D)", psh3, 200, 55, 60, 14
-    DEFPUSHBUTTON "OK", IDOK, 70, 145, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 135, 145, 60, 14
+    PUSHBUTTON "すべて削除(&L)", psh7, 200, 105, 60, 14
+    DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 200, 145, 60, 14
+    PUSHBUTTON "すべてリセット(&R)", psh6, 5, 145, 60, 14
 }
 
 IDD_ADDMACRO DIALOG 0, 0, 190, 80
