@@ -359,6 +359,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, iItem, state, state);
+        ListView_EnsureVisible(hCtl1, iItem, FALSE);
     }
 
     void OnDelete(HWND hwnd)

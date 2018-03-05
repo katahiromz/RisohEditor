@@ -610,6 +610,7 @@ public:
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(hCtl1, iItem, state, state);
+        ListView_EnsureVisible(hCtl1, iItem, FALSE);
     }
 
     BOOL GetEntry(HWND hwnd, HWND hCtl1, MENU_ENTRY& entry, INT iItem)
