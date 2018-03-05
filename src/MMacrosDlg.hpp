@@ -29,6 +29,7 @@
 
 struct MACRO_ENTRY;
 class MAddMacroDlg;
+class MEditMacroDlg;
 class MMacrosDlg;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -61,6 +62,95 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
+
+        CenterWindowDx();
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+
+        ::GetWindowText(hCmb1, m_entry.szKey, _countof(m_entry.szKey));
+        ::GetWindowText(hCmb2, m_entry.szValue, _countof(m_entry.szValue));
+
+        mstr_trim(m_entry.szKey);
+        mstr_trim(m_entry.szValue);
+
+        if (m_entry.szKey[0] == 0)
+        {
+            ComboBox_SetEditSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_EMPTYSTR);
+            return;
+        }
+
+        EndDialog(IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
+};
+
+class MEditMacroDlg : public MDialogBase
+{
+public:
+    MACRO_ENTRY& m_entry;
+    ConstantsDB& m_db;
+    MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
+
+    MEditMacroDlg(MACRO_ENTRY& entry, ConstantsDB& db) :
+        MDialogBase(IDD_EDITMACRO), m_entry(entry), m_db(db)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        CheckDlgButton(hwnd, chx1, BST_CHECKED);
+
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        SubclassChildDx(m_cmb1, cmb1);
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        SubclassChildDx(m_cmb2, cmb2);
+
+        ::SetWindowText(m_cmb1, m_entry.szKey);
+        ::SetWindowText(m_cmb2, m_entry.szValue);
 
         CenterWindowDx();
         return TRUE;
@@ -251,30 +341,25 @@ public:
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        if (entry.szKey[0] == 0)
+        MEditMacroDlg dialog(entry, m_db);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-            ComboBox_SetEditSel(hCmb1, 0, -1);
-            SetFocus(hCmb1);
-            ErrorBoxDx(IDS_EMPTYSTR);
-            return;
+            LV_ITEM item;
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 0;
+            item.pszText = entry.szKey;
+            ListView_SetItem(m_hLst1, &item);
+
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = iItem;
+            item.mask = LVIF_TEXT;
+            item.iSubItem = 1;
+            item.pszText = entry.szValue;
+            ListView_SetItem(m_hLst1, &item);
         }
-
-        LV_ITEM item;
-
-        ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
-        item.iSubItem = 0;
-        item.pszText = entry.szKey;
-        ListView_SetItem(m_hLst1, &item);
-
-        ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
-        item.iSubItem = 1;
-        item.pszText = entry.szValue;
-        ListView_SetItem(m_hLst1, &item);
     }
 
     void OnOK(HWND hwnd)
