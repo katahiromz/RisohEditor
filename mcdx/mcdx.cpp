@@ -255,7 +255,8 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
     {
         return syntax_error();
     }
-    else if (memcmp(ptr, "BEGIN", 5) == 0)
+    else if (memcmp(ptr, "BEGIN", 5) == 0 &&
+             (ptr[5] == 0 || std::isspace(ptr[5])))
     {
         nMode = 2;
         ptr += 5;
@@ -286,7 +287,7 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
         return EXITCODE_SUCCESS;
     }
     else if (memcmp(ptr, "END", 3) == 0 &&
-             (std::isspace(ptr[3]) || ptr[3] == 0))
+             (ptr[3] == 0 || std::isspace(ptr[3])))
     {
         ptr += 3;
         nMode = 0;
