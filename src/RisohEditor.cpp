@@ -2773,14 +2773,21 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     if (bCanEditLabel)
     {
         UINT i = LOWORD(lParam);
-        ResEntry& entry = m_entries[i];
-
-        if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+        if (i < m_entries.size())
         {
-            if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+            ResEntry& entry = m_entries[i];
+
+            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
-                bCanEditLabel = FALSE;
+                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                {
+                    bCanEditLabel = FALSE;
+                }
             }
+        }
+        else
+        {
+            bCanEditLabel = FALSE;
         }
     }
 
@@ -5981,6 +5988,9 @@ void MMainWnd::OnEditLabel(HWND hwnd)
     }
 
     UINT i = LOWORD(lParam);
+    if (i >= m_entries.size())
+        return;
+
     ResEntry& entry = m_entries[i];
 
     if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
