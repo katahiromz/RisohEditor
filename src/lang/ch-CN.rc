@@ -805,8 +805,8 @@ FONT 9, "宋体"
     AUTOCHECKBOX "更新 ""&resource.h"" (弃用)", chx7, 10, 150, 190, 14
     AUTOCHECKBOX "保存 EXE 文件时用 &UPX 压缩", chx8, 10, 170, 190, 14
     PUSHBUTTON "预定义的宏(&M)...", psh1, 10, 190, 85, 14
-    DEFPUSHBUTTON "OK", IDOK, 65, 215, 60, 14
-    PUSHBUTTON "取消", IDCANCEL, 130, 215, 60, 14
+    DEFPUSHBUTTON "OK", IDOK, 75, 215, 60, 14
+    PUSHBUTTON "取消", IDCANCEL, 140, 215, 60, 14
 }
 
 IDD_ADDRESID DIALOG 0, 0, 165, 90
