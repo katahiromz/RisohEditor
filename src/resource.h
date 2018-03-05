@@ -145,6 +145,7 @@
 #define CMDID_ADDHTML           209
 #define CMDID_ADDACCEL          210
 #define CMDID_ADDMANIFEST       211
+#define CMDID_EDITLABEL         212
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101

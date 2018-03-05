@@ -84,6 +84,8 @@ IDM_MAIN MENU
             MENUITEM "导出二进制资源文件(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
+        MENUITEM "编辑标签(&I)...", CMDID_EDITLABEL
+        MENUITEM SEPARATOR
         MENUITEM "复制为别名(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "复制为别语言(&L)...", CMDID_COPYASNEWLANG
         MENUITEM SEPARATOR
@@ -163,6 +165,8 @@ IDM_POPUPS MENU
             MENUITEM "导出位图文件(&B)...", CMDID_EXTRACTBITMAP
             MENUITEM "导出二进制资源文件(&R)...", CMDID_EXTRACTBIN
         }
+        MENUITEM SEPARATOR
+        MENUITEM "编辑标签(&I)...", CMDID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "复制为别名(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "复制为别语言(&L)...", CMDID_COPYASNEWLANG

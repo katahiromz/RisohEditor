@@ -1079,6 +1079,7 @@ public:
     void OnIDList(HWND hwnd);
     void OnIdAssoc(HWND hwnd);
     void OnPredefMacros(HWND hwnd);
+    void OnEditLabel(HWND hwnd);
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
@@ -2762,6 +2763,32 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    BOOL bCanEditLabel = TRUE;
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) == I_TYPE)
+    {
+        bCanEditLabel = FALSE;
+    }
+
+    if (bCanEditLabel)
+    {
+        UINT i = LOWORD(lParam);
+        ResEntry& entry = m_entries[i];
+
+        if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+        {
+            if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+            {
+                bCanEditLabel = FALSE;
+            }
+        }
+    }
+
+    if (bCanEditLabel)
+        EnableMenuItem(hMenu, CMDID_EDITLABEL, MF_BYCOMMAND | MF_ENABLED);
+    else
+        EnableMenuItem(hMenu, CMDID_EDITLABEL, MF_BYCOMMAND | MF_GRAYED);
+
     if (m_settings.bUpdateResH)
         EnableMenuItem(hMenu, CMDID_UPDATERESHBANG, MF_BYCOMMAND | MF_ENABLED);
     else
@@ -2832,7 +2859,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     UINT i = LOWORD(Item.lParam);
     const ResEntry& entry = m_entries[i];
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    lParam = TV_GetParam(m_hTreeView);
     BOOL bEditable = IsEditableEntry(hwnd, lParam);
     if (bEditable)
     {
@@ -5942,6 +5969,32 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::OnEditLabel(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    LPARAM lParam = TV_GetParam(m_hTreeView);
+    if (HIWORD(lParam) == I_TYPE)
+    {
+        return;
+    }
+
+    UINT i = LOWORD(lParam);
+    ResEntry& entry = m_entries[i];
+
+    if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+    {
+        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+        {
+            return;
+        }
+    }
+
+    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    TreeView_EditLabel(m_hTreeView, hItem);
+}
+
 void MMainWnd::OnPredefMacros(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -6249,6 +6302,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_PREDEFMACROS:
         OnPredefMacros(hwnd);
+        break;
+    case CMDID_EDITLABEL:
+        OnEditLabel(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
