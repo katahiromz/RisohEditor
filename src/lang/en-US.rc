@@ -56,32 +56,32 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
-            MENUITEM "Add Icon...", CMDID_ADDICON
-            MENUITEM "Add Cursor...", CMDID_ADDCURSOR
-            MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
-            MENUITEM "Add Dialog...", CMDID_ADDDIALOG
-            MENUITEM "Add Menu...", CMDID_ADDMENU
-            MENUITEM "Add String Table...", CMDID_ADDSTRINGTABLE
-            MENUITEM "Add Message Table...", CMDID_ADDMESSAGETABLE
-            MENUITEM "Add HTML Table...", CMDID_ADDHTML
-            MENUITEM "Add Accelerators...", CMDID_ADDACCEL
-            MENUITEM "Add Version Info...", CMDID_ADDVERINFO
-            MENUITEM "Add Manifest...", CMDID_ADDMANIFEST
-            MENUITEM "Add Resource Item...", CMDID_ADDRES
+            MENUITEM "Add &Icon...", CMDID_ADDICON
+            MENUITEM "Add &Cursor...", CMDID_ADDCURSOR
+            MENUITEM "Add &Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add &Dialog...", CMDID_ADDDIALOG
+            MENUITEM "Add &Menu...", CMDID_ADDMENU
+            MENUITEM "Add &String Table...", CMDID_ADDSTRINGTABLE
+            MENUITEM "Add M&essage Table...", CMDID_ADDMESSAGETABLE
+            MENUITEM "Add &HTML Table...", CMDID_ADDHTML
+            MENUITEM "Add &Accelerators...", CMDID_ADDACCEL
+            MENUITEM "Add &Version Info...", CMDID_ADDVERINFO
+            MENUITEM "Add Mani&fest...", CMDID_ADDMANIFEST
+            MENUITEM "Add &Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
         {
-            MENUITEM "Replace Icon...", CMDID_REPLACEICON
-            MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
-            MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
-            MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
+            MENUITEM "Replace &Icon...", CMDID_REPLACEICON
+            MENUITEM "Replace &Cursor...", CMDID_REPLACECURSOR
+            MENUITEM "Replace &Bitmap...", CMDID_REPLACEBITMAP
+            MENUITEM "Replace Binary &Resource Item...", CMDID_REPLACEBIN
         }
         POPUP "&Extract"
         {
-            MENUITEM "Extract Icon...", CMDID_EXTRACTICON
-            MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
-            MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
-            MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+            MENUITEM "Extract &Icon...", CMDID_EXTRACTICON
+            MENUITEM "Extract &Cursor...", CMDID_EXTRACTCURSOR
+            MENUITEM "Extract &Bitmap...", CMDID_EXTRACTBITMAP
+            MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST
@@ -136,32 +136,32 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
-            MENUITEM "Add Icon...", CMDID_ADDICON
-            MENUITEM "Add Cursor...", CMDID_ADDCURSOR
-            MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
-            MENUITEM "Add Dialog...", CMDID_ADDDIALOG
-            MENUITEM "Add Menu...", CMDID_ADDMENU
-            MENUITEM "Add String Table...", CMDID_ADDSTRINGTABLE
-            MENUITEM "Add Message Table...", CMDID_ADDMESSAGETABLE
-            MENUITEM "Add HTML Table...", CMDID_ADDHTML
-            MENUITEM "Add Accelerators...", CMDID_ADDACCEL
-            MENUITEM "Add Version Info...", CMDID_ADDVERINFO
-            MENUITEM "Add Manifest...", CMDID_ADDMANIFEST
-            MENUITEM "Add Resource Item...", CMDID_ADDRES
+            MENUITEM "Add &Icon...", CMDID_ADDICON
+            MENUITEM "Add &Cursor...", CMDID_ADDCURSOR
+            MENUITEM "Add &Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add &Dialog...", CMDID_ADDDIALOG
+            MENUITEM "Add &Menu...", CMDID_ADDMENU
+            MENUITEM "Add &String Table...", CMDID_ADDSTRINGTABLE
+            MENUITEM "Add M&essage Table...", CMDID_ADDMESSAGETABLE
+            MENUITEM "Add &HTML Table...", CMDID_ADDHTML
+            MENUITEM "Add &Accelerators...", CMDID_ADDACCEL
+            MENUITEM "Add &Version Info...", CMDID_ADDVERINFO
+            MENUITEM "Add Mani&fest...", CMDID_ADDMANIFEST
+            MENUITEM "Add &Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
         {
-            MENUITEM "Replace Icon...", CMDID_REPLACEICON
-            MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
-            MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
-            MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
+            MENUITEM "Replace &Icon...", CMDID_REPLACEICON
+            MENUITEM "Replace &Cursor...", CMDID_REPLACECURSOR
+            MENUITEM "Replace &Bitmap...", CMDID_REPLACEBITMAP
+            MENUITEM "Replace Binary &Resource Item...", CMDID_REPLACEBIN
         }
         POPUP "&Extract"
         {
-            MENUITEM "Extract Icon...", CMDID_EXTRACTICON
-            MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
-            MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
-            MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+            MENUITEM "Extract &Icon...", CMDID_EXTRACTICON
+            MENUITEM "Extract &Cursor...", CMDID_EXTRACTCURSOR
+            MENUITEM "Extract &Bitmap...", CMDID_EXTRACTBITMAP
+            MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST

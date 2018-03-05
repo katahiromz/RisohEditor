@@ -56,32 +56,32 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
-            MENUITEM "アイコンを追加...", CMDID_ADDICON
-            MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
-            MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
-            MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
-            MENUITEM "メニューを追加...", CMDID_ADDMENU
-            MENUITEM "文字列テーブルを追加...", CMDID_ADDSTRINGTABLE
-            MENUITEM "メッセージ テーブルを追加...", CMDID_ADDMESSAGETABLE
-            MENUITEM "HTMLを追加...", CMDID_ADDHTML
-            MENUITEM "アクセスキーを追加...", CMDID_ADDACCEL
-            MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
-            MENUITEM "マニフェストを追加...", CMDID_ADDMANIFEST
-            MENUITEM "リソース項目を追加...", CMDID_ADDRES
+            MENUITEM "アイコンを追加(&I)...", CMDID_ADDICON
+            MENUITEM "カーソルを追加(&C)...", CMDID_ADDCURSOR
+            MENUITEM "ビットマップを追加(&B)...", CMDID_ADDBITMAP
+            MENUITEM "ダイアログを追加(&D)...", CMDID_ADDDIALOG
+            MENUITEM "メニューを追加(&M)...", CMDID_ADDMENU
+            MENUITEM "文字列テーブルを追加(&S)...", CMDID_ADDSTRINGTABLE
+            MENUITEM "メッセージ テーブルを追加(&E)...", CMDID_ADDMESSAGETABLE
+            MENUITEM "&HTMLを追加...", CMDID_ADDHTML
+            MENUITEM "アクセスキーを追加(&A)...", CMDID_ADDACCEL
+            MENUITEM "バージョン情報を追加(&V)...", CMDID_ADDVERINFO
+            MENUITEM "マニフェストを追加(&F)...", CMDID_ADDMANIFEST
+            MENUITEM "リソース項目を追加(&R)...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
         {
-            MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
-            MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
-            MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
-            MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
+            MENUITEM "アイコンを置き換え(&I)...", CMDID_REPLACEICON
+            MENUITEM "カーソルを置き換え(&C)...", CMDID_REPLACECURSOR
+            MENUITEM "ビットマップを置き換え(&B)...", CMDID_REPLACEBITMAP
+            MENUITEM "バイナリ リソース項目を置き換え(&R)...", CMDID_REPLACEBIN
         }
         POPUP "抽出(&E)"
         {
-            MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
-            MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
-            MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
-            MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+            MENUITEM "アイコンを抽出(&I)...", CMDID_EXTRACTICON
+            MENUITEM "カーソルを抽出(&C)...", CMDID_EXTRACTCURSOR
+            MENUITEM "ビットマップを抽出(&B)...", CMDID_EXTRACTBITMAP
+            MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", CMDID_TEST
@@ -136,32 +136,32 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         POPUP "追加(&A)"
         {
-            MENUITEM "アイコンを追加...", CMDID_ADDICON
-            MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
-            MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
-            MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
-            MENUITEM "メニューを追加...", CMDID_ADDMENU
-            MENUITEM "文字列テーブルを追加...", CMDID_ADDSTRINGTABLE
-            MENUITEM "メッセージ テーブルを追加...", CMDID_ADDMESSAGETABLE
-            MENUITEM "HTMLを追加...", CMDID_ADDHTML
-            MENUITEM "アクセスキーを追加...", CMDID_ADDACCEL
-            MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
-            MENUITEM "マニフェストを追加...", CMDID_ADDMANIFEST
-            MENUITEM "リソース項目を追加...", CMDID_ADDRES
+            MENUITEM "アイコンを追加(&I)...", CMDID_ADDICON
+            MENUITEM "カーソルを追加(&C)...", CMDID_ADDCURSOR
+            MENUITEM "ビットマップを追加(&B)...", CMDID_ADDBITMAP
+            MENUITEM "ダイアログを追加(&D)...", CMDID_ADDDIALOG
+            MENUITEM "メニューを追加(&M)...", CMDID_ADDMENU
+            MENUITEM "文字列テーブルを追加(&S)...", CMDID_ADDSTRINGTABLE
+            MENUITEM "メッセージ テーブルを追加(&E)...", CMDID_ADDMESSAGETABLE
+            MENUITEM "&HTMLを追加...", CMDID_ADDHTML
+            MENUITEM "アクセスキーを追加(&A)...", CMDID_ADDACCEL
+            MENUITEM "バージョン情報を追加(&V)...", CMDID_ADDVERINFO
+            MENUITEM "マニフェストを追加(&F)...", CMDID_ADDMANIFEST
+            MENUITEM "リソース項目を追加(&R)...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
         {
-            MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
-            MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
-            MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
-            MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
+            MENUITEM "アイコンを置き換え(&I)...", CMDID_REPLACEICON
+            MENUITEM "カーソルを置き換え(&C)...", CMDID_REPLACECURSOR
+            MENUITEM "ビットマップを置き換え(&B)...", CMDID_REPLACEBITMAP
+            MENUITEM "バイナリ リソース項目を置き換え(&R)...", CMDID_REPLACEBIN
         }
         POPUP "抽出(&E)"
         {
-            MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
-            MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
-            MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
-            MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+            MENUITEM "アイコンを抽出(&I)...", CMDID_EXTRACTICON
+            MENUITEM "カーソルを抽出(&C)...", CMDID_EXTRACTCURSOR
+            MENUITEM "ビットマップを抽出(&B)...", CMDID_EXTRACTBITMAP
+            MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", CMDID_TEST
