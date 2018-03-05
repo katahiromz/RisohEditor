@@ -31,8 +31,8 @@ message-id, "text"
 
 A *message-id* is a 32-bit integer value.
 
-Why do I use MESSAGETABLE resources?
-------------------------------------
+Why do we use MESSAGETABLE resources?
+-------------------------------------
 
 Win32 *MESSAGETABLE* resource has complicated syntax.
 Our *MESSAGETABLEDX* resource is simple.
