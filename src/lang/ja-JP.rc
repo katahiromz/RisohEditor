@@ -84,7 +84,7 @@ IDM_MAIN MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "ラベルを編集(&I)", CMDID_EDITLABEL
+        MENUITEM "ラベルを編集(&I)\tF2", CMDID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", CMDID_COPYASNEWLANG
@@ -166,7 +166,7 @@ IDM_POPUPS MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "ラベルを編集(&I)", CMDID_EDITLABEL
+        MENUITEM "ラベルを編集(&I)\tF2", CMDID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", CMDID_COPYASNEWLANG
