@@ -328,6 +328,7 @@ public:
 
         LV_FINDINFO find;
         TCHAR sz[128];
+        lstrcpy(sz, s_entry.MessageID);
         ZeroMemory(&find, sizeof(find));
         find.flags = LVFI_STRING;
         find.psz = sz;
