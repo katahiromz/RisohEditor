@@ -528,7 +528,8 @@ retry:
         if (nMode == 0 && *ptr) // out of MESSAGETABLEDX { ... }
         {
             ptr = mstr_skip_space(ptr);
-            if (memcmp("MESSAGETABLEDX", ptr, 14) == 0)
+            if (memcmp("MESSAGETABLEDX", ptr, 14) == 0 &&
+                (std::isspace(ptr[14]) || ptr[14] == 0 || ptr[14] == '{'))  // }
             {
                 nMode = 1;
                 ptr += 14;
