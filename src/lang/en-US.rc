@@ -97,10 +97,10 @@ IDM_MAIN MENU
         MENUITEM "Always &CONTROL statement", CMDID_ALWAYSCONTROL
         MENUITEM "Don't Use &ID Macros", CMDID_HIDEIDMACROS
         MENUITEM SEPARATOR
-        MENUITEM "Re&fresh", CMDID_REFRESHALL
-        MENUITEM SEPARATOR
         MENUITEM "Predefined &Macros...", CMDID_PREDEFMACROS
         MENUITEM "&Font settings...", CMDID_FONTS
+        MENUITEM SEPARATOR
+        MENUITEM "Re&fresh", CMDID_REFRESHALL
     }
     POPUP "&Help"
     {

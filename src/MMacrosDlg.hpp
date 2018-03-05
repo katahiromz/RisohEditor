@@ -247,7 +247,7 @@ public:
     HWND m_hLst1;
     HICON m_hIcon;
     HICON m_hIconSm;
-	MString m_strTemp;
+    MString m_strTemp;
 
     MMacrosDlg(macro_map_type& map, ConstantsDB& db)
         : MDialogBase(IDD_MACROS), m_map(map), m_db(db)
@@ -403,16 +403,16 @@ public:
             OnRename(hwnd);
             break;
         case IDOK:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-	            OnOK(hwnd);
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnOK(hwnd);
             break;
         case IDCANCEL:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-	            EndDialog(IDCANCEL);
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                EndDialog(IDCANCEL);
             break;
         case psh6:
-			if (codeNotify == 0 || codeNotify == BN_CLICKED)
-	            EndDialog(psh6);
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                EndDialog(psh6);
             break;
         case psh7:
             ListView_DeleteAllItems(m_hLst1);
@@ -443,6 +443,11 @@ public:
                     OnDelete(hwnd);
                     return 0;
                 }
+                if (KeyDown->wVKey == VK_F2)
+                {
+                    OnRename(hwnd);
+                    return 0;
+                }
             }
             if (pnmhdr->code == NM_DBLCLK)
             {
@@ -456,10 +461,10 @@ public:
                     return TRUE;
                 LV_DISPINFO *pInfo = (LV_DISPINFO *)pnmhdr;
                 pInfo->item.iItem = iItem;
-				if (pInfo->item.pszText)
-					m_strTemp = pInfo->item.pszText;
-				else
-					m_strTemp.clear();
+                if (pInfo->item.pszText)
+                    m_strTemp = pInfo->item.pszText;
+                else
+                    m_strTemp.clear();
                 return 0;
             }
             if (pnmhdr->code == LVN_ENDLABELEDIT)
@@ -470,28 +475,28 @@ public:
 
                 LV_DISPINFO *pInfo = (LV_DISPINFO *)pnmhdr;
 
-				if (pInfo->item.pszText == NULL)
-					return TRUE;
+                if (pInfo->item.pszText == NULL)
+                    return TRUE;
 
-				macro_map_type::const_iterator it;
-				it = m_map.find(pInfo->item.pszText);
-				if (it != m_map.end())
-				{
-					return TRUE;
-				}
+                macro_map_type::const_iterator it;
+                it = m_map.find(pInfo->item.pszText);
+                if (it != m_map.end())
+                {
+                    return TRUE;
+                }
 
-				MString strValue = m_map[m_strTemp];
-				m_map.erase(m_strTemp);
-				m_map[pInfo->item.pszText] = strValue;
+                MString strValue = m_map[m_strTemp];
+                m_map.erase(m_strTemp);
+                m_map[pInfo->item.pszText] = strValue;
 
-				LV_ITEM item;
-				ZeroMemory(&item, sizeof(item));
-				item.iItem = iItem;
-				item.mask = LVIF_TEXT;
-				item.iSubItem = 0;
-				item.pszText = pInfo->item.pszText;
-				ListView_SetItem(m_hLst1, &item);
-			}
+                LV_ITEM item;
+                ZeroMemory(&item, sizeof(item));
+                item.iItem = iItem;
+                item.mask = LVIF_TEXT;
+                item.iSubItem = 0;
+                item.pszText = pInfo->item.pszText;
+                ListView_SetItem(m_hLst1, &item);
+            }
         }
         return 0;
     }
