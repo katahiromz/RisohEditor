@@ -60,6 +60,7 @@ IDM_MAIN MENU
             MENUITEM "添加光标...", CMDID_ADDCURSOR
             MENUITEM "添加位图...", CMDID_ADDBITMAP
             MENUITEM "添加对话...", CMDID_ADDDIALOG
+            MENUITEM "添加菜单...", CMDID_ADDMENU
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"
@@ -133,6 +134,7 @@ IDM_POPUPS MENU
             MENUITEM "添加光标...", CMDID_ADDCURSOR
             MENUITEM "添加位图...", CMDID_ADDBITMAP
             MENUITEM "添加对话...", CMDID_ADDDIALOG
+            MENUITEM "添加菜单...", CMDID_ADDMENU
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"

@@ -60,6 +60,7 @@ IDM_MAIN MENU
             MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
             MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
+            MENUITEM "メニューを追加...", CMDID_ADDMENU
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
@@ -133,6 +134,7 @@ IDM_POPUPS MENU
             MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
             MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
+            MENUITEM "メニューを追加...", CMDID_ADDMENU
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"

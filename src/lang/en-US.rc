@@ -60,6 +60,7 @@ IDM_MAIN MENU
             MENUITEM "Add Cursor...", CMDID_ADDCURSOR
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
             MENUITEM "Add Dialog...", CMDID_ADDDIALOG
+            MENUITEM "Add Menu...", CMDID_ADDMENU
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
@@ -133,6 +134,7 @@ IDM_POPUPS MENU
             MENUITEM "Add Cursor...", CMDID_ADDCURSOR
             MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
             MENUITEM "Add Dialog...", CMDID_ADDDIALOG
+            MENUITEM "Add Menu...", CMDID_ADDMENU
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
