@@ -84,10 +84,10 @@ IDM_MAIN MENU
             MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", CMDID_TEST
-        MENUITEM SEPARATOR
         MENUITEM "Clone In New &Name...", CMDID_COPYASNEWNAME
         MENUITEM "Clone In New &Language...", CMDID_COPYASNEWLANG
+        MENUITEM SEPARATOR
+        MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }
@@ -164,10 +164,10 @@ IDM_POPUPS MENU
             MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", CMDID_TEST
-        MENUITEM SEPARATOR
         MENUITEM "Clone As New &Name...", CMDID_COPYASNEWNAME
         MENUITEM "Clone As New &Language...", CMDID_COPYASNEWLANG
+        MENUITEM SEPARATOR
+        MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
     }

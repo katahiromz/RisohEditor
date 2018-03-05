@@ -84,10 +84,10 @@ IDM_MAIN MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "テストする(&T)", CMDID_TEST
-        MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM SEPARATOR
+        MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
         MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
@@ -164,10 +164,10 @@ IDM_POPUPS MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", CMDID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "テストする(&T)", CMDID_TEST
-        MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", CMDID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM SEPARATOR
+        MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
         MENUITEM "リソース項目を削除(&D)\tDel", CMDID_DELETERES
     }
