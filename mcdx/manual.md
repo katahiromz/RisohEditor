@@ -25,7 +25,7 @@ message-statement
 An *message-statement* is a statement to specify a resource message and has the following syntax:
 
 ```rc
-message-id, "text"`
+message-id, "text"
 ```
 
 A *message-id* is a 32-bit integer value.
