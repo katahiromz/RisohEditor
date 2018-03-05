@@ -66,6 +66,7 @@ IDM_MAIN MENU
             MENUITEM "HTMLを追加...", CMDID_ADDHTML
             MENUITEM "アクセスキーを追加...", CMDID_ADDACCEL
             MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
+            MENUITEM "マニフェストを追加...", CMDID_ADDMANIFEST
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
@@ -145,6 +146,7 @@ IDM_POPUPS MENU
             MENUITEM "HTMLを追加...", CMDID_ADDHTML
             MENUITEM "アクセスキーを追加...", CMDID_ADDACCEL
             MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
+            MENUITEM "マニフェストを追加...", CMDID_ADDMANIFEST
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"

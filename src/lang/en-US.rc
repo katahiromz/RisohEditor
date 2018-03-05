@@ -66,6 +66,7 @@ IDM_MAIN MENU
             MENUITEM "Add HTML Table...", CMDID_ADDHTML
             MENUITEM "Add Accelerators...", CMDID_ADDACCEL
             MENUITEM "Add Version Info...", CMDID_ADDVERINFO
+            MENUITEM "Add Manifest...", CMDID_ADDMANIFEST
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"
@@ -145,6 +146,7 @@ IDM_POPUPS MENU
             MENUITEM "Add HTML Table...", CMDID_ADDHTML
             MENUITEM "Add Accelerators...", CMDID_ADDACCEL
             MENUITEM "Add Version Info...", CMDID_ADDVERINFO
+            MENUITEM "Add Manifest...", CMDID_ADDMANIFEST
             MENUITEM "Add Resource Item...", CMDID_ADDRES
         }
         POPUP "&Replace"

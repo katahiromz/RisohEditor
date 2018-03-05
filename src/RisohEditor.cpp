@@ -1192,6 +1192,7 @@ protected:
     void OnAddMenu(HWND hwnd);
     void OnAddRes(HWND hwnd);
     void OnAddVerInfo(HWND hwnd);
+    void OnAddManifest(HWND hwnd);
     void OnAddStringTable(HWND hwnd);
     void OnAddMessageTable(HWND hwnd);
     void OnAddHtml(HWND hwnd);
@@ -6189,6 +6190,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_ADDVERINFO:
         OnAddVerInfo(hwnd);
         break;
+    case CMDID_ADDMANIFEST:
+        OnAddManifest(hwnd);
+        break;
     case CMDID_ADDDIALOG:
         OnAddDialog(hwnd);
         break;
@@ -7081,6 +7085,20 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
 
     MAddResDlg dialog(m_entries, m_db);
     dialog.m_type = RT_VERSION;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+    }
+}
+
+void MMainWnd::OnAddManifest(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, FALSE))
+        return;
+
+    MAddResDlg dialog(m_entries, m_db);
+    dialog.m_type = RT_MANIFEST;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         TV_RefreshInfo(m_hTreeView, m_db, m_entries);

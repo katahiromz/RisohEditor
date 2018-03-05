@@ -66,6 +66,7 @@ IDM_MAIN MENU
             MENUITEM "添加HTML...", CMDID_ADDHTML
             MENUITEM "添加加速器...", CMDID_ADDACCEL
             MENUITEM "添加版本信息...", CMDID_ADDVERINFO
+            MENUITEM "添加清单...", CMDID_ADDMANIFEST
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"
@@ -145,6 +146,7 @@ IDM_POPUPS MENU
             MENUITEM "添加HTML...", CMDID_ADDHTML
             MENUITEM "添加加速器...", CMDID_ADDACCEL
             MENUITEM "添加版本信息...", CMDID_ADDVERINFO
+            MENUITEM "添加清单...", CMDID_ADDMANIFEST
             MENUITEM "添加资源项目...", CMDID_ADDRES
         }
         POPUP "替换(&R)"
