@@ -45,6 +45,7 @@ MString mstr_dec_word(WORD value);
 MString mstr_dec_dword(DWORD value);
 MString mstr_dec(int value);
 MString mstr_hex(int value);
+MString mstr_hex_word(WORD value);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(MStringW& str);
 bool mstr_unquote(char *str);
@@ -561,6 +562,19 @@ inline MString mstr_hex(int value)
         mstr_to_hex(str, value);
         ret += str;
     }
+    return ret;
+}
+
+inline MString mstr_hex_word(WORD value)
+{
+    MString ret, str;
+    ret += TEXT("0x");
+    mstr_to_hex(str, value);
+    if (str.size() < 4)
+    {
+        ret += MString(str.size() - 4, TEXT('0'));
+    }
+    ret += str;
     return ret;
 }
 
