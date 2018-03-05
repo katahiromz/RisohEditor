@@ -3,7 +3,7 @@ MESSAGETABLEDX Resource
 
 The *MESSAGETABLEDX* resource is a dirty extension of Win32 *MESSAGETABLE* resource.
 It can be compiled by the [mcdx](https://github.com/katahiromz/RisohEditor/tree/master/mcdx) program, created by Katayama Hirofumi MZ.
-Compiled binary data is compatible to Win32 *MESSAGETABLE* resource.
+The compiled binary data is compatible to Win32 *MESSAGETABLE* resource.
 
 Syntax
 ------
@@ -34,7 +34,7 @@ A *message-id* is a 32-bit integer value.
 Why do I use MESSAGETABLE resources?
 ------------------------------------
 
-The Win32 *MESSAGETABLE* resource has complicated syntax.
+Win32 *MESSAGETABLE* resource has complicated syntax.
 Our *MESSAGETABLEDX* resource is simple.
 You can embed the *MESSAGETABLEDX* resources in your resource file (.rc).
 To build the resource file with the *MESSAGETABLEDX* resources,
