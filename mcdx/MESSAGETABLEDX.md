@@ -31,7 +31,7 @@ An *message-statement* is a statement to specify a resource message and has the 
 message-id, "text"
 ```
 
-A *message-id* is a 32-bit integer value or an integral C constant expression.
+A *message-id* is a 32-bit C integer literal or an integral C constant expression.
 
 
 Why do we use MESSAGETABLEDX resources?
