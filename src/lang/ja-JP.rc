@@ -61,6 +61,7 @@ IDM_MAIN MENU
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
             MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
             MENUITEM "メニューを追加...", CMDID_ADDMENU
+            MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
@@ -135,6 +136,7 @@ IDM_POPUPS MENU
             MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
             MENUITEM "ダイアログを追加...", CMDID_ADDDIALOG
             MENUITEM "メニューを追加...", CMDID_ADDMENU
+            MENUITEM "バージョン情報を追加...", CMDID_ADDVERINFO
             MENUITEM "リソース項目を追加...", CMDID_ADDRES
         }
         POPUP "置き換え(&R)"
