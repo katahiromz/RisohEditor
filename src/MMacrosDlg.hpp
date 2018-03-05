@@ -364,18 +364,12 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        INT i, nCount = ListView_GetItemCount(m_hLst1);
-
-        if (nCount == 0)
-        {
-            ErrorBoxDx(IDS_DATAISEMPTY);
-            return;
-        }
+        INT nCount = ListView_GetItemCount(m_hLst1);
 
         MACRO_ENTRY entry;
 
         m_map.clear();
-        for (i = 0; i < nCount; ++i)
+        for (INT i = 0; i < nCount; ++i)
         {
             ListView_GetItemText(m_hLst1, i, 0, entry.szKey, _countof(entry.szKey));
             ListView_GetItemText(m_hLst1, i, 1, entry.szValue, _countof(entry.szValue));
