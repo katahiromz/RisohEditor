@@ -54,20 +54,27 @@ IDM_MAIN MENU
     {
         MENUITEM "GUI Edit...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "Add Icon...", CMDID_ADDICON
-        MENUITEM "Add Cursor...", CMDID_ADDCURSOR
-        MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
-        MENUITEM "Add Resource Item...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "Replace Icon...", CMDID_REPLACEICON
-        MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
-        MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "Extract Icon...", CMDID_EXTRACTICON
-        MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
-        MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+        POPUP "&Add"
+        {
+            MENUITEM "Add Icon...", CMDID_ADDICON
+            MENUITEM "Add Cursor...", CMDID_ADDCURSOR
+            MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add Resource Item...", CMDID_ADDRES
+        }
+        POPUP "&Replace"
+        {
+            MENUITEM "Replace Icon...", CMDID_REPLACEICON
+            MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
+            MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
+            MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
+        }
+        POPUP "&Extract"
+        {
+            MENUITEM "Extract Icon...", CMDID_EXTRACTICON
+            MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
+            MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
+            MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
@@ -119,20 +126,27 @@ IDM_POPUPS MENU
     {
         MENUITEM "Edit by GUI...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "Add Icon...", CMDID_ADDICON
-        MENUITEM "Add Cursor...", CMDID_ADDCURSOR
-        MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
-        MENUITEM "Add Resource Item...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "Replace Icon...", CMDID_REPLACEICON
-        MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
-        MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
-        MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "Extract Icon...", CMDID_EXTRACTICON
-        MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
-        MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
-        MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+        POPUP "&Add"
+        {
+            MENUITEM "Add Icon...", CMDID_ADDICON
+            MENUITEM "Add Cursor...", CMDID_ADDCURSOR
+            MENUITEM "Add Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "Add Resource Item...", CMDID_ADDRES
+        }
+        POPUP "&Replace"
+        {
+            MENUITEM "Replace Icon...", CMDID_REPLACEICON
+            MENUITEM "Replace Cursor...", CMDID_REPLACECURSOR
+            MENUITEM "Replace Bitmap...", CMDID_REPLACEBITMAP
+            MENUITEM "Replace Binary Resource Item...", CMDID_REPLACEBIN
+        }
+        POPUP "&Extract"
+        {
+            MENUITEM "Extract Icon...", CMDID_EXTRACTICON
+            MENUITEM "Extract Cursor...", CMDID_EXTRACTCURSOR
+            MENUITEM "Extract Bitmap...", CMDID_EXTRACTBITMAP
+            MENUITEM "Extract Binary Resource Item...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", CMDID_TEST
         MENUITEM SEPARATOR
@@ -193,8 +207,10 @@ IDM_POPUPS MENU
     POPUP "Popup #4"
     {
         MENUITEM "&Add...", CMDID_ADD
-        MENUITEM "&Modify...", CMDID_MODIFY
-        MENUITEM "&Rename...", CMDID_RENAME
+        MENUITEM SEPARATOR
+        MENUITEM "Change &Name...\tF2", CMDID_RENAME
+        MENUITEM "Change &Value...", CMDID_MODIFY
+        MENUITEM SEPARATOR
         MENUITEM "&Delete\tDel", CMDID_DELETE
     }
 }

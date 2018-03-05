@@ -54,20 +54,27 @@ IDM_MAIN MENU
     {
         MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを追加...", CMDID_ADDICON
-        MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
-        MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
-        MENUITEM "リソース項目を追加...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
-        MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
-        MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
-        MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
-        MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
-        MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+        POPUP "追加(&A)"
+        {
+            MENUITEM "アイコンを追加...", CMDID_ADDICON
+            MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
+            MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+            MENUITEM "リソース項目を追加...", CMDID_ADDRES
+        }
+        POPUP "置き換え(&R)"
+        {
+            MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
+            MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
+            MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
+            MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
+        }
+        POPUP "抽出(&E)"
+        {
+            MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
+            MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
+            MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
+            MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -119,20 +126,27 @@ IDM_POPUPS MENU
     {
         MENUITEM "GUI編集...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "アイコンを追加...", CMDID_ADDICON
-        MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
-        MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
-        MENUITEM "リソース項目を追加...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
-        MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
-        MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
-        MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
-        MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
-        MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
-        MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+        POPUP "追加(&A)"
+        {
+            MENUITEM "アイコンを追加...", CMDID_ADDICON
+            MENUITEM "カーソルを追加...", CMDID_ADDCURSOR
+            MENUITEM "ビットマップを追加...", CMDID_ADDBITMAP
+            MENUITEM "リソース項目を追加...", CMDID_ADDRES
+        }
+        POPUP "置き換え(&R)"
+        {
+            MENUITEM "アイコンを置き換え...", CMDID_REPLACEICON
+            MENUITEM "カーソルを置き換え...", CMDID_REPLACECURSOR
+            MENUITEM "ビットマップを置き換え...", CMDID_REPLACEBITMAP
+            MENUITEM "バイナリ リソース項目を置き換え...", CMDID_REPLACEBIN
+        }
+        POPUP "抽出(&E)"
+        {
+            MENUITEM "アイコンを抽出...", CMDID_EXTRACTICON
+            MENUITEM "カーソルを抽出...", CMDID_EXTRACTCURSOR
+            MENUITEM "ビットマップを抽出...", CMDID_EXTRACTBITMAP
+            MENUITEM "バイナリ リソース項目を抽出...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -193,8 +207,10 @@ IDM_POPUPS MENU
     POPUP "ポップアップ #4"
     {
         MENUITEM "追加(&A)...", CMDID_ADD
-        MENUITEM "変更(&M)...", CMDID_MODIFY
-        MENUITEM "改名(&R)...", CMDID_RENAME
+        MENUITEM SEPARATOR
+        MENUITEM "名前の変更(&N)...\tF2", CMDID_RENAME
+        MENUITEM "値の変更(&V)...", CMDID_MODIFY
+        MENUITEM SEPARATOR
         MENUITEM "削除(&D)\tDel", CMDID_DELETE
     }
 }

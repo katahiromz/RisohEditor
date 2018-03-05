@@ -54,20 +54,27 @@ IDM_MAIN MENU
     {
         MENUITEM "GUI模式编辑...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "添加图标...", CMDID_ADDICON
-        MENUITEM "添加光标...", CMDID_ADDCURSOR
-        MENUITEM "添加Bitmap...", CMDID_ADDBITMAP
-        MENUITEM "添加资源项目...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "替换图标...", CMDID_REPLACEICON
-        MENUITEM "替换光标...", CMDID_REPLACECURSOR
-        MENUITEM "替换位图文件...", CMDID_REPLACEBITMAP
-        MENUITEM "替换二进制资源项目...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "导出图标...", CMDID_EXTRACTICON
-        MENUITEM "导出光标...", CMDID_EXTRACTCURSOR
-        MENUITEM "导出位图文件...", CMDID_EXTRACTBITMAP
-        MENUITEM "导出二进制资源文件...", CMDID_EXTRACTBIN
+        POPUP "添加(&A)"
+        {
+            MENUITEM "添加图标...", CMDID_ADDICON
+            MENUITEM "添加光标...", CMDID_ADDCURSOR
+            MENUITEM "添加Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "添加资源项目...", CMDID_ADDRES
+        }
+        POPUP "替换(&R)"
+        {
+            MENUITEM "替换图标...", CMDID_REPLACEICON
+            MENUITEM "替换光标...", CMDID_REPLACECURSOR
+            MENUITEM "替换位图文件...", CMDID_REPLACEBITMAP
+            MENUITEM "替换二进制资源项目...", CMDID_REPLACEBIN
+        }
+        POPUP "导出(&E)"
+        {
+            MENUITEM "导出图标...", CMDID_EXTRACTICON
+            MENUITEM "导出光标...", CMDID_EXTRACTCURSOR
+            MENUITEM "导出位图文件...", CMDID_EXTRACTBITMAP
+            MENUITEM "导出二进制资源文件...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -119,20 +126,27 @@ IDM_POPUPS MENU
     {
         MENUITEM "GUI模式...\tCtrl+G", CMDID_GUIEDIT
         MENUITEM SEPARATOR
-        MENUITEM "添加图标...", CMDID_ADDICON
-        MENUITEM "添加光标...", CMDID_ADDCURSOR
-        MENUITEM "添加位图...", CMDID_ADDBITMAP
-        MENUITEM "添加资源项...", CMDID_ADDRES
-        MENUITEM SEPARATOR
-        MENUITEM "替换图标...", CMDID_REPLACEICON
-        MENUITEM "替换光标...", CMDID_REPLACECURSOR
-        MENUITEM "替换位图文件...", CMDID_REPLACEBITMAP
-        MENUITEM "替换二进制资源项目...", CMDID_REPLACEBIN
-        MENUITEM SEPARATOR
-        MENUITEM "导出图标...", CMDID_EXTRACTICON
-        MENUITEM "导出光标...", CMDID_EXTRACTCURSOR
-        MENUITEM "导出位图文件...", CMDID_EXTRACTBITMAP
-        MENUITEM "导出二进制资源文件...", CMDID_EXTRACTBIN
+        POPUP "添加(&A)"
+        {
+            MENUITEM "添加图标...", CMDID_ADDICON
+            MENUITEM "添加光标...", CMDID_ADDCURSOR
+            MENUITEM "添加Bitmap...", CMDID_ADDBITMAP
+            MENUITEM "添加资源项目...", CMDID_ADDRES
+        }
+        POPUP "替换(&R)"
+        {
+            MENUITEM "替换图标...", CMDID_REPLACEICON
+            MENUITEM "替换光标...", CMDID_REPLACECURSOR
+            MENUITEM "替换位图文件...", CMDID_REPLACEBITMAP
+            MENUITEM "替换二进制资源项目...", CMDID_REPLACEBIN
+        }
+        POPUP "导出(&E)"
+        {
+            MENUITEM "导出图标...", CMDID_EXTRACTICON
+            MENUITEM "导出光标...", CMDID_EXTRACTCURSOR
+            MENUITEM "导出位图文件...", CMDID_EXTRACTBITMAP
+            MENUITEM "导出二进制资源文件...", CMDID_EXTRACTBIN
+        }
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -193,8 +207,10 @@ IDM_POPUPS MENU
     POPUP "Popup #4"
     {
         MENUITEM "增加(&A)...", CMDID_ADD
-        MENUITEM "修改(&M)...", CMDID_MODIFY
-        MENUITEM "名称变更(&R)...", CMDID_RENAME
+        MENUITEM SEPARATOR
+        MENUITEM "名称变更(&N)...\tF2", CMDID_RENAME
+        MENUITEM "值变更(&V)...", CMDID_MODIFY
+        MENUITEM SEPARATOR
         MENUITEM "删除(&D)\tDel", CMDID_DELETE
     }
 }
