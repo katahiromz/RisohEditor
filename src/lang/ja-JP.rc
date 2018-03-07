@@ -866,6 +866,7 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "EXE保存時に&UPXで圧縮する", chx8, 10, 170, 190, 14
     AUTOCHECKBOX "古いスタイルの&LANGUAGE文を使う", chx9, 10, 190, 190, 14
     PUSHBUTTON "定義済みマクロ(&M)...", psh1, 10, 210, 85, 14
+    PUSHBUTTON "PATHの設定(&T)...", psh2, 115, 210, 85, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 235, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 140, 235, 60, 14
 }
