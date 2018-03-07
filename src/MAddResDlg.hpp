@@ -149,6 +149,9 @@ public:
         {
             SetFocus(GetDlgItem(hwnd, cmb2));
         }
+
+        OnCmb1(hwnd);
+
         return FALSE;
     }
 
@@ -156,6 +159,7 @@ public:
     {
         MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+
         const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
@@ -345,6 +349,44 @@ public:
         SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_IDLIST, 0);
     }
 
+    void OnCmb1(HWND hwnd)
+    {
+        MIdOrString type;
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+
+        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        INT iType = ComboBox_GetCurSel(hCmb1);
+        if (iType != CB_ERR && iType < INT(table.size()))
+        {
+            type = WORD(table[iType].value);
+        }
+        else
+        {
+            if (!CheckTypeComboBox(hCmb1, type))
+            {
+                return;
+            }
+        }
+
+        if (Res_HasSample(type))
+        {
+            SetDlgItemText(hwnd, stc2, LoadStringDx(IDS_OPTIONAL));
+        }
+        else
+        {
+            SetDlgItemText(hwnd, stc2, NULL);
+        }
+
+        if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_VERSION)
+        {
+            SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_OPTIONAL));
+        }
+        else
+        {
+            SetDlgItemText(hwnd, stc1, NULL);
+        }
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -364,11 +406,12 @@ public:
         case cmb1:
             if (codeNotify == CBN_SELCHANGE)
             {
-                ;
+                OnCmb1(hwnd);
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
                 m_cmb1.OnEditChange();
+                OnCmb1(hwnd);
             }
             break;
         case cmb2:

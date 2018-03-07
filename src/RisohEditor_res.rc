@@ -24,6 +24,8 @@
 // UTF-8
 #pragma code_page(65001)
 
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
 IDI_MAIN    ICON "res\\RisohEditor.ico"
 IDI_ICO     ICON "res\\ico.ico"
 IDI_SMILY   ICON "res\\smily.ico"

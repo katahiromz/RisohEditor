@@ -365,6 +365,7 @@ STRINGTABLE
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_()."
     IDS_MACRONAME, "マクロ名"
     IDS_MACROVALUE, "マクロ値"
+    IDS_OPTIONAL, "(オプションです)"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
@@ -473,6 +474,8 @@ FONT 9, "MS UI Gothic"
     LTEXT "バイナリーファイル(&F):", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "参照(&B)...", psh1, 150, 115, 60, 14
+    LTEXT "", stc1, 75, 43, 115, 10
+    LTEXT "", stc2, 5, 112, 100, 10
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 115, 150, 60, 14
 }

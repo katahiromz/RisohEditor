@@ -316,6 +316,7 @@
 #define IDS_HALFWIDTH       127
 #define IDS_MACRONAME       128
 #define IDS_MACROVALUE      129
+#define IDS_OPTIONAL        130
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2
