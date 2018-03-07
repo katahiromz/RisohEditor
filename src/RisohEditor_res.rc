@@ -21,10 +21,16 @@
 #include <dlgs.h>
 #include "resource.h"
 
+#if !defined(LANGUAGE_EN_US) && !defined(LANGUAGE_ZH_CN) && !defined(LANGUAGE_JA_JP)
+    #error You should specify languages. You lose.
+#endif
+
 // UTF-8
 #pragma code_page(65001)
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+//////////////////////////////////////////////////////////////////////////////
 
 IDI_MAIN    ICON "res\\RisohEditor.ico"
 IDI_ICO     ICON "res\\ico.ico"
@@ -50,6 +56,8 @@ IDB_CONTROLS BITMAP "res\\controls.bmp"
 1 EMF "res\\emf.emf"
 1 RCDATA "res\\RCDATA.bin"
 
+//////////////////////////////////////////////////////////////////////////////
+
 1 ACCELERATORS
 {
     "N",            CMDID_NEW, VIRTKEY, CONTROL
@@ -69,12 +77,15 @@ IDB_CONTROLS BITMAP "res\\controls.bmp"
     "L",            CMDID_DEBUGTREENODE, VIRTKEY, CONTROL, SHIFT
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION     3, 7, 0, 0
 PRODUCTVERSION  3, 7, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
+#ifdef LANGUAGE_EN_US
     // English (U.S.)
     BLOCK "StringFileInfo"
     {
@@ -88,6 +99,8 @@ FILETYPE        VFT_APP
             VALUE "ProductVersion", "3.7\0"
         }
     }
+#endif
+#ifdef LANGUAGE_ZH_CN
     // Chinese (P.R.C.)
     BLOCK "StringFileInfo"
     {
@@ -101,6 +114,8 @@ FILETYPE        VFT_APP
             VALUE "ProductVersion", "3.7\0"
         }
     }
+#endif
+#ifdef LANGUAGE_JA_JP
     // Japanese
     BLOCK "StringFileInfo"
     {
@@ -114,21 +129,32 @@ FILETYPE        VFT_APP
             VALUE "ProductVersion", "3.7\0"
         }
     }
+#endif
     BLOCK "VarFileInfo"
     {
-#if 1
+#ifdef LANGUAGE_EN_US
         // English (U.S.)
         VALUE "Translation", 0x0409, 0x04E4
-#elif 1
+#elif defined(LANGUAGE_ZH_CN)
         // Chinese (C.N.)
         VALUE "Translation", 0x0804, 0x04B0
-#else
+#elif defined(LANGUAGE_JA_JP)
         // Japanese
         VALUE "Translation", 0x0411, 0x03A4
 #endif
     }
 }
 
-#include "lang\\en-US.rc"
-#include "lang\\ch-CN.rc"
-#include "lang\\ja-JP.rc"
+//////////////////////////////////////////////////////////////////////////////
+
+#ifdef LANGUAGE_EN_US
+    #include "lang\\en-US.rc"
+#endif
+#ifdef LANGUAGE_ZH_CN
+    #include "lang\\ch-CN.rc"
+#endif
+#ifdef LANGUAGE_JA_JP
+    #include "lang\\ja-JP.rc"
+#endif
+
+//////////////////////////////////////////////////////////////////////////////

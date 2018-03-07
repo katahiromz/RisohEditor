@@ -4,6 +4,27 @@ ENABLE_LANGUAGE(RC)
 # include directories
 include_directories(../include)
 
+#
+# language options
+#
+option(LANGUAGE_EN_US "Use English" ON)
+option(LANGUAGE_ZH_CN "Use Chinese" ON)
+option(LANGUAGE_JA_JP "Use Japanese" ON)
+
+set(LANG_DEFS "")
+if (LANGUAGE_EN_US)
+    add_definitions(-DLANGUAGE_EN_US)
+    list(APPEND LANG_DEFS -DLANGUAGE_EN_US)
+endif()
+if (LANGUAGE_ZH_CN)
+    add_definitions(-DLANGUAGE_ZH_CN)
+    list(APPEND LANG_DEFS -DLANGUAGE_ZH_CN)
+endif()
+if (LANGUAGE_JA_JP)
+    add_definitions(-DLANGUAGE_JA_JP)
+    list(APPEND LANG_DEFS -DLANGUAGE_JA_JP)
+endif()
+
 # RisohEditor.exe
 add_executable(RisohEditor WIN32 
     PackedDIB.cpp
@@ -22,7 +43,7 @@ endif()
 
 # messagetables.res or messagetables.o
 add_custom_target(messagetables ALL
-    mcdx RisohEditor_res.rc --preprocessor=..\\data\\bin\\cpp.exe ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
+    mcdx RisohEditor_res.rc --preprocessor=..\\data\\bin\\cpp.exe ${LANG_DEFS} ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
     DEPENDS mcdx RisohEditor_res.rc
     BYPRODUCTS ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}
     COMMENT "mcdx RisohEditor_res.rc --preprocessor=..\\data\\bin\\cpp.exe ../build/${CMAKE_CFG_INTDIR}/messagetables${DOTRES}"

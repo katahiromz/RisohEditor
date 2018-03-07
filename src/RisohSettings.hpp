@@ -108,7 +108,6 @@ struct RisohSettings
         DEF_VALUE(__GNUC__, 7);
         DEF_VALUE(__GNUC_MINOR__, 3);
         DEF_VALUE(__GNUC_PATCHLEVEL__, 0);
-        DEF_VALUE(__VERSION__, 7.3.0);
         #ifdef _WIN64
             DEF_VALUE(_WIN64, 1);
             DEF_VALUE(__x86_64, 1);
@@ -129,17 +128,22 @@ struct RisohSettings
         DEF_LANG("LANGUAGE_DA_DK");
         DEF_LANG("LANGUAGE_DE_DE");
         DEF_LANG("LANGUAGE_EL_GR");
+        DEF_LANG("LANGUAGE_EN_US");
+        DEF_LANG("LANGUAGE_EO_AA");
         DEF_LANG("LANGUAGE_ES_ES");
         DEF_LANG("LANGUAGE_ET_EE");
         DEF_LANG("LANGUAGE_FI_FI");
         DEF_LANG("LANGUAGE_FR_FR");
         DEF_LANG("LANGUAGE_HE_IL");
         DEF_LANG("LANGUAGE_HU_HU");
+        DEF_LANG("LANGUAGE_ID_ID");
         DEF_LANG("LANGUAGE_IT_IT");
         DEF_LANG("LANGUAGE_JA_JP");
         DEF_LANG("LANGUAGE_KO_KR");
-        DEF_LANG("LANGUAGE_NL_NL");
+        DEF_LANG("LANGUAGE_LT_LT");
         DEF_LANG("LANGUAGE_NB_NO");
+        DEF_LANG("LANGUAGE_NL_NL");
+        DEF_LANG("LANGUAGE_NO_NO");
         DEF_LANG("LANGUAGE_PL_PL");
         DEF_LANG("LANGUAGE_PT_BR");
         DEF_LANG("LANGUAGE_PT_PT");
@@ -148,7 +152,9 @@ struct RisohSettings
         DEF_LANG("LANGUAGE_SK_SK");
         DEF_LANG("LANGUAGE_SL_SI");
         DEF_LANG("LANGUAGE_SQ_AL");
+        DEF_LANG("LANGUAGE_SR_SP");
         DEF_LANG("LANGUAGE_SV_SE");
+        DEF_LANG("LANGUAGE_TH_TH");
         DEF_LANG("LANGUAGE_TR_TR");
         DEF_LANG("LANGUAGE_UK_UA");
         DEF_LANG("LANGUAGE_ZH_CN");
