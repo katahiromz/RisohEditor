@@ -108,17 +108,17 @@ struct RisohSettings
         DEF_VALUE(__GNUC__, 7);
         DEF_VALUE(__GNUC_MINOR__, 3);
         DEF_VALUE(__GNUC_PATCHLEVEL__, 0);
-        #ifdef _WIN64
-            DEF_VALUE(_WIN64, 1);
-            DEF_VALUE(__x86_64, 1);
-            DEF_VALUE(__x86_64__, 1);
-            DEF_VALUE(__amd64, 1);
-            DEF_VALUE(__amd64__, 1);
-        #else
+        //#ifdef _WIN64
+        //    DEF_VALUE(_WIN64, 1);
+        //    DEF_VALUE(__x86_64, 1);
+        //    DEF_VALUE(__x86_64__, 1);
+        //    DEF_VALUE(__amd64, 1);
+        //    DEF_VALUE(__amd64__, 1);
+        //#else
             DEF_VALUE(_X86_, 1);
             DEF_VALUE(__i386, 1);
             DEF_VALUE(__i386__, 1);
-        #endif
+        //#endif
 #undef DEF_VALUE
 
 #define DEF_LANG(lang) macros.insert(std::make_pair(TEXT(lang), TEXT("")))
