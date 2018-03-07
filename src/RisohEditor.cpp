@@ -1080,6 +1080,7 @@ public:
     void OnIdAssoc(HWND hwnd);
     void OnPredefMacros(HWND hwnd);
     void OnEditLabel(HWND hwnd);
+    void OnSetIncludes(HWND hwnd);
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
@@ -5976,6 +5977,15 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::OnSetIncludes(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    MIncludesDlg dialog(m_settings);
+    dialog.DialogBoxDx(hwnd);
+}
+
 void MMainWnd::OnEditLabel(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -6315,6 +6325,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_EDITLABEL:
         OnEditLabel(hwnd);
+        break;
+    case CMDID_SETINCLUDES:
+        OnSetIncludes(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -7351,6 +7364,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.removed_ids.clear();
 
     m_settings.ResetMacros();
+
+    m_settings.includes.clear();
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -7422,6 +7437,24 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
             if (!key.empty())
                 m_settings.macros.insert(std::make_pair(key, value));
+        }
+    }
+
+    DWORD dwNumIncludes = 0;
+    if (keyRisoh.QueryDword(TEXT("dwNumIncludes"), dwNumIncludes) == ERROR_SUCCESS)
+    {
+        m_settings.includes.clear();
+
+        for (DWORD i = 0; i < dwNumIncludes; ++i)
+        {
+            MString value;
+
+            wsprintf(szValueName, TEXT("Include%lu"), i);
+            if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+                value = szText;
+
+            if (!value.empty())
+                m_settings.includes.push_back(value);
         }
     }
 
@@ -7593,6 +7626,17 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
             wsprintf(szValueName, TEXT("MacroValue%lu"), i);
             keyRisoh.SetSz(szValueName, it->second.c_str());
+        }
+    }
+
+    DWORD dwNumIncludes = DWORD(m_settings.includes.size());
+    keyRisoh.SetDword(TEXT("dwNumIncludes"), dwNumIncludes);
+
+    {
+        for (i = 0; i < dwNumIncludes; ++i)
+        {
+            wsprintf(szValueName, TEXT("Include%lu"), i);
+            keyRisoh.SetSz(szValueName, m_settings.includes[i].c_str());
         }
     }
 

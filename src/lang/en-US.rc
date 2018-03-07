@@ -115,6 +115,8 @@ IDM_MAIN MENU
         MENUITEM "Don't Use &ID Macros", CMDID_HIDEIDMACROS
         MENUITEM SEPARATOR
         MENUITEM "Predefined &Macros...", CMDID_PREDEFMACROS
+        MENUITEM "&Include Directories...", CMDID_SETINCLUDES
+        MENUITEM SEPARATOR
         MENUITEM "&Font settings...", CMDID_FONTS
         MENUITEM SEPARATOR
         MENUITEM "Re&fresh", CMDID_REFRESHALL
@@ -1071,6 +1073,44 @@ FONT 9, "MS Shell Dlg"
     LTEXT "Please input the control data as space-separated 16-bit hexidemical integers. You don't have to add ""0x""", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 125, 110, 60, 14
+}
+
+IDD_INCLUDES DIALOG 0, 0, 295, 150
+CAPTION "Set Include Directories"
+STYLE WS_THICKFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS Shell Dlg"
+{
+    LISTBOX lst1, 5, 5, 220, 120, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Add...", psh1, 230, 5, 60, 14
+    PUSHBUTTON "&Edit...", psh2, 230, 25, 60, 14
+    PUSHBUTTON "&Delete", psh3, 230, 45, 60, 14
+    PUSHBUTTON "&Up", psh4, 230, 65, 60, 14
+    PUSHBUTTON "D&own", psh5, 230, 85, 60, 14
+    DEFPUSHBUTTON "OK", IDOK, 165, 130, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 230, 130, 60, 14
+    PUSHBUTTON "Delete &All", psh6, 5, 130, 95, 14
+}
+
+IDD_ADDINCLUDE DIALOG 0, 0, 215, 55
+CAPTION "Add Include Directory"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "&Include Directory:", -1, 5, 5, 111, 10
+    EDITTEXT edt1, 5, 15, 204, 14, ES_NOHIDESEL | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 85, 35, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 150, 35, 60, 14
+}
+
+IDD_EDITINCLUDE DIALOG 0, 0, 215, 55
+CAPTION "Edit Include Directory"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "&Include Directory:", -1, 5, 5, 111, 10
+    EDITTEXT edt1, 5, 15, 204, 14, ES_NOHIDESEL | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "OK", IDOK, 85, 35, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 150, 35, 60, 14
 }
 
 #ifdef MCDX_INVOKED
