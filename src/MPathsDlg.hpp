@@ -1,4 +1,4 @@
-// MIncludesDlg.hpp --- Dialogs for Include Directories
+// MPathsDlg.hpp --- Dialogs for Include Directories
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -17,19 +17,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MINCLUDESDLG_HPP_
-#define MZC4_MINCLUDESDLG_HPP_
+#ifndef MZC4_MPATHSDLG_HPP_
+#define MZC4_MPATHSDLG_HPP_
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "MResizable.hpp"
 #include "resource.h"
 
-class MIncludesDlg;
+class MPathsDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MIncludesDlg : public MDialogBase
+class MPathsDlg : public MDialogBase
 {
 public:
     RisohSettings& m_settings;
@@ -39,14 +39,14 @@ public:
     HICON m_hIconSm;
     std::vector<MString> m_list;
 
-    MIncludesDlg(RisohSettings& settings)
-        : MDialogBase(IDD_INCLUDES), m_settings(settings)
+    MPathsDlg(RisohSettings& settings)
+        : MDialogBase(IDD_PATHS), m_settings(settings)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
     }
 
-    ~MIncludesDlg()
+    ~MPathsDlg()
     {
         DestroyIcon(m_hIcon);
         DestroyIcon(m_hIconSm);
@@ -210,4 +210,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MINCLUDESDLG_HPP_
+#endif  // ndef MZC4_MPATHSDLG_HPP_

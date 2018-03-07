@@ -146,7 +146,7 @@
 #define CMDID_ADDACCEL          210
 #define CMDID_ADDMANIFEST       211
 #define CMDID_EDITLABEL         212
-#define CMDID_SETINCLUDES       213
+#define CMDID_SETPATHS          213
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -188,7 +188,7 @@
 #define IDD_ADDMACRO        146
 #define IDD_EDITMACRO       147
 #define IDD_CTRLDATA        148
-#define IDD_INCLUDES        149
+#define IDD_PATHS           149
 #define IDD_ADDINCLUDE      150
 #define IDD_EDITINCLUDE     151
 

@@ -1080,7 +1080,7 @@ public:
     void OnIdAssoc(HWND hwnd);
     void OnPredefMacros(HWND hwnd);
     void OnEditLabel(HWND hwnd);
-    void OnSetIncludes(HWND hwnd);
+    void OnSetPaths(HWND hwnd);
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
@@ -5977,12 +5977,12 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
-void MMainWnd::OnSetIncludes(HWND hwnd)
+void MMainWnd::OnSetPaths(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MIncludesDlg dialog(m_settings);
+    MPathsDlg dialog(m_settings);
     dialog.DialogBoxDx(hwnd);
 }
 
@@ -6326,8 +6326,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case CMDID_EDITLABEL:
         OnEditLabel(hwnd);
         break;
-    case CMDID_SETINCLUDES:
-        OnSetIncludes(hwnd);
+    case CMDID_SETPATHS:
+        OnSetPaths(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
