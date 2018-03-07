@@ -1128,6 +1128,8 @@ public:
     HTREEITEM GetLastItem(HTREEITEM hItem);
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
+    void ReCreateFonts(HWND hwnd);
+
     BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
 
 protected:
@@ -1919,6 +1921,43 @@ HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
         hItem = hChild;
     }
     return hItem;
+}
+
+void MMainWnd::ReCreateFonts(HWND hwnd)
+{
+    if (m_hBinFont)
+    {
+        DeleteObject(m_hBinFont);
+        m_hBinFont = NULL;
+    }
+    if (m_hSrcFont)
+    {
+        DeleteObject(m_hSrcFont);
+        m_hSrcFont = NULL;
+    }
+
+    LOGFONTW lfBin, lfSrc;
+    ZeroMemory(&lfBin, sizeof(lfBin));
+    ZeroMemory(&lfSrc, sizeof(lfSrc));
+
+    lstrcpy(lfBin.lfFaceName, m_settings.strBinFont.c_str());
+    lstrcpy(lfSrc.lfFaceName, m_settings.strSrcFont.c_str());
+
+    if (HDC hDC = CreateCompatibleDC(NULL))
+    {
+        lfBin.lfHeight = -MulDiv(m_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        lfSrc.lfHeight = -MulDiv(m_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        DeleteDC(hDC);
+    }
+
+    m_hBinFont = CreateFontIndirectW(&lfBin);
+    assert(m_hBinFont);
+
+    m_hSrcFont = ::CreateFontIndirectW(&lfSrc);
+    assert(m_hSrcFont);
+
+    SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
+    SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
 
 BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
@@ -5957,14 +5996,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog(m_settings, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DeleteObject(m_hBinFont);
-        m_hBinFont = dialog.DetachBinFont();
-        SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
-
-        DeleteObject(m_hSrcFont);
-        m_hSrcFont = dialog.DetachSrcFont();
-        SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
-
+        ReCreateFonts(hwnd);
         DoRefresh(hwnd);
     }
 }
@@ -7853,28 +7885,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     else
         ShowWindow(m_hStatusBar, SW_HIDE);
 
-    LOGFONTW lfBin, lfSrc;
-    ZeroMemory(&lfBin, sizeof(lfBin));
-    ZeroMemory(&lfSrc, sizeof(lfSrc));
-
-    lstrcpy(lfBin.lfFaceName, m_settings.strBinFont.c_str());
-    lstrcpy(lfSrc.lfFaceName, m_settings.strSrcFont.c_str());
-
-    if (HDC hDC = CreateCompatibleDC(NULL))
-    {
-        lfBin.lfHeight = -MulDiv(m_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-        lfSrc.lfHeight = -MulDiv(m_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-        DeleteDC(hDC);
-    }
-
-    m_hBinFont = CreateFontIndirectW(&lfBin);
-    assert(m_hBinFont);
-
-    m_hSrcFont = ::CreateFontIndirectW(&lfSrc);
-    assert(m_hSrcFont);
-
-    SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
-    SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
+    ReCreateFonts(hwnd);
 
     if (m_argc >= 2)
     {
