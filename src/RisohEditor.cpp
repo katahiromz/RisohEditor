@@ -1129,6 +1129,7 @@ public:
     HTREEITEM GetLastLeaf(HTREEITEM hItem);
 
     void ReCreateFonts(HWND hwnd);
+    void ReSetPaths(HWND hwnd);
 
     BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
 
@@ -5996,8 +5997,32 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog(m_settings, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        ReSetPaths(hwnd);
         ReCreateFonts(hwnd);
         DoRefresh(hwnd);
+    }
+}
+
+void MMainWnd::ReSetPaths(HWND hwnd)
+{
+    if (m_settings.strWindResExe.size())
+    {
+        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
+    }
+    else
+    {
+        lstrcpyW(m_szWindresExe, m_szDataFolder);
+        lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+    }
+
+    if (m_settings.strCppExe.size())
+    {
+        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
+    }
+    else
+    {
+        lstrcpyW(m_szCppExe, m_szDataFolder);
+        lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
     }
 }
 
@@ -6066,26 +6091,9 @@ void MMainWnd::OnSetPaths(HWND hwnd)
         return;
 
     MPathsDlg dialog(m_settings);
-    dialog.DialogBoxDx(hwnd);
-
-    if (m_settings.strWindResExe.size())
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
-    }
-    else
-    {
-        lstrcpyW(m_szWindresExe, m_szDataFolder);
-        lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
-    }
-
-    if (m_settings.strCppExe.size())
-    {
-        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
-    }
-    else
-    {
-        lstrcpyW(m_szCppExe, m_szDataFolder);
-        lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+        ReSetPaths(hwnd);
     }
 }
 
