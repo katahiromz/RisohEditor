@@ -6081,7 +6081,8 @@ void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    m_settings.bOldStyle = !m_settings.bOldStyle;
+    m_settings.bOldStyle = TRUE;
+    //m_settings.bOldStyle = !m_settings.bOldStyle;
     DoRefresh(hwnd);
 }
 
@@ -7674,7 +7675,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
             m_settings.strCppExe = szText;
     }
 
-    keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
+    // always use old style
+    //keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
+    m_settings.bOldStyle = TRUE;
 
     return TRUE;
 }
@@ -7784,7 +7787,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(TEXT("strWindResExe"), m_settings.strWindResExe.c_str());
     keyRisoh.SetSz(TEXT("strCppExe"), m_settings.strCppExe.c_str());
 
-    keyRisoh.SetDword(TEXT("bOldStyle"), m_settings.bOldStyle);
+    // always use old style
+    keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
     return TRUE;
 }
