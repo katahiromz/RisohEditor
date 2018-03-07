@@ -274,6 +274,13 @@ public:
         }
     }
 
+    void OnPsh9(HWND hwnd)
+    {
+        ListBox_ResetContent(m_hLst1);
+        SetDlgItemText(hwnd, cmb1, NULL);
+        SetDlgItemText(hwnd, cmb2, NULL);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -317,6 +324,10 @@ public:
         case psh8:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
                 OnPsh8(hwnd);
+            break;
+        case psh9:
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnPsh9(hwnd);
             break;
         }
     }
@@ -380,8 +391,15 @@ public:
         m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(stc2, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(cmb2, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh7, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh8, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(psh9, mzcLA_BOTTOM_LEFT);
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
