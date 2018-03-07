@@ -73,9 +73,29 @@ public:
         if (LPITEMIDLIST pidl = SHBrowseForFolder(&bi))
         {
             SHGetPathFromIDList(pidl, szPath);
-            ListBox_AddString(m_hLst1, szPath);
+            INT iItem = ListBox_AddString(m_hLst1, szPath);
             CoTaskMemFree(pidl);
+
+            if (iItem != LB_ERR)
+                ListBox_SetCurSel(m_hLst1, iItem);
         }
+    }
+
+    static INT CALLBACK
+    BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+    {
+        if (uMsg == BFFM_INITIALIZED)
+        {
+            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)lpData);
+        }
+        return 0;
+    }
+
+    BOOL SetItemText(HWND hLst1, INT iItem, LPCTSTR psz)
+    {
+        ListBox_DeleteString(hLst1, iItem);
+        ListBox_InsertString(hLst1, iItem, psz);
+        return TRUE;
     }
 
     void OnModify(HWND hwnd)
@@ -89,21 +109,19 @@ public:
 
         ListBox_GetText(m_hLst1, iItem, szPath);
 
-		LPITEMIDLIST pidl = ILCreateFromPath(szPath);
-
         ZeroMemory(&bi, sizeof(bi));
         bi.hwndOwner = hwnd;
-        bi.pidlRoot = pidl;
+        bi.pidlRoot = NULL;
         bi.lpszTitle = LoadStringDx(IDS_EDITINCLUDE);
         bi.ulFlags = BIF_RETURNONLYFSDIRS;
+        bi.lpfn = BrowseCallbackProc;
+        bi.lParam = (LPARAM)szPath;
         if (LPITEMIDLIST pidl = SHBrowseForFolder(&bi))
         {
-            TCHAR szPath[MAX_PATH];
             SHGetPathFromIDList(pidl, szPath);
-            ListBox_SetItemData(m_hLst1, iItem, szPath);
+            SetItemText(m_hLst1, iItem, szPath);
             CoTaskMemFree(pidl);
         }
-        CoTaskMemFree(pidl);
     }
 
     void OnOK(HWND hwnd)
@@ -167,6 +185,42 @@ public:
             PostMessage(hwnd, WM_NULL, 0, 0);
             DestroyMenu(hMenu);
         }
+    }
+
+    void OnPsh4(HWND hwnd)
+    {
+        INT iItem = ListBox_GetCurSel(m_hLst1);
+        if (iItem == LB_ERR)
+            return;
+
+        TCHAR szPath1[MAX_PATH], szPath2[MAX_PATH];
+        ListBox_GetText(m_hLst1, iItem - 1, szPath1);
+        ListBox_GetText(m_hLst1, iItem, szPath2);
+
+        SetItemText(m_hLst1, iItem - 1, szPath2);
+        SetItemText(m_hLst1, iItem, szPath1);
+
+        ListBox_SetCurSel(m_hLst1, iItem - 1);
+    }
+
+    void OnPsh5(HWND hwnd)
+    {
+        INT iItem = ListBox_GetCurSel(m_hLst1);
+        if (iItem < 0)
+            return;
+
+        INT nCount = ListBox_GetCount(m_hLst1);
+        if (iItem + 1 >= nCount)
+            return;
+
+        TCHAR szPath1[MAX_PATH], szPath2[MAX_PATH];
+        ListBox_GetText(m_hLst1, iItem, szPath1);
+        ListBox_GetText(m_hLst1, iItem + 1, szPath2);
+
+        SetItemText(m_hLst1, iItem, szPath2);
+        SetItemText(m_hLst1, iItem + 1, szPath1);
+
+        ListBox_SetCurSel(m_hLst1, iItem + 1);
     }
 
     void OnPsh6(HWND hwnd)
@@ -244,6 +298,14 @@ public:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
                 EndDialog(IDCANCEL);
             break;
+        case psh4:
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnPsh4(hwnd);
+            break;
+        case psh5:
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnPsh5(hwnd);
+            break;
         case psh6:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
                 OnPsh6(hwnd);
@@ -306,8 +368,8 @@ public:
             ListBox_AddString(m_hLst1, m_settings.includes[i].c_str());
         }
 
-		SetDlgItemText(hwnd, cmb1, m_settings.strWindResExe.c_str());
-		SetDlgItemText(hwnd, cmb2, m_settings.strCppExe.c_str());
+        SetDlgItemText(hwnd, cmb1, m_settings.strWindResExe.c_str());
+        SetDlgItemText(hwnd, cmb2, m_settings.strCppExe.c_str());
 
         m_resizable.OnParentCreate(hwnd);
 

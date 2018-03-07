@@ -81,7 +81,7 @@ public:
 
     MString GetLanguageStatement(WORD langid)
     {
-		return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+        return ::GetLanguageStatement(langid, m_settings.bOldStyle);
     }
 
     MString DoCursor(const ResEntry& entry);

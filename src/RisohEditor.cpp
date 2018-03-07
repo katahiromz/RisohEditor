@@ -988,7 +988,7 @@ protected:
 
     MString GetLanguageStatement(WORD langid)
     {
-		return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+        return ::GetLanguageStatement(langid, m_settings.bOldStyle);
     }
 
 public:
