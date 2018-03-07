@@ -1140,6 +1140,7 @@ protected:
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
     MStringW GetMacroDump();
+    MStringW GetIncludesDump();
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -3674,6 +3675,22 @@ MStringW MMainWnd::GetMacroDump()
     return ret;
 }
 
+MStringW MMainWnd::GetIncludesDump()
+{
+    MStringW ret;
+    for (size_t i = 0; i < m_settings.includes.size(); ++i)
+    {
+        const MStringW& str = m_settings.includes[i];
+        if (str.empty())
+            continue;
+        
+        ret += L" -I";
+        ret += str;
+    }
+    ret += L" ";
+    return ret;
+}
+
 BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 {
     LPARAM lParam = TV_GetParam(m_hTreeView);
@@ -3724,6 +3741,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
     strCmdLine += m_szMcdxExe;
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res \"";
@@ -3866,6 +3884,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     strCmdLine += m_szWindresExe;
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
@@ -4358,6 +4377,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries,
     strCmdLine += m_szMcdxExe;
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res \"";
@@ -4408,6 +4428,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
     strCmdLine += m_szWindresExe;
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
@@ -5747,6 +5768,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     strCmdLine += m_szCppExe;
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
     strCmdLine += L" -Wp,-E \"";
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';

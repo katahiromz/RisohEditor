@@ -172,7 +172,6 @@ public:
     void OnPsh6(HWND hwnd)
     {
         ListBox_ResetContent(m_hLst1);
-        OnOK(hwnd);
     }
 
     void OnPsh7(HWND hwnd)
