@@ -52,7 +52,7 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
 HBITMAP
 CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
 
-MString GetLanguageStatement(WORD langid);
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -78,6 +78,11 @@ protected:
     const ResEntries& m_entries;
 public:
     BOOL m_bHumanReadable;
+
+    MString GetLanguageStatement(WORD langid)
+    {
+		return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+    }
 
     MString DoCursor(const ResEntry& entry);
     MString DoBitmap(const ResEntry& entry);

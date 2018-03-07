@@ -39,7 +39,7 @@
 
 #define MYWM_POSTSEARCH (WM_USER + 200)
 
-MString GetLanguageStatement(WORD langid);
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -986,6 +986,11 @@ protected:
     TCHAR           m_szFindWhat[80];
     TCHAR           m_szReplaceWith[80];
 
+    MString GetLanguageStatement(WORD langid)
+    {
+		return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+    }
+
 public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE),
@@ -1081,13 +1086,14 @@ public:
     void OnPredefMacros(HWND hwnd);
     void OnEditLabel(HWND hwnd);
     void OnSetPaths(HWND hwnd);
+    void OnUseOldStyleLangStmt(HWND hwnd);
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
     void ShowMovie(BOOL bShow = TRUE);
     void ShowBmpView(BOOL bShow = TRUE);
     void ShowStatusBar(BOOL bShow = TRUE);
-    void ShowBinEdit(BOOL bShow = TRUE);
+    void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
 
     // preview
     VOID HidePreview(HWND hwnd);
@@ -2691,9 +2697,9 @@ void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
         ShowWindow(m_hStatusBar, SW_HIDE);
 }
 
-void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/)
+void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
 {
-    if (bShow && m_settings.bShowBinEdit)
+    if (bShow && (m_settings.bShowBinEdit || bShowError))
     {
         ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         m_splitter2.SetPaneCount(2);
@@ -2764,6 +2770,11 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    if (m_settings.bOldStyle)
+        CheckMenuItem(hMenu, CMDID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, CMDID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_UNCHECKED);
+
     BOOL bCanEditLabel = TRUE;
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) == I_TYPE)
@@ -3762,7 +3773,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         {
             ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         }
-        ShowBinEdit(TRUE);
+        ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
         ::DeleteFileW(szPath1);
         ::DeleteFileW(szPath2);
@@ -3862,7 +3873,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
-    // MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -3906,7 +3917,8 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         {
             ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         }
-        ShowBinEdit(TRUE);
+        //MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
+        ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
         ::DeleteFileW(szPath1);
         ::DeleteFileW(szPath2);
@@ -4452,7 +4464,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         ErrorBoxDx(a2w.c_str());
 
         ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-        ShowBinEdit(TRUE);
+        ShowBinEdit(TRUE, TRUE);
     }
 #ifdef NDEBUG
     ::DeleteFileW(szPath3);
@@ -5977,6 +5989,15 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    m_settings.bOldStyle = !m_settings.bOldStyle;
+    DoRefresh(hwnd);
+}
+
 void MMainWnd::OnSetPaths(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -5984,6 +6005,26 @@ void MMainWnd::OnSetPaths(HWND hwnd)
 
     MPathsDlg dialog(m_settings);
     dialog.DialogBoxDx(hwnd);
+
+    if (m_settings.strWindResExe.size())
+    {
+        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
+    }
+    else
+    {
+        lstrcpyW(m_szWindresExe, m_szDataFolder);
+        lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+    }
+
+    if (m_settings.strCppExe.size())
+    {
+        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
+    }
+    else
+    {
+        lstrcpyW(m_szCppExe, m_szDataFolder);
+        lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+    }
 }
 
 void MMainWnd::OnEditLabel(HWND hwnd)
@@ -6328,6 +6369,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_SETPATHS:
         OnSetPaths(hwnd);
+        break;
+    case CMDID_USEOLDLANGSTMT:
+        OnUseOldStyleLangStmt(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -7366,6 +7410,19 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.ResetMacros();
 
     m_settings.includes.clear();
+
+    m_settings.strWindResExe.clear();
+    m_settings.strCppExe.clear();
+
+    // cpp.exe
+    lstrcpyW(m_szCppExe, m_szDataFolder);
+    lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+
+    // windres.exe
+    lstrcpyW(m_szWindresExe, m_szDataFolder);
+    lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+
+    m_settings.bOldStyle = TRUE;
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -7535,6 +7592,20 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
             it->second = szName;
     }
 
+    if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        if (GetFileAttributesW(szText) != 0xFFFFFFFF)
+            m_settings.strWindResExe = szText;
+    }
+
+    if (keyRisoh.QuerySz(TEXT("strCppExe"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        if (GetFileAttributesW(szText) != 0xFFFFFFFF)
+            m_settings.strCppExe = szText;
+    }
+
+    keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
+
     return TRUE;
 }
 
@@ -7639,6 +7710,11 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
             keyRisoh.SetSz(szValueName, m_settings.includes[i].c_str());
         }
     }
+
+    keyRisoh.SetSz(TEXT("strWindResExe"), m_settings.strWindResExe.c_str());
+    keyRisoh.SetSz(TEXT("strCppExe"), m_settings.strCppExe.c_str());
+
+    keyRisoh.SetDword(TEXT("bOldStyle"), m_settings.bOldStyle);
 
     return TRUE;
 }
@@ -7775,6 +7851,15 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     DragAcceptFiles(hwnd, TRUE);
     SetFocus(m_hTreeView);
     UpdateMenu();
+
+    if (m_settings.strWindResExe.size())
+    {
+        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
+    }
+    if (m_settings.strCppExe.size())
+    {
+        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
+    }
 
     PostMessageDx(WM_COMMAND, CMDID_READY);
 
@@ -8003,7 +8088,7 @@ INT_PTR MMainWnd::RunDx()
 
 //////////////////////////////////////////////////////////////////////////////
 
-MString GetLanguageStatement(WORD langid)
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 {
     MString strPrim, strSub;
 
@@ -8991,6 +9076,10 @@ MString GetLanguageStatement(WORD langid)
         wsprintf(szText, TEXT("0x%04X"), PRIMARYLANGID(langid));
         strPrim = szText;
     }
+
+    if (bOldStyle)
+        strSub.clear();
+
     if (strSub.empty())
     {
         switch (SUBLANGID(langid))

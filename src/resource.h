@@ -147,6 +147,7 @@
 #define CMDID_ADDMANIFEST       211
 #define CMDID_EDITLABEL         212
 #define CMDID_SETPATHS          213
+#define CMDID_USEOLDLANGSTMT    214
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
@@ -189,8 +190,6 @@
 #define IDD_EDITMACRO       147
 #define IDD_CTRLDATA        148
 #define IDD_PATHS           149
-#define IDD_ADDINCLUDE      150
-#define IDD_EDITINCLUDE     151
 
 #define IDS_APPNAME         1
 #define IDS_TITLEWITHFILE   2
@@ -321,6 +320,11 @@
 #define IDS_MACRONAME       128
 #define IDS_MACROVALUE      129
 #define IDS_OPTIONAL        130
+#define IDS_ADDINCLUDE      131
+#define IDS_EDITINCLUDE     132
+#define IDS_WINDRESEXE      133
+#define IDS_CPPEXE          134
+#define IDS_INVALIDPATH     135
 
 #define IDM_MAIN            1
 #define IDM_POPUPS          2

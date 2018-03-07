@@ -1,4 +1,4 @@
-// MPathsDlg.hpp --- Dialogs for Include Directories
+// MPathsDlg.hpp --- Dialogs for Paths
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -63,10 +63,47 @@ public:
 
     void OnAdd(HWND hwnd)
     {
+        TCHAR szPath[MAX_PATH];
+        BROWSEINFO bi;
+
+        ZeroMemory(&bi, sizeof(bi));
+        bi.hwndOwner = hwnd;
+        bi.lpszTitle = LoadStringDx(IDS_ADDINCLUDE);
+        bi.ulFlags = BIF_RETURNONLYFSDIRS;
+        if (LPITEMIDLIST pidl = SHBrowseForFolder(&bi))
+        {
+            SHGetPathFromIDList(pidl, szPath);
+            ListBox_AddString(m_hLst1, szPath);
+            CoTaskMemFree(pidl);
+        }
     }
 
     void OnModify(HWND hwnd)
     {
+        TCHAR szPath[MAX_PATH];
+        BROWSEINFO bi;
+
+        INT iItem = ListBox_GetCurSel(m_hLst1);
+        if (iItem == LB_ERR)
+            return;
+
+        ListBox_GetText(m_hLst1, iItem, szPath);
+
+		LPITEMIDLIST pidl = ILCreateFromPath(szPath);
+
+        ZeroMemory(&bi, sizeof(bi));
+        bi.hwndOwner = hwnd;
+        bi.pidlRoot = pidl;
+        bi.lpszTitle = LoadStringDx(IDS_EDITINCLUDE);
+        bi.ulFlags = BIF_RETURNONLYFSDIRS;
+        if (LPITEMIDLIST pidl = SHBrowseForFolder(&bi))
+        {
+            TCHAR szPath[MAX_PATH];
+            SHGetPathFromIDList(pidl, szPath);
+            ListBox_SetItemData(m_hLst1, iItem, szPath);
+            CoTaskMemFree(pidl);
+        }
+        CoTaskMemFree(pidl);
     }
 
     void OnOK(HWND hwnd)
@@ -82,7 +119,37 @@ public:
             m_list.push_back(szText);
         }
 
+        GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
+        MString strWindResExe = szText;
+        mstr_trim(strWindResExe);
+
+        GetDlgItemText(hwnd, cmb2, szText, _countof(szText));
+        MString strCppExe = szText;
+        mstr_trim(strCppExe);
+
+        if (strWindResExe.size() &&
+            GetFileAttributes(strWindResExe.c_str()) == 0xFFFFFFFF)
+        {
+            HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+            ComboBox_SetEditSel(hCmb1, 0, -1);
+            SetFocus(hCmb1);
+            ErrorBoxDx(IDS_INVALIDPATH);
+            return;
+        }
+
+        if (strCppExe.size() &&
+            GetFileAttributes(strCppExe.c_str()) == 0xFFFFFFFF)
+        {
+            HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+            ComboBox_SetEditSel(hCmb2, 0, -1);
+            SetFocus(hCmb2);
+            ErrorBoxDx(IDS_INVALIDPATH);
+            return;
+        }
+
         m_settings.includes = m_list;
+        m_settings.strWindResExe = strWindResExe;
+        m_settings.strCppExe = strCppExe;
 
         EndDialog(IDOK);
     }
@@ -106,6 +173,52 @@ public:
     {
         ListBox_ResetContent(m_hLst1);
         OnOK(hwnd);
+    }
+
+    void OnPsh7(HWND hwnd)
+    {
+        WCHAR file[MAX_PATH];
+        GetDlgItemText(hwnd, cmb1, file, _countof(file));
+        mstr_trim(file);
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WINDRESEXE));
+        ofn.lpstrFile = file;
+        ofn.nMaxFile = _countof(file);
+        ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"exe";
+        if (GetOpenFileNameW(&ofn))
+        {
+            SetDlgItemText(hwnd, cmb1, file);
+        }
+    }
+
+    void OnPsh8(HWND hwnd)
+    {
+        WCHAR file[MAX_PATH];
+        GetDlgItemText(hwnd, cmb2, file, _countof(file));
+        mstr_trim(file);
+
+        OPENFILENAMEW ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CPPEXE));
+        ofn.lpstrFile = file;
+        ofn.nMaxFile = _countof(file);
+        ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
+        ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
+            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"exe";
+        if (GetOpenFileNameW(&ofn))
+        {
+            SetDlgItemText(hwnd, cmb2, file);
+        }
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -135,6 +248,14 @@ public:
         case psh6:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
                 OnPsh6(hwnd);
+            break;
+        case psh7:
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnPsh7(hwnd);
+            break;
+        case psh8:
+            if (codeNotify == 0 || codeNotify == BN_CLICKED)
+                OnPsh8(hwnd);
             break;
         }
     }
@@ -185,6 +306,9 @@ public:
             m_list.push_back(m_settings.includes[i]);
             ListBox_AddString(m_hLst1, m_settings.includes[i].c_str());
         }
+
+		SetDlgItemText(hwnd, cmb1, m_settings.strWindResExe.c_str());
+		SetDlgItemText(hwnd, cmb2, m_settings.strCppExe.c_str());
 
         m_resizable.OnParentCreate(hwnd);
 

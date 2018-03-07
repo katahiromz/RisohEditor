@@ -75,6 +75,9 @@ struct RisohSettings
     id_map_type         removed_ids;
     macro_map_type      macros;
     include_dirs_type   includes;
+    MString             strWindResExe;
+    MString             strCppExe;
+    BOOL                bOldStyle;
 
     RisohSettings()
     {
