@@ -40,7 +40,7 @@ public:
     {
     }
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    void Reload(HWND hwnd)
     {
         CheckDlgButton(hwnd, chx1, m_settings.bAlwaysControl ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx2, m_settings.bHideID ? BST_CHECKED : BST_UNCHECKED);
@@ -52,6 +52,11 @@ public:
         CheckDlgButton(hwnd, chx7, m_settings.bUpdateResH ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx8, m_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx9, m_settings.bOldStyle ? BST_CHECKED : BST_UNCHECKED);
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        Reload(hwnd);
 
         CenterWindowDx();
         return TRUE;
@@ -101,6 +106,12 @@ public:
         dialog.DialogBoxDx(hwnd);
     }
 
+    void OnPsh3(HWND hwnd)
+    {
+        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_SETDEFAULTS, 0);
+        Reload(hwnd);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -116,6 +127,9 @@ public:
             break;
         case psh2:
             OnPsh2(hwnd);
+            break;
+        case psh3:
+            OnPsh3(hwnd);
             break;
         }
     }

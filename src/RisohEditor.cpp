@@ -5957,6 +5957,14 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog(m_settings, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        DeleteObject(m_hBinFont);
+        m_hBinFont = dialog.DetachBinFont();
+        SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
+
+        DeleteObject(m_hSrcFont);
+        m_hSrcFont = dialog.DetachSrcFont();
+        SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
+
         DoRefresh(hwnd);
     }
 }
@@ -6394,6 +6402,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case CMDID_USEOLDLANGSTMT:
         OnUseOldStyleLangStmt(hwnd);
+        break;
+    case CMDID_SETDEFAULTS:
+        SetDefaultSettings(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

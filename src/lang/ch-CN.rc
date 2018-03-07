@@ -854,21 +854,22 @@ CAPTION "配置"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "宋体"
 {
-    AUTOCHECKBOX "一直使用CONTROL语句(&A)", chx1, 10, 10, 190, 14
-    AUTOCHECKBOX "不使用ID宏定义(&M)", chx2, 10, 30, 190, 14
-    AUTOCHECKBOX "恢复以前的窗口位置(&P)", chx3, 10, 50, 190, 14
-    AUTOCHECKBOX "自动加载最近的""&resource.h""", chx4, 10, 70, 190, 14
-    AUTOCHECKBOX "自动显示资源ID列表(&L)", chx5, 10, 90, 190, 14
-    AUTOCHECKBOX "在对话框编辑上显示点阵(&D)", chx6, 10, 110, 190, 14
-    RTEXT "Combo&Box的高度:", -1, 10, 134, 75, 12
+    AUTOCHECKBOX "一直使用CONTROL语句(&A)", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "不使用ID宏定义(&M)", chx2, 5, 25, 200, 14
+    AUTOCHECKBOX "恢复以前的窗口位置(&P)", chx3, 5, 45, 200, 14
+    AUTOCHECKBOX "自动加载最近的""&resource.h""", chx4, 5, 65, 200, 14
+    AUTOCHECKBOX "自动显示资源ID列表(&L)", chx5, 5, 85, 200, 14
+    AUTOCHECKBOX "在对话框编辑上显示点阵(&D)", chx6, 5, 105, 200, 14
+    RTEXT "Combo&Box的高度(&B):", -1, 10, 134, 75, 12
     EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
-    AUTOCHECKBOX "更新 ""&resource.h"" (弃用)", chx7, 10, 150, 190, 14
-    AUTOCHECKBOX "保存 EXE 文件时用 &UPX 压缩", chx8, 10, 170, 190, 14
-    AUTOCHECKBOX "Use Old-Style &LANGUAGE Statement", chx9, 10, 190, 190, 14
-    PUSHBUTTON "预定义的宏(&M)...", psh1, 10, 210, 85, 14
-    PUSHBUTTON "设置路径(&T)...", psh2, 115, 210, 85, 14
-    DEFPUSHBUTTON "OK", IDOK, 75, 235, 60, 14
-    PUSHBUTTON "取消", IDCANCEL, 140, 235, 60, 14
+    AUTOCHECKBOX "更新 ""&resource.h""", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "保存EXE文件时用&UPX压缩", chx8, 5, 165, 200, 14
+    AUTOCHECKBOX "使用旧式&LANGUAGE语句", chx9, 5, 185, 200, 14
+    PUSHBUTTON "预定义的宏(&M)...", psh1, 5, 205, 85, 14
+    PUSHBUTTON "设置PATH(&T)...", psh2, 120, 205, 85, 14
+    DEFPUSHBUTTON "OK", IDOK, 100, 235, 50, 14
+    PUSHBUTTON "取消", IDCANCEL, 155, 235, 50, 14
+    PUSHBUTTON "全部重置(&S)", psh3, 5, 235, 75, 14
 }
 
 IDD_ADDRESID DIALOG 0, 0, 165, 90

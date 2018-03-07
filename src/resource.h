@@ -148,6 +148,7 @@
 #define CMDID_EDITLABEL         212
 #define CMDID_SETPATHS          213
 #define CMDID_USEOLDLANGSTMT    214
+#define CMDID_SETDEFAULTS       215
 
 #define IDD_REPLACERES      100
 #define IDD_ADDICON         101
