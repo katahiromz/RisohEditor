@@ -110,6 +110,7 @@ public:
     {
         SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_SETDEFAULTS, 0);
         Reload(hwnd);
+        EndDialog(hwnd, psh3);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
