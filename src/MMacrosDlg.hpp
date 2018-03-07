@@ -22,7 +22,6 @@
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
-#include "ConstantsDB.hpp"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
@@ -47,12 +46,11 @@ class MAddMacroDlg : public MDialogBase
 public:
     macro_map_type& m_map;
     MACRO_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MAddMacroDlg(macro_map_type& map, MACRO_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_ADDMACRO), m_map(map), m_entry(entry), m_db(db)
+    MAddMacroDlg(macro_map_type& map, MACRO_ENTRY& entry) :
+        MDialogBase(IDD_ADDMACRO), m_map(map), m_entry(entry)
     {
     }
 
@@ -147,12 +145,11 @@ class MEditMacroDlg : public MDialogBase
 {
 public:
     MACRO_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MEditMacroDlg(MACRO_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_EDITMACRO), m_entry(entry), m_db(db)
+    MEditMacroDlg(MACRO_ENTRY& entry) :
+        MDialogBase(IDD_EDITMACRO), m_entry(entry)
     {
     }
 
@@ -241,16 +238,17 @@ public:
 class MMacrosDlg : public MDialogBase
 {
 public:
+    RisohSettings& m_settings;
     macro_map_type& m_map;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HWND m_hLst1;
     HICON m_hIcon;
     HICON m_hIconSm;
     MString m_strTemp;
 
-    MMacrosDlg(macro_map_type& map, ConstantsDB& db)
-        : MDialogBase(IDD_MACROS), m_map(map), m_db(db)
+    MMacrosDlg(RisohSettings& settings)
+        : MDialogBase(IDD_MACROS), m_settings(settings),
+          m_map(settings.macros)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -285,7 +283,7 @@ public:
         }
 
         MACRO_ENTRY entry;
-        MAddMacroDlg dialog(m_map, entry, m_db);
+        MAddMacroDlg dialog(m_map, entry);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             m_map[dialog.m_entry.szKey] = dialog.m_entry.szValue;
@@ -328,7 +326,7 @@ public:
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
 
-        MEditMacroDlg dialog(entry, m_db);
+        MEditMacroDlg dialog(entry);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             m_map[dialog.m_entry.szKey] = dialog.m_entry.szValue;
@@ -412,7 +410,10 @@ public:
             break;
         case psh6:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
-                EndDialog(psh6);
+            {
+                m_settings.ResetMacros();
+                EndDialog(IDOK);
+            }
             break;
         case psh7:
             ListView_DeleteAllItems(m_hLst1);

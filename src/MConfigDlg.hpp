@@ -93,11 +93,8 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        MMacrosDlg dialog(m_settings.macros, m_db);
-        if (dialog.DialogBoxDx(hwnd) == psh6)
-        {
-            m_settings.ResetMacros();
-        }
+        MMacrosDlg dialog(m_settings);
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnPsh2(HWND hwnd)

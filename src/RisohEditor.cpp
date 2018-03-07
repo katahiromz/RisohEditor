@@ -6123,11 +6123,8 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MMacrosDlg dialog(m_settings.macros, m_db);
-    if (dialog.DialogBoxDx(hwnd) == psh6)
-    {
-        m_settings.ResetMacros();
-    }
+    MMacrosDlg dialog(m_settings);
+    dialog.DialogBoxDx(hwnd);
 }
 
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
