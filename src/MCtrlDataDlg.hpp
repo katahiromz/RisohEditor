@@ -60,7 +60,7 @@ public:
             if (vec[i].empty())
                 continue;
 
-            words.push_back(mstr_parse_int(vec[i].c_str(), false, 16));
+            words.push_back(mstr_parse_int(vec[i].c_str(), true));
         }
 
         m_data.clear();

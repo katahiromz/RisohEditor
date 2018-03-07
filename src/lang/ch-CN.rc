@@ -1078,7 +1078,7 @@ FONT 9, "宋体"
 {
     LTEXT "二进制数据(&B):", -1, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    LTEXT "请输入控制数据作为空格分隔的16位十六进制整数. 您不必添加""0x"".", -1, 5, 80, 180, 25
+    LTEXT "您可以通过空格分隔的16位整数来设置控制数据.", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 125, 110, 60, 14
 }
