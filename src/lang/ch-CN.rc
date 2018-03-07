@@ -860,8 +860,8 @@ FONT 9, "宋体"
     AUTOCHECKBOX "自动加载最近的""&resource.h""", chx4, 5, 65, 200, 14
     AUTOCHECKBOX "自动显示资源ID列表(&L)", chx5, 5, 85, 200, 14
     AUTOCHECKBOX "在对话框编辑上显示点阵(&D)", chx6, 5, 105, 200, 14
-    RTEXT "Combo&Box的高度(&B):", -1, 10, 134, 75, 12
-    EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
+    RTEXT "Combo&Box的高度(&B):", -1, 10, 127, 75, 12
+    EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
     AUTOCHECKBOX "更新 ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "保存EXE文件时用&UPX压缩", chx8, 5, 165, 200, 14
     //AUTOCHECKBOX "使用旧式&LANGUAGE语句", chx9, 5, 185, 200, 14

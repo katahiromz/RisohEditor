@@ -860,8 +860,8 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "近くの""&resource.h""を自動的に読み込む", chx4, 5, 65, 200, 14
     AUTOCHECKBOX "自動的にリソースIDの一覧を表示する(&L)", chx5, 5, 85, 200, 14
     AUTOCHECKBOX "ダイアログ編集に点々を表示する(&D)", chx6, 5, 105, 200, 14
-    RTEXT "コンボボックスの高さ(&B):", -1, 10, 134, 75, 12
-    EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
+    RTEXT "コンボボックスの高さ(&B):", -1, 10, 127, 75, 12
+    EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
     AUTOCHECKBOX """&resource.h"" を更新する", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "EXE保存時に&UPXで圧縮する", chx8, 5, 165, 200, 14
     //AUTOCHECKBOX "古いスタイルの&LANGUAGE文を使う", chx9, 5, 185, 200, 14

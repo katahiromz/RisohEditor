@@ -860,8 +860,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Automatically load nearby ""&resource.h""", chx4, 5, 65, 200, 14
     AUTOCHECKBOX "Automatically show the &list of resource IDs", chx5, 5, 85, 200, 14
     AUTOCHECKBOX "Show &dots on dialog edit", chx6, 5, 105, 200, 14
-    RTEXT "Height of Combo&Box:", -1, 10, 134, 75, 12
-    EDITTEXT edt1, 90, 130, 34, 14, ES_NUMBER
+    RTEXT "Height of Combo&Box:", -1, 10, 127, 75, 12
+    EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
     AUTOCHECKBOX "Update ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Compress EXE by &UPX On saving it", chx8, 5, 165, 200, 14
     //AUTOCHECKBOX "Use Old-Style &LANGUAGE Statement", chx9, 5, 185, 200, 14
