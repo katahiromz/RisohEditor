@@ -80,11 +80,11 @@
 template <typename T_CHAR>
 inline size_t mstrlen(const T_CHAR *str);
 
-template <typename T_CHAR>
-T_CHAR *mstrcpy(T_CHAR *dest, const T_CHAR *src);
+template <typename T_CHAR, size_t siz>
+T_CHAR *mstrcpy(T_CHAR (&dest)[siz], const T_CHAR *src);
 
-template <typename T_CHAR>
-T_CHAR *mstrcpyn(T_CHAR *dest, const T_CHAR *src, size_t maxbuf);
+template <typename T_CHAR, size_t siz>
+T_CHAR *mstrcpyn(T_CHAR (&dest)[siz], const T_CHAR *src, size_t maxbuf);
 
 template <typename T_CHAR>
 T_CHAR *mstrrchr(T_CHAR *str, T_CHAR ch);
@@ -170,18 +170,18 @@ bool mstr_is_text_unicode(const void *ptr, size_t len);
 
 template <typename T_CHAR>
 void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR>
-void mstr_trim(T_CHAR *str, const T_CHAR *spaces);
+template <typename T_CHAR, size_t siz>
+void mstr_trim(T_CHAR (&str)[siz], const T_CHAR *spaces);
 
 template <typename T_CHAR>
 void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR>
-void mstr_trim_left(T_CHAR *str, const T_CHAR *spaces);
+template <typename T_CHAR, size_t siz>
+void mstr_trim_left(T_CHAR (&str)[siz], const T_CHAR *spaces);
 
 template <typename T_CHAR>
 void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces);
-template <typename T_CHAR>
-void mstr_trim_right(T_CHAR *str, const T_CHAR *spaces);
+template <typename T_CHAR, size_t siz>
+void mstr_trim_right(T_CHAR (&str)[siz], const T_CHAR *spaces);
 
 template <typename T_CHAR>
 T_CHAR *mstr_skip_space(T_CHAR *pch, const T_CHAR *spaces);
@@ -267,15 +267,15 @@ inline size_t mstrlen(const T_CHAR *str)
     return std::char_traits<T_CHAR>::length(str);
 }
 
-template <typename T_CHAR>
-inline T_CHAR *mstrcpy(T_CHAR *dest, const T_CHAR *src)
+template <typename T_CHAR, size_t siz>
+inline T_CHAR *mstrcpy(T_CHAR (&dest)[siz], const T_CHAR *src)
 {
     std::char_traits<T_CHAR>::copy(dest, src, mstrlen(src) + 1);
     return dest;
 }
 
-template <typename T_CHAR>
-inline T_CHAR *mstrcpyn(T_CHAR *dest, const T_CHAR *src, size_t maxbuf)
+template <typename T_CHAR, size_t siz>
+inline T_CHAR *mstrcpyn(T_CHAR (&dest)[siz], const T_CHAR *src, size_t maxbuf)
 {
     size_t len = mstrlen(src) + 1;
     if (len >= maxbuf)
@@ -573,8 +573,8 @@ inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
     }
 }
 
-template <typename T_CHAR>
-inline void mstr_trim(T_CHAR *str, const T_CHAR *spaces)
+template <typename T_CHAR, size_t siz>
+inline void mstr_trim(T_CHAR (&str)[siz], const T_CHAR *spaces)
 {
     typedef std::basic_string<T_CHAR> string_type;
     string_type s = str;
@@ -597,8 +597,8 @@ inline void mstr_trim_left(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
     }
 }
 
-template <typename T_CHAR>
-inline void mstr_trim_left(T_CHAR *str, const T_CHAR *spaces)
+template <typename T_CHAR, size_t siz>
+inline void mstr_trim_left(T_CHAR (&str)[siz], const T_CHAR *spaces)
 {
     typedef std::basic_string<T_CHAR> string_type;
     string_type s = str;
@@ -621,8 +621,8 @@ inline void mstr_trim_right(std::basic_string<T_CHAR>& str, const T_CHAR *spaces
     }
 }
 
-template <typename T_CHAR>
-inline void mstr_trim_right(T_CHAR *str, const T_CHAR *spaces)
+template <typename T_CHAR, size_t siz>
+inline void mstr_trim_right(T_CHAR (&str)[siz], const T_CHAR *spaces)
 {
     typedef std::basic_string<T_CHAR> string_type;
     string_type s = str;
@@ -1039,11 +1039,13 @@ inline void mstr_trim(MStringW& str)
 {
     mstr_trim(str, WIDE(" \t\n\r\f\v"));
 }
-inline void mstr_trim(char *str)
+template <size_t siz>
+inline void mstr_trim(char (&str)[siz])
 {
     mstr_trim(str, " \t\n\r\f\v");
 }
-inline void mstr_trim(WCHAR *str)
+template <size_t siz>
+inline void mstr_trim(WCHAR (&str)[siz])
 {
     mstr_trim(str, WIDE(" \t\n\r\f\v"));
 }
@@ -1056,11 +1058,13 @@ inline void mstr_trim_left(MStringW& str)
 {
     mstr_trim_left(str, WIDE(" \t\n\r\f\v"));
 }
-inline void mstr_trim_left(char *str)
+template <size_t siz>
+inline void mstr_trim_left(char (&str)[siz])
 {
     mstr_trim_left(str, " \t\n\r\f\v");
 }
-inline void mstr_trim_left(WCHAR *str)
+template <size_t siz>
+inline void mstr_trim_left(WCHAR (&str)[siz])
 {
     mstr_trim_left(str, WIDE(" \t\n\r\f\v"));
 }
@@ -1073,11 +1077,13 @@ inline void mstr_trim_right(MStringW& str)
 {
     mstr_trim_right(str, WIDE(" \t\n\r\f\v"));
 }
-inline void mstr_trim_right(char *str)
+template <size_t siz>
+inline void mstr_trim_right(char (&str)[siz])
 {
     mstr_trim_right(str, " \t\n\r\f\v");
 }
-inline void mstr_trim_right(WCHAR *str)
+template <size_t siz>
+inline void mstr_trim_right(WCHAR (&str)[siz])
 {
     mstr_trim_right(str, WIDE(" \t\n\r\f\v"));
 }

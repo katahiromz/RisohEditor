@@ -48,8 +48,10 @@ MString mstr_hex(int value);
 MString mstr_hex_word(WORD value);
 bool mstr_unquote(std::string& str);
 bool mstr_unquote(MStringW& str);
-bool mstr_unquote(char *str);
-bool mstr_unquote(WCHAR *str);
+template <size_t siz>
+bool mstr_unquote(char (&str)[siz]);
+template <size_t siz>
+bool mstr_unquote(WCHAR (&str)[siz]);
 bool guts_escape(std::string& str, const char*& pch);
 bool guts_escape(MStringW& str, const WCHAR*& pch);
 bool guts_quote(std::string& str, const char*& pch);
@@ -592,7 +594,8 @@ inline bool mstr_unquote(MStringW& str)
     return guts_quote(str, pch);
 }
 
-inline bool mstr_unquote(char *str)
+template <size_t siz>
+inline bool mstr_unquote(char (&str)[siz])
 {
     std::string s = str;
     bool ret = mstr_unquote(s);
@@ -600,7 +603,8 @@ inline bool mstr_unquote(char *str)
     return ret;
 }
 
-inline bool mstr_unquote(WCHAR *str)
+template <size_t siz>
+inline bool mstr_unquote(WCHAR (&str)[siz])
 {
     MStringW s = str;
     bool ret = mstr_unquote(s);

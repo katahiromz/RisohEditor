@@ -4921,7 +4921,7 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& en
 BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
 {
     WCHAR sz[MAX_PATH];
-    mstrcpy(sz, pszPath);
+    StringCchCopy(sz, _countof(sz), pszPath);
     StringCchCat(sz, _countof(sz), L"\\*");
 
     BOOL bFound = FALSE;
@@ -5083,7 +5083,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     }
 
     WCHAR szPath[MAX_PATH];
-    mstrcpy(szPath, pszFileName);
+    StringCchCopy(szPath, _countof(szPath), pszFileName);
     WCHAR *pch = mstrrchr(szPath, L'\\');
     *pch = 0;
 
@@ -5116,7 +5116,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     BOOL bOK = FALSE;
     if (m_szResourceH && !m_settings.id_map.empty())
     {
-        mstrcpy(pch, L"resource.h");
+        StringCchCopyW(pch, _countof(szPath), L"resource.h");
         bOK = DoWriteResH(szPath) && DoWriteRC(pszFileName, szPath);
     }
     else
@@ -6491,7 +6491,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 {
     WCHAR szText[128];
-    mstrcpy(szText, pszLang);
+    StringCchCopyW(szText, _countof(szText), pszLang);
 
     MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
     MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
@@ -6525,7 +6525,7 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
         {
             WCHAR szText[MAX_PATH];
 
-            mstrcpy(szText, g_Langs[i].str.c_str());
+            StringCchCopyW(szText, _countof(szText), g_Langs[i].str.c_str());
             if (lstrcmpiW(szText, szText) == 0)
             {
                 return g_Langs[i].LangID;
@@ -6544,7 +6544,7 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
     WCHAR szText[128];
-    mstrcpy(szText, pszText);
+    StringCchCopyW(szText, _countof(szText), pszText);
 
     MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
     MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
