@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESOURCE_H_
-#define RESOURCE_H_
+// {{NO_DEPENDENCIES}}
+#define APSTUDIO_READONLY_SYMBOLS
 
 #define IDR_MAINFRAME           1
 
@@ -344,4 +344,16 @@
 
 #define IDA_MAIN                101
 
-#endif  // ndef RESOURCE_H_
+#ifndef IDC_STATIC
+    #define IDC_STATIC -1
+#endif
+
+#ifdef APSTUDIO_INVOKED
+    #ifndef APSTUDIO_READONLY_SYMBOLS
+        #define _APS_NO_MFC                 130
+        #define _APS_NEXT_RESOURCE_VALUE    201
+        #define _APS_NEXT_COMMAND_VALUE     216
+        #define _APS_NEXT_CONTROL_VALUE     100
+        #define _APS_NEXT_SYMED_VALUE       300
+    #endif
+#endif
