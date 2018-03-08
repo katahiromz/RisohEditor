@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.4)
 
+# Enable C/C++
+ENABLE_LANGUAGE(C)
+ENABLE_LANGUAGE(CXX)
+
 # support C++11
 macro(use_cxx11)
   if (CMAKE_VERSION VERSION_LESS "3.1")
