@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       16  /* Version 16 */
+#define MZC4_MSTRING_HPP_       17  /* Version 17 */
 
 // class MString;
 // class MStringA;
@@ -131,6 +131,20 @@ bool mchr_is_digit(T_CHAR ch);
 
 template <typename T_CHAR>
 bool mchr_is_xdigit(T_CHAR ch);
+
+template <typename T_CHAR>
+bool mchr_is_upper(T_CHAR ch);
+template <typename T_CHAR>
+bool mchr_is_lower(T_CHAR ch);
+
+template <typename T_CHAR>
+bool mchr_is_alpha(T_CHAR ch);
+
+template <typename T_CHAR>
+bool mchr_is_alnum(T_CHAR ch);
+
+template <typename T_CHAR>
+bool mchr_is_space(T_CHAR ch);
 
 template <typename T_CHAR>
 int mstr_parse_int(const T_CHAR *str, bool is_signed = true, int base = 0);
@@ -342,6 +356,38 @@ inline bool mchr_is_xdigit(T_CHAR ch)
     if (T_CHAR('a') <= ch && ch <= T_CHAR('f'))
         return true;
     return false;
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_upper(T_CHAR ch)
+{
+    return (T_CHAR('A') <= ch && ch <= T_CHAR('Z'));
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_lower(T_CHAR ch)
+{
+    return (T_CHAR('a') <= ch && ch <= T_CHAR('z'));
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_alpha(T_CHAR ch)
+{
+    return mchr_is_upper(ch) || mchr_is_lower(ch);
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_alnum(T_CHAR ch)
+{
+    return mchr_is_alpha(ch) || mchr_is_digit(ch);
+}
+
+template <typename T_CHAR>
+inline bool mchr_is_space(T_CHAR ch)
+{
+    return (ch == T_CHAR(' ') || ch == T_CHAR('\t') ||
+            ch == T_CHAR('\n') || ch == T_CHAR('\r') ||
+            ch == T_CHAR('\f') || ch == T_CHAR('\v'));
 }
 
 template <typename T_CHAR>
