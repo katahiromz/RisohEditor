@@ -212,6 +212,7 @@ msg_tables_type g_msg_tables;
 int syntax_error(void)
 {
     fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
+    assert(0);
     return EXITCODE_SYNTAX_ERROR;
 }
 
@@ -221,7 +222,7 @@ bool do_directive_line(char*& ptr)
 {
     // # line "file"
     char *ptr1 = ptr;
-    while (std::isdigit(*ptr))
+    while (mchr_is_digit(*ptr))
     {
         ++ptr;
     }
@@ -256,7 +257,7 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
         return syntax_error();
     }
     else if (memcmp(ptr, "BEGIN", 5) == 0 &&
-             (ptr[5] == 0 || std::isspace(ptr[5])))
+             (ptr[5] == 0 || mchr_is_space(ptr[5])))
     {
         nMode = 2;
         ptr += 5;
@@ -264,7 +265,7 @@ int do_mode_1(char*& ptr, int& nMode, bool& do_retry)
     ptr = mstr_skip_space(ptr);
     if (nMode != 2)
     {
-        if (*ptr && !std::isdigit(*ptr))
+        if (*ptr && !mchr_is_digit(*ptr))
         {
             return syntax_error();
         }
@@ -287,7 +288,7 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
         return EXITCODE_SUCCESS;
     }
     else if (memcmp(ptr, "END", 3) == 0 &&
-             (ptr[3] == 0 || std::isspace(ptr[3])))
+             (ptr[3] == 0 || mchr_is_space(ptr[3])))
     {
         ptr += 3;
         nMode = 0;
@@ -386,7 +387,7 @@ int do_directive(char*& ptr)
 {
     ++ptr;
     ptr = mstr_skip_space(ptr);
-    if (std::isdigit(*ptr))
+    if (mchr_is_digit(*ptr))
     {
         do_directive_line(ptr);
     }
@@ -411,11 +412,11 @@ int do_directive(char*& ptr)
                 ptr = mstr_skip_space(ptr);
                 // #pragma code_page(...)
                 uint16_t wCodePage = 0;
-                if (std::isdigit(*ptr))
+                if (mchr_is_digit(*ptr))
                 {
                     wCodePage = uint16_t(strtol(ptr, NULL, 0));
                 }
-                while (std::isalnum(*ptr))
+                while (mchr_is_alnum(*ptr))
                 {
                     ++ptr;
                 }
@@ -462,6 +463,8 @@ int eat_output(const std::string& output)
     for (size_t i = 0; i < lines.size(); ++i, ++g_nLineNo)
     {
         std::string& line = lines[i];
+        if (line.empty())
+            continue;
         char *ptr = &line[0];
         if (*ptr == '#')
         {
@@ -470,17 +473,18 @@ int eat_output(const std::string& output)
 
             continue;
         }
-        else if (memcmp("LANGUAGE", ptr, 8) == 0)
+        else if (memcmp("LANGUAGE", ptr, 8) == 0 &&
+            (ptr[8] == 0 || mchr_is_space(ptr[8])))
         {
             // LANGUAGE (primary), (sublang)
-            ptr = &line[8];
+            ptr += 8;
             nMode = -1;
         }
 retry:
         if (nMode == -1 && *ptr)    // after LANGUAGE
         {
             ptr = mstr_skip_space(ptr);
-            if (std::isdigit(*ptr))
+            if (mchr_is_digit(*ptr))
             {
                 nMode = -2;
             }
@@ -489,11 +493,11 @@ retry:
         {
             ptr = mstr_skip_space(ptr);
             char *ptr0 = ptr;
-            while (std::isalnum(*ptr))
+            while (mchr_is_alnum(*ptr))
             {
                 ++ptr;
             }
-            if (std::isdigit(*ptr0))
+            if (mchr_is_digit(*ptr0))
             {
                 bPrimLang = (uint8_t)strtoul(ptr0, NULL, 0);
                 nMode = -3;
@@ -515,7 +519,7 @@ retry:
         if (nMode == -4 && *ptr)    // expect SUBLANGID
         {
             ptr = mstr_skip_space(ptr);
-            if (std::isdigit(*ptr))
+            if (mchr_is_digit(*ptr))
             {
                 bSubLang = (uint8_t)strtoul(ptr, NULL, 0);
                 g_langid = MAKELANGID(bPrimLang, bSubLang);
@@ -530,7 +534,7 @@ retry:
         {
             ptr = mstr_skip_space(ptr);
             if (memcmp("MESSAGETABLEDX", ptr, 14) == 0 &&
-                (std::isspace(ptr[14]) || ptr[14] == 0 || ptr[14] == '{'))  // }
+                (mchr_is_space(ptr[14]) || ptr[14] == 0 || ptr[14] == '{'))  // }
             {
                 nMode = 1;
                 ptr += 14;
