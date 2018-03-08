@@ -32,28 +32,28 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 //////////////////////////////////////////////////////////////////////////////
 
-IDI_MAIN    ICON "res/RisohEditor.ico"
-IDI_ICO     ICON "res/ico.ico"
-IDI_SMILY   ICON "res/smily.ico"
-IDI_FIND    ICON "res/find.ico"
+IDI_MAIN            ICON "res/RisohEditor.ico"
+IDI_ICO             ICON "res/ico.ico"
+IDI_SMILY           ICON "res/smily.ico"
+IDI_FIND            ICON "res/find.ico"
 
-IDI_FILE    ICON "res/file.ico"
-IDI_FOLDER  ICON "res/folder.ico"
-IDI_PLAY    ICON "res/play.ico"
+IDI_FILE            ICON "res/file.ico"
+IDI_FOLDER          ICON "res/folder.ico"
+IDI_PLAY            ICON "res/play.ico"
 
-IDC_CURSORNS CURSOR "res/cursor-ns.cur"
-IDC_CURSORWE CURSOR "res/cursor-we.cur"
-IDC_BOUNCE ANICURSOR "res/bounce.ani"
+IDC_CURSORNS        CURSOR "res/cursor-ns.cur"
+IDC_CURSORWE        CURSOR "res/cursor-we.cur"
+IDAC_BOUNCE         ANICURSOR "res/bounce.ani"
 
-IDB_BMP BITMAP "res/bmp.bmp"
-IDB_CONTROLS BITMAP "res/controls.bmp"
+IDB_BMP             BITMAP "res/bmp.bmp"
+IDB_CONTROLS        BITMAP "res/controls.bmp"
 
-IDR_MAINFRAME WAVE "res/wa.wav"
-IDR_MAINFRAME GIF "res/anime.gif"
-IDR_MAINFRAME PNG "res/RisohEditor.png"
-IDR_MAINFRAME AVI "res/trash.avi"
-IDR_MAINFRAME EMF "res/emf.emf"
-IDR_MAINFRAME RCDATA "res/RCDATA.bin"
+IDR_MAINFRAME       WAVE "res/wa.wav"
+IDR_MAINFRAME       GIF "res/anime.gif"
+IDR_MAINFRAME       PNG "res/RisohEditor.png"
+IDR_MAINFRAME       AVI "res/trash.avi"
+IDR_MAINFRAME       EMF "res/emf.emf"
+IDR_MAINFRAME       RCDATA "res/RCDATA.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 
