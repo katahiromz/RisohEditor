@@ -3,12 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     10      /* Version 10 */
+#define MZC4_MFILE_HPP_     11      /* Version 11 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
 #endif
+#include <tchar.h>
 #include <cassert>
+#include <strsafe.h>
 
 class MFile;
 
@@ -604,7 +606,7 @@ inline BOOL __cdecl MFile::WriteFormatA(LPCSTR pszFormat, ...)
     va_list argList;
     CHAR sz[1024];
     va_start(argList, pszFormat);
-    wvsprintfA(sz, pszFormat, argList);
+    StringCchVPrintfA(sz, _countof(sz), pszFormat, argList);
     BOOL b = WriteSzA(sz);
     va_end(argList);
     return b;
@@ -617,7 +619,7 @@ inline BOOL __cdecl MFile::WriteFormatW(LPCWSTR pszFormat, ...)
     va_list argList;
     WCHAR sz[1024];
     va_start(argList, pszFormat);
-    wvsprintfW(sz, pszFormat, argList);
+    StringCchVPrintfW(sz, _countof(sz), pszFormat, argList);
     BOOL b = WriteSzW(sz);
     va_end(argList);
     return b;
@@ -630,7 +632,7 @@ inline BOOL __cdecl MFile::WriteFormat(LPCTSTR pszFormat, ...)
     va_list argList;
     TCHAR sz[1024];
     va_start(argList, pszFormat);
-    wvsprintf(sz, pszFormat, argList);
+    StringCchVPrintf(sz, _countof(sz), pszFormat, argList);
     BOOL b = WriteSz(sz);
     va_end(argList);
     return b;

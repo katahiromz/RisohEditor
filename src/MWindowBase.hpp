@@ -686,7 +686,7 @@ inline VOID MZCAPIV DebugPrintDx(const char *format, ...)
         char buffer[512];
         va_list va;
         va_start(va, format);
-        ::wvsprintfA(buffer, format, va);
+        StringCchVPrintfA(buffer, _countof(buffer), format, va);
         va_end(va);
         OutputDebugStringA(buffer);
     #endif
@@ -698,7 +698,7 @@ inline VOID MZCAPIV DebugPrintDx(const WCHAR *format, ...)
         WCHAR buffer[512];
         va_list va;
         va_start(va, format);
-        ::wvsprintfW(buffer, format, va);
+        StringCchVPrintfW(buffer, _countof(buffer), format, va);
         va_end(va);
         OutputDebugStringW(buffer);
     #endif

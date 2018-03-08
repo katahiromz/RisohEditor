@@ -951,7 +951,7 @@ DumpBitmapInfo(HBITMAP hbm)
         return ret;
 
     WCHAR sz[64];
-    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
+    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGEINFO),
               bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     ret = sz;
     return ret;
@@ -964,7 +964,7 @@ DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
 
     using namespace std;
     WCHAR sz[128];
-    wsprintfW(sz, LoadStringDx(IDS_IMAGEINFO),
+    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGEINFO),
               bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     ret = sz;
 
@@ -988,7 +988,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         return ret;
     }
 
-    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
+    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
     ret += sz;
     ret += L"-------\r\n";
 
@@ -1006,7 +1006,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        wsprintfW(sz, LoadStringDx(IDS_ICONINFO),
+        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_ICONINFO),
                   i, Width, Height, pEntries[i].wBitCount, nID);
         ret += sz;
     }
@@ -1031,7 +1031,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         return ret;
     }
 
-    wsprintfW(sz, LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
+    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
     ret += sz;
     ret += L"-------\r\n";
 
@@ -1065,7 +1065,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        wsprintfW(sz, LoadStringDx(IDS_CURSORINFO),
+        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_CURSORINFO),
                   i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
         ret += sz;
     }

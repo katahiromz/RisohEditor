@@ -68,7 +68,7 @@ public:
         for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
-            wsprintfW(sz, L"%s (%lu)", table[i].name.c_str(), table[i].value);
+            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
             if (m_entry.type == WORD(table[i].value))
             {

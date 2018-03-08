@@ -17,10 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <strsafe.h>
 #include "PackedDIB.hpp"
 #include "MIdOrString.hpp"
 #include "MByteStreamEx.hpp"
+#include <strsafe.h>
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)
 

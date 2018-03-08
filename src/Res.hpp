@@ -600,7 +600,7 @@ Res_GetType(const MIdOrString& id_or_str)
     default:
         if (id_or_str.m_id != 0)
         {
-            wsprintfW(sz, L"%u", id_or_str.m_id);
+            StringCchPrintfW(sz, _countof(sz), L"%u", id_or_str.m_id);
             ret = sz;
         }
         else
@@ -610,7 +610,7 @@ Res_GetType(const MIdOrString& id_or_str)
     }
     if (name.size())
     {
-        wsprintfW(sz, L" (%u)", id_or_str.m_id);
+        StringCchPrintfW(sz, _countof(sz), L" (%u)", id_or_str.m_id);
         ret = name;
         ret += sz;
     }

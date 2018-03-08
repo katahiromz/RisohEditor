@@ -24,7 +24,6 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
-#include <strsafe.h>
 #include <initguid.h>
 #include <windows.h>
 #include <windowsx.h>
@@ -42,6 +41,7 @@
 #include <vector>       // for std::vector
 #include <map>          // for std::map
 #include <cstdio>
+#include <strsafe.h>
 
 ////////////////////////////////////////////////////////////////////////////
 

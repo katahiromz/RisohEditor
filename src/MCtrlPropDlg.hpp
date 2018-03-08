@@ -454,7 +454,7 @@ public:
         if (m_flags & F_STYLE)
         {
             m_bUpdating = TRUE;
-            wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+            StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
             SetDlgItemText(hwnd, edt6, szText);
             ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
             m_bUpdating = FALSE;
@@ -472,7 +472,7 @@ public:
         if (m_flags & F_EXSTYLE)
         {
             m_bUpdating = TRUE;
-            wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+            StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwExStyle);
             SetDlgItemText(hwnd, edt7, szText);
             ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
             m_bUpdating = FALSE;
@@ -569,7 +569,7 @@ public:
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
-        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
         m_bUpdating = FALSE;
     }
@@ -590,7 +590,7 @@ public:
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
-        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+        StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
         m_bUpdating = FALSE;
     }
@@ -657,7 +657,7 @@ public:
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
-        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
         m_bUpdating = FALSE;
 
@@ -793,7 +793,7 @@ public:
             UINT nID = UINT(pnmhdr->idFrom - 1000);
             if (size_t(nID) < m_vecControls.size())
             {
-                lstrcpyW(ttt->szText, m_vecControls[nID].c_str());
+                StringCchCopyW(ttt->szText, _countof(ttt->szText), m_vecControls[nID].c_str());
             }
         }
         return 0;

@@ -142,7 +142,7 @@ public:
         if (HDC hDC = CreateCompatibleDC(NULL))
         {
             lf.lfHeight = -MulDiv(nPointSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-            lstrcpy(lf.lfFaceName, pszName);
+            StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), pszName);
             hFont = CreateFontIndirect(&lf);
             DeleteDC(hDC);
         }
@@ -162,7 +162,7 @@ public:
 
         if (k1 != MString::npos)
         {
-            lstrcpy(lf.lfFaceName, str1.substr(0, k1).c_str());
+            StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), str1.substr(0, k1).c_str());
             INT nPointSize = mstr_parse_int(str1.substr(k1 + 2).c_str());
 
             HDC hDC = CreateCompatibleDC(NULL);
@@ -207,7 +207,7 @@ public:
 
         if (k2 != MString::npos)
         {
-            lstrcpy(lf.lfFaceName, str2.substr(0, k2).c_str());
+            StringCchCopy(lf.lfFaceName, _countof(lf.lfFaceName), str2.substr(0, k2).c_str());
             INT nPointSize = mstr_parse_int(str2.substr(k2 + 2).c_str());
 
             HDC hDC = CreateCompatibleDC(NULL);

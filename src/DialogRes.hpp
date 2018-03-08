@@ -1012,7 +1012,7 @@ struct DialogRes
                 if (m_type_face.empty())
                     lf.lfFaceName[0] = 0;
                 else
-                    lstrcpyW(lf.lfFaceName, m_type_face.m_str.c_str());
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.m_str.c_str());
 
                 hFont = CreateFontIndirectW(&lf);
             }

@@ -230,7 +230,7 @@ public:
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
         m_bUpdating = TRUE;
-        wsprintfW(Buf, L"%08X", m_dwStyle);
+        StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwStyle);
         ::SetDlgItemTextW(hwnd, edt6, Buf);
         ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
@@ -242,7 +242,7 @@ public:
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
         m_bUpdating = TRUE;
-        wsprintfW(Buf, L"%08X", m_dwExStyle);
+        StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwExStyle);
         ::SetDlgItemTextW(hwnd, edt7, Buf);
         ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
@@ -361,7 +361,7 @@ public:
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
-        wsprintf(szText, TEXT("%08lX"), m_dwStyle);
+        StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
         m_bUpdating = FALSE;
     }
@@ -382,7 +382,7 @@ public:
 
         m_bUpdating = TRUE;
         TCHAR szText[32];
-        wsprintf(szText, TEXT("%08lX"), m_dwExStyle);
+        StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwExStyle);
         SetDlgItemText(hwnd, edt7, szText);
         m_bUpdating = FALSE;
     }

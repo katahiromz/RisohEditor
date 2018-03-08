@@ -319,7 +319,7 @@ public:
 
         LV_FINDINFO find;
         TCHAR sz[128];
-        lstrcpy(sz, s_entry.StringID);
+        StringCchCopy(sz, _countof(sz), s_entry.StringID);
         ZeroMemory(&find, sizeof(find));
         find.flags = LVFI_STRING;
         find.psz = sz;

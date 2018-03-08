@@ -127,7 +127,7 @@ public:
                 WCHAR buf[MAX_PATH];
                 for (size_t i = 0; i < value.value.size(); i += 2)
                 {
-                    wsprintfW(buf, L", 0x%04X", *pw++);
+                    StringCchPrintfW(buf, _countof(buf), L", 0x%04X", *pw++);
                     ret += buf;
                 }
             }
@@ -196,24 +196,26 @@ public:
 
         ret += L" VERSIONINFO\r\n";
 
-        wsprintfW(line, L"FILEVERSION\t%u, %u, %u, %u\r\n",
+        StringCchPrintfW(line, _countof(line),
+            L"FILEVERSION\t%u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwFileVersionMS),
             LOWORD(m_fixed.dwFileVersionMS),
             HIWORD(m_fixed.dwFileVersionLS),
             LOWORD(m_fixed.dwFileVersionLS));
         ret += line;
 
-        wsprintfW(line, L"PRODUCTVERSION\t%u, %u, %u, %u\r\n",
+        StringCchPrintfW(line, _countof(line),
+            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n",
             HIWORD(m_fixed.dwProductVersionMS),
             LOWORD(m_fixed.dwProductVersionMS),
             HIWORD(m_fixed.dwProductVersionLS),
             LOWORD(m_fixed.dwProductVersionLS));
         ret += line;
 
-        wsprintfW(line, L"FILEOS\t\t0x%04lX\r\n", m_fixed.dwFileOS);
+        StringCchPrintfW(line, _countof(line), L"FILEOS\t\t0x%04lX\r\n", m_fixed.dwFileOS);
         ret += line;
 
-        wsprintfW(line, L"FILETYPE\t0x%X\r\n", m_fixed.dwFileType);
+        StringCchPrintfW(line, _countof(line), L"FILETYPE\t0x%X\r\n", m_fixed.dwFileType);
         ret += line;
 
         ret += L"{\r\n";

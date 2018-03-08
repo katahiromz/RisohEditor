@@ -547,7 +547,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     for (size_t i = 0; i < g_Langs.size(); ++i)
     {
         WCHAR sz[MAX_PATH];
-        wsprintfW(sz, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
+        StringCchPrintfW(sz, _countof(sz), L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
         INT k = ComboBox_AddString(hCmb3, sz);
         if (langid == g_Langs[i].LangID)
         {
@@ -705,7 +705,7 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
     {
         if ((addr & 0xF) == 0)
         {
-            wsprintfW(sz, L"%08lX  ", addr);
+            StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
             ret += sz;
 
             bool flag = false;
@@ -716,7 +716,7 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
                 DWORD offset = addr + i;
                 if (offset < size)
                 {
-                    wsprintfW(sz, L"%02X ", data[offset]);
+                    StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
                     ret += sz;
                 }
                 else
@@ -922,12 +922,12 @@ Res_GetLangName(WORD lang)
     LCID lcid = MAKELCID(lang, SORT_DEFAULT);
     if (lcid == 0)
     {
-        wsprintfW(sz, L"%s (0)", LoadStringDx(IDS_NEUTRAL));
+        StringCchPrintfW(sz, _countof(sz), L"%s (0)", LoadStringDx(IDS_NEUTRAL));
     }
     else
     {
         GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64);
-        wsprintfW(sz, L"%s (%u)", szLoc, lang);
+        StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
     }
     return MStringW(sz);
 }
@@ -1286,7 +1286,7 @@ LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
     INT cy = (SHORT)HIWORD(lParam);
 
     WCHAR szText[64];
-    wsprintfW(szText, LoadStringDx(IDS_COORD), x, y, cx, cy);
+    StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_COORD), x, y, cx, cy);
     ChangeStatusText(szText);
     return 0;
 }
@@ -1329,7 +1329,7 @@ void MMainWnd::UpdateMenu()
             pch = it->c_str();
         else
             ++pch;
-        wsprintf(szText, TEXT("&%c  %s"), szPrefix[i], pch);
+        StringCchPrintf(szText, _countof(szText), TEXT("&%c  %s"), szPrefix[i], pch);
         InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, szText);
 #else
         InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, CMDID_MRUFILE0 + i, it->c_str());
@@ -1942,8 +1942,8 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     ZeroMemory(&lfBin, sizeof(lfBin));
     ZeroMemory(&lfSrc, sizeof(lfSrc));
 
-    lstrcpy(lfBin.lfFaceName, m_settings.strBinFont.c_str());
-    lstrcpy(lfSrc.lfFaceName, m_settings.strSrcFont.c_str());
+    StringCchCopy(lfBin.lfFaceName, _countof(lfBin.lfFaceName), m_settings.strBinFont.c_str());
+    StringCchCopy(lfSrc.lfFaceName, _countof(lfSrc.lfFaceName), m_settings.strSrcFont.c_str());
 
     if (HDC hDC = CreateCompatibleDC(NULL))
     {
@@ -2511,16 +2511,17 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
         return;
 
     ++pch;
-    lstrcpyW(pch, L"README.txt");
+    size_t diff = szPath - pch;
+    StringCchCopyW(pch, diff, L"README.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"..\\README.txt");
+        StringCchCopyW(pch, diff, L"..\\README.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"..\\..\\README.txt");
+            StringCchCopyW(pch, diff, L"..\\..\\README.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"..\\..\\..\\README.txt");
+                StringCchCopyW(pch, diff, L"..\\..\\..\\README.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -2540,16 +2541,17 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
         return;
 
     ++pch;
-    lstrcpyW(pch, L"READMEJP.txt");
+    size_t diff = szPath - pch;
+    StringCchCopyW(pch, diff, L"READMEJP.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"..\\READMEJP.txt");
+        StringCchCopyW(pch, diff, L"..\\READMEJP.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"..\\..\\READMEJP.txt");
+            StringCchCopyW(pch, diff, L"..\\..\\READMEJP.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"..\\..\\..\\READMEJP.txt");
+                StringCchCopyW(pch, diff, L"..\\..\\..\\READMEJP.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -2569,16 +2571,17 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
         return;
 
     ++pch;
-    lstrcpyW(pch, L"LICENSE.txt");
+    size_t diff = szPath - pch;
+    StringCchCopyW(pch, diff, L"LICENSE.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"..\\LICENSE.txt");
+        StringCchCopyW(pch, diff, L"..\\LICENSE.txt");
         if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"..\\..\\LICENSE.txt");
+            StringCchCopyW(pch, diff, L"..\\..\\LICENSE.txt");
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"..\\..\\..\\LICENSE.txt");
+                StringCchCopyW(pch, diff, L"..\\..\\..\\LICENSE.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -2591,9 +2594,13 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
 
 BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
-    WCHAR szCmdLine[MAX_PATH * 2];
-    wsprintfW(szCmdLine, L"\"%s\" -t \"%s\"", pszUpx, pszFile);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L"\"";
+    strCmdLine += pszUpx;
+    strCmdLine += L"\" -t \"";
+    strCmdLine += pszFile;
+    strCmdLine += L"\"";
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
@@ -2603,7 +2610,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         std::string strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
@@ -2622,9 +2629,13 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 
 BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
-    WCHAR szCmdLine[MAX_PATH * 2];
-    wsprintfW(szCmdLine, L"\"%s\" -d \"%s\"", pszUpx, pszFile);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L"\"";
+    strCmdLine += pszUpx;
+    strCmdLine += L"\" -d \"";
+    strCmdLine += pszFile;
+    strCmdLine += L"\"";
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
@@ -2634,7 +2645,7 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
 
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         std::string strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
@@ -2688,8 +2699,9 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         WCHAR sz[64];
         MStringW type = entry.type.str();
         MStringW name = entry.name.str();
-        wsprintfW(sz, L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k],
-                  type.c_str(), name.c_str(), entry.lang);
+        StringCchPrintfW(sz, _countof(sz),
+            L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k],
+            type.c_str(), name.c_str(), entry.lang);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
 }
@@ -4070,19 +4082,20 @@ BOOL MMainWnd::CheckDataFolder(VOID)
     WCHAR szPath[MAX_PATH], *pch;
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
     pch = wcsrchr(szPath, L'\\');
-    lstrcpyW(pch, L"\\data");
+    size_t diff = pch - szPath;
+    StringCchCopyW(pch, diff, L"\\data");
     if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpyW(pch, L"\\..\\data");
+        StringCchCopyW(pch, diff, L"\\..\\data");
         if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpyW(pch, L"\\..\\..\\data");
+            StringCchCopyW(pch, diff, L"\\..\\..\\data");
             if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpyW(pch, L"\\..\\..\\..\\data");
+                StringCchCopyW(pch, diff, L"\\..\\..\\..\\data");
                 if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpyW(pch, L"\\..\\..\\..\\..\\data");
+                    StringCchCopyW(pch, diff, L"\\..\\..\\..\\..\\data");
                     if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
                         return FALSE;
@@ -4117,8 +4130,8 @@ INT MMainWnd::CheckData(VOID)
     }
 
     // Constants.txt
-    lstrcpyW(m_szConstantsFile, m_szDataFolder);
-    lstrcatW(m_szConstantsFile, L"\\Constants.txt");
+    StringCchCopyW(m_szConstantsFile, _countof(m_szConstantsFile), m_szDataFolder);
+    StringCchCatW(m_szConstantsFile, _countof(m_szConstantsFile), L"\\Constants.txt");
     if (!m_db.LoadFromFile(m_szConstantsFile))
     {
         ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
@@ -4126,8 +4139,8 @@ INT MMainWnd::CheckData(VOID)
     }
 
     // cpp.exe
-    lstrcpyW(m_szCppExe, m_szDataFolder);
-    lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+    StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
+    StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
     if (::GetFileAttributesW(m_szCppExe) == INVALID_FILE_ATTRIBUTES)
     {
         ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
@@ -4135,8 +4148,8 @@ INT MMainWnd::CheckData(VOID)
     }
 
     // windres.exe
-    lstrcpyW(m_szWindresExe, m_szDataFolder);
-    lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+    StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
+    StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
     if (::GetFileAttributesW(m_szWindresExe) == INVALID_FILE_ATTRIBUTES)
     {
         ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
@@ -4144,8 +4157,8 @@ INT MMainWnd::CheckData(VOID)
     }
 
     // upx.exe
-    lstrcpyW(m_szUpxExe, m_szDataFolder);
-    lstrcatW(m_szUpxExe, L"\\bin\\upx.exe");
+    StringCchCopyW(m_szUpxExe, _countof(m_szUpxExe), m_szDataFolder);
+    StringCchCatW(m_szUpxExe, _countof(m_szUpxExe), L"\\bin\\upx.exe");
     if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
     {
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
@@ -4155,15 +4168,17 @@ INT MMainWnd::CheckData(VOID)
     // mcdx.exe
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    lstrcpyW(wcsrchr(szPath, L'\\'), L"\\mcdx.exe");
+    LPWSTR pch = wcsrchr(szPath, L'\\');
+    size_t diff = pch - szPath;
+    StringCchCopyW(pch, diff, L"\\mcdx.exe");
     if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpynW(m_szMcdxExe, szPath, _countof(m_szMcdxExe));
+        StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), szPath);
     }
     else
     {
-        lstrcpyW(m_szMcdxExe, m_szDataFolder);
-        lstrcatW(m_szMcdxExe, L"\\bin\\mcdx.exe");
+        StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), m_szDataFolder);
+        StringCchCatW(m_szMcdxExe, _countof(m_szMcdxExe), L"\\bin\\mcdx.exe");
         if (::GetFileAttributesW(m_szMcdxExe) == INVALID_FILE_ATTRIBUTES)
         {
             ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
@@ -4274,7 +4289,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         LPWSTR szFormat = LoadStringDx(IDS_FILEISUPXED);
 
         WCHAR szMsg[MAX_PATH + 128];
-        wsprintfW(szMsg, szFormat, pszReal);
+        StringCchPrintfW(szMsg, _countof(szMsg), szFormat, pszReal);
 
         INT nID;
         if (bForceDecompress)
@@ -4371,25 +4386,26 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     }
 
     ++pch;
-    lstrcpy(pch, TEXT("resource.h"));
+    size_t diff = pch - szPath;
+    StringCchCopy(pch, diff, TEXT("resource.h"));
     if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
     {
-        lstrcpy(pch, TEXT("..\\resource.h"));
+        StringCchCopy(pch, diff, TEXT("..\\resource.h"));
         if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
         {
-            lstrcpy(pch, TEXT("..\\..\\resource.h"));
+            StringCchCopy(pch, diff, TEXT("..\\..\\resource.h"));
             if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
             {
-                lstrcpy(pch, TEXT("..\\..\\..\\resource.h"));
+                StringCchCopy(pch, diff, TEXT("..\\..\\..\\resource.h"));
                 if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
-                    lstrcpy(pch, TEXT("..\\src\\resource.h"));
+                    StringCchCopy(pch, diff, TEXT("..\\src\\resource.h"));
                     if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
-                        lstrcpy(pch, TEXT("..\\..\\src\\resource.h"));
+                        StringCchCopy(pch, diff, TEXT("..\\..\\src\\resource.h"));
                         if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                         {
-                            lstrcpy(pch, TEXT("..\\..\\..\\src\\resource.h"));
+                            StringCchCopy(pch, diff, TEXT("..\\..\\..\\src\\resource.h"));
                             if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                             {
                                 return FALSE;
@@ -4906,7 +4922,7 @@ BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
 {
     WCHAR sz[MAX_PATH];
     mstrcpy(sz, pszPath);
-    lstrcat(sz, L"\\*");
+    StringCchCat(sz, _countof(sz), L"\\*");
 
     BOOL bFound = FALSE;
     WIN32_FIND_DATA find;
@@ -5194,9 +5210,13 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
 
 BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 {
-    WCHAR szCmdLine[MAX_PATH * 2];
-    wsprintfW(szCmdLine, L"\"%s\" -9 \"%s\"", pszUpx, pszExeFile);
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    MStringW strCmdLine;
+    strCmdLine += L"\"";
+    strCmdLine += pszUpx;
+    strCmdLine += L"\" -9 \"";
+    strCmdLine += pszExeFile;
+    strCmdLine += L"\"";
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
@@ -5206,7 +5226,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, szCmdLine))
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         std::string strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
@@ -5599,9 +5619,9 @@ void MMainWnd::OnLoadResH(HWND hwnd)
 
     WCHAR szFile[MAX_PATH];
     if (m_szResourceH[0])
-        lstrcpynW(szFile, m_szResourceH, _countof(szFile));
+        StringCchCopyW(szFile, _countof(szFile), m_szResourceH);
     else
-        lstrcpyW(szFile, L"resource.h");
+        StringCchCopyW(szFile, _countof(szFile), L"resource.h");
 
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
@@ -5716,7 +5736,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
             if (eval_ast(parser.ast(), value))
             {
                 char sz[32];
-                wsprintfA(sz, "%d", value);
+                StringCchPrintfA(sz, _countof(sz), "%d", value);
                 m_settings.id_map[macro] = sz;
             }
 #if 0
@@ -5793,13 +5813,15 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     MFile file1(szTempFile1, TRUE);
     char buf[MAX_PATH + 64];
     WCHAR szFile[MAX_PATH];
-    lstrcpyW(szFile, pszFile);
-    wsprintfA(buf, "#include \"%s\"\n", MTextToAnsi(CP_ACP, szFile).c_str());
+    StringCchCopyW(szFile, _countof(szFile), pszFile);
+    file1.WriteSzA("#include \"", &cbWritten);
+    file1.WriteSzA(MTextToAnsi(CP_ACP, szFile).c_str(), &cbWritten);
+    file1.WriteSzA("\"\n", &cbWritten);
     file1.WriteSzA(buf, &cbWritten);
     file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
     for (size_t i = 0; i < macros.size(); ++i)
     {
-        wsprintfA(buf, "%s\n", macros[i].c_str());
+        StringCchPrintfA(buf, _countof(buf), "%s\n", macros[i].c_str());
         file1.WriteSzA(buf, &cbWritten);
     }
     file1.CloseHandle();
@@ -5850,9 +5872,12 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     MFile file(szTempFile, TRUE);
     file.CloseHandle();
 
-    WCHAR szCmdLine[512];
-    wsprintfW(szCmdLine,
-        L"-E -dM -DRC_INVOKED -o \"%s\" -x none \"%s\"", szTempFile, pszFile);
+    MString strCmdLine;
+    strCmdLine += L"-E -dM -DRC_INVOKED -o \"";
+    strCmdLine += szTempFile;
+    strCmdLine += L"\" -x none \"";
+    strCmdLine += pszFile;
+    strCmdLine += L"\"";
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
     BOOL bOK = FALSE;
@@ -5862,7 +5887,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     info.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE | SEE_MASK_FLAG_NO_UI;
     info.hwnd = hwnd;
     info.lpFile = m_szCppExe;
-    info.lpParameters = szCmdLine;
+    info.lpParameters = &strCmdLine[0];
     info.nShow = SW_HIDE;
     if (ShellExecuteExW(&info))
     {
@@ -5872,15 +5897,14 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
         {
             DWORD cbRead;
             CHAR szBuf[512];
-            std::vector<char> data;
+            std::string data;
             while (file.ReadFile(szBuf, 512, &cbRead) && cbRead)
             {
-                data.insert(data.end(), &szBuf[0], &szBuf[cbRead]);
+                data.append(&szBuf[0], cbRead);
             }
             file.CloseHandle();
             DeleteFileW(szTempFile);
-            data.push_back(0);
-            bOK = ParseResH(hwnd, pszFile, &data[0], (DWORD)(data.size() - 1));
+            bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
         }
     }
     DeleteFileW(szTempFile);
@@ -6008,22 +6032,22 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 {
     if (m_settings.strWindResExe.size())
     {
-        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
+        StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_settings.strWindResExe.c_str());
     }
     else
     {
-        lstrcpyW(m_szWindresExe, m_szDataFolder);
-        lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+        StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
+        StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
     }
 
     if (m_settings.strCppExe.size())
     {
-        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
+        StringCchCopy(m_szCppExe, _countof(m_szCppExe), m_settings.strCppExe.c_str());
     }
     else
     {
-        lstrcpyW(m_szCppExe, m_szDataFolder);
-        lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+        StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
+        StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
     }
 }
 
@@ -6457,7 +6481,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #if 1 && !defined(NDEBUG) && (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
-    wsprintf(szText, TEXT("GDI:%ld, USER:%ld"), 
+    StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"), 
              GetGuiResources(hProcess, GR_GDIOBJECTS),
              GetGuiResources(hProcess, GR_USEROBJECTS));
     ChangeStatusText(szText);
@@ -6506,7 +6530,7 @@ WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
             {
                 return g_Langs[i].LangID;
             }
-            wsprintfW(szText, L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
+            StringCchPrintfW(szText, _countof(szText), L"%s (%u)", g_Langs[i].str.c_str(), g_Langs[i].LangID);
             if (lstrcmpiW(szText, szText) == 0)
             {
                 return g_Langs[i].LangID;
@@ -6720,7 +6744,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
             }
 
-            lstrcpyW(szOldText, pszOldText);
+            StringCchCopyW(szOldText, _countof(szOldText), pszOldText);
             mstr_trim(szOldText);
 
             if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING ||
@@ -6761,7 +6785,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
 
             WCHAR szNewText[128];
-            lstrcpyW(szNewText, pszNewText);
+            StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
             mstr_trim(szNewText);
 
             if (HIWORD(lParam) == I_NAME)
@@ -6933,13 +6957,14 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         // build file path
         if (m_szNominalFile[0])
         {
-            lstrcpyW(szResH, m_szNominalFile);
+            StringCchCopyW(szResH, _countof(szResH), m_szNominalFile);
             WCHAR *pch = wcsrchr(szResH, L'\\');
-            lstrcpyW(pch, L"\\resource.h");
+            *pch = 0;
+            StringCchCatW(pch, _countof(szResH), L"\\resource.h");
         }
         else
         {
-            lstrcpyW(szResH, L"resource.h");
+            StringCchCopyW(szResH, _countof(szResH), L"resource.h");
         }
 
         if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)
@@ -7342,7 +7367,7 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
         pch = wcsrchr(szPath, L'/');
     if (pch)
     {
-        wsprintfW(sz, LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
+        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
         SetWindowTextW(hwnd, sz);
     }
     else
@@ -7489,12 +7514,12 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.strCppExe.clear();
 
     // cpp.exe
-    lstrcpyW(m_szCppExe, m_szDataFolder);
-    lstrcatW(m_szCppExe, L"\\bin\\cpp.exe");
+    StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
+    StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
 
     // windres.exe
-    lstrcpyW(m_szWindresExe, m_szDataFolder);
-    lstrcatW(m_szWindresExe, L"\\bin\\windres.exe");
+    StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
+    StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
 
     m_settings.bOldStyle = TRUE;
 }
@@ -7558,11 +7583,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         {
             MString key, value;
 
-            wsprintf(szValueName, TEXT("MacroName%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
             if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
                 key = szText;
 
-            wsprintf(szValueName, TEXT("MacroValue%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroValue%lu"), i);
             if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
                 value = szText;
 
@@ -7580,7 +7605,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         {
             MString value;
 
-            wsprintf(szValueName, TEXT("Include%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
             if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
                 value = szText;
 
@@ -7652,7 +7677,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     TCHAR szFormat[32], szFile[MAX_PATH];
     for (i = 0; i < dwCount; ++i)
     {
-        wsprintf(szFormat, TEXT("File%lu"), i);
+        StringCchPrintf(szFormat, _countof(szFormat), TEXT("File%lu"), i);
         keyRisoh.QuerySz(szFormat, szFile, _countof(szFile));
         m_settings.vecRecentlyUsed.push_back(szFile);
     }
@@ -7748,7 +7773,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
     for (i = 0; i < dwCount; ++i)
     {
-        wsprintf(szValueName, TEXT("File%lu"), i);
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("File%lu"), i);
         keyRisoh.SetSz(szValueName, m_settings.vecRecentlyUsed[i].c_str());
     }
 
@@ -7768,10 +7793,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         macro_map_type::const_iterator it, end = m_settings.macros.end();
         for (it = m_settings.macros.begin(); it != end; ++it, ++i)
         {
-            wsprintf(szValueName, TEXT("MacroName%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
             keyRisoh.SetSz(szValueName, it->first.c_str());
 
-            wsprintf(szValueName, TEXT("MacroValue%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroValue%lu"), i);
             keyRisoh.SetSz(szValueName, it->second.c_str());
         }
     }
@@ -7782,7 +7807,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     {
         for (i = 0; i < dwNumIncludes; ++i)
         {
-            wsprintf(szValueName, TEXT("Include%lu"), i);
+            StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
             keyRisoh.SetSz(szValueName, m_settings.includes[i].c_str());
         }
     }
@@ -7910,11 +7935,11 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     if (m_settings.strWindResExe.size())
     {
-        lstrcpy(m_szWindresExe, m_settings.strWindResExe.c_str());
+        StringCchCopy(m_szWindresExe, _countof(m_szWindresExe), m_settings.strWindResExe.c_str());
     }
     if (m_settings.strCppExe.size())
     {
-        lstrcpy(m_szCppExe, m_settings.strCppExe.c_str());
+        StringCchCopy(m_szCppExe, _countof(m_szCppExe), m_settings.strCppExe.c_str());
     }
 
     PostMessageDx(WM_COMMAND, CMDID_READY);
@@ -9129,7 +9154,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     TCHAR szText[32];
     if (strPrim.empty())
     {
-        wsprintf(szText, TEXT("0x%04X"), PRIMARYLANGID(langid));
+        StringCchPrintf(szText, _countof(szText), TEXT("0x%04X"), PRIMARYLANGID(langid));
         strPrim = szText;
     }
 
@@ -9152,7 +9177,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     }
     if (strSub.empty())
     {
-        wsprintf(szText, TEXT("0x%04X"), SUBLANGID(langid));
+        StringCchPrintf(szText, _countof(szText), TEXT("0x%04X"), SUBLANGID(langid));
         strSub = szText;
     }
 #undef SWITCH_SUBLANG

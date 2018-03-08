@@ -91,7 +91,7 @@ public:
                 MapWindowRect(NULL, m_hwndOwner, &rc);
 
                 TCHAR szText[32];
-                wsprintf(szText, TEXT("%d"), it->first);
+                StringCchPrintf(szText, _countof(szText), TEXT("%d"), it->first);
                 TextOut(hDC, rc.left, rc.top, szText, lstrlen(szText));
             }
             SelectObject(hDC, hFontOld);
