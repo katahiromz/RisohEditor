@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAM_HPP_
-#define MZC4_MBYTESTREAM_HPP_       5       /* Version 5 */
+#define MZC4_MBYTESTREAM_HPP_       6       /* Version 6 */
 
 class MByteStream;
 
@@ -286,9 +286,9 @@ public:
 
         FILE *fp;
 #ifdef UNICODE
-        fp = _wfopen(FileName, L"rb");
+        _wfopen_s(&fp, FileName, L"rb");
 #else
-        fp = fopen(FileName, "rb");
+        fopen_s(&fp, FileName, "rb");
 #endif
         if (!fp)
             return false;
@@ -317,9 +317,9 @@ public:
     {
         FILE *fp;
 #ifdef UNICODE
-        fp = _wfopen(FileName, L"wb");
+        _wfopen_s(&fp, FileName, L"wb");
 #else
-        fp = fopen(FileName, "wb");
+        fopen_s(&fp, FileName, "wb");
 #endif
         if (!fp)
             return false;

@@ -417,7 +417,8 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
     using namespace std;
-    FILE *fp = _tfopen(filename, _T("wb"));
+	FILE *fp;
+    _wfopen_s(&fp, filename, L"wb");
     int n = (int)fwrite(pv, size, 1, fp);
     fclose(fp);
     return n == 1;
@@ -1994,7 +1995,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 
             if (search.bIgnoreCases)
             {
-                _tcsupr(search.szText);
+                CharUpper(search.szText);
             }
 
             BOOL bFound = FALSE;
@@ -2021,7 +2022,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 
                         if (search.bIgnoreCases)
                         {
-                            _tcsupr(&text[0]);
+                            CharUpper(&text[0]);
                         }
                         if (_tcsstr(text.c_str(), search.strText.c_str()) != NULL)
                         {
@@ -2218,7 +2219,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 
     if (m_search.bIgnoreCases)
     {
-        _tcsupr(&m_search.strText[0]);
+        CharUpper(&m_search.strText[0]);
     }
 
     m_search.bCancelled = FALSE;
@@ -6962,7 +6963,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // create new
-        FILE *fp = _wfopen(szResH, L"wb");
+		FILE *fp;
+		_wfopen_s(&fp, szResH, L"wb");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
@@ -6983,7 +6985,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     else
     {
         // open file
-        FILE *fp = _wfopen(m_szResourceH, L"r");
+		FILE *fp;
+		_wfopen_s(&fp, m_szResourceH, L"r");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
@@ -7075,7 +7078,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // write now
-        fp = _wfopen(m_szResourceH, L"w");
+        _wfopen_s(&fp, m_szResourceH, L"w");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);

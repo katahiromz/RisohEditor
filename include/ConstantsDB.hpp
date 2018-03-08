@@ -271,7 +271,8 @@ public:
         using namespace std;
         m_map.clear();
 
-        FILE *fp = _wfopen(FileName, L"rb");
+		FILE *fp;
+        _wfopen_s(&fp, FileName, L"rb");
         if (fp == NULL)
             return FALSE;
 
@@ -303,13 +304,13 @@ public:
 
             // "name, value, mask"
             static const wchar_t *s_delim = L" ,\r\n";
-            WCHAR *pch0 = wcstok(&line[0], s_delim);
+            WCHAR *pch0 = wcstok_s(&line[0], s_delim, NULL);
             if (pch0 == NULL)
                 continue;
-            WCHAR *pch1 = wcstok(NULL, s_delim);
+            WCHAR *pch1 = wcstok_s(NULL, s_delim, NULL);
             if (pch1 == NULL)
                 continue;
-            WCHAR *pch2 = wcstok(NULL, s_delim);
+            WCHAR *pch2 = wcstok_s(NULL, s_delim, NULL);
 
             NameType name = pch0;
             mstr_trim(name);

@@ -27,5 +27,6 @@ TMP1.$$$
 *.filters
 *.sdf
 *.opensdf
+.vs
 ipch
 risoheditor-*-setup.exe
