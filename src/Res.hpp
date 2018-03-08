@@ -761,14 +761,7 @@ Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& entries)
                                entry.type.ptr(), entry.name.ptr(), entry.lang,
                                pv, size))
         {
-            DWORD dwError = GetLastError();
-            WCHAR szFormat[128], sz[128];
-            LoadStringW(GetModuleHandle(NULL), 27, szFormat, _countof(szFormat));
-            wsprintfW(sz, szFormat, dwError);
-            MessageBoxW(hwnd, sz, NULL, MB_ICONERROR);
             assert(0);
-            ::EndUpdateResourceW(hUpdate, TRUE);
-            dwError = dwError;
             return FALSE;
         }
     }

@@ -2284,7 +2284,7 @@ public:
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
         HMENU hSubMenu = GetSubMenu(hMenu, 1);
 
         ::SetForegroundWindow(hwnd);

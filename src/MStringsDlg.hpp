@@ -214,8 +214,8 @@ public:
     MStringsDlg(ConstantsDB& db, StringRes& str_res)
         : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db)
     {
-        m_hIcon = LoadIconDx(3);
-        m_hIconSm = LoadSmallIconDx(3);
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
     }
 
     ~MStringsDlg()
@@ -424,7 +424,7 @@ public:
     {
         if (hwndContext == GetDlgItem(hwnd, ctl1))
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
             HMENU hSubMenu = GetSubMenu(hMenu, 4);
 
             SetForegroundWindow(hwnd);

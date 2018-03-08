@@ -370,7 +370,7 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
             HMENU hSubMenu = GetSubMenu(hMenu, 4);
 
             SetForegroundWindow(hwnd);

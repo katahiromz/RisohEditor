@@ -1038,7 +1038,7 @@ public:
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
         MWindowBase::ModifyWndClassDx(wcx);
-        wcx.lpszMenuName = MAKEINTRESOURCE(1);
+        wcx.lpszMenuName = MAKEINTRESOURCE(IDM_MAIN);
         wcx.hIcon = m_hIcon;
         wcx.hIconSm = m_hIconSm;
     }
@@ -3100,7 +3100,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 
     TreeView_SelectItem(hwndContext, hItem);
 
-    HMENU hMenu = LoadMenuW(m_hInst, MAKEINTRESOURCEW(2));
+    HMENU hMenu = LoadMenuW(m_hInst, MAKEINTRESOURCEW(IDM_POPUPS));
     OnInitMenu(hwnd, hMenu);
     HMENU hSubMenu = ::GetSubMenu(hMenu, 0);
     if (hMenu == NULL || hSubMenu == NULL)
@@ -8042,12 +8042,12 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 BOOL MMainWnd::StartDx()
 {
-    MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(1));
-    MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(2));
+    MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(IDC_CURSORNS));
+    MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(IDC_CURSORWE));
 
     m_hIcon = LoadIconDx(IDI_MAIN);
     m_hIconSm = LoadSmallIconDx(IDI_MAIN);
-    m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(1));
+    m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(IDA_MAIN));
 
     if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
         WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))

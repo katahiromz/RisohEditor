@@ -339,4 +339,10 @@
 #define HID_TEST            1
 #define HID_SAMPLE          0x7FFFFFFF
 
+#define IDC_CURSORNS        1
+#define IDC_CURSORWE        2
+#define IDC_BOUNCE          3
+
+#define IDA_MAIN            1
+
 #endif  // ndef RESOURCE_H_

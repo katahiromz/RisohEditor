@@ -475,7 +475,7 @@ public:
                 yPos = (rc.top + rc.bottom) / 2;
             }
 
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(2));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
             HMENU hSubMenu = GetSubMenu(hMenu, 3);
 
             SetForegroundWindow(hwnd);
