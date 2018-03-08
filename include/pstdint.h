@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     6   /* Version 6 */
+#define MZC4_PSTDINT_H_     7   /* Version 7 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
@@ -15,11 +15,11 @@
     #endif
     typedef signed char int8_t;
     typedef SHORT       int16_t;
-    typedef LONG        int32_t;
+    typedef INT         int32_t;
     typedef LONGLONG    int64_t;
     typedef BYTE        uint8_t;
     typedef WORD        uint16_t;
-    typedef DWORD       uint32_t;
+    typedef UINT        uint32_t;
     typedef DWORDLONG   uint64_t;
 #else
     #ifdef __cplusplus
