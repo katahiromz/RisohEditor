@@ -304,13 +304,14 @@ public:
 
             // "name, value, mask"
             static const wchar_t *s_delim = L" ,\r\n";
-            WCHAR *pch0 = wcstok_s(&line[0], s_delim, NULL);
+			wchar_t *context;
+            WCHAR *pch0 = wcstok_s(&line[0], s_delim, &context);
             if (pch0 == NULL)
                 continue;
-            WCHAR *pch1 = wcstok_s(NULL, s_delim, NULL);
+            WCHAR *pch1 = wcstok_s(NULL, s_delim, &context);
             if (pch1 == NULL)
                 continue;
-            WCHAR *pch2 = wcstok_s(NULL, s_delim, NULL);
+            WCHAR *pch2 = wcstok_s(NULL, s_delim, &context);
 
             NameType name = pch0;
             mstr_trim(name);
