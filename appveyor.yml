@@ -24,7 +24,7 @@ configuration:
 
 before_build:
   - cmake --version
-  - cmake -G "%GENERATOR%" -A "%PLATFORM%" ..
+  - cmake -G "%GENERATOR%" -A "%PLATFORM%" .
 
 build:
   project: RisohEditor.sln
