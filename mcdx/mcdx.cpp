@@ -209,6 +209,8 @@ int g_value = 0;
 typedef std::map<LANGID, MessageRes> msg_tables_type;
 msg_tables_type g_msg_tables;
 
+char g_lang_english[] = "LANG=en_US";
+
 int syntax_error(void)
 {
     fprintf(stderr, "%s (%d): ERROR: Syntax error\n", g_strFile.c_str(), g_nLineNo);
@@ -748,7 +750,7 @@ int save_coff(const char *output_file)
         fputs(output.c_str(), stderr);
     }
 #else
-    putenv("LANG=en_US");
+    putenv(g_lang_english);
     if (FILE *fp = popen(command_line.c_str(), "r"))
     {
         std::string output;
@@ -877,7 +879,7 @@ int load_rc(const char *input_file)
         fputs(output.c_str(), stderr);
     }
 #else
-    putenv("LANG=en_US");
+    putenv(g_lang_english);
     if (FILE *fp = popen(command_line.c_str(), "r"))
     {
         std::string output;
