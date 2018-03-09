@@ -78,6 +78,7 @@ struct RisohSettings
     MString             strWindResExe;
     MString             strCppExe;
     BOOL                bOldStyle;
+    MString             strVersion;
 
     RisohSettings()
     {

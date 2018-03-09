@@ -240,6 +240,7 @@ IDM_POPUPS MENU
     }
 }
 
+// TODO: Update the version numbers
 STRINGTABLE
 {
     IDS_APPNAME, "RisohEditor 3.8 by Katayama Hirofumi MZ"

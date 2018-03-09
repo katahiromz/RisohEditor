@@ -7518,6 +7518,9 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
 
     m_settings.bOldStyle = TRUE;
+
+    // TODO: Update the version number
+    m_settings.strVersion = L"3.8";
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -7703,6 +7706,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     //keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
     m_settings.bOldStyle = TRUE;
 
+    if (keyRisoh.QuerySz(TEXT("strVersion"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        m_settings.strVersion = szText;
+    }
+
     return TRUE;
 }
 
@@ -7813,6 +7821,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
     // always use old style
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
+
+    keyRisoh.SetSz(TEXT("strVersion"), m_settings.strVersion.c_str());
 
     return TRUE;
 }

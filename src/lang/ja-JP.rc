@@ -240,6 +240,7 @@ IDM_POPUPS MENU
     }
 }
 
+// TODO: Update the version numbers
 STRINGTABLE
 {
     IDS_APPNAME, "リソーエディタ 3.8 by 片山博文MZ"

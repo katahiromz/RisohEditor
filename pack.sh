@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
+# TODO: Update the version number
 RE_VERSION=3.8
 RE_BIN_DIR="build/re-$RE_VERSION-bin"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt src/resource.h build/RisohEditor.exe"
