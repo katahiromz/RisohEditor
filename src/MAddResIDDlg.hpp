@@ -205,6 +205,11 @@ public:
                         }
                     }
                     UINT nNextID = nLastID + 1;
+                    if (i == IDTYPE_COMMAND)
+                    {
+                        if (nNextID < 8)
+                            nNextID = 8;
+                    }
                     SetDlgItemInt(hwnd, edt2, nNextID, TRUE);
                 }
             }
