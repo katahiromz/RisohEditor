@@ -119,7 +119,7 @@ inline VOID MResizable::SetLayoutAnchor(
     assert(::IsWindow(m_hwndParent));
     assert(sizLA_1 != mzcLA_NO_ANCHOR);
     MResizable::SetLayoutAnchor(
-        ::GetDlgItem(m_hwndParent, nCtrlID), sizLA_1, sizLA_2);
+        GetDlgItem(m_hwndParent, nCtrlID), sizLA_1, sizLA_2);
 }
 
 inline VOID MResizable::OnSize(const RECT *prcClient/* = NULL*/)
@@ -148,7 +148,7 @@ inline VOID MResizable::ShowSizeGrip(BOOL bShow/* = TRUE*/)
         {
             // create size grip
             MRect ClientRect;
-            ::GetClientRect(m_hwndParent, &ClientRect);
+            GetClientRect(m_hwndParent, &ClientRect);
             INT cx = ::GetSystemMetrics(SM_CXVSCROLL);
             INT cy = ::GetSystemMetrics(SM_CYHSCROLL);
             m_size_grip.CreateWindowDx(m_hwndParent, NULL,
@@ -158,12 +158,12 @@ inline VOID MResizable::ShowSizeGrip(BOOL bShow/* = TRUE*/)
         }
 
         MoveSizeGrip();
-        ::ShowWindow(m_size_grip, SW_SHOWNOACTIVATE);
+        ShowWindow(m_size_grip, SW_SHOWNOACTIVATE);
     }
     else
     {
         if (::IsWindow(m_size_grip))
-            ::ShowWindow(m_size_grip, SW_HIDE);
+            ShowWindow(m_size_grip, SW_HIDE);
     }
 }
 
@@ -176,10 +176,10 @@ inline VOID MResizable::MoveSizeGrip()
     {
         // move it
         MRect ClientRect;
-        ::GetClientRect(m_hwndParent, &ClientRect);
+        GetClientRect(m_hwndParent, &ClientRect);
         INT cx = ::GetSystemMetrics(SM_CXVSCROLL);
         INT cy = ::GetSystemMetrics(SM_CYHSCROLL);
-        ::SetWindowPos(m_size_grip, NULL,
+        SetWindowPos(m_size_grip, NULL,
             ClientRect.right - cx, ClientRect.bottom - cy,
             cx, cy, SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
     }
@@ -193,13 +193,13 @@ inline VOID MResizable::ModifyParentStyle(BOOL bEnableResize)
     {
         style &= ~DS_MODALFRAME;
         style |= WS_THICKFRAME | WS_MAXIMIZEBOX;
-        ::SetWindowLong(m_hwndParent, GWL_STYLE, style);
+        SetWindowLong(m_hwndParent, GWL_STYLE, style);
     }
     else
     {
         style &= ~(WS_THICKFRAME | WS_MAXIMIZEBOX);
         style |= DS_MODALFRAME;
-        ::SetWindowLong(m_hwndParent, GWL_STYLE, style);
+        SetWindowLong(m_hwndParent, GWL_STYLE, style);
     }
     // ex.style
     style = ::GetWindowLong(m_hwndParent, GWL_EXSTYLE);
@@ -207,29 +207,29 @@ inline VOID MResizable::ModifyParentStyle(BOOL bEnableResize)
     {
         style &= ~WS_EX_DLGMODALFRAME;
         style |= 0;
-        ::SetWindowLong(m_hwndParent, GWL_EXSTYLE, style);
+        SetWindowLong(m_hwndParent, GWL_EXSTYLE, style);
     }
     else
     {
         style &= ~0;
         style |= WS_EX_DLGMODALFRAME;
-        ::SetWindowLong(m_hwndParent, GWL_EXSTYLE, style);
+        SetWindowLong(m_hwndParent, GWL_EXSTYLE, style);
     }
     if (bEnableResize)
     {
-        ::GetSystemMenu(m_hwndParent, TRUE);
+        GetSystemMenu(m_hwndParent, TRUE);
     }
     else
     {
         HMENU hSysMenu;
         hSysMenu = ::GetSystemMenu(m_hwndParent, FALSE);
-        ::RemoveMenu(hSysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-        ::RemoveMenu(hSysMenu, SC_SIZE, MF_BYCOMMAND);
-        ::RemoveMenu(hSysMenu, SC_RESTORE, MF_BYCOMMAND);
+        RemoveMenu(hSysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+        RemoveMenu(hSysMenu, SC_SIZE, MF_BYCOMMAND);
+        RemoveMenu(hSysMenu, SC_RESTORE, MF_BYCOMMAND);
     }
-    ::RedrawWindow(m_hwndParent, NULL, NULL,
+    RedrawWindow(m_hwndParent, NULL, NULL,
                    RDW_FRAME | RDW_INVALIDATE | RDW_ERASENOW);
-    ::InvalidateRect(m_hwndParent, NULL, TRUE);
+    InvalidateRect(m_hwndParent, NULL, TRUE);
 }
 
 inline VOID
@@ -268,7 +268,7 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
     }
     else
     {
-        ::GetClientRect(m_hwndParent, &ClientRect);
+        GetClientRect(m_hwndParent, &ClientRect);
     }
 
     const INT count = INT(m_layouts.size());
@@ -289,8 +289,8 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
 
         MRect ChildRect, NewRect;
 
-        ::GetWindowRect(hwndCtrl, &ChildRect);
-        ::MapWindowPoints(NULL, m_hwndParent,
+        GetWindowRect(hwndCtrl, &ChildRect);
+        MapWindowPoints(NULL, m_hwndParent,
                           reinterpret_cast<LPPOINT>(&ChildRect), 2);
 
         NewRect.left = layout.m_sizMargin1.cx +
@@ -309,10 +309,10 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
                 NewRect.Width(), NewRect.Height(), uFlags);
         }
 
-        ::InvalidateRect(hwndCtrl, NULL, TRUE);
+        InvalidateRect(hwndCtrl, NULL, TRUE);
     }
 
-    ::EndDeferWindowPos(hDwp);
+    EndDeferWindowPos(hDwp);
 }
 
 inline VOID MResizable::SetLayoutAnchor(
@@ -323,10 +323,10 @@ inline VOID MResizable::SetLayoutAnchor(
     assert(sizLA_1 != mzcLA_NO_ANCHOR);
 
     MRect ClientRect, ChildRect;
-    ::GetClientRect(m_hwndParent, &ClientRect);
-    ::GetWindowRect(hwndCtrl, &ChildRect);
-    ::MapWindowPoints(NULL, m_hwndParent,
-                      reinterpret_cast<LPPOINT>(&ChildRect), 2);
+    GetClientRect(m_hwndParent, &ClientRect);
+    GetWindowRect(hwndCtrl, &ChildRect);
+    MapWindowPoints(NULL, m_hwndParent,
+                    reinterpret_cast<LPPOINT>(&ChildRect), 2);
 
     if (sizLA_2 == mzcLA_NO_ANCHOR)
         sizLA_2 = sizLA_1;

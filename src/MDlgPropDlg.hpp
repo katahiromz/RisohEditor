@@ -148,8 +148,8 @@ public:
             strCaption = mstr_quote(strCaption);
         }
 
-        ::SetDlgItemTextW(hwnd, cmb1, strCaption.c_str());
-        ::SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
+        SetDlgItemTextW(hwnd, cmb1, strCaption.c_str());
+        SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
 
         if (m_dialog_res.IsExtended())
         {
@@ -184,29 +184,29 @@ public:
         if (m_dialog_res.m_italic)
             CheckDlgButton(hwnd, chx3, BST_CHECKED);
 
-        ::SetDlgItemInt(hwnd, edt1, m_dialog_res.m_pt.x, TRUE);
-        ::SetDlgItemInt(hwnd, edt2, m_dialog_res.m_pt.y, TRUE);
-        ::SetDlgItemInt(hwnd, edt3, m_dialog_res.m_siz.cx, TRUE);
-        ::SetDlgItemInt(hwnd, edt4, m_dialog_res.m_siz.cy, TRUE);
-        ::SendDlgItemMessage(hwnd, edt1, EM_SETLIMITTEXT, 12, 0);
-        ::SendDlgItemMessage(hwnd, edt2, EM_SETLIMITTEXT, 12, 0);
-        ::SendDlgItemMessage(hwnd, edt3, EM_SETLIMITTEXT, 12, 0);
-        ::SendDlgItemMessage(hwnd, edt4, EM_SETLIMITTEXT, 12, 0);
+        SetDlgItemInt(hwnd, edt1, m_dialog_res.m_pt.x, TRUE);
+        SetDlgItemInt(hwnd, edt2, m_dialog_res.m_pt.y, TRUE);
+        SetDlgItemInt(hwnd, edt3, m_dialog_res.m_siz.cx, TRUE);
+        SetDlgItemInt(hwnd, edt4, m_dialog_res.m_siz.cy, TRUE);
+        SendDlgItemMessage(hwnd, edt1, EM_SETLIMITTEXT, 12, 0);
+        SendDlgItemMessage(hwnd, edt2, EM_SETLIMITTEXT, 12, 0);
+        SendDlgItemMessage(hwnd, edt3, EM_SETLIMITTEXT, 12, 0);
+        SendDlgItemMessage(hwnd, edt4, EM_SETLIMITTEXT, 12, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
-        ::SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
+        SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
+        SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
         MStringW strHelp = m_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
-        ::SetDlgItemText(hwnd, cmb3, strHelp.c_str());
+        SetDlgItemText(hwnd, cmb3, strHelp.c_str());
         InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, L"", IDTYPE_HELP);
         SubclassChildDx(m_cmb3, cmb3);
-        ::SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
+        SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
 
-        ::SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_type_face.c_str_or_empty());
-        ::SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
+        SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_type_face.c_str_or_empty());
+        SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
-        ::SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
-        ::SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
+        SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
+        SendDlgItemMessage(hwnd, edt5, EM_SETLIMITTEXT, 12, 0);
 
         MString strMenu;
         if (m_dialog_res.m_menu.empty())
@@ -215,8 +215,8 @@ public:
             strMenu = m_db.GetNameOfResID(IDTYPE_MENU, m_dialog_res.m_menu.m_id);
         else
             strMenu = m_dialog_res.m_menu.str();
-        ::SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
-        ::SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
+        SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
+        SendDlgItemMessage(hwnd, cmb6, CB_LIMITTEXT, 64, 0);
         SubclassChildDx(m_cmb6, cmb6);
 
         InitTables(TEXT("DIALOG"));
@@ -231,8 +231,8 @@ public:
 
         m_bUpdating = TRUE;
         StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwStyle);
-        ::SetDlgItemTextW(hwnd, edt6, Buf);
-        ::SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
+        SetDlgItemTextW(hwnd, edt6, Buf);
+        SendDlgItemMessage(hwnd, edt6, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
         m_dwExStyle = m_dialog_res.m_ex_style;
@@ -243,8 +243,8 @@ public:
 
         m_bUpdating = TRUE;
         StringCchPrintfW(Buf, _countof(Buf), L"%08X", m_dwExStyle);
-        ::SetDlgItemTextW(hwnd, edt7, Buf);
-        ::SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
+        SetDlgItemTextW(hwnd, edt7, Buf);
+        SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
         CenterWindowDx();

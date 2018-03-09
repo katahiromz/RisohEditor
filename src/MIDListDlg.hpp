@@ -272,7 +272,7 @@ public:
         switch (id)
         {
         case IDCANCEL:
-            ::DestroyWindow(hwnd);
+            DestroyWindow(hwnd);
             break;
         case CMDID_ADDRESID:
             {

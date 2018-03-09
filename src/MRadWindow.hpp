@@ -205,7 +205,7 @@ public:
             MRadCtrl *pCtrl = GetRadCtrl(*it);
             if (pCtrl)
             {
-                ::DestroyWindow(pCtrl->m_hwndRubberBand);
+                DestroyWindow(pCtrl->m_hwndRubberBand);
                 pCtrl->m_hwndRubberBand = NULL;
                 bFound = TRUE;
             }
@@ -229,7 +229,7 @@ public:
         MRubberBand *band = GetRubberBand();
         if (band)
         {
-            ::DestroyWindow(*band);
+            DestroyWindow(*band);
         }
         GetTargets().erase(m_hwnd);
         m_hwndRubberBand = NULL;
@@ -275,8 +275,8 @@ public:
             if (pCtrl)
             {
                 RECT rc;
-                ::GetWindowRect(*pCtrl, &rc);
-                ::MapWindowPoints(NULL, ::GetParent(*pCtrl), (LPPOINT)&rc, 2);
+                GetWindowRect(*pCtrl, &rc);
+                MapWindowPoints(NULL, ::GetParent(*pCtrl), (LPPOINT)&rc, 2);
                 OffsetRect(&rc, dx, dy);
 
                 pCtrl->m_bMoving = TRUE;
@@ -448,7 +448,7 @@ public:
             if (!m_bMoving)
             {
                 POINT pt;
-                ::GetCursorPos(&pt);
+                GetCursorPos(&pt);
                 MoveSelection(hwnd, pt.x - m_pt.x, pt.y - m_pt.y);
                 m_pt = pt;
             }
@@ -460,8 +460,8 @@ public:
             }
 
             RECT rc;
-            ::GetClientRect(hwnd, &rc);
-            ::InvalidateRect(hwnd, &rc, TRUE);
+            GetClientRect(hwnd, &rc);
+            InvalidateRect(hwnd, &rc, TRUE);
 
             SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
         }
@@ -495,7 +495,7 @@ public:
 
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
-        ::GetCursorPos(&m_pt);
+        GetCursorPos(&m_pt);
 
         if (fDoubleClick)
             return;
@@ -535,14 +535,14 @@ public:
             Select(hwnd);
         }
 
-        ::DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
+        DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
         if (!IsGroupBox(hwnd))
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
     }
 
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
     {
-        ::DefWindowProc(hwnd, WM_NCMOUSEMOVE, codeHitTest, MAKELPARAM(x, y));
+        DefWindowProc(hwnd, WM_NCMOUSEMOVE, codeHitTest, MAKELPARAM(x, y));
     }
 
     void OnNCLButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
@@ -550,7 +550,7 @@ public:
         m_bMoving = FALSE;
         m_pt.x = -1;
         m_pt.y = -1;
-        ::DefWindowProc(hwnd, WM_NCLBUTTONUP, codeHitTest, MAKELPARAM(x, y));
+        DefWindowProc(hwnd, WM_NCLBUTTONUP, codeHitTest, MAKELPARAM(x, y));
     }
 
     struct MYHITTEST
@@ -905,7 +905,7 @@ public:
             DrawDragSelect(hwnd);
 
             MRadCtrl::GetRangeSelect() = TRUE;
-            ::SetCapture(hwnd);
+            SetCapture(hwnd);
         }
     }
 
@@ -1035,7 +1035,7 @@ public:
 
         m_ptClicked.x = x;
         m_ptClicked.y = y;
-        ::ScreenToClient(hwnd, &m_ptClicked);
+        ScreenToClient(hwnd, &m_ptClicked);
 
         FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
     }
@@ -1581,69 +1581,69 @@ public:
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.empty())
         {
-            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
-            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
-            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
-            ::EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
         }
 
         if (CanIndexTop())
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_GRAYED);
         }
 
         if (CanIndexBottom())
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_GRAYED);
         }
 
         if (CanIndexMinus())
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_GRAYED);
         }
 
         if (CanIndexPlus())
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_ENABLED);
         }
         else
         {
-            ::EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_GRAYED);
         }
     }
 
@@ -2287,10 +2287,10 @@ public:
         HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
         HMENU hSubMenu = GetSubMenu(hMenu, 1);
 
-        ::SetForegroundWindow(hwnd);
-        ::TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+        SetForegroundWindow(hwnd);
+        TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
             xPos, yPos, 0, hwnd, NULL);
-        ::PostMessage(hwnd, WM_NULL, 0, 0);
+        PostMessage(hwnd, WM_NULL, 0, 0);
         DestroyMenu(hMenu);
     }
 

@@ -165,7 +165,7 @@ public:
     VOID GetPaneRect(INT nIndex, RECT *prc) const
     {
         assert(0 <= nIndex && nIndex < m_nPaneCount);
-        ::GetClientRect(m_hwnd, prc);
+        GetClientRect(m_hwnd, prc);
         if (IsVertical())
         {
             prc->top = m_vecPanes[nIndex].xyPos;
@@ -185,7 +185,7 @@ public:
     INT HitTestBorder(POINT ptClient) const
     {
         RECT rcClient;
-        ::GetClientRect(m_hwnd, &rcClient);
+        GetClientRect(m_hwnd, &rcClient);
         if (!::PtInRect(&rcClient, ptClient))
             return -1;
 
@@ -340,13 +340,13 @@ protected:
         if (iBorder < 0)
             return;
 
-        ::SetCapture(hwnd);
+        SetCapture(hwnd);
         m_iDraggingBorder = iBorder;
 
         if (IsVertical())
-            ::SetCursor(CursorNS());
+            SetCursor(CursorNS());
         else
-            ::SetCursor(CursorWE());
+            SetCursor(CursorWE());
     }
 
     void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
@@ -358,7 +358,7 @@ protected:
         UpdatePanes();
 
         m_iDraggingBorder = -1;
-        ::ReleaseCapture();
+        ReleaseCapture();
     }
 
     void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
@@ -399,19 +399,19 @@ protected:
     BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg)
     {
         POINT pt;
-        ::GetCursorPos(&pt);
-        ::ScreenToClient(hwnd, &pt);
+        GetCursorPos(&pt);
+        ScreenToClient(hwnd, &pt);
 
         if (HitTestBorder(pt) == -1)
         {
-            ::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+            SetCursor(::LoadCursor(NULL, IDC_ARROW));
             return TRUE;
         }
 
         if (IsVertical())
-            ::SetCursor(CursorNS());
+            SetCursor(CursorNS());
         else
-            ::SetCursor(CursorWE());
+            SetCursor(CursorWE());
         return TRUE;
     }
 };

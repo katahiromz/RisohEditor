@@ -48,7 +48,7 @@ public:
     {
         if (m_hwnd)
         {
-            ::DestroyWindow(m_hwnd);
+            DestroyWindow(m_hwnd);
         }
     }
 

@@ -76,7 +76,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        ::GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
+        GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
 
         std::wstring str = m_entry.sz0;
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
@@ -102,7 +102,7 @@ public:
         str = GetKeyFlags(wFlags);
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_db, m_entry.sz2))
         {
@@ -217,7 +217,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        ::GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
+        GetWindowTextW(hCmb1, m_entry.sz0, _countof(m_entry.sz0));
 
         std::wstring str = m_entry.sz0;
         BOOL bVirtKey = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
@@ -243,7 +243,7 @@ public:
         str = GetKeyFlags(wFlags);
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_db, m_entry.sz2))
         {

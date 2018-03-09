@@ -114,7 +114,7 @@ EnumFontFamProc(
 void InitFontComboBox(HWND hCmb)
 {
     HDC hDC = CreateCompatibleDC(NULL);
-    ::EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, (LPARAM)hCmb);
+    EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, (LPARAM)hCmb);
     DeleteDC(hDC);
 }
 
@@ -428,8 +428,8 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 {
     static WCHAR TempFile[MAX_PATH];
     WCHAR szPath[MAX_PATH];
-    ::GetTempPathW(_countof(szPath), szPath);
-    ::GetTempFileNameW(szPath, L"KRE", 0, TempFile);
+    GetTempPathW(_countof(szPath), szPath);
+    GetTempFileNameW(szPath, L"KRE", 0, TempFile);
     return TempFile;
 }
 
@@ -2328,7 +2328,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
     MStringW strWide;
     strWide.resize(cchText);
-    ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
+    GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, strWide, bReopen))
@@ -2409,7 +2409,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         m_rad_window.create_maps(entry.lang);
 
         if (::IsWindowVisible(m_rad_window) &&
-            ::IsWindowVisible(m_rad_window.m_rad_dialog))
+            IsWindowVisible(m_rad_window.m_rad_dialog))
         {
             m_rad_window.ReCreateRadDialog(m_rad_window);
         }
@@ -2740,7 +2740,7 @@ void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
         m_splitter3.SetPaneCount(1);
         m_splitter3.SetPane(0, m_hSrcEdit);
     }
-    ::SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
+    SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
 }
 
 void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
@@ -3121,13 +3121,13 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 
     ClientToScreen(hwndContext, &pt);
 
-    ::SetForegroundWindow(hwndContext);
+    SetForegroundWindow(hwndContext);
     INT id;
     UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
     id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
                         hwndContext, NULL);
-    ::PostMessageW(hwndContext, WM_NULL, 0, 0);
-    ::DestroyMenu(hMenu);
+    PostMessageW(hwndContext, WM_NULL, 0, 0);
+    DestroyMenu(hMenu);
 
     if (id)
     {
@@ -3842,20 +3842,20 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         }
         else
         {
-            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         }
         ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
-        ::DeleteFileW(szPath1);
-        ::DeleteFileW(szPath2);
-        ::DeleteFileW(szPath3);
+        DeleteFileW(szPath1);
+        DeleteFileW(szPath2);
+        DeleteFileW(szPath3);
 #endif
     }
     else
     {
-        ::DeleteFileW(szPath1);
-        ::DeleteFileW(szPath2);
-        ::DeleteFileW(szPath3);
+        DeleteFileW(szPath1);
+        DeleteFileW(szPath2);
+        DeleteFileW(szPath3);
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -3987,21 +3987,21 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         }
         else
         {
-            ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         }
         //MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
         ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
-        ::DeleteFileW(szPath1);
-        ::DeleteFileW(szPath2);
-        ::DeleteFileW(szPath3);
+        DeleteFileW(szPath1);
+        DeleteFileW(szPath2);
+        DeleteFileW(szPath3);
 #endif
     }
     else
     {
-        ::DeleteFileW(szPath1);
-        ::DeleteFileW(szPath2);
-        ::DeleteFileW(szPath3);
+        DeleteFileW(szPath1);
+        DeleteFileW(szPath2);
+        DeleteFileW(szPath3);
 
         if (bReopen && entry.type == RT_DIALOG)
         {
@@ -4019,7 +4019,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
     MStringW strWide;
     strWide.resize(cchText);
-    ::GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
+    GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
     if (!CompileParts(hwnd, strWide))
     {
@@ -4466,7 +4466,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries,
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
-    ::DeleteFileW(szPath3);
+    DeleteFileW(szPath3);
 
     return bSuccess;
 }
@@ -4527,7 +4527,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
 
     if (bSuccess)
     {
-        ::DeleteFileW(szPath3);
+        DeleteFileW(szPath3);
         bSuccess = DoLoadMsgTables(hwnd, szRCFile, entries, strOutput);
     }
 
@@ -4541,11 +4541,11 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
         MAnsiToWide a2w(CP_ACP, strOutput.c_str());
         ErrorBoxDx(a2w.c_str());
 
-        ::SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+        SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         ShowBinEdit(TRUE, TRUE);
     }
 #ifdef NDEBUG
-    ::DeleteFileW(szPath3);
+    DeleteFileW(szPath3);
 #endif
 
     HidePreview(hwnd);
@@ -8152,8 +8152,8 @@ void MMainWnd::DoMsg(MSG& msg)
             return;
     }
 
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
 }
 
 INT_PTR MMainWnd::RunDx()

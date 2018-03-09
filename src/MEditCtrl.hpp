@@ -340,18 +340,18 @@ MEditCtrl::CtrlAMsgProcDx(INT nCode, WPARAM wParam, LPARAM lParam)
     if (pMsg->message == WM_KEYDOWN)
     {
         if ((INT) pMsg->wParam == 'A' &&
-            ::GetAsyncKeyState(VK_CONTROL) < 0 &&
-            ::GetAsyncKeyState(VK_SHIFT) >= 0 &&
-            ::GetAsyncKeyState(VK_MENU) >= 0)
+            GetAsyncKeyState(VK_CONTROL) < 0 &&
+            GetAsyncKeyState(VK_SHIFT) >= 0 &&
+            GetAsyncKeyState(VK_MENU) >= 0)
         {
             // Ctrl+A is pressed
             hWnd = ::GetFocus();
             if (hWnd != NULL)
             {
-                ::GetClassName(hWnd, szClassName, _countof(szClassName));
+                GetClassName(hWnd, szClassName, _countof(szClassName));
                 if (lstrcmpi(szClassName, TEXT("EDIT")) == 0)
                 {
-                    ::SendMessage(hWnd, EM_SETSEL, 0, -1);
+                    SendMessage(hWnd, EM_SETSEL, 0, -1);
                     return 1;
                 }
             }
@@ -367,12 +367,12 @@ inline /*static*/ void MEditCtrl::SetCtrlAHookDx(BOOL bHook)
         assert(OldHookProc() == NULL);
         OldHookProc() = ::SetWindowsHookEx(
             WH_MSGFILTER, MEditCtrl::CtrlAMsgProcDx, NULL,
-            ::GetCurrentThreadId());
+            GetCurrentThreadId());
     }
     else
     {
         assert(OldHookProc() != NULL);
-        ::UnhookWindowsHookEx(OldHookProc());
+        UnhookWindowsHookEx(OldHookProc());
         OldHookProc() = NULL;
     }
 }

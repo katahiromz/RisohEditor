@@ -65,14 +65,14 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ::GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
+        GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
         mstr_trim(m_entry.szCaption);
         if (m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
         }
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_db, m_entry.szCommandID))
         {
@@ -116,7 +116,7 @@ public:
         }
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
@@ -246,14 +246,14 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        ::GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
+        GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
         mstr_trim(m_entry.szCaption);
         if (m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
         }
 
-        ::GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_db, m_entry.szCommandID))
         {
@@ -297,7 +297,7 @@ public:
         std::wstring str = GetMenuTypeAndState(dwType, dwState);
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
-        ::GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));

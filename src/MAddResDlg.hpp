@@ -177,7 +177,7 @@ public:
         if (type == RT_STRING || type == RT_MESSAGETABLE)
         {
             WCHAR sz[16];
-            ::GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
             if (sz[0] == 0)
                 SetDlgItemTextW(hwnd, cmb2, L"1");

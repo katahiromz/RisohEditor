@@ -75,8 +75,8 @@ public:
 
         MACRO_ENTRY entry;
 
-        ::GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        ::GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
+        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);
@@ -163,8 +163,8 @@ public:
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
 
-        ::SetWindowText(m_cmb1, m_entry.szKey);
-        ::SetWindowText(m_cmb2, m_entry.szValue);
+        SetWindowText(m_cmb1, m_entry.szKey);
+        SetWindowText(m_cmb2, m_entry.szValue);
 
         CenterWindowDx();
         return TRUE;
@@ -177,8 +177,8 @@ public:
 
         MACRO_ENTRY entry;
 
-        ::GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
-        ::GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
+        GetWindowText(hCmb1, entry.szKey, _countof(entry.szKey));
+        GetWindowText(hCmb2, entry.szValue, _countof(entry.szValue));
 
         mstr_trim(entry.szKey);
         mstr_trim(entry.szValue);

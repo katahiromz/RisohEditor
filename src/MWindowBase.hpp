@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    60     /* Version 60 */
+#define MZC4_MWINDOWBASE_HPP_    61     /* Version 61 */
 
 class MWindowBase;
 class MDialogBase;
@@ -370,7 +370,11 @@ public:
     }
 
     static MString GetWindowText(HWND hwnd);
-
+    static INT GetWindowText(HWND hwnd, LPTSTR pszText, INT cchMax)
+    {
+        assert(::IsWindow(hwnd));
+        return ::GetWindowText(hwnd, pszText, cchMax);
+    }
     MString GetWindowText() const
     {
         return GetWindowText(m_hwnd);

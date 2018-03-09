@@ -115,11 +115,11 @@ public:
         GetIdealClientRect(&rc);
         MapWindowRect(m_hwnd, GetParent(m_hwndTarget), &rc);
 
-        ::SetWindowPos(m_hwndTarget, NULL,
+        SetWindowPos(m_hwndTarget, NULL,
             rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
             SWP_NOACTIVATE | SWP_NOZORDER);
 
-        ::InvalidateRect(m_hwnd, NULL, TRUE);
+        InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
     void FitToTarget()
@@ -133,11 +133,11 @@ public:
 
         InflateRect(&rc, 2 * m_nGripSize, 2 * m_nGripSize);
 
-        ::SetWindowPos(m_hwnd, NULL,
+        SetWindowPos(m_hwnd, NULL,
             rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
             SWP_NOACTIVATE | SWP_NOZORDER);
 
-        ::InvalidateRect(m_hwnd, NULL, TRUE);
+        InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
     void OnDestroy(HWND hwnd)
@@ -282,7 +282,7 @@ public:
 
                 if (hDC)
                 {
-                    ::Rectangle(hDC,
+                    Rectangle(hDC,
                         ax[i] - m_nGripSize, ay[k] - m_nGripSize,
                         ax[i] + m_nGripSize, ay[k] + m_nGripSize);
                 }
