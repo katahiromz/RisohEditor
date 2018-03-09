@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    59     /* Version 59 */
+#define MZC4_MWINDOWBASE_HPP_    60     /* Version 60 */
 
 class MWindowBase;
 class MDialogBase;
@@ -55,6 +55,8 @@ class MDialogBase;
 #endif
 
 #include <dlgs.h>           // dialog control IDs
+
+#include <strsafe.h>        // StringCch* or StringCb*
 
 // standard C/C++ library
 #include <cassert>          // assert
