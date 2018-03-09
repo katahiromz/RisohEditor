@@ -62,12 +62,13 @@ public:
     ResEntries& m_entries;
     ConstantsDB& m_db;
     HWND m_hMainWnd;
-    MSubclassedListView m_lv;
     LPWSTR m_pszResH;
+    INT m_nBase;
+    MSubclassedListView m_lv;
 
     MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
-          m_hMainWnd(NULL)
+          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10)
     {
     }
 
@@ -163,11 +164,21 @@ public:
             item.pszText = &text2[0];
             ListView_SetItem(m_hLst1, &item);
 
+            int value = mstr_parse_int(text3.c_str(), true);
+
+            TCHAR szText[32];
+            if (m_nBase == 10)
+                StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
+            else if (m_nBase == 16)
+                StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
+            else
+                assert(0);
+
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 2;
-            item.pszText = &text3[0];
+            item.pszText = szText;
             ListView_SetItem(m_hLst1, &item);
 
             ++iItem;
@@ -407,6 +418,14 @@ public:
                 PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, nIDTYPE_, nID);
             }
             break;
+        case CMDID_BASE10:
+            m_nBase = 10;
+            SetItems();
+            break;
+        case CMDID_BASE16:
+            m_nBase = 16;
+            SetItems();
+            break;
         }
     }
 
@@ -421,8 +440,23 @@ public:
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+        HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         default:
             return DefaultProcDx();
+        }
+    }
+
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        if (m_nBase == 10)
+        {
+            CheckMenuRadioItem(hMenu, CMDID_BASE10, CMDID_BASE16,
+                CMDID_BASE10, MF_BYCOMMAND);
+        }
+        else if (m_nBase == 16)
+        {
+            CheckMenuRadioItem(hMenu, CMDID_BASE10, CMDID_BASE16,
+                CMDID_BASE16, MF_BYCOMMAND);
         }
     }
 

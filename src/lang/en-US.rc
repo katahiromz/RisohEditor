@@ -224,6 +224,9 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Delete ID\tDel", CMDID_DELETERESID
         MENUITEM SEPARATOR
+        MENUITEM "&Decimal Numbers", CMDID_BASE10
+        MENUITEM "&Hexadecimal Numbers", CMDID_BASE16
+        MENUITEM SEPARATOR
         MENUITEM "&Reload", CMDID_LOADRESH
     }
     POPUP "Popup #4"

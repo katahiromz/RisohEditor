@@ -148,6 +148,8 @@
 #define CMDID_SETPATHS          213
 #define CMDID_USEOLDLANGSTMT    214
 #define CMDID_SETDEFAULTS       215
+#define CMDID_BASE10            216
+#define CMDID_BASE16            217
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

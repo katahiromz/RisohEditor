@@ -417,7 +417,7 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
     using namespace std;
-	FILE *fp;
+    FILE *fp;
     _wfopen_s(&fp, filename, L"wb");
     int n = (int)fwrite(pv, size, 1, fp);
     fclose(fp);
@@ -5736,16 +5736,12 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
             if (eval_ast(parser.ast(), value))
             {
                 char sz[32];
-                StringCchPrintfA(sz, _countof(sz), "%d", value);
+                if (m_id_list_dlg.m_nBase == 16)
+                    StringCchPrintfA(sz, _countof(sz), "0x%X", value);
+                else
+                    StringCchPrintfA(sz, _countof(sz), "%u", value);
                 m_settings.id_map[macro] = sz;
             }
-#if 0
-            else if (parser.ast()->m_id == ASTID_STRING)
-            {
-                StringAst *str = (StringAst *)parser.ast();
-                m_settings.id_map[macro] = str->m_str;
-            }
-#endif
         }
     }
 
@@ -6988,8 +6984,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // create new
-		FILE *fp;
-		_wfopen_s(&fp, szResH, L"wb");
+        FILE *fp;
+        _wfopen_s(&fp, szResH, L"wb");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
@@ -7010,8 +7006,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     else
     {
         // open file
-		FILE *fp;
-		_wfopen_s(&fp, m_szResourceH, L"r");
+        FILE *fp;
+        _wfopen_s(&fp, m_szResourceH, L"r");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);

@@ -44,7 +44,9 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemText(hwnd, edt1, m_str1.c_str());
-        SetDlgItemText(hwnd, edt3, m_str2.c_str());
+
+        int value = mstr_parse_int(m_str2.c_str(), true);
+        SetDlgItemInt(hwnd, edt3, value, TRUE);
 
         CenterWindowDx();
         return TRUE;
