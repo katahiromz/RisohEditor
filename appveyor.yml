@@ -1,0 +1,33 @@
+version: '{build}'
+
+branches:
+  only:
+    - master
+
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: "Visual Studio 15 2017"
+  
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      GENERATOR: "Visual Studio 14 2015"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      GENERATOR: "Visual Studio 12 2013"
+
+platform:
+  - Win32
+
+configuration:
+  - Debug
+  - Release
+
+before_build:
+  - cmake --version
+  - cmake -G "%GENERATOR%" -A "%PLATFORM%" ..
+
+build:
+  project: RisohEditor.sln
+
+matrix:
+  fast_finish: true
