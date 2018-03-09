@@ -31,7 +31,7 @@ Those are control ID macros defined in <dlgs.h>.
 
 At first, please configure [ID Association] settings from [File] Menu --> [ID Association]. You have to load the "resource.h" file to get the resource ID names correctly.
 
-##Contact Us
+## Contact Us
 
 >Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 >Homepage     http://katahiromz.web.fc2.com
