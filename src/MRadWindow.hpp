@@ -104,7 +104,7 @@ public:
         return FALSE;
     }
 
-    void EndSubclass()
+    void PostSubclass()
     {
         SIZE siz;
         TCHAR szClass[16];
@@ -1068,7 +1068,7 @@ public:
             MRadCtrl::IndexToCtrlMap()[nIndex] = hCtrl;
         }
 
-        pCtrl->EndSubclass();
+        pCtrl->PostSubclass();
 
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
