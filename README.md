@@ -1,5 +1,5 @@
 [![Build Status on Travis CI](https://travis-ci.org/katahiromz/RisohEditor.svg?branch=master)](https://travis-ci.org/katahiromz/RisohEditor)
-[![Build status on AppVeyor](https://ci.appveyor.com/api/projects/status/imme6ah9lp2yadnx/branch/master?svg=true)](https://ci.appveyor.com/project/katahiromz/RisohEditor/branch/master)
+[![Build status on AppVeyor](https://ci.appveyor.com/api/projects/status/4sdaed4vyakby61h?svg=true)](https://ci.appveyor.com/project/katahiromz/risoheditor)
 
 # RisohEditor by katahiromz
 
