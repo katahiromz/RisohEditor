@@ -1258,7 +1258,7 @@ public:
 
         if (HGLOBAL hGlobal = GetClipboardData(m_uCF_DIALOGITEMS))
         {
-            DWORD siz = GlobalSize(hGlobal);
+            SIZE_T siz = GlobalSize(hGlobal);
             if (LPVOID pv = GlobalLock(hGlobal))
             {
                 MByteStreamEx stream(siz);

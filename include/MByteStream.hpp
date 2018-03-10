@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAM_HPP_
-#define MZC4_MBYTESTREAM_HPP_       7       /* Version 7 */
+#define MZC4_MBYTESTREAM_HPP_       8       /* Version 8 */
 
 class MByteStream;
 
@@ -328,7 +328,7 @@ public:
         if (!fp)
             return false;
 
-        int n = fwrite(&m_data[0], m_data.size(), 1, fp);
+        size_t n = fwrite(&m_data[0], m_data.size(), 1, fp);
         fclose(fp);
 
         if (!n)

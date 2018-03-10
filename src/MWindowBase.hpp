@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    61     /* Version 61 */
+#define MZC4_MWINDOWBASE_HPP_    62     /* Version 62 */
 
 class MWindowBase;
 class MDialogBase;
@@ -56,7 +56,9 @@ class MDialogBase;
 
 #include <dlgs.h>           // dialog control IDs
 
-#include <strsafe.h>        // StringCch* or StringCb*
+#ifndef NO_STRSAFE
+    #include <strsafe.h>    // StringCch* or StringCb*
+#endif
 
 // standard C/C++ library
 #include <cassert>          // assert
@@ -692,7 +694,11 @@ inline VOID MZCAPIV DebugPrintDx(const char *format, ...)
         char buffer[512];
         va_list va;
         va_start(va, format);
+#ifdef NO_STRSAFE
+        wsprintfA(buffer, format, va);
+#else
         StringCchVPrintfA(buffer, _countof(buffer), format, va);
+#endif
         va_end(va);
         OutputDebugStringA(buffer);
     #endif
@@ -704,7 +710,11 @@ inline VOID MZCAPIV DebugPrintDx(const WCHAR *format, ...)
         WCHAR buffer[512];
         va_list va;
         va_start(va, format);
+#ifdef NO_STRSAFE
+        wsprintfW(buffer, format, va);
+#else
         StringCchVPrintfW(buffer, _countof(buffer), format, va);
+#endif
         va_end(va);
         OutputDebugStringW(buffer);
     #endif
