@@ -7519,8 +7519,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 
     m_settings.bOldStyle = TRUE;
 
-    // TODO: Update the version number
-    m_settings.strVersion = L"3.8";
+    m_settings.strPrevVersion.clear();
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -7706,9 +7705,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     //keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
     m_settings.bOldStyle = TRUE;
 
-    if (keyRisoh.QuerySz(TEXT("strVersion"), szText, _countof(szText)) == ERROR_SUCCESS)
+    if (keyRisoh.QuerySz(TEXT("strPrevVersion"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        m_settings.strVersion = szText;
+        m_settings.strPrevVersion = szText;
     }
 
     return TRUE;
@@ -7822,7 +7821,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     // always use old style
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
-    keyRisoh.SetSz(TEXT("strVersion"), m_settings.strVersion.c_str());
+    keyRisoh.SetSz(TEXT("strPrevVersion"), TEXT(RE_VERSION));
 
     return TRUE;
 }
