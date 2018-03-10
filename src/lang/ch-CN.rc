@@ -29,15 +29,15 @@ IDM_MAIN MENU
         MENUITEM "打开(&O)...\tCtrl+O", CMDID_OPEN
         MENUITEM "另存为(&A)...\tCtrl+S", CMDID_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "加载(&I)...\tCtrl+I", CMDID_IMPORT
-        MENUITEM "出口(&E)...", CMDID_EXPORT
+        MENUITEM "导入(&I)...\tCtrl+I", CMDID_IMPORT
+        MENUITEM "导出(&E)...", CMDID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "加载窗口类DLL(&W)...", CMDID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&ID 关联...", CMDID_IDASSOC
-        MENUITEM "重新加载(&R) &resource.h...\tCtrl+R", CMDID_LOADRESH
-        MENUITEM "卸载(&U) resource.h", CMDID_UNLOADRESH
-        MENUITEM "变更修改(&V) resource.h ...", CMDID_ADVICERESH
+        MENUITEM "&ID关联列表...", CMDID_IDASSOC
+        MENUITEM "重新加载 &resource.h...\tCtrl+R", CMDID_LOADRESH
+        MENUITEM "卸载 resource.h (&U)", CMDID_UNLOADRESH
+        MENUITEM "修改记录(&V) resource.h ...", CMDID_ADVICERESH
         MENUITEM SEPARATOR
         MENUITEM "更新 resource.h(&P)", CMDID_UPDATERESHBANG
         MENUITEM SEPARATOR
@@ -86,8 +86,8 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         MENUITEM "编辑标签(&I)...\tF2", CMDID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "复制为别名(&N)...", CMDID_COPYASNEWNAME
-        MENUITEM "复制为别语言(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM "复制为其他名称(&N)...", CMDID_COPYASNEWNAME
+        MENUITEM "复制为其他语言(&L)...", CMDID_COPYASNEWLANG
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -111,7 +111,7 @@ IDM_MAIN MENU
         MENUITEM SEPARATOR
         MENUITEM "资源ID列表(&R)", CMDID_IDLIST
         MENUITEM SEPARATOR
-        MENUITEM "使用&CONTROL语句", CMDID_ALWAYSCONTROL
+        MENUITEM "使用&CONTROL字段", CMDID_ALWAYSCONTROL
         MENUITEM "不使用&ID宏定义", CMDID_HIDEIDMACROS
         //MENUITEM "使用旧式&LANGUAGE语句", CMDID_USEOLDLANGSTMT
         MENUITEM SEPARATOR
@@ -170,8 +170,8 @@ IDM_POPUPS MENU
         MENUITEM SEPARATOR
         MENUITEM "编辑标签(&I)...\tF2", CMDID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "复制为别名(&N)...", CMDID_COPYASNEWNAME
-        MENUITEM "复制为别语言(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM "复制为其他名称(&N)...", CMDID_COPYASNEWNAME
+        MENUITEM "复制为其他语言(&L)...", CMDID_COPYASNEWLANG
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", CMDID_TEST
         MENUITEM SEPARATOR
@@ -181,9 +181,9 @@ IDM_POPUPS MENU
     {
         MENUITEM "增加控件(&A)...", CMDID_ADDCTRL
         MENUITEM SEPARATOR
-        MENUITEM "切(&T)\tCtrl+X", CMDID_CUT
+        MENUITEM "剪切(&T)\tCtrl+X", CMDID_CUT
         MENUITEM "复制(&C)\tCtrl+C", CMDID_COPY
-        MENUITEM "糊(&P)\tCtrl+V", CMDID_PASTE
+        MENUITEM "黏贴(&P)\tCtrl+V", CMDID_PASTE
         MENUITEM "删除(&D)\tDel", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "索引位置(&I)"
@@ -237,8 +237,8 @@ IDM_POPUPS MENU
     {
         MENUITEM "增加(&A)...", CMDID_ADD
         MENUITEM SEPARATOR
-        MENUITEM "名称变更(&N)...\tF2", CMDID_RENAME
-        MENUITEM "值变更(&V)...", CMDID_MODIFY
+        MENUITEM "名称修改(&N)...\tF2", CMDID_RENAME
+        MENUITEM "值修改(&V)...", CMDID_MODIFY
         MENUITEM SEPARATOR
         MENUITEM "删除(&D)\tDel", CMDID_DELETE
     }
@@ -353,9 +353,9 @@ STRINGTABLE
     IDS_ADDMENU, "添加菜单"
     IDS_ADDVERINFO, "添加版本信息"
     IDS_ADDCURSOR, "添加光标"
-    IDS_NOMOREITEM, "没有更多的项目."
+    IDS_NOMOREITEM, "没有更多的项目了"
     IDS_INVALIDDATA, "(invalid data)\r\n"
-    IDS_UPDATERESH, "你想更新 ""resource.h"" 吗?"
+    IDS_UPDATERESH, "确定更新 ""resource.h"" 吗?"
     IDS_CANTWRITERESH, "无法写入 ""resource.h""."
     IDS_SAVERESH, "保存 ""resource.h"" 文件"
     IDS_DLLFILTER, "DLL 文件 (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|全部文件 (*.*)|*.*|"
@@ -368,9 +368,9 @@ STRINGTABLE
     IDS_MESSAGEID, "消息 ID"
     IDS_MESSAGEVALUE, "消息值"
     IDS_RCFILTER, "RC 文件 (*.rc)|*.rc|"
-    IDS_EXPORT, "出口"
-    IDS_CANTEXPORT, "出口失败."
-    IDS_MUSTBEEMPTYDIR, "出口目标必须是空文件夹."
+    IDS_EXPORT, "导出"
+    IDS_CANTEXPORT, "导出失败."
+    IDS_MUSTBEEMPTYDIR, "导出资源必须是空文件夹."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_()."
     IDS_MACRONAME, "宏名称"
@@ -824,7 +824,7 @@ FONT 9, "宋体"
 }
 
 IDD_IDASSOC DIALOG 0, 0, 200, 220
-CAPTION "ID 关联"
+CAPTION "ID 关联列表"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "宋体"
 {
@@ -923,7 +923,7 @@ FONT 9, "宋体"
 }
 
 IDD_CLONEINNEWNAME DIALOG 0, 0, 215, 75
-CAPTION "复制为别名"
+CAPTION "复制为其他名称"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "宋体"
 {
@@ -937,7 +937,7 @@ FONT 9, "宋体"
 }
 
 IDD_CLONEINNEWLANG DIALOG 0, 0, 215, 105
-CAPTION "复制为别语言"
+CAPTION "复制为其他语言"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "宋体"
 {
