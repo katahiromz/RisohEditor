@@ -1188,11 +1188,13 @@ public:
     HICON           m_hIconSm;
     MTitleToBitmap  m_title_to_bitmap;
     MTitleToIcon    m_title_to_icon;
+    DialogItemClipboard m_clipboard;
 
     MRadWindow(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
         : m_entries(entries),
           m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
-          m_dialog_res(db), m_settings(settings), m_hIcon(NULL), m_hIconSm(NULL)
+          m_dialog_res(db), m_settings(settings), m_hIcon(NULL), m_hIconSm(NULL),
+          m_clipboard(m_dialog_res)
     {
     }
 
@@ -1341,7 +1343,7 @@ public:
         wcx.hIconSm = NULL;
     }
 
-    BOOL ReCreateRadDialog(HWND hwnd)
+    BOOL ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex = -1)
     {
         assert(IsWindow(hwnd));
 
@@ -1377,6 +1379,20 @@ public:
         SetForegroundWindow(hwnd);
 
         update_maps();
+
+        if (nSelectStartIndex != -1)
+        {
+            HWND hwndNext = MRadDialog::GetFirstCtrl(hwnd);
+            while (hwndNext)
+            {
+                if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndNext))
+                {
+                    if (pCtrl->m_nIndex >= nSelectStartIndex)
+                        MRadCtrl::Select(hwndNext);
+                }
+                hwndNext = m_rad_dialog.GetNextCtrl(hwndNext);
+            }
+        }
 
         return TRUE;
     }
@@ -1588,6 +1604,8 @@ public:
             EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_CUT, MF_GRAYED);
+            EnableMenuItem(hMenu, CMDID_COPY, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
@@ -1598,6 +1616,8 @@ public:
             EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
             EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CUT, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_COPY, MF_ENABLED);
         }
         else
         {
@@ -1608,6 +1628,8 @@ public:
             EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
             EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
             EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_CUT, MF_ENABLED);
+            EnableMenuItem(hMenu, CMDID_COPY, MF_ENABLED);
         }
 
         if (CanIndexTop())
@@ -1644,6 +1666,15 @@ public:
         else
         {
             EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_GRAYED);
+        }
+
+        if (m_clipboard.IsAvailable())
+        {
+            EnableMenuItem(hMenu, CMDID_PASTE, MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, CMDID_PASTE, MF_GRAYED);
         }
     }
 
@@ -1837,8 +1868,62 @@ public:
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
 
+    BOOL GetSelectedItems(DialogItems& items)
+    {
+        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        std::set<INT>::const_iterator it, end = indeces.end();
+        for (it = indeces.begin(); it != end; ++it)
+        {
+            DialogItem& item = m_dialog_res.m_items[*it];
+            items.push_back(item);
+        }
+        return !items.empty();
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        DialogItems items;
+        static INT s_nShift = 0;
+
+        switch (id)
+        {
+        case CMDID_CUT:
+            if (GetSelectedItems(items))
+            {
+                m_clipboard.Copy(hwnd, items);
+                MRadCtrl::DeleteSelection();
+                s_nShift = 0;
+            }
+            return;
+        case CMDID_COPY:
+            if (GetSelectedItems(items))
+            {
+                m_clipboard.Copy(hwnd, items);
+                s_nShift = 0;
+            }
+            return;
+        case CMDID_PASTE:
+            if (m_clipboard.Paste(hwnd, items))
+            {
+                s_nShift += 5;
+                for (size_t i = 0; i < items.size(); ++i)
+                {
+                    items[i].m_pt.x += s_nShift;
+                    items[i].m_pt.y += s_nShift;
+                }
+
+                INT nIndex = INT(m_dialog_res.m_items.size());
+                for (size_t i = 0; i < items.size(); ++i)
+                {
+                    m_dialog_res.m_cItems++;
+                    m_dialog_res.m_items.push_back(items[i]);
+                }
+                ReCreateRadDialog(hwnd, nIndex);
+                UpdateRes();
+            }
+            return;
+        }
+
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, SendMessage);
     }
@@ -2253,17 +2338,38 @@ public:
             MRadCtrl::DeleteSelection();
             break;
         case 'A':
-            if (GetKeyState(VK_CONTROL) < 0)
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+A
                 SelectAll(hwnd);
             }
             break;
+        case 'C':
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
+            {
+                // Ctrl+C
+                PostMessageDx(WM_COMMAND, CMDID_COPY);
+            }
+            break;
         case 'D':
-            if (GetKeyState(VK_CONTROL) < 0)
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+D
                 PostMessageDx(WM_COMMAND, CMDID_SHOWHIDEINDEX);
+            }
+            break;
+        case 'V':
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
+            {
+                // Ctrl+V
+                PostMessageDx(WM_COMMAND, CMDID_PASTE);
+            }
+            break;
+        case 'X':
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
+            {
+                // Ctrl+X
+                PostMessageDx(WM_COMMAND, CMDID_CUT);
             }
             break;
         default:

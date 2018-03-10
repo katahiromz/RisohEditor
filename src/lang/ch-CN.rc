@@ -180,7 +180,11 @@ IDM_POPUPS MENU
     POPUP "Popup #1"
     {
         MENUITEM "增加控件(&A)...", CMDID_ADDCTRL
-        MENUITEM "删除控件(&D)", CMDID_DELCTRL
+        MENUITEM SEPARATOR
+        MENUITEM "切(&T)\tCtrl+X", CMDID_CUT
+        MENUITEM "复制(&C)\tCtrl+C", CMDID_COPY
+        MENUITEM "糊(&P)\tCtrl+V", CMDID_PASTE
+        MENUITEM "删除(&D)\tDel", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "索引位置(&I)"
         BEGIN

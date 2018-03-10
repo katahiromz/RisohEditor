@@ -1201,6 +1201,88 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////////
 
+class DialogItemClipboard
+{
+public:
+    DialogRes& m_dialog_res;
+    UINT m_uCF_DIALOGITEMS;
+
+    DialogItemClipboard(DialogRes& dialog_res)
+        : m_dialog_res(dialog_res),
+        m_uCF_DIALOGITEMS(::RegisterClipboardFormat(TEXT("RisohEditor_DialogItem_ClipboardData")))
+    {
+    }
+
+    BOOL Copy(HWND hwndRad, const DialogItems& items)
+    {
+        MByteStreamEx stream;
+
+        for (size_t i = 0; i < items.size(); ++i)
+        {
+            items[i].SaveToStream(stream, m_dialog_res.IsExtended());
+        }
+
+        if (HGLOBAL hGlobal = GlobalAlloc(GHND | GMEM_SHARE, DWORD(stream.size())))
+        {
+            if (LPVOID pv = GlobalLock(hGlobal))
+            {
+                CopyMemory(pv, &stream[0], stream.size());
+                GlobalUnlock(hGlobal);
+
+                if (OpenClipboard(hwndRad))
+                {
+                    EmptyClipboard();
+                    SetClipboardData(m_uCF_DIALOGITEMS, hGlobal);
+                    return CloseClipboard();
+                }
+            }
+            GlobalFree(hGlobal);
+        }
+        return FALSE;
+    }
+
+    BOOL IsAvailable() const
+    {
+        return IsClipboardFormatAvailable(m_uCF_DIALOGITEMS);
+    }
+
+    BOOL Paste(HWND hwndRad, DialogItems& items) const
+    {
+        items.clear();
+
+        if (!IsAvailable())
+            return FALSE;
+
+        if (!OpenClipboard(hwndRad))
+            return FALSE;
+
+        if (HGLOBAL hGlobal = GetClipboardData(m_uCF_DIALOGITEMS))
+        {
+            DWORD siz = GlobalSize(hGlobal);
+            if (LPVOID pv = GlobalLock(hGlobal))
+            {
+                MByteStreamEx stream(siz);
+                CopyMemory(&stream[0], pv, siz);
+
+                DialogItem item;
+                while (item.LoadFromStream(stream, m_dialog_res.IsExtended()))
+                {
+                    items.push_back(item);
+                }
+                GlobalUnlock(hGlobal);
+
+                if (items.size())
+                {
+                    return TRUE;
+                }
+            }
+        }
+        return FALSE;
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
 #endif  // ndef DIALOG_RES_HPP_
 
 //////////////////////////////////////////////////////////////////////////////

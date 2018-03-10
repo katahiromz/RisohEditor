@@ -180,7 +180,11 @@ IDM_POPUPS MENU
     POPUP "Popup #1"
     {
         MENUITEM "&Add Control...", CMDID_ADDCTRL
-        MENUITEM "&Delete Control", CMDID_DELCTRL
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X", CMDID_CUT
+        MENUITEM "&Copy\tCtrl+C", CMDID_COPY
+        MENUITEM "&Paste\tCtrl+V", CMDID_PASTE
+        MENUITEM "&Delete\tDel", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "&Index"
         BEGIN

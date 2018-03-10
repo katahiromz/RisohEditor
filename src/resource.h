@@ -150,6 +150,9 @@
 #define CMDID_SETDEFAULTS       215
 #define CMDID_BASE10            216
 #define CMDID_BASE16            217
+#define CMDID_CUT               218
+#define CMDID_COPY              219
+#define CMDID_PASTE             220
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

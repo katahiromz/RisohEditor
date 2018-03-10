@@ -180,7 +180,11 @@ IDM_POPUPS MENU
     POPUP "ポップアップ #1"
     {
         MENUITEM "コントロールの追加(&A)...", CMDID_ADDCTRL
-        MENUITEM "コントロールの削除(&D)", CMDID_DELCTRL
+        MENUITEM SEPARATOR
+        MENUITEM "切り取り(&T)\tCtrl+X", CMDID_CUT
+        MENUITEM "コピー(&C)\tCtrl+C", CMDID_COPY
+        MENUITEM "貼り付け(&P)\tCtrl+V", CMDID_PASTE
+        MENUITEM "削除(&D)\tDel", CMDID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "インデックス(&I)"
         {
