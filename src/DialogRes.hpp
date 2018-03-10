@@ -1256,6 +1256,7 @@ public:
         if (!OpenClipboard(hwndRad))
             return FALSE;
 
+        BOOL bOK = FALSE;
         if (HGLOBAL hGlobal = GetClipboardData(m_uCF_DIALOGITEMS))
         {
             SIZE_T siz = GlobalSize(hGlobal);
@@ -1273,11 +1274,12 @@ public:
 
                 if (items.size())
                 {
-                    return TRUE;
+                    bOK = TRUE;
                 }
             }
         }
-        return FALSE;
+        CloseClipboard();
+        return bOK;
     }
 };
 
