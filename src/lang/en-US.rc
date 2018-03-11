@@ -381,6 +381,7 @@ STRINGTABLE
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH, "Invalid path."
+    IDS_DATATOOLONG, "Data is too long."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

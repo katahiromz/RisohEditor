@@ -330,6 +330,7 @@
 #define IDS_WINDRESEXE          233
 #define IDS_CPPEXE              234
 #define IDS_INVALIDPATH         235
+#define IDS_DATATOOLONG         236
 
 #define IDM_MAIN                100
 #define IDM_POPUPS              101

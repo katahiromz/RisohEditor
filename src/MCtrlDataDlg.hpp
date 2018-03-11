@@ -53,6 +53,12 @@ public:
         std::vector<MString> vec;
         mstr_split(vec, str, TEXT(" \t\n\r\f\v,"));
 
+        if (vec.size() > 0x10000 / sizeof(WORD))
+        {
+            ErrorBoxDx(IDS_DATATOOLONG);
+            return;
+        }
+
         std::vector<WORD> words;
         for (size_t i = 0; i < vec.size(); ++i)
         {
