@@ -34,6 +34,10 @@ Question 3. I can't find my resource IDs in [List of Resource IDs]
             the "resource.h" file to get the resource ID names 
             correctly.
 
+Question 4. Why can't I add a control data to my dialog item?
+
+    Answer. Make the dialog box extended.
+
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 // Homepage     http://katahiromz.web.fc2.com
