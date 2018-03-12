@@ -19,7 +19,7 @@
 ################################################################################
 
 # TODO: Update the version number
-RE_VERSION=3.8
+RE_VERSION=3.9
 RE_BIN_DIR="build/re-$RE_VERSION-bin"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt src/resource.h build/RisohEditor.exe"
 RE_TARGET="build/re-$RE_VERSION-bin.zip"
