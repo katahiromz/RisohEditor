@@ -307,6 +307,7 @@ public:
             static const wchar_t *s_delim = L" ,\r\n";
             wchar_t *context;
             WCHAR *pch0, *pch1, *pch2;
+			pch0 = &line[0];
             if (*pch0 == L',')
             {
                 pch0 = wcstok_s(&line[0], s_delim, &context);
