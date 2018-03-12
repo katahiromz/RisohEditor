@@ -5740,7 +5740,9 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
                     StringCchPrintfA(sz, _countof(sz), "0x%X", value);
                 else
                     StringCchPrintfA(sz, _countof(sz), "%u", value);
-                m_settings.id_map[macro] = sz;
+
+                if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
+                    m_settings.id_map[macro] = sz;
             }
         }
     }
