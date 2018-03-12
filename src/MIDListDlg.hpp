@@ -86,8 +86,11 @@ public:
                 }
                 else
                 {
-                    str += TEXT("/");
-                    str += it->first;
+                    if (!it->second.empty())
+                    {
+                        str += TEXT("/");
+                        str += it->first;
+                    }
                 }
             }
         }
@@ -144,6 +147,9 @@ public:
             LV_ITEM item;
 
             MString text1 = MAnsiToText(CP_ACP, it->first.c_str()).c_str();
+            if (text1 == L"WIN32" || text1 == L"WINNT" || text1 == L"i386")
+                continue;
+
             MString text2 = GetAssoc(text1);
             MString text3 = MAnsiToText(CP_ACP, it->second.c_str()).c_str();
             if (text2.empty())

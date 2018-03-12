@@ -37,6 +37,7 @@ Command.ID, 11
 Control.ID, 12
 Resource.ID, 13
 Message.ID, 14
+Unknown.ID, 15
 
 [RESOURCE.ID.PREFIX]
 IDC_, 0
@@ -54,6 +55,7 @@ CMDID_, 11
 CID_, 12
 IDR_, 13
 MSGID_, 14
+, 15
 
 [HIDE.ID]
 HIDE.ID, 0

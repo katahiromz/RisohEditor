@@ -354,6 +354,8 @@
     #define IDC_STATIC -1
 #endif
 
+#define UNKNOWNRESID            999
+
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 130

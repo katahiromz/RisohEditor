@@ -282,7 +282,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
         nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
         nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
-        nIDTYPE_ != IDTYPE_INVALID)
+        nIDTYPE_ != IDTYPE_UNKNOWN && nIDTYPE_ != IDTYPE_INVALID)
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
@@ -7496,6 +7496,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
         m_settings.assoc_map[L"Control.ID"] = L"CID_";
         m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
         m_settings.assoc_map[L"Message.ID"] = L"MSGID_";
+        m_settings.assoc_map[L"Unknown.ID"] = L"";
     }
 
     m_settings.id_map.clear();
@@ -7676,17 +7677,23 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     for (i = 0; i < dwCount; ++i)
     {
         StringCchPrintf(szFormat, _countof(szFormat), TEXT("File%lu"), i);
-        keyRisoh.QuerySz(szFormat, szFile, _countof(szFile));
-        m_settings.vecRecentlyUsed.push_back(szFile);
+        if (keyRisoh.QuerySz(szFormat, szFile, _countof(szFile)) == ERROR_SUCCESS)
+        {
+            if (GetFileAttributes(szFile) != 0xFFFFFFFF)
+            {
+                m_settings.vecRecentlyUsed.push_back(szFile);
+            }
+        }
     }
 
     TCHAR szName[MAX_PATH];
     assoc_map_type::iterator it, end = m_settings.assoc_map.end();
     for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
-        keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName));
-        if (szName[0])
+        if (keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
+        {
             it->second = szName;
+        }
     }
 
     if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
@@ -7785,6 +7792,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         for (it = m_settings.assoc_map.begin(); it != end; ++it)
         {
             keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
+            //MessageBoxW(NULL, it->first.c_str(), it->second.c_str(), 0);
         }
     }
 
@@ -8035,6 +8043,8 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
         type = RT_MESSAGETABLE;
         name.clear();
         break;
+    case IDTYPE_UNKNOWN:
+        return 0;
     case IDTYPE_INVALID:
         return 0;
     }

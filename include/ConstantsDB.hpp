@@ -49,6 +49,7 @@
 #define IDTYPE_CONTROL      12  // Control.ID
 #define IDTYPE_RESOURCE     13  // Resource.ID
 #define IDTYPE_MESSAGE      14  // Message.ID
+#define IDTYPE_UNKNOWN      15  // Unknown.ID
 #define IDTYPE_INVALID      -1
 
 class ConstantsDB
@@ -271,7 +272,7 @@ public:
         using namespace std;
         m_map.clear();
 
-		FILE *fp;
+        FILE *fp;
         _wfopen_s(&fp, FileName, L"rb");
         if (fp == NULL)
             return FALSE;
@@ -302,16 +303,26 @@ public:
                 continue;
             }
 
-            // "name, value, mask"
+            // "[name], value, mask"
             static const wchar_t *s_delim = L" ,\r\n";
-			wchar_t *context;
-            WCHAR *pch0 = wcstok_s(&line[0], s_delim, &context);
-            if (pch0 == NULL)
-                continue;
-            WCHAR *pch1 = wcstok_s(NULL, s_delim, &context);
+            wchar_t *context;
+            WCHAR *pch0, *pch1, *pch2;
+            if (*pch0 == L',')
+            {
+                pch0 = wcstok_s(&line[0], s_delim, &context);
+                if (pch0 == NULL)
+                    continue;
+                pch1 = wcstok_s(NULL, s_delim, &context);
+            }
+            else
+            {
+                pch0 = &line[0];
+                *pch0 = 0;
+                pch1 = wcstok_s(pch0 + 1, s_delim, &context);
+            }
             if (pch1 == NULL)
                 continue;
-            WCHAR *pch2 = wcstok_s(NULL, s_delim, &context);
+            pch2 = wcstok_s(NULL, s_delim, &context);
 
             NameType name = pch0;
             mstr_trim(name);
