@@ -21,6 +21,7 @@
 #define _SCL_SECURE_NO_WARNINGS
 
 #define NO_CONSTANTS_DB
+#define NO_STRSAFE
 
 #if defined(_WIN32) && !defined(WONVER)
     #include "MProcessMaker.hpp"

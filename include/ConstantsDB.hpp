@@ -307,19 +307,19 @@ public:
             static const wchar_t *s_delim = L" ,\r\n";
             wchar_t *context;
             WCHAR *pch0, *pch1, *pch2;
-			pch0 = &line[0];
+            pch0 = &line[0];
             if (*pch0 == L',')
+            {
+                pch0 = &line[0];
+                *pch0 = 0;
+                pch1 = wcstok_s(pch0 + 1, s_delim, &context);
+            }
+            else
             {
                 pch0 = wcstok_s(&line[0], s_delim, &context);
                 if (pch0 == NULL)
                     continue;
                 pch1 = wcstok_s(NULL, s_delim, &context);
-            }
-            else
-            {
-                pch0 = &line[0];
-                *pch0 = 0;
-                pch1 = wcstok_s(pch0 + 1, s_delim, &context);
             }
             if (pch1 == NULL)
                 continue;
@@ -327,8 +327,8 @@ public:
 
             NameType name = pch0;
             mstr_trim(name);
-            if (name.empty())
-                continue;
+            //if (name.empty())
+            //    continue;
 
             StringType value_str = pch1;
             mstr_trim(value_str);
