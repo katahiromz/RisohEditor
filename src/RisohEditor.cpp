@@ -1114,6 +1114,7 @@ public:
     BOOL DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExport(LPCWSTR pszFileName);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
+    BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszFileName);
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
@@ -4945,10 +4946,84 @@ BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
     return !bFound;
 }
 
+BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
+{
+    file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n\r\n");
+    MString strLang = ::GetLanguageStatement(lang, TRUE);
+    file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
+
+    for (size_t i = 0; i < m_entries.size(); ++i)
+    {
+        ResEntry& entry = m_entries[i];
+        if (entry.lang != lang)
+            continue;
+        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+            continue;
+        MString str = res2text.DumpEntry(entry);
+        if (!str.empty())
+        {
+            mstr_trim(str);
+            MTextToAnsi t2a(CP_UTF8, str.c_str());
+            file.WriteSzA(t2a.c_str());
+            file.WriteSzA("\r\n\r\n");
+        }
+    }
+
+    ResEntries found;
+
+    Res_Search(found, m_entries, RT_STRING, (WORD)0, lang);
+    if (found.size())
+    {
+        StringRes str_res;
+        ResEntries::iterator it, end = found.end();
+        for (it = found.begin(); it != end; ++it)
+        {
+            if (it->lang != lang)
+                continue;
+            MByteStreamEx stream(it->data);
+            if (!str_res.LoadFromStream(stream, it->name.m_id))
+                return FALSE;
+        }
+
+        MString str = str_res.Dump(m_db);;
+        mstr_trim(str);
+        str += L"\r\n\r\n";
+
+        MTextToAnsi t2a(CP_UTF8, str.c_str());
+        file.WriteSzA(t2a.c_str());
+    }
+
+    Res_Search(found, m_entries, RT_MESSAGETABLE, (WORD)0, lang);
+    if (found.size())
+    {
+        MessageRes msg_res;
+        ResEntries::iterator it, end = found.end();
+        for (it = found.begin(); it != end; ++it)
+        {
+            if (it->lang != lang)
+                continue;
+            MByteStreamEx stream(it->data);
+            if (!msg_res.LoadFromStream(stream, it->name.m_id))
+                return FALSE;
+        }
+
+        MString str;
+        str += L"#ifdef MCDX_INVOKED\r\n";
+        str += msg_res.Dump(m_db);
+        str += L"#endif\r\n\r\n";
+
+        MTextToAnsi t2a(CP_UTF8, str.c_str());
+        file.WriteSzA(t2a.c_str());
+    }
+
+    return TRUE;
+}
+
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 {
     ResToText res2text(m_settings, m_db, m_entries);
     res2text.m_bHumanReadable = FALSE;
+    res2text.m_bNoLanguage = TRUE;
 
     MFile file(pszFileName, TRUE);
     if (!file)
@@ -4961,91 +5036,23 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
 
-    file.WriteFormatA("#pragma code_page(65001)\r\n");
+    file.WriteFormatA("#pragma code_page(65001)\r\n\r\n");
 
+    std::set<WORD> langs;
     for (size_t i = 0; i < m_entries.size(); ++i)
     {
-        if (m_entries[i].type == RT_STRING ||
-            m_entries[i].type == RT_MESSAGETABLE)
-        {
-            continue;
-        }
-        MString str = res2text.DumpEntry(m_entries[i]);
-        if (!str.empty())
-        {
-            file.WriteSzA("\r\n");
-            MTextToAnsi t2a(CP_UTF8, str.c_str());
-            file.WriteSzA(t2a.c_str());
-        }
+        langs.insert(m_entries[i].lang);
     }
 
-    ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, (WORD)0, 0xFFFF);
-    if (found.size())
+    std::set<WORD>::const_iterator it, end = langs.end();
+    for (it = langs.begin(); it != end; ++it)
     {
-        std::set<WORD> langs;
-        for (size_t i = 0; i < found.size(); ++i)
-        {
-            langs.insert(found[i].lang);
-        }
-
-        std::set<WORD>::iterator lang_it, lang_end = langs.end();
-        for (lang_it = langs.begin(); lang_it != lang_end; ++lang_it)
-        {
-            StringRes str_res;
-            ResEntries::iterator it, end = found.end();
-            for (it = found.begin(); it != end; ++it)
-            {
-                if (it->lang != *lang_it)
-                    continue;
-                MByteStreamEx stream(it->data);
-                if (!str_res.LoadFromStream(stream, it->name.m_id))
-                    return FALSE;
-            }
-
-            MString str;
-            str += GetLanguageStatement(*lang_it);
-            str += str_res.Dump(m_db);
-            str += L"\r\n\r\n";
-
-            MTextToAnsi t2a(CP_UTF8, str.c_str());
-            file.WriteSzA(t2a.c_str());
-        }
+        WORD lang = *it;
+        if (!DoWriteRCLang(file, res2text, lang))
+            return FALSE;
     }
 
-    Res_Search(found, m_entries, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
-    if (found.size())
-    {
-        std::set<WORD> langs;
-        for (size_t i = 0; i < found.size(); ++i)
-        {
-            langs.insert(found[i].lang);
-        }
-
-        std::set<WORD>::iterator lang_it, lang_end = langs.end();
-        for (lang_it = langs.begin(); lang_it != lang_end; ++lang_it)
-        {
-            MessageRes msg_res;
-            ResEntries::iterator it, end = found.end();
-            for (it = found.begin(); it != end; ++it)
-            {
-                if (it->lang != *lang_it)
-                    continue;
-                MByteStreamEx stream(it->data);
-                if (!msg_res.LoadFromStream(stream, it->name.m_id))
-                    return FALSE;
-            }
-
-            MString str;
-            str += GetLanguageStatement(*lang_it);
-            str += L"#ifdef MCDX_INVOKED\r\n";
-            str += msg_res.Dump(m_db);
-            str += L"#endif\r\n\r\n";
-
-            MTextToAnsi t2a(CP_UTF8, str.c_str());
-            file.WriteSzA(t2a.c_str());
-        }
-    }
+    file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
 
     return TRUE;
 }
@@ -5250,6 +5257,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
 
     if (entry.type == RT_CURSOR)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_BITMAP)
@@ -5258,18 +5266,22 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
     }
     if (entry.type == RT_ICON)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_MENU)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_DIALOG)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_STRING)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_FONTDIR)
@@ -5282,6 +5294,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
     }
     if (entry.type == RT_ACCELERATOR)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_RCDATA)
@@ -5290,6 +5303,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
     }
     if (entry.type == RT_MESSAGETABLE)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_GROUP_CURSOR)
@@ -5302,6 +5316,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry)
     }
     if (entry.type == RT_VERSION)
     {
+        // No output file
         return TRUE;
     }
     if (entry.type == RT_DLGINCLUDE)

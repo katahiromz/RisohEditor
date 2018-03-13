@@ -95,6 +95,11 @@ public:
     {
     }
 
+    bool empty() const
+    {
+        return m_map.empty();
+    }
+
     void clear()
     {
         m_map.clear();

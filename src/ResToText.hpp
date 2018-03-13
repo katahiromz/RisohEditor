@@ -63,7 +63,7 @@ public:
 
     ResToText(const RisohSettings& settings, const ConstantsDB& db, const ResEntries& entries)
         : m_hwnd(NULL), m_hwndDialog(NULL), m_settings(settings), m_db(db), m_entries(entries),
-          m_bHumanReadable(TRUE)
+          m_bHumanReadable(TRUE), m_bNoLanguage(FALSE)
     {
     }
 
@@ -78,10 +78,14 @@ protected:
     const ResEntries& m_entries;
 public:
     BOOL m_bHumanReadable;
+    BOOL m_bNoLanguage;
 
     MString GetLanguageStatement(WORD langid)
     {
-        return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+        if (!m_bNoLanguage)
+            return ::GetLanguageStatement(langid, m_settings.bOldStyle) + TEXT("\r\n");
+        else
+            return TEXT("");
     }
 
     MString DoCursor(const ResEntry& entry);
