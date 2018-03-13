@@ -7499,23 +7499,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     }
     else
     {
-        m_settings.assoc_map[L"Cursor.ID"] = L"IDC_";
-        m_settings.assoc_map[L"Bitmap.ID"] = L"IDB_";
-        m_settings.assoc_map[L"Menu.ID"] = L"IDM_";
-        m_settings.assoc_map[L"Dialog.ID"] = L"IDD_";
-        m_settings.assoc_map[L"String.ID"] = L"IDS_";
-        m_settings.assoc_map[L"Accel.ID"] = L"IDA_";
-        m_settings.assoc_map[L"Icon.ID"] = L"IDI_";
-        m_settings.assoc_map[L"AniCursor.ID"] = L"IDAC_";
-        m_settings.assoc_map[L"AniIcon.ID"] = L"IDAI_";
-        m_settings.assoc_map[L"Html.ID"] = L"IDH_";
-        m_settings.assoc_map[L"Help.ID"] = L"HID_";
-        m_settings.assoc_map[L"Command.ID"] = L"CMDID_";
-        m_settings.assoc_map[L"Control.ID"] = L"CID_";
-        m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
-        m_settings.assoc_map[L"Message.ID"] = L"MSGID_";
-        m_settings.assoc_map[L"Window.ID"] = L"IDW_";
-        m_settings.assoc_map[L"Unknown.ID"] = L"";
+        m_settings.ResetAssoc();
     }
 
     m_settings.id_map.clear();

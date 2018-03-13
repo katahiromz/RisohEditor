@@ -99,6 +99,27 @@ struct RisohSettings
             vecRecentlyUsed.resize(MAX_MRU);
     }
 
+    void ResetAssoc()
+    {
+        assoc_map[L"Cursor.ID"] = L"IDC_";
+        assoc_map[L"Bitmap.ID"] = L"IDB_";
+        assoc_map[L"Menu.ID"] = L"IDM_";
+        assoc_map[L"Dialog.ID"] = L"IDD_";
+        assoc_map[L"String.ID"] = L"IDS_";
+        assoc_map[L"Accel.ID"] = L"IDA_";
+        assoc_map[L"Icon.ID"] = L"IDI_";
+        assoc_map[L"AniCursor.ID"] = L"IDAC_";
+        assoc_map[L"AniIcon.ID"] = L"IDAI_";
+        assoc_map[L"Html.ID"] = L"IDH_";
+        assoc_map[L"Help.ID"] = L"HID_";
+        assoc_map[L"Command.ID"] = L"CMDID_";
+        assoc_map[L"Control.ID"] = L"CID_";
+        assoc_map[L"Resource.ID"] = L"IDR_";
+        assoc_map[L"Message.ID"] = L"MSGID_";
+        assoc_map[L"Window.ID"] = L"IDW_";
+        assoc_map[L"Unknown.ID"] = L"";
+    }
+
     void ResetMacros()
     {
         macros.clear();
