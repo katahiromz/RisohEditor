@@ -115,10 +115,11 @@ public:
 inline MString
 ResToText::GetEntryFileName(const ResEntry& entry)
 {
-    MString ret;
-    
+    MString ret, lang;
+
     if (entry.type == RT_CURSOR)
     {
+        // No output file
     }
     else if (entry.type == RT_BITMAP)
     {
@@ -128,15 +129,19 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     }
     else if (entry.type == RT_ICON)
     {
+        // No output file
     }
     else if (entry.type == RT_MENU)
     {
+        // No output file
     }
     else if (entry.type == RT_DIALOG)
     {
+        // No output file
     }
     else if (entry.type == RT_STRING)
     {
+        // No output file
     }
     else if (entry.type == RT_FONTDIR)
     {
@@ -176,6 +181,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     }
     else if (entry.type == RT_VERSION)
     {
+        // No output file
     }
     else if (entry.type == RT_DLGINCLUDE)
     {
@@ -324,6 +330,13 @@ ResToText::GetEntryFileName(const ResEntry& entry)
             ret += DumpEscapedName(entry.name);
             ret += L".bin";
         }
+    }
+
+    if (ret.size() && entry.lang != 0 && entry.lang != 0xFFFF)
+    {
+        WCHAR sz[32];
+        StringCchPrintfW(sz, _countof(sz), L"%u_", entry.lang);
+        ret = sz + ret;
     }
 
     return ret;
