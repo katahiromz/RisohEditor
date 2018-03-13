@@ -282,7 +282,8 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
         nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
         nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
         nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
-        nIDTYPE_ != IDTYPE_UNKNOWN && nIDTYPE_ != IDTYPE_INVALID)
+        nIDTYPE_ != IDTYPE_WINDOW && nIDTYPE_ != IDTYPE_UNKNOWN &&
+        nIDTYPE_ != IDTYPE_INVALID)
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
@@ -7513,6 +7514,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
         m_settings.assoc_map[L"Control.ID"] = L"CID_";
         m_settings.assoc_map[L"Resource.ID"] = L"IDR_";
         m_settings.assoc_map[L"Message.ID"] = L"MSGID_";
+        m_settings.assoc_map[L"Window.ID"] = L"IDW_";
         m_settings.assoc_map[L"Unknown.ID"] = L"";
     }
 
@@ -8060,6 +8062,8 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
         type = RT_MESSAGETABLE;
         name.clear();
         break;
+    case IDTYPE_WINDOW:
+        return 0;
     case IDTYPE_UNKNOWN:
         return 0;
     case IDTYPE_INVALID:

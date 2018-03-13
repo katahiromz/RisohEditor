@@ -49,7 +49,8 @@
 #define IDTYPE_CONTROL      12  // Control.ID
 #define IDTYPE_RESOURCE     13  // Resource.ID
 #define IDTYPE_MESSAGE      14  // Message.ID
-#define IDTYPE_UNKNOWN      15  // Unknown.ID
+#define IDTYPE_WINDOW       15  // Window.ID
+#define IDTYPE_UNKNOWN      16  // Unknown.ID
 #define IDTYPE_INVALID      -1
 
 class ConstantsDB
@@ -209,7 +210,8 @@ public:
 
         if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
             nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-            nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE)
+            nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
+            nIDTYPE_ != IDTYPE_WINDOW)
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
