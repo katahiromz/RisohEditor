@@ -11,7 +11,7 @@
 - The RT_STRING or RT_MESSAGETABLE resource can have multiple resource IDs.
 - The resource ID of RT_MANIFEST or RT_VERSION has special meanings.
 - The "user resource" is a Win32 resource data that the user's project directly provides, and that is not provided by another project or framework.
-- The "user ID" is the ID of a Win32 resource data that the user's project directly provides, and that is not provided by another project or framework.
+- The "user ID" is the ID that the user's project directly provides, and that is not provided by another project or framework.
 - The "icon ID" is the resource ID of RT_GROUP_ICON type.
 - The "cursor ID" is the resource ID of RT_GROUP_CURSOR type.
 
