@@ -22,7 +22,7 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 
 ## RULES
 
-The contents of file "resource.h" should begin with the C++ comments as follows:
+For Visual C++ compatibility, the contents of file "resource.h" should begin with the C++ comments as follows:
 
 ```c
 //{{NO_DEPENDENCIES}}
@@ -78,7 +78,7 @@ Don't use the "IDP_" prefix.
 
 ## TEXTINCLUDE
 
-The resource file should have three TEXTINCLUDE data as follows:
+For Visual C++ compatibility, the resource file should have three TEXTINCLUDE data as follows:
 
 ```rc
 #ifdef APSTUDIO_INVOKED
