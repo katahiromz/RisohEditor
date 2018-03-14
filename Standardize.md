@@ -1,5 +1,8 @@
 # Standardize Win32 Resource
 
+New RisohEditor resource information should follow the following rules.
+If you are using old RisohEditor resource data, then you have to apply the following rules.
+
 ## DEFINITIONS
 
 - A "resource ID" is the ID, that is used for Win32 resource data.
