@@ -101,3 +101,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 ```
+
+## SEE ALSO
+
+[https://msdn.microsoft.com/en-us/library/t2zechd4.aspx](https://msdn.microsoft.com/en-us/library/t2zechd4.aspx)
