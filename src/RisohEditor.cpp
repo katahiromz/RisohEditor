@@ -3403,6 +3403,9 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
 
     MString str;
     str += GetLanguageStatement(entry.lang);
+    str += L"#ifdef APSTUDIO_INVOKED\r\n";
+    str += L"    #error Ap Studio cannot edit this message table.\r\n";
+    str += L"#endif\r\n";
     str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump(m_db);
     str += L"#endif\r\n\r\n";
@@ -5007,6 +5010,9 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         }
 
         MString str;
+        str += L"#ifdef APSTUDIO_INVOKED\r\n";
+        str += L"    #error Ap Studio cannot edit this message table.\r\n";
+        str += L"#endif\r\n";
         str += L"#ifdef MCDX_INVOKED\r\n";
         str += msg_res.Dump(m_db);
         str += L"#endif\r\n\r\n";

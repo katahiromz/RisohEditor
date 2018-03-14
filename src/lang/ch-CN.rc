@@ -1116,6 +1116,9 @@ FONT 9, "宋体"
     PUSHBUTTON "重置全部(&S)", psh9, 5, 200, 95, 14
 }
 
+#ifdef APSTUDIO_INVOKED
+    #error Ap Studio cannot edit this message table.
+#endif
 #ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {

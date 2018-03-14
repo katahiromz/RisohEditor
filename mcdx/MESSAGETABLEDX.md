@@ -10,6 +10,9 @@ Syntax
 ------
 
 ```rc
+#ifdef APSTUDIO_INVOKED
+    #error Ap Studio cannot edit this message table.
+#endif
 #ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {

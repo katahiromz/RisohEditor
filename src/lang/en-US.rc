@@ -1116,6 +1116,9 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Re&set All", psh9, 5, 200, 95, 14
 }
 
+#ifdef APSTUDIO_INVOKED
+    #error Ap Studio cannot edit this message table.
+#endif
 #ifdef MCDX_INVOKED
 MESSAGETABLEDX
 {
