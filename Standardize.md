@@ -57,7 +57,7 @@ The user ID prefixes defined in file "resource.h" should apply the following tab
 | ID Type                  | ID Prefix | Bounded Range | Preferable Range |
 |--------------------------|-----------|---------------|------------------|
 | String ID                | IDS_      | 1 to 0x7FFF   | 100 to 0x7FFF    |
-| Message ID               | MSGID_    | 1 to 0x7FFF   | 100 to 0x7FFF    |
+| Message ID               | MSGID_    | 0 to 0x7FFF   | 0 to 0x7FFF      |
 | Command ID               | ID_       | 1 to 0x7FFF   | 100 to 0x7FFF    |
 | Command ID (Old Type)    | IDM_      | 1 to 0x7FFF   | 100 to 0x7FFF    |
 | Control ID               | IDC_      | 8 to 0xDFFF   | 1000 to 0x7FFF   |
