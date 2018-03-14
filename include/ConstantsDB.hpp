@@ -315,6 +315,14 @@ public:
         return mstr_dec_word(WORD(value));
     }
 
+    StringType GetNameOfResID(INT nIDTYPE_1, INT nIDTYPE_2, ValueType value) const
+    {
+        StringType ret = GetNameOfResID(nIDTYPE_1, value);
+        if (mchr_is_digit(ret[0]) || ret[0] == L'-')
+            ret = GetNameOfResID(nIDTYPE_2, value);
+        return ret;
+    }
+
     NameType GetName(CategoryType category, ValueType value) const
     {
         const TableType& table = GetTable(category);

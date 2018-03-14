@@ -445,7 +445,7 @@ public:
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, it->wMenuID);
+                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
                     }
                     ret += DumpFlags(it->fItemFlags);
                     ret += L"\r\n";
@@ -507,7 +507,7 @@ public:
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
+                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
                     }
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
@@ -558,7 +558,7 @@ public:
                         }
                         else
                         {
-                            ret += db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
+                            ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
                         }
                     }
                     if (it->dwType || it->dwState)

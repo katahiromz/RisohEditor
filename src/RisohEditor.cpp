@@ -279,11 +279,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 
     if (k == -1 &&
-        nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
-        nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-        nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
-        nIDTYPE_ != IDTYPE_WINDOW && nIDTYPE_ != IDTYPE_UNKNOWN &&
-        nIDTYPE_ != IDTYPE_INVALID)
+        nIDTYPE_ != IDTYPE_RESOURCE && m_db.IsEntityIDType(nIDTYPE_))
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
@@ -763,7 +759,7 @@ MStringW GetKeyID(ConstantsDB& db, UINT wId)
     if (!db.AreMacroIDShown())
         return mstr_dec_short((SHORT)wId);
 
-    return db.GetNameOfResID(IDTYPE_COMMAND, wId);
+    return db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, wId);
 }
 
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)

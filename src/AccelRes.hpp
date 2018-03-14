@@ -143,7 +143,7 @@ public:
             }
             else
             {
-                ret += m_db.GetNameOfResID(IDTYPE_COMMAND, it->wId);
+                ret += m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wId);
             }
 
             if (NOINVERT)

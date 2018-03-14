@@ -458,7 +458,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = m_db.GetNameOfResID(IDTYPE_COMMAND, it->menuId);
+                str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -512,7 +512,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(hCtl1, &item);
 
-                str = m_db.GetNameOfResID(IDTYPE_COMMAND, it->wMenuID);
+                str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
