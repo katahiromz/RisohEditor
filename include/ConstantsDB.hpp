@@ -50,7 +50,8 @@
 #define IDTYPE_RESOURCE     13  // Resource.ID
 #define IDTYPE_MESSAGE      14  // Message.ID
 #define IDTYPE_WINDOW       15  // Window.ID
-#define IDTYPE_UNKNOWN      16  // Unknown.ID
+#define IDTYPE_NEWCOMMAND   16  // New.Command.ID
+#define IDTYPE_UNKNOWN      17  // Unknown.ID
 #define IDTYPE_INVALID      -1
 
 class ConstantsDB
@@ -80,6 +81,94 @@ public:
     typedef std::vector<EntryType> TableType;
     typedef std::map<CategoryType, TableType> MapType;
     MapType m_map;
+
+    BOOL IsEntityIDType(INT nIDTYPE_) const
+    {
+        switch (nIDTYPE_)
+        {
+        case IDTYPE_CURSOR:
+        case IDTYPE_BITMAP:
+        case IDTYPE_MENU:
+        case IDTYPE_DIALOG:
+        case IDTYPE_ACCEL:
+        case IDTYPE_ICON:
+        case IDTYPE_ANICURSOR:
+        case IDTYPE_ANIICON:
+        case IDTYPE_HTML:
+        case IDTYPE_RESOURCE:
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    INT IDTypeFromRes(const MIdOrString& id) const
+    {
+        if (id == RT_CURSOR)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_BITMAP)
+        {
+            return IDTYPE_BITMAP;
+        }
+        if (id == RT_ICON)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_MENU)
+        {
+            return IDTYPE_MENU;
+        }
+        if (id == RT_DIALOG)
+        {
+            return IDTYPE_DIALOG;
+        }
+        if (id == RT_STRING)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_ACCELERATOR)
+        {
+            return IDTYPE_ACCEL;
+        }
+        if (id == RT_GROUP_CURSOR)
+        {
+            return IDTYPE_CURSOR;
+        }
+        if (id == RT_GROUP_ICON)
+        {
+            return IDTYPE_ICON;
+        }
+        if (id == RT_VERSION)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_DLGINCLUDE)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_ANICURSOR)
+        {
+            return IDTYPE_ANICURSOR;
+        }
+        if (id == RT_ANIICON)
+        {
+            return IDTYPE_ANIICON;
+        }
+        if (id == RT_HTML)
+        {
+            return IDTYPE_HTML;
+        }
+        if (id == RT_MANIFEST)
+        {
+            return IDTYPE_INVALID;
+        }
+        if (id == RT_MESSAGETABLE)
+        {
+            return IDTYPE_INVALID;
+        }
+        return IDTYPE_RESOURCE;
+    }
 
     ConstantsDB()
     {
@@ -208,10 +297,7 @@ public:
             return DumpValue(L"CTRLID", value);
         }
 
-        if (nIDTYPE_ != IDTYPE_RESOURCE && nIDTYPE_ != IDTYPE_STRING &&
-            nIDTYPE_ != IDTYPE_CONTROL && nIDTYPE_ != IDTYPE_COMMAND &&
-            nIDTYPE_ != IDTYPE_HELP && nIDTYPE_ != IDTYPE_MESSAGE &&
-            nIDTYPE_ != IDTYPE_WINDOW)
+        if (!IsEntityIDType(nIDTYPE_))
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
@@ -544,75 +630,6 @@ public:
         }
 
         return value;
-    }
-
-    INT IDTypeFromRes(const MIdOrString& id) const
-    {
-        if (id == RT_CURSOR)
-        {
-            return IDTYPE_RESOURCE;
-        }
-        if (id == RT_BITMAP)
-        {
-            return IDTYPE_BITMAP;
-        }
-        if (id == RT_ICON)
-        {
-            return IDTYPE_RESOURCE;
-        }
-        if (id == RT_MENU)
-        {
-            return IDTYPE_MENU;
-        }
-        if (id == RT_DIALOG)
-        {
-            return IDTYPE_DIALOG;
-        }
-        if (id == RT_STRING)
-        {
-            return IDTYPE_INVALID;
-        }
-        if (id == RT_ACCELERATOR)
-        {
-            return IDTYPE_ACCEL;
-        }
-        if (id == RT_GROUP_CURSOR)
-        {
-            return IDTYPE_CURSOR;
-        }
-        if (id == RT_GROUP_ICON)
-        {
-            return IDTYPE_ICON;
-        }
-        if (id == RT_VERSION)
-        {
-            return IDTYPE_INVALID;
-        }
-        if (id == RT_DLGINCLUDE)
-        {
-            return IDTYPE_INVALID;
-        }
-        if (id == RT_ANICURSOR)
-        {
-            return IDTYPE_ANICURSOR;
-        }
-        if (id == RT_ANIICON)
-        {
-            return IDTYPE_ANIICON;
-        }
-        if (id == RT_HTML)
-        {
-            return IDTYPE_HTML;
-        }
-        if (id == RT_MANIFEST)
-        {
-            return IDTYPE_INVALID;
-        }
-        if (id == RT_MESSAGETABLE)
-        {
-            return IDTYPE_MESSAGE;
-        }
-        return IDTYPE_RESOURCE;
     }
 
 protected:

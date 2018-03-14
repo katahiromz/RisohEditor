@@ -38,7 +38,8 @@ Control.ID, 12
 Resource.ID, 13
 Message.ID, 14
 Window.ID, 15
-Unknown.ID, 16
+New.Command.ID, 16
+Unknown.ID, 17
 
 [RESOURCE.ID.PREFIX]
 IDC_, 0
@@ -57,7 +58,8 @@ CID_, 12
 IDR_, 13
 MSGID_, 14
 IDW_, 15
-, 16
+ID_, 16
+, 17
 
 [HIDE.ID]
 HIDE.ID, 0

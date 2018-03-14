@@ -150,6 +150,20 @@ public:
 };
 typedef std::vector<ResEntry> ResEntries;
 
+///////////////////////////////////////////////////////////////////////////////
+
+inline BOOL
+Res_IsEntityType(const MIdOrString& type)
+{
+    if (type == RT_CURSOR || type == RT_ICON)
+        return FALSE;
+    if (type == RT_STRING || type == RT_MESSAGETABLE)
+        return FALSE;
+    if (type == RT_VERSION || type == RT_MANIFEST)
+        return FALSE;
+    return TRUE;
+}
+
 inline INT
 Res_Find(const ResEntries& entries,
          const MIdOrString& type, 
