@@ -72,6 +72,8 @@ Two different resource IDs of the same ID prefix should have a different value f
 The resource data of ID prefix "IDC_" is either a control ID or a cursor ID.
 If we follow the preferable ranges of ID prefixes, then control IDs and a cursor IDs don't collide.
 
+Don't use the "IDP_" prefix.
+
 ## TEXTINCLUDE
 
 The resource file should have three TEXTINCLUDE data as follows:
