@@ -3778,10 +3778,10 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
-    r1.WriteFormatA("#include <windows.h>\r\n");
-    r1.WriteFormatA("#include <commctrl.h>\r\n");
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    r1.WriteFormatA("#include <windows.h>\r\n");
+    r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001)\r\n");
@@ -3920,10 +3920,10 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
-    r1.WriteFormatA("#include <windows.h>\r\n");
-    r1.WriteFormatA("#include <commctrl.h>\r\n");
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    r1.WriteFormatA("#include <windows.h>\r\n");
+    r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001)\r\n");
@@ -5034,12 +5034,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     if (!file)
         return FALSE;
 
-    file.WriteFormatA("#include <windows.h>\r\n");
-    file.WriteFormatA("#include <commctrl.h>\r\n");
-
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
-
+    file.WriteFormatA("#include <windows.h>\r\n");
+    file.WriteFormatA("#include <commctrl.h>\r\n");
     file.WriteFormatA("#pragma code_page(65001)\r\n\r\n");
 
     std::set<WORD> langs;

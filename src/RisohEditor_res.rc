@@ -17,9 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <windows.h>
-#include <dlgs.h>
 #include "resource.h"
+
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
 
 #if !defined(LANGUAGE_EN_US) && !defined(LANGUAGE_ZH_CN) && !defined(LANGUAGE_JA_JP)
     #error You should specify languages. You lose.
@@ -156,5 +158,28 @@ FILETYPE        VFT_APP
 #ifdef LANGUAGE_JA_JP
     #include "lang/ja-JP.rc"
 #endif
+
+//////////////////////////////////////////////////////////////////////////////
+
+#ifdef APSTUDIO_INVOKED
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+#endif    // APSTUDIO_INVOKED
 
 //////////////////////////////////////////////////////////////////////////////
