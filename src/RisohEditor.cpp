@@ -3777,7 +3777,6 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("#include <dlgs.h>\r\n");
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
@@ -3920,7 +3919,6 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("#include <dlgs.h>\r\n");
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
@@ -5032,7 +5030,6 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     file.WriteFormatA("#include <windows.h>\r\n");
     file.WriteFormatA("#include <commctrl.h>\r\n");
-    file.WriteFormatA("#include <dlgs.h>\r\n");
 
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
