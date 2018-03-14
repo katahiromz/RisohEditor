@@ -17,6 +17,8 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 - The "user ID" is the ID that the user's project directly provides, and that is not provided by another project or framework.
 - The "icon ID" is the resource ID of RT_GROUP_ICON type.
 - The "cursor ID" is the resource ID of RT_GROUP_CURSOR type.
+- The "string ID" is the ID of one string data in the string table.
+- The "message ID" is the ID of one message data in the message table.
 
 ## RULES
 
