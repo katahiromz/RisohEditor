@@ -32,7 +32,7 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(const MString& name, INT nIDTYPE_);
+MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +85,7 @@ public:
                 INT nIDTYPE_ = (INT)m_db.GetValue(L"RESOURCE.ID.PREFIX", it->second);
                 if (m_db.IsEntityIDType(nIDTYPE_))
                 {
-                    str = GetEntityIDText(name, nIDTYPE_);
+                    str = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
                     break;
                 }
                 else

@@ -247,7 +247,7 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-MString GetEntityIDText(const MString& name, INT nIDTYPE_)
+MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_)
 {
     MIdOrString type;
     switch (nIDTYPE_)
@@ -266,16 +266,16 @@ MString GetEntityIDText(const MString& name, INT nIDTYPE_)
         return L"Unknown.ID";
     }
 
-    WORD wName = WORD(m_db.GetResIDValue(name));
+    WORD wName = WORD(db.GetResIDValue(name));
 
     ResEntries found;
-    Res_Search(found, m_entries, type, wName, 0xFFFF);
+    Res_Search(found, entries, type, wName, 0xFFFF);
 
     if (found.size())
     {
         if (found[0].type.is_int())
         {
-            MString res_name = m_db.GetName(L"RESOURCE", found[0].type.m_id);
+            MString res_name = db.GetName(L"RESOURCE", found[0].type.m_id);
             if (res_name.size())
             {
                 if (res_name == L"RT_GROUP_CURSOR")
