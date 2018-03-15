@@ -279,7 +279,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 
     if (k == -1 &&
-        nIDTYPE_ != IDTYPE_RESOURCE && m_db.IsEntityIDType(nIDTYPE_))
+        nIDTYPE_ != IDTYPE_RESOURCE && db.IsEntityIDType(nIDTYPE_))
     {
         table = db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
@@ -8044,6 +8044,8 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
         name.clear();
         break;
     case IDTYPE_WINDOW:
+        return 0;
+    case IDTYPE_NEWCOMMAND:
         return 0;
     case IDTYPE_UNKNOWN:
         return 0;
