@@ -169,7 +169,7 @@ public:
             item.iSubItem = 0;
             item.pszText = &text1[0];
             item.lParam = iItem;
-            ListView_InsertItem(m_hLst1, &item);
+            iItem = ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
