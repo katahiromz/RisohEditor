@@ -66,11 +66,12 @@ public:
     HWND m_hMainWnd;
     LPWSTR m_pszResH;
     INT m_nBase;
+    HWND m_hLst1;
     MSubclassedListView m_lv;
 
     MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
-          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10)
+          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL)
     {
     }
 
@@ -85,8 +86,19 @@ public:
                 INT nIDTYPE_ = (INT)m_db.GetValue(L"RESOURCE.ID.PREFIX", it->second);
                 if (m_db.IsEntityIDType(nIDTYPE_))
                 {
-                    str = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
-                    break;
+                    MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
+                    if (str.empty())
+                    {
+                        str = str2;
+                    }
+                    else
+                    {
+                        if (!it->second.empty() && str2 != L"Unknown.ID")
+                        {
+                            str += TEXT("/");
+                            str += str2;
+                        }
+                    }
                 }
                 else
                 {
@@ -421,16 +433,7 @@ public:
             break;
         case CMDID_IDJUMP:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-            ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
-            str1 = szText;
-            ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
-            str2 = szText;
-            {
-                ConstantsDB::TableType table;
-                int nIDTYPE_ = m_db.GetValue(L"RESOURCE.ID.TYPE", str1.c_str());
-                int nID = mstr_parse_int(str2.c_str());
-                PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, nIDTYPE_, nID);
-            }
+            PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
             break;
         case CMDID_BASE10:
             m_nBase = 10;
@@ -557,9 +560,6 @@ public:
         }
         return 0;
     }
-
-protected:
-    HWND m_hLst1;
 };
 
 //////////////////////////////////////////////////////////////////////////////

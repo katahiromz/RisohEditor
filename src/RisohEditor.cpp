@@ -1122,6 +1122,8 @@ public:
     BOOL IsEditableEntry(HWND hwnd, LPARAM lParam);
     BOOL CompileIfNecessary(HWND hwnd, BOOL bReopen = FALSE);
     BOOL ReCompileOnSelChange(HWND hwnd, BOOL bReopen = FALSE);
+    void SelectString(HWND hwnd);
+    void SelectMessage(HWND hwnd);
 
     // ID list
     void UpdateIDList(HWND hwnd);
@@ -8042,82 +8044,91 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
+void MMainWnd::SelectString(HWND hwnd)
+{
+    ResEntries found;
+    Res_Search(found, m_entries, RT_STRING, WORD(0), 0xFFFF);
+    if (found.size())
+    {
+        ResEntry entry(RT_STRING, found[0].name, found[0].lang);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
+    }
+}
+
+void MMainWnd::SelectMessage(HWND hwnd)
+{
+    ResEntries found;
+    Res_Search(found, m_entries, RT_MESSAGETABLE, WORD(0), 0xFFFF);
+    if (found.size())
+    {
+        ResEntry entry(RT_MESSAGETABLE, found[0].name, found[0].lang);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
+    }
+}
+
 LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    int nIDTYPE_ = (int)wParam;
-    int nID = (int)lParam;
+    INT iItem = wParam;
+    if (iItem == -1)
+        return 0;
 
-    MIdOrString type, name = (WORD)nID;
-    switch (nIDTYPE_)
+    TCHAR szText[64];
+    ListView_GetItemText(m_id_list_dlg.m_hLst1, iItem, 0, szText, _countof(szText));
+    MString name = szText;
+
+    INT nIDTYPE_ = IDTYPE_INVALID;
+    assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
+    for (it = m_settings.assoc_map.begin(); it != end; ++it)
     {
-    case IDTYPE_CURSOR:
-        type = RT_GROUP_CURSOR;
-        break;
-    case IDTYPE_BITMAP:
-        type = RT_BITMAP;
-        break;
-    case IDTYPE_MENU:
-        type = RT_MENU;
-        break;
-    case IDTYPE_DIALOG:
-        type = RT_DIALOG;
-        break;
-    case IDTYPE_STRING:
-        type = RT_STRING;
-        name.clear();
-        break;
-    case IDTYPE_ACCEL:
-        type = RT_ACCELERATOR;
-        break;
-    case IDTYPE_ICON:
-        type = RT_GROUP_ICON;
-        break;
-    case IDTYPE_ANICURSOR:
-        type = RT_ANICURSOR;
-        break;
-    case IDTYPE_ANIICON:
-        type = RT_ANIICON;
-        break;
-    case IDTYPE_HTML:
-        type = RT_HTML;
-        break;
-    case IDTYPE_HELP:
+        if (name.find(it->second) == 0)
+        {
+            nIDTYPE_ = (INT)m_db.GetValue(L"RESOURCE.ID.PREFIX", it->second);
+            break;
+        }
+    }
+
+    if (nIDTYPE_ == IDTYPE_STRING)
+    {
+        SelectString(hwnd);
         return 0;
-    case IDTYPE_COMMAND:
-        return 0;
-    case IDTYPE_CONTROL:
-        return 0;
-    case IDTYPE_RESOURCE:
-        break;
-    case IDTYPE_MESSAGE:
-        type = RT_MESSAGETABLE;
-        name.clear();
-        break;
-    case IDTYPE_WINDOW:
-        return 0;
-    case IDTYPE_NEWCOMMAND:
-        return 0;
-    case IDTYPE_UNKNOWN:
-        return 0;
-    case IDTYPE_INVALID:
+    }
+    if (nIDTYPE_ == IDTYPE_MESSAGE)
+    {
+        SelectMessage(hwnd);
         return 0;
     }
 
-    ResEntry entry;
-    entry.type = type;
-    entry.name = name;
-    entry.lang = 0xFFFF;
-    INT iFound = Res_Find2(m_entries, entry, FALSE);
 
-    if (iFound < 0 || iFound >= INT(m_entries.size()))
+    MIdOrString type;
+    switch (nIDTYPE_)
+    {
+    case IDTYPE_CURSOR:     type = RT_GROUP_CURSOR; break;
+    case IDTYPE_BITMAP:     type = RT_BITMAP; break;
+    case IDTYPE_MENU:       type = RT_MENU; break;
+    case IDTYPE_DIALOG:     type = RT_DIALOG; break;
+    case IDTYPE_ACCEL:      type = RT_ACCELERATOR; break;
+    case IDTYPE_ICON:       type = RT_GROUP_ICON; break;
+    case IDTYPE_ANICURSOR:  type = RT_ANICURSOR; break;
+    case IDTYPE_ANIICON:    type = RT_ANIICON; break;
+    case IDTYPE_HTML:       type = RT_HTML; break;
+    case IDTYPE_RESOURCE:   type.clear(); break;
+    default:
         return 0;
+    }
 
-    entry = m_entries[iFound];
-    TV_SelectEntry(m_hTreeView, m_entries, entry);
+    WORD wName = WORD(m_db.GetResIDValue(name));
 
-    SetForegroundWindow(m_hwnd);
-    BringWindowToTop(m_hwnd);
-    SetFocus(m_hwnd);
+    ResEntries found;
+    Res_Search(found, m_entries, type, wName, 0xFFFF);
+
+    if (found.size())
+    {
+        TV_SelectEntry(m_hTreeView, m_entries, found[0]);
+
+        SetForegroundWindow(m_hwnd);
+        BringWindowToTop(m_hwnd);
+        SetFocus(m_hwnd);
+    }
 
     return 0;
 }
