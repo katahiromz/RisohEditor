@@ -247,6 +247,52 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
+MString GetEntityIDText(const MString& name, INT nIDTYPE_)
+{
+    MIdOrString type;
+    switch (nIDTYPE_)
+    {
+    case IDTYPE_CURSOR:     type = RT_GROUP_CURSOR; break;
+    case IDTYPE_BITMAP:     type = RT_BITMAP; break;
+    case IDTYPE_MENU:       type = RT_MENU; break;
+    case IDTYPE_DIALOG:     type = RT_DIALOG; break;
+    case IDTYPE_ACCEL:      type = RT_ACCELERATOR; break;
+    case IDTYPE_ICON:       type = RT_GROUP_ICON; break;
+    case IDTYPE_ANICURSOR:  type = RT_ANICURSOR; break;
+    case IDTYPE_ANIICON:    type = RT_ANIICON; break;
+    case IDTYPE_HTML:       type = RT_HTML; break;
+    case IDTYPE_RESOURCE:   type.clear(); break;
+    default:
+        return L"Unknown.ID";
+    }
+
+    WORD wName = WORD(m_db.GetResIDValue(name));
+
+    ResEntries found;
+    Res_Search(found, m_entries, type, wName, 0xFFFF);
+
+    if (found.size())
+    {
+        if (found[0].type.is_int())
+        {
+            MString res_name = m_db.GetName(L"RESOURCE", found[0].type.m_id);
+            if (res_name.size())
+            {
+                if (res_name == L"RT_GROUP_CURSOR")
+                    res_name = L"Cursor.ID";
+                else if (res_name == L"RT_GROUP_ICON")
+                    res_name = L"Icon.ID";
+                return res_name;
+            }
+        }
+        else
+        {
+            return found[0].type.str();
+        }
+    }
+    return L"Unknown.ID";
+}
+
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_)
 {
     SetWindowTextW(hCmb, id.c_str());
@@ -4335,19 +4381,22 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
     }
 
-    UnloadResourceH(hwnd);
-    if (m_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, pszNominal);
-
     m_bLoading = TRUE;
     {
         m_entries.clear();
         Res_GetListFromRes(hMod, (LPARAM)&m_entries);
         FreeLibrary(hMod);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     }
     m_bLoading = FALSE;
-    SetFilePath(hwnd, pszReal, pszNominal);
+
+    UnloadResourceH(hwnd);
+    if (m_settings.bAutoLoadNearbyResH)
+        CheckResourceH(hwnd, pszNominal);
+
+    m_bLoading = TRUE;
+    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    m_bLoading = FALSE;
+	SetFilePath(hwnd, pszReal, pszNominal);
 
     return TRUE;
 }
