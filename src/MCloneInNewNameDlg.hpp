@@ -127,7 +127,7 @@ public:
         }
 
         // for Names
-        INT nIDTYPE_ = m_db.IDTypeFromRes(m_entry.type);
+        INT nIDTYPE_ = m_db.IDTypeFromResType(m_entry.type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_db, m_entry.name, nIDTYPE_);
         SubclassChildDx(m_cmb2, cmb2);

@@ -72,6 +72,48 @@ public:
     {
     }
 
+    MString FindEntity(const MString& name, INT nIDTYPE_)
+    {
+        MIdOrString type;
+        switch (nIDTYPE_)
+        {
+        case IDTYPE_CURSOR:     type = RT_GROUP_CURSOR; break;
+        case IDTYPE_BITMAP:     type = RT_BITMAP; break;
+        case IDTYPE_MENU:       type = RT_MENU; break;
+        case IDTYPE_DIALOG:     type = RT_DIALOG; break;
+        case IDTYPE_ACCEL:      type = RT_ACCELERATOR; break;
+        case IDTYPE_ICON:       type = RT_GROUP_ICON; break;
+        case IDTYPE_ANICURSOR:  type = RT_ANICURSOR; break;
+        case IDTYPE_ANIICON:    type = RT_ANIICON; break;
+        case IDTYPE_HTML:       type = RT_HTML; break;
+        case IDTYPE_RESOURCE:   type.clear(); break;
+        default:
+            return L"Unknown.ID";
+        }
+
+        WORD wName = WORD(m_db.GetResIDValue(name));
+
+        ResEntries found;
+        Res_Search(found, m_entries, type, wName, 0xFFFF);
+
+        if (found.size())
+        {
+            if (found[0].type.is_int())
+            {
+                ConstantsDB::TableType table = m_db.GetTable(L"RESOURCE");
+                if (found[0].type.m_id < table.size())
+                {
+                    return table[found[0].type.m_id].name;
+                }
+            }
+            else
+            {
+                return found[0].type.str();
+            }
+        }
+        return L"Unknown.ID";
+    }
+
     MString GetAssoc(const MString& name)
     {
         MString str;
@@ -80,16 +122,25 @@ public:
         {
             if (name.find(it->second) == 0)
             {
-                if (str.empty())
+                INT nIDTYPE_ = (INT)m_db.GetValue(L"RESOURCE.ID.PREFIX", it->second);
+                if (m_db.IsEntityIDType(nIDTYPE_))
                 {
-                    str = it->first;
+                    str = FindEntity(name, nIDTYPE_);
+                    break;
                 }
                 else
                 {
-                    if (!it->second.empty())
+                    if (str.empty())
                     {
-                        str += TEXT("/");
-                        str += it->first;
+                        str = it->first;
+                    }
+                    else
+                    {
+                        if (!it->second.empty())
+                        {
+                            str += TEXT("/");
+                            str += it->first;
+                        }
                     }
                 }
             }

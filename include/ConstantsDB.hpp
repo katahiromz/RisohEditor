@@ -101,69 +101,69 @@ public:
         return FALSE;
     }
 
-    INT IDTypeFromRes(const MIdOrString& id) const
+    INT IDTypeFromResType(const MIdOrString& type) const
     {
-        if (id == RT_CURSOR)
+        if (type == RT_CURSOR)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_BITMAP)
+        if (type == RT_BITMAP)
         {
             return IDTYPE_BITMAP;
         }
-        if (id == RT_ICON)
+        if (type == RT_ICON)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_MENU)
+        if (type == RT_MENU)
         {
             return IDTYPE_MENU;
         }
-        if (id == RT_DIALOG)
+        if (type == RT_DIALOG)
         {
             return IDTYPE_DIALOG;
         }
-        if (id == RT_STRING)
+        if (type == RT_STRING)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_ACCELERATOR)
+        if (type == RT_ACCELERATOR)
         {
             return IDTYPE_ACCEL;
         }
-        if (id == RT_GROUP_CURSOR)
+        if (type == RT_GROUP_CURSOR)
         {
             return IDTYPE_CURSOR;
         }
-        if (id == RT_GROUP_ICON)
+        if (type == RT_GROUP_ICON)
         {
             return IDTYPE_ICON;
         }
-        if (id == RT_VERSION)
+        if (type == RT_VERSION)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_DLGINCLUDE)
+        if (type == RT_DLGINCLUDE)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_ANICURSOR)
+        if (type == RT_ANICURSOR)
         {
             return IDTYPE_ANICURSOR;
         }
-        if (id == RT_ANIICON)
+        if (type == RT_ANIICON)
         {
             return IDTYPE_ANIICON;
         }
-        if (id == RT_HTML)
+        if (type == RT_HTML)
         {
             return IDTYPE_HTML;
         }
-        if (id == RT_MANIFEST)
+        if (type == RT_MANIFEST)
         {
             return IDTYPE_INVALID;
         }
-        if (id == RT_MESSAGETABLE)
+        if (type == RT_MESSAGETABLE)
         {
             return IDTYPE_INVALID;
         }

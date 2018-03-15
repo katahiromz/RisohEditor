@@ -247,13 +247,13 @@ Res_Find2(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
 }
 
 inline void
-Res_Search(ResEntries& Found,
+Res_Search(ResEntries& found,
            const ResEntries& entries,
            const MIdOrString& type, 
            const MIdOrString& name,
            WORD lang)
 {
-    Found.clear();
+    found.clear();
 
     size_t i, count = entries.size();
     for (i = 0; i < count; ++i)
@@ -268,14 +268,14 @@ Res_Search(ResEntries& Found,
         if (entry.empty())
             continue;
 
-        Found.push_back(entry);
+        found.push_back(entry);
     }
 }
 
 inline void
-Res_Search(ResEntries& Found, const ResEntries& entries, const ResEntry& entry)
+Res_Search(ResEntries& found, const ResEntries& entries, const ResEntry& entry)
 {
-    Res_Search(Found, entries, entry.type, entry.name, entry.lang);
+    Res_Search(found, entries, entry.type, entry.name, entry.lang);
 }
 
 inline UINT

@@ -922,7 +922,7 @@ inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& n
     }
     else
     {
-        ret += m_db.GetNameOfResID(m_db.IDTypeFromRes(type), name.m_id);
+        ret += m_db.GetNameOfResID(m_db.IDTypeFromResType(type), name.m_id);
     }
     return ret;
 }
