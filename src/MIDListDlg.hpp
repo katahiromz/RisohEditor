@@ -129,8 +129,8 @@ public:
         TCHAR sz1[64], sz2[64];
         if (i1 != -1 && i2 != -1)
         {
-            ListView_GetItemText(m_hLst1, i1, 1, sz1, _countof(sz1));
-            ListView_GetItemText(m_hLst1, i2, 1, sz2, _countof(sz2));
+            ListView_GetItemText(m_hLst1, i1, 0, sz1, _countof(sz1));
+            ListView_GetItemText(m_hLst1, i2, 0, sz2, _countof(sz2));
             int cmp = lstrcmp(sz1, sz2);
             if (cmp != 0)
                 return cmp;
