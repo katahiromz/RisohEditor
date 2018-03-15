@@ -431,7 +431,7 @@ inline int mstr_parse_int(const T_CHAR *str, bool is_signed, int base)
     }
     assert(base == 10 || base == 8 || base == 16);
 
-	int num;
+    int num;
     for (num = 0; *str; ++str)
     {
         if (base == 8)

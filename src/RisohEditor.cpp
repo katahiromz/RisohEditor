@@ -4396,7 +4396,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = TRUE;
     TV_RefreshInfo(m_hTreeView, m_db, m_entries);
     m_bLoading = FALSE;
-	SetFilePath(hwnd, pszReal, pszNominal);
+
+    SetFilePath(hwnd, pszReal, pszNominal);
 
     return TRUE;
 }
