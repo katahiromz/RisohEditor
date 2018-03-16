@@ -6186,7 +6186,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MIdAssocDlg dialog(m_settings.assoc_map);
+    MIdAssocDlg dialog(m_settings);
     dialog.DialogBoxDx(hwnd);
 }
 

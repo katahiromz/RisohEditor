@@ -22,6 +22,7 @@
 
 #include "MWindowBase.hpp"
 #include "MModifyAssocDlg.hpp"
+#include "RisohSettings.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -29,10 +30,11 @@ class MIdAssocDlg : public MDialogBase
 {
 public:
     typedef std::map<MString, MString> map_type;
-    map_type& m_map;
+    RisohSettings& m_settings;
     HWND m_hLst1;
 
-    MIdAssocDlg(map_type& map) : MDialogBase(IDD_IDASSOC), m_map(map)
+    MIdAssocDlg(RisohSettings& settings)
+        : MDialogBase(IDD_IDASSOC), m_settings(settings)
     {
     }
 
@@ -43,8 +45,8 @@ public:
         LV_ITEM item;
 
         INT iItem = 0;
-        map_type::iterator it, end = m_map.end();
-        for (it = m_map.begin(); it != end; ++it)
+        map_type::iterator it, end = m_settings.assoc_map.end();
+        for (it = m_settings.assoc_map.begin(); it != end; ++it)
         {
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
@@ -95,6 +97,12 @@ public:
         return TRUE;
     }
 
+    void OnPsh2(HWND hwnd)
+    {
+        m_settings.ResetAssoc();
+        Lst1_Init(m_hLst1);
+    }
+
     void OnPsh1(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -113,7 +121,6 @@ public:
         MModifyAssocDlg dialog(str1, str2);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            m_map[str1] = str2;
             ListView_SetItemText(m_hLst1, iItem, 1, const_cast<LPTSTR>(str2.c_str()));
         }
     }
@@ -132,7 +139,7 @@ public:
             ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
             str2 = szText;
 
-            m_map[str1] = str2;
+            m_settings.assoc_map[str1] = str2;
         }
 
         EndDialog(IDOK);
@@ -150,6 +157,9 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case psh2:
+            OnPsh2(hwnd);
             break;
         case ID_MODIFYASSOC:
             OnPsh1(hwnd);
