@@ -497,15 +497,16 @@ public:
         if (nIndex == -1)
         {
             HMENU hMenu = CreatePopupMenu();
-            for (size_t i = 0; i < vecItems.size(); ++i)
+            const size_t max_count = 10;
+            for (size_t i = 0; i < vecItems.size() && i < max_count; ++i)
             {
                 INT k = ID_IDJUMP00 + INT(i);
                 InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED,
                     k, vecItems[i].c_str());
             }
 
-			POINT pt;
-			GetCursorPos(&pt);
+            POINT pt;
+            GetCursorPos(&pt);
 
             SetForegroundWindow(hwnd);
             TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
