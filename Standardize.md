@@ -107,6 +107,10 @@ END
 #endif    // APSTUDIO_INVOKED
 ```
 
+## COMMENTS
+
+The resource file and "resource.h" file should use C++ comments rather than C comments.
+
 ## SEE ALSO
 
 [https://msdn.microsoft.com/en-us/library/t2zechd4.aspx](https://msdn.microsoft.com/en-us/library/t2zechd4.aspx)
