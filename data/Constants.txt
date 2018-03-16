@@ -44,7 +44,7 @@ Unknown.ID, 0
 [RESOURCE.ID.PREFIX]
 IDC_, 1
 IDB_, 2
-IDM_, 3
+IDR_, 3
 IDD_, 4
 IDS_, 5
 IDA_, 6
@@ -53,7 +53,7 @@ IDR_, 8
 IDR_, 9
 IDR_, 10
 HID_, 11
-CMDID_, 12
+IDM_, 12
 IDC_, 13
 IDR_, 14
 MSGID_, 15
