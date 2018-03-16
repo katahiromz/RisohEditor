@@ -5149,6 +5149,33 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
 
+    // write three TEXTINCLUDE's
+    file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n");
+    file.WriteSzA("\r\n");
+    file.WriteSzA("1 TEXTINCLUDE\r\n");
+    file.WriteSzA("BEGIN\r\n");
+    file.WriteSzA("    \"resource.h\\0\"\r\n");
+    file.WriteSzA("END\r\n");
+    file.WriteSzA("\r\n");
+    file.WriteSzA("2 TEXTINCLUDE\r\n");
+    file.WriteSzA("BEGIN\r\n");
+    file.WriteSzA("    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+    file.WriteSzA("    \"#include <windows.h>\\r\\n\"\r\n");
+    file.WriteSzA("    \"#include <commctrl.h>\\r\\n\"\r\n");
+    file.WriteSzA("    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+    file.WriteSzA("    \"\\0\"\r\n");
+    file.WriteSzA("END\r\n");
+    file.WriteSzA("\r\n");
+    file.WriteSzA("3 TEXTINCLUDE\r\n");
+    file.WriteSzA("BEGIN\r\n");
+    file.WriteSzA("    \"\\r\\n\"\r\n");
+    file.WriteSzA("    \"\\0\"\r\n");
+    file.WriteSzA("END\r\n");
+    file.WriteSzA("\r\n");
+    file.WriteSzA("#endif    // APSTUDIO_INVOKED\r\n");
+
+    file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
+
     return TRUE;
 }
 
