@@ -7764,16 +7764,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         }
     }
 
-    TCHAR szName[MAX_PATH];
-    assoc_map_type::iterator it, end = m_settings.assoc_map.end();
-    for (it = m_settings.assoc_map.begin(); it != end; ++it)
-    {
-        if (keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
-        {
-            it->second = szName;
-        }
-    }
-
     if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
         if (GetFileAttributesW(szText) != 0xFFFFFFFF)
@@ -7798,7 +7788,15 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     // reset association if version <= 3.8
     if (m_settings.strPrevVersion.empty() || m_settings.strPrevVersion <= L"3.8")
     {
-        m_settings.ResetAssoc();
+        TCHAR szName[MAX_PATH];
+        assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        {
+            if (keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
+            {
+                it->second = szName;
+            }
+        }
     }
 
     return TRUE;

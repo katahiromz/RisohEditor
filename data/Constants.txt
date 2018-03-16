@@ -39,6 +39,7 @@ Resource.ID, 14
 Message.ID, 15
 Window.ID, 16
 New.Command.ID, 17
+Prompt.ID, 18
 Unknown.ID, 0
 
 [RESOURCE.ID.PREFIX]
@@ -59,6 +60,7 @@ IDR_, 14
 MSGID_, 15
 IDW_, 16
 ID_, 17
+IDP_, 18
 , 0
 
 [HIDE.ID]

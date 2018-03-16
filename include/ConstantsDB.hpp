@@ -52,6 +52,7 @@
 #define IDTYPE_MESSAGE      15  // Message.ID
 #define IDTYPE_WINDOW       16  // Window.ID
 #define IDTYPE_NEWCOMMAND   17  // New.Command.ID
+#define IDTYPE_PROMPT       18  // Prompt.ID
 
 class ConstantsDB
 {
