@@ -1235,6 +1235,7 @@ protected:
     BOOL UnloadResourceH(HWND hwnd);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
+    void UpdateResHLines(std::vector<std::string>& lines);
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -7154,6 +7155,78 @@ void MMainWnd::OnTest(HWND hwnd)
     }
 }
 
+void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
+{
+    // join by '\\'
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        std::string& line = lines[i];
+        if (line.size())
+        {
+            if (line[line.size() - 1] == '\\')
+            {
+                line = line.substr(0, line.size() - 1);
+                lines[i] = line + lines[i + 1];
+                lines.erase(lines.begin() + (i + 1));
+                --i;
+            }
+        }
+    }
+
+    // scan and convert lines
+    size_t iEndIf = (size_t)-1;
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        std::string& line = lines[i];
+        const char *pch = mstr_skip_space(&line[0]);
+        if (*pch == '#')
+        {
+            ++pch;
+            pch = mstr_skip_space(pch);
+            if (memcmp(pch, "define", 6) == 0 && std::isspace(pch[6]))
+            {
+                // #define
+                pch += 6;
+                const char *pch0 = pch = mstr_skip_space(pch);
+                while (std::isalnum(*pch) || *pch == '_')
+                {
+                    ++pch;
+                }
+                std::string name(pch0, pch);
+
+                id_map_type::iterator it = m_settings.removed_ids.find(name);
+                if (it != m_settings.removed_ids.end())
+                {
+                    lines.erase(lines.begin() + i);
+                    --i;
+                }
+
+                iEndIf = (size_t)-1;
+            }
+            else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
+            {
+                // #endif
+                iEndIf = i;
+            }
+        }
+    }
+
+    if (iEndIf == (size_t)-1)
+        iEndIf = lines.size();
+
+    // add lines
+    std::string str;
+    id_map_type::iterator it, end = m_settings.added_ids.end();
+    for (it = m_settings.added_ids.begin(); it != end; ++it)
+    {
+        std::string line = "#define ";
+        line += it->first;
+        line += " ";
+        line += it->second;
+        lines.insert(lines.begin() + iEndIf, line);
+    }
+}
+
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
@@ -7245,74 +7318,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
         fclose(fp);
 
-        // join by '\\'
-        for (size_t i = 0; i < lines.size(); ++i)
-        {
-            std::string& line = lines[i];
-            if (line.size())
-            {
-                if (line[line.size() - 1] == '\\')
-                {
-                    line = line.substr(0, line.size() - 1);
-                    lines[i] = line + lines[i + 1];
-                    lines.erase(lines.begin() + (i + 1));
-                    --i;
-                }
-            }
-        }
-
-        // scan and convert lines
-        size_t iEndIf = (size_t)-1;
-        for (size_t i = 0; i < lines.size(); ++i)
-        {
-            std::string& line = lines[i];
-            const char *pch = mstr_skip_space(&line[0]);
-            if (*pch == '#')
-            {
-                ++pch;
-                pch = mstr_skip_space(pch);
-                if (memcmp(pch, "define", 6) == 0 && std::isspace(pch[6]))
-                {
-                    // #define
-                    pch += 6;
-                    const char *pch0 = pch = mstr_skip_space(pch);
-                    while (std::isalnum(*pch) || *pch == '_')
-                    {
-                        ++pch;
-                    }
-                    std::string name(pch0, pch);
-
-                    id_map_type::iterator it = m_settings.removed_ids.find(name);
-                    if (it != m_settings.removed_ids.end())
-                    {
-                        lines.erase(lines.begin() + i);
-                        --i;
-                    }
-
-                    iEndIf = (size_t)-1;
-                }
-                else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
-                {
-                    // #endif
-                    iEndIf = i;
-                }
-            }
-        }
-
-        if (iEndIf == (size_t)-1)
-            iEndIf = lines.size();
-
-        // add lines
-        std::string str;
-        id_map_type::iterator it, end = m_settings.added_ids.end();
-        for (it = m_settings.added_ids.begin(); it != end; ++it)
-        {
-            std::string line = "#define ";
-            line += it->first;
-            line += " ";
-            line += it->second;
-            lines.insert(lines.begin() + iEndIf, line);
-        }
+        UpdateResHLines(lines);
 
         // write now
         _wfopen_s(&fp, m_szResourceH, L"w");

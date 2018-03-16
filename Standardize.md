@@ -32,6 +32,8 @@ For Visual C++ compatibility, the contents of file "resource.h" should begin wit
 
 Here, "TheProject.rc" must be replaced with the actual resource file name for this "resource.h".
 
+File "resource.h" should not use include guard.
+
 The contents of file "resource.h" should end with the text like:
 
 ```c
