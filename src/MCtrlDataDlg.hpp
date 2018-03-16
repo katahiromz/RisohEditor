@@ -55,7 +55,7 @@ public:
 
         if (vec.size() > 0x10000 / sizeof(WORD))
         {
-            ErrorBoxDx(IDP_DATATOOLONG);
+            ErrorBoxDx(IDS_DATATOOLONG);
             return;
         }
 

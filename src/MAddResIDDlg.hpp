@@ -26,6 +26,8 @@
 #include "resource.h"
 #include "RisohSettings.hpp"
 
+std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddResIDDlg : public MDialogBase
@@ -126,31 +128,27 @@ public:
         case edt1:
             if (codeNotify == EN_CHANGE && !m_bChanging)
             {
-                MString text = GetDlgItemText(hwnd, edt1);
+                MString name = GetDlgItemText(hwnd, edt1);
+                mstr_trim(name);
+
+                MString prefix = name.substr(0, name.find(L'_') + 1);
+
+                std::vector<INT> indexes;
+                indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+                if (indexes.empty() || indexes.size() >= 2)
+                {
+                    m_bChanging = TRUE;
+                    SendDlgItemMessage(hwnd, cmb1, CB_SETCURSEL, -1, 0);
+                    m_bChanging = FALSE;
+                    break;
+                }
 
                 ConstantsDB::TableType table;
                 table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
 
-                INT i = 0;
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
-                {
-                    if (text.find(it->name) == 0)
-                    {
-                        m_bChanging = TRUE;
-                        SendDlgItemMessage(hwnd, cmb1, CB_SETCURSEL, i, 0);
-                        m_bChanging = FALSE;
-                        i = -1;
-                        break;
-                    }
-                    ++i;
-                }
-                if (i != -1)
-                {
-                    m_bChanging = TRUE;
-                    SetDlgItemText(hwnd, cmb1, NULL);
-                    m_bChanging = FALSE;
-                }
+                m_bChanging = TRUE;
+                SendDlgItemMessage(hwnd, cmb1, CB_SETCURSEL, indexes[0], 0);
+                m_bChanging = FALSE;
             }
             break;
         case cmb1:
@@ -163,7 +161,7 @@ public:
                     ConstantsDB::TableType table;
                     table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
 
-                    MString text = GetDlgItemText(hwnd, cmb1);
+                    MString name = GetDlgItemText(hwnd, cmb1);
                     m_bChanging = TRUE;
                     SetDlgItemText(hwnd, edt1, table[k].name.c_str());
                     m_bChanging = FALSE;
@@ -172,44 +170,56 @@ public:
             break;
         case psh1:
             {
-                MString text = GetDlgItemText(hwnd, edt1);
                 SetDlgItemTextW(hwnd, edt2, NULL);
 
-                ConstantsDB::TableType table;
-                table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+                MString name = GetDlgItemText(hwnd, edt1);
+                mstr_trim(name);
 
-                INT i = 0;
-                MString prefix;
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
-                {
-                    if (text.find(it->name) == 0)
-                    {
-                        prefix = it->name;
-                        break;
-                    }
-                    ++i;
-                }
-
+                MString prefix = name.substr(0, name.find(L'_') + 1);
                 if (prefix.size())
                 {
-                    UINT nLastID = 0;
-                    table = m_db.m_map[L"RESOURCE.ID"];
-                    end = table.end();
-                    for (it = table.begin(); it != end; ++it)
+                    ConstantsDB::TableType table;
+                    table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+
+                    UINT nMax = 0;
                     {
-                        if (it->name.find(prefix) == 0)
+                        ConstantsDB::TableType::iterator it, end = table.end();
+                        for (it = table.begin(); it != end; ++it)
                         {
-                            if (nLastID < it->value)
-                                nLastID = it->value;
+                            if (it->name == L"IDC_STATIC")
+                                continue;
+                            if (nMax < it->value)
+                                nMax = it->value;
                         }
                     }
-                    UINT nNextID = nLastID + 1;
-                    if (i == IDTYPE_COMMAND)
+
+                    INT nIDTYPE_ = IDTYPE_UNKNOWN;
                     {
-                        if (nNextID < 8)
-                            nNextID = 8;
+                        assoc_map_type::iterator it, end = m_settings.assoc_map.end();
+                        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+                        {
+                            if (it->second == prefix)
+                            {
+                                nIDTYPE_ = INT(m_db.GetValue(L"RESOURCE.ID.TYPE", it->first));
+                                break;
+                            }
+                        }
                     }
+
+                    INT nNextID = nMax + 1;
+
+                    switch (nIDTYPE_)
+                    {
+                    case IDTYPE_UNKNOWN:
+                    case IDTYPE_MESSAGE:
+                    case IDTYPE_WINDOW:
+                        break;
+                    default:
+                        if (nNextID < 100)
+                            nNextID = 100;
+                        break;
+                    }
+
                     SetDlgItemInt(hwnd, edt2, nNextID, TRUE);
                 }
             }
