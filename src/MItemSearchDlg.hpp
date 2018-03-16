@@ -122,7 +122,7 @@ public:
         m_search.bInternalText = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
         m_search.bRunning = TRUE;
         EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
-        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_ITEMSEARCHBANG, (WPARAM)this);
+        SendMessage(GetParent(hwnd), WM_COMMAND, ID_ITEMSEARCHBANG, (WPARAM)this);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

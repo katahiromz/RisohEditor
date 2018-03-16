@@ -48,7 +48,7 @@ public:
             LPMSG pMsg = (LPMSG)lParam;
             if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
             {
-                SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_MODIFYRESID, (LPARAM)hwnd);
+                SendMessage(GetParent(hwnd), WM_COMMAND, ID_MODIFYRESID, (LPARAM)hwnd);
             }
         }
         return DefaultProcDx();
@@ -77,47 +77,42 @@ public:
 
     MString GetAssoc(const MString& name)
     {
-        MString str;
-        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
-        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        MString ret;
+        MString prefix = name.substr(0, name.find(L'_') + 1);
+        ConstantsDB::ValuesType values = m_db.GetValues(L"RESOURCE.ID.PREFIX", prefix);
+        ConstantsDB::ValuesType::iterator it2, end2 = values.end();
+        for (it2 = values.begin(); it2 != end2; ++it2)
         {
-            if (name.find(it->second) == 0)
+            if (m_db.IsEntityIDType(*it2))
             {
-                INT nIDTYPE_ = (INT)m_db.GetValue(L"RESOURCE.ID.PREFIX", it->second);
-                if (m_db.IsEntityIDType(nIDTYPE_))
+                MString str2 = GetEntityIDText(m_entries, m_db, name, *it2);
+                if (!str2.empty() && ret.find(str2) == MString::npos)
                 {
-                    MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
-                    if (str.empty())
+                    if (ret.empty())
                     {
-                        str = str2;
+                        ret = str2;
                     }
                     else
                     {
-                        if (!it->second.empty() && str2 != L"Unknown.ID")
-                        {
-                            str += TEXT("/");
-                            str += str2;
-                        }
-                    }
-                }
-                else
-                {
-                    if (str.empty())
-                    {
-                        str = it->first;
-                    }
-                    else
-                    {
-                        if (!it->second.empty())
-                        {
-                            str += TEXT("/");
-                            str += it->first;
-                        }
+                        ret += TEXT("/");
+                        ret += str2;
                     }
                 }
             }
+            else
+            {
+                if (ret.empty())
+                {
+                    ret = m_db.GetName(L"RESOURCE.ID.TYPE", *it2);
+                }
+                else
+                {
+                    ret += TEXT("/");
+                    ret += m_db.GetName(L"RESOURCE.ID.TYPE", *it2);
+                }
+            }
         }
-        return str;
+        return ret;
     }
 
     static int CALLBACK
@@ -141,8 +136,8 @@ public:
         TCHAR sz1[64], sz2[64];
         if (i1 != -1 && i2 != -1)
         {
-            ListView_GetItemText(m_hLst1, i1, 0, sz1, _countof(sz1));
-            ListView_GetItemText(m_hLst1, i2, 0, sz2, _countof(sz2));
+            ListView_GetItemText(m_hLst1, i1, 1, sz1, _countof(sz1));
+            ListView_GetItemText(m_hLst1, i2, 1, sz2, _countof(sz2));
             int cmp = lstrcmp(sz1, sz2);
             if (cmp != 0)
                 return cmp;
@@ -163,7 +158,6 @@ public:
     {
         ListView_DeleteAllItems(m_hLst1);
 
-        INT iItem = 0;
         id_map_type::const_iterator it, end = m_settings.id_map.end();
         for (it = m_settings.id_map.begin(); it != end; ++it)
         {
@@ -175,13 +169,14 @@ public:
             if (text2.empty())
                 continue;
 
+            INT iItem = ListView_GetItemCount(m_hLst1);
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT | LVIF_PARAM;
             item.iSubItem = 0;
             item.pszText = &text1[0];
             item.lParam = iItem;
-            iItem = ListView_InsertItem(m_hLst1, &item);
+            ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
@@ -206,8 +201,6 @@ public:
             item.iSubItem = 2;
             item.pszText = szText;
             ListView_SetItem(m_hLst1, &item);
-
-            ++iItem;
         }
 
         ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
@@ -231,7 +224,7 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 90;
+        column.cx = 120;
         column.pszText = LoadStringDx(IDS_IDTYPE);
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
@@ -287,7 +280,7 @@ public:
 
     void UpdateResH()
     {
-        PostMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATERESHBANG, 0);
+        PostMessage(m_hMainWnd, WM_COMMAND, ID_UPDATERESHBANG, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -300,7 +293,7 @@ public:
         case IDCANCEL:
             DestroyWindow(hwnd);
             break;
-        case CMDID_ADDRESID:
+        case ID_ADDRESID:
             {
                 MAddResIDDlg dialog(m_settings, m_entries, m_db);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -318,13 +311,13 @@ public:
                     m_settings.removed_ids.erase(stra1);
 
                     SetItems();
-                    SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+                    SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 
                     UpdateResH();
                 }
             }
             break;
-        case CMDID_MODIFYRESID:
+        case ID_MODIFYRESID:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
             ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
             str1 = szText;
@@ -366,12 +359,12 @@ public:
 
                     SetItems();
 
-                    SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+                    SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
                     UpdateResH();
                 }
             }
             break;
-        case CMDID_DELETERESID:
+        case ID_DELETERESID:
             for (;;)
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -403,17 +396,17 @@ public:
 
                 ListView_DeleteItem(m_hLst1, iItem);
             }
-            SendMessage(m_hMainWnd, WM_COMMAND, CMDID_UPDATEID, 0);
+            SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
             UpdateResH();
             break;
-        case CMDID_COPYRESIDNAME:
+        case ID_COPYRESIDNAME:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
                 CopyText(hwnd, szText);
             }
             break;
-        case CMDID_COPYIDDEF:
+        case ID_COPYIDDEF:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
@@ -428,18 +421,18 @@ public:
                 CopyText(hwnd, text);
             }
             break;
-        case CMDID_LOADRESH:
-            PostMessage(m_hMainWnd, WM_COMMAND, CMDID_LOADRESHBANG, 0);
+        case ID_LOADRESH:
+            PostMessage(m_hMainWnd, WM_COMMAND, ID_LOADRESHBANG, 0);
             break;
-        case CMDID_IDJUMP:
+        case ID_IDJUMP:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
             PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
             break;
-        case CMDID_BASE10:
+        case ID_BASE10:
             m_nBase = 10;
             SetItems();
             break;
-        case CMDID_BASE16:
+        case ID_BASE16:
             m_nBase = 16;
             SetItems();
             break;
@@ -467,13 +460,13 @@ public:
     {
         if (m_nBase == 10)
         {
-            CheckMenuRadioItem(hMenu, CMDID_BASE10, CMDID_BASE16,
-                CMDID_BASE10, MF_BYCOMMAND);
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
+                ID_BASE10, MF_BYCOMMAND);
         }
         else if (m_nBase == 16)
         {
-            CheckMenuRadioItem(hMenu, CMDID_BASE10, CMDID_BASE16,
-                CMDID_BASE16, MF_BYCOMMAND);
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
+                ID_BASE16, MF_BYCOMMAND);
         }
     }
 
@@ -526,7 +519,7 @@ public:
                 yPos = (rc.top + rc.bottom) / 2;
             }
 
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
             HMENU hSubMenu = GetSubMenu(hMenu, 3);
 
             SetForegroundWindow(hwnd);
@@ -541,7 +534,7 @@ public:
     {
         if (pnmhdr->code == NM_DBLCLK)
         {
-            PostMessageDx(WM_COMMAND, CMDID_IDJUMP);
+            PostMessageDx(WM_COMMAND, ID_IDJUMP);
             return 1;
         }
         if (pnmhdr->code == LVN_KEYDOWN)
@@ -549,12 +542,12 @@ public:
             LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
             if (down->wVKey == VK_DELETE)
             {
-                PostMessageDx(WM_COMMAND, CMDID_DELETERESID);
+                PostMessageDx(WM_COMMAND, ID_DELETERESID);
                 return 1;
             }
             if (down->wVKey == 'C' && GetKeyState(VK_CONTROL) < 0)
             {
-                PostMessageDx(WM_COMMAND, CMDID_COPYIDDEF);
+                PostMessageDx(WM_COMMAND, ID_COPYIDDEF);
                 return 1;
             }
         }

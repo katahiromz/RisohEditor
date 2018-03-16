@@ -1501,7 +1501,7 @@ public:
     void OnDestroy(HWND hwnd)
     {
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, CMDID_DESTROYRAD, 0);
+        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
         if (m_hIcon)
         {
@@ -1597,84 +1597,84 @@ public:
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.empty())
         {
-            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_CUT, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_COPY, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CTRLPROP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_FITTOGRID, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CUT, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_COPY, MF_GRAYED);
         }
         else if (set.size() == 1)
         {
-            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_CUT, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_COPY, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_TOPALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_LEFTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CUT, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPY, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_DELCTRL, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_CTRLPROP, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_TOPALIGN, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_BOTTOMALIGN, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_LEFTALIGN, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_RIGHTALIGN, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_FITTOGRID, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_CUT, MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_COPY, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELCTRL, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLPROP, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_TOPALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_BOTTOMALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_LEFTALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_RIGHTALIGN, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_FITTOGRID, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CUT, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPY, MF_ENABLED);
         }
 
         if (CanIndexTop())
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXTOP, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXTOP, MF_GRAYED);
         }
 
         if (CanIndexBottom())
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXBOTTOM, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXBOTTOM, MF_GRAYED);
         }
 
         if (CanIndexMinus())
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXMINUS, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXMINUS, MF_GRAYED);
         }
 
         if (CanIndexPlus())
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_CTRLINDEXPLUS, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_CTRLINDEXPLUS, MF_GRAYED);
         }
 
         if (m_clipboard.IsAvailable())
         {
-            EnableMenuItem(hMenu, CMDID_PASTE, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_PASTE, MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_PASTE, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_PASTE, MF_GRAYED);
         }
     }
 
@@ -1773,7 +1773,7 @@ public:
     void UpdateRes()
     {
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, CMDID_UPDATEDLGRES, 0);
+        PostMessage(hwndOwner, WM_COMMAND, ID_UPDATEDLGRES, 0);
 
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
@@ -1887,7 +1887,7 @@ public:
 
         switch (id)
         {
-        case CMDID_CUT:
+        case ID_CUT:
             if (GetSelectedItems(items))
             {
                 m_clipboard.Copy(hwnd, items);
@@ -1895,14 +1895,14 @@ public:
                 s_nShift = 0;
             }
             return;
-        case CMDID_COPY:
+        case ID_COPY:
             if (GetSelectedItems(items))
             {
                 m_clipboard.Copy(hwnd, items);
                 s_nShift = 0;
             }
             return;
-        case CMDID_PASTE:
+        case ID_PASTE:
             if (m_clipboard.Paste(hwnd, items))
             {
                 s_nShift += 5;
@@ -2348,28 +2348,28 @@ public:
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+C
-                PostMessageDx(WM_COMMAND, CMDID_COPY);
+                PostMessageDx(WM_COMMAND, ID_COPY);
             }
             break;
         case 'D':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+D
-                PostMessageDx(WM_COMMAND, CMDID_SHOWHIDEINDEX);
+                PostMessageDx(WM_COMMAND, ID_SHOWHIDEINDEX);
             }
             break;
         case 'V':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+V
-                PostMessageDx(WM_COMMAND, CMDID_PASTE);
+                PostMessageDx(WM_COMMAND, ID_PASTE);
             }
             break;
         case 'X':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+X
-                PostMessageDx(WM_COMMAND, CMDID_CUT);
+                PostMessageDx(WM_COMMAND, ID_CUT);
             }
             break;
         default:
@@ -2390,7 +2390,7 @@ public:
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
+        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
         HMENU hSubMenu = GetSubMenu(hMenu, 1);
 
         SetForegroundWindow(hwnd);

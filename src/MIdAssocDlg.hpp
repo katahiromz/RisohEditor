@@ -151,7 +151,7 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
-        case CMDID_MODIFYASSOC:
+        case ID_MODIFYASSOC:
             OnPsh1(hwnd);
             break;
         }
@@ -174,7 +174,7 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
             HMENU hSubMenu = GetSubMenu(hMenu, 2);
 
             SetForegroundWindow(hwnd);

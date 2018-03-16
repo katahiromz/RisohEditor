@@ -34,25 +34,24 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-#define IDTYPE_CURSOR       0   // Cursor.ID
-#define IDTYPE_BITMAP       1   // Bitmap.ID
-#define IDTYPE_MENU         2   // Menu.ID
-#define IDTYPE_DIALOG       3   // Dialog.ID
-#define IDTYPE_STRING       4   // String.ID
-#define IDTYPE_ACCEL        5   // Accel.ID
-#define IDTYPE_ICON         6   // Icon.ID
-#define IDTYPE_ANICURSOR    7   // AniCursor.ID
-#define IDTYPE_ANIICON      8   // AniIcon.ID
-#define IDTYPE_HTML         9   // Html.ID
-#define IDTYPE_HELP         10  // Help.ID
-#define IDTYPE_COMMAND      11  // Command.ID
-#define IDTYPE_CONTROL      12  // Control.ID
-#define IDTYPE_RESOURCE     13  // Resource.ID
-#define IDTYPE_MESSAGE      14  // Message.ID
-#define IDTYPE_WINDOW       15  // Window.ID
-#define IDTYPE_NEWCOMMAND   16  // New.Command.ID
-#define IDTYPE_UNKNOWN      17  // Unknown.ID
-#define IDTYPE_INVALID      -1
+#define IDTYPE_UNKNOWN      0   // Unknown.ID
+#define IDTYPE_CURSOR       1   // Cursor.ID
+#define IDTYPE_BITMAP       2   // Bitmap.ID
+#define IDTYPE_MENU         3   // Menu.ID
+#define IDTYPE_DIALOG       4   // Dialog.ID
+#define IDTYPE_STRING       5   // String.ID
+#define IDTYPE_ACCEL        6   // Accel.ID
+#define IDTYPE_ICON         7   // Icon.ID
+#define IDTYPE_ANICURSOR    8   // AniCursor.ID
+#define IDTYPE_ANIICON      9   // AniIcon.ID
+#define IDTYPE_HTML         10   // Html.ID
+#define IDTYPE_HELP         11  // Help.ID
+#define IDTYPE_COMMAND      12  // Command.ID
+#define IDTYPE_CONTROL      13  // Control.ID
+#define IDTYPE_RESOURCE     14  // Resource.ID
+#define IDTYPE_MESSAGE      15  // Message.ID
+#define IDTYPE_WINDOW       16  // Window.ID
+#define IDTYPE_NEWCOMMAND   17  // New.Command.ID
 
 class ConstantsDB
 {
@@ -61,6 +60,7 @@ public:
     typedef StringType NameType;
     typedef StringType CategoryType;
     typedef DWORD ValueType;
+    typedef std::vector<ValueType> ValuesType;
 
     struct EntryType
     {
@@ -105,7 +105,7 @@ public:
     {
         if (type == RT_CURSOR)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_BITMAP)
         {
@@ -113,7 +113,7 @@ public:
         }
         if (type == RT_ICON)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_MENU)
         {
@@ -125,7 +125,7 @@ public:
         }
         if (type == RT_STRING)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_ACCELERATOR)
         {
@@ -141,11 +141,11 @@ public:
         }
         if (type == RT_VERSION)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_DLGINCLUDE)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_ANICURSOR)
         {
@@ -161,11 +161,11 @@ public:
         }
         if (type == RT_MANIFEST)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         if (type == RT_MESSAGETABLE)
         {
-            return IDTYPE_INVALID;
+            return IDTYPE_UNKNOWN;
         }
         return IDTYPE_RESOURCE;
     }
@@ -345,6 +345,21 @@ public:
                 return it->value;
         }
         return (ValueType)mstr_parse_int(name.c_str());
+    }
+
+    ValuesType GetValues(CategoryType category, NameType name) const
+    {
+        ValuesType ret;
+        const TableType& table = GetTable(category);
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name == name)
+            {
+                ret.push_back(it->value);
+            }
+        }
+        return ret;
     }
 
     template <typename T_STR_CONTAINER>

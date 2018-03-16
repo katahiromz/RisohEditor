@@ -20,227 +20,227 @@
 // English (U.S.)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
-IDM_MAIN MENU
+IDR_MAINMENU MENU
 {
     POPUP "&File"
     {
-        MENUITEM "&New\tCtrl+N", CMDID_NEW
+        MENUITEM "&New\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "&Open...\tCtrl+O", CMDID_OPEN
-        MENUITEM "Save &As...\tCtrl+S", CMDID_SAVEAS
+        MENUITEM "&Open...\tCtrl+O", ID_OPEN
+        MENUITEM "Save &As...\tCtrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "&Import...\tCtrl+I", CMDID_IMPORT
-        MENUITEM "&Export...", CMDID_EXPORT
+        MENUITEM "&Import...\tCtrl+I", ID_IMPORT
+        MENUITEM "&Export...", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Load &Window Class Library...", CMDID_LOADWCLIB
+        MENUITEM "Load &Window Class Library...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&ID Association...", CMDID_IDASSOC
-        MENUITEM "Reload &resource.h...\tCtrl+R", CMDID_LOADRESH
-        MENUITEM "&Unload resource.h", CMDID_UNLOADRESH
-        MENUITEM "Ad&vice resource.h Modification...", CMDID_ADVICERESH
+        MENUITEM "&ID Association...", ID_IDASSOC
+        MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "&Unload resource.h", ID_UNLOADRESH
+        MENUITEM "Ad&vice resource.h Modification...", ID_ADVICERESH
         MENUITEM SEPARATOR
-        MENUITEM "U&pdate resource.h", CMDID_UPDATERESHBANG
+        MENUITEM "U&pdate resource.h", ID_UPDATERESHBANG
         MENUITEM SEPARATOR
-        MENUITEM "&Configuration...", CMDID_CONFIG
+        MENUITEM "&Configuration...", ID_CONFIG
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
             MENUITEM "(None)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4", CMDID_EXIT
+        MENUITEM "E&xit\tAlt+F4", ID_EXIT
     }
     POPUP "&Edit"
     {
-        MENUITEM "Edit by &GUI...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "Edit by &GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
-            MENUITEM "Add &Icon...", CMDID_ADDICON
-            MENUITEM "Add &Cursor...", CMDID_ADDCURSOR
-            MENUITEM "Add &Bitmap...", CMDID_ADDBITMAP
-            MENUITEM "Add &Dialog...", CMDID_ADDDIALOG
-            MENUITEM "Add &Menu...", CMDID_ADDMENU
-            MENUITEM "Add &String Table...", CMDID_ADDSTRINGTABLE
-            MENUITEM "Add M&essage Table...", CMDID_ADDMESSAGETABLE
-            MENUITEM "Add &HTML Table...", CMDID_ADDHTML
-            MENUITEM "Add &Accelerators...", CMDID_ADDACCEL
-            MENUITEM "Add &Version Info...", CMDID_ADDVERINFO
-            MENUITEM "Add Mani&fest...", CMDID_ADDMANIFEST
-            MENUITEM "Add &Resource Item...", CMDID_ADDRES
+            MENUITEM "Add &Icon...", ID_ADDICON
+            MENUITEM "Add &Cursor...", ID_ADDCURSOR
+            MENUITEM "Add &Bitmap...", ID_ADDBITMAP
+            MENUITEM "Add &Dialog...", ID_ADDDIALOG
+            MENUITEM "Add &Menu...", ID_ADDMENU
+            MENUITEM "Add &String Table...", ID_ADDSTRINGTABLE
+            MENUITEM "Add M&essage Table...", ID_ADDMESSAGETABLE
+            MENUITEM "Add &HTML Table...", ID_ADDHTML
+            MENUITEM "Add &Accelerators...", ID_ADDACCEL
+            MENUITEM "Add &Version Info...", ID_ADDVERINFO
+            MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
+            MENUITEM "Add &Resource Item...", ID_ADDRES
         }
         POPUP "&Replace"
         {
-            MENUITEM "Replace &Icon...", CMDID_REPLACEICON
-            MENUITEM "Replace &Cursor...", CMDID_REPLACECURSOR
-            MENUITEM "Replace &Bitmap...", CMDID_REPLACEBITMAP
-            MENUITEM "Replace Binary &Resource Item...", CMDID_REPLACEBIN
+            MENUITEM "Replace &Icon...", ID_REPLACEICON
+            MENUITEM "Replace &Cursor...", ID_REPLACECURSOR
+            MENUITEM "Replace &Bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Replace Binary &Resource Item...", ID_REPLACEBIN
         }
         POPUP "&Extract"
         {
-            MENUITEM "Extract &Icon...", CMDID_EXTRACTICON
-            MENUITEM "Extract &Cursor...", CMDID_EXTRACTCURSOR
-            MENUITEM "Extract &Bitmap...", CMDID_EXTRACTBITMAP
-            MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
+            MENUITEM "Extract &Icon...", ID_EXTRACTICON
+            MENUITEM "Extract &Cursor...", ID_EXTRACTCURSOR
+            MENUITEM "Extract &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Ed&it Label...\tF2", CMDID_EDITLABEL
+        MENUITEM "Ed&it Label...\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clone In New &Name...", CMDID_COPYASNEWNAME
-        MENUITEM "Clone In New &Language...", CMDID_COPYASNEWLANG
+        MENUITEM "Clone In New &Name...", ID_COPYASNEWNAME
+        MENUITEM "Clone In New &Language...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", CMDID_TEST
+        MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
     }
     POPUP "&Search"
     {
-        MENUITEM "&Find...\tCtrl+F", CMDID_FIND
+        MENUITEM "&Find...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Search &Upward", CMDID_FINDUPWARD
-        MENUITEM "Search &Downward", CMDID_FINDDOWNWARD
+        MENUITEM "Search &Upward", ID_FINDUPWARD
+        MENUITEM "Search &Downward", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "&Replace...\tCtrl+H", CMDID_REPLACE
+        MENUITEM "&Replace...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "&Item Search...\tCtrl+M", CMDID_ITEMSEARCH
+        MENUITEM "&Item Search...\tCtrl+M", ID_ITEMSEARCH
     }
     POPUP "&View"
     {
-        MENUITEM "&Status Bar", CMDID_STATUSBAR
-        MENUITEM "&Binary", CMDID_BINARYPANE
+        MENUITEM "&Status Bar", ID_STATUSBAR
+        MENUITEM "&Binary", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "List of &Resource IDs", CMDID_IDLIST
+        MENUITEM "List of &Resource IDs", ID_IDLIST
         MENUITEM SEPARATOR
-        MENUITEM "Always &CONTROL statement", CMDID_ALWAYSCONTROL
-        MENUITEM "Don't Use &ID Macros", CMDID_HIDEIDMACROS
-        //MENUITEM "Use Old-Style &LANGUAGE", CMDID_USEOLDLANGSTMT
+        MENUITEM "Always &CONTROL statement", ID_ALWAYSCONTROL
+        MENUITEM "Don't Use &ID Macros", ID_HIDEIDMACROS
+        //MENUITEM "Use Old-Style &LANGUAGE", ID_USEOLDLANGSTMT
         MENUITEM SEPARATOR
-        MENUITEM "Predefined &Macros...", CMDID_PREDEFMACROS
-        MENUITEM "&Font settings...", CMDID_FONTS
-        MENUITEM "Set &Paths...", CMDID_SETPATHS
+        MENUITEM "Predefined &Macros...", ID_PREDEFMACROS
+        MENUITEM "&Font settings...", ID_FONTS
+        MENUITEM "Set &Paths...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "Re&fresh", CMDID_REFRESHALL
+        MENUITEM "Re&fresh", ID_REFRESHALL
     }
     POPUP "&Help"
     {
-        MENUITEM "Open &README.txt", CMDID_OPENREADME
-        MENUITEM "Open README&JP.txt", CMDID_OPENREADMEJP
+        MENUITEM "Open &README.txt", ID_OPENREADME
+        MENUITEM "Open README&JP.txt", ID_OPENREADMEJP
         MENUITEM SEPARATOR
-        MENUITEM "Open &LICENSE.txt", CMDID_OPENLICENSE
+        MENUITEM "Open &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "&About...", CMDID_ABOUT
+        MENUITEM "&About...", ID_ABOUT
     }
 }
 
-IDM_POPUPS MENU
+IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Edit by &GUI...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "Edit by &GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Add"
         {
-            MENUITEM "Add &Icon...", CMDID_ADDICON
-            MENUITEM "Add &Cursor...", CMDID_ADDCURSOR
-            MENUITEM "Add &Bitmap...", CMDID_ADDBITMAP
-            MENUITEM "Add &Dialog...", CMDID_ADDDIALOG
-            MENUITEM "Add &Menu...", CMDID_ADDMENU
-            MENUITEM "Add &String Table...", CMDID_ADDSTRINGTABLE
-            MENUITEM "Add M&essage Table...", CMDID_ADDMESSAGETABLE
-            MENUITEM "Add &HTML Table...", CMDID_ADDHTML
-            MENUITEM "Add &Accelerators...", CMDID_ADDACCEL
-            MENUITEM "Add &Version Info...", CMDID_ADDVERINFO
-            MENUITEM "Add Mani&fest...", CMDID_ADDMANIFEST
-            MENUITEM "Add &Resource Item...", CMDID_ADDRES
+            MENUITEM "Add &Icon...", ID_ADDICON
+            MENUITEM "Add &Cursor...", ID_ADDCURSOR
+            MENUITEM "Add &Bitmap...", ID_ADDBITMAP
+            MENUITEM "Add &Dialog...", ID_ADDDIALOG
+            MENUITEM "Add &Menu...", ID_ADDMENU
+            MENUITEM "Add &String Table...", ID_ADDSTRINGTABLE
+            MENUITEM "Add M&essage Table...", ID_ADDMESSAGETABLE
+            MENUITEM "Add &HTML Table...", ID_ADDHTML
+            MENUITEM "Add &Accelerators...", ID_ADDACCEL
+            MENUITEM "Add &Version Info...", ID_ADDVERINFO
+            MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
+            MENUITEM "Add &Resource Item...", ID_ADDRES
         }
         POPUP "&Replace"
         {
-            MENUITEM "Replace &Icon...", CMDID_REPLACEICON
-            MENUITEM "Replace &Cursor...", CMDID_REPLACECURSOR
-            MENUITEM "Replace &Bitmap...", CMDID_REPLACEBITMAP
-            MENUITEM "Replace Binary &Resource Item...", CMDID_REPLACEBIN
+            MENUITEM "Replace &Icon...", ID_REPLACEICON
+            MENUITEM "Replace &Cursor...", ID_REPLACECURSOR
+            MENUITEM "Replace &Bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Replace Binary &Resource Item...", ID_REPLACEBIN
         }
         POPUP "&Extract"
         {
-            MENUITEM "Extract &Icon...", CMDID_EXTRACTICON
-            MENUITEM "Extract &Cursor...", CMDID_EXTRACTCURSOR
-            MENUITEM "Extract &Bitmap...", CMDID_EXTRACTBITMAP
-            MENUITEM "Extract Binary &Resource Item...", CMDID_EXTRACTBIN
+            MENUITEM "Extract &Icon...", ID_EXTRACTICON
+            MENUITEM "Extract &Cursor...", ID_EXTRACTCURSOR
+            MENUITEM "Extract &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Ed&it Label...\tF2", CMDID_EDITLABEL
+        MENUITEM "Ed&it Label...\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clone As New &Name...", CMDID_COPYASNEWNAME
-        MENUITEM "Clone As New &Language...", CMDID_COPYASNEWLANG
+        MENUITEM "Clone As New &Name...", ID_COPYASNEWNAME
+        MENUITEM "Clone As New &Language...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
-        MENUITEM "Do &Test", CMDID_TEST
+        MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", CMDID_DELETERES
+        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
     }
     POPUP "Popup #1"
     {
-        MENUITEM "&Add Control...", CMDID_ADDCTRL
+        MENUITEM "&Add Control...", ID_ADDCTRL
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X", CMDID_CUT
-        MENUITEM "&Copy\tCtrl+C", CMDID_COPY
-        MENUITEM "&Paste\tCtrl+V", CMDID_PASTE
-        MENUITEM "&Delete\tDel", CMDID_DELCTRL
+        MENUITEM "Cu&t\tCtrl+X", ID_CUT
+        MENUITEM "&Copy\tCtrl+C", ID_COPY
+        MENUITEM "&Paste\tCtrl+V", ID_PASTE
+        MENUITEM "&Delete\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "&Index"
         BEGIN
-            MENUITEM "To &Top", CMDID_CTRLINDEXTOP
+            MENUITEM "To &Top", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "&Minus", CMDID_CTRLINDEXMINUS
-            MENUITEM "&Plus", CMDID_CTRLINDEXPLUS
+            MENUITEM "&Minus", ID_CTRLINDEXMINUS
+            MENUITEM "&Plus", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "To &Bottom", CMDID_CTRLINDEXBOTTOM
+            MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "Show/Hide Indeces\tCtrl+D", CMDID_SHOWHIDEINDEX
+            MENUITEM "Show/Hide Indeces\tCtrl+D", ID_SHOWHIDEINDEX
         END
         POPUP "&Alignment"
         BEGIN
-            MENUITEM "&Top-Align", CMDID_TOPALIGN
-            MENUITEM "&Bottom-Align", CMDID_BOTTOMALIGN
-            MENUITEM "&Left-Align", CMDID_LEFTALIGN
-            MENUITEM "&Right-Align", CMDID_RIGHTALIGN
+            MENUITEM "&Top-Align", ID_TOPALIGN
+            MENUITEM "&Bottom-Align", ID_BOTTOMALIGN
+            MENUITEM "&Left-Align", ID_LEFTALIGN
+            MENUITEM "&Right-Align", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Fit To &Grid", CMDID_FITTOGRID
+            MENUITEM "Fit To &Grid", ID_FITTOGRID
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Refresh", CMDID_REFRESHDIALOG
+        MENUITEM "&Refresh", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "&Properties for Control...", CMDID_CTRLPROP
-        MENUITEM "Pr&operties for Dialog...", CMDID_DLGPROP
+        MENUITEM "&Properties for Control...", ID_CTRLPROP
+        MENUITEM "Pr&operties for Dialog...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
-        MENUITEM "&Modify...", CMDID_MODIFYASSOC
+        MENUITEM "&Modify...", ID_MODIFYASSOC
     }
     POPUP "Popup #3"
     {
-        MENUITEM "&Jump!\tEnter", CMDID_IDJUMP
+        MENUITEM "&Jump!\tEnter", ID_IDJUMP
         MENUITEM SEPARATOR
-        MENUITEM "&Add ID...", CMDID_ADDRESID
-        MENUITEM "&Modify ID...", CMDID_MODIFYRESID
+        MENUITEM "&Add ID...", ID_ADDRESID
+        MENUITEM "&Modify ID...", ID_MODIFYRESID
         MENUITEM SEPARATOR
-        MENUITEM "Copy &Name", CMDID_COPYRESIDNAME
-        MENUITEM "Copy &Definition\tCtrl+C", CMDID_COPYIDDEF
+        MENUITEM "Copy &Name", ID_COPYRESIDNAME
+        MENUITEM "Copy &Definition\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
-        MENUITEM "&Delete ID\tDel", CMDID_DELETERESID
+        MENUITEM "&Delete ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "&Decimal Numbers", CMDID_BASE10
-        MENUITEM "&Hexadecimal Numbers", CMDID_BASE16
+        MENUITEM "&Decimal Numbers", ID_BASE10
+        MENUITEM "&Hexadecimal Numbers", ID_BASE16
         MENUITEM SEPARATOR
-        MENUITEM "&Reload", CMDID_LOADRESH
+        MENUITEM "&Reload", ID_LOADRESH
     }
     POPUP "Popup #4"
     {
-        MENUITEM "&Add...", CMDID_ADD
+        MENUITEM "&Add...", ID_ADD
         MENUITEM SEPARATOR
-        MENUITEM "Change &Name...\tF2", CMDID_RENAME
-        MENUITEM "Change &Value...", CMDID_MODIFY
+        MENUITEM "Change &Name...\tF2", ID_RENAME
+        MENUITEM "Change &Value...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "&Delete\tDel", CMDID_DELETE
+        MENUITEM "&Delete\tDel", ID_DELETE
     }
 }
 
@@ -855,7 +855,7 @@ STYLE WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"
 {
-    CONTROL "", lst1, "SysListView32", LVS_REPORT | LVS_SORTASCENDING | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 0, 200, 300
+    CONTROL "", lst1, "SysListView32", LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 0, 200, 300
 }
 
 IDD_CONFIG DIALOG 0, 0, 210, 260

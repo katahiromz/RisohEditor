@@ -402,7 +402,7 @@ public:
         case 2:
             if (codeNotify == BN_CLICKED)
             {
-                PostMessage(GetParent(hwnd), WM_COMMAND, CMDID_PLAY, 0);
+                PostMessage(GetParent(hwnd), WM_COMMAND, ID_PLAY, 0);
             }
             break;
         }

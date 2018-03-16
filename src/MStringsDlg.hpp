@@ -117,7 +117,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
     }
 
     virtual INT_PTR CALLBACK
@@ -168,7 +168,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -424,7 +424,7 @@ public:
     {
         if (hwndContext == GetDlgItem(hwnd, ctl1))
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_POPUPS));
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
             HMENU hSubMenu = GetSubMenu(hMenu, 4);
 
             SetForegroundWindow(hwnd);
@@ -440,15 +440,15 @@ public:
         switch (id)
         {
         case psh1:
-        case CMDID_ADD:
+        case ID_ADD:
             OnAdd(hwnd);
             break;
         case psh2:
-        case CMDID_MODIFY:
+        case ID_MODIFY:
             OnModify(hwnd);
             break;
         case psh3:
-        case CMDID_DELETE:
+        case ID_DELETE:
             OnDelete(hwnd);
             break;
         case IDOK:
@@ -492,15 +492,15 @@ public:
         INT iItem = ListView_GetNextItem(m_hCtl1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem >= 0)
         {
-            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
-            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, CMDID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
-            EnableMenuItem(hMenu, CMDID_DELETE, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_GRAYED);
         }
-        EnableMenuItem(hMenu, CMDID_RENAME, MF_BYCOMMAND | MF_GRAYED);
+        EnableMenuItem(hMenu, ID_RENAME, MF_BYCOMMAND | MF_GRAYED);
     }
 
     virtual INT_PTR CALLBACK

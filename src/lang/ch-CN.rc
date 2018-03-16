@@ -20,227 +20,227 @@
 // Chinese (P.R.C.)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 
-IDM_MAIN MENU
+IDR_MAINMENU MENU
 {
     POPUP "文件(&F)"
     {
-        MENUITEM "新建(&N)\tCtrl+N", CMDID_NEW
+        MENUITEM "新建(&N)\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "打开(&O)...\tCtrl+O", CMDID_OPEN
-        MENUITEM "另存为(&A)...\tCtrl+S", CMDID_SAVEAS
+        MENUITEM "打开(&O)...\tCtrl+O", ID_OPEN
+        MENUITEM "另存为(&A)...\tCtrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "导入(&I)...\tCtrl+I", CMDID_IMPORT
-        MENUITEM "导出(&E)...", CMDID_EXPORT
+        MENUITEM "导入(&I)...\tCtrl+I", ID_IMPORT
+        MENUITEM "导出(&E)...", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "加载窗口类DLL(&W)...", CMDID_LOADWCLIB
+        MENUITEM "加载窗口类DLL(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&ID关联列表...", CMDID_IDASSOC
-        MENUITEM "重新加载 &resource.h...\tCtrl+R", CMDID_LOADRESH
-        MENUITEM "卸载 resource.h (&U)", CMDID_UNLOADRESH
-        MENUITEM "修改记录(&V) resource.h ...", CMDID_ADVICERESH
+        MENUITEM "&ID关联列表...", ID_IDASSOC
+        MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
+        MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
         MENUITEM SEPARATOR
-        MENUITEM "更新 resource.h(&P)", CMDID_UPDATERESHBANG
+        MENUITEM "更新 resource.h(&P)", ID_UPDATERESHBANG
         MENUITEM SEPARATOR
-        MENUITEM "设置(&C)...", CMDID_CONFIG
+        MENUITEM "设置(&C)...", ID_CONFIG
         MENUITEM SEPARATOR
         POPUP "最近使用的文件夹"
         {
             MENUITEM "(无)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "退出(&X)\tAlt+F4", CMDID_EXIT
+        MENUITEM "退出(&X)\tAlt+F4", ID_EXIT
     }
     POPUP "编辑(&E)"
     {
-        MENUITEM "&GUI模式编辑...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI模式编辑...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
-            MENUITEM "添加图标(&I)...", CMDID_ADDICON
-            MENUITEM "添加光标(&C)...", CMDID_ADDCURSOR
-            MENUITEM "添加位图(&B)...", CMDID_ADDBITMAP
-            MENUITEM "添加对话(&D)...", CMDID_ADDDIALOG
-            MENUITEM "添加菜单(&M)...", CMDID_ADDMENU
-            MENUITEM "添加字符串表(&S)...", CMDID_ADDSTRINGTABLE
-            MENUITEM "添加消息表(&E)...", CMDID_ADDMESSAGETABLE
-            MENUITEM "添加&HTML...", CMDID_ADDHTML
-            MENUITEM "添加加速器(&A)...", CMDID_ADDACCEL
-            MENUITEM "添加版本信息(&V)...", CMDID_ADDVERINFO
-            MENUITEM "添加清单(&F)...", CMDID_ADDMANIFEST
-            MENUITEM "添加资源项目(&R)...", CMDID_ADDRES
+            MENUITEM "添加图标(&I)...", ID_ADDICON
+            MENUITEM "添加光标(&C)...", ID_ADDCURSOR
+            MENUITEM "添加位图(&B)...", ID_ADDBITMAP
+            MENUITEM "添加对话(&D)...", ID_ADDDIALOG
+            MENUITEM "添加菜单(&M)...", ID_ADDMENU
+            MENUITEM "添加字符串表(&S)...", ID_ADDSTRINGTABLE
+            MENUITEM "添加消息表(&E)...", ID_ADDMESSAGETABLE
+            MENUITEM "添加&HTML...", ID_ADDHTML
+            MENUITEM "添加加速器(&A)...", ID_ADDACCEL
+            MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
+            MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
+            MENUITEM "添加资源项目(&R)...", ID_ADDRES
         }
         POPUP "替换(&R)"
         {
-            MENUITEM "替换图标(&I)...", CMDID_REPLACEICON
-            MENUITEM "替换光标(&C)...", CMDID_REPLACECURSOR
-            MENUITEM "替换位图文件(&B)...", CMDID_REPLACEBITMAP
-            MENUITEM "替换二进制资源项目(&R)...", CMDID_REPLACEBIN
+            MENUITEM "替换图标(&I)...", ID_REPLACEICON
+            MENUITEM "替换光标(&C)...", ID_REPLACECURSOR
+            MENUITEM "替换位图文件(&B)...", ID_REPLACEBITMAP
+            MENUITEM "替换二进制资源项目(&R)...", ID_REPLACEBIN
         }
         POPUP "导出(&E)"
         {
-            MENUITEM "导出图标(&I)...", CMDID_EXTRACTICON
-            MENUITEM "导出光标(&C)...", CMDID_EXTRACTCURSOR
-            MENUITEM "导出位图文件(&B)...", CMDID_EXTRACTBITMAP
-            MENUITEM "导出二进制资源文件(&R)...", CMDID_EXTRACTBIN
+            MENUITEM "导出图标(&I)...", ID_EXTRACTICON
+            MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
+            MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
+            MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "编辑标签(&I)...\tF2", CMDID_EDITLABEL
+        MENUITEM "编辑标签(&I)...\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "复制为其他名称(&N)...", CMDID_COPYASNEWNAME
-        MENUITEM "复制为其他语言(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM "复制为其他名称(&N)...", ID_COPYASNEWNAME
+        MENUITEM "复制为其他语言(&L)...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
-        MENUITEM "效果测试(&T)", CMDID_TEST
+        MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "删除资源项目(&D)\tDel", CMDID_DELETERES
+        MENUITEM "删除资源项目(&D)\tDel", ID_DELETERES
     }
     POPUP "搜索(&S)"
     {
-        MENUITEM "查询(&F)...\tCtrl+F", CMDID_FIND
+        MENUITEM "查询(&F)...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "向上搜索(&U)", CMDID_FINDUPWARD
-        MENUITEM "向下搜索(&D)", CMDID_FINDDOWNWARD
+        MENUITEM "向上搜索(&U)", ID_FINDUPWARD
+        MENUITEM "向下搜索(&D)", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "替换(&R)...\tCtrl+H", CMDID_REPLACE
+        MENUITEM "替换(&R)...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "項目搜索(&I)...\tCtrl+M", CMDID_ITEMSEARCH
+        MENUITEM "項目搜索(&I)...\tCtrl+M", ID_ITEMSEARCH
     }
     POPUP "界面显示(&V)"
     {
-        MENUITEM "状态栏(&S)", CMDID_STATUSBAR
-        MENUITEM "二进制模式(&B)", CMDID_BINARYPANE
+        MENUITEM "状态栏(&S)", ID_STATUSBAR
+        MENUITEM "二进制模式(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "资源ID列表(&R)", CMDID_IDLIST
+        MENUITEM "资源ID列表(&R)", ID_IDLIST
         MENUITEM SEPARATOR
-        MENUITEM "使用&CONTROL字段", CMDID_ALWAYSCONTROL
-        MENUITEM "不使用&ID宏定义", CMDID_HIDEIDMACROS
-        //MENUITEM "使用旧式&LANGUAGE语句", CMDID_USEOLDLANGSTMT
+        MENUITEM "使用&CONTROL字段", ID_ALWAYSCONTROL
+        MENUITEM "不使用&ID宏定义", ID_HIDEIDMACROS
+        //MENUITEM "使用旧式&LANGUAGE语句", ID_USEOLDLANGSTMT
         MENUITEM SEPARATOR
-        MENUITEM "预定义的宏(&M)...", CMDID_PREDEFMACROS
-        MENUITEM "字体设置(&F)...", CMDID_FONTS
-        MENUITEM "设置PATH(&P)...", CMDID_SETPATHS
+        MENUITEM "预定义的宏(&M)...", ID_PREDEFMACROS
+        MENUITEM "字体设置(&F)...", ID_FONTS
+        MENUITEM "设置PATH(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "更新到最新信息(&F)", CMDID_REFRESHALL
+        MENUITEM "更新到最新信息(&F)", ID_REFRESHALL
     }
     POPUP "帮助(&H)"
     {
-        MENUITEM "打开英文 &README.txt", CMDID_OPENREADME
-        MENUITEM "打开日文 README&JP.txt", CMDID_OPENREADMEJP
+        MENUITEM "打开英文 &README.txt", ID_OPENREADME
+        MENUITEM "打开日文 README&JP.txt", ID_OPENREADMEJP
         MENUITEM SEPARATOR
-        MENUITEM "打开 &LICENSE.txt", CMDID_OPENLICENSE
+        MENUITEM "打开 &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "关于(&A)...", CMDID_ABOUT
+        MENUITEM "关于(&A)...", ID_ABOUT
     }
 }
 
-IDM_POPUPS MENU
+IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "&GUI模式...\tCtrl+G", CMDID_GUIEDIT
+        MENUITEM "&GUI模式...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "添加(&A)"
         {
-            MENUITEM "添加图标(&I)...", CMDID_ADDICON
-            MENUITEM "添加光标(&C)...", CMDID_ADDCURSOR
-            MENUITEM "添加位图(&B)...", CMDID_ADDBITMAP
-            MENUITEM "添加对话(&D)...", CMDID_ADDDIALOG
-            MENUITEM "添加菜单(&M)...", CMDID_ADDMENU
-            MENUITEM "添加字符串表(&S)...", CMDID_ADDSTRINGTABLE
-            MENUITEM "添加消息表(&E)...", CMDID_ADDMESSAGETABLE
-            MENUITEM "添加&HTML...", CMDID_ADDHTML
-            MENUITEM "添加加速器(&A)...", CMDID_ADDACCEL
-            MENUITEM "添加版本信息(&V)...", CMDID_ADDVERINFO
-            MENUITEM "添加清单(&F)...", CMDID_ADDMANIFEST
-            MENUITEM "添加资源项目(&R)...", CMDID_ADDRES
+            MENUITEM "添加图标(&I)...", ID_ADDICON
+            MENUITEM "添加光标(&C)...", ID_ADDCURSOR
+            MENUITEM "添加位图(&B)...", ID_ADDBITMAP
+            MENUITEM "添加对话(&D)...", ID_ADDDIALOG
+            MENUITEM "添加菜单(&M)...", ID_ADDMENU
+            MENUITEM "添加字符串表(&S)...", ID_ADDSTRINGTABLE
+            MENUITEM "添加消息表(&E)...", ID_ADDMESSAGETABLE
+            MENUITEM "添加&HTML...", ID_ADDHTML
+            MENUITEM "添加加速器(&A)...", ID_ADDACCEL
+            MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
+            MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
+            MENUITEM "添加资源项目(&R)...", ID_ADDRES
         }
         POPUP "替换(&R)"
         {
-            MENUITEM "替换图标(&I)...", CMDID_REPLACEICON
-            MENUITEM "替换光标(&C)...", CMDID_REPLACECURSOR
-            MENUITEM "替换位图文件(&B)...", CMDID_REPLACEBITMAP
-            MENUITEM "替换二进制资源项目(&R)...", CMDID_REPLACEBIN
+            MENUITEM "替换图标(&I)...", ID_REPLACEICON
+            MENUITEM "替换光标(&C)...", ID_REPLACECURSOR
+            MENUITEM "替换位图文件(&B)...", ID_REPLACEBITMAP
+            MENUITEM "替换二进制资源项目(&R)...", ID_REPLACEBIN
         }
         POPUP "导出(&E)"
         {
-            MENUITEM "导出图标(&I)...", CMDID_EXTRACTICON
-            MENUITEM "导出光标(&C)...", CMDID_EXTRACTCURSOR
-            MENUITEM "导出位图文件(&B)...", CMDID_EXTRACTBITMAP
-            MENUITEM "导出二进制资源文件(&R)...", CMDID_EXTRACTBIN
+            MENUITEM "导出图标(&I)...", ID_EXTRACTICON
+            MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
+            MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
+            MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "编辑标签(&I)...\tF2", CMDID_EDITLABEL
+        MENUITEM "编辑标签(&I)...\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "复制为其他名称(&N)...", CMDID_COPYASNEWNAME
-        MENUITEM "复制为其他语言(&L)...", CMDID_COPYASNEWLANG
+        MENUITEM "复制为其他名称(&N)...", ID_COPYASNEWNAME
+        MENUITEM "复制为其他语言(&L)...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
-        MENUITEM "效果测试(&T)", CMDID_TEST
+        MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "删除资源项目(&D)\tDel", CMDID_DELETERES
+        MENUITEM "删除资源项目(&D)\tDel", ID_DELETERES
     }
     POPUP "Popup #1"
     {
-        MENUITEM "增加控件(&A)...", CMDID_ADDCTRL
+        MENUITEM "增加控件(&A)...", ID_ADDCTRL
         MENUITEM SEPARATOR
-        MENUITEM "剪切(&T)\tCtrl+X", CMDID_CUT
-        MENUITEM "复制(&C)\tCtrl+C", CMDID_COPY
-        MENUITEM "黏贴(&P)\tCtrl+V", CMDID_PASTE
-        MENUITEM "删除(&D)\tDel", CMDID_DELCTRL
+        MENUITEM "剪切(&T)\tCtrl+X", ID_CUT
+        MENUITEM "复制(&C)\tCtrl+C", ID_COPY
+        MENUITEM "黏贴(&P)\tCtrl+V", ID_PASTE
+        MENUITEM "删除(&D)\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
         POPUP "索引位置(&I)"
         BEGIN
-            MENUITEM "置顶(&T)", CMDID_CTRLINDEXTOP
+            MENUITEM "置顶(&T)", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "减(&M)", CMDID_CTRLINDEXMINUS
-            MENUITEM "加(&P)", CMDID_CTRLINDEXPLUS
+            MENUITEM "减(&M)", ID_CTRLINDEXMINUS
+            MENUITEM "加(&P)", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "置底(&B)", CMDID_CTRLINDEXBOTTOM
+            MENUITEM "置底(&B)", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
-            MENUITEM "切换显示模式(&S)\tCtrl+D", CMDID_SHOWHIDEINDEX
+            MENUITEM "切换显示模式(&S)\tCtrl+D", ID_SHOWHIDEINDEX
         END
         POPUP "排列方式(&A)"
         BEGIN
-            MENUITEM "向上对齐(&T)", CMDID_TOPALIGN
-            MENUITEM "向下对齐(&B)", CMDID_BOTTOMALIGN
-            MENUITEM "左对齐(&L)", CMDID_LEFTALIGN
-            MENUITEM "右对齐(&R)", CMDID_RIGHTALIGN
+            MENUITEM "向上对齐(&T)", ID_TOPALIGN
+            MENUITEM "向下对齐(&B)", ID_BOTTOMALIGN
+            MENUITEM "左对齐(&L)", ID_LEFTALIGN
+            MENUITEM "右对齐(&R)", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "适应网格(&G)", CMDID_FITTOGRID
+            MENUITEM "适应网格(&G)", ID_FITTOGRID
         END
         MENUITEM SEPARATOR
-        MENUITEM "刷新(&R)", CMDID_REFRESHDIALOG
+        MENUITEM "刷新(&R)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "控件属性(&P)...", CMDID_CTRLPROP
-        MENUITEM "对话框属性(&O)...", CMDID_DLGPROP
+        MENUITEM "控件属性(&P)...", ID_CTRLPROP
+        MENUITEM "对话框属性(&O)...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
-        MENUITEM "修改(&M)...", CMDID_MODIFYASSOC
+        MENUITEM "修改(&M)...", ID_MODIFYASSOC
     }
     POPUP "Popup #3"
     {
-        MENUITEM "跳转(&J)!\tEnter", CMDID_IDJUMP
+        MENUITEM "跳转(&J)!\tEnter", ID_IDJUMP
         MENUITEM SEPARATOR
-        MENUITEM "增加ID(&A)...", CMDID_ADDRESID
-        MENUITEM "修改ID(&M)...", CMDID_MODIFYRESID
+        MENUITEM "增加ID(&A)...", ID_ADDRESID
+        MENUITEM "修改ID(&M)...", ID_MODIFYRESID
         MENUITEM SEPARATOR
-        MENUITEM "复制名称(&N)", CMDID_COPYRESIDNAME
-        MENUITEM "复制定义(&D)\tCtrl+C", CMDID_COPYIDDEF
+        MENUITEM "复制名称(&N)", ID_COPYRESIDNAME
+        MENUITEM "复制定义(&D)\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
-        MENUITEM "删除ID(&D) \tDel", CMDID_DELETERESID
+        MENUITEM "删除ID(&D) \tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "十进制数字(&D)", CMDID_BASE10
-        MENUITEM "十六进制数字(&H)", CMDID_BASE16
+        MENUITEM "十进制数字(&D)", ID_BASE10
+        MENUITEM "十六进制数字(&H)", ID_BASE16
         MENUITEM SEPARATOR
-        MENUITEM "重新加载(&R)", CMDID_LOADRESH
+        MENUITEM "重新加载(&R)", ID_LOADRESH
     }
     POPUP "Popup #4"
     {
-        MENUITEM "增加(&A)...", CMDID_ADD
+        MENUITEM "增加(&A)...", ID_ADD
         MENUITEM SEPARATOR
-        MENUITEM "名称修改(&N)...\tF2", CMDID_RENAME
-        MENUITEM "值修改(&V)...", CMDID_MODIFY
+        MENUITEM "名称修改(&N)...\tF2", ID_RENAME
+        MENUITEM "值修改(&V)...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "删除(&D)\tDel", CMDID_DELETE
+        MENUITEM "删除(&D)\tDel", ID_DELETE
     }
 }
 
@@ -855,7 +855,7 @@ STYLE WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "宋体"
 {
-    CONTROL "", lst1, "SysListView32", LVS_REPORT | LVS_SORTASCENDING | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 0, 200, 300
+    CONTROL "", lst1, "SysListView32", LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 0, 200, 300
 }
 
 IDD_CONFIG DIALOG 0, 0, 210, 260

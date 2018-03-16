@@ -115,7 +115,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -294,7 +294,7 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, CMDID_IDLIST, 0);
+        SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
     }
 
     virtual INT_PTR CALLBACK

@@ -105,7 +105,7 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        SendMessage(GetParent(hwnd), WM_COMMAND, CMDID_SETDEFAULTS, 0);
+        SendMessage(GetParent(hwnd), WM_COMMAND, ID_SETDEFAULTS, 0);
         Reload(hwnd);
         EndDialog(hwnd, IDOK);
     }

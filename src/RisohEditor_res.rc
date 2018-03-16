@@ -45,7 +45,7 @@ IDI_PLAY            ICON "res/play.ico"
 
 IDC_CURSORNS        CURSOR "res/cursor-ns.cur"
 IDC_CURSORWE        CURSOR "res/cursor-we.cur"
-IDAC_BOUNCE         ANICURSOR "res/bounce.ani"
+IDR_BOUNCEANICUR    ANICURSOR "res/bounce.ani"
 
 IDB_BMP             BITMAP "res/bmp.bmp"
 IDB_CONTROLS        BITMAP "res/controls.bmp"
@@ -59,23 +59,23 @@ IDR_MAINFRAME       RCDATA "res/RCDATA.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 
-IDA_MAIN ACCELERATORS
+IDR_MAINACCEL ACCELERATORS
 {
-    "N",            CMDID_NEW, VIRTKEY, CONTROL
-    "O",            CMDID_OPEN, VIRTKEY, CONTROL
-    "S",            CMDID_SAVEAS, VIRTKEY, CONTROL
-    "I",            CMDID_IMPORT, VIRTKEY, CONTROL
-    "E",            CMDID_CANCELEDIT, VIRTKEY, CONTROL
-    "G",            CMDID_GUIEDIT, VIRTKEY, CONTROL
-    "T",            CMDID_TEXTEDIT, VIRTKEY, CONTROL
-    VK_F8,          CMDID_COMPILE, VIRTKEY
-    "R",            CMDID_LOADRESH, VIRTKEY, CONTROL
-    "F",            CMDID_FIND, VIRTKEY, CONTROL
-    VK_F3,          CMDID_FINDDOWNWARD, VIRTKEY
-    VK_F3,          CMDID_FINDUPWARD, VIRTKEY, SHIFT
-    "H",            CMDID_REPLACE, VIRTKEY, CONTROL
-    "M",            CMDID_ITEMSEARCH, VIRTKEY, CONTROL
-    "L",            CMDID_DEBUGTREENODE, VIRTKEY, CONTROL, SHIFT
+    "N",            ID_NEW, VIRTKEY, CONTROL
+    "O",            ID_OPEN, VIRTKEY, CONTROL
+    "S",            ID_SAVEAS, VIRTKEY, CONTROL
+    "I",            ID_IMPORT, VIRTKEY, CONTROL
+    "E",            ID_CANCELEDIT, VIRTKEY, CONTROL
+    "G",            ID_GUIEDIT, VIRTKEY, CONTROL
+    "T",            ID_TEXTEDIT, VIRTKEY, CONTROL
+    VK_F8,          ID_COMPILE, VIRTKEY
+    "R",            ID_LOADRESH, VIRTKEY, CONTROL
+    "F",            ID_FIND, VIRTKEY, CONTROL
+    VK_F3,          ID_FINDDOWNWARD, VIRTKEY
+    VK_F3,          ID_FINDUPWARD, VIRTKEY, SHIFT
+    "H",            ID_REPLACE, VIRTKEY, CONTROL
+    "M",            ID_ITEMSEARCH, VIRTKEY, CONTROL
+    "L",            ID_DEBUGTREENODE, VIRTKEY, CONTROL, SHIFT
 }
 
 //////////////////////////////////////////////////////////////////////////////
