@@ -33,6 +33,7 @@ class MIDListDlg;
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
 MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_);
+std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -79,16 +80,20 @@ public:
     {
         MString ret;
         MString prefix = name.substr(0, name.find(L'_') + 1);
-        ConstantsDB::ValuesType values = m_db.GetValues(L"RESOURCE.ID.PREFIX", prefix);
-        ConstantsDB::ValuesType::iterator it2, end2 = values.end();
-        for (it2 = values.begin(); it2 != end2; ++it2)
+        if (prefix.empty())
+            return L"";
+
+        std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+        for (size_t i = 0; i < indexes.size(); ++i)
         {
-            if (*it2 == IDTYPE_UNKNOWN)
+            const INT nIDTYPE_ = indexes[i];
+
+            if (nIDTYPE_ == IDTYPE_UNKNOWN)
                 continue;
 
-            if (m_db.IsEntityIDType(*it2))
+            if (m_db.IsEntityIDType(nIDTYPE_))
             {
-                MString str2 = GetEntityIDText(m_entries, m_db, name, *it2);
+                MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
                 if (!str2.empty() && ret.find(str2) == MString::npos)
                 {
                     if (ret.empty())
@@ -106,12 +111,12 @@ public:
             {
                 if (ret.empty())
                 {
-                    ret = m_db.GetName(L"RESOURCE.ID.TYPE", *it2);
+                    ret = m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                 }
                 else
                 {
                     ret += TEXT("/");
-                    ret += m_db.GetName(L"RESOURCE.ID.TYPE", *it2);
+                    ret += m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                 }
             }
         }

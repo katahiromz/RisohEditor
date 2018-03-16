@@ -1,11 +1,11 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ Compatible
 // RisohEditor_res.rc
-#define IDR_MAINFRAME           101
+#define IDR_MAINFRAME           100
 #define IDR_MAINMENU            101
 #define IDR_POPUPMENUS          102
-#define IDR_BOUNCEANICUR        101
-#define IDR_MAINACCEL           101
+#define IDR_BOUNCEANICUR        103
+#define IDR_MAINACCEL           104
 
 #define IDI_MAIN                100
 #define IDI_ICO                 101

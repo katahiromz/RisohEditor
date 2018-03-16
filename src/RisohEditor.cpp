@@ -307,6 +307,12 @@ MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& nam
                     res_name = L"Cursor.ID";
                 else if (res_name == L"RT_GROUP_ICON")
                     res_name = L"Icon.ID";
+                else if (res_name == L"RT_ACCELERATOR")
+                    res_name = L"Accel.ID";
+                else if (res_name == L"RT_ANICURSOR")
+                    res_name = L"AniCursor.ID";
+                else if (res_name == L"RT_ANIICON")
+                    res_name = L"AniIcon.ID";
                 return res_name;
             }
         }
@@ -6669,6 +6675,21 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     }
 }
 
+std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix)
+{
+    std::vector<INT> ret;
+    assoc_map_type::const_iterator it, end = settings.assoc_map.end();
+    for (it = settings.assoc_map.begin(); it != end; ++it)
+    {
+        if (prefix == it->second && !it->second.empty())
+        {
+            INT nIDTYPE_ = INT(db.GetValue(L"RESOURCE.ID.TYPE", it->first));
+            ret.push_back(nIDTYPE_);
+        }
+    }
+    return ret;
+}
+
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
@@ -8105,18 +8126,24 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         strType = L"RT_GROUP_ICON";
     if (strType == L"Cursor.ID")
         strType = L"RT_GROUP_CURSOR";
+    if (strType == L"Accel.ID")
+        strType = L"RT_ACCELERATOR";
+    if (strType == L"AniCursor.ID")
+        strType = L"RT_ANICURSOR";
+    if (strType == L"AniIcon.ID")
+        strType = L"RT_ANIICON";
 
     MString prefix = name.substr(0, name.find(L'_') + 1);
-    ConstantsDB::ValuesType values = m_db.GetValues(L"RESOURCE.ID.PREFIX", prefix);
-    ConstantsDB::ValuesType::iterator it2, end2 = values.end();
-    for (it2 = values.begin(); it2 != end2; ++it2)
+    std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+    for (size_t i = 0; i < indexes.size(); ++i)
     {
-        if (*it2 == IDTYPE_STRING)
+        INT nIDTYPE_ = indexes[i];
+        if (nIDTYPE_ == IDTYPE_STRING)
         {
             SelectString(hwnd);
             return;
         }
-        if (*it2 == IDTYPE_MESSAGE)
+        if (nIDTYPE_ == IDTYPE_MESSAGE)
         {
             SelectMessage(hwnd);
             return;
