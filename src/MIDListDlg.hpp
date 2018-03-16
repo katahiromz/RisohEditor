@@ -488,6 +488,7 @@ public:
         if (str.find(TEXT('/')) == MString::npos || nIndex == 0)
         {
             PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
+			return;
         }
 
         std::vector<MString> vecItems;
