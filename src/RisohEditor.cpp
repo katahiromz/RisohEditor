@@ -408,6 +408,18 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
             ComboBox_SetCurSel(hCmb, i);
         }
     }
+
+    prefix = table[IDTYPE_PROMPT].name;
+    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    end = table.end();
+    for (it = table.begin(); it != end; ++it)
+    {
+        INT i = ComboBox_AddString(hCmb, it->name.c_str());
+        if (it->name == strString)
+        {
+            ComboBox_SetCurSel(hCmb, i);
+        }
+    }
 }
 
 void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString)
@@ -8138,7 +8150,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     for (size_t i = 0; i < indexes.size(); ++i)
     {
         INT nIDTYPE_ = indexes[i];
-        if (nIDTYPE_ == IDTYPE_STRING)
+        if (nIDTYPE_ == IDTYPE_STRING || nIDTYPE_ == IDTYPE_PROMPT)
         {
             SelectString(hwnd);
             return;

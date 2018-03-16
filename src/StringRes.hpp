@@ -112,7 +112,7 @@ public:
             }
             else
             {
-                ret += db.GetNameOfResID(IDTYPE_STRING, i);
+                ret += db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, i);
             }
 
             ret += L", \"";
@@ -144,7 +144,7 @@ public:
             }
             else
             {
-                ret += db.GetNameOfResID(IDTYPE_STRING, it->first);
+                ret += db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
             }
 
             ret += L", \"";

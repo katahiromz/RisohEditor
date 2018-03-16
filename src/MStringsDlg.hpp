@@ -238,7 +238,7 @@ public:
             if (it->second.empty())
                 continue;
 
-            MStringW str = m_db.GetNameOfResID(IDTYPE_STRING, it->first);
+            MStringW str = m_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
