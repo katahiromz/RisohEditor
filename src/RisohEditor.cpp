@@ -5161,19 +5161,22 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
     file.WriteSzA("//{{NO_DEPENDENCIES}}\r\n");
     file.WriteSzA("// Microsoft Visual C++ Compatible\r\n");
 
-    // get file title
-    TCHAR szFileTitle[64];
-    GetFileTitle(pszRCFile, szFileTitle, _countof(szFileTitle));
+    if (pszRCFile)
+    {
+        // get file title
+        TCHAR szFileTitle[64];
+        GetFileTitle(pszRCFile, szFileTitle, _countof(szFileTitle));
 
-    // change extension to .rc
-    LPTSTR pch = mstrrchr(szFileTitle, TEXT('.'));
-    *pch = 0;
-    StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
+        // change extension to .rc
+        LPTSTR pch = mstrrchr(szFileTitle, TEXT('.'));
+        *pch = 0;
+        StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
 
-    // write file title
-    file.WriteSzA("// ");
-    file.WriteSzA(MTextToAnsi(CP_ACP, szFileTitle).c_str());
-    file.WriteSzA("\r\n");
+        // write file title
+        file.WriteSzA("// ");
+        file.WriteSzA(MTextToAnsi(CP_ACP, szFileTitle).c_str());
+        file.WriteSzA("\r\n");
+    }
 
     id_map_type::iterator it, end = m_settings.id_map.end();
     for (it = m_settings.id_map.begin(); it != end; ++it)
@@ -7180,23 +7183,13 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // create new
-        FILE *fp;
-        _wfopen_s(&fp, szResH, L"wb");
-        if (!fp)
+        if (!DoWriteResH(NULL, szResH))
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
             ShowIDList(hwnd, bListOpen);
             return;
         }
 
-        id_map_type& add = m_settings.added_ids;
-        id_map_type::iterator it, end = add.end();
-        for (it = add.begin(); it != end; ++it)
-        {
-            fprintf(fp, "#define %s %s\r\n", it->first.c_str(), it->second.c_str());
-        }
-
-        fclose(fp);
         lstrcpynW(m_szResourceH, szResH, MAX_PATH);
     }
     else
