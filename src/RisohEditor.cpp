@@ -7795,6 +7795,12 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.strPrevVersion = szText;
     }
 
+    // reset association if version <= 3.8
+    if (m_settings.strPrevVersion.empty() || m_settings.strPrevVersion <= L"3.8")
+    {
+        m_settings.ResetAssoc();
+    }
+
     return TRUE;
 }
 
