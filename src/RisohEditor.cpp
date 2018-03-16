@@ -1201,9 +1201,10 @@ public:
     BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries);
     BOOL DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExport(LPCWSTR pszFileName);
+    void DoIDStat(UINT anValues[5]);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
-    BOOL DoWriteResH(LPCWSTR pszFileName);
+    BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
@@ -5151,26 +5152,95 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     return TRUE;
 }
 
-BOOL MMainWnd::DoWriteResH(LPCWSTR pszFileName)
+BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
 {
-    if (m_szResourceH[0])
+    MFile file(pszFileName, TRUE);
+    if (!file)
+        return FALSE;
+
+    file.WriteSzA("//{{NO_DEPENDENCIES}}\r\n");
+    file.WriteSzA("// Microsoft Visual C++ Compatible\r\n");
+
+    // get file title
+    TCHAR szFileTitle[64];
+    GetFileTitle(pszRCFile, szFileTitle, _countof(szFileTitle));
+
+    // change extension to .rc
+    LPTSTR pch = mstrrchr(szFileTitle, TEXT('.'));
+    *pch = 0;
+    StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
+
+    // write file title
+    file.WriteSzA("// ");
+    file.WriteSzA(MTextToAnsi(CP_ACP, szFileTitle).c_str());
+    file.WriteSzA("\r\n");
+
+    id_map_type::iterator it, end = m_settings.id_map.end();
+    for (it = m_settings.id_map.begin(); it != end; ++it)
     {
-        if (!CopyFile(m_szResourceH, pszFileName, FALSE))
+        file.WriteFormatA("#define %s %s\r\n",
+            it->first.c_str(), it->second.c_str());
+    }
+
+    UINT anValues[5];
+    DoIDStat(anValues);
+
+    file.WriteFormatA("#ifdef APSTUDIO_INVOKED\r\n");
+    file.WriteFormatA("    #ifndef APSTUDIO_READONLY_SYMBOLS\r\n");
+    file.WriteFormatA("        #define _APS_NO_MFC                 %u\r\n", anValues[0]);
+    file.WriteFormatA("        #define _APS_NEXT_RESOURCE_VALUE    %u\r\n", anValues[1]);
+    file.WriteFormatA("        #define _APS_NEXT_COMMAND_VALUE     %u\r\n", anValues[2]);
+    file.WriteFormatA("        #define _APS_NEXT_CONTROL_VALUE     %u\r\n", anValues[3]);
+    file.WriteFormatA("        #define _APS_NEXT_SYMED_VALUE       %u\r\n", anValues[4]);
+    file.WriteFormatA("    #endif\r\n");
+    file.WriteFormatA("#endif\r\n");
+
+    return TRUE;
+}
+
+void MMainWnd::DoIDStat(UINT anValues[5])
+{
+    const size_t count = 4;
+    INT anNext[count];
+    MString prefixes[count];
+    prefixes[0] = m_settings.assoc_map[L"Resource.ID"];
+    prefixes[1] = m_settings.assoc_map[L"Command.ID"];
+    prefixes[2] = m_settings.assoc_map[L"New.Command.ID"];
+    prefixes[3] = m_settings.assoc_map[L"Control.ID"];
+
+    for (size_t i = 0; i < count; ++i)
+    {
+		ConstantsDB::TableType table;
+        table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
+
+        UINT nMax = 0;
         {
-            MFile file(pszFileName, TRUE);
-
-            if (!file)
-                return FALSE;
-
-            id_map_type::iterator it, end = m_settings.id_map.end();
-            for (it = m_settings.id_map.begin(); it != end; ++it)
+            ConstantsDB::TableType::iterator it, end = table.end();
+            for (it = table.begin(); it != end; ++it)
             {
-                file.WriteFormatA("#define %s %s\r\n",
-                    it->first.c_str(), it->second.c_str());
+                if (it->name == L"IDC_STATIC")
+                    continue;
+
+                if (i == 3)
+                {
+                    INT k = Res_Find2(m_entries, RT_CURSOR, WORD(it->value), 0xFFFF, FALSE);
+                    if (k != -1)
+                        continue;   // it was Cursor.ID, not Control.ID
+                }
+
+                if (nMax < it->value)
+                    nMax = it->value;
             }
         }
+
+        anNext[i] = nMax + 1;
     }
-    return TRUE;
+
+    anValues[0] = 1;
+    anValues[1] = anNext[0];
+    anValues[2] = max(anNext[1], anNext[2]);
+    anValues[3] = anNext[3];
+    anValues[4] = 300;
 }
 
 BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
@@ -5218,7 +5288,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     if (m_szResourceH && !m_settings.id_map.empty())
     {
         StringCchCopyW(pch, _countof(szPath), L"resource.h");
-        bOK = DoWriteResH(szPath) && DoWriteRC(pszFileName, szPath);
+        bOK = DoWriteResH(pszFileName, szPath) && DoWriteRC(pszFileName, szPath);
     }
     else
     {
