@@ -83,6 +83,9 @@ public:
         ConstantsDB::ValuesType::iterator it2, end2 = values.end();
         for (it2 = values.begin(); it2 != end2; ++it2)
         {
+            if (*it2 == IDTYPE_UNKNOWN)
+                continue;
+
             if (m_db.IsEntityIDType(*it2))
             {
                 MString str2 = GetEntityIDText(m_entries, m_db, name, *it2);
@@ -425,8 +428,7 @@ public:
             PostMessage(m_hMainWnd, WM_COMMAND, ID_LOADRESHBANG, 0);
             break;
         case ID_IDJUMP:
-            iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-            PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
+            OnIdJump(hwnd);
             break;
         case ID_BASE10:
             m_nBase = 10;
@@ -436,6 +438,78 @@ public:
             m_nBase = 16;
             SetItems();
             break;
+        case ID_IDJUMP00:
+            OnIdJump(hwnd, 0);
+            break;
+        case ID_IDJUMP01:
+            OnIdJump(hwnd, 1);
+            break;
+        case ID_IDJUMP02:
+            OnIdJump(hwnd, 2);
+            break;
+        case ID_IDJUMP03:
+            OnIdJump(hwnd, 3);
+            break;
+        case ID_IDJUMP04:
+            OnIdJump(hwnd, 4);
+            break;
+        case ID_IDJUMP05:
+            OnIdJump(hwnd, 5);
+            break;
+        case ID_IDJUMP06:
+            OnIdJump(hwnd, 6);
+            break;
+        case ID_IDJUMP07:
+            OnIdJump(hwnd, 7);
+            break;
+        case ID_IDJUMP08:
+            OnIdJump(hwnd, 8);
+            break;
+        case ID_IDJUMP09:
+            OnIdJump(hwnd, 9);
+            break;
+        }
+    }
+
+    void OnIdJump(HWND hwnd, INT nIndex = -1)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem == -1)
+            return;
+
+        TCHAR szText[128];
+        ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+        MString str = szText;
+        if (str.find(TEXT('/')) == MString::npos || nIndex == 0)
+        {
+            PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
+        }
+
+        std::vector<MString> vecItems;
+        mstr_split(vecItems, str, TEXT("/"));
+
+        if (nIndex == -1)
+        {
+            HMENU hMenu = CreatePopupMenu();
+            for (size_t i = 0; i < vecItems.size(); ++i)
+            {
+                INT k = ID_IDJUMP00 + INT(i);
+                InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED,
+                    k, vecItems[i].c_str());
+            }
+
+			POINT pt;
+			GetCursorPos(&pt);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                pt.x, pt.y, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+            DestroyMenu(hMenu);
+        }
+        else
+        {
+            PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, nIndex);
         }
     }
 

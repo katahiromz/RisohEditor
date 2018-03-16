@@ -1,10 +1,10 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ Compatible
 // RisohEditor_res.rc
-#define IDR_MAINFRAME           1
-#define IDR_MAINMENU            100
-#define IDR_POPUPMENUS          101
-#define IDR_BOUNCEANICUR        103
+#define IDR_MAINFRAME           101
+#define IDR_MAINMENU            101
+#define IDR_POPUPMENUS          102
+#define IDR_BOUNCEANICUR        101
 #define IDR_MAINACCEL           101
 
 #define IDI_MAIN                100
@@ -138,6 +138,16 @@
 #define ID_CUT                  218
 #define ID_COPY                 219
 #define ID_PASTE                220
+#define ID_IDJUMP00             221
+#define ID_IDJUMP01             222
+#define ID_IDJUMP02             223
+#define ID_IDJUMP03             224
+#define ID_IDJUMP04             225
+#define ID_IDJUMP05             226
+#define ID_IDJUMP06             227
+#define ID_IDJUMP07             228
+#define ID_IDJUMP08             229
+#define ID_IDJUMP09             230
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

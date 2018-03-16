@@ -22,6 +22,7 @@ RT_HTML, 23
 RT_MANIFEST, 24
 
 [RESOURCE.ID.TYPE]
+Unknown.ID, 0
 Cursor.ID, 1
 Bitmap.ID, 2
 Menu.ID, 3
@@ -40,9 +41,9 @@ Message.ID, 15
 Window.ID, 16
 New.Command.ID, 17
 Prompt.ID, 18
-Unknown.ID, 0
 
 [RESOURCE.ID.PREFIX]
+, 0
 IDC_, 1
 IDB_, 2
 IDR_, 3
@@ -61,7 +62,6 @@ MSGID_, 15
 IDW_, 16
 ID_, 17
 IDP_, 18
-, 0
 
 [HIDE.ID]
 HIDE.ID, 0

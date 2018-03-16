@@ -298,7 +298,7 @@ public:
             return DumpValue(L"CTRLID", value);
         }
 
-        if (!IsEntityIDType(nIDTYPE_))
+        if (nIDTYPE_ != IDTYPE_RESOURCE && IsEntityIDType(nIDTYPE_))
         {
             return GetNameOfResID(IDTYPE_RESOURCE, value);
         }
