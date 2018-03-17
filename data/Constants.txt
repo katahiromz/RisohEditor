@@ -63,6 +63,45 @@ IDW_, 16
 ID_, 17
 IDP_, 18
 
+[LANGUAGES]
+ar_SA, 1025
+bg_BG, 1026
+zh_CN, 2052
+zh_TW, 1028
+hr_HR, 1050
+cs_CZ, 1029
+da_DK, 1030
+nl_NL, 1043
+en_US, 1033
+en_GB, 2057
+et_EE, 1061
+fi_FI, 1035
+fr_CA, 3084
+fr_FR, 1036
+de_DE, 1031
+el_GR, 1032
+he_IL, 1037
+hu_HU, 1038
+it_IT, 1040
+ja_JP, 1041
+ko_KR, 1042
+lv_LV, 1062
+lt_LT, 1063
+nb_NO, 1044
+pl_PL, 1045
+pt_BR, 1046
+pt_PT, 2070
+ro_RO, 1048
+ru_RU, 1049
+sk_SK, 1051
+sl_SI, 1060
+es_MX, 2058
+es_ES, 3082
+sv_SE, 1053
+th_TH, 1054
+tr_TR, 1055
+uk_UA, 1058
+
 [HIDE.ID]
 HIDE.ID, 0
 
