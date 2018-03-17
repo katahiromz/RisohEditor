@@ -1235,7 +1235,17 @@ protected:
     BOOL UnloadResourceH(HWND hwnd);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
+    void ReadResHLines(FILE *fp, std::vector<std::string>& lines);
     void UpdateResHLines(std::vector<std::string>& lines);
+
+    void JoinLinesByBackslash(std::vector<std::string>& lines);
+    void DeleteIncludeGuard(std::vector<std::string>& lines);
+    void AddAdditionalMacroLines(std::vector<std::string>& lines);
+    void DeleteSpecificMacroLines(std::vector<std::string>& lines);
+    void AddApStudioBlock(std::vector<std::string>& lines);
+    void DeleteApStudioBlock(std::vector<std::string>& lines);
+    void AddHeadComment(std::vector<std::string>& lines);
+    void DeleteHeadComment(std::vector<std::string>& lines);
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -7155,7 +7165,7 @@ void MMainWnd::OnTest(HWND hwnd)
     }
 }
 
-void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
+void MMainWnd::JoinLinesByBackslash(std::vector<std::string>& lines)
 {
     // join by '\\'
     for (size_t i = 0; i < lines.size(); ++i)
@@ -7172,49 +7182,159 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
             }
         }
     }
+}
 
-    // scan and convert lines
-    size_t iEndIf = (size_t)-1;
+void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
+{
+    size_t k0 = -1, k1 = -1;
+    std::string name0;
+
     for (size_t i = 0; i < lines.size(); ++i)
     {
         std::string& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
-        if (*pch == '#')
+        if (*pch != '#')
+            continue;
+
+        ++pch;
+        pch = mstr_skip_space(pch);
+        if (memcmp(pch, "ifndef", 5) == 0 && mchr_is_space(pch[5]))
         {
-            ++pch;
-            pch = mstr_skip_space(pch);
-            if (memcmp(pch, "define", 6) == 0 && std::isspace(pch[6]))
+            // #ifndef
+            pch += 5;
+            const char *pch0 = pch = mstr_skip_space(pch);
+            while (std::isalnum(*pch) || *pch == '_')
             {
-                // #define
-                pch += 6;
-                const char *pch0 = pch = mstr_skip_space(pch);
-                while (std::isalnum(*pch) || *pch == '_')
-                {
-                    ++pch;
-                }
-                std::string name(pch0, pch);
-
-                id_map_type::iterator it = m_settings.removed_ids.find(name);
-                if (it != m_settings.removed_ids.end())
-                {
-                    lines.erase(lines.begin() + i);
-                    --i;
-                }
-
-                iEndIf = (size_t)-1;
+                ++pch;
             }
-            else if (memcmp(pch, "endif", 5) == 0 && std::isspace(pch[5]))
+            std::string name(pch0, pch);
+
+            if (name0.empty())
             {
-                // #endif
-                iEndIf = i;
+                k0 = i;
+                name0 = name;
             }
+            else
+            {
+                name0.clear();
+                break;
+            }
+        }
+        else if (memcmp(pch, "define", 6) == 0 && mchr_is_space(pch[6]))
+        {
+            // #define
+            pch += 6;
+            const char *pch0 = pch = mstr_skip_space(pch);
+            while (std::isalnum(*pch) || *pch == '_')
+            {
+                ++pch;
+            }
+            std::string name(pch0, pch);
+            if (name0 == name)
+            {
+                k1 = i;
+                break;
+            }
+        }
+        else
+        {
+            // otherwise
+            break;
         }
     }
 
-    if (iEndIf == (size_t)-1)
-        iEndIf = lines.size();
+    if (name0.empty())
+        return;
 
-    // add lines
+    for (size_t i = lines.size(); i > 0; )
+    {
+        --i;
+        std::string& line = lines[i];
+        const char *pch = mstr_skip_space(&line[0]);
+        if (*pch != '#')
+            continue;
+
+        ++pch;
+        pch = mstr_skip_space(pch);
+        if (memcmp(pch, "endif", 5) == 0)
+        {
+            lines.erase(lines.begin() + i);
+            lines.erase(lines.begin() + k1);
+            lines.erase(lines.begin() + k0);
+            break;
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+void MMainWnd::AddHeadComment(std::vector<std::string>& lines)
+{
+    if (m_szNominalFile[0])
+    {
+        WCHAR title[64];
+        GetFileTitleW(m_szNominalFile, title, _countof(title));
+        std::string line = "// ";
+        line += MWideToAnsi(CP_ACP, title).c_str();
+        lines.insert(lines.begin(), line);
+    }
+    lines.insert(lines.begin(), "// Microsoft Visual C++ Compatible");
+    lines.insert(lines.begin(), "//{{NO_DEPENDENCIES}}");
+}
+
+void MMainWnd::DeleteHeadComment(std::vector<std::string>& lines)
+{
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        std::string& line = lines[i];
+        if (line.find("//") == 0)
+        {
+            if (line.find("{{NO_DEPENDENCIES}}") != std::string::npos ||
+                line.find("Microsoft Visual C++") != std::string::npos ||
+                line.find(".rc") != std::string::npos)
+            {
+                lines.erase(lines.begin() + i);
+                --i;
+            }
+        }
+    }
+}
+
+void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
+{
+    for (size_t i = lines.size(); i > 0; )
+    {
+        --i;
+        std::string& line = lines[i];
+        const char *pch = mstr_skip_space(&line[0]);
+        if (*pch != '#')
+            continue;
+
+        ++pch;
+        pch = mstr_skip_space(pch);
+        if (memcmp(pch, "define", 6) == 0 && mchr_is_space(pch[6]))
+        {
+            // #define
+            pch += 6;
+            const char *pch0 = pch = mstr_skip_space(pch);
+            while (std::isalnum(*pch) || *pch == '_')
+            {
+                ++pch;
+            }
+            std::string name(pch0, pch);
+
+            if (m_settings.removed_ids.find(name) != m_settings.removed_ids.end())
+            {
+                lines.erase(lines.begin() + i);
+            }
+        }
+    }
+}
+
+void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
+{
     std::string str;
     id_map_type::iterator it, end = m_settings.added_ids.end();
     for (it = m_settings.added_ids.begin(); it != end; ++it)
@@ -7223,7 +7343,124 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
         line += it->first;
         line += " ";
         line += it->second;
-        lines.insert(lines.begin() + iEndIf, line);
+        lines.push_back(line);
+    }
+}
+
+void MMainWnd::AddApStudioBlock(std::vector<std::string>& lines)
+{
+    UINT anValues[5];
+    DoIDStat(anValues);
+
+    lines.push_back("#ifdef APSTUDIO_INVOKED\r\n");
+    lines.push_back("    #ifndef APSTUDIO_READONLY_SYMBOLS\r\n");
+
+    char buf[256];
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NO_MFC                 %u\r\n", anValues[0]);
+    lines.push_back(buf);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_RESOURCE_VALUE    %u\r\n", anValues[1]);
+    lines.push_back(buf);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_COMMAND_VALUE     %u\r\n", anValues[2]);
+    lines.push_back(buf);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_CONTROL_VALUE     %u\r\n", anValues[3]);
+    lines.push_back(buf);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_SYMED_VALUE       %u\r\n", anValues[4]);
+    lines.push_back(buf);
+    lines.push_back("    #endif\r\n");
+    lines.push_back("#endif\r\n");
+}
+
+void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
+{
+    bool inside = false, found = false;
+    size_t nest = 0, k = -1;
+    for (size_t i = lines.size(); i > 0; )
+    {
+        --i;
+        std::string& line = lines[i];
+        const char *pch = mstr_skip_space(&line[0]);
+        if (*pch != '#')
+            continue;
+
+        ++pch;
+        pch = mstr_skip_space(pch);
+        if (memcmp(pch, "ifdef", 5) == 0 && mchr_is_space(pch[5]))
+        {
+            // #ifdef
+            pch += 5;
+            const char *pch0 = pch = mstr_skip_space(pch);
+            while (std::isalnum(*pch) || *pch == '_')
+            {
+                ++pch;
+            }
+            std::string name(pch0, pch);
+
+            if (name == "APSTUDIO_INVOKED")
+            {
+                inside = true;
+                found = false;
+                k = i;
+                ++nest;
+            }
+        }
+        else if (memcmp(pch, "if", 2) == 0)
+        {
+            ++nest;
+        }
+        else if (memcmp(pch, "define", 6) == 0 && mchr_is_space(pch[6]))
+        {
+            if (!inside)
+                continue;
+
+            // #define
+            pch += 6;
+            const char *pch0 = pch = mstr_skip_space(pch);
+            while (std::isalnum(*pch) || *pch == '_')
+            {
+                ++pch;
+            }
+            std::string name(pch0, pch);
+
+            if (name == "_APS_NEXT_RESOURCE_VALUE")
+            {
+                found = true;
+            }
+        }
+        else if (memcmp(pch, "endif", 5) == 0)
+        {
+            --nest;
+            if (nest == 0)
+            {
+                lines.erase(lines.begin() + k, lines.begin() + i + 1);
+                break;
+            }
+        }
+    }
+}
+
+void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
+{
+    JoinLinesByBackslash(lines);
+    DeleteIncludeGuard(lines);
+    DeleteHeadComment(lines);
+    AddAdditionalMacroLines(lines);
+    DeleteSpecificMacroLines(lines);
+    DeleteApStudioBlock(lines);
+    AddApStudioBlock(lines);
+}
+
+void MMainWnd::ReadResHLines(FILE *fp, std::vector<std::string>& lines)
+{
+    // read lines
+    CHAR buf[512];
+    while (fgets(buf, _countof(buf), fp) != NULL)
+    {
+        size_t len = std::strlen(buf);
+        if (len == 0)
+            break;
+        if (buf[len - 1] == '\n')
+            buf[len - 1] = 0;
+        lines.push_back(buf);
     }
 }
 
@@ -7304,18 +7541,10 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             return;
         }
 
-        // read lines
-        CHAR buf[512];
         std::vector<std::string> lines;
-        while (fgets(buf, _countof(buf), fp) != NULL)
-        {
-            size_t len = std::strlen(buf);
-            if (len == 0)
-                break;
-            if (buf[len - 1] == '\n')
-                buf[len - 1] = 0;
-            lines.push_back(buf);
-        }
+
+        ReadResHLines(fp, lines);
+
         fclose(fp);
 
         UpdateResHLines(lines);
