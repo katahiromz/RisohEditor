@@ -370,7 +370,7 @@ STRINGTABLE
     IDS_RCFILTER, "RC Files (*.rc)|*.rc|"
     IDS_EXPORT, "Export"
     IDS_CANTEXPORT, "Export failed."
-    IDS_MUSTBEEMPTYDIR, "The export destination must be an empty folder."
+    IDS_MUSTBEEMPTYDIR, "If there is any external file, then the export destination must be an empty folder."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Macro Name"

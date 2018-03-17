@@ -370,7 +370,7 @@ STRINGTABLE
     IDS_RCFILTER, "RC 文件 (*.rc)|*.rc|"
     IDS_EXPORT, "导出"
     IDS_CANTEXPORT, "导出失败."
-    IDS_MUSTBEEMPTYDIR, "导出资源必须是空文件夹."
+    IDS_MUSTBEEMPTYDIR, "如果有任何外部文件，则导出目标必须是空文件夹."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "宏名称"

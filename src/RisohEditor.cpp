@@ -5301,8 +5301,22 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 
     if (!IsEmptyDirectoryDx(szPath))
     {
-        ErrorBoxDx(IDS_MUSTBEEMPTYDIR);
-        return FALSE;
+        BOOL bHasExternFile = FALSE;
+        for (size_t i = 0; i < m_entries.size(); ++i)
+        {
+            ResToText res2text(m_settings, m_db, m_entries);
+            MString filename = res2text.GetEntryFileName(m_entries[i]);
+            if (filename.size())
+            {
+                bHasExternFile = TRUE;
+                break;
+            }
+        }
+        if (bHasExternFile)
+        {
+            ErrorBoxDx(IDS_MUSTBEEMPTYDIR);
+            return FALSE;
+        }
     }
 
     *pch++ = L'\\';
@@ -7352,22 +7366,22 @@ void MMainWnd::AddApStudioBlock(std::vector<std::string>& lines)
     UINT anValues[5];
     DoIDStat(anValues);
 
-    lines.push_back("#ifdef APSTUDIO_INVOKED\r\n");
-    lines.push_back("    #ifndef APSTUDIO_READONLY_SYMBOLS\r\n");
+    lines.push_back("#ifdef APSTUDIO_INVOKED");
+    lines.push_back("    #ifndef APSTUDIO_READONLY_SYMBOLS");
 
     char buf[256];
-    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NO_MFC                 %u\r\n", anValues[0]);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NO_MFC                 %u", anValues[0]);
     lines.push_back(buf);
-    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_RESOURCE_VALUE    %u\r\n", anValues[1]);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_RESOURCE_VALUE    %u", anValues[1]);
     lines.push_back(buf);
-    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_COMMAND_VALUE     %u\r\n", anValues[2]);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_COMMAND_VALUE     %u", anValues[2]);
     lines.push_back(buf);
-    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_CONTROL_VALUE     %u\r\n", anValues[3]);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_CONTROL_VALUE     %u", anValues[3]);
     lines.push_back(buf);
-    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_SYMED_VALUE       %u\r\n", anValues[4]);
+    StringCchPrintfA(buf, _countof(buf), "        #define _APS_NEXT_SYMED_VALUE       %u", anValues[4]);
     lines.push_back(buf);
-    lines.push_back("    #endif\r\n");
-    lines.push_back("#endif\r\n");
+    lines.push_back("    #endif");
+    lines.push_back("#endif");
 }
 
 void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
