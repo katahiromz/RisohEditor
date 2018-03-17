@@ -63,7 +63,7 @@ struct RisohSettings
     INT         nIDListHeight;
     INT         nRadLeft;
     INT         nRadTop;
-    BOOL        bUpdateResH;
+    BOOL        bAskUpdateResH;
     BOOL        bCompressByUPX;
     MString     strSrcFont;
     INT         nSrcFontSize;
