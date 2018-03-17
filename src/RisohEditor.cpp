@@ -8009,6 +8009,10 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bOldStyle = TRUE;
 
     m_settings.strPrevVersion.clear();
+
+    m_settings.bSepFilesByLang = FALSE;
+    m_settings.bStoreToResFolder = TRUE;
+    m_settings.bSelectableByMacro = FALSE;
 }
 
 BOOL MMainWnd::LoadSettings(HWND hwnd)
@@ -8209,6 +8213,10 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         }
     }
 
+    keyRisoh.QueryDword(TEXT("bSepFilesByLang"), (DWORD&)m_settings.bSepFilesByLang);
+    keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)m_settings.bStoreToResFolder);
+    keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)m_settings.bSelectableByMacro);
+
     return TRUE;
 }
 
@@ -8322,6 +8330,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
     keyRisoh.SetSz(TEXT("strPrevVersion"), TEXT(RE_VERSION));
+
+    keyRisoh.SetDword(TEXT("bSepFilesByLang"), m_settings.bSepFilesByLang);
+    keyRisoh.SetDword(TEXT("bStoreToResFolder"), m_settings.bStoreToResFolder);
+    keyRisoh.SetDword(TEXT("bSelectableByMacro"), m_settings.bSelectableByMacro);
 
     return TRUE;
 }

@@ -79,6 +79,9 @@ struct RisohSettings
     MString             strCppExe;
     BOOL                bOldStyle;
     MString             strPrevVersion;
+    BOOL                bSepFilesByLang;
+    BOOL                bStoreToResFolder;
+    BOOL                bSelectableByMacro;
 
     RisohSettings()
     {
