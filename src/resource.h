@@ -190,6 +190,7 @@
 #define IDD_EDITMACRO           147
 #define IDD_CTRLDATA            148
 #define IDD_PATHS               149
+#define IDD_EXP_OPTIONS         150
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
