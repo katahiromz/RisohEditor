@@ -153,7 +153,7 @@ FILETYPE        VFT_APP
     #include "lang/en-US.rc"
 #endif
 #ifdef LANGUAGE_ZH_CN
-    #include "lang/ch-CN.rc"
+    #include "lang/zh-CN.rc"
 #endif
 #ifdef LANGUAGE_JA_JP
     #include "lang/ja-JP.rc"
