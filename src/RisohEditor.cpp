@@ -6049,7 +6049,6 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     file1.WriteSzA("#include \"", &cbWritten);
     file1.WriteSzA(MTextToAnsi(CP_ACP, szFile).c_str(), &cbWritten);
     file1.WriteSzA("\"\n", &cbWritten);
-    file1.WriteSzA(buf, &cbWritten);
     file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
     for (size_t i = 0; i < macros.size(); ++i)
     {
@@ -7388,9 +7387,8 @@ void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
 {
     bool inside = false, found = false;
     size_t nest = 0, k = -1;
-    for (size_t i = lines.size(); i > 0; )
+    for (size_t i = 0; i < lines.size(); ++i)
     {
-        --i;
         std::string& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
         if (*pch != '#')
@@ -7457,8 +7455,8 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
     JoinLinesByBackslash(lines);
     DeleteIncludeGuard(lines);
     DeleteHeadComment(lines);
-    AddAdditionalMacroLines(lines);
     DeleteSpecificMacroLines(lines);
+    AddAdditionalMacroLines(lines);
     DeleteApStudioBlock(lines);
     AddApStudioBlock(lines);
 }
