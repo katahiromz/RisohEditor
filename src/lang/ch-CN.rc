@@ -38,7 +38,6 @@ IDR_MAINMENU MENU
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
         MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
-        MENUITEM SEPARATOR
         MENUITEM "更新 resource.h(&P)", ID_UPDATERESHBANG
         MENUITEM SEPARATOR
         MENUITEM "设置(&C)...", ID_CONFIG
@@ -872,7 +871,7 @@ FONT 9, "宋体"
     AUTOCHECKBOX "在对话框编辑上显示点阵(&D)", chx6, 5, 105, 200, 14
     RTEXT "Combo&Box的高度(&B):", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
-    AUTOCHECKBOX "更新 ""&resource.h""", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "询问""&resource.h""的更新", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "保存EXE文件时用&UPX压缩", chx8, 5, 165, 200, 14
     //AUTOCHECKBOX "使用旧式&LANGUAGE语句", chx9, 5, 185, 200, 14
     PUSHBUTTON "预定义的宏(&M)...", psh1, 5, 205, 85, 14

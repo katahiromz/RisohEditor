@@ -32,7 +32,7 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bMustExist);
+MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bFlag);
 std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -84,69 +84,47 @@ public:
             return L"";
 
         std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
-        for (size_t i = 0; i < indexes.size(); ++i)
+        for (INT bFlag = FALSE; bFlag <= TRUE; ++bFlag)
         {
-            const INT nIDTYPE_ = indexes[i];
-
-            if (nIDTYPE_ == IDTYPE_UNKNOWN)
-                continue;
-
-            if (m_db.IsEntityIDType(nIDTYPE_))
+            for (size_t i = 0; i < indexes.size(); ++i)
             {
-                MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, TRUE);
-                if (!str2.empty() && ret.find(str2) == MString::npos)
+                const INT nIDTYPE_ = indexes[i];
+
+                if (nIDTYPE_ == IDTYPE_UNKNOWN)
+                    continue;
+
+                if (m_db.IsEntityIDType(nIDTYPE_))
+                {
+                    MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, bFlag);
+                    if (!str2.empty() && ret.find(str2) == MString::npos)
+                    {
+                        if (ret.empty())
+                        {
+                            ret = str2;
+                        }
+                        else
+                        {
+                            ret += TEXT("/");
+                            ret += str2;
+                        }
+                    }
+                }
+                else
                 {
                     if (ret.empty())
                     {
-                        ret = str2;
+                        ret = m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                     }
                     else
                     {
                         ret += TEXT("/");
-                        ret += str2;
+                        ret += m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                     }
                 }
             }
-            else
-            {
-                if (ret.empty())
-                {
-                    ret = m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
-                }
-                else
-                {
-                    ret += TEXT("/");
-                    ret += m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
-                }
-            }
+            if (!bFlag && !ret.empty())
+                break;
         }
-		if (ret.empty())
-		{
-			for (size_t i = 0; i < indexes.size(); ++i)
-			{
-				const INT nIDTYPE_ = indexes[i];
-
-				if (nIDTYPE_ == IDTYPE_UNKNOWN)
-					continue;
-
-				if (m_db.IsEntityIDType(nIDTYPE_))
-				{
-					MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, FALSE);
-					if (!str2.empty() && ret.find(str2) == MString::npos)
-					{
-						if (ret.empty())
-						{
-							ret = str2;
-						}
-						else
-						{
-							ret += TEXT("/");
-							ret += str2;
-						}
-					}
-				}
-			}
-		}
         return ret;
     }
 
@@ -515,7 +493,7 @@ public:
         if (str.find(TEXT('/')) == MString::npos || nIndex == 0)
         {
             PostMessage(m_hMainWnd, MYWM_IDJUMPBANG, iItem, 0);
-			return;
+            return;
         }
 
         std::vector<MString> vecItems;

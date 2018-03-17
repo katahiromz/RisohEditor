@@ -247,7 +247,9 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bMustExist)
+MString
+GetEntityIDText(ResEntries& entries, ConstantsDB& db,
+                const MString& name, INT nIDTYPE_, BOOL bFlag)
 {
     MIdOrString type;
     switch (nIDTYPE_)
@@ -321,27 +323,24 @@ MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& nam
             return found[0].type.str();
         }
     }
-	else
-	{
-		if (!bMustExist)
-		{
-            MString res_name = db.GetName(L"RESOURCE", type.m_id);
-            if (res_name.size())
-            {
-                if (res_name == L"RT_GROUP_CURSOR")
-                    res_name = L"Cursor.ID";
-                else if (res_name == L"RT_GROUP_ICON")
-                    res_name = L"Icon.ID";
-                else if (res_name == L"RT_ACCELERATOR")
-                    res_name = L"Accel.ID";
-                else if (res_name == L"RT_ANICURSOR")
-                    res_name = L"AniCursor.ID";
-                else if (res_name == L"RT_ANIICON")
-                    res_name = L"AniIcon.ID";
-                return res_name;
-            }
-		}
-	}
+    else if (bFlag)
+    {
+        MString res_name = db.GetName(L"RESOURCE", type.m_id);
+        if (res_name.size())
+        {
+            if (res_name == L"RT_GROUP_CURSOR")
+                res_name = L"Cursor.ID";
+            else if (res_name == L"RT_GROUP_ICON")
+                res_name = L"Icon.ID";
+            else if (res_name == L"RT_ACCELERATOR")
+                res_name = L"Accel.ID";
+            else if (res_name == L"RT_ANICURSOR")
+                res_name = L"AniCursor.ID";
+            else if (res_name == L"RT_ANIICON")
+                res_name = L"AniIcon.ID";
+            return res_name;
+        }
+    }
     return L"";
 }
 
@@ -2985,11 +2984,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         EnableMenuItem(hMenu, ID_EDITLABEL, MF_BYCOMMAND | MF_GRAYED);
 
-    if (m_settings.bUpdateResH)
-        EnableMenuItem(hMenu, ID_UPDATERESHBANG, MF_BYCOMMAND | MF_ENABLED);
-    else
-        EnableMenuItem(hMenu, ID_UPDATERESHBANG, MF_BYCOMMAND | MF_GRAYED);
-
     if (IsWindowVisible(m_hStatusBar))
         CheckMenuItem(hMenu, ID_STATUSBAR, MF_CHECKED);
     else
@@ -5272,7 +5266,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 
     for (size_t i = 0; i < count; ++i)
     {
-		ConstantsDB::TableType table;
+        ConstantsDB::TableType table;
         table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
 
         UINT nMax = 0;
@@ -7480,7 +7474,7 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
     AddAdditionalMacroLines(lines);
     DeleteApStudioBlock(lines);
     AddApStudioBlock(lines);
-	AddHeadComment(lines);
+    AddHeadComment(lines);
 }
 
 void MMainWnd::ReadResHLines(FILE *fp, std::vector<std::string>& lines)
@@ -7505,7 +7499,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
         return;
 
-    if (!m_settings.bUpdateResH)
+    if (!m_settings.bAskUpdateResH)
         return;
 
     DestroyWindow(m_id_list_dlg);
@@ -7887,7 +7881,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.nIDListHeight = 490;
     m_settings.nRadLeft = CW_USEDEFAULT;
     m_settings.nRadTop = CW_USEDEFAULT;
-    m_settings.bUpdateResH = FALSE;
+    m_settings.bAskUpdateResH = FALSE;
     m_settings.bCompressByUPX = FALSE;
 
     HFONT hFont;
@@ -8037,7 +8031,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)m_settings.nIDListHeight);
     keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)m_settings.nRadLeft);
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
-    keyRisoh.QueryDword(TEXT("bUpdateResH"), (DWORD&)m_settings.bUpdateResH);
+    keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)m_settings.bAskUpdateResH);
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)m_settings.bCompressByUPX);
 
     TCHAR szText[128];
@@ -8241,7 +8235,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nIDListHeight"), m_settings.nIDListHeight);
     keyRisoh.SetDword(TEXT("nRadLeft"), m_settings.nRadLeft);
     keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
-    keyRisoh.SetDword(TEXT("bUpdateResH"), m_settings.bUpdateResH);
+    keyRisoh.SetDword(TEXT("bAskUpdateResH"), m_settings.bAskUpdateResH);
     keyRisoh.SetDword(TEXT("bCompressByUPX"), m_settings.bCompressByUPX);
     keyRisoh.SetSz(TEXT("strSrcFont"), m_settings.strSrcFont.c_str());
     keyRisoh.SetDword(TEXT("nSrcFontSize"), m_settings.nSrcFontSize);
