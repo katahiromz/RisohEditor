@@ -79,6 +79,7 @@ protected:
 public:
     BOOL m_bHumanReadable;
     BOOL m_bNoLanguage;
+    MString m_strFilePrefix;
 
     MString GetLanguageStatement(WORD langid)
     {
@@ -341,6 +342,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         WCHAR sz[32];
         StringCchPrintfW(sz, _countof(sz), L"%u_", entry.lang);
         ret = sz + ret;
+        ret = m_strFilePrefix + ret;
     }
 
     return ret;
