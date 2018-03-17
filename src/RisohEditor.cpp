@@ -3899,7 +3899,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
-    r1.WriteFormatA("#pragma code_page(65001)\r\n");
+    r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
@@ -4041,7 +4041,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
-    r1.WriteFormatA("#pragma code_page(65001)\r\n");
+    r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
@@ -5157,7 +5157,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteFormatA("#include \"resource.h\"\r\n");
     file.WriteFormatA("#include <windows.h>\r\n");
     file.WriteFormatA("#include <commctrl.h>\r\n");
-    file.WriteFormatA("#pragma code_page(65001)\r\n\r\n");
+    file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
     std::set<WORD> langs;
     for (size_t i = 0; i < m_entries.size(); ++i)
