@@ -291,9 +291,10 @@ public:
         return FALSE;
     }
 
-    void UpdateResH()
+    void UpdateResHIfAsk()
     {
-        PostMessage(m_hMainWnd, WM_COMMAND, ID_UPDATERESHBANG, 0);
+        if (m_settings.bAskUpdateResH)
+            PostMessage(m_hMainWnd, WM_COMMAND, ID_UPDATERESHBANG, 0);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -326,7 +327,7 @@ public:
                     SetItems();
                     SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
 
-                    UpdateResH();
+                    UpdateResHIfAsk();
                 }
             }
             break;
@@ -373,7 +374,7 @@ public:
                     SetItems();
 
                     SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
-                    UpdateResH();
+                    UpdateResHIfAsk();
                 }
             }
             break;
@@ -410,7 +411,7 @@ public:
                 ListView_DeleteItem(m_hLst1, iItem);
             }
             SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
-            UpdateResH();
+            UpdateResHIfAsk();
             break;
         case ID_COPYRESIDNAME:
             {
