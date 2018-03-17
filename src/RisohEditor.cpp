@@ -247,7 +247,7 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_)
+MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bMustExist)
 {
     MIdOrString type;
     switch (nIDTYPE_)
@@ -321,6 +321,27 @@ MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& nam
             return found[0].type.str();
         }
     }
+	else
+	{
+		if (!bMustExist)
+		{
+            MString res_name = db.GetName(L"RESOURCE", type.m_id);
+            if (res_name.size())
+            {
+                if (res_name == L"RT_GROUP_CURSOR")
+                    res_name = L"Cursor.ID";
+                else if (res_name == L"RT_GROUP_ICON")
+                    res_name = L"Icon.ID";
+                else if (res_name == L"RT_ACCELERATOR")
+                    res_name = L"Accel.ID";
+                else if (res_name == L"RT_ANICURSOR")
+                    res_name = L"AniCursor.ID";
+                else if (res_name == L"RT_ANIICON")
+                    res_name = L"AniIcon.ID";
+                return res_name;
+            }
+		}
+	}
     return L"";
 }
 
@@ -7459,6 +7480,7 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
     AddAdditionalMacroLines(lines);
     DeleteApStudioBlock(lines);
     AddApStudioBlock(lines);
+	AddHeadComment(lines);
 }
 
 void MMainWnd::ReadResHLines(FILE *fp, std::vector<std::string>& lines)

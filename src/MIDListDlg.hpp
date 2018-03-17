@@ -32,7 +32,7 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_);
+MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bMustExist);
 std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ public:
 
             if (m_db.IsEntityIDType(nIDTYPE_))
             {
-                MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_);
+                MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, TRUE);
                 if (!str2.empty() && ret.find(str2) == MString::npos)
                 {
                     if (ret.empty())
@@ -120,6 +120,33 @@ public:
                 }
             }
         }
+		if (ret.empty())
+		{
+			for (size_t i = 0; i < indexes.size(); ++i)
+			{
+				const INT nIDTYPE_ = indexes[i];
+
+				if (nIDTYPE_ == IDTYPE_UNKNOWN)
+					continue;
+
+				if (m_db.IsEntityIDType(nIDTYPE_))
+				{
+					MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, FALSE);
+					if (!str2.empty() && ret.find(str2) == MString::npos)
+					{
+						if (ret.empty())
+						{
+							ret = str2;
+						}
+						else
+						{
+							ret += TEXT("/");
+							ret += str2;
+						}
+					}
+				}
+			}
+		}
         return ret;
     }
 
@@ -175,7 +202,7 @@ public:
             MString text2 = GetAssoc(text1);
             MString text3 = MAnsiToText(CP_ACP, it->second.c_str()).c_str();
             if (text2.empty())
-                continue;
+                text2 = L"Unknown.ID";
 
             INT iItem = ListView_GetItemCount(m_hLst1);
             ZeroMemory(&item, sizeof(item));
