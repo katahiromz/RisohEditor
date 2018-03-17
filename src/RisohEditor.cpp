@@ -5294,7 +5294,8 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 
     anValues[0] = 1;
     anValues[1] = anNext[0];
-    anValues[2] = max(anNext[1], anNext[2]);
+#undef max
+    anValues[2] = std::max(anNext[1], anNext[2]);
     anValues[3] = anNext[3];
     anValues[4] = 300;
 }
