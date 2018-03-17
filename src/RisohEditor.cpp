@@ -7496,12 +7496,6 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
-    if (m_settings.added_ids.empty() && m_settings.removed_ids.empty())
-        return;
-
-    if (!m_settings.bAskUpdateResH)
-        return;
-
     DestroyWindow(m_id_list_dlg);
 
     if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
