@@ -1702,6 +1702,10 @@ void MMainWnd::OnExport(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
+    MExportOptionsDlg dialog(m_settings);
+    if (dialog.DialogBoxDx(hwnd) != IDOK)
+        return;
+
     WCHAR file[MAX_PATH] = TEXT("");
 
     OPENFILENAMEW ofn;
