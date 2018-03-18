@@ -5213,9 +5213,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
 
         if (m_settings.bStoreToResFolder)
-            res2text.m_strFilePrefix = L"../res";
-        else
-            res2text.m_strFilePrefix = L"..";
+            res2text.m_strFilePrefix = L"res/";
 
         // create "lang" directory path
         TCHAR szLangDir[MAX_PATH];
