@@ -1215,13 +1215,15 @@ public:
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries, MStringA& strOutput);
-    BOOL DoExtract(const ResEntry& entry);
+    BOOL DoExtract(const ResEntry& entry, BOOL bExporting);
     BOOL DoExtractIcon(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExtractCursor(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries);
     BOOL DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
+    BOOL DoBackupFile(LPCWSTR pszFileName);
+    BOOL DoBackupFolder(LPCWSTR pszDir);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
@@ -5148,34 +5150,161 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
+BOOL MMainWnd::DoBackupFile(LPCWSTR pszFileName)
+{
+    if (GetFileAttributes(pszFileName) != 0xFFFFFFFF)
+    {
+        TCHAR szFile[MAX_PATH];
+        StringCchCopy(szFile, _countof(szFile), pszFileName);
+        StringCchCat(szFile, _countof(szFile), L"-old");
+        CopyFile(pszFileName, szFile, FALSE);
+    }
+}
+
+BOOL MMainWnd::DoBackupFolder(LPCWSTR pszDir)
+{
+    if (GetFileAttributes(pszDir) != 0xFFFFFFFF)
+    {
+        TCHAR szPath[MAX_PATH];
+        StringCchCopy(szPath, _countof(szPath), pszDir);
+        StringCchCat(szPath, _countof(szPath), L"-old");
+        MoveFileEx(pszDir, szPath,
+            MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+    }
+}
+
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 {
     ResToText res2text(m_settings, m_db, m_entries);
     res2text.m_bHumanReadable = FALSE;
     res2text.m_bNoLanguage = TRUE;
 
+    DoBackupFile(pszFileName);
     MFile file(pszFileName, TRUE);
     if (!file)
         return FALSE;
 
+    // dump header
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
     file.WriteFormatA("#include <windows.h>\r\n");
     file.WriteFormatA("#include <commctrl.h>\r\n");
     file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
+    // get languages
     std::set<WORD> langs;
     for (size_t i = 0; i < m_entries.size(); ++i)
     {
         langs.insert(m_entries[i].lang);
     }
 
-    std::set<WORD>::const_iterator it, end = langs.end();
-    for (it = langs.begin(); it != end; ++it)
+    if (m_settings.bSepFilesByLang)
     {
-        WORD lang = *it;
-        if (!DoWriteRCLang(file, res2text, lang))
-            return FALSE;
+        if (m_settings.bStoreToResFolder)
+            res2text.m_strFilePrefix = L"res";
+
+        // dump neutral
+        if (langs.count(0) > 0)
+        {
+            if (!DoWriteRCLang(file, res2text, 0))
+                return FALSE;
+        }
+
+        if (m_settings.bStoreToResFolder)
+            res2text.m_strFilePrefix = L"../res";
+        else
+            res2text.m_strFilePrefix = L"..";
+
+        // create "lang" directory path
+        TCHAR szLangDir[MAX_PATH];
+        StringCchCopy(szLangDir, _countof(szLangDir), pszFileName);
+        TCHAR *pch = mstrrchr(szLangDir, TEXT('\\'));
+        size_t diff = pch - szLangDir;
+        *pch = 0;
+        StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
+
+        // for each language
+        std::set<WORD>::const_iterator it, end = langs.end();
+        for (it = langs.begin(); it != end; ++it)
+        {
+            WORD lang = *it;
+            if (!lang)
+                continue;
+
+            // create "lang" directory
+            CreateDirectory(szLangDir, NULL);
+
+            // create lang/XX_XX.rc file
+            TCHAR szLangFile[MAX_PATH];
+            StringCchCopy(szLangFile, _countof(szLangFile), szLangDir);
+            StringCchCat(szLangFile, _countof(szLangFile), TEXT("/"));
+            MString lang_name = m_db.GetName(L"LANGUAGES", lang);
+            StringCchCat(szLangFile, _countof(szLangFile), lang_name.c_str());
+            StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
+            //MessageBox(NULL, szLangFile, NULL, 0);
+
+            // dump to lang/XX_XX.rc file
+            DoBackupFile(szLangFile);
+            MFile lang_file(szLangFile, TRUE);
+            lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+            if (!lang_file)
+                return FALSE;
+            if (!DoWriteRCLang(lang_file, res2text, lang))
+                return FALSE;
+        }
+    }
+    else
+    {
+        std::set<WORD>::const_iterator it, end = langs.end();
+        for (it = langs.begin(); it != end; ++it)
+        {
+            WORD lang = *it;
+            if (!DoWriteRCLang(file, res2text, lang))
+                return FALSE;
+        }
+    }
+
+    // dump language includes
+    if (m_settings.bSepFilesByLang)
+    {
+        file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
+        if (m_settings.bSelectableByMacro)
+        {
+            std::set<WORD>::const_iterator it, end = langs.end();
+            for (it = langs.begin(); it != end; ++it)
+            {
+                WORD lang = *it;
+                if (!lang)
+                    continue;
+
+                MString lang_name1 = m_db.GetName(L"LANGUAGES", lang);
+                MString lang_name2 = lang_name1;
+                CharUpper(&lang_name2[0]);
+                file.WriteSzA("#ifdef LANGUAGE_");
+                MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
+                file.WriteSzA(lang2_w2a.c_str());
+                file.WriteSzA("\r\n");
+                file.WriteSzA("    #include \"lang/");
+                MWideToAnsi lang1_w2a(CP_ACP, lang_name1.c_str());
+                file.WriteSzA(lang1_w2a.c_str());
+                file.WriteSzA(".rc\"\r\n");
+                file.WriteSzA("#endif\r\n");
+            }
+        }
+        else
+        {
+            std::set<WORD>::const_iterator it, end = langs.end();
+            for (it = langs.begin(); it != end; ++it)
+            {
+                WORD lang = *it;
+                if (!lang)
+                    continue;
+                MString lang_name1 = m_db.GetName(L"LANGUAGES", lang);
+                file.WriteSzA("#include \"lang/");
+                file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
+                file.WriteSzA(".rc\"\r\n");
+            }
+        }
     }
 
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
@@ -5320,20 +5449,21 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     WCHAR *pch = mstrrchr(szPath, L'\\');
     *pch = 0;
 
+    BOOL bHasExternFile = FALSE;
+    for (size_t i = 0; i < m_entries.size(); ++i)
+    {
+        ResToText res2text(m_settings, m_db, m_entries);
+        MString filename = res2text.GetEntryFileName(m_entries[i]);
+        if (filename.size())
+        {
+            bHasExternFile = TRUE;
+            break;
+        }
+    }
+
     if (!IsEmptyDirectoryDx(szPath))
     {
-        BOOL bHasExternFile = FALSE;
-        for (size_t i = 0; i < m_entries.size(); ++i)
-        {
-            ResToText res2text(m_settings, m_db, m_entries);
-            MString filename = res2text.GetEntryFileName(m_entries[i]);
-            if (filename.size())
-            {
-                bHasExternFile = TRUE;
-                break;
-            }
-        }
-        if (bHasExternFile)
+        if (bHasExternFile && !m_settings.bStoreToResFolder)
         {
             ErrorBoxDx(IDS_MUSTBEEMPTYDIR);
             return FALSE;
@@ -5349,15 +5479,26 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     if (!SetCurrentDirectory(szPath))
         return FALSE;
 
-    for (size_t i = 0; i < m_entries.size(); ++i)
+    if (bHasExternFile)
     {
-        if (m_entries[i].type == RT_STRING ||
-            m_entries[i].type == RT_MESSAGETABLE)
+        if (m_settings.bStoreToResFolder)
         {
-            continue;
+            TCHAR szResDir[MAX_PATH];
+            StringCchCopy(szResDir, _countof(szResDir), szPath);
+            StringCchCat(szResDir, _countof(szResDir), TEXT("/res"));
+            DoBackupFolder(szResDir);
         }
-        if (!DoExtract(m_entries[i]))
-            return FALSE;
+
+        for (size_t i = 0; i < m_entries.size(); ++i)
+        {
+            if (m_entries[i].type == RT_STRING ||
+                m_entries[i].type == RT_MESSAGETABLE)
+            {
+                continue;
+            }
+            if (!DoExtract(m_entries[i], TRUE))
+                return FALSE;
+        }
     }
 
     BOOL bOK = FALSE;
@@ -5488,9 +5629,28 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoExtract(const ResEntry& entry)
+BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
 {
     ResToText res2text(m_settings, m_db, m_entries);
+
+    if (bExporting)
+    {
+        if (m_settings.bStoreToResFolder)
+        {
+            if (m_settings.bSepFilesByLang && entry.lang != 0)
+                res2text.m_strFilePrefix = L"res/";
+            else
+                res2text.m_strFilePrefix = L"../res/";
+        }
+        else
+        {
+            if (m_settings.bSepFilesByLang && entry.lang != 0)
+                ;
+            else
+                res2text.m_strFilePrefix = L"../";
+        }
+    }
+
     MString filename = res2text.GetEntryFileName(entry);
     if (filename.empty())
         return TRUE;
