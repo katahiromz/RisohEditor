@@ -58,12 +58,12 @@ public:
         Characteristics = 0;
     }
 
-    BOOL ReadFrom(const MByteStreamEx& bs)
+    bool ReadFrom(const MByteStreamEx& bs)
     {
         if (!bs.ReadRaw(DataSize) || !bs.ReadRaw(HeaderSize) ||
             !bs.ReadID(type) || !bs.ReadID(name))
         {
-            return FALSE;
+            return false;
         }
         bs.ReadDwordAlignment();
 
@@ -71,19 +71,19 @@ public:
             !bs.ReadRaw(LanguageId) || !bs.ReadRaw(Version) ||
             !bs.ReadRaw(Characteristics))
         {
-            return FALSE;
+            return false;
         }
         bs.ReadDwordAlignment();
 
-        return TRUE;
+        return true;
     }
 
-    BOOL WriteTo(MByteStreamEx& bs) const
+    bool WriteTo(MByteStreamEx& bs) const
     {
         if (!bs.WriteRaw(DataSize) || !bs.WriteRaw(HeaderSize) ||
             !bs.WriteID(type) || !bs.WriteID(name))
         {
-            return FALSE;
+            return false;
         }
         bs.WriteDwordAlignment();
 
@@ -91,11 +91,11 @@ public:
             !bs.WriteRaw(LanguageId) || !bs.WriteRaw(Version) ||
             !bs.WriteRaw(Characteristics))
         {
-            return FALSE;
+            return false;
         }
         bs.WriteDwordAlignment();
 
-        return TRUE;
+        return true;
     }
 
     DWORD GetHeaderSize(MIdOrString type, MIdOrString name) const
