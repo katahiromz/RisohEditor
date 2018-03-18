@@ -14,7 +14,7 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 - The RT_STRING or RT_MESSAGETABLE resource can have multiple resource IDs.
 - The resource ID of RT_MANIFEST or RT_VERSION has special meanings.
 - The "user resource" is a Win32 resource data that the user's project directly provides, and that is not provided by another project or framework.
-- The "user ID" is the ID that the user's project directly provides, and that is not provided by another project or framework.
+- The "user ID" is the resource ID that the user's project directly provides, and that is not provided by another project or framework.
 - The "icon ID" is the resource ID of RT_GROUP_ICON type.
 - The "cursor ID" is the resource ID of RT_GROUP_CURSOR type.
 - The "string ID" is the ID of one string data in the string table.
@@ -67,24 +67,41 @@ Here, we should ignore the value of _APS_NEXT_SYMED_VALUE macro.
 
 The user ID prefixes defined in file "resource.h" should apply the following table:
 
-| ID Type                  | ID Prefix | Bounded Range    | Preferable Range |
-|--------------------------|-----------|------------------|------------------|
-| String ID                | IDS_      | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Message ID               | MSGID_    | 0 to 0x7FFF      | 0 to 0x7FFF      |
-| Command ID               | ID_       | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Command ID (Old Type)    | IDM_      | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Control ID               | IDC_      | 8 to 0xDFFF      | 1000 to 0x7FFF   |
-| Cursor ID                | IDC_      | 1 to 0x7FFF      | 100 to 999       |
-| Icon ID                  | IDI_      | 1 to 0x7FFF      | 100 to 999       |
-| Dialog ID                | IDD_      | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Bitmap ID                | IDB_      | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Other Entity Resource ID | IDR_      | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Window ID                | IDW_      | 1 to 0x7FFF      | 1 to 0x7FFF      |
-| Help ID                  | HID_      | 1 to 0x7FFFFFFF  | 1 to 0x7FFFFFFF  |
+| ID Type                  | ID Prefix |
+|--------------------------|-----------|
+| String ID                | IDS_      |
+| Message ID               | MSGID_    |
+| Command ID               | ID_       |
+| Command ID (Old Type)    | IDM_      |
+| Control ID               | IDC_      |
+| Cursor ID                | IDC_      |
+| Icon ID                  | IDI_      |
+| Dialog ID                | IDD_      |
+| Bitmap ID                | IDB_      |
+| Other Entity Resource ID | IDR_      |
+| Window ID                | IDW_      |
+| Help ID                  | HID_      |
+
+The user resource ID defined in file "resource.h" should be inside of the following ranges:
+
+| ID Type                  | Bounded Range    | Preferable Range |
+|--------------------------|------------------|------------------|
+| String ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Message ID               | 0 to 0x7FFF      | 0 to 0x7FFF      |
+| Command ID               | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Command ID (Old Type)    | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Control ID               | 8 to 0xDFFF      | 1000 to 0x7FFF   |
+| Cursor ID                | 1 to 0x7FFF      | 100 to 999       |
+| Icon ID                  | 1 to 0x7FFF      | 100 to 999       |
+| Dialog ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Bitmap ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Other Entity Resource ID | 1 to 0x7FFF      | 100 to 0x7FFF    |
+| Window ID                | 1 to 0x7FFF      | 1 to 0x7FFF      |
+| Help ID                  | 1 to 0x7FFFFFFF  | 1 to 0x7FFFFFFF  |
 
 Two different resource IDs of the same ID prefix should have a different value from each other.
-The resource data of ID prefix "IDC_" is either a control ID or a cursor ID.
-If we follow the preferable ranges of ID prefixes, then control IDs and a cursor IDs don't collide.
+The resource ID of ID prefix "IDC_" is either a control ID or a cursor ID.
+If we follow the preferable ranges of IDs, then control IDs and a cursor IDs don't collide.
 
 Don't use the "IDP_" prefix.
 
