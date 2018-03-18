@@ -89,7 +89,6 @@ public:
             for (size_t i = 0; i < indexes.size(); ++i)
             {
                 const INT nIDTYPE_ = indexes[i];
-
                 if (nIDTYPE_ == IDTYPE_UNKNOWN)
                     continue;
 

@@ -6,6 +6,7 @@
 #define IDR_POPUPMENUS          102
 #define IDR_BOUNCEANICUR        103
 #define IDR_MAINACCEL           104
+#define IDR_UNKNOWNRESID        999
 
 #define IDI_MAIN                100
 #define IDI_ICO                 101

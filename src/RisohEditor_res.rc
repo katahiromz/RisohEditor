@@ -78,6 +78,8 @@ IDR_MAINACCEL ACCELERATORS
     "L",            ID_DEBUGTREENODE, VIRTKEY, CONTROL, SHIFT
 }
 
+IDR_UNKNOWNRESID    999 "res/999.bin"
+
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO: Update the version numbers

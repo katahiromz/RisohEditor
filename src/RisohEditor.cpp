@@ -321,6 +321,10 @@ GetEntityIDText(ResEntries& entries, ConstantsDB& db,
             if (found[i].type.is_int())
             {
                 res_name = db.GetName(L"RESOURCE", found[i].type.m_id);
+                if (res_name.empty())
+                {
+                    res_name = mstr_dec(found[i].type.m_id);
+                }
                 ReplaceResTypeString(res_name);
             }
             else
@@ -343,6 +347,10 @@ GetEntityIDText(ResEntries& entries, ConstantsDB& db,
         for (size_t i = 0; i < found.size(); ++i)
         {
             MString res_name = db.GetName(L"RESOURCE", type.m_id);
+            if (res_name.empty())
+            {
+                res_name = mstr_dec(type.m_id);
+            }
             if (res_name.size())
             {
                 if (ret.find(L"[" + res_name + L"]") == MString::npos)
