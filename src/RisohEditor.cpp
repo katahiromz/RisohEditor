@@ -259,6 +259,10 @@ void ReplaceResTypeString(MString& str)
         str = L"AniCursor.ID";
     else if (str == L"RT_ANIICON")
         str = L"AniIcon.ID";
+    else if (str == L"RT_DIALOG")
+        str = L"Dialog.ID";
+    else if (str == L"RT_MENU")
+        str = L"Menu.ID";
 }
 
 MString
@@ -8775,6 +8779,10 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         strType = L"RT_ANICURSOR";
     if (strType == L"AniIcon.ID")
         strType = L"RT_ANIICON";
+    if (strType == L"Dialog.ID")
+        strType = L"RT_DIALOG";
+    if (strType == L"Menu.ID")
+        strType = L"RT_MENU";
 
     MString prefix = name.substr(0, name.find(L'_') + 1);
     std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
