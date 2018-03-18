@@ -654,6 +654,8 @@ ResToText::DoImage(const ResEntry& entry)
 
         str += DumpBitmapInfo(hbm);
         DeleteObject(hbm);
+
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...

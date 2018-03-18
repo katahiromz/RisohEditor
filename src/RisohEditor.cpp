@@ -247,6 +247,20 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
+void ReplaceResTypeString(MString& str)
+{
+    if (str == L"RT_GROUP_CURSOR")
+        str = L"Cursor.ID";
+    else if (str == L"RT_GROUP_ICON")
+        str = L"Icon.ID";
+    else if (str == L"RT_ACCELERATOR")
+        str = L"Accel.ID";
+    else if (str == L"RT_ANICURSOR")
+        str = L"AniCursor.ID";
+    else if (str == L"RT_ANIICON")
+        str = L"AniIcon.ID";
+}
+
 MString
 GetEntityIDText(ResEntries& entries, ConstantsDB& db,
                 const MString& name, INT nIDTYPE_, BOOL bFlag)
@@ -298,50 +312,52 @@ GetEntityIDText(ResEntries& entries, ConstantsDB& db,
         }
     }
 
+    MString ret;
     if (found.size())
     {
-        if (found[0].type.is_int())
+        for (size_t i = 0; i < found.size(); ++i)
         {
-            MString res_name = db.GetName(L"RESOURCE", found[0].type.m_id);
+            MString res_name;
+            if (found[i].type.is_int())
+            {
+                res_name = db.GetName(L"RESOURCE", found[i].type.m_id);
+                ReplaceResTypeString(res_name);
+            }
+            else
+            {
+                res_name = found[i].type.str();
+            }
             if (res_name.size())
             {
-                if (res_name == L"RT_GROUP_CURSOR")
-                    res_name = L"Cursor.ID";
-                else if (res_name == L"RT_GROUP_ICON")
-                    res_name = L"Icon.ID";
-                else if (res_name == L"RT_ACCELERATOR")
-                    res_name = L"Accel.ID";
-                else if (res_name == L"RT_ANICURSOR")
-                    res_name = L"AniCursor.ID";
-                else if (res_name == L"RT_ANIICON")
-                    res_name = L"AniIcon.ID";
-                return res_name;
+                if (ret.find(L"[" + res_name + L"]") == MString::npos)
+                {
+                    ret += L"[";
+                    ret += res_name;
+                    ret += L"]";
+                }
             }
-        }
-        else
-        {
-            return found[0].type.str();
         }
     }
     else if (bFlag)
     {
-        MString res_name = db.GetName(L"RESOURCE", type.m_id);
-        if (res_name.size())
+        for (size_t i = 0; i < found.size(); ++i)
         {
-            if (res_name == L"RT_GROUP_CURSOR")
-                res_name = L"Cursor.ID";
-            else if (res_name == L"RT_GROUP_ICON")
-                res_name = L"Icon.ID";
-            else if (res_name == L"RT_ACCELERATOR")
-                res_name = L"Accel.ID";
-            else if (res_name == L"RT_ANICURSOR")
-                res_name = L"AniCursor.ID";
-            else if (res_name == L"RT_ANIICON")
-                res_name = L"AniIcon.ID";
-            return res_name;
+            MString res_name = db.GetName(L"RESOURCE", type.m_id);
+            if (res_name.size())
+            {
+                if (ret.find(L"[" + res_name + L"]") == MString::npos)
+                {
+                    ret += L"[";
+                    ret += res_name;
+                    ret += L"]";
+                }
+            }
         }
     }
-    return L"";
+    mstr_replace_all(ret, L"][", L"/");
+    mstr_replace_all(ret, L"[", L"");
+    mstr_replace_all(ret, L"]", L"");
+    return ret;
 }
 
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_)
@@ -1095,7 +1111,7 @@ protected:
 
     MString GetLanguageStatement(WORD langid)
     {
-        return ::GetLanguageStatement(langid, m_settings.bOldStyle);
+        return ::GetLanguageStatement(langid, m_settings.bOldStyle) + L"\r\n";
     }
 
 public:
@@ -5078,6 +5094,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n\r\n");
     MString strLang = ::GetLanguageStatement(lang, TRUE);
+    strLang += L"\r\n";
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
 
     for (size_t i = 0; i < m_entries.size(); ++i)
@@ -9943,7 +9960,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     str += strPrim;
     str += TEXT(", ");
     str += strSub;
-    str += TEXT("\r\n\r\n");
+    str += TEXT("\r\n");
     return str;
 }
 
