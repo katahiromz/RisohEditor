@@ -6,7 +6,7 @@
 #define IDR_POPUPMENUS          102
 #define IDR_BOUNCEANICUR        103
 #define IDR_MAINACCEL           104
-#define IDR_UNKNOWNRESID        999
+#define IDR_UNKNOWNRESID        105
 
 #define IDI_MAIN                100
 #define IDI_ICO                 101
@@ -350,8 +350,8 @@
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
-        #define _APS_NEXT_RESOURCE_VALUE    1000
-        #define _APS_NEXT_COMMAND_VALUE     220
+        #define _APS_NEXT_RESOURCE_VALUE    106
+        #define _APS_NEXT_COMMAND_VALUE     231
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif
