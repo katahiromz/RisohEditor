@@ -5208,7 +5208,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         *pch = 0;
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
-        // for each language
+        // backup and create "lang" directory
         std::set<WORD>::const_iterator it, end = langs.end();
         for (it = langs.begin(); it != end; ++it)
         {
@@ -5216,8 +5216,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             if (!lang)
                 continue;
 
-            // create "lang" directory
+            DoBackup(szLangDir);
             CreateDirectory(szLangDir, NULL);
+            break;
+        }
+
+        // for each language
+        end = langs.end();
+        for (it = langs.begin(); it != end; ++it)
+        {
+            WORD lang = *it;
+            if (!lang)
+                continue;
 
             // create lang/XX_XX.rc file
             TCHAR szLangFile[MAX_PATH];
