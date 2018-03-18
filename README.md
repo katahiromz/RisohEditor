@@ -29,7 +29,7 @@ The word "risoh" means "ideal" in Japanese.
 
 ### Question 2. What are edt1, edt2, cmb1?
 
-Those are control ID macros defined in <dlgs.h>.
+Those are standard control ID macros defined in <dlgs.h>.
 
 ### Question 3. I can't find my resource IDs in [List of Resource IDs] Window.
 

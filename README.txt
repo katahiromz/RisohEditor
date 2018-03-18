@@ -26,7 +26,7 @@ Question 1. What is "Risoh"?
 
 Question 2. What are edt1, edt2, cmb1?
 
-    Answer. Those are control ID macros defined in <dlgs.h>.
+    Answer. Those are standard control ID macros defined in <dlgs.h>.
 
 Question 3. I can't find my resource IDs in [List of Resource IDs] 
             Window.
