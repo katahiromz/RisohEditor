@@ -82,6 +82,8 @@ The user ID prefixes defined in file "resource.h" should apply the following tab
 | Window ID                | IDW_      |
 | Help ID                  | HID_      |
 
+Don't use the "IDP_" prefix.
+
 ## VALUES AND RANGES
 
 The user ID defined in file "resource.h" should be inside of the following ranges:
@@ -104,8 +106,6 @@ The user ID defined in file "resource.h" should be inside of the following range
 Two different resource IDs of the same ID prefix should have a different value from each other.
 The resource ID of ID prefix "IDC_" is either a control ID or a cursor ID.
 If we follow the preferable ranges of IDs, then control IDs and a cursor IDs don't collide.
-
-Don't use the "IDP_" prefix.
 
 ## TEXTINCLUDE
 
