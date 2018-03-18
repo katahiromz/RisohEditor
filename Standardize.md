@@ -34,6 +34,15 @@ Here, "TheProject.rc" must be replaced with the actual resource file name for th
 
 File "resource.h" should not use include guard.
 
+If the rc file has #include's of the system headers, then the includes should be wrapped as follows:
+
+```c
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+```
+
 The contents of file "resource.h" should end with the text like:
 
 ```c

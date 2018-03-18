@@ -5191,8 +5191,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     // dump header
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
+    file.WriteFormatA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
     file.WriteFormatA("#include <windows.h>\r\n");
     file.WriteFormatA("#include <commctrl.h>\r\n");
+    file.WriteFormatA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
     file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
     // get languages
