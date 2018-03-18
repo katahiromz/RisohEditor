@@ -11,11 +11,15 @@ It works on Windows 2003/Vista/7/8.1/10.
 
 ## License Agreement
 
-See LICENSE.txt for details of copyrights and license agreement.
+See "LICENSE.txt" for details of copyrights and license agreement.
 
 ## NOTICE
 
 Please avoid to install in "C:\Program Files" or "C:\Program Files (x86)". Because its resource compiler (windres) doesn't accept a space character in the file path. 
+
+## Standardization
+
+See "Standardize.md" for standardization of resource IDs.
 
 ## FAQ
 

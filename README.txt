@@ -8,7 +8,9 @@ development, created by Katayama Hirofumi MZ.
 
 It works on Windows 2003/Vista/7/8.1/10.
 
-See LICENSE.txt for details of copyrights and 
+See "Standardize.md" for standardization of resource IDs.
+
+See "LICENSE.txt" for details of copyrights and 
 license agreement.
 
 NOTICE: Please avoid to install in "C:\Program Files" or 
