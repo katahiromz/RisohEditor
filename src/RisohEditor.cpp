@@ -247,22 +247,42 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
     }
 }
 
-void ReplaceResTypeString(MString& str)
+void ReplaceResTypeString(MString& str, bool bRevert = false)
 {
-    if (str == L"RT_GROUP_CURSOR")
-        str = L"Cursor.ID";
-    else if (str == L"RT_GROUP_ICON")
-        str = L"Icon.ID";
-    else if (str == L"RT_ACCELERATOR")
-        str = L"Accel.ID";
-    else if (str == L"RT_ANICURSOR")
-        str = L"AniCursor.ID";
-    else if (str == L"RT_ANIICON")
-        str = L"AniIcon.ID";
-    else if (str == L"RT_DIALOG")
-        str = L"Dialog.ID";
-    else if (str == L"RT_MENU")
-        str = L"Menu.ID";
+    if (bRevert)
+    {
+        if (str == L"Icon.ID")
+            str = L"RT_GROUP_ICON";
+        if (str == L"Cursor.ID")
+            str = L"RT_GROUP_CURSOR";
+        if (str == L"Accel.ID")
+            str = L"RT_ACCELERATOR";
+        if (str == L"AniCursor.ID")
+            str = L"RT_ANICURSOR";
+        if (str == L"AniIcon.ID")
+            str = L"RT_ANIICON";
+        if (str == L"Dialog.ID")
+            str = L"RT_DIALOG";
+        if (str == L"Menu.ID")
+            str = L"RT_MENU";
+    }
+    else
+    {
+        if (str == L"RT_GROUP_CURSOR")
+            str = L"Cursor.ID";
+        else if (str == L"RT_GROUP_ICON")
+            str = L"Icon.ID";
+        else if (str == L"RT_ACCELERATOR")
+            str = L"Accel.ID";
+        else if (str == L"RT_ANICURSOR")
+            str = L"AniCursor.ID";
+        else if (str == L"RT_ANIICON")
+            str = L"AniIcon.ID";
+        else if (str == L"RT_DIALOG")
+            str = L"Dialog.ID";
+        else if (str == L"RT_MENU")
+            str = L"Menu.ID";
+    }
 }
 
 MString
@@ -329,7 +349,7 @@ GetEntityIDText(ResEntries& entries, ConstantsDB& db,
                 {
                     res_name = mstr_dec(found[i].type.m_id);
                 }
-                ReplaceResTypeString(res_name);
+                ReplaceResTypeString(res_name, false);
             }
             else
             {
@@ -8769,20 +8789,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     if (strType == L"Unknown.ID")
         return;
 
-    if (strType == L"Icon.ID")
-        strType = L"RT_GROUP_ICON";
-    if (strType == L"Cursor.ID")
-        strType = L"RT_GROUP_CURSOR";
-    if (strType == L"Accel.ID")
-        strType = L"RT_ACCELERATOR";
-    if (strType == L"AniCursor.ID")
-        strType = L"RT_ANICURSOR";
-    if (strType == L"AniIcon.ID")
-        strType = L"RT_ANIICON";
-    if (strType == L"Dialog.ID")
-        strType = L"RT_DIALOG";
-    if (strType == L"Menu.ID")
-        strType = L"RT_MENU";
+    ReplaceResTypeString(strType, true);
 
     MString prefix = name.substr(0, name.find(L'_') + 1);
     std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
