@@ -363,22 +363,6 @@ public:
         return ret;
     }
 
-    template <typename T_STR_CONTAINER>
-    void split_by_sep(T_STR_CONTAINER& container,
-                      const typename T_STR_CONTAINER::value_type& str) const
-    {
-        const wchar_t *separators = L" \t\r\n|+";
-        container.clear();
-        size_t i = 0, j = str.find_first_of(separators);
-        while (j != T_STR_CONTAINER::value_type::npos)
-        {
-            container.push_back(str.substr(i, j - i));
-            i = j + 1;
-            j = str.find_first_of(separators, i);
-        }
-        container.push_back(str.substr(i));
-    }
-
     BOOL LoadFromFile(LPCWSTR FileName)
     {
         using namespace std;
@@ -624,7 +608,7 @@ public:
         ::CharUpperW(&category[0]);
 
         std::vector<StringType> values;
-        split_by_sep(values, str);
+        mstr_split(values, str, L" \t\r\n|+");
 
         ValueType value = default_value;
         std::vector<StringType>::iterator it, end = values.end();
