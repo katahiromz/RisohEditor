@@ -337,11 +337,14 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         }
     }
 
-    if (ret.size() && entry.lang != 0 && entry.lang != 0xFFFF)
+    if (ret.size())
     {
-        WCHAR sz[32];
-        StringCchPrintfW(sz, _countof(sz), L"%u_", entry.lang);
-        ret = sz + ret;
+        if (entry.lang != 0 && entry.lang != 0xFFFF)
+        {
+            WCHAR sz[32];
+            StringCchPrintfW(sz, _countof(sz), L"%u_", entry.lang);
+            ret = sz + ret;
+        }
         ret = m_strFilePrefix + ret;
     }
 

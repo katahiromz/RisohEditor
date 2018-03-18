@@ -5157,8 +5157,9 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszFileName)
         TCHAR szFile[MAX_PATH];
         StringCchCopy(szFile, _countof(szFile), pszFileName);
         StringCchCat(szFile, _countof(szFile), L"-old");
-        CopyFile(pszFileName, szFile, FALSE);
+        return CopyFile(pszFileName, szFile, FALSE);
     }
+    return TRUE;
 }
 
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszDir)
@@ -5168,9 +5169,10 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszDir)
         TCHAR szPath[MAX_PATH];
         StringCchCopy(szPath, _countof(szPath), pszDir);
         StringCchCat(szPath, _countof(szPath), L"-old");
-        MoveFileEx(pszDir, szPath,
+        return MoveFileEx(pszDir, szPath,
             MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
+    return TRUE;
 }
 
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
@@ -5201,7 +5203,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     if (m_settings.bSepFilesByLang)
     {
         if (m_settings.bStoreToResFolder)
-            res2text.m_strFilePrefix = L"res";
+            res2text.m_strFilePrefix = L"res/";
 
         // dump neutral
         if (langs.count(0) > 0)
@@ -5470,7 +5472,6 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
         }
     }
 
-    *pch++ = L'\\';
     *pch = 0;
 
     WCHAR szCurDir[MAX_PATH];
@@ -5485,8 +5486,9 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
         {
             TCHAR szResDir[MAX_PATH];
             StringCchCopy(szResDir, _countof(szResDir), szPath);
-            StringCchCat(szResDir, _countof(szResDir), TEXT("/res"));
+            StringCchCat(szResDir, _countof(szResDir), TEXT("\\res"));
             DoBackupFolder(szResDir);
+            CreateDirectory(szResDir, NULL);
         }
 
         for (size_t i = 0; i < m_entries.size(); ++i)
@@ -5504,7 +5506,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     BOOL bOK = FALSE;
     if (m_szResourceH && !m_settings.id_map.empty())
     {
-        StringCchCopyW(pch, _countof(szPath), L"resource.h");
+        StringCchCopyW(pch, _countof(szPath), L"\\resource.h");
         bOK = DoWriteResH(pszFileName, szPath) && DoWriteRC(pszFileName, szPath);
     }
     else
@@ -5637,17 +5639,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
     {
         if (m_settings.bStoreToResFolder)
         {
-            if (m_settings.bSepFilesByLang && entry.lang != 0)
-                res2text.m_strFilePrefix = L"res/";
-            else
-                res2text.m_strFilePrefix = L"../res/";
-        }
-        else
-        {
-            if (m_settings.bSepFilesByLang && entry.lang != 0)
-                ;
-            else
-                res2text.m_strFilePrefix = L"../";
+            res2text.m_strFilePrefix = L"res\\";
         }
     }
 
@@ -5655,6 +5647,7 @@ BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
     if (filename.empty())
         return TRUE;
 
+    //MessageBox(NULL, filename.c_str(), NULL, 0);
     if (entry.type == RT_CURSOR)
     {
         // No output file
