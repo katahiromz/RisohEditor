@@ -1222,8 +1222,8 @@ public:
     BOOL DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
-    BOOL DoBackupFile(LPCWSTR pszFileName);
-    BOOL DoBackupFolder(LPCWSTR pszFileName);
+    BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
+    BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
@@ -5150,29 +5150,77 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
-BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath)
+#define ISDOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
+
+BOOL DeleteDirectoryDx(LPCTSTR pszDir)
+{
+    TCHAR szDirOld[MAX_PATH];
+    HANDLE hFind;
+    WIN32_FIND_DATA find;
+
+    GetCurrentDirectory(MAX_PATH, szDirOld);
+    if (!SetCurrentDirectory(pszDir))
+        return FALSE;
+
+    hFind = FindFirstFile(TEXT("*"), &find);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if (!ISDOTS(find.cFileName))
+            {
+                if (find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                {
+                    DeleteDirectoryDx(find.cFileName);
+                }
+                else
+                {
+                    SetFileAttributes(find.cFileName, FILE_ATTRIBUTE_NORMAL);
+                    DeleteFile(find.cFileName);
+                }
+            }
+        } while(FindNextFile(hFind, &find));
+        FindClose(hFind);
+    }
+    SetCurrentDirectory(szDirOld);
+
+    SetFileAttributes(pszDir, FILE_ATTRIBUTE_DIRECTORY);
+    return RemoveDirectory(pszDir);
+}
+
+static const UINT s_nBackupMaxCount = 5;
+
+BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
     if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
     {
-        TCHAR szPath[MAX_PATH * 3];
-        StringCchCopy(szPath, _countof(szPath), pszPath);
-        StringCchCat(szPath, _countof(szPath), L"-old");
-        DoBackupFolder(szPath);
-        return MoveFileEx(pszPath, szPath,
-            MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+        if (nCount < s_nBackupMaxCount)
+        {
+            MString strPath = pszPath;
+            strPath += L"-old";
+            DoBackupFolder(strPath.c_str(), nCount + 1);
+            return MoveFileEx(pszPath, strPath.c_str(),
+                MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+        }
+        else
+        {
+            DeleteDirectoryDx(pszPath);
+        }
     }
     return TRUE;
 }
 
-BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath)
+BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 {
     if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
     {
-        TCHAR szPath[MAX_PATH * 3];
-        StringCchCopy(szPath, _countof(szPath), pszPath);
-        StringCchCat(szPath, _countof(szPath), L"-old");
-        DoBackupFile(szPath);
-        return CopyFile(pszPath, szPath, FALSE);
+        if (nCount < s_nBackupMaxCount)
+        {
+            MString strPath = pszPath;
+            strPath += L"-old";
+            DoBackupFile(strPath.c_str(), nCount + 1);
+            return CopyFile(pszPath, strPath.c_str(), FALSE);
+        }
     }
     return TRUE;
 }
