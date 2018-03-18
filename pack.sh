@@ -21,7 +21,7 @@
 # TODO: Update the version number
 RE_VERSION=4.0
 RE_BIN_DIR="build/re-$RE_VERSION-bin"
-RE_FILES="README.txt READMEJP.txt LICENSE.txt src/resource.h build/RisohEditor.exe"
+RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md src/resource.h build/RisohEditor.exe"
 RE_TARGET="build/re-$RE_VERSION-bin.zip"
 
 ################################################################################
