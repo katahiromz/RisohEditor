@@ -1,54 +1,54 @@
 
-�yWin32���\�[�X�̕W�����z
+【Win32リソースの標準化】
 
 (UTF-8, Japanese)
 
-�V�������\�[�G�f�B�^�̃��\�[�X���́A�ȉ��̃��[���ɏ]���ׂ��ł��B
-�Â����\�[�G�f�B�^�̃f�[�^���g���Ă���Ȃ�A�ȉ��̃��[����K�p����
-�K�v������܂��B
+新しいリソーエディタのリソース情報は、以下のルールに従うべきです。
+古いリソーエディタのデータを使っているなら、以下のルールを適用する
+必要があります。
 
 
-����`
+■定義
 
-�@�E�u���\�[�XID�v�Ƃ́AWin32���\�[�X�f�[�^�Ɏg����ID�ł��B
-�@�E�uID�v���t�B�b�N�X�v�Ƃ́A���\�[�XID�̃v���t�B�b�N�X (prefix) �ł��B
-�@�E�u�G���e�B�e�B ���\�[�X�v�Ƃ́ART_ICON�ART_CURSOR�ART_STRING�ART_MANIFEST�ART_VERSION�A������RT_MESSAGETABLE�ȊO�̃��\�[�X�f�[�^�ł��B
-�@�E�G���e�B�e�B ���\�[�X�́u���\�[�X���v�Ƃ́A16�r�b�g�����l���A���C�h�����񂩁A16�r�b�g�����l�̃}�N���ł��B
-�@�ERT_ICON�^�C�v�̃��\�[�X�f�[�^�́ART_GROUP_ICON �^�C�v�̃��\�[�X�f�[�^�ɂ���ĎQ�Ƃ���܂��B
-�@�ERT_CURSOR�^�C�v�̃��\�[�X�f�[�^�́ART_GROUP_CURSOR �^�C�v�̃��\�[�X�f�[�^�ɂ���ĎQ�Ƃ���܂��B
-�@�ERT_STRING�܂���RT_MESSAGETABLE���\�[�X�́A�����̃��\�[�XID���܂ނ��Ƃ��ł��܂��B
-�@�ERT_MANIFEST�܂���RT_VERSION�̃��\�[�XID�͓��ʂȈӖ��������܂��B
-�@�E�u���[�U�[���\�[�X�v�Ƃ́A���[�U�[�̃v���W�F�N�g�����ڒ񋟂��A���A���̃v���W�F�N�g��t���[�����[�N�ɂ���Ē񋟂���Ȃ��AWin32���\�[�X�f�[�^�ł��B
-�@�E�u���[�U�[ID�v�Ƃ́A���[�U�[�̃v���W�F�N�g�����ڒ񋟂��A���A���̃v���W�F�N�g��t���[�����[�N�ɂ���Ē񋟂���Ȃ����\�[�XID�ł��B
-�@�E�u�A�C�R��ID�v�Ƃ́ART_GROUP_ICON �^�C�v�̃��\�[�XID�ł��B
-�@�E�u�J�[�\��ID�v�Ƃ́ART_GROUP_CURSOR �^�C�v�̃��\�[�XID�ł��B
-�@�E�u������ID�v�Ƃ́A������e�[�u���̒���1�̕�����f�[�^��ID�ł��B
-�@�E�u���b�Z�[�WID�v�Ƃ́A���b�Z�[�W�e�[�u���̒���1�̃��b�Z�[�W�f�[�^��ID�ł��B
+　・「リソースID」とは、Win32リソースデータに使われるIDです。
+　・「IDプレフィックス」とは、リソースIDのプレフィックス (prefix) です。
+　・「エンティティ リソース」とは、RT_ICON、RT_CURSOR、RT_STRING、RT_MANIFEST、RT_VERSION、そしてRT_MESSAGETABLE以外のリソースデータです。
+　・エンティティ リソースの「リソース名」とは、16ビット整数値か、ワイド文字列か、16ビット整数値のマクロです。
+　・RT_ICONタイプのリソースデータは、RT_GROUP_ICON タイプのリソースデータによって参照されます。
+　・RT_CURSORタイプのリソースデータは、RT_GROUP_CURSOR タイプのリソースデータによって参照されます。
+　・RT_STRINGまたはRT_MESSAGETABLEリソースは、複数のリソースIDを含むことができます。
+　・RT_MANIFESTまたはRT_VERSIONのリソースIDは特別な意味を持ちます。
+　・「ユーザーリソース」とは、ユーザーのプロジェクトが直接提供し、かつ、他のプロジェクトやフレームワークによって提供されない、Win32リソースデータです。
+　・「ユーザーID」とは、ユーザーのプロジェクトが直接提供し、かつ、他のプロジェクトやフレームワークによって提供されないリソースIDです。
+　・「アイコンID」とは、RT_GROUP_ICON タイプのリソースIDです。
+　・「カーソルID」とは、RT_GROUP_CURSOR タイプのリソースIDです。
+　・「文字列ID」とは、文字列テーブルの中の1個の文字列データのIDです。
+　・「メッセージID」とは、メッセージテーブルの中の1個のメッセージデータのIDです。
 
 
-�����[��
+■ルール
 
-Visual C++�݊����̂��߂ɁA�t�@�C���uresource.h�v�̒��g�́A���̂悤��C+
-+�R�����g�Ŏn�܂�ׂ��ł��B
+Visual C++互換性のために、ファイル「resource.h」の中身は、次のようなC+
++コメントで始まるべきです。
 
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ Compatible
 // TheProject.rc
 
-�����ŁA�uTheProject.rc�v�́A���́uresource.h�v�ɑ΂�����ۂ�
-���\�[�X�t�@�C�����Œu�������Ȃ���΂Ȃ�܂���B
+ここで、「TheProject.rc」は、この「resource.h」に対する実際の
+リソースファイル名で置き換えなければなりません。
 
-�t�@�C���uresource.h�v�́A�C���N���[�h�K�[�h���g���ׂ��ł͂���܂���B
+ファイル「resource.h」は、インクルードガードを使うべきではありません。
 
-�����Arc�t�@�C�����V�X�e���w�b�_�[��#include��L����Ȃ�A����
-�C���N���[�h�́A���̂悤�ɕ�܂��ׂ��ł��F
+もし、rcファイルがシステムヘッダーの#includeを有するなら、その
+インクルードは、次のように包まれるべきです：
 
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include <windows.h>
 #include <commctrl.h>
 #undef APSTUDIO_HIDDEN_SYMBOLS
 
-�t�@�C���uresource.h�v�̒��g�́A���̂悤�ȃe�L�X�g�ŏI���ׂ��ł��F
+ファイル「resource.h」の中身は、次のようなテキストで終わるべきです：
 
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS
@@ -60,23 +60,23 @@ Visual C++�݊����̂��߂ɁA�t�@�C���uresource.h�v�̒��g�́A���̂悤��C+
     #endif
 #endif
 
-�����ɁA_APS_NO_MFC �}�N���̒l��1�ł���ׂ��ł��B
-�����ɁA_APS_NEXT_RESOURCE_VALUE �}�N���̒l�́A���ׂẴ��[�U�[ 
-�G���e�B�e�B ���\�[�X�̍ő吮���l + 1�łȂ���΂Ȃ�܂���B
-�����ɁA_APS_NEXT_COMMAND_VALUE �}�N���̒l�́A���ׂẴ��[�U�[ 
-�R�}���h ID�̍ő吮���l + 1�łȂ���΂Ȃ�܂���B
-�����ɁA_APS_NEXT_CONTROL_VALUE �}�N���̒l�́A���ׂẴ��[�U�[ 
-�R���g���[��ID�̍ő吮���l + 1�łȂ���΂Ȃ�܂���B
-�����ɁA_APS_NEXT_SYMED_VALUE �}�N���̒l�͖�������ׂ��ł��B
+ここに、_APS_NO_MFC マクロの値は1であるべきです。
+ここに、_APS_NEXT_RESOURCE_VALUE マクロの値は、すべてのユーザー 
+エンティティ リソースの最大整数値 + 1でなければなりません。
+ここに、_APS_NEXT_COMMAND_VALUE マクロの値は、すべてのユーザー 
+コマンド IDの最大整数値 + 1でなければなりません。
+ここに、_APS_NEXT_CONTROL_VALUE マクロの値は、すべてのユーザー 
+コントロールIDの最大整数値 + 1でなければなりません。
+ここに、_APS_NEXT_SYMED_VALUE マクロの値は無視するべきです。
 
 
-��ID�v���t�B�b�N�X
+■IDプレフィックス
 
-�uresource.h�v�Œ�`����郆�[�U�[ID�v���t�B�b�N�X�͎��̕\�ɏ]���ׂ�
-�ł��F
+「resource.h」で定義されるユーザーIDプレフィックスは次の表に従うべき
+です：
 
 +----------------------------------+------------------------+
-|             ID�^�C�v             |    ID�v���t�B�b�N�X    |
+|             IDタイプ             |    IDプレフィックス    |
 +----------------------------------+------------------------+
 |            String ID             |          IDS_          |
 +----------------------------------+------------------------+
@@ -96,56 +96,56 @@ Visual C++�݊����̂��߂ɁA�t�@�C���uresource.h�v�̒��g�́A���̂悤��C+
 +----------------------------------+------------------------+
 |            Bitmap ID             |          IDB_          |
 +----------------------------------+------------------------+
-|      ���̑��̃G���e�B�e�BID      |          IDR_          |
+|      その他のエンティティID      |          IDR_          |
 +----------------------------------+------------------------+
 |            Window ID             |          IDW_          |
 +----------------------------------+------------------------+
 |             Help ID              |          HID_          |
 +----------------------------------+------------------------+
 
-�uresource.h�v�Œ�`����郆�[�U�[ID�́A���̕\�͈̔͂ł���ׂ��ł��B
+「resource.h」で定義されるユーザーIDは、次の表の範囲であるべきです。
 
 +----------------------------------+---------------------+---------------------+
-|             ID�^�C�v             |      �����͈�       |    �D�܂����͈�     |
+|             IDタイプ             |      束縛範囲       |    好ましい範囲     |
 +----------------------------------+---------------------+---------------------+
-|            String ID             |      1�`0x7FFF      |     100�`0x7FFF     |
+|            String ID             |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|            Message ID            |      0�`0x7FFF      |      0�`0x7FFF      |
+|            Message ID            |      0～0x7FFF      |      0～0x7FFF      |
 +----------------------------------+---------------------+---------------------+
-|            Command ID            |      1�`0x7FFF      |     100�`0x7FFF     |
+|            Command ID            |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|      Command ID (Old Type)       |      1�`0x7FFF      |     100�`0x7FFF     |
+|      Command ID (Old Type)       |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|            Control ID            |      8�`0xDFFF      |    1000�`0x7FFF     |
+|            Control ID            |      8～0xDFFF      |    1000～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|            Cursor ID             |      1�`0x7FFF      |      100�`999       |
+|            Cursor ID             |      1～0x7FFF      |      100～999       |
 +----------------------------------+---------------------+---------------------+
-|             Icon ID              |      1�`0x7FFF      |      100�`999       |
+|             Icon ID              |      1～0x7FFF      |      100～999       |
 +----------------------------------+---------------------+---------------------+
-|            Dialog ID             |      1�`0x7FFF      |     100�`0x7FFF     |
+|            Dialog ID             |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|            Bitmap ID             |      1�`0x7FFF      |     100�`0x7FFF     |
+|            Bitmap ID             |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|      ���̑��̃G���e�B�e�BID      |      1�`0x7FFF      |     100�`0x7FFF     |
+|      その他のエンティティID      |      1～0x7FFF      |     100～0x7FFF     |
 +----------------------------------+---------------------+---------------------+
-|            Window ID             |      1�`0x7FFF      |      1�`0x7FFF      |
+|            Window ID             |      1～0x7FFF      |      1～0x7FFF      |
 +----------------------------------+---------------------+---------------------+
-|             Help ID              |    1�`0x7FFFFFFF    |    1�`0x7FFFFFFF    |
+|             Help ID              |    1～0x7FFFFFFF    |    1～0x7FFFFFFF    |
 +----------------------------------+---------------------+---------------------+
 
-����ID�v���t�B�b�N�X�̂Q�̈قȂ郊�\�[�XID�́A�݂��ɈႤ�l�����ׂ�
-�ł��B
-�uIDC_�v�̃��\�[�XID�́A�R���g���[��ID���A�J�[�\��ID�ł��B
-�����A��X��ID�̍D�܂����͈͂ɏ]���΁A�R���g���[��ID�ƃJ�[�\��ID��
-�Փ˂��܂���B
+同じIDプレフィックスの２つの異なるリソースIDは、互いに違う値を持つべき
+です。
+「IDC_」のリソースIDは、コントロールIDか、カーソルIDです。
+もし、我々がIDの好ましい範囲に従えば、コントロールIDとカーソルIDは
+衝突しません。
 
-�uIDP_�v�v���t�B�b�N�X�͎g��Ȃ��ŉ������B
+「IDP_」プレフィックスは使わないで下さい。
 
 
-��TEXTINCLUDE
+■TEXTINCLUDE
 
-Visual C++ �݊����̂��߂ɁA���\�[�X�t�@�C���́A�ȉ��̂悤��3��
-TEXTINCLUDE�f�[�^��L���Ȃ���΂Ȃ�܂���F
+Visual C++ 互換性のために、リソースファイルは、以下のような3個の
+TEXTINCLUDEデータを有しなければなりません：
 
 #ifdef APSTUDIO_INVOKED
 
@@ -172,12 +172,12 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-���R�����g
+■コメント
 
-�uresource.h�v�t�@�C���̃��\�[�X�t�@�C���́AC�R�����g����C++�R�����g
-���g���ׂ��ł��B
+「resource.h」ファイルのリソースファイルは、CコメントよりもC++コメント
+を使うべきです。
 
 
-���Q��
+■参照
 
 https://msdn.microsoft.com/en-us/library/t2zechd4.aspx
