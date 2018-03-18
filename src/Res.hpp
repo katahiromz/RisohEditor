@@ -722,6 +722,10 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
         {
             ;
         }
+        else
+        {
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+        }
 
         if (ret.size())
         {
