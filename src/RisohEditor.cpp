@@ -5200,20 +5200,17 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         langs.insert(m_entries[i].lang);
     }
 
+    if (m_settings.bStoreToResFolder)
+        res2text.m_strFilePrefix = L"res/";
+
     if (m_settings.bSepFilesByLang)
     {
-        if (m_settings.bStoreToResFolder)
-            res2text.m_strFilePrefix = L"res/";
-
         // dump neutral
         if (langs.count(0) > 0)
         {
             if (!DoWriteRCLang(file, res2text, 0))
                 return FALSE;
         }
-
-        if (m_settings.bStoreToResFolder)
-            res2text.m_strFilePrefix = L"res/";
 
         // create "lang" directory path
         TCHAR szLangDir[MAX_PATH];
