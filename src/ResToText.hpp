@@ -443,7 +443,7 @@ ResToText::DoDialog(const ResEntry& entry)
     {
         MString str;
         str += GetLanguageStatement(entry.lang);
-        str += dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
+        str += dialog_res.Dump(entry.name, !!m_settings.bAlwaysControl);
         str += L"\r\n";
         return str;
     }

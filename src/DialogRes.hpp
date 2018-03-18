@@ -1233,7 +1233,7 @@ public:
                 {
                     EmptyClipboard();
                     SetClipboardData(m_uCF_DIALOGITEMS, hGlobal);
-                    return CloseClipboard();
+                    return !!CloseClipboard();
                 }
             }
             GlobalFree(hGlobal);
@@ -1243,7 +1243,7 @@ public:
 
     bool IsAvailable() const
     {
-        return IsClipboardFormatAvailable(m_uCF_DIALOGITEMS);
+        return !!IsClipboardFormatAvailable(m_uCF_DIALOGITEMS);
     }
 
     bool Paste(HWND hwndRad, DialogItems& items) const

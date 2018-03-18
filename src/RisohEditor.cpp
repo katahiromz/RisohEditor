@@ -3465,7 +3465,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& entry)
     if (dialog_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
-        str += dialog_res.Dump(entry.name, m_settings.bAlwaysControl);
+        str += dialog_res.Dump(entry.name, !!m_settings.bAlwaysControl);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
