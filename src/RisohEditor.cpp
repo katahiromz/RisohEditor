@@ -5157,7 +5157,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath)
         TCHAR szPath[MAX_PATH * 3];
         StringCchCopy(szPath, _countof(szPath), pszPath);
         StringCchCat(szPath, _countof(szPath), L"-old");
-        DoBackup(szPath);
+        DoBackupFolder(szPath);
         return MoveFileEx(pszPath, szPath,
             MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
