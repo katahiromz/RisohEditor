@@ -39,6 +39,10 @@ At first, please configure [ID Association] settings from [File] Menu --> [ID As
 
 Make the dialog box extended.
 
+### Question 5. What is mcdx?
+
+It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
+
 ## Contact Us
 
 katayama.hirofumi.mz@gmail.com

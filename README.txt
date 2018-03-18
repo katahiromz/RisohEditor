@@ -40,6 +40,11 @@ Question 4. Why can't I add a control data to my dialog item?
 
     Answer. Make the dialog box extended.
 
+Question 5. What is mcdx?
+
+    Answer. It's a special message compiler I made.
+            See mcdx/MESSAGETABLEDX.md for details.
+
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 // Homepage     http://katahiromz.web.fc2.com
