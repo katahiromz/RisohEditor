@@ -1222,8 +1222,7 @@ public:
     BOOL DoExtractBin(LPCWSTR pszFileName, const ResEntry& entry);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
-    BOOL DoBackupFile(LPCWSTR pszFileName);
-    BOOL DoBackupFolder(LPCWSTR pszDir);
+    BOOL DoBackup(LPCWSTR pszFileName);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
@@ -5150,26 +5149,15 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
-BOOL MMainWnd::DoBackupFile(LPCWSTR pszFileName)
+BOOL MMainWnd::DoBackup(LPCWSTR pszPath)
 {
-    if (GetFileAttributes(pszFileName) != 0xFFFFFFFF)
+    if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
     {
-        TCHAR szFile[MAX_PATH];
-        StringCchCopy(szFile, _countof(szFile), pszFileName);
-        StringCchCat(szFile, _countof(szFile), L"-old");
-        return CopyFile(pszFileName, szFile, FALSE);
-    }
-    return TRUE;
-}
-
-BOOL MMainWnd::DoBackupFolder(LPCWSTR pszDir)
-{
-    if (GetFileAttributes(pszDir) != 0xFFFFFFFF)
-    {
-        TCHAR szPath[MAX_PATH];
-        StringCchCopy(szPath, _countof(szPath), pszDir);
+        TCHAR szPath[MAX_PATH * 3];
+        StringCchCopy(szPath, _countof(szPath), pszPath);
         StringCchCat(szPath, _countof(szPath), L"-old");
-        return MoveFileEx(pszDir, szPath,
+        DoBackup(szPath);
+        return MoveFileEx(pszPath, szPath,
             MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
     return TRUE;
@@ -5181,7 +5169,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     res2text.m_bHumanReadable = FALSE;
     res2text.m_bNoLanguage = TRUE;
 
-    DoBackupFile(pszFileName);
+    DoBackup(pszFileName);
     MFile file(pszFileName, TRUE);
     if (!file)
         return FALSE;
@@ -5241,7 +5229,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             //MessageBox(NULL, szLangFile, NULL, 0);
 
             // dump to lang/XX_XX.rc file
-            DoBackupFile(szLangFile);
+            DoBackup(szLangFile);
             MFile lang_file(szLangFile, TRUE);
             lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             if (!lang_file)
@@ -5338,6 +5326,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
 {
+    DoBackup(pszFileName);
     MFile file(pszFileName, TRUE);
     if (!file)
         return FALSE;
@@ -5482,7 +5471,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
             TCHAR szResDir[MAX_PATH];
             StringCchCopy(szResDir, _countof(szResDir), szPath);
             StringCchCat(szResDir, _countof(szResDir), TEXT("\\res"));
-            DoBackupFolder(szResDir);
+            DoBackup(szResDir);
             CreateDirectory(szResDir, NULL);
         }
 
@@ -7723,6 +7712,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     }
     else
     {
+        DoBackup(m_szResourceH);
+
         // open file
         FILE *fp;
         _wfopen_s(&fp, m_szResourceH, L"r");
