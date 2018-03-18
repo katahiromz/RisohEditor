@@ -68,14 +68,14 @@ public:
         NameType    name;
         ValueType   value;
         ValueType   mask;
-        BOOL        selected;
+        bool        selected;
 
         EntryType(NameType name_, ValueType value_)
-            : name(name_), value(value_), mask(value_), selected(FALSE)
+            : name(name_), value(value_), mask(value_), selected(false)
         {
         }
         EntryType(NameType name_, ValueType value_, ValueType mask_)
-            : name(name_), value(value_), mask(mask_), selected(FALSE)
+            : name(name_), value(value_), mask(mask_), selected(false)
         {
         }
     };
@@ -83,7 +83,7 @@ public:
     typedef std::map<CategoryType, TableType> MapType;
     MapType m_map;
 
-    BOOL IsEntityIDType(INT nIDTYPE_) const
+    bool IsEntityIDType(INT nIDTYPE_) const
     {
         switch (nIDTYPE_)
         {
@@ -97,9 +97,9 @@ public:
         case IDTYPE_ANIICON:
         case IDTYPE_HTML:
         case IDTYPE_RESOURCE:
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     INT IDTypeFromResType(const MIdOrString& type) const
@@ -217,35 +217,35 @@ public:
         return GetValue(L"CTRLID", name);
     }
 
-    BOOL HasCtrlID(NameType name) const
+    bool HasCtrlID(NameType name) const
     {
         TableType table = GetTable(L"CTRLID");
         TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
-                return TRUE;
+                return true;
         }
-        return FALSE;
+        return false;
     }
-    BOOL HasResID(NameType name) const
+    bool HasResID(NameType name) const
     {
         TableType table = GetTable(L"RESOURCE.ID");
         TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
-                return TRUE;
+                return true;
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL AreMacroIDShown() const
+    bool AreMacroIDShown() const
     {
         return !GetValue(L"HIDE.ID", L"HIDE.ID");
     }
 
-    void ShowMacroID(BOOL bShown = TRUE)
+    void ShowMacroID(bool bShown = true)
     {
         TableType& table = m_map[L"HIDE.ID"];
         table.clear();
@@ -363,7 +363,7 @@ public:
         return ret;
     }
 
-    BOOL LoadFromFile(LPCWSTR FileName)
+    bool LoadFromFile(LPCWSTR FileName)
     {
         using namespace std;
         m_map.clear();
@@ -371,7 +371,7 @@ public:
         FILE *fp;
         _wfopen_s(&fp, FileName, L"rb");
         if (fp == NULL)
-            return FALSE;
+            return false;
 
         CategoryType category;
         char buf[MAX_PATH];
@@ -467,7 +467,7 @@ public:
         }
 
         fclose(fp);
-        return TRUE;
+        return true;
     }
 
     StringType DumpBitField(CategoryType cat1, ValueType& value,
@@ -500,7 +500,7 @@ public:
 
         if (default_value)
         {
-            str3 = _dumpBitField(cat1, default_value, TRUE);
+            str3 = _dumpBitField(cat1, default_value, true);
             if (ret == L"0")
                 ret.clear();
             else if (!ret.empty() && !str3.empty())
@@ -558,7 +558,7 @@ public:
 
         if (default_value)
         {
-            str3 = _dumpBitField(cat1, default_value, TRUE);
+            str3 = _dumpBitField(cat1, default_value, true);
             if (ret == L"0")
                 ret.clear();
             else if (!ret.empty() && !str3.empty())
@@ -642,7 +642,7 @@ public:
 
 protected:
     StringType _dumpBitField(CategoryType category, ValueType& value,
-                             BOOL bNot = FALSE) const
+                             bool bNot = false) const
     {
         StringType ret;
 
