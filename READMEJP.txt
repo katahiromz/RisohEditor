@@ -219,7 +219,7 @@
         バックアップをもっと安全に。
         バックアップを5世代までに制限。
         非標準のリソースIDの解釈を改善。
-        「Standardize.md」と「MESSAGETABLEDX.md」を追加。
+        「Standardize.md」と「MESSAGETABLEDX.md」と「HYOJUNKA.txt」を追加。
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]
