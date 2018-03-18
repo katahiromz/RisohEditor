@@ -581,7 +581,7 @@ Res_GetListFromRes(HMODULE hMod, LPARAM lParam)
 ///////////////////////////////////////////////////////////////////////////////
 
 inline MStringW
-Res_GetType(const MIdOrString& id_or_str)
+Res_GetTypeString(const MIdOrString& id_or_str)
 {
     wchar_t sz[32];
     MStringW ret, name;
@@ -927,7 +927,7 @@ _tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
         }
     }
 
-    MStringW ResType = Res_GetType(entries[i].type);
+    MStringW ResType = Res_GetTypeString(entries[i].type);
     return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
 }
 
