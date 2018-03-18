@@ -84,6 +84,7 @@ Visual C++互換性のために、ファイル「resource.h」の中身は、次
 | Window ID              | IDW_             |
 | Help ID                | HID_             |
 
+## 値と範囲
 
 「resource.h」で定義されるユーザーIDは、次の表の範囲であるべきです。
 

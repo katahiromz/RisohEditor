@@ -82,6 +82,8 @@ The user ID prefixes defined in file "resource.h" should apply the following tab
 | Window ID                | IDW_      |
 | Help ID                  | HID_      |
 
+## VALUES AND RANGES
+
 The user ID defined in file "resource.h" should be inside of the following ranges:
 
 | ID Type                  | Bounded Range    | Preferable Range |
