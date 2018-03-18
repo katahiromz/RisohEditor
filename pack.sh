@@ -61,11 +61,11 @@ fi
 
 ################################################################################
 
-echo Copying No.1...
+echo Copying Stage 1...
 if cp $RE_FILES "$RE_BIN_DIR"; then
-    echo Copying No.2...
+    echo Copying Stage 2...
     if cp -r data "$RE_BIN_DIR"; then
-        echo Copying No.3...
+        echo Copying Stage 3...
         if cp build/mcdx.exe "$RE_BIN_DIR/data/bin"; then
             echo Zipping...
             cd build
@@ -83,15 +83,15 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                 exit 8
             fi
         else
-            echo ERROR: Copying No.3 failed.
+            echo ERROR: Copying Stage 3 failed.
             exit 7
         fi
     else
-        echo ERROR: Copying No.2 failed.
+        echo ERROR: Copying Stage 2 failed.
         exit 6
     fi
 else
-    echo ERROR: Copying No.1 failed.
+    echo ERROR: Copying Stage 1 failed.
     exit 5
 fi
 
