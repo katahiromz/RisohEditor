@@ -78,8 +78,6 @@ IDR_MAINACCEL ACCELERATORS
     "L",            ID_DEBUGTREENODE, VIRTKEY, CONTROL, SHIFT
 }
 
-1 MANIFEST "res/RisohEditor_exe.manifest"
-
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO: Update the version numbers
