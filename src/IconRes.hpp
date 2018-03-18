@@ -112,7 +112,7 @@ public:
         m_images.clear();
     }
 
-    BOOL IsIconDirOK() const
+    bool IsIconDirOK() const
     {
         return m_dir.idReserved == 0 && m_dir.idType == RES_ICON &&
                m_dir.idCount > 0;
@@ -158,20 +158,20 @@ public:
         return DWORD(m_images[index].size());
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    bool LoadFromStream(const MByteStreamEx& stream)
     {
         DWORD size = sizeof(ICONDIR);
         if (stream.size() < size)
-            return FALSE;
+            return false;
 
         memcpy(&m_dir, stream.ptr(), size);
         if (!IsIconDirOK())
-            return FALSE;
+            return false;
 
         stream.pos(size);
         size = m_dir.idCount * sizeof(EntryType);
         if (stream.remainder() < size)
-            return FALSE;
+            return false;
 
         m_entries.resize(m_dir.idCount);
         memcpy(&m_entries[0], stream.ptr(stream.pos()), size);
@@ -182,29 +182,29 @@ public:
             stream.pos(m_entries[i].dwImageOffset);
             if (stream.remainder() < m_entries[i].dwBytesInRes)
             {
-                return FALSE;
+                return false;
             }
 
             LPBYTE pb = (LPBYTE)stream.ptr(stream.pos());
             m_images[i].assign(&pb[0], &pb[m_entries[i].dwBytesInRes]);
         }
-        return TRUE;
+        return true;
     }
 
-    BOOL LoadFromFile(LPCTSTR pszFileName)
+    bool LoadFromFile(LPCTSTR pszFileName)
     {
         MByteStreamEx stream;
         if (!stream.LoadFromFile(pszFileName))
-            return FALSE;
+            return false;
 
         return LoadFromStream(stream);
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream)
+    bool SaveToStream(MByteStreamEx& stream)
     {
         stream.clear();
         if (!IsIconDirOK())
-            return FALSE;
+            return false;
 
         DWORD offset = sizeof(ICONDIR);
         const DWORD SizeOfEntries = GetImageCount() * sizeof(EntryType);
@@ -220,23 +220,23 @@ public:
         if (!stream.WriteRaw(m_dir) ||
             !stream.WriteData(&m_entries[0], SizeOfEntries))
         {
-            return FALSE;
+            return false;
         }
 
         for (DWORD i = 0; i < nCount; ++i)
         {
             if (!stream.WriteData(GetImagePtr(i), GetImageSize(i)))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToFile(LPCTSTR pszFileName)
+    bool SaveToFile(LPCTSTR pszFileName)
     {
         MByteStreamEx stream;
         if (!SaveToStream(stream))
-            return FALSE;
+            return false;
         return stream.SaveToFile(pszFileName);
     }
 
@@ -253,7 +253,7 @@ public:
             BITMAPINFOHEADER    bmih;
 
             memcpy(&bmch, GetImagePtr(i), sizeof(bmch));
-            BOOL bCoreOnly = (bmch.bcSize == sizeof(bmch));
+            bool bCoreOnly = (bmch.bcSize == sizeof(bmch));
             if (!bCoreOnly)
             {
                 memcpy(&bmih, GetImagePtr(i), sizeof(bmih));
@@ -325,7 +325,7 @@ public:
         m_images.clear();
     }
 
-    BOOL IsIconDirOK() const
+    bool IsIconDirOK() const
     {
         return m_dir.idReserved == 0 && m_dir.idType == RES_CURSOR &&
                m_dir.idCount > 0;
@@ -371,20 +371,20 @@ public:
         return DWORD(m_images[index].size());
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    bool LoadFromStream(const MByteStreamEx& stream)
     {
         DWORD size = sizeof(ICONDIR);
         if (stream.size() < size)
-            return FALSE;
+            return false;
 
         memcpy(&m_dir, stream.ptr(), size);
         if (!IsIconDirOK())
-            return FALSE;
+            return false;
 
         stream.pos(size);
         size = m_dir.idCount * sizeof(EntryType);
         if (stream.remainder() < size)
-            return FALSE;
+            return false;
 
         m_entries.resize(m_dir.idCount);
         memcpy(&m_entries[0], stream.ptr(stream.pos()), size);
@@ -395,7 +395,7 @@ public:
             stream.pos(m_entries[i].dwImageOffset);
             if (stream.remainder() < m_entries[i].dwBytesInRes)
             {
-                return FALSE;
+                return false;
             }
 
             LOCALHEADER local;
@@ -405,30 +405,30 @@ public:
 
             MByteStreamEx bs;
             if (!bs.WriteRaw(local))
-                return FALSE;
+                return false;
             if (!bs.WriteData(pb, m_entries[i].dwBytesInRes))
-                return FALSE;
+                return false;
 
             m_entries[i].dwBytesInRes += sizeof(local);
             m_images[i] = bs.data();
         }
-        return TRUE;
+        return true;
     }
 
-    BOOL LoadFromFile(LPCTSTR pszFileName)
+    bool LoadFromFile(LPCTSTR pszFileName)
     {
         MByteStreamEx stream;
         if (!stream.LoadFromFile(pszFileName))
-            return FALSE;
+            return false;
 
         return LoadFromStream(stream);
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream)
+    bool SaveToStream(MByteStreamEx& stream)
     {
         stream.clear();
         if (!IsIconDirOK())
-            return FALSE;
+            return false;
 
         DWORD offset = sizeof(ICONDIR);
         const DWORD SizeOfEntries = GetImageCount() * sizeof(EntryType);
@@ -444,7 +444,7 @@ public:
         if (!stream.WriteRaw(m_dir) ||
             !stream.WriteData(&m_entries[0], SizeOfEntries))
         {
-            return FALSE;
+            return false;
         }
 
         for (DWORD i = 0; i < nCount; ++i)
@@ -452,17 +452,17 @@ public:
             LPBYTE pb = GetImagePtr(i) + sizeof(LOCALHEADER);
             DWORD size = GetImageSize(i) - sizeof(LOCALHEADER);
             if (!stream.WriteData(pb, size))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToFile(LPCTSTR pszFileName)
+    bool SaveToFile(LPCTSTR pszFileName)
     {
         MByteStreamEx stream;
         if (!SaveToStream(stream))
-            return FALSE;
+            return false;
         return stream.SaveToFile(pszFileName);
     }
 
@@ -483,7 +483,7 @@ public:
             memcpy(&local, pb, sizeof(local));
             memcpy(&bmch, pb + sizeof(local), sizeof(bmch));
 
-            BOOL bCoreOnly = (bmch.bcSize == sizeof(bmch));
+            bool bCoreOnly = (bmch.bcSize == sizeof(bmch));
             if (!bCoreOnly)
             {
                 memcpy(&bmih, pb + sizeof(local), sizeof(bmih));

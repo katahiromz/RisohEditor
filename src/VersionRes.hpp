@@ -55,7 +55,7 @@ class VersionRes
 public:
     VersionRes() { }
 
-    BOOL VarsFromStream(Vars& vars, const MByteStreamEx& stream)
+    bool VarsFromStream(Vars& vars, const MByteStreamEx& stream)
     {
         Var var;
 
@@ -64,7 +64,7 @@ public:
         size_t pos0 = stream.pos();
 
         if (!stream.ReadRaw(var.head) || !stream.ReadSz(var.key))
-            return FALSE;
+            return false;
 
         size_t pos1 = pos0 + var.head.wLength;
         stream.ReadDwordAlignment();
@@ -76,7 +76,7 @@ public:
                 dwSize *= 2;
             var.value.resize(dwSize);
             if (!stream.ReadData(&var.value[0], dwSize))
-                return FALSE;
+                return false;
         }
         stream.ReadDwordAlignment();
 
@@ -87,30 +87,30 @@ public:
 
         vars.push_back(var);
 
-        return TRUE;
+        return true;
     }
 
-    BOOL LoadFromData(const std::vector<BYTE>& data)
+    bool LoadFromData(const std::vector<BYTE>& data)
     {
         ZeroMemory(&m_fixed, sizeof(m_fixed));
 
         MByteStreamEx stream(data);
         if (!VarsFromStream(m_vars, stream))
-            return FALSE;
+            return false;
 
         if (m_vars.size() != 1)
-            return FALSE;
+            return false;
 
         Var& var = m_vars[0];
         if (var.key != L"VS_VERSION_INFO")
-            return FALSE;
+            return false;
 
         if (var.value.size() == sizeof(VS_FIXEDFILEINFO))
         {
             CopyMemory(&m_fixed, &var.value[0], var.value.size());
         }
 
-        return TRUE;
+        return true;
     }
 
     MStringW DumpValue(WORD wType, const Var& value, int depth = 0) const

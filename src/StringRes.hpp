@@ -48,7 +48,7 @@ public:
     {
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream, WORD wName)
+    bool LoadFromStream(const MByteStreamEx& stream, WORD wName)
     {
         for (WORD i = 0; i < 16; ++i)
         {
@@ -71,10 +71,10 @@ public:
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream, WORD wName)
+    bool SaveToStream(MByteStreamEx& stream, WORD wName)
     {
         WORD first, last;
         GetIdRange(wName, first, last);
@@ -85,10 +85,10 @@ public:
             WORD wLen = WORD(str.size());
             if (!stream.WriteWord(wLen) ||
                 !stream.WriteData(&str[0], wLen * sizeof(WCHAR)))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
     string_type Dump(const ConstantsDB& db, WORD wName)

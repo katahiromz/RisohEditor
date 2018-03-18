@@ -129,15 +129,15 @@ public:
         ZeroMemory(&m_header, sizeof(m_header));
     }
 
-    BOOL IsExtended() const
+    bool IsExtended() const
     {
         return (m_header.wVersion == 1);
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    bool LoadFromStream(const MByteStreamEx& stream)
     {
         if (!stream.PeekWord(m_header.wVersion))
-            return FALSE;
+            return false;
 
         if (m_header.wVersion == 1)
             return LoadFromStreamEx(stream);
@@ -146,11 +146,11 @@ public:
         if (!stream.ReadRaw(header) ||
             header.wVersion != 0 || header.cbHeaderSize != 0)
         {
-            return FALSE;
+            return false;
         }
 
         std::stack<BYTE> flag_stack;
-        flag_stack.push(TRUE);
+        flag_stack.push(true);
 
         WORD wDepth = 0, fItemFlags;
         MenuItem item;
@@ -162,7 +162,7 @@ public:
 
                 POPUPMENUITEMHEAD head;
                 if (!stream.ReadRaw(head) || !stream.ReadSz(item.text))
-                    return FALSE;
+                    return false;
 
                 item.fItemFlags = fItemFlags;
                 item.wMenuID = 0;
@@ -173,7 +173,7 @@ public:
             {
                 NORMALMENUITEMHEAD head;
                 if (!stream.ReadRaw(head) || !stream.ReadSz(item.text))
-                    return FALSE;
+                    return false;
 
                 item.fItemFlags = fItemFlags;
                 item.wMenuID = head.wMenuID;
@@ -196,27 +196,27 @@ public:
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL LoadFromStreamEx(const MByteStreamEx& stream)
+    bool LoadFromStreamEx(const MByteStreamEx& stream)
     {
         if (!stream.ReadRaw(m_header))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         if (m_header.wVersion != 1 || m_header.wOffset < 4)
         {
             assert(0);
-            return FALSE;
+            return false;
         }
         stream.pos(4 + m_header.wOffset);
         stream.ReadDwordAlignment();
 
         std::stack<BYTE> flag_stack;
-        flag_stack.push(TRUE);
+        flag_stack.push(true);
 
         WORD wDepth = 0;
         ExMenuItem exitem;
@@ -228,7 +228,7 @@ public:
             if (!stream.ReadSz(exitem.text))
             {
                 assert(0);
-                return FALSE;
+                return false;
             }
 
             if (item_header.bResInfo & 0x01)
@@ -237,7 +237,7 @@ public:
 
                 stream.ReadDwordAlignment();
                 if (!stream.ReadRaw(exitem.dwHelpId))
-                    return FALSE;
+                    return false;
 
                 exitem.dwType = item_header.dwType;
                 exitem.dwState = item_header.dwState;
@@ -272,7 +272,7 @@ public:
             }
             stream.ReadDwordAlignment();
         }
-        return TRUE;
+        return true;
     }
 
     string_type DumpFlags(WORD fItemFlags) const
@@ -305,7 +305,7 @@ public:
         return stream.data();
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream) const
+    bool SaveToStream(MByteStreamEx& stream) const
     {
         if (IsExtended())
             return SaveToStreamEx(stream);
@@ -314,7 +314,7 @@ public:
         header.wVersion = 0;
         header.cbHeaderSize = 0;
         if (!stream.WriteRaw(header))
-            return FALSE;
+            return false;
 
         for (size_t i = 0; i < m_items.size(); ++i)
         {
@@ -325,7 +325,7 @@ public:
                 POPUPMENUITEMHEAD head;
                 head.fItemFlags = fItemFlags;
                 if (!stream.WriteRaw(head) || !stream.WriteSz(item.text))
-                    return FALSE;
+                    return false;
             }
             else
             {
@@ -333,17 +333,17 @@ public:
                 head.fItemFlags = item.fItemFlags;
                 head.wMenuID = item.wMenuID;
                 if (!stream.WriteRaw(head) || !stream.WriteSz(item.text))
-                    return FALSE;
+                    return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToStreamEx(MByteStreamEx& stream) const
+    bool SaveToStreamEx(MByteStreamEx& stream) const
     {
         if (!IsExtended())
-            return FALSE;
+            return false;
 
         MENUEX_TEMPLATE_HEADER header;
         header.wVersion = 1;
@@ -352,7 +352,7 @@ public:
         if (!stream.WriteRaw(header))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         for (size_t i = 0; i < m_exitems.size(); ++i)
@@ -370,18 +370,18 @@ public:
                 !stream.WriteSz(exitem.text))
             {
                 assert(0);
-                return FALSE;
+                return false;
             }
 
             if (item_header.bResInfo & 0x01)
             {
                 stream.WriteDwordAlignment();
                 if (!stream.WriteRaw(exitem.dwHelpId))
-                    return FALSE;
+                    return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     string_type Dump(MIdOrString name, const ConstantsDB& db)
@@ -671,7 +671,7 @@ protected:
     MenuItemsType           m_items;
     ExMenuItemsType         m_exitems;
 
-    BOOL IsParent(size_t iItem) const
+    bool IsParent(size_t iItem) const
     {
         if (IsExtended())
         {
@@ -679,7 +679,7 @@ protected:
             if (iItem + 1 < m_exitems.size() &&
                 wDepth < m_exitems[iItem + 1].wDepth)
             {
-                return TRUE;
+                return true;
             }
         }
         else
@@ -688,15 +688,15 @@ protected:
             if (iItem + 1 < m_items.size() &&
                 wDepth < m_items[iItem + 1].wDepth)
             {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL IsLastItem(size_t iItem) const
+    bool IsLastItem(size_t iItem) const
     {
-        BOOL Found = FALSE;
+        bool Found = false;
         if (IsExtended())
         {
             WORD wDepth = m_exitems[iItem].wDepth;
@@ -704,7 +704,7 @@ protected:
             {
                 if (m_exitems[i].wDepth == wDepth)
                 {
-                    Found = TRUE;
+                    Found = true;
                 }
                 if (m_exitems[i].wDepth < wDepth)
                 {
@@ -719,7 +719,7 @@ protected:
             {
                 if (m_items[i].wDepth == wDepth)
                 {
-                    Found = TRUE;
+                    Found = true;
                 }
                 if (m_items[i].wDepth < wDepth)
                 {

@@ -55,18 +55,18 @@ public:
     const ConstantsDB& m_db;
     AccelRes(const ConstantsDB& db) : m_db(db) { }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    bool LoadFromStream(const MByteStreamEx& stream)
     {
         m_entries.clear();
         if (stream.size() < sizeof(entry_type))
-            return FALSE;
+            return false;
 
         entry_type entry;
         size_t i, count = stream.size() / sizeof(entry_type);
         for (i = 0; i < count; ++i)
         {
             if (!stream.ReadRaw(entry))
-                return FALSE;
+                return false;
 
             m_entries.push_back(entry);
 
@@ -74,7 +74,7 @@ public:
                 break;
         }
 
-        return TRUE;
+        return true;
     }
 
     void Update()
@@ -119,11 +119,11 @@ public:
         entries_type::const_iterator it, end = m_entries.end();
         for (it = m_entries.begin(); it != end; ++it)
         {
-            BOOL VIRTKEY = (it->fFlags & FVIRTKEY);
-            BOOL NOINVERT = (it->fFlags & FNOINVERT);
-            BOOL SHIFT = (it->fFlags & FSHIFT);
-            BOOL CONTROL = (it->fFlags & FCONTROL);
-            BOOL ALT = (it->fFlags & FALT);
+            bool VIRTKEY = !!(it->fFlags & FVIRTKEY);
+            bool NOINVERT = !!(it->fFlags & FNOINVERT);
+            bool SHIFT = !!(it->fFlags & FSHIFT);
+            bool CONTROL = !!(it->fFlags & FCONTROL);
+            bool ALT = !!(it->fFlags & FALT);
 
             ret += L"    ";
             if (VIRTKEY)
