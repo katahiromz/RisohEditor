@@ -65,7 +65,7 @@ typedef struct DLGITEMTEMPLATEEXHEAD
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline BOOL PredefClassToID(MStringW name, WORD& w)
+inline bool PredefClassToID(MStringW name, WORD& w)
 {
     w = 0;
     CharUpperW(&name[0]);
@@ -84,30 +84,30 @@ inline BOOL PredefClassToID(MStringW name, WORD& w)
     return w != 0;
 }
 
-inline BOOL IDToPredefClass(WORD w, MStringW& name)
+inline bool IDToPredefClass(WORD w, MStringW& name)
 {
     switch (w)
     {
     case 0x0080:
         name = L"BUTTON";
-        return TRUE;
+        return true;
     case 0x0081:
         name = L"EDIT";
-        return TRUE;
+        return true;
     case 0x0082:
         name = L"STATIC";
-        return TRUE;
+        return true;
     case 0x0083:
         name = L"LISTBOX";
-        return TRUE;
+        return true;
     case 0x0084:
         name = L"SCROLLBAR";
-        return TRUE;
+        return true;
     case 0x0085:
         name = L"COMBOBOX";
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 inline void FixClassName(const ConstantsDB& db, MStringW& cls)
@@ -151,7 +151,7 @@ struct DialogItem
         m_id = 0;
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream, BOOL extended = FALSE)
+    bool LoadFromStream(const MByteStreamEx& stream, bool extended = false)
     {
         if (extended)
             return LoadFromStreamEx(stream);
@@ -160,7 +160,7 @@ struct DialogItem
 
         DLGITEMTEMPLATE item;
         if (!stream.ReadRaw(item))
-            return FALSE;
+            return false;
 
         m_help_id = 0;
         m_style = item.style;
@@ -174,31 +174,31 @@ struct DialogItem
         if (!stream.ReadString(m_class) ||
             !stream.ReadString(m_title))
         {
-            return FALSE;
+            return false;
         }
 
         BYTE b;
         if (!stream.ReadByte(b))
-            return FALSE;
+            return false;
 
         if (b)
         {
             m_extra.resize(b);
             if (!stream.ReadData(&m_extra[0], b))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL LoadFromStreamEx(const MByteStreamEx& stream)
+    bool LoadFromStreamEx(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
         DLGITEMTEMPLATEEXHEAD item;
         if (!stream.ReadRaw(item))
         {
-            return FALSE;
+            return false;
         }
 
         m_help_id = item.helpID;
@@ -214,24 +214,24 @@ struct DialogItem
 
         if (!stream.ReadString(m_class) || !stream.ReadString(m_title))
         {
-            return FALSE;
+            return false;
         }
 
         WORD extraCount;
         if (!stream.ReadWord(extraCount))
-            return FALSE;
+            return false;
 
         if (extraCount)
         {
             m_extra.resize(extraCount);
             if (!stream.ReadData(&m_extra[0], extraCount))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream, BOOL extended = FALSE) const
+    bool SaveToStream(MByteStreamEx& stream, bool extended = false) const
     {
         if (extended)
         {
@@ -249,39 +249,39 @@ struct DialogItem
         item.cy = (SHORT)m_siz.cy;
         item.id = m_id;
         if (!stream.WriteData(&item, sizeof(item)))
-            return FALSE;
+            return false;
 
         WORD w;
         if (!IS_INTRESOURCE(m_class.ptr()) && 
             PredefClassToID(m_class.ptr(), w))
         {
             if (!stream.WriteString(MAKEINTRESOURCEW(w)))
-                return FALSE;
+                return false;
         }
         else
         {
             if (!stream.WriteString(m_class.ptr()))
-                return FALSE;
+                return false;
         }
 
         if (!stream.WriteString(m_title.ptr()))
-            return FALSE;
+            return false;
 
         BYTE b = BYTE(m_extra.size());
         if (!stream.WriteRaw(b))
-            return FALSE;
+            return false;
 
         if (b)
         {
             stream.WriteDwordAlignment();
             if (!stream.WriteData(&m_extra[0], b))
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL SaveToStreamEx(MByteStreamEx& stream) const
+    bool SaveToStreamEx(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -295,7 +295,7 @@ struct DialogItem
         ItemEx.cy = (short)m_siz.cy;
         ItemEx.id = m_id;
         if (!stream.WriteRaw(ItemEx))
-            return FALSE;
+            return false;
 
         stream.WriteDwordAlignment();
 
@@ -304,30 +304,30 @@ struct DialogItem
             PredefClassToID(m_class.ptr(), w))
         {
             if (!stream.WriteString(MAKEINTRESOURCEW(w)))
-                return FALSE;
+                return false;
         }
         else
         {
             if (!stream.WriteString(m_class.ptr()))
-                return FALSE;
+                return false;
         }
 
         if (!stream.WriteString(m_title.ptr()) ||
             !stream.WriteWord(WORD(m_extra.size())))
         {
-            return FALSE;
+            return false;
         }
 
         if (m_extra.size() > 0)
         {
             WORD ExtraSize = WORD(m_extra.size());
             if (!stream.WriteData(&m_extra[0], ExtraSize))
-                return FALSE;
+                return false;
         }
-        return TRUE;
+        return true;
     }
 
-    MStringW Dump(const ConstantsDB& db, BOOL bAlwaysControl = FALSE)
+    MStringW Dump(const ConstantsDB& db, bool bAlwaysControl = false)
     {
         MStringW cls;
 
@@ -464,11 +464,11 @@ struct DialogItem
         return ret;
     }
 
-    MStringW _do_CONTROL(BOOL bNeedsText,
-                             const ConstantsDB& db,
-                             const MStringW& ctrl,
-                             const MStringW& cls,
-                             DWORD DefStyle)
+    MStringW _do_CONTROL(bool bNeedsText,
+                         const ConstantsDB& db,
+                         const MStringW& ctrl,
+                         const MStringW& cls,
+                         DWORD DefStyle)
     {
         MStringW ret;
         ret += ctrl;
@@ -528,13 +528,13 @@ struct DialogItem
     MStringW _do_BUTTON(const ConstantsDB& db,
                             const MStringW& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(TRUE, db, ctrl, L"BUTTON", DefStyle);
+        return _do_CONTROL(true, db, ctrl, L"BUTTON", DefStyle);
     }
 
     MStringW _do_TEXT(const ConstantsDB& db,
                           const MStringW& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(TRUE, db, ctrl, L"STATIC", DefStyle);
+        return _do_CONTROL(true, db, ctrl, L"STATIC", DefStyle);
     }
 
     MStringW _do_AUTO3STATE(const ConstantsDB& db)
@@ -592,32 +592,32 @@ struct DialogItem
     MStringW _do_EDITTEXT(const ConstantsDB& db)
     {
         assert(m_title.empty());
-        return _do_CONTROL(FALSE, db, L"EDITTEXT", L"EDIT",
+        return _do_CONTROL(false, db, L"EDITTEXT", L"EDIT",
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_COMBOBOX(const ConstantsDB& db)
     {
         assert(m_title.empty());
-        return _do_CONTROL(FALSE, db, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(false, db, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_ICON(const ConstantsDB& db)
     {
         assert(m_title.empty());
-        return _do_CONTROL(TRUE, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(true, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_LISTBOX(const ConstantsDB& db)
     {
         assert(m_title.empty());
-        return _do_CONTROL(FALSE, db, L"LISTBOX", L"LISTBOX",
+        return _do_CONTROL(false, db, L"LISTBOX", L"LISTBOX",
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_SCROLLBAR(const ConstantsDB& db)
     {
         assert(m_title.empty());
-        return _do_CONTROL(FALSE, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(false, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
-    void Fixup(BOOL bRevert = FALSE)
+    void Fixup(bool bRevert = false)
     {
         if (bRevert)
         {
@@ -688,7 +688,7 @@ struct DialogRes
         m_siz.cy = 0;
         m_point_size = 0;
         m_weight = FW_NORMAL;
-        m_italic = FALSE;
+        m_italic = false;
         m_charset = DEFAULT_CHARSET;
         m_lang_id = 0;
     }
@@ -706,15 +706,15 @@ struct DialogRes
         return m_items.size();
     }
 
-    BOOL IsExtended() const
+    bool IsExtended() const
     {
         return m_signature == 0xFFFF;
     }
 
-    BOOL LoadFromStream(const MByteStreamEx& stream)
+    bool LoadFromStream(const MByteStreamEx& stream)
     {
         if (stream.size() < sizeof(WORD) * 2)
-            return FALSE;
+            return false;
 
         if (*(WORD *)stream.ptr(0) == 1 &&
             *(WORD *)stream.ptr(2) == 0xFFFF)
@@ -726,10 +726,10 @@ struct DialogRes
                 {
                     DialogItem item;
                     if (!item.LoadFromStreamEx(stream))
-                        return FALSE;
+                        return false;
                     m_items.push_back(item);
                 }
-                return TRUE;
+                return true;
             }
         }
         else
@@ -741,16 +741,16 @@ struct DialogRes
                 {
                     DialogItem item;
                     if (!item.LoadFromStream(stream))
-                        return FALSE;
+                        return false;
                     m_items.push_back(item);
                 }
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL SaveToStream(MByteStreamEx& stream) const
+    bool SaveToStream(MByteStreamEx& stream) const
     {
         if (IsExtended())
         {
@@ -760,9 +760,9 @@ struct DialogRes
                 for (i = 0; i < count; ++i)
                 {
                     if (!m_items[i].SaveToStreamEx(stream))
-                        return FALSE;
+                        return false;
                 }
-                return TRUE;
+                return true;
             }
         }
         else
@@ -773,12 +773,12 @@ struct DialogRes
                 for (i = 0; i < count; ++i)
                 {
                     if (!m_items[i].SaveToStream(stream))
-                        return FALSE;
+                        return false;
                 }
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     void Update()
@@ -796,7 +796,7 @@ struct DialogRes
         return stream.data();
     }
 
-    MStringW Dump(const MIdOrString& id_or_str, BOOL bAlwaysControl = FALSE)
+    MStringW Dump(const MIdOrString& id_or_str, bool bAlwaysControl = false)
     {
         MStringW ret;
 
@@ -926,7 +926,7 @@ struct DialogRes
         return ret;
     }
 
-    void Fixup(BOOL bRevert = FALSE)
+    void Fixup(bool bRevert = false)
     {
         if (bRevert)
         {
@@ -1039,13 +1039,13 @@ struct DialogRes
     }
 
 protected:
-    BOOL _headerFromStream(const MByteStreamEx& stream)
+    bool _headerFromStream(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
         DLGTEMPLATE tmp;
         if (!stream.ReadRaw(tmp))
-            return FALSE;
+            return false;
 
         m_version = 0;
         m_signature = 0;
@@ -1062,7 +1062,7 @@ protected:
             !stream.ReadString(m_class) || 
             !stream.ReadString(m_title))
         {
-            return FALSE;
+            return false;
         }
 
         m_point_size = 0;
@@ -1076,23 +1076,23 @@ protected:
             if (!stream.ReadWord(m_point_size) ||
                 !stream.ReadString(m_type_face))
             {
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL _headerFromStreamEx(const MByteStreamEx& stream)
+    bool _headerFromStreamEx(const MByteStreamEx& stream)
     {
         stream.ReadDwordAlignment();
 
         DLGTEMPLATEEXHEAD TemplateEx;
         if (!stream.ReadRaw(TemplateEx))
-            return FALSE;
+            return false;
 
         if (TemplateEx.dlgVer != 1 || TemplateEx.signature != 0xFFFF)
-            return FALSE;
+            return false;
 
         m_version = TemplateEx.dlgVer;
         m_signature = TemplateEx.signature;
@@ -1109,7 +1109,7 @@ protected:
             !stream.ReadString(m_class) ||
             !stream.ReadString(m_title))
         {
-            return FALSE;
+            return false;
         }
 
         if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
@@ -1120,15 +1120,15 @@ protected:
                 !stream.ReadByte(m_charset) ||
                 !stream.ReadString(m_type_face))
             {
-                return FALSE;
+                return false;
             }
         }
 
         m_items.clear();
-        return TRUE;
+        return true;
     }
 
-    BOOL _headerToStream(MByteStreamEx& stream) const
+    bool _headerToStream(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -1146,7 +1146,7 @@ protected:
             !stream.WriteString(m_class.ptr()) ||
             !stream.WriteString(m_title.ptr()))
         {
-            return FALSE;
+            return false;
         }
 
         if (tmp.style & (DS_SETFONT | DS_SHELLFONT))
@@ -1154,14 +1154,14 @@ protected:
             if (!stream.WriteWord(m_point_size) ||
                 !stream.WriteString(m_type_face.ptr()))
             {
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
-    BOOL _headerToStreamEx(MByteStreamEx& stream) const
+    bool _headerToStreamEx(MByteStreamEx& stream) const
     {
         stream.WriteDwordAlignment();
 
@@ -1181,7 +1181,7 @@ protected:
             !stream.WriteString(m_class.ptr()) ||
             !stream.WriteString(m_title.ptr()))
         {
-            return FALSE;
+            return false;
         }
 
         if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
@@ -1192,10 +1192,10 @@ protected:
                 !stream.WriteByte(m_charset) ||
                 !stream.WriteString(m_type_face.ptr()))
             {
-                return FALSE;
+                return false;
             }
         }
-        return TRUE;
+        return true;
     }
 };
 
@@ -1213,7 +1213,7 @@ public:
     {
     }
 
-    BOOL Copy(HWND hwndRad, const DialogItems& items)
+    bool Copy(HWND hwndRad, const DialogItems& items)
     {
         MByteStreamEx stream;
 
@@ -1238,25 +1238,25 @@ public:
             }
             GlobalFree(hGlobal);
         }
-        return FALSE;
+        return false;
     }
 
-    BOOL IsAvailable() const
+    bool IsAvailable() const
     {
         return IsClipboardFormatAvailable(m_uCF_DIALOGITEMS);
     }
 
-    BOOL Paste(HWND hwndRad, DialogItems& items) const
+    bool Paste(HWND hwndRad, DialogItems& items) const
     {
         items.clear();
 
         if (!IsAvailable())
-            return FALSE;
+            return false;
 
         if (!OpenClipboard(hwndRad))
-            return FALSE;
+            return false;
 
-        BOOL bOK = FALSE;
+        bool bOK = false;
         if (HGLOBAL hGlobal = GetClipboardData(m_uCF_DIALOGITEMS))
         {
             SIZE_T siz = GlobalSize(hGlobal);
@@ -1274,7 +1274,7 @@ public:
 
                 if (items.size())
                 {
-                    bOK = TRUE;
+                    bOK = true;
                 }
             }
         }
