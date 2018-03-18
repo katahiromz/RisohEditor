@@ -7409,10 +7409,10 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
 
         ++pch;
         pch = mstr_skip_space(pch);
-        if (memcmp(pch, "ifndef", 5) == 0 && mchr_is_space(pch[5]))
+        if (memcmp(pch, "ifndef", 6) == 0 && mchr_is_space(pch[6]))
         {
             // #ifndef
-            pch += 5;
+            pch += 6;
             const char *pch0 = pch = mstr_skip_space(pch);
             while (std::isalnum(*pch) || *pch == '_')
             {
