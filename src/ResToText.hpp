@@ -162,6 +162,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     }
     else if (entry.type == RT_ACCELERATOR)
     {
+        // No output file
     }
     else if (entry.type == RT_RCDATA)
     {
@@ -171,6 +172,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     }
     else if (entry.type == RT_MESSAGETABLE)
     {
+        // No output file
     }
     else if (entry.type == RT_GROUP_CURSOR)
     {
