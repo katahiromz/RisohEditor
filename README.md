@@ -37,4 +37,4 @@ Make the dialog box extended.
 
 ## Contact Us
 
-[katayama.hirofumi.mz@gmail.com](mailto:katayama.hirofumi.mz@gmail.com)
+katayama.hirofumi.mz@gmail.com
