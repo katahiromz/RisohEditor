@@ -329,6 +329,7 @@
 #define IDS_CPPEXE              234
 #define IDS_INVALIDPATH         235
 #define IDS_DATATOOLONG         236
+#define IDS_ALL                 237
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

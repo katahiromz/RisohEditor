@@ -26,6 +26,7 @@
 #include "resource.h"
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"
+#include "MResizable.hpp"
 
 class MSubclassedListView;
 class MIDListDlg;
@@ -73,12 +74,16 @@ public:
     HWND m_hMainWnd;
     LPWSTR m_pszResH;
     INT m_nBase;
+    HWND m_hCmb1;
     HWND m_hLst1;
+    BOOL m_bChanging;
     MSubclassedListView m_lv;
+    MResizable m_resizable;
 
     MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
         : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
-          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL)
+          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL),
+          m_bChanging(FALSE)
     {
     }
 
@@ -172,7 +177,15 @@ public:
         return 0;
     }
 
-    void SetItems()
+    void OnCmb1(HWND hwnd)
+    {
+        INT iItem = ComboBox_GetCurSel(m_hCmb1);
+        TCHAR szText[256];
+        ComboBox_GetLBText(m_hCmb1, iItem, szText);
+        SetItems(szText);
+    }
+
+    void SetItems(LPCTSTR pszIDType = NULL)
     {
         ListView_DeleteAllItems(m_hLst1);
 
@@ -186,6 +199,12 @@ public:
             MString text3 = MAnsiToText(CP_ACP, it->second.c_str()).c_str();
             if (text2.empty())
                 text2 = L"Unknown.ID";
+
+            if (pszIDType && text2.find(pszIDType) == MString::npos &&
+                lstrcmp(pszIDType, LoadStringDx(IDS_ALL)) != 0)
+            {
+                continue;
+            }
 
             INT iItem = ListView_GetItemCount(m_hLst1);
             ZeroMemory(&item, sizeof(item));
@@ -227,11 +246,46 @@ public:
         }
 
         ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
+
+        if (!m_bChanging)
+        {
+            m_bChanging = TRUE;
+            if (pszIDType == NULL)
+            {
+                ComboBox_ResetContent(m_hCmb1);
+                ComboBox_AddString(m_hCmb1, LoadStringDx(IDS_ALL));
+                INT i, nCount = ListView_GetItemCount(m_hLst1);
+                for (i = 0; i < nCount; ++i)
+                {
+                    TCHAR szText[256];
+                    ListView_GetItemText(m_hLst1, i, 1, szText, _countof(szText));
+                    std::vector<MString> types;
+                    mstr_split(types, szText, TEXT("/"));
+                    for (size_t k = 0; k < types.size(); ++k)
+                    {
+                        INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
+                        if (ret == CB_ERR)
+                        {
+                            ComboBox_AddString(m_hCmb1, types[k].c_str());
+                        }
+                    }
+                }
+            }
+            ComboBox_SetCurSel(m_hCmb1, 0);
+            m_bChanging = FALSE;
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        m_hCmb1 = GetDlgItem(hwnd, cmb1);
         m_hLst1 = GetDlgItem(hwnd, lst1);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+
         ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
         m_lv.SubclassDx(m_hLst1);
 
@@ -314,6 +368,14 @@ public:
         MString str1, str2;
         switch (id)
         {
+        case cmb1:
+            if (codeNotify == CBN_SELCHANGE && !m_bChanging)
+            {
+                m_bChanging = TRUE;
+                OnCmb1(hwnd);
+                m_bChanging = FALSE;
+            }
+            break;
         case IDCANCEL:
             DestroyWindow(hwnd);
             break;
@@ -607,7 +669,7 @@ public:
             m_settings.nIDListHeight = rc.bottom - rc.top;
         }
 
-        MoveWindow(m_hLst1, 0, 0, cx, cy, TRUE);
+        m_resizable.OnSize();
     }
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)

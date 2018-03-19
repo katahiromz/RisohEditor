@@ -253,18 +253,20 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
     {
         if (str == L"Icon.ID")
             str = L"RT_GROUP_ICON";
-        if (str == L"Cursor.ID")
+        else if (str == L"Cursor.ID")
             str = L"RT_GROUP_CURSOR";
-        if (str == L"Accel.ID")
+        else if (str == L"Accel.ID")
             str = L"RT_ACCELERATOR";
-        if (str == L"AniCursor.ID")
+        else if (str == L"AniCursor.ID")
             str = L"RT_ANICURSOR";
-        if (str == L"AniIcon.ID")
+        else if (str == L"AniIcon.ID")
             str = L"RT_ANIICON";
-        if (str == L"Dialog.ID")
+        else if (str == L"Dialog.ID")
             str = L"RT_DIALOG";
-        if (str == L"Menu.ID")
+        else if (str == L"Menu.ID")
             str = L"RT_MENU";
+        else if (str == L"Bitmap.ID")
+            str = L"RT_BITMAP";
     }
     else
     {
@@ -282,6 +284,8 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"Dialog.ID";
         else if (str == L"RT_MENU")
             str = L"Menu.ID";
+        else if (str == L"RT_BITMAP")
+            str = L"Bitmap.ID";
     }
 }
 
