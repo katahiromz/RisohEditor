@@ -53,6 +53,7 @@
 #define IDTYPE_WINDOW       16  // Window.ID
 #define IDTYPE_NEWCOMMAND   17  // New.Command.ID
 #define IDTYPE_PROMPT       18  // Prompt.ID
+#define IDTYPE_RCDATA       19  // RCData.ID
 
 class ConstantsDB
 {
@@ -97,6 +98,7 @@ public:
         case IDTYPE_ANIICON:
         case IDTYPE_HTML:
         case IDTYPE_RESOURCE:
+        case IDTYPE_RCDATA:
             return true;
         }
         return false;

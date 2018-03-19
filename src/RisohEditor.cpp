@@ -279,6 +279,8 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"RT_MENU";
         else if (str == L"Bitmap.ID")
             str = L"RT_BITMAP";
+        else if (str == L"RCData.ID")
+            str = L"RT_RCDATA";
     }
     else
     {
@@ -298,6 +300,8 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"Menu.ID";
         else if (str == L"RT_BITMAP")
             str = L"Bitmap.ID";
+        else if (str == L"RT_RCDATA")
+            str = L"RCData.ID";
     }
 }
 
@@ -319,6 +323,7 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
     case IDTYPE_ANIICON:    type = RT_ANIICON; break;
     case IDTYPE_HTML:       type = RT_HTML; break;
     case IDTYPE_RESOURCE:   type.clear(); break;
+    case IDTYPE_RCDATA:     type = RT_RCDATA; break;
     default:
         return L"";
     }
@@ -353,7 +358,8 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
             BOOL bErase = FALSE;
             MIdOrString type = found[i].type;
             if (type == RT_GROUP_CURSOR || type == RT_BITMAP ||
-                type == RT_DIALOG || type == RT_GROUP_ICON)
+                type == RT_DIALOG || type == RT_GROUP_ICON ||
+                type == RT_RCDATA)
             {
                 bErase = TRUE;
             }

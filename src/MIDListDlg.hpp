@@ -179,7 +179,7 @@ public:
             cmp = lstrcmp(sz1, sz2);
             if (cmp != 0)
                 return cmp;
-		}
+        }
         return 0;
     }
 

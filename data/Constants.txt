@@ -41,6 +41,7 @@ Message.ID, 15
 Window.ID, 16
 New.Command.ID, 17
 Prompt.ID, 18
+RCData.ID, 19
 
 [RESOURCE.ID.PREFIX]
 , 0
@@ -62,6 +63,7 @@ MSGID_, 15
 IDW_, 16
 ID_, 17
 IDP_, 18
+IDR_, 19
 
 [LANGUAGES]
 ar_SA, 1025
