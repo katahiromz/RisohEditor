@@ -247,7 +247,7 @@ public:
 
         ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
 
-        if (!m_bChanging)
+        if (pszIDType == NULL && !m_bChanging)
         {
             m_bChanging = TRUE;
             if (pszIDType == NULL)
@@ -515,12 +515,18 @@ public:
             OnIdJump(hwnd);
             break;
         case ID_BASE10:
-            m_nBase = 10;
-            SetItems();
+            {
+                m_nBase = 10;
+                ComboBox_GetText(m_hCmb1, szText, _countof(szText));
+                SetItems(szText);
+            }
             break;
         case ID_BASE16:
-            m_nBase = 16;
-            SetItems();
+            {
+                m_nBase = 16;
+                ComboBox_GetText(m_hCmb1, szText, _countof(szText));
+                SetItems(szText);
+            }
             break;
         case ID_IDJUMP00:
             OnIdJump(hwnd, 0);
