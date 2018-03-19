@@ -33,6 +33,7 @@ typedef std::map<MString, MString>      assoc_map_type;
 typedef std::map<MStringA, MStringA>    id_map_type;
 typedef std::map<MString, MString>      macro_map_type;
 typedef std::vector<MString>            include_dirs_type;
+typedef std::vector<MString>            captions_type;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -82,9 +83,27 @@ struct RisohSettings
     BOOL                bSepFilesByLang;
     BOOL                bStoreToResFolder;
     BOOL                bSelectableByMacro;
+    captions_type       captions;
 
     RisohSettings()
     {
+    }
+
+    void AddCaption(LPCTSTR pszCaption)
+    {
+        if (!pszCaption || !pszCaption[0])
+            return;
+
+        for (size_t i = 0; i < captions.size(); ++i)
+        {
+            if (captions[i] == pszCaption)
+            {
+                captions.erase(captions.begin() + i);
+                break;
+            }
+        }
+
+        captions.insert(captions.begin(), pszCaption);
     }
 
     void AddFile(LPCTSTR pszFile)

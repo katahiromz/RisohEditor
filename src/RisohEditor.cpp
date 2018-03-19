@@ -41,6 +41,8 @@
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
+const DWORD s_nMaxCaptions = 10;
+
 //////////////////////////////////////////////////////////////////////////////
 
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
@@ -179,6 +181,16 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     if (i < _countof(s_charset_entries))
         return s_charset_entries[i].CharSet;
     return DEFAULT_CHARSET;
+}
+
+void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption)
+{
+    ComboBox_ResetContent(hCmb);
+    for (size_t i = 0; i < settings.captions.size(); ++i)
+    {
+        ComboBox_AddString(hCmb, settings.captions[i].c_str());
+    }
+    ComboBox_SetText(hCmb, pszCaption);
 }
 
 void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass)
@@ -8334,6 +8346,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bSepFilesByLang = FALSE;
     m_settings.bStoreToResFolder = TRUE;
     m_settings.bSelectableByMacro = FALSE;
+
+    m_settings.captions.clear();
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
@@ -8557,6 +8571,22 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)m_settings.bStoreToResFolder);
     keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)m_settings.bSelectableByMacro);
 
+    DWORD dwNumCaptions = 0;
+    keyRisoh.QueryDword(TEXT("dwNumCaptions"), (DWORD&)dwNumCaptions);
+
+    if (dwNumCaptions > s_nMaxCaptions)
+        dwNumCaptions = s_nMaxCaptions;
+
+    captions_type captions;
+    for (DWORD i = 0; i < dwNumCaptions; ++i)
+    {
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
+        if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
+        {
+            m_settings.captions.push_back(szText);
+        }
+    }
+
     return TRUE;
 }
 
@@ -8674,6 +8704,19 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bSepFilesByLang"), m_settings.bSepFilesByLang);
     keyRisoh.SetDword(TEXT("bStoreToResFolder"), m_settings.bStoreToResFolder);
     keyRisoh.SetDword(TEXT("bSelectableByMacro"), m_settings.bSelectableByMacro);
+
+    DWORD dwNumCaptions = DWORD(m_settings.captions.size());
+
+    if (dwNumCaptions > s_nMaxCaptions)
+        dwNumCaptions = s_nMaxCaptions;
+
+    keyRisoh.SetDword(TEXT("dwNumCaptions"), dwNumCaptions);
+
+    for (DWORD i = 0; i < dwNumCaptions; ++i)
+    {
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
+        keyRisoh.SetSz(szValueName, m_settings.captions[i].c_str());
+    }
 
     return TRUE;
 }

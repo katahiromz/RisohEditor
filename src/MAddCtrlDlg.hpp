@@ -39,6 +39,7 @@ DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
+void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
 void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
@@ -63,6 +64,7 @@ public:
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
     MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
@@ -192,6 +194,10 @@ public:
         InitClassComboBox(hCmb1, m_db, TEXT(""));
         SubclassChildDx(m_cmb1, cmb1);
 
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitCaptionComboBox(hCmb2, m_settings, TEXT(""));
+        SubclassChildDx(m_cmb2, cmb2);
+
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
         SetDlgItemText(hwnd, cmb3, TEXT("-1"));
@@ -249,6 +255,7 @@ public:
         {
             mstr_unquote(strCaption);
         }
+        m_settings.AddCaption(strCaption.c_str());
 
         INT x = GetDlgItemInt(hwnd, edt1, NULL, TRUE);
         INT y = GetDlgItemInt(hwnd, edt2, NULL, TRUE);
@@ -523,6 +530,12 @@ public:
                     UpdateClass(hwnd, hLst1, text);
                 }
                 m_cmb1.SetEditSel(LOWORD(dwPos), -1);
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
             }
             break;
         case cmb3:

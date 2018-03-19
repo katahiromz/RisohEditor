@@ -42,6 +42,7 @@ DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
+void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
 void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 
@@ -69,6 +70,7 @@ public:
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
+    RisohSettings&        m_settings;
     ConstantsDB&        m_db;
     DWORD               m_flags;
     DWORD               m_dwStyle;
@@ -82,13 +84,14 @@ public:
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
     MComboBoxAutoComplete m_cmb1;
+    MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
 
-    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, ConstantsDB& db)
+    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, RisohSettings& settings, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_indeces(indeces), m_db(db)
+          m_bUpdating(FALSE), m_indeces(indeces), m_settings(settings), m_db(db)
     {
         m_himlControls = NULL;
     }
@@ -296,6 +299,7 @@ public:
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
             {
                 item.m_title = m_item.m_title;
+                m_settings.AddCaption(m_item.m_title.c_str());
             }
             if ((m_flags & F_EXTRA) || (flags & F_EXTRA))
             {
@@ -416,6 +420,10 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
         SubclassChildDx(m_cmb1, cmb1);
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        InitCaptionComboBox(hCmb2, m_settings, TEXT(""));
+        SubclassChildDx(m_cmb2, cmb2);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
@@ -709,6 +717,12 @@ public:
                     UpdateClass(hwnd, hLst1, text);
                 }
                 m_cmb1.SetEditSel(LOWORD(dwPos), -1);
+            }
+            break;
+        case cmb2:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb2.OnEditChange();
             }
             break;
         case cmb3:

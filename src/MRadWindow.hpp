@@ -1838,7 +1838,7 @@ public:
     void OnCtrlProp(HWND hwnd)
     {
         MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces(),
-                            m_rad_dialog.m_db);
+                            m_settings, m_rad_dialog.m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
