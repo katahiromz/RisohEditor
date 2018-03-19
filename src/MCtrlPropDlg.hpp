@@ -161,6 +161,7 @@ public:
         mstr_trim(strCaption);
         if (!strCaption.empty())
             flags |= F_TITLE;
+        m_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
             mstr_unquote(strCaption);
         item.m_title = strCaption.c_str();
@@ -299,7 +300,6 @@ public:
             if ((m_flags & F_TITLE) || (flags & F_TITLE))
             {
                 item.m_title = m_item.m_title;
-                m_settings.AddCaption(m_item.m_title.c_str());
             }
             if ((m_flags & F_EXTRA) || (flags & F_EXTRA))
             {

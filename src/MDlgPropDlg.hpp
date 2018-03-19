@@ -263,11 +263,11 @@ public:
 
         MString strCaption = GetDlgItemText(cmb1);
         mstr_trim(strCaption);
+        m_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
         {
             mstr_unquote(strCaption);
         }
-        m_settings.AddCaption(strCaption.c_str());
 
         INT x = ::GetDlgItemInt(hwnd, edt1, NULL, TRUE);
         INT y = ::GetDlgItemInt(hwnd, edt2, NULL, TRUE);
