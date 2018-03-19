@@ -795,6 +795,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 {
     WCHAR szType[MAX_PATH];
     GetWindowTextW(hCmb1, szType, _countof(szType));
+    ReplaceFullWithHalf(szType);
     MStringW str = szType;
     mstr_trim(str);
     lstrcpynW(szType, str.c_str(), _countof(szType));
@@ -833,9 +834,9 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
     MStringW str = szName;
+    ReplaceFullWithHalf(str);
     mstr_trim(str);
     lstrcpynW(szName, str.c_str(), _countof(szName));
-    ReplaceFullWithHalf(szName);
     if (szName[0] == 0)
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);
@@ -1061,6 +1062,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
+    ReplaceFullWithHalf(str);
     mstr_trim(str);
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
@@ -1099,11 +1101,12 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
+    ReplaceFullWithHalf(str);
     mstr_trim(str);
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         LONG n = mstr_parse_int(str.c_str());
-        str = mstr_dec_word(WORD(n));
+        str = mstr_hex(n);
     }
     else if (!db.HasResID(str))
     {
