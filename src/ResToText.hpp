@@ -331,12 +331,10 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     }
     else
     {
-        if (entry.type.is_str())
-        {
-            ret += entry.type.str();
-            ret += DumpEscapedName(entry.name);
-            ret += L".bin";
-        }
+        ret += entry.type.str();
+        ret += L"_";
+        ret += DumpEscapedName(entry.name);
+        ret += L".bin";
     }
 
     if (ret.size())
