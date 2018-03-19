@@ -5565,6 +5565,174 @@ void MMainWnd::DoIDStat(UINT anValues[5])
     anValues[4] = 300;
 }
 
+inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
+{
+    ResToText res2text(m_settings, m_db, m_entries);
+
+    if (bExporting)
+    {
+        if (m_settings.bStoreToResFolder)
+        {
+            res2text.m_strFilePrefix = L"res\\";
+        }
+    }
+
+    MString filename = res2text.GetEntryFileName(entry);
+    if (filename.empty())
+        return TRUE;
+
+    //MessageBox(NULL, filename.c_str(), NULL, 0);
+
+    if (entry.type.is_int())
+    {
+        WORD wType = entry.type.m_id;
+        if (wType == (WORD)RT_CURSOR)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_BITMAP)
+        {
+            return PackedDIB_Extract(filename.c_str(), &entry[0], entry.size(), FALSE);
+        }
+        if (wType == (WORD)RT_ICON)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_MENU)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_DIALOG)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_STRING)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_FONTDIR)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_FONT)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_ACCELERATOR)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_RCDATA)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_MESSAGETABLE)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_GROUP_CURSOR)
+        {
+            return DoExtractCursor(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_GROUP_ICON)
+        {
+            return DoExtractIcon(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_VERSION)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)RT_DLGINCLUDE)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_PLUGPLAY)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_VXD)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_ANICURSOR)
+        {
+            return DoExtractCursor(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_ANIICON)
+        {
+            return DoExtractIcon(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_HTML)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (wType == (WORD)RT_MANIFEST)
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+    }
+    else
+    {
+        if (entry.type == L"AVI")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"PNG")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"GIF")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"JPEG")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"JPG")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"TIFF")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"TIF")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"EMF")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"ENHMETAFILE")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"WMF")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"WAVE")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+        if (entry.type == L"IMAGE")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
+    }
+    return DoExtractBin(filename.c_str(), entry);
+}
+
 BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 {
     MWaitCursor wait;
@@ -5757,166 +5925,6 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     }
 
     return bSuccess;
-}
-
-BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
-{
-    ResToText res2text(m_settings, m_db, m_entries);
-
-    if (bExporting)
-    {
-        if (m_settings.bStoreToResFolder)
-        {
-            res2text.m_strFilePrefix = L"res\\";
-        }
-    }
-
-    MString filename = res2text.GetEntryFileName(entry);
-    if (filename.empty())
-        return TRUE;
-
-    //MessageBox(NULL, filename.c_str(), NULL, 0);
-    if (entry.type == RT_CURSOR)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_BITMAP)
-    {
-        return PackedDIB_Extract(filename.c_str(), &entry[0], entry.size(), FALSE);
-    }
-    if (entry.type == RT_ICON)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_MENU)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_DIALOG)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_STRING)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_FONTDIR)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_FONT)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_ACCELERATOR)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_RCDATA)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_MESSAGETABLE)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_GROUP_CURSOR)
-    {
-        return DoExtractCursor(filename.c_str(), entry);
-    }
-    if (entry.type == RT_GROUP_ICON)
-    {
-        return DoExtractIcon(filename.c_str(), entry);
-    }
-    if (entry.type == RT_VERSION)
-    {
-        // No output file
-        return TRUE;
-    }
-    if (entry.type == RT_DLGINCLUDE)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_PLUGPLAY)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_VXD)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_ANICURSOR)
-    {
-        return DoExtractCursor(filename.c_str(), entry);
-    }
-    if (entry.type == RT_ANIICON)
-    {
-        return DoExtractIcon(filename.c_str(), entry);
-    }
-    if (entry.type == RT_HTML)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == RT_MANIFEST)
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"AVI")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"PNG")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"GIF")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"JPEG")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"JPG")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"TIFF")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"TIF")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"EMF")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"ENHMETAFILE")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"WMF")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"WAVE")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    if (entry.type == L"IMAGE")
-    {
-        return DoExtractBin(filename.c_str(), entry);
-    }
-    return DoExtractBin(filename.c_str(), entry);
 }
 
 BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const ResEntry& entry)
