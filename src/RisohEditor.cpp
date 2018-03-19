@@ -5613,11 +5613,10 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     {
         if (m_settings.bStoreToResFolder)
         {
-            TCHAR szResDir[MAX_PATH];
-            StringCchCopy(szResDir, _countof(szResDir), szPath);
-            StringCchCat(szResDir, _countof(szResDir), TEXT("\\res"));
-            DoBackupFolder(szResDir);
-            CreateDirectory(szResDir, NULL);
+            MString strResDir = szPath;
+            strResDir += TEXT("\\res");
+            DoBackupFolder(strResDir.c_str());
+            CreateDirectory(strResDir.c_str(), NULL);
         }
 
         for (size_t i = 0; i < m_entries.size(); ++i)
