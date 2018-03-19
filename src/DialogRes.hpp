@@ -802,9 +802,7 @@ struct DialogRes
 
         if (id_or_str.is_str())
         {
-            ret += L"\"";
             ret += id_or_str.str();
-            ret += L"\"";
         }
         else
         {

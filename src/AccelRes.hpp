@@ -104,9 +104,7 @@ public:
 
         if (id_or_str.m_id == 0)
         {
-            ret += L"\"";
             ret += id_or_str.str();
-            ret += L"\"";
         }
         else
         {

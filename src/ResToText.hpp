@@ -925,9 +925,7 @@ inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& n
     MString ret;
     if (name.is_str())
     {
-        ret += L"\"";
         ret += name.str();
-        ret += L"\"";
     }
     else
     {

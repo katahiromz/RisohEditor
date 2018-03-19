@@ -183,17 +183,7 @@ public:
         MStringW ret;
         WCHAR line[MAX_PATH];
 
-        if (name.m_id == 0)
-        {
-            ret += L"\"";
-            ret += name.str();
-            ret += L"\"";
-        }
-        else
-        {
-            ret += name.str();
-        }
-
+        ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
         StringCchPrintfW(line, _countof(line),
