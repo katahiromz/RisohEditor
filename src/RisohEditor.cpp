@@ -6273,7 +6273,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     if (GetOpenFileNameW(&ofn))
     {
         DoLoadResH(hwnd, szFile);
-        if (m_szResourceH[0] && m_settings.bAutoLoadNearbyResH)
+        if (m_szResourceH[0])
         {
             ShowIDList(hwnd, TRUE);
         }
