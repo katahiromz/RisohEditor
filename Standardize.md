@@ -34,7 +34,7 @@ Here, "TheProject.rc" must be replaced with the actual resource file name for th
 
 File "resource.h" should not use include guard.
 
-Don't use string macro or resource ID of string value.
+In "resource.h", please don't use string macro or resource ID of string value.
 
 If the rc file has #include's of the system headers, then the includes should be wrapped as follows:
 
