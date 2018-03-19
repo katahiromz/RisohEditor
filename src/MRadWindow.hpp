@@ -1848,7 +1848,7 @@ public:
 
     void OnDlgProp(HWND hwnd)
     {
-        MDlgPropDlg dialog(m_dialog_res, m_rad_dialog.m_db);
+        MDlgPropDlg dialog(m_dialog_res, m_settings, m_rad_dialog.m_db);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);

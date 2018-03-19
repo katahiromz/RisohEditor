@@ -39,6 +39,7 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -48,18 +49,20 @@ public:
     DialogRes&      m_dialog_res;
     BOOL            m_bUpdating;
     ConstantsDB&    m_db;
+    RisohSettings&  m_settings;
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
+    MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb6;
 
-    MDlgPropDlg(DialogRes& dialog_res, ConstantsDB& db) :
+    MDlgPropDlg(DialogRes& dialog_res, RisohSettings& settings, ConstantsDB& db) :
         MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE),
-        m_db(db)
+        m_db(db), m_settings(settings)
     {
     }
 
@@ -148,7 +151,8 @@ public:
             strCaption = mstr_quote(strCaption);
         }
 
-        SetDlgItemTextW(hwnd, cmb1, strCaption.c_str());
+        SubclassChildDx(m_cmb1, cmb1);
+        InitCaptionComboBox(m_cmb1, m_settings, strCaption.c_str());
         SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
 
         if (m_dialog_res.IsExtended())
@@ -263,6 +267,7 @@ public:
         {
             mstr_unquote(strCaption);
         }
+        m_settings.AddCaption(strCaption.c_str());
 
         INT x = ::GetDlgItemInt(hwnd, edt1, NULL, TRUE);
         INT y = ::GetDlgItemInt(hwnd, edt2, NULL, TRUE);
