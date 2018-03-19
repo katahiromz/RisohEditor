@@ -59,7 +59,7 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 180;
+        column.cx = 140;
         column.pszText = LoadStringDx(IDS_INTVALUE);
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
