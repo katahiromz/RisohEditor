@@ -7799,7 +7799,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         return;
     }
 
-    if (m_szResourceH[0] == 0)
+    if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == 0xFFFFFFFF)
     {
         WCHAR szResH[MAX_PATH];
 
