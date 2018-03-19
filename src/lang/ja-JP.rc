@@ -32,13 +32,13 @@ IDR_MAINMENU MENU
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "エクスポート(&E)...", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "ウィンドウ クラス ライブラリを読み込む(&W)...", ID_LOADWCLIB
-        MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH
         MENUITEM "resource.h を更新/保存する(&P)", ID_UPDATERESHBANG
         MENUITEM "resource.h の変更を助言する(&V)...", ID_ADVICERESH
         MENUITEM "resource.h のアンロード(&U)", ID_UNLOADRESH
+        MENUITEM SEPARATOR
+        MENUITEM "ウィンドウ クラス ライブラリを読み込む(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         MENUITEM "設定(&C)...", ID_CONFIG
         MENUITEM SEPARATOR
