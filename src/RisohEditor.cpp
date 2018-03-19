@@ -750,6 +750,35 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     }
 }
 
+void InitLangListView(HWND hLst1)
+{
+    ListView_DeleteAllItems(hLst1);
+
+    WCHAR sz[32];
+    LV_ITEM item;
+    INT iItem = 0;
+    for (size_t i = 0; i < g_Langs.size(); ++i)
+    {
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = const_cast<LPTSTR>(g_Langs[i].str.c_str());
+        ListView_InsertItem(hLst1, &item);
+
+        StringCchPrintfW(sz, _countof(sz), L"%u", g_Langs[i].LangID);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = sz;
+        ListView_SetItem(hLst1, &item);
+
+        ++iItem;
+    }
+}
+
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
 {
     WCHAR szType[MAX_PATH];
@@ -1284,6 +1313,8 @@ public:
     void OnEditLabel(HWND hwnd);
     void OnSetPaths(HWND hwnd);
     void OnUseOldStyleLangStmt(HWND hwnd);
+    void OnShowLangs(HWND hwnd);
+
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
@@ -6277,7 +6308,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         {
             ShowIDList(hwnd, TRUE);
         }
-		DoRefresh(hwnd);
+        DoRefresh(hwnd);
     }
 }
 
@@ -6744,6 +6775,15 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     UpdatePrefixDB(hwnd);
 }
 
+void MMainWnd::OnShowLangs(HWND hwnd)
+{
+    if (!CompileIfNecessary(hwnd, TRUE))
+        return;
+
+    MLangsDlg dialog;
+    dialog.DialogBoxDx(hwnd);
+}
+
 void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -7111,6 +7151,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SETDEFAULTS:
         SetDefaultSettings(hwnd);
+        break;
+    case ID_SHOWLANGS:
+        OnShowLangs(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

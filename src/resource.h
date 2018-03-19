@@ -149,6 +149,7 @@
 #define ID_IDJUMP07             228
 #define ID_IDJUMP08             229
 #define ID_IDJUMP09             230
+#define ID_SHOWLANGS            231
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101
@@ -193,6 +194,7 @@
 #define IDD_PATHS               149
 #define IDD_EXP_OPTIONS         150
 #define IDD_STRINGID            "StringID"
+#define IDD_LANGS               151
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
@@ -331,6 +333,8 @@
 #define IDS_DATATOOLONG         236
 #define IDS_ALL                 237
 #define IDS_UNKNOWNFORMAT       238
+#define IDS_LANGUAGE            239
+#define IDS_INTVALUE            240
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
