@@ -25,11 +25,13 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
-
 #include "DialogRes.hpp"
 
-void InitFontComboBox(HWND hCmb);
+class MDlgPropDlg;
 
+//////////////////////////////////////////////////////////////////////////////
+
+void InitFontComboBox(HWND hCmb);
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
 void GetStyleSelect(std::vector<BYTE>& sel,
                     const ConstantsDB::TableType& table, DWORD dwValue);
@@ -40,6 +42,7 @@ void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
 void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
+void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -278,6 +281,7 @@ public:
         mstr_trim(strClass);
 
         MString strHelp = GetDlgItemText(cmb3);
+        ReplaceFullWithHalf(strHelp);
         mstr_trim(strHelp);
         DWORD help;
         if (m_db.HasResID(strHelp))
@@ -300,6 +304,7 @@ public:
         }
 
         MString strStyle = GetDlgItemText(edt6);
+        ReplaceFullWithHalf(strStyle);
         mstr_trim(strStyle);
         DWORD style = mstr_parse_int(strStyle.c_str(), false, 16);
 

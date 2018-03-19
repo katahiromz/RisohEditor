@@ -45,6 +45,7 @@ void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
 void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
 void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
+void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -229,6 +230,7 @@ public:
         item.m_class = strClass.c_str();
 
         MString strHelp = GetDlgItemText(cmb5);
+        ReplaceFullWithHalf(strHelp);
         mstr_trim(strHelp);
         if (!strHelp.empty())
             flags |= F_HELP;
@@ -242,6 +244,7 @@ public:
         }
 
         MString strStyle = GetDlgItemText(edt6);
+        ReplaceFullWithHalf(strStyle);
         mstr_trim(strStyle);
         if (!strStyle.empty())
             flags |= F_STYLE;

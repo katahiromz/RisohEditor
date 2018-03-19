@@ -30,6 +30,8 @@
 
 class MAddCtrlDlg;
 
+void ReplaceFullWithHalf(MStringW& strText);
+
 //////////////////////////////////////////////////////////////////////////////
 
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
@@ -297,6 +299,7 @@ public:
         }
 
         MString strHelp = GetDlgItemText(cmb5);
+        ReplaceFullWithHalf(strHelp);
         mstr_trim(strHelp);
         DWORD help;
         if (m_db.HasResID(strHelp))
@@ -309,6 +312,7 @@ public:
         }
 
         MString strStyle = GetDlgItemText(edt6);
+        ReplaceFullWithHalf(strStyle);
         mstr_trim(strStyle);
         DWORD style = mstr_parse_int(strStyle.c_str(), false, 16);
 

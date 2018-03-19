@@ -34,6 +34,7 @@ class MEditMenuDlg;
 
 BOOL CheckCommand(ConstantsDB& db, MString strCommand);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -117,6 +118,9 @@ public:
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
         GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
+        ReplaceFullWithHalf(m_entry.szHelpID);
+        mstr_trim(m_entry.szHelpID);
+
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
