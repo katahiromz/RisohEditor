@@ -3656,77 +3656,77 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     if (entry.type.m_id != 0)
     {
         WORD wType = entry.type.m_id;
-        if (wType == (WORD)RT_ICON)
+        if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
             PreviewIcon(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_CURSOR)
+        else if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             PreviewCursor(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_GROUP_ICON)
+        else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
             PreviewGroupIcon(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_GROUP_CURSOR)
+        else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
             PreviewGroupCursor(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_BITMAP)
+        else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
             PreviewBitmap(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_ACCELERATOR)
+        else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
             PreviewAccel(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (wType == (WORD)RT_STRING)
+        else if (wType == (WORD)(UINT_PTR)RT_STRING)
         {
             PreviewString(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_MENU)
+        else if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
             PreviewMenu(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (wType == (WORD)RT_DIALOG)
+        else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
             PreviewDialog(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (wType == (WORD)RT_ANIICON)
+        else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
             PreviewAniIcon(hwnd, entry, TRUE);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_ANICURSOR)
+        else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
             PreviewAniIcon(hwnd, entry, FALSE);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_MESSAGETABLE)
+        else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
             PreviewMessage(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (wType == (WORD)RT_MANIFEST || wType == (WORD)RT_HTML)
+        else if (wType == (WORD)(UINT_PTR)RT_MANIFEST || wType == (WORD)(UINT_PTR)RT_HTML)
         {
             PreviewHtml(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (wType == (WORD)RT_VERSION)
+        else if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
             PreviewVersion(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (wType == (WORD)RT_RCDATA)
+        else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
             PreviewRCData(hwnd, entry);
             bEditable = TRUE;
@@ -5659,95 +5659,95 @@ inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
     if (entry.type.is_int())
     {
         WORD wType = entry.type.m_id;
-        if (wType == (WORD)RT_CURSOR)
+        if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_BITMAP)
+        if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
             return PackedDIB_Extract(filename.c_str(), &entry[0], entry.size(), FALSE);
         }
-        if (wType == (WORD)RT_ICON)
+        if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_MENU)
+        if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_DIALOG)
+        if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_STRING)
+        if (wType == (WORD)(UINT_PTR)RT_STRING)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_FONTDIR)
+        if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_FONT)
+        if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_ACCELERATOR)
+        if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_RCDATA)
+        if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_MESSAGETABLE)
+        if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_GROUP_CURSOR)
+        if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
             return DoExtractCursor(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_GROUP_ICON)
+        if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
             return DoExtractIcon(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_VERSION)
+        if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
             // No output file
             return TRUE;
         }
-        if (wType == (WORD)RT_DLGINCLUDE)
+        if (wType == (WORD)(UINT_PTR)RT_DLGINCLUDE)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_PLUGPLAY)
+        if (wType == (WORD)(UINT_PTR)RT_PLUGPLAY)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_VXD)
+        if (wType == (WORD)(UINT_PTR)RT_VXD)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_ANICURSOR)
+        if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
             return DoExtractCursor(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_ANIICON)
+        if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
             return DoExtractIcon(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_HTML)
+        if (wType == (WORD)(UINT_PTR)RT_HTML)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (wType == (WORD)RT_MANIFEST)
+        if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
         {
             return DoExtractBin(filename.c_str(), entry);
         }

@@ -125,105 +125,105 @@ ResToText::GetEntryFileName(const ResEntry& entry)
     if (entry.type.is_int())
     {
         WORD wType = entry.type.m_id;
-        if (wType == (WORD)RT_CURSOR)
+        if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_BITMAP)
+        else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
             ret += L"Bitmap_";
             ret += DumpEscapedName(entry.name);
             ret += L".bmp";
         }
-        else if (wType == (WORD)RT_ICON)
+        else if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_MENU)
+        else if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_DIALOG)
+        else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_STRING)
+        else if (wType == (WORD)(UINT_PTR)RT_STRING)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_FONTDIR)
+        else if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
             ret += L"FontDir_";
             ret += DumpEscapedName(entry.name);
             ret += L".bin";
         }
-        else if (wType == (WORD)RT_FONT)
+        else if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
             ret += L"Font_";
             ret += DumpEscapedName(entry.name);
             ret += L".bin";
         }
-        else if (wType == (WORD)RT_ACCELERATOR)
+        else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_RCDATA)
+        else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
             ret += L"RCData_";
             ret += DumpEscapedName(entry.name);
             ret += L".bin";
         }
-        else if (wType == (WORD)RT_MESSAGETABLE)
+        else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_GROUP_CURSOR)
+        else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
             ret += L"Cursor_";
             ret += DumpEscapedName(entry.name);
             ret += L".cur";
         }
-        else if (wType == (WORD)RT_GROUP_ICON)
+        else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
             ret += L"Icon_";
             ret += DumpEscapedName(entry.name);
             ret += L".ico";
         }
-        else if (wType == (WORD)RT_VERSION)
+        else if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
             // No output file
         }
-        else if (wType == (WORD)RT_DLGINCLUDE)
+        else if (wType == (WORD)(UINT_PTR)RT_DLGINCLUDE)
         {
             // TODO:
         }
-        else if (wType == (WORD)RT_PLUGPLAY)
+        else if (wType == (WORD)(UINT_PTR)RT_PLUGPLAY)
         {
             // TODO:
         }
-        else if (wType == (WORD)RT_VXD)
+        else if (wType == (WORD)(UINT_PTR)RT_VXD)
         {
             // TODO:
         }
-        else if (wType == (WORD)RT_ANICURSOR)
+        else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
             ret += L"AniCursor_";
             ret += DumpEscapedName(entry.name);
             ret += L".ani";
         }
-        else if (wType == (WORD)RT_ANIICON)
+        else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
             ret += L"AniIcon_";
             ret += DumpEscapedName(entry.name);
             ret += L".ani";
         }
-        else if (wType == (WORD)RT_HTML)
+        else if (wType == (WORD)(UINT_PTR)RT_HTML)
         {
             ret += L"Html_";
             ret += DumpEscapedName(entry.name);
             ret += L".html";
         }
-        else if (wType == (WORD)RT_MANIFEST)
+        else if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
         {
             ret += L"Manifest_";
             ret += DumpEscapedName(entry.name);
