@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH
         MENUITEM "resource.h のアンロード(&U)", ID_UNLOADRESH
         MENUITEM "resource.h の変更を助言する(&V)...", ID_ADVICERESH
-        MENUITEM "resource.h を更新する(&P)", ID_UPDATERESHBANG
+        MENUITEM "resource.h を更新/保存する(&P)", ID_UPDATERESHBANG
         MENUITEM SEPARATOR
         MENUITEM "設定(&C)...", ID_CONFIG
         MENUITEM SEPARATOR
@@ -894,7 +894,7 @@ FONT 9, "MS UI Gothic"
     RTEXT "IDの名前(&N):", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14
     RTEXT "整数値(&I):", -1, 10, 47, 50, 14
-    EDITTEXT edt2, 65, 45, 48, 14, ES_NUMBER
+    EDITTEXT edt2, 65, 45, 48, 14
     PUSHBUTTON "自動(&A)", psh1, 115, 45, 45, 14
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 85, 70, 60, 14
@@ -910,7 +910,7 @@ FONT 9, "MS UI Gothic"
     RTEXT "IDの種類(&T):", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
     RTEXT "整数値(&I):", -1, 10, 52, 50, 14
-    EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
+    EDITTEXT edt3, 65, 50, 48, 14
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 85, 70, 60, 14
 }

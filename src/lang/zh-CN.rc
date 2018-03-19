@@ -38,7 +38,7 @@ IDR_MAINMENU MENU
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
         MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
-        MENUITEM "更新 resource.h(&P)", ID_UPDATERESHBANG
+        MENUITEM "更新/保存 resource.h(&P)", ID_UPDATERESHBANG
         MENUITEM SEPARATOR
         MENUITEM "设置(&C)...", ID_CONFIG
         MENUITEM SEPARATOR
@@ -894,7 +894,7 @@ FONT 9, "宋体"
     RTEXT "ID名称(&N):", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14
     RTEXT "整型值(&I):", -1, 10, 47, 50, 14
-    EDITTEXT edt2, 65, 45, 48, 14, ES_NUMBER
+    EDITTEXT edt2, 65, 45, 48, 14
     PUSHBUTTON "自动(&A)", psh1, 115, 45, 45, 14
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 85, 70, 60, 14
@@ -910,7 +910,7 @@ FONT 9, "宋体"
     RTEXT "ID类型(&T):", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
     RTEXT "整型值(&I):", -1, 10, 52, 50, 14
-    EDITTEXT edt3, 65, 50, 48, 14, ES_NUMBER
+    EDITTEXT edt3, 65, 50, 48, 14
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 85, 70, 60, 14
 }
