@@ -9014,7 +9014,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 
 LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    INT iItem = wParam;
+    INT iItem = (INT)wParam;
     if (iItem == -1)
         return 0;
 
