@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     12      /* Version 12 */
+#define MZC4_MFILE_HPP_     13      /* Version 13 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
@@ -686,7 +686,7 @@ inline BOOL MFile::WriteBinary(LPCVOID pv, DWORD cb)
         else
             break;
     }
-    return (cb == 0) && FlushFileBuffers();
+    return (cb == 0);
 }
 
 inline /*static*/ HANDLE MFile::CloneHandleDx(HANDLE hFile)
