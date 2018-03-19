@@ -6277,6 +6277,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         {
             ShowIDList(hwnd, TRUE);
         }
+		DoRefresh(hwnd);
     }
 }
 
