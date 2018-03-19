@@ -32,6 +32,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
+void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 

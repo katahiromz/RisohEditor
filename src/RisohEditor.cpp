@@ -835,6 +835,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
     MStringW str = szName;
     mstr_trim(str);
     lstrcpynW(szName, str.c_str(), _countof(szName));
+    ReplaceFullWithHalf(szName);
     if (szName[0] == 0)
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);
@@ -7186,22 +7187,32 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #endif
 }
 
+void ReplaceFullWithHalf(LPWSTR pszText)
+{
+    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
+    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+
+    for (DWORD i = 0; pszText[i]; ++i)
+    {
+        size_t k = strFullWidth.find(pszText[i]);
+        if (k != MStringW::npos)
+        {
+            pszText[i] = strHalfWidth[k];
+        }
+    }
+}
+
+void ReplaceFullWithHalf(MStringW& strText)
+{
+    ReplaceFullWithHalf(&strText[0]);
+}
+
 WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
 {
     WCHAR szText[128];
     StringCchCopyW(szText, _countof(szText), pszLang);
 
-    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
-    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
-
-    for (DWORD i = 0; szText[i]; ++i)
-    {
-        size_t k = strFullWidth.find(szText[i]);
-        if (k != MStringW::npos)
-        {
-            szText[i] = strHalfWidth[k];
-        }
-    }
+    ReplaceFullWithHalf(szText);
 
     if (szText[0] == 0)
     {
@@ -7487,6 +7498,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
 
             UINT i = LOWORD(lParam);
+            if (i >= m_entries.size())
+                return FALSE;   // reject
+
             ResEntry entry = m_entries[i];
 
             if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)

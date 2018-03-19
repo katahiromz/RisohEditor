@@ -27,6 +27,7 @@
 #include "RisohSettings.hpp"
 
 std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
+void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +80,9 @@ public:
     void OnOK(HWND hwnd)
     {
         MString str1 = GetDlgItemText(hwnd, edt1);
+        ReplaceFullWithHalf(str1);
         mstr_trim(str1);
+        CharUpper(&str1[0]);
         if (str1.empty())
         {
             HWND hEdt1 = GetDlgItem(hwnd, edt1);
@@ -91,6 +94,7 @@ public:
         m_str1 = str1;
 
         MString str2 = GetDlgItemText(hwnd, edt2);
+        ReplaceFullWithHalf(str2);
         mstr_trim(str2);
         if (str2.empty())
         {

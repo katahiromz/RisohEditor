@@ -26,6 +26,8 @@
 #include "Res.hpp"
 #include "resource.h"
 
+void ReplaceFullWithHalf(MStringW& strText);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MModifyResIDDlg : public MDialogBase
@@ -55,6 +57,7 @@ public:
     void OnOK(HWND hwnd)
     {
         MString str1 = GetDlgItemText(hwnd, edt1);
+        ReplaceFullWithHalf(str1);
         mstr_trim(str1);
         if (str1.empty())
         {
@@ -78,6 +81,7 @@ public:
         }
 
         MString str3 = GetDlgItemText(hwnd, edt3);
+        ReplaceFullWithHalf(str3);
         mstr_trim(str3);
         if (str3.empty())
         {
