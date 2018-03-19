@@ -192,6 +192,7 @@
 #define IDD_CTRLDATA            148
 #define IDD_PATHS               149
 #define IDD_EXP_OPTIONS         150
+#define IDD_STRINGID            "StringID"
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
@@ -346,7 +347,6 @@
 #endif
 
 #define UNKNOWNRESID1           999
-#define UNKNOWNRESID2           L"String"
 
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS

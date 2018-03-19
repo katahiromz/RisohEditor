@@ -286,7 +286,8 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
 }
 
 MString
-GetEntityIDText(ResEntries& entries, ConstantsDB& db,
+GetEntityIDText(ResEntries& entries, RisohSettings& settings,
+                ConstantsDB& db,
                 const MString& name, INT nIDTYPE_, BOOL bFlag)
 {
     MIdOrString type;
@@ -307,9 +308,25 @@ GetEntityIDText(ResEntries& entries, ConstantsDB& db,
     }
 
     WORD wName = WORD(db.GetResIDValue(name));
+    MIdOrString name_or_id(wName);
+    if (wName == 0)
+    {
+        id_map_type::iterator it;
+        MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
+        it = settings.id_map.find(strA);
+        if (it != settings.id_map.end())
+        {
+            MStringA strA = it->second;
+            if (strA[0] == 'L')
+                strA = strA.substr(1);
+            mstr_unquote(strA);
+            CharUpperA(&strA[0]);
+            name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
+        }
+    }
 
     ResEntries found;
-    Res_Search(found, entries, type, wName, 0xFFFF);
+    Res_Search(found, entries, type, name_or_id, 0xFFFF);
 
     if (nIDTYPE_ == IDTYPE_RESOURCE)
     {
@@ -7355,6 +7372,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (new_name.empty())
                     return FALSE;   // reject
 
+                if (old_name.is_str())
+                    CharUpper(&old_name.m_str[0]);
+                if (new_name.is_str())
+                    CharUpper(&new_name.m_str[0]);
+
                 if (old_name == new_name)
                     return FALSE;   // reject
 
@@ -8845,9 +8867,25 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         type.m_str = strType;
 
     WORD wName = WORD(m_db.GetResIDValue(name));
+    MIdOrString name_or_id(wName);
+    if (wName == 0)
+    {
+        id_map_type::iterator it;
+        MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
+        it = m_settings.id_map.find(strA);
+        if (it != m_settings.id_map.end())
+        {
+            MStringA strA = it->second;
+            if (strA[0] == 'L')
+                strA = strA.substr(1);
+            mstr_unquote(strA);
+            CharUpperA(&strA[0]);
+            name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
+        }
+    }
 
     ResEntries found;
-    Res_Search(found, m_entries, type, wName, 0xFFFF);
+    Res_Search(found, m_entries, type, name_or_id, 0xFFFF);
 
     if (found.size())
     {

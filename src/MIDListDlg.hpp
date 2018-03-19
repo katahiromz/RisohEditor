@@ -32,7 +32,7 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(ResEntries& entries, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bFlag);
+MString GetEntityIDText(ResEntries& entries, RisohSettings& settings, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bFlag);
 std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ public:
 
                 if (m_db.IsEntityIDType(nIDTYPE_))
                 {
-                    MString str2 = GetEntityIDText(m_entries, m_db, name, nIDTYPE_, bFlag);
+                    MString str2 = GetEntityIDText(m_entries, m_settings, m_db, name, nIDTYPE_, bFlag);
                     if (!str2.empty() && ret.find(str2) == MString::npos)
                     {
                         if (ret.empty())
