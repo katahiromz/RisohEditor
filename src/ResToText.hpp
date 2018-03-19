@@ -378,6 +378,8 @@ ResToText::DoCursor(const ResEntry& entry)
         str += DumpIconInfo(bm, FALSE);
         DestroyCursor(hCursor);
         DeleteObject(hbm);
+
+        str += L"\r\n";
     }
 
     return str;
@@ -392,6 +394,7 @@ ResToText::DoBitmap(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += DumpBitmapInfo(hbm);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -427,6 +430,8 @@ ResToText::DoIcon(const ResEntry& entry)
         }
         DestroyIcon(hIcon);
         DeleteObject(hbm);
+
+        str += L"\r\n";
     }
 
     return str;
@@ -533,6 +538,7 @@ ResToText::DoGroupCursor(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += DumpGroupCursorInfo(m_entries, entry.data);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -554,6 +560,7 @@ ResToText::DoGroupIcon(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += DumpGroupIconInfo(entry.data);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -589,6 +596,7 @@ ResToText::DoAniCursor(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += LoadStringDx(IDS_ANICURSOR);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -610,6 +618,7 @@ ResToText::DoAniIcon(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += LoadStringDx(IDS_ANIICON);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -863,6 +872,7 @@ inline MString ResToText::DoWave(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += LoadStringDx(IDS_WAVESOUND);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -883,6 +893,7 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     if (m_bHumanReadable)
     {
         str += LoadStringDx(IDS_AVIMOVIE);
+        str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
@@ -914,6 +925,12 @@ inline MString ResToText::DoRCData(const ResEntry& entry)
 inline MString ResToText::DoUnknown(const ResEntry& entry)
 {
     MString str;
+
+    if (m_bHumanReadable)
+    {
+        str += LoadStringDx(IDS_UNKNOWNFORMAT);
+        str += L"\r\n";
+    }
 
     // LANGUAGE ..., ...
     str += GetLanguageStatement(entry.lang);

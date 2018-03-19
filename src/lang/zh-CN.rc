@@ -382,6 +382,7 @@ STRINGTABLE
     IDS_INVALIDPATH, "该路径无效."
     IDS_DATATOOLONG, "数据太长."
     IDS_ALL, "(所有)"
+    IDS_UNKNOWNFORMAT, "(未知的数据格式)\r\n"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

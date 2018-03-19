@@ -382,6 +382,7 @@ STRINGTABLE
     IDS_INVALIDPATH, "パスが無効です。"
     IDS_DATATOOLONG, "データが長すぎます。"
     IDS_ALL, "(すべて)"
+    IDS_UNKNOWNFORMAT, "(未知のデータ形式)\r\n"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

@@ -382,6 +382,7 @@ STRINGTABLE
     IDS_INVALIDPATH, "Invalid path."
     IDS_DATATOOLONG, "Data is too long."
     IDS_ALL, "(All)"
+    IDS_UNKNOWNFORMAT, "(Unknown Data Format)\r\n"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

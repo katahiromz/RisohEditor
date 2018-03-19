@@ -1374,6 +1374,7 @@ protected:
     void PreviewStringTable(HWND hwnd, const ResEntry& entry);
     void PreviewMessageTable(HWND hwnd, const ResEntry& entry);
     void PreviewRCData(HWND hwnd, const ResEntry& entry);
+    void PreviewUnknown(HWND hwnd, const ResEntry& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
@@ -3510,6 +3511,13 @@ void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& entry)
     }
 }
 
+void MMainWnd::PreviewUnknown(HWND hwnd, const ResEntry& entry)
+{
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
+}
+
 void MMainWnd::PreviewRCData(HWND hwnd, const ResEntry& entry)
 {
     ResToText res2text(m_settings, m_db, m_entries);
@@ -3640,99 +3648,115 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     BOOL bEditable = FALSE;
-    if (entry.type == RT_ICON)
+    if (entry.type.m_id != 0)
     {
-        PreviewIcon(hwnd, entry);
-        bEditable = FALSE;
+        if (entry.type == RT_ICON)
+        {
+            PreviewIcon(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_CURSOR)
+        {
+            PreviewCursor(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_GROUP_ICON)
+        {
+            PreviewGroupIcon(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_GROUP_CURSOR)
+        {
+            PreviewGroupCursor(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_BITMAP)
+        {
+            PreviewBitmap(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_ACCELERATOR)
+        {
+            PreviewAccel(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else if (entry.type == RT_STRING)
+        {
+            PreviewString(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_MENU)
+        {
+            PreviewMenu(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else if (entry.type == RT_DIALOG)
+        {
+            PreviewDialog(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else if (entry.type == RT_ANIICON)
+        {
+            PreviewAniIcon(hwnd, entry, TRUE);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_ANICURSOR)
+        {
+            PreviewAniIcon(hwnd, entry, FALSE);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_MESSAGETABLE)
+        {
+            PreviewMessage(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == RT_MANIFEST || entry.type == RT_HTML)
+        {
+            PreviewHtml(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else if (entry.type == RT_VERSION)
+        {
+            PreviewVersion(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else if (entry.type == RT_RCDATA)
+        {
+            PreviewRCData(hwnd, entry);
+            bEditable = TRUE;
+        }
+        else
+        {
+            PreviewUnknown(hwnd, entry);
+            bEditable = FALSE;
+        }
     }
-    else if (entry.type == RT_CURSOR)
+    else
     {
-        PreviewCursor(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_GROUP_ICON)
-    {
-        PreviewGroupIcon(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_GROUP_CURSOR)
-    {
-        PreviewGroupCursor(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_BITMAP)
-    {
-        PreviewBitmap(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_ACCELERATOR)
-    {
-        PreviewAccel(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == RT_STRING)
-    {
-        PreviewString(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_MENU)
-    {
-        PreviewMenu(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == RT_DIALOG)
-    {
-        PreviewDialog(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == RT_ANIICON)
-    {
-        PreviewAniIcon(hwnd, entry, TRUE);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_ANICURSOR)
-    {
-        PreviewAniIcon(hwnd, entry, FALSE);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_MESSAGETABLE)
-    {
-        PreviewMessage(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == RT_MANIFEST || entry.type == RT_HTML)
-    {
-        PreviewHtml(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == RT_VERSION)
-    {
-        PreviewVersion(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == RT_RCDATA)
-    {
-        PreviewRCData(hwnd, entry);
-        bEditable = TRUE;
-    }
-    else if (entry.type == L"PNG" || entry.type == L"GIF" ||
-             entry.type == L"JPEG" || entry.type == L"TIFF" ||
-             entry.type == L"JPG" || entry.type == L"TIF" ||
-             entry.type == L"EMF" || entry.type == L"ENHMETAFILE" ||
-             entry.type == L"WMF" || entry.type == L"IMAGE")
-    {
-        PreviewImage(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == L"WAVE")
-    {
-        PreviewWAVE(hwnd, entry);
-        bEditable = FALSE;
-    }
-    else if (entry.type == L"AVI")
-    {
-        PreviewAVI(hwnd, entry);
-        bEditable = FALSE;
+        if (entry.type == L"PNG" || entry.type == L"GIF" ||
+                 entry.type == L"JPEG" || entry.type == L"TIFF" ||
+                 entry.type == L"JPG" || entry.type == L"TIF" ||
+                 entry.type == L"EMF" || entry.type == L"ENHMETAFILE" ||
+                 entry.type == L"WMF" || entry.type == L"IMAGE")
+        {
+            PreviewImage(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == L"WAVE")
+        {
+            PreviewWAVE(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else if (entry.type == L"AVI")
+        {
+            PreviewAVI(hwnd, entry);
+            bEditable = FALSE;
+        }
+        else
+        {
+            PreviewUnknown(hwnd, entry);
+            bEditable = FALSE;
+        }
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
