@@ -44,7 +44,6 @@ public:
     ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
-    HWND m_hLst1;
 
     MAddMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
         : MDialogBase(IDD_ADDMITEM), m_entry(entry), m_db(db)
@@ -53,8 +52,6 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        m_hLst1 = GetDlgItem(hwnd, lst1);
-
         InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND);
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -371,12 +368,14 @@ public:
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
+    HWND m_hLst1;
 
     MEditMenuDlg(ConstantsDB& db, MenuRes& menu_res)
         : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res), m_db(db)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+        m_hLst1 = NULL;
     }
 
     ~MEditMenuDlg()
@@ -390,8 +389,8 @@ public:
         if (m_menu_res.IsExtended())
             CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-        ListView_SetExtendedListViewStyle(hLst1, LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
+        m_hLst1 = GetDlgItem(hwnd, lst1);
+        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 
         LV_COLUMN column;
         ZeroMemory(&column, sizeof(column));
@@ -401,28 +400,28 @@ public:
         column.cx = 225;
         column.pszText = LoadStringDx(IDS_CAPTION);
         column.iSubItem = 0;
-        ListView_InsertColumn(hLst1, 0, &column);
+        ListView_InsertColumn(m_hLst1, 0, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
         column.cx = 95;
         column.pszText = LoadStringDx(IDS_FLAGS);
         column.iSubItem = 1;
-        ListView_InsertColumn(hLst1, 1, &column);
+        ListView_InsertColumn(m_hLst1, 1, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
         column.cx = 150;
         column.pszText = LoadStringDx(IDS_COMMANDID);
         column.iSubItem = 2;
-        ListView_InsertColumn(hLst1, 2, &column);
+        ListView_InsertColumn(m_hLst1, 2, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
         column.cx = 180;
         column.pszText = LoadStringDx(IDS_HELPID);
         column.iSubItem = 3;
-        ListView_InsertColumn(hLst1, 3, &column);
+        ListView_InsertColumn(m_hLst1, 3, &column);
 
         INT i = 0;
         std::wstring str;
@@ -450,7 +449,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 0;
                 item.pszText = &str[0];
-                ListView_InsertItem(hLst1, &item);
+                ListView_InsertItem(m_hLst1, &item);
 
                 str = GetMenuTypeAndState(it->dwType, it->dwState);
 
@@ -459,7 +458,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 1;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
 
                 str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
 
@@ -468,7 +467,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 2;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
 
                 str = m_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
 
@@ -477,7 +476,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 3;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
             }
         }
         else
@@ -502,7 +501,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 0;
                 item.pszText = &str[0];
-                ListView_InsertItem(hLst1, &item);
+                ListView_InsertItem(m_hLst1, &item);
 
                 str = GetMenuFlags(it->fItemFlags);
                 if (it->text.empty() && it->wMenuID == 0)
@@ -513,7 +512,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 1;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
 
                 str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
 
@@ -522,7 +521,7 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 2;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
 
                 str = TEXT("0");
 
@@ -531,13 +530,13 @@ public:
                 item.mask = LVIF_TEXT;
                 item.iSubItem = 3;
                 item.pszText = &str[0];
-                ListView_SetItem(hLst1, &item);
+                ListView_SetItem(m_hLst1, &item);
             }
         }
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hLst1, 0, state, state);
-        SetFocus(hLst1);
+        ListView_SetItemState(m_hLst1, 0, state, state);
+        SetFocus(m_hLst1);
 
         m_resizable.OnParentCreate(hwnd);
 
@@ -562,8 +561,6 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
         MENU_ENTRY m_entry;
         ZeroMemory(&m_entry, sizeof(m_entry));
         MAddMItemDlg dialog(m_db, m_entry);
@@ -573,7 +570,7 @@ public:
             return;
         }
 
-        INT iItem = ListView_GetItemCount(hLst1);
+        INT iItem = ListView_GetItemCount(m_hLst1);
 
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = mstr_quote(m_entry.szCaption);
@@ -588,38 +585,38 @@ public:
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
         item.pszText = &str[0];
-        ListView_InsertItem(hLst1, &item);
+        ListView_InsertItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
         item.pszText = m_entry.szFlags;
-        ListView_SetItem(hLst1, &item);
+        ListView_SetItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 2;
         item.pszText = m_entry.szCommandID;
-        ListView_SetItem(hLst1, &item);
+        ListView_SetItem(m_hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 3;
         item.pszText = m_entry.szHelpID;
-        ListView_SetItem(hLst1, &item);
+        ListView_SetItem(m_hLst1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hLst1, iItem, state, state);
-        ListView_EnsureVisible(hLst1, iItem, FALSE);
+        ListView_SetItemState(m_hLst1, iItem, state, state);
+        ListView_EnsureVisible(m_hLst1, iItem, FALSE);
     }
 
-    BOOL GetEntry(HWND hwnd, HWND hLst1, MENU_ENTRY& entry, INT iItem)
+    BOOL GetEntry(HWND hwnd, MENU_ENTRY& entry, INT iItem)
     {
         WCHAR szCaption[256];
-        ListView_GetItemText(hLst1, iItem, 0, szCaption, _countof(szCaption));
+        ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
 
         entry.wDepth = 0;
         MStringW str = szCaption, strIndent = LoadStringDx(IDS_INDENT);
@@ -640,13 +637,13 @@ public:
 
         lstrcpynW(entry.szCaption, str.c_str(), _countof(entry.szCaption));
 
-        ListView_GetItemText(hLst1, iItem, 1, entry.szFlags, _countof(entry.szFlags));
-        ListView_GetItemText(hLst1, iItem, 2, entry.szCommandID, _countof(entry.szCommandID));
-        ListView_GetItemText(hLst1, iItem, 3, entry.szHelpID, _countof(entry.szHelpID));
+        ListView_GetItemText(m_hLst1, iItem, 1, entry.szFlags, _countof(entry.szFlags));
+        ListView_GetItemText(m_hLst1, iItem, 2, entry.szCommandID, _countof(entry.szCommandID));
+        ListView_GetItemText(m_hLst1, iItem, 3, entry.szHelpID, _countof(entry.szHelpID));
         return TRUE;
     }
 
-    BOOL SetEntry(HWND hwnd, HWND hLst1, MENU_ENTRY& entry, INT iItem)
+    BOOL SetEntry(HWND hwnd, MENU_ENTRY& entry, INT iItem)
     {
         MStringW str, strIndent = LoadStringDx(IDS_INDENT);
         str = mstr_repeat(strIndent, entry.wDepth);
@@ -656,99 +653,89 @@ public:
         else
             str += mstr_quote(entry.szCaption);
 
-        ListView_SetItemText(hLst1, iItem, 0, &str[0]);
-        ListView_SetItemText(hLst1, iItem, 1, entry.szFlags);
-        ListView_SetItemText(hLst1, iItem, 2, entry.szCommandID);
-        ListView_SetItemText(hLst1, iItem, 3, entry.szHelpID);
+        ListView_SetItemText(m_hLst1, iItem, 0, &str[0]);
+        ListView_SetItemText(m_hLst1, iItem, 1, entry.szFlags);
+        ListView_SetItemText(m_hLst1, iItem, 2, entry.szCommandID);
+        ListView_SetItemText(m_hLst1, iItem, 3, entry.szHelpID);
         return TRUE;
     }
 
     void OnModify(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem < 0)
         {
             return;
         }
 
         MENU_ENTRY m_entry;
-        GetEntry(hwnd, hLst1, m_entry, iItem);
+        GetEntry(hwnd, m_entry, iItem);
         
         MModifyMItemDlg dialog(m_db, m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
-            SetEntry(hwnd, hLst1, m_entry, iItem);
+            SetEntry(hwnd, m_entry, iItem);
         }
     }
 
     void OnDelete(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem >= 0)
         {
-            ListView_DeleteItem(hLst1, iItem);
+            ListView_DeleteItem(m_hLst1, iItem);
         }
     }
 
     void OnUp(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem <= 0)
             return;
 
         MENU_ENTRY entry0, entry1;
 
-        GetEntry(hwnd, hLst1, entry0, iItem - 1);
-        GetEntry(hwnd, hLst1, entry1, iItem);
+        GetEntry(hwnd, entry0, iItem - 1);
+        GetEntry(hwnd, entry1, iItem);
 
-        SetEntry(hwnd, hLst1, entry1, iItem - 1);
-        SetEntry(hwnd, hLst1, entry0, iItem);
+        SetEntry(hwnd, entry1, iItem - 1);
+        SetEntry(hwnd, entry0, iItem);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hLst1, iItem - 1, state, state);
+        ListView_SetItemState(m_hLst1, iItem - 1, state, state);
     }
 
     void OnDown(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem < 0)
             return;
 
-        INT nCount = ListView_GetItemCount(hLst1);
+        INT nCount = ListView_GetItemCount(m_hLst1);
         if (iItem + 1 >= nCount)
             return;
 
         MENU_ENTRY entry0, entry1;
 
-        GetEntry(hwnd, hLst1, entry0, iItem);
-        GetEntry(hwnd, hLst1, entry1, iItem + 1);
+        GetEntry(hwnd, entry0, iItem);
+        GetEntry(hwnd, entry1, iItem + 1);
 
-        SetEntry(hwnd, hLst1, entry1, iItem);
-        SetEntry(hwnd, hLst1, entry0, iItem + 1);
+        SetEntry(hwnd, entry1, iItem);
+        SetEntry(hwnd, entry0, iItem + 1);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
-        ListView_SetItemState(hLst1, iItem + 1, state, state);
+        ListView_SetItemState(m_hLst1, iItem + 1, state, state);
     }
 
     void OnLeft(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem < 0)
             return;
 
         WCHAR szCaption[128];
-        ListView_GetItemText(hLst1, iItem, 0, szCaption, _countof(szCaption));
+        ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
 
         std::wstring strIndent = LoadStringDx(IDS_INDENT);
 
@@ -758,14 +745,12 @@ public:
             str = str.substr(strIndent.size());
         }
 
-        ListView_SetItemText(hLst1, iItem, 0, &str[0]);
+        ListView_SetItemText(m_hLst1, iItem, 0, &str[0]);
     }
 
     void OnRight(HWND hwnd)
     {
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-
-        INT iItem = ListView_GetNextItem(hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem < 0)
             return;
 
@@ -773,9 +758,9 @@ public:
             return;
 
         WCHAR CaptionUp[128];
-        ListView_GetItemText(hLst1, iItem - 1, 0, CaptionUp, _countof(CaptionUp));
+        ListView_GetItemText(m_hLst1, iItem - 1, 0, CaptionUp, _countof(CaptionUp));
         WCHAR szCaption[128];
-        ListView_GetItemText(hLst1, iItem, 0, szCaption, _countof(szCaption));
+        ListView_GetItemText(m_hLst1, iItem, 0, szCaption, _countof(szCaption));
 
         MStringW strIndent = LoadStringDx(IDS_INDENT);
         size_t depth_up = mstr_repeat_count(CaptionUp, strIndent);
@@ -785,14 +770,13 @@ public:
             return;
 
         std::wstring str = strIndent + szCaption;
-        ListView_SetItemText(hLst1, iItem, 0, &str[0]);
+        ListView_SetItemText(m_hLst1, iItem, 0, &str[0]);
     }
 
     void OnOK(HWND hwnd)
     {
         MENU_ENTRY entry;
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-        INT iItem, nCount = ListView_GetItemCount(hLst1);
+        INT iItem, nCount = ListView_GetItemCount(m_hLst1);
 
         if (nCount == 0)
         {
@@ -809,7 +793,7 @@ public:
             m_menu_res.exitems().clear();
             for (iItem = 0; iItem < nCount; ++iItem)
             {
-                GetEntry(hwnd, hLst1, entry, iItem);
+                GetEntry(hwnd, entry, iItem);
 
                 MenuRes::ExMenuItem exitem;
 
@@ -831,7 +815,7 @@ public:
             m_menu_res.items().clear();
             for (iItem = 0; iItem < nCount; ++iItem)
             {
-                GetEntry(hwnd, hLst1, entry, iItem);
+                GetEntry(hwnd, entry, iItem);
 
                 MenuRes::MenuItem item;
 
