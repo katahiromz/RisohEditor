@@ -5562,9 +5562,15 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 #undef max
     anValues[2] = std::max(anNext[1], anNext[2]);
     anValues[3] = anNext[3];
+    anValues[4] = 300;
+
+    // fix for preferable values
+    if (anValues[1] < 100)
+        anValues[1] = 100;
+    if (anValues[2] < 100)
+        anValues[2] = 100;
     if (anValues[3] < 1000)
         anValues[3] = 1000;
-    anValues[4] = 300;
 }
 
 inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
