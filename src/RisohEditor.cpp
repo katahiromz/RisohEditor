@@ -498,6 +498,7 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
         }
     }
 
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_PROMPT].name;
     table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
     end = table.end();
