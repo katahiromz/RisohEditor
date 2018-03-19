@@ -21,7 +21,7 @@
 #define MZC4_MLANGSDLG_HPP_
 
 #include "MWindowBase.hpp"
-#include "MModifyAssocDlg.hpp"
+#include "MResizable.hpp"
 #include "RisohSettings.hpp"
 
 void InitLangListView(HWND hLst1, LPCTSTR pszText);
@@ -32,9 +32,20 @@ class MLangsDlg : public MDialogBase
 {
 public:
     HWND m_hLst1;
+    MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MLangsDlg() : MDialogBase(IDD_LANGS)
     {
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+    }
+
+    ~MLangsDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     void Lst1_Init(HWND hLst1)
@@ -44,6 +55,16 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+
         m_hLst1 = GetDlgItem(hwnd, lst1);
         ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
 
@@ -164,6 +185,11 @@ public:
         }
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -173,6 +199,7 @@ public:
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+        HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         default:
             return DefaultProcDx();
         }
