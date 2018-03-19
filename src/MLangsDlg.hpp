@@ -93,6 +93,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        OnCopy(hwnd);
         EndDialog(IDOK);
     }
 
