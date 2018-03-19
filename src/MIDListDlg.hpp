@@ -173,7 +173,13 @@ public:
                 return -1;
             if (id1 > id2)
                 return 1;
-        }
+
+            ListView_GetItemText(m_hLst1, i1, 0, sz1, _countof(sz1));
+            ListView_GetItemText(m_hLst1, i2, 0, sz2, _countof(sz2));
+            cmp = lstrcmp(sz1, sz2);
+            if (cmp != 0)
+                return cmp;
+		}
         return 0;
     }
 
@@ -326,6 +332,8 @@ public:
                 SetWindowPosDx(NULL, &siz);
             }
         }
+
+        SetItems();
 
         return TRUE;
     }

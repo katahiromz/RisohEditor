@@ -1272,7 +1272,6 @@ public:
     void SelectMessage(HWND hwnd);
 
     // ID list
-    void UpdateIDList(HWND hwnd);
     void OnIDList(HWND hwnd);
     void OnIdAssoc(HWND hwnd);
     void OnPredefMacros(HWND hwnd);
@@ -1339,7 +1338,7 @@ protected:
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
-    BOOL UnloadResourceH(HWND hwnd);
+    BOOL UnloadResourceH(HWND hwnd, BOOL bRefresh = TRUE);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
     void ReadResHLines(FILE *fp, std::vector<std::string>& lines);
@@ -4467,7 +4466,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             return FALSE;
         }
 
-        UnloadResourceH(hwnd);
+        UnloadResourceH(hwnd, FALSE);
         if (m_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
@@ -4478,7 +4477,15 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             TV_RefreshInfo(m_hTreeView, m_db, m_entries);
         }
         m_bLoading = FALSE;
+
         SetFilePath(hwnd, szPath, NULL);
+
+        if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+        {
+            ShowIDList(hwnd, TRUE);
+        }
+        DoRefresh(hwnd);
+
         return TRUE;
     }
 
@@ -4492,7 +4499,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             return FALSE;
         }
 
-        UnloadResourceH(hwnd);
+        UnloadResourceH(hwnd, FALSE);
         if (m_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
@@ -4503,7 +4510,14 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             TV_RefreshInfo(m_hTreeView, m_db, m_entries);
         }
         m_bLoading = FALSE;
+
         SetFilePath(hwnd, szPath, NULL);
+
+        if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+        {
+            ShowIDList(hwnd, TRUE);
+        }
+        DoRefresh(hwnd);
 
         return TRUE;
     }
@@ -4577,7 +4591,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     }
     m_bLoading = FALSE;
 
-    UnloadResourceH(hwnd);
+    UnloadResourceH(hwnd, FALSE);
     if (m_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, pszNominal);
 
@@ -4587,10 +4601,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     SetFilePath(hwnd, pszReal, pszNominal);
 
+    if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+    {
+        ShowIDList(hwnd, TRUE);
+    }
+    DoRefresh(hwnd);
+
     return TRUE;
 }
 
-BOOL MMainWnd::UnloadResourceH(HWND hwnd)
+BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 {
     m_db.m_map[L"RESOURCE.ID"].clear();
     m_settings.id_map.clear();
@@ -4598,16 +4618,17 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     m_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
     ShowIDList(hwnd, FALSE);
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    if (bRefresh)
+    {
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    }
 
     return TRUE;
 }
 
 BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 {
-    m_szResourceH[0] = 0;
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
+    UnloadResourceH(hwnd);
 
     TCHAR szPath[MAX_PATH];
     lstrcpyn(szPath, pszPath, _countof(szPath));
@@ -6173,6 +6194,11 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         {
             UnloadResourceH(hwnd);
             CheckResourceH(hwnd, file);
+            if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+            {
+                ShowIDList(hwnd, TRUE);
+            }
+            DoRefresh(hwnd);
             ChangeStatusText(IDS_READY);
             return;
         }
@@ -6241,6 +6267,10 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     if (GetOpenFileNameW(&ofn))
     {
         DoLoadResH(hwnd, szFile);
+        if (m_szResourceH[0])
+        {
+            ShowIDList(hwnd, TRUE);
+        }
     }
 }
 
@@ -6249,6 +6279,10 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
     if (m_szResourceH[0])
     {
         DoLoadResH(hwnd, m_szResourceH);
+        if (m_szResourceH[0])
+        {
+            ShowIDList(hwnd, TRUE);
+        }
     }
 }
 
@@ -6372,12 +6406,6 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     }
 
     lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
-    if (m_settings.bAutoShowIDList)
-    {
-        ShowIDList(hwnd, TRUE);
-    }
-
-    DoRefresh(hwnd);
 
     return TRUE;
 }
@@ -6475,6 +6503,8 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
 BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 {
+    UnloadResourceH(hwnd);
+
     WCHAR szTempFile[MAX_PATH];
     lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
 
@@ -6673,15 +6703,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 
     m_db.ShowMacroID(!m_settings.bHideID);
 
-    DoRefresh(hwnd);
-}
-
-void MMainWnd::UpdateIDList(HWND hwnd)
-{
-    if (!IsWindow(m_id_list_dlg))
-        return;
-
-    m_id_list_dlg.SetItems();
+    DoRefresh(hwnd, TRUE);
 }
 
 void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
@@ -6693,7 +6715,6 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
         m_id_list_dlg.CreateDialogDx(NULL);
         ShowWindow(m_id_list_dlg, SW_SHOWNOACTIVATE);
         UpdateWindow(m_id_list_dlg);
-        UpdateIDList(hwnd);
     }
     else
     {
@@ -6723,7 +6744,7 @@ void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
 
     m_settings.bOldStyle = TRUE;
     //m_settings.bOldStyle = !m_settings.bOldStyle;
-    DoRefresh(hwnd);
+    DoRefresh(hwnd, TRUE);
 }
 
 void MMainWnd::OnSetPaths(HWND hwnd)
