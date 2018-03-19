@@ -286,7 +286,7 @@ public:
         m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(lst1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
 
-        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
+        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
         m_lv.SubclassDx(m_hLst1);
 
         LV_COLUMN column;
@@ -730,6 +730,16 @@ public:
                 PostMessageDx(WM_COMMAND, ID_COPYIDDEF);
                 return 1;
             }
+        }
+        if (pnmhdr->code == LVN_GETINFOTIP)
+        {
+            NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
+            INT iItem = pGetInfoTip->iItem;
+            INT iSubItem = pGetInfoTip->iSubItem;
+            TCHAR szText[128];
+            ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
+            StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
+            return 1;
         }
         return 0;
     }
