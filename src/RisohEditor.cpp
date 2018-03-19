@@ -2730,7 +2730,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            bool shown = m_db.AreMacroIDShown();
+            m_db.ShowMacroID(false);
             MStringW strWide = str_res.Dump(m_db);
+            m_db.ShowMacroID(shown);
+
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
@@ -2764,7 +2768,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            bool shown = m_db.AreMacroIDShown();
+            m_db.ShowMacroID(false);
             MStringW strWide = msg_res.Dump(m_db);
+            m_db.ShowMacroID(shown);
+
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_MESSAGETABLE, WORD(0), lang);
