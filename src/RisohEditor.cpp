@@ -7200,7 +7200,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
         ChangeStatusText(IDS_READY);
 
-#if 1 && !defined(NDEBUG) && (WINVER >= 0x0500)
+#if !defined(NDEBUG) && (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
     StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"), 
