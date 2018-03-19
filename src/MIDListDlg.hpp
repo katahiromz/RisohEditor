@@ -49,7 +49,13 @@ public:
             LPMSG pMsg = (LPMSG)lParam;
             if (pMsg && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
             {
-                SendMessage(GetParent(hwnd), WM_COMMAND, ID_MODIFYRESID, (LPARAM)hwnd);
+                INT iItem = ListView_GetNextItem(m_hwnd, -1, LVNI_ALL | LVNI_SELECTED);
+                TCHAR szText[128];
+                ListView_GetItemText(m_hwnd, iItem, 2, szText, _countof(szText));
+                if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
+                {
+                    SendMessage(GetParent(hwnd), WM_COMMAND, ID_MODIFYRESID, (LPARAM)hwnd);
+                }
             }
         }
         return DefaultProcDx();
@@ -197,21 +203,26 @@ public:
             item.pszText = &text2[0];
             ListView_SetItem(m_hLst1, &item);
 
-            int value = mstr_parse_int(text3.c_str(), true);
+            if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
+            {
+                int value = mstr_parse_int(text3.c_str(), true);
 
-            TCHAR szText[32];
-            if (m_nBase == 10)
-                StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
-            else if (m_nBase == 16)
-                StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
-            else
-                assert(0);
+                TCHAR szText[32];
+                if (m_nBase == 10)
+                    StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
+                else if (m_nBase == 16)
+                    StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
+                else
+                    assert(0);
+
+                text3 = szText;
+            }
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 2;
-            item.pszText = szText;
+            item.pszText = &text3[0];
             ListView_SetItem(m_hLst1, &item);
         }
 
@@ -336,6 +347,7 @@ public:
             str1 = szText;
             ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
             str2 = szText;
+            if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
             {
                 MModifyResIDDlg dialog(m_entries, m_db, str1, str2);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -553,6 +565,20 @@ public:
         {
             CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
                 ID_BASE16, MF_BYCOMMAND);
+        }
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem == -1)
+            return;
+
+        TCHAR szText[128];
+        ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+        if (szText[0] == TEXT('L') || szText[0] == TEXT('"'))
+        {
+            EnableMenuItem(hMenu, ID_MODIFYRESID, MF_GRAYED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, ID_MODIFYRESID, MF_ENABLED);
         }
     }
 

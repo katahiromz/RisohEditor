@@ -345,7 +345,8 @@
     #define IDC_STATIC -1
 #endif
 
-#define UNKNOWNRESID            999
+#define UNKNOWNRESID1           999
+#define UNKNOWNRESID2           L"String"
 
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS

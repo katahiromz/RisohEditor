@@ -317,7 +317,7 @@ int do_mode_2(char*& ptr, int& nMode, bool& do_retry)
         Parser parser(stream);
         if (parser.parse())
         {
-            if (!eval_ast(parser.ast(), g_value))
+            if (!eval_int(parser.ast(), g_value))
             {
                 return syntax_error();
             }

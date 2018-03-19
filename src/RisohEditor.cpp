@@ -1189,6 +1189,7 @@ public:
     void SetDefaultSettings(HWND hwnd);
     BOOL LoadSettings(HWND hwnd);
     BOOL SaveSettings(HWND hwnd);
+    void UpdatePrefixDB(HWND hwnd);
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
@@ -6258,17 +6259,28 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         Parser parser(stream);
         if (parser.parse())
         {
-            int value = 0;
-            if (eval_ast(parser.ast(), value))
+            if (is_str(parser.ast()))
             {
-                char sz[32];
-                if (m_id_list_dlg.m_nBase == 16)
-                    StringCchPrintfA(sz, _countof(sz), "0x%X", value);
-                else
-                    StringCchPrintfA(sz, _countof(sz), "%u", value);
+                string_type value;
+                if (eval_string(parser.ast(), value))
+                {
+                    m_settings.id_map[macro] = value;
+                }
+            }
+            else
+            {
+                int value = 0;
+                if (eval_int(parser.ast(), value))
+                {
+                    char sz[32];
+                    if (m_id_list_dlg.m_nBase == 16)
+                        StringCchPrintfA(sz, _countof(sz), "0x%X", value);
+                    else
+                        StringCchPrintfA(sz, _countof(sz), "%u", value);
 
-                if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
-                    m_settings.id_map[macro] = sz;
+                    if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
+                        m_settings.id_map[macro] = sz;
+                }
             }
         }
     }
@@ -6627,6 +6639,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 
     MIdAssocDlg dialog(m_settings);
     dialog.DialogBoxDx(hwnd);
+    UpdatePrefixDB(hwnd);
 }
 
 void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
@@ -8281,6 +8294,24 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bSelectableByMacro = FALSE;
 }
 
+void MMainWnd::UpdatePrefixDB(HWND hwnd)
+{
+    // update "RESOURCE.ID.PREFIX" table
+    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID.PREFIX"];
+    for (size_t i = 0; i < table.size(); ++i)
+    {
+        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
+        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        {
+            if (table[i].name == it->first)
+            {
+                table[i].value = mstr_parse_int(it->second.c_str());
+                break;
+            }
+        }
+    }
+}
+
 BOOL MMainWnd::LoadSettings(HWND hwnd)
 {
     SetDefaultSettings(hwnd);
@@ -8465,8 +8496,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         m_settings.strPrevVersion = szText;
     }
 
-    // reset association if version <= 3.8
-    if (m_settings.strPrevVersion.empty() || m_settings.strPrevVersion <= L"3.8")
+    // update association if version > 3.8
+    if (!m_settings.strPrevVersion.empty() && m_settings.strPrevVersion > L"3.8")
     {
         TCHAR szName[MAX_PATH];
         assoc_map_type::iterator it, end = m_settings.assoc_map.end();
@@ -8477,6 +8508,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
                 it->second = szName;
             }
         }
+        UpdatePrefixDB(hwnd);
     }
 
     keyRisoh.QueryDword(TEXT("bSepFilesByLang"), (DWORD&)m_settings.bSepFilesByLang);

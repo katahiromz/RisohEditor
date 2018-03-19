@@ -498,7 +498,7 @@ namespace MacroParser
         }
     };
 
-    bool eval_ast(const BaseAst *ast, int& value);
+    bool eval_int(const BaseAst *ast, int& value);
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -605,6 +605,7 @@ namespace MacroParser
             }
             else if (isdigit(ch))
             {
+                // 0123456789
                 str.clear();
                 str += ch;
                 for (;;)
@@ -629,6 +630,21 @@ namespace MacroParser
             {
                 str.clear();
                 str += ch;
+                if (ch == 'L')
+                {
+                    // L"string"
+                    ch = getch();
+                    if (ch == '"')
+                    {
+                        ungetch();
+                        str = m_scanner.get_quoted();
+                        Token token("L" + str, TOK_STRING);
+                        m_tokens.push_back(token);
+                        continue;
+                    }
+                    ungetch();
+                }
+                // identifier
                 for (;;)
                 {
                     ch = getch();
@@ -648,6 +664,7 @@ namespace MacroParser
             }
             else if (ch == '"')
             {
+                // "string"
                 ungetch();
                 str = m_scanner.get_quoted();
                 Token token(str, TOK_STRING);
@@ -1147,7 +1164,7 @@ namespace MacroParser
     {
         const BinaryAst *binary = (const BinaryAst *)ast;
         int left, right;
-        if (!eval_ast(binary->m_left, left) || !eval_ast(binary->m_right, right))
+        if (!eval_int(binary->m_left, left) || !eval_int(binary->m_right, right))
         {
             value = 0;
             return false;
@@ -1182,7 +1199,7 @@ namespace MacroParser
             value = 0;
             return false;
         }
-        return eval_ast(comma->m_args[comma->m_args.size() - 1], value);
+        return eval_int(comma->m_args[comma->m_args.size() - 1], value);
     }
     inline bool eval_ident(const BaseAst *ast, int& value)
     {
@@ -1195,10 +1212,14 @@ namespace MacroParser
         value = integer->m_value;
         return true;
     }
-    inline bool eval_string(const BaseAst *ast, int& value)
+    inline bool eval_string(const BaseAst *ast, string_type& value)
     {
-        //const StringAst *str = (const StringAst *)ast;
-        value = 0;
+        if (ast->m_id == ASTID_STRING)
+        {
+            const StringAst *str = (const StringAst *)ast;
+            value = str->m_str;
+            return true;
+        }
         return false;
     }
     inline bool eval_triple(const BaseAst *ast, int& value)
@@ -1210,9 +1231,9 @@ namespace MacroParser
             return false;
         }
         int first, second, third;
-        if (!eval_ast(triple->m_first, first) ||
-            !eval_ast(triple->m_second, second) ||
-            !eval_ast(triple->m_third, third))
+        if (!eval_int(triple->m_first, first) ||
+            !eval_int(triple->m_second, second) ||
+            !eval_int(triple->m_third, third))
         {
             value = 0;
             return false;
@@ -1223,7 +1244,7 @@ namespace MacroParser
     inline bool eval_unary(const BaseAst *ast, int& value)
     {
         const UnaryAst *unary = (const UnaryAst *)ast;
-        if (!eval_ast(unary->m_arg, value))
+        if (!eval_int(unary->m_arg, value))
             return false;
 
         if (unary->m_str == "+") value = value;
@@ -1236,7 +1257,7 @@ namespace MacroParser
         return true;
     }
 
-    inline bool eval_ast(const BaseAst *ast, int& value)
+    inline bool eval_int(const BaseAst *ast, int& value)
     {
         switch (ast->m_id)
         {
@@ -1249,7 +1270,8 @@ namespace MacroParser
         case ASTID_INTEGER:
             return eval_integer(ast, value);
         case ASTID_STRING:
-            return eval_string(ast, value);
+            value = 0;
+            return true;
         case ASTID_TRIPLE:
             return eval_triple(ast, value);
         case ASTID_UNARY:
@@ -1258,6 +1280,11 @@ namespace MacroParser
             value = 0;
             return false;
         }
+    }
+
+    inline bool is_str(const BaseAst *ast)
+    {
+        return ast->m_id == ASTID_STRING;
     }
 } // namespace MacroParser
 
