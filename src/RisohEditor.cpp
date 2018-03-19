@@ -736,6 +736,26 @@ HWND ToolBar_Create(HWND hwndParent)
 
 //////////////////////////////////////////////////////////////////////////////
 
+void ReplaceFullWithHalf(LPWSTR pszText)
+{
+    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
+    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+
+    for (DWORD i = 0; pszText[i]; ++i)
+    {
+        size_t k = strFullWidth.find(pszText[i]);
+        if (k != MStringW::npos)
+        {
+            pszText[i] = strHalfWidth[k];
+        }
+    }
+}
+
+void ReplaceFullWithHalf(MStringW& strText)
+{
+    ReplaceFullWithHalf(&strText[0]);
+}
+
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
     for (size_t i = 0; i < g_Langs.size(); ++i)
@@ -7188,26 +7208,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
              GetGuiResources(hProcess, GR_USEROBJECTS));
     ChangeStatusText(szText);
 #endif
-}
-
-void ReplaceFullWithHalf(LPWSTR pszText)
-{
-    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
-    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
-
-    for (DWORD i = 0; pszText[i]; ++i)
-    {
-        size_t k = strFullWidth.find(pszText[i]);
-        if (k != MStringW::npos)
-        {
-            pszText[i] = strHalfWidth[k];
-        }
-    }
-}
-
-void ReplaceFullWithHalf(MStringW& strText)
-{
-    ReplaceFullWithHalf(&strText[0]);
 }
 
 WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)

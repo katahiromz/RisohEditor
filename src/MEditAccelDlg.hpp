@@ -34,7 +34,8 @@
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
-BOOL CheckCommand(ConstantsDB& db, MString strCommand);
+BOOL CheckCommand(ConstantsDB& db, MString& strCommand);
+void ReplaceFullWithHalf(LPWSTR pszText);
 
 std::wstring GetKeyID(ConstantsDB& db, UINT wId);
 
@@ -103,6 +104,7 @@ public:
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_db, m_entry.sz2))
         {
@@ -244,6 +246,7 @@ public:
         lstrcpynW(m_entry.sz1, str.c_str(), _countof(m_entry.sz1));
 
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
+        ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
         if (!CheckCommand(m_db, m_entry.sz2))
         {

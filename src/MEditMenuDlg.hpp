@@ -74,6 +74,7 @@ public:
         }
 
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_db, m_entry.szCommandID))
         {
@@ -123,6 +124,7 @@ public:
 
         DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
         MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
+        ReplaceFullWithHalf(strHelp);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
 
         EndDialog(IDOK);
@@ -258,6 +260,7 @@ public:
         }
 
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
+        ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
         if (!CheckCommand(m_db, m_entry.szCommandID))
         {
