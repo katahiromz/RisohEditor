@@ -2729,7 +2729,7 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
         return;
 
     ++pch;
-    size_t diff = szPath - pch;
+    size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"README.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
@@ -2759,7 +2759,7 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
         return;
 
     ++pch;
-    size_t diff = szPath - pch;
+    size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"READMEJP.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
@@ -2789,7 +2789,7 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
         return;
 
     ++pch;
-    size_t diff = szPath - pch;
+    size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"LICENSE.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
     {
