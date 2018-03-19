@@ -122,6 +122,7 @@ public:
             ComboBox_SetCurSel(hCmb1, k);
         }
         SubclassChildDx(m_cmb1, cmb1);
+        SubclassChildDx(m_cmb2, cmb2);
 
         if (m_type == RT_VERSION)
         {
@@ -158,17 +159,16 @@ public:
     void OnOK(HWND hwnd)
     {
         MIdOrString type;
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 
         const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
-        INT iType = ComboBox_GetCurSel(hCmb1);
+        INT iType = ComboBox_GetCurSel(m_cmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
         {
             type = WORD(table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, type))
+            if (!CheckTypeComboBox(m_cmb1, type))
             {
                 return;
             }
@@ -352,17 +352,16 @@ public:
     void OnCmb1(HWND hwnd)
     {
         MIdOrString type;
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
 
         const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
-        INT iType = ComboBox_GetCurSel(hCmb1);
+        INT iType = ComboBox_GetCurSel(m_cmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
         {
             type = WORD(table[iType].value);
         }
         else
         {
-            if (!CheckTypeComboBox(hCmb1, type))
+            if (!CheckTypeComboBox(m_cmb1, type))
             {
                 return;
             }
@@ -384,6 +383,19 @@ public:
         else
         {
             SetDlgItemText(hwnd, stc1, NULL);
+        }
+
+        MString prefix = m_db.GetName(L"RESOURCE.ID.PREFIX", iType);
+        if (prefix.empty())
+            return;
+
+        {
+            ComboBox_ResetContent(m_cmb2);
+            ConstantsDB::TableType table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+            for (size_t i = 0; i < table.size(); ++i)
+            {
+                ComboBox_AddString(m_cmb2, table[i].name.c_str());
+            }
         }
     }
 
