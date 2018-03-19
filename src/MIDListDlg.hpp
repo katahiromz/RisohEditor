@@ -712,34 +712,37 @@ public:
 
     LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
     {
-        if (pnmhdr->code == NM_DBLCLK)
+        if (idFrom == lst1)
         {
-            PostMessageDx(WM_COMMAND, ID_IDJUMP);
-            return 1;
-        }
-        if (pnmhdr->code == LVN_KEYDOWN)
-        {
-            LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
-            if (down->wVKey == VK_DELETE)
+            if (pnmhdr->code == NM_DBLCLK)
             {
-                PostMessageDx(WM_COMMAND, ID_DELETERESID);
+                PostMessageDx(WM_COMMAND, ID_IDJUMP);
                 return 1;
             }
-            if (down->wVKey == 'C' && GetKeyState(VK_CONTROL) < 0)
+            if (pnmhdr->code == LVN_KEYDOWN)
             {
-                PostMessageDx(WM_COMMAND, ID_COPYIDDEF);
+                LV_KEYDOWN *down = (LV_KEYDOWN *)pnmhdr;
+                if (down->wVKey == VK_DELETE)
+                {
+                    PostMessageDx(WM_COMMAND, ID_DELETERESID);
+                    return 1;
+                }
+                if (down->wVKey == 'C' && GetKeyState(VK_CONTROL) < 0)
+                {
+                    PostMessageDx(WM_COMMAND, ID_COPYIDDEF);
+                    return 1;
+                }
+            }
+            if (pnmhdr->code == LVN_GETINFOTIP)
+            {
+                NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
+                INT iItem = pGetInfoTip->iItem;
+                INT iSubItem = pGetInfoTip->iSubItem;
+                TCHAR szText[128];
+                ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
+                StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
                 return 1;
             }
-        }
-        if (pnmhdr->code == LVN_GETINFOTIP)
-        {
-            NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
-            INT iItem = pGetInfoTip->iItem;
-            INT iSubItem = pGetInfoTip->iSubItem;
-            TCHAR szText[128];
-            ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
-            StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
-            return 1;
         }
         return 0;
     }

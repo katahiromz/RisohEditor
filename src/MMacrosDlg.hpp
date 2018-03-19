@@ -498,6 +498,15 @@ public:
                 item.pszText = pInfo->item.pszText;
                 ListView_SetItem(m_hLst1, &item);
             }
+            if (pnmhdr->code == LVN_GETINFOTIP)
+            {
+                NMLVGETINFOTIP *pGetInfoTip = (NMLVGETINFOTIP *)pnmhdr;
+                INT iItem = pGetInfoTip->iItem;
+                INT iSubItem = pGetInfoTip->iSubItem;
+                TCHAR szText[128];
+                ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
+                StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
+            }
         }
         return 0;
     }
@@ -542,7 +551,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         m_hLst1 = GetDlgItem(hwnd, lst1);
-        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT);
+        ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 
         LV_COLUMN column;
         ZeroMemory(&column, sizeof(column));
