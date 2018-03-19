@@ -3650,77 +3650,78 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     BOOL bEditable = FALSE;
     if (entry.type.m_id != 0)
     {
-        if (entry.type == RT_ICON)
+        WORD wType = entry.type.m_id;
+        if (wType == (WORD)RT_ICON)
         {
             PreviewIcon(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_CURSOR)
+        else if (wType == (WORD)RT_CURSOR)
         {
             PreviewCursor(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_GROUP_ICON)
+        else if (wType == (WORD)RT_GROUP_ICON)
         {
             PreviewGroupIcon(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_GROUP_CURSOR)
+        else if (wType == (WORD)RT_GROUP_CURSOR)
         {
             PreviewGroupCursor(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_BITMAP)
+        else if (wType == (WORD)RT_BITMAP)
         {
             PreviewBitmap(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_ACCELERATOR)
+        else if (wType == (WORD)RT_ACCELERATOR)
         {
             PreviewAccel(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (entry.type == RT_STRING)
+        else if (wType == (WORD)RT_STRING)
         {
             PreviewString(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_MENU)
+        else if (wType == (WORD)RT_MENU)
         {
             PreviewMenu(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (entry.type == RT_DIALOG)
+        else if (wType == (WORD)RT_DIALOG)
         {
             PreviewDialog(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (entry.type == RT_ANIICON)
+        else if (wType == (WORD)RT_ANIICON)
         {
             PreviewAniIcon(hwnd, entry, TRUE);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_ANICURSOR)
+        else if (wType == (WORD)RT_ANICURSOR)
         {
             PreviewAniIcon(hwnd, entry, FALSE);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_MESSAGETABLE)
+        else if (wType == (WORD)RT_MESSAGETABLE)
         {
             PreviewMessage(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == RT_MANIFEST || entry.type == RT_HTML)
+        else if (wType == (WORD)RT_MANIFEST || wType == (WORD)RT_HTML)
         {
             PreviewHtml(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (entry.type == RT_VERSION)
+        else if (wType == (WORD)RT_VERSION)
         {
             PreviewVersion(hwnd, entry);
             bEditable = TRUE;
         }
-        else if (entry.type == RT_RCDATA)
+        else if (wType == (WORD)RT_RCDATA)
         {
             PreviewRCData(hwnd, entry);
             bEditable = TRUE;
@@ -3734,10 +3735,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     else
     {
         if (entry.type == L"PNG" || entry.type == L"GIF" ||
-                 entry.type == L"JPEG" || entry.type == L"TIFF" ||
-                 entry.type == L"JPG" || entry.type == L"TIF" ||
-                 entry.type == L"EMF" || entry.type == L"ENHMETAFILE" ||
-                 entry.type == L"WMF" || entry.type == L"IMAGE")
+            entry.type == L"JPEG" || entry.type == L"TIFF" ||
+            entry.type == L"JPG" || entry.type == L"TIF" ||
+            entry.type == L"EMF" || entry.type == L"ENHMETAFILE" ||
+            entry.type == L"WMF" || entry.type == L"IMAGE")
         {
             PreviewImage(hwnd, entry);
             bEditable = FALSE;

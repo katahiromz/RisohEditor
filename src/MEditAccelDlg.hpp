@@ -337,8 +337,6 @@ public:
 
     void OnUp(HWND hwnd)
     {
-        m_hLst1 = GetDlgItem(hwnd, lst1);
-
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         if (iItem == 0)
             return;
@@ -585,7 +583,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        HWND m_hLst1 = GetDlgItem(hwnd, lst1);
+        m_hLst1 = GetDlgItem(hwnd, lst1);
         ListView_SetExtendedListViewStyle(m_hLst1, LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 
         LV_COLUMN column;
