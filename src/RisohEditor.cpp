@@ -750,29 +750,41 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     }
 }
 
-void InitLangListView(HWND hLst1)
+void InitLangListView(HWND hLst1, LPCTSTR pszText)
 {
     ListView_DeleteAllItems(hLst1);
 
-    WCHAR sz[32];
+    WCHAR sz1[64], sz2[64];
     LV_ITEM item;
     INT iItem = 0;
     for (size_t i = 0; i < g_Langs.size(); ++i)
     {
+        StringCchPrintfW(sz1, _countof(sz1), L"%s", g_Langs[i].str.c_str());
+        StringCchPrintfW(sz2, _countof(sz2), L"%u", g_Langs[i].LangID);
+
+        if (pszText)
+        {
+            MString str = sz1;
+            if (str.find(pszText) == MString::npos)
+            {
+                str = sz2;
+                if (str.find(pszText) == MString::npos)
+                    continue;
+            }
+        }
+
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
-        item.pszText = const_cast<LPTSTR>(g_Langs[i].str.c_str());
+        item.pszText = sz1;
         ListView_InsertItem(hLst1, &item);
-
-        StringCchPrintfW(sz, _countof(sz), L"%u", g_Langs[i].LangID);
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 1;
-        item.pszText = sz;
+        item.pszText = sz2;
         ListView_SetItem(hLst1, &item);
 
         ++iItem;

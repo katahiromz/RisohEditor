@@ -24,7 +24,7 @@
 #include "MModifyAssocDlg.hpp"
 #include "RisohSettings.hpp"
 
-void InitLangListView(HWND hLst1);
+void InitLangListView(HWND hLst1, LPCTSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +39,7 @@ public:
 
     void Lst1_Init(HWND hLst1)
     {
-        InitLangListView(hLst1);
+        InitLangListView(hLst1, NULL);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -58,8 +58,8 @@ public:
         ListView_InsertColumn(m_hLst1, 0, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-        column.fmt = LVCFMT_LEFT;
-        column.cx = 140;
+        column.fmt = LVCFMT_RIGHT;
+        column.cx = 135;
         column.pszText = LoadStringDx(IDS_INTVALUE);
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
@@ -75,6 +75,14 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnCmb1(HWND hwnd)
+    {
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        MString strText = GetWindowText(hCmb1);
+
+        InitLangListView(m_hLst1, strText.c_str());
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -87,6 +95,12 @@ public:
             break;
         case ID_COPY:
             OnCopy(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                OnCmb1(hwnd);
+            }
             break;
         }
     }
