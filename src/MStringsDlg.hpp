@@ -204,7 +204,7 @@ public:
 class MStringsDlg : public MDialogBase
 {
 public:
-    StringRes& m_str_res;
+    StringRes m_str_res;
     ConstantsDB& m_db;
     MResizable m_resizable;
     HWND m_hLst1;
@@ -295,6 +295,7 @@ public:
         m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh4, mzcLA_BOTTOM_LEFT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
 
@@ -349,18 +350,12 @@ public:
         item.pszText = &str[0];
         ListView_SetItem(m_hLst1, &item);
 
+        WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+        m_str_res.m_map[wID] = s_entry.StringValue;
+
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem, state, state);
         ListView_EnsureVisible(m_hLst1, iItem, FALSE);
-    }
-
-    void OnDelete(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem >= 0)
-        {
-            ListView_DeleteItem(m_hLst1, iItem);
-        }
     }
 
     void GetEntry(HWND hwnd, INT iItem, STRING_ENTRY& entry)
@@ -374,6 +369,27 @@ public:
         {
             mstr_unquote(entry.StringValue);
         }
+    }
+
+    void OnDelete(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            STRING_ENTRY s_entry;
+            GetEntry(hwnd, iItem, s_entry);
+
+            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+            m_str_res.m_map.erase(wID);
+
+            ListView_DeleteItem(m_hLst1, iItem);
+        }
+    }
+
+    void OnDeleteAll(HWND hwnd)
+    {
+        m_str_res.m_map.clear();
+        ListView_DeleteAllItems(m_hLst1);
     }
 
     void OnModify(HWND hwnd)
@@ -390,6 +406,9 @@ public:
         MModifyStrDlg dialog(m_db, s_entry, m_str_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
+            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+            m_str_res.m_map[wID] = s_entry.StringValue;
+
             MString str = mstr_quote(s_entry.StringValue);
             ListView_SetItemText(m_hLst1, iItem, 1, &str[0]);
         }
@@ -458,6 +477,9 @@ public:
         case psh3:
         case ID_DELETE:
             OnDelete(hwnd);
+            break;
+        case psh4:
+            OnDeleteAll(hwnd);
             break;
         case IDOK:
             OnOK(hwnd);

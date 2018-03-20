@@ -665,6 +665,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "削除(&D)", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 260, 140, 60, 14
+    PUSHBUTTON "すべて削除(&L)", psh4, 5, 140, 75, 14
 }
 
 IDD_ADDMITEM DIALOG 0, 0, 210, 200
@@ -1054,6 +1055,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "削除(&D)", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 260, 140, 60, 14
+    PUSHBUTTON "すべて削除(&L)", psh4, 5, 140, 75, 14
 }
 
 IDD_FONTS DIALOG 0, 0, 195, 110

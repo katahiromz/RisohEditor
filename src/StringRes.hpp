@@ -43,6 +43,8 @@ class StringRes
 public:
     typedef MStringW string_type;
     typedef std::map<WORD, string_type> map_type;
+    WORD        m_wName;
+    map_type    m_map;
 
     StringRes()
     {
@@ -171,10 +173,6 @@ public:
         first = (name - 1) * 16;
         last = first + 16 - 1;
     }
-
-protected:
-    WORD        m_wName;
-    map_type    m_map;
 };
 
 //////////////////////////////////////////////////////////////////////////////

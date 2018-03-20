@@ -303,6 +303,7 @@ public:
         m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh2, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh4, mzcLA_BOTTOM_LEFT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
 
@@ -393,6 +394,12 @@ public:
         }
     }
 
+    void OnDeleteAll(HWND hwnd)
+    {
+        m_msg_res.m_map.clear();
+        ListView_DeleteAllItems(m_hLst1);
+    }
+
     void OnModify(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -478,6 +485,9 @@ public:
         case psh3:
         case ID_DELETE:
             OnDelete(hwnd);
+            break;
+        case psh4:
+            OnDeleteAll(hwnd);
             break;
         case IDOK:
             OnOK(hwnd);

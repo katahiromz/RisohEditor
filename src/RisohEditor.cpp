@@ -2772,6 +2772,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            str_res = dialog.m_str_res;
+
             bool shown = m_db.AreMacroIDShown();
             m_db.ShowMacroID(false);
             MStringW strWide = str_res.Dump(m_db);
