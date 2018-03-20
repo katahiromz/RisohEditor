@@ -94,7 +94,7 @@ The user ID defined in file "resource.h" should be inside of the following range
 | ID Type                  | Bounded Range    | Preferable Range |
 |--------------------------|------------------|------------------|
 | String ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
-| Message ID               | 0 to 0x7FFF      | 0 to 0x7FFF      |
+| Message ID               | 0 to 0xFFFFFFFF  | 1 to 0x7FFFFFFF  |
 | Command ID               | 1 to 0x7FFF      | 100 to 0x7FFF    |
 | Command ID (Old Type)    | 1 to 0x7FFF      | 100 to 0x7FFF    |
 | Control ID               | 8 to 0xDFFF      | 1000 to 0x7FFF   |
@@ -104,7 +104,7 @@ The user ID defined in file "resource.h" should be inside of the following range
 | Bitmap ID                | 1 to 0x7FFF      | 100 to 0x7FFF    |
 | Other Entity Resource ID | 1 to 0x7FFF      | 100 to 0x7FFF    |
 | Window ID                | 1 to 0x7FFF      | 1 to 0x7FFF      |
-| Help ID                  | 1 to 0x7FFFFFFF  | 1 to 0x7FFFFFFF  |
+| Help ID                  | 0 to 0xFFFFFFFF  | 1 to 0x7FFFFFFF  |
 
 Two different resource IDs of the same ID prefix should have a different value from each other.
 The resource ID of ID prefix "IDC_" is either a control ID or a cursor ID.
