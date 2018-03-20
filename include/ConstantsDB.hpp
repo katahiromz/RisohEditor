@@ -128,7 +128,7 @@ public:
         }
         if (type == RT_STRING)
         {
-            return IDTYPE_UNKNOWN;
+            return IDTYPE_STRING;
         }
         if (type == RT_ACCELERATOR)
         {
@@ -168,7 +168,11 @@ public:
         }
         if (type == RT_MESSAGETABLE)
         {
-            return IDTYPE_UNKNOWN;
+            return IDTYPE_MESSAGE;
+        }
+        if (type == RT_RCDATA)
+        {
+            return IDTYPE_RCDATA;
         }
         return IDTYPE_RESOURCE;
     }

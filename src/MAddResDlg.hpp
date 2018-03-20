@@ -354,18 +354,28 @@ public:
     {
         MIdOrString type;
 
-        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
-        INT iType = ComboBox_GetCurSel(m_cmb1);
-        if (iType != CB_ERR && iType < INT(table.size()))
+        INT iSel = ComboBox_GetCurSel(m_cmb1);
+        TCHAR szText[64];
+        if (iSel == CB_ERR || ComboBox_GetLBText(m_cmb1, iSel, szText) == CB_ERR)
+            szText[0] = 0;
+
+        MString strIDType = szText;
+        mstr_trim(strIDType);
+        size_t k = strIDType.find(L" (");
+        if (k != MString::npos)
         {
-            type = WORD(table[iType].value);
+            strIDType = strIDType.substr(0, k);
+        }
+
+        WORD nRT_ = (WORD)m_db.GetValue(L"RESOURCE", strIDType);
+        INT iType = m_db.IDTypeFromResType(nRT_);
+        if (iType != IDTYPE_UNKNOWN)
+        {
+            type = nRT_;
         }
         else
         {
-            if (!CheckTypeComboBox(m_cmb1, type))
-            {
-                return;
-            }
+            type.m_str = strIDType;
         }
 
         if (Res_HasSample(type))
@@ -390,9 +400,11 @@ public:
         if (prefix.empty())
             return;
 
+        ComboBox_ResetContent(m_cmb2);
+        if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
-            ComboBox_ResetContent(m_cmb2);
-            ConstantsDB::TableType table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+            ConstantsDB::TableType table;
+            table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
             for (size_t i = 0; i < table.size(); ++i)
             {
                 ComboBox_AddString(m_cmb2, table[i].name.c_str());
