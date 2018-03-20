@@ -25,6 +25,7 @@
 #include "ConstantsDB.hpp"
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
+#include "MFontsDlg.hpp"
 #include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -110,6 +111,12 @@ public:
         EndDialog(hwnd, IDOK);
     }
 
+    void OnPsh4(HWND hwnd)
+    {
+        MFontsDlg dialog(m_settings);
+        dialog.DialogBoxDx(hwnd);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -128,6 +135,9 @@ public:
             break;
         case psh3:
             OnPsh3(hwnd);
+            break;
+        case psh4:
+            OnPsh4(hwnd);
             break;
         }
     }
