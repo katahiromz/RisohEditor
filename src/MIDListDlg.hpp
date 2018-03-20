@@ -413,6 +413,8 @@ public:
             break;
         case ID_MODIFYRESID:
             iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+            if (iItem == -1)
+                break;
             ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
             str1 = szText;
             ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
@@ -497,6 +499,8 @@ public:
         case ID_COPYRESIDNAME:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1)
+                    break;
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
                 CopyText(hwnd, szText);
             }
@@ -504,6 +508,8 @@ public:
         case ID_COPYRESIDVALUE:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1)
+                    break;
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
                 MString text = szText;
                 CopyText(hwnd, text);
@@ -512,6 +518,8 @@ public:
         case ID_COPYIDDEF:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                if (iItem == -1)
+                    break;
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
                 MString text1 = szText;
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
@@ -651,18 +659,24 @@ public:
                 ID_BASE16, MF_BYCOMMAND);
         }
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem == -1)
-            return;
 
         TCHAR szText[128];
         ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
-        if (szText[0] == TEXT('L') || szText[0] == TEXT('"'))
+        if (iItem == -1 || szText[0] == TEXT('L') || szText[0] == TEXT('"'))
         {
             EnableMenuItem(hMenu, ID_MODIFYRESID, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_COPYRESIDNAME, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_COPYRESIDVALUE, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_COPYIDDEF, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETERESID, MF_GRAYED);
         }
         else
         {
             EnableMenuItem(hMenu, ID_MODIFYRESID, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPYRESIDNAME, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPYRESIDVALUE, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPYIDDEF, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETERESID, MF_ENABLED);
         }
     }
 
