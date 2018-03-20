@@ -282,10 +282,70 @@ public:
         }
     }
 
+    void OnMeasureItem(HWND hwnd, MEASUREITEMSTRUCT * lpMeasureItem)
+    {
+        RECT rc;
+        SetRect(&rc, 0, 0, 200, 15);
+        MapDialogRect(hwnd, &rc);
+
+        lpMeasureItem->itemHeight = rc.bottom;
+
+        GetClientRect(hwnd, &rc);
+        lpMeasureItem->itemWidth = rc.right - rc.left;
+    }
+
+    void OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT * lpDrawItem)
+    {
+        INT iItem = lpDrawItem->itemID;
+
+        RECT rc = lpDrawItem->rcItem;
+
+        SetBkMode(lpDrawItem->hDC, OPAQUE);
+        if (lpDrawItem->itemState & ODS_SELECTED)
+        {
+            SetBkColor(lpDrawItem->hDC, GetSysColor(COLOR_HIGHLIGHT));
+            FillRect(lpDrawItem->hDC, &rc, (HBRUSH)(COLOR_HIGHLIGHT + 1));
+            SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
+        }
+        else
+        {
+            SetBkColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOW));
+            FillRect(lpDrawItem->hDC, &rc, (HBRUSH)(COLOR_WINDOW + 1));
+            SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOWTEXT));
+        }
+
+        TCHAR szText[128];
+        ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
+
+        InflateRect(&rc, -1, -1);
+        DrawText(lpDrawItem->hDC, szText, -1, &rc,
+            DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
+        InflateRect(&rc, 1, 1);
+
+        if (lpDrawItem->itemState & ODS_FOCUS)
+        {
+            DrawFocusRect(lpDrawItem->hDC, &lpDrawItem->rcItem);
+        }
+    }
+
+    int OnCompareItem(HWND hwnd, const COMPAREITEMSTRUCT * lpCompareItem)
+    {
+        TCHAR szText1[128], szText2[128];
+        ComboBox_GetLBText(lpCompareItem->hwndItem, lpCompareItem->itemID1, szText1);
+        ComboBox_GetLBText(lpCompareItem->hwndItem, lpCompareItem->itemID2, szText2);
+        return lstrcmpi(szText1, szText2);
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         m_hCmb1 = GetDlgItem(hwnd, cmb1);
         m_hLst1 = GetDlgItem(hwnd, lst1);
+
+        RECT rc;
+        SetRect(&rc, 0, 0, 200, 12);
+        MapDialogRect(hwnd, &rc);
+        ComboBox_SetItemHeight(m_hCmb1, -1, rc.bottom - rc.top);
+        ComboBox_SetItemHeight(m_hCmb1, 0, rc.bottom - rc.top);
 
         m_resizable.OnParentCreate(hwnd);
 
@@ -641,6 +701,9 @@ public:
         HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
         HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
+        HANDLE_MSG(hwnd, WM_MEASUREITEM, OnMeasureItem);
+        HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
+        HANDLE_MSG(hwnd, WM_COMPAREITEM, OnCompareItem);
         default:
             return DefaultProcDx();
         }
