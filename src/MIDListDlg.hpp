@@ -288,7 +288,7 @@ public:
         SetRect(&rc, 0, 0, 200, 15);
         MapDialogRect(hwnd, &rc);
 
-        lpMeasureItem->itemHeight = rc.bottom;
+        lpMeasureItem->itemHeight = rc.bottom - rc.top;
 
         GetClientRect(hwnd, &rc);
         lpMeasureItem->itemWidth = rc.right - rc.left;
@@ -317,10 +317,10 @@ public:
         TCHAR szText[128];
         ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
 
-        InflateRect(&rc, -1, -1);
+        InflateRect(&rc, -2, -2);
         DrawText(lpDrawItem->hDC, szText, -1, &rc,
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
-        InflateRect(&rc, 1, 1);
+        InflateRect(&rc, 2, 2);
 
         if (lpDrawItem->itemState & ODS_FOCUS)
         {
