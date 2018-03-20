@@ -712,25 +712,16 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            if ((SHORT)xPos == -1 && (SHORT)yPos == -1)
-            {
-                RECT rc;
-                INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-                if (iItem == -1 ||
-                    !ListView_GetItemRect(m_hLst1, iItem, &rc, LVIR_LABEL))
-                {
-                    GetWindowRect(m_hLst1, &rc);
-                }
-                else
-                {
-                    MapWindowRect(m_hLst1, NULL, &rc);
-                }
-                xPos = (rc.left + rc.right) / 2;
-                yPos = (rc.top + rc.bottom) / 2;
-            }
-
             HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
             HMENU hSubMenu = GetSubMenu(hMenu, 3);
+
+            if (xPos == 0xFFFF && yPos == 0xFFFF)
+            {
+                RECT rc;
+                GetWindowRect(m_hLst1, &rc);
+                xPos = rc.left;
+                yPos = rc.top;
+            }
 
             SetForegroundWindow(hwnd);
             TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
