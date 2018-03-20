@@ -243,19 +243,38 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
         ComboBox_AddString(hCmb, it->name.c_str());
     }
 
-    if (!db.AreMacroIDShown())
-        return;
-
     table = db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_CONTROL].name;
-    if (prefix.empty())
-        return;
-
-    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-    end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    if (prefix.size())
     {
-        ComboBox_AddString(hCmb, it->name.c_str());
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb, it->name.c_str());
+        }
+    }
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    prefix = table[IDTYPE_COMMAND].name;
+    if (prefix.size())
+    {
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb, it->name.c_str());
+        }
+    }
+    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    prefix = table[IDTYPE_NEWCOMMAND].name;
+    if (prefix.size())
+    {
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            ComboBox_AddString(hCmb, it->name.c_str());
+        }
     }
 }
 
@@ -2791,6 +2810,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            msg_res = dialog.m_msg_res;
             bool shown = m_db.AreMacroIDShown();
             m_db.ShowMacroID(false);
             MStringW strWide = msg_res.Dump(m_db);

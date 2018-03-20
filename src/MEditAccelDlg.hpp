@@ -33,10 +33,9 @@
 
 void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
 BOOL CheckCommand(ConstantsDB& db, MString& strCommand);
 void ReplaceFullWithHalf(LPWSTR pszText);
+void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 
 std::wstring GetKeyID(ConstantsDB& db, UINT wId);
 
@@ -68,7 +67,8 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, MIdOrString(L""), IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
+        InitCtrlIDComboBox(hCmb2, m_db);
+        SetDlgItemText(hwnd, cmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
@@ -179,9 +179,9 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        MIdOrString id(m_entry.sz2);
-        InitResNameComboBox(hCmb2, m_db, id, IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
+        InitCtrlIDComboBox(hCmb2, m_db);
         SubclassChildDx(m_cmb2, cmb2);
+        SetDlgItemTextW(hwnd, cmb2, m_entry.sz2);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         Cmb1_InitVirtualKeys(hCmb1, m_db);

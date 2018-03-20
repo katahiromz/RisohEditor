@@ -212,7 +212,7 @@ public:
 class MMessagesDlg : public MDialogBase
 {
 public:
-    MessageRes& m_msg_res;
+    MessageRes m_msg_res;
     ConstantsDB& m_db;
     MResizable m_resizable;
     HICON m_hIcon;
@@ -315,9 +315,9 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        MESSAGE_ENTRY s_entry;
-        ZeroMemory(&s_entry, sizeof(s_entry));
-        MAddMsgDlg dialog(m_db, s_entry, m_msg_res);
+        MESSAGE_ENTRY me;
+        ZeroMemory(&me, sizeof(me));
+        MAddMsgDlg dialog(m_db, me, m_msg_res);
         if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
@@ -327,7 +327,7 @@ public:
 
         LV_FINDINFO find;
         TCHAR sz[128];
-        StringCchCopy(sz, _countof(sz), s_entry.MessageID);
+        StringCchCopy(sz, _countof(sz), me.MessageID);
         ZeroMemory(&find, sizeof(find));
         find.flags = LVFI_STRING;
         find.psz = sz;
@@ -344,10 +344,10 @@ public:
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 0;
-        item.pszText = s_entry.MessageID;
+        item.pszText = me.MessageID;
         ListView_InsertItem(m_hLst1, &item);
 
-        std::wstring str = s_entry.MessageValue;
+        std::wstring str = me.MessageValue;
         str = mstr_quote(str);
 
         ZeroMemory(&item, sizeof(item));
@@ -360,15 +360,9 @@ public:
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, iItem, state, state);
         ListView_EnsureVisible(m_hLst1, iItem, FALSE);
-    }
 
-    void OnDelete(HWND hwnd)
-    {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem >= 0)
-        {
-            ListView_DeleteItem(m_hLst1, iItem);
-        }
+        ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+        m_msg_res.m_map[dwValue] = me.MessageValue;
     }
 
     void GetEntry(HWND hwnd, INT iItem, MESSAGE_ENTRY& entry)
@@ -384,6 +378,21 @@ public:
         }
     }
 
+    void OnDelete(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            MESSAGE_ENTRY me;
+            GetEntry(hwnd, iItem, me);
+
+            ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+            m_msg_res.m_map.erase(dwValue);
+
+            ListView_DeleteItem(m_hLst1, iItem);
+        }
+    }
+
     void OnModify(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -392,14 +401,17 @@ public:
             return;
         }
 
-        MESSAGE_ENTRY s_entry;
-        GetEntry(hwnd, iItem, s_entry);
+        MESSAGE_ENTRY me;
+        GetEntry(hwnd, iItem, me);
 
-        MModifyMsgDlg dialog(m_db, s_entry, m_msg_res);
+        MModifyMsgDlg dialog(m_db, me, m_msg_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
-            MString str = mstr_quote(s_entry.MessageValue);
+            MString str = mstr_quote(me.MessageValue);
             ListView_SetItemText(m_hLst1, iItem, 1, &str[0]);
+
+            ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+            m_msg_res.m_map[dwValue] = str;
         }
     }
 
@@ -414,13 +426,13 @@ public:
 
         m_msg_res.map().clear();
 
-        MESSAGE_ENTRY s_entry;
+        MESSAGE_ENTRY me;
         for (iItem = 0; iItem < nCount; ++iItem)
         {
-            GetEntry(hwnd, iItem, s_entry);
+            GetEntry(hwnd, iItem, me);
 
-            WORD wID = (WORD)m_db.GetResIDValue(s_entry.MessageID);
-            std::wstring str = s_entry.MessageValue;
+            WORD wID = (WORD)m_db.GetResIDValue(me.MessageID);
+            std::wstring str = me.MessageValue;
 
             m_msg_res.map().insert(std::make_pair(wID, str));
         }

@@ -216,7 +216,12 @@ public:
 
     ValueType GetResIDValue(NameType name) const
     {
-        return GetValue(L"RESOURCE.ID", name);
+        ValueType value = GetValue(L"RESOURCE.ID", name);
+        if (!value)
+        {
+            value = GetValue(L"CTRLID", name);
+        }
+        return value;
     }
     ValueType GetCtrlIDValue(NameType name) const
     {
@@ -238,6 +243,13 @@ public:
     {
         TableType table = GetTable(L"RESOURCE.ID");
         TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name == name)
+                return true;
+        }
+        table = GetTable(L"CTRLID");
+        end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
@@ -301,7 +313,7 @@ public:
             if (value == -1 || value == 0xFFFF)
                 return L"-1";
 
-            return DumpValue(L"CTRLID", value);
+            return GetCtrlOrCmdName(value);
         }
 
         if (nIDTYPE_ != IDTYPE_RESOURCE && IsEntityIDType(nIDTYPE_))
@@ -319,7 +331,48 @@ public:
             return mstr_hex(value);
         }
 
+        if (nIDTYPE_ == IDTYPE_COMMAND)
+        {
+            return GetCtrlOrCmdName(value);
+        }
+
         return mstr_dec_word(WORD(value));
+    }
+
+    StringType GetNameOfIDTypeValue(INT nIDTYPE_, ValueType value) const
+    {
+        TableType table = GetTable(L"RESOURCE.ID.PREFIX");
+        StringType prefix = table[nIDTYPE_].name;
+
+        table = GetTableByPrefix(L"RESOURCE.ID", prefix);
+        {
+            TableType::iterator it, end = table.end();
+            for (it = table.begin(); it != end; ++it)
+            {
+                if (it->value == value)
+                    return it->name;
+            }
+        }
+        return L"";
+    }
+
+    StringType GetCtrlOrCmdName(ValueType value) const
+    {
+        StringType ret = DumpValue(L"CTRLID", value);
+        if (ret.empty() || ret[0] == L'-' || mchr_is_digit(ret[0]))
+        {
+            StringType str;
+            str = GetNameOfIDTypeValue(IDTYPE_COMMAND, value);
+            if (str.size())
+                return str;
+            str = GetNameOfIDTypeValue(IDTYPE_CONTROL, value);
+            if (str.size())
+                return str;
+            str = GetNameOfIDTypeValue(IDTYPE_NEWCOMMAND, value);
+            if (str.size())
+                return str;
+        }
+        return ret;
     }
 
     StringType GetNameOfResID(INT nIDTYPE_1, INT nIDTYPE_2, ValueType value) const
@@ -591,16 +644,16 @@ public:
         ::CharUpperW(&category[0]);
 
         MapType::const_iterator found = m_map.find(category);
-        if (found == m_map.end())
-            return ret;
-
-        const TableType& table = found->second;
-        TableType::const_iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        if (found != m_map.end())
         {
-            if (value == it->value)
+            const TableType& table = found->second;
+            TableType::const_iterator it, end = table.end();
+            for (it = table.begin(); it != end; ++it)
             {
-                return it->name;
+                if (value == it->value)
+                {
+                    return it->name;
+                }
             }
         }
 

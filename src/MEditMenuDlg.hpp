@@ -32,6 +32,7 @@ class MAddMItemDlg;
 class MModifyMItemDlg;
 class MEditMenuDlg;
 
+void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 BOOL CheckCommand(ConstantsDB& db, MString strCommand);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
@@ -54,8 +55,9 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2), m_db);
         SubclassChildDx(m_cmb2, cmb2);
+        SetDlgItemText(hwnd, cmb2, L"0");
 
         InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, MIdOrString(L""), IDTYPE_HELP);
         SetDlgItemInt(hwnd, cmb3, 0, TRUE);
@@ -203,8 +205,8 @@ public:
     {
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
-        MIdOrString cmd_id(m_entry.szCommandID);
-        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, cmd_id, IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2), m_db);
+        SetDlgItemText(hwnd, cmb2, m_entry.szCommandID);
         SubclassChildDx(m_cmb2, cmb2);
 
         MIdOrString help_id(m_entry.szHelpID);
