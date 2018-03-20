@@ -175,22 +175,7 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
-            HMENU hSubMenu = GetSubMenu(hMenu, 5);
-
-            if (xPos == 0xFFFF && yPos == 0xFFFF)
-            {
-                RECT rc;
-                GetWindowRect(m_hLst1, &rc);
-                xPos = rc.left;
-                yPos = rc.top;
-            }
-
-            SetForegroundWindow(hwnd);
-            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-                xPos, yPos, 0, hwnd, NULL);
-            PostMessage(hwnd, WM_NULL, 0, 0);
-            DestroyMenu(hMenu);
+            PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 5, xPos, yPos);
         }
     }
 

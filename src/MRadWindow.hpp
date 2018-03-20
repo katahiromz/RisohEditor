@@ -2390,14 +2390,7 @@ public:
 
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
-        HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
-        HMENU hSubMenu = GetSubMenu(hMenu, 1);
-
-        SetForegroundWindow(hwnd);
-        TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-            xPos, yPos, 0, hwnd, NULL);
-        PostMessage(hwnd, WM_NULL, 0, 0);
-        DestroyMenu(hMenu);
+        PopupMenuDx(hwnd, hwndContext, IDR_POPUPMENUS, 1, xPos, yPos);
     }
 
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)

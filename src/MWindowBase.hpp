@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    62     /* Version 62 */
+#define MZC4_MWINDOWBASE_HPP_    63     /* Version 63 */
 
 class MWindowBase;
 class MDialogBase;
@@ -121,11 +121,14 @@ BOOL MZCAPI SetWindowPosDx(HWND hwnd, LPPOINT ppt = NULL, LPSIZE psiz = NULL,
     HWND hwndInsertAfter = NULL,
     UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 BOOL MZCAPI SetWindowPosDx(HWND hwnd, const RECT *prc);
-LPSTR MakeFilterDx(LPSTR psz);
-LPWSTR MakeFilterDx(LPWSTR psz);
-HBITMAP Create24BppBitmapDx(INT width, INT height);
-void FillBitmapDx(HBITMAP hbm, HBRUSH hbr);
-void PremultiplyDx(HBITMAP hbm32bpp);
+LPSTR MZCAPI MakeFilterDx(LPSTR psz);
+LPWSTR MZCAPI MakeFilterDx(LPWSTR psz);
+HBITMAP MZCAPI Create24BppBitmapDx(INT width, INT height);
+void MZCAPI FillBitmapDx(HBITMAP hbm, HBRUSH hbr);
+void MZCAPI PremultiplyDx(HBITMAP hbm32bpp);
+BOOL MZCAPI CopyTextDx(HWND hwnd, const MString& text);
+void MZCAPI
+PopupMenuDx(HWND hwnd, HWND hContext, UINT nMenuID, INT iSubMenu, INT x, INT y);
 
 //////////////////////////////////////////////////////////////////////////////
 // Messaging
@@ -889,7 +892,7 @@ SetWindowPosDx(HWND hwnd, const RECT *prc)
     return ::SetWindowPosDx(hwnd, &pt, &siz);
 }
 
-inline LPSTR MakeFilterDx(LPSTR psz)
+inline LPSTR MZCAPI MakeFilterDx(LPSTR psz)
 {
     for (LPSTR pch = psz; *pch; ++pch)
     {
@@ -899,7 +902,7 @@ inline LPSTR MakeFilterDx(LPSTR psz)
     return psz;
 }
 
-inline LPWSTR MakeFilterDx(LPWSTR psz)
+inline LPWSTR MZCAPI MakeFilterDx(LPWSTR psz)
 {
     for (LPWSTR pch = psz; *pch; ++pch)
     {
@@ -909,7 +912,7 @@ inline LPWSTR MakeFilterDx(LPWSTR psz)
     return psz;
 }
 
-inline HBITMAP Create24BppBitmapDx(INT width, INT height)
+inline HBITMAP MZCAPI Create24BppBitmapDx(INT width, INT height)
 {
     BITMAPINFO bi;
     ZeroMemory(&bi, sizeof(bi));
@@ -927,7 +930,7 @@ inline HBITMAP Create24BppBitmapDx(INT width, INT height)
     return hbm;
 }
 
-inline void FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
+inline void MZCAPI FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
 {
     BITMAP bm;
     if (!GetObject(hbm, sizeof(bm), &bm))
@@ -947,7 +950,7 @@ inline void FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
     DeleteDC(hDC);
 }
 
-inline void
+inline void MZCAPI
 PremultiplyDx(HBITMAP hbm32bpp)
 {
     BITMAP bm;
@@ -968,6 +971,52 @@ PremultiplyDx(HBITMAP hbm32bpp)
             pb += 4;
         }
     }
+}
+
+inline BOOL MZCAPI CopyTextDx(HWND hwnd, const MString& text)
+{
+#ifdef UNICODE
+    UINT CF_ = CF_UNICODETEXT;
+#else
+    UINT CF_ = CF_TEXT;
+#endif
+    DWORD size = DWORD((text.size() + 1) * sizeof(TCHAR));
+    LPTSTR psz = (LPTSTR)GlobalAllocPtr(GMEM_SHARE | GMEM_MOVEABLE, size);
+    if (psz)
+    {
+        HGLOBAL hGlobal = GlobalPtrHandle(psz);
+        CopyMemory(psz, text.c_str(), size);
+        GlobalUnlockPtr(psz);
+
+        if (OpenClipboard(hwnd))
+        {
+            EmptyClipboard();
+            SetClipboardData(CF_, hGlobal);
+            return CloseClipboard();
+        }
+    }
+    return FALSE;
+}
+
+inline void MZCAPI
+PopupMenuDx(HWND hwnd, HWND hContext, UINT nMenuID, INT iSubMenu, INT x, INT y)
+{
+    HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(nMenuID));
+    HMENU hSubMenu = GetSubMenu(hMenu, iSubMenu);
+
+    if (x == 0xFFFF && y == 0xFFFF)
+    {
+        RECT rc;
+        GetWindowRect(hContext, &rc);
+        x = rc.left;
+        y = rc.top;
+    }
+
+    SetForegroundWindow(hwnd);
+    TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+        x, y, 0, hwnd, NULL);
+    PostMessage(hwnd, WM_NULL, 0, 0);
+    DestroyMenu(hMenu);
 }
 
 //////////////////////////////////////////////////////////////////////////////

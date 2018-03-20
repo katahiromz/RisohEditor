@@ -407,31 +407,6 @@ public:
         return TRUE;
     }
 
-    BOOL CopyText(HWND hwnd, const MString& text)
-    {
-#ifdef UNICODE
-        UINT CF_ = CF_UNICODETEXT;
-#else
-        UINT CF_ = CF_TEXT;
-#endif
-        DWORD size = DWORD((text.size() + 1) * sizeof(TCHAR));
-        LPTSTR psz = (LPTSTR)GlobalAllocPtr(GMEM_SHARE | GMEM_MOVEABLE, size);
-        if (psz)
-        {
-            HGLOBAL hGlobal = GlobalPtrHandle(psz);
-            CopyMemory(psz, text.c_str(), size);
-            GlobalUnlockPtr(psz);
-
-            if (OpenClipboard(hwnd))
-            {
-                EmptyClipboard();
-                SetClipboardData(CF_, hGlobal);
-                return CloseClipboard();
-            }
-        }
-        return FALSE;
-    }
-
     void UpdateResHIfAsk()
     {
         if (m_settings.bAskUpdateResH)
@@ -571,7 +546,7 @@ public:
                 if (iItem == -1)
                     break;
                 ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
-                CopyText(hwnd, szText);
+                CopyTextDx(hwnd, szText);
             }
             break;
         case ID_COPYRESIDVALUE:
@@ -581,7 +556,7 @@ public:
                     break;
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
                 MString text = szText;
-                CopyText(hwnd, text);
+                CopyTextDx(hwnd, text);
             }
             break;
         case ID_COPYIDDEF:
@@ -598,7 +573,7 @@ public:
                 text += TEXT(" ");
                 text += text2;
                 text += TEXT("\r\n");
-                CopyText(hwnd, text);
+                CopyTextDx(hwnd, text);
             }
             break;
         case ID_LOADRESH:
@@ -784,22 +759,7 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
-            HMENU hSubMenu = GetSubMenu(hMenu, 3);
-
-            if (xPos == 0xFFFF && yPos == 0xFFFF)
-            {
-                RECT rc;
-                GetWindowRect(m_hLst1, &rc);
-                xPos = rc.left;
-                yPos = rc.top;
-            }
-
-            SetForegroundWindow(hwnd);
-            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-                xPos, yPos, 0, hwnd, NULL);
-            PostMessage(hwnd, WM_NULL, 0, 0);
-            DestroyMenu(hMenu);
+            PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 3, xPos, yPos);
         }
     }
 
