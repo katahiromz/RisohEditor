@@ -1009,7 +1009,7 @@ CAPTION "关于 RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 12, "宋体"
 {
-    CONTROL 1, -1, "STATIC", SS_ICON, 5, 5, 20, 20
+    CONTROL IDI_MAIN, -1, "STATIC", SS_ICON, 5, 5, 20, 20
     LTEXT "...", stc1, 30, 5, 140, 50
     CTEXT "http://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
