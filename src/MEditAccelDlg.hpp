@@ -536,7 +536,6 @@ public:
         }
     }
 
-
     void OnItemChanged(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);

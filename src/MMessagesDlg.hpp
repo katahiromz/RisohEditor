@@ -503,6 +503,11 @@ public:
                 ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
                 StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
             }
+            if (pnmhdr->code == LVN_ITEMCHANGED)
+            {
+                //NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr;
+                OnItemChanged(hwnd);
+            }
         }
         return 0;
     }
@@ -526,6 +531,14 @@ public:
             EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_GRAYED);
         }
         EnableMenuItem(hMenu, ID_RENAME, MF_BYCOMMAND | MF_GRAYED);
+    }
+
+    void OnItemChanged(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
     }
 
     virtual INT_PTR CALLBACK

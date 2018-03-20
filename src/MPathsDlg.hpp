@@ -59,6 +59,7 @@ public:
             return;
 
         ListBox_DeleteString(m_hLst1, iItem);
+        OnSelChange(hwnd);
     }
 
     void OnAdd(HWND hwnd)
@@ -77,7 +78,10 @@ public:
             CoTaskMemFree(pidl);
 
             if (iItem != LB_ERR)
+            {
                 ListBox_SetCurSel(m_hLst1, iItem);
+                OnSelChange(hwnd);
+            }
         }
     }
 
@@ -177,7 +181,7 @@ public:
         if (hwndContext == m_hLst1)
         {
             HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
-            HMENU hSubMenu = GetSubMenu(hMenu, 5);
+            HMENU hSubMenu = GetSubMenu(hMenu, 7);
 
             if (xPos == 0xFFFF && yPos == 0xFFFF)
             {
@@ -209,6 +213,7 @@ public:
         SetItemText(m_hLst1, iItem, szPath1);
 
         ListBox_SetCurSel(m_hLst1, iItem - 1);
+        OnSelChange(hwnd);
     }
 
     void OnPsh5(HWND hwnd)
@@ -229,11 +234,13 @@ public:
         SetItemText(m_hLst1, iItem + 1, szPath1);
 
         ListBox_SetCurSel(m_hLst1, iItem + 1);
+        OnSelChange(hwnd);
     }
 
     void OnPsh6(HWND hwnd)
     {
         ListBox_ResetContent(m_hLst1);
+        OnSelChange(hwnd);
     }
 
     void OnPsh7(HWND hwnd)
@@ -256,6 +263,7 @@ public:
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemText(hwnd, cmb1, file);
+            OnSelChange(hwnd);
         }
     }
 
@@ -279,6 +287,7 @@ public:
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemText(hwnd, cmb2, file);
+            OnSelChange(hwnd);
         }
     }
 
@@ -287,6 +296,7 @@ public:
         ListBox_ResetContent(m_hLst1);
         SetDlgItemText(hwnd, cmb1, NULL);
         SetDlgItemText(hwnd, cmb2, NULL);
+        OnSelChange(hwnd);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -337,22 +347,42 @@ public:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
                 OnPsh9(hwnd);
             break;
+        case lst1:
+            if (codeNotify == LBN_SELCHANGE)
+            {
+                OnSelChange(hwnd);
+            }
+            break;
         }
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
     {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        INT iItem = ListBox_GetCurSel(m_hLst1);
         if (iItem >= 0)
         {
-            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, psh2, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, psh3, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, psh4, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, psh5, MF_BYCOMMAND | MF_ENABLED);
         }
         else
         {
-            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
-            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, psh2, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, psh3, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, psh4, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, psh5, MF_BYCOMMAND | MF_GRAYED);
         }
+    }
+
+    void OnSelChange(HWND hwnd)
+    {
+        INT iItem = ListBox_GetCurSel(m_hLst1);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh4), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh5), bSelected);
     }
 
     virtual INT_PTR CALLBACK
@@ -362,11 +392,34 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
             HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
             HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx();
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+    {
+        if (idFrom == lst1)
+        {
+            if (pnmhdr->code == LVN_KEYDOWN)
+            {
+                LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+                if (KeyDown->wVKey == VK_DELETE)
+                {
+                    OnDelete(hwnd);
+                    return 0;
+                }
+            }
+            if (pnmhdr->code == NM_DBLCLK)
+            {
+                OnModify(hwnd);
+                return 0;
+            }
+        }
+        return 0;
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -413,6 +466,8 @@ public:
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         SetFocus(m_hLst1);
+
+        OnSelChange(hwnd);
 
         CenterWindowDx();
         return TRUE;

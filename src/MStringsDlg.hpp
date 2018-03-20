@@ -496,6 +496,11 @@ public:
                 StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
                 return 1;
             }
+            if (pnmhdr->code == LVN_ITEMCHANGED)
+            {
+                //NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr;
+                OnItemChanged(hwnd);
+            }
         }
         return 0;
     }
@@ -503,6 +508,14 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         m_resizable.OnSize();
+    }
+
+    void OnItemChanged(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, ID_MODIFY), bSelected);
+        EnableWindow(GetDlgItem(hwnd, ID_DELETE), bSelected);
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
