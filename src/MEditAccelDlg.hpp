@@ -398,6 +398,11 @@ public:
         }
     }
 
+    void OnDeleteAll(HWND hwnd)
+    {
+        ListView_DeleteAllItems(m_hLst1);
+    }
+
     void OnAdd(HWND hwnd)
     {
         ACCEL_ENTRY entry;
@@ -526,6 +531,9 @@ public:
             break;
         case psh5:
             OnDown(hwnd);
+            break;
+        case psh6:
+            OnDeleteAll(hwnd);
             break;
         case IDOK:
             OnOK(hwnd);
@@ -698,6 +706,7 @@ public:
         m_resizable.SetLayoutAnchor(psh3, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh4, mzcLA_TOP_RIGHT);
         m_resizable.SetLayoutAnchor(psh5, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh6, mzcLA_BOTTOM_LEFT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
 
