@@ -909,7 +909,6 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
     AUTOCHECKBOX "Ask ""&resource.h""'s update", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Compress EXE by &UPX On saving it", chx8, 5, 165, 200, 14
-    //AUTOCHECKBOX "Use Old-Style &LANGUAGE Statement", chx9, 5, 185, 200, 14
     PUSHBUTTON "Predefined &Macros...", psh1, 5, 205, 85, 14
     PUSHBUTTON "Set Pa&ths...", psh2, 120, 205, 85, 14
     DEFPUSHBUTTON "OK", IDOK, 100, 235, 50, 14

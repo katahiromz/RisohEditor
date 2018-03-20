@@ -909,7 +909,6 @@ FONT 9, "宋体"
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER
     AUTOCHECKBOX "询问""&resource.h""的更新", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "保存EXE文件时用&UPX压缩", chx8, 5, 165, 200, 14
-    //AUTOCHECKBOX "使用旧式&LANGUAGE语句", chx9, 5, 185, 200, 14
     PUSHBUTTON "预定义的宏(&M)...", psh1, 5, 205, 85, 14
     PUSHBUTTON "设置PATH(&T)...", psh2, 120, 205, 85, 14
     DEFPUSHBUTTON "OK", IDOK, 100, 235, 50, 14
