@@ -403,7 +403,20 @@ struct DialogItem
         MStringW ret;
 
         ret += L"CONTROL ";
-        ret += m_title.quoted_wstr();
+
+        if (m_title.is_int() &&
+            (m_class.m_id == 0x0082 ||
+             lstrcmpiW(m_class.m_str.c_str(), L"STATIC") == 0) &&
+            (m_style & SS_TYPEMASK) == SS_ICON)
+        {
+            // STATIC icon
+            ret += db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
+        }
+        else
+        {
+            ret += m_title.quoted_wstr();
+        }
+
         ret += L", ";
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_id);
         ret += L", ";
