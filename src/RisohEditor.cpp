@@ -6496,7 +6496,8 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 {
     if (m_szResourceH[0])
     {
-        DoLoadResH(hwnd, m_szResourceH);
+        MString strFile = m_szResourceH;
+        DoLoadResH(hwnd, strFile.c_str());
         if (m_szResourceH[0])
         {
             ShowIDList(hwnd, TRUE);
