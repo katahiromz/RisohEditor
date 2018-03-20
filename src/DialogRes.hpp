@@ -513,7 +513,7 @@ struct DialogItem
         ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.y);
-        // NOTE: Don't omit cx and cy!
+        // NOTE: Don't omit cx and cy! Visual Studio 2017 won't accept omission.
         //if (!IsStaticIcon() || m_siz.cx || m_siz.cy || m_style != DefStyle || m_ex_style || m_help_id)
         {
             ret += L", ";
