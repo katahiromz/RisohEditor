@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "删除资源项目(&D)\tDel", ID_DELETERES
+        MENUITEM "删除(&D)\tDel", ID_DELETERES
     }
     POPUP "搜索(&S)"
     {
@@ -176,7 +176,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "删除资源项目(&D)\tDel", ID_DELETERES
+        MENUITEM "删除(&D)\tDel", ID_DELETERES
     }
     POPUP "Popup #1"
     {

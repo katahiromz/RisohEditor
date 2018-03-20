@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
+        MENUITEM "削除(&D)\tDel", ID_DELETERES
     }
     POPUP "検索(&S)"
     {
@@ -178,7 +178,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "リソース項目を削除(&D)\tDel", ID_DELETERES
+        MENUITEM "削除(&D)\tDel", ID_DELETERES
     }
     POPUP "ポップアップ #1"
     {

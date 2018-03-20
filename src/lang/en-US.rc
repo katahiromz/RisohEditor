@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
+        MENUITEM "&Delete\tDel", ID_DELETERES
     }
     POPUP "&Search"
     {
@@ -176,7 +176,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "&Delete Resource Item\tDel", ID_DELETERES
+        MENUITEM "&Delete\tDel", ID_DELETERES
     }
     POPUP "Popup #1"
     {
