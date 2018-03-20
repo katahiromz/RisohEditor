@@ -250,6 +250,18 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "整数値をコピー(&C)", ID_COPY
     }
+    POPUP "ポップアップ #6"
+    {
+        MENUITEM "追加(&A)...", psh1
+        MENUITEM "変更(&M)...", psh2
+        MENUITEM SEPARATOR
+        MENUITEM "上へ(&U)", psh4
+        MENUITEM "下へ(&D)", psh5
+        MENUITEM "左へ(&L)", psh6
+        MENUITEM "右へ(&R)", psh7
+        MENUITEM SEPARATOR
+        MENUITEM "削除(&T)\tDel", psh3
+    }
 }
 
 // TODO: Update the version numbers

@@ -248,6 +248,18 @@ IDR_POPUPMENUS MENU
     {
         MENUITEM "&Copy Integer Value", ID_COPY
     }
+    POPUP "Popup #6"
+    {
+        MENUITEM "&Add...", psh1
+        MENUITEM "&Modify...", psh2
+        MENUITEM SEPARATOR
+        MENUITEM "&Up", psh4
+        MENUITEM "&Down", psh5
+        MENUITEM "&Left", psh6
+        MENUITEM "&Right", psh7
+        MENUITEM SEPARATOR
+        MENUITEM "Dele&te\tDel", psh3
+    }
 }
 
 // TODO: Update the version numbers

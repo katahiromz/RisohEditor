@@ -873,6 +873,30 @@ public:
         }
     }
 
+    void OnItemChanged(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh4), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh5), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh6), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh7), bSelected);
+    }
+
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableMenuItem(hMenu, psh2, bSelected ? MF_ENABLED : MF_GRAYED);
+        EnableMenuItem(hMenu, psh3, bSelected ? MF_ENABLED : MF_GRAYED);
+        EnableMenuItem(hMenu, psh4, bSelected ? MF_ENABLED : MF_GRAYED);
+        EnableMenuItem(hMenu, psh5, bSelected ? MF_ENABLED : MF_GRAYED);
+        EnableMenuItem(hMenu, psh6, bSelected ? MF_ENABLED : MF_GRAYED);
+        EnableMenuItem(hMenu, psh7, bSelected ? MF_ENABLED : MF_GRAYED);
+    }
+
     LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (idFrom == lst1)
@@ -900,6 +924,11 @@ public:
                 ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
                 StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
             }
+            if (pnmhdr->code == LVN_ITEMCHANGED)
+            {
+                //NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr;
+                OnItemChanged(hwnd);
+            }
         }
         return 0;
     }
@@ -913,6 +942,8 @@ public:
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
             HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx();
     }
@@ -920,6 +951,21 @@ public:
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         m_resizable.OnSize();
+    }
+
+    void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
+    {
+        if (hwndContext == GetDlgItem(hwnd, lst1))
+        {
+            HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_POPUPMENUS));
+            HMENU hSubMenu = GetSubMenu(hMenu, 6);
+
+            SetForegroundWindow(hwnd);
+            TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                xPos, yPos, 0, hwnd, NULL);
+            PostMessage(hwnd, WM_NULL, 0, 0);
+            DestroyMenu(hMenu);
+        }
     }
 };
 
