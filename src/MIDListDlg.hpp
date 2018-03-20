@@ -77,6 +77,7 @@ public:
     HWND m_hCmb1;
     HWND m_hLst1;
     BOOL m_bChanging;
+    HICON m_hIconDiamond;
     MSubclassedListView m_lv;
     MResizable m_resizable;
 
@@ -85,6 +86,12 @@ public:
           m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL),
           m_bChanging(FALSE)
     {
+        m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
+    }
+
+    ~MIDListDlg()
+    {
+        DestroyIcon(m_hIconDiamond);
     }
 
     MString GetAssoc(const MString& name)
@@ -318,9 +325,14 @@ public:
         ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
 
         InflateRect(&rc, -2, -2);
+        rc.left += 15;
         DrawText(lpDrawItem->hDC, szText, -1, &rc,
-            DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
+            DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
+        rc.left -= 15;
         InflateRect(&rc, 2, 2);
+
+        INT y = ((rc.top + rc.bottom) - 16) / 2 - 1;
+        DrawIconEx(lpDrawItem->hDC, 2, y, m_hIconDiamond, 16, 16, 0, NULL, DI_NORMAL);
 
         if (lpDrawItem->itemState & ODS_FOCUS)
         {

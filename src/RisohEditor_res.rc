@@ -42,6 +42,7 @@ IDI_FIND            ICON "res/find.ico"
 IDI_FILE            ICON "res/file.ico"
 IDI_FOLDER          ICON "res/folder.ico"
 IDI_PLAY            ICON "res/play.ico"
+IDI_DIAMOND         ICON "res/diamond.ico"
 
 IDC_CURSORNS        CURSOR "res/cursor-ns.cur"
 IDC_CURSORWE        CURSOR "res/cursor-we.cur"
