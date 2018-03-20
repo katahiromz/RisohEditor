@@ -260,6 +260,16 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Dele&te\tDel", psh3
     }
+    POPUP "Popup #7"
+    {
+        MENUITEM "&Add...", psh1
+        MENUITEM "&Modify...", psh2
+        MENUITEM SEPARATOR
+        MENUITEM "&Up", psh4
+        MENUITEM "&Down", psh5
+        MENUITEM SEPARATOR
+        MENUITEM "Dele&te\tDel", psh3
+    }
 }
 
 // TODO: Update the version numbers

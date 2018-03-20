@@ -260,6 +260,16 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "删除(&T)\tDel", psh3
     }
+    POPUP "Popup #7"
+    {
+        MENUITEM "添加(&A)...", psh1
+        MENUITEM "修改(&M)...", psh2
+        MENUITEM SEPARATOR
+        MENUITEM "上(&U)", psh4
+        MENUITEM "下(&D)", psh5
+        MENUITEM SEPARATOR
+        MENUITEM "删除(&T)\tDel", psh3
+    }
 }
 
 // TODO: Update the version numbers
