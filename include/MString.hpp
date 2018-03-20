@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       17  /* Version 17 */
+#define MZC4_MSTRING_HPP_       18  /* Version 18 */
 
 // class MString;
 // class MStringA;
@@ -548,14 +548,24 @@ inline bool mstr_is_text_utf8(const std::string& str)
     return mstr_is_text_utf8(&str[0], str.size());
 }
 
-inline bool mstr_is_text_unicode(const void *ptr, size_t len)
-{
-    assert(0);
-    //if (::IsTextUnicode(const_cast<void *>(ptr), int(len), NULL))
-    //    return true;
-    //return false;
-    return true;    // ...
-}
+#if defined(_WIN32) && !defined(WONVER)
+    inline bool mstr_is_text_unicode(const void *ptr, size_t len)
+    {
+        if (len == 0)
+            return true;
+
+        return ::IsTextUnicode(ptr, len, NULL);
+    }
+#else
+    #include "UTF16_validator.h"
+    inline bool mstr_is_text_unicode(const void *ptr, size_t len)
+    {
+        if (len == 0)
+            return true;
+
+        return UTF16_validate(ptr, len);
+    }
+#endif
 
 template <typename T_CHAR>
 inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)

@@ -2,7 +2,7 @@
  */
 
 #ifndef MZC4_UTF16_VALIDATOR_H_
-#define MZC4_UTF16_VALIDATOR_H_      2   /* Version 2 */
+#define MZC4_UTF16_VALIDATOR_H_      3   /* Version 3 */
 
 #include "UTF8_validator.h"
 
@@ -14,7 +14,7 @@
     #include <assert.h>
 #endif
 
-bool UTF16_validate(const void *pv, int cb);
+bool UTF16_validate(const void *pv, size_t cb);
 
 /****************************************************************************/
 
