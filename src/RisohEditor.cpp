@@ -1468,6 +1468,7 @@ protected:
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
+    void OnOpenHyojunka(HWND hwnd);
     void OnDebugTreeNode(HWND hwnd);
     void OnAdviceResH(HWND hwnd);
     void OnUnloadResH(HWND hwnd);
@@ -2797,6 +2798,36 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
             if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\READMEJP.txt");
+                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                {
+                    return;
+                }
+            }
+        }
+    }
+    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+void MMainWnd::OnOpenHyojunka(HWND hwnd)
+{
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        return;
+
+    ++pch;
+    size_t diff = pch - szPath;
+    StringCchCopyW(pch, diff, L"HYOJUNKA.txt");
+    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        StringCchCopyW(pch, diff, L"..\\HYOJUNKA.txt");
+        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        {
+            StringCchCopyW(pch, diff, L"..\\..\\HYOJUNKA.txt");
+            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            {
+                StringCchCopyW(pch, diff, L"..\\..\\..\\HYOJUNKA.txt");
                 if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                 {
                     return;
@@ -7185,6 +7216,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_OPENLICENSE:
         OnOpenLicense(hwnd);
+        break;
+    case ID_OPENHYOJUNKA:
+        OnOpenHyojunka(hwnd);
         break;
     case ID_DEBUGTREENODE:
         OnDebugTreeNode(hwnd);
