@@ -513,7 +513,8 @@ struct DialogItem
         ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.y);
-        if (!IsStaticIcon() || m_siz.cx || m_siz.cy || m_style != DefStyle || m_ex_style || m_help_id)
+        // NOTE: Don't omit cx and cy!
+        //if (!IsStaticIcon() || m_siz.cx || m_siz.cy || m_style != DefStyle || m_ex_style || m_help_id)
         {
             ret += L", ";
             ret += mstr_dec_short((SHORT)m_siz.cx);
