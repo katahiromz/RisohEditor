@@ -380,7 +380,7 @@ struct DialogItem
                     return _do_CTEXT(db);
                 if ((m_style & SS_TYPEMASK) == SS_RIGHT)
                     return _do_RTEXT(db);
-                if ((m_style & SS_TYPEMASK) == SS_ICON && m_title.empty())
+                if ((m_style & SS_TYPEMASK) == SS_ICON)
                     return _do_ICON(db);
             }
             if (m_title.empty())
@@ -398,18 +398,26 @@ struct DialogItem
         return DumpControl(db, cls);
     }
 
+    bool IsStaticIcon() const
+    {
+        if (m_title.is_int() &&
+            (m_class.m_id == 0x0082 ||
+             lstrcmpiW(m_class.m_str.c_str(), L"STATIC") == 0) &&
+            (m_style & SS_TYPEMASK) == SS_ICON)
+        {
+            return true;
+        }
+        return false;
+    }
+
     MStringW DumpControl(const ConstantsDB& db, MStringW& cls)
     {
         MStringW ret;
 
         ret += L"CONTROL ";
 
-        if (m_title.is_int() &&
-            (m_class.m_id == 0x0082 ||
-             lstrcmpiW(m_class.m_str.c_str(), L"STATIC") == 0) &&
-            (m_style & SS_TYPEMASK) == SS_ICON)
+        if (IsStaticIcon())
         {
-            // STATIC icon
             ret += db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
         }
         else
@@ -486,20 +494,32 @@ struct DialogItem
         MStringW ret;
         ret += ctrl;
         ret += L" ";
+
         if (!m_title.empty() || bNeedsText)
         {
-            ret += m_title.quoted_wstr();
+            if (IsStaticIcon())
+            {
+                ret += db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
+            }
+            else
+            {
+                ret += m_title.quoted_wstr();
+            }
             ret += L", ";
         }
+
         ret += db.GetNameOfResID(IDTYPE_CONTROL, m_id);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.y);
-        ret += L", ";
-        ret += mstr_dec_short((SHORT)m_siz.cx);
-        ret += L", ";
-        ret += mstr_dec_short((SHORT)m_siz.cy);
+        if (m_siz.cx != 0 || m_siz.cy != 0 || m_style != DefStyle || m_ex_style || m_help_id)
+        {
+            ret += L", ";
+            ret += mstr_dec_short((SHORT)m_siz.cx);
+            ret += L", ";
+            ret += mstr_dec_short((SHORT)m_siz.cy);
+        }
         if (m_style != DefStyle || m_ex_style || m_help_id)
         {
             ret += L", ";
@@ -615,7 +635,6 @@ struct DialogItem
     }
     MStringW _do_ICON(const ConstantsDB& db)
     {
-        assert(m_title.empty());
         return _do_CONTROL(true, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
     MStringW _do_LISTBOX(const ConstantsDB& db)
