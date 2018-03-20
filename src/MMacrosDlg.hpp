@@ -239,7 +239,7 @@ class MMacrosDlg : public MDialogBase
 {
 public:
     RisohSettings& m_settings;
-    macro_map_type& m_map;
+    macro_map_type m_map;
     MResizable m_resizable;
     HWND m_hLst1;
     HICON m_hIcon;
@@ -276,12 +276,6 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
-        if (iItem < 0)
-        {
-            return;
-        }
-
         MACRO_ENTRY entry;
         MAddMacroDlg dialog(m_map, entry);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -419,12 +413,13 @@ public:
         case psh6:
             if (codeNotify == 0 || codeNotify == BN_CLICKED)
             {
-                m_settings.ResetMacros();
-                EndDialog(IDOK);
+                EndDialog(psh6);
             }
             break;
         case psh7:
+            m_map.clear();
             ListView_DeleteAllItems(m_hLst1);
+            OnItemChanged(hwnd);
             break;
         }
     }
@@ -515,6 +510,11 @@ public:
                 ListView_GetItemText(m_hLst1, iItem, iSubItem, szText, _countof(szText));
                 StringCchCopy(pGetInfoTip->pszText, pGetInfoTip->cchTextMax, szText);
             }
+            if (pnmhdr->code == LVN_ITEMCHANGED)
+            {
+                //NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr;
+                OnItemChanged(hwnd);
+            }
         }
         return 0;
     }
@@ -534,6 +534,15 @@ public:
             EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_GRAYED);
             EnableMenuItem(hMenu, ID_RENAME, MF_BYCOMMAND | MF_GRAYED);
         }
+    }
+
+    void OnItemChanged(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh7), bSelected);
     }
 
     virtual INT_PTR CALLBACK

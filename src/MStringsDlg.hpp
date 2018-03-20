@@ -514,8 +514,8 @@ public:
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
         BOOL bSelected = (iItem != -1);
-        EnableWindow(GetDlgItem(hwnd, ID_MODIFY), bSelected);
-        EnableWindow(GetDlgItem(hwnd, ID_DELETE), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
     }
 
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)

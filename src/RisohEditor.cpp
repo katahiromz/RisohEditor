@@ -7012,7 +7012,16 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
         return;
 
     MMacrosDlg dialog(m_settings);
-    dialog.DialogBoxDx(hwnd);
+    INT_PTR nID = dialog.DialogBoxDx(hwnd);
+    switch (INT(nID))
+    {
+    case IDOK:
+        m_settings.macros = dialog.m_map;
+        break;
+    case psh6:
+        m_settings.ResetMacros();
+        break;
+    }
 }
 
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
