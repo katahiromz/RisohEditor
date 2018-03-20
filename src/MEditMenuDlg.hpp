@@ -34,6 +34,7 @@ class MEditMenuDlg;
 
 BOOL CheckCommand(ConstantsDB& db, MString strCommand);
 void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
 void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, MIdOrString(L""), IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
         SubclassChildDx(m_cmb2, cmb2);
 
         InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, MIdOrString(L""), IDTYPE_HELP);
@@ -203,7 +204,7 @@ public:
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
         MIdOrString cmd_id(m_entry.szCommandID);
-        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, cmd_id, IDTYPE_COMMAND);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb2), m_db, cmd_id, IDTYPE_COMMAND, IDTYPE_NEWCOMMAND);
         SubclassChildDx(m_cmb2, cmb2);
 
         MIdOrString help_id(m_entry.szHelpID);

@@ -481,6 +481,76 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 }
 
+void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2)
+{
+    SetWindowTextW(hCmb, id.c_str());
+
+    if (!db.AreMacroIDShown())
+        return;
+
+    INT k = -1;
+    MStringW prefix;
+    ConstantsDB::TableType table;
+    if (nIDTYPE_1 != IDTYPE_UNKNOWN)
+    {
+        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        prefix = table[nIDTYPE_1].name;
+        if (prefix.empty())
+            return;
+
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            INT i = ComboBox_AddString(hCmb, it->name.c_str());
+            if (it->value == id.m_id)
+            {
+                k = i;
+                ComboBox_SetCurSel(hCmb, i);
+                SetWindowTextW(hCmb, it->name.c_str());
+            }
+        }
+    }
+    if (nIDTYPE_2 != IDTYPE_UNKNOWN)
+    {
+        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        prefix = table[nIDTYPE_2].name;
+        if (prefix.empty())
+            return;
+
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            INT i = ComboBox_AddString(hCmb, it->name.c_str());
+            if (it->value == id.m_id)
+            {
+                k = i;
+                ComboBox_SetCurSel(hCmb, i);
+                SetWindowTextW(hCmb, it->name.c_str());
+            }
+        }
+    }
+
+    if (k == -1 &&
+        nIDTYPE_1 != IDTYPE_RESOURCE && db.IsEntityIDType(nIDTYPE_1))
+    {
+        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        prefix = table[IDTYPE_RESOURCE].name;
+        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        ConstantsDB::TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            INT i = ComboBox_AddString(hCmb, it->name.c_str());
+            if (it->value == id.m_id)
+            {
+                ComboBox_SetCurSel(hCmb, i);
+                SetWindowTextW(hCmb, it->name.c_str());
+            }
+        }
+    }
+}
+
 BOOL CheckCommand(ConstantsDB& db, MString strCommand)
 {
     mstr_trim(strCommand);
