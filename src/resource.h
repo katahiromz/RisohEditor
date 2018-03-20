@@ -342,6 +342,7 @@
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
+#define IDC_STATIC -1
 
 #define MSGID_HELLO             101
 #define MSGID_SAMPLE            102
@@ -351,10 +352,6 @@
 
 #define IDC_CURSORNS            101
 #define IDC_CURSORWE            102
-
-#ifndef IDC_STATIC
-    #define IDC_STATIC -1
-#endif
 
 #define UNKNOWNRESID1           999
 

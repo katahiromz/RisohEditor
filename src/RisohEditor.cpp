@@ -5775,8 +5775,15 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
     id_map_type::iterator it, end = m_settings.id_map.end();
     for (it = m_settings.id_map.begin(); it != end; ++it)
     {
-        file.WriteFormatA("#define %s %s\r\n",
-            it->first.c_str(), it->second.c_str());
+        if (it->first == "IDC_STATIC")
+        {
+            file.WriteFormatA("#define IDC_STATIC -1\r\n");
+        }
+        else
+        {
+            file.WriteFormatA("#define %s %s\r\n",
+                it->first.c_str(), it->second.c_str());
+        }
     }
 
     UINT anValues[5];
@@ -6841,10 +6848,17 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         for (it = m_settings.removed_ids.begin(); it != end; ++it)
         {
             str += TEXT("#define ");
-            str += MAnsiToText(CP_ACP, it->first).c_str();
-            str += TEXT(" ");
-            str += MAnsiToText(CP_ACP, it->second).c_str();
-            str += TEXT("\r\n");
+            if (it->first == "IDC_STATIC")
+            {
+                str += TEXT("IDC_STATIC -1\r\n");
+            }
+            else
+            {
+                str += MAnsiToText(CP_ACP, it->first).c_str();
+                str += TEXT(" ");
+                str += MAnsiToText(CP_ACP, it->second).c_str();
+                str += TEXT("\r\n");
+            }
         }
         str += TEXT("\r\n");
     }
@@ -6857,10 +6871,17 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         for (it = m_settings.added_ids.begin(); it != end; ++it)
         {
             str += TEXT("#define ");
-            str += MAnsiToText(CP_ACP, it->first).c_str();
-            str += TEXT(" ");
-            str += MAnsiToText(CP_ACP, it->second).c_str();
-            str += TEXT("\r\n");
+            if (it->first == "IDC_STATIC")
+            {
+                str += TEXT("IDC_STATIC -1\r\n");
+            }
+            else
+            {
+                str += MAnsiToText(CP_ACP, it->first).c_str();
+                str += TEXT(" ");
+                str += MAnsiToText(CP_ACP, it->second).c_str();
+                str += TEXT("\r\n");
+            }
         }
         str += TEXT("\r\n");
     }
@@ -7894,8 +7915,15 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
                 break;
             }
         }
+        else if (memcmp(pch, "if", 2) == 0)
+        {
+            break;
+        }
         else if (memcmp(pch, "define", 6) == 0 && mchr_is_space(pch[6]))
         {
+            if (name0.empty())
+                break;
+
             // #define
             pch += 6;
             const char *pch0 = pch = mstr_skip_space(pch);
@@ -8014,9 +8042,16 @@ void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
     for (it = m_settings.added_ids.begin(); it != end; ++it)
     {
         std::string line = "#define ";
-        line += it->first;
-        line += " ";
-        line += it->second;
+        if (it->first == "IDC_STATIC")
+        {
+            line += "IDC_STATIC -1";
+        }
+        else
+        {
+            line += it->first;
+            line += " ";
+            line += it->second;
+        }
         lines.push_back(line);
     }
 }
@@ -8102,7 +8137,7 @@ void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
         else if (memcmp(pch, "endif", 5) == 0)
         {
             --nest;
-            if (nest == 0)
+            if (nest == 0 && k != -1)
             {
                 lines.erase(lines.begin() + k, lines.begin() + i + 1);
                 break;
