@@ -84,6 +84,7 @@ struct RisohSettings
     BOOL                bStoreToResFolder;
     BOOL                bSelectableByMacro;
     captions_type       captions;
+    BOOL                bShowToolBar;
 
     RisohSettings()
     {

@@ -106,6 +106,7 @@ IDR_MAINMENU MENU
     POPUP "&View"
     {
         MENUITEM "&Status Bar", ID_STATUSBAR
+        MENUITEM "&Tool Bar", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binary", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "List of &Resource IDs", ID_IDLIST

@@ -106,6 +106,7 @@ IDR_MAINMENU MENU
     POPUP "界面显示(&V)"
     {
         MENUITEM "状态栏(&S)", ID_STATUSBAR
+        MENUITEM "工具栏(&T)", ID_SHOWHIDETOOLBAR
         MENUITEM "二进制模式(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "资源ID列表(&R)", ID_IDLIST

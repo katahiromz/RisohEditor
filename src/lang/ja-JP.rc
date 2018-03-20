@@ -106,6 +106,7 @@ IDR_MAINMENU MENU
     POPUP "表示(&V)"
     {
         MENUITEM "ステータス バー(&S)", ID_STATUSBAR
+        MENUITEM "ツール バー(&T)", ID_SHOWHIDETOOLBAR
         MENUITEM "バイナリー(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "リソースIDの一覧(&R)", ID_IDLIST

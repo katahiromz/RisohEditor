@@ -669,34 +669,6 @@ TBBUTTON g_buttons5[] =
     { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
 };
 
-void ToolBar_Update(HWND hwnd, INT iType)
-{
-    while (SendMessageW(hwnd, TB_DELETEBUTTON, 0, 0))
-        ;
-
-    switch (iType)
-    {
-    case 0:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
-        break;
-    case 1:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
-        break;
-    case 2:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
-        break;
-    case 3:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
-        break;
-    case 4:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
-        break;
-    case 5:
-        SendMessageW(hwnd, TB_ADDBUTTONS, _countof(g_buttons5), (LPARAM)g_buttons5);
-        break;
-    }
-}
-
 VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
 {
     for (INT i = 0; i < nCount; ++i)
@@ -709,29 +681,6 @@ VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
         id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
         pButtons[i].iString = id;
     }
-}
-
-HWND ToolBar_Create(HWND hwndParent)
-{
-    HWND hwndTB;
-    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
-        0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
-    if (hwndTB == NULL)
-        return hwndTB;
-
-    SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
-    SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
-
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
-
-    ToolBar_Update(hwndTB, 3);
-    return hwndTB;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1341,6 +1290,8 @@ public:
     BOOL ReCompileOnSelChange(HWND hwnd, BOOL bReopen = FALSE);
     void SelectString(HWND hwnd);
     void SelectMessage(HWND hwnd);
+    BOOL CreateOurToolBar(HWND hwndParent);
+    void UpdateOurToolBar(INT iType);
 
     // ID list
     void OnIDList(HWND hwnd);
@@ -1350,6 +1301,7 @@ public:
     void OnSetPaths(HWND hwnd);
     void OnUseOldStyleLangStmt(HWND hwnd);
     void OnShowLangs(HWND hwnd);
+    void OnShowHideToolBar(HWND hwnd);
 
 
     // show/hide
@@ -3122,6 +3074,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_UNCHECKED);
 
+    if (m_settings.bShowToolBar)
+        CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_UNCHECKED);
+
     BOOL bCanEditLabel = TRUE;
     LPARAM lParam = TV_GetParam(m_hTreeView);
     if (HIWORD(lParam) == I_TYPE)
@@ -3844,6 +3801,64 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
     return bEditable;
 }
 
+BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
+{
+    HWND hwndTB;
+    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
+        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
+    if (hwndTB == NULL)
+        return FALSE;
+
+    SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
+    SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
+
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
+    ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
+
+    m_hToolBar = hwndTB;
+    UpdateOurToolBar(3);
+
+    return TRUE;
+}
+
+void MMainWnd::UpdateOurToolBar(INT iType)
+{
+    while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
+        ;
+
+    switch (iType)
+    {
+    case 0:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons0), (LPARAM)g_buttons0);
+        break;
+    case 1:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons1), (LPARAM)g_buttons1);
+        break;
+    case 2:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons2), (LPARAM)g_buttons2);
+        break;
+    case 3:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons3), (LPARAM)g_buttons3);
+        break;
+    case 4:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
+        break;
+    case 5:
+        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons5), (LPARAM)g_buttons5);
+        break;
+    }
+
+    if (m_settings.bShowToolBar)
+        ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
+    else
+        ShowWindow(m_hToolBar, SW_HIDE);
+}
+
 void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 {
     HidePreview(hwnd);
@@ -3854,7 +3869,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     WORD i = LOWORD(lParam);
     if (m_entries.size() <= i)
     {
-        ToolBar_Update(m_hToolBar, 3);
+        UpdateOurToolBar(3);
         return;
     }
 
@@ -3902,28 +3917,27 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
 
         if (Edit_GetModify(m_hSrcEdit))
         {
-            ToolBar_Update(m_hToolBar, 2);
+            UpdateOurToolBar(2);
         }
         else if (Res_IsTestable(entry.type))
         {
-            ToolBar_Update(m_hToolBar, 0);
+            UpdateOurToolBar(0);
         }
         else if (Res_CanGuiEdit(entry.type))
         {
-            ToolBar_Update(m_hToolBar, 4);
+            UpdateOurToolBar(4);
         }
         else
         {
-            ToolBar_Update(m_hToolBar, 3);
+            UpdateOurToolBar(3);
         }
     }
     else
     {
         Edit_SetReadOnly(m_hSrcEdit, TRUE);
 
-        ToolBar_Update(m_hToolBar, 3);
+        UpdateOurToolBar(3);
     }
-    ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
 
     PostMessageDx(WM_SIZE);
 }
@@ -6828,6 +6842,18 @@ void MMainWnd::OnShowLangs(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+void MMainWnd::OnShowHideToolBar(HWND hwnd)
+{
+    m_settings.bShowToolBar = !m_settings.bShowToolBar;
+
+    if (m_settings.bShowToolBar)
+        ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
+    else
+        ShowWindow(m_hToolBar, SW_HIDE);
+
+    PostMessageDx(WM_SIZE);
+}
+
 void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -6893,7 +6919,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     MWaitCursor wait;
     if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
     {
-        ToolBar_Update(m_hToolBar, 2);
+        UpdateOurToolBar(2);
         ChangeStatusText(IDS_READY);
         return;
     }
@@ -7198,6 +7224,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SHOWLANGS:
         OnShowLangs(hwnd);
+        break;
+    case ID_SHOWHIDETOOLBAR:
+        OnShowHideToolBar(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -8481,6 +8510,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.bSelectableByMacro = FALSE;
 
     m_settings.captions.clear();
+
+    m_settings.bShowToolBar = TRUE;
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
@@ -8720,6 +8751,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         }
     }
 
+    keyRisoh.QueryDword(TEXT("bShowToolBar"), (DWORD&)m_settings.bShowToolBar);
+
     return TRUE;
 }
 
@@ -8851,6 +8884,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         keyRisoh.SetSz(szValueName, m_settings.captions[i].c_str());
     }
 
+    keyRisoh.SetDword(TEXT("bShowToolBar"), m_settings.bShowToolBar);
+
     return TRUE;
 }
 
@@ -8888,8 +8923,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ImageList_AddIcon(m_hImageList, m_hFileIcon);
     ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
-    m_hToolBar = ToolBar_Create(hwnd);
-    if (m_hToolBar == NULL)
+    if (!CreateOurToolBar(hwnd))
         return FALSE;
 
     DWORD style, exstyle;
