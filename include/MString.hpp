@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MSTRING_HPP_
-#define MZC4_MSTRING_HPP_       18  /* Version 18 */
+#define MZC4_MSTRING_HPP_       19  /* Version 19 */
 
 // class MString;
 // class MStringA;
@@ -554,7 +554,7 @@ inline bool mstr_is_text_utf8(const std::string& str)
         if (len == 0)
             return true;
 
-        return ::IsTextUnicode(ptr, len, NULL);
+        return !!::IsTextUnicode(ptr, int(len), NULL);
     }
 #else
     #include "UTF16_validator.h"
