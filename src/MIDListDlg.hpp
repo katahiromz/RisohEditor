@@ -341,12 +341,6 @@ public:
         m_hCmb1 = GetDlgItem(hwnd, cmb1);
         m_hLst1 = GetDlgItem(hwnd, lst1);
 
-        RECT rc;
-        SetRect(&rc, 0, 0, 200, 12);
-        MapDialogRect(hwnd, &rc);
-        ComboBox_SetItemHeight(m_hCmb1, -1, rc.bottom - rc.top);
-        ComboBox_SetItemHeight(m_hCmb1, 0, rc.bottom - rc.top);
-
         m_resizable.OnParentCreate(hwnd);
 
         m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
