@@ -152,6 +152,7 @@
 #define ID_SHOWLANGS            231
 #define ID_SHOWHIDETOOLBAR      232
 #define ID_OPENHYOJUNKA         233
+#define ID_COPYRESIDVALUE       234
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

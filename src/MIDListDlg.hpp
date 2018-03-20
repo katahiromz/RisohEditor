@@ -501,6 +501,14 @@ public:
                 CopyText(hwnd, szText);
             }
             break;
+        case ID_COPYRESIDVALUE:
+            {
+                iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+                ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
+                MString text = szText;
+                CopyText(hwnd, text);
+            }
+            break;
         case ID_COPYIDDEF:
             {
                 iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
