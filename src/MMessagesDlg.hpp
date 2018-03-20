@@ -82,7 +82,7 @@ public:
         {
             value = mstr_parse_int(m_entry.MessageID);
         }
-        if (m_msg_res.map().find((WORD)value) != m_msg_res.map().end())
+        if (m_msg_res.map().find(value) != m_msg_res.map().end())
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -438,10 +438,10 @@ public:
         {
             GetEntry(hwnd, iItem, me);
 
-            WORD wID = (WORD)m_db.GetResIDValue(me.MessageID);
+            DWORD dwID = m_db.GetResIDValue(me.MessageID);
             std::wstring str = me.MessageValue;
 
-            m_msg_res.map().insert(std::make_pair(wID, str));
+            m_msg_res.map().insert(std::make_pair(dwID, str));
         }
 
         EndDialog(IDOK);
