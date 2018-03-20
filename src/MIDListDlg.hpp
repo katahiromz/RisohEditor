@@ -324,15 +324,18 @@ public:
         TCHAR szText[128];
         ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
 
+        const INT CX_ICON_SMALL = 16;
+        const INT CY_ICON_SMALL = 16;
+
         InflateRect(&rc, -2, -2);
-        rc.left += 15;
+        rc.left += CX_ICON_SMALL - 1;
         DrawText(lpDrawItem->hDC, szText, -1, &rc,
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
-        rc.left -= 15;
+        rc.left -= CX_ICON_SMALL - 1;
         InflateRect(&rc, 2, 2);
 
-        INT y = ((rc.top + rc.bottom) - 16) / 2 - 1;
-        DrawIconEx(lpDrawItem->hDC, 2, y, m_hIconDiamond, 16, 16, 0, NULL, DI_NORMAL);
+        INT y = ((rc.top + rc.bottom) - CY_ICON_SMALL) / 2 - 1;
+        DrawIconEx(lpDrawItem->hDC, 2, y, m_hIconDiamond, CX_ICON_SMALL, CY_ICON_SMALL, 0, NULL, DI_NORMAL);
 
         if (lpDrawItem->itemState & ODS_FOCUS)
         {
