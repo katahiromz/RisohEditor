@@ -369,7 +369,15 @@ public:
 
         WORD nRT_ = (WORD)m_db.GetValue(L"RESOURCE", strIDType);
         INT iType = m_db.IDTypeFromResType(nRT_);
-        if (iType != IDTYPE_UNKNOWN)
+        if (nRT_ != 0)
+        {
+            type = nRT_;
+            if (iType == IDTYPE_UNKNOWN)
+            {
+                iType = IDTYPE_RESOURCE;
+            }
+        }
+        else if (iType != IDTYPE_UNKNOWN)
         {
             type = nRT_;
         }
