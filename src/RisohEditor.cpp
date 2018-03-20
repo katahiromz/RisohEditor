@@ -41,7 +41,8 @@
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
-const DWORD s_nMaxCaptions = 10;
+static const DWORD s_nMaxCaptions = 10;
+static const UINT s_nBackupMaxCount = 5;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -5535,8 +5536,6 @@ BOOL DeleteDirectoryDx(LPCTSTR pszDir)
     SetFileAttributes(pszDir, FILE_ATTRIBUTE_DIRECTORY);
     return RemoveDirectory(pszDir);
 }
-
-static const UINT s_nBackupMaxCount = 5;
 
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
