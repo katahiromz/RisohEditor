@@ -1412,8 +1412,8 @@ public:
                 if (pCtrl->m_nImageType == 1)
                 {
                     // icon
-                    WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                    if (HICON hIcon = m_title_to_icon[wID])
+                    MIdOrString title = m_dialog_res[pCtrl->m_nIndex].m_title;
+                    if (HICON hIcon = m_title_to_icon[title])
                     {
                         SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
                         DWORD style = GetWindowStyle(hCtrl);
@@ -1441,8 +1441,8 @@ public:
                 if (pCtrl->m_nImageType == 2)
                 {
                     // bitmap
-                    WORD wID = m_dialog_res[pCtrl->m_nIndex].m_title.m_id;
-                    if (HBITMAP hbm = m_title_to_bitmap[wID])
+                    MIdOrString title = m_dialog_res[pCtrl->m_nIndex].m_title;
+                    if (HBITMAP hbm = m_title_to_bitmap[title])
                     {
                         SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
                         DWORD style = GetWindowStyle(hCtrl);

@@ -39,8 +39,8 @@
 class ResEntry;
 // class ResEntries;
 
-typedef std::map<WORD, HBITMAP> MTitleToBitmap;
-typedef std::map<WORD, HICON> MTitleToIcon;
+typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
+typedef std::map<MIdOrString, HICON>    MTitleToIcon;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1550,11 +1550,11 @@ Res_DoIcon(ResEntries& entries, MTitleToIcon& title_to_icon, DialogItem& item, W
     HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
     if (hIcon)
     {
-        if (WORD id = item.m_title.m_id)
+        if (!item.m_title.empty())
         {
-            if (title_to_icon[id])
-                DestroyIcon(title_to_icon[id]);
-            title_to_icon[id] = hIcon;
+            if (title_to_icon[item.m_title])
+                DestroyIcon(title_to_icon[item.m_title]);
+            title_to_icon[item.m_title] = hIcon;
         }
     }
 }
@@ -1571,11 +1571,11 @@ Res_DoBitmap(ResEntries& entries, MTitleToBitmap& title_to_bitmap, DialogItem& i
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     if (hbm)
     {
-        if (WORD id = item.m_title.m_id)
+        if (!item.m_title.empty())
         {
-            if (title_to_bitmap[id])
-                DeleteObject(title_to_bitmap[id]);
-            title_to_bitmap[id] = hbm;
+            if (title_to_bitmap[item.m_title])
+                DeleteObject(title_to_bitmap[item.m_title]);
+            title_to_bitmap[item.m_title] = hbm;
         }
     }
 }

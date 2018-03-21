@@ -141,10 +141,10 @@ public:
             GetClassNameW(hCtrl, szClass, 32);
             if (lstrcmpiW(szClass, L"STATIC") == 0)
             {
-                WORD id = m_dialog_res[i].m_title.m_id;
+                MIdOrString title = m_dialog_res[i].m_title;
                 if ((style & SS_TYPEMASK) == SS_ICON)
                 {
-                    HICON hIcon = m_title_to_icon[id];
+                    HICON hIcon = m_title_to_icon[title];
                     SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
                     if (style & SS_REALSIZEIMAGE)
                     {
@@ -164,7 +164,7 @@ public:
                 }
                 else if ((style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    HBITMAP hbm = m_title_to_bitmap[id];
+                    HBITMAP hbm = m_title_to_bitmap[title];
                     SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
                     if (style & SS_REALSIZECONTROL)
                     {
