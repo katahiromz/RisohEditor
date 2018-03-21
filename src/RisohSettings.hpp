@@ -86,9 +86,11 @@ struct RisohSettings
     BOOL                bSelectableByMacro;
     captions_type       captions;
     BOOL                bShowToolBar;
+    BOOL                bHasIDC_STATIC;
 
     RisohSettings()
     {
+        bHasIDC_STATIC = FALSE;
     }
 
     void AddCaption(LPCTSTR pszCaption)
@@ -125,8 +127,9 @@ struct RisohSettings
 
     void AddIDC_STATIC()
     {
-        added_ids.insert(std::make_pair("IDC_STATIC", "-1"));
-        id_map.insert(std::make_pair("IDC_STATIC", "-1"));
+        id_map["IDC_STATIC"] = "-1";
+        added_ids["IDC_STATIC"] = "-1";
+        removed_ids["IDC_STATIC"] = "-1";
     }
 
     void ResetAssoc()

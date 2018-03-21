@@ -4876,6 +4876,7 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
     m_db.m_map[L"RESOURCE.ID"].clear();
     m_db.AddIDC_STATIC();
     m_settings.AddIDC_STATIC();
+    m_settings.bHasIDC_STATIC = FALSE;
 
     m_settings.id_map.clear();
     m_settings.added_ids.clear();
@@ -6655,7 +6656,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
                     if (m_id_list_dlg.m_nBase == 16)
                         StringCchPrintfA(sz, _countof(sz), "0x%X", value);
                     else
-                        StringCchPrintfA(sz, _countof(sz), "%u", value);
+                        StringCchPrintfA(sz, _countof(sz), "%d", value);
 
                     if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
                         m_settings.id_map[macro] = sz;
@@ -6666,6 +6667,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
 
     ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
     table.clear();
+    m_settings.bHasIDC_STATIC = FALSE;
     id_map_type::iterator it, end = m_settings.id_map.end();
     for (it = m_settings.id_map.begin(); it != end; ++it)
     {
@@ -6674,6 +6676,8 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         DWORD value2 = mstr_parse_int(str2.c_str());
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
+        if (str1 == L"IDC_STATIC")
+            m_settings.bHasIDC_STATIC = TRUE;
     }
     m_db.AddIDC_STATIC();
     m_settings.AddIDC_STATIC();
@@ -6880,56 +6884,52 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
 
     MString str;
 
-    if (m_settings.added_ids.empty() &&
-        m_settings.removed_ids.empty())
-    {
-        str += LoadStringDx(IDS_NOCHANGE);
-        str += TEXT("\r\n");
-    }
-
-    if (!m_settings.removed_ids.empty())
+    if (!m_settings.removed_ids.empty() &&
+        (m_settings.removed_ids.size() != 1 ||
+         m_settings.removed_ids.find("IDC_STATIC") == m_settings.removed_ids.end()))
     {
         str += LoadStringDx(IDS_DELETENEXTIDS);
 
         id_map_type::iterator it, end = m_settings.removed_ids.end();
         for (it = m_settings.removed_ids.begin(); it != end; ++it)
         {
-            str += TEXT("#define ");
             if (it->first == "IDC_STATIC")
-            {
-                str += TEXT("IDC_STATIC -1\r\n");
-            }
-            else
-            {
-                str += MAnsiToText(CP_ACP, it->first).c_str();
-                str += TEXT(" ");
-                str += MAnsiToText(CP_ACP, it->second).c_str();
-                str += TEXT("\r\n");
-            }
+                continue;
+
+            str += TEXT("#define ");
+            str += MAnsiToText(CP_ACP, it->first).c_str();
+            str += TEXT(" ");
+            str += MAnsiToText(CP_ACP, it->second).c_str();
+            str += TEXT("\r\n");
         }
         str += TEXT("\r\n");
     }
 
-    if (!m_settings.added_ids.empty())
+    if (!m_settings.added_ids.empty() &&
+        (m_settings.added_ids.size() != 1 ||
+         m_settings.added_ids.find("IDC_STATIC") == m_settings.added_ids.end() ||
+         !m_settings.bHasIDC_STATIC))
     {
         str += LoadStringDx(IDS_ADDNEXTIDS);
 
         id_map_type::iterator it, end = m_settings.added_ids.end();
         for (it = m_settings.added_ids.begin(); it != end; ++it)
         {
+            if (it->first == "IDC_STATIC" && m_settings.bHasIDC_STATIC)
+                continue;
+
             str += TEXT("#define ");
-            if (it->first == "IDC_STATIC")
-            {
-                str += TEXT("IDC_STATIC -1\r\n");
-            }
-            else
-            {
-                str += MAnsiToText(CP_ACP, it->first).c_str();
-                str += TEXT(" ");
-                str += MAnsiToText(CP_ACP, it->second).c_str();
-                str += TEXT("\r\n");
-            }
+            str += MAnsiToText(CP_ACP, it->first).c_str();
+            str += TEXT(" ");
+            str += MAnsiToText(CP_ACP, it->second).c_str();
+            str += TEXT("\r\n");
         }
+        str += TEXT("\r\n");
+    }
+
+    if (str.empty())
+    {
+        str += LoadStringDx(IDS_NOCHANGE);
         str += TEXT("\r\n");
     }
 
