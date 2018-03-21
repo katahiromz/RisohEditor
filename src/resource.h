@@ -155,6 +155,7 @@
 #define ID_OPENHYOJUNKA         233
 #define ID_COPYRESIDVALUE       234
 #define ID_CHILDDESTROYED       235
+#define ID_USEIDC_STATIC        236
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

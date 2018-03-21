@@ -50,6 +50,7 @@ struct RisohSettings
     BOOL        bAutoLoadNearbyResH;
     BOOL        bAutoShowIDList;
     BOOL        bHideID;
+    BOOL        bUseIDC_STATIC;
     BOOL        bShowDotsOnDialog;
     INT         nComboHeight;
     mru_type    vecRecentlyUsed;
@@ -120,6 +121,12 @@ struct RisohSettings
         vecRecentlyUsed.insert(vecRecentlyUsed.begin(), pszFile);
         if (vecRecentlyUsed.size() > MAX_MRU)
             vecRecentlyUsed.resize(MAX_MRU);
+    }
+
+    void AddIDC_STATIC()
+    {
+        added_ids.insert(std::make_pair("IDC_STATIC", "-1"));
+        id_map.insert(std::make_pair("IDC_STATIC", "-1"));
     }
 
     void ResetAssoc()

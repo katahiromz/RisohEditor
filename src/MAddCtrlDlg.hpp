@@ -202,7 +202,10 @@ public:
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3, m_db);
-        SetDlgItemText(hwnd, cmb3, TEXT("-1"));
+        if (m_db.DoesUseIDC_STATIC())
+            SetDlgItemText(hwnd, cmb3, TEXT("IDC_STATIC"));
+        else
+            SetDlgItemText(hwnd, cmb3, TEXT("-1"));
         SubclassChildDx(m_cmb3, cmb3);
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);

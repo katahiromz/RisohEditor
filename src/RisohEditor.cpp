@@ -1393,7 +1393,6 @@ public:
     void OnShowLangs(HWND hwnd);
     void OnShowHideToolBar(HWND hwnd);
 
-
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
     void ShowMovie(BOOL bShow = TRUE);
@@ -1563,6 +1562,7 @@ protected:
     void OnAdviceResH(HWND hwnd);
     void OnUnloadResH(HWND hwnd);
     void OnHideIDMacros(HWND hwnd);
+    void OnUseIDC_STATIC(HWND hwnd);
     void OnTest(HWND hwnd);
 
     // find/replace
@@ -3256,6 +3256,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_UNCHECKED);
 
+    if (m_db.DoesUseIDC_STATIC())
+        CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_UNCHECKED);
+
     if (GetWindowTextLength(m_hSrcEdit) == 0 ||
         !IsWindowVisible(m_hSrcEdit))
     {
@@ -4869,6 +4874,9 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 {
     m_db.m_map[L"RESOURCE.ID"].clear();
+    m_db.AddIDC_STATIC();
+    m_settings.AddIDC_STATIC();
+
     m_settings.id_map.clear();
     m_settings.added_ids.clear();
     m_settings.removed_ids.clear();
@@ -6667,6 +6675,8 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
     }
+    m_db.AddIDC_STATIC();
+    m_settings.AddIDC_STATIC();
 
     lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
 
@@ -6970,6 +6980,16 @@ void MMainWnd::ReSetPaths(HWND hwnd)
         StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
         StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
     }
+}
+
+void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
+{
+    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
+    bUseIDC_STATIC = !bUseIDC_STATIC;
+    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    m_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+
+    DoRefresh(hwnd, TRUE);
 }
 
 void MMainWnd::OnHideIDMacros(HWND hwnd)
@@ -7303,6 +7323,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_HIDEIDMACROS:
         OnHideIDMacros(hwnd);
+        break;
+    case ID_USEIDC_STATIC:
+        OnUseIDC_STATIC(hwnd);
         break;
     case ID_CONFIG:
         OnConfig(hwnd);
@@ -8768,6 +8791,13 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     m_db.ShowMacroID(!bHideID);
     m_settings.bHideID = bHideID;
 
+    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
+    keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)bUseIDC_STATIC);
+    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    m_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+    m_db.AddIDC_STATIC();
+    m_settings.AddIDC_STATIC();
+
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)m_settings.bAlwaysControl);
@@ -8995,6 +9025,11 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     BOOL bHideID = !m_db.AreMacroIDShown();
     m_settings.bHideID = bHideID;
     keyRisoh.SetDword(TEXT("HIDE.ID"), m_settings.bHideID);
+
+    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
+    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), m_settings.bUseIDC_STATIC);
+
     keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
     keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);

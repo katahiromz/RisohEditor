@@ -271,6 +271,37 @@ public:
         table.push_back(entry);
     }
 
+    bool DoesUseIDC_STATIC() const
+    {
+        return !!GetValue(L"USE.IDC_STATIC", L"USE.IDC_STATIC");
+    }
+
+    void UseIDC_STATIC(bool bUse = true)
+    {
+        TableType& table = m_map[L"USE.IDC_STATIC"];
+        table.clear();
+        EntryType entry(L"USE.IDC_STATIC", bUse);
+        table.push_back(entry);
+    }
+
+    void AddIDC_STATIC()
+    {
+        const NameType name = L"IDC_STATIC";
+        TableType table = GetTable(L"RESOURCE.ID");
+        TableType::iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name == name)
+            {
+                table.erase(it);
+                break;
+            }
+        }
+        EntryType entry(name, -1);
+        table.push_back(entry);
+        m_map[L"RESOURCE.ID"] = table;
+    }
+
     StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
     {
         if (!AreMacroIDShown())
@@ -311,7 +342,11 @@ public:
         if (nIDTYPE_ == IDTYPE_CONTROL)
         {
             if (value == -1 || value == 0xFFFF)
+            {
+                if (DoesUseIDC_STATIC() && AreMacroIDShown())
+                    return L"IDC_STATIC";
                 return L"-1";
+            }
 
             return GetCtrlOrCmdName(value);
         }
