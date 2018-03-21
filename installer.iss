@@ -72,6 +72,7 @@ Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winnt.h"; DestDir: "{app}\d
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
