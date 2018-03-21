@@ -4375,6 +4375,22 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
+
+    id_map_type::iterator it, end = m_settings.id_map.end();
+    for (it = m_settings.id_map.begin(); it != end; ++it)
+    {
+        if (it->first == "IDC_STATIC")
+        {
+            r1.WriteFormatA("#undef IDC_STATIC\r\n");
+            r1.WriteFormatA("#define IDC_STATIC -1\r\n");
+        }
+        else
+        {
+            r1.WriteFormatA("#undef %s\r\n", it->first.c_str());
+            r1.WriteFormatA("#define %s %s\r\n", it->first.c_str(), it->second.c_str());
+        }
+    }
+
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();
 
