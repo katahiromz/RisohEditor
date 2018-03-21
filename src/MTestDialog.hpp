@@ -185,8 +185,18 @@ public:
             ++i;
         }
 
-        CenterWindowDx();
+        if (m_bModal)
+            CenterWindowDx();
         return TRUE;
+    }
+
+    void Destroy(HWND hwnd)
+    {
+        PostMessage(GetParent(hwnd), WM_NULL, 0, 0);
+        if (m_bModal)
+            EndDialog(IDOK);
+        else
+            DestroyWindow(*this);
     }
 
     virtual INT_PTR CALLBACK
@@ -200,17 +210,17 @@ public:
             dwStyle = GetWindowStyle(hwnd);
             if (!(dwStyle & WS_SYSMENU))
             {
-                EndDialog(IDOK);
+                Destroy(hwnd);
             }
             break;
         case WM_LBUTTONDBLCLK:
-            EndDialog(IDOK);
+            Destroy(hwnd);
             break;
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
             case IDOK: case IDCANCEL:
-                EndDialog(LOWORD(wParam));
+                Destroy(hwnd);
                 break;
             }
             break;

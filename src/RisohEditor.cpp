@@ -4791,15 +4791,36 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     }
 
     // executable files
-    HMODULE hMod = LoadLibraryExW(pszReal, NULL, LOAD_LIBRARY_AS_DATAFILE);
+    HMODULE hMod;
+	MString strReal = pszReal;
+	hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+		LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
     if (hMod == NULL)
     {
-        hMod = LoadLibraryW(pszReal);
-        if (hMod == NULL)
-        {
-            ErrorBoxDx(IDS_CANNOTOPEN);
-            return FALSE;
-        }
+		#ifdef _WIN64
+			mstr_replace_all(strReal, 
+				L"C:\\Program Files\\",
+				L"C:\\Program Files (x86)\\");
+		#else
+			mstr_replace_all(strReal, 
+				L"C:\\Program Files (x86)\\",
+				L"C:\\Program Files\\");
+		#endif
+		hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+			LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
+		if (hMod)
+		{
+			StringCchCopy(pszReal, _countof(szPath), strReal.c_str());
+		}
+		else
+		{
+			hMod = LoadLibraryW(pszReal);
+			if (hMod == NULL)
+			{
+				ErrorBoxDx(IDS_CANNOTOPEN);
+				return FALSE;
+			}
+		}
     }
 
     m_bLoading = TRUE;
@@ -7828,11 +7849,7 @@ void MMainWnd::OnTest(HWND hwnd)
         DialogRes dialog_res(m_db);
         dialog_res.LoadFromStream(stream);
 
-        if (dialog_res.m_style & WS_CHILD)
-        {
-            ErrorBoxDx(IDS_CANTTESTCHILDWND);
-        }
-        else if (!dialog_res.m_class.empty())
+        if (!dialog_res.m_class.empty())
         {
             ErrorBoxDx(IDS_CANTTESTCLASSDLG);
         }
@@ -7844,8 +7861,20 @@ void MMainWnd::OnTest(HWND hwnd)
             dialog_res.SaveToStream(stream);
 
             // show test dialog
-            MTestDialog dialog(m_entries, dialog_res, menu, entry.lang);
-            dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
+            if (dialog_res.m_style & WS_CHILD)
+            {
+                MTestParentWnd *window = new MTestParentWnd(m_entries, dialog_res, menu, entry.lang, stream);
+                window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
+                    WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
+
+                ShowWindow(*window, SW_SHOWNORMAL);
+                UpdateWindow(*window);
+            }
+            else
+            {
+                MTestDialog dialog(m_entries, dialog_res, menu, entry.lang);
+                dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
+            }
         }
     }
     else if (entry.type == RT_MENU)

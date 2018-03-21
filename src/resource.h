@@ -199,6 +199,7 @@
 #define IDD_EXP_OPTIONS         150
 #define IDD_STRINGID            "StringID"
 #define IDD_LANGS               151
+#define IDD_CHILD               152
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
@@ -339,6 +340,7 @@
 #define IDS_UNKNOWNFORMAT       238
 #define IDS_LANGUAGE            239
 #define IDS_INTVALUE            240
+#define IDS_PARENTWND           241
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
