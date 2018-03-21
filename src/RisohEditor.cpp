@@ -10575,12 +10575,6 @@ WinMain(HINSTANCE   hInstance,
 
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
-    // SysLink support
-    BOOL (STDAPICALLTYPE *pLinkWindow_RegisterClass)(void);
-    HMODULE hShell32 = GetModuleHandleA("shell32");
-    pLinkWindow_RegisterClass = GetProcAddress(hShell32, (CHAR *)(INT_PTR)258);
-    (*pLinkWindow_RegisterClass)();
-
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
     ULONG_PTR gp_token;
