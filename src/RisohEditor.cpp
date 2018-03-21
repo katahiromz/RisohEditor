@@ -10539,6 +10539,13 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 
 ////////////////////////////////////////////////////////////////////////////
 
+#pragma comment(linker,"/manifestdependency:\"type='win32' \
+  name='Microsoft.Windows.Common-Controls' \
+  version='6.0.0.0' \
+  processorArchitecture='x86' \
+  publicKeyToken='6595b64144ccf1df' \
+  language='*'\"")
+
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
@@ -10551,13 +10558,28 @@ WinMain(HINSTANCE   hInstance,
 
     // initialize the libraries
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
-    InitCommonControls();
-    HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
+    // initialize common controls
     INITCOMMONCONTROLSEX iccx;
     iccx.dwSize = sizeof(iccx);
-    iccx.dwICC = ICC_INTERNET_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_NATIVEFNTCTL_CLASS;
+    iccx.dwICC = ICC_WIN95_CLASSES |
+                 ICC_DATE_CLASSES |
+                 ICC_USEREX_CLASSES |
+                 ICC_COOL_CLASSES |
+                 ICC_INTERNET_CLASSES |
+                 ICC_PAGESCROLLER_CLASS |
+                 ICC_NATIVEFNTCTL_CLASS |
+                 ICC_STANDARD_CLASSES |
+                 ICC_LINK_CLASS;
     InitCommonControlsEx(&iccx);
+
+    HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
+
+    // SysLink support
+    BOOL (STDAPICALLTYPE *pLinkWindow_RegisterClass)(void);
+    HMODULE hShell32 = GetModuleHandleA("shell32");
+    pLinkWindow_RegisterClass = GetProcAddress(hShell32, (CHAR *)(INT_PTR)258);
+    (*pLinkWindow_RegisterClass)();
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
