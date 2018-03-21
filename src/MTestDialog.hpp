@@ -192,7 +192,7 @@ public:
 
     void Destroy(HWND hwnd)
     {
-        PostMessage(GetParent(hwnd), WM_NULL, 0, 0);
+        PostMessage(GetParent(hwnd), WM_COMMAND, ID_CHILDDESTROYED, 0);
         if (m_bModal)
             EndDialog(IDOK);
         else

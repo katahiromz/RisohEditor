@@ -83,8 +83,12 @@ public:
         return TRUE;
     }
 
-    void OnDestroy(HWND hwnd)
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
+        if (id == ID_CHILDDESTROYED)
+        {
+            DestroyWindow(hwnd);
+        }
     }
 
     virtual LRESULT CALLBACK
@@ -93,10 +97,7 @@ public:
         switch (uMsg)
         {
         HANDLE_MSG(hwnd, WM_CREATE, OnCreate);
-        HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
-        case WM_NULL:
-            DestroyWindow(hwnd);
-            break;
+        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         default:
             return DefaultProcDx();
         }
