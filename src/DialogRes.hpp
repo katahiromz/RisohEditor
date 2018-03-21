@@ -851,10 +851,12 @@ struct DialogRes
             ret += L" DIALOG ";
         }
 
-        ret += mstr_dec_short((SHORT)m_pt.x);
+        // NOTE: windres can't read negative x and y. It must be unsigned.
+        ret += mstr_dec_word((WORD)m_pt.x);
         ret += L", ";
-        ret += mstr_dec_short((SHORT)m_pt.y);
+        ret += mstr_dec_word((WORD)m_pt.y);
         ret += L", ";
+
         ret += mstr_dec_short((SHORT)m_siz.cx);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_siz.cy);
