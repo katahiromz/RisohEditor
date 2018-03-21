@@ -305,7 +305,24 @@ public:
     {
         INT iItem = lpDrawItem->itemID;
 
+        const INT CX_ICON_SMALL = 16;
+        const INT CY_ICON_SMALL = 16;
+
         RECT rc = lpDrawItem->rcItem;
+
+        SetBkColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOW));
+        FillRect(lpDrawItem->hDC, &rc, (HBRUSH)(COLOR_WINDOW + 1));
+        SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOWTEXT));
+
+        INT x = 0;
+        INT y = ((rc.top + rc.bottom) - CY_ICON_SMALL) / 2 - 1;
+        if (lpDrawItem->itemState & ODS_COMBOBOXEDIT)
+        {
+            x += 3;
+        }
+        DrawIconEx(lpDrawItem->hDC, x, y, m_hIconDiamond, CX_ICON_SMALL, CY_ICON_SMALL, 0, NULL, DI_NORMAL);
+
+        rc.left += CX_ICON_SMALL;
 
         SetBkMode(lpDrawItem->hDC, OPAQUE);
         if (lpDrawItem->itemState & ODS_SELECTED)
@@ -314,32 +331,18 @@ public:
             FillRect(lpDrawItem->hDC, &rc, (HBRUSH)(COLOR_HIGHLIGHT + 1));
             SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
         }
-        else
-        {
-            SetBkColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOW));
-            FillRect(lpDrawItem->hDC, &rc, (HBRUSH)(COLOR_WINDOW + 1));
-            SetTextColor(lpDrawItem->hDC, GetSysColor(COLOR_WINDOWTEXT));
-        }
 
         TCHAR szText[128];
         ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
 
-        const INT CX_ICON_SMALL = 16;
-        const INT CY_ICON_SMALL = 16;
-
         InflateRect(&rc, -2, -2);
-        rc.left += CX_ICON_SMALL - 1;
         DrawText(lpDrawItem->hDC, szText, -1, &rc,
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
-        rc.left -= CX_ICON_SMALL - 1;
         InflateRect(&rc, 2, 2);
-
-        INT y = ((rc.top + rc.bottom) - CY_ICON_SMALL) / 2 - 1;
-        DrawIconEx(lpDrawItem->hDC, 2, y, m_hIconDiamond, CX_ICON_SMALL, CY_ICON_SMALL, 0, NULL, DI_NORMAL);
 
         if (lpDrawItem->itemState & ODS_FOCUS)
         {
-            DrawFocusRect(lpDrawItem->hDC, &lpDrawItem->rcItem);
+            DrawFocusRect(lpDrawItem->hDC, &rc);
         }
     }
 
