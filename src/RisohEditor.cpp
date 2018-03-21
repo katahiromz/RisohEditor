@@ -4792,35 +4792,35 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // executable files
     HMODULE hMod;
-	MString strReal = pszReal;
-	hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
-		LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
+    MString strReal = pszReal;
+    hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+        LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
     if (hMod == NULL)
     {
-		#ifdef _WIN64
-			mstr_replace_all(strReal, 
-				L"C:\\Program Files\\",
-				L"C:\\Program Files (x86)\\");
-		#else
-			mstr_replace_all(strReal, 
-				L"C:\\Program Files (x86)\\",
-				L"C:\\Program Files\\");
-		#endif
-		hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
-			LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
-		if (hMod)
-		{
-			StringCchCopy(pszReal, _countof(szPath), strReal.c_str());
-		}
-		else
-		{
-			hMod = LoadLibraryW(pszReal);
-			if (hMod == NULL)
-			{
-				ErrorBoxDx(IDS_CANNOTOPEN);
-				return FALSE;
-			}
-		}
+        #ifdef _WIN64
+            mstr_replace_all(strReal, 
+                L"C:\\Program Files\\",
+                L"C:\\Program Files (x86)\\");
+        #else
+            mstr_replace_all(strReal, 
+                L"C:\\Program Files (x86)\\",
+                L"C:\\Program Files\\");
+        #endif
+        hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+            LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
+        if (hMod)
+        {
+            StringCchCopy(pszReal, _countof(szPath), strReal.c_str());
+        }
+        else
+        {
+            hMod = LoadLibraryW(pszReal);
+            if (hMod == NULL)
+            {
+                ErrorBoxDx(IDS_CANNOTOPEN);
+                return FALSE;
+            }
+        }
     }
 
     m_bLoading = TRUE;
