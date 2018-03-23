@@ -1,4 +1,4 @@
-add_executable(ResTest WIN32 ResTest.cpp ResTest_res.rc)
+add_executable(ResTest WIN32 ResTest.cpp ResTest_res.rc ResTest.exe.manifest)
 target_link_libraries(ResTest comctl32)
 
 # do statically link

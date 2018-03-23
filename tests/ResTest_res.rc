@@ -175,10 +175,6 @@ STRINGTABLE
     #define MANIFEST    24
 #endif
 
-#ifndef THIS_IS_MSVC
-1 MANIFEST "ResTest.exe.manifest"
-#endif
-
 //////////////////////////////////////////////////////////////////////////////
 // Version Info
 
