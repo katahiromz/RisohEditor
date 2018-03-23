@@ -30,9 +30,6 @@
 // UTF-8
 #pragma code_page(65001)
 
-// manifest
-1 24 "res/RisohEditor.exe.manifest"
-
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 //////////////////////////////////////////////////////////////////////////////
