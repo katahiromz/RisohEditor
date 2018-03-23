@@ -50,7 +50,7 @@ add_custom_target(messagetables ALL
     VERBATIM)
 add_dependencies(RisohEditor messagetables)
 add_dependencies(messagetables mcdx)
-set_target_properties(RisohEditor PROPERTIES LINK_FLAGS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/messagetables${DOTRES})
+set_target_properties(RisohEditor PROPERTIES LINK_FLAGS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/messagetables${DOTRES} /MANIFEST:NO")
 
 # do statically link
 set_target_properties(RisohEditor PROPERTIES LINK_SEARCH_START_STATIC 1)
