@@ -1,9 +1,9 @@
-/* pstdint.h -- portable standard integers                      -*- C++ -*-
+/* pstdint.h -- portable standard integers                      -*- C++ -*- */
 /* This file is part of MZC4.  See file "ReadMe.txt" and "License.txt". */
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     7   /* Version 7 */
+#define MZC4_PSTDINT_H_     8   /* Version 8 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
