@@ -7,7 +7,7 @@ RisohEditor is a free resource editor for Win32 development, created by Katayama
 
 ## Supported Platforms
 
-It works on Windows 2003/Vista/7/8.1/10.
+It works on Windows XP/2003/Vista/7/8.1/10.
 
 ## License Agreement
 
