@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    64     /* Version 64 */
+#define MZC4_MWINDOWBASE_HPP_    65     /* Version 65 */
 
 class MWindowBase;
 class MDialogBase;
@@ -791,7 +791,8 @@ inline LPTSTR MZCAPI LoadStringDx(INT nID)
     TCHAR *pszBuff = s_sz[s_index];
     s_index = (s_index + 1) % _countof(s_sz);
     pszBuff[0] = 0;
-    ::LoadString(NULL, nID, pszBuff, cchBuffMax);
+    if (!::LoadString(NULL, nID, pszBuff, cchBuffMax))
+        assert(0);
     return pszBuff;
 }
 
