@@ -1609,9 +1609,7 @@ LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
     INT cx = (SHORT)LOWORD(lParam);
     INT cy = (SHORT)HIWORD(lParam);
 
-    WCHAR szText[64];
-    StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_COORD), x, y, cx, cy);
-    ChangeStatusText(szText);
+    ChangeStatusText(LoadStringPrintfDx(IDS_COORD, x, y, cx, cy));
     return 0;
 }
 
@@ -4773,10 +4771,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszReal);
     if (m_bUpxCompressed)
     {
-        LPWSTR szFormat = LoadStringDx(IDS_FILEISUPXED);
-
-        WCHAR szMsg[MAX_PATH + 128];
-        StringCchPrintfW(szMsg, _countof(szMsg), szFormat, pszReal);
+        LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszReal);
 
         INT nID;
         if (bForceDecompress)
@@ -8593,14 +8588,12 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
     GetFullPathNameW(pszNominal, _countof(szPath), szPath, &pch);
     lstrcpynW(m_szNominalFile, szPath, _countof(m_szNominalFile));
 
-    WCHAR sz[MAX_PATH];
     pch = wcsrchr(szPath, L'\\');
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
     if (pch)
     {
-        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_TITLEWITHFILE), pch + 1);
-        SetWindowTextW(hwnd, sz);
+        SetWindowTextW(hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch + 1));
     }
     else
     {

@@ -999,10 +999,7 @@ DumpBitmapInfo(HBITMAP hbm)
     if (!GetObjectW(hbm, sizeof(bm), &bm))
         return ret;
 
-    WCHAR sz[64];
-    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGEINFO),
-              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
-    ret = sz;
+    ret = LoadStringPrintfDx(IDS_IMAGEINFO, bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     return ret;
 }
 
@@ -1011,11 +1008,7 @@ DumpIconInfo(const BITMAP& bm, BOOL bIcon/* = TRUE*/)
 {
     MStringW ret;
 
-    using namespace std;
-    WCHAR sz[128];
-    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGEINFO),
-              bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
-    ret = sz;
+    ret = LoadStringPrintfDx(IDS_IMAGEINFO, bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
 
     return ret;
 }
@@ -1024,7 +1017,6 @@ inline MStringW
 DumpGroupIconInfo(const std::vector<BYTE>& data)
 {
     MStringW ret;
-    WCHAR sz[128];
 
     ICONDIR dir;
     if (data.size() < sizeof(dir))
@@ -1037,8 +1029,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         return ret;
     }
 
-    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
-    ret += sz;
+    ret += LoadStringPrintfDx(IDS_IMAGECOUNT, dir.idCount);;
     ret += L"-------\r\n";
 
     const GRPICONDIRENTRY *pEntries;
@@ -1055,9 +1046,8 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_ICONINFO),
-                  i, Width, Height, pEntries[i].wBitCount, nID);
-        ret += sz;
+        ret += LoadStringPrintfDx(IDS_ICONINFO,
+            i, Width, Height, pEntries[i].wBitCount, nID);
     }
 
     return ret;
@@ -1067,7 +1057,6 @@ inline MStringW
 DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
 {
     MStringW ret;
-    WCHAR sz[128];
 
     ICONDIR dir;
     if (data.size() < sizeof(dir))
@@ -1080,8 +1069,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         return ret;
     }
 
-    StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_IMAGECOUNT), dir.idCount);
-    ret += sz;
+    ret += LoadStringPrintfDx(IDS_IMAGECOUNT, dir.idCount);
     ret += L"-------\r\n";
 
     const GRPCURSORDIRENTRY *pEntries;
@@ -1114,9 +1102,8 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        StringCchPrintfW(sz, _countof(sz), LoadStringDx(IDS_CURSORINFO),
-                  i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
-        ret += sz;
+        ret += LoadStringPrintfDx(IDS_CURSORINFO,
+            i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
     }
 
     return ret;

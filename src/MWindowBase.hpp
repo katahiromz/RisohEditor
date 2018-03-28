@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    63     /* Version 63 */
+#define MZC4_MWINDOWBASE_HPP_    64     /* Version 64 */
 
 class MWindowBase;
 class MDialogBase;
@@ -113,6 +113,8 @@ VOID MZCAPI RepositionPointDx(LPPOINT ppt, SIZE siz, LPCRECT prc);
 RECT MZCAPI WorkAreaFromWindowDx(HWND hwnd);
 SIZE MZCAPI SizeFromRectDx(LPCRECT prc);
 LPTSTR MZCAPI LoadStringDx(INT nID);
+LPTSTR MZCAPIV LoadStringPrintfDx(INT nID, ...);
+LPTSTR MZCAPI LoadStringVPrintfDx(INT nID, va_list va);
 LPCTSTR MZCAPI GetStringDx(INT nStringID);
 LPCTSTR MZCAPI GetStringDx(LPCTSTR psz);
 BOOL MZCAPI GetWindowPosDx(HWND hwnd, POINT *ppt = NULL, SIZE *psiz = NULL);
@@ -694,32 +696,32 @@ public:
 inline VOID MZCAPIV DebugPrintDx(const char *format, ...)
 {
     #ifndef NDEBUG
-        char buffer[512];
+        char szBuff[512];
         va_list va;
         va_start(va, format);
 #ifdef NO_STRSAFE
-        wsprintfA(buffer, format, va);
+        wsprintfA(szBuff, format, va);
 #else
-        StringCchVPrintfA(buffer, _countof(buffer), format, va);
+        StringCchVPrintfA(szBuff, _countof(szBuff), format, va);
 #endif
         va_end(va);
-        OutputDebugStringA(buffer);
+        OutputDebugStringA(szBuff);
     #endif
 }
 
 inline VOID MZCAPIV DebugPrintDx(const WCHAR *format, ...)
 {
     #ifndef NDEBUG
-        WCHAR buffer[512];
+        WCHAR szBuff[512];
         va_list va;
         va_start(va, format);
 #ifdef NO_STRSAFE
-        wsprintfW(buffer, format, va);
+        wsprintfW(szBuff, format, va);
 #else
-        StringCchVPrintfW(buffer, _countof(buffer), format, va);
+        StringCchVPrintfW(szBuff, _countof(szBuff), format, va);
 #endif
         va_end(va);
-        OutputDebugStringW(buffer);
+        OutputDebugStringW(szBuff);
     #endif
 }
 
@@ -783,14 +785,40 @@ inline SIZE MZCAPI SizeFromRectDx(LPCRECT prc)
 inline LPTSTR MZCAPI LoadStringDx(INT nID)
 {
     static UINT s_index = 0;
-    const UINT buf_size = 1024;
-    static TCHAR s_sz[4][buf_size];
+    const UINT cchBuffMax = 1024;
+    static TCHAR s_sz[4][cchBuffMax];
 
-    TCHAR *buffer = s_sz[s_index];
+    TCHAR *pszBuff = s_sz[s_index];
     s_index = (s_index + 1) % _countof(s_sz);
-    buffer[0] = 0;
-    ::LoadString(NULL, nID, buffer, buf_size);
-    return buffer;
+    pszBuff[0] = 0;
+    ::LoadString(NULL, nID, pszBuff, cchBuffMax);
+    return pszBuff;
+}
+
+inline LPTSTR MZCAPI LoadStringVPrintfDx(INT nID, va_list va)
+{
+    static UINT s_index = 0;
+    const UINT cchBuffMax = 1024;
+    static TCHAR s_sz[4][cchBuffMax];
+
+    TCHAR *pszBuff = s_sz[s_index];
+    s_index = (s_index + 1) % _countof(s_sz);
+    pszBuff[0] = 0;
+#ifdef NO_STRSAFE
+    wvsprintf(pszBuff, LoadStringDx(nID), va);
+#else
+    StringCchVPrintf(pszBuff, cchBuffMax, LoadStringDx(nID), va);
+#endif
+    return pszBuff;
+}
+
+inline LPTSTR MZCAPIV LoadStringPrintfDx(INT nID, ...)
+{
+    va_list va;
+    va_start(va, nID);
+    LPTSTR psz = LoadStringVPrintfDx(nID, va);
+    va_end(va);
+    return psz;
 }
 
 inline LPCTSTR MZCAPI GetStringDx(LPCTSTR psz)
