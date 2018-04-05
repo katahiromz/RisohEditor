@@ -10550,7 +10550,7 @@ WinMain(HINSTANCE   hInstance,
     LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
     // initialize the libraries
-    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    OleInitialize(NULL);
 
     // initialize common controls
     INITCOMMONCONTROLSEX iccx;
@@ -10596,7 +10596,7 @@ WinMain(HINSTANCE   hInstance,
 
     // free the libraries
     FreeLibrary(hinstRichEdit);
-    CoUninitialize();
+    OleUninitialize();
 
     // free command line
     LocalFree(targv);
