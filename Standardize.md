@@ -1,7 +1,7 @@
 # Standardize Win32 Resource
 
-New RisohEditor resource information should follow the following rules.
-If you are using old RisohEditor resource data, then you have to apply the following rules.
+New RisohEditor resource information should follow the following guidelines.
+If you are using old RisohEditor resource data, then you have to apply the following guidelines.
 
 ## DEFINITIONS
 
@@ -20,7 +20,7 @@ If you are using old RisohEditor resource data, then you have to apply the follo
 - The "string ID" is the ID of one string data in the string table.
 - The "message ID" is the ID of one message data in the message table.
 
-## RULES
+## GUIDELINES
 
 For Visual C++ compatibility, the contents of file "resource.h" should begin with the C++ comments as follows:
 
