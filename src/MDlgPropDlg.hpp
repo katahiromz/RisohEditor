@@ -254,6 +254,11 @@ public:
         SendDlgItemMessage(hwnd, edt7, EM_SETLIMITTEXT, 8, 0);
         m_bUpdating = FALSE;
 
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr2, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr3, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr4, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+
         CenterWindowDx();
         return TRUE;
     }

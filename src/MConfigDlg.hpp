@@ -59,6 +59,8 @@ public:
     {
         Reload(hwnd);
 
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+
         CenterWindowDx();
         return TRUE;
     }

@@ -248,6 +248,11 @@ public:
         if (!m_dialog_res.IsExtended())
             EnableWindow(GetDlgItem(hwnd, psh1), FALSE);
 
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr2, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr3, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, scr4, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+
         CenterWindowDx();
         return TRUE;
     }
