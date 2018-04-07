@@ -540,6 +540,23 @@ public:
         SendDlgItemMessage(hwnd, scr3, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
         SendDlgItemMessage(hwnd, scr4, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
 
+        if (!(m_flags & F_X))
+        {
+            SetDlgItemTextW(hwnd, edt1, NULL);
+        }
+        if (!(m_flags & F_Y))
+        {
+            SetDlgItemTextW(hwnd, edt2, NULL);
+        }
+        if (!(m_flags & F_CX))
+        {
+            SetDlgItemTextW(hwnd, edt3, NULL);
+        }
+        if (!(m_flags & F_CY))
+        {
+            SetDlgItemTextW(hwnd, edt4, NULL);
+        }
+
         CenterWindowDx();
         return TRUE;
     }

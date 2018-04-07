@@ -73,6 +73,8 @@ public:
         SetDlgItemTextW(hwnd, edt1, table[IDTYPE_default].name.c_str());
         m_bChanging = FALSE;
 
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(SHRT_MAX, SHRT_MIN));
+
         CenterWindowDx();
         return TRUE;
     }
