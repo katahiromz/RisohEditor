@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    65     /* Version 65 */
+#define MZC4_MWINDOWBASE_HPP_    66     /* Version 66 */
 
 class MWindowBase;
 class MDialogBase;
@@ -159,12 +159,13 @@ protected:
 public:
     HWND m_hwnd;
     WNDPROC m_fnOldProc;
+    bool m_bDynamicCreated;
 
-    MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL)
+    MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL), m_bDynamicCreated(false)
     {
     }
 
-    MWindowBase(HWND hwnd) : m_hwnd(hwnd), m_fnOldProc(NULL)
+    MWindowBase(HWND hwnd) : m_hwnd(hwnd), m_fnOldProc(NULL), m_bDynamicCreated(false)
     {
     }
 
@@ -224,6 +225,10 @@ public:
     {
         SetUserData(m_hwnd, NULL);
         m_hwnd = NULL;
+        if (m_bDynamicCreated)
+        {
+            delete this;
+        }
     }
 
     MWindowBase *GetUserData() const
@@ -536,7 +541,38 @@ private:
 public:
     #include "MWindowBaseRichMethods.hpp"
 #endif
+
+public:
+    // for DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
+    typedef MWindowBase *(*FNCREATEINSTANCEDX)();
+    typedef std::map<MString, FNCREATEINSTANCEDX> class_to_create_map_t;
+
+    static class_to_create_map_t& ClassToCreateMap()
+    {
+        static class_to_create_map_t s_class_to_create_map;
+        return s_class_to_create_map;
+    }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
+
+#define DECLARE_DYNAMIC(class_name) \
+    static MWindowBase *CreateInstanceDx();
+
+#define IMPLEMENT_DYNAMIC(class_name) \
+    /*static*/ MWindowBase *class_name::CreateInstanceDx() \
+    { \
+        return new class_name(); \
+    } \
+    struct class_name##AutoDynamicRegister \
+    { \
+        class_name##AutoDynamicRegister() \
+        { \
+            MWindowBase::ClassToCreateMap().insert( \
+                std::make_pair(TEXT(#class_name), &class_name::CreateInstanceDx)); \
+        } \
+    } class_name##AutoDynamicRegister##__LINE__;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1070,8 +1106,27 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     if (uMsg == WM_CREATE)
     {
         LPCREATESTRUCT pcs = (LPCREATESTRUCT)lParam;
-        assert(pcs->lpCreateParams);
-        base = (MWindowBase *)pcs->lpCreateParams;
+        if (pcs->lpCreateParams)
+        {
+            base = reinterpret_cast<MWindowBase *>(pcs->lpCreateParams);
+        }
+        else
+        {
+            // for DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
+            TCHAR szClass[128];
+            GetClassName(hwnd, szClass, _countof(szClass));
+
+            class_to_create_map_t::const_iterator it;
+            it = MWindowBase::ClassToCreateMap().find(szClass);
+            if (it == MWindowBase::ClassToCreateMap().end())
+            {
+                assert(0);
+                return 0;
+            }
+
+            base = (*it->second)();
+            base->m_bDynamicCreated = true;
+        }
         base->m_hwnd = hwnd;
     }
     else
