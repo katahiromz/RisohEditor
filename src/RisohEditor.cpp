@@ -10552,6 +10552,9 @@ WinMain(HINSTANCE   hInstance,
     // initialize the libraries
     OleInitialize(NULL);
 
+    // register MOleCtrl window class
+    MOleCtrl::RegisterDx();
+
     // initialize common controls
     INITCOMMONCONTROLSEX iccx;
     iccx.dwSize = sizeof(iccx);
