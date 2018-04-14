@@ -3,12 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MOLECTRL_HPP_
-#define MZC4_MOLECTRL_HPP_      27      /* Version 27 */
+#define MZC4_MOLECTRL_HPP_      28      /* Version 28 */
 
 ////////////////////////////////////////////////////////////////////////////
 
 #include "MWindowBase.hpp"
 
+#include <cguid.h>      // for IID_NULL
 #include <exdisp.h>
 #include <ocidl.h>
 
