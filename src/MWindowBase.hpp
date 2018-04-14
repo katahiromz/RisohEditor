@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    66     /* Version 66 */
+#define MZC4_MWINDOWBASE_HPP_    67     /* Version 67 */
 
 class MWindowBase;
 class MDialogBase;
@@ -569,8 +569,20 @@ public:
     { \
         class_name##AutoDynamicRegister() \
         { \
-            MWindowBase::ClassToCreateMap().insert( \
-                std::make_pair(TEXT(#class_name), &class_name::CreateInstanceDx)); \
+            MWindowBase::ClassToCreateMap()[TEXT(#class_name)] = &class_name::CreateInstanceDx; \
+        } \
+    } class_name##AutoDynamicRegister##__LINE__;
+
+#define IMPLEMENT_DYNAMIC2(class_name, wndclass_name) \
+    /*static*/ MWindowBase *class_name::CreateInstanceDx() \
+    { \
+        return new class_name(); \
+    } \
+    struct class_name##AutoDynamicRegister \
+    { \
+        class_name##AutoDynamicRegister() \
+        { \
+            MWindowBase::ClassToCreateMap()[TEXT(#wndclass_name)] = &class_name::CreateInstanceDx; \
         } \
     } class_name##AutoDynamicRegister##__LINE__;
 
