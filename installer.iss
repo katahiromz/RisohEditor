@@ -53,6 +53,8 @@ Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: "data\bin\cpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "src\MOleCtrl.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
+Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "data\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\libgmp-10.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion

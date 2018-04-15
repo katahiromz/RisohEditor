@@ -67,19 +67,26 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
     if cp -r data "$RE_BIN_DIR"; then
         echo Copying Stage 3...
         if cp build/mcdx.exe "$RE_BIN_DIR/data/bin"; then
-            echo Zipping...
-            cd build
-            if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
-                cd ..
-                if [ -e "$RE_TARGET" ]; then
-                    echo Success. "$RE_TARGET" was generated.
+            echo Copying Stage 4...
+            mkdir "$RE_BIN_DIR/OLE"
+            if cp -f src/MOleCtrl.hpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
+                echo Zipping...
+                cd build
+                if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
+                    cd ..
+                    if [ -e "$RE_TARGET" ]; then
+                        echo Success. "$RE_TARGET" was generated.
+                    else
+                        echo ERROR: Target not found.
+                        exit 10
+                    fi
                 else
-                    echo ERROR: Target not found.
+                    cd ..
+                    echo ERROR: Zipping failed.
                     exit 9
                 fi
             else
-                cd ..
-                echo ERROR: Zipping failed.
+                echo ERROR: Copying Stage 4 failed.
                 exit 8
             fi
         else
