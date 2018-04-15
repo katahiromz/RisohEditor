@@ -492,15 +492,13 @@ inline BOOL MOleCtrl::CreateInstanceByCLSID(const CLSID& clsid)
     HRESULT hr;
     if (IsEqualIID(clsid, IID_IWebBrowser2))
     {
-        IWebBrowser2 *pwb;
-        hr = QueryInterfaceDx(IID_IWebBrowser2, &pwb);
+        hr = QueryInterfaceDx(IID_IWebBrowser2, &m_pWebBrowser2);
         if (FAILED(hr))
         {
             m_pUnknown->Release();
             m_pUnknown = NULL;
             return FALSE;
         }
-        m_pWebBrowser2 = pwb;
     }
 
     IOleObject *pioo;

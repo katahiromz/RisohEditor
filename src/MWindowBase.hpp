@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    68     /* Version 69 */
+#define MZC4_MWINDOWBASE_HPP_    70     /* Version 70 */
 
 class MWindowBase;
 class MDialogBase;
@@ -155,22 +155,23 @@ PopupMenuDx(HWND hwnd, HWND hContext, UINT nMenuID, INT iSubMenu, INT x, INT y);
 class MWindowBase
 {
 protected:
-    DWORD   m_dwWindowBaseMagic;
-    MSG     m_msg;
+    DWORD           m_dwWindowBaseMagic;
+    MSG             m_msg;
 public:
-    HWND    m_hwnd;
-    WNDPROC m_fnOldProc;
-    bool    m_bDynamicCreated;
+    HWND            m_hwnd;
+    WNDPROC         m_fnOldProc;
+    MWindowBase *   m_pwndSub;
+    bool            m_bDynamicCreated;
 
     MWindowBase() :
         m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(NULL), m_fnOldProc(NULL),
-        m_bDynamicCreated(false)
+        m_pwndSub(NULL), m_bDynamicCreated(false)
     {
     }
 
     MWindowBase(HWND hwnd) :
         m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(hwnd), m_fnOldProc(NULL),
-        m_bDynamicCreated(false)
+        m_pwndSub(NULL), m_bDynamicCreated(false)
     {
     }
 
@@ -209,7 +210,7 @@ public:
     {
         if (ptr)
         {
-            GetHandleMap().insert(std::make_pair(hwnd, ptr));
+            GetHandleMap()[hwnd] = ptr;
         }
         else
         {
@@ -250,6 +251,11 @@ public:
     virtual LRESULT MZCAPI
     DefaultProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+        if (m_pwndSub)
+        {
+            assert(this != m_pwndSub);
+            return m_pwndSub->WindowProcDx(hwnd, uMsg, wParam, lParam);
+        }
         if (m_fnOldProc)
         {
             return ::CallWindowProc(m_fnOldProc, hwnd, uMsg, wParam, lParam);
@@ -297,16 +303,19 @@ public:
 
     BOOL Attach(HWND hwnd)
     {
+        MWindowBase *pwndSub = GetUserData(hwnd);
         m_hwnd = hwnd;
         SetUserData(m_hwnd, this);
+        m_pwndSub = pwndSub;
         return m_hwnd != NULL;
     }
 
     HWND Detach()
     {
         HWND hwnd = m_hwnd;
-        SetUserData(hwnd, NULL);
+        SetUserData(hwnd, m_pwndSub);
         m_hwnd = NULL;
+        m_pwndSub = NULL;
         return hwnd;
     }
 
@@ -317,18 +326,18 @@ public:
     BOOL SubclassDx(HWND hwnd)
     {
         Attach(hwnd);
-        m_fnOldProc = SubclassWindow(hwnd, MWindowBase::WindowProc);
-        if (m_fnOldProc)
+        if (!m_pwndSub)
         {
-            PostSubclassDx(hwnd);
+            m_fnOldProc = SubclassWindow(hwnd, MWindowBase::WindowProc);
         }
-        return m_fnOldProc != NULL;
+        PostSubclassDx(hwnd);
+        return m_pwndSub || m_fnOldProc;
     }
 
     VOID UnsubclassDx()
     {
         SubclassWindow(m_hwnd, m_fnOldProc);
-        Detach();
+        SetUserData(m_hwnd, m_pwndSub);
         m_fnOldProc = NULL;
     }
 
@@ -1118,7 +1127,7 @@ MWindowBase::SaveMessageDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 inline /*static*/ LRESULT CALLBACK
 MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+ {
     MWindowBase *base;
     if (uMsg == WM_CREATE)
     {
@@ -1131,6 +1140,7 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             ((MWindowBase*)(pcs->lpCreateParams))->m_dwWindowBaseMagic == 0xFEEDFEED)
         {
             base = reinterpret_cast<MWindowBase *>(pcs->lpCreateParams);
+            base->m_hwnd = hwnd;
         }
         else
         {
@@ -1145,8 +1155,8 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             base = (*it->second)();
             base->m_bDynamicCreated = true;
+            base->Attach(hwnd);
         }
-        base->m_hwnd = hwnd;
     }
     else
     {

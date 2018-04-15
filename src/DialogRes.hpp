@@ -138,6 +138,7 @@ struct DialogItem
     std::vector<BYTE>   m_extra;
     DWORD               m_old_style, m_old_ex_style;
     SIZE                m_sizOld;
+    MIdOrString         m_classOld;
 
     DialogItem()
     {
@@ -657,6 +658,7 @@ struct DialogItem
             m_style = m_old_style;
             m_ex_style = m_old_ex_style;
             m_siz = m_sizOld;
+            m_class = m_classOld;
         }
         else
         {
@@ -674,6 +676,11 @@ struct DialogItem
             {
                 m_siz.cx = 20;
                 m_siz.cy = 20;
+            }
+            m_classOld = m_class;
+            if (m_class.str() == L"MOleCtrl")
+            {
+                m_class = L"STATIC";
             }
         }
     }
