@@ -32,6 +32,7 @@
 #include "resource.h"
 
 #include <set>
+#include <oledlg.h>
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -291,7 +292,8 @@ public:
                 item.m_class = m_item.m_class;
                 WNDCLASSEX cls;
                 if (!item.m_class.empty() &&
-                    !GetClassInfoEx(NULL, item.m_class.str().c_str(), &cls))
+                    !GetClassInfoEx(NULL, item.m_class.str().c_str(), &cls) &&
+                    !GetClassInfoEx(GetModuleHandle(NULL), item.m_class.str().c_str(), &cls))
                 {
                     HWND hCmb4 = GetDlgItem(m_hwnd, cmb4);
                     ComboBox_SetEditSel(hCmb4, 0, -1);
@@ -708,6 +710,33 @@ public:
         dialog.DialogBoxDx(hwnd);
     }
 
+    void OnPsh2(HWND hwnd)
+    {
+        OLEUIINSERTOBJECT insert_object;
+        TCHAR szFile[MAX_PATH] = { 0 };
+
+        ZeroMemory(&insert_object, sizeof(insert_object));
+        insert_object.cbStruct = sizeof(insert_object);
+        insert_object.dwFlags = IOF_DISABLEDISPLAYASICON | IOF_SELECTCREATENEW | IOF_DISABLELINK;
+        insert_object.hWndOwner = hwnd;
+        insert_object.lpszCaption = LoadStringDx(IDS_CHOOSE_OLE_CLSID);
+        insert_object.iid = IID_IOleObject;
+        insert_object.lpszFile = szFile;
+        insert_object.cchFile = _countof(szFile);
+
+        UINT uResult = OleUIInsertObject(&insert_object);
+        if (uResult == OLEUI_OK)
+        {
+            LPOLESTR pszCLSID = NULL;
+            if (S_OK == StringFromCLSID(insert_object.clsid, &pszCLSID))
+            {
+                SetDlgItemTextW(hwnd, cmb2, pszCLSID);
+                SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
+                CoTaskMemFree(pszCLSID);
+            }
+        }
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -810,6 +839,9 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case psh2:
+            OnPsh2(hwnd);
             break;
         default:
             if (size_t(id - 1000) < m_vecControls.size())

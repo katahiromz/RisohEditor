@@ -584,6 +584,8 @@ NFS_BUTTON, 0x8
 NFS_ALL, 0x10
 NFS_USEFONTASSOC, 0x20
 
+[MOleCtrl]
+
 [CTRLID]
 IDOK, 1
 IDCANCEL, 2
@@ -1040,6 +1042,7 @@ msctls_statusbar32, 2
 msctls_trackbar32, 2
 msctls_updown32, 2
 tooltips_class32, 2
+MOleCtrl, 2
 AUTO3STATE, 3
 AUTOCHECKBOX, 3
 AUTORADIOBUTTON, 3
@@ -1197,6 +1200,9 @@ STYLE, 0x50020000
 [SysIPAddress32.DEFAULT.STYLE]
 STYLE, 0x50010000
 
+[MOleCtrl.DEFAULT.STYLE]
+STYLE, 0x50010000
+
 [SysLink.DEFAULT.STYLE]
 STYLE, 0x50000000
 
@@ -1337,6 +1343,10 @@ HEIGHT, 12
 WIDTH, 60
 HEIGHT, 14
 
+[MOleCtrl.SIZE]
+WIDTH, 60
+HEIGHT, 60
+
 [SysLink.SIZE]
 WIDTH, 64
 HEIGHT, 64
@@ -1378,3 +1388,4 @@ msctls_progress32, 12
 msctls_updown32, 13
 SysLink, 14
 SplitButton, 15
+MOleCtrl, 16

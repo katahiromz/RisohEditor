@@ -343,6 +343,7 @@
 #define IDS_LANGUAGE            239
 #define IDS_INTVALUE            240
 #define IDS_PARENTWND           241
+#define IDS_CHOOSE_OLE_CLSID    242
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

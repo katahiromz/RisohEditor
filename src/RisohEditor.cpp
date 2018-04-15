@@ -10539,6 +10539,8 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
   publicKeyToken='6595b64144ccf1df' \
   language='*'\"")
 
+IMPLEMENT_DYNAMIC(MOleCtrl)
+
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
         HINSTANCE   hPrevInstance,
