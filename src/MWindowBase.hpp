@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    67     /* Version 67 */
+#define MZC4_MWINDOWBASE_HPP_    68     /* Version 69 */
 
 class MWindowBase;
 class MDialogBase;
@@ -155,17 +155,22 @@ PopupMenuDx(HWND hwnd, HWND hContext, UINT nMenuID, INT iSubMenu, INT x, INT y);
 class MWindowBase
 {
 protected:
-    MSG m_msg;
+    DWORD   m_dwWindowBaseMagic;
+    MSG     m_msg;
 public:
-    HWND m_hwnd;
+    HWND    m_hwnd;
     WNDPROC m_fnOldProc;
-    bool m_bDynamicCreated;
+    bool    m_bDynamicCreated;
 
-    MWindowBase() : m_hwnd(NULL), m_fnOldProc(NULL), m_bDynamicCreated(false)
+    MWindowBase() :
+        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(NULL), m_fnOldProc(NULL),
+        m_bDynamicCreated(false)
     {
     }
 
-    MWindowBase(HWND hwnd) : m_hwnd(hwnd), m_fnOldProc(NULL), m_bDynamicCreated(false)
+    MWindowBase(HWND hwnd) :
+        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(hwnd), m_fnOldProc(NULL),
+        m_bDynamicCreated(false)
     {
     }
 
@@ -1117,17 +1122,19 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     MWindowBase *base;
     if (uMsg == WM_CREATE)
     {
+        TCHAR szClass[128];
+        GetClassName(hwnd, szClass, _countof(szClass));
+
         LPCREATESTRUCT pcs = (LPCREATESTRUCT)lParam;
-        if (pcs->lpCreateParams)
+        if (pcs->lpCreateParams &&
+            !IsBadReadPtr(pcs->lpCreateParams, sizeof(MWindowBase)) &&
+            ((MWindowBase*)(pcs->lpCreateParams))->m_dwWindowBaseMagic == 0xFEEDFEED)
         {
             base = reinterpret_cast<MWindowBase *>(pcs->lpCreateParams);
         }
         else
         {
             // for DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
-            TCHAR szClass[128];
-            GetClassName(hwnd, szClass, _countof(szClass));
-
             class_to_create_map_t::const_iterator it;
             it = MWindowBase::ClassToCreateMap().find(szClass);
             if (it == MWindowBase::ClassToCreateMap().end())
@@ -1149,6 +1156,10 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     LRESULT ret = 0;
     if (base)
     {
+#ifndef NDEBUG
+        TCHAR szClass[128];
+        GetClassName(hwnd, szClass, _countof(szClass));
+#endif
         base->SaveMessageDx(hwnd, uMsg, wParam, lParam);
         ret = base->WindowProcDx(hwnd, uMsg, wParam, lParam);
 
