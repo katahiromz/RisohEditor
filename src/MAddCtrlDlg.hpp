@@ -32,6 +32,7 @@
 class MAddCtrlDlg;
 
 void ReplaceFullWithHalf(MStringW& strText);
+BOOL IsThereWndClass(const WCHAR *pszName);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -299,10 +300,7 @@ public:
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
-        WNDCLASSEX cls;
-        if (strClass.empty() ||
-            (!GetClassInfoEx(NULL, strClass.c_str(), &cls) &&
-             !GetClassInfoEx(GetModuleHandle(NULL), strClass.c_str(), &cls)))
+        if (!IsThereWndClass(strClass.c_str()))
         {
             SetFocus(GetDlgItem(hwnd, cmb4));
             MsgBoxDx(LoadStringDx(IDS_ENTERCLASS), MB_ICONERROR);

@@ -47,6 +47,7 @@ void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption)
 void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
 void ReplaceFullWithHalf(MStringW& strText);
+BOOL IsThereWndClass(const WCHAR *pszName);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -290,10 +291,7 @@ public:
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
             {
                 item.m_class = m_item.m_class;
-                WNDCLASSEX cls;
-                if (!item.m_class.empty() &&
-                    !GetClassInfoEx(NULL, item.m_class.str().c_str(), &cls) &&
-                    !GetClassInfoEx(GetModuleHandle(NULL), item.m_class.str().c_str(), &cls))
+                if (!IsThereWndClass(item.m_class.c_str()))
                 {
                     HWND hCmb4 = GetDlgItem(m_hwnd, cmb4);
                     ComboBox_SetEditSel(hCmb4, 0, -1);

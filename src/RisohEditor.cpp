@@ -1927,6 +1927,46 @@ void MMainWnd::OnExport(HWND hwnd)
     }
 }
 
+typedef std::set<HMODULE> wclib_t;
+
+wclib_t& wclib()
+{
+    static wclib_t s_wclib;
+    return s_wclib;
+}
+
+BOOL IsThereWndClass(const WCHAR *pszName)
+{
+    if (!pszName || pszName[0] == 0)
+        return FALSE;
+
+    WNDCLASSEX cls;
+    if (GetClassInfoEx(NULL, pszName, &cls) ||
+        GetClassInfoEx(GetModuleHandle(NULL), pszName, &cls))
+    {
+        return TRUE;
+    }
+
+    wclib_t::iterator it, end = wclib().end();
+    for (it = wclib().begin(); it != end; ++it)
+    {
+        if (GetClassInfoEx(*it, pszName, &cls))
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+void FreeWCLib()
+{
+    wclib_t::iterator it, end = wclib().end();
+    for (it = wclib().begin(); it != end; ++it)
+    {
+        FreeLibrary(*it);
+    }
+    wclib().clear();
+}
+
 void MMainWnd::OnLoadWCLib(HWND hwnd)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
@@ -1947,7 +1987,12 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ofn.lpstrDefExt = L"dll";
     if (GetOpenFileNameW(&ofn))
     {
-        if (!LoadLibraryW(file))
+        HMODULE hMod = LoadLibraryW(file);
+        if (hMod)
+        {
+            wclib().insert(hMod);
+        }
+        else
         {
             ErrorBoxDx(IDS_CANNOTLOAD);
         }
@@ -10602,6 +10647,7 @@ WinMain(HINSTANCE   hInstance,
     // free the libraries
     FreeLibrary(hinstRichEdit);
     OleUninitialize();
+    FreeWCLib();
 
     // free command line
     LocalFree(targv);
