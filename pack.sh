@@ -72,9 +72,9 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
             if cp -f src/MOleCtrl.hpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
                 echo Copying Stage 5...
                 mkdir "$RE_BIN_DIR/MyWndCtrl"
-                if cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"
+                if cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"; then
                     echo Copying Stage 6...
-                    if cp -f build/MyWndCtrl.dll "$RE_BIN_DIR"
+                    if cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"; then
                         echo Zipping...
                         cd build
                         if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
