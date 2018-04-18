@@ -32,22 +32,22 @@ if ! which zip > /dev/null 2>&1; then
 fi
 
 if [ ! -d build ]; then
-    echo ERROR: the build directory doesn't exists.
+    echo ERROR: the build directory doesn\'t exists.
     exit 1
 fi
 
 if [ ! -d data ]; then
-    echo ERROR: the data directory doesn't exists.
+    echo ERROR: the data directory doesn\'t exists.
     exit 2
 fi
 
 if [ ! -e build/RisohEditor.exe ]; then
-    echo ERROR: build/RisohEditor.exe doesn't exists.
+    echo ERROR: build/RisohEditor.exe doesn\'t exists.
     exit 3
 fi
 
 if [ ! -e build/mcdx.exe ]; then
-    echo ERROR: build/mcdx.exe doesn't exists.
+    echo ERROR: build/mcdx.exe doesn\'t exists.
     exit 4
 fi
 
@@ -70,19 +70,32 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
             echo Copying Stage 4...
             mkdir "$RE_BIN_DIR/OLE"
             if cp -f src/MOleCtrl.hpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
-                echo Zipping...
-                cd build
-                if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
-                    cd ..
-                    if [ -e "$RE_TARGET" ]; then
-                        echo Success. "$RE_TARGET" was generated.
+                echo Copying Stage 5...
+                mkdir "$RE_BIN_DIR/MyWndCtrl"
+                if cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"
+                    echo Copying Stage 6...
+                    if cp -f build/MyWndCtrl.dll "$RE_BIN_DIR"
+                        echo Zipping...
+                        cd build
+                        if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
+                            cd ..
+                            if [ -e "$RE_TARGET" ]; then
+                                echo Success. "$RE_TARGET" was generated.
+                            else
+                                echo ERROR: Target not found.
+                                exit 12
+                            fi
+                        else
+                            cd ..
+                            echo ERROR: Zipping failed.
+                            exit 11
+                        fi
                     else
-                        echo ERROR: Target not found.
+                        echo ERROR: Copying Stage 6 failed.
                         exit 10
                     fi
                 else
-                    cd ..
-                    echo ERROR: Zipping failed.
+                    echo ERROR: Copying Stage 5 failed.
                     exit 9
                 fi
             else

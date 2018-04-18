@@ -73,5 +73,6 @@ add_definitions(-DMZC4_HANDLE_MAP=1)
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(mcdx)
+add_subdirectory(MyWndCtrl)
 
 ##############################################################################
