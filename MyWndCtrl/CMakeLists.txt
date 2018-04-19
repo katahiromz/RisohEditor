@@ -6,6 +6,9 @@
 # CMake minimum version
 cmake_minimum_required(VERSION 2.4)
 
+# use new policy
+cmake_policy(SET CMP0054 NEW)
+
 # check build type
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Debug")
