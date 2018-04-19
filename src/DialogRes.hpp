@@ -678,7 +678,8 @@ struct DialogItem
                 m_siz.cy = 20;
             }
             m_classOld = m_class;
-            if (m_class.str() == L"MOleCtrl")
+            if (m_class.str() == L"MOleCtrl" ||
+                m_class.str().find(L"AtlAxWin") == 0)
             {
                 m_class = L"STATIC";
             }

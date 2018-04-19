@@ -79,7 +79,6 @@ struct RisohSettings
     include_dirs_type   includes;
     MString             strWindResExe;
     MString             strCppExe;
-    BOOL                bOldStyle;
     MString             strPrevVersion;
     BOOL                bSepFilesByLang;
     BOOL                bStoreToResFolder;
@@ -87,6 +86,8 @@ struct RisohSettings
     captions_type       captions;
     BOOL                bShowToolBar;
     BOOL                bHasIDC_STATIC;
+    BOOL                bUseAtlAxWin;
+    MString             strAtlAxWin;
 
     RisohSettings()
     {

@@ -729,7 +729,10 @@ public:
             if (S_OK == StringFromCLSID(insert_object.clsid, &pszCLSID))
             {
                 SetDlgItemTextW(hwnd, cmb2, pszCLSID);
-                SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
+                if (m_settings.bUseAtlAxWin)
+                    SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
+                else
+                    SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
                 CoTaskMemFree(pszCLSID);
             }
         }
@@ -844,7 +847,18 @@ public:
         default:
             if (size_t(id - 1000) < m_vecControls.size())
             {
-                SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
+                if (id - 1000 == 16)
+                {
+                    // OLE controls
+                    if (m_settings.bUseAtlAxWin)
+                        SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
+                    else
+                        SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
+                }
+                else
+                {
+                    SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
+                }
                 MString text = GetDlgItemText(hwnd, cmb1);
                 mstr_trim(text);
                 InitTables(text.c_str());

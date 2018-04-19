@@ -1287,7 +1287,7 @@ protected:
 
     MString GetLanguageStatement(WORD langid)
     {
-        return ::GetLanguageStatement(langid, m_settings.bOldStyle) + L"\r\n";
+        return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
 public:
@@ -1348,6 +1348,7 @@ public:
         return TEXT("katahiromz's RisohEditor");
     }
 
+    BOOL LoadATL();
     BOOL StartDx();
     INT_PTR RunDx();
     void DoEvents();
@@ -3236,10 +3237,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
-    if (m_settings.bOldStyle)
-        CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_CHECKED);
-    else
-        CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_UNCHECKED);
+    CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_CHECKED);
 
     if (m_settings.bShowToolBar)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
@@ -7100,8 +7098,6 @@ void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    m_settings.bOldStyle = TRUE;
-    //m_settings.bOldStyle = !m_settings.bOldStyle;
     DoRefresh(hwnd, TRUE);
 }
 
@@ -8777,8 +8773,6 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
 
-    m_settings.bOldStyle = TRUE;
-
     m_settings.strPrevVersion.clear();
 
     m_settings.bSepFilesByLang = FALSE;
@@ -8788,6 +8782,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.captions.clear();
 
     m_settings.bShowToolBar = TRUE;
+    m_settings.bUseAtlAxWin = TRUE;
+    m_settings.strAtlAxWin = L"AtlAxWin";
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
@@ -8990,10 +8986,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
             m_settings.strCppExe = szText;
     }
 
-    // always use old style
-    //keyRisoh.QueryDword(TEXT("bOldStyle"), (DWORD&)m_settings.bOldStyle);
-    m_settings.bOldStyle = TRUE;
-
     if (keyRisoh.QuerySz(TEXT("strPrevVersion"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
         m_settings.strPrevVersion = szText;
@@ -9035,6 +9027,12 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     keyRisoh.QueryDword(TEXT("bShowToolBar"), (DWORD&)m_settings.bShowToolBar);
+    keyRisoh.QueryDword(TEXT("bUseAtlAxWin"), (DWORD&)m_settings.bUseAtlAxWin);
+
+    if (keyRisoh.QuerySz(L"strAtlAxWin", szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        m_settings.strAtlAxWin = szText;
+    }
 
     return TRUE;
 }
@@ -9173,6 +9171,9 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     }
 
     keyRisoh.SetDword(TEXT("bShowToolBar"), m_settings.bShowToolBar);
+    keyRisoh.SetDword(TEXT("bUseAtlAxWin"), m_settings.bUseAtlAxWin);
+
+    keyRisoh.SetSz(L"strAtlAxWin", m_settings.strAtlAxWin.c_str());
 
     return TRUE;
 }
@@ -9188,6 +9189,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     LoadSettings(hwnd);
+    LoadATL();
 
     if (m_settings.bResumeWindowPos)
     {
@@ -9451,6 +9453,58 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
         OnFindNext(hwnd);
     }
     return 0;
+}
+
+BOOL MMainWnd::LoadATL()
+{
+    static struct {
+        const WCHAR *dll;
+        const WCHAR *wndclass;
+    } s_entries[] = {
+        { L"atl110.dll", L"AtlAxWin110" },
+        { L"atl100.dll", L"AtlAxWin100" },
+        { L"atl90.dll", L"AtlAxWin90" },
+        { L"atl80.dll", L"AtlAxWin80" },
+        { L"atl71.dll", L"AtlAxWin71" },
+        { L"atl.dll", L"AtlAxWin" },
+    };
+    size_t i;
+    HMODULE hATL = NULL;
+    const WCHAR *pszWndClass = NULL;
+    for (i = 0; i < _countof(s_entries); ++i)
+    {
+        hATL = LoadLibraryW(s_entries[i].dll);
+        if (hATL)
+        {
+            wclib().insert(hATL);
+            pszWndClass = s_entries[i].wndclass;
+            break;
+        }
+    }
+    if (!hATL)
+    {
+        WCHAR szPath[MAX_PATH];
+        StringCchCopyW(szPath, _countof(szPath), m_szDataFolder);
+        StringCchCatW(szPath, _countof(szPath), L"\\atl.dll");
+        hATL = LoadLibraryW(s_entries[i].dll);
+        pszWndClass = L"AtlAxWin";
+    }
+    if (hATL && pszWndClass)
+    {
+        wclib().insert(hATL);
+
+        typedef BOOL (WINAPI *ATLAXWININIT)();
+        typedef HRESULT (WINAPI *ATLAXGETCONTROL)(HWND, IUnknown **);
+
+        ATLAXWININIT pAtlAxWinInit =
+            (ATLAXWININIT)GetProcAddress(hATL, "AtlAxWinInit");
+        if (pAtlAxWinInit)
+        {
+            (*pAtlAxWinInit)();
+        }
+
+        m_settings.strAtlAxWin = pszWndClass;
+    }
 }
 
 BOOL MMainWnd::StartDx()
@@ -10577,6 +10631,25 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 
 ////////////////////////////////////////////////////////////////////////////
 
+LPWSTR FindATL(void)
+{
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    LPWSTR pch = wcsrchr(szPath, L'\\');
+    size_t diff = pch - szPath;
+    StringCchCopyW(pch, diff, L"\\atl100.dll");
+    if (GetFileAttributesW(szPath) == 0xFFFFFFFF)
+    {
+        StringCchCopyW(pch, diff, L"\\..\\atl100.dll");
+        if (GetFileAttributesW(szPath) == 0xFFFFFFFF)
+        {
+            StringCchCopyW(pch, diff, L"\\..\\..\\atl100.dll");
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' \
   name='Microsoft.Windows.Common-Controls' \
   version='6.0.0.0' \
@@ -10616,6 +10689,7 @@ WinMain(HINSTANCE   hInstance,
                  ICC_LINK_CLASS;
     InitCommonControlsEx(&iccx);
 
+    // load RichEdit
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
     // load GDI+

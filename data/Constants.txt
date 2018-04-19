@@ -586,6 +586,8 @@ NFS_USEFONTASSOC, 0x20
 
 [MOleCtrl]
 
+[AtlAxWin]
+
 [CTRLID]
 IDOK, 1
 IDCANCEL, 2
@@ -1043,6 +1045,7 @@ msctls_trackbar32, 2
 msctls_updown32, 2
 tooltips_class32, 2
 MOleCtrl, 2
+AtlAxWin, 2
 AUTO3STATE, 3
 AUTOCHECKBOX, 3
 AUTORADIOBUTTON, 3
@@ -1203,6 +1206,9 @@ STYLE, 0x50010000
 [MOleCtrl.DEFAULT.STYLE]
 STYLE, 0x50010000
 
+[AtlAxWin.DEFAULT.STYLE]
+STYLE, 0x50010000
+
 [SysLink.DEFAULT.STYLE]
 STYLE, 0x50000000
 
@@ -1347,6 +1353,10 @@ HEIGHT, 14
 WIDTH, 60
 HEIGHT, 60
 
+[AtlAxWin.SIZE]
+WIDTH, 60
+HEIGHT, 60
+
 [SysLink.SIZE]
 WIDTH, 64
 HEIGHT, 64
@@ -1388,4 +1398,4 @@ msctls_progress32, 12
 msctls_updown32, 13
 SysLink, 14
 SplitButton, 15
-MOleCtrl, 16
+AtlAxWin, 16

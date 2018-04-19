@@ -84,7 +84,7 @@ public:
     MString GetLanguageStatement(WORD langid)
     {
         if (!m_bNoLanguage)
-            return ::GetLanguageStatement(langid, m_settings.bOldStyle) + TEXT("\r\n");
+            return ::GetLanguageStatement(langid, TRUE) + TEXT("\r\n");
         else
             return TEXT("");
     }
