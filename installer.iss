@@ -52,6 +52,7 @@ Source: "build\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: "data\bin\cpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\x86\atl.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "src\MOleCtrl.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
