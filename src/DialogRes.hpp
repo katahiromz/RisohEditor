@@ -685,6 +685,23 @@ struct DialogItem
             }
         }
     }
+
+    void Fixup2(bool bRevert = false)
+    {
+        if (bRevert)
+        {
+            m_class = m_classOld;
+        }
+        else
+        {
+            m_classOld = m_class;
+            if (m_class.str() == L"MOleCtrl" ||
+                m_class.str().find(L"AtlAxWin") == 0)
+            {
+                m_class = L"STATIC";
+            }
+        }
+    }
 };
 typedef std::vector<DialogItem> DialogItems;
 
@@ -997,6 +1014,15 @@ struct DialogRes
         for (it = m_items.begin(); it != end; ++it)
         {
             it->Fixup(bRevert);
+        }
+    }
+
+    void Fixup2(bool bRevert = false)
+    {
+        DialogItems::iterator it, end = m_items.end();
+        for (it = m_items.begin(); it != end; ++it)
+        {
+            it->Fixup2(bRevert);
         }
     }
 

@@ -7937,7 +7937,11 @@ void MMainWnd::OnTest(HWND hwnd)
             MIdOrString menu = dialog_res.m_menu;
             dialog_res.m_menu.clear();
             stream.clear();
+
+            // TODO: OLE support
+            dialog_res.Fixup2(false);
             dialog_res.SaveToStream(stream);
+            dialog_res.Fixup2(true);
 
             // show test dialog
             if (dialog_res.m_style & WS_CHILD)
@@ -9470,11 +9474,10 @@ HMODULE MMainWnd::LoadATL()
 #endif
     assert(GetFileAttributesW(szPath) != 0xFFFFFFFF);
 
-    if (GetMyATLSupport().LoadATL(szPath))
-    {
-        m_settings.strAtlAxWin = GetMyATLSupport().m_pszClass;
-        GetMyATLSupport().RegisterAll();
-    }
+    // TODO: OLE support
+    GetMyATLSupport().LoadATL(szPath);
+    m_settings.strAtlAxWin = GetMyATLSupport().m_pszClass;
+    //GetMyATLSupport().RegisterAll();
 
     return GetMyATLSupport().m_hATL;
 }

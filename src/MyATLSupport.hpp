@@ -1,3 +1,5 @@
+// TODO: OLE support
+
 #include "MWindowBase.hpp"
 
 class MyATLSupport;
@@ -27,12 +29,16 @@ public:
 
     typedef BOOL (WINAPI *ATLAXWININIT)();
     typedef HRESULT (WINAPI *ATLAXGETCONTROL)(HWND, IUnknown **);
+    typedef HRESULT (WINAPI *ATLAXCREATECONTROLEX)(LPCOLESTR, HWND,
+        IStream *, IUnknown **, IUnknown **, IID *, IUnknown *);
 
     ATLAXWININIT m_pAtlAxWinInit;
     ATLAXGETCONTROL m_pAtlAxGetControl;
+    ATLAXCREATECONTROLEX m_pAtlAxCreateControlEx;
 
     MyATLSupport() : m_hATL(NULL), m_pszClass(NULL),
-                     m_pAtlAxWinInit(NULL), m_pAtlAxGetControl(NULL)
+                     m_pAtlAxWinInit(NULL), m_pAtlAxGetControl(NULL),
+                     m_pAtlAxCreateControlEx(NULL)
     {
     }
 
@@ -82,6 +88,7 @@ public:
         {
             m_pAtlAxWinInit = (ATLAXWININIT)GetProcAddress(hATL, "AtlAxWinInit");
             m_pAtlAxGetControl = (ATLAXGETCONTROL)GetProcAddress(hATL, "AtlAxGetControl");
+            m_pAtlAxCreateControlEx = (ATLAXCREATECONTROLEX)GetProcAddress(hATL, "AtlAxCreateControlEx");
 
             if (m_pAtlAxWinInit)
             {
@@ -141,8 +148,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
@@ -200,8 +210,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
@@ -259,8 +272,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
@@ -318,8 +334,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
@@ -377,8 +396,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
@@ -436,8 +458,11 @@ public:
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        WCHAR szText[MAX_PATH];
+        GetWindowTextW(hwnd, szText, MAX_PATH);
+
         HRESULT hr;
-        hr = GetMyATLSupport().m_pAtlAxGetControl(hwnd, &m_pUnknown);
+        hr = GetMyATLSupport().m_pAtlAxCreateControlEx(szText, hwnd, NULL, NULL, NULL, NULL, NULL);
         assert(hr == S_OK);
         return TRUE;
     }
