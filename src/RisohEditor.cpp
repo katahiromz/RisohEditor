@@ -1327,6 +1327,8 @@ public:
         m_szReplaceWith[0] = 0;
         m_fr.lpstrReplaceWith = m_szReplaceWith;
         m_fr.wReplaceWithLen = _countof(m_szReplaceWith);
+
+        m_hATL = NULL;
     }
 
     // settings
@@ -1347,6 +1349,8 @@ public:
     {
         return TEXT("katahiromz's RisohEditor");
     }
+
+    HMODULE m_hATL;
 
     BOOL LoadATL();
     BOOL StartDx();
@@ -9503,8 +9507,11 @@ BOOL MMainWnd::LoadATL()
             (*pAtlAxWinInit)();
         }
 
+        m_hATL = hATL;
         m_settings.strAtlAxWin = pszWndClass;
+        return TRUE;
     }
+    return FALSE;
 }
 
 BOOL MMainWnd::StartDx()
@@ -10627,25 +10634,6 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     str += strSub;
     str += TEXT("\r\n");
     return str;
-}
-
-////////////////////////////////////////////////////////////////////////////
-
-LPWSTR FindATL(void)
-{
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"\\atl100.dll");
-    if (GetFileAttributesW(szPath) == 0xFFFFFFFF)
-    {
-        StringCchCopyW(pch, diff, L"\\..\\atl100.dll");
-        if (GetFileAttributesW(szPath) == 0xFFFFFFFF)
-        {
-            StringCchCopyW(pch, diff, L"\\..\\..\\atl100.dll");
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////
