@@ -1351,8 +1351,8 @@ public:
     }
 
     HMODULE m_hATL;
+    HMODULE LoadATL();
 
-    BOOL LoadATL();
     BOOL StartDx();
     INT_PTR RunDx();
     void DoEvents();
@@ -9459,59 +9459,24 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-BOOL MMainWnd::LoadATL()
+HMODULE MMainWnd::LoadATL()
 {
-    static struct {
-        const WCHAR *dll;
-        const WCHAR *wndclass;
-    } s_entries[] = {
-        { L"atl110.dll", L"AtlAxWin110" },
-        { L"atl100.dll", L"AtlAxWin100" },
-        { L"atl90.dll", L"AtlAxWin90" },
-        { L"atl80.dll", L"AtlAxWin80" },
-        { L"atl71.dll", L"AtlAxWin71" },
-        { L"atl.dll", L"AtlAxWin" },
-    };
-    size_t i;
-    HMODULE hATL = NULL;
-    const WCHAR *pszWndClass = NULL;
-    for (i = 0; i < _countof(s_entries); ++i)
-    {
-        hATL = LoadLibraryW(s_entries[i].dll);
-        if (hATL)
-        {
-            wclib().insert(hATL);
-            pszWndClass = s_entries[i].wndclass;
-            break;
-        }
-    }
-    if (!hATL)
-    {
-        WCHAR szPath[MAX_PATH];
-        StringCchCopyW(szPath, _countof(szPath), m_szDataFolder);
-        StringCchCatW(szPath, _countof(szPath), L"\\atl.dll");
-        hATL = LoadLibraryW(s_entries[i].dll);
-        pszWndClass = L"AtlAxWin";
-    }
-    if (hATL && pszWndClass)
-    {
-        wclib().insert(hATL);
+    WCHAR szPath[MAX_PATH];
+    StringCchCopyW(szPath, _countof(szPath), m_szDataFolder);
+#ifdef _WIN64
+    StringCchCatW(szPath, _countof(szPath), L"\\x64\\atl.dll");
+#else
+    StringCchCatW(szPath, _countof(szPath), L"\\x86\\atl.dll");
+#endif
+    assert(GetFileAttributesW(szPath) != 0xFFFFFFFF);
 
-        typedef BOOL (WINAPI *ATLAXWININIT)();
-        typedef HRESULT (WINAPI *ATLAXGETCONTROL)(HWND, IUnknown **);
-
-        ATLAXWININIT pAtlAxWinInit =
-            (ATLAXWININIT)GetProcAddress(hATL, "AtlAxWinInit");
-        if (pAtlAxWinInit)
-        {
-            (*pAtlAxWinInit)();
-        }
-
-        m_hATL = hATL;
-        m_settings.strAtlAxWin = pszWndClass;
-        return TRUE;
+    if (GetMyATLSupport().LoadATL(szPath))
+    {
+        m_settings.strAtlAxWin = GetMyATLSupport().m_pszClass;
+        GetMyATLSupport().RegisterAll();
     }
-    return FALSE;
+
+    return GetMyATLSupport().m_hATL;
 }
 
 BOOL MMainWnd::StartDx()
@@ -10646,6 +10611,12 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
   language='*'\"")
 
 IMPLEMENT_DYNAMIC(MOleCtrl)
+IMPLEMENT_DYNAMIC(AtlAxWin)
+IMPLEMENT_DYNAMIC(AtlAxWin71)
+IMPLEMENT_DYNAMIC(AtlAxWin80)
+IMPLEMENT_DYNAMIC(AtlAxWin90)
+IMPLEMENT_DYNAMIC(AtlAxWin100)
+IMPLEMENT_DYNAMIC(AtlAxWin110)
 
 INT WINAPI
 WinMain(HINSTANCE   hInstance,
