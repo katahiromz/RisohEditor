@@ -2,6 +2,9 @@
 // This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 //////////////////////////////////////////////////////////////////////////////
 
+#ifndef MZC4_DLGINIT_H_
+#define MZC4_DLGINIT_H_     4   /* Version 4 */
+
 // RT_DLGINIT
 // BOOL ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name);
 
@@ -49,7 +52,7 @@
             case WIN16_CB_ADDSTRING: msg = CB_ADDSTRING; break;
             }
 
-            // NOTE: no OCC Support
+            // NOTE: There is no OCC support.
             assert(msg == LB_ADDSTRING || msg == CB_ADDSTRING ||
                    msg == CBEM_INSERTITEM);
 
@@ -57,8 +60,7 @@
             if (msg == LB_ADDSTRING || msg == CB_ADDSTRING ||
                 msg == CBEM_INSERTITEM)
             {
-                assert(
-                    *(reinterpret_cast<const BYTE *>(pw) + (dwLen - 1)) == 0);
+                assert(*(reinterpret_cast<const BYTE *>(pw) + (dwLen - 1)) == 0);
             }
 #endif
 
@@ -85,6 +87,8 @@
             pw = reinterpret_cast<const WORD *>(
                 reinterpret_cast<const BYTE *>(pw) + dwLen);
         }
+
+        // NOTE: We don't send WM_INITIALUPDATE messages.
 
         return bSuccess;
     }
@@ -120,3 +124,5 @@
 #endif  // ndef RC_INVOKED
 
 //////////////////////////////////////////////////////////////////////////////
+
+#endif  // ndef MZC4_DLGINIT_H_
