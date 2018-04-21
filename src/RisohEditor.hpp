@@ -113,8 +113,6 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "Res.hpp"
 #include "ResHeader.hpp"
 
-#include "MyATLSupport.hpp"
-
 #include "MFile.hpp"
 #include "MProcessMaker.hpp"
 

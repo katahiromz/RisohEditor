@@ -86,7 +86,6 @@ struct RisohSettings
     captions_type       captions;
     BOOL                bShowToolBar;
     BOOL                bHasIDC_STATIC;
-    BOOL                bUseAtlAxWin;
     MString             strAtlAxWin;
 
     RisohSettings()

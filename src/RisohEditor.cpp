@@ -1327,8 +1327,6 @@ public:
         m_szReplaceWith[0] = 0;
         m_fr.lpstrReplaceWith = m_szReplaceWith;
         m_fr.wReplaceWithLen = _countof(m_szReplaceWith);
-
-        m_hATL = NULL;
     }
 
     // settings
@@ -1349,9 +1347,6 @@ public:
     {
         return TEXT("katahiromz's RisohEditor");
     }
-
-    HMODULE m_hATL;
-    HMODULE LoadATL();
 
     BOOL StartDx();
     INT_PTR RunDx();
@@ -1958,6 +1953,9 @@ BOOL IsThereWndClass(const WCHAR *pszName)
         if (GetClassInfoEx(*it, pszName, &cls))
             return TRUE;
     }
+
+    if (std::wstring(pszName).find(L"AtlAxWin") == 0)
+        return TRUE;
 
     return FALSE;
 }
@@ -8790,8 +8788,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     m_settings.captions.clear();
 
     m_settings.bShowToolBar = TRUE;
-    m_settings.bUseAtlAxWin = TRUE;
-    m_settings.strAtlAxWin = L"AtlAxWin";
+
+    m_settings.strAtlAxWin = L"AtlAxWin110";
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
@@ -9035,7 +9033,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     keyRisoh.QueryDword(TEXT("bShowToolBar"), (DWORD&)m_settings.bShowToolBar);
-    keyRisoh.QueryDword(TEXT("bUseAtlAxWin"), (DWORD&)m_settings.bUseAtlAxWin);
 
     if (keyRisoh.QuerySz(L"strAtlAxWin", szText, _countof(szText)) == ERROR_SUCCESS)
     {
@@ -9179,7 +9176,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     }
 
     keyRisoh.SetDword(TEXT("bShowToolBar"), m_settings.bShowToolBar);
-    keyRisoh.SetDword(TEXT("bUseAtlAxWin"), m_settings.bUseAtlAxWin);
 
     keyRisoh.SetSz(L"strAtlAxWin", m_settings.strAtlAxWin.c_str());
 
@@ -9197,7 +9193,6 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     LoadSettings(hwnd);
-    LoadATL();
 
     if (m_settings.bResumeWindowPos)
     {
@@ -9461,25 +9456,6 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
         OnFindNext(hwnd);
     }
     return 0;
-}
-
-HMODULE MMainWnd::LoadATL()
-{
-    WCHAR szPath[MAX_PATH];
-    StringCchCopyW(szPath, _countof(szPath), m_szDataFolder);
-#ifdef _WIN64
-    StringCchCatW(szPath, _countof(szPath), L"\\x64\\atl.dll");
-#else
-    StringCchCatW(szPath, _countof(szPath), L"\\x86\\atl.dll");
-#endif
-    assert(GetFileAttributesW(szPath) != 0xFFFFFFFF);
-
-    // TODO: OLE support
-    GetMyATLSupport().LoadATL(szPath);
-    m_settings.strAtlAxWin = GetMyATLSupport().m_pszClass;
-    //GetMyATLSupport().RegisterAll();
-
-    return GetMyATLSupport().m_hATL;
 }
 
 BOOL MMainWnd::StartDx()
@@ -10614,12 +10590,6 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
   language='*'\"")
 
 IMPLEMENT_DYNAMIC(MOleCtrl)
-IMPLEMENT_DYNAMIC(AtlAxWin)
-IMPLEMENT_DYNAMIC(AtlAxWin71)
-IMPLEMENT_DYNAMIC(AtlAxWin80)
-IMPLEMENT_DYNAMIC(AtlAxWin90)
-IMPLEMENT_DYNAMIC(AtlAxWin100)
-IMPLEMENT_DYNAMIC(AtlAxWin110)
 
 INT WINAPI
 WinMain(HINSTANCE   hInstance,

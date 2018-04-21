@@ -52,7 +52,6 @@ public:
         SetDlgItemInt(hwnd, edt1, m_settings.nComboHeight, FALSE);
         CheckDlgButton(hwnd, chx7, m_settings.bAskUpdateResH ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx8, m_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx9, m_settings.bUseAtlAxWin ? BST_CHECKED : BST_UNCHECKED);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -87,7 +86,6 @@ public:
         m_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
         m_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
         m_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
-        m_settings.bUseAtlAxWin = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
         m_db.ShowMacroID(!m_settings.bHideID);
 

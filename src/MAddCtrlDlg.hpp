@@ -529,11 +529,18 @@ public:
             LPOLESTR pszCLSID = NULL;
             if (S_OK == StringFromCLSID(insert_object.clsid, &pszCLSID))
             {
-                SetDlgItemTextW(hwnd, cmb2, pszCLSID);
-                if (m_settings.bUseAtlAxWin)
-                    SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
+                if (GetDlgItemText(hwnd, cmb4).find(TEXT("AtlAxWin")) == 0)
+                {
+                    WCHAR szText[64];
+                    StringCchCopyW(szText, _countof(szText), L"CLSID:");
+                    StringCchCatW(szText, _countof(szText), pszCLSID);
+                    SetDlgItemTextW(hwnd, cmb2, szText);
+                }
                 else
-                    SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
+                {
+                    SetDlgItemTextW(hwnd, cmb2, pszCLSID);
+                }
+                SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
                 CoTaskMemFree(pszCLSID);
             }
         }
@@ -651,10 +658,7 @@ public:
                 if (id - 1000 == 16)
                 {
                     // OLE controls
-                    if (m_settings.bUseAtlAxWin)
-                        SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
-                    else
-                        SetDlgItemTextW(hwnd, cmb4, L"MOleCtrl");
+                    SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
                 }
                 else
                 {
