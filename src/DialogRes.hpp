@@ -137,8 +137,9 @@ struct DialogItem
     MIdOrString         m_title;
     std::vector<BYTE>   m_extra;
     DWORD               m_old_style, m_old_ex_style;
+    MIdOrString         m_old_title;
     SIZE                m_sizOld;
-    MIdOrString         m_classOld;
+    MIdOrString         m_old_class;
 
     DialogItem()
     {
@@ -658,7 +659,8 @@ struct DialogItem
             m_style = m_old_style;
             m_ex_style = m_old_ex_style;
             m_siz = m_sizOld;
-            m_class = m_classOld;
+            m_class = m_old_class;
+            m_title = m_old_title;
         }
         else
         {
@@ -672,15 +674,23 @@ struct DialogItem
                          WS_EX_TOPMOST);
             m_ex_style |= WS_EX_NOACTIVATE;
             m_sizOld = m_siz;
+            m_old_class = m_class;
+            m_old_title = m_title;
+
             if (m_siz.cx == 0 && m_siz.cy == 0)
             {
                 m_siz.cx = 20;
                 m_siz.cy = 20;
             }
-            m_classOld = m_class;
             if (m_class.str() == L"MOleCtrl" ||
                 m_class.str().find(L"AtlAxWin") == 0)
             {
+                m_class = L"STATIC";
+                m_style |= WS_BORDER;
+            }
+            else if (m_class.c_str()[0] == L'{')
+            {
+                m_title = m_class.c_str();
                 m_class = L"STATIC";
                 m_style |= WS_BORDER;
             }
@@ -691,16 +701,24 @@ struct DialogItem
     {
         if (bRevert)
         {
-            m_class = m_classOld;
+            m_class = m_old_class;
             m_style = m_old_style;
+            m_title = m_old_title;
         }
         else
         {
             m_old_style = m_style;
-            m_classOld = m_class;
+            m_old_class = m_class;
+            m_old_title = m_title;
             if (m_class.str() == L"MOleCtrl" ||
                 m_class.str().find(L"AtlAxWin") == 0)
             {
+                m_class = L"STATIC";
+                m_style |= WS_BORDER;
+            }
+            else if (m_class.c_str()[0] == L'{')
+            {
+                m_title = m_class.c_str();
                 m_class = L"STATIC";
                 m_style |= WS_BORDER;
             }

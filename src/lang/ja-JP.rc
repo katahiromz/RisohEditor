@@ -931,7 +931,8 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "フォント設定(&F)...", psh4, 5, 185, 200, 14
     PUSHBUTTON "定義済みマクロ(&M)...", psh1, 5, 205, 93, 14
     PUSHBUTTON "PATHの設定(&T)...", psh2, 107, 205, 98, 14
-    AUTOCHECKBOX "AtlA&xWinコントロールを使う", chx9, 5, 225, 195, 14
+    RTEXT "&OLEコントロールの名前:", -1, 5, 227, 80, 12
+    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 245, 50, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 155, 245, 50, 14
     PUSHBUTTON "すべてリセット(&S)", psh3, 5, 245, 75, 14

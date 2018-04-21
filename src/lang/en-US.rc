@@ -929,7 +929,8 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Fonts...", psh4, 5, 185, 200, 14
     PUSHBUTTON "Predefined &Macros...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Set Pa&ths...", psh2, 107, 205, 98, 14
-    AUTOCHECKBOX "Use AtlA&xWin Controls", chx9, 5, 225, 195, 14
+    RTEXT "Name of &OLE controls:", -1, 5, 227, 80, 12
+    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 245, 50, 14
     PUSHBUTTON "Cancel", IDCANCEL, 155, 245, 50, 14
     PUSHBUTTON "Re&set All", psh3, 5, 245, 75, 14

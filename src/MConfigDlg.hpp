@@ -52,14 +52,21 @@ public:
         SetDlgItemInt(hwnd, edt1, m_settings.nComboHeight, FALSE);
         CheckDlgButton(hwnd, chx7, m_settings.bAskUpdateResH ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx8, m_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemText(hwnd, cmb1, m_settings.strAtlAxWin.c_str());
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        Reload(hwnd);
-
         SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin71")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin80")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin90")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin100")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin110")));
+        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("MOleCtrl")));
 
+        Reload(hwnd);
         CenterWindowDx();
         return TRUE;
     }
@@ -86,6 +93,11 @@ public:
         m_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
         m_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
         m_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+
+        TCHAR szText[64];
+        GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
+        mstr_trim(szText);
+        m_settings.strAtlAxWin = szText;
 
         m_db.ShowMacroID(!m_settings.bHideID);
 

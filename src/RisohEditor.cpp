@@ -1938,7 +1938,7 @@ wclib_t& wclib()
 BOOL IsThereWndClass(const WCHAR *pszName)
 {
     if (!pszName || pszName[0] == 0)
-        return FALSE;
+        return FALSE;   // failure
 
     WNDCLASSEX cls;
     if (GetClassInfoEx(NULL, pszName, &cls) ||
@@ -1947,6 +1947,7 @@ BOOL IsThereWndClass(const WCHAR *pszName)
         return TRUE;
     }
 
+    // in the window class libraries?
     wclib_t::iterator it, end = wclib().end();
     for (it = wclib().begin(); it != end; ++it)
     {
@@ -1954,10 +1955,20 @@ BOOL IsThereWndClass(const WCHAR *pszName)
             return TRUE;
     }
 
+    // CLSID?
+    if (pszName[0] == L'{' &&
+        pszName[9] == L'-' && pszName[14] == L'-' &&
+        pszName[19] == L'-' && pszName[24] == L'-' &&
+        pszName[37] == L'}')
+    {
+        return TRUE;
+    }
+
+    // ATL OLE controls?
     if (std::wstring(pszName).find(L"AtlAxWin") == 0)
         return TRUE;
 
-    return FALSE;
+    return FALSE;   // failure
 }
 
 void FreeWCLib()

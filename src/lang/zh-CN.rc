@@ -929,7 +929,8 @@ FONT 9, "宋体"
     PUSHBUTTON "字体(&F)...", psh4, 5, 185, 200, 14
     PUSHBUTTON "预定义的宏(&M)...", psh1, 5, 205, 93, 14
     PUSHBUTTON "设置PATH(&T)...", psh2, 107, 205, 98, 14
-    AUTOCHECKBOX "使用AtlA&xWin控件", chx9, 5, 225, 195, 14
+    RTEXT "&OLE控件的名称:", -1, 5, 227, 80, 12
+    COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 245, 50, 14
     PUSHBUTTON "取消", IDCANCEL, 155, 245, 50, 14
     PUSHBUTTON "全部重置(&S)", psh3, 5, 245, 75, 14
