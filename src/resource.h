@@ -345,6 +345,9 @@
 #define IDS_INTVALUE            240
 #define IDS_PARENTWND           241
 #define IDS_CHOOSE_OLE_CLSID    242
+#define IDS_CONTROL_ID          243
+#define IDS_MESSAGE             244
+#define IDS_STRING              245
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

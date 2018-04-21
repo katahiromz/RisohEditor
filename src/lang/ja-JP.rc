@@ -418,6 +418,9 @@ STRINGTABLE
     IDS_INTVALUE, "整数値"
     IDS_PARENTWND, "親テストウィンドウ"
     IDS_CHOOSE_OLE_CLSID, "OLE CLSIDの選択"
+    IDS_CONTROL, "コントロール"
+    IDS_MESSAGE, "メッセージ"
+    IDS_STRING, "文字列"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

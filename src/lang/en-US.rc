@@ -416,6 +416,9 @@ STRINGTABLE
     IDS_INTVALUE, "Integer Value"
     IDS_PARENTWND, "Parent Test Window"
     IDS_CHOOSE_OLE_CLSID, "Choose OLE CLSID"
+    IDS_CONTROL, "Control"
+    IDS_MESSAGE, "Message"
+    IDS_STRING, "String"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
