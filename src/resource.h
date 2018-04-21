@@ -202,6 +202,7 @@
 #define IDD_STRINGID            "StringID"
 #define IDD_LANGS               151
 #define IDD_CHILD               152
+#define IDD_DLGINITEDIT         153
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
