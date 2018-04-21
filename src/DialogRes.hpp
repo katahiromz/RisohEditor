@@ -682,6 +682,7 @@ struct DialogItem
                 m_class.str().find(L"AtlAxWin") == 0)
             {
                 m_class = L"STATIC";
+                m_style |= WS_BORDER;
             }
         }
     }
@@ -691,14 +692,17 @@ struct DialogItem
         if (bRevert)
         {
             m_class = m_classOld;
+            m_style = m_old_style;
         }
         else
         {
+            m_old_style = m_style;
             m_classOld = m_class;
             if (m_class.str() == L"MOleCtrl" ||
                 m_class.str().find(L"AtlAxWin") == 0)
             {
                 m_class = L"STATIC";
+                m_style |= WS_BORDER;
             }
         }
     }
