@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_DLGINIT_H_
-#define MZC4_DLGINIT_H_     5   /* Version 5 */
+#define MZC4_DLGINIT_H_     6   /* Version 6 */
 
 // RT_DLGINIT
 // BOOL ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name);
@@ -66,7 +66,7 @@
             if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(&item)) == -1)
                 return NULL;
         }
-        else
+        else if (msg == LB_ADDSTRING || msg == CB_ADDSTRING)
         {
             if (::SendDlgItemMessageA(hwnd, ctrl, msg, 0, LPARAM(pw)) == -1)
                 return NULL;
@@ -74,7 +74,7 @@
 
         // go to next entry
         return reinterpret_cast<const UNALIGNED WORD *>(
-            reinterpret_cast<const UNALIGNED BYTE *>(pw) + dwLen);
+            reinterpret_cast<const BYTE *>(pw) + dwLen);
     }
 
     inline BOOL
