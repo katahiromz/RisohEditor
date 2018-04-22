@@ -71,22 +71,28 @@ public:
             if (!stream.ReadData(&entry.strText[0], dwLen - 9))
                 return false;
 
+            BYTE b;
+            if (!stream.ReadByte(b))
+                return false;
+
             m_entries.push_back(entry);
         }
+        assert(sizeof(WORD) + sizeof(WORD) + sizeof(DWORD) + sizeof(BYTE) == 9);
 
         return true;
     }
 
     bool SaveToStream(MByteStreamEx& stream) const
     {
+        assert(sizeof(WORD) + sizeof(WORD) + sizeof(DWORD) + sizeof(BYTE) == 9);
         for (size_t i = 0; i < m_entries.size(); ++i)
         {
             const DlgInitEntry& entry = m_entries[i];
-            DWORD dwLen = DWORD(entry.strText.size() + 9);
+            DWORD dwLen = DWORD(entry.strText.size());
             if (!stream.WriteWord(entry.wCtrl) ||
                 !stream.WriteWord(entry.wMsg) ||
-                !stream.WriteDword(dwLen) ||
-                !stream.WriteData(entry.strText.c_str(), dwLen))
+                !stream.WriteDword(dwLen + 9) ||
+                !stream.WriteData(entry.strText.c_str(), dwLen + 1))
             {
                 return false;
             }
@@ -152,13 +158,13 @@ public:
             ret += L", 0";
 
             const WORD *pw = reinterpret_cast<const WORD *>(it->strText.c_str());
-            size_t len = it->strText.size() / 2 * 2;
+            size_t len = it->strText.size() / 2;
             for (size_t k = 0; k < len; ++k)
             {
                 ret += L", ";
                 ret += mstr_hex_word(pw[k]);
             }
-            if (len % 2 == 0)
+            if (it->strText.size() % 2 == 0)
             {
                 ret += L", \"\\000\"";
             }
