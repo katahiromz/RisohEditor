@@ -95,7 +95,7 @@ public:
         return stream.WriteWord(0);
     }
 
-    MStringW Dump(const MIdOrString &id_or_str) const
+    MStringW Dump(const MIdOrString& id_or_str) const
     {
         MStringW ret;
 
@@ -181,6 +181,23 @@ public:
     const entries_type& entries() const
     {
         return m_entries;
+    }
+
+    bool empty() const
+    {
+        return size() == 0;
+    }
+    size_t size() const
+    {
+        return m_entries.size();
+    }
+    entry_type& operator[](size_t i)
+    {
+        return m_entries[i];
+    }
+    const entry_type& operator[](size_t i) const
+    {
+        return m_entries[i];
     }
 
     std::vector<BYTE> data() const
