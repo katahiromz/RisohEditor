@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_DLGINIT_H_
-#define MZC4_DLGINIT_H_     7   /* Version 7 */
+#define MZC4_DLGINIT_H_     8   /* Version 8 */
 
 // RT_DLGINIT
 // BOOL ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name);
@@ -30,7 +30,9 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw)
     // get data
     WORD ctrl = *pw++;
     WORD msg = *pw++;
-    DWORD dwLen = *reinterpret_cast<const UNALIGNED DWORD *&>(pw)++;
+    WORD w0 = *pw++;
+    WORD w1 = *pw++;
+    DWORD dwLen = MAKELONG(w0, w1);
 
     // convert Win16 messages
     switch (msg)
@@ -45,7 +47,8 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw)
            msg == CBEM_INSERTITEM);
 
 #ifndef NDEBUG
-    assert(*(reinterpret_cast<const BYTE *>(pw) + (dwLen - 1)) == 0);
+    const BYTE *pb = reinterpret_cast<const BYTE *>(pw);
+    assert(pb[dwLen - 1] == 0);
 #endif
 
     // send the message
@@ -75,11 +78,17 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw)
 inline BOOL
 ExecuteDlgInitDataDx(HWND hwnd, const void *pData)
 {
+#ifndef NDEBUG
+    DWORD i = 0;
+#endif
     const UNALIGNED WORD *pw;
     pw = reinterpret_cast<const UNALIGNED WORD *>(pData);
     while (pw && *pw)
     {
         pw = ExecuteDlgInitEntryDx(hwnd, pw);
+#ifndef NDEBUG
+        ++i;
+#endif
     }
 
     // NOTE: We don't send WM_INITIALUPDATE messages.
@@ -96,7 +105,7 @@ ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name)
     BOOL bSuccess = FALSE;
 
     // load from resource
-    if (HRSRC hRsrc = FindResource(module, RT_DLGINIT, res_name))
+    if (HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT))
     {
         hGlobal = LoadResource(module, hRsrc);
         pData = LockResource(hGlobal);

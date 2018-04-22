@@ -67,32 +67,26 @@ public:
             if (!stream.ReadWord(entry.wMsg) || !stream.ReadDword(dwLen))
                 return false;
 
-            entry.strText.resize(dwLen - 9);
-            if (!stream.ReadData(&entry.strText[0], dwLen - 9))
-                return false;
-
-            BYTE b;
-            if (!stream.ReadByte(b))
+            entry.strText.resize(dwLen - 1);
+            if (!stream.ReadData(&entry.strText[0], dwLen))
                 return false;
 
             m_entries.push_back(entry);
         }
-        assert(sizeof(WORD) + sizeof(WORD) + sizeof(DWORD) + sizeof(BYTE) == 9);
 
         return true;
     }
 
     bool SaveToStream(MByteStreamEx& stream) const
     {
-        assert(sizeof(WORD) + sizeof(WORD) + sizeof(DWORD) + sizeof(BYTE) == 9);
         for (size_t i = 0; i < m_entries.size(); ++i)
         {
             const DlgInitEntry& entry = m_entries[i];
-            DWORD dwLen = DWORD(entry.strText.size());
+            DWORD dwLen = DWORD(entry.strText.size() + 1);
             if (!stream.WriteWord(entry.wCtrl) ||
                 !stream.WriteWord(entry.wMsg) ||
-                !stream.WriteDword(dwLen + 9) ||
-                !stream.WriteData(entry.strText.c_str(), dwLen + 1))
+                !stream.WriteDword(dwLen) ||
+                !stream.WriteData(entry.strText.c_str(), dwLen))
             {
                 return false;
             }
@@ -105,14 +99,15 @@ public:
     {
         MStringW ret;
 
-        if (id_or_str.m_id == 0)
+        if (id_or_str.is_str())
         {
             ret += id_or_str.str();
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
+            ret += m_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
         }
+
         ret += L" DLGINIT\r\n";
         ret += L"{\r\n";
 
@@ -158,7 +153,7 @@ public:
             ret += L", 0";
 
             const WORD *pw = reinterpret_cast<const WORD *>(it->strText.c_str());
-            size_t len = it->strText.size() / 2;
+            size_t len = (it->strText.size() + 1) / 2;
             for (size_t k = 0; k < len; ++k)
             {
                 ret += L", ";

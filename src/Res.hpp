@@ -655,7 +655,7 @@ Res_GetName(const ConstantsDB& db, const ResEntry& entry)
         {
             ret += db.GetNameOfResID(IDTYPE_MENU, id);
         }
-        else if (entry.type == RT_DIALOG)
+        else if (entry.type == RT_DIALOG || entry.type == WORD(240))
         {
             ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
         }
