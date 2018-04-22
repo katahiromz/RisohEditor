@@ -24,6 +24,7 @@
 #include <vector>
 #include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
+#include "DlgInitRes.hpp"
 
 #ifndef BS_PUSHBOX
     #define BS_PUSHBOX  0x0000000A
@@ -753,8 +754,9 @@ struct DialogRes
     LANGID                      m_lang_id;
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
+    DlgInitRes                  m_dlginit;
 
-    DialogRes(const ConstantsDB& db) : m_db(db)
+    DialogRes(const ConstantsDB& db) : m_db(db), m_dlginit(db)
     {
         m_version = 0;
         m_signature = 0;

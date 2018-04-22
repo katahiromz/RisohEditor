@@ -199,6 +199,14 @@ public:
     {
         return m_entries[i];
     }
+    void push_back(const DlgInitEntry& entry)
+    {
+        m_entries.push_back(entry);
+    }
+	void clear()
+	{
+		m_entries.clear();
+	}
 
     std::vector<BYTE> data() const
     {
@@ -207,9 +215,43 @@ public:
         return stream.data();
     }
 
+    void Split(DlgInitRes& destination, WORD wCtrl)
+    {
+        destination.clear();
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].wCtrl == wCtrl)
+            {
+                destination.push_back(m_entries[i]);
+            }
+        }
+    }
+    void Erase(WORD wCtrl)
+    {
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].wCtrl == wCtrl)
+            {
+                m_entries.erase(m_entries.begin() + i);
+                --i;
+            }
+        }
+    }
+    void Union(const DlgInitRes& another)
+    {
+        for (size_t i = 0; i < size(); ++i)
+        {
+            push_back(another[i]);
+        }
+    }
+
 protected:
     entries_type    m_entries;
 };
+
+    WORD        wCtrl;
+    WORD        wMsg;
+    MStringA    strText;
 
 //////////////////////////////////////////////////////////////////////////////
 
