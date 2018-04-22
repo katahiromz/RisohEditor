@@ -203,6 +203,8 @@
 #define IDD_LANGS               151
 #define IDD_CHILD               152
 #define IDD_DLGINITEDIT         153
+#define IDD_ADDDLGINIT          154
+#define IDD_MODIFYDLGINIT       155
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102
@@ -345,7 +347,7 @@
 #define IDS_INTVALUE            240
 #define IDS_PARENTWND           241
 #define IDS_CHOOSE_OLE_CLSID    242
-#define IDS_CONTROL_ID          243
+#define IDS_CONTROL             243
 #define IDS_MESSAGE             244
 #define IDS_STRING              245
 
