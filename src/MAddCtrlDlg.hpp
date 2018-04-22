@@ -376,9 +376,10 @@ public:
             for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
             {
                 DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
-                if (entry.wCtrl == id)
+                if (entry.wCtrl == id || entry.wCtrl == WORD(-1))
                 {
-                    entry.wMsg = id;
+					entry.wCtrl = id;
+                    entry.wMsg = CB_ADDSTRING;
                 }
             }
         }
