@@ -43,18 +43,18 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-		std::vector<MStringA> vec;
-		for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
-		{
-			if (m_dialog_res.m_dlginit[i].wCtrl == m_nCtrl)
-			{
-				vec.push_back(m_dialog_res.m_dlginit[i].strText);
-			}
-		}
-		MStringA text = mstr_join(vec, "\r\n");
-		SetDlgItemTextA(hwnd, edt1, text.c_str());
+        std::vector<MStringA> vec;
+        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+        {
+            if (m_dialog_res.m_dlginit[i].wCtrl == m_nCtrl)
+            {
+                vec.push_back(m_dialog_res.m_dlginit[i].strText);
+            }
+        }
+        MStringA text = mstr_join(vec, "\r\n");
+        SetDlgItemTextA(hwnd, edt1, text.c_str());
 
-		return TRUE;
+        return TRUE;
     }
 
     void OnOK(HWND hwnd)
