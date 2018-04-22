@@ -591,6 +591,15 @@ public:
         if (!SetInfo(flags))
             return;
 
+        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+        {
+            DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
+            if (entry.wCtrl == WORD(-1))
+            {
+                entry.wCtrl = m_item.m_id;
+            }
+        }
+
         EndDialog(IDOK);
     }
 
@@ -765,7 +774,7 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        MStringListDlg dialog;
+        MStringListDlg dialog(m_dialog_res, m_item.m_id);
         dialog.DialogBoxDx(hwnd);
     }
 

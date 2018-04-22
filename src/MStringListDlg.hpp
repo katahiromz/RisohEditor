@@ -21,13 +21,19 @@
 #define MSTRINGLISTDLG_HPP_
 
 #include "MWindowBase.hpp"
+#include "MString.hpp"
+#include "DialogRes.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MStringListDlg : public MDialogBase
 {
 public:
-    MStringListDlg() : MDialogBase(IDD_STRINGLIST)
+    DialogRes& m_dialog_res;
+    WORD m_nCtrl;
+
+    MStringListDlg(DialogRes& dialog_res, WORD nCtrl = -1) :
+        MDialogBase(IDD_STRINGLIST), m_dialog_res(dialog_res), m_nCtrl(nCtrl)
     {
     }
 
@@ -37,7 +43,36 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        return TRUE;
+		std::vector<MStringA> vec;
+		for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+		{
+			if (m_dialog_res.m_dlginit[i].wCtrl == m_nCtrl)
+			{
+				vec.push_back(m_dialog_res.m_dlginit[i].strText);
+			}
+		}
+		MStringA text = mstr_join(vec, "\r\n");
+		SetDlgItemTextA(hwnd, edt1, text.c_str());
+
+		return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        MString str = GetDlgItemText(hwnd, edt1);
+        mstr_trim(str);
+
+		MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
+
+        std::vector<MStringA> lines;
+        mstr_split(lines, strA, "\n");
+
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            DlgInitEntry entry = { m_nCtrl, WORD(-1), lines[i] };
+            m_dialog_res.m_dlginit.push_back(entry);
+		}
+        EndDialog(IDOK);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -45,7 +80,7 @@ public:
         switch (id)
         {
         case IDOK:
-            EndDialog(IDOK);
+            OnOK(hwnd);
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);

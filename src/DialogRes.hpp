@@ -401,6 +401,23 @@ struct DialogItem
         return DumpControl(db, cls);
     }
 
+    bool IsStdComboBox() const
+    {
+        if (lstrcmpiW(m_class.m_str.c_str(), L"COMBOBOX") == 0)
+            return true;
+        return (m_class.m_id == 0x0085);
+    }
+    bool IsListBox() const
+    {
+        if (lstrcmpiW(m_class.m_str.c_str(), L"LISTBOX") == 0)
+            return true;
+        return (m_class.m_id == 0x0083);
+    }
+    bool IsExtComboBox() const
+    {
+        return (lstrcmpiW(m_class.m_str.c_str(), L"ComboBoxEx32") == 0);
+    }
+
     bool IsStaticIcon() const
     {
         if (m_title.is_int() &&

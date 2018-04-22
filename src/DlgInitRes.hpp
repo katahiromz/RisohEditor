@@ -237,6 +237,10 @@ public:
             }
         }
     }
+    void EraseInvalid()
+    {
+        Erase(WORD(-1));
+    }
     void Union(const DlgInitRes& another)
     {
         for (size_t i = 0; i < size(); ++i)
