@@ -288,7 +288,7 @@ public:
                 stream.assign(pb, dwSize);
                 name = 1;
             }
-            else if (type == WORD(240))
+            else if (type == RT_DLGINIT)
             {
                 DWORD dwSize;
                 const BYTE *pb = GetDlgInitSample(dwSize);

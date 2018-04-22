@@ -840,7 +840,7 @@ ResToText::DumpEntry(const ResEntry& entry)
             return DoText(entry);
         case 24: // RT_MANIFEST
             return DoText(entry);
-        case 240:
+        case 240: // RT_DLGINIT
             return DoDlgInit(entry);
         default:
             return DoUnknown(entry);
