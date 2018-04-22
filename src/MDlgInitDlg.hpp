@@ -381,7 +381,7 @@ public:
             ListView_GetItemText(m_hLst1, i, 2, die.sz2, _countof(die.sz2));
 
             DlgInitEntry entry;
-            entry.wCtrl = m_db.GetResIDValue(die.sz0);
+            entry.wCtrl = WORD(m_db.GetResIDValue(die.sz0));
 
             if (lstrcmpiW(die.sz1, L"LB_ADDSTRING") == 0)
             {
