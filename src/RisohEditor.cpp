@@ -1487,6 +1487,7 @@ protected:
     void PreviewStringTable(HWND hwnd, const ResEntry& entry);
     void PreviewMessageTable(HWND hwnd, const ResEntry& entry);
     void PreviewRCData(HWND hwnd, const ResEntry& entry);
+    void PreviewDlgInit(HWND hwnd, const ResEntry& entry);
     void PreviewUnknown(HWND hwnd, const ResEntry& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
@@ -2807,6 +2808,24 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
+    else if (entry.type == RT_DLGINIT)
+    {
+        DlgInitRes dlginit_res(m_db);
+        if (dlginit_res.LoadFromStream(stream))
+        {
+            ChangeStatusText(IDS_EDITINGBYGUI);
+            MDlgInitDlg dialog(dlginit_res, m_db);
+            INT nID = (INT)dialog.DialogBoxDx(hwnd);
+            if (nID == IDOK)
+            {
+                entry.data = dlginit_res.data();
+                SelectTV(hwnd, lParam, FALSE);
+            }
+        }
+        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        ChangeStatusText(IDS_READY);
+    }
     else if (entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
         WORD lang = entry.lang;
@@ -3745,6 +3764,13 @@ void MMainWnd::PreviewRCData(HWND hwnd, const ResEntry& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+void MMainWnd::PreviewDlgInit(HWND hwnd, const ResEntry& entry)
+{
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
+}
+
 void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
@@ -3946,6 +3972,11 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
             PreviewRCData(hwnd, entry);
             bEditable = TRUE;
         }
+        else if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
+        {
+            PreviewDlgInit(hwnd, entry);
+            bEditable = TRUE;
+        }
         else
         {
             PreviewUnknown(hwnd, entry);
@@ -4137,7 +4168,8 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
     {
     case I_LANG:
         if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
-            type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION)
+            type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
+            type == RT_DLGINIT)
         {
             ;
         }
@@ -6034,6 +6066,11 @@ inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
             return DoExtractIcon(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_VERSION)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
         {
             // No output file
             return TRUE;

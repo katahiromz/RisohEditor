@@ -32,6 +32,7 @@ const BYTE *GetVersionSample(DWORD& dwSize);
 const BYTE *GetHtmlSample(DWORD& dwSize);
 const BYTE *GetManifestSample(DWORD& dwSize);
 const BYTE *GetMessageTableSample(DWORD& dwSize);
+const BYTE *GetDlgInitSample(DWORD& dwSize);
 
 //////////////////////////////////////////////////////////////////////////////
 

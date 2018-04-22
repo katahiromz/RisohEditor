@@ -350,6 +350,7 @@
 #define IDS_CONTROL             243
 #define IDS_MESSAGE             244
 #define IDS_STRING              245
+#define IDS_DATAISINVALID       246
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

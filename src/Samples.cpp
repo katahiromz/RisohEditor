@@ -193,6 +193,10 @@ static const BYTE abMessageTable[] = {
 0x65, 0x00, 0x2E, 0x00, 0x0D, 0x00, 0x0A, 0x00, 0x00, 0x00,
 };
 
+static const BYTE abDlgInit[] = {
+0x00, 0x00,
+};
+
 //////////////////////////////////////////////////////////////////////////////
 
 const BYTE *GetAccelSample(DWORD& dwSize)
@@ -241,6 +245,12 @@ const BYTE *GetMessageTableSample(DWORD& dwSize)
 {
     dwSize = sizeof(abMessageTable);
     return abMessageTable;
+}
+
+const BYTE *GetDlgInitSample(DWORD& dwSize)
+{
+    dwSize = sizeof(abDlgInit);
+    return abDlgInit;
 }
 
 //////////////////////////////////////////////////////////////////////////////

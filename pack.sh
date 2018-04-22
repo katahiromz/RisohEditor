@@ -77,7 +77,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                     if cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"; then
                         echo Copying Stage 7...
                         mkdir "$RE_BIN_DIR/DlgInit"
-                        if cp -f "include/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
+                        if cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
                             echo Zipping...
                             cd build
                             if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then

@@ -31,6 +31,7 @@
 #include "VersionRes.hpp"
 #include "StringRes.hpp"
 #include "AccelRes.hpp"
+#include "DlgInitRes.hpp"
 
 #include "resource.h"
 
@@ -106,6 +107,7 @@ public:
     MString DoMessage(const ResEntry& entry);
     MString DoWave(const ResEntry& entry);
     MString DoAVI(const ResEntry& entry);
+    MString DoDlgInit(const ResEntry& entry);
     MString DoRCData(const ResEntry& entry);
     MString DoUnknown(const ResEntry& entry);
 
@@ -838,6 +840,8 @@ ResToText::DumpEntry(const ResEntry& entry)
             return DoText(entry);
         case 24: // RT_MANIFEST
             return DoText(entry);
+        case 240:
+            return DoDlgInit(entry);
         default:
             return DoUnknown(entry);
         }
@@ -903,6 +907,21 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     str += L" AVI \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
+
+    return str;
+}
+
+MString ResToText::DoDlgInit(const ResEntry& entry)
+{
+    MStringW str;
+
+    MByteStreamEx stream(entry.data);
+    DlgInitRes dlginit(m_db);
+    if (dlginit.LoadFromStream(stream))
+    {
+        str += GetLanguageStatement(entry.lang);
+        str += dlginit.Dump(entry.name);
+    }
 
     return str;
 }

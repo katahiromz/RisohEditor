@@ -55,7 +55,7 @@ Source: "data\bin\cpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "src\MOleCtrl.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
-Source: "include\DlgInit.h"; DestDir: "{app}\DlgInit"; Flags: ignoreversion
+Source: "src\DlgInit.h"; DestDir: "{app}\DlgInit"; Flags: ignoreversion
 Source: "MyWndCtrl\MWindowBase.hpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\MyWndCtrl.cpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\CMakeLists.txt"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion

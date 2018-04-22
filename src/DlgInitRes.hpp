@@ -27,6 +27,7 @@
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
 #include "ConstantsDB.hpp"
+#include "DlgInit.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -106,12 +107,12 @@ public:
         {
             ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
         }
-        ret += L" 240\r\n";
+        ret += L" DLGINIT\r\n";
         ret += L"{\r\n";
 
         if (m_entries.size() == 0)
         {
-            ret += L"    0";
+            ret += L"    0\r\n";
             ret += L"}\r\n";
             return ret;
         }
@@ -121,6 +122,7 @@ public:
         {
             ret += L"    ";
             ret += m_db.GetCtrlOrCmdName(it->wCtrl);
+            ret += L", ";
 
 // Win16 messages
 #define WIN16_LB_ADDSTRING  0x0401
@@ -131,15 +133,15 @@ public:
             {
             case WIN16_LB_ADDSTRING:
             case LB_ADDSTRING:
-                ret += L"LB_ADDSTRING";
+                ret += mstr_hex_word(LB_ADDSTRING);
                 break;
             case WIN16_CB_ADDSTRING:
             case CB_ADDSTRING:
-                ret += L"CB_ADDSTRING";
+                ret += mstr_hex_word(CB_ADDSTRING);
                 break;
             case AFX_CB_ADDSTRING:
             case CBEM_INSERTITEM:
-                ret += L"CBEM_INSERTITEM";
+                ret += mstr_hex_word(CBEM_INSERTITEM);
                 break;
             default:
                 ret += mstr_hex_word(it->wMsg);
@@ -154,7 +156,7 @@ public:
             for (size_t k = 0; k < len; ++k)
             {
                 ret += L", ";
-                ret += mstr_hex_word(*pw);
+                ret += mstr_hex_word(pw[k]);
             }
             if (len % 2 == 0)
             {
@@ -165,7 +167,7 @@ public:
             ret += L"\r\n";
         }
 
-        ret += L"    0";
+        ret += L"    0\r\n";
         ret += L"}\r\n";
 
         return ret;
@@ -178,6 +180,13 @@ public:
     const entries_type& entries() const
     {
         return m_entries;
+    }
+
+    std::vector<BYTE> data() const
+    {
+        MByteStreamEx stream;
+        SaveToStream(stream);
+        return stream.data();
     }
 
 protected:

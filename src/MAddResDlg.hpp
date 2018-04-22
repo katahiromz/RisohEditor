@@ -26,6 +26,7 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 #include "Samples.hpp"
+#include "DlgInit.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
@@ -286,6 +287,12 @@ public:
                 const BYTE *pb = GetMessageTableSample(dwSize);
                 stream.assign(pb, dwSize);
                 name = 1;
+            }
+            else if (type == WORD(240))
+            {
+                DWORD dwSize;
+                const BYTE *pb = GetDlgInitSample(dwSize);
+                stream.assign(pb, dwSize);
             }
             else
             {

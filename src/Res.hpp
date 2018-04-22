@@ -611,6 +611,7 @@ Res_GetTypeString(const MIdOrString& id_or_str)
     case 22: name = L"RT_ANIICON"; break;
     case 23: name = L"RT_HTML"; break;
     case 24: name = L"RT_MANIFEST"; break;
+    case 240: name = L"RT_DLGINIT"; break;
     default:
         if (id_or_str.m_id != 0)
         {
@@ -1478,7 +1479,7 @@ Res_CanGuiEdit(const MIdOrString& type)
 {
     return type == RT_DIALOG || type == RT_MENU ||
            type == RT_STRING || type == RT_MESSAGETABLE ||
-           type == RT_ACCELERATOR;
+           type == RT_ACCELERATOR || type == WORD(240);
 }
 
 inline BOOL
@@ -1486,7 +1487,8 @@ Res_HasSample(const MIdOrString& type)
 {
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
            type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
-           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE;
+           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE ||
+           type == WORD(240);
 }
 
 inline BOOL
