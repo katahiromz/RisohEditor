@@ -197,6 +197,7 @@ public:
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitClassComboBox(hCmb1, m_db, TEXT(""));
         SubclassChildDx(m_cmb1, cmb1);
+        EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitCaptionComboBox(hCmb2, m_settings, TEXT(""));
@@ -501,6 +502,16 @@ public:
             SetDlgItemText(hwnd, cmb4, strSuper.c_str());
         else
             SetDlgItemText(hwnd, cmb4, strClass.c_str());
+
+        if (strClass == L"COMBOBOX" || strClass == L"LISTBOX" ||
+            strClass == L"ComboBoxEx32")
+        {
+            EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
+        }
+        else
+        {
+            EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
+        }
     }
 
     void OnPsh1(HWND hwnd)
@@ -544,6 +555,11 @@ public:
                 CoTaskMemFree(pszCLSID);
             }
         }
+    }
+
+    void OnPsh3(HWND hwnd)
+    {
+        ErrorBoxDx(L"Not implemented yet!");
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -651,6 +667,9 @@ public:
             break;
         case psh2:
             OnPsh2(hwnd);
+            break;
+        case psh3:
+            OnPsh3(hwnd);
             break;
         default:
             if (size_t(id - 1000) < m_vecControls.size())

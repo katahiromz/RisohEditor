@@ -515,9 +515,16 @@ public:
             MStringW name = m_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_id);
             SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
+        EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
         if (m_flags & F_CLASS)
         {
             SetDlgItemText(hwnd, cmb4, m_item.m_class.c_str());
+
+            if (m_item.m_class == L"COMBOBOX" || m_item.m_class == L"LISTBOX" ||
+                m_item.m_class == L"ComboBoxEx32")
+            {
+                EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
+            }
         }
         if (m_flags & F_TITLE)
         {
@@ -700,6 +707,16 @@ public:
             SetDlgItemText(hwnd, cmb4, strSuper.c_str());
         else
             SetDlgItemText(hwnd, cmb4, strClass.c_str());
+
+        if (strClass == L"COMBOBOX" || strClass == L"LISTBOX" ||
+            strClass == L"ComboBoxEx32")
+        {
+            EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
+        }
+        else
+        {
+            EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
+        }
     }
 
     void OnPsh1(HWND hwnd)
@@ -743,6 +760,11 @@ public:
                 CoTaskMemFree(pszCLSID);
             }
         }
+    }
+
+    void OnPsh3(HWND hwnd)
+    {
+        ErrorBoxDx(L"Not implemented yet!");
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -850,6 +872,9 @@ public:
             break;
         case psh2:
             OnPsh2(hwnd);
+            break;
+        case psh3:
+            OnPsh3(hwnd);
             break;
         default:
             if (size_t(id - 1000) < m_vecControls.size())
