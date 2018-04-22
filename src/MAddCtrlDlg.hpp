@@ -27,6 +27,7 @@
 #include "MToolBarCtrl.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"
+#include "MStringListDlg.hpp"
 #include <oledlg.h>
 
 class MAddCtrlDlg;
@@ -559,7 +560,8 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        ErrorBoxDx(L"Not implemented yet!");
+        MStringListDlg dialog;
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

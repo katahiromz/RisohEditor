@@ -25,6 +25,7 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"
+#include "MStringListDlg.hpp"
 #include "resource.h"
 
 #include "DialogRes.hpp"
@@ -764,7 +765,8 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        ErrorBoxDx(L"Not implemented yet!");
+        MStringListDlg dialog;
+        dialog.DialogBoxDx(hwnd);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
