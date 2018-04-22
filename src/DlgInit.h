@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_DLGINIT_H_
-#define MZC4_DLGINIT_H_     8   /* Version 8 */
+#define MZC4_DLGINIT_H_     9   /* Version 9 */
 
 // RT_DLGINIT
 // BOOL ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name);
@@ -25,14 +25,24 @@
 //////////////////////////////////////////////////////////////////////////////
 
 inline const UNALIGNED WORD *
-ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw)
+ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw, SIZE_T& cbData)
 {
+    DWORD cb = 4 * sizeof(WORD);
+    if (cbData <= cb)
+        return NULL;
+    cbData -= cb;
+
     // get data
     WORD ctrl = *pw++;
     WORD msg = *pw++;
     WORD w0 = *pw++;
     WORD w1 = *pw++;
     DWORD dwLen = MAKELONG(w0, w1);
+
+    cb = dwLen;
+    if (cbData <= cb)
+        return NULL;
+    cbData -= cb;
 
     // convert Win16 messages
     switch (msg)
@@ -76,7 +86,7 @@ ExecuteDlgInitEntryDx(HWND hwnd, const UNALIGNED WORD *pw)
 }
 
 inline BOOL
-ExecuteDlgInitDataDx(HWND hwnd, const void *pData)
+ExecuteDlgInitDataDx(HWND hwnd, const void *pData, SIZE_T& cbData)
 {
 #ifndef NDEBUG
     DWORD i = 0;
@@ -85,7 +95,7 @@ ExecuteDlgInitDataDx(HWND hwnd, const void *pData)
     pw = reinterpret_cast<const UNALIGNED WORD *>(pData);
     while (pw && *pw)
     {
-        pw = ExecuteDlgInitEntryDx(hwnd, pw);
+        pw = ExecuteDlgInitEntryDx(hwnd, pw, cbData);
 #ifndef NDEBUG
         ++i;
 #endif
@@ -100,21 +110,23 @@ ExecuteDlgInitDataDx(HWND hwnd, const void *pData)
 inline BOOL
 ExecuteDlgInitDx(HWND hwnd, HMODULE module, const TCHAR *res_name)
 {
+    BOOL bSuccess = FALSE;
     HGLOBAL hGlobal = NULL;
     void *pData = NULL;
-    BOOL bSuccess = FALSE;
+    SIZE_T cbData = 0;
 
     // load from resource
     if (HRSRC hRsrc = FindResource(module, res_name, RT_DLGINIT))
     {
         hGlobal = LoadResource(module, hRsrc);
+        cbData = SizeofResource(module, hRsrc);
         pData = LockResource(hGlobal);
     }
 
     // execute
-    if (pData)
+    if (pData && cbData)
     {
-        bSuccess = ExecuteDlgInitDataDx(hwnd, pData);
+        bSuccess = ExecuteDlgInitDataDx(hwnd, pData, cbData);
     }
 
     // clean up
