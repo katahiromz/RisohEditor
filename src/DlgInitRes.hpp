@@ -203,10 +203,10 @@ public:
     {
         m_entries.push_back(entry);
     }
-	void clear()
-	{
-		m_entries.clear();
-	}
+    void clear()
+    {
+        m_entries.clear();
+    }
 
     std::vector<BYTE> data() const
     {

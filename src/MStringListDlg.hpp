@@ -62,7 +62,7 @@ public:
         MString str = GetDlgItemText(hwnd, edt1);
         mstr_trim(str);
 
-		MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
+        MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
 
         std::vector<MStringA> lines;
         mstr_split(lines, strA, "\n");

@@ -360,27 +360,27 @@ public:
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
 
-		for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
-		{
-			DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
-			if (entry.wCtrl == WORD(-1))
-				entry.wCtrl = id;
-		}
+        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+        {
+            DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
+            if (entry.wCtrl == WORD(-1))
+                entry.wCtrl = id;
+        }
 
-		for (size_t k = 0; k < m_dialog_res.size(); ++k)
-		{
-			DialogItem& item = m_dialog_res[k];
-			if (item.m_id != id)
-				continue;
+        for (size_t k = 0; k < m_dialog_res.size(); ++k)
+        {
+            DialogItem& item = m_dialog_res[k];
+            if (item.m_id != id)
+                continue;
 
-			for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
-			{
-				DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
-				if (entry.wCtrl == id)
-				{
-					entry.wMsg = id;
-				}
-			}
+            for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+            {
+                DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
+                if (entry.wCtrl == id)
+                {
+                    entry.wMsg = id;
+                }
+            }
         }
 
         EndDialog(IDOK);
