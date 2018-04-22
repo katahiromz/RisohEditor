@@ -1430,6 +1430,7 @@ msctls_updown32, 13
 SysLink, 14
 SplitButton, 15
 AtlAxWin, 16
+SCROLLBAR, 17
 
 [CONTROLS.OLE.CONTROL]
 INDEX, 16
