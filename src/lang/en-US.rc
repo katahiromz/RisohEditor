@@ -1280,8 +1280,8 @@ CAPTION "Control String List"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "You can specify initialization of combo boxes and list boxes by setting initialization data in the RT_DLGINIT resource data of the same name as the dialog. When the WM_INITDIALOG message arrives, you can use the ExecuteDlgInitDx function of DlgInit/DlgInit.h to initialize the RT_DLGINIT dialog.\r\n\r\nPlease specify a list of character strings separated by line breaks for RT_DLGINIT.", -1, 5, 5, 195, 60
-    EDITTEXT edt1, 5, 70, 195, 125, ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
+    LTEXT "You can specify initialization of combo boxes and list boxes by setting initialization data in the RT_DLGINIT resource data with the same name as the dialog. When the WM_INITDIALOG message arrives, you can initialize the dialog by calling the ExecuteDlgInitDx function of DlgInit/DlgInit.h.\r\n\r\nPlease specify a list of character strings separated by line breaks for RT_DLGINIT.", -1, 5, 5, 195, 70
+    EDITTEXT edt1, 5, 80, 195, 115, ES_MULTILINE | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 75, 200, 60, 14
     PUSHBUTTON "Cancel", IDCANCEL, 140, 200, 60, 14
 }

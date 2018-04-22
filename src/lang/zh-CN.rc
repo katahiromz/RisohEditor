@@ -1280,8 +1280,8 @@ CAPTION "Control String List"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "宋体"
 {
-    LTEXT "您可以通过在与对话相同名称的RT_DLGINIT资源数据中设置初始化数据来指定组合框和列表框的初始化. 当WM_INITDIALOG消息到达时，可以使用DlgInit/DlgInit.h的ExecuteDlgInitDx函数初始化RT_DLGINIT对话框.\r\n\r\n请指定用换行符分隔的RT_DLGINIT字符串列表.", -1, 5, 5, 195, 60
-    EDITTEXT edt1, 5, 70, 195, 125, ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
+    LTEXT "您可以通过在与对话框同名的RT_DLGINIT资源数据中设置初始化数据来指定组合框和列表框的初始化. 当WM_INITDIALOG消息到达时，您可以通过调用DlgInit/DlgInit.h的ExecuteDlgInitDx函数来初始化对话框.\r\n\r\n请指定用换行符分隔的RT_DLGINIT字符串列表.", -1, 5, 5, 195, 70
+    EDITTEXT edt1, 5, 80, 195, 115, ES_MULTILINE | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 75, 200, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 140, 200, 60, 14
 }
