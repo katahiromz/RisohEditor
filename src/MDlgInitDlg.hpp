@@ -526,21 +526,21 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 105;
+        column.cx = 130;
         column.pszText = LoadStringDx(IDS_CONTROL);
         column.iSubItem = 0;
         ListView_InsertColumn(m_hLst1, 0, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 105;
+        column.cx = 125;
         column.pszText = LoadStringDx(IDS_MESSAGE);
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 185;
+        column.cx = 200;
         column.pszText = LoadStringDx(IDS_STRING);
         column.iSubItem = 2;
         ListView_InsertColumn(m_hLst1, 2, &column);
