@@ -879,16 +879,18 @@ public:
         default:
             if (size_t(id - 1000) < m_vecControls.size())
             {
-                if (id - 1000 == 16)
+                MString text;
+                if (id - 1000 == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
                 {
                     // OLE controls
-                    SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
+                    text = m_settings.strAtlAxWin;
+                    SetDlgItemTextW(hwnd, cmb4, text.c_str());
                 }
                 else
                 {
-                    SetDlgItemTextW(hwnd, cmb1, m_vecControls[id - 1000].c_str());
+                    text = m_vecControls[id - 1000].c_str();
+                    SetDlgItemTextW(hwnd, cmb1, text.c_str());
                 }
-                MString text = GetDlgItemText(hwnd, cmb1);
                 mstr_trim(text);
                 InitTables(text.c_str());
                 UpdateClass(hwnd, hLst1, text);
