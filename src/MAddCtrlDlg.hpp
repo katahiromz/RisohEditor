@@ -675,7 +675,8 @@ public:
             if (size_t(id - 1000) < m_vecControls.size())
             {
                 MString text;
-                if (id - 1000 == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
+                UINT nID = UINT(id - 1000);
+                if (nID == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
                 {
                     // OLE controls
                     text = m_settings.strAtlAxWin;
@@ -683,7 +684,7 @@ public:
                 }
                 else
                 {
-                    text = m_vecControls[id - 1000].c_str();
+                    text = m_vecControls[nID];
                     SetDlgItemTextW(hwnd, cmb1, text.c_str());
                 }
                 mstr_trim(text);
@@ -702,7 +703,17 @@ public:
             UINT nID = UINT(pnmhdr->idFrom - 1000);
             if (size_t(nID) < m_vecControls.size())
             {
-                StringCchCopyW(ttt->szText, _countof(ttt->szText), m_vecControls[nID].c_str());
+                MString text;
+                if (nID == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
+                {
+                    // OLE controls
+                    text = m_settings.strAtlAxWin;
+                }
+                else
+                {
+                    text = m_vecControls[nID];
+                }
+                StringCchCopyW(ttt->szText, _countof(ttt->szText), text.c_str());
             }
         }
         return 0;
