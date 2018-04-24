@@ -347,11 +347,13 @@ public:
         item.pszText = entry.sz1;
         ListView_SetItem(m_hLst1, &item);
 
+        MString str2 = mstr_quote(entry.sz2);
+
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
         item.iSubItem = 2;
-        item.pszText = entry.sz2;
+        item.pszText = &str2[0];
         ListView_SetItem(m_hLst1, &item);
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -371,13 +373,16 @@ public:
         ListView_GetItemText(m_hLst1, iItem, 0, die.sz0, _countof(die.sz0));
         ListView_GetItemText(m_hLst1, iItem, 1, die.sz1, _countof(die.sz1));
         ListView_GetItemText(m_hLst1, iItem, 2, die.sz2, _countof(die.sz2));
+        if (die.sz2[0] == L'"')
+            mstr_unquote(die.sz2);
 
         MModifyDlgInitDlg dialog(die, m_db);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
+            MString str2 = mstr_quote(die.sz2);
             ListView_SetItemText(m_hLst1, iItem, 0, die.sz0);
             ListView_SetItemText(m_hLst1, iItem, 1, die.sz1);
-            ListView_SetItemText(m_hLst1, iItem, 2, die.sz2);
+            ListView_SetItemText(m_hLst1, iItem, 2, &str2[0]);
         }
     }
 
@@ -392,6 +397,8 @@ public:
             ListView_GetItemText(m_hLst1, i, 0, die.sz0, _countof(die.sz0));
             ListView_GetItemText(m_hLst1, i, 1, die.sz1, _countof(die.sz1));
             ListView_GetItemText(m_hLst1, i, 2, die.sz2, _countof(die.sz2));
+            if (die.sz2[0] == L'"')
+                mstr_unquote(die.sz2);
 
             DlgInitEntry entry;
             entry.wCtrl = WORD(m_db.GetResIDValue(die.sz0));
