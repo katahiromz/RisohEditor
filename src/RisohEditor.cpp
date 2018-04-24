@@ -2809,6 +2809,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         m_rad_window.clear_maps();
         m_rad_window.create_maps(entry.lang);
 
+        m_rad_window.m_dialog_res.m_dlginit.clear();
         INT iDlgInit = Res_Find(m_entries, RT_DLGINIT, entry.name, entry.lang);
         if (iDlgInit >= 0)
         {
