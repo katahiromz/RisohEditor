@@ -253,10 +253,6 @@ protected:
     entries_type    m_entries;
 };
 
-    WORD        wCtrl;
-    WORD        wMsg;
-    MStringA    strText;
-
 //////////////////////////////////////////////////////////////////////////////
 
 #endif  // ndef DLGINIT_RES_HPP_
