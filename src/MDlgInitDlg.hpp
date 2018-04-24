@@ -171,10 +171,23 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        GetWindowTextW(m_cmb2, m_entry.sz1, _countof(m_entry.sz1));
         GetDlgItemTextW(hwnd, edt1, m_entry.sz2, _countof(m_entry.sz2));
+        ReplaceFullWithHalf(m_entry.sz1);
+        mstr_trim(m_entry.sz1);
         mstr_trim(m_entry.sz2);
         if (m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
+
+        if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
+            lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
+            lstrcmpW(m_entry.sz1, L"CBEM_INSERTITEM") != 0)
+        {
+            m_cmb2.SetEditSel(0, -1);
+            SetFocus(m_cmb2);
+            ErrorBoxDx(IDS_DATAISINVALID);
+            return;
+        }
 
         EndDialog(IDOK);
     }
