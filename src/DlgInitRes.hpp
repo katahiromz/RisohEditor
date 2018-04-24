@@ -215,9 +215,8 @@ public:
         return stream.data();
     }
 
-    void Split(DlgInitRes& destination, WORD wCtrl)
+    void Filter(DlgInitRes& destination, WORD wCtrl)
     {
-        destination.clear();
         for (size_t i = 0; i < size(); ++i)
         {
             if (m_entries[i].wCtrl == wCtrl)
