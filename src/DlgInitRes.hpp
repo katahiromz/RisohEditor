@@ -60,16 +60,23 @@ public:
     {
         m_entries.clear();
 
-        DlgInitEntry entry;
-        while (stream.ReadWord(entry.wCtrl) && entry.wCtrl)
+        WORD wCtrl;
+        while (stream.ReadWord(wCtrl) && wCtrl)
         {
+            DlgInitEntry entry;
+            entry.wCtrl = wCtrl;
+           
             int32_t dwLen;
             if (!stream.ReadWord(entry.wMsg) || !stream.ReadDword(dwLen))
                 return false;
 
-            entry.strText.resize(dwLen - 1);
-            if (!stream.ReadData(&entry.strText[0], dwLen))
-                return false;
+            assert(dwLen);
+            if (dwLen)
+            {
+                entry.strText.resize(dwLen - 1);
+                if (!stream.ReadData(&entry.strText[0], dwLen))
+                    return false;
+            }
 
             m_entries.push_back(entry);
         }

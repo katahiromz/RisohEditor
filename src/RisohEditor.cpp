@@ -2809,6 +2809,16 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         m_rad_window.clear_maps();
         m_rad_window.create_maps(entry.lang);
 
+        INT iDlgInit = Res_Find(m_entries, RT_DLGINIT, entry.name, entry.lang);
+        if (iDlgInit >= 0)
+        {
+            ResEntry& die = m_entries[iDlgInit];
+            DlgInitRes dlginit_res(m_db);
+            stream.assign(die.data);
+            dlginit_res.LoadFromStream(stream);
+            m_rad_window.m_dialog_res.m_dlginit.entries() = dlginit_res.entries();
+        }
+
         if (::IsWindowVisible(m_rad_window) &&
             IsWindowVisible(m_rad_window.m_rad_dialog))
         {

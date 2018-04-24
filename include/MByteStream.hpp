@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MBYTESTREAM_HPP_
-#define MZC4_MBYTESTREAM_HPP_       8       /* Version 8 */
+#define MZC4_MBYTESTREAM_HPP_       9       /* Version 9 */
 
 class MByteStream;
 
@@ -71,10 +71,14 @@ public:
     {
         m_data.assign((const uint8_t *)ptr, (const uint8_t *)ptr + size);
     }
-
     void assign(const void *ptr1, const void *ptr2)
     {
         m_data.assign((const uint8_t *)ptr1, (const uint8_t *)ptr2);
+    }
+    void assign(const data_type& data)
+    {
+        m_pos = 0;
+        m_data = data;
     }
 
     void clear()
