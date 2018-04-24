@@ -836,7 +836,7 @@ FONT 9, "MS UI Gothic"
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 130, 305, 60, 14
     PUSHBUTTON "&DATA...", psh1, 5, 290, 45, 14
-    PUSHBUTTON "リスト(&I)...", psh3, 5, 305, 60, 14
+    PUSHBUTTON "文字列リスト(&I)...", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDCTRL DIALOG 0, 0, 195, 325
@@ -879,7 +879,7 @@ FONT 9, "MS UI Gothic"
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 130, 305, 60, 14
     PUSHBUTTON "&DATA...", psh1, 5, 290, 45, 14
-    PUSHBUTTON "リスト(&I)...", psh3, 5, 305, 60, 14
+    PUSHBUTTON "文字列リスト(&I)...", psh3, 5, 305, 75, 14
 }
 
 IDD_IDASSOC DIALOG 0, 0, 200, 220

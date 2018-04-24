@@ -2822,7 +2822,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         if (::IsWindowVisible(m_rad_window) &&
-            IsWindowVisible(m_rad_window.m_rad_dialog))
+            ::IsWindowVisible(m_rad_window.m_rad_dialog))
         {
             m_rad_window.ReCreateRadDialog(m_rad_window);
         }

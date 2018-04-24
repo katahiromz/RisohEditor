@@ -378,7 +378,7 @@ public:
                 DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
                 if (entry.wCtrl == id || entry.wCtrl == WORD(-1))
                 {
-					entry.wCtrl = id;
+                    entry.wCtrl = id;
                     entry.wMsg = CB_ADDSTRING;
                 }
             }
