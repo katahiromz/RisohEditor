@@ -101,7 +101,8 @@ public:
           m_dlginit(db)
     {
         m_himlControls = NULL;
-        m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
+        DialogItem& item = m_dialog_res[*m_indeces.begin()];
+        m_dialog_res.m_dlginit.Filter(m_dlginit, item.m_id);
     }
 
     ~MCtrlPropDlg()
@@ -122,7 +123,7 @@ public:
         std::set<INT>::iterator it, end = m_indeces.end();
         it = m_indeces.begin();
         {
-            DialogItem& item = m_dialog_res.m_items[*it];
+            DialogItem& item = m_dialog_res[*it];
             m_item = item;
         }
         for (++it; it != end; ++it)
@@ -276,7 +277,7 @@ public:
         std::set<INT>::iterator it, end = m_indeces.end();
         for (it = m_indeces.begin(); it != end; ++it)
         {
-            DialogItem& item = m_dialog_res.m_items[*it];
+            DialogItem& item = m_dialog_res[*it];
             if ((m_flags & F_HELP) || (flags & F_HELP))
                 item.m_help_id = m_item.m_help_id;
             if ((m_flags & F_STYLE) || (flags & F_STYLE))
@@ -330,6 +331,20 @@ public:
 
         if (m_flags & F_SLIST)
         {
+            m_dlginit.ReplaceInvalid(m_item.m_id);
+            DialogItem& item = m_dialog_res[*m_indeces.begin()];
+            if (item.IsStdComboBox())
+            {
+                m_dlginit.ReplaceMsg(m_item.m_id, CB_ADDSTRING);
+            }
+            else if (item.IsListBox())
+            {
+                m_dlginit.ReplaceMsg(m_item.m_id, LB_ADDSTRING);
+            }
+            else if (item.IsExtComboBox())
+            {
+                m_dlginit.ReplaceMsg(m_item.m_id, CBEM_INSERTITEM);
+            }
             m_dialog_res.m_dlginit.Erase(m_item.m_id);
             m_dialog_res.m_dlginit.Union(m_dlginit);
         }
@@ -778,43 +793,10 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        MStringListDlg dialog(m_dialog_res, m_item.m_id);
+        MStringListDlg dialog(m_dlginit, m_item.m_id);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             m_flags |= F_SLIST;
-
-            for (size_t k = 0; k < m_dialog_res.size(); ++k)
-            {
-                DialogItem& item = m_dialog_res[k];
-                if (item.m_id != m_item.m_id)
-                    continue;
-
-                if (item.IsStdComboBox())
-                {
-                    for (size_t i = 0; i < m_dlginit.size(); ++i)
-                    {
-                        DlgInitEntry& entry = m_dlginit[i];
-                        entry.wMsg = CB_ADDSTRING;
-                    }
-                }
-                else if (item.IsListBox())
-                {
-                    for (size_t i = 0; i < m_dlginit.size(); ++i)
-                    {
-                        DlgInitEntry& entry = m_dlginit[i];
-                        entry.wMsg = LB_ADDSTRING;
-                    }
-                }
-                else if (item.IsExtComboBox())
-                {
-                    for (size_t i = 0; i < m_dlginit.size(); ++i)
-                    {
-                        DlgInitEntry& entry = m_dlginit[i];
-                        entry.wMsg = CBEM_INSERTITEM;
-                    }
-                }
-                break;
-            }
         }
     }
 

@@ -22,18 +22,18 @@
 
 #include "MWindowBase.hpp"
 #include "MString.hpp"
-#include "DialogRes.hpp"
+#include "DlgInitRes.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MStringListDlg : public MDialogBase
 {
 public:
-    DialogRes& m_dialog_res;
+    DlgInitRes& m_dlginit;
     WORD m_nCtrl;
 
-    MStringListDlg(DialogRes& dialog_res, WORD nCtrl = -1) :
-        MDialogBase(IDD_STRINGLIST), m_dialog_res(dialog_res), m_nCtrl(nCtrl)
+    MStringListDlg(DlgInitRes& dlginit, WORD nCtrl = -1) :
+        MDialogBase(IDD_STRINGLIST), m_dlginit(dlginit), m_nCtrl(nCtrl)
     {
     }
 
@@ -44,11 +44,11 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         std::vector<MStringA> vec;
-        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+        for (size_t i = 0; i < m_dlginit.size(); ++i)
         {
-            if (m_dialog_res.m_dlginit[i].wCtrl == m_nCtrl)
+            if (m_dlginit[i].wCtrl == m_nCtrl)
             {
-                vec.push_back(m_dialog_res.m_dlginit[i].strText);
+                vec.push_back(m_dlginit[i].strText);
             }
         }
         MStringA text = mstr_join(vec, "\r\n");
@@ -67,11 +67,11 @@ public:
         std::vector<MStringA> lines;
         mstr_split(lines, strA, "\n");
 
-        m_dialog_res.m_dlginit.Erase(m_nCtrl);
+        m_dlginit.Erase(m_nCtrl);
         for (size_t i = 0; i < lines.size(); ++i)
         {
             DlgInitEntry entry = { m_nCtrl, WORD(-1), lines[i] };
-            m_dialog_res.m_dlginit.push_back(entry);
+            m_dlginit.push_back(entry);
         }
         EndDialog(IDOK);
     }

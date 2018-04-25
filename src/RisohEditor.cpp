@@ -2187,7 +2187,6 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str = DumpDataAsString(entry.data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
-    dialog_res.m_dlginit.EraseInvalid();
     if (dialog_res.m_dlginit.empty())
     {
         Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);

@@ -606,7 +606,7 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        MStringListDlg dialog(m_dialog_res);
+        MStringListDlg dialog(m_dlginit);
         dialog.DialogBoxDx(hwnd);
     }
 

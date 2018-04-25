@@ -222,6 +222,26 @@ public:
         return stream.data();
     }
 
+    void ReplaceInvalid(WORD wCtrl)
+    {
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].wCtrl == WORD(-1))
+            {
+                m_entries[i].wCtrl = wCtrl;
+            }
+        }
+    }
+    void ReplaceMsg(WORD wCtrl, WORD wMsg)
+    {
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].wCtrl == wCtrl)
+            {
+                m_entries[i].wMsg = wMsg;
+            }
+        }
+    }
     void Filter(DlgInitRes& destination, WORD wCtrl)
     {
         for (size_t i = 0; i < size(); ++i)
@@ -249,7 +269,7 @@ public:
     }
     void Union(const DlgInitRes& another)
     {
-        for (size_t i = 0; i < size(); ++i)
+        for (size_t i = 0; i < another.size(); ++i)
         {
             push_back(another[i]);
         }
