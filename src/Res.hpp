@@ -147,6 +147,22 @@ public:
     {
         return !(*this == entry);
     }
+    bool operator<(const ResEntry& entry) const
+    {
+        if (type < entry.type)
+            return true;
+        if (type > entry.type)
+            return false;
+        if (name < entry.name)
+            return true;
+        if (name > entry.name)
+            return false;
+        if (lang < entry.lang)
+            return true;
+        if (lang > entry.lang)
+            return false;
+        return false;
+    }
 };
 typedef std::vector<ResEntry> ResEntries;
 
@@ -200,18 +216,6 @@ Res_Find2(const ResEntries& entries,
 }
 
 inline bool
-Res_Equal(const ResEntry& entry1, const ResEntry& entry2)
-{
-    if (entry1.type != entry2.type)
-        return false;
-    if (entry1.name != entry2.name)
-        return false;
-    if (entry1.lang != entry2.lang)
-        return false;
-    return true;
-}
-
-inline bool
 Res_Intersect(const ResEntries& entries1, const ResEntries& entries2)
 {
     size_t i1, count1 = entries1.size();
@@ -226,7 +230,7 @@ Res_Intersect(const ResEntries& entries1, const ResEntries& entries2)
             if (entries1[i1].empty() || entries2[i2].empty())
                 continue;
 
-            if (Res_Equal(entries1[i1], entries2[i2]))
+            if (entries1[i1] == entries2[i2])
                 return true;
         }
     }
@@ -932,8 +936,8 @@ _tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
 }
 
-inline void
-TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+inline HTREEITEM
+TV_GetItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 {
     HTREEITEM hParent = NULL;
 
@@ -994,6 +998,36 @@ TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
         }
     }
 
+    return hParent;
+}
+
+inline void
+TV_DeleteItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+{
+    if (HTREEITEM hItem = TV_GetItem(hwnd, entries, entry))
+    {
+        HTREEITEM hParent = TreeView_GetParent(hwnd, hItem);
+        TreeView_DeleteItem(hwnd, hItem);
+        hItem = hParent;
+        if (TreeView_GetChild(hwnd, hItem) == NULL)
+        {
+            hParent = TreeView_GetParent(hwnd, hItem);
+            TreeView_DeleteItem(hwnd, hItem);
+            hItem = hParent;
+            if (TreeView_GetChild(hwnd, hItem) == NULL)
+            {
+                hParent = TreeView_GetParent(hwnd, hItem);
+                TreeView_DeleteItem(hwnd, hItem);
+            }
+        }
+    }
+}
+
+inline void
+TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+{
+    HTREEITEM hParent = TV_GetItem(hwnd, entries, entry);
+
     TreeView_SelectItem(hwnd, hParent);
 }
 
@@ -1037,27 +1071,24 @@ _tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
 }
 
-inline bool Res_Less(const ResEntry& entry1, const ResEntry& entry2)
-{
-    if (entry1.type < entry2.type)
-        return true;
-    if (entry1.type > entry2.type)
-        return false;
-    if (entry1.name < entry2.name)
-        return true;
-    if (entry1.name > entry2.name)
-        return false;
-    if (entry1.lang < entry2.lang)
-        return true;
-    if (entry1.lang > entry2.lang)
-        return false;
-    return false;
-}
-
 inline void Res_Sort(ResEntries& entries)
 {
-    std::sort(entries.begin(), entries.end(), Res_Less);
+    std::sort(entries.begin(), entries.end());
     std::unique(entries.begin(), entries.end());
+}
+
+inline void
+Res_EraseEmpty(ResEntries& entries)
+{
+    for (size_t i = entries.size(); i > 0; )
+    {
+        --i;
+        if (entries[i].empty())
+        {
+            entries.erase(entries.begin() + i);
+            continue;
+        }
+    }
 }
 
 inline void
@@ -1094,6 +1125,7 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
         }
     }
 
+    // NOTE: Here, i is old index. k is new index.
     INT k = 0;
     for (INT i = 0; i < INT(entries.size()); ++i)
     {
@@ -1108,15 +1140,7 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
         ++k;
     }
 
-    for (size_t i = entries.size(); i > 0; )
-    {
-        --i;
-        if (entries[i].empty())
-        {
-            entries.erase(entries.begin() + i);
-            continue;
-        }
-    }
+    Res_EraseEmpty(entries);
 }
 
 inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& entries)

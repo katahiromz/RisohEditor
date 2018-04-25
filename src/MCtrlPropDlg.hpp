@@ -68,13 +68,14 @@ public:
         F_ID = 0x0080,
         F_CLASS = 0x0100,
         F_TITLE = 0x0200,
-        F_EXTRA = 0x400,
-        F_ALL = 0x07FF
+        F_EXTRA = 0x0400,
+        F_SLIST = 0x0800,
+        F_ALL = 0x0FFF
     };
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
-    RisohSettings&        m_settings;
+    RisohSettings&      m_settings;
     ConstantsDB&        m_db;
     DWORD               m_flags;
     DWORD               m_dwStyle;
@@ -92,12 +93,15 @@ public:
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
+    DlgInitRes m_dlginit;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, RisohSettings& settings, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
           m_bUpdating(FALSE), m_indeces(indeces), m_settings(settings), m_db(db)
     {
         m_himlControls = NULL;
+        m_dlginit.clear();
+        m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
     }
 
     ~MCtrlPropDlg()
@@ -323,6 +327,13 @@ public:
                 }
             }
         }
+
+        if (m_flags & F_SLIST)
+        {
+            m_dialog_res.m_dlginit.Erase(m_item.m_id);
+            m_dialog_res.m_dlginit.Union(m_dlginit);
+        }
+
         return TRUE;
     }
 
@@ -521,10 +532,12 @@ public:
         {
             SetDlgItemText(hwnd, cmb4, m_item.m_class.c_str());
 
-            if (m_item.m_class == L"COMBOBOX" || m_item.m_class == L"LISTBOX" ||
+            if (m_item.m_class == L"COMBOBOX" ||
+                m_item.m_class == L"LISTBOX" ||
                 m_item.m_class == L"ComboBoxEx32")
             {
-                EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
+                if (m_indeces.size() == 1)
+                    EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
             }
         }
         if (m_flags & F_TITLE)
@@ -590,15 +603,6 @@ public:
 
         if (!SetInfo(flags))
             return;
-
-        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
-        {
-            DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
-            if (entry.wCtrl == WORD(-1))
-            {
-                entry.wCtrl = m_item.m_id;
-            }
-        }
 
         EndDialog(IDOK);
     }
@@ -721,7 +725,7 @@ public:
         if (strClass == L"COMBOBOX" || strClass == L"LISTBOX" ||
             strClass == L"ComboBoxEx32")
         {
-            EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
+            EnableWindow(GetDlgItem(hwnd, psh3), m_indeces.size() == 1);
         }
         else
         {
@@ -775,7 +779,30 @@ public:
     void OnPsh3(HWND hwnd)
     {
         MStringListDlg dialog(m_dialog_res, m_item.m_id);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            m_flags |= F_SLIST;
+
+            for (size_t k = 0; k < m_dialog_res.size(); ++k)
+            {
+                DialogItem& item = m_dialog_res[k];
+                if (item.m_id != m_item.m_id)
+                    continue;
+
+                if (item.IsStdComboBox())
+                {
+                    entry.wMsg = CB_ADDSTRING;
+                }
+                else if (item.IsListBox())
+                {
+                    entry.wMsg = LB_ADDSTRING;
+                }
+                else if (item.IsExtComboBox())
+                {
+                    entry.wMsg = CBEM_INSERTITEM;
+                }
+            }
+        }
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

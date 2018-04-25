@@ -67,12 +67,12 @@ public:
         std::vector<MStringA> lines;
         mstr_split(lines, strA, "\n");
 
-		m_dialog_res.m_dlginit.Erase(m_nCtrl);
+        m_dialog_res.m_dlginit.Erase(m_nCtrl);
         for (size_t i = 0; i < lines.size(); ++i)
         {
             DlgInitEntry entry = { m_nCtrl, WORD(-1), lines[i] };
             m_dialog_res.m_dlginit.push_back(entry);
-		}
+        }
         EndDialog(IDOK);
     }
 

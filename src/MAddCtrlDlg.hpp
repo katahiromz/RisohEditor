@@ -74,6 +74,7 @@ public:
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
     std::vector<BYTE> m_data;
+    DlgInitRes m_dlginit;
 
     MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt,
                 RisohSettings& settings)
@@ -81,6 +82,8 @@ public:
           m_db(db), m_bUpdating(FALSE), m_pt(pt), m_settings(settings)
     {
         m_himlControls = NULL;
+        m_dlginit.clear();
+        m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
     }
 
     ~MAddCtrlDlg()
@@ -360,11 +363,11 @@ public:
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
 
-        for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+        for (size_t i = 0; i < m_dlginit.size(); ++i)
         {
-            DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
+            DlgInitEntry& entry = m_dlginit[i];
             if (entry.wCtrl == WORD(-1))
-                entry.wCtrl = id;
+                entry.wCtrl = item.m_id;
         }
 
         for (size_t k = 0; k < m_dialog_res.size(); ++k)
@@ -373,16 +376,22 @@ public:
             if (item.m_id != id)
                 continue;
 
-            for (size_t i = 0; i < m_dialog_res.m_dlginit.size(); ++i)
+            if (item.IsStdComboBox())
             {
-                DlgInitEntry& entry = m_dialog_res.m_dlginit[i];
-                if (entry.wCtrl == id || entry.wCtrl == WORD(-1))
-                {
-                    entry.wCtrl = id;
-                    entry.wMsg = CB_ADDSTRING;
-                }
+                entry.wMsg = CB_ADDSTRING;
+            }
+            else if (item.IsListBox())
+            {
+                entry.wMsg = LB_ADDSTRING;
+            }
+            else if (item.IsExtComboBox())
+            {
+                entry.wMsg = CBEM_INSERTITEM;
             }
         }
+
+        m_dialog_res.m_dlginit.Erase(item.m_id);
+        m_dialog_res.m_dlginit.Union(m_dlginit);
 
         EndDialog(IDOK);
     }
