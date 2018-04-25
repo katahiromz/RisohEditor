@@ -2187,41 +2187,22 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str = DumpDataAsString(entry.data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
-	// FIXME:
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
         ResEntry entry2(RT_DLGINIT, entry.name, entry.lang);
-		entry2.data = stream.data();
-
-		if (dialog_res.m_dlginit.empty())
-		{
-			HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
-			TV_DeleteItem(m_hTreeView, m_entries, entry2);
-			Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
-			return;
-		}
-
-        INT k = -1;
-        for (INT i = 0; i < INT(m_entries.size()); ++i)
-        {
-            if (m_entries[i] < entry2)
-                continue;
-
-            k = i;  // position to be inserted
-            break;
-        }
-
         entry2.data = stream.data();
-        if (k >= 0)
+
+        if (dialog_res.m_dlginit.empty())
         {
-            m_entries.insert(m_entries.begin() + k, entry2);
+            HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
+            TV_DeleteItem(m_hTreeView, m_entries, entry2);
+            Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
+            return;
         }
-        else
-        {
-            k = INT(m_entries.size());
-            m_entries.push_back(entry2);
-        }
+
+        INT k = INT(m_entries.size());
+        m_entries.push_back(entry2);
 
         // insert
         HTREEITEM hItem = NULL;

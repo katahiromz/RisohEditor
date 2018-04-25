@@ -851,12 +851,13 @@ TV_GetSelection(HWND hwnd, ResEntries& selection,
 }
 
 inline HTREEITEM
-TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam)
+TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam,
+            HTREEITEM hInsertAfter = TVI_LAST)
 {
     TV_INSERTSTRUCTW Insert;
     ZeroMemory(&Insert, sizeof(Insert));
     Insert.hParent = hParent;
-    Insert.hInsertAfter = TVI_LAST;
+    Insert.hInsertAfter = hInsertAfter;
     Insert.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
                        TVIF_IMAGE | TVIF_SELECTEDIMAGE;
     Insert.item.state = 0;
@@ -878,8 +879,9 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam)
 
 inline HTREEITEM
 TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                       const ResEntries& entries, INT i, INT k)
+                      const ResEntries& entries, INT i, INT k)
 {
+    HTREEITEM hInsertAfter = TVI_LAST;
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
          hItem = TreeView_GetNextSibling(hwnd, hItem))
