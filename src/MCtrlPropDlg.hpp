@@ -128,7 +128,7 @@ public:
         }
         for (++it; it != end; ++it)
         {
-            DialogItem& item = m_dialog_res.m_items[*it];
+            DialogItem& item = m_dialog_res[*it];
             if (m_item.m_help_id != item.m_help_id)
                 m_flags &= ~F_HELP;
             if (m_item.m_style != item.m_style)

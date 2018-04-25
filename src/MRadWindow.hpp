@@ -1584,7 +1584,7 @@ public:
 
         if (size_t(pCtrl->m_nIndex) < m_dialog_res.m_items.size())
         {
-            DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
+            DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
@@ -1712,7 +1712,7 @@ public:
 
         ClientToDialog(&rc);
 
-        DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
+        DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
         item.m_pt.x = rc.left;
         item.m_pt.y = rc.top;
 
@@ -1746,7 +1746,7 @@ public:
 
         ClientToDialog(&rc);
 
-        DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
+        DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
         item.m_siz.cx = rc.right - rc.left;
         item.m_siz.cy = rc.bottom - rc.top;
 
@@ -1874,7 +1874,7 @@ public:
         std::set<INT>::const_iterator it, end = indeces.end();
         for (it = indeces.begin(); it != end; ++it)
         {
-            DialogItem& item = m_dialog_res.m_items[*it];
+            DialogItem& item = m_dialog_res[*it];
             items.push_back(item);
         }
         return !items.empty();
@@ -2079,11 +2079,11 @@ public:
         {
             if (indeces.find(i) == indeces.end())
             {
-                items1.push_back(m_dialog_res.m_items[i]);
+                items1.push_back(m_dialog_res[i]);
             }
             else
             {
-                items2.push_back(m_dialog_res.m_items[i]);
+                items2.push_back(m_dialog_res[i]);
             }
         }
         m_dialog_res.m_items = items1;
@@ -2130,11 +2130,11 @@ public:
         {
             if (indeces.find(i) == indeces.end())
             {
-                items1.push_back(m_dialog_res.m_items[i]);
+                items1.push_back(m_dialog_res[i]);
             }
             else
             {
-                items2.push_back(m_dialog_res.m_items[i]);
+                items2.push_back(m_dialog_res[i]);
             }
         }
         m_dialog_res.m_items = items1;
@@ -2163,7 +2163,7 @@ public:
         {
             if (indeces.find(i + 1) != indeces.end())
             {
-                std::swap(m_dialog_res.m_items[i], m_dialog_res.m_items[i + 1]);
+                std::swap(m_dialog_res[i], m_dialog_res[i + 1]);
             }
         }
 
@@ -2190,7 +2190,7 @@ public:
         {
             if (indeces.find(i - 1) != indeces.end())
             {
-                std::swap(m_dialog_res.m_items[i], m_dialog_res.m_items[i - 1]);
+                std::swap(m_dialog_res[i], m_dialog_res[i - 1]);
             }
         }
 
@@ -2474,7 +2474,7 @@ public:
             if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
                 continue;
 
-            DialogItem& item = m_dialog_res.m_items[pCtrl->m_nIndex];
+            DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
             FitToGrid(&item.m_pt);
             FitToGrid(&item.m_siz);
 
