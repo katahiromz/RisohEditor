@@ -62,6 +62,13 @@ public:
         MString str = GetDlgItemText(hwnd, edt1);
         mstr_trim(str);
 
+        if (str.empty())
+        {
+            m_dlginit.clear();
+            EndDialog(IDOK);
+            return;
+        }
+
         MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
 
         std::vector<MStringA> lines;

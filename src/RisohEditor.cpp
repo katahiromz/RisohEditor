@@ -2196,7 +2196,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 		if (dialog_res.m_dlginit.empty())
 		{
 			HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
-			TreeView_DeleteItem(m_hTreeView, hItem);
+			TV_DeleteItem(m_hTreeView, m_entries, entry2);
 			Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
 			return;
 		}
