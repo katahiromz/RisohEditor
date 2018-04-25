@@ -23,6 +23,7 @@
 #include "MWindowBase.hpp"
 #include "MenuRes.hpp"
 #include "DialogRes.hpp"
+#include "DlgInit.h"
 #include "Res.hpp"
 
 #include <map>
@@ -37,13 +38,15 @@ public:
     MIdOrString m_menu;
     WORD m_lang;
     HMENU m_hMenu;
+    std::vector<BYTE> m_dlginit_data;
     MTitleToBitmap  m_title_to_bitmap;
     MTitleToIcon    m_title_to_icon;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
 
-    MTestDialog(ResEntries& entries, DialogRes& dialog_res, MIdOrString menu, WORD lang)
-        : m_entries(entries), m_dialog_res(dialog_res), m_menu(menu), m_lang(lang), m_hMenu(NULL)
+    MTestDialog(ResEntries& entries, DialogRes& dialog_res, MIdOrString menu, WORD lang, const std::vector<BYTE>& dlginit_data)
+        : m_entries(entries), m_dialog_res(dialog_res), m_menu(menu),
+          m_lang(lang), m_hMenu(NULL), m_dlginit_data(dlginit_data)
     {
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
         m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
@@ -187,6 +190,12 @@ public:
 
         if (m_bModal)
             CenterWindowDx();
+
+        if (m_dlginit_data.size())
+        {
+            SIZE_T siz = m_dlginit_data.size();
+            ExecuteDlgInitDataDx(hwnd, &m_dlginit_data[0], siz);
+        }
         return TRUE;
     }
 

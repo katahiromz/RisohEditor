@@ -8065,10 +8065,18 @@ void MMainWnd::OnTest(HWND hwnd)
             dialog_res.SaveToStream(stream);
             dialog_res.Fixup2(true);
 
+            // load RT_DLGINIT
+            std::vector<BYTE> dlginit_data;
+            INT iDlgInit = Res_Find2(m_entries, RT_DLGINIT, entry.name, entry.lang);
+            if (iDlgInit >= 0)
+            {
+                dlginit_data = m_entries[iDlgInit].data;
+            }
+
             // show test dialog
             if (dialog_res.m_style & WS_CHILD)
             {
-                MTestParentWnd *window = new MTestParentWnd(m_entries, dialog_res, menu, entry.lang, stream);
+                MTestParentWnd *window = new MTestParentWnd(m_entries, dialog_res, menu, entry.lang, stream, dlginit_data);
                 window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
@@ -8077,7 +8085,7 @@ void MMainWnd::OnTest(HWND hwnd)
             }
             else
             {
-                MTestDialog dialog(m_entries, dialog_res, menu, entry.lang);
+                MTestDialog dialog(m_entries, dialog_res, menu, entry.lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
             }
         }

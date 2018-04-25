@@ -34,8 +34,10 @@ public:
     HICON m_hIconSm;
 
     MTestParentWnd(ResEntries& entries, DialogRes& dialog_res,
-                   MIdOrString menu, WORD lang, const MByteStreamEx& stream)
-        : m_test_dialog(entries, dialog_res, menu, lang), m_stream(stream)
+                   MIdOrString menu, WORD lang, const MByteStreamEx& stream,
+                   const std::vector<BYTE>& dlginit_data)
+        : m_test_dialog(entries, dialog_res, menu, lang, dlginit_data),
+          m_stream(stream)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
