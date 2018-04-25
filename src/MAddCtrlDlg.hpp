@@ -66,6 +66,7 @@ public:
     std::vector<BYTE>       m_exstyle_selection;
     RisohSettings&          m_settings;
     DlgInitRes              m_dlginit;
+    BOOL                    m_bIsDlgInitSet;
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
@@ -80,7 +81,7 @@ public:
                 RisohSettings& settings)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res),
           m_db(db), m_bUpdating(FALSE), m_pt(pt), m_settings(settings),
-          m_dlginit(db)
+          m_dlginit(db), m_bIsDlgInitSet(FALSE)
     {
         m_himlControls = NULL;
         m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
@@ -363,21 +364,24 @@ public:
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
 
-        m_dlginit.ReplaceInvalid(item.m_id);
-        if (item.IsStdComboBox())
+        if (m_bIsDlgInitSet)
         {
-            m_dlginit.ReplaceMsg(item.m_id, CB_ADDSTRING);
+            m_dlginit.ReplaceInvalid(item.m_id);
+            if (item.IsStdComboBox())
+            {
+                m_dlginit.ReplaceMsg(item.m_id, CB_ADDSTRING);
+            }
+            else if (item.IsListBox())
+            {
+                m_dlginit.ReplaceMsg(item.m_id, LB_ADDSTRING);
+            }
+            else if (item.IsExtComboBox())
+            {
+                m_dlginit.ReplaceMsg(item.m_id, CBEM_INSERTITEM);
+            }
+            m_dialog_res.m_dlginit.Erase(item.m_id);
+            m_dialog_res.m_dlginit.Union(m_dlginit);
         }
-        else if (item.IsListBox())
-        {
-            m_dlginit.ReplaceMsg(item.m_id, LB_ADDSTRING);
-        }
-        else if (item.IsExtComboBox())
-        {
-            m_dlginit.ReplaceMsg(item.m_id, CBEM_INSERTITEM);
-        }
-        m_dialog_res.m_dlginit.Erase(item.m_id);
-        m_dialog_res.m_dlginit.Union(m_dlginit);
 
         EndDialog(IDOK);
     }
@@ -580,7 +584,10 @@ public:
     void OnPsh3(HWND hwnd)
     {
         MStringListDlg dialog(m_dlginit);
-        dialog.DialogBoxDx(hwnd);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            m_bIsDlgInitSet = TRUE;
+        }
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
