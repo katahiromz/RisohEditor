@@ -2187,6 +2187,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str = DumpDataAsString(entry.data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
+	// FIXME:
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
@@ -2207,32 +2208,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
             if (m_entries[i] < entry2)
                 continue;
 
-            if (m_entries[i] == entry2)
-            {
-                // already exists
-                m_entries[i].data = stream.data();
-                return;
-            }
-
             k = i;  // position to be inserted
             break;
-        }
-
-        // shift indeces
-        UINT nCount = TreeView_GetCount(m_hTreeView);
-        for (UINT i = 0; i < nCount; ++i)
-        {
-            TV_ITEM item;
-            item.mask = TVIF_PARAM;
-            TreeView_GetItem(m_hTreeView, &item);
-
-            WORD lo = LOWORD(item.lParam);
-            WORD hi = HIWORD(item.lParam);
-            if (lo >= k)
-                ++lo;
-
-            item.lParam = MAKELPARAM(lo, hi);
-            TreeView_SetItem(m_hTreeView, &item);
         }
 
         entry2.data = stream.data();
