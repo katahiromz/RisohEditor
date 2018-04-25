@@ -65,6 +65,7 @@ public:
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
     RisohSettings&          m_settings;
+    DlgInitRes              m_dlginit;
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
@@ -74,15 +75,14 @@ public:
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
     std::vector<BYTE> m_data;
-    DlgInitRes m_dlginit;
 
     MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt,
                 RisohSettings& settings)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res),
-          m_db(db), m_bUpdating(FALSE), m_pt(pt), m_settings(settings)
+          m_db(db), m_bUpdating(FALSE), m_pt(pt), m_settings(settings),
+          m_dlginit(db)
     {
         m_himlControls = NULL;
-        m_dlginit.clear();
         m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
     }
 
@@ -378,16 +378,29 @@ public:
 
             if (item.IsStdComboBox())
             {
-                entry.wMsg = CB_ADDSTRING;
+                for (size_t i = 0; i < m_dlginit.size(); ++i)
+                {
+                    DlgInitEntry& entry = m_dlginit[i];
+                    entry.wMsg = CB_ADDSTRING;
+                }
             }
             else if (item.IsListBox())
             {
-                entry.wMsg = LB_ADDSTRING;
+                for (size_t i = 0; i < m_dlginit.size(); ++i)
+                {
+                    DlgInitEntry& entry = m_dlginit[i];
+                    entry.wMsg = LB_ADDSTRING;
+                }
             }
             else if (item.IsExtComboBox())
             {
-                entry.wMsg = CBEM_INSERTITEM;
+                for (size_t i = 0; i < m_dlginit.size(); ++i)
+                {
+                    DlgInitEntry& entry = m_dlginit[i];
+                    entry.wMsg = CBEM_INSERTITEM;
+                }
             }
+            break;
         }
 
         m_dialog_res.m_dlginit.Erase(item.m_id);

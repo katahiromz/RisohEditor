@@ -974,9 +974,7 @@ TV_GetItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
         {
             if (entries[LOWORD(lParam)].lang == entry.lang)
             {
-                hParent = hItem;
-                TreeView_SelectItem(hwnd, hParent);
-                return;
+                return hItem;
             }
         }
     }

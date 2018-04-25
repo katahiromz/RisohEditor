@@ -77,6 +77,7 @@ public:
     std::set<INT>       m_indeces;
     RisohSettings&      m_settings;
     ConstantsDB&        m_db;
+    DlgInitRes          m_dlginit;
     DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -93,14 +94,13 @@ public:
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
-    DlgInitRes m_dlginit;
 
     MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces, RisohSettings& settings, ConstantsDB& db)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res),
-          m_bUpdating(FALSE), m_indeces(indeces), m_settings(settings), m_db(db)
+          m_bUpdating(FALSE), m_indeces(indeces), m_settings(settings), m_db(db),
+          m_dlginit(db)
     {
         m_himlControls = NULL;
-        m_dlginit.clear();
         m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
     }
 
@@ -791,16 +791,29 @@ public:
 
                 if (item.IsStdComboBox())
                 {
-                    entry.wMsg = CB_ADDSTRING;
+                    for (size_t i = 0; i < m_dlginit.size(); ++i)
+                    {
+                        DlgInitEntry& entry = m_dlginit[i];
+                        entry.wMsg = CB_ADDSTRING;
+                    }
                 }
                 else if (item.IsListBox())
                 {
-                    entry.wMsg = LB_ADDSTRING;
+                    for (size_t i = 0; i < m_dlginit.size(); ++i)
+                    {
+                        DlgInitEntry& entry = m_dlginit[i];
+                        entry.wMsg = LB_ADDSTRING;
+                    }
                 }
                 else if (item.IsExtComboBox())
                 {
-                    entry.wMsg = CBEM_INSERTITEM;
+                    for (size_t i = 0; i < m_dlginit.size(); ++i)
+                    {
+                        DlgInitEntry& entry = m_dlginit[i];
+                        entry.wMsg = CBEM_INSERTITEM;
+                    }
                 }
+                break;
             }
         }
     }

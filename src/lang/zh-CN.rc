@@ -877,7 +877,6 @@ FONT 9, "宋体"
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 130, 305, 60, 14
     PUSHBUTTON "数据(&D)...", psh1, 5, 290, 45, 14
-    PUSHBUTTON "列表(&I)...", psh3, 5, 305, 60, 14
     PUSHBUTTON "字符串列表(&I)...", psh3, 5, 305, 75, 14
 }
 
