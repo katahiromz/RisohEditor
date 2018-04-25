@@ -363,46 +363,19 @@ public:
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
 
-        for (size_t i = 0; i < m_dlginit.size(); ++i)
+        m_dlginit.ReplaceInvalid(item.m_id);
+        if (item.IsStdComboBox())
         {
-            DlgInitEntry& entry = m_dlginit[i];
-            if (entry.wCtrl == WORD(-1))
-                entry.wCtrl = item.m_id;
+            m_dlginit.ReplaceMsg(item.m_id, CB_ADDSTRING);
         }
-
-        for (size_t k = 0; k < m_dialog_res.size(); ++k)
+        else if (item.IsListBox())
         {
-            DialogItem& item = m_dialog_res[k];
-            if (item.m_id != id)
-                continue;
-
-            if (item.IsStdComboBox())
-            {
-                for (size_t i = 0; i < m_dlginit.size(); ++i)
-                {
-                    DlgInitEntry& entry = m_dlginit[i];
-                    entry.wMsg = CB_ADDSTRING;
-                }
-            }
-            else if (item.IsListBox())
-            {
-                for (size_t i = 0; i < m_dlginit.size(); ++i)
-                {
-                    DlgInitEntry& entry = m_dlginit[i];
-                    entry.wMsg = LB_ADDSTRING;
-                }
-            }
-            else if (item.IsExtComboBox())
-            {
-                for (size_t i = 0; i < m_dlginit.size(); ++i)
-                {
-                    DlgInitEntry& entry = m_dlginit[i];
-                    entry.wMsg = CBEM_INSERTITEM;
-                }
-            }
-            break;
+            m_dlginit.ReplaceMsg(item.m_id, LB_ADDSTRING);
         }
-
+        else if (item.IsExtComboBox())
+        {
+            m_dlginit.ReplaceMsg(item.m_id, CBEM_INSERTITEM);
+        }
         m_dialog_res.m_dlginit.Erase(item.m_id);
         m_dialog_res.m_dlginit.Union(m_dlginit);
 
