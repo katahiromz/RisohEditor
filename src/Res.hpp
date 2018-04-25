@@ -877,7 +877,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam)
 }
 
 inline HTREEITEM
-_tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
+TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
                        const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -894,10 +894,10 @@ _tv_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 
     MStringW ResLang = Res_GetLangName(entries[i].lang);
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, I_LANG));
-}   
+}
 
 inline HTREEITEM
-_tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
+TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
                        const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -917,7 +917,7 @@ _tv_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 }
 
 inline HTREEITEM
-_tv_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
+TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
                        const ResEntries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -1030,7 +1030,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 }
 
 inline HTREEITEM
-_tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
+TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
                        const ResEntries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -1050,7 +1050,7 @@ _tv_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
 }
 
 inline HTREEITEM
-_tv_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
+TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
                         const ResEntries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -1111,15 +1111,15 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i);
+        hItem = TV_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i);
 
         if (entries[i].type == RT_STRING)
         {
-            _tv_FindOrInsertString(hwnd, hItem, entries, i);
+            TV_FindOrInsertString(hwnd, hItem, entries, i);
         }
         if (entries[i].type == RT_MESSAGETABLE)
         {
-            _tv_FindOrInsertMessage(hwnd, hItem, entries, i);
+            TV_FindOrInsertMessage(hwnd, hItem, entries, i);
         }
     }
 
@@ -1131,9 +1131,9 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
             continue;
 
         HTREEITEM hItem = NULL;
-        hItem = _tv_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k);
-        hItem = _tv_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k);
-        hItem = _tv_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k);
+        hItem = TV_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k);
+        hItem = TV_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k);
+        hItem = TV_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k);
         hItem = hItem;
         ++k;
     }

@@ -2190,15 +2190,65 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     if (dialog_res.m_dlginit.empty())
     {
         Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
+        return;
     }
-    else
+
+    stream.clear();
+    if (dialog_res.m_dlginit.SaveToStream(stream))
     {
-        MByteStreamEx stream;
-        if (dialog_res.m_dlginit.SaveToStream(stream))
+        ResEntry entry2(RT_DLGINIT, entry.name, entry.lang);
+
+        INT k = -1;
+        for (INT i = 0; i < INT(m_entries.size()); ++i)
         {
-            Res_AddEntry(m_entries, RT_DLGINIT, entry.name, entry.lang,
-                         stream.data(), TRUE);
+            if (m_entries[i] < entry2)
+                continue;
+
+            if (m_entries[i] == entry2)
+            {
+                // already exists
+                m_entries[i].data = stream.data();
+                return;
+            }
+
+            k = i;  // position to be inserted
+            break;
         }
+
+        // shift indeces
+        UINT nCount = TreeView_GetCount(m_hTreeView);
+        for (UINT i = 0; i < nCount; ++i)
+        {
+            TV_ITEM item;
+            item.mask = TVIF_PARAM;
+            TreeView_GetItem(m_hTreeView, &item);
+
+            WORD lo = LOWORD(item.lParam);
+            WORD hi = HIWORD(item.lParam);
+            if (lo >= k)
+                ++lo;
+
+            item.lParam = MAKELPARAM(lo, hi);
+            TreeView_SetItem(m_hTreeView, &item);
+        }
+
+        entry2.data = stream.data();
+        if (k >= 0)
+        {
+            m_entries.insert(m_entries.begin() + k, entry2);
+        }
+        else
+        {
+            k = INT(m_entries.size());
+            m_entries.push_back(entry2);
+        }
+
+        // insert
+        HTREEITEM hItem = NULL;
+        hItem = TV_FindOrInsertDepth1(m_hTreeView, m_db, hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth2(m_hTreeView, m_db, hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth3(m_hTreeView, m_db, hItem, m_entries, k, k);
+        hItem = hItem;
     }
 }
 
