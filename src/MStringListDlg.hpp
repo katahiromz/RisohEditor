@@ -65,6 +65,7 @@ public:
         MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
 
         std::vector<MStringA> lines;
+        mstr_replace_all(strA, "\r", "");
         mstr_split(lines, strA, "\n");
 
         m_dlginit.Erase(m_nCtrl);

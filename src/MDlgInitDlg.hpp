@@ -171,13 +171,24 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        GetWindowTextW(m_cmb1, m_entry.sz0, _countof(m_entry.sz0));
         GetWindowTextW(m_cmb2, m_entry.sz1, _countof(m_entry.sz1));
         GetDlgItemTextW(hwnd, edt1, m_entry.sz2, _countof(m_entry.sz2));
+        ReplaceFullWithHalf(m_entry.sz0);
         ReplaceFullWithHalf(m_entry.sz1);
+        mstr_trim(m_entry.sz0);
         mstr_trim(m_entry.sz1);
         mstr_trim(m_entry.sz2);
         if (m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
+
+        if (!m_db.HasResID(m_entry.sz0))
+        {
+            m_cmb1.SetEditSel(0, -1);
+            SetFocus(m_cmb1);
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
 
         if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
             lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
@@ -610,6 +621,7 @@ public:
             ListView_SetItem(m_hLst1, &item);
 
             str = MAnsiToText(CP_ACP, it->strText).c_str();
+            str = mstr_quote(str);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;

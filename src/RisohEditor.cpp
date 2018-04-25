@@ -2187,16 +2187,19 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str = DumpDataAsString(entry.data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
-    if (dialog_res.m_dlginit.empty())
-    {
-        Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
-        return;
-    }
-
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
         ResEntry entry2(RT_DLGINIT, entry.name, entry.lang);
+		entry2.data = stream.data();
+
+		if (dialog_res.m_dlginit.empty())
+		{
+			HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
+			TreeView_DeleteItem(m_hTreeView, hItem);
+			Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
+			return;
+		}
 
         INT k = -1;
         for (INT i = 0; i < INT(m_entries.size()); ++i)
@@ -2860,7 +2863,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
         // load RT_DLGINIT
         m_rad_window.m_dialog_res.m_dlginit.clear();
-        INT iDlgInit = Res_Find(m_entries, RT_DLGINIT, entry.name, entry.lang);
+        INT iDlgInit = Res_Find2(m_entries, RT_DLGINIT, entry.name, entry.lang);
         if (iDlgInit >= 0)
         {
             ResEntry& die = m_entries[iDlgInit];
