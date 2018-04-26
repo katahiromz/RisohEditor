@@ -10,7 +10,7 @@
     #else
         #define true        1
         #define false       0
-        typedef char        bool;
+        typedef signed char bool;
     #endif
     #define __bool_true_false_are_defined   1
 #endif  /* ndef __bool_true_false_are_defined */
