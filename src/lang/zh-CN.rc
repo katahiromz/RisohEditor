@@ -420,6 +420,9 @@ STRINGTABLE
     IDS_MESSAGE, "信息"
     IDS_STRING, "串"
     IDS_DATAISINVALID, "数据无效."
+    IDS_DLGINIT1, "您可以通过在与对话框同名的RT_DLGINIT资源数据中设置初始化数据来指定组合框和列表框的初始化. "
+    IDS_DLGINIT2, "当WM_INITDIALOG消息到达时, 您可以通过调用附加文件“DlgInit/DlgInit.h”的ExecuteDlgInitDx函数来初始化对话框.\r\n\r\n"
+    IDS_DLGINIT3, "请指定用换行符分隔的RT_DLGINIT字符串列表."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
@@ -1280,7 +1283,7 @@ CAPTION "Control String List"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "宋体"
 {
-    LTEXT "您可以通过在与对话框同名的RT_DLGINIT资源数据中设置初始化数据来指定组合框和列表框的初始化. 当WM_INITDIALOG消息到达时, 您可以通过调用附加文件“DlgInit/DlgInit.h”的ExecuteDlgInitDx函数来初始化对话框.\r\n\r\n请指定用换行符分隔的RT_DLGINIT字符串列表.", -1, 5, 5, 195, 70
+    LTEXT "", stc1, 5, 5, 195, 70
     EDITTEXT edt1, 5, 80, 195, 115, ES_MULTILINE | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 75, 200, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 140, 200, 60, 14

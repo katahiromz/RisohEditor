@@ -54,6 +54,11 @@ public:
         MStringA text = mstr_join(vec, "\r\n");
         SetDlgItemTextA(hwnd, edt1, text.c_str());
 
+        MString str = LoadStringDx(IDS_DLGINIT1);
+        str += LoadStringDx(IDS_DLGINIT2);
+        str += LoadStringDx(IDS_DLGINIT3);
+        SetDlgItemText(hwnd, stc1, str.c_str());
+
         return TRUE;
     }
 
