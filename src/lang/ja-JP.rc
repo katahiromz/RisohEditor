@@ -1282,7 +1282,7 @@ CAPTION "コントロールの文字列リスト"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "MS UI Gothic"
 {
-    LTEXT "ダイアログと同名のRT_DLGINITリソースデータに初期化データを設定して、コンボボックスとリストボックスの初期化を指定できます。WM_INITDIALOGメッセージが来た時に、DlgInit/DlgInit.hのExecuteDlgInitDx関数を呼び出せば、ダイアログの初期化を実行できます。\r\n\r\nRT_DLGINITに使う改行区切りの文字列のリストを指定して下さい。", -1, 5, 5, 195, 70
+    LTEXT "ダイアログと同名のRT_DLGINITリソースデータに初期化データを設定して、コンボボックスとリストボックスの初期化を指定できます。WM_INITDIALOGメッセージが来た時に、付属のファイル「DlgInit/DlgInit.h」のExecuteDlgInitDx関数を呼び出せば、ダイアログの初期化を実行できます。\r\n\r\nRT_DLGINITに使う改行区切りの文字列のリストを指定して下さい。", -1, 5, 5, 195, 70
     EDITTEXT edt1, 5, 80, 195, 115, ES_MULTILINE | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 75, 200, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 140, 200, 60, 14
