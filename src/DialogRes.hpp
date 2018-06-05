@@ -953,7 +953,14 @@ struct DialogRes
         }
 
         {
-            DWORD value = (m_style & ~DS_SETFONT);
+            DWORD value = m_style;
+            if ((value & DS_SHELLFONT) == DS_SHELLFONT)
+                ;
+            else if ((value & DS_SHELLFONT) == DS_FIXEDSYS)
+                ;
+            else if ((value & DS_SHELLFONT) == DS_SETFONT)
+                value &= ~DS_SETFONT;
+
             MStringW str = m_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
             if (value)
             {
@@ -1096,7 +1103,15 @@ struct DialogRes
 
         HDC hDC = CreateCompatibleDC(NULL);
         HFONT hFont = NULL;
-        if (m_style & DS_SETFONT)
+        if ((m_style & DS_SHELLFONT) == DS_SHELLFONT)
+        {
+            hFont = HFONT(GetStockObject(SYSTEM_FONT));
+        }
+        else if ((m_style & DS_SHELLFONT) == DS_FIXEDSYS)
+        {
+            hFont = HFONT(GetStockObject(SYSTEM_FIXED_FONT));
+        }
+        else if (m_style & DS_SETFONT)
         {
             if (m_point_size == 0x7FFF)
             {

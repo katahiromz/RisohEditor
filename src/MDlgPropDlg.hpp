@@ -263,6 +263,37 @@ public:
         return TRUE;
     }
 
+    INT PointSizeFromStockFont(MString& strFont, INT nObject)
+    {
+        HFONT hFont = HFONT(GetStockObject(nObject));
+
+        LOGFONT lf;
+        GetObject(hFont, sizeof(lf), &lf);
+
+        strFont = lf.lfFaceName;
+
+        HDC hDC = CreateCompatibleDC(NULL);
+        SelectObject(hDC, hFont);
+
+        // lf.lfHeight --> nFontSize
+        INT nFontSize;
+        if (lf.lfHeight < 0)
+        {
+            lf.lfHeight = -lf.lfHeight;
+        }
+        else
+        {
+            TEXTMETRIC tm;
+            GetTextMetrics(hDC, &tm);
+            lf.lfHeight -= tm.tmInternalLeading;
+        }
+        nFontSize = MulDiv(lf.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+
+        DeleteDC(hDC);
+
+        return nFontSize;
+    }
+
     void OnOK(HWND hwnd)
     {
         BOOL bExtended = (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
@@ -319,10 +350,23 @@ public:
 
         MString strFont = GetDlgItemText(cmb4);
         mstr_trim(strFont);
-        if (strFont.empty())
-            style &= ~DS_SETFONT;
-        else
-            style |= DS_SETFONT;
+
+        if ((style & DS_SHELLFONT) != DS_SHELLFONT)
+        {
+            if (strFont.empty())
+                style &= ~DS_SETFONT;
+            else
+                style |= DS_SETFONT;
+        }
+
+        if ((style & DS_SHELLFONT) == DS_SHELLFONT)
+        {
+            nFontSize = PointSizeFromStockFont(strFont, SYSTEM_FONT);
+        }
+        else if ((style & DS_SHELLFONT) == DS_FIXEDSYS)
+        {
+            nFontSize = PointSizeFromStockFont(strFont, SYSTEM_FIXED_FONT);
+        }
 
         if (bExtended)
         {
