@@ -277,8 +277,8 @@ IDR_POPUPMENUS MENU
 // TODO: Update the version numbers
 STRINGTABLE
 {
-    IDS_APPNAME, "リソーエディタ 4.6 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - リソーエディタ 4.6 by 片山博文MZ"
+    IDS_APPNAME, "リソーエディタ 4.7 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - リソーエディタ 4.7 by 片山博文MZ"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE, "保存できませんでした。"
@@ -304,7 +304,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "ビットマップの置き換えができませんでした。"
     IDS_REPLACEBMP, "ビットマップの置き換え"
     IDS_ERRORCODE, "エラーコード %dが発生しました。"
-    IDS_VERSIONINFO, "リソーエディタ Version 4.6\r\n\r\n片山博文MZ\r\nかたやまひろふみえむぜっど\r\n\r\nライセンス: GPLv3 (フリーソフト)"
+    IDS_VERSIONINFO, "リソーエディタ Version 4.7\r\n\r\n片山博文MZ\r\nかたやまひろふみえむぜっど\r\n\r\nライセンス: GPLv3 (フリーソフト)"
     IDS_ADDRES, "リソースの追加"
     IDS_CANNOTADDRES, "リソースの追加ができませんでした。"
     IDS_CANTADDBMP, "ビットマップの追加ができませんでした。"
