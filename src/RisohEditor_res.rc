@@ -202,3 +202,28 @@ END
 #endif    // APSTUDIO_INVOKED
 
 //////////////////////////////////////////////////////////////////////////////
+// RISOHTEMPLATE
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+#undef RT_ACCELERATOR
+#undef RT_DIALOG
+#undef RT_DLGINIT
+#undef RT_HTML
+#undef RT_MANIFEST
+#undef RT_MENU
+#undef RT_MESSAGETABLE
+#undef RT_STRING
+#undef RT_VERSION
+
+RT_ACCELERATOR RISOHTEMPLATE "res/RT_ACCELERATOR.txt"
+RT_DIALOG RISOHTEMPLATE "res/RT_DIALOG.txt"
+RT_DLGINIT RISOHTEMPLATE "res/RT_DLGINIT.txt"
+RT_HTML RISOHTEMPLATE "res/RT_HTML.txt"
+RT_MANIFEST RISOHTEMPLATE "res/RT_MANIFEST.txt"
+RT_MENU RISOHTEMPLATE "res/RT_MENU.txt"
+RT_MESSAGETABLE RISOHTEMPLATE "res/RT_MESSAGETABLE.txt"
+RT_STRING RISOHTEMPLATE "res/RT_STRING.txt"
+RT_VERSION RISOHTEMPLATE "res/RT_VERSION.txt"
+
+//////////////////////////////////////////////////////////////////////////////

@@ -125,7 +125,7 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, bs.data(), bOverwrite))
+                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, L"", bs.data(), bOverwrite))
             {
                 if (bOverwrite)
                     ErrorBoxDx(IDS_CANTREPLACECUR);

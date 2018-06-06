@@ -109,6 +109,7 @@ public:
     MString DoAVI(const ResEntry& entry);
     MString DoDlgInit(const ResEntry& entry);
     MString DoRCData(const ResEntry& entry);
+    MString DoRisohTemplate(const ResEntry& entry);
     MString DoUnknown(const ResEntry& entry);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
@@ -642,7 +643,10 @@ ResToText::DoText(const ResEntry& entry)
     {
         MTextType type;
         type.nNewLine = MNEWLINE_CRLF;
-        str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+        if (entry.size())
+        {
+            str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+        }
     }
     else
     {
@@ -865,6 +869,10 @@ ResToText::DumpEntry(const ResEntry& entry)
         {
             return DoAVI(entry);
         }
+        else if (entry.type == L"RISOHTEMPLATE")
+        {
+            return DoRisohTemplate(entry);
+        }
     }
     return DoText(entry);
 }
@@ -939,6 +947,11 @@ inline MString ResToText::DoRCData(const ResEntry& entry)
     str += L"\"\r\n\r\n";
 
     return str;
+}
+
+inline MString ResToText::DoRisohTemplate(const ResEntry& entry)
+{
+    return DoText(entry);
 }
 
 inline MString ResToText::DoUnknown(const ResEntry& entry)

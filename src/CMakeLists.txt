@@ -29,7 +29,6 @@ endif()
 add_executable(RisohEditor WIN32 
     PackedDIB.cpp
     RisohEditor.cpp
-    Samples.cpp
     RisohEditor_res.rc
     RisohEditor.exe.manifest)
 target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg)

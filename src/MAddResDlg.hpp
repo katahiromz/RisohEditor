@@ -25,7 +25,6 @@
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
-#include "Samples.hpp"
 #include "DlgInit.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
@@ -34,6 +33,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void ReplaceFullWithHalf(LPWSTR pszText);
+MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +44,7 @@ public:
     ConstantsDB& m_db;
     MIdOrString m_type;
     LPCTSTR m_file;
+    MStringW m_strTemplate;
     ResEntry m_entry_copy;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
@@ -120,6 +121,11 @@ public:
         }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
         if (m_type == TEXT("WMF"))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+        k = ComboBox_AddString(hCmb1, TEXT("RISOHTEMPLATE"));
+        if (m_type == TEXT("RISOHTEMPLATE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
@@ -238,71 +244,32 @@ public:
             }
 
             MByteStreamEx stream;
-            if (type == RT_ACCELERATOR)
+            if (type == RT_ACCELERATOR || type == RT_DIALOG ||
+                type == RT_MENU || type == RT_STRING ||
+                type == RT_VERSION || type == RT_HTML ||
+                type == RT_MANIFEST || type == RT_MESSAGETABLE ||
+                type == RT_DLGINIT)
             {
-                DWORD dwSize;
-                const BYTE *pb = GetAccelSample(dwSize);
-                stream.assign(pb, dwSize);
+                m_strTemplate = GetRisohTemplate(m_db, type, lang);
             }
-            else if (type == RT_DIALOG)
+            else if (type == L"RISOHTEMPLATE")
             {
-                DWORD dwSize;
-                const BYTE *pb = GetDialogSample(dwSize);
-                stream.assign(pb, dwSize);
-            }
-            else if (type == RT_MENU)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetMenuSample(dwSize);
-                stream.assign(pb, dwSize);
-            }
-            else if (type == RT_STRING)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetStringSample(dwSize);
-                stream.assign(pb, dwSize);
-                name = 1;
-            }
-            else if (type == RT_VERSION)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetVersionSample(dwSize);
-                stream.assign(pb, dwSize);
-            }
-            else if (type == RT_HTML)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetHtmlSample(dwSize);
-                stream.assign(pb, dwSize);
-            }
-            else if (type == RT_MANIFEST)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetManifestSample(dwSize);
-                stream.assign(pb, dwSize);
-            }
-            else if (type == RT_MESSAGETABLE)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetMessageTableSample(dwSize);
-                stream.assign(pb, dwSize);
-                name = 1;
-            }
-            else if (type == RT_DLGINIT)
-            {
-                DWORD dwSize;
-                const BYTE *pb = GetDlgInitSample(dwSize);
-                stream.assign(pb, dwSize);
+                m_strTemplate = L" ";
             }
             else
             {
                 bOK = FALSE;
             }
 
+            if (type == RT_STRING || type == RT_MESSAGETABLE)
+            {
+                name = 1;
+            }
+
             if (bOK)
             {
-                Res_AddEntry(m_entries, type, name, lang, stream.data(), FALSE);
-                ResEntry entry(type, name, lang);
+                Res_AddEntry(m_entries, type, name, lang, m_strTemplate, stream.data(), FALSE);
+                ResEntry entry(type, name, lang, m_strTemplate);
                 m_entry_copy = entry;
                 bAdded = TRUE;
             }
@@ -319,7 +286,7 @@ public:
         }
         if (!bAdded)
         {
-            Res_AddEntry(m_entries, type, name, lang, bs.data(), bOverwrite);
+            Res_AddEntry(m_entries, type, name, lang, L"", bs.data(), bOverwrite);
             ResEntry entry(type, name, lang);
             m_entry_copy = entry;
         }

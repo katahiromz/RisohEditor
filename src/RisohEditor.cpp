@@ -1466,6 +1466,7 @@ protected:
     void DeleteApStudioBlock(std::vector<std::string>& lines);
     void AddHeadComment(std::vector<std::string>& lines);
     void DeleteHeadComment(std::vector<std::string>& lines);
+    void DoAddRes(HWND hwnd, MAddResDlg& dialog);
 
     // preview
     void PreviewIcon(HWND hwnd, const ResEntry& entry);
@@ -1488,6 +1489,7 @@ protected:
     void PreviewMessageTable(HWND hwnd, const ResEntry& entry);
     void PreviewRCData(HWND hwnd, const ResEntry& entry);
     void PreviewDlgInit(HWND hwnd, const ResEntry& entry);
+    void PreviewRisohTemplate(HWND hwnd, const ResEntry& entry);
     void PreviewUnknown(HWND hwnd, const ResEntry& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
@@ -3760,7 +3762,9 @@ void MMainWnd::PreviewHtml(HWND hwnd, const ResEntry& entry)
 {
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
-    MStringW str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+    MStringW str;
+    if (entry.size())
+        str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
@@ -3788,6 +3792,13 @@ void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& entry)
 }
 
 void MMainWnd::PreviewUnknown(HWND hwnd, const ResEntry& entry)
+{
+    ResToText res2text(m_settings, m_db, m_entries);
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
+}
+
+void MMainWnd::PreviewRisohTemplate(HWND hwnd, const ResEntry& entry)
 {
     ResToText res2text(m_settings, m_db, m_entries);
     MString str = res2text.DumpEntry(entry);
@@ -4041,6 +4052,11 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
             PreviewAVI(hwnd, entry);
             bEditable = FALSE;
         }
+        else if (entry.type == L"RISOHTEMPLATE")
+        {
+            PreviewRisohTemplate(hwnd, entry);
+            bEditable = TRUE;
+        }
         else
         {
             PreviewUnknown(hwnd, entry);
@@ -4206,7 +4222,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
     case I_LANG:
         if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
             type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
-            type == RT_DLGINIT)
+            type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
         {
             ;
         }
@@ -4240,13 +4256,12 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
             name = (WORD)m_db.GetResIDValue(name.c_str());
         }
 
-        if (entries.size() != 1 ||
-            entries[0].name != name ||
-            entries[0].lang != entry.lang)
+        if (entries.size() != 1 || entries[0].lang != entry.lang)
         {
             msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_RESMISMATCH));
             return FALSE;
         }
+        entries[0].name = name;
         entry = entries[0];
         return TRUE;
     }
@@ -4462,7 +4477,8 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     {
         if (Res_IsPlainText(entry.type))
         {
-            if (strWide.find(L"\"UTF-8\"") != MStringW::npos)
+            if (strWide.find(L"\"UTF-8\"") != MStringW::npos ||
+                entry.type == L"RISOHTEMPLATE")
             {
                 entry.data.assign(strUtf8.begin(), strUtf8.end());
 
@@ -6191,6 +6207,10 @@ inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
         {
             return DoExtractBin(filename.c_str(), entry);
         }
+        if (entry.type == L"RISOHTEMPLATE")
+        {
+            return DoExtractBin(filename.c_str(), entry);
+        }
     }
     return DoExtractBin(filename.c_str(), entry);
 }
@@ -6482,9 +6502,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6509,9 +6527,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"PNG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6523,9 +6539,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"GIF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6538,9 +6552,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"JPEG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6552,9 +6564,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"TIFF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6566,9 +6576,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"AVI";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6604,9 +6612,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"WMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6618,9 +6624,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_type = L"EMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
-                DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                DoAddRes(hwnd, dialog);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -8583,9 +8587,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
     MAddResDlg dialog(m_entries, m_db);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8598,9 +8600,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8613,9 +8613,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     dialog.m_type = RT_STRING;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8628,9 +8626,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     dialog.m_type = RT_MESSAGETABLE;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8643,9 +8639,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     dialog.m_type = RT_HTML;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8658,9 +8652,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     dialog.m_type = RT_ACCELERATOR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8673,9 +8665,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -8688,9 +8678,37 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     dialog.m_type = RT_MANIFEST;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        DoAddRes(hwnd, dialog);
+    }
+}
+
+void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
+{
+    if (dialog.m_strTemplate.empty())
+    {
         DoRefreshIDList(hwnd);
         TV_RefreshInfo(m_hTreeView, m_db, m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        Edit_SetModify(m_hSrcEdit, FALSE);
+    }
+    else
+    {
+        DoRefreshIDList(hwnd);
+        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        if (CompileParts(hwnd, dialog.m_strTemplate, FALSE))
+        {
+            LPARAM lParam = TV_GetParam(m_hTreeView);
+            SelectTV(hwnd, lParam, FALSE);
+            Edit_SetModify(m_hSrcEdit, FALSE);
+        }
+        else
+        {
+            SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+            Edit_SetModify(m_hSrcEdit, TRUE);
+            Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            UpdateOurToolBar(2);
+        }
     }
 }
 
@@ -8703,9 +8721,7 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        DoAddRes(hwnd, dialog);
     }
 }
 
@@ -10671,6 +10687,54 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     str += strSub;
     str += TEXT("\r\n");
     return str;
+}
+
+MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang)
+{
+    HINSTANCE hInst = GetModuleHandle(NULL);
+
+    MStringW strName;
+    if (type.is_int())
+    {
+        strName = db.GetName(L"RESOURCE", type.m_id);
+        if (strName.empty())
+        {
+            strName = mstr_dec_short(type.m_id);
+        }
+    }
+    else
+    {
+        strName = type.m_str;
+    }
+    if (strName.empty())
+        return NULL;
+
+    WORD LangID = PRIMARYLANGID(wLang);
+    HRSRC hRsrc = NULL;
+    if (hRsrc == NULL)
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), wLang);
+    if (hRsrc == NULL)
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
+    if (hRsrc == NULL)
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+    if (hRsrc == NULL)
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
+    if (hRsrc == NULL)
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+    if (hRsrc == NULL)
+        return L"";
+
+    HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
+    DWORD cb = SizeofResource(hInst, hRsrc);
+    const BYTE *pb = (const BYTE *)LockResource(hGlobal);
+    if (memcmp(pb, "\xEF\xBB\xBF", 3) == 0)
+    {
+        pb += 3;
+        cb -= 3;
+    }
+    MStringA utf8(LPCSTR(pb), LPCSTR(pb) + cb);
+    MAnsiToWide wide(CP_UTF8, utf8);
+    return wide.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////

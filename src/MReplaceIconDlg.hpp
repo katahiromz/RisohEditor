@@ -100,7 +100,7 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !Res_AddEntry(m_entries, RT_ANIICON, name, lang, bs.data(), TRUE))
+                !Res_AddEntry(m_entries, RT_ANIICON, name, lang, L"", bs.data(), TRUE))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;

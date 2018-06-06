@@ -1,0 +1,4 @@
+﻿STRINGTABLE
+{
+    100, "This is a sample text."
+}

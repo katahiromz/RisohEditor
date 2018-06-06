@@ -206,7 +206,7 @@ public:
             return;
         }
 
-        Res_AddEntry(m_entries, type, name, lang, bs.data(), TRUE);
+        Res_AddEntry(m_entries, type, name, lang, L"", bs.data(), TRUE);
 
         ResEntry entry(type, name, lang);
         m_entry_copy = entry;

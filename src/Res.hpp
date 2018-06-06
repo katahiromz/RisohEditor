@@ -69,14 +69,15 @@ public:
     MIdOrString     type;
     MIdOrString     name;
     DataType        data;
+    MStringW        strTemplate;
 
     ResEntry() : lang(0xFFFF), updated(FALSE)
     {
     }
 
     ResEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
-             BOOL Updated = TRUE)
-     : type(type), name(name), lang(lang), updated(Updated)
+             const MStringW strTmp = L"", BOOL Updated = TRUE)
+     : type(type), name(name), lang(lang), strTemplate(strTmp), updated(Updated)
     {
     }
 
@@ -91,12 +92,13 @@ public:
     void clear_data()
     {
         data.clear();
+        strTemplate.clear();
         updated = TRUE;
     }
 
     bool empty() const
     {
-        return size() == 0;
+        return size() == 0 && strTemplate.empty();
     }
     size_type size() const
     {
@@ -360,10 +362,10 @@ Res_AddEntry(ResEntries& entries, const ResEntry& entry,
 
 inline BOOL
 Res_AddEntry(ResEntries& entries, const MIdOrString& type,
-             const MIdOrString& name, WORD lang,
+             const MIdOrString& name, WORD lang, const MStringW& strTmp,
              const ResEntry::DataType& vecData, BOOL Replace = FALSE)
 {
-    ResEntry entry(type, name, lang);
+    ResEntry entry(type, name, lang, strTmp);
     entry.data = vecData;
     return Res_AddEntry(entries, entry, Replace);
 }
@@ -477,13 +479,13 @@ Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
     UINT LastIconID = Res_GetLastIconID(entries);
     UINT NextIconID = LastIconID + 1;
     IconFile::DataType group(icon.GetIconGroup(NextIconID));
-    Res_AddEntry(entries, RT_GROUP_ICON, name, lang, group, Replace);
+    Res_AddEntry(entries, RT_GROUP_ICON, name, lang, L"", group, Replace);
 
     int i, nCount = icon.GetImageCount();
     for (i = 0; i < nCount; ++i)
     {
         Res_AddEntry(entries, RT_ICON, WORD(NextIconID + i), lang,
-                     icon.GetImage(i));
+                     L"", icon.GetImage(i));
     }
     return TRUE;
 }
@@ -500,13 +502,13 @@ Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
     UINT LastCursorID = Res_GetLastCursorID(entries);
     UINT NextCursorID = LastCursorID + 1;
     CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
-    Res_AddEntry(entries, RT_GROUP_CURSOR, name, lang, group, Replace);
+    Res_AddEntry(entries, RT_GROUP_CURSOR, name, lang, L"", group, Replace);
 
     int i, nCount = cur.GetImageCount();
     for (i = 0; i < nCount; ++i)
     {
         Res_AddEntry(entries, RT_CURSOR, WORD(NextCursorID + i), lang,
-                     cur.GetImage(i));
+                     L"", cur.GetImage(i));
     }
     return TRUE;
 }
@@ -539,7 +541,7 @@ Res_AddBitmap(ResEntries& entries, const MIdOrString& name,
         }
         DeleteObject(hbm);
 
-        Res_AddEntry(entries, RT_BITMAP, name, lang, PackedDIB, Replace);
+        Res_AddEntry(entries, RT_BITMAP, name, lang, L"", PackedDIB, Replace);
     }
     else
     {
@@ -549,7 +551,7 @@ Res_AddBitmap(ResEntries& entries, const MIdOrString& name,
 
         size_t i0 = FileHeadSize, i1 = stream.size();
         ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-        Res_AddEntry(entries, RT_BITMAP, name, lang, HeadLess, Replace);
+        Res_AddEntry(entries, RT_BITMAP, name, lang, L"", HeadLess, Replace);
     }
 
     return TRUE;
@@ -1489,7 +1491,8 @@ Res_ExtractCursor(const ResEntries& entries,
 inline INT
 Res_IsPlainText(const MIdOrString& type)
 {
-    return type == RT_HTML || type == RT_MANIFEST || type == RT_DLGINCLUDE;
+    return type == RT_HTML || type == RT_MANIFEST ||
+           type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
 }
 
 inline INT
@@ -1512,7 +1515,7 @@ Res_HasSample(const MIdOrString& type)
     return type == RT_ACCELERATOR || type == RT_DIALOG ||
            type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
            type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE ||
-           type == WORD(240);
+           type == WORD(240) || type == L"RISOHTEMPLATE";
 }
 
 inline BOOL
