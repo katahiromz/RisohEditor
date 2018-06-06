@@ -10733,7 +10733,7 @@ MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang)
         pb += 3;
         cb -= 3;
     }
-    MStringA utf8(LPCSTR(pb), LPCSTR(pb) + cb);
+    MStringA utf8((LPCSTR)(pb), (LPCSTR)(pb) + cb);
     MAnsiToWide wide(CP_UTF8, utf8);
     return wide.c_str();
 }
