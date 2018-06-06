@@ -414,6 +414,7 @@ public:
         std::vector<BYTE> old_style_selection = m_style_selection;
         GetStyleSelect(hLst1, m_style_selection);
 
+        DWORD dwOldStyle = m_dwStyle;
         m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
                                      old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
@@ -422,6 +423,23 @@ public:
         TCHAR szText[32];
         StringCchPrintf(szText, _countof(szText), TEXT("%08lX"), m_dwStyle);
         SetDlgItemText(hwnd, edt6, szText);
+        if ((dwOldStyle & DS_SETFONT) && !(m_dwStyle & DS_SETFONT))
+        {
+            SetDlgItemTextW(hwnd, cmb4, NULL);
+            SetDlgItemInt(hwnd, edt5, 0, FALSE);
+        }
+        if (!(dwOldStyle & DS_SETFONT) && (m_dwStyle & DS_SETFONT))
+        {
+            LOGFONTW lf;
+            HFONT hFont;
+            if ((m_dwStyle & DS_SHELLFONT) == DS_SHELLFONT)
+                hFont = HFONT(GetStockObject(SYSTEM_FONT));
+            else
+                hFont = HFONT(GetStockObject(DEFAULT_GUI_FONT));
+            GetObjectW(hFont, sizeof(lf), &lf);
+            SetDlgItemTextW(hwnd, cmb4, lf.lfFaceName);
+            SetDlgItemInt(hwnd, edt5, 9, FALSE);
+        }
         m_bUpdating = FALSE;
     }
 
