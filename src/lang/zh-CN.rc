@@ -109,8 +109,8 @@ IDR_MAINMENU MENU
         MENUITEM "工具栏(&T)", ID_SHOWHIDETOOLBAR
         MENUITEM "二进制模式(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "全部展开(&X)", ID_EXPAND_ALL
-        MENUITEM "全部折叠(&O)", ID_COLLAPSE_ALL
+        MENUITEM "全部展开(&X)\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "全部折叠(&O)\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "资源ID列表(&R)", ID_IDLIST
         MENUITEM "语言列表(&L)...", ID_SHOWLANGS
