@@ -30,7 +30,7 @@ IDR_MAINMENU MENU
         MENUITEM "名前を付けて保存(&A)...\tCtrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
-        MENUITEM "エクスポート(&E)...", ID_EXPORT
+        MENUITEM "エクスポート(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH

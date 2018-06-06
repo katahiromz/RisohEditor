@@ -30,7 +30,7 @@ IDR_MAINMENU MENU
         MENUITEM "Save &As...\tCtrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
-        MENUITEM "&Export...", ID_EXPORT
+        MENUITEM "&Export...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", ID_IDASSOC
         MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH

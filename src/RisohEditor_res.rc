@@ -72,6 +72,7 @@ IDR_MAINACCEL ACCELERATORS
     "O",            ID_OPEN, VIRTKEY, CONTROL
     "S",            ID_SAVEAS, VIRTKEY, CONTROL
     "I",            ID_IMPORT, VIRTKEY, CONTROL
+    "P",            ID_EXPORT, VIRTKEY, CONTROL
     "E",            ID_CANCELEDIT, VIRTKEY, CONTROL
     "G",            ID_GUIEDIT, VIRTKEY, CONTROL
     "T",            ID_TEXTEDIT, VIRTKEY, CONTROL

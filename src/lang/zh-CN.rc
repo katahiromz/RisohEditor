@@ -30,7 +30,7 @@ IDR_MAINMENU MENU
         MENUITEM "另存为(&A)...\tCtrl+S", ID_SAVEAS
         MENUITEM SEPARATOR
         MENUITEM "导入(&I)...\tCtrl+I", ID_IMPORT
-        MENUITEM "导出(&E)...", ID_EXPORT
+        MENUITEM "导出(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "&ID关联列表...", ID_IDASSOC
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
