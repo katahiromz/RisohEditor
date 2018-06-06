@@ -156,6 +156,8 @@
 #define ID_COPYRESIDVALUE       234
 #define ID_CHILDDESTROYED       235
 #define ID_USEIDC_STATIC        236
+#define ID_EXPAND_ALL           237
+#define ID_COLLAPSE_ALL         238
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

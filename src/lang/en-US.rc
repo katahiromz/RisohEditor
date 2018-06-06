@@ -109,6 +109,9 @@ IDR_MAINMENU MENU
         MENUITEM "&Tool Bar", ID_SHOWHIDETOOLBAR
         MENUITEM "&Binary", ID_BINARYPANE
         MENUITEM SEPARATOR
+        MENUITEM "E&xpand All", ID_EXPAND_ALL
+        MENUITEM "C&ollapse All", ID_COLLAPSE_ALL
+        MENUITEM SEPARATOR
         MENUITEM "List of &Resource IDs", ID_IDLIST
         MENUITEM "List of &Languages...", ID_SHOWLANGS
         MENUITEM SEPARATOR

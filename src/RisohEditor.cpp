@@ -1514,6 +1514,10 @@ protected:
     void OnCopyAsNewLang(HWND hwnd);
     void OnItemSearch(HWND hwnd);
     void OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
+    void OnExpandAll(HWND hwnd);
+    void OnCollapseAll(HWND hwnd);
+    void Expand(HTREEITEM hItem);
+    void Collapse(HTREEITEM hItem);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -7251,6 +7255,58 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     }
 }
 
+void MMainWnd::OnExpandAll(HWND hwnd)
+{
+    HTREEITEM hItem = TreeView_GetRoot(m_hTreeView);
+    do
+    {
+        Expand(hItem);
+        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+    } while (hItem);
+    hItem = TreeView_GetRoot(m_hTreeView);
+    TreeView_SelectItem(m_hTreeView, hItem);
+    TreeView_EnsureVisible(m_hTreeView, hItem);
+}
+
+void MMainWnd::OnCollapseAll(HWND hwnd)
+{
+    HTREEITEM hItem = TreeView_GetRoot(m_hTreeView);
+    do
+    {
+        Collapse(hItem);
+        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+    } while (hItem);
+    hItem = TreeView_GetRoot(m_hTreeView);
+    TreeView_SelectItem(m_hTreeView, hItem);
+    TreeView_EnsureVisible(m_hTreeView, hItem);
+}
+
+void MMainWnd::Expand(HTREEITEM hItem)
+{
+    TreeView_Expand(m_hTreeView, hItem, TVE_EXPAND);
+    hItem = TreeView_GetChild(m_hTreeView, hItem);
+    if (hItem == NULL)
+        return;
+    do
+    {
+        Expand(hItem);
+        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+    } while (hItem);
+}
+
+void MMainWnd::Collapse(HTREEITEM hItem)
+{
+    TreeView_Expand(m_hTreeView, hItem, TVE_COLLAPSE);
+    hItem = TreeView_GetChild(m_hTreeView, hItem);
+    if (hItem == NULL)
+        return;
+    do
+    {
+        Collapse(hItem);
+        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+    } while (hItem);
+}
+
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     MWaitCursor wait;
@@ -7570,6 +7626,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SHOWHIDETOOLBAR:
         OnShowHideToolBar(hwnd);
+        break;
+    case ID_EXPAND_ALL:
+        OnExpandAll(hwnd);
+        break;
+    case ID_COLLAPSE_ALL:
+        OnCollapseAll(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

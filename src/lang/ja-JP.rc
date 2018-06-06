@@ -109,6 +109,9 @@ IDR_MAINMENU MENU
         MENUITEM "ツール バー(&T)", ID_SHOWHIDETOOLBAR
         MENUITEM "バイナリー(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
+        MENUITEM "すべて展開(&X)", ID_EXPAND_ALL
+        MENUITEM "すべて折りたたむ(&O)", ID_COLLAPSE_ALL
+        MENUITEM SEPARATOR
         MENUITEM "リソースIDの一覧(&R)", ID_IDLIST
         MENUITEM "言語の一覧(&L)...", ID_SHOWLANGS
         MENUITEM SEPARATOR
