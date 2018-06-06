@@ -8710,6 +8710,11 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             UpdateOurToolBar(2);
         }
         Res_DeleteTemplate(m_entries);
+        if (dialog.m_entry_copy.type == RT_STRING)
+        {
+            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        }
     }
 }
 

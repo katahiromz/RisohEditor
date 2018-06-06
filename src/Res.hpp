@@ -1038,7 +1038,6 @@ inline void
 TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 {
     HTREEITEM hParent = TV_GetItem(hwnd, entries, entry);
-
     TreeView_SelectItem(hwnd, hParent);
 }
 
