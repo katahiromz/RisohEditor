@@ -429,6 +429,15 @@ Res_DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
     return TRUE;
 }
 
+inline void
+Res_DeleteTemplate(ResEntries& entries)
+{
+    for (size_t i = 0; i < entries.size(); ++i)
+    {
+        entries[i].strTemplate.clear();
+    }
+}
+
 inline BOOL
 Res_DeleteEntries(ResEntries& entries, const MIdOrString& type,
                   const MIdOrString& name, WORD lang)

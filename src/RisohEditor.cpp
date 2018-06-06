@@ -8709,6 +8709,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
             UpdateOurToolBar(2);
         }
+        Res_DeleteTemplate(m_entries);
     }
 }
 
