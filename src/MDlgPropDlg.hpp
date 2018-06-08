@@ -351,21 +351,13 @@ public:
         MString strFont = GetDlgItemText(cmb4);
         mstr_trim(strFont);
 
-        if ((style & DS_SHELLFONT) != DS_SHELLFONT)
-        {
-            if (strFont.empty())
-                style &= ~DS_SETFONT;
-            else
-                style |= DS_SETFONT;
-        }
+        if (strFont.empty())
+            style &= ~DS_SETFONT;
 
-        if ((style & DS_SHELLFONT) == DS_SHELLFONT)
+        if ((style & DS_SHELLFONT) == DS_FIXEDSYS)
         {
-            nFontSize = PointSizeFromStockFont(strFont, SYSTEM_FONT);
-        }
-        else if ((style & DS_SHELLFONT) == DS_FIXEDSYS)
-        {
-            nFontSize = PointSizeFromStockFont(strFont, SYSTEM_FIXED_FONT);
+            strFont.clear();
+            nFontSize = 0;
         }
 
         if (bExtended)
@@ -430,15 +422,34 @@ public:
         }
         if (!(dwOldStyle & DS_SETFONT) && (m_dwStyle & DS_SETFONT))
         {
-            LOGFONTW lf;
-            HFONT hFont;
             if ((m_dwStyle & DS_SHELLFONT) == DS_SHELLFONT)
-                hFont = HFONT(GetStockObject(SYSTEM_FONT));
+            {
+                SetDlgItemTextW(hwnd, cmb4, L"MS Shell Dlg");
+            }
             else
-                hFont = HFONT(GetStockObject(DEFAULT_GUI_FONT));
-            GetObjectW(hFont, sizeof(lf), &lf);
-            SetDlgItemTextW(hwnd, cmb4, lf.lfFaceName);
-            SetDlgItemInt(hwnd, edt5, 9, FALSE);
+            {
+                HDC hDC = CreateCompatibleDC(NULL);
+                HFONT hFont = HFONT(GetStockObject(DEFAULT_GUI_FONT));
+                SelectObject(hDC, hFont);
+
+                LOGFONTW lf;
+                GetObjectW(hFont, sizeof(lf), &lf);
+                if (lf.lfHeight < 0)
+                {
+                    lf.lfHeight = -lf.lfHeight;
+                }
+                else
+                {
+                    TEXTMETRIC tm;
+                    GetTextMetrics(hDC, &tm);
+                    lf.lfHeight -= tm.tmInternalLeading;
+                }
+                INT nFontSize = MulDiv(lf.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+                DeleteDC(hDC);
+
+                SetDlgItemTextW(hwnd, cmb4, lf.lfFaceName);
+                SetDlgItemInt(hwnd, edt5, nFontSize, FALSE);
+            }
         }
         m_bUpdating = FALSE;
     }

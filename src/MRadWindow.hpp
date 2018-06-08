@@ -2423,8 +2423,6 @@ public:
         if (m_rad_dialog.m_bMovingSizing)
             return;
 
-        m_dialog_res.Update();
-
         RECT rc;
 
         GetClientRect(m_hwnd, &rc);

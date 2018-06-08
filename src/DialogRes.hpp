@@ -880,14 +880,6 @@ struct DialogRes
         return false;
     }
 
-    void Update()
-    {
-        if (m_type_face.empty())
-            m_style &= ~DS_SETFONT;
-        else
-            m_style |= DS_SETFONT;
-    }
-
     std::vector<BYTE> data() const
     {
         MByteStreamEx stream;
@@ -1000,7 +992,7 @@ struct DialogRes
             ret += L"\r\n";
         }
 
-        if (m_style & (DS_SETFONT | DS_SHELLFONT))
+        if (m_style & DS_SETFONT)
         {
             ret += L"FONT ";
             ret += mstr_dec_short(m_point_size);
@@ -1103,15 +1095,7 @@ struct DialogRes
 
         HDC hDC = CreateCompatibleDC(NULL);
         HFONT hFont = NULL;
-        if ((m_style & DS_SHELLFONT) == DS_SHELLFONT)
-        {
-            hFont = HFONT(GetStockObject(SYSTEM_FONT));
-        }
-        else if ((m_style & DS_SHELLFONT) == DS_FIXEDSYS)
-        {
-            hFont = HFONT(GetStockObject(SYSTEM_FIXED_FONT));
-        }
-        else if (m_style & DS_SETFONT)
+        if (m_style & DS_SETFONT)
         {
             if (m_point_size == 0x7FFF)
             {
@@ -1139,6 +1123,10 @@ struct DialogRes
 
                 hFont = CreateFontIndirectW(&lf);
             }
+        }
+        if ((m_style & DS_SHELLFONT) == DS_FIXEDSYS)
+        {
+            hFont = HFONT(GetStockObject(SYSTEM_FIXED_FONT));
         }
 
         if (hFont)
@@ -1194,7 +1182,7 @@ protected:
         m_type_face.clear();
         m_items.clear();
 
-        if (m_style & (DS_SETFONT | DS_SHELLFONT))
+        if (m_style & DS_SETFONT)
         {
             if (!stream.ReadWord(m_point_size) ||
                 !stream.ReadString(m_type_face))
@@ -1235,7 +1223,14 @@ protected:
             return false;
         }
 
-        if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
+        m_point_size = 0;
+        m_weight = FW_NORMAL;
+        m_italic = FALSE;
+        m_charset = DEFAULT_CHARSET;
+        m_type_face.clear();
+        m_items.clear();
+
+        if (TemplateEx.style & DS_SETFONT)
         {
             if (!stream.ReadWord(m_point_size) ||
                 !stream.ReadWord(m_weight) || 
@@ -1247,7 +1242,6 @@ protected:
             }
         }
 
-        m_items.clear();
         return true;
     }
 
@@ -1272,7 +1266,7 @@ protected:
             return false;
         }
 
-        if (tmp.style & (DS_SETFONT | DS_SHELLFONT))
+        if (tmp.style & DS_SETFONT)
         {
             if (!stream.WriteWord(m_point_size) ||
                 !stream.WriteString(m_type_face.ptr()))
@@ -1307,7 +1301,7 @@ protected:
             return false;
         }
 
-        if (TemplateEx.style & (DS_SETFONT | DS_SHELLFONT))
+        if (TemplateEx.style & DS_SETFONT)
         {
             if (!stream.WriteWord(m_point_size) ||
                 !stream.WriteWord(m_weight) ||
