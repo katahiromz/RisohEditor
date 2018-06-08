@@ -1086,6 +1086,14 @@ struct DialogRes
         return (sz.cx / 26 + 1) / 2;
     }
 
+    static INT CALLBACK
+    EnumFontFamProc(ENUMLOGFONT *pelf, NEWTEXTMETRIC *pntm, INT nFontType, LPARAM lParam)
+    {
+        if (lstrcmpi(pelf->elfLogFont.lfFaceName, TEXT("MS Shell Dlg 2")) == 0)
+            return FALSE;
+        return TRUE;
+    }
+
     INT GetBaseUnits(INT& y) const
     {
         INT xBaseUnit, yBaseUnit;
@@ -1120,7 +1128,7 @@ struct DialogRes
                 if (m_type_face.empty())
                     lf.lfFaceName[0] = 0;
                 else
-                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.m_str.c_str());
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.c_str());
 
                 hFont = CreateFontIndirectW(&lf);
             }
@@ -1137,17 +1145,23 @@ struct DialogRes
             }
             else
             {
-                int pixels = MulDiv(m_point_size, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+                // check existence of "MS Shell Dlg 2"
+                INT ret = TRUE;
+                ret = EnumFontFamilies(hDC, L"MS Shell Dlg 2", (FONTENUMPROC)EnumFontFamProc, 0);
 
                 LOGFONTW lf;
                 ZeroMemory(&lf, sizeof(lf));
+                int pixels = MulDiv(m_point_size, GetDeviceCaps(hDC, LOGPIXELSY), 72);
                 lf.lfHeight = -pixels;
                 lf.lfWeight = m_weight;
                 lf.lfItalic = m_italic;
                 lf.lfCharSet = DEFAULT_CHARSET;
-                StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), L"MS Shell Dlg");
-                if (lstrcmpiW(m_type_face.c_str(), L"MS Shell Dlg") == 0)
-                    StringCchCatW(lf.lfFaceName, _countof(lf.lfFaceName), L" 2");
+
+                if (!ret && lstrcmpiW(m_type_face.c_str(), L"MS Shell Dlg") == 0)
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), L"MS Shell Dlg 2");
+                else
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.c_str());
+
                 hFont = CreateFontIndirectW(&lf);
             }
             break;
