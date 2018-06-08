@@ -1098,7 +1098,6 @@ struct DialogRes
         switch (m_style & DS_SHELLFONT)
         {
         case DS_SETFONT:
-        case DS_SHELLFONT:
             if (m_point_size == 0x7FFF)
             {
                 NONCLIENTMETRICSW ncm;
@@ -1123,6 +1122,32 @@ struct DialogRes
                 else
                     StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.m_str.c_str());
 
+                hFont = CreateFontIndirectW(&lf);
+            }
+            break;
+        case DS_SHELLFONT:
+            if (m_point_size == 0x7FFF)
+            {
+                NONCLIENTMETRICSW ncm;
+                ncm.cbSize = sizeof(ncm);
+                if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0))
+                {
+                    hFont = CreateFontIndirectW(&ncm.lfMessageFont);
+                }
+            }
+            else
+            {
+                int pixels = MulDiv(m_point_size, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+
+                LOGFONTW lf;
+                ZeroMemory(&lf, sizeof(lf));
+                lf.lfHeight = -pixels;
+                lf.lfWeight = m_weight;
+                lf.lfItalic = m_italic;
+                lf.lfCharSet = DEFAULT_CHARSET;
+                StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), L"MS Shell Dlg");
+                if (lstrcmpiW(m_type_face.c_str(), L"MS Shell Dlg") == 0)
+                    StringCchCatW(lf.lfFaceName, _countof(lf.lfFaceName), L" 2");
                 hFont = CreateFontIndirectW(&lf);
             }
             break;
