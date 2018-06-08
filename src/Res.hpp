@@ -201,6 +201,33 @@ struct EntryBase
             return false;
         return true;
     }
+
+    bool operator==(const EntryBase& entry) const
+    {
+        return m_lang == entry.m_lang &&
+               m_type == entry.m_type &&
+               m_name == entry.m_name;
+    }
+    bool operator!=(const EntryBase& entry) const
+    {
+        return !(*this == entry);
+    }
+    bool operator<(const EntryBase& entry) const
+    {
+        if (m_type < entry.m_type)
+            return true;
+        if (m_type > entry.m_type)
+            return false;
+        if (m_name < entry.m_name)
+            return true;
+        if (m_name > entry.m_name)
+            return false;
+        if (m_lang < entry.m_lang)
+            return true;
+        if (m_lang > entry.m_lang)
+            return false;
+        return false;
+    }
 };
 typedef std::vector<EntryBase *> EntryVector;
 
@@ -313,100 +340,71 @@ struct LangEntry : EntryBase
         }
     }
 
-    bool operator==(const Entry& entry) const
-    {
-        return m_lang == entry.m_lang &&
-               m_type == entry.m_type &&
-               m_name == entry.m_name;
-    }
-    bool operator!=(const Entry& entry) const
-    {
-        return !(*this == entry);
-    }
-    bool operator<(const Entry& entry) const
-    {
-        if (m_type < entry.m_type)
-            return true;
-        if (m_type > entry.m_type)
-            return false;
-        if (m_name < entry.m_name)
-            return true;
-        if (m_name > entry.m_name)
-            return false;
-        if (m_lang < entry.m_lang)
-            return true;
-        if (m_lang > entry.m_lang)
-            return false;
-        return false;
-    }
-
     MStringW get_name(const ConstantsDB& db) const
     {
-        MStringW ret;
-        if (m_name.m_id != 0)
+        // FIXME: Use ConstantsDB
+        if (m_name.m_id == 0)
         {
-            WORD id = m_name.m_id;
-            switch ((UINT_PTR)id)
+            return m_name.m_str;
+        }
+
+        MStringW ret;
+        switch (WORD id = m_name.m_id)
+        {
+        case (UINT_PTR)RT_BITMAP:
+            ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
+            break;
+
+        case (UINT_PTR)RT_MENU:
+            ret += db.GetNameOfResID(IDTYPE_MENU, id);
+            break;
+
+        case (UINT_PTR)RT_DIALOG:
+        case 240:   // RT_DLGINIT
+            ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
+            break;
+
+        case (UINT_PTR)RT_ACCELERATOR:
+            ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
+            break;
+
+        case (UINT_PTR)RT_GROUP_CURSOR:
+            ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
+            break;
+
+        case (UINT_PTR)RT_GROUP_ICON:
+            ret += db.GetNameOfResID(IDTYPE_ICON, id);
+            break;
+
+        case (UINT_PTR)RT_ANICURSOR:
+            ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
+            break;
+
+        case (UINT_PTR)RT_ANIICON:
+            ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
+            break;
+
+        case (UINT_PTR)RT_HTML:
+            ret += db.GetNameOfResID(IDTYPE_HTML, id);
+            break;
+
+        default:
+            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            break;
+        }
+
+        if (ret.size())
+        {
+            if (!mchr_is_digit(ret[0]))
             {
-            case (UINT_PTR)RT_BITMAP:
-                ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
-                break;
-
-            case (UINT_PTR)RT_MENU:
-                ret += db.GetNameOfResID(IDTYPE_MENU, id);
-                break;
-
-            case (UINT_PTR)RT_DIALOG:
-            case 240:   // RT_DLGINIT
-                ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
-                break;
-
-            case (UINT_PTR)RT_ACCELERATOR:
-                ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
-                break;
-
-            case (UINT_PTR)RT_GROUP_CURSOR:
-                ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
-                break;
-
-            case (UINT_PTR)RT_GROUP_ICON:
-                ret += db.GetNameOfResID(IDTYPE_ICON, id);
-                break;
-
-            case (UINT_PTR)RT_ANICURSOR:
-                ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
-                break;
-
-            case (UINT_PTR)RT_ANIICON:
-                ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
-                break;
-
-            case (UINT_PTR)RT_HTML:
-                ret += db.GetNameOfResID(IDTYPE_HTML, id);
-                break;
-
-            default:
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-                break;
-            }
-
-            if (ret.size())
-            {
-                if (!mchr_is_digit(ret[0]))
-                {
-                    ret += L" (";
-                    ret += mstr_dec_word(m_name.m_id);
-                    ret += L")";
-                }
-            }
-            else
-            {
+                ret += L" (";
                 ret += mstr_dec_word(m_name.m_id);
+                ret += L")";
             }
         }
         else
         {
-            ret = m_name.m_str;
+            ret += mstr_dec_word(m_name.m_id);
         }
         return ret;
     }
@@ -438,9 +436,8 @@ struct EntryTree
         {
             hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
             if (!hItem)
-                return;
-
-            
+                return;ss
+            ...
         }
     }
 
