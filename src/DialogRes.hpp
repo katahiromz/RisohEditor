@@ -1095,8 +1095,10 @@ struct DialogRes
 
         HDC hDC = CreateCompatibleDC(NULL);
         HFONT hFont = NULL;
-        if (m_style & DS_SETFONT)
+        switch (m_style & DS_SHELLFONT)
         {
+        case DS_SETFONT:
+        case DS_SHELLFONT:
             if (m_point_size == 0x7FFF)
             {
                 NONCLIENTMETRICSW ncm;
@@ -1123,10 +1125,13 @@ struct DialogRes
 
                 hFont = CreateFontIndirectW(&lf);
             }
-        }
-        if ((m_style & DS_SHELLFONT) == DS_FIXEDSYS)
-        {
+            break;
+        case DS_FIXEDSYS:
             hFont = HFONT(GetStockObject(SYSTEM_FIXED_FONT));
+            break;
+        default:
+            hFont = HFONT(GetStockObject(SYSTEM_FONT));
+            break;
         }
 
         if (hFont)
