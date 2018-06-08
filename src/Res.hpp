@@ -37,11 +37,13 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 
-class Entry2;
-// class Entries2;
+class ResEntry;
+// class ResEntries;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
+
+BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +53,111 @@ typedef std::map<MIdOrString, HICON>    MTitleToIcon;
 #ifndef RT_MANIFEST
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline BOOL
+Res_IsEntityType(const MIdOrString& type)
+{
+    if (type == RT_CURSOR || type == RT_ICON)
+        return FALSE;
+    if (type == RT_STRING || type == RT_MESSAGETABLE)
+        return FALSE;
+    if (type == RT_VERSION || type == RT_MANIFEST)
+        return FALSE;
+    return TRUE;
+}
+
+inline INT
+Res_IsPlainText(const MIdOrString& type)
+{
+    return type == RT_HTML || type == RT_MANIFEST ||
+           type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
+}
+
+inline INT
+Res_IsTestable(const MIdOrString& type)
+{
+    return type == RT_DIALOG || type == RT_MENU;
+}
+
+inline BOOL
+Res_CanGuiEdit(const MIdOrString& type)
+{
+    return type == RT_DIALOG || type == RT_MENU ||
+           type == RT_STRING || type == RT_MESSAGETABLE ||
+           type == RT_ACCELERATOR || type == WORD(240);
+}
+
+inline BOOL
+Res_HasSample(const MIdOrString& type)
+{
+    return type == RT_ACCELERATOR || type == RT_DIALOG ||
+           type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
+           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE ||
+           type == WORD(240) || type == L"RISOHTEMPLATE";
+}
+
+inline BOOL
+Res_HasNoName(const MIdOrString& type)
+{
+    return type == RT_STRING || type == RT_MESSAGETABLE;
+}
+
+inline MStringW
+Res_GetTypeString(const MIdOrString& id_or_str)
+{
+    // FIXME: Use ConstantsDB
+    wchar_t sz[32];
+    MStringW ret, name;
+    switch (id_or_str.m_id)
+    {
+    case 1: name = L"RT_CURSOR"; break;
+    case 2: name = L"RT_BITMAP"; break;
+    case 3: name = L"RT_ICON"; break;
+    case 4: name = L"RT_MENU"; break;
+    case 5: name = L"RT_DIALOG"; break;
+    case 6: name = L"RT_STRING"; break;
+    case 7: name = L"RT_FONTDIR"; break;
+    case 8: name = L"RT_FONT"; break;
+    case 9: name = L"RT_ACCELERATOR"; break;
+    case 10: name = L"RT_RCDATA"; break;
+    case 11: name = L"RT_MESSAGETABLE"; break;
+    case 12: name = L"RT_GROUP_CURSOR"; break;
+    //
+    case 14: name = L"RT_GROUP_ICON"; break;
+    //
+    case 16: name = L"RT_VERSION"; break;
+    case 17: name = L"RT_DLGINCLUDE"; break;
+    //
+    case 19: name = L"RT_PLUGPLAY"; break;
+    case 20: name = L"RT_VXD"; break;
+    case 21: name = L"RT_ANICURSOR"; break;
+    case 22: name = L"RT_ANIICON"; break;
+    case 23: name = L"RT_HTML"; break;
+    case 24: name = L"RT_MANIFEST"; break;
+    case 240: name = L"RT_DLGINIT"; break;
+    default:
+        if (id_or_str.m_id != 0)
+        {
+            StringCchPrintfW(sz, _countof(sz), L"%u", id_or_str.m_id);
+            ret = sz;
+        }
+        else
+        {
+            ret = id_or_str.m_str;
+        }
+    }
+    if (name.size())
+    {
+        StringCchPrintfW(sz, _countof(sz), L" (%u)", id_or_str.m_id);
+        ret = name;
+        ret += sz;
+    }
+    return ret;
+}
+
+MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntryBase, TypeEntry, NameEnry, LangEntry, StringEntry, MessageEntry
@@ -103,7 +210,7 @@ struct NameEntry : EntryBase
 struct StringEntry : EntryBase
 {
     NameEntry(const MIdOrString& type, WORD lang)
-        : EntryBase(I_STRING, RT_STRING, lang)
+        : EntryBase(I_STRING, RT_STRING, L"", lang)
     {
     }
 };
@@ -111,7 +218,7 @@ struct StringEntry : EntryBase
 struct MessageEntry : EntryBase
 {
     NameEntry(const MIdOrString& type, WORD lang)
-        : EntryBase(I_STRING, RT_STRING, lang)
+        : EntryBase(I_STRING, RT_STRING, L"", lang)
     {
     }
 };
@@ -227,36 +334,40 @@ struct LangEntry : EntryBase
             case (UINT_PTR)RT_BITMAP:
                 ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
                 break;
+
             case (UINT_PTR)RT_MENU:
                 ret += db.GetNameOfResID(IDTYPE_MENU, id);
                 break;
+
             case (UINT_PTR)RT_DIALOG:
             case 240:   // RT_DLGINIT
                 ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
                 break;
+
             case (UINT_PTR)RT_ACCELERATOR:
                 ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
+                break;
+
             case (UINT_PTR)RT_GROUP_CURSOR:
                 ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
                 break;
+
             case (UINT_PTR)RT_GROUP_ICON:
                 ret += db.GetNameOfResID(IDTYPE_ICON, id);
                 break;
+
             case (UINT_PTR)RT_ANICURSOR:
                 ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
                 break;
+
             case (UINT_PTR)RT_ANIICON:
                 ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
                 break;
+
             case (UINT_PTR)RT_HTML:
                 ret += db.GetNameOfResID(IDTYPE_HTML, id);
                 break;
-            case (UINT_PTR)RT_FONTDIR:
-            case (UINT_PTR)RT_FONT:
-            case (UINT_PTR)RT_RCDATA:
-            case (UINT_PTR)RT_DLGINCLUDE:
-            case (UINT_PTR)RT_PLUGPLAY:
-            case (UINT_PTR)RT_VXD:
+
             default:
                 ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
                 break;
@@ -285,16 +396,16 @@ struct LangEntry : EntryBase
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// Entries2
+// ResEntries
 
-class Entries2 : public std::set<Entry2 *>
+class ResEntries : public std::set<ResEntry *>
 {
-    Entries2()
+    ResEntries()
     {
     }
-    Entries2(const std::set<Entry2 *>& entries) = delete;
-    Entries2& operator=(const std::set<Entry2 *>& entries) = delete;
-    ~Entries2()
+    ResEntries(const std::set<ResEntry *>& entries) = delete;
+    ResEntries& operator=(const std::set<ResEntry *>& entries) = delete;
+    ~ResEntries()
     {
         for (auto item : *this)
         {
@@ -315,7 +426,7 @@ class Entries2 : public std::set<Entry2 *>
         }
     }
 
-    Entry2 *
+    ResEntry *
     Find(const MIdOrString& type, 
          const MIdOrString& name,
          WORD lang)
@@ -334,7 +445,7 @@ class Entries2 : public std::set<Entry2 *>
         return NULL;
     }
 
-    Entry2 *
+    ResEntry *
     Find2(const MIdOrString& type, 
           const MIdOrString& name,
           WORD lang)
@@ -346,7 +457,7 @@ class Entries2 : public std::set<Entry2 *>
     }
 
     inline bool
-    Intersect(const Entries2& entries2) const
+    Intersect(const ResEntries& entries2) const
     {
         if (size() == 0 && entries2.size() == 0)
             return false;
@@ -363,7 +474,7 @@ class Entries2 : public std::set<Entry2 *>
     }
 
     void
-    Search(Entries2& found,
+    Search(ResEntries& found,
            const MIdOrString& type, 
            const MIdOrString& name,
            WORD lang)
@@ -399,7 +510,7 @@ class Entries2 : public std::set<Entry2 *>
             return;
         }
 
-        Entries2 found;
+        ResEntries found;
         Search(found, entries, type, name, lang);
 
         for (auto item : found)
@@ -449,7 +560,7 @@ class Entries2 : public std::set<Entry2 *>
         LPVOID pv = LockResource(hGlobal);
         if (pv && dwSize)
         {
-            auto entry = new Entry2(type, name, lang);
+            auto entry = new ResEntry(type, name, lang);
             entry->assign(pv, dwSize);
             push_back(entry);
             return true;
@@ -464,7 +575,7 @@ class Entries2 : public std::set<Entry2 *>
         ...
     }
 
-    bool DeleteGroupIcon(Entry2& entry)
+    bool DeleteGroupIcon(ResEntry& entry)
     {
         assert(entry.M_type == RT_GROUP_ICON);
 
@@ -603,7 +714,7 @@ class Entries2 : public std::set<Entry2 *>
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
     {
-        Entries2& entries = *(Entries *)lParam;
+        ResEntries& entries = *(Entries *)lParam;
         AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
         return TRUE;
     }
@@ -724,81 +835,272 @@ class Entries2 : public std::set<Entry2 *>
         {
             if (entry->empty())
             {
-                entries.erase(entry);
+                erase(entry);
                 delete entry;
             }
         }
     }
+
+    BOOL ExtractCursor(const EntryBase& cur_entry,
+                       const wchar_t *OutputFileName)
+    {
+        ICONDIR dir;
+        dir.idReserved = 0;
+        dir.idType = RES_CURSOR;
+        dir.idCount = 1;
+
+        LOCALHEADER local;
+        if (cur_entry.size() < sizeof(local))
+        {
+            assert(0);
+            return FALSE;
+        }
+        memcpy(&local, &cur_entry[0], sizeof(local));
+
+        BITMAP bm;
+        LPBYTE pb = LPBYTE(&cur_entry[0]) + sizeof(local);
+        DWORD cb = cur_entry.size() - sizeof(local);
+        if (!PackedDIB_GetInfo(pb, cb, bm))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        ICONDIRENTRY entry;
+        entry.bWidth = (BYTE)bm.bmWidth;
+        entry.bHeight = (BYTE)(bm.bmHeight / 2);
+        entry.bColorCount = 0;
+        entry.bReserved = 0;
+        entry.xHotSpot = local.xHotSpot;
+        entry.yHotSpot = local.yHotSpot;
+        entry.dwBytesInRes = cur_entry.size() - sizeof(local);
+        entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
+
+        DWORD cbLocal = sizeof(LOCALHEADER);
+        pb = LPBYTE(&cur_entry[0]) + cbLocal;
+        cb = cur_entry.size() - cbLocal;
+
+        MByteStreamEx stream;
+        if (!stream.WriteRaw(dir) ||
+            !stream.WriteData(&entry, sizeof(entry)) ||
+            !stream.WriteData(pb, cb))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        return stream.SaveToFile(OutputFileName);
+    }
+
+    BOOL
+    ExtractGroupCursor(const Entry& grp_cur_entry, const wchar_t *OutputFileName)
+    {
+        ICONDIR dir;
+        if (grp_cur_entry.type != RT_GROUP_CURSOR ||
+            grp_cur_entry.size() < sizeof(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        memcpy(&dir, &grp_cur_entry[0], sizeof(dir));
+        if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        DWORD SizeOfCursorEntries = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
+        if (grp_cur_entry.size() < sizeof(dir) + SizeOfCursorEntries)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
+        memcpy(&GroupEntries[0], &grp_cur_entry[sizeof(dir)],
+               SizeOfCursorEntries);
+
+        DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
+        std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto entry = Find2(RT_CURSOR, GroupEntries[i].nID, grp_cur_entry.lang);
+            if (!entry)
+                continue;
+
+            LOCALHEADER local;
+            if (entry->size() >= sizeof(local))
+                memcpy(&local, &(*entry)[0], sizeof(local));
+
+            DirEntries[i].bWidth = (BYTE)GroupEntries[i].wWidth;
+            DirEntries[i].bHeight = (BYTE)GroupEntries[i].wHeight;
+            if (GroupEntries[i].wBitCount >= 8)
+                DirEntries[i].bColorCount = 0;
+            else
+                DirEntries[i].bColorCount = 1 << GroupEntries[i].wBitCount;
+            DirEntries[i].bReserved = 0;
+            DirEntries[i].xHotSpot = local.xHotSpot;
+            DirEntries[i].yHotSpot = local.yHotSpot;
+            DirEntries[i].dwBytesInRes = entry->size() - sizeof(local);
+            DirEntries[i].dwImageOffset = offset;
+            offset += DirEntries[i].dwBytesInRes;
+        }
+
+        MByteStreamEx stream;
+        if (!stream.WriteRaw(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
+        if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto entry = Find2(RT_CURSOR, GroupEntries[i].nID, grp_cur_entry.lang, FALSE);
+            if (!entry)
+                continue;
+
+            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = (*entry).size() - cbLocal;
+            LPBYTE pb = LPBYTE(&(*entry)[0]) + cbLocal;
+            if (!stream.WriteData(pb, dwSize))
+            {
+                assert(0);
+                return FALSE;
+            }
+        }
+
+        return stream.SaveToFile(OutputFileName);
+    }
+
+    BOOL ExtractIcon(const Entry& i_entry, const wchar_t *OutputFileName)
+    {
+        ICONDIR dir;
+        dir.idReserved = 0;
+        dir.idType = RES_ICON;
+        dir.idCount = 1;
+
+        BITMAP bm;
+        if (!PackedDIB_GetInfo(&i_entry[0], i_entry.size(), bm))
+        {
+            MBitmapDx bitmap;
+            bitmap.CreateFromMemory(&i_entry[0], i_entry.size());
+
+            LONG cx, cy;
+            HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
+            GetObject(hbm, sizeof(bm), &bm);
+            DeleteObject(hbm);
+        }
+
+        ICONDIRENTRY entry;
+        entry.bWidth = (BYTE)bm.bmWidth;
+        entry.bHeight = (BYTE)bm.bmHeight;
+        entry.bColorCount = 0;
+        entry.bReserved = 0;
+        entry.wPlanes = 1;
+        entry.wBitCount = bm.bmBitsPixel;
+        entry.dwBytesInRes = i_entry.size();
+        entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
+
+        MByteStreamEx stream;
+        if (!stream.WriteRaw(dir) ||
+            !stream.WriteData(&entry, sizeof(entry)) ||
+            !stream.WriteData(&i_entry[0], i_entry.size()))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        return stream.SaveToFile(OutputFileName);
+    }
+
+    BOOL
+    ExtractGroupIcon(const Entry& grp_ico_entry, const wchar_t *OutputFileName)
+    {
+        ICONDIR dir;
+        if (grp_ico_entry.type != RT_GROUP_ICON ||
+            grp_ico_entry.size() < sizeof(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        memcpy(&dir, &grp_ico_entry[0], sizeof(dir));
+        if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        DWORD SizeOfIconEntries = sizeof(GRPICONDIRENTRY) * dir.idCount;
+        if (grp_ico_entry.size() < sizeof(dir) + SizeOfIconEntries)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        std::vector<GRPICONDIRENTRY> GroupEntries(dir.idCount);
+        memcpy(&GroupEntries[0], &grp_ico_entry[sizeof(dir)], SizeOfIconEntries);
+
+        DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
+        std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto entry = Find2(RT_ICON, GroupEntries[i].nID, grp_ico_entry.lang);
+            if (!entry)
+                continue;
+
+            DirEntries[i].bWidth = GroupEntries[i].bWidth;
+            DirEntries[i].bHeight = GroupEntries[i].bHeight;
+            if (GroupEntries[i].wBitCount >= 8)
+                DirEntries[i].bColorCount = 0;
+            else
+                DirEntries[i].bColorCount = GroupEntries[i].bColorCount;
+            DirEntries[i].bReserved = 0;
+            DirEntries[i].wPlanes = 1;
+            DirEntries[i].wBitCount = GroupEntries[i].wBitCount;
+            DirEntries[i].dwBytesInRes = (*entry).size();
+            DirEntries[i].dwImageOffset = offset;
+            offset += DirEntries[i].dwBytesInRes;
+        }
+
+        MByteStreamEx stream;
+        if (!stream.WriteRaw(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
+        if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto entry = Find2(RT_ICON, GroupEntries[i].nID, grp_ico_entry.lang, FALSE);
+            if (!entry)
+                continue;
+
+            DWORD dwSize = (*entry).size();
+            if (!stream.WriteData(&(*entry)[0], dwSize))
+            {
+                assert(0);
+                return FALSE;
+            }
+        }
+
+        return stream.SaveToFile(OutputFileName);
+    }
 };
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline BOOL Res_IsEntityType(const MIdOrString& type)
-{
-    if (type == RT_CURSOR || type == RT_ICON)
-        return FALSE;
-    if (type == RT_STRING || type == RT_MESSAGETABLE)
-        return FALSE;
-    if (type == RT_VERSION || type == RT_MANIFEST)
-        return FALSE;
-    return TRUE;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline MStringW
-Res_GetTypeString(const MIdOrString& id_or_str)
-{
-    wchar_t sz[32];
-    MStringW ret, name;
-    switch (id_or_str.m_id)
-    {
-    case 1: name = L"RT_CURSOR"; break;
-    case 2: name = L"RT_BITMAP"; break;
-    case 3: name = L"RT_ICON"; break;
-    case 4: name = L"RT_MENU"; break;
-    case 5: name = L"RT_DIALOG"; break;
-    case 6: name = L"RT_STRING"; break;
-    case 7: name = L"RT_FONTDIR"; break;
-    case 8: name = L"RT_FONT"; break;
-    case 9: name = L"RT_ACCELERATOR"; break;
-    case 10: name = L"RT_RCDATA"; break;
-    case 11: name = L"RT_MESSAGETABLE"; break;
-    case 12: name = L"RT_GROUP_CURSOR"; break;
-    //
-    case 14: name = L"RT_GROUP_ICON"; break;
-    //
-    case 16: name = L"RT_VERSION"; break;
-    case 17: name = L"RT_DLGINCLUDE"; break;
-    //
-    case 19: name = L"RT_PLUGPLAY"; break;
-    case 20: name = L"RT_VXD"; break;
-    case 21: name = L"RT_ANICURSOR"; break;
-    case 22: name = L"RT_ANIICON"; break;
-    case 23: name = L"RT_HTML"; break;
-    case 24: name = L"RT_MANIFEST"; break;
-    case 240: name = L"RT_DLGINIT"; break;
-    default:
-        if (id_or_str.m_id != 0)
-        {
-            StringCchPrintfW(sz, _countof(sz), L"%u", id_or_str.m_id);
-            ret = sz;
-        }
-        else
-        {
-            ret = id_or_str.m_str;
-        }
-    }
-    if (name.size())
-    {
-        StringCchPrintfW(sz, _countof(sz), L" (%u)", id_or_str.m_id);
-        ret = name;
-        ret += sz;
-    }
-    return ret;
-}
-
-MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -817,45 +1119,6 @@ TV_GetParam(HWND hwnd, HTREEITEM hItem = NULL)
     TreeView_GetItem(hwnd, &item);
 
     return item.lParam;
-}
-
-inline INT
-TV_GetSelection(HWND hwnd, Entries& selection,
-                const Entries& entries, HTREEITEM hItem = NULL)
-{
-    selection.clear();
-
-    LPARAM lParam = TV_GetParam(hwnd, hItem);
-    WORD i = LOWORD(lParam);
-    if (i >= entries.size())
-        return 0;
-
-    Entry entry;
-    switch (HIWORD(lParam))
-    {
-    case I_TYPE:
-        entry = entries[i];
-        entry.name.clear();
-        entry.lang = 0xFFFF;
-        break;
-    case I_NAME:
-        entry = entries[i];
-        entry.lang = 0xFFFF;
-        break;
-    case I_LANG:
-        entry = entries[i];
-        break;
-    case I_STRING:
-    case I_MESSAGE:
-        entry = entries[i];
-        entry.name.clear();
-        break;
-    default:
-        return 0;
-    }
-
-    Res_Search(selection, entries, entry);
-    return INT(selection.size());
 }
 
 inline HTREEITEM
@@ -1163,329 +1426,6 @@ inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, Entries& entr
     TV_RefreshInfo(hwnd, db, entries);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
-}
-
-inline BOOL
-Res_ExtractGroupIcon(const Entries& entries,
-                     const Entry& GroupIconEntry,
-                     const wchar_t *OutputFileName)
-{
-    ICONDIR dir;
-    if (GroupIconEntry.type != RT_GROUP_ICON ||
-        GroupIconEntry.size() < sizeof(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    memcpy(&dir, &GroupIconEntry[0], sizeof(dir));
-    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    DWORD SizeOfIconEntries = sizeof(GRPICONDIRENTRY) * dir.idCount;
-    if (GroupIconEntry.size() < sizeof(dir) + SizeOfIconEntries)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    std::vector<GRPICONDIRENTRY> GroupEntries(dir.idCount);
-    memcpy(&GroupEntries[0], &GroupIconEntry[sizeof(dir)], SizeOfIconEntries);
-
-    DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
-    std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find2(entries, RT_ICON, GroupEntries[i].nID,
-                          GroupIconEntry.lang, FALSE);
-        if (k == -1)
-        {
-            continue;
-        }
-        const Entry& IconEntry = entries[k];
-
-        DirEntries[i].bWidth = GroupEntries[i].bWidth;
-        DirEntries[i].bHeight = GroupEntries[i].bHeight;
-        if (GroupEntries[i].wBitCount >= 8)
-            DirEntries[i].bColorCount = 0;
-        else
-            DirEntries[i].bColorCount = GroupEntries[i].bColorCount;
-        DirEntries[i].bReserved = 0;
-        DirEntries[i].wPlanes = 1;
-        DirEntries[i].wBitCount = GroupEntries[i].wBitCount;
-        DirEntries[i].dwBytesInRes = IconEntry.size();
-        DirEntries[i].dwImageOffset = offset;
-        offset += DirEntries[i].dwBytesInRes;
-    }
-
-    MByteStreamEx stream;
-    if (!stream.WriteRaw(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
-    if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find2(entries, RT_ICON, GroupEntries[i].nID,
-                          GroupIconEntry.lang, FALSE);
-        if (k == -1)
-        {
-            continue;
-        }
-        const Entry& IconEntry = entries[k];
-
-        DWORD dwSize = IconEntry.size();
-        if (!stream.WriteData(&IconEntry[0], dwSize))
-        {
-            assert(0);
-            return FALSE;
-        }
-    }
-
-    return stream.SaveToFile(OutputFileName);
-}
-
-BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
-
-inline BOOL
-Res_ExtractIcon(const Entries& entries,
-                const Entry& IconEntry,
-                const wchar_t *OutputFileName)
-{
-    ICONDIR dir;
-    dir.idReserved = 0;
-    dir.idType = RES_ICON;
-    dir.idCount = 1;
-
-    BITMAP bm;
-    if (!PackedDIB_GetInfo(&IconEntry[0], IconEntry.size(), bm))
-    {
-        MBitmapDx bitmap;
-        bitmap.CreateFromMemory(&IconEntry[0], IconEntry.size());
-
-        LONG cx, cy;
-        HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
-        GetObject(hbm, sizeof(bm), &bm);
-        DeleteObject(hbm);
-    }
-
-    ICONDIRENTRY entry;
-    entry.bWidth = (BYTE)bm.bmWidth;
-    entry.bHeight = (BYTE)bm.bmHeight;
-    entry.bColorCount = 0;
-    entry.bReserved = 0;
-    entry.wPlanes = 1;
-    entry.wBitCount = bm.bmBitsPixel;
-    entry.dwBytesInRes = IconEntry.size();
-    entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
-
-    MByteStreamEx stream;
-    if (!stream.WriteRaw(dir) ||
-        !stream.WriteData(&entry, sizeof(entry)) ||
-        !stream.WriteData(&IconEntry[0], IconEntry.size()))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    return stream.SaveToFile(OutputFileName);
-}
-
-inline BOOL
-Res_ExtractGroupCursor(const Entries& entries,
-                       const Entry& GroupCursorEntry,
-                       const wchar_t *OutputFileName)
-{
-    ICONDIR dir;
-    if (GroupCursorEntry.type != RT_GROUP_CURSOR ||
-        GroupCursorEntry.size() < sizeof(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    memcpy(&dir, &GroupCursorEntry[0], sizeof(dir));
-    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    DWORD SizeOfCursorEntries = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
-    if (GroupCursorEntry.size() < sizeof(dir) + SizeOfCursorEntries)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
-    memcpy(&GroupEntries[0], &GroupCursorEntry[sizeof(dir)],
-           SizeOfCursorEntries);
-
-    DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
-    std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find2(entries, RT_CURSOR, GroupEntries[i].nID,
-                          GroupCursorEntry.lang, FALSE);
-        if (k == -1)
-        {
-            continue;
-        }
-        const Entry& CursorEntry = entries[k];
-        LOCALHEADER local;
-        if (CursorEntry.size() >= sizeof(local))
-            memcpy(&local, &CursorEntry[0], sizeof(local));
-
-        DirEntries[i].bWidth = (BYTE)GroupEntries[i].wWidth;
-        DirEntries[i].bHeight = (BYTE)GroupEntries[i].wHeight;
-        if (GroupEntries[i].wBitCount >= 8)
-            DirEntries[i].bColorCount = 0;
-        else
-            DirEntries[i].bColorCount = 1 << GroupEntries[i].wBitCount;
-        DirEntries[i].bReserved = 0;
-        DirEntries[i].xHotSpot = local.xHotSpot;
-        DirEntries[i].yHotSpot = local.yHotSpot;
-        DirEntries[i].dwBytesInRes = CursorEntry.size() - sizeof(local);
-        DirEntries[i].dwImageOffset = offset;
-        offset += DirEntries[i].dwBytesInRes;
-    }
-
-    MByteStreamEx stream;
-    if (!stream.WriteRaw(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
-    if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        INT k = Res_Find2(entries, RT_CURSOR, GroupEntries[i].nID,
-                          GroupCursorEntry.lang, FALSE);
-        if (k == -1)
-        {
-            continue;
-        }
-        const Entry& CursorEntry = entries[k];
-
-        DWORD cbLocal = sizeof(LOCALHEADER);
-        DWORD dwSize = CursorEntry.size() - cbLocal;
-        LPBYTE pb = LPBYTE(&CursorEntry[0]) + cbLocal;
-        if (!stream.WriteData(pb, dwSize))
-        {
-            assert(0);
-            return FALSE;
-        }
-    }
-
-    return stream.SaveToFile(OutputFileName);
-}
-
-inline BOOL
-Res_ExtractCursor(const Entries& entries,
-                  const Entry& CursorEntry,
-                  const wchar_t *OutputFileName)
-{
-    ICONDIR dir;
-    dir.idReserved = 0;
-    dir.idType = RES_CURSOR;
-    dir.idCount = 1;
-
-    LOCALHEADER local;
-    if (CursorEntry.size() < sizeof(local))
-    {
-        assert(0);
-        return FALSE;
-    }
-    memcpy(&local, &CursorEntry[0], sizeof(local));
-
-    BITMAP bm;
-    LPBYTE pb = LPBYTE(&CursorEntry[0]) + sizeof(local);
-    DWORD cb = CursorEntry.size() - sizeof(local);
-    if (!PackedDIB_GetInfo(pb, cb, bm))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    ICONDIRENTRY entry;
-    entry.bWidth = (BYTE)bm.bmWidth;
-    entry.bHeight = (BYTE)(bm.bmHeight / 2);
-    entry.bColorCount = 0;
-    entry.bReserved = 0;
-    entry.xHotSpot = local.xHotSpot;
-    entry.yHotSpot = local.yHotSpot;
-    entry.dwBytesInRes = CursorEntry.size() - sizeof(local);
-    entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
-
-    DWORD cbLocal = sizeof(LOCALHEADER);
-    pb = LPBYTE(&CursorEntry[0]) + cbLocal;
-    cb = CursorEntry.size() - cbLocal;
-
-    MByteStreamEx stream;
-    if (!stream.WriteRaw(dir) ||
-        !stream.WriteData(&entry, sizeof(entry)) ||
-        !stream.WriteData(pb, cb))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    return stream.SaveToFile(OutputFileName);
-}
-
-inline INT
-Res_IsPlainText(const MIdOrString& type)
-{
-    return type == RT_HTML || type == RT_MANIFEST ||
-           type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
-}
-
-inline INT
-Res_IsTestable(const MIdOrString& type)
-{
-    return type == RT_DIALOG || type == RT_MENU;
-}
-
-inline BOOL
-Res_CanGuiEdit(const MIdOrString& type)
-{
-    return type == RT_DIALOG || type == RT_MENU ||
-           type == RT_STRING || type == RT_MESSAGETABLE ||
-           type == RT_ACCELERATOR || type == WORD(240);
-}
-
-inline BOOL
-Res_HasSample(const MIdOrString& type)
-{
-    return type == RT_ACCELERATOR || type == RT_DIALOG ||
-           type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
-           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE ||
-           type == WORD(240) || type == L"RISOHTEMPLATE";
-}
-
-inline BOOL
-Res_HasNoName(const MIdOrString& type)
-{
-    return type == RT_STRING || type == RT_MESSAGETABLE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
