@@ -26,6 +26,7 @@
 #include <commctrl.h>
 #include <cctype>
 #include <cwchar>
+#include <set>          // for std::set
 #include <algorithm>    // for std::sort
 
 #include "IconRes.hpp"
@@ -36,8 +37,8 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 
-class ResEntry;
-// class ResEntries;
+class ResEntry2;
+// class ResEntries2;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
@@ -58,92 +59,89 @@ typedef std::map<MIdOrString, HICON>    MTitleToIcon;
 #define I_STRING    4
 #define I_MESSAGE   5
 
-class ResEntry
+///////////////////////////////////////////////////////////////////////////////
+// ResEntry2
+
+class ResEntry2
 {
 public:
     typedef DWORD               size_type;
     typedef std::vector<BYTE>   DataType;
 
-    WORD            lang;
-    BOOL            updated;
-    MIdOrString     type;
-    MIdOrString     name;
-    DataType        data;
-    MStringW        strTemplate;
+    HTREEITEM       m_hTreeItem = NULL;
+    WORD            m_lang = 0xFFFF;
+    MIdOrString     m_type;
+    MIdOrString     m_name;
+    DataType        m_data;
+    MStringW        m_strText;
 
-    ResEntry() : lang(0xFFFF), updated(FALSE)
+    ResEntry2(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF,
+              const MStringW strText = L"")
+        : m_type(type), m_name(name), m_lang(lang), m_strText(strText)
     {
     }
 
-    ResEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
-             const MStringW strTmp = L"", BOOL Updated = TRUE)
-     : type(type), name(name), lang(lang), strTemplate(strTmp), updated(Updated)
+    void clear_data()
     {
+        m_data.clear();
+        m_strText.clear();
     }
 
     void clear()
     {
         clear_data();
-        lang = 0xFFFF;
-        name = (WORD)0;
-        type = (WORD)0;
-    }
-
-    void clear_data()
-    {
-        data.clear();
-        strTemplate.clear();
-        updated = TRUE;
+        m_lang = 0xFFFF;
+        m_name = (WORD)0;
+        m_type = (WORD)0;
     }
 
     bool empty() const
     {
-        return size() == 0 && strTemplate.empty();
+        return size() == 0 && m_strText.empty();
     }
     size_type size() const
     {
-        return size_type(data.size());
+        return size_type(m_data.size());
     }
 
     void *ptr(DWORD index = 0)
     {
-        return &data[index];
+        return &m_data[index];
     }
     const void *ptr(DWORD index = 0) const
     {
-        return &data[index];
+        return &m_data[index];
     }
 
     BYTE& operator[](DWORD index)
     {
-        assert(index <= data.size());
-        return data[index];
+        assert(index <= m_data.size());
+        return m_data[index];
     }
     const BYTE& operator[](DWORD index) const
     {
-        assert(index <= data.size());
-        return data[index];
+        assert(index <= m_data.size());
+        return m_data[index];
     }
 
     void assign(const void *ptr, size_type nSize)
     {
         if (ptr && nSize)
         {
-            data.resize(nSize);
-            memcpy(&data[0], ptr, nSize);
+            m_data.resize(nSize);
+            memcpy(&m_data[0], ptr, nSize);
         }
         else
         {
-            data.clear();
+            m_data.clear();
         }
-        updated = TRUE;
     }
 
     bool operator==(const ResEntry& entry) const
     {
-        return lang == entry.lang &&
-               type == entry.type &&
-               name == entry.name;
+        return m_lang == entry.m_lang &&
+               m_type == entry.m_type &&
+               m_name == entry.m_name;
     }
     bool operator!=(const ResEntry& entry) const
     {
@@ -151,27 +149,246 @@ public:
     }
     bool operator<(const ResEntry& entry) const
     {
-        if (type < entry.type)
+        if (m_type < entry.m_type)
             return true;
-        if (type > entry.type)
+        if (m_type > entry.m_type)
             return false;
-        if (name < entry.name)
+        if (m_name < entry.m_name)
             return true;
-        if (name > entry.name)
+        if (m_name > entry.m_name)
             return false;
-        if (lang < entry.lang)
+        if (m_lang < entry.m_lang)
             return true;
-        if (lang > entry.lang)
+        if (m_lang > entry.m_lang)
             return false;
         return false;
     }
 };
-typedef std::vector<ResEntry> ResEntries;
+
+///////////////////////////////////////////////////////////////////////////////
+// ResEntries2
+
+class ResEntries2 : public std::set<ResEntry2 *>
+{
+    ResEntries2()
+    {
+    }
+    ResEntries2(const std::set<ResEntry2 *>& entries) = delete;
+    ResEntries2& operator=(const std::set<ResEntry2 *>& entries) = delete;
+    ~ResEntries2()
+    {
+        for (auto item : *this)
+        {
+            delete item;
+        }
+    }
+
+    ResEntry2 *
+    Find(const MIdOrString& type, 
+         const MIdOrString& name,
+         WORD lang)
+    {
+        for (auto item : *this)
+        {
+            auto entry = *item;
+            if (!type.is_zero() && entry.m_type != type)
+                continue;
+            if (!name.is_zero() && entry.m_name != name)
+                continue;
+            if (lang != 0xFFFF && entry.m_lang != lang)
+                continue;
+            return item;
+        }
+        return NULL;
+    }
+
+    ResEntry2 *
+    Find2(const MIdOrString& type, 
+          const MIdOrString& name,
+          WORD lang)
+    {
+        auto entry = Find(type, name, lang);
+        if (!entry)
+            entry = Find(type, name, 0xFFFF);
+        return entry;
+    }
+
+    inline bool
+    Intersect(const ResEntries2& entries2) const
+    {
+        if (size() == 0 && entries2.size() == 0)
+            return false;
+
+        for (auto item1 : *this)
+        {
+            for (auto item2 : entries2)
+            {
+                if (*item1 == *item2)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    void
+    Search(ResEntries2& found,
+           const MIdOrString& type, 
+           const MIdOrString& name,
+           WORD lang)
+    {
+        found.clear();
+
+        for (auto item : *this)
+        {
+            if (!type.is_zero() && item->type != type)
+                continue;
+            if (!name.is_zero() && item->name != name)
+                continue;
+            if (lang != 0xFFFF && item->lang != lang)
+                continue;
+
+            found.push_back(item);
+        }
+    }
+
+    void
+    SearchAndDelete(const MIdOrString& type, 
+                    const MIdOrString& name,
+                    WORD lang)
+    {
+        if (type == RT_GROUP_ICON)
+        {
+            DeleteGroupIcon(entry);
+            return;
+        }
+        if (type == RT_GROUP_CURSOR)
+        {
+            DeleteGroupCursor(entry);
+            return;
+        }
+
+        ResEntries2 found;
+        Search(found, entries, type, name, lang);
+
+        for (auto item : found)
+        {
+            entries.erase(item);
+            delete item;
+        }
+
+        found.clear();
+    }
+
+    UINT GetLastIconID(const ResEntries& entries)
+    {
+        WORD last_id = 0;
+        for (auto item : *this)
+        {
+            if (item->type != RT_ICON || !item->m_name.is_int() || item->m_name.is_zero())
+                continue;
+            if (last_id < item->name.m_id)
+                last_id = item->name.m_id;
+        }
+        return last_id;
+    }
+
+    UINT GetLastCursorID(const ResEntries& entries)
+    {
+        WORD last_id = 0;
+        for (auto item : *this)
+        {
+            if (item->type != RT_CURSOR || !item->m_name.is_int() || item->m_name.is_zero())
+                continue;
+
+            if (last_id < item->name.m_id)
+                last_id = item->name.m_id;
+        }
+        return last_id;
+    }
+
+    bool AddFromRes(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
+    {
+        HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
+        if (!hResInfo)
+            return false;
+
+        DWORD dwSize = SizeofResource(hMod, hResInfo);
+        HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
+        LPVOID pv = LockResource(hGlobal);
+        if (pv && dwSize)
+        {
+            auto entry = new ResEntry2(type, name, lang);
+            entry->assign(pv, dwSize);
+            push_back(entry);
+            return true;
+        }
+        return false;
+    }
+
+    BOOL Add(const MIdOrString& type, const MIdOrString& name, WORD lang,
+             const MStringW& strText, const ResEntry::DataType& data,
+             BOOL Replace = FALSE)
+    {
+        ...
+        ResEntry entry(type, name, lang, strText);
+        entry.m_data = vecData;
+        return AddEntry(entries, entry, Replace);
+    }
+
+    bool DeleteGroupIcon(ResEntry2& entry)
+    {
+        assert(entry.M_type == RT_GROUP_ICON);
+
+        MByteStreamEx bs(entry.m_data);
+
+        ICONDIR dir;
+        if (!bs.ReadRaw(dir))
+            return false;
+
+        DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
+        std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
+        if (!bs.ReadData(&DirEntries[0], size))
+            return false;
+
+        DWORD i, nCount = dir.idCount;
+        for (i = 0; i < nCount; ++i)
+        {
+            SearchAndDelete(RT_ICON, DirEntries[i].nID, entry.lang);
+        }
+
+        SearchAndDelete(entry.m_type, entry.m_name, entry.m_lang);
+        return true;
+    }
+
+    bool DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
+    {
+        assert(entry.m_type == RT_GROUP_CURSOR);
+
+        MByteStreamEx bs(entry.m_data);
+
+        ICONDIR dir;
+        if (!bs.ReadRaw(dir))
+            return false;
+
+        DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
+        std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
+        if (!bs.ReadData(&DirEntries[0], size))
+            return false;
+
+        DWORD i, nCount = dir.idCount;
+        for (i = 0; i < nCount; ++i)
+        {
+            SearchAndDelete(RT_CURSOR, DirEntries[i].nID, entry.lang);
+        }
+
+        SearchAndDelete(entry.m_type, entry.m_name, entry.m_lang);
+        return true;
+    }
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline BOOL
-Res_IsEntityType(const MIdOrString& type)
+inline BOOL Res_IsEntityType(const MIdOrString& type)
 {
     if (type == RT_CURSOR || type == RT_ICON)
         return FALSE;
@@ -180,300 +397,6 @@ Res_IsEntityType(const MIdOrString& type)
     if (type == RT_VERSION || type == RT_MANIFEST)
         return FALSE;
     return TRUE;
-}
-
-inline INT
-Res_Find(const ResEntries& entries,
-         const MIdOrString& type, 
-         const MIdOrString& name,
-         WORD lang, BOOL bEmptyOK = FALSE)
-{
-    size_t i, count = entries.size();
-    for (i = 0; i < count; ++i)
-    {
-        const ResEntry& entry = entries[i];
-        if (!type.is_zero() && entry.type != type)
-            continue;
-        if (!name.is_zero() && entry.name != name)
-            continue;
-        if (lang != 0xFFFF && entry.lang != lang)
-            continue;
-        if (entry.empty() && !bEmptyOK)
-            continue;
-        return INT(i);
-    }
-    return -1;
-}
-
-inline INT
-Res_Find2(const ResEntries& entries,
-          const MIdOrString& type, 
-          const MIdOrString& name,
-          WORD lang, BOOL bEmptyOK = FALSE)
-{
-    INT ret = Res_Find(entries, type, name, lang, bEmptyOK);
-    if (ret == -1 && lang != 0xFFFF)
-        ret = Res_Find(entries, type, name, 0xFFFF, bEmptyOK);
-    return ret;
-}
-
-inline bool
-Res_Intersect(const ResEntries& entries1, const ResEntries& entries2)
-{
-    size_t i1, count1 = entries1.size();
-    size_t i2, count2 = entries2.size();
-    if (count1 == 0 || count2 == 0)
-        return false;
-
-    for (i1 = 0; i1 < count1; ++i1)
-    {
-        for (i2 = 0; i2 < count2; ++i2)
-        {
-            if (entries1[i1].empty() || entries2[i2].empty())
-                continue;
-
-            if (entries1[i1] == entries2[i2])
-                return true;
-        }
-    }
-
-    return false;
-}
-
-inline INT
-Res_Find(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
-{
-    return Res_Find(entries, entry.type, entry.name, entry.lang, bEmptyOK);
-}
-
-inline INT
-Res_Find2(const ResEntries& entries, const ResEntry& entry, BOOL bEmptyOK)
-{
-    return Res_Find2(entries, entry.type, entry.name, entry.lang, bEmptyOK);
-}
-
-inline void
-Res_Search(ResEntries& found,
-           const ResEntries& entries,
-           const MIdOrString& type, 
-           const MIdOrString& name,
-           WORD lang)
-{
-    found.clear();
-
-    size_t i, count = entries.size();
-    for (i = 0; i < count; ++i)
-    {
-        const ResEntry& entry = entries[i];
-        if (!type.is_zero() && entry.type != type)
-            continue;
-        if (!name.is_zero() && entry.name != name)
-            continue;
-        if (lang != 0xFFFF && entry.lang != lang)
-            continue;
-        if (entry.empty())
-            continue;
-
-        found.push_back(entry);
-    }
-}
-
-inline void
-Res_Search(ResEntries& found, const ResEntries& entries, const ResEntry& entry)
-{
-    Res_Search(found, entries, entry.type, entry.name, entry.lang);
-}
-
-inline UINT
-Res_GetLastIconID(const ResEntries& entries)
-{
-    WORD last_id = 0;
-
-    ResEntries::const_iterator it, end = entries.end();
-    for (it = entries.begin(); it != end; ++it)
-    {
-        if (it->type != RT_ICON || !it->name.is_int() || it->name.is_zero())
-            continue;
-
-        if (last_id < it->name.m_id)
-            last_id = it->name.m_id;
-    }
-    return last_id;
-}
-
-inline UINT
-Res_GetLastCursorID(const ResEntries& entries)
-{
-    WORD last_id = 0;
-
-    ResEntries::const_iterator it, end = entries.end();
-    for (it = entries.begin(); it != end; ++it)
-    {
-        if (it->type != RT_CURSOR || !it->name.is_int() || it->name.is_zero())
-            continue;
-
-        if (last_id < it->name.m_id)
-            last_id = it->name.m_id;
-    }
-    return last_id;
-}
-
-inline void
-Res_AddEntryFromRes(HMODULE hMod, ResEntries& entries,
-                    LPCWSTR type, LPCWSTR name, WORD lang)
-{
-    ResEntry entry(type, name, lang);
-
-    HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
-    if (hResInfo)
-    {
-        DWORD dwSize = SizeofResource(hMod, hResInfo);
-        HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
-        LPVOID pv = LockResource(hGlobal);
-        if (pv && dwSize)
-        {
-            entry.assign(pv, dwSize);
-        }
-    }
-
-    entries.push_back(entry);
-}
-
-inline BOOL
-Res_AddEntry(ResEntries& entries, const ResEntry& entry,
-             BOOL Replace = FALSE)
-{
-    INT iEntry = Res_Find(entries, entry, TRUE);
-    if (iEntry != -1)
-    {
-        if (!Replace && !entries[iEntry].empty())
-        {
-            return FALSE;
-        }
-        entries[iEntry] = entry;
-    }
-    else
-    {
-        entries.push_back(entry);
-    }
-
-    return TRUE;
-}
-
-inline BOOL
-Res_AddEntry(ResEntries& entries, const MIdOrString& type,
-             const MIdOrString& name, WORD lang, const MStringW& strTmp,
-             const ResEntry::DataType& vecData, BOOL Replace = FALSE)
-{
-    ResEntry entry(type, name, lang, strTmp);
-    entry.data = vecData;
-    return Res_AddEntry(entries, entry, Replace);
-}
-
-inline BOOL
-Res_DeleteGroupIcon(ResEntries& entries, ResEntry& entry)
-{
-    assert(entry.type == RT_GROUP_ICON);
-
-    MByteStreamEx bs(entry.data);
-
-    ICONDIR dir;
-    if (!bs.ReadRaw(dir))
-        return FALSE;
-
-    DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
-    std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
-    if (!bs.ReadData(&DirEntries[0], size))
-    {
-        return FALSE;
-    }
-
-    DWORD i, nCount = dir.idCount;
-    for (i = 0; i < nCount; ++i)
-    {
-        INT k = Res_Find(entries, RT_ICON, DirEntries[i].nID, entry.lang, TRUE);
-        if (k != -1)
-            entries[k].clear_data();
-    }
-
-    entry.clear_data();
-    return TRUE;
-}
-
-inline BOOL
-Res_DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
-{
-    assert(entry.type == RT_GROUP_CURSOR);
-
-    MByteStreamEx bs(entry.data);
-
-    ICONDIR dir;
-    if (!bs.ReadRaw(dir))
-        return FALSE;
-
-    DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
-    std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
-    if (!bs.ReadData(&DirEntries[0], size))
-    {
-        return FALSE;
-    }
-
-    DWORD i, nCount = dir.idCount;
-    for (i = 0; i < nCount; ++i)
-    {
-        INT k = Res_Find(entries, RT_CURSOR, DirEntries[i].nID, entry.lang, TRUE);
-        entries[k].clear_data();
-    }
-
-    entry.clear_data();
-    return TRUE;
-}
-
-inline void
-Res_DeleteTemplate(ResEntries& entries)
-{
-    for (size_t i = 0; i < entries.size(); ++i)
-    {
-        entries[i].strTemplate.clear();
-    }
-}
-
-inline BOOL
-Res_DeleteEntries(ResEntries& entries, const MIdOrString& type,
-                  const MIdOrString& name, WORD lang)
-{
-    BOOL bFound = FALSE;
-    for (;;)
-    {
-        INT iEntry = Res_Find(entries, type, name, lang, FALSE);
-        if (iEntry == -1)
-            break;
-
-        ResEntry& entry = entries[iEntry];
-
-        if (entry.type == RT_GROUP_ICON)
-        {
-            Res_DeleteGroupIcon(entries, entry);
-        }
-        if (entry.type == RT_GROUP_CURSOR)
-        {
-            Res_DeleteGroupCursor(entries, entry);
-        }
-        else
-        {
-            entry.clear_data();
-        }
-
-        bFound = TRUE;
-    }
-
-    return bFound;
-}
-
-inline BOOL
-Res_DeleteEntries(ResEntries& entries, const ResEntry& entry)
-{
-    return Res_DeleteEntries(entries, entry.type, entry.name, entry.lang);
 }
 
 inline BOOL
@@ -1198,12 +1121,6 @@ Res_Optimize(ResEntries& entries)
         {
             entries.erase(entries.begin() + count);
         }
-    }
-
-    count = entries.size();
-    for (size_t i = 0; i < count; ++i)
-    {
-        entries[i].updated = FALSE;
     }
 
     return TRUE;

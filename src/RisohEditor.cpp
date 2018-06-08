@@ -5246,7 +5246,6 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
         }
 
         entry.lang = header.LanguageId;
-        entry.updated = TRUE;
         entry.type = header.type;
         entry.name = header.name;
         entries.push_back(entry);
