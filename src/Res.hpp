@@ -163,6 +163,122 @@ public:
             return false;
         return false;
     }
+
+    MStringW GetName(const ConstantsDB& db) const
+    {
+        MStringW ret;
+        if (m_name.m_id != 0)
+        {
+            WORD id = m_name.m_id;
+            if (m_type == RT_CURSOR)
+            {
+                ;
+            }
+            else if (m_type == RT_BITMAP)
+            {
+                ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
+            }
+            else if (m_type == RT_ICON)
+            {
+                ;
+            }
+            else if (m_type == RT_MENU)
+            {
+                ret += db.GetNameOfResID(IDTYPE_MENU, id);
+            }
+            else if (m_type == RT_DIALOG || m_type == WORD(240))
+            {
+                ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
+            }
+            else if (m_type == RT_STRING)
+            {
+                ;
+            }
+            else if (m_type == RT_FONTDIR)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_FONT)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_ACCELERATOR)
+            {
+                ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
+            }
+            else if (m_type == RT_RCDATA)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_MESSAGETABLE)
+            {
+                ;
+            }
+            else if (m_type == RT_GROUP_CURSOR)
+            {
+                ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
+            }
+            else if (m_type == RT_GROUP_ICON)
+            {
+                ret += db.GetNameOfResID(IDTYPE_ICON, id);
+            }
+            else if (m_type == RT_VERSION)
+            {
+                ;
+            }
+            else if (m_type == RT_DLGINCLUDE)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_PLUGPLAY)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_VXD)
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+            else if (m_type == RT_ANICURSOR)
+            {
+                ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
+            }
+            else if (m_type == RT_ANIICON)
+            {
+                ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
+            }
+            else if (m_type == RT_HTML)
+            {
+                ret += db.GetNameOfResID(IDTYPE_HTML, id);
+            }
+            else if (m_type == RT_MANIFEST)
+            {
+                ;
+            }
+            else
+            {
+                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+            }
+
+            if (ret.size())
+            {
+                if (!mchr_is_digit(ret[0]))
+                {
+                    ret += L" (";
+                    ret += mstr_dec_word(m_name.m_id);
+                    ret += L")";
+                }
+            }
+            else
+            {
+                ret += mstr_dec_word(m_name.m_id);
+            }
+        }
+        else
+        {
+            ret = m_name.m_str;
+        }
+        return ret;
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -279,7 +395,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         found.clear();
     }
 
-    UINT GetLastIconID(const ResEntries& entries)
+    UINT GetLastIconID() const
     {
         WORD last_id = 0;
         for (auto item : *this)
@@ -292,7 +408,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         return last_id;
     }
 
-    UINT GetLastCursorID(const ResEntries& entries)
+    UINT GetLastCursorID()
     {
         WORD last_id = 0;
         for (auto item : *this)
@@ -330,9 +446,6 @@ class ResEntries2 : public std::set<ResEntry2 *>
              BOOL Replace = FALSE)
     {
         ...
-        ResEntry entry(type, name, lang, strText);
-        entry.m_data = vecData;
-        return AddEntry(entries, entry, Replace);
     }
 
     bool DeleteGroupIcon(ResEntry2& entry)
@@ -360,7 +473,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         return true;
     }
 
-    bool DeleteGroupCursor(ResEntries& entries, ResEntry& entry)
+    bool DeleteGroupCursor(ResEntry& entry)
     {
         assert(entry.m_type == RT_GROUP_CURSOR);
 
@@ -384,6 +497,147 @@ class ResEntries2 : public std::set<ResEntry2 *>
         SearchAndDelete(entry.m_type, entry.m_name, entry.m_lang);
         return true;
     }
+
+    bool
+    AddGroupIcon(const MIdOrString& name, WORD lang,
+                 const MStringW& FileName, BOOL Replace = FALSE)
+    {
+        IconFile icon;
+        if (!icon.LoadFromFile(FileName.c_str()) || icon.type() != RES_ICON)
+            return false;
+
+        UINT LastIconID = GetLastIconID(*this);
+        UINT NextIconID = LastIconID + 1;
+        IconFile::DataType group(icon.GetIconGroup(NextIconID));
+        Add(RT_GROUP_ICON, name, lang, L"", group, Replace);
+
+        int i, nCount = icon.GetImageCount();
+        for (i = 0; i < nCount; ++i)
+        {
+            Add(RT_ICON, WORD(NextIconID + i), lang, L"", icon.GetImage(i));
+        }
+
+        return true;
+    }
+
+    bool AddGroupCursor(const MIdOrString& name, WORD lang,
+                        const MStringW& FileName, BOOL Replace = FALSE)
+    {
+        CursorFile cur;
+        if (!cur.LoadFromFile(FileName.c_str()) || cur.type() != RES_CURSOR)
+            return false;
+
+        UINT LastCursorID = GetLastCursorID(*this);
+        UINT NextCursorID = LastCursorID + 1;
+        CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
+        Add(RT_GROUP_CURSOR, name, lang, L"", group, Replace);
+
+        int i, nCount = cur.GetImageCount();
+        for (i = 0; i < nCount; ++i)
+        {
+            Add(RT_CURSOR, WORD(NextCursorID + i), lang, L"", cur.GetImage(i));
+        }
+        return true;
+    }
+
+    bool AddBitmap(const MIdOrString& name, WORD lang,
+                   const MStringW& BitmapFile, BOOL Replace = FALSE)
+    {
+        MByteStreamEx stream;
+        if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
+            return FALSE;
+
+        if (stream.size() >= 4 &&
+            (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
+             memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
+             memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
+        {
+            MBitmapDx bitmap;
+            if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
+                return FALSE;
+
+            LONG cx, cy;
+            HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
+
+            std::vector<BYTE> PackedDIB;
+            if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
+            {
+                DeleteObject(hbm);
+                return FALSE;
+            }
+            DeleteObject(hbm);
+
+            AddEntry(RT_BITMAP, name, lang, L"", PackedDIB, Replace);
+        }
+        else
+        {
+            size_t FileHeadSize = sizeof(BITMAPFILEHEADER);
+            if (stream.size() < FileHeadSize)
+                return FALSE;
+
+            size_t i0 = FileHeadSize, i1 = stream.size();
+            ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
+            Add(RT_BITMAP, name, lang, L"", HeadLess, Replace);
+        }
+
+        return TRUE;
+    }
+
+    static BOOL CALLBACK
+    EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
+                    WORD wIDLanguage, LPARAM lParam)
+    {
+        ResEntries2& entries = *(ResEntries *)lParam;
+        AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
+        return TRUE;
+    }
+
+    static BOOL CALLBACK
+    EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
+    {
+        return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
+    }
+
+    static BOOL CALLBACK
+    EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
+    {
+        return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
+    }
+
+    BOOL GetListFromRes(HMODULE hMod, LPARAM lParam)
+    {
+        return ::EnumResourceTypesW(hMod, EnumResTypeProc, lParam);
+    }
+
+    BOOL UpdateExe(HWND hwnd, LPCWSTR ExeFile) const
+    {
+        HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
+
+        if (hUpdate == NULL)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        for (auto item : *this)
+        {
+            void *pv = NULL;
+            DWORD size = 0;
+            if (!item->empty())
+            {
+                pv = const_cast<void *>(entry.ptr());
+                size = entry.size();
+            }
+            if (!::UpdateResourceW(hUpdate,
+                                   item->type.ptr(), item->name.ptr(), item->lang,
+                                   pv, size))
+            {
+                assert(0);
+                return FALSE;
+            }
+        }
+        return ::EndUpdateResourceW(hUpdate, FALSE);
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -397,123 +651,6 @@ inline BOOL Res_IsEntityType(const MIdOrString& type)
     if (type == RT_VERSION || type == RT_MANIFEST)
         return FALSE;
     return TRUE;
-}
-
-inline BOOL
-Res_AddGroupIcon(ResEntries& entries, const MIdOrString& name,
-                 WORD lang, const MStringW& FileName,
-                 BOOL Replace = FALSE)
-{
-    IconFile icon;
-    if (!icon.LoadFromFile(FileName.c_str()) || icon.type() != RES_ICON)
-        return FALSE;
-
-    UINT LastIconID = Res_GetLastIconID(entries);
-    UINT NextIconID = LastIconID + 1;
-    IconFile::DataType group(icon.GetIconGroup(NextIconID));
-    Res_AddEntry(entries, RT_GROUP_ICON, name, lang, L"", group, Replace);
-
-    int i, nCount = icon.GetImageCount();
-    for (i = 0; i < nCount; ++i)
-    {
-        Res_AddEntry(entries, RT_ICON, WORD(NextIconID + i), lang,
-                     L"", icon.GetImage(i));
-    }
-    return TRUE;
-}
-
-inline BOOL
-Res_AddGroupCursor(ResEntries& entries, const MIdOrString& name,
-                   WORD lang, const MStringW& FileName,
-                   BOOL Replace = FALSE)
-{
-    CursorFile cur;
-    if (!cur.LoadFromFile(FileName.c_str()) || cur.type() != RES_CURSOR)
-        return FALSE;
-
-    UINT LastCursorID = Res_GetLastCursorID(entries);
-    UINT NextCursorID = LastCursorID + 1;
-    CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
-    Res_AddEntry(entries, RT_GROUP_CURSOR, name, lang, L"", group, Replace);
-
-    int i, nCount = cur.GetImageCount();
-    for (i = 0; i < nCount; ++i)
-    {
-        Res_AddEntry(entries, RT_CURSOR, WORD(NextCursorID + i), lang,
-                     L"", cur.GetImage(i));
-    }
-    return TRUE;
-}
-
-inline BOOL
-Res_AddBitmap(ResEntries& entries, const MIdOrString& name,
-              WORD lang, const MStringW& BitmapFile, BOOL Replace = FALSE)
-{
-    MByteStreamEx stream;
-    if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
-        return FALSE;
-
-    if (stream.size() >= 4 &&
-        (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
-         memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
-         memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
-    {
-        MBitmapDx bitmap;
-        if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
-            return FALSE;
-
-        LONG cx, cy;
-        HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
-
-        std::vector<BYTE> PackedDIB;
-        if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
-        {
-            DeleteObject(hbm);
-            return FALSE;
-        }
-        DeleteObject(hbm);
-
-        Res_AddEntry(entries, RT_BITMAP, name, lang, L"", PackedDIB, Replace);
-    }
-    else
-    {
-        size_t FileHeadSize = sizeof(BITMAPFILEHEADER);
-        if (stream.size() < FileHeadSize)
-            return FALSE;
-
-        size_t i0 = FileHeadSize, i1 = stream.size();
-        ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-        Res_AddEntry(entries, RT_BITMAP, name, lang, L"", HeadLess, Replace);
-    }
-
-    return TRUE;
-}
-
-inline BOOL CALLBACK
-EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
-                WORD wIDLanguage, LPARAM lParam)
-{
-    ResEntries& entries = *(ResEntries *)lParam;
-    Res_AddEntryFromRes(hMod, entries, lpszType, lpszName, wIDLanguage);
-    return TRUE;
-}
-
-inline BOOL CALLBACK
-EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
-{
-    return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
-}
-
-inline BOOL CALLBACK
-EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
-{
-    return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
-}
-
-inline BOOL
-Res_GetListFromRes(HMODULE hMod, LPARAM lParam)
-{
-    return ::EnumResourceTypesW(hMod, EnumResTypeProc, lParam);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -570,161 +707,7 @@ Res_GetTypeString(const MIdOrString& id_or_str)
     return ret;
 }
 
-inline MStringW
-Res_GetName(const ConstantsDB& db, const ResEntry& entry)
-{
-    MStringW ret;
-    if (entry.name.m_id != 0)
-    {
-        WORD id = entry.name.m_id;
-        if (entry.type == RT_CURSOR)
-        {
-            ;
-        }
-        else if (entry.type == RT_BITMAP)
-        {
-            ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
-        }
-        else if (entry.type == RT_ICON)
-        {
-            ;
-        }
-        else if (entry.type == RT_MENU)
-        {
-            ret += db.GetNameOfResID(IDTYPE_MENU, id);
-        }
-        else if (entry.type == RT_DIALOG || entry.type == WORD(240))
-        {
-            ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
-        }
-        else if (entry.type == RT_STRING)
-        {
-            ;
-        }
-        else if (entry.type == RT_FONTDIR)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_FONT)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_ACCELERATOR)
-        {
-            ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
-        }
-        else if (entry.type == RT_RCDATA)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_MESSAGETABLE)
-        {
-            ;
-        }
-        else if (entry.type == RT_GROUP_CURSOR)
-        {
-            ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
-        }
-        else if (entry.type == RT_GROUP_ICON)
-        {
-            ret += db.GetNameOfResID(IDTYPE_ICON, id);
-        }
-        else if (entry.type == RT_VERSION)
-        {
-            ;
-        }
-        else if (entry.type == RT_DLGINCLUDE)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_PLUGPLAY)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_VXD)
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-        else if (entry.type == RT_ANICURSOR)
-        {
-            ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
-        }
-        else if (entry.type == RT_ANIICON)
-        {
-            ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
-        }
-        else if (entry.type == RT_HTML)
-        {
-            ret += db.GetNameOfResID(IDTYPE_HTML, id);
-        }
-        else if (entry.type == RT_MANIFEST)
-        {
-            ;
-        }
-        else
-        {
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-        }
-
-        if (ret.size())
-        {
-            if (!mchr_is_digit(ret[0]))
-            {
-                ret += L" (";
-                ret += mstr_dec_word(entry.name.m_id);
-                ret += L")";
-            }
-        }
-        else
-        {
-            ret += mstr_dec_word(entry.name.m_id);
-        }
-    }
-    else
-    {
-        ret = entry.name.m_str;
-    }
-    return ret;
-}
-
 MStringW Res_GetLangName(WORD lang);
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline BOOL
-Res_UpdateExe(HWND hwnd, LPCWSTR ExeFile, const ResEntries& entries)
-{
-    HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
-    if (hUpdate == NULL)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    for (DWORD i = 0; i < DWORD(entries.size()); ++i)
-    {
-        const ResEntry& entry = entries[i];
-        if (entry.empty())
-            continue;
-
-        void *pv = NULL;
-        DWORD size = 0;
-        if (!entry.empty())
-        {
-            pv = const_cast<void *>(entry.ptr());
-            size = entry.size();
-        }
-        if (!::UpdateResourceW(hUpdate,
-                               entry.type.ptr(), entry.name.ptr(), entry.lang,
-                               pv, size))
-        {
-            assert(0);
-            return FALSE;
-        }
-    }
-
-    return ::EndUpdateResourceW(hUpdate, FALSE);
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
