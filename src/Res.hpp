@@ -37,8 +37,8 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 
-class ResEntry2;
-// class ResEntries2;
+class Entry2;
+// class Entries2;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
@@ -60,24 +60,81 @@ typedef std::map<MIdOrString, HICON>    MTitleToIcon;
 #define I_MESSAGE   5
 
 ///////////////////////////////////////////////////////////////////////////////
-// ResEntry2
+// EntryBase, TypeEntry, NameEnry, LangEntry, StringEntry, MessageEntry
 
-class ResEntry2
+struct EntryBase
 {
-public:
     typedef DWORD               size_type;
-    typedef std::vector<BYTE>   DataType;
+    typedef std::vector<BYTE>   data_type;
+    enum EntryType
+    {
+        I_NONE,     // None. Don't use.
+        I_TYPE,     // TypeEntry.
+        I_NAME,     // NameEntry.
+        I_LANG,     // LangEntry.
+        I_STRING,   // StringEntry.
+        I_MESSAGE   // MessageEntry.
+    };
+    EntryType       m_e_type;
 
-    HTREEITEM       m_hTreeItem = NULL;
-    WORD            m_lang = 0xFFFF;
     MIdOrString     m_type;
     MIdOrString     m_name;
-    DataType        m_data;
-    MStringW        m_strText;
+    WORD            m_lang = 0xFFFF;
+    HTREEITEM       m_hItem = NULL;
 
-    ResEntry2(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF,
-              const MStringW strText = L"")
-        : m_type(type), m_name(name), m_lang(lang), m_strText(strText)
+    EntryBase(EntryType e_type, const MIdOrString& type,
+              const MIdOrString& name = L"", WORD lang = 0xFFFF)
+        : m_e_type(e_type), m_type(type), m_name(name), m_lang(lang)
+    {
+    }
+    virtual ~EntryBase()
+    {
+    }
+};
+
+struct TypeEntry : EntryBase
+{
+    TypeEntry(const MIdOrString& type) : EntryBase(I_TYPE, type)
+    {
+    }
+};
+
+struct NameEntry : EntryBase
+{
+    NameEntry(const MIdOrString& type, const MIdOrString& name)
+        : EntryBase(I_NAME, type, name)
+    {
+    }
+};
+
+struct StringEntry : EntryBase
+{
+    NameEntry(const MIdOrString& type, WORD lang)
+        : EntryBase(I_STRING, RT_STRING, lang)
+    {
+    }
+};
+
+struct MessageEntry : EntryBase
+{
+    NameEntry(const MIdOrString& type, WORD lang)
+        : EntryBase(I_STRING, RT_STRING, lang)
+    {
+    }
+};
+
+struct LangEntry : EntryBase
+{
+    data_type m_data;
+    MStringW  m_strText;
+
+    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
+        : EntryBase(I_NAME, type, name, lang)
+    {
+    }
+    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
+              const data_type& data)
+        : EntryBase(I_NAME, type, name, lang), m_data(data)
     {
     }
 
@@ -103,16 +160,6 @@ public:
     {
         return size_type(m_data.size());
     }
-
-    void *ptr(DWORD index = 0)
-    {
-        return &m_data[index];
-    }
-    const void *ptr(DWORD index = 0) const
-    {
-        return &m_data[index];
-    }
-
     BYTE& operator[](DWORD index)
     {
         assert(index <= m_data.size());
@@ -122,6 +169,15 @@ public:
     {
         assert(index <= m_data.size());
         return m_data[index];
+    }
+
+    void *ptr(DWORD index = 0)
+    {
+        return &m_data[index];
+    }
+    const void *ptr(DWORD index = 0) const
+    {
+        return &m_data[index];
     }
 
     void assign(const void *ptr, size_type nSize)
@@ -137,17 +193,17 @@ public:
         }
     }
 
-    bool operator==(const ResEntry& entry) const
+    bool operator==(const Entry& entry) const
     {
         return m_lang == entry.m_lang &&
                m_type == entry.m_type &&
                m_name == entry.m_name;
     }
-    bool operator!=(const ResEntry& entry) const
+    bool operator!=(const Entry& entry) const
     {
         return !(*this == entry);
     }
-    bool operator<(const ResEntry& entry) const
+    bool operator<(const Entry& entry) const
     {
         if (m_type < entry.m_type)
             return true;
@@ -164,6 +220,13 @@ public:
         return false;
     }
 
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Entry
+
+struct Entry : EntryBase
+{
     MStringW GetName(const ConstantsDB& db) const
     {
         MStringW ret;
@@ -282,16 +345,16 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// ResEntries2
+// Entries2
 
-class ResEntries2 : public std::set<ResEntry2 *>
+class Entries2 : public std::set<Entry2 *>
 {
-    ResEntries2()
+    Entries2()
     {
     }
-    ResEntries2(const std::set<ResEntry2 *>& entries) = delete;
-    ResEntries2& operator=(const std::set<ResEntry2 *>& entries) = delete;
-    ~ResEntries2()
+    Entries2(const std::set<Entry2 *>& entries) = delete;
+    Entries2& operator=(const std::set<Entry2 *>& entries) = delete;
+    ~Entries2()
     {
         for (auto item : *this)
         {
@@ -312,7 +375,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         }
     }
 
-    ResEntry2 *
+    Entry2 *
     Find(const MIdOrString& type, 
          const MIdOrString& name,
          WORD lang)
@@ -331,7 +394,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         return NULL;
     }
 
-    ResEntry2 *
+    Entry2 *
     Find2(const MIdOrString& type, 
           const MIdOrString& name,
           WORD lang)
@@ -343,7 +406,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
     }
 
     inline bool
-    Intersect(const ResEntries2& entries2) const
+    Intersect(const Entries2& entries2) const
     {
         if (size() == 0 && entries2.size() == 0)
             return false;
@@ -360,7 +423,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
     }
 
     void
-    Search(ResEntries2& found,
+    Search(Entries2& found,
            const MIdOrString& type, 
            const MIdOrString& name,
            WORD lang)
@@ -396,7 +459,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
             return;
         }
 
-        ResEntries2 found;
+        Entries2 found;
         Search(found, entries, type, name, lang);
 
         for (auto item : found)
@@ -446,7 +509,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         LPVOID pv = LockResource(hGlobal);
         if (pv && dwSize)
         {
-            auto entry = new ResEntry2(type, name, lang);
+            auto entry = new Entry2(type, name, lang);
             entry->assign(pv, dwSize);
             push_back(entry);
             return true;
@@ -455,13 +518,13 @@ class ResEntries2 : public std::set<ResEntry2 *>
     }
 
     BOOL Add(const MIdOrString& type, const MIdOrString& name, WORD lang,
-             const MStringW& strText, const ResEntry::DataType& data,
+             const MStringW& strText, const Entry::DataType& data,
              BOOL Replace = FALSE)
     {
         ...
     }
 
-    bool DeleteGroupIcon(ResEntry2& entry)
+    bool DeleteGroupIcon(Entry2& entry)
     {
         assert(entry.M_type == RT_GROUP_ICON);
 
@@ -486,7 +549,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
         return true;
     }
 
-    bool DeleteGroupCursor(ResEntry& entry)
+    bool DeleteGroupCursor(Entry& entry)
     {
         assert(entry.m_type == RT_GROUP_CURSOR);
 
@@ -589,7 +652,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
                 return FALSE;
 
             size_t i0 = FileHeadSize, i1 = stream.size();
-            ResEntry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
+            Entry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
             Add(RT_BITMAP, name, lang, L"", HeadLess, Replace);
         }
 
@@ -600,7 +663,7 @@ class ResEntries2 : public std::set<ResEntry2 *>
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
     {
-        ResEntries2& entries = *(ResEntries *)lParam;
+        Entries2& entries = *(Entries *)lParam;
         AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
         return TRUE;
     }
@@ -817,8 +880,8 @@ TV_GetParam(HWND hwnd, HTREEITEM hItem = NULL)
 }
 
 inline INT
-TV_GetSelection(HWND hwnd, ResEntries& selection,
-                const ResEntries& entries, HTREEITEM hItem = NULL)
+TV_GetSelection(HWND hwnd, Entries& selection,
+                const Entries& entries, HTREEITEM hItem = NULL)
 {
     selection.clear();
 
@@ -827,7 +890,7 @@ TV_GetSelection(HWND hwnd, ResEntries& selection,
     if (i >= entries.size())
         return 0;
 
-    ResEntry entry;
+    Entry entry;
     switch (HIWORD(lParam))
     {
     case I_TYPE:
@@ -884,7 +947,7 @@ TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam,
 
 inline HTREEITEM
 TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                      const ResEntries& entries, INT i, INT k)
+                      const Entries& entries, INT i, INT k)
 {
     HTREEITEM hInsertAfter = TVI_LAST;
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
@@ -905,7 +968,7 @@ TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 
 inline HTREEITEM
 TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                       const ResEntries& entries, INT i, INT k)
+                       const Entries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -925,7 +988,7 @@ TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 
 inline HTREEITEM
 TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
-                       const ResEntries& entries, INT i, INT k)
+                       const Entries& entries, INT i, INT k)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -944,7 +1007,7 @@ TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 }
 
 inline HTREEITEM
-TV_GetItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+TV_GetItem(HWND hwnd, const Entries& entries, const Entry& entry)
 {
     HTREEITEM hParent = NULL;
 
@@ -1007,7 +1070,7 @@ TV_GetItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 }
 
 inline void
-TV_DeleteItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+TV_DeleteItem(HWND hwnd, const Entries& entries, const Entry& entry)
 {
     if (HTREEITEM hItem = TV_GetItem(hwnd, entries, entry))
     {
@@ -1029,7 +1092,7 @@ TV_DeleteItem(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 }
 
 inline void
-TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
+TV_SelectEntry(HWND hwnd, const Entries& entries, const Entry& entry)
 {
     HTREEITEM hParent = TV_GetItem(hwnd, entries, entry);
     TreeView_SelectItem(hwnd, hParent);
@@ -1037,7 +1100,7 @@ TV_SelectEntry(HWND hwnd, const ResEntries& entries, const ResEntry& entry)
 
 inline HTREEITEM
 TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
-                       const ResEntries& entries, INT iEntry)
+                       const Entries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -1057,7 +1120,7 @@ TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
 
 inline HTREEITEM
 TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
-                        const ResEntries& entries, INT iEntry)
+                        const Entries& entries, INT iEntry)
 {
     for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
          hItem != NULL;
@@ -1076,7 +1139,7 @@ TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
 }
 
 inline void
-TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
+TV_RefreshInfo(HWND hwnd, ConstantsDB& db, Entries& entries)
 {
     TreeView_DeleteAllItems(hwnd);
 
@@ -1127,12 +1190,12 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
     Res_EraseEmpty(entries);
 }
 
-inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& entries)
+inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, Entries& entries)
 {
     LPARAM lParam = TV_GetParam(hwnd, hItem);
 
     WORD i = LOWORD(lParam);
-    ResEntry entry = entries[i];
+    Entry entry = entries[i];
 
     INT nPos = GetScrollPos(hwnd, SB_VERT);
 
@@ -1163,8 +1226,8 @@ inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& e
 }
 
 inline BOOL
-Res_ExtractGroupIcon(const ResEntries& entries,
-                     const ResEntry& GroupIconEntry,
+Res_ExtractGroupIcon(const Entries& entries,
+                     const Entry& GroupIconEntry,
                      const wchar_t *OutputFileName)
 {
     ICONDIR dir;
@@ -1202,7 +1265,7 @@ Res_ExtractGroupIcon(const ResEntries& entries,
         {
             continue;
         }
-        const ResEntry& IconEntry = entries[k];
+        const Entry& IconEntry = entries[k];
 
         DirEntries[i].bWidth = GroupEntries[i].bWidth;
         DirEntries[i].bHeight = GroupEntries[i].bHeight;
@@ -1240,7 +1303,7 @@ Res_ExtractGroupIcon(const ResEntries& entries,
         {
             continue;
         }
-        const ResEntry& IconEntry = entries[k];
+        const Entry& IconEntry = entries[k];
 
         DWORD dwSize = IconEntry.size();
         if (!stream.WriteData(&IconEntry[0], dwSize))
@@ -1256,8 +1319,8 @@ Res_ExtractGroupIcon(const ResEntries& entries,
 BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 inline BOOL
-Res_ExtractIcon(const ResEntries& entries,
-                const ResEntry& IconEntry,
+Res_ExtractIcon(const Entries& entries,
+                const Entry& IconEntry,
                 const wchar_t *OutputFileName)
 {
     ICONDIR dir;
@@ -1300,8 +1363,8 @@ Res_ExtractIcon(const ResEntries& entries,
 }
 
 inline BOOL
-Res_ExtractGroupCursor(const ResEntries& entries,
-                       const ResEntry& GroupCursorEntry,
+Res_ExtractGroupCursor(const Entries& entries,
+                       const Entry& GroupCursorEntry,
                        const wchar_t *OutputFileName)
 {
     ICONDIR dir;
@@ -1340,7 +1403,7 @@ Res_ExtractGroupCursor(const ResEntries& entries,
         {
             continue;
         }
-        const ResEntry& CursorEntry = entries[k];
+        const Entry& CursorEntry = entries[k];
         LOCALHEADER local;
         if (CursorEntry.size() >= sizeof(local))
             memcpy(&local, &CursorEntry[0], sizeof(local));
@@ -1381,7 +1444,7 @@ Res_ExtractGroupCursor(const ResEntries& entries,
         {
             continue;
         }
-        const ResEntry& CursorEntry = entries[k];
+        const Entry& CursorEntry = entries[k];
 
         DWORD cbLocal = sizeof(LOCALHEADER);
         DWORD dwSize = CursorEntry.size() - cbLocal;
@@ -1397,8 +1460,8 @@ Res_ExtractGroupCursor(const ResEntries& entries,
 }
 
 inline BOOL
-Res_ExtractCursor(const ResEntries& entries,
-                  const ResEntry& CursorEntry,
+Res_ExtractCursor(const Entries& entries,
+                  const Entry& CursorEntry,
                   const wchar_t *OutputFileName)
 {
     ICONDIR dir;
