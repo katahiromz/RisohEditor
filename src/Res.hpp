@@ -38,7 +38,7 @@
 #include "DialogRes.hpp"
 
 class ResEntry;
-// class ResEntries;
+// class EntryTree;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
@@ -190,7 +190,19 @@ struct EntryBase
     virtual ~EntryBase()
     {
     }
+
+    bool match(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
+    {
+        if (!type.is_zero() && m_type != type)
+            return false;
+        if (!name.is_zero() && m_name != name)
+            return false;
+        if (lang != 0xFFFF && m_lang != lang)
+            return false;
+        return true;
+    }
 };
+typedef std::vector<EntryBase *> EntryVector;
 
 struct TypeEntry : EntryBase
 {
@@ -401,52 +413,42 @@ struct LangEntry : EntryBase
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// ResEntries
+// EntryTree
 
-class ResEntries : public std::set<ResEntry *>
+struct EntryTree
 {
-    ResEntries()
+    HWND m_hwndTV;
+    typedef bool (*scan_proc_t)(EntryBase *base, void *pUserData);
+
+    EntryTree(HWND hwndTV) : m_hwndTV(hwndTV);
     {
-    }
-    ResEntries(const std::set<ResEntry *>& entries) = delete;
-    ResEntries& operator=(const std::set<ResEntry *>& entries) = delete;
-    ~ResEntries()
-    {
-        for (auto item : *this)
-        {
-            delete item;
-        }
     }
 
-    void DeleteNames(const MIdOrString& type, WORD lang)
+    LPARAM get_param(HTREEITEM hItem) 
     {
+        ...
+    }
+
+    void get_all_entries(EntryVector& vec, HTREEITEM hItem)
+    {
+        if (!hItem)
+            hItem = TreeView_GetRoot(m_hwndTV);
+
         for (;;)
         {
-            auto entry = Find(type, (WORD)0, lang);
-            if (!entry)
-                break;
+            hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
+            if (!hItem)
+                return;
 
-            erase(entry);
-            delete entry;
+            
         }
     }
 
-    ResEntry *
-    Find(const MIdOrString& type, 
-         const MIdOrString& name,
-         WORD lang)
+    bool search(EntryVector& vec, const MIdOrString& type,
+                const MIdOrString& name, WORD lang = 0xFFFF)
     {
-        for (auto item : *this)
-        {
-            auto entry = *item;
-            if (!type.is_zero() && entry.m_type != type)
-                continue;
-            if (!name.is_zero() && entry.m_name != name)
-                continue;
-            if (lang != 0xFFFF && entry.m_lang != lang)
-                continue;
-            return item;
-        }
+        vecFound.clear();
+
         return NULL;
     }
 
@@ -462,7 +464,7 @@ class ResEntries : public std::set<ResEntry *>
     }
 
     inline bool
-    Intersect(const ResEntries& entries2) const
+    Intersect(const EntryTree& entries2) const
     {
         if (size() == 0 && entries2.size() == 0)
             return false;
@@ -479,7 +481,7 @@ class ResEntries : public std::set<ResEntry *>
     }
 
     void
-    Search(ResEntries& found,
+    Search(EntryTree& found,
            const MIdOrString& type, 
            const MIdOrString& name,
            WORD lang)
@@ -515,7 +517,7 @@ class ResEntries : public std::set<ResEntry *>
             return;
         }
 
-        ResEntries found;
+        EntryTree found;
         Search(found, entries, type, name, lang);
 
         for (auto item : found)
@@ -720,7 +722,7 @@ private:
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
     {
-        ResEntries& entries = *(Entries *)lParam;
+        EntryTree& entries = *(Entries *)lParam;
         AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
         return TRUE;
     }
