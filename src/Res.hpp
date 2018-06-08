@@ -209,7 +209,7 @@ struct NameEntry : EntryBase
 
 struct StringEntry : EntryBase
 {
-    NameEntry(const MIdOrString& type, WORD lang)
+    StringEntry(const MIdOrString& type, WORD lang)
         : EntryBase(I_STRING, RT_STRING, L"", lang)
     {
     }
@@ -217,7 +217,7 @@ struct StringEntry : EntryBase
 
 struct MessageEntry : EntryBase
 {
-    NameEntry(const MIdOrString& type, WORD lang)
+    MessageEntry(const MIdOrString& type, WORD lang)
         : EntryBase(I_STRING, RT_STRING, L"", lang)
     {
     }
@@ -235,6 +235,11 @@ struct LangEntry : EntryBase
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
               const data_type& data)
         : EntryBase(I_NAME, type, name, lang), m_data(data)
+    {
+    }
+    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
+              const MStringW& strText)
+        : EntryBase(I_NAME, type, name, lang), m_strText(strText)
     {
     }
     virtual ~LangEntry()
@@ -710,6 +715,7 @@ class ResEntries : public std::set<ResEntry *>
         return TRUE;
     }
 
+private:
     static BOOL CALLBACK
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
@@ -731,6 +737,7 @@ class ResEntries : public std::set<ResEntry *>
         return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
     }
 
+public:
     BOOL GetListFromRes(HMODULE hMod, LPARAM lParam)
     {
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, lParam);
