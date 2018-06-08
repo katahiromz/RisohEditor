@@ -52,13 +52,6 @@ typedef std::map<MIdOrString, HICON>    MTitleToIcon;
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
 
-#define I_NONE      0
-#define I_TYPE      1
-#define I_NAME      2
-#define I_LANG      3
-#define I_STRING    4
-#define I_MESSAGE   5
-
 ///////////////////////////////////////////////////////////////////////////////
 // EntryBase, TypeEntry, NameEnry, LangEntry, StringEntry, MessageEntry
 
@@ -135,6 +128,9 @@ struct LangEntry : EntryBase
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
               const data_type& data)
         : EntryBase(I_NAME, type, name, lang), m_data(data)
+    {
+    }
+    virtual ~LangEntry()
     {
     }
 
@@ -220,106 +216,50 @@ struct LangEntry : EntryBase
         return false;
     }
 
-};
-
-///////////////////////////////////////////////////////////////////////////////
-// Entry
-
-struct Entry : EntryBase
-{
-    MStringW GetName(const ConstantsDB& db) const
+    MStringW get_name(const ConstantsDB& db) const
     {
         MStringW ret;
         if (m_name.m_id != 0)
         {
             WORD id = m_name.m_id;
-            if (m_type == RT_CURSOR)
+            switch ((UINT_PTR)id)
             {
-                ;
-            }
-            else if (m_type == RT_BITMAP)
-            {
+            case (UINT_PTR)RT_BITMAP:
                 ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
-            }
-            else if (m_type == RT_ICON)
-            {
-                ;
-            }
-            else if (m_type == RT_MENU)
-            {
+                break;
+            case (UINT_PTR)RT_MENU:
                 ret += db.GetNameOfResID(IDTYPE_MENU, id);
-            }
-            else if (m_type == RT_DIALOG || m_type == WORD(240))
-            {
+                break;
+            case (UINT_PTR)RT_DIALOG:
+            case 240:   // RT_DLGINIT
                 ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
-            }
-            else if (m_type == RT_STRING)
-            {
-                ;
-            }
-            else if (m_type == RT_FONTDIR)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_FONT)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_ACCELERATOR)
-            {
+                break;
+            case (UINT_PTR)RT_ACCELERATOR:
                 ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
-            }
-            else if (m_type == RT_RCDATA)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_MESSAGETABLE)
-            {
-                ;
-            }
-            else if (m_type == RT_GROUP_CURSOR)
-            {
+            case (UINT_PTR)RT_GROUP_CURSOR:
                 ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
-            }
-            else if (m_type == RT_GROUP_ICON)
-            {
+                break;
+            case (UINT_PTR)RT_GROUP_ICON:
                 ret += db.GetNameOfResID(IDTYPE_ICON, id);
-            }
-            else if (m_type == RT_VERSION)
-            {
-                ;
-            }
-            else if (m_type == RT_DLGINCLUDE)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_PLUGPLAY)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_VXD)
-            {
-                ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            }
-            else if (m_type == RT_ANICURSOR)
-            {
+                break;
+            case (UINT_PTR)RT_ANICURSOR:
                 ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
-            }
-            else if (m_type == RT_ANIICON)
-            {
+                break;
+            case (UINT_PTR)RT_ANIICON:
                 ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
-            }
-            else if (m_type == RT_HTML)
-            {
+                break;
+            case (UINT_PTR)RT_HTML:
                 ret += db.GetNameOfResID(IDTYPE_HTML, id);
-            }
-            else if (m_type == RT_MANIFEST)
-            {
-                ;
-            }
-            else
-            {
+                break;
+            case (UINT_PTR)RT_FONTDIR:
+            case (UINT_PTR)RT_FONT:
+            case (UINT_PTR)RT_RCDATA:
+            case (UINT_PTR)RT_DLGINCLUDE:
+            case (UINT_PTR)RT_PLUGPLAY:
+            case (UINT_PTR)RT_VXD:
+            default:
                 ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
+                break;
             }
 
             if (ret.size())
