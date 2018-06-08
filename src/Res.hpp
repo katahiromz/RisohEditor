@@ -299,6 +299,19 @@ class ResEntries2 : public std::set<ResEntry2 *>
         }
     }
 
+    void DeleteNames(const MIdOrString& type, WORD lang)
+    {
+        for (;;)
+        {
+            auto entry = Find(type, (WORD)0, lang);
+            if (!entry)
+                break;
+
+            erase(entry);
+            delete entry;
+        }
+    }
+
     ResEntry2 *
     Find(const MIdOrString& type, 
          const MIdOrString& name,
@@ -637,6 +650,81 @@ class ResEntries2 : public std::set<ResEntry2 *>
             }
         }
         return ::EndUpdateResourceW(hUpdate, FALSE);
+    }
+
+    void DoBitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_BITMAP;
+        auto entry = Find2(type, item.m_title, lang);
+        if (!entry)
+            return;
+
+        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], entry->size());
+        if (hbm)
+        {
+            if (!item.m_title.empty())
+            {
+                if (title_to_bitmap[item.m_title])
+                    DeleteObject(title_to_bitmap[item.m_title]);
+                title_to_bitmap[item.m_title] = hbm;
+            }
+        }
+    }
+
+    void DoIcon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
+    {
+        MIdOrString type = RT_GROUP_ICON;
+        auto entry = Find2(type, item.m_title, lang);
+        if (!entry)
+            return;
+
+        if (entry->size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+            return;
+
+        ICONDIR& dir = (ICONDIR&)(*entry)[0];
+        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&(*entry)[sizeof(ICONDIR)];
+
+        int cx = 0, cy = 0, bits = 0, n = 0;
+        for (int m = 0; m < dir.idCount; ++m)
+        {
+            if (cx < pGroupIcon[m].bWidth ||
+                cy < pGroupIcon[m].bHeight ||
+                bits < pGroupIcon[m].wBitCount)
+            {
+                cx = pGroupIcon[m].bWidth;
+                cy = pGroupIcon[m].bHeight;
+                bits = pGroupIcon[m].wBitCount;
+                n = m;
+            }
+        }
+
+        type = RT_ICON;
+        entry = Find2(type, pGroupIcon[n].nID, lang);
+        if (!entry)
+            return;
+
+        HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
+        if (hIcon)
+        {
+            if (!item.m_title.empty())
+            {
+                if (title_to_icon[item.m_title])
+                    DestroyIcon(title_to_icon[item.m_title]);
+                title_to_icon[item.m_title] = hIcon;
+            }
+        }
+    }
+
+    void Optimize()
+    {
+        for (auto entry : *this)
+        {
+            if (entry->empty())
+            {
+                entries.erase(entry);
+                delete entry;
+            }
+        }
     }
 };
 
@@ -987,26 +1075,6 @@ TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
 }
 
-inline void Res_Sort(ResEntries& entries)
-{
-    std::sort(entries.begin(), entries.end());
-    std::unique(entries.begin(), entries.end());
-}
-
-inline void
-Res_EraseEmpty(ResEntries& entries)
-{
-    for (size_t i = entries.size(); i > 0; )
-    {
-        --i;
-        if (entries[i].empty())
-        {
-            entries.erase(entries.begin() + i);
-            continue;
-        }
-    }
-}
-
 inline void
 TV_RefreshInfo(HWND hwnd, ConstantsDB& db, ResEntries& entries)
 {
@@ -1092,21 +1160,6 @@ inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, ResEntries& e
     TV_RefreshInfo(hwnd, db, entries);
 
     SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
-}
-
-inline BOOL
-Res_Optimize(ResEntries& entries)
-{
-    size_t count = entries.size();
-    while (count-- > 0)
-    {
-        if (entries[count].empty())
-        {
-            entries.erase(entries.begin() + count);
-        }
-    }
-
-    return TRUE;
 }
 
 inline BOOL
@@ -1432,90 +1485,7 @@ Res_HasNoName(const MIdOrString& type)
     return type == RT_STRING || type == RT_MESSAGETABLE;
 }
 
-inline void
-Res_DeleteNames(ResEntries& entries, const MIdOrString& type, WORD lang)
-{
-    INT k;
-    for (;;)
-    {
-        k = Res_Find(entries, type, (WORD)0, lang, FALSE);
-        if (k == -1)
-            break;
-
-        ResEntry& entry = entries[k];
-        entry.clear_data();
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////////////
-
-inline void
-Res_DoIcon(ResEntries& entries, MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
-{
-    MIdOrString type = RT_GROUP_ICON;
-    INT k = Res_Find2(entries, type, item.m_title, lang);
-    if (k < 0 || k >= (INT)entries.size())
-        return;
-
-    ResEntry entry = entries[k];
-    if (entry.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
-        return;
-
-    ICONDIR& dir = (ICONDIR&)entry[0];
-    GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&entry[sizeof(ICONDIR)];
-
-    int cx = 0, cy = 0, bits = 0, n = 0;
-    for (int m = 0; m < dir.idCount; ++m)
-    {
-        if (cx < pGroupIcon[m].bWidth ||
-            cy < pGroupIcon[m].bHeight ||
-            bits < pGroupIcon[m].wBitCount)
-        {
-            cx = pGroupIcon[m].bWidth;
-            cy = pGroupIcon[m].bHeight;
-            bits = pGroupIcon[m].wBitCount;
-            n = m;
-        }
-    }
-
-    type = RT_ICON;
-    k = Res_Find2(entries, type, pGroupIcon[n].nID, lang);
-    if (k < 0 || k >= (INT)entries.size())
-        return;
-
-    entry = entries[k];
-    HICON hIcon = CreateIconFromResource((PBYTE)&entry[0], entry.size(), TRUE, 0x00030000);
-    if (hIcon)
-    {
-        if (!item.m_title.empty())
-        {
-            if (title_to_icon[item.m_title])
-                DestroyIcon(title_to_icon[item.m_title]);
-            title_to_icon[item.m_title] = hIcon;
-        }
-    }
-}
-
-inline void
-Res_DoBitmap(ResEntries& entries, MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
-{
-    MIdOrString type = RT_BITMAP;
-    INT k = Res_Find2(entries, type, item.m_title, lang);
-    if (k < 0 || k >= (INT)entries.size())
-        return;
-
-    ResEntry& entry = entries[k];
-    HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
-    if (hbm)
-    {
-        if (!item.m_title.empty())
-        {
-            if (title_to_bitmap[item.m_title])
-                DeleteObject(title_to_bitmap[item.m_title]);
-            title_to_bitmap[item.m_title] = hbm;
-        }
-    }
-}
 
 inline void
 ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
