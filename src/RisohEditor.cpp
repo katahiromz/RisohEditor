@@ -19,8 +19,6 @@
 
 #include "RisohEditor.hpp"
 
-#pragma comment(lib, "msimg32.lib")
-
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
@@ -1485,8 +1483,8 @@ protected:
     void PreviewVersion(HWND hwnd, const LangEntry& entry);
     void PreviewDialog(HWND hwnd, const LangEntry& entry);
     void PreviewAniIcon(HWND hwnd, const LangEntry& entry, BOOL bIcon);
-    void PreviewStringTable(HWND hwnd, const LangEntry& entry);
-    void PreviewMessageTable(HWND hwnd, const LangEntry& entry);
+    void PreviewStringTable(HWND hwnd, const StringEntry& entry);
+    void PreviewMessageTable(HWND hwnd, const MessageEntry& entry);
     void PreviewRCData(HWND hwnd, const LangEntry& entry);
     void PreviewDlgInit(HWND hwnd, const LangEntry& entry);
     void PreviewRisohTemplate(HWND hwnd, const LangEntry& entry);
@@ -3831,46 +3829,44 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const LangEntry& entry, BOOL bIcon)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewStringTable(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewStringTable(HWND hwnd, const StringEntry& entry)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, (WORD)0, entry.lang);
+    EntrySet::super_type found;
+    g_res.search(found, ET_LANG, RT_STRING, (WORD)0, entry.m_lang);
 
     StringRes str_res;
-    ResEntries::iterator it, end = found.end();
-    for (it = found.begin(); it != end; ++it)
+    for (auto e : found)
     {
-        MByteStreamEx stream(it->data);
-        if (!str_res.LoadFromStream(stream, it->name.m_id))
+        MByteStreamEx stream(e->m_data);
+        if (!str_res.LoadFromStream(stream, e->m_name.m_id))
             return;
     }
 
-    MString str = GetLanguageStatement(entry.lang);
-    str += str_res.Dump(g_db);
+    MString str = GetLanguageStatement(entry.m_lang);
+    str += str_res.Dump();
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewMessageTable(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewMessageTable(HWND hwnd, const MessageEntry& entry)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_MESSAGETABLE, (WORD)0, entry.lang);
+    EntrySet::super_type found;
+    g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
 
     MessageRes msg_res;
-    ResEntries::iterator it, end = found.end();
-    for (it = found.begin(); it != end; ++it)
+    for (auto e : found)
     {
-        MByteStreamEx stream(it->data);
-        if (!msg_res.LoadFromStream(stream, it->name.m_id))
+        MByteStreamEx stream(e->data);
+        if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
             return;
     }
 
     MString str;
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
     str += L"#ifdef APSTUDIO_INVOKED\r\n";
     str += L"    #error Ap Studio cannot edit this message table.\r\n";
     str += L"#endif\r\n";
     str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump(g_db);
+    str += msg_res.Dump();
     str += L"#endif\r\n\r\n";
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
