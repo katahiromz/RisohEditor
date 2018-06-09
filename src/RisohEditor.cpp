@@ -1290,6 +1290,15 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
+    void UpdateEntryName(EntryBase& e)
+    {
+        //TODO:
+    }
+    void UpdateEntryLang(EntryBase& e)
+    {
+        //TODO:
+    }
+
 public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
@@ -1838,7 +1847,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     MReplaceBinDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_SelectEntry(dialog.m_entry_copy);
+        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -2044,13 +2053,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 }
             }
 
-            size_t i, count = res.size();
-            for (i = 0; i < count; ++i)
-            {
-                Res_AddEntry(res[i], bOverwrite);
-            }
-
-            TV_RefreshInfo(g_tv, m_m_entries);
+            g_res.add_entries(res);
         }
         else
         {
@@ -2102,7 +2105,6 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH];
-
     lstrcpynW(szFile, m_szNominalFile, _countof(szFile));
 
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
@@ -2175,14 +2177,13 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
-        ResEntry entry2(RT_DLGINIT, entry.name, entry->m_lang);
+        ResEntry entry2(RT_DLGINIT, entry->m_name, entry->m_lang);
         entry2.m_data = stream.data();
 
         if (dialog_res.m_dlginit.empty())
         {
             HTREEITEM hItem = TV_GetItem(g_tv, m_entries, entry2);
             TV_DeleteItem(g_tv, m_entries, entry2);
-            Res_DeleteEntries(RT_DLGINIT, entry.name, entry->m_lang);
             return;
         }
 
@@ -2226,23 +2227,20 @@ BOOL MMainWnd::DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(RT_ICON, pEntries[i].nID, entry->m_lang, FALSE);
-        if (k == -1)
-        {
+        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
+        if (!e)
             return FALSE;
-        }
-        ResEntry icon_entry = m_entries[k];
 
-        UINT nLastID = Res_GetLastIconID(m_entries);
+        UINT nLastID = g_res.get_last_id(RT_ICON, entry.m_lang);
         UINT nNextID = nLastID + 1;
 
-        icon_entry.name = WORD(nNextID);
-
-        Res_AddEntry(icon_entry, TRUE);
+        e->name = WORD(nNextID);
+        UpdateEntryName(*e);
     }
 
-    entry.name = name;
-    return Res_AddEntry(entry, TRUE);
+    entry.m_name = name;
+    UpdateEntryName(entry);
+    return TRUE;
 }
 
 BOOL MMainWnd::DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name)
@@ -2273,23 +2271,20 @@ BOOL MMainWnd::DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(RT_CURSOR, pEntries[i].nID, entry->m_lang, FALSE);
-        if (k == -1)
-        {
+        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
+        if (!e)
             return FALSE;
-        }
-        ResEntry cursor_entry = m_entries[k];
 
-        UINT nLastID = Res_GetLastCursorID(m_entries);
+        UINT nLastID = g_res.get_last_id(RT_CURSOR, entry.m_lang);
         UINT nNextID = nLastID + 1;
 
-        cursor_entry.name = WORD(nNextID);
-
-        Res_AddEntry(cursor_entry, TRUE);
+        e->m_name = WORD(nNextID);
+        UpdateEntryName(*e);
     }
 
-    entry.name = name;
-    return Res_AddEntry(entry, TRUE);
+    entry.m_name = m_name;
+    UpdateEntryName(entry);
+    return TRUE;
 }
 
 HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
@@ -2497,32 +2492,37 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         }
         TV_RefreshInfo(g_tv, m_m_entries);
         entry.name = dialog.m_name;
-        TV_SelectEntry(entry);
+        SelectTV(hwnd, &entry, FALSE);
     }
 }
 
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
     auto entry = TV_GetEntry();
-    if (!entry ||
-        entry->m_e_type != ET_LANG &&
-        entry->m_e_type != ET_STRING &&
-        entry->m_e_type != ET_MESSAGE)
+    if (!entry)
+        return;
+
+    switch (entry->m_e_type)
     {
+    case ET_LANG: case ET_STRING: case ET_MESSAGE:
+        break;
+
+    default:
         return;
     }
 
     MCloneInNewLangDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        ResEntries found;
-        Res_Search(found, m_entries, entry);
         if (entry->m_type == RT_GROUP_ICON)
         {
-            for (size_t i = 0; i < found.size(); ++i)
+            EntrySet::super_type found;
+            g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
+            for (auto e : found)
             {
-                found[i].lang = dialog.m_lang;
-                DoCopyGroupIcon(found[i], found[i].name);
+                e->lang = dialog.m_lang;
+                UpdateEntryLang(*e);
+                DoCopyGroupIcon(found[i], e->name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
@@ -2533,9 +2533,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 DoCopyGroupCursor(found[i], found[i].name);
             }
         }
-        else if (HIWORD(lParam) == ET_STRING)
+        else if (entry->m_e_type == ET_STRING)
         {
-            WORD lang = entry.m_lang;
+            WORD lang = entry->m_lang;
             EntrySet::super_type found;
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
 
@@ -2565,9 +2565,8 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 Res_AddEntry(found[i], TRUE);
             }
         }
-        TV_RefreshInfo(g_tv, m_m_entries);
         entry->m_lang = dialog.m_lang;
-        TV_SelectEntry(entry);
+        SelectTV(hwnd, entry, FALSE);
     }
 }
 

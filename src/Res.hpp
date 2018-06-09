@@ -350,6 +350,7 @@ struct EntrySet : private std::set<EntryBase *>
     typedef std::set<EntryBase *> super_type;
     using super_type::empty;
     using super_type::size;
+    using super_type::clear;
     using super_type::begin;
     using super_type::end;
     using super_type::insert;
