@@ -408,7 +408,7 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
             MString res_name;
             if (e->m_type.is_int())
             {
-                res_name = g_db.GetName(L"RESOURCE", found[i].type.m_id);
+                res_name = g_db.GetName(L"RESOURCE", e->m_type.m_id);
                 if (res_name.empty())
                 {
                     res_name = mstr_dec(e->m_type.m_id);
@@ -658,7 +658,7 @@ struct LANG_ENTRY
     WORD LangID;
     MStringW str;
 
-    bool operator<(const LangEntry& ent) const
+    bool operator<(const LANG_ENTRY& ent) const
     {
         return str < ent.str;
     }
@@ -958,7 +958,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
                 return FALSE;
             }
         }
-        lang = entry.LangID;
+        lang = g_Langs[i].LangID;
     }
 
     return TRUE;
@@ -1203,7 +1203,7 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
 {
-    LangEntry entry;
+    LANG_ENTRY entry;
     LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
     entry.LangID = LANGIDFROMLCID(lcid);
 
@@ -1275,14 +1275,11 @@ protected:
     WORD            m_lang;
 
     // classes
-    RisohSettings   g_settings;
-    ConstantsDB     g_db;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit, m_hSrcEdit;
     MBmpView        m_hBmpView;
     MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
     MIDListDlg      m_id_list_dlg;
-    ResEntries      m_entries;
     ITEM_SEARCH     m_search;
 
     // find/replace
@@ -1301,10 +1298,8 @@ public:
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
         m_hSrcFont(NULL), m_hBinFont(NULL), 
-        g_tv(NULL), m_hToolBar(NULL), m_hStatusBar(NULL), 
-        m_hFindReplaceDlg(NULL), m_rad_window(m_g_settings), 
-        m_id_list_dlg(m_g_settings), 
-        m_search(g_settings, m_m_entries)
+        m_hToolBar(NULL), m_hStatusBar(NULL), 
+        m_hFindReplaceDlg(NULL)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1413,14 +1408,14 @@ public:
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
-    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries);
-    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries);
-    BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries, MStringA& strOutput);
-    BOOL DoExtract(const ResEntry& entry, BOOL bExporting);
+    BOOL DoImport(HWND hwnd, LPCWSTR ResFile);
+    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile);
+    BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
+    BOOL DoExtract(const EntryBase& entry, BOOL bExporting);
     BOOL DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry);
     BOOL DoExtractCursor(LPCWSTR pszFileName, const LangEntry& entry);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries);
-    BOOL DoExtractBin(LPCWSTR pszFileName, const LangEntry& entry);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *e);
+    BOOL DoExtractBin(LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
     BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
@@ -1431,13 +1426,13 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name);
-    BOOL DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name);
+    BOOL DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name);
+    BOOL DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
-    void DoRenameEntry(ResEntry entry, const MIdOrString& old_name, const MIdOrString& new_name);
-    void DoRelangEntry(ResEntry entry, WORD old_lang, WORD new_lang);
+    void DoRenameEntry(NameEntry& entry, const MIdOrString& old_name, const MIdOrString& new_name);
+    void DoRelangEntry(LangEntry& entry, WORD old_lang, WORD new_lang);
     void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
     void DoRefreshIDList(HWND hwnd);
 
@@ -1451,7 +1446,7 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg);
+    BOOL CareWindresResult(HWND hwnd, MStringA& msg);
     BOOL CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen = FALSE);
     BOOL CompileMessageTable(HWND hwnd, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
@@ -1682,11 +1677,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    LPARAM lParam = TV_GetParam(g_tv);
-    if (HIWORD(lParam) == I_NONE)
+    auto e = TV_GetEntry();
+    if (!e)
         return;
-
-    UINT i = LOWORD(lParam);
 
     WCHAR szFile[MAX_PATH] = L"";
 
@@ -1694,9 +1687,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+    if (e->m_e_type == ET_STRING || e->m_e_type == ET_MESSAGE)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    if (HIWORD(lParam) == I_LANG)
+    if (e->m_e_type == ET_LANG)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
     else
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
@@ -1710,16 +1703,14 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     {
         if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
         {
-            ResEntries selection;
-            INT count = TV_GetSelection(g_tv, selection, m_entries);
-            if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
+            if (!DoExtractRes(hwnd, ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
         }
         else
         {
-            if (!DoExtractBin(ofn.lpstrFile, m_entries[i]))
+            if (!DoExtractBin(ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -1747,7 +1738,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    if (entry.type == RT_ANIICON)
+    if (entry.m_type == RT_ANIICON)
     {
         ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"ani";
@@ -1786,7 +1777,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    if (entry.type == RT_ANICURSOR)
+    if (entry.m_type == RT_ANICURSOR)
     {
         ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"ani";
@@ -2209,7 +2200,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -2256,7 +2247,7 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
     return Res_AddEntry(entry, TRUE);
 }
 
-BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -2414,18 +2405,15 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             {
                 if (search.bInternalText)
                 {
-                    LPARAM lParam = TV_GetParam(g_tv, hItem);
-                    if (HIWORD(lParam) == I_LANG ||
-                        HIWORD(lParam) == I_STRING ||
-                        HIWORD(lParam) == I_MESSAGE)
+                    auto entry = TV_GetEntry();
+                    if (entry->m_e_type == ET_LANG ||
+                        entry->m_e_type == ET_STRING ||
+                        entry->m_e_type == ET_MESSAGE)
                     {
-                        UINT i = LOWORD(lParam);
-                        ResEntry entry = m_entries[i];
+                        if (entry->m_e_type == ET_STRING || entry->m_e_type == ET_MESSAGE)
+                            entry->m_name.clear();
 
-                        if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
-                            entry.name.clear();
-
-                        MString text = search.res2text.DumpEntry(entry);
+                        MString text = search.res2text.DumpEntry(*entry);
 
                         if (search.bIgnoreCases)
                         {
@@ -2487,14 +2475,14 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         ResEntries found;
         entry.lang = 0xFFFF;
         Res_Search(found, m_entries, entry);
-        if (entry.type == RT_GROUP_ICON)
+        if (entry.m_type == RT_GROUP_ICON)
         {
             for (size_t i = 0; i < found.size(); ++i)
             {
                 DoCopyGroupIcon(found[i], dialog.m_name);
             }
         }
-        else if (entry.type == RT_GROUP_CURSOR)
+        else if (entry.m_type == RT_GROUP_CURSOR)
         {
             for (size_t i = 0; i < found.size(); ++i)
             {
@@ -2531,7 +2519,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     {
         ResEntries found;
         Res_Search(found, m_entries, entry);
-        if (entry.type == RT_GROUP_ICON)
+        if (entry.m_type == RT_GROUP_ICON)
         {
             for (size_t i = 0; i < found.size(); ++i)
             {
@@ -2539,7 +2527,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 DoCopyGroupIcon(found[i], found[i].name);
             }
         }
-        else if (entry.type == RT_GROUP_CURSOR)
+        else if (entry.m_type == RT_GROUP_CURSOR)
         {
             for (size_t i = 0; i < found.size(); ++i)
             {
@@ -2740,7 +2728,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
 
     ResEntry& entry = m_entries[i];
-    if (!Res_CanGuiEdit(entry.type))
+    if (!Res_CanGuiEdit(entry.m_type))
     {
         return;
     }
@@ -2752,7 +2740,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
     const ResEntry::DataType& data = entry.data;
     MByteStreamEx stream(data);
-    if (entry.type == RT_ACCELERATOR)
+    if (entry.m_type == RT_ACCELERATOR)
     {
         AccelRes accel_res(g_db);
         MEditAccelDlg dialog(accel_res);
@@ -2771,7 +2759,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.type == RT_MENU)
+    else if (entry.m_type == RT_MENU)
     {
         MenuRes menu_res;
         if (menu_res.LoadFromStream(stream))
@@ -2790,7 +2778,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.type == RT_DIALOG)
+    else if (entry.m_type == RT_DIALOG)
     {
         // load RT_DIALOG
         MByteStreamEx stream(entry.data);
@@ -2825,7 +2813,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
-    else if (entry.type == RT_DLGINIT)
+    else if (entry.m_type == RT_DLGINIT)
     {
         DlgInitRes dlginit_res(g_db);
         if (dlginit_res.LoadFromStream(stream))
@@ -2843,7 +2831,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
+    else if (entry.m_type == RT_STRING && HIWORD(lParam) == I_STRING)
     {
         WORD lang = entry.lang;
         ResEntries found;
@@ -2883,7 +2871,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.type == RT_MESSAGETABLE && HIWORD(lParam) == I_MESSAGE)
+    else if (entry.m_type == RT_MESSAGETABLE && HIWORD(lParam) == I_MESSAGE)
     {
         WORD lang = entry.lang;
         ResEntries found;
@@ -3159,7 +3147,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         const ResEntry& entry = m_entries[i];
 
         WCHAR sz[64];
-        MStringW type = entry.type.str();
+        MStringW type = entry.m_type.str();
         MStringW name = entry.name.str();
         StringCchPrintfW(sz, _countof(sz), 
             L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k], 
@@ -3309,7 +3297,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
             if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
-                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                 {
                     bCanEditLabel = FALSE;
                 }
@@ -3401,7 +3389,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     if (bEditable)
     {
         EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
-        if (Res_CanGuiEdit(entry.type))
+        if (Res_CanGuiEdit(entry.m_type))
         {
             EnableMenuItem(hMenu, ID_GUIEDIT, MF_ENABLED);
         }
@@ -3447,8 +3435,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
         break;
     case I_LANG:
-        if (entry.type == RT_GROUP_ICON || entry.type == RT_ICON ||
-            entry.type == RT_ANIICON)
+        if (entry.m_type == RT_GROUP_ICON || entry.m_type == RT_ICON ||
+            entry.m_type == RT_ANIICON)
         {
             EnableMenuItem(hMenu, ID_EXTRACTICON, MF_ENABLED);
         }
@@ -3456,7 +3444,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         {
             EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         }
-        if (entry.type == RT_GROUP_ICON || entry.type == RT_ANIICON)
+        if (entry.m_type == RT_GROUP_ICON || entry.m_type == RT_ANIICON)
         {
             EnableMenuItem(hMenu, ID_REPLACEICON, MF_ENABLED);
         }
@@ -3465,7 +3453,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         }
 
-        if (entry.type == RT_BITMAP)
+        if (entry.m_type == RT_BITMAP)
         {
             EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_ENABLED);
             EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_ENABLED);
@@ -3476,8 +3464,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
         }
 
-        if (entry.type == RT_GROUP_CURSOR || entry.type == RT_CURSOR ||
-            entry.type == RT_ANICURSOR)
+        if (entry.m_type == RT_GROUP_CURSOR || entry.m_type == RT_CURSOR ||
+            entry.m_type == RT_ANICURSOR)
         {
             EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_ENABLED);
         }
@@ -3485,7 +3473,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         {
             EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
         }
-        if (entry.type == RT_GROUP_CURSOR || entry.type == RT_ANICURSOR)
+        if (entry.m_type == RT_GROUP_CURSOR || entry.m_type == RT_ANICURSOR)
         {
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_ENABLED);
         }
@@ -3494,7 +3482,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         }
 
-        if (entry.type == RT_DIALOG || entry.type == RT_MENU)
+        if (entry.m_type == RT_DIALOG || entry.m_type == RT_MENU)
         {
             EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
         }
@@ -3507,7 +3495,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
-        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+        if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
         else
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
@@ -3920,9 +3908,9 @@ BOOL MMainWnd::Preview(HWND hwnd, const LangEntry& entry)
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     BOOL bEditable = FALSE;
-    if (entry.type.m_id != 0)
+    if (entry.m_type.m_id != 0)
     {
-        WORD wType = entry.type.m_id;
+        WORD wType = entry.m_type.m_id;
         if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
             PreviewIcon(hwnd, entry);
@@ -4011,26 +3999,26 @@ BOOL MMainWnd::Preview(HWND hwnd, const LangEntry& entry)
     }
     else
     {
-        if (entry.type == L"PNG" || entry.type == L"GIF" ||
-            entry.type == L"JPEG" || entry.type == L"TIFF" ||
-            entry.type == L"JPG" || entry.type == L"TIF" ||
-            entry.type == L"EMF" || entry.type == L"ENHMETAFILE" ||
-            entry.type == L"WMF" || entry.type == L"IMAGE")
+        if (entry.m_type == L"PNG" || entry.m_type == L"GIF" ||
+            entry.m_type == L"JPEG" || entry.m_type == L"TIFF" ||
+            entry.m_type == L"JPG" || entry.m_type == L"TIF" ||
+            entry.m_type == L"EMF" || entry.m_type == L"ENHMETAFILE" ||
+            entry.m_type == L"WMF" || entry.m_type == L"IMAGE")
         {
             PreviewImage(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == L"WAVE")
+        else if (entry.m_type == L"WAVE")
         {
             PreviewWAVE(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == L"AVI")
+        else if (entry.m_type == L"AVI")
         {
             PreviewAVI(hwnd, entry);
             bEditable = FALSE;
         }
-        else if (entry.type == L"RISOHTEMPLATE")
+        else if (entry.m_type == L"RISOHTEMPLATE")
         {
             PreviewRisohTemplate(hwnd, entry);
             bEditable = TRUE;
@@ -4119,7 +4107,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     }
 
     ResEntry& entry = m_entries[i];
-    m_type = entry.type;
+    m_type = entry.m_type;
     m_name = entry.name;
     m_lang = entry.lang;
 
@@ -4164,11 +4152,11 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         {
             UpdateOurToolBar(2);
         }
-        else if (Res_IsTestable(entry.type))
+        else if (Res_IsTestable(entry.m_type))
         {
             UpdateOurToolBar(0);
         }
-        else if (Res_CanGuiEdit(entry.type))
+        else if (Res_CanGuiEdit(entry.m_type))
         {
             UpdateOurToolBar(4);
         }
@@ -4194,7 +4182,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
         return FALSE;
 
     const ResEntry& entry = m_entries[i];
-    const MIdOrString& type = entry.type;
+    const MIdOrString& type = entry.m_type;
     switch (HIWORD(lParam))
     {
     case I_LANG:
@@ -4217,7 +4205,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
     return TRUE;
 }
 
-BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
+BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg)
 {
     auto entry = TV_GetParam(g_tv);
     if (!entry)
@@ -4322,7 +4310,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         return FALSE;
 
     ResEntry& entry = m_entries[i];
-    if (entry.type != RT_MESSAGETABLE)
+    if (entry.m_type != RT_MESSAGETABLE)
         return FALSE;
 
     MStringA strUtf8;
@@ -4440,7 +4428,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         return FALSE;
 
     ResEntry& entry = m_entries[i];
-    if (entry.type == RT_MESSAGETABLE)
+    if (entry.m_type == RT_MESSAGETABLE)
     {
         return CompileMessageTable(hwnd, strWide);
     }
@@ -4449,10 +4437,10 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
     if (HIWORD(lParam) == I_LANG)
     {
-        if (Res_IsPlainText(entry.type))
+        if (Res_IsPlainText(entry.m_type))
         {
             if (strWide.find(L"\"UTF-8\"") != MStringW::npos ||
-                entry.type == L"RISOHTEMPLATE")
+                entry.m_type == L"RISOHTEMPLATE")
             {
                 entry.data.assign(strUtf8.begin(), strUtf8.end());
 
@@ -4588,7 +4576,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         DeleteFileW(szPath2);
         DeleteFileW(szPath3);
 
-        if (bReopen && entry.type == RT_DIALOG)
+        if (bReopen && entry.m_type == RT_DIALOG)
         {
             PostMessage(hwnd, MYWM_REOPENRAD, 0, 0);
         }
@@ -4626,10 +4614,10 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
     if (bReopen)
     {
         ResEntry& entry = m_entries[i];
-        if (m_type == entry.type && m_name == entry.name &&
+        if (m_type == entry.m_type && m_name == entry.name &&
             m_lang == entry.lang)
         {
-            if (HIWORD(lParam) == I_LANG && entry.type == RT_DIALOG)
+            if (HIWORD(lParam) == I_LANG && entry.m_type == RT_DIALOG)
             {
                 MByteStreamEx stream(entry.data);
                 m_rad_window.m_dialog_res.LoadFromStream(stream);
@@ -4778,7 +4766,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
 {
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
     {
-        LangEntry entry;
+        LANG_ENTRY entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
         entry.str = LoadStringDx(IDS_NEUTRAL);
         g_Langs.push_back(entry);
@@ -5052,7 +5040,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     return DoLoadResH(hwnd, szPath);
 }
 
-BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries, MStringA& strOutput)
+BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
 {
     MWaitCursor wait;
 
@@ -5103,7 +5091,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries,
     return bSuccess;
 }
 
-BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
+BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile)
 {
     MWaitCursor wait;
 
@@ -5186,7 +5174,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, ResEntries& entries)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
+BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile)
 {
     MWaitCursor wait;
     MByteStreamEx stream;
@@ -5215,7 +5203,7 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, ResEntries& entries)
         }
 
         entry.lang = header.LanguageId;
-        entry.type = header.type;
+        entry.m_type = header.type;
         entry.name = header.name;
         entries.push_back(entry);
 
@@ -5511,36 +5499,33 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const ResEntries& entries)
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *e)
 {
     MByteStreamEx bs;
     ResHeader header;
     if (!header.WriteTo(bs))
         return FALSE;
 
-    ResEntries::const_iterator it, end = entries.end();
-    for (it = entries.begin(); it != end; ++it)
+    for (auto entry : g_entries)
     {
-        const ResEntry& entry = *it;
-
-        header.DataSize = entry.size();
-        header.HeaderSize = header.GetHeaderSize(entry.type, entry.name);
+        header.DataSize = entry->size();
+        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;
 
-        header.type = entry.type;
-        header.name = entry.name;
+        header.type = entry->type;
+        header.name = entry->name;
         header.DataVersion = 0;
         header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
                              MEMORYFLAG_MOVEABLE;
-        header.LanguageId = entry.lang;
+        header.LanguageId = entry->m_lang;
         header.Version = 0;
         header.Characteristics = 0;
 
         if (!header.WriteTo(bs))
             return FALSE;
 
-        if (!bs.WriteData(&entry[0], entry.size()))
+        if (!bs.WriteData(&(*entry)[0], entry->size()))
             return FALSE;
 
         bs.WriteDwordAlignment();
@@ -5583,14 +5568,13 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     strLang += L"\r\n";
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
 
-    for (size_t i = 0; i < m_entries.size(); ++i)
+    for (auto entry : g_entries)
     {
-        ResEntry& entry = m_entries[i];
-        if (entry.lang != lang)
+        if (entry->m_lang != lang)
             continue;
-        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+        if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
             continue;
-        MString str = res2text.DumpEntry(entry);
+        MString str = res2text.DumpEntry(*entry);
         if (!str.empty())
         {
             mstr_trim(str);
@@ -6010,7 +5994,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
         anValues[3] = 1000;
 }
 
-inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
+inline BOOL MMainWnd::DoExtract(const EntryBase& entry, BOOL bExporting)
 {
     ResToText res2text(g_settings, m_m_entries);
 
@@ -6028,9 +6012,9 @@ inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
 
     //MessageBox(NULL, filename.c_str(), NULL, 0);
 
-    if (entry.type.is_int())
+    if (entry.m_type.is_int())
     {
-        WORD wType = entry.type.m_id;
+        WORD wType = entry.m_type.m_id;
         if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             // No output file
@@ -6131,55 +6115,55 @@ inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
     }
     else
     {
-        if (entry.type == L"AVI")
+        if (entry.m_type == L"AVI")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"PNG")
+        if (entry.m_type == L"PNG")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"GIF")
+        if (entry.m_type == L"GIF")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"JPEG")
+        if (entry.m_type == L"JPEG")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"JPG")
+        if (entry.m_type == L"JPG")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"TIFF")
+        if (entry.m_type == L"TIFF")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"TIF")
+        if (entry.m_type == L"TIF")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"EMF")
+        if (entry.m_type == L"EMF")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"ENHMETAFILE")
+        if (entry.m_type == L"ENHMETAFILE")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"WMF")
+        if (entry.m_type == L"WMF")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"WAVE")
+        if (entry.m_type == L"WAVE")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"IMAGE")
+        if (entry.m_type == L"IMAGE")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
-        if (entry.type == L"RISOHTEMPLATE")
+        if (entry.m_type == L"RISOHTEMPLATE")
         {
             return DoExtractBin(filename.c_str(), entry);
         }
@@ -6269,9 +6253,9 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     return bOK;
 }
 
-BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const LangEntry& entry)
+BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const EntryBase *e)
 {
-    MByteStreamEx bs(entry.data);
+    MByteStreamEx bs(entry.m_data);
     return bs.SaveToFile(pszFileName);
 }
 
@@ -6383,15 +6367,15 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
 BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry)
 {
-    if (entry.type == RT_GROUP_ICON)
+    if (entry.m_type == RT_GROUP_ICON)
     {
         return Res_ExtractGroupIcon(entry, pszFileName);
     }
-    else if (entry.type == RT_ICON)
+    else if (entry.m_type == RT_ICON)
     {
         return Res_ExtractIcon(entry, pszFileName);
     }
-    else if (entry.type == RT_ANIICON)
+    else if (entry.m_type == RT_ANIICON)
     {
         MFile file;
         DWORD cbWritten = 0;
@@ -6407,15 +6391,15 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry)
 
 BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const LangEntry& entry)
 {
-    if (entry.type == RT_GROUP_CURSOR)
+    if (entry.m_type == RT_GROUP_CURSOR)
     {
         return Res_ExtractGroupCursor(entry, pszFileName);
     }
-    else if (entry.type == RT_CURSOR)
+    else if (entry.m_type == RT_CURSOR)
     {
         return Res_ExtractCursor(entry, pszFileName);
     }
-    else if (entry.type == RT_ANICURSOR)
+    else if (entry.m_type == RT_ANICURSOR)
     {
         MFile file;
         DWORD cbWritten = 0;
@@ -7189,7 +7173,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 
     if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
     {
-        if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+        if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
         {
             return;
         }
@@ -7835,7 +7819,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
                 if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
                 {
-                    if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                    if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                     {
                         return TRUE;
                     }
@@ -7869,7 +7853,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
-                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                 {
                     return TRUE;    // prevent
                 }
@@ -7912,7 +7896,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
             {
-                if (entry.type == RT_STRING || entry.type == RT_MESSAGETABLE)
+                if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                 {
                     return FALSE;   // reject
                 }
@@ -7971,7 +7955,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
-void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, const MIdOrString& new_name)
+void MMainWnd::DoRenameEntry(NameEntry& entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
     selector.lang = 0xFFFF;
 
@@ -7990,7 +7974,7 @@ void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, con
     TV_SelectEntry(g_tv, m_entries, selector);
 }
 
-void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
+void MMainWnd::DoRelangEntry(LangEntry& selector, WORD old_lang, WORD new_lang)
 {
     for (;;)
     {
@@ -8027,7 +8011,7 @@ void MMainWnd::OnTest(HWND hwnd)
 
     UINT i = LOWORD(Item.lParam);
     const ResEntry& entry = m_entries[i];
-    if (entry.type == RT_DIALOG)
+    if (entry.m_type == RT_DIALOG)
     {
         MByteStreamEx stream(entry.data);
 
@@ -8075,7 +8059,7 @@ void MMainWnd::OnTest(HWND hwnd)
             }
         }
     }
-    else if (entry.type == RT_MENU)
+    else if (entry.m_type == RT_MENU)
     {
         HMENU hMenu = LoadMenuIndirect(&entry[0]);
         if (hMenu)
