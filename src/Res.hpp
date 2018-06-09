@@ -970,20 +970,40 @@ TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entr
 inline HTREEITEM
 TV_GetInsertParent(HWND hwndTV, EntryBase *entry)
 {
+    HTREEITEM TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace);
+    HTREEITEM TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, bool replace);
+
     if (entry->m_e_type == ET_TYPE)
         return NULL;
 
-    // TODO:
-    return NULL;
+    HTREEITEM hType = TV_AddTypeEntry(hwndTV, entry->m_type, false);
+    if (!hType)
+        return NULL;
+
+    switch (entry->m_e_type)
+    {
+    case ET_NAME:
+    case ET_STRING:
+    case ET_MESSAGE:
+        return hType;
+    default:
+        break;
+    }
+
+    if (entry->m_e_type != ET_LANG)
+        return NULL;
+
+    return TV_AddNameEntry(hwndTV, entry->m_type, entry->m_name, false);
 }
 
 inline HTREEITEM
-TV_GetInsertPosition(HWND hwndTV, EntryBase *entry)
+TV_GetInsertPosition(HWND hwndTV, HTREEITEM hParent, EntryBase *entry)
 {
     if (entry->m_e_type == ET_TYPE)
         return NULL;
 
     // TODO:
+    ...
     return NULL;
 }
 
@@ -991,7 +1011,11 @@ inline HTREEITEM
 TV_InsertEntry(HWND hwndTV, EntryBase *entry)
 {
     HTREEITEM hParent = TV_GetInsertParent(hwndTV, entry);
-    HTREEITEM hPosition = TV_GetInsertPosition(hwndTV, entry);
+    if (entry->m_e_type != ET_TYPE && hParent == NULL)
+        return NULL;
+
+    HTREEITEM hPosition = TV_GetInsertPosition(hwndTV, hParent, entry);
+
     MStringW strText;
     switch (entry->m_e_type)
     {
@@ -1002,8 +1026,6 @@ TV_InsertEntry(HWND hwndTV, EntryBase *entry)
         strText = entry->get_name_label();
         break;
     case ET_LANG:
-        strText = entry->get_lang_label();
-        break;
     case ET_STRING:
     case ET_MESSAGE:
         strText = entry->get_lang_label();
@@ -1181,7 +1203,7 @@ TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
     return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, HeadLess, replace);
 }
 
-static inline BOOL CALLBACK
+inline BOOL CALLBACK
 TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                    WORD wIDLanguage, LPARAM lParam)
 {
@@ -1191,13 +1213,13 @@ TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
     return TRUE;
 }
 
-static inline BOOL CALLBACK
+inline BOOL CALLBACK
 TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
 {
     return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, TV_EnumResLangProc, lParam);
 }
 
-static inline BOOL CALLBACK
+inline BOOL CALLBACK
 TV_EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 {
     return ::EnumResourceNamesW(hMod, lpszType, TV_EnumResNameProc, lParam);
