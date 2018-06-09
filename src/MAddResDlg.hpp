@@ -29,7 +29,7 @@
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(ConstantsDB& HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void ReplaceFullWithHalf(LPWSTR pszText);
@@ -42,14 +42,13 @@ class MAddResDlg : public MDialogBase
 public:
     MIdOrString m_type;
     LPCTSTR m_file;
-    MStringW m_strTemplate;
+    MStringW m_strText;
     LangEntry m_entry_copy;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddResDlg(ResEntries& entries)
-        : MDialogBase(IDD_ADDRES), m_type(0xFFFF), m_file(NULL)
+    MAddResDlg() : MDialogBase(IDD_ADDRES), m_type(0xFFFF), m_file(NULL)
     {
     }
 
@@ -209,7 +208,7 @@ public:
             return;
 
         bool bOverwrite = false;
-        if (auto entry = g_res.find(type, name, lang))
+        if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
             if (file.empty() && Res_HasSample(type))
             {
@@ -246,11 +245,11 @@ public:
                 type == RT_MANIFEST || type == RT_MESSAGETABLE ||
                 type == RT_DLGINIT)
             {
-                m_strTemplate = GetRisohTemplate(m_type, lang);
+                m_strText = GetRisohTemplate(m_type, lang);
             }
             else if (type == L"RISOHTEMPLATE")
             {
-                m_strTemplate = L" ";
+                m_strText = L" ";
             }
             else
             {
@@ -264,12 +263,13 @@ public:
 
             if (bOK)
             {
-                if (m_strTemplate.empty()
-                    TV_AddLangEntry(g_tv, type, name, lang, stream.data(), false);
+                if (m_strText.empty())
+                    TV_AddLangEntry(type, name, lang, stream.data(), false);
                 else
-                    TV_AddLangEntry(g_tv, type, name, lang, m_strTemplate, false);
+                    TV_AddLangEntry(type, name, lang, m_strText, false);
 
-                m_entry_copy = LangEntry(type, name, lang, m_strTemplate);
+                m_entry_copy = LangEntry(type, name, lang);
+                m_entry_copy.m_strText = m_strText;
                 bAdded = true;
             }
         }

@@ -120,7 +120,7 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !TV_AddLangEntry(g_tv, RT_ANICURSOR, name, lang, bs.data(), bOverwrite))
+                !TV_AddLangEntry(RT_ANICURSOR, name, lang, bs.data(), bOverwrite))
             {
                 if (bOverwrite)
                     ErrorBoxDx(IDS_CANTREPLACECUR);
@@ -131,7 +131,7 @@ public:
         }
         else
         {
-            if (!TV_AddGroupCursor(g_tv, name, lang, file, bOverwrite))
+            if (!TV_AddGroupCursor(name, lang, file, bOverwrite))
             {
                 if (bOverwrite)
                     ErrorBoxDx(IDS_CANTREPLACECUR);

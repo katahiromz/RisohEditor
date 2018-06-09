@@ -80,7 +80,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!TV_AddBitmap(g_tv, name, lang, file, true))
+        if (!TV_AddBitmap(name, lang, file, true))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;

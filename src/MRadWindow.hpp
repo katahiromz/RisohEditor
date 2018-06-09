@@ -671,7 +671,6 @@ public:
     POINT           m_ptClicked;
     POINT           m_ptDragging;
     MIndexLabels    m_labels;
-    RisohSettings&  g_settings;
     BOOL            m_bMovingSizing;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
@@ -1177,7 +1176,6 @@ public:
     INT             m_yDialogBaseUnit;
     MRadDialog      m_rad_dialog;
     DialogRes       m_dialog_res;
-    RisohSettings&  g_settings;
     HICON           m_hIcon;
     HICON           m_hIconSm;
     MTitleToBitmap  m_title_to_bitmap;
@@ -1201,11 +1199,11 @@ public:
                 // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
-                    Res_GetMaster().do_icon(m_title_to_icon, item, lang);
+                    g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    Res_GetMaster().do_bitmap(m_title_to_bitmap, item, lang);
+                    g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }

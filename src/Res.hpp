@@ -53,6 +53,18 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
 
+#ifdef USE_GLOBALS
+    extern HWND g_tv;
+#else
+    inline HWND&
+    TV_GetMaster(void)
+    {
+        static HWND hwndTV = NULL;
+        return hwndTV;
+    }
+    #define g_tv TV_GetMaster()
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
@@ -103,14 +115,6 @@ Res_HasNoName(const MIdOrString& type)
     return type == RT_STRING || type == RT_MESSAGETABLE;
 }
 
-inline HWND&
-TV_GetMaster(void)
-{
-    static HWND hwndTV = NULL;
-    return hwndTV;
-}
-#define g_tv TV_GetMaster()
-
 ///////////////////////////////////////////////////////////////////////////////
 // EntryType
 
@@ -136,7 +140,6 @@ struct EntryBase
     MIdOrString     m_type;
     MIdOrString     m_name;
     WORD            m_lang = 0xFFFF;
-    INT             m_cRefs = -1;
     HTREEITEM       m_hItem = NULL;
 
     EntryBase()
@@ -803,35 +806,39 @@ struct EntrySet : private std::set<EntryBase *>
     }
 };
 
-inline EntrySet&
-Res_GetMaster(void)
-{
-    static EntrySet eset;
-    return eset;
-}
-#define g_res   Res_GetMaster()
+#ifdef USE_GLOBALS
+    extern EntrySet g_res;
+#else
+    inline EntrySet&
+    Res_GetMaster(void)
+    {
+        static EntrySet eset;
+        return eset;
+    }
+    #define g_res   Res_GetMaster()
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
 inline LPARAM
-TV_GetParam(HWND hwndTV, HTREEITEM hItem = NULL)
+TV_GetParam(HTREEITEM hItem = NULL)
 {
     if (!hItem)
-        hItem = TreeView_GetSelection(hwndTV);
+        hItem = TreeView_GetSelection(g_tv);
 
     TV_ITEM item;
     ZeroMemory(&item, sizeof(item));
     item.mask = TVIF_PARAM;
     item.hItem = hItem;
-    TreeView_GetItem(hwndTV, &item);
+    TreeView_GetItem(g_tv, &item);
 
     return item.lParam;
 }
 
 inline EntryBase *
-TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
+TV_GetEntry(HTREEITEM hItem = NULL)
 {
-    LPARAM lParam = TV_GetParam(hwndTV, hItem);
+    LPARAM lParam = TV_GetParam(hItem);
     return (EntryBase *)lParam;
 }
 
@@ -859,7 +866,7 @@ Res_OnDeleteGroupCursor(EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, le.m_lang);
+        g_res.search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, le.m_lang);
     }
     return true;
 }
@@ -886,7 +893,7 @@ Res_OnDeleteGroupIcon(EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, le.m_lang);
+        g_res.search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, le.m_lang);
     }
 
     return true;
@@ -896,22 +903,22 @@ inline void
 Res_OnDeleteString(EntryBase *entry)
 {
     assert(entry->m_e_type == ET_STRING);
-    Res_GetMaster().search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
+    g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
 }
 
 inline void
 Res_OnDeleteMessage(EntryBase *entry)
 {
     assert(entry->m_e_type == ET_MESSAGE);
-    Res_GetMaster().search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
+    g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
 }
 
 inline INT
-TV_GetChildrenAboutCount(HWND hwndTV, HTREEITEM hItem)
+TV_GetChildrenAboutCount(HTREEITEM hItem)
 {
-    if (HTREEITEM hItem = TreeView_GetChild(hwndTV, hItem))
+    if (HTREEITEM hItem = TreeView_GetChild(g_tv, hItem))
     {
-        if (TreeView_GetNextSibling(hwndTV, hItem))
+        if (TreeView_GetNextSibling(g_tv, hItem))
             return 2;
         return 1;
     }
@@ -926,10 +933,10 @@ Res_GetParent(EntryBase *entry)
     case ET_NAME:
     case ET_STRING:
     case ET_MESSAGE:
-        return Res_GetMaster().find(ET_TYPE, entry->m_type);
+        return g_res.find(ET_TYPE, entry->m_type);
 
     case ET_LANG:
-        return Res_GetMaster().find(ET_NAME, entry->m_type, entry->m_name);
+        return g_res.find(ET_NAME, entry->m_type, entry->m_name);
 
     default:
         return NULL;
@@ -939,17 +946,15 @@ Res_GetParent(EntryBase *entry)
 inline void
 Res_DeleteEntry(EntryBase *entry)
 {
-    HWND hwndTV = TV_GetMaster();
-
     HTREEITEM hItem = entry->m_hItem;
     entry->m_hItem = NULL;
 
     HTREEITEM hParent = NULL;
     EntryBase *pParent;
-    if (hwndTV)
+    if (g_tv)
     {
-        hParent = TreeView_GetParent(hwndTV, hItem);
-        pParent = TV_GetEntry(hwndTV, hParent);
+        hParent = TreeView_GetParent(g_tv, hItem);
+        pParent = TV_GetEntry(hParent);
     }
     else
     {
@@ -986,23 +991,23 @@ Res_DeleteEntry(EntryBase *entry)
         return;
     }
 
-    Res_GetMaster().erase(entry);
+    g_res.erase(entry);
     delete entry;
 
-    if (hwndTV)
+    if (g_tv)
     {
         if (hParent)
         {
             if (entry->m_e_type == ET_STRING || entry->m_e_type == ET_MESSAGE)
             {
-                INT nCount = TV_GetChildrenAboutCount(hwndTV, hParent);
+                INT nCount = TV_GetChildrenAboutCount(hParent);
                 if (nCount == 1)
-                    TreeView_DeleteItem(hwndTV, hParent);
+                    TreeView_DeleteItem(g_tv, hParent);
             }
             else
             {
-                if (TreeView_GetChild(hwndTV, hParent) == NULL)
-                    TreeView_DeleteItem(hwndTV, hParent);
+                if (TreeView_GetChild(g_tv, hParent) == NULL)
+                    TreeView_DeleteItem(g_tv, hParent);
             }
         }
     }
@@ -1014,14 +1019,14 @@ Res_DeleteEntry(EntryBase *entry)
 }
 
 inline void
-TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
+TV_OnDeleteItem(HTREEITEM hItem)
 {
-    auto entry = TV_GetEntry(hwndTV, hItem);
+    auto entry = TV_GetEntry(hItem);
     Res_DeleteEntry(entry);
 }
 
 inline HTREEITEM
-TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry, 
+TV_InsertAfter(HTREEITEM hParent, MStringW strText, EntryBase *entry, 
                HTREEITEM hInsertAfter)
 {
     assert(entry);
@@ -1047,19 +1052,19 @@ TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entr
         insert.item.iImage = 0;
         insert.item.iSelectedImage = 0;
     }
-    return TreeView_InsertItem(hwndTV, &insert);
+    return TreeView_InsertItem(g_tv, &insert);
 }
 
 inline HTREEITEM
-TV_GetInsertParent(HWND hwndTV, EntryBase *entry)
+TV_GetInsertParent(EntryBase *entry)
 {
-    HTREEITEM TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace);
-    HTREEITEM TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, bool replace);
+    HTREEITEM TV_AddTypeEntry(const MIdOrString& type, bool replace);
+    HTREEITEM TV_AddNameEntry(const MIdOrString& type, const MIdOrString& name, bool replace);
 
     if (entry->m_e_type == ET_TYPE)
         return NULL;
 
-    HTREEITEM hType = TV_AddTypeEntry(hwndTV, entry->m_type, false);
+    HTREEITEM hType = TV_AddTypeEntry(entry->m_type, false);
     if (!hType)
         return NULL;
 
@@ -1075,11 +1080,11 @@ TV_GetInsertParent(HWND hwndTV, EntryBase *entry)
         return NULL;
     }
 
-    return TV_AddNameEntry(hwndTV, entry->m_type, entry->m_name, false);
+    return TV_AddNameEntry(entry->m_type, entry->m_name, false);
 }
 
 inline HTREEITEM
-TV_GetInsertPosition(HWND hwndTV, HTREEITEM hParent, EntryBase *entry)
+TV_GetInsertPosition(HTREEITEM hParent, EntryBase *entry)
 {
     if (entry->m_e_type == ET_TYPE)
         return NULL;
@@ -1090,13 +1095,13 @@ TV_GetInsertPosition(HWND hwndTV, HTREEITEM hParent, EntryBase *entry)
 }
 
 inline HTREEITEM
-TV_InsertEntry(HWND hwndTV, EntryBase *entry)
+TV_InsertEntry(EntryBase *entry)
 {
-    HTREEITEM hParent = TV_GetInsertParent(hwndTV, entry);
+    HTREEITEM hParent = TV_GetInsertParent(entry);
     if (entry->m_e_type != ET_TYPE && hParent == NULL)
         return NULL;
 
-    HTREEITEM hPosition = TV_GetInsertPosition(hwndTV, hParent, entry);
+    HTREEITEM hPosition = TV_GetInsertPosition(hParent, entry);
 
     MStringW strText;
     switch (entry->m_e_type)
@@ -1116,92 +1121,92 @@ TV_InsertEntry(HWND hwndTV, EntryBase *entry)
         assert(0);
         break;
     }
-    return TV_InsertAfter(hwndTV, hParent, strText, entry, hPosition);
+    return TV_InsertAfter(hParent, strText, entry, hPosition);
 }
 
 inline HTREEITEM
-TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace)
+TV_AddTypeEntry(const MIdOrString& type, bool replace)
 {
     if (replace)
     {
-        Res_GetMaster().search_and_delete(ET_TYPE, type);
+        g_res.search_and_delete(ET_TYPE, type);
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find2(ET_TYPE, type))
+        if (auto hItem = g_res.find2(ET_TYPE, type))
             return hItem;
     }
     auto entry = new TypeEntry(type);
-    return TV_InsertEntry(hwndTV, entry);
+    return TV_InsertEntry(entry);
 }
 
 inline HTREEITEM
-TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, 
+TV_AddNameEntry(const MIdOrString& type, const MIdOrString& name, 
                 bool replace)
 {
     if (replace)
     {
-        Res_GetMaster().search_and_delete(ET_NAME, type, name);
+        g_res.search_and_delete(ET_NAME, type, name);
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find2(ET_NAME, type, name))
+        if (auto hItem = g_res.find2(ET_NAME, type, name))
             return hItem;
     }
     auto entry = new NameEntry(type, name);
-    return TV_InsertEntry(hwndTV, entry);
+    return TV_InsertEntry(entry);
 }
 
 inline HTREEITEM
-TV_AddStringEntry(HWND hwndTV, WORD lang)
+TV_AddStringEntry(WORD lang)
 {
-    if (auto hItem = Res_GetMaster().find2(ET_STRING, RT_STRING, (WORD)0, lang))
+    if (auto hItem = g_res.find2(ET_STRING, RT_STRING, (WORD)0, lang))
         return hItem;
 
     auto entry = new StringEntry(lang);
-    return TV_InsertEntry(hwndTV, entry);
+    return TV_InsertEntry(entry);
 }
 
 inline HTREEITEM
-TV_AddMessageEntry(HWND hwndTV, WORD lang)
+TV_AddMessageEntry(WORD lang)
 {
-    if (auto hItem = Res_GetMaster().find2(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang))
+    if (auto hItem = g_res.find2(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang))
         return hItem;
 
     auto entry = new MessageEntry(lang);
-    return TV_InsertEntry(hwndTV, entry);
+    return TV_InsertEntry(entry);
 }
 
 inline HTREEITEM
-TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, 
+TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name, 
                 WORD lang, const EntryBase::data_type& data, bool replace)
 {
     if (replace)
     {
-        Res_GetMaster().search_and_delete(ET_LANG, type, name, lang);
+        g_res.search_and_delete(ET_LANG, type, name, lang);
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find2(ET_LANG, type, name, lang))
+        if (auto hItem = g_res.find2(ET_LANG, type, name, lang))
             return hItem;
     }
 
     if (type == RT_STRING)
     {
-        TV_AddStringEntry(hwndTV, lang);
+        TV_AddStringEntry(lang);
     }
     if (type == RT_MESSAGETABLE)
     {
-        TV_AddMessageEntry(hwndTV, lang);
+        TV_AddMessageEntry(lang);
     }
 
     auto entry = new LangEntry(type, name, lang);
     entry->assign(data);
-    return TV_InsertEntry(hwndTV, entry);
+    return TV_InsertEntry(entry);
 }
 
 inline HTREEITEM
-TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang, bool replace)
+TV_AddResEntry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang, bool replace)
 {
     HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
     if (!hResInfo)
@@ -1213,68 +1218,68 @@ TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang,
     if (pv && dwSize)
     {
         EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
-        return TV_AddLangEntry(hwndTV, type, name, lang, data, replace);
+        return TV_AddLangEntry(type, name, lang, data, replace);
     }
 
     return NULL;
 }
 
 inline HTREEITEM
-TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang, 
+TV_AddGroupIcon(const MIdOrString& name, WORD lang, 
                 const MStringW& file_name, bool replace)
 {
     if (replace)
     {
-        HTREEITEM hItem = Res_GetMaster().find2(ET_LANG, RT_GROUP_ICON, name, lang);
-        TreeView_DeleteItem(hwndTV, hItem);
+        HTREEITEM hItem = g_res.find2(ET_LANG, RT_GROUP_ICON, name, lang);
+        TreeView_DeleteItem(g_tv, hItem);
     }
 
     IconFile icon;
     if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
         return NULL;
 
-    UINT LastIconID = Res_GetMaster().get_last_id(RT_ICON, lang);
+    UINT LastIconID = g_res.get_last_id(RT_ICON, lang);
     UINT NextIconID = LastIconID + 1;
 
     int i, nCount = icon.GetImageCount();
     for (i = 0; i < nCount; ++i)
     {
-        TV_AddLangEntry(hwndTV, RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i), FALSE);
+        TV_AddLangEntry(RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i), FALSE);
     }
 
     IconFile::DataType data(icon.GetIconGroup(NextIconID));
-    return TV_AddLangEntry(hwndTV, RT_GROUP_ICON, name, lang, data, FALSE);
+    return TV_AddLangEntry(RT_GROUP_ICON, name, lang, data, FALSE);
 }
 
 inline HTREEITEM
-TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang, 
+TV_AddGroupCursor(const MIdOrString& name, WORD lang, 
                   const MStringW& file_name, bool replace)
 {
     if (replace)
     {
-        auto hItem = Res_GetMaster().find2(ET_LANG, RT_GROUP_CURSOR, name, lang);
-        TreeView_DeleteItem(hwndTV, hItem);
+        auto hItem = g_res.find2(ET_LANG, RT_GROUP_CURSOR, name, lang);
+        TreeView_DeleteItem(g_tv, hItem);
     }
 
     CursorFile cur;
     if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
         return NULL;
 
-    UINT LastCursorID = Res_GetMaster().get_last_id(RT_CURSOR, lang);
+    UINT LastCursorID = g_res.get_last_id(RT_CURSOR, lang);
     UINT NextCursorID = LastCursorID + 1;
 
     int i, nCount = cur.GetImageCount();
     for (i = 0; i < nCount; ++i)
     {
-        TV_AddLangEntry(hwndTV, RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i), FALSE);
+        TV_AddLangEntry(RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i), FALSE);
     }
 
     CursorFile::DataType data(cur.GetCursorGroup(NextCursorID));
-    return TV_AddLangEntry(hwndTV, RT_GROUP_CURSOR, name, lang, data, FALSE);
+    return TV_AddLangEntry(RT_GROUP_CURSOR, name, lang, data, FALSE);
 }
 
 inline HTREEITEM
-TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang, 
+TV_AddBitmap(const MIdOrString& name, WORD lang, 
              const MStringW& file, bool replace = false)
 {
     MByteStreamEx stream;
@@ -1301,7 +1306,7 @@ TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
         }
         DeleteObject(hbm);
 
-        return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, PackedDIB, replace);
+        return TV_AddLangEntry(RT_BITMAP, name, lang, PackedDIB, replace);
     }
 
     size_t head_size = sizeof(BITMAPFILEHEADER);
@@ -1310,16 +1315,15 @@ TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
 
     size_t i0 = head_size, i1 = stream.size();
     EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-    return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, HeadLess, replace);
+    return TV_AddLangEntry(RT_BITMAP, name, lang, HeadLess, replace);
 }
 
 inline BOOL CALLBACK
 TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName, 
                    WORD wIDLanguage, LPARAM lParam)
 {
-    HWND hwndTV = TV_GetMaster();
     bool replace = (bool)lParam;
-    TV_AddResEntry(hwndTV, hMod, lpszType, lpszName, wIDLanguage, replace);
+    TV_AddResEntry(hMod, lpszType, lpszName, wIDLanguage, replace);
     return TRUE;
 }
 
@@ -1336,7 +1340,7 @@ TV_EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
 }
 
 inline BOOL
-TV_FromRes(HWND hwndTV, HMODULE hMod, bool replace)
+TV_FromRes(HMODULE hMod, bool replace)
 {
     return ::EnumResourceTypesW(hMod, TV_EnumResTypeProc, replace);
 }

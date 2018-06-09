@@ -45,6 +45,16 @@ static const DWORD s_nMaxCaptions = 10;
 static const UINT s_nBackupMaxCount = 5;
 
 //////////////////////////////////////////////////////////////////////////////
+// globals
+
+#ifdef USE_GLOBALS
+    ConstantsDB g_db;
+    RisohSettings g_settings;
+    HWND g_tv = NULL;
+    EntrySet g_res;
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
 
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
 {
@@ -8745,7 +8755,7 @@ void MMainWnd::OnAddManifest(HWND hwnd)
 
 void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 {
-    if (dialog.m_strTemplate.empty())
+    if (dialog.m_strText.empty())
     {
         DoRefreshIDList(hwnd);
         TV_RefreshInfo(m_hTreeView, m_m_entries);
@@ -8757,7 +8767,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         DoRefreshIDList(hwnd);
         TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
-        if (CompileParts(hwnd, dialog.m_strTemplate, FALSE))
+        if (CompileParts(hwnd, dialog.m_strText, FALSE))
         {
             LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, FALSE);
@@ -8765,7 +8775,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         }
         else
         {
-            SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+            SetWindowTextW(m_hSrcEdit, dialog.m_strText.c_str());
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
             UpdateOurToolBar(2);

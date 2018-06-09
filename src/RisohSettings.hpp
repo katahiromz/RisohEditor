@@ -221,13 +221,17 @@ struct RisohSettings
     }
 };
 
-inline RisohSettings&
-RisohSettings_GetMaster(void)
-{
-    static RisohSettings s_settings;
-    return s_settings;
-}
-#define g_settings RisohSettings_GetMaster()
+#ifdef USE_GLOBALS
+    extern RisohSettings g_settings;
+#else
+    inline RisohSettings&
+    RisohSettings_GetMaster(void)
+    {
+        static RisohSettings s_settings;
+        return s_settings;
+    }
+    #define g_settings RisohSettings_GetMaster()
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 

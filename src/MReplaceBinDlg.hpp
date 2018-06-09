@@ -204,10 +204,9 @@ public:
             return;
         }
 
-        TV_AddLangEntry(g_tv, type, name, lang, bs.data(), TRUE);
+        TV_AddLangEntry(type, name, lang, bs.data(), TRUE);
 
-        LangEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = LangEntry(type, name, lang);
 
         EndDialog(IDOK);
     }
