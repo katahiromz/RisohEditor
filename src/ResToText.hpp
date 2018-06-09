@@ -39,19 +39,19 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 MStringW DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
 MStringW DumpBitmapInfo(HBITMAP hbm);
 MStringW DumpGroupIconInfo(const std::vector<BYTE>& data);
-MStringW DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data);
+MStringW DumpGroupCursorInfo(const std::vector<BYTE>& data);
 
 HBITMAP
-CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
+CreateBitmapFromIconOrPngDx(HWND hwnd, const LangEntry& entry, BITMAP& bm);
 
 HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
+CreateBitmapFromIconsDx(HWND hwnd, const LangEntry& entry);
 
 HBITMAP
-CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm);
+CreateBitmapFromCursorDx(HWND hwnd, const LangEntry& entry, BITMAP& bm);
 
 HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry);
+CreateBitmapFromCursorsDx(HWND hwnd, const LangEntry& entry);
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
@@ -67,7 +67,7 @@ public:
     {
     }
 
-    MString DumpEntry(const ResEntry& entry);
+    MString DumpEntry(const LangEntry& entry);
 
 public:
     HWND m_hwnd;
@@ -84,44 +84,44 @@ public:
             return TEXT("");
     }
 
-    MString DoCursor(const ResEntry& entry);
-    MString DoBitmap(const ResEntry& entry);
-    MString DoIcon(const ResEntry& entry);
-    MString DoMenu(const ResEntry& entry);
-    MString DoDialog(const ResEntry& entry);
-    MString DoString(const ResEntry& entry);
-    MString DoAccel(const ResEntry& entry);
-    MString DoGroupCursor(const ResEntry& entry);
-    MString DoGroupIcon(const ResEntry& entry);
-    MString DoVersion(const ResEntry& entry);
-    MString DoAniCursor(const ResEntry& entry);
-    MString DoAniIcon(const ResEntry& entry);
-    MString DoText(const ResEntry& entry);
-    MString DoImage(const ResEntry& entry);
-    MString DoMessage(const ResEntry& entry);
-    MString DoWave(const ResEntry& entry);
-    MString DoAVI(const ResEntry& entry);
-    MString DoDlgInit(const ResEntry& entry);
-    MString DoRCData(const ResEntry& entry);
-    MString DoRisohTemplate(const ResEntry& entry);
-    MString DoUnknown(const ResEntry& entry);
+    MString DoCursor(const LangEntry& entry);
+    MString DoBitmap(const LangEntry& entry);
+    MString DoIcon(const LangEntry& entry);
+    MString DoMenu(const LangEntry& entry);
+    MString DoDialog(const LangEntry& entry);
+    MString DoString(const LangEntry& entry);
+    MString DoAccel(const LangEntry& entry);
+    MString DoGroupCursor(const LangEntry& entry);
+    MString DoGroupIcon(const LangEntry& entry);
+    MString DoVersion(const LangEntry& entry);
+    MString DoAniCursor(const LangEntry& entry);
+    MString DoAniIcon(const LangEntry& entry);
+    MString DoText(const LangEntry& entry);
+    MString DoImage(const LangEntry& entry);
+    MString DoMessage(const LangEntry& entry);
+    MString DoWave(const LangEntry& entry);
+    MString DoAVI(const LangEntry& entry);
+    MString DoDlgInit(const LangEntry& entry);
+    MString DoRCData(const LangEntry& entry);
+    MString DoRisohTemplate(const LangEntry& entry);
+    MString DoUnknown(const LangEntry& entry);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
     MString DumpEscapedName(const MIdOrString& name);
 
-    MString GetEntryFileName(const ResEntry& entry);
+    MString GetEntryFileName(const LangEntry& entry);
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 inline MString
-ResToText::GetEntryFileName(const ResEntry& entry)
+ResToText::GetEntryFileName(const LangEntry& entry)
 {
     MString ret, lang;
 
-    if (entry.type.is_int())
+    if (entry.m_type.is_int())
     {
-        WORD wType = entry.type.m_id;
+        WORD wType = entry.m_type.m_id;
         if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             // No output file
@@ -129,7 +129,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
             ret += L"Bitmap_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bmp";
         }
         else if (wType == (WORD)(UINT_PTR)RT_ICON)
@@ -151,13 +151,13 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         else if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
             ret += L"FontDir_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
         }
         else if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
             ret += L"Font_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
         }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
@@ -167,7 +167,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
             ret += L"RCData_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
         }
         else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
@@ -177,13 +177,13 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
             ret += L"Cursor_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".cur";
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
             ret += L"Icon_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".ico";
         }
         else if (wType == (WORD)(UINT_PTR)RT_VERSION)
@@ -205,155 +205,155 @@ ResToText::GetEntryFileName(const ResEntry& entry)
         else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
             ret += L"AniCursor_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".ani";
         }
         else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
             ret += L"AniIcon_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".ani";
         }
         else if (wType == (WORD)(UINT_PTR)RT_HTML)
         {
             ret += L"Html_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".html";
         }
         else if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
         {
             ret += L"Manifest_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".manifest";
         }
         else
         {
-            ret += entry.type.str();
+            ret += entry.m_type.str();
             ret += L"_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
         }
     }
     else
     {
-        if (entry.type == L"AVI")
+        if (entry.m_type == L"AVI")
         {
             ret += L"Avi_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".avi";
         }
-        else if (entry.type == L"PNG")
+        else if (entry.m_type == L"PNG")
         {
             ret += L"Png_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".png";
         }
-        else if (entry.type == L"GIF")
+        else if (entry.m_type == L"GIF")
         {
             ret += L"Gif_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".gif";
         }
-        else if (entry.type == L"JPEG")
+        else if (entry.m_type == L"JPEG")
         {
             ret += L"Jpeg_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".jpg";
         }
-        else if (entry.type == L"JPG")
+        else if (entry.m_type == L"JPG")
         {
             ret += L"Jpg_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".jpg";
         }
-        else if (entry.type == L"TIFF")
+        else if (entry.m_type == L"TIFF")
         {
             ret += L"Tiff_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".tif";
         }
-        else if (entry.type == L"TIF")
+        else if (entry.m_type == L"TIF")
         {
             ret += L"Tif_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".tif";
         }
-        else if (entry.type == L"EMF")
+        else if (entry.m_type == L"EMF")
         {
             ret += L"Emf_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".emf";
         }
-        else if (entry.type == L"ENHMETAFILE")
+        else if (entry.m_type == L"ENHMETAFILE")
         {
             ret += L"EnhMetaFile_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".emf";
         }
-        else if (entry.type == L"WMF")
+        else if (entry.m_type == L"WMF")
         {
             ret += L"Wmf_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".wmf";
         }
-        else if (entry.type == L"WAVE")
+        else if (entry.m_type == L"WAVE")
         {
             ret += L"Wave_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".wav";
         }
-        else if (entry.type == L"IMAGE")
+        else if (entry.m_type == L"IMAGE")
         {
             if (entry.size() >= 4)
             {
                 if (memcmp(&entry[0], "BM", 2) == 0)
                 {
                     ret += L"Image_";
-                    ret += DumpEscapedName(entry.name);
+                    ret += DumpEscapedName(entry.m_name);
                     ret += L".bmp";
                 }
                 else if (memcmp(&entry[0], "GIF", 3) == 0)
                 {
                     ret += L"Image_";
-                    ret += DumpEscapedName(entry.name);
+                    ret += DumpEscapedName(entry.m_name);
                     ret += L".gif";
                 }
                 else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
                 {
                     ret += L"Image_";
-                    ret += DumpEscapedName(entry.name);
+                    ret += DumpEscapedName(entry.m_name);
                     ret += L".png";
                 }
                 else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
                 {
                     ret += L"Image_";
-                    ret += DumpEscapedName(entry.name);
+                    ret += DumpEscapedName(entry.m_name);
                     ret += L".jpg";
                 }
                 else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
                          memcmp(&entry[0], "\x49\x49", 2) == 0)
                 {
                     ret += L"Image_";
-                    ret += DumpEscapedName(entry.name);
+                    ret += DumpEscapedName(entry.m_name);
                     ret += L".tif";
                 }
             }
         }
         else
         {
-            ret += entry.type.str();
+            ret += entry.m_type.str();
             ret += L"_";
-            ret += DumpEscapedName(entry.name);
+            ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
         }
     }
 
     if (ret.size())
     {
-        if (entry.lang != 0 && entry.lang != 0xFFFF)
+        if (entry.m_lang != 0 && entry.m_lang != 0xFFFF)
         {
             WCHAR sz[32];
-            StringCchPrintfW(sz, _countof(sz), L"%u_", entry.lang);
+            StringCchPrintfW(sz, _countof(sz), L"%u_", entry.m_lang);
             ret = sz + ret;
         }
         ret = m_strFilePrefix + ret;
@@ -363,7 +363,7 @@ ResToText::GetEntryFileName(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoCursor(const ResEntry& entry)
+ResToText::DoCursor(const LangEntry& entry)
 {
     MString str;
 
@@ -383,7 +383,7 @@ ResToText::DoCursor(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoBitmap(const ResEntry& entry)
+ResToText::DoBitmap(const LangEntry& entry)
 {
     HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
     MString str;
@@ -395,9 +395,9 @@ ResToText::DoBitmap(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" BITMAP \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -407,7 +407,7 @@ ResToText::DoBitmap(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoIcon(const ResEntry& entry)
+ResToText::DoIcon(const LangEntry& entry)
 {
     MString str;
 
@@ -435,14 +435,14 @@ ResToText::DoIcon(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoMenu(const ResEntry& entry)
+ResToText::DoMenu(const LangEntry& entry)
 {
-    MByteStreamEx stream(entry.data);
+    MByteStreamEx stream(entry.m_data);
     MenuRes menu_res;
     if (menu_res.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
-        str += menu_res.Dump(entry.name);
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += menu_res.Dump(entry.m_name);
         str += L"\r\n";
         return str;
     }
@@ -450,14 +450,14 @@ ResToText::DoMenu(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoDialog(const ResEntry& entry)
+ResToText::DoDialog(const LangEntry& entry)
 {
-    MByteStreamEx stream(entry.data);
-    DialogRes dialog_res(g_db);
+    MByteStreamEx stream(entry.m_data);
+    DialogRes dialog_res;
     if (dialog_res.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
-        str += dialog_res.Dump(entry.name, !!g_settings.bAlwaysControl);
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
         str += L"\r\n";
         return str;
     }
@@ -465,10 +465,10 @@ ResToText::DoDialog(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoString(const ResEntry& entry)
+ResToText::DoString(const LangEntry& entry)
 {
     ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, entry.name, entry.lang);
+    Res_Search(found, m_entries, RT_STRING, entry.m_name, entry.m_lang);
 
     StringRes str_res;
     ResEntries::iterator it, end = found.end();
@@ -480,18 +480,18 @@ ResToText::DoString(const ResEntry& entry)
     }
 
     MString str;
-    if (entry.name.empty())
-        str += GetLanguageStatement(entry.lang);
+    if (entry.m_name.empty())
+        str += GetLanguageStatement(entry.m_lang);
     str += str_res.Dump(g_db);
     str += L"\r\n\r\n";
     return str;
 }
 
 inline MString
-ResToText::DoMessage(const ResEntry& entry)
+ResToText::DoMessage(const LangEntry& entry)
 {
     ResEntries found;
-    Res_Search(found, m_entries, RT_MESSAGETABLE, entry.name, entry.lang);
+    Res_Search(found, m_entries, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
     MessageRes msg_res;
     ResEntries::iterator it, end = found.end();
@@ -503,8 +503,8 @@ ResToText::DoMessage(const ResEntry& entry)
     }
 
     MString str;
-    if (entry.name.empty())
-        str += GetLanguageStatement(entry.lang);
+    if (entry.m_name.empty())
+        str += GetLanguageStatement(entry.m_lang);
 
     str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump(g_db);
@@ -513,14 +513,14 @@ ResToText::DoMessage(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoAccel(const ResEntry& entry)
+ResToText::DoAccel(const LangEntry& entry)
 {
-    MByteStreamEx stream(entry.data);
+    MByteStreamEx stream(entry.m_data);
     AccelRes accel(g_db);
     if (accel.LoadFromStream(stream))
     {
-        MString str = GetLanguageStatement(entry.lang);
-        str += accel.Dump(entry.name);
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += accel.Dump(entry.m_name);
         str += L"\r\n\r\n";
         return str;
     }
@@ -528,20 +528,20 @@ ResToText::DoAccel(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoGroupCursor(const ResEntry& entry)
+ResToText::DoGroupCursor(const LangEntry& entry)
 {
     MStringW str;
 
     if (m_bHumanReadable)
     {
-        str += DumpGroupCursorInfo(entry.data);
+        str += DumpGroupCursorInfo(entry.m_data);
         str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" CURSOR \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -550,20 +550,20 @@ ResToText::DoGroupCursor(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoGroupIcon(const ResEntry& entry)
+ResToText::DoGroupIcon(const LangEntry& entry)
 {
     MStringW str;
 
     if (m_bHumanReadable)
     {
-        str += DumpGroupIconInfo(entry.data);
+        str += DumpGroupIconInfo(entry.m_data);
         str += L"\r\n";
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" ICON \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -572,13 +572,13 @@ ResToText::DoGroupIcon(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoVersion(const ResEntry& entry)
+ResToText::DoVersion(const LangEntry& entry)
 {
     VersionRes ver_res;
-    if (ver_res.LoadFromData(entry.data))
+    if (ver_res.LoadFromData(entry.m_data))
     {
-        MString str = GetLanguageStatement(entry.lang);
-        str += ver_res.Dump(entry.name);
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += ver_res.Dump(entry.m_name);
         str += L"\r\n";
         return str;
     }
@@ -586,7 +586,7 @@ ResToText::DoVersion(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoAniCursor(const ResEntry& entry)
+ResToText::DoAniCursor(const LangEntry& entry)
 {
     MString str;
 
@@ -597,9 +597,9 @@ ResToText::DoAniCursor(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" ANICURSOR \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -608,7 +608,7 @@ ResToText::DoAniCursor(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoAniIcon(const ResEntry& entry)
+ResToText::DoAniIcon(const LangEntry& entry)
 {
     MString str;
 
@@ -619,9 +619,9 @@ ResToText::DoAniIcon(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" ANIICON \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -630,7 +630,7 @@ ResToText::DoAniIcon(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoText(const ResEntry& entry)
+ResToText::DoText(const LangEntry& entry)
 {
     MString str;
     if (m_bHumanReadable)
@@ -639,15 +639,15 @@ ResToText::DoText(const ResEntry& entry)
         type.nNewLine = MNEWLINE_CRLF;
         if (entry.size())
         {
-            str = mstr_from_bin(&entry.data[0], entry.data.size(), &type);
+            str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
         }
     }
     else
     {
-        str += GetLanguageStatement(entry.lang);
-        str += DumpName(entry.type, entry.name);
+        str += GetLanguageStatement(entry.m_lang);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" ";
-        str += DumpEscapedName(entry.type);
+        str += DumpEscapedName(entry.m_type);
         str += L" \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
@@ -656,7 +656,7 @@ ResToText::DoText(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DoImage(const ResEntry& entry)
+ResToText::DoImage(const LangEntry& entry)
 {
     MString str;
 
@@ -678,99 +678,99 @@ ResToText::DoImage(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    if (entry.type == L"PNG")
+    if (entry.m_type == L"PNG")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" PNG \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"GIF")
+    else if (entry.m_type == L"GIF")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" GIF \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"JPEG")
+    else if (entry.m_type == L"JPEG")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" JPEG \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"JPG")
+    else if (entry.m_type == L"JPG")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" JPG \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"TIFF")
+    else if (entry.m_type == L"TIFF")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" TIFF \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"TIF")
+    else if (entry.m_type == L"TIF")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" TIF \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"EMF")
+    else if (entry.m_type == L"EMF")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" EMF \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"ENHMETAFILE")
+    else if (entry.m_type == L"ENHMETAFILE")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" ENHMETAFILE \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"WMF")
+    else if (entry.m_type == L"WMF")
     {
-        str += DumpName(entry.type, entry.name);
+        str += DumpName(entry.m_type, entry.m_name);
         str += L" WMF \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
-    else if (entry.type == L"IMAGE")
+    else if (entry.m_type == L"IMAGE")
     {
         if (entry.size() >= 4)
         {
             if (memcmp(&entry[0], "BM", 2) == 0)
             {
-                str += DumpName(entry.type, entry.name);
+                str += DumpName(entry.m_type, entry.m_name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
                 str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "GIF", 3) == 0)
             {
-                str += DumpName(entry.type, entry.name);
+                str += DumpName(entry.m_type, entry.m_name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
                 str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
             {
-                str += DumpName(entry.type, entry.name);
+                str += DumpName(entry.m_type, entry.m_name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
                 str += L"\"\r\n\r\n";
             }
             else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
             {
-                str += DumpName(entry.type, entry.name);
+                str += DumpName(entry.m_type, entry.m_name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
                 str += L"\"\r\n\r\n";
@@ -778,7 +778,7 @@ ResToText::DoImage(const ResEntry& entry)
             else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
                      memcmp(&entry[0], "\x49\x49", 2) == 0)
             {
-                str += DumpName(entry.type, entry.name);
+                str += DumpName(entry.m_type, entry.m_name);
                 str += L" IMAGE \"";
                 str += GetEntryFileName(entry);
                 str += L"\"\r\n\r\n";
@@ -790,11 +790,11 @@ ResToText::DoImage(const ResEntry& entry)
 }
 
 inline MString
-ResToText::DumpEntry(const ResEntry& entry)
+ResToText::DumpEntry(const LangEntry& entry)
 {
-    if (entry.type.m_id)
+    if (entry.m_type.m_id)
     {
-        switch (entry.type.m_id)
+        switch (entry.m_type.m_id)
         {
         case 1: // RT_CURSOR
             return DoCursor(entry);
@@ -846,7 +846,7 @@ ResToText::DumpEntry(const ResEntry& entry)
     }
     else
     {
-        MString type = entry.type.m_str;
+        MString type = entry.m_type.m_str;
         if (type == L"PNG" || type == L"GIF" ||
             type == L"JPEG" || type == L"TIFF" ||
             type == L"JPG" || type == L"TIF" ||
@@ -859,11 +859,11 @@ ResToText::DumpEntry(const ResEntry& entry)
         {
             return DoWave(entry);
         }
-        else if (entry.type == L"AVI")
+        else if (entry.m_type == L"AVI")
         {
             return DoAVI(entry);
         }
-        else if (entry.type == L"RISOHTEMPLATE")
+        else if (entry.m_type == L"RISOHTEMPLATE")
         {
             return DoRisohTemplate(entry);
         }
@@ -871,7 +871,7 @@ ResToText::DumpEntry(const ResEntry& entry)
     return DoText(entry);
 }
 
-inline MString ResToText::DoWave(const ResEntry& entry)
+inline MString ResToText::DoWave(const LangEntry& entry)
 {
     MString str;
 
@@ -882,9 +882,9 @@ inline MString ResToText::DoWave(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" WAVE \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -892,7 +892,7 @@ inline MString ResToText::DoWave(const ResEntry& entry)
     return str;
 }
 
-inline MString ResToText::DoAVI(const ResEntry& entry)
+inline MString ResToText::DoAVI(const LangEntry& entry)
 {
     MString str;
 
@@ -903,9 +903,9 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" AVI \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -913,29 +913,29 @@ inline MString ResToText::DoAVI(const ResEntry& entry)
     return str;
 }
 
-MString ResToText::DoDlgInit(const ResEntry& entry)
+MString ResToText::DoDlgInit(const LangEntry& entry)
 {
     MStringW str;
 
-    MByteStreamEx stream(entry.data);
+    MByteStreamEx stream(entry.m_data);
     DlgInitRes dlginit(g_db);
     if (dlginit.LoadFromStream(stream))
     {
-        str += GetLanguageStatement(entry.lang);
-        str += dlginit.Dump(entry.name);
+        str += GetLanguageStatement(entry.m_lang);
+        str += dlginit.Dump(entry.m_name);
     }
 
     return str;
 }
 
-inline MString ResToText::DoRCData(const ResEntry& entry)
+inline MString ResToText::DoRCData(const LangEntry& entry)
 {
     MString str;
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" RCDATA \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -943,12 +943,12 @@ inline MString ResToText::DoRCData(const ResEntry& entry)
     return str;
 }
 
-inline MString ResToText::DoRisohTemplate(const ResEntry& entry)
+inline MString ResToText::DoRisohTemplate(const LangEntry& entry)
 {
     return DoText(entry);
 }
 
-inline MString ResToText::DoUnknown(const ResEntry& entry)
+inline MString ResToText::DoUnknown(const LangEntry& entry)
 {
     MString str;
 
@@ -959,11 +959,11 @@ inline MString ResToText::DoUnknown(const ResEntry& entry)
     }
 
     // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.lang);
+    str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.type, entry.name);
+    str += DumpName(entry.m_type, entry.m_name);
     str += L" ";
-    str += entry.type.str();
+    str += entry.m_type.str();
     str += L" \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -1113,7 +1113,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         INT k = Res_Find(entries, RT_CURSOR, nID, 0xFFFF, FALSE);
         if (k != -1)
         {
-            const ResEntry& cursor_entry = entries[k];
+            const LangEntry& cursor_entry = entries[k];
             LOCALHEADER header;
             if (cursor_entry.size() >= sizeof(header))
             {
@@ -1136,7 +1136,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
 }
 
 inline HBITMAP
-CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
+CreateBitmapFromIconOrPngDx(HWND hwnd, const LangEntry& entry, BITMAP& bm)
 {
     HBITMAP hbmIcon;
 
@@ -1202,7 +1202,7 @@ DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
 }
 
 inline HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
+CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -1231,12 +1231,12 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.m_lang, FALSE);
         if (k == -1)
         {
             return NULL;
         }
-        ResEntry& icon_entry = entries[k];
+        LangEntry& icon_entry = entries[k];
 
         BITMAP bm;
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
@@ -1262,13 +1262,13 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.m_lang, FALSE);
         if (k == -1)
         {
             DeleteObject(hbm);
             return NULL;
         }
-        ResEntry& icon_entry = entries[k];
+        LangEntry& icon_entry = entries[k];
 
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
 
@@ -1280,7 +1280,7 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
 }
 
 inline HBITMAP
-CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
+CreateBitmapFromCursorDx(HWND hwnd, const LangEntry& entry, BITMAP& bm)
 {
     HBITMAP hbmCursor;
 
@@ -1296,7 +1296,7 @@ CreateBitmapFromCursorDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
 }
 
 inline HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
+CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -1325,12 +1325,12 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.m_lang, FALSE);
         if (k == -1)
         {
             return NULL;
         }
-        ResEntry& cursor_entry = entries[k];
+        LangEntry& cursor_entry = entries[k];
 
         BITMAP bm;
         HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
@@ -1360,14 +1360,14 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const ResEntry& entry)
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+            INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.m_lang, FALSE);
             if (k == -1)
             {
                 assert(0);
                 DeleteObject(hbm);
                 return NULL;
             }
-            ResEntry& cursor_entry = entries[k];
+            LangEntry& cursor_entry = entries[k];
 
             BITMAP bm;
             HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);

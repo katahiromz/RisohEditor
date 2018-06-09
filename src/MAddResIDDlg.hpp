@@ -136,7 +136,7 @@ public:
                 MString prefix = name.substr(0, name.find(L'_') + 1);
 
                 std::vector<INT> indexes;
-                indexes = GetPrefixIndexes(g_settings, m_prefix);
+                indexes = GetPrefixIndexes(prefix);
                 if (indexes.empty() || indexes.size() >= 2)
                 {
                     m_bChanging = TRUE;

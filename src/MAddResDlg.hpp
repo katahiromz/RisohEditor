@@ -235,7 +235,7 @@ public:
             bOK = TRUE;
             if (Res_HasNoName(type))
             {
-                Res_DeleteNames(type, lang);
+                g_res.search_and_delete(ET_NAME, type, L"", lang);
             }
 
             MByteStreamEx stream;
@@ -285,9 +285,8 @@ public:
         }
         if (!bAdded)
         {
-            Res_AddEntry(type, name, lang, L"", bs.data(), bOverwrite);
-            ResEntry entry(type, name, lang);
-            m_entry_copy = entry;
+            g_res.add_entry(type, name, lang, bs.data(), bOverwrite);
+            m_entry_copy = LangEntry(type, name, lang);
         }
 
         EndDialog(IDOK);

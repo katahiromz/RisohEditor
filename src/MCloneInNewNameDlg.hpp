@@ -29,7 +29,7 @@
 #include "resource.h"
 
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(ConstantsDB& HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -37,12 +37,12 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MCloneInNewNameDlg : public MDialogBase
 {
 public:
-    ResEntry& m_entry;
+    LangEntry& m_entry;
     MIdOrString m_name;
     MComboBoxAutoComplete m_cmb2;
 
-    MCloneInNewNameDlg(ResEntries& entries, ResEntry& entry)
-        : MDialogBase(IDD_CLONEINNEWNAME), m_entries(entries), m_entry(entry), 
+    MCloneInNewNameDlg(LangEntry& entry)
+        : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry)
     {
     }
 
@@ -127,7 +127,7 @@ public:
         // for Names
         INT nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_m_entry.name, nIDTYPE_);
+        InitResNameComboBox(hCmb2, m_entry.m_name, nIDTYPE_);
         SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
@@ -153,10 +153,10 @@ public:
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
-        if (!CheckNameComboBox(m_hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
-        if (Res_Find(m_entry.m_type, name, m_entry.m_lang, FALSE) != -1)
+        if (g_res.find(ET_NAME, m_entry.m_type, name, m_entry.m_lang))
         {
             if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
             {

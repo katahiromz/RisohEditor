@@ -415,7 +415,16 @@ struct EntrySet : private std::set<EntryBase *>
         return false;
     }
 
-    void do_delete(EntryBase *entry)
+    HTREEITEM
+    add_entry(const MIdOrString& type, const MIdOrString& name, 
+              WORD lang, const EntryBase::data_type& data, bool replace)
+    {
+        HTREEITEM TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name, 
+                                  WORD lang, const EntryBase::data_type& data, bool replace);
+        return TV_AddLangEntry(type, name, lang, data, replace);
+    }
+
+    void delete_entry(EntryBase *entry)
     {
         void Res_DeleteEntry(EntryBase *entry);
         Res_DeleteEntry(entry);
@@ -428,7 +437,7 @@ struct EntrySet : private std::set<EntryBase *>
         search(found, e_type, type, name, lang);
         for (auto entry : found)
         {
-            do_delete(entry);
+            delete_entry(entry);
         }
     }
 
@@ -1202,6 +1211,34 @@ TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name,
 
     auto entry = new LangEntry(type, name, lang);
     entry->assign(data);
+    return TV_InsertEntry(entry);
+}
+
+inline HTREEITEM
+TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name, 
+                WORD lang, const MStringW& strText, bool replace)
+{
+    if (replace)
+    {
+        g_res.search_and_delete(ET_LANG, type, name, lang);
+    }
+    else
+    {
+        if (auto hItem = g_res.find2(ET_LANG, type, name, lang))
+            return hItem;
+    }
+
+    if (type == RT_STRING)
+    {
+        TV_AddStringEntry(lang);
+    }
+    if (type == RT_MESSAGETABLE)
+    {
+        TV_AddMessageEntry(lang);
+    }
+
+    auto entry = new LangEntry(type, name, lang);
+    entry->m_strText = strText;
     return TV_InsertEntry(entry);
 }
 

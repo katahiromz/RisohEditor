@@ -102,13 +102,13 @@ public:
 
     void OnPsh1(HWND hwnd)
     {
-        MMacrosDlg dialog(g_settings);
+        MMacrosDlg dialog;
         dialog.DialogBoxDx(hwnd);
     }
 
     void OnPsh2(HWND hwnd)
     {
-        MPathsDlg dialog(g_settings);
+        MPathsDlg dialog;
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -121,7 +121,7 @@ public:
 
     void OnPsh4(HWND hwnd)
     {
-        MFontsDlg dialog(g_settings);
+        MFontsDlg dialog;
         dialog.DialogBoxDx(hwnd);
     }
 

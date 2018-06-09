@@ -47,7 +47,7 @@ public:
     StringRes& m_str_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MAddStrDlg(ConstantsDB& STRING_ENTRY& entry, StringRes& str_res)
+    MAddStrDlg(STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_ADDSTR), m_entry(entry), m_str_res(str_res)
     {
     }
@@ -55,7 +55,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitStringComboBox(hCmb1, m_L"");
+        InitStringComboBox(hCmb1, L"");
         SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
@@ -65,7 +65,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        if (!StrDlg_GetEntry(hwnd, m_entry, g_db))
+        if (!StrDlg_GetEntry(hwnd, m_entry))
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -139,7 +139,7 @@ public:
     STRING_ENTRY& m_entry;
     StringRes& m_str_res;
 
-    MModifyStrDlg(ConstantsDB& STRING_ENTRY& entry, StringRes& str_res)
+    MModifyStrDlg(STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_str_res(str_res)
     {
     }
@@ -147,7 +147,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitStringComboBox(hCmb1, m_L"");
+        InitStringComboBox(hCmb1, L"");
 
         StrDlg_SetEntry(hwnd, m_entry);
         CenterWindowDx();
@@ -156,7 +156,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        if (!StrDlg_GetEntry(hwnd, m_entry, g_db))
+        if (!StrDlg_GetEntry(hwnd, m_entry))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -208,8 +208,8 @@ public:
     HICON m_hIcon;
     HICON m_hIconSm;
 
-    MStringsDlg(ConstantsDB& StringRes& str_res)
-        : MDialogBase(IDD_STRINGS), m_str_res(str_res), g_db()
+    MStringsDlg(StringRes& str_res)
+        : MDialogBase(IDD_STRINGS), m_str_res(str_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -307,7 +307,7 @@ public:
     {
         STRING_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
-        MAddStrDlg dialog(m_s_entry, m_str_res);
+        MAddStrDlg dialog(s_entry, m_str_res);
         if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
@@ -400,7 +400,7 @@ public:
         STRING_ENTRY s_entry;
         GetEntry(hwnd, iItem, s_entry);
 
-        MModifyStrDlg dialog(m_s_entry, m_str_res);
+        MModifyStrDlg dialog(s_entry, m_str_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             WORD wID = (WORD)g_db.GetResIDValue(s_entry.StringID);

@@ -36,8 +36,8 @@ public:
     MString m_str1;
     MString m_str2;
 
-    MModifyResIDDlg(ResEntries& entries, MString str1, MString str2)
-        : MDialogBase(IDD_MODIFYRESID), m_entries(entries), m_str1(str1), m_str2(str2)
+    MModifyResIDDlg(MString str1, MString str2)
+        : MDialogBase(IDD_MODIFYRESID), m_str1(str1), m_str2(str2)
     {
     }
 

@@ -30,7 +30,7 @@
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(ConstantsDB& HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
@@ -40,12 +40,12 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MCloneInNewLangDlg : public MDialogBase
 {
 public:
-    ResEntry& m_entry;
+    LangEntry& m_entry;
     WORD m_lang;
     MComboBoxAutoComplete m_cmb3;
 
-    MCloneInNewLangDlg(ResEntries& entries, ResEntry& entry)
-        : MDialogBase(IDD_CLONEINNEWLANG), m_entries(entries), m_entry(entry),
+    MCloneInNewLangDlg(LangEntry& entry)
+        : MDialogBase(IDD_CLONEINNEWLANG), m_entry(entry)
     {
         m_lang = 0xFFFF;
     }
@@ -131,7 +131,7 @@ public:
         // for Names
         INT nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_m_entry.name, nIDTYPE_);
+        InitResNameComboBox(hCmb2, m_entry.m_name, nIDTYPE_);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -163,7 +163,7 @@ public:
         if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        if (Res_Find(m_entry.m_type, m_entry.name, lang, FALSE) != -1)
+        if (g_res.find(ET_LANG, m_entry.m_type, m_entry.m_name, lang))
         {
             if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
             {

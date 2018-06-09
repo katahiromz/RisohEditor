@@ -32,7 +32,7 @@
     #define RT_MANIFEST 24
 #endif
 
-#define TV_WIDTH        250     // default m_hTreeView width
+#define TV_WIDTH        250     // default g_tv width
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
@@ -1255,10 +1255,10 @@ protected:
     HICON       m_hIcon;        // the icon handle
     HICON       m_hIconSm;      // the small icon handle
     HACCEL      m_hAccel;       // the accelerator handle
-    HIMAGELIST  m_hImageList;   // the image list for m_hTreeView
+    HIMAGELIST  m_hImageList;   // the image list for g_tv
     HICON       m_hFileIcon, m_hFolderIcon;
     HFONT       m_hSrcFont, m_hBinFont;
-    HWND        m_hTreeView, m_hToolBar, m_hStatusBar;
+    HWND        m_hToolBar, m_hStatusBar;
     HWND        m_hFindReplaceDlg;
 
     // path strings
@@ -1306,7 +1306,7 @@ public:
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
         m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
         m_hSrcFont(NULL), m_hBinFont(NULL), 
-        m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL), 
+        g_tv(NULL), m_hToolBar(NULL), m_hStatusBar(NULL), 
         m_hFindReplaceDlg(NULL), m_rad_window(m_g_settings), 
         m_id_list_dlg(m_g_settings), 
         m_search(g_settings, m_m_entries)
@@ -1640,7 +1640,7 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
 {
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
     {
-        SetFocus(m_hTreeView);
+        SetFocus(g_tv);
     }
     FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
@@ -1687,7 +1687,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) == I_NONE)
         return;
 
@@ -1716,7 +1716,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
         {
             ResEntries selection;
-            INT count = TV_GetSelection(m_hTreeView, selection, m_entries);
+            INT count = TV_GetSelection(g_tv, selection, m_entries);
             if (count && !DoExtractRes(hwnd, ofn.lpstrFile, selection))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
@@ -1737,7 +1737,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -1779,7 +1779,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -1821,7 +1821,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -1855,7 +1855,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -1863,8 +1863,8 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     MReplaceBinDlg dialog(m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -2076,7 +2076,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 Res_AddEntry(entries[i], bOverwrite);
             }
 
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
+            TV_RefreshInfo(g_tv, m_m_entries);
         }
         else
         {
@@ -2119,7 +2119,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL, NULL);
     m_entries.clear();
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -2179,7 +2179,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -2211,8 +2211,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
         if (dialog_res.m_dlginit.empty())
         {
-            HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
-            TV_DeleteItem(m_hTreeView, m_entries, entry2);
+            HTREEITEM hItem = TV_GetItem(g_tv, m_entries, entry2);
+            TV_DeleteItem(g_tv, m_entries, entry2);
             Res_DeleteEntries(RT_DLGINIT, entry.name, entry.lang);
             return;
         }
@@ -2222,9 +2222,9 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
         // insert
         HTREEITEM hItem = NULL;
-        hItem = TV_FindOrInsertDepth1(m_hTreeView, m_hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth2(m_hTreeView, m_hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth3(m_hTreeView, m_hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth1(g_tv, m_hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth2(g_tv, m_hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth3(g_tv, m_hItem, m_entries, k, k);
         hItem = hItem;
     }
 }
@@ -2329,7 +2329,7 @@ HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
     do
     {
         hItem = hNext;
-        hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hNext = TreeView_GetNextSibling(g_tv, hItem);
     } while (hNext);
     return hItem;
 }
@@ -2343,7 +2343,7 @@ HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
         if (!hNext)
             break;
 
-        hChild = TreeView_GetChild(m_hTreeView, hNext);
+        hChild = TreeView_GetChild(g_tv, hNext);
         if (!hChild)
             break;
 
@@ -2418,7 +2418,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             item.hItem = hItem;
             item.pszText = search.szText;
             item.cchTextMax = _countof(search.szText);
-            TreeView_GetItem(m_hTreeView, &item);
+            TreeView_GetItem(g_tv, &item);
 
             if (search.bIgnoreCases)
             {
@@ -2434,7 +2434,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             {
                 if (search.bInternalText)
                 {
-                    LPARAM lParam = TV_GetParam(m_hTreeView, hItem);
+                    LPARAM lParam = TV_GetParam(g_tv, hItem);
                     if (HIWORD(lParam) == I_LANG ||
                         HIWORD(lParam) == I_STRING ||
                         HIWORD(lParam) == I_MESSAGE)
@@ -2483,12 +2483,12 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             search.bValid = TRUE;
         }
 
-        hChild = TreeView_GetChild(m_hTreeView, hItem);
+        hChild = TreeView_GetChild(g_tv, hItem);
         if (hChild)
         {
             DoItemSearch(hChild, search);
         }
-        hNext = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hNext = TreeView_GetNextSibling(g_tv, hItem);
         hItem = hNext;
     }
 
@@ -2497,7 +2497,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_NAME)
         return;
 
@@ -2532,15 +2532,15 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
                 Res_AddEntry(found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
+        TV_RefreshInfo(g_tv, m_m_entries);
         entry.name = dialog.m_name;
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
     }
 }
 
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG && 
         HIWORD(lParam) != I_STRING &&
         HIWORD(lParam) != I_MESSAGE)
@@ -2604,9 +2604,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 Res_AddEntry(found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
+        TV_RefreshInfo(g_tv, m_m_entries);
         entry.lang = dialog.m_lang;
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
     }
 }
 
@@ -2635,8 +2635,8 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
-    HTREEITEM hRoot = TreeView_GetRoot(m_hTreeView);
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    HTREEITEM hRoot = TreeView_GetRoot(g_tv);
+    HTREEITEM hItem = TreeView_GetSelection(g_tv);
     if (!hItem)
     {
         hItem = hRoot;
@@ -2667,8 +2667,8 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     if (DoItemSearch(hRoot, m_search))
     {
         pDialog->Done();
-        TreeView_SelectItem(m_hTreeView, m_search.hFound);
-        TreeView_EnsureVisible(m_hTreeView, m_search.hFound);
+        TreeView_SelectItem(g_tv, m_search.hFound);
+        TreeView_EnsureVisible(g_tv, m_search.hFound);
 
         PostMessageDx(MYWM_POSTSEARCH);
     }
@@ -2690,28 +2690,28 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetSelection(g_tv);
     if (hItem == NULL)
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     WORD i = LOWORD(lParam);
     if (i >= m_entries.size())
         return;
 
     ResEntry selection = m_entries[i];
 
-    TV_Delete(m_hTreeView, m_hItem, m_entries);
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_Delete(g_tv, m_hItem, m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
     HidePreview(hwnd);
 
-    TV_SelectEntry(m_hTreeView, m_entries, selection);
+    TV_SelectEntry(g_tv, m_entries, selection);
     SelectTV(hwnd, lParam, FALSE);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -2729,7 +2729,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     SelectTV(hwnd, lParam, FALSE);
 }
 
@@ -2737,7 +2737,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 {
     BOOL bReopen = IsWindowVisible(m_rad_window);
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (!Edit_GetModify(m_hSrcEdit))
     {
         SelectTV(hwnd, lParam, FALSE);
@@ -2760,14 +2760,14 @@ void MMainWnd::OnCompile(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, strWide, bReopen))
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, entry);
     }
 }
 
 void MMainWnd::OnGuiEdit(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (!IsEditableEntry(hwnd, lParam))
         return;
 
@@ -2804,7 +2804,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
     else if (entry.type == RT_MENU)
@@ -2823,7 +2823,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
     else if (entry.type == RT_DIALOG)
@@ -2876,7 +2876,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
     else if (entry.type == RT_STRING && HIWORD(lParam) == I_STRING)
@@ -2912,8 +2912,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, selection);
+                TV_RefreshInfo(g_tv, m_m_entries);
+                TV_SelectEntry(g_tv, m_entries, selection);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2951,8 +2951,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_MESSAGETABLE, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, selection);
+                TV_RefreshInfo(g_tv, m_m_entries);
+                TV_SelectEntry(g_tv, m_entries, selection);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2962,7 +2962,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
 void MMainWnd::OnEdit(HWND hwnd)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (!IsEditableEntry(hwnd, lParam))
         return;
 
@@ -3178,7 +3178,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     }
     else
     {
-        LPARAM lParam = TV_GetParam(m_hTreeView);
+        LPARAM lParam = TV_GetParam(g_tv);
         WORD i = LOWORD(lParam);
         WORD k = HIWORD(lParam);
 
@@ -3330,7 +3330,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_UNCHECKED);
 
     BOOL bCanEditLabel = TRUE;
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) == I_TYPE)
     {
         bCanEditLabel = FALSE;
@@ -3403,7 +3403,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
     }
 
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetSelection(g_tv);
     if (hItem == NULL)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -3427,12 +3427,12 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     ZeroMemory(&Item, sizeof(Item));
     Item.mask = TVIF_PARAM;
     Item.hItem = hItem;
-    TreeView_GetItem(m_hTreeView, &Item);
+    TreeView_GetItem(g_tv, &Item);
 
     UINT i = LOWORD(Item.lParam);
     const ResEntry& entry = m_entries[i];
 
-    lParam = TV_GetParam(m_hTreeView);
+    lParam = TV_GetParam(g_tv);
     BOOL bEditable = IsEditableEntry(hwnd, lParam);
     if (bEditable)
     {
@@ -3580,7 +3580,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
 void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 {
-    if (hwndContext != m_hTreeView)
+    if (hwndContext != g_tv)
         return;
 
     if (IsWindowVisible(m_rad_window))
@@ -4145,7 +4145,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     HidePreview(hwnd);
 
     if (lParam == 0)
-        lParam = TV_GetParam(m_hTreeView);
+        lParam = TV_GetParam(g_tv);
 
     WORD i = LOWORD(lParam);
     if (m_entries.size() <= i)
@@ -4255,22 +4255,18 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
 
 BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
-    WORD i = LOWORD(lParam);
-    if (m_entries.size() <= i)
+    auto entry = TV_GetParam(g_tv);
+    if (!entry)
         return FALSE;
 
-    if (HIWORD(lParam) == I_LANG)
+    if (entry->m_e_type == ET_LANG)
     {
-        ResEntry& entry = m_entries[i];
-
-        MIdOrString name = entry.name;
+        MIdOrString name = entry->m_name;
         if (name.is_str() && g_db.HasResID(name.str()))
         {
             name = (WORD)g_db.GetResIDValue(name.c_str());
         }
-
-        if (entries.size() != 1 || entries[0].lang != entry.lang)
+        if (g_res.size() != 1 || entries[0].lang != entry.lang)
         {
             msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_RESMISMATCH));
             return FALSE;
@@ -4283,7 +4279,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
         ResEntry entry = m_entries[i];
 
-        Res_DeleteNames(RT_STRING, entry.lang);
+        g_res.search_and_delete(ET_NAME, RT_STRING, L"", entry.m_lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
@@ -4298,9 +4294,9 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     }
     else if (HIWORD(lParam) == I_MESSAGE)
     {
-        ResEntry entry = m_entries[i];
+        LangEntry entry = m_entries[i];
 
-        Res_DeleteNames(RT_MESSAGETABLE, entry.lang);
+        g_res.search_and_delete(ET_NAME, RT_MESSAGETABLE, L"", entry.m_lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
@@ -4356,7 +4352,7 @@ MStringW MMainWnd::GetIncludesDump()
 
 BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     WORD i = LOWORD(lParam);
     if (m_entries.size() <= i)
         return FALSE;
@@ -4474,7 +4470,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 
 BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 {
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     WORD i = LOWORD(lParam);
     if (m_entries.size() <= i)
         return FALSE;
@@ -4651,7 +4647,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
         return FALSE;
     }
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     WORD i = LOWORD(lParam);
     if (m_entries.size() <= i)
         return FALSE;
@@ -4867,7 +4863,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             m_bUpxCompressed = FALSE;
             m_entries = entries;
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
+            TV_RefreshInfo(g_tv, m_m_entries);
         }
         m_bLoading = FALSE;
 
@@ -4900,7 +4896,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             m_bUpxCompressed = FALSE;
             m_entries = entries;
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
+            TV_RefreshInfo(g_tv, m_m_entries);
         }
         m_bLoading = FALSE;
 
@@ -5007,7 +5003,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         CheckResourceH(hwnd, pszNominal);
 
     m_bLoading = TRUE;
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
     m_bLoading = FALSE;
 
     SetFilePath(hwnd, pszReal, pszNominal);
@@ -5035,7 +5031,7 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
     ShowIDList(hwnd, FALSE);
     if (bRefresh)
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
+        TV_RefreshInfo(g_tv, m_m_entries);
     }
 
     return TRUE;
@@ -6492,8 +6488,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.file = file;
             dialog.DialogBoxDx(hwnd);
             DoRefreshIDList(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
-            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+            TV_RefreshInfo(g_tv, m_m_entries);
+            TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
         }
@@ -6503,8 +6499,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             dialog.m_file = file;
             dialog.DialogBoxDx(hwnd);
             DoRefreshIDList(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
-            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+            TV_RefreshInfo(g_tv, m_m_entries);
+            TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
         }
@@ -6527,8 +6523,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
                 DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_m_entries);
-                TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+                TV_RefreshInfo(g_tv, m_m_entries);
+                TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
             return;
@@ -6645,7 +6641,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
 
     DoLoadFile(hwnd, file);
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
     ChangeStatusText(IDS_READY);
 }
 
@@ -6748,7 +6744,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyCursor(MSplitterWnd::CursorNS());
     DestroyCursor(MSplitterWnd::CursorWE());
 
-    DestroyWindow(m_hTreeView);
+    DestroyWindow(g_tv);
     DestroyWindow(m_hToolBar);
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
@@ -6982,7 +6978,7 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
         DoRefreshIDList(hwnd);
     }
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     UINT i = LOWORD(lParam);
 
     ResEntry selection;
@@ -7009,12 +7005,12 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
         break;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
 
     if (HIWORD(lParam) != I_NONE)
     {
-        TV_SelectEntry(m_hTreeView, m_entries, selection);
-        lParam = TV_GetParam(m_hTreeView);
+        TV_SelectEntry(g_tv, m_entries, selection);
+        lParam = TV_GetParam(g_tv);
         SelectTV(hwnd, lParam, FALSE);
     }
 }
@@ -7222,7 +7218,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) == I_TYPE)
     {
         return;
@@ -7242,8 +7238,8 @@ void MMainWnd::OnEditLabel(HWND hwnd)
         }
     }
 
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
-    TreeView_EditLabel(m_hTreeView, hItem);
+    HTREEITEM hItem = TreeView_GetSelection(g_tv);
+    TreeView_EditLabel(g_tv, hItem);
 }
 
 void MMainWnd::OnPredefMacros(HWND hwnd)
@@ -7266,53 +7262,53 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
-    HTREEITEM hItem = TreeView_GetRoot(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetRoot(g_tv);
     do
     {
         Expand(hItem);
-        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hItem = TreeView_GetNextSibling(g_tv, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(m_hTreeView);
-    TreeView_SelectItem(m_hTreeView, hItem);
-    TreeView_EnsureVisible(m_hTreeView, hItem);
+    hItem = TreeView_GetRoot(g_tv);
+    TreeView_SelectItem(g_tv, hItem);
+    TreeView_EnsureVisible(g_tv, hItem);
 }
 
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
-    HTREEITEM hItem = TreeView_GetRoot(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetRoot(g_tv);
     do
     {
         Collapse(hItem);
-        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hItem = TreeView_GetNextSibling(g_tv, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(m_hTreeView);
-    TreeView_SelectItem(m_hTreeView, hItem);
-    TreeView_EnsureVisible(m_hTreeView, hItem);
+    hItem = TreeView_GetRoot(g_tv);
+    TreeView_SelectItem(g_tv, hItem);
+    TreeView_EnsureVisible(g_tv, hItem);
 }
 
 void MMainWnd::Expand(HTREEITEM hItem)
 {
-    TreeView_Expand(m_hTreeView, hItem, TVE_EXPAND);
-    hItem = TreeView_GetChild(m_hTreeView, hItem);
+    TreeView_Expand(g_tv, hItem, TVE_EXPAND);
+    hItem = TreeView_GetChild(g_tv, hItem);
     if (hItem == NULL)
         return;
     do
     {
         Expand(hItem);
-        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hItem = TreeView_GetNextSibling(g_tv, hItem);
     } while (hItem);
 }
 
 void MMainWnd::Collapse(HTREEITEM hItem)
 {
-    TreeView_Expand(m_hTreeView, hItem, TVE_COLLAPSE);
-    hItem = TreeView_GetChild(m_hTreeView, hItem);
+    TreeView_Expand(g_tv, hItem, TVE_COLLAPSE);
+    hItem = TreeView_GetChild(g_tv, hItem);
     if (hItem == NULL)
         return;
     do
     {
         Collapse(hItem);
-        hItem = TreeView_GetNextSibling(m_hTreeView, hItem);
+        hItem = TreeView_GetNextSibling(g_tv, hItem);
     } while (hItem);
 }
 
@@ -7468,7 +7464,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ALWAYSCONTROL:
         {
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
-            LPARAM lParam = TV_GetParam(m_hTreeView);
+            LPARAM lParam = TV_GetParam(g_tv);
             SelectTV(hwnd, lParam, TRUE);
         }
         break;
@@ -7761,7 +7757,7 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
         if (pnmhdr->hwndFrom == m_splitter1)
@@ -7782,7 +7778,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
-        if (pnmhdr->hwndFrom == m_hTreeView)
+        if (pnmhdr->hwndFrom == g_tv)
         {
             switch (HIWORD(lParam))
             {
@@ -7833,7 +7829,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == NM_RETURN)
     {
-        if (pnmhdr->hwndFrom == m_hTreeView)
+        if (pnmhdr->hwndFrom == g_tv)
         {
             switch (HIWORD(lParam))
             {
@@ -7871,7 +7867,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             return TRUE;
         case VK_F2:
             {
-                LPARAM lParam = TV_GetParam(m_hTreeView);
+                LPARAM lParam = TV_GetParam(g_tv);
                 if (HIWORD(lParam) == I_TYPE)
                 {
                     return TRUE;
@@ -7888,8 +7884,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     }
                 }
 
-                HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
-                TreeView_EditLabel(m_hTreeView, hItem);
+                HTREEITEM hItem = TreeView_GetSelection(g_tv);
+                TreeView_EditLabel(g_tv, hItem);
             }
             return TRUE;
         }
@@ -8033,10 +8029,10 @@ void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, con
         entry.name = new_name;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
 
     selector.name = new_name;
-    TV_SelectEntry(m_hTreeView, m_entries, selector);
+    TV_SelectEntry(g_tv, m_entries, selector);
 }
 
 void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
@@ -8052,10 +8048,10 @@ void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
         entry.lang = new_lang;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_m_entries);
+    TV_RefreshInfo(g_tv, m_m_entries);
 
     selector.lang = new_lang;
-    TV_SelectEntry(m_hTreeView, m_entries, selector);
+    TV_SelectEntry(g_tv, m_entries, selector);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
@@ -8063,7 +8059,7 @@ void MMainWnd::OnTest(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    HTREEITEM hItem = TreeView_GetSelection(m_hTreeView);
+    HTREEITEM hItem = TreeView_GetSelection(g_tv);
     if (hItem == NULL)
         return;
 
@@ -8071,7 +8067,7 @@ void MMainWnd::OnTest(HWND hwnd)
     ZeroMemory(&Item, sizeof(Item));
     Item.mask = TVIF_PARAM;
     Item.hItem = hItem;
-    TreeView_GetItem(m_hTreeView, &Item);
+    TreeView_GetItem(g_tv, &Item);
 
     if (HIWORD(Item.lParam) != 3)
         return;
@@ -8563,8 +8559,8 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8573,7 +8569,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -8581,8 +8577,8 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     MReplaceIconDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8591,7 +8587,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -8599,8 +8595,8 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     MReplaceCursorDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8613,8 +8609,8 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8623,7 +8619,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(m_hTreeView);
+    LPARAM lParam = TV_GetParam(g_tv);
     if (HIWORD(lParam) != I_LANG)
         return;
 
@@ -8631,8 +8627,8 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     MReplaceBitmapDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8645,8 +8641,8 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
     }
 }
 
@@ -8758,18 +8754,18 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     if (dialog.m_strText.empty())
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_m_entries);
-        TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+        TV_RefreshInfo(g_tv, m_m_entries);
+        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
         if (CompileParts(hwnd, dialog.m_strText, FALSE))
         {
-            LPARAM lParam = TV_GetParam(m_hTreeView);
+            LPARAM lParam = TV_GetParam(g_tv);
             SelectTV(hwnd, lParam, FALSE);
             Edit_SetModify(m_hSrcEdit, FALSE);
         }
@@ -8783,8 +8779,8 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         Res_DeleteTemplate(m_entries);
         if (dialog.m_entry_copy.type == RT_STRING)
         {
-            TV_RefreshInfo(m_hTreeView, m_m_entries);
-            TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
+            TV_RefreshInfo(g_tv, m_m_entries);
+            TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
         }
     }
 }
@@ -9422,15 +9418,15 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
         TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_EDITLABELS;
-    m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE, 
+    g_tv = CreateWindowExW(WS_EX_CLIENTEDGE, 
         WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1, 
         (HMENU)1, m_hInst, NULL);
-    if (m_hTreeView == NULL)
+    if (g_tv == NULL)
         return FALSE;
 
-    TreeView_SetImageList(m_hTreeView, m_hImageList, TVSIL_NORMAL);
+    TreeView_SetImageList(g_tv, m_hImageList, TVSIL_NORMAL);
 
-    m_splitter1.SetPane(0, m_hTreeView);
+    m_splitter1.SetPane(0, g_tv);
     m_splitter1.SetPane(1, m_splitter2);
     m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
 
@@ -9476,7 +9472,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     }
 
     DragAcceptFiles(hwnd, TRUE);
-    SetFocus(m_hTreeView);
+    SetFocus(g_tv);
     UpdateMenu();
 
     if (g_settings.strWindResExe.size())
@@ -9532,7 +9528,7 @@ void MMainWnd::SelectString(HWND hwnd)
     if (found.size())
     {
         ResEntry entry(RT_STRING, found[0].name, found[0].lang);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
     }
 }
 
@@ -9543,7 +9539,7 @@ void MMainWnd::SelectMessage(HWND hwnd)
     if (found.size())
     {
         ResEntry entry(RT_MESSAGETABLE, found[0].name, found[0].lang);
-        TV_SelectEntry(m_hTreeView, m_entries, entry);
+        TV_SelectEntry(g_tv, m_entries, entry);
     }
 }
 
@@ -9598,7 +9594,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 
     if (found.size())
     {
-        TV_SelectEntry(m_hTreeView, m_entries, found[0]);
+        TV_SelectEntry(g_tv, m_entries, found[0]);
 
         SetForegroundWindow(m_hwnd);
         BringWindowToTop(m_hwnd);

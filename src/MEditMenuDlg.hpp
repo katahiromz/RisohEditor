@@ -33,7 +33,7 @@ class MModifyMItemDlg;
 class MEditMenuDlg;
 
 void InitCtrlIDComboBox(HWND hCmb);
-BOOL CheckCommand(ConstantsDB& MString strCommand);
+BOOL CheckCommand(MString strCommand);
 void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
 void ReplaceFullWithHalf(LPWSTR pszText);
@@ -47,7 +47,7 @@ public:
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddMItemDlg(ConstantsDB& MENU_ENTRY& entry)
+    MAddMItemDlg(MENU_ENTRY& entry)
         : MDialogBase(IDD_ADDMITEM), m_entry(entry)
     {
     }
@@ -58,7 +58,7 @@ public:
         SubclassChildDx(m_cmb2, cmb2);
         SetDlgItemText(hwnd, cmb2, L"0");
 
-        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_MIdOrString(L""), IDTYPE_HELP);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), MIdOrString(L""), IDTYPE_HELP);
         SetDlgItemInt(hwnd, cmb3, 0, TRUE);
         SubclassChildDx(m_cmb3, cmb3);
 
@@ -78,7 +78,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
-        if (!CheckCommand(m_m_entry.szCommandID))
+        if (!CheckCommand(m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -194,7 +194,7 @@ public:
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MModifyMItemDlg(ConstantsDB& MENU_ENTRY& entry)
+    MModifyMItemDlg(MENU_ENTRY& entry)
         : MDialogBase(IDD_MODIFYMITEM), m_entry(entry)
     {
     }
@@ -208,7 +208,7 @@ public:
         SubclassChildDx(m_cmb2, cmb2);
 
         MIdOrString help_id(m_entry.szHelpID);
-        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_help_id, IDTYPE_HELP);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), help_id, IDTYPE_HELP);
         SubclassChildDx(m_cmb3, cmb3);
 
         DWORD dwType, dwState;
@@ -263,7 +263,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
-        if (!CheckCommand(m_m_entry.szCommandID))
+        if (!CheckCommand(m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -377,7 +377,7 @@ public:
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MEditMenuDlg(ConstantsDB& MenuRes& menu_res)
+    MEditMenuDlg(MenuRes& menu_res)
         : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
@@ -570,7 +570,7 @@ public:
     {
         MENU_ENTRY m_entry;
         ZeroMemory(&m_entry, sizeof(m_entry));
-        MAddMItemDlg dialog(m_m_entry);
+        MAddMItemDlg dialog(m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
@@ -678,7 +678,7 @@ public:
         MENU_ENTRY m_entry;
         GetEntry(hwnd, m_entry, iItem);
         
-        MModifyMItemDlg dialog(m_m_entry);
+        MModifyMItemDlg dialog(m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {

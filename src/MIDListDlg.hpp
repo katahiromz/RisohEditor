@@ -33,7 +33,7 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(ResEntries& entries, const MString& name, INT nIDTYPE_, BOOL bFlag);
+MString GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -78,10 +78,9 @@ public:
     MSubclassedListView m_lv;
     MResizable m_resizable;
 
-    MIDListDlg(ResEntries& entries)
-        : MDialogBase(IDD_IDLIST), m_entries(entries), 
-          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL), 
-          m_bChanging(FALSE)
+    MIDListDlg()
+        : MDialogBase(IDD_IDLIST), m_hMainWnd(NULL), m_pszResH(NULL),
+          m_nBase(10), m_hLst1(NULL), m_bChanging(FALSE)
     {
         m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
     }
@@ -98,7 +97,7 @@ public:
         if (prefix.empty())
             return L"";
 
-        std::vector<INT> indexes = GetPrefixIndexes(g_settings, m_prefix);
+        std::vector<INT> indexes = GetPrefixIndexes(prefix);
         for (INT bFlag = FALSE; bFlag <= TRUE; ++bFlag)
         {
             for (size_t i = 0; i < indexes.size(); ++i)
@@ -109,7 +108,7 @@ public:
 
                 if (g_db.IsEntityIDType(nIDTYPE_))
                 {
-                    MString str2 = GetEntityIDText(m_name, nIDTYPE_, bFlag);
+                    MString str2 = GetEntityIDText(name, nIDTYPE_, bFlag);
                     if (!str2.empty() && ret.find(str2) == MString::npos)
                     {
                         if (ret.empty())
@@ -433,7 +432,7 @@ public:
             break;
         case ID_ADDRESID:
             {
-                MAddResIDDlg dialog(g_settings, m_entries);
+                MAddResIDDlg dialog;
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
@@ -465,7 +464,7 @@ public:
             str2 = szText;
             if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
             {
-                MModifyResIDDlg dialog(m_str1, str2);
+                MModifyResIDDlg dialog(str1, str2);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];

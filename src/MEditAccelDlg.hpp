@@ -33,11 +33,11 @@
 
 void Cmb1_InitVirtualKeys(HWND hCmb1);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
-BOOL CheckCommand(ConstantsDB& MString& strCommand);
+BOOL CheckCommand(MString& strCommand);
 void ReplaceFullWithHalf(LPWSTR pszText);
 void InitCtrlIDComboBox(HWND hCmb);
 
-std::wstring GetKeyID(ConstantsDB& UINT wId);
+std::wstring GetKeyID(UINT wId);
 
 class MAddKeyDlg;
 class MModifyKeyDlg;
@@ -106,7 +106,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_m_entry.sz2))
+        if (!CheckCommand(m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -247,7 +247,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_m_entry.sz2))
+        if (!CheckCommand(m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -681,7 +681,7 @@ public:
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
 
-            str = GetKeyID(m_it->wId);
+            str = GetKeyID(it->wId);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;

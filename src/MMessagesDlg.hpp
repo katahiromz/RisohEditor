@@ -47,7 +47,7 @@ public:
     MessageRes& m_msg_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MAddMsgDlg(ConstantsDB& MESSAGE_ENTRY& entry, MessageRes& msg_res)
+    MAddMsgDlg(MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_ADDMSG), m_entry(entry), m_msg_res(msg_res)
     {
     }
@@ -55,7 +55,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitMessageComboBox(hCmb1, m_L"");
+        InitMessageComboBox(hCmb1, L"");
         SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
@@ -140,7 +140,7 @@ public:
     MessageRes& m_msg_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MModifyMsgDlg(ConstantsDB& MESSAGE_ENTRY& entry, MessageRes& msg_res)
+    MModifyMsgDlg(MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_MODIFYMSG), m_entry(entry), m_msg_res(msg_res)
     {
     }
@@ -148,7 +148,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitMessageComboBox(hCmb1, m_L"");
+        InitMessageComboBox(hCmb1, L"");
         SubclassChildDx(m_cmb1, cmb1);
 
         MsgDlg_SetEntry(hwnd, m_entry);
@@ -216,7 +216,7 @@ public:
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MMessagesDlg(ConstantsDB& MessageRes& msg_res)
+    MMessagesDlg(MessageRes& msg_res)
         : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
@@ -315,7 +315,7 @@ public:
     {
         MESSAGE_ENTRY me;
         ZeroMemory(&me, sizeof(me));
-        MAddMsgDlg dialog(m_me, m_msg_res);
+        MAddMsgDlg dialog(me, m_msg_res);
         if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
@@ -408,7 +408,7 @@ public:
         MESSAGE_ENTRY me;
         GetEntry(hwnd, iItem, me);
 
-        MModifyMsgDlg dialog(m_me, m_msg_res);
+        MModifyMsgDlg dialog(me, m_msg_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             MString str = mstr_quote(me.MessageValue);
