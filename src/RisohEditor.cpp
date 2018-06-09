@@ -1723,7 +1723,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry(g_tv);
+    auto entry = TV_GetLangEntry();
     if (!entry)
         return;
 
@@ -1777,7 +1777,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    if (entry.m_type == RT_ANICURSOR)
+    if (entry->m_type == RT_ANICURSOR)
     {
         ofn.nFilterIndex = 2;
         ofn.lpstrDefExt = L"ani";
@@ -1876,7 +1876,7 @@ void MMainWnd::OnFonts(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MFontsDlg dialog(g_settings);
+    MFontsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DeleteObject(m_hBinFont);
@@ -1894,7 +1894,7 @@ void MMainWnd::OnExport(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MExportOptionsDlg dialog(g_settings);
+    MExportOptionsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) != IDOK)
         return;
 
@@ -2026,11 +2026,10 @@ void MMainWnd::OnImport(HWND hwnd)
     ofn.lpstrDefExt = L"res";
     if (GetOpenFileNameW(&ofn))
     {
-        ResEntries entries;
-        if (DoImport(hwnd, file, entries))
+        if (DoImport(hwnd, file))
         {
             BOOL bOverwrite = TRUE;
-            if (Res_Intersect(entries))
+            if (g_res.intersect(...))
             {
                 INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
                                    MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -2094,8 +2093,8 @@ void MMainWnd::OnNew(HWND hwnd)
     HidePreview(hwnd);
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL, NULL);
-    m_entries.clear();
-    TV_RefreshInfo(g_tv, m_m_entries);
+    TreeView_DeleteAllItems(g_tv);
+    g_entries.clear();
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -2535,7 +2534,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 DoCopyGroupCursor(found[i], found[i].name);
             }
         }
-        else if (HIWORD(lParam) == I_STRING)
+        else if (HIWORD(lParam) == ET_STRING)
         {
             WORD lang = entry.m_lang;
             EntrySet::super_type found;
@@ -2547,7 +2546,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 Res_AddEntry(found[i], TRUE);
             }
         }
-        else if (HIWORD(lParam) == I_MESSAGE)
+        else if (HIWORD(lParam) == ET_MESSAGE)
         {
             WORD lang = entry.lang;
             ResEntries found;
@@ -2831,7 +2830,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         TV_SelectEntry(g_tv, m_entries, entry);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.m_type == RT_STRING && HIWORD(lParam) == I_STRING)
+    else if (entry.m_type == RT_STRING && HIWORD(lParam) == ET_STRING)
     {
         WORD lang = entry.lang;
         ResEntries found;
@@ -2871,7 +2870,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry.m_type == RT_MESSAGETABLE && HIWORD(lParam) == I_MESSAGE)
+    else if (entry.m_type == RT_MESSAGETABLE && HIWORD(lParam) == ET_MESSAGE)
     {
         WORD lang = entry.lang;
         ResEntries found;
@@ -3139,9 +3138,9 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
             L"I_NONE", 
             L"I_TYPE", 
             L"I_NAME", 
-            L"I_LANG", 
-            L"I_STRING", 
-            L"I_MESSAGE"
+            L"ET_LANG", 
+            L"ET_STRING", 
+            L"ET_MESSAGE"
         };
 
         const ResEntry& entry = m_entries[i];
@@ -3282,8 +3281,9 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_UNCHECKED);
 
     BOOL bCanEditLabel = TRUE;
-    LPARAM lParam = TV_GetParam(g_tv);
-    if (HIWORD(lParam) == I_TYPE)
+
+    auto entry = TV_GetEntry();
+    if (entry->m_e_type == ET_TYPE)
     {
         bCanEditLabel = FALSE;
     }
@@ -3295,9 +3295,9 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         {
             ResEntry& entry = m_entries[i];
 
-            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+            if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
             {
-                if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
+                if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
                 {
                     bCanEditLabel = FALSE;
                 }
@@ -3355,7 +3355,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
     }
 
-    HTREEITEM hItem = TreeView_GetSelection(g_tv);
+    HTREEITEM hItem = TV_GetItem();
     if (hItem == NULL)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -3375,16 +3375,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         return;
     }
 
-    TV_ITEM Item;
-    ZeroMemory(&Item, sizeof(Item));
-    Item.mask = TVIF_PARAM;
-    Item.hItem = hItem;
-    TreeView_GetItem(g_tv, &Item);
-
-    UINT i = LOWORD(Item.lParam);
-    const ResEntry& entry = m_entries[i];
-
-    lParam = TV_GetParam(g_tv);
     BOOL bEditable = IsEditableEntry(hwnd, lParam);
     if (bEditable)
     {
@@ -3434,7 +3424,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
         break;
-    case I_LANG:
+    case ET_LANG:
         if (entry.m_type == RT_GROUP_ICON || entry.m_type == RT_ICON ||
             entry.m_type == RT_ANIICON)
         {
@@ -3500,7 +3490,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         else
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
         break;
-    case I_STRING: case I_MESSAGE:
+    case ET_STRING: case ET_MESSAGE:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACEBITMAP, MF_GRAYED);
@@ -4112,12 +4102,12 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
     m_lang = entry.lang;
 
     BOOL bEditable, bSelectNone = FALSE;
-    if (HIWORD(lParam) == I_LANG)
+    if (HIWORD(lParam) == ET_LANG)
     {
         bEditable = Preview(hwnd, entry);
         ShowBinEdit(TRUE);
     }
-    else if (HIWORD(lParam) == I_STRING)
+    else if (HIWORD(lParam) == ET_STRING)
     {
         m_hBmpView.DestroyView();
         SetWindowTextW(m_hBinEdit, NULL);
@@ -4126,7 +4116,7 @@ void MMainWnd::SelectTV(HWND hwnd, LPARAM lParam, BOOL DoubleClick)
         bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
     }
-    else if (HIWORD(lParam) == I_MESSAGE)
+    else if (HIWORD(lParam) == ET_MESSAGE)
     {
         m_hBmpView.DestroyView();
         SetWindowTextW(m_hBinEdit, NULL);
@@ -4185,7 +4175,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
     const MIdOrString& type = entry.m_type;
     switch (HIWORD(lParam))
     {
-    case I_LANG:
+    case ET_LANG:
         if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
             type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
             type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
@@ -4197,7 +4187,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, LPARAM lParam)
             return FALSE;
         }
         break;
-    case I_STRING: case I_MESSAGE:
+    case ET_STRING: case ET_MESSAGE:
         break;
     default:
         return FALSE;
@@ -4227,7 +4217,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg)
         entry = entries[0];
         return TRUE;
     }
-    else if (HIWORD(lParam) == I_STRING)
+    else if (HIWORD(lParam) == ET_STRING)
     {
         ResEntry entry = m_entries[i];
 
@@ -4244,7 +4234,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg)
 
         return TRUE;
     }
-    else if (HIWORD(lParam) == I_MESSAGE)
+    else if (HIWORD(lParam) == ET_MESSAGE)
     {
         LangEntry entry = m_entries[i];
 
@@ -4435,7 +4425,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
     MStringA strUtf8;
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
-    if (HIWORD(lParam) == I_LANG)
+    if (HIWORD(lParam) == ET_LANG)
     {
         if (Res_IsPlainText(entry.m_type))
         {
@@ -4617,7 +4607,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
         if (m_type == entry.m_type && m_name == entry.name &&
             m_lang == entry.lang)
         {
-            if (HIWORD(lParam) == I_LANG && entry.m_type == RT_DIALOG)
+            if (HIWORD(lParam) == ET_LANG && entry.m_type == RT_DIALOG)
             {
                 MByteStreamEx stream(entry.data);
                 m_rad_window.m_dialog_res.LoadFromStream(stream);
@@ -6940,10 +6930,10 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
     case I_NAME:
         selection.lang = 0xFFFF;
         break;
-    case I_LANG:
+    case ET_LANG:
         break;
-    case I_STRING:
-    case I_MESSAGE:
+    case ET_STRING:
+    case ET_MESSAGE:
         selection.name.clear();
         break;
     }
@@ -7171,7 +7161,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 
     ResEntry& entry = m_entries[i];
 
-    if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+    if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == ET_LANG)
     {
         if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
         {
@@ -7723,21 +7713,21 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
             switch (HIWORD(lParam))
             {
-            case I_LANG:
+            case ET_LANG:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
-            case I_STRING:
+            case ET_STRING:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
-            case I_MESSAGE:
+            case ET_MESSAGE:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
@@ -7774,21 +7764,21 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
             switch (HIWORD(lParam))
             {
-            case I_LANG:
+            case ET_LANG:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
-            case I_STRING:
+            case ET_STRING:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
-            case I_MESSAGE:
+            case ET_MESSAGE:
                 OnEdit(hwnd);
                 if (g_settings.bGuiByDblClick)
                 {
@@ -7817,7 +7807,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 UINT i = LOWORD(lParam);
                 ResEntry& entry = m_entries[i];
 
-                if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+                if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == ET_LANG)
                 {
                     if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                     {
@@ -7851,7 +7841,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             UINT i = LOWORD(lParam);
             ResEntry entry = m_entries[i];
 
-            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == ET_LANG)
             {
                 if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                 {
@@ -7862,8 +7852,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             StringCchCopyW(szOldText, _countof(szOldText), pszOldText);
             mstr_trim(szOldText);
 
-            if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING ||
-                HIWORD(lParam) == I_MESSAGE)
+            if (HIWORD(lParam) == ET_LANG || HIWORD(lParam) == ET_STRING ||
+                HIWORD(lParam) == ET_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -7894,7 +7884,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             ResEntry entry = m_entries[i];
 
-            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == I_LANG)
+            if (HIWORD(lParam) == I_NAME || HIWORD(lParam) == ET_LANG)
             {
                 if (entry.m_type == RT_STRING || entry.m_type == RT_MESSAGETABLE)
                 {
@@ -7928,8 +7918,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 DoRenameEntry(entry, old_name, new_name);
                 return TRUE;   // accept
             }
-            else if (HIWORD(lParam) == I_LANG || HIWORD(lParam) == I_STRING ||
-                     HIWORD(lParam) == I_MESSAGE)
+            else if (HIWORD(lParam) == ET_LANG || HIWORD(lParam) == ET_STRING ||
+                     HIWORD(lParam) == ET_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -7942,7 +7932,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (old_lang == new_lang)
                     return FALSE;   // reject
 
-                if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
+                if (HIWORD(lParam) == ET_STRING || HIWORD(lParam) == ET_MESSAGE)
                     entry.name.clear();
 
                 DoRelangEntry(entry, old_lang, new_lang);
@@ -8506,7 +8496,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
         return;
 
     LPARAM lParam = TV_GetParam(g_tv);
-    if (HIWORD(lParam) != I_LANG)
+    if (HIWORD(lParam) != ET_LANG)
         return;
 
     UINT i = LOWORD(lParam);
@@ -8523,7 +8513,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
         return;
 
     LPARAM lParam = TV_GetParam(g_tv);
-    if (HIWORD(lParam) != I_LANG)
+    if (HIWORD(lParam) != ET_LANG)
         return;
 
     UINT i = LOWORD(lParam);
@@ -8552,15 +8542,14 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    LPARAM lParam = TV_GetParam(g_tv);
-    if (HIWORD(lParam) != I_LANG)
+    auto entry = TV_GetEntry();
+    if (!entry)
         return;
 
-    UINT i = LOWORD(lParam);
-    MReplaceBitmapDlg dialog(m_m_entries, m_entries[i]);
+    MReplaceBitmapDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
+        TV_SelectEntry(dialog.m_entry_copy);
     }
 }
 
@@ -8569,11 +8558,11 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddCursorDlg dialog(m_m_entries);
+    MAddCursorDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_SelectEntry(g_tv, m_entries, dialog.m_entry_copy);
+        TV_SelectEntry(dialog.m_entry_copy);
     }
 }
 
@@ -8582,7 +8571,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoAddRes(hwnd, dialog);
@@ -8594,7 +8583,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8607,7 +8596,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_STRING;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8620,7 +8609,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_MESSAGETABLE;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8633,7 +8622,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_HTML;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8646,7 +8635,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_ACCELERATOR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8659,7 +8648,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8672,7 +8661,7 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries);
+    MAddResDlg dialog;
     dialog.m_type = RT_MANIFEST;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
