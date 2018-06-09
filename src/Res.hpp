@@ -103,67 +103,12 @@ Res_HasNoName(const MIdOrString& type)
     return type == RT_STRING || type == RT_MESSAGETABLE;
 }
 
-inline MStringW
-Res_GetTypeString(const MIdOrString& id_or_str)
-{
-    // FIXME: Use ConstantsDB
-    wchar_t sz[32];
-    MStringW ret, name;
-    switch (id_or_str.m_id)
-    {
-    case 1: name = L"RT_CURSOR"; break;
-    case 2: name = L"RT_BITMAP"; break;
-    case 3: name = L"RT_ICON"; break;
-    case 4: name = L"RT_MENU"; break;
-    case 5: name = L"RT_DIALOG"; break;
-    case 6: name = L"RT_STRING"; break;
-    case 7: name = L"RT_FONTDIR"; break;
-    case 8: name = L"RT_FONT"; break;
-    case 9: name = L"RT_ACCELERATOR"; break;
-    case 10: name = L"RT_RCDATA"; break;
-    case 11: name = L"RT_MESSAGETABLE"; break;
-    case 12: name = L"RT_GROUP_CURSOR"; break;
-    //
-    case 14: name = L"RT_GROUP_ICON"; break;
-    //
-    case 16: name = L"RT_VERSION"; break;
-    case 17: name = L"RT_DLGINCLUDE"; break;
-    //
-    case 19: name = L"RT_PLUGPLAY"; break;
-    case 20: name = L"RT_VXD"; break;
-    case 21: name = L"RT_ANICURSOR"; break;
-    case 22: name = L"RT_ANIICON"; break;
-    case 23: name = L"RT_HTML"; break;
-    case 24: name = L"RT_MANIFEST"; break;
-    case 240: name = L"RT_DLGINIT"; break;
-    default:
-        if (id_or_str.m_id != 0)
-        {
-            StringCchPrintfW(sz, _countof(sz), L"%u", id_or_str.m_id);
-            ret = sz;
-        }
-        else
-        {
-            ret = id_or_str.m_str;
-        }
-    }
-    if (name.size())
-    {
-        StringCchPrintfW(sz, _countof(sz), L" (%u)", id_or_str.m_id);
-        ret = name;
-        ret += sz;
-    }
-    return ret;
-}
-
 inline HWND&
 Res_GetTreeViewHandle(void)
 {
     static HWND hwndTV = NULL;
     return hwndTV;
 }
-
-MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntryType
@@ -241,6 +186,46 @@ struct EntryBase
         if (m_lang > entry.m_lang)
             return false;
         return false;
+    }
+
+    MStringW get_type_label() const
+    {
+        if (!m_type.m_id)
+            return m_type.m_str;
+
+        ConstantsDB& db = DB_GetMaster();
+        MStringW label = db.GetName(L"RESOURCE", m_type.m_id);
+        if (label.empty())
+            return mstr_dec_word(m_type.m_id);
+
+        label += L" (";
+        label += mstr_dec_word(m_type.m_id);
+        label += L")";
+        return label;
+    }
+
+    MStringW get_name_label() const
+    {
+        WORD id = m_name.m_id;
+        if (!id)
+            return m_name.m_str;
+
+        ConstantsDB& db = DB_GetMaster();
+        INT nIDTYPE_ = db.IDTypeFromResType(m_type) const
+        MStringW label = db.GetNameOfResID(nIDTYPE_, id);
+        if (label.empty())
+            return mstr_dec_word(id);
+
+        label += L" (";
+        label += mstr_dec_word(id);
+        label += L")";
+        return label;
+    }
+
+    MStringW get_lang_label() const
+    {
+        MStringW Res_GetLangName(WORD lang);
+        return Res_GetLangName(m_lang);
     }
 };
 
@@ -347,75 +332,6 @@ struct LangEntry : EntryBase
             m_data.clear();
         }
     }
-
-    MStringW get_name(const ConstantsDB& db) const
-    {
-        // FIXME: Use ConstantsDB
-        if (m_name.m_id == 0)
-        {
-            return m_name.m_str;
-        }
-
-        MStringW ret;
-        switch (WORD id = m_name.m_id)
-        {
-        case (UINT_PTR)RT_BITMAP:
-            ret += db.GetNameOfResID(IDTYPE_BITMAP, id);
-            break;
-
-        case (UINT_PTR)RT_MENU:
-            ret += db.GetNameOfResID(IDTYPE_MENU, id);
-            break;
-
-        case (UINT_PTR)RT_DIALOG:
-        case 240:   // RT_DLGINIT
-            ret += db.GetNameOfResID(IDTYPE_DIALOG, id);
-            break;
-
-        case (UINT_PTR)RT_ACCELERATOR:
-            ret += db.GetNameOfResID(IDTYPE_ACCEL, id);
-            break;
-
-        case (UINT_PTR)RT_GROUP_CURSOR:
-            ret += db.GetNameOfResID(IDTYPE_CURSOR, id);
-            break;
-
-        case (UINT_PTR)RT_GROUP_ICON:
-            ret += db.GetNameOfResID(IDTYPE_ICON, id);
-            break;
-
-        case (UINT_PTR)RT_ANICURSOR:
-            ret += db.GetNameOfResID(IDTYPE_ANICURSOR, id);
-            break;
-
-        case (UINT_PTR)RT_ANIICON:
-            ret += db.GetNameOfResID(IDTYPE_ANIICON, id);
-            break;
-
-        case (UINT_PTR)RT_HTML:
-            ret += db.GetNameOfResID(IDTYPE_HTML, id);
-            break;
-
-        default:
-            ret += db.GetNameOfResID(IDTYPE_RESOURCE, id);
-            break;
-        }
-
-        if (ret.size())
-        {
-            if (!mchr_is_digit(ret[0]))
-            {
-                ret += L" (";
-                ret += mstr_dec_word(m_name.m_id);
-                ret += L")";
-            }
-        }
-        else
-        {
-            ret += mstr_dec_word(m_name.m_id);
-        }
-        return ret;
-    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -451,14 +367,22 @@ struct EntrySet : private std::set<EntryBase *>
         return !found.empty();
     }
 
-    HTREEITEM find(EntryType e_type, const MIdOrString& type,
+    EntryBase *find(EntryType e_type, const MIdOrString& type,
               const MIdOrString& name, WORD lang = 0xFFFF)
     {
         super_type found;
         if (search(found, e_type, type, name, lang))
         {
-            return found.begin()->m_hItem;
+            return *found.begin();
         }
+        return NULL;
+    }
+
+    HTREEITEM find2(EntryType e_type, const MIdOrString& type,
+              const MIdOrString& name, WORD lang = 0xFFFF)
+    {
+        if (auto entry = find(e_type, type, name, lang))
+            return entry->m_hItem;
         return NULL;
     }
 
@@ -517,34 +441,6 @@ struct EntrySet : private std::set<EntryBase *>
         return last_id;
     }
 
-private:
-    static BOOL CALLBACK
-    EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
-                    WORD wIDLanguage, LPARAM lParam)
-    {
-        EntrySet& entries = *(Entries *)lParam;
-        AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
-        return TRUE;
-    }
-
-    static BOOL CALLBACK
-    EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
-    {
-        return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
-    }
-
-    static BOOL CALLBACK
-    EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
-    {
-        return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
-    }
-
-public:
-    BOOL GetListFromRes(HMODULE hMod, LPARAM lParam)
-    {
-        return ::EnumResourceTypesW(hMod, EnumResTypeProc, lParam);
-    }
-
     BOOL update_exe(LPCWSTR ExeFile) const
     {
         HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
@@ -579,7 +475,7 @@ public:
     void DoBitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_BITMAP;
-        auto entry = Find2(type, item.m_title, lang);
+        auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
@@ -598,7 +494,7 @@ public:
     void DoIcon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_GROUP_ICON;
-        auto entry = Find2(type, item.m_title, lang);
+        auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
@@ -623,7 +519,7 @@ public:
         }
 
         type = RT_ICON;
-        entry = Find2(type, pGroupIcon[n].nID, lang);
+        entry = find(ET_LANG, type, pGroupIcon[n].nID, lang);
         if (!entry)
             return;
 
@@ -639,13 +535,9 @@ public:
         }
     }
 
-    BOOL ExtractCursor(const EntryBase& cur_entry,
-                       const wchar_t *OutputFileName)
+    BOOL extract_cursor(const EntryBase& cur_entry, const wchar_t *file_name)
     {
-        ICONDIR dir;
-        dir.idReserved = 0;
-        dir.idType = RES_CURSOR;
-        dir.idCount = 1;
+        ICONDIR dir = { 0, RES_CURSOR, 1 };
 
         LOCALHEADER local;
         if (cur_entry.size() < sizeof(local))
@@ -687,21 +579,21 @@ public:
             return FALSE;
         }
 
-        return stream.SaveToFile(OutputFileName);
+        return stream.SaveToFile(file_name);
     }
 
     BOOL
-    ExtractGroupCursor(const Entry& grp_cur_entry, const wchar_t *OutputFileName)
+    extract_group_cursor(const EntryBase& group, const wchar_t *file_name)
     {
         ICONDIR dir;
-        if (grp_cur_entry.type != RT_GROUP_CURSOR ||
-            grp_cur_entry.size() < sizeof(dir))
+        if (group.type != RT_GROUP_CURSOR ||
+            group.size() < sizeof(dir))
         {
             assert(0);
             return FALSE;
         }
 
-        memcpy(&dir, &grp_cur_entry[0], sizeof(dir));
+        memcpy(&dir, &group[0], sizeof(dir));
         if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
         {
             assert(0);
@@ -709,21 +601,21 @@ public:
         }
 
         DWORD SizeOfCursorEntries = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
-        if (grp_cur_entry.size() < sizeof(dir) + SizeOfCursorEntries)
+        if (group.size() < sizeof(dir) + SizeOfCursorEntries)
         {
             assert(0);
             return FALSE;
         }
 
         std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
-        memcpy(&GroupEntries[0], &grp_cur_entry[sizeof(dir)],
+        memcpy(&GroupEntries[0], &group[sizeof(dir)],
                SizeOfCursorEntries);
 
         DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_CURSOR, GroupEntries[i].nID, grp_cur_entry.lang);
+            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.lang);
             if (!entry)
                 continue;
 
@@ -761,7 +653,7 @@ public:
 
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_CURSOR, GroupEntries[i].nID, grp_cur_entry.lang, FALSE);
+            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.lang, FALSE);
             if (!entry)
                 continue;
 
@@ -774,15 +666,12 @@ public:
             }
         }
 
-        return stream.SaveToFile(OutputFileName);
+        return stream.SaveToFile(file_name);
     }
 
-    BOOL ExtractIcon(const Entry& i_entry, const wchar_t *OutputFileName)
+    BOOL extract_icon(const Entry& i_entry, const wchar_t *file_name)
     {
-        ICONDIR dir;
-        dir.idReserved = 0;
-        dir.idType = RES_ICON;
-        dir.idCount = 1;
+        ICONDIR dir = { 0, RES_ICON, 1 };
 
         BITMAP bm;
         if (!PackedDIB_GetInfo(&i_entry[0], i_entry.size(), bm))
@@ -815,21 +704,21 @@ public:
             return FALSE;
         }
 
-        return stream.SaveToFile(OutputFileName);
+        return stream.SaveToFile(file_name);
     }
 
     BOOL
-    ExtractGroupIcon(const Entry& grp_ico_entry, const wchar_t *OutputFileName)
+    extract_group_icon(const EntryBase& group, const wchar_t *file_name)
     {
         ICONDIR dir;
-        if (grp_ico_entry.type != RT_GROUP_ICON ||
-            grp_ico_entry.size() < sizeof(dir))
+        if (group.type != RT_GROUP_ICON ||
+            group.size() < sizeof(dir))
         {
             assert(0);
             return FALSE;
         }
 
-        memcpy(&dir, &grp_ico_entry[0], sizeof(dir));
+        memcpy(&dir, &group[0], sizeof(dir));
         if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
         {
             assert(0);
@@ -837,20 +726,20 @@ public:
         }
 
         DWORD SizeOfIconEntries = sizeof(GRPICONDIRENTRY) * dir.idCount;
-        if (grp_ico_entry.size() < sizeof(dir) + SizeOfIconEntries)
+        if (group.size() < sizeof(dir) + SizeOfIconEntries)
         {
             assert(0);
             return FALSE;
         }
 
         std::vector<GRPICONDIRENTRY> GroupEntries(dir.idCount);
-        memcpy(&GroupEntries[0], &grp_ico_entry[sizeof(dir)], SizeOfIconEntries);
+        memcpy(&GroupEntries[0], &group[sizeof(dir)], SizeOfIconEntries);
 
         DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_ICON, GroupEntries[i].nID, grp_ico_entry.lang);
+            auto entry = Find2(RT_ICON, GroupEntries[i].nID, group.lang);
             if (!entry)
                 continue;
 
@@ -884,7 +773,7 @@ public:
 
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_ICON, GroupEntries[i].nID, grp_ico_entry.lang, FALSE);
+            auto entry = Find2(RT_ICON, GroupEntries[i].nID, group.lang, FALSE);
             if (!entry)
                 continue;
 
@@ -896,7 +785,7 @@ public:
             }
         }
 
-        return stream.SaveToFile(OutputFileName);
+        return stream.SaveToFile(file_name);
     }
 };
 
@@ -923,7 +812,6 @@ TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
     LPARAM lParam = TV_GetParam(hwndTV, hItem);
     return (EntryBase *)lParam;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1104,7 +992,27 @@ TV_InsertEntry(HWND hwndTV, EntryBase *entry)
 {
     HTREEITEM hParent = TV_GetInsertParent(hwndTV, entry);
     HTREEITEM hPosition = TV_GetInsertPosition(hwndTV, entry);
-    return TV_InsertAfter(hwndTV, hParent, ..., entry, hPosition);
+    MStringW strText;
+    switch (entry->m_e_type)
+    {
+    case ET_TYPE:
+        strText = entry->get_type_label();
+        break;
+    case ET_NAME:
+        strText = entry->get_name_label();
+        break;
+    case ET_LANG:
+        strText = entry->get_lang_label();
+        break;
+    case ET_STRING:
+    case ET_MESSAGE:
+        strText = entry->get_lang_label();
+        break;
+    default:
+        assert(0);
+        break;
+    }
+    return TV_InsertAfter(hwndTV, hParent, strText, entry, hPosition);
 }
 
 inline HTREEITEM
@@ -1116,7 +1024,7 @@ TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace)
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find(ET_TYPE, type))
+        if (auto hItem = Res_GetMaster().find2(ET_TYPE, type))
             return hItem;
     }
     auto entry = new TypeEntry(type);
@@ -1133,7 +1041,7 @@ TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find(ET_NAME, type, name))
+        if (auto hItem = Res_GetMaster().find2(ET_NAME, type, name))
             return hItem;
     }
     auto entry = new NameEntry(type, name);
@@ -1151,7 +1059,7 @@ TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
     }
     else
     {
-        if (auto hItem = Res_GetMaster().find(ET_LANG, type, name, lang))
+        if (auto hItem = Res_GetMaster().find2(ET_LANG, type, name, lang))
             return hItem;
     }
 
@@ -1161,7 +1069,7 @@ TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
 }
 
 inline HTREEITEM
-TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
+TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang, bool replace)
 {
     HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
     if (!hResInfo)
@@ -1175,16 +1083,17 @@ TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
         EntryBase::data_type data(LPBYTE(pv), LPBYTE(pv) + dwSize);
         return TV_AddLangEntry(hwndTV, type, name, lang, data, replace);
     }
+
     return NULL;
 }
 
 inline HTREEITEM
 TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang,
-                const MStringW& file_name, BOOL replace)
+                const MStringW& file_name, bool replace)
 {
     if (replace)
     {
-        HTREEITEM hItem = Res_GetMaster().find(ET_LANG, RT_GROUP_ICON, name, lang);
+        HTREEITEM hItem = Res_GetMaster().find2(ET_LANG, RT_GROUP_ICON, name, lang);
         TreeView_DeleteItem(hwndTV, hItem);
     }
 
@@ -1207,11 +1116,11 @@ TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang,
 
 inline HTREEITEM
 TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang,
-                  const MStringW& file_name, BOOL replace)
+                  const MStringW& file_name, bool replace)
 {
     if (replace)
     {
-        HTREEITEM hItem = Res_GetMaster().find(ET_LANG, RT_GROUP_CURSOR, name, lang);
+        auto hItem = Res_GetMaster().find2(ET_LANG, RT_GROUP_CURSOR, name, lang);
         TreeView_DeleteItem(hwndTV, hItem);
     }
 
@@ -1234,7 +1143,7 @@ TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang,
 
 inline HTREEITEM
 TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
-             const MStringW& file, BOOL replace = FALSE)
+             const MStringW& file, bool replace = FALSE)
 {
     MByteStreamEx stream;
     if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
@@ -1270,6 +1179,34 @@ TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
     size_t i0 = head_size, i1 = stream.size();
     EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
     return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, HeadLess, replace);
+}
+
+static inline BOOL CALLBACK
+TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
+                   WORD wIDLanguage, LPARAM lParam)
+{
+    HWND hwndTV = Res_GetTreeViewHandle();
+    bool replace = (bool)lParam;
+    TV_AddResEntry(hwndTV, hMod, lpszType, lpszName, wIDLanguage, replace);
+    return TRUE;
+}
+
+static inline BOOL CALLBACK
+TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
+{
+    return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, TV_EnumResLangProc, lParam);
+}
+
+static inline BOOL CALLBACK
+TV_EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
+{
+    return ::EnumResourceNamesW(hMod, lpszType, TV_EnumResNameProc, lParam);
+}
+
+inline BOOL
+TV_FromRes(HWND hwndTV, HMODULE hMod, bool replace)
+{
+    return ::EnumResourceTypesW(hMod, TV_EnumResTypeProc, replace);
 }
 
 //////////////////////////////////////////////////////////////////////////////
