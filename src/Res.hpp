@@ -120,7 +120,7 @@ Res_HasNoName(const MIdOrString& type)
 
 enum EntryType
 {
-    ET_NONE,        // None. Don't use.
+    ET_ANY,         // Any.
     ET_TYPE,        // TypeEntry.
     ET_NAME,        // NameEntry.
     ET_LANG,        // LangEntry.
@@ -157,7 +157,7 @@ struct EntryBase
 
     bool match(EntryType e_type, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
     {
-        if (e_type != ET_NONE && m_e_type != e_type)
+        if (e_type != ET_ANY && m_e_type != e_type)
             return false;
         if (!type.is_zero() && m_type != type)
             return false;
