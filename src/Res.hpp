@@ -38,7 +38,7 @@
 #include "DialogRes.hpp"
 
 class ResEntry;
-// class EntryTree;
+// class EntrySet;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
@@ -160,26 +160,31 @@ Res_GetTypeString(const MIdOrString& id_or_str)
 MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
+// EntryType
+
+enum EntryType
+{
+    I_NONE,     // None. Don't use.
+    I_TYPE,     // TypeEntry.
+    I_NAME,     // NameEntry.
+    I_LANG,     // LangEntry.
+    I_STRING,   // StringEntry.
+    I_MESSAGE   // MessageEntry.
+};
+
+///////////////////////////////////////////////////////////////////////////////
 // EntryBase, TypeEntry, NameEnry, LangEntry, StringEntry, MessageEntry
 
 struct EntryBase
 {
     typedef DWORD               size_type;
     typedef std::vector<BYTE>   data_type;
-    enum EntryType
-    {
-        I_NONE,     // None. Don't use.
-        I_TYPE,     // TypeEntry.
-        I_NAME,     // NameEntry.
-        I_LANG,     // LangEntry.
-        I_STRING,   // StringEntry.
-        I_MESSAGE   // MessageEntry.
-    };
     EntryType       m_e_type;
 
     MIdOrString     m_type;
     MIdOrString     m_name;
     WORD            m_lang = 0xFFFF;
+    INT             m_cRefs = -1;
     HTREEITEM       m_hItem = NULL;
 
     EntryBase(EntryType e_type, const MIdOrString& type,
@@ -229,7 +234,7 @@ struct EntryBase
         return false;
     }
 };
-typedef std::vector<EntryBase *> EntryVector;
+typedef std::vector<EntryBase *> EntrySet;
 
 struct TypeEntry : EntryBase
 {
@@ -411,37 +416,27 @@ struct LangEntry : EntryBase
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// EntryTree
+// EntrySet
 
-struct EntryTree
+struct EntrySet : private std::set<EntryBase *>
 {
+    typedef std::set<EntryBase *> super_type;
+    using super_type::empty;
+    using super_type::size;
+    using super_type::operator[];
+    using super_type::begin;
+    using super_type::end;
+    using super_type::insert;
+    using super_type::erase;
+
     HWND m_hwndTV;
     typedef bool (*scan_proc_t)(EntryBase *base, void *pUserData);
 
-    EntryTree(HWND hwndTV) : m_hwndTV(hwndTV);
+    EntrySet(HWND hwndTV) : m_hwndTV(hwndTV);
     {
     }
 
-    LPARAM get_param(HTREEITEM hItem) 
-    {
-        ...
-    }
-
-    void get_all_entries(EntryVector& vec, HTREEITEM hItem)
-    {
-        if (!hItem)
-            hItem = TreeView_GetRoot(m_hwndTV);
-
-        for (;;)
-        {
-            hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
-            if (!hItem)
-                return;ss
-            ...
-        }
-    }
-
-    bool search(EntryVector& vec, const MIdOrString& type,
+    bool search(EntrySet& vec, const MIdOrString& type,
                 const MIdOrString& name, WORD lang = 0xFFFF)
     {
         vecFound.clear();
@@ -461,7 +456,7 @@ struct EntryTree
     }
 
     inline bool
-    Intersect(const EntryTree& entries2) const
+    Intersect(const EntrySet& entries2) const
     {
         if (size() == 0 && entries2.size() == 0)
             return false;
@@ -478,7 +473,7 @@ struct EntryTree
     }
 
     void
-    Search(EntryTree& found,
+    Search(EntrySet& found,
            const MIdOrString& type, 
            const MIdOrString& name,
            WORD lang)
@@ -514,7 +509,7 @@ struct EntryTree
             return;
         }
 
-        EntryTree found;
+        EntrySet found;
         Search(found, entries, type, name, lang);
 
         for (auto item : found)
@@ -719,7 +714,7 @@ private:
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
                     WORD wIDLanguage, LPARAM lParam)
     {
-        EntryTree& entries = *(Entries *)lParam;
+        EntrySet& entries = *(Entries *)lParam;
         AddFromRes(hMod, lpszType, lpszName, wIDLanguage);
         return TRUE;
     }
@@ -1111,20 +1106,25 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 inline LPARAM
-TV_GetParam(HWND hwnd, HTREEITEM hItem = NULL)
+TV_GetParam(HWND hwndTV, HTREEITEM hItem = NULL)
 {
-    if (hItem == NULL)
-    {
-        hItem = TreeView_GetSelection(hwnd);
-    }
+    if (!hItem)
+        hItem = TreeView_GetSelection(hwndTV);
 
     TV_ITEM item;
     ZeroMemory(&item, sizeof(item));
     item.mask = TVIF_PARAM;
     item.hItem = hItem;
-    TreeView_GetItem(hwnd, &item);
+    TreeView_GetItem(hwndTV, &item);
 
     return item.lParam;
+}
+
+inline EntryBase *
+TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
+{
+    LPARAM lParam = TV_GetParam(hwndTV, hItem);
+    return (EntryBase *)lParam;
 }
 
 inline HTREEITEM
@@ -1399,41 +1399,6 @@ TV_RefreshInfo(HWND hwnd, ConstantsDB& db, Entries& entries)
     Res_EraseEmpty(entries);
 }
 
-inline void TV_Delete(HWND hwnd, ConstantsDB& db, HTREEITEM hItem, Entries& entries)
-{
-    LPARAM lParam = TV_GetParam(hwnd, hItem);
-
-    WORD i = LOWORD(lParam);
-    Entry entry = entries[i];
-
-    INT nPos = GetScrollPos(hwnd, SB_VERT);
-
-    switch (HIWORD(lParam))
-    {
-    case I_TYPE:
-        entry.name.clear();
-        entry.lang = 0xFFFF;
-        Res_DeleteEntries(entries, entry);
-        break;
-    case I_NAME:
-        entry.lang = 0xFFFF;
-        Res_DeleteEntries(entries, entry);
-        break;
-    case I_LANG:
-        Res_DeleteEntries(entries, entry);
-        break;
-    case I_STRING:
-    case I_MESSAGE:
-        entry.name.clear();
-        Res_DeleteEntries(entries, entry);
-        break;
-    }
-
-    TV_RefreshInfo(hwnd, db, entries);
-
-    SetScrollPos(hwnd, SB_VERT, nPos, TRUE);
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void
@@ -1455,6 +1420,132 @@ ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
         }
         title_to_icon.clear();
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+inline EntrySet&
+Res_GetMaster(void)
+{
+    static EntrySet eset;
+    return eset;
+}
+
+inline HWND&
+Res_GetTreeViewHandle(void)
+{
+    static HWND hwndTV = NULL;
+    return hwndTV;
+}
+
+inline void
+TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
+{
+    switch (entry->m_e_type)
+    {
+    case I_TYPE:
+    case I_NAME:
+    case I_LANG:
+        // TODO:
+        break;
+    default:
+        assert(0);
+        break;
+    }
+}
+
+inline void
+TV_OnDeleteGroupIcon(HWND hwndTV, EntryBase *entry)
+{
+    switch (entry->m_e_type)
+    {
+    case I_TYPE:
+    case I_NAME:
+    case I_LANG:
+        // TODO:
+        break;
+    default:
+        assert(0);
+        break;
+    }
+}
+
+inline void
+TV_OnDeleteString(HWND hwndTV, EntryBase *entry)
+{
+    assert(entry->m_e_type == I_STRING);
+    // TODO:
+}
+
+inline void
+TV_OnDeleteMessage(HWND hwndTV, EntryBase *entry)
+{
+    assert(entry->m_e_type == I_MESSAGE);
+    // TODO:
+}
+
+inline void
+TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
+{
+    auto entry = TV_GetEntry(hwndTV, hItem);
+
+    HTREEITEM hParent = TreeView_GetParent(hwndTV, entry->m_hItem);
+
+    switch (entry->m_e_type)
+    {
+    case I_NONE:
+        assert(0);
+        break;
+
+    case I_TYPE:
+        if (entry->m_type == RT_GROUP_CURSOR)
+        {
+            TV_OnDeleteGroupCursor(HWND hwndTV, entry);
+        }
+        if (entry->m_type == RT_GROUP_ICON)
+        {
+            TV_OnDeleteGroupIcon(HWND hwndTV, entry);
+        }
+        break;
+
+    case I_NAME:
+        if (entry->m_type == RT_GROUP_CURSOR)
+        {
+            TV_OnDeleteGroupCursor(HWND hwndTV, entry);
+        }
+        if (entry->m_type == RT_GROUP_ICON)
+        {
+            TV_OnDeleteGroupIcon(HWND hwndTV, entry);
+        }
+        break;
+
+    case I_LANG:
+        if (entry->m_type == RT_GROUP_CURSOR)
+        {
+            TV_OnDeleteGroupCursor(HWND hwndTV, entry);
+        }
+        if (entry->m_type == RT_GROUP_ICON)
+        {
+            TV_OnDeleteGroupIcon(HWND hwndTV, entry);
+        }
+        break;
+
+    case I_STRING:
+        TV_OnDeleteString(HWND hwndTV, entry);
+        break;
+
+    case I_MESSAGE:
+        TV_OnDeleteMessage(HWND hwndTV, entry);
+        break;
+
+    default:
+        break;
+    }
+
+    delete entry;
+
+    if (TreeView_GetChild(hwndTV, hParent) == NULL)
+        TreeView_DeleteItem(hwndTV, hParent);
 }
 
 //////////////////////////////////////////////////////////////////////////////
