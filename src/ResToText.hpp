@@ -467,22 +467,22 @@ ResToText::DoDialog(const LangEntry& entry)
 inline MString
 ResToText::DoString(const LangEntry& entry)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, entry.m_name, entry.m_lang);
+    EntrySet::super_type found;
+    g_res.search(found, ET_LANG, RT_STRING, entry.m_name, entry.m_lang);
 
     StringRes str_res;
-    ResEntries::iterator it, end = found.end();
-    for (it = found.begin(); it != end; ++it)
+    for (auto e : found)
     {
-        MByteStreamEx stream(it->data);
-        if (!str_res.LoadFromStream(stream, it->name.m_id))
+        auto& le = (LangEntry&)*e;
+        MByteStreamEx stream(le.m_data);
+        if (!str_res.LoadFromStream(stream, le.m_name.m_id))
             return LoadStringDx(IDS_INVALIDDATA);
     }
 
     MString str;
     if (entry.m_name.empty())
         str += GetLanguageStatement(entry.m_lang);
-    str += str_res.Dump(g_db);
+    str += str_res.Dump();
     str += L"\r\n\r\n";
     return str;
 }
@@ -490,15 +490,15 @@ ResToText::DoString(const LangEntry& entry)
 inline MString
 ResToText::DoMessage(const LangEntry& entry)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
+    EntrySet::super_type found;
+    g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
     MessageRes msg_res;
-    ResEntries::iterator it, end = found.end();
-    for (it = found.begin(); it != end; ++it)
+    for (auto e : found)
     {
-        MByteStreamEx stream(it->data);
-        if (!msg_res.LoadFromStream(stream, it->name.m_id))
+        auto& le = (LangEntry&)*e;
+        MByteStreamEx stream(le.m_data);
+        if (!msg_res.LoadFromStream(stream, le.m_name.m_id))
             return LoadStringDx(IDS_INVALIDDATA);
     }
 
@@ -507,7 +507,7 @@ ResToText::DoMessage(const LangEntry& entry)
         str += GetLanguageStatement(entry.m_lang);
 
     str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump(g_db);
+    str += msg_res.Dump();
     str += L"#endif\r\n\r\n";
     return str;
 }
@@ -516,7 +516,7 @@ inline MString
 ResToText::DoAccel(const LangEntry& entry)
 {
     MByteStreamEx stream(entry.m_data);
-    AccelRes accel(g_db);
+    AccelRes accel;
     if (accel.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.m_lang);
@@ -918,7 +918,7 @@ MString ResToText::DoDlgInit(const LangEntry& entry)
     MStringW str;
 
     MByteStreamEx stream(entry.m_data);
-    DlgInitRes dlginit(g_db);
+    DlgInitRes dlginit;
     if (dlginit.LoadFromStream(stream))
     {
         str += GetLanguageStatement(entry.m_lang);
@@ -1080,7 +1080,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
 }
 
 inline MStringW
-DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
+DumpGroupCursorInfo(const std::vector<BYTE>& data)
 {
     MStringW ret;
 
@@ -1110,10 +1110,9 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         WORD xHotSpot = 0;
         WORD yHotSpot = 0;
 
-        INT k = Res_Find(entries, RT_CURSOR, nID, 0xFFFF, FALSE);
-        if (k != -1)
+        if (auto entry = g_res.find(ET_LANG, RT_CURSOR, nID, 0xFFFF))
         {
-            const LangEntry& cursor_entry = entries[k];
+            auto& cursor_entry = (LangEntry&)*entry;
             LOCALHEADER header;
             if (cursor_entry.size() >= sizeof(header))
             {
@@ -1202,7 +1201,7 @@ DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
 }
 
 inline HBITMAP
-CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
+CreateBitmapFromIconsDx(HWND hwnd, const LangEntry& entry)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -1231,12 +1230,11 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.m_lang, FALSE);
-        if (k == -1)
-        {
+        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
+        if (!e)
             return NULL;
-        }
-        LangEntry& icon_entry = entries[k];
+
+        auto& icon_entry = (LangEntry&)*e;
 
         BITMAP bm;
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
@@ -1262,13 +1260,13 @@ CreateBitmapFromIconsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
     INT y = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_ICON, pEntries[i].nID, entry.m_lang, FALSE);
-        if (k == -1)
+        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
+        if (!e)
         {
             DeleteObject(hbm);
             return NULL;
         }
-        LangEntry& icon_entry = entries[k];
+        auto icon_entry = (LangEntry&)*e;
 
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
 
@@ -1296,7 +1294,7 @@ CreateBitmapFromCursorDx(HWND hwnd, const LangEntry& entry, BITMAP& bm)
 }
 
 inline HBITMAP
-CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry)
+CreateBitmapFromCursorsDx(HWND hwnd, const LangEntry& entry)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -1325,12 +1323,11 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.m_lang, FALSE);
-        if (k == -1)
-        {
+        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
+        if (!e)
             return NULL;
-        }
-        LangEntry& cursor_entry = entries[k];
+
+        auto cursor_entry = (LangEntry&)*e;
 
         BITMAP bm;
         HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);
@@ -1360,14 +1357,14 @@ CreateBitmapFromCursorsDx(HWND hwnd, ResEntries& entries, const LangEntry& entry
         INT y = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            INT k = Res_Find2(entries, RT_CURSOR, pEntries[i].nID, entry.m_lang, FALSE);
-            if (k == -1)
+            auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
+            if (!e)
             {
                 assert(0);
                 DeleteObject(hbm);
                 return NULL;
             }
-            LangEntry& cursor_entry = entries[k];
+            auto& cursor_entry = (LangEntry&)*e;
 
             BITMAP bm;
             HBITMAP hbmCursor = CreateBitmapFromCursorDx(hwnd, cursor_entry, bm);

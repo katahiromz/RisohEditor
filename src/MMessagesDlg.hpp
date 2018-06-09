@@ -65,7 +65,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        if (!MsgDlg_GetEntry(hwnd, m_entry, g_db))
+        if (!MsgDlg_GetEntry(hwnd, m_entry))
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -158,7 +158,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        if (!MsgDlg_GetEntry(hwnd, m_entry, g_db))
+        if (!MsgDlg_GetEntry(hwnd, m_entry))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;

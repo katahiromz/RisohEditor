@@ -851,6 +851,15 @@ TV_GetEntry(HTREEITEM hItem = NULL)
     return (EntryBase *)lParam;
 }
 
+inline LangEntry *
+TV_GetLangEntry(HTREEITEM hItem = NULL)
+{
+    auto e = TV_GetEntry(hItem);
+    if (e->m_e_type == ET_LANG)
+        return (LangEntry *)e;
+    return NULL;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 inline bool
