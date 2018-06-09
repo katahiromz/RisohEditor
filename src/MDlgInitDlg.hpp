@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -40,19 +40,18 @@ class MAddDlgInitDlg : public MDialogBase
 {
 public:
     DLGINIT_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MAddDlgInitDlg(DLGINIT_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_ADDDLGINIT), m_entry(entry), m_db(db)
+    MAddDlgInitDlg(DLGINIT_ENTRY& entry) :
+        MDialogBase(IDD_ADDDLGINIT), m_entry(entry)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitCtrlIDComboBox(hCmb1, m_db);
+        InitCtrlIDComboBox(hCmb1);
         SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -77,7 +76,7 @@ public:
         if (m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
 
-        if (!m_db.HasResID(m_entry.sz0))
+        if (!g_db.HasResID(m_entry.sz0))
         {
             m_cmb1.SetEditSel(0, -1);
             SetFocus(m_cmb1);
@@ -141,19 +140,18 @@ class MModifyDlgInitDlg : public MDialogBase
 {
 public:
     DLGINIT_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MModifyDlgInitDlg(DLGINIT_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_MODIFYDLGINIT), m_entry(entry), m_db(db)
+    MModifyDlgInitDlg(DLGINIT_ENTRY& entry) :
+        MDialogBase(IDD_MODIFYDLGINIT), m_entry(entry)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitCtrlIDComboBox(hCmb1, m_db);
+        InitCtrlIDComboBox(hCmb1);
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
         SubclassChildDx(m_cmb1, cmb1);
 
@@ -182,7 +180,7 @@ public:
         if (m_entry.sz2[0] == L'"')
             mstr_unquote(m_entry.sz2);
 
-        if (!m_db.HasResID(m_entry.sz0))
+        if (!g_db.HasResID(m_entry.sz0))
         {
             m_cmb1.SetEditSel(0, -1);
             SetFocus(m_cmb1);
@@ -246,14 +244,13 @@ class MDlgInitDlg : public MDialogBase
 {
 public:
     DlgInitRes& m_dlginit_res;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MDlgInitDlg(DlgInitRes& dlginit_res, ConstantsDB& db)
-        : MDialogBase(IDD_DLGINITEDIT), m_dlginit_res(dlginit_res), m_db(db)
+    MDlgInitDlg(DlgInitRes& dlginit_res)
+        : MDialogBase(IDD_DLGINITEDIT), m_dlginit_res(dlginit_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -334,7 +331,7 @@ public:
     {
         DLGINIT_ENTRY entry;
 
-        MAddDlgInitDlg dialog(entry, m_db);
+        MAddDlgInitDlg dialog(entry);
         if (IDOK != dialog.DialogBoxDx(hwnd))
         {
             return;
@@ -387,7 +384,7 @@ public:
         if (die.sz2[0] == L'"')
             mstr_unquote(die.sz2);
 
-        MModifyDlgInitDlg dialog(die, m_db);
+        MModifyDlgInitDlg dialog(die);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             MString str2 = mstr_quote(die.sz2);
@@ -412,7 +409,7 @@ public:
                 mstr_unquote(die.sz2);
 
             DlgInitEntry entry;
-            entry.wCtrl = WORD(m_db.GetResIDValue(die.sz0));
+            entry.wCtrl = WORD(g_db.GetResIDValue(die.sz0));
 
             if (lstrcmpiW(die.sz1, L"LB_ADDSTRING") == 0)
             {
@@ -585,7 +582,7 @@ public:
         {
             MString str;
 
-            str = m_db.GetCtrlOrCmdName(it->wCtrl);
+            str = g_db.GetCtrlOrCmdName(it->wCtrl);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));

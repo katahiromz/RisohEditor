@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -54,7 +54,7 @@ void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
     }
 }
 
-void GetStyleSelect(std::vector<BYTE>& sel,
+void GetStyleSelect(std::vector<BYTE>& sel, 
                     const ConstantsDB::TableType& table, DWORD dwValue)
 {
     sel.resize(table.size());
@@ -68,7 +68,7 @@ void GetStyleSelect(std::vector<BYTE>& sel,
 }
 
 DWORD AnalyseStyleDiff(
-    DWORD dwValue, ConstantsDB::TableType& table,
+    DWORD dwValue, ConstantsDB::TableType& table, 
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
 {
     assert(old_sel.size() == new_sel.size());
@@ -103,9 +103,9 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 
 static int CALLBACK
 EnumFontFamProc(
-    ENUMLOGFONT *lpelf,
-    NEWTEXTMETRIC *lpntm,
-    int FontType,
+    ENUMLOGFONT *lpelf, 
+    NEWTEXTMETRIC *lpntm, 
+    int FontType, 
     LPARAM lParam)
 {
     HWND hCmb = HWND(lParam);
@@ -129,26 +129,26 @@ typedef struct CharSetInfo
 
 static const CharSetInfo s_charset_entries[] =
 {
-    { ANSI_CHARSET, TEXT("ANSI_CHARSET") },
-    { DEFAULT_CHARSET, TEXT("DEFAULT_CHARSET") },
-    { SYMBOL_CHARSET, TEXT("SYMBOL_CHARSET") },
-    { SHIFTJIS_CHARSET, TEXT("SHIFTJIS_CHARSET") },
-    { HANGEUL_CHARSET, TEXT("HANGEUL_CHARSET") },
-    { HANGUL_CHARSET, TEXT("HANGUL_CHARSET") },
-    { GB2312_CHARSET, TEXT("GB2312_CHARSET") },
-    { CHINESEBIG5_CHARSET, TEXT("CHINESEBIG5_CHARSET") },
-    { OEM_CHARSET, TEXT("OEM_CHARSET") },
-    { JOHAB_CHARSET, TEXT("JOHAB_CHARSET") },
-    { HEBREW_CHARSET, TEXT("HEBREW_CHARSET") },
-    { ARABIC_CHARSET, TEXT("ARABIC_CHARSET") },
-    { GREEK_CHARSET, TEXT("GREEK_CHARSET") },
-    { TURKISH_CHARSET, TEXT("TURKISH_CHARSET") },
-    { VIETNAMESE_CHARSET, TEXT("VIETNAMESE_CHARSET") },
-    { THAI_CHARSET, TEXT("THAI_CHARSET") },
-    { EASTEUROPE_CHARSET, TEXT("EASTEUROPE_CHARSET") },
-    { RUSSIAN_CHARSET, TEXT("RUSSIAN_CHARSET") },
-    { MAC_CHARSET, TEXT("MAC_CHARSET") },
-    { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") },
+    { ANSI_CHARSET, TEXT("ANSI_CHARSET") }, 
+    { DEFAULT_CHARSET, TEXT("DEFAULT_CHARSET") }, 
+    { SYMBOL_CHARSET, TEXT("SYMBOL_CHARSET") }, 
+    { SHIFTJIS_CHARSET, TEXT("SHIFTJIS_CHARSET") }, 
+    { HANGEUL_CHARSET, TEXT("HANGEUL_CHARSET") }, 
+    { HANGUL_CHARSET, TEXT("HANGUL_CHARSET") }, 
+    { GB2312_CHARSET, TEXT("GB2312_CHARSET") }, 
+    { CHINESEBIG5_CHARSET, TEXT("CHINESEBIG5_CHARSET") }, 
+    { OEM_CHARSET, TEXT("OEM_CHARSET") }, 
+    { JOHAB_CHARSET, TEXT("JOHAB_CHARSET") }, 
+    { HEBREW_CHARSET, TEXT("HEBREW_CHARSET") }, 
+    { ARABIC_CHARSET, TEXT("ARABIC_CHARSET") }, 
+    { GREEK_CHARSET, TEXT("GREEK_CHARSET") }, 
+    { TURKISH_CHARSET, TEXT("TURKISH_CHARSET") }, 
+    { VIETNAMESE_CHARSET, TEXT("VIETNAMESE_CHARSET") }, 
+    { THAI_CHARSET, TEXT("THAI_CHARSET") }, 
+    { EASTEUROPE_CHARSET, TEXT("EASTEUROPE_CHARSET") }, 
+    { RUSSIAN_CHARSET, TEXT("RUSSIAN_CHARSET") }, 
+    { MAC_CHARSET, TEXT("MAC_CHARSET") }, 
+    { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") }, 
 };
 
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
@@ -184,7 +184,7 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     return DEFAULT_CHARSET;
 }
 
-void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption)
+void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption)
 {
     ComboBox_ResetContent(hCmb);
     for (size_t i = 0; i < settings.captions.size(); ++i)
@@ -194,12 +194,12 @@ void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption)
     ComboBox_SetText(hCmb, pszCaption);
 }
 
-void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass)
+void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
 {
     ComboBox_ResetContent(hCmb);
 
     ConstantsDB::TableType table;
-    table = db.GetTable(TEXT("CONTROL.CLASSES"));
+    table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
 
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -212,12 +212,12 @@ void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass)
     }
 }
 
-void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass)
+void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 {
     ComboBox_ResetContent(hCmb);
 
     ConstantsDB::TableType table;
-    table = db.GetTable(TEXT("CONTROL.CLASSES"));
+    table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
 
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -233,10 +233,10 @@ void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass)
     }
 }
 
-void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
+void InitCtrlIDComboBox(HWND hCmb)
 {
     ConstantsDB::TableType table;
-    table = db.GetTable(TEXT("CTRLID"));
+    table = g_db.GetTable(TEXT("CTRLID"));
 
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -244,33 +244,33 @@ void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db)
         ComboBox_AddString(hCmb, it->name.c_str());
     }
 
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_CONTROL].name;
     if (prefix.size())
     {
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             ComboBox_AddString(hCmb, it->name.c_str());
         }
     }
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_COMMAND].name;
     if (prefix.size())
     {
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
             ComboBox_AddString(hCmb, it->name.c_str());
         }
     }
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_NEWCOMMAND].name;
     if (prefix.size())
     {
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -326,8 +326,8 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
 }
 
 MString
-GetEntityIDText(ResEntries& entries, RisohSettings& settings,
-                ConstantsDB& db,
+GetEntityIDText(ResEntries& entries, 
+                ConstantsDB& g_db, 
                 const MString& name, INT nIDTYPE_, BOOL bFlag)
 {
     MIdOrString type;
@@ -348,7 +348,7 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
         return L"";
     }
 
-    WORD wName = WORD(db.GetResIDValue(name));
+    WORD wName = WORD(g_db.GetResIDValue(name));
     MIdOrString name_or_id(wName);
     if (wName == 0)
     {
@@ -403,7 +403,7 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
             MString res_name;
             if (found[i].type.is_int())
             {
-                res_name = db.GetName(L"RESOURCE", found[i].type.m_id);
+                res_name = g_db.GetName(L"RESOURCE", found[i].type.m_id);
                 if (res_name.empty())
                 {
                     res_name = mstr_dec(found[i].type.m_id);
@@ -429,7 +429,7 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
     {
         for (size_t i = 0; i < found.size(); ++i)
         {
-            MString res_name = db.GetName(L"RESOURCE", type.m_id);
+            MString res_name = g_db.GetName(L"RESOURCE", type.m_id);
             if (res_name.empty())
             {
                 res_name = mstr_dec(type.m_id);
@@ -451,11 +451,11 @@ GetEntityIDText(ResEntries& entries, RisohSettings& settings,
     return ret;
 }
 
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_)
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_)
 {
     SetWindowTextW(hCmb, id.c_str());
 
-    if (!db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         return;
 
     INT k = -1;
@@ -463,12 +463,12 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     ConstantsDB::TableType table;
     if (nIDTYPE_ != IDTYPE_UNKNOWN)
     {
-        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_].name;
         if (prefix.empty())
             return;
 
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -483,11 +483,11 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 
     if (k == -1 &&
-        nIDTYPE_ != IDTYPE_RESOURCE && db.IsEntityIDType(nIDTYPE_))
+        nIDTYPE_ != IDTYPE_RESOURCE && g_db.IsEntityIDType(nIDTYPE_))
     {
-        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -501,11 +501,11 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 }
 
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2)
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2)
 {
     SetWindowTextW(hCmb, id.c_str());
 
-    if (!db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         return;
 
     INT k = -1;
@@ -513,12 +513,12 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     ConstantsDB::TableType table;
     if (nIDTYPE_1 != IDTYPE_UNKNOWN)
     {
-        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_1].name;
         if (prefix.empty())
             return;
 
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -533,12 +533,12 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
     if (nIDTYPE_2 != IDTYPE_UNKNOWN)
     {
-        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_2].name;
         if (prefix.empty())
             return;
 
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -553,11 +553,11 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 
     if (k == -1 &&
-        nIDTYPE_1 != IDTYPE_RESOURCE && db.IsEntityIDType(nIDTYPE_1))
+        nIDTYPE_1 != IDTYPE_RESOURCE && g_db.IsEntityIDType(nIDTYPE_1))
     {
-        table = db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
-        table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         ConstantsDB::TableType::iterator it, end = table.end();
         for (it = table.begin(); it != end; ++it)
         {
@@ -571,7 +571,7 @@ void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE
     }
 }
 
-BOOL CheckCommand(ConstantsDB& db, MString strCommand)
+BOOL CheckCommand(ConstantsDB& MString strCommand)
 {
     mstr_trim(strCommand);
     if (('0' <= strCommand[0] && strCommand[0] <= '9') ||
@@ -579,23 +579,23 @@ BOOL CheckCommand(ConstantsDB& db, MString strCommand)
     {
         return TRUE;
     }
-    return db.HasResID(strCommand);
+    return g_db.HasResID(strCommand);
 }
 
-void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
+void InitStringComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if (!db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         return;
 
     ConstantsDB::TableType table;
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_STRING].name;
     if (prefix.empty())
         return;
 
-    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
     {
@@ -606,9 +606,9 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
         }
     }
 
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_PROMPT].name;
-    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
     end = table.end();
     for (it = table.begin(); it != end; ++it)
     {
@@ -620,20 +620,20 @@ void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString)
     }
 }
 
-void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString)
+void InitMessageComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if (!db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         return;
 
     ConstantsDB::TableType table;
-    table = db.GetTable(L"RESOURCE.ID.PREFIX");
+    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_MESSAGE].name;
     if (prefix.empty())
         return;
 
-    table = db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+    table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
     ConstantsDB::TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
     {
@@ -676,7 +676,7 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
                             IID_IShellLinkW, (void **)&pShellLink);
     if (SUCCEEDED(hRes))
     {
-        hRes = pShellLink->QueryInterface(IID_IPersistFile,
+        hRes = pShellLink->QueryInterface(IID_IPersistFile, 
                                           (void **)&pPersistFile);
         if (SUCCEEDED(hRes))
         {
@@ -722,41 +722,41 @@ LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
 
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
 };
 
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
 };
 
 TBBUTTON g_buttons2[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE }, 
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT }, 
 };
 
 TBBUTTON g_buttons3[] =
 {
-    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON },
-    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR },
-    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG },
-    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU },
-    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO },
+    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON }, 
+    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR }, 
+    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG }, 
+    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU }, 
+    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO }, 
 };
 
 TBBUTTON g_buttons4[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
 };
 
 TBBUTTON g_buttons5[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
 };
 
 VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
@@ -863,7 +863,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     {
         ComboBox_SetEditSel(hCmb1, 0, -1);
         SetFocus(hCmb1);
-        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
+        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE), 
                     NULL, MB_ICONERROR);
         return FALSE;
     }
@@ -888,7 +888,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     return TRUE;
 }
 
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
+BOOL CheckNameComboBox(ConstantsDB& HWND hCmb2, MIdOrString& name)
 {
     WCHAR szName[MAX_PATH];
     GetWindowTextW(hCmb2, szName, _countof(szName));
@@ -900,7 +900,7 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
     {
         ComboBox_SetEditSel(hCmb2, 0, -1);
         SetFocus(hCmb2);
-        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
+        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME), 
                     NULL, MB_ICONERROR);
         return FALSE;
     }
@@ -910,8 +910,8 @@ BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name)
     }
     else
     {
-        if (db.HasResID(szName))
-            name = (WORD)db.GetResIDValue(szName);
+        if (g_db.HasResID(szName))
+            name = (WORD)g_db.GetResIDValue(szName);
         else
             name = szName;
     }
@@ -930,7 +930,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     {
         ComboBox_SetEditSel(hCmb3, 0, -1);
         SetFocus(hCmb3);
-        MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+        MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG), 
                     NULL, MB_ICONERROR);
         return FALSE;
     }
@@ -948,7 +948,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
             {
                 ComboBox_SetEditSel(hCmb3, 0, -1);
                 SetFocus(hCmb3);
-                MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG), 
                             NULL, MB_ICONERROR);
                 return FALSE;
             }
@@ -970,7 +970,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
     {
         Edit_SetSel(hEdt1, 0, -1);
         SetFocus(hEdt1);
-        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND),
+        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND), 
                     NULL, MB_ICONERROR);
         return FALSE;
     }
@@ -1053,21 +1053,21 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
     return ret;
 }
 
-MStringW GetKeyID(ConstantsDB& db, UINT wId)
+MStringW GetKeyID(ConstantsDB& UINT wId)
 {
-    if (!db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         return mstr_dec_short((SHORT)wId);
 
-    return db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, wId);
+    return g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, wId);
 }
 
-void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db)
+void Cmb1_InitVirtualKeys(HWND hCmb1)
 {
     ComboBox_ResetContent(hCmb1);
 
     typedef ConstantsDB::TableType TableType;
     TableType table;
-    table = db.GetTable(L"VIRTUALKEYS");
+    table = g_db.GetTable(L"VIRTUALKEYS");
 
     TableType::iterator it, end = table.end();
     for (it = table.begin(); it != end; ++it)
@@ -1118,7 +1118,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 //////////////////////////////////////////////////////////////////////////////
 // STRING_ENTRY
 
-BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
@@ -1128,7 +1128,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
         LONG n = mstr_parse_int(str.c_str());
         str = mstr_dec_word(WORD(n));
     }
-    else if (!db.HasResID(str))
+    else if (!g_db.HasResID(str))
     {
         return FALSE;
     }
@@ -1144,7 +1144,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
     return TRUE;
 }
 
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
 
@@ -1157,7 +1157,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db)
 //////////////////////////////////////////////////////////////////////////////
 // MESSAGE_ENTRY
 
-BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
+BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
@@ -1167,7 +1167,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
         LONG n = mstr_parse_int(str.c_str());
         str = mstr_hex(n);
     }
-    else if (!db.HasResID(str))
+    else if (!g_db.HasResID(str))
     {
         return FALSE;
     }
@@ -1183,7 +1183,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
     return TRUE;
 }
 
-void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db)
+void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
 
@@ -1270,8 +1270,8 @@ protected:
     WORD            m_lang;
 
     // classes
-    RisohSettings   m_settings;
-    ConstantsDB     m_db;
+    RisohSettings   g_settings;
+    ConstantsDB     g_db;
     MRadWindow      m_rad_window;
     MEditCtrl       m_hBinEdit, m_hSrcEdit;
     MBmpView        m_hBmpView;
@@ -1292,14 +1292,14 @@ protected:
 
 public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
-        m_argc(argc), m_targv(targv), m_bLoading(FALSE),
-        m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
-        m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL),
-        m_hSrcFont(NULL), m_hBinFont(NULL),
-        m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL),
-        m_hFindReplaceDlg(NULL), m_rad_window(m_entries, m_db, m_settings),
-        m_id_list_dlg(m_entries, m_db, m_settings),
-        m_search(m_settings, m_db, m_entries)
+        m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
+        m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
+        m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
+        m_hSrcFont(NULL), m_hBinFont(NULL), 
+        m_hTreeView(NULL), m_hToolBar(NULL), m_hStatusBar(NULL), 
+        m_hFindReplaceDlg(NULL), m_rad_window(m_g_settings), 
+        m_id_list_dlg(m_g_settings), 
+        m_search(g_settings, m_m_entries)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1647,8 +1647,8 @@ void MMainWnd::UpdateMenu()
     INT i = 0;
     TCHAR szText[MAX_PATH * 2];
     static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
-    mru_type::iterator it, end = m_settings.vecRecentlyUsed.end();
-    for (it = m_settings.vecRecentlyUsed.begin(); it != end; ++it)
+    mru_type::iterator it, end = g_settings.vecRecentlyUsed.end();
+    for (it = g_settings.vecRecentlyUsed.begin(); it != end; ++it)
     {
 #if 1
         LPCTSTR pch = _tcsrchr(it->c_str(), TEXT('\\'));
@@ -1666,7 +1666,7 @@ void MMainWnd::UpdateMenu()
         ++i;
     }
 
-    if (m_settings.vecRecentlyUsed.empty())
+    if (g_settings.vecRecentlyUsed.empty())
     {
         InsertMenu(hMruMenu, 0, MF_BYPOSITION | MF_STRING | MF_GRAYED, -1, LoadStringDx(IDS_NONE));
     }
@@ -1850,10 +1850,10 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceBinDlg dialog(m_entries, m_entries[i], m_db);
+    MReplaceBinDlg dialog(m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -1890,7 +1890,7 @@ void MMainWnd::OnFonts(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MFontsDlg dialog(m_settings);
+    MFontsDlg dialog(g_settings);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DeleteObject(m_hBinFont);
@@ -1908,7 +1908,7 @@ void MMainWnd::OnExport(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MExportOptionsDlg dialog(m_settings);
+    MExportOptionsDlg dialog(g_settings);
     if (dialog.DialogBoxDx(hwnd) != IDOK)
         return;
 
@@ -2044,9 +2044,9 @@ void MMainWnd::OnImport(HWND hwnd)
         if (DoImport(hwnd, file, entries))
         {
             BOOL bOverwrite = TRUE;
-            if (Res_Intersect(m_entries, entries))
+            if (Res_Intersect(entries))
             {
-                INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE,
+                INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
                                    MB_ICONINFORMATION | MB_YESNOCANCEL);
                 switch (nID)
                 {
@@ -2063,10 +2063,10 @@ void MMainWnd::OnImport(HWND hwnd)
             size_t i, count = entries.size();
             for (i = 0; i < count; ++i)
             {
-                Res_AddEntry(m_entries, entries[i], bOverwrite);
+                Res_AddEntry(entries[i], bOverwrite);
             }
 
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
         }
         else
         {
@@ -2109,7 +2109,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL, NULL);
     m_entries.clear();
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -2203,7 +2203,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
         {
             HTREEITEM hItem = TV_GetItem(m_hTreeView, m_entries, entry2);
             TV_DeleteItem(m_hTreeView, m_entries, entry2);
-            Res_DeleteEntries(m_entries, RT_DLGINIT, entry.name, entry.lang);
+            Res_DeleteEntries(RT_DLGINIT, entry.name, entry.lang);
             return;
         }
 
@@ -2212,9 +2212,9 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
         // insert
         HTREEITEM hItem = NULL;
-        hItem = TV_FindOrInsertDepth1(m_hTreeView, m_db, hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth2(m_hTreeView, m_db, hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth3(m_hTreeView, m_db, hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth1(m_hTreeView, m_hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth2(m_hTreeView, m_hItem, m_entries, k, k);
+        hItem = TV_FindOrInsertDepth3(m_hTreeView, m_hItem, m_entries, k, k);
         hItem = hItem;
     }
 }
@@ -2247,7 +2247,7 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(m_entries, RT_ICON, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find2(RT_ICON, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return FALSE;
@@ -2259,11 +2259,11 @@ BOOL MMainWnd::DoCopyGroupIcon(ResEntry& entry, const MIdOrString& name)
 
         icon_entry.name = WORD(nNextID);
 
-        Res_AddEntry(m_entries, icon_entry, TRUE);
+        Res_AddEntry(icon_entry, TRUE);
     }
 
     entry.name = name;
-    return Res_AddEntry(m_entries, entry, TRUE);
+    return Res_AddEntry(entry, TRUE);
 }
 
 BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
@@ -2294,7 +2294,7 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        INT k = Res_Find2(m_entries, RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
+        INT k = Res_Find2(RT_CURSOR, pEntries[i].nID, entry.lang, FALSE);
         if (k == -1)
         {
             return FALSE;
@@ -2306,11 +2306,11 @@ BOOL MMainWnd::DoCopyGroupCursor(ResEntry& entry, const MIdOrString& name)
 
         cursor_entry.name = WORD(nNextID);
 
-        Res_AddEntry(m_entries, cursor_entry, TRUE);
+        Res_AddEntry(cursor_entry, TRUE);
     }
 
     entry.name = name;
-    return Res_AddEntry(m_entries, entry, TRUE);
+    return Res_AddEntry(entry, TRUE);
 }
 
 HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
@@ -2359,13 +2359,13 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     ZeroMemory(&lfBin, sizeof(lfBin));
     ZeroMemory(&lfSrc, sizeof(lfSrc));
 
-    StringCchCopy(lfBin.lfFaceName, _countof(lfBin.lfFaceName), m_settings.strBinFont.c_str());
-    StringCchCopy(lfSrc.lfFaceName, _countof(lfSrc.lfFaceName), m_settings.strSrcFont.c_str());
+    StringCchCopy(lfBin.lfFaceName, _countof(lfBin.lfFaceName), g_settings.strBinFont.c_str());
+    StringCchCopy(lfSrc.lfFaceName, _countof(lfSrc.lfFaceName), g_settings.strSrcFont.c_str());
 
     if (HDC hDC = CreateCompatibleDC(NULL))
     {
-        lfBin.lfHeight = -MulDiv(m_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-        lfSrc.lfHeight = -MulDiv(m_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        lfBin.lfHeight = -MulDiv(g_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        lfSrc.lfHeight = -MulDiv(g_settings.nSrcFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
         DeleteDC(hDC);
     }
 
@@ -2494,7 +2494,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     UINT i = LOWORD(lParam);
     ResEntry entry = m_entries[i];
 
-    MCloneInNewNameDlg dialog(m_entries, entry, m_db);
+    MCloneInNewNameDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
@@ -2519,10 +2519,10 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].name = dialog.m_name;
-                Res_AddEntry(m_entries, found[i], TRUE);
+                Res_AddEntry(found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         entry.name = dialog.m_name;
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
@@ -2541,7 +2541,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     UINT i = LOWORD(lParam);
     ResEntry entry = m_entries[i];
 
-    MCloneInNewLangDlg dialog(m_entries, entry, m_db);
+    MCloneInNewLangDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ResEntries found;
@@ -2571,7 +2571,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].lang = dialog.m_lang;
-                Res_AddEntry(m_entries, found[i], TRUE);
+                Res_AddEntry(found[i], TRUE);
             }
         }
         else if (HIWORD(lParam) == I_MESSAGE)
@@ -2583,7 +2583,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].lang = dialog.m_lang;
-                Res_AddEntry(m_entries, found[i], TRUE);
+                Res_AddEntry(found[i], TRUE);
             }
         }
         else
@@ -2591,10 +2591,10 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             for (size_t i = 0; i < found.size(); ++i)
             {
                 found[i].lang = dialog.m_lang;
-                Res_AddEntry(m_entries, found[i], TRUE);
+                Res_AddEntry(found[i], TRUE);
             }
         }
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         entry.lang = dialog.m_lang;
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
@@ -2691,8 +2691,8 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 
     ResEntry selection = m_entries[i];
 
-    TV_Delete(m_hTreeView, m_db, hItem, m_entries);
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_Delete(m_hTreeView, m_hItem, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
     HidePreview(hwnd);
 
     TV_SelectEntry(m_hTreeView, m_entries, selection);
@@ -2750,7 +2750,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, strWide, bReopen))
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, entry);
     }
 }
@@ -2780,8 +2780,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     MByteStreamEx stream(data);
     if (entry.type == RT_ACCELERATOR)
     {
-        AccelRes accel_res(m_db);
-        MEditAccelDlg dialog(accel_res, m_db);
+        AccelRes accel_res(g_db);
+        MEditAccelDlg dialog(accel_res);
         if (accel_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
@@ -2803,7 +2803,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (menu_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
-            MEditMenuDlg dialog(m_db, menu_res);
+            MEditMenuDlg dialog(m_menu_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
@@ -2827,11 +2827,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
         // load RT_DLGINIT
         m_rad_window.m_dialog_res.m_dlginit.clear();
-        INT iDlgInit = Res_Find2(m_entries, RT_DLGINIT, entry.name, entry.lang);
+        INT iDlgInit = Res_Find2(RT_DLGINIT, entry.name, entry.lang);
         if (iDlgInit >= 0)
         {
             ResEntry& die = m_entries[iDlgInit];
-            DlgInitRes dlginit_res(m_db);
+            DlgInitRes dlginit_res(g_db);
             stream.assign(die.data);
             dlginit_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_dlginit.entries() = dlginit_res.entries();
@@ -2853,11 +2853,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry.type == RT_DLGINIT)
     {
-        DlgInitRes dlginit_res(m_db);
+        DlgInitRes dlginit_res(g_db);
         if (dlginit_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
-            MDlgInitDlg dialog(dlginit_res, m_db);
+            MDlgInitDlg dialog(dlginit_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
@@ -2888,21 +2888,21 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         ChangeStatusText(IDS_EDITINGBYGUI);
-        MStringsDlg dialog(m_db, str_res);
+        MStringsDlg dialog(m_str_res);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
             str_res = dialog.m_str_res;
 
-            bool shown = m_db.AreMacroIDShown();
-            m_db.ShowMacroID(false);
-            MStringW strWide = str_res.Dump(m_db);
-            m_db.ShowMacroID(shown);
+            bool shown = g_db.AreMacroIDShown();
+            g_db.ShowMacroID(false);
+            MStringW strWide = str_res.Dump(g_db);
+            g_db.ShowMacroID(shown);
 
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_STRING, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+                TV_RefreshInfo(m_hTreeView, m_m_entries);
                 TV_SelectEntry(m_hTreeView, m_entries, selection);
             }
         }
@@ -2928,20 +2928,20 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         ChangeStatusText(IDS_EDITINGBYGUI);
-        MMessagesDlg dialog(m_db, msg_res);
+        MMessagesDlg dialog(m_msg_res);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
             msg_res = dialog.m_msg_res;
-            bool shown = m_db.AreMacroIDShown();
-            m_db.ShowMacroID(false);
-            MStringW strWide = msg_res.Dump(m_db);
-            m_db.ShowMacroID(shown);
+            bool shown = g_db.AreMacroIDShown();
+            g_db.ShowMacroID(false);
+            MStringW strWide = msg_res.Dump(g_db);
+            g_db.ShowMacroID(shown);
 
             if (CompileParts(hwnd, strWide))
             {
                 ResEntry selection(RT_MESSAGETABLE, WORD(0), lang);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+                TV_RefreshInfo(m_hTreeView, m_m_entries);
                 TV_SelectEntry(m_hTreeView, m_entries, selection);
             }
         }
@@ -3154,15 +3154,15 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     {
         TCHAR szMsg[256];
         FormatMessage(
-            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS,
-            GetModuleHandle(NULL),
-            MSGID_HELLO, 0,
+            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS, 
+            GetModuleHandle(NULL), 
+            MSGID_HELLO, 0, 
             szMsg, _countof(szMsg), NULL);
         MessageBox(hwnd, szMsg, TEXT("MSGID_HELLO"), MB_ICONINFORMATION);
         FormatMessage(
-            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS,
-            GetModuleHandle(NULL),
-            MSGID_SAMPLE, 0,
+            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS, 
+            GetModuleHandle(NULL), 
+            MSGID_SAMPLE, 0, 
             szMsg, _countof(szMsg), NULL);
         MessageBox(hwnd, szMsg, TEXT("MSGID_SAMPLE"), MB_ICONINFORMATION);
     }
@@ -3174,11 +3174,11 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 
         static const LPCWSTR apszI_[] =
         {
-            L"I_NONE",
-            L"I_TYPE",
-            L"I_NAME",
-            L"I_LANG",
-            L"I_STRING",
+            L"I_NONE", 
+            L"I_TYPE", 
+            L"I_NAME", 
+            L"I_LANG", 
+            L"I_STRING", 
             L"I_MESSAGE"
         };
 
@@ -3187,8 +3187,8 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         WCHAR sz[64];
         MStringW type = entry.type.str();
         MStringW name = entry.name.str();
-        StringCchPrintfW(sz, _countof(sz),
-            L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k],
+        StringCchPrintfW(sz, _countof(sz), 
+            L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k], 
             type.c_str(), name.c_str(), entry.lang);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
@@ -3218,12 +3218,12 @@ void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
         m_splitter3.SetPaneCount(2);
         m_splitter3.SetPane(0, m_hSrcEdit);
         m_splitter3.SetPane(1, m_hBmpView);
-        m_splitter3.SetPaneExtent(1, m_settings.nBmpViewWidth);
+        m_splitter3.SetPaneExtent(1, g_settings.nBmpViewWidth);
     }
     else
     {
         if (m_splitter3.GetPaneCount() >= 2)
-            m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+            g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
         ShowWindow(m_hBmpView, SW_HIDE);
         m_splitter3.SetPaneCount(1);
         m_splitter3.SetPane(0, m_hSrcEdit);
@@ -3241,18 +3241,18 @@ void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
 
 void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
 {
-    if (bShow && (m_settings.bShowBinEdit || bShowError))
+    if (bShow && (g_settings.bShowBinEdit || bShowError))
     {
         ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         m_splitter2.SetPaneCount(2);
         m_splitter2.SetPane(0, m_splitter3);
         m_splitter2.SetPane(1, m_hBinEdit);
-        m_splitter2.SetPaneExtent(1, m_settings.nBinEditHeight);
+        m_splitter2.SetPaneExtent(1, g_settings.nBinEditHeight);
     }
     else
     {
         if (m_splitter2.GetPaneCount() >= 2)
-            m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+            g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
         ShowWindow(m_hBinEdit, SW_HIDE);
         m_splitter2.SetPaneCount(1);
         m_splitter2.SetPane(0, m_splitter3);
@@ -3265,8 +3265,8 @@ void MMainWnd::OnMove(HWND hwnd, int x, int y)
     GetWindowRect(hwnd, &rc);
     if (!IsZoomed(hwnd) && !IsIconic(hwnd))
     {
-        m_settings.nWindowLeft = rc.left;
-        m_settings.nWindowTop = rc.top;
+        g_settings.nWindowLeft = rc.left;
+        g_settings.nWindowTop = rc.top;
     }
 }
 
@@ -3279,14 +3279,14 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
     if (IsZoomed(hwnd))
     {
-        m_settings.bMaximized = TRUE;
+        g_settings.bMaximized = TRUE;
     }
     else if (!IsIconic(hwnd))
     {
         GetWindowRect(hwnd, &rc);
-        m_settings.nWindowWidth = rc.right - rc.left;
-        m_settings.nWindowHeight = rc.bottom - rc.top;
-        m_settings.bMaximized = FALSE;
+        g_settings.nWindowWidth = rc.right - rc.left;
+        g_settings.nWindowHeight = rc.bottom - rc.top;
+        g_settings.bMaximized = FALSE;
     }
 
     GetClientRect(hwnd, &ClientRect);
@@ -3314,7 +3314,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_CHECKED);
 
-    if (m_settings.bShowToolBar)
+    if (g_settings.bShowToolBar)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_UNCHECKED);
@@ -3362,17 +3362,17 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
 
-    if (m_settings.bAlwaysControl)
+    if (g_settings.bAlwaysControl)
         CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_UNCHECKED);
 
-    if (!m_db.AreMacroIDShown())
+    if (!g_db.AreMacroIDShown())
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_UNCHECKED);
 
-    if (m_db.DoesUseIDC_STATIC())
+    if (g_db.DoesUseIDC_STATIC())
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_UNCHECKED);
@@ -3614,7 +3614,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     SetForegroundWindow(hwndContext);
     INT id;
     UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
-    id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0,
+    id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0, 
                         hwndContext, NULL);
     PostMessageW(hwndContext, WM_NULL, 0, 0);
     DestroyMenu(hMenu);
@@ -3664,7 +3664,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const ResEntry& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3676,7 +3676,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_entries, entry));
     assert(m_hBmpView);
 
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3689,7 +3689,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const ResEntry& entry)
     m_hBmpView.SetBitmap(hbm);
     ShowBmpView(TRUE);
 
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
@@ -3698,7 +3698,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
 {
     MStringW str;
 
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     str += res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3708,7 +3708,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3718,7 +3718,7 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
@@ -3729,7 +3729,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const ResEntry& entry)
 void MMainWnd::PreviewAccel(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
-    AccelRes accel(m_db);
+    AccelRes accel(g_db);
     if (accel.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
@@ -3745,7 +3745,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const ResEntry& entry)
     WORD nNameID = entry.name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
     {
-        MStringW str = mes.Dump(m_db, nNameID);
+        MStringW str = mes.Dump(m_nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3757,7 +3757,7 @@ void MMainWnd::PreviewString(HWND hwnd, const ResEntry& entry)
     WORD nNameID = entry.name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
     {
-        MStringW str = str_res.Dump(m_db, nNameID);
+        MStringW str = str_res.Dump(m_nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3779,7 +3779,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const ResEntry& entry)
     if (menu_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
-        str += menu_res.Dump(entry.name, m_db);
+        str += menu_res.Dump(entry.name);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3797,28 +3797,28 @@ void MMainWnd::PreviewVersion(HWND hwnd, const ResEntry& entry)
 
 void MMainWnd::PreviewUnknown(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewRisohTemplate(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewRCData(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
 void MMainWnd::PreviewDlgInit(HWND hwnd, const ResEntry& entry)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
@@ -3826,11 +3826,11 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const ResEntry& entry)
 void MMainWnd::PreviewDialog(HWND hwnd, const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
-    DialogRes dialog_res(m_db);
+    DialogRes dialog_res(g_db);
     if (dialog_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
-        str += dialog_res.Dump(entry.name, !!m_settings.bAlwaysControl);
+        str += dialog_res.Dump(entry.name, !!g_settings.bAlwaysControl);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
 }
@@ -3852,12 +3852,12 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon)
             file.CloseHandle();
             if (bIcon)
             {
-                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON,
+                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON, 
                     0, 0, LR_LOADFROMFILE);
             }
             else
             {
-                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_CURSOR,
+                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_CURSOR, 
                     0, 0, LR_LOADFROMFILE);
             }
         }
@@ -3868,7 +3868,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const ResEntry& entry, BOOL bIcon)
     {
         m_hBmpView.SetIcon(hIcon, bIcon);
 
-        ResToText res2text(m_settings, m_db, m_entries);
+        ResToText res2text(g_settings, m_m_entries);
         MString str = res2text.DumpEntry(entry);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
@@ -3894,7 +3894,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const ResEntry& entry)
     }
 
     MString str = GetLanguageStatement(entry.lang);
-    str += str_res.Dump(m_db);
+    str += str_res.Dump(g_db);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
@@ -3918,7 +3918,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const ResEntry& entry)
     str += L"    #error Ap Studio cannot edit this message table.\r\n";
     str += L"#endif\r\n";
     str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump(m_db);
+    str += msg_res.Dump(g_db);
     str += L"#endif\r\n\r\n";
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
@@ -4075,8 +4075,8 @@ BOOL MMainWnd::Preview(HWND hwnd, const ResEntry& entry)
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
 {
     HWND hwndTB;
-    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL, 
+        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST, 
         0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
     if (hwndTB == NULL)
         return FALSE;
@@ -4124,7 +4124,7 @@ void MMainWnd::UpdateOurToolBar(INT iType)
         break;
     }
 
-    if (m_settings.bShowToolBar)
+    if (g_settings.bShowToolBar)
         ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
     else
         ShowWindow(m_hToolBar, SW_HIDE);
@@ -4255,9 +4255,9 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
         ResEntry& entry = m_entries[i];
 
         MIdOrString name = entry.name;
-        if (name.is_str() && m_db.HasResID(name.str()))
+        if (name.is_str() && g_db.HasResID(name.str()))
         {
-            name = (WORD)m_db.GetResIDValue(name.c_str());
+            name = (WORD)g_db.GetResIDValue(name.c_str());
         }
 
         if (entries.size() != 1 || entries[0].lang != entry.lang)
@@ -4273,11 +4273,11 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
         ResEntry entry = m_entries[i];
 
-        Res_DeleteNames(m_entries, RT_STRING, entry.lang);
+        Res_DeleteNames(RT_STRING, entry.lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
-            if (!Res_AddEntry(m_entries, entries[m], TRUE))
+            if (!Res_AddEntry(entries[m], TRUE))
             {
                 msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
                 return FALSE;
@@ -4290,11 +4290,11 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
     {
         ResEntry entry = m_entries[i];
 
-        Res_DeleteNames(m_entries, RT_MESSAGETABLE, entry.lang);
+        Res_DeleteNames(RT_MESSAGETABLE, entry.lang);
 
         for (size_t m = 0; m < entries.size(); ++m)
         {
-            if (!Res_AddEntry(m_entries, entries[m], TRUE))
+            if (!Res_AddEntry(entries[m], TRUE))
             {
                 msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
                 return FALSE;
@@ -4313,8 +4313,8 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, ResEntries& entries, MStringA& msg)
 MStringW MMainWnd::GetMacroDump()
 {
     MStringW ret;
-    macro_map_type::const_iterator it, end = m_settings.macros.end();
-    for (it = m_settings.macros.begin(); it != end; ++it)
+    macro_map_type::const_iterator it, end = g_settings.macros.end();
+    for (it = g_settings.macros.begin(); it != end; ++it)
     {
         ret += L" -D";
         ret += it->first;
@@ -4331,9 +4331,9 @@ MStringW MMainWnd::GetMacroDump()
 MStringW MMainWnd::GetIncludesDump()
 {
     MStringW ret;
-    for (size_t i = 0; i < m_settings.includes.size(); ++i)
+    for (size_t i = 0; i < g_settings.includes.size(); ++i)
     {
-        const MStringW& str = m_settings.includes[i];
+        const MStringW& str = g_settings.includes[i];
         if (str.empty())
             continue;
         
@@ -4377,7 +4377,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", 
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
@@ -4520,12 +4520,12 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n",
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", 
                     PRIMARYLANGID(entry.lang), SUBLANGID(entry.lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
-    id_map_type::iterator it, end = m_settings.id_map.end();
-    for (it = m_settings.id_map.begin(); it != end; ++it)
+    id_map_type::iterator it, end = g_settings.id_map.end();
+    for (it = g_settings.id_map.begin(); it != end; ++it)
     {
         if (it->first == "IDC_STATIC")
         {
@@ -4747,7 +4747,7 @@ INT MMainWnd::CheckData(VOID)
     // Constants.txt
     StringCchCopyW(m_szConstantsFile, _countof(m_szConstantsFile), m_szDataFolder);
     StringCchCatW(m_szConstantsFile, _countof(m_szConstantsFile), L"\\Constants.txt");
-    if (!m_db.LoadFromFile(m_szConstantsFile))
+    if (!g_db.LoadFromFile(m_szConstantsFile))
     {
         ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
         return -2;  // failure
@@ -4850,20 +4850,20 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
 
         UnloadResourceH(hwnd, FALSE);
-        if (m_settings.bAutoLoadNearbyResH)
+        if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
             m_entries = entries;
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
         }
         m_bLoading = FALSE;
 
         SetFilePath(hwnd, szPath, NULL);
 
-        if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+        if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
             ShowIDList(hwnd, TRUE);
         }
@@ -4883,20 +4883,20 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
 
         UnloadResourceH(hwnd, FALSE);
-        if (m_settings.bAutoLoadNearbyResH)
+        if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
             m_entries = entries;
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
         }
         m_bLoading = FALSE;
 
         SetFilePath(hwnd, szPath, NULL);
 
-        if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+        if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
             ShowIDList(hwnd, TRUE);
         }
@@ -4960,11 +4960,11 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         #ifdef _WIN64
             mstr_replace_all(strReal, 
-                L"C:\\Program Files\\",
+                L"C:\\Program Files\\", 
                 L"C:\\Program Files (x86)\\");
         #else
             mstr_replace_all(strReal, 
-                L"C:\\Program Files (x86)\\",
+                L"C:\\Program Files (x86)\\", 
                 L"C:\\Program Files\\");
         #endif
         hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
@@ -4993,16 +4993,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = FALSE;
 
     UnloadResourceH(hwnd, FALSE);
-    if (m_settings.bAutoLoadNearbyResH)
+    if (g_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, pszNominal);
 
     m_bLoading = TRUE;
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
     m_bLoading = FALSE;
 
     SetFilePath(hwnd, pszReal, pszNominal);
 
-    if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+    if (m_szResourceH[0] && g_settings.bAutoShowIDList)
     {
         ShowIDList(hwnd, TRUE);
     }
@@ -5013,19 +5013,19 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
 BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 {
-    m_db.m_map[L"RESOURCE.ID"].clear();
-    m_db.AddIDC_STATIC();
-    m_settings.AddIDC_STATIC();
-    m_settings.bHasIDC_STATIC = FALSE;
+    g_db.m_map[L"RESOURCE.ID"].clear();
+    g_db.AddIDC_STATIC();
+    g_settings.AddIDC_STATIC();
+    g_settings.bHasIDC_STATIC = FALSE;
 
-    m_settings.id_map.clear();
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
+    g_settings.id_map.clear();
+    g_settings.added_ids.clear();
+    g_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
     ShowIDList(hwnd, FALSE);
     if (bRefresh)
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
     }
 
     return TRUE;
@@ -5647,7 +5647,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
                 return FALSE;
         }
 
-        MString str = str_res.Dump(m_db);;
+        MString str = str_res.Dump(g_db);;
         mstr_trim(str);
         str += L"\r\n\r\n";
 
@@ -5674,7 +5674,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         str += L"    #error Ap Studio cannot edit this message table.\r\n";
         str += L"#endif\r\n";
         str += L"#ifdef MCDX_INVOKED\r\n";
-        str += msg_res.Dump(m_db);
+        str += msg_res.Dump(g_db);
         str += L"#endif\r\n\r\n";
 
         MTextToAnsi t2a(CP_UTF8, str.c_str());
@@ -5731,7 +5731,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
             MString strPath = pszPath;
             strPath += L"-old";
             DoBackupFolder(strPath.c_str(), nCount + 1);
-            return MoveFileEx(pszPath, strPath.c_str(),
+            return MoveFileEx(pszPath, strPath.c_str(), 
                 MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
         }
         else
@@ -5759,7 +5759,7 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
     res2text.m_bHumanReadable = FALSE;
     res2text.m_bNoLanguage = TRUE;
 
@@ -5784,10 +5784,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         langs.insert(m_entries[i].lang);
     }
 
-    if (m_settings.bStoreToResFolder)
+    if (g_settings.bStoreToResFolder)
         res2text.m_strFilePrefix = L"res/";
 
-    if (m_settings.bSepFilesByLang)
+    if (g_settings.bSepFilesByLang)
     {
         // dump neutral
         if (langs.count(0) > 0)
@@ -5829,7 +5829,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             TCHAR szLangFile[MAX_PATH];
             StringCchCopy(szLangFile, _countof(szLangFile), szLangDir);
             StringCchCat(szLangFile, _countof(szLangFile), TEXT("/"));
-            MString lang_name = m_db.GetName(L"LANGUAGES", lang);
+            MString lang_name = g_db.GetName(L"LANGUAGES", lang);
             StringCchCat(szLangFile, _countof(szLangFile), lang_name.c_str());
             StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
             //MessageBox(NULL, szLangFile, NULL, 0);
@@ -5856,10 +5856,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     }
 
     // dump language includes
-    if (m_settings.bSepFilesByLang)
+    if (g_settings.bSepFilesByLang)
     {
         file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
-        if (m_settings.bSelectableByMacro)
+        if (g_settings.bSelectableByMacro)
         {
             std::set<WORD>::const_iterator it, end = langs.end();
             for (it = langs.begin(); it != end; ++it)
@@ -5868,7 +5868,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 if (!lang)
                     continue;
 
-                MString lang_name1 = m_db.GetName(L"LANGUAGES", lang);
+                MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
                 MString lang_name2 = lang_name1;
                 CharUpper(&lang_name2[0]);
                 file.WriteSzA("#ifdef LANGUAGE_");
@@ -5890,7 +5890,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 WORD lang = *it;
                 if (!lang)
                     continue;
-                MString lang_name1 = m_db.GetName(L"LANGUAGES", lang);
+                MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
                 file.WriteSzA("#include \"lang/");
                 file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
                 file.WriteSzA(".rc\"\r\n");
@@ -5957,8 +5957,8 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
         file.WriteSzA("\r\n");
     }
 
-    id_map_type::iterator it, end = m_settings.id_map.end();
-    for (it = m_settings.id_map.begin(); it != end; ++it)
+    id_map_type::iterator it, end = g_settings.id_map.end();
+    for (it = g_settings.id_map.begin(); it != end; ++it)
     {
         if (it->first == "IDC_STATIC")
         {
@@ -5966,7 +5966,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
         }
         else
         {
-            file.WriteFormatA("#define %s %s\r\n",
+            file.WriteFormatA("#define %s %s\r\n", 
                 it->first.c_str(), it->second.c_str());
         }
     }
@@ -5992,15 +5992,15 @@ void MMainWnd::DoIDStat(UINT anValues[5])
     const size_t count = 4;
     INT anNext[count];
     MString prefixes[count];
-    prefixes[0] = m_settings.assoc_map[L"Resource.ID"];
-    prefixes[1] = m_settings.assoc_map[L"Command.ID"];
-    prefixes[2] = m_settings.assoc_map[L"New.Command.ID"];
-    prefixes[3] = m_settings.assoc_map[L"Control.ID"];
+    prefixes[0] = g_settings.assoc_map[L"Resource.ID"];
+    prefixes[1] = g_settings.assoc_map[L"Command.ID"];
+    prefixes[2] = g_settings.assoc_map[L"New.Command.ID"];
+    prefixes[3] = g_settings.assoc_map[L"Control.ID"];
 
     for (size_t i = 0; i < count; ++i)
     {
         ConstantsDB::TableType table;
-        table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
+        table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
 
         UINT nMax = 0;
         {
@@ -6012,7 +6012,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 
                 if (i == 3)
                 {
-                    INT k = Res_Find2(m_entries, RT_CURSOR, WORD(it->value), 0xFFFF, FALSE);
+                    INT k = Res_Find2(RT_CURSOR, WORD(it->value), 0xFFFF, FALSE);
                     if (k != -1)
                         continue;   // it was Cursor.ID, not Control.ID
                 }
@@ -6043,11 +6043,11 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 
 inline BOOL MMainWnd::DoExtract(const ResEntry& entry, BOOL bExporting)
 {
-    ResToText res2text(m_settings, m_db, m_entries);
+    ResToText res2text(g_settings, m_m_entries);
 
     if (bExporting)
     {
-        if (m_settings.bStoreToResFolder)
+        if (g_settings.bStoreToResFolder)
         {
             res2text.m_strFilePrefix = L"res\\";
         }
@@ -6236,7 +6236,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     BOOL bHasExternFile = FALSE;
     for (size_t i = 0; i < m_entries.size(); ++i)
     {
-        ResToText res2text(m_settings, m_db, m_entries);
+        ResToText res2text(g_settings, m_m_entries);
         MString filename = res2text.GetEntryFileName(m_entries[i]);
         if (filename.size())
         {
@@ -6247,7 +6247,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 
     if (!IsEmptyDirectoryDx(szPath))
     {
-        if (bHasExternFile && !m_settings.bStoreToResFolder)
+        if (bHasExternFile && !g_settings.bStoreToResFolder)
         {
             ErrorBoxDx(IDS_MUSTBEEMPTYDIR);
             return FALSE;
@@ -6264,7 +6264,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 
     if (bHasExternFile)
     {
-        if (m_settings.bStoreToResFolder)
+        if (g_settings.bStoreToResFolder)
         {
             MString strResDir = szPath;
             strResDir += TEXT("\\res");
@@ -6285,7 +6285,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH && !m_settings.id_map.empty())
+    if (m_szResourceH && !g_settings.id_map.empty())
     {
         StringCchCopyW(pch, _countof(szPath), L"\\resource.h");
         bOK = DoWriteResH(pszFileName, szPath) && DoWriteRC(pszFileName, szPath);
@@ -6367,7 +6367,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
             DeleteFileW(TempFile);
             Res_Optimize(m_entries);
             SetFilePath(hwnd, pszExeFile, NULL);
-            if (m_settings.bCompressByUPX)
+            if (g_settings.bCompressByUPX)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
             }
@@ -6416,11 +6416,11 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const ResEntry& entry)
 {
     if (entry.type == RT_GROUP_ICON)
     {
-        return Res_ExtractGroupIcon(m_entries, entry, pszFileName);
+        return Res_ExtractGroupIcon(entry, pszFileName);
     }
     else if (entry.type == RT_ICON)
     {
-        return Res_ExtractIcon(m_entries, entry, pszFileName);
+        return Res_ExtractIcon(entry, pszFileName);
     }
     else if (entry.type == RT_ANIICON)
     {
@@ -6440,11 +6440,11 @@ BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const ResEntry& entry)
 {
     if (entry.type == RT_GROUP_CURSOR)
     {
-        return Res_ExtractGroupCursor(m_entries, entry, pszFileName);
+        return Res_ExtractGroupCursor(entry, pszFileName);
     }
     else if (entry.type == RT_CURSOR)
     {
-        return Res_ExtractCursor(m_entries, entry, pszFileName);
+        return Res_ExtractCursor(entry, pszFileName);
     }
     else if (entry.type == RT_ANICURSOR)
     {
@@ -6478,29 +6478,29 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     {
         if (lstrcmpiW(pch, L".ico") == 0)
         {
-            MAddIconDlg dialog(m_db, m_entries);
+            MAddIconDlg dialog(m_m_entries);
             dialog.file = file;
             dialog.DialogBoxDx(hwnd);
             DoRefreshIDList(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
         {
-            MAddCursorDlg dialog(m_db, m_entries);
+            MAddCursorDlg dialog(m_m_entries);
             dialog.m_file = file;
             dialog.DialogBoxDx(hwnd);
             DoRefreshIDList(hwnd);
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
             ChangeStatusText(IDS_READY);
             return;
         }
         else if (lstrcmpiW(pch, L".wav") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_type = L"WAVE";
             dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6512,12 +6512,12 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
         {
-            MAddBitmapDlg dialog(m_db, m_entries);
+            MAddBitmapDlg dialog(m_m_entries);
             dialog.m_file = file;
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
                 DoRefreshIDList(hwnd);
-                TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+                TV_RefreshInfo(m_hTreeView, m_m_entries);
                 TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
                 ChangeStatusText(IDS_READY);
             }
@@ -6525,7 +6525,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".png") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"PNG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6537,7 +6537,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".gif") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"GIF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6550,7 +6550,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
                  lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"JPEG";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6562,7 +6562,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"TIFF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6574,7 +6574,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".avi") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"AVI";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6600,7 +6600,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         {
             UnloadResourceH(hwnd);
             CheckResourceH(hwnd, file);
-            if (m_szResourceH[0] && m_settings.bAutoShowIDList)
+            if (m_szResourceH[0] && g_settings.bAutoShowIDList)
             {
                 ShowIDList(hwnd, TRUE);
             }
@@ -6610,7 +6610,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".wmf") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"WMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6622,7 +6622,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         }
         else if (lstrcmpiW(pch, L".emf") == 0)
         {
-            MAddResDlg dialog(m_entries, m_db);
+            MAddResDlg dialog(m_entries);
             dialog.m_file = file;
             dialog.m_type = L"EMF";
             if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -6635,7 +6635,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
 
     DoLoadFile(hwnd, file);
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
     ChangeStatusText(IDS_READY);
 }
 
@@ -6776,7 +6776,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
                 string_type value;
                 if (eval_string(parser.ast(), value))
                 {
-                    m_settings.id_map[macro] = value;
+                    g_settings.id_map[macro] = value;
                 }
             }
             else
@@ -6791,17 +6791,17 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
                         StringCchPrintfA(sz, _countof(sz), "%d", value);
 
                     if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
-                        m_settings.id_map[macro] = sz;
+                        g_settings.id_map[macro] = sz;
                 }
             }
         }
     }
 
-    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
     table.clear();
-    m_settings.bHasIDC_STATIC = FALSE;
-    id_map_type::iterator it, end = m_settings.id_map.end();
-    for (it = m_settings.id_map.begin(); it != end; ++it)
+    g_settings.bHasIDC_STATIC = FALSE;
+    id_map_type::iterator it, end = g_settings.id_map.end();
+    for (it = g_settings.id_map.begin(); it != end; ++it)
     {
         MStringW str1 = MAnsiToWide(CP_ACP, it->first).c_str();
         MStringW str2 = MAnsiToWide(CP_ACP, it->second).c_str();
@@ -6809,10 +6809,10 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
         if (str1 == L"IDC_STATIC")
-            m_settings.bHasIDC_STATIC = TRUE;
+            g_settings.bHasIDC_STATIC = TRUE;
     }
-    m_db.AddIDC_STATIC();
-    m_settings.AddIDC_STATIC();
+    g_db.AddIDC_STATIC();
+    g_settings.AddIDC_STATIC();
 
     lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
 
@@ -6846,7 +6846,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         macros.push_back(line.substr(0, found1));
     }
 
-    m_settings.id_map.clear();
+    g_settings.id_map.clear();
 
     if (macros.empty())
     {
@@ -6878,7 +6878,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -Wp,-E \"";
+    strCmdLine += L" -Wp, -E \"";
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
@@ -6999,7 +6999,7 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
         break;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
 
     if (HIWORD(lParam) != I_NONE)
     {
@@ -7016,14 +7016,14 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
 
     MString str;
 
-    if (!m_settings.removed_ids.empty() &&
-        (m_settings.removed_ids.size() != 1 ||
-         m_settings.removed_ids.find("IDC_STATIC") == m_settings.removed_ids.end()))
+    if (!g_settings.removed_ids.empty() &&
+        (g_settings.removed_ids.size() != 1 ||
+         g_settings.removed_ids.find("IDC_STATIC") == g_settings.removed_ids.end()))
     {
         str += LoadStringDx(IDS_DELETENEXTIDS);
 
-        id_map_type::iterator it, end = m_settings.removed_ids.end();
-        for (it = m_settings.removed_ids.begin(); it != end; ++it)
+        id_map_type::iterator it, end = g_settings.removed_ids.end();
+        for (it = g_settings.removed_ids.begin(); it != end; ++it)
         {
             if (it->first == "IDC_STATIC")
                 continue;
@@ -7037,17 +7037,17 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         str += TEXT("\r\n");
     }
 
-    if (!m_settings.added_ids.empty() &&
-        (m_settings.added_ids.size() != 1 ||
-         m_settings.added_ids.find("IDC_STATIC") == m_settings.added_ids.end() ||
-         !m_settings.bHasIDC_STATIC))
+    if (!g_settings.added_ids.empty() &&
+        (g_settings.added_ids.size() != 1 ||
+         g_settings.added_ids.find("IDC_STATIC") == g_settings.added_ids.end() ||
+         !g_settings.bHasIDC_STATIC))
     {
         str += LoadStringDx(IDS_ADDNEXTIDS);
 
-        id_map_type::iterator it, end = m_settings.added_ids.end();
-        for (it = m_settings.added_ids.begin(); it != end; ++it)
+        id_map_type::iterator it, end = g_settings.added_ids.end();
+        for (it = g_settings.added_ids.begin(); it != end; ++it)
         {
-            if (it->first == "IDC_STATIC" && m_settings.bHasIDC_STATIC)
+            if (it->first == "IDC_STATIC" && g_settings.bHasIDC_STATIC)
                 continue;
 
             str += TEXT("#define ");
@@ -7065,7 +7065,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         str += TEXT("\r\n");
     }
 
-    MAdviceResHDlg dialog(m_settings, str);
+    MAdviceResHDlg dialog(g_settings, str);
     dialog.DialogBoxDx(hwnd);
 }
 
@@ -7082,7 +7082,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MConfigDlg dialog(m_settings, m_db);
+    MConfigDlg dialog(g_settings);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ReSetPaths(hwnd);
@@ -7093,9 +7093,9 @@ void MMainWnd::OnConfig(HWND hwnd)
 
 void MMainWnd::ReSetPaths(HWND hwnd)
 {
-    if (m_settings.strWindResExe.size())
+    if (g_settings.strWindResExe.size())
     {
-        StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_settings.strWindResExe.c_str());
+        StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), g_settings.strWindResExe.c_str());
     }
     else
     {
@@ -7103,9 +7103,9 @@ void MMainWnd::ReSetPaths(HWND hwnd)
         StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
     }
 
-    if (m_settings.strCppExe.size())
+    if (g_settings.strCppExe.size())
     {
-        StringCchCopy(m_szCppExe, _countof(m_szCppExe), m_settings.strCppExe.c_str());
+        StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
     }
     else
     {
@@ -7116,21 +7116,21 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
-    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
+    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
     bUseIDC_STATIC = !bUseIDC_STATIC;
-    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-    m_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
 
     DoRefresh(hwnd, TRUE);
 }
 
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
-    BOOL bHideID = !m_db.AreMacroIDShown();
+    BOOL bHideID = !g_db.AreMacroIDShown();
     bHideID = !bHideID;
-    m_settings.bHideID = bHideID;
+    g_settings.bHideID = bHideID;
 
-    m_db.ShowMacroID(!m_settings.bHideID);
+    g_db.ShowMacroID(!g_settings.bHideID);
 
     DoRefresh(hwnd, TRUE);
 }
@@ -7161,7 +7161,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MIdAssocDlg dialog(m_settings);
+    MIdAssocDlg dialog(g_settings);
     dialog.DialogBoxDx(hwnd);
     UpdatePrefixDB(hwnd);
 }
@@ -7177,9 +7177,9 @@ void MMainWnd::OnShowLangs(HWND hwnd)
 
 void MMainWnd::OnShowHideToolBar(HWND hwnd)
 {
-    m_settings.bShowToolBar = !m_settings.bShowToolBar;
+    g_settings.bShowToolBar = !g_settings.bShowToolBar;
 
-    if (m_settings.bShowToolBar)
+    if (g_settings.bShowToolBar)
         ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
     else
         ShowWindow(m_hToolBar, SW_HIDE);
@@ -7200,7 +7200,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MPathsDlg dialog(m_settings);
+    MPathsDlg dialog(g_settings);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ReSetPaths(hwnd);
@@ -7241,15 +7241,15 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MMacrosDlg dialog(m_settings);
+    MMacrosDlg dialog(g_settings);
     INT_PTR nID = dialog.DialogBoxDx(hwnd);
     switch (INT(nID))
     {
     case IDOK:
-        m_settings.macros = dialog.m_map;
+        g_settings.macros = dialog.m_map;
         break;
     case psh6:
-        m_settings.ResetMacros();
+        g_settings.ResetMacros();
         break;
     }
 }
@@ -7447,17 +7447,17 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         bUpdateStatus = FALSE;
         break;
     case ID_STATUSBAR:
-        m_settings.bShowStatusBar = !m_settings.bShowStatusBar;
-        ShowStatusBar(m_settings.bShowStatusBar);
+        g_settings.bShowStatusBar = !g_settings.bShowStatusBar;
+        ShowStatusBar(g_settings.bShowStatusBar);
         PostMessageDx(WM_SIZE);
         break;
     case ID_BINARYPANE:
-        m_settings.bShowBinEdit = !m_settings.bShowBinEdit;
-        ShowBinEdit(m_settings.bShowBinEdit);
+        g_settings.bShowBinEdit = !g_settings.bShowBinEdit;
+        ShowBinEdit(g_settings.bShowBinEdit);
         break;
     case ID_ALWAYSCONTROL:
         {
-            m_settings.bAlwaysControl = !m_settings.bAlwaysControl;
+            g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
             LPARAM lParam = TV_GetParam(m_hTreeView);
             SelectTV(hwnd, lParam, TRUE);
         }
@@ -7480,9 +7480,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_MRUFILE15:
         {
             DWORD i = id - ID_MRUFILE0;
-            if (i < m_settings.vecRecentlyUsed.size())
+            if (i < g_settings.vecRecentlyUsed.size())
             {
-                DoLoadFile(hwnd, m_settings.vecRecentlyUsed[i].c_str());
+                DoLoadFile(hwnd, g_settings.vecRecentlyUsed[i].c_str());
             }
         }
         break;
@@ -7645,7 +7645,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
     StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"), 
-             GetGuiResources(hProcess, GR_GDIOBJECTS),
+             GetGuiResources(hProcess, GR_GDIOBJECTS), 
              GetGuiResources(hProcess, GR_USEROBJECTS));
     ChangeStatusText(szText);
 #endif
@@ -7733,7 +7733,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     }
 }
 
-std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix)
+std::vector<INT> GetPrefixIndexes(const MString& prefix)
 {
     std::vector<INT> ret;
     assoc_map_type::const_iterator it, end = settings.assoc_map.end();
@@ -7741,7 +7741,7 @@ std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, cons
     {
         if (prefix == it->second && !it->second.empty())
         {
-            INT nIDTYPE_ = INT(db.GetValue(L"RESOURCE.ID.TYPE", it->first));
+            INT nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", it->first));
             ret.push_back(nIDTYPE_);
         }
     }
@@ -7757,17 +7757,17 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         if (pnmhdr->hwndFrom == m_splitter1)
         {
             if (m_splitter1.GetPaneCount() >= 1)
-                m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
+                g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
         }
         else if (pnmhdr->hwndFrom == m_splitter2)
         {
             if (m_splitter2.GetPaneCount() >= 2)
-                m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+                g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
         }
         else if (pnmhdr->hwndFrom == m_splitter3)
         {
             if (m_splitter3.GetPaneCount() >= 2)
-                m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+                g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
         }
     }
     else if (pnmhdr->code == NM_DBLCLK)
@@ -7778,21 +7778,21 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             {
             case I_LANG:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
             case I_STRING:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
             case I_MESSAGE:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
@@ -7829,21 +7829,21 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             {
             case I_LANG:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
             case I_STRING:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
                 return 1;
             case I_MESSAGE:
                 OnEdit(hwnd);
-                if (m_settings.bGuiByDblClick)
+                if (g_settings.bGuiByDblClick)
                 {
                     OnGuiEdit(hwnd);
                 }
@@ -8014,7 +8014,7 @@ void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, con
 
     for (;;)
     {
-        INT iEntry = Res_Find2(m_entries, selector, FALSE);
+        INT iEntry = Res_Find2(selector, FALSE);
         if (iEntry == -1)
             break;
 
@@ -8023,7 +8023,7 @@ void MMainWnd::DoRenameEntry(ResEntry selector, const MIdOrString& old_name, con
         entry.name = new_name;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
 
     selector.name = new_name;
     TV_SelectEntry(m_hTreeView, m_entries, selector);
@@ -8033,7 +8033,7 @@ void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
 {
     for (;;)
     {
-        INT iEntry = Res_Find(m_entries, selector, FALSE);
+        INT iEntry = Res_Find(selector, FALSE);
         if (iEntry == -1)
             break;
 
@@ -8042,7 +8042,7 @@ void MMainWnd::DoRelangEntry(ResEntry selector, WORD old_lang, WORD new_lang)
         entry.lang = new_lang;
     }
 
-    TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+    TV_RefreshInfo(m_hTreeView, m_m_entries);
 
     selector.lang = new_lang;
     TV_SelectEntry(m_hTreeView, m_entries, selector);
@@ -8073,7 +8073,7 @@ void MMainWnd::OnTest(HWND hwnd)
         MByteStreamEx stream(entry.data);
 
         // detach menu
-        DialogRes dialog_res(m_db);
+        DialogRes dialog_res(g_db);
         dialog_res.LoadFromStream(stream);
 
         if (!dialog_res.m_class.empty())
@@ -8093,7 +8093,7 @@ void MMainWnd::OnTest(HWND hwnd)
 
             // load RT_DLGINIT
             std::vector<BYTE> dlginit_data;
-            INT iDlgInit = Res_Find2(m_entries, RT_DLGINIT, entry.name, entry.lang);
+            INT iDlgInit = Res_Find2(RT_DLGINIT, entry.name, entry.lang);
             if (iDlgInit >= 0)
             {
                 dlginit_data = m_entries[iDlgInit].data;
@@ -8102,8 +8102,8 @@ void MMainWnd::OnTest(HWND hwnd)
             // show test dialog
             if (dialog_res.m_style & WS_CHILD)
             {
-                MTestParentWnd *window = new MTestParentWnd(m_entries, dialog_res, menu, entry.lang, stream, dlginit_data);
-                window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
+                MTestParentWnd *window = new MTestParentWnd(dialog_res, menu, entry.lang, stream, dlginit_data);
+                window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND), 
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
                 ShowWindow(*window, SW_SHOWNORMAL);
@@ -8111,7 +8111,7 @@ void MMainWnd::OnTest(HWND hwnd)
             }
             else
             {
-                MTestDialog dialog(m_entries, dialog_res, menu, entry.lang, dlginit_data);
+                MTestDialog dialog(dialog_res, menu, entry.lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
             }
         }
@@ -8295,7 +8295,7 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
             }
             std::string name(pch0, pch);
 
-            if (m_settings.removed_ids.find(name) != m_settings.removed_ids.end())
+            if (g_settings.removed_ids.find(name) != g_settings.removed_ids.end())
             {
                 lines.erase(lines.begin() + i);
             }
@@ -8306,8 +8306,8 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
 void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
 {
     std::string str;
-    id_map_type::iterator it, end = m_settings.added_ids.end();
-    for (it = m_settings.added_ids.begin(); it != end; ++it)
+    id_map_type::iterator it, end = g_settings.added_ids.end();
+    for (it = g_settings.added_ids.begin(); it != end; ++it)
     {
         std::string line = "#define ";
         if (it->first == "IDC_STATIC")
@@ -8538,8 +8538,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     }
 
     // clear modification
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
+    g_settings.added_ids.clear();
+    g_settings.removed_ids.clear();
 
     ShowIDList(hwnd, bListOpen);
 }
@@ -8549,11 +8549,11 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddIconDlg dialog(m_db, m_entries);
+    MAddIconDlg dialog(m_m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8568,10 +8568,10 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceIconDlg dialog(m_db, m_entries, m_entries[i]);
+    MReplaceIconDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8586,10 +8586,10 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceCursorDlg dialog(m_db, m_entries, m_entries[i]);
+    MReplaceCursorDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8599,11 +8599,11 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddBitmapDlg dialog(m_db, m_entries);
+    MAddBitmapDlg dialog(m_m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8618,10 +8618,10 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
         return;
 
     UINT i = LOWORD(lParam);
-    MReplaceBitmapDlg dialog(m_db, m_entries, m_entries[i]);
+    MReplaceBitmapDlg dialog(m_m_entries, m_entries[i]);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8631,11 +8631,11 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddCursorDlg dialog(m_db, m_entries);
+    MAddCursorDlg dialog(m_m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
     }
 }
@@ -8645,7 +8645,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoAddRes(hwnd, dialog);
@@ -8657,7 +8657,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8670,7 +8670,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_STRING;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8683,7 +8683,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_MESSAGETABLE;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8696,7 +8696,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_HTML;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8709,7 +8709,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_ACCELERATOR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8722,7 +8722,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8735,7 +8735,7 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_MANIFEST;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8748,14 +8748,14 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     if (dialog.m_strTemplate.empty())
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
     {
         DoRefreshIDList(hwnd);
-        TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+        TV_RefreshInfo(m_hTreeView, m_m_entries);
         TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
         if (CompileParts(hwnd, dialog.m_strTemplate, FALSE))
         {
@@ -8773,7 +8773,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         Res_DeleteTemplate(m_entries);
         if (dialog.m_entry_copy.type == RT_STRING)
         {
-            TV_RefreshInfo(m_hTreeView, m_db, m_entries);
+            TV_RefreshInfo(m_hTreeView, m_m_entries);
             TV_SelectEntry(m_hTreeView, m_entries, dialog.m_entry_copy);
         }
     }
@@ -8784,7 +8784,7 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MAddResDlg dialog(m_entries, m_db);
+    MAddResDlg dialog(m_entries);
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -8823,39 +8823,39 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
         SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
     }
 
-    m_settings.AddFile(m_szNominalFile);
+    g_settings.AddFile(m_szNominalFile);
     UpdateMenu();
     return TRUE;
 }
 
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
-    m_settings.bShowBinEdit = TRUE;
-    m_settings.bAlwaysControl = FALSE;
-    m_settings.bShowStatusBar = TRUE;
-    m_settings.nTreeViewWidth = TV_WIDTH;
-    m_settings.nBmpViewWidth = BV_WIDTH;
-    m_settings.nBinEditHeight = BE_HEIGHT;
-    m_settings.bGuiByDblClick = TRUE;
-    m_settings.bResumeWindowPos = TRUE;
-    m_settings.bAutoLoadNearbyResH = TRUE;
-    m_settings.bAutoShowIDList = TRUE;
-    m_settings.bShowDotsOnDialog = TRUE;
-    m_settings.nComboHeight = 300;
-    m_settings.vecRecentlyUsed.clear();
-    m_settings.nWindowLeft = CW_USEDEFAULT;
-    m_settings.nWindowTop = CW_USEDEFAULT;
-    m_settings.nWindowWidth = 760;
-    m_settings.nWindowHeight = 480;
-    m_settings.bMaximized = FALSE;
-    m_settings.nIDListLeft = CW_USEDEFAULT;
-    m_settings.nIDListTop = CW_USEDEFAULT;
-    m_settings.nIDListWidth = 366;
-    m_settings.nIDListHeight = 490;
-    m_settings.nRadLeft = CW_USEDEFAULT;
-    m_settings.nRadTop = CW_USEDEFAULT;
-    m_settings.bAskUpdateResH = FALSE;
-    m_settings.bCompressByUPX = FALSE;
+    g_settings.bShowBinEdit = TRUE;
+    g_settings.bAlwaysControl = FALSE;
+    g_settings.bShowStatusBar = TRUE;
+    g_settings.nTreeViewWidth = TV_WIDTH;
+    g_settings.nBmpViewWidth = BV_WIDTH;
+    g_settings.nBinEditHeight = BE_HEIGHT;
+    g_settings.bGuiByDblClick = TRUE;
+    g_settings.bResumeWindowPos = TRUE;
+    g_settings.bAutoLoadNearbyResH = TRUE;
+    g_settings.bAutoShowIDList = TRUE;
+    g_settings.bShowDotsOnDialog = TRUE;
+    g_settings.nComboHeight = 300;
+    g_settings.vecRecentlyUsed.clear();
+    g_settings.nWindowLeft = CW_USEDEFAULT;
+    g_settings.nWindowTop = CW_USEDEFAULT;
+    g_settings.nWindowWidth = 760;
+    g_settings.nWindowHeight = 480;
+    g_settings.bMaximized = FALSE;
+    g_settings.nIDListLeft = CW_USEDEFAULT;
+    g_settings.nIDListTop = CW_USEDEFAULT;
+    g_settings.nIDListWidth = 366;
+    g_settings.nIDListHeight = 490;
+    g_settings.nRadLeft = CW_USEDEFAULT;
+    g_settings.nRadTop = CW_USEDEFAULT;
+    g_settings.bAskUpdateResH = FALSE;
+    g_settings.bCompressByUPX = FALSE;
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
@@ -8889,63 +8889,63 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     }
     DeleteObject(hFont);
 
-    m_settings.strSrcFont = lfSrc.lfFaceName;
-    m_settings.strBinFont = lfBin.lfFaceName;
+    g_settings.strSrcFont = lfSrc.lfFaceName;
+    g_settings.strBinFont = lfBin.lfFaceName;
 
-    m_settings.nSrcFontSize = 12;
-    m_settings.nBinFontSize = 9;
+    g_settings.nSrcFontSize = 12;
+    g_settings.nBinFontSize = 9;
 
     if (HDC hDC = CreateCompatibleDC(NULL))
     {
         if (lfBin.lfHeight < 0)
         {
-            m_settings.nBinFontSize = -MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+            g_settings.nBinFontSize = -MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
         }
         else
         {
-            m_settings.nBinFontSize = MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+            g_settings.nBinFontSize = MulDiv(lfBin.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
         }
 
         if (lfSrc.lfHeight < 0)
         {
-            m_settings.nSrcFontSize = -MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+            g_settings.nSrcFontSize = -MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
         }
         else
         {
-            m_settings.nSrcFontSize = MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
+            g_settings.nSrcFontSize = MulDiv(lfSrc.lfHeight, 72, GetDeviceCaps(hDC, LOGPIXELSY));
         }
 
         DeleteDC(hDC);
     }
 
     ConstantsDB::TableType table1, table2;
-    table1 = m_db.GetTable(L"RESOURCE.ID.TYPE");
-    table2 = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+    table1 = g_db.GetTable(L"RESOURCE.ID.TYPE");
+    table2 = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     assert(table1.size() == table2.size());
 
-    m_settings.assoc_map.clear();
+    g_settings.assoc_map.clear();
     if (table1.size() && table1.size() == table2.size())
     {
         for (size_t i = 0; i < table1.size(); ++i)
         {
-            m_settings.assoc_map.insert(std::make_pair(table1[i].name, table2[i].name));
+            g_settings.assoc_map.insert(std::make_pair(table1[i].name, table2[i].name));
         }
     }
     else
     {
-        m_settings.ResetAssoc();
+        g_settings.ResetAssoc();
     }
 
-    m_settings.id_map.clear();
-    m_settings.added_ids.clear();
-    m_settings.removed_ids.clear();
+    g_settings.id_map.clear();
+    g_settings.added_ids.clear();
+    g_settings.removed_ids.clear();
 
-    m_settings.ResetMacros();
+    g_settings.ResetMacros();
 
-    m_settings.includes.clear();
+    g_settings.includes.clear();
 
-    m_settings.strWindResExe.clear();
-    m_settings.strCppExe.clear();
+    g_settings.strWindResExe.clear();
+    g_settings.strCppExe.clear();
 
     // cpp.exe
     StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
@@ -8955,27 +8955,27 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
 
-    m_settings.strPrevVersion.clear();
+    g_settings.strPrevVersion.clear();
 
-    m_settings.bSepFilesByLang = FALSE;
-    m_settings.bStoreToResFolder = TRUE;
-    m_settings.bSelectableByMacro = FALSE;
+    g_settings.bSepFilesByLang = FALSE;
+    g_settings.bStoreToResFolder = TRUE;
+    g_settings.bSelectableByMacro = FALSE;
 
-    m_settings.captions.clear();
+    g_settings.captions.clear();
 
-    m_settings.bShowToolBar = TRUE;
+    g_settings.bShowToolBar = TRUE;
 
-    m_settings.strAtlAxWin = L"AtlAxWin110";
+    g_settings.strAtlAxWin = L"AtlAxWin110";
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
 {
     // update "RESOURCE.ID.PREFIX" table
-    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID.PREFIX"];
+    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID.PREFIX"];
     for (size_t i = 0; i < table.size(); ++i)
     {
-        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
-        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        assoc_map_type::const_iterator it, end = g_settings.assoc_map.end();
+        for (it = g_settings.assoc_map.begin(); it != end; ++it)
         {
             if (table[i].name == it->first)
             {
@@ -9002,43 +9002,43 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
-    BOOL bHideID = !m_db.AreMacroIDShown();
+    BOOL bHideID = !g_db.AreMacroIDShown();
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHideID);
-    m_db.ShowMacroID(!bHideID);
-    m_settings.bHideID = bHideID;
+    g_db.ShowMacroID(!bHideID);
+    g_settings.bHideID = bHideID;
 
-    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
+    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
     keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)bUseIDC_STATIC);
-    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-    m_db.UseIDC_STATIC(!!bUseIDC_STATIC);
-    m_db.AddIDC_STATIC();
-    m_settings.AddIDC_STATIC();
+    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+    g_db.AddIDC_STATIC();
+    g_settings.AddIDC_STATIC();
 
-    keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)m_settings.bShowStatusBar);
-    keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)m_settings.bShowBinEdit);
-    keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)m_settings.bAlwaysControl);
-    keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)m_settings.nTreeViewWidth);
-    keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)m_settings.nBmpViewWidth);
-    keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)m_settings.nBinEditHeight);
-    keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)m_settings.bGuiByDblClick);
-    keyRisoh.QueryDword(TEXT("bResumeWindowPos"), (DWORD&)m_settings.bResumeWindowPos);
-    keyRisoh.QueryDword(TEXT("bAutoLoadNearbyResH"), (DWORD&)m_settings.bAutoLoadNearbyResH);
-    keyRisoh.QueryDword(TEXT("bAutoShowIDList"), (DWORD&)m_settings.bAutoShowIDList);
-    keyRisoh.QueryDword(TEXT("bShowDotsOnDialog"), (DWORD&)m_settings.bShowDotsOnDialog);
-    keyRisoh.QueryDword(TEXT("nComboHeight"), (DWORD&)m_settings.nComboHeight);
-    keyRisoh.QueryDword(TEXT("nWindowLeft"), (DWORD&)m_settings.nWindowLeft);
-    keyRisoh.QueryDword(TEXT("nWindowTop"), (DWORD&)m_settings.nWindowTop);
-    keyRisoh.QueryDword(TEXT("nWindowWidth"), (DWORD&)m_settings.nWindowWidth);
-    keyRisoh.QueryDword(TEXT("nWindowHeight"), (DWORD&)m_settings.nWindowHeight);
-    keyRisoh.QueryDword(TEXT("bMaximized"), (DWORD&)m_settings.bMaximized);
-    keyRisoh.QueryDword(TEXT("nIDListLeft"), (DWORD&)m_settings.nIDListLeft);
-    keyRisoh.QueryDword(TEXT("nIDListTop"), (DWORD&)m_settings.nIDListTop);
-    keyRisoh.QueryDword(TEXT("nIDListWidth"), (DWORD&)m_settings.nIDListWidth);
-    keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)m_settings.nIDListHeight);
-    keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)m_settings.nRadLeft);
-    keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)m_settings.nRadTop);
-    keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)m_settings.bAskUpdateResH);
-    keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)m_settings.bCompressByUPX);
+    keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)g_settings.bShowStatusBar);
+    keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
+    keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)g_settings.bAlwaysControl);
+    keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)g_settings.nTreeViewWidth);
+    keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)g_settings.nBmpViewWidth);
+    keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)g_settings.nBinEditHeight);
+    keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)g_settings.bGuiByDblClick);
+    keyRisoh.QueryDword(TEXT("bResumeWindowPos"), (DWORD&)g_settings.bResumeWindowPos);
+    keyRisoh.QueryDword(TEXT("bAutoLoadNearbyResH"), (DWORD&)g_settings.bAutoLoadNearbyResH);
+    keyRisoh.QueryDword(TEXT("bAutoShowIDList"), (DWORD&)g_settings.bAutoShowIDList);
+    keyRisoh.QueryDword(TEXT("bShowDotsOnDialog"), (DWORD&)g_settings.bShowDotsOnDialog);
+    keyRisoh.QueryDword(TEXT("nComboHeight"), (DWORD&)g_settings.nComboHeight);
+    keyRisoh.QueryDword(TEXT("nWindowLeft"), (DWORD&)g_settings.nWindowLeft);
+    keyRisoh.QueryDword(TEXT("nWindowTop"), (DWORD&)g_settings.nWindowTop);
+    keyRisoh.QueryDword(TEXT("nWindowWidth"), (DWORD&)g_settings.nWindowWidth);
+    keyRisoh.QueryDword(TEXT("nWindowHeight"), (DWORD&)g_settings.nWindowHeight);
+    keyRisoh.QueryDword(TEXT("bMaximized"), (DWORD&)g_settings.bMaximized);
+    keyRisoh.QueryDword(TEXT("nIDListLeft"), (DWORD&)g_settings.nIDListLeft);
+    keyRisoh.QueryDword(TEXT("nIDListTop"), (DWORD&)g_settings.nIDListTop);
+    keyRisoh.QueryDword(TEXT("nIDListWidth"), (DWORD&)g_settings.nIDListWidth);
+    keyRisoh.QueryDword(TEXT("nIDListHeight"), (DWORD&)g_settings.nIDListHeight);
+    keyRisoh.QueryDword(TEXT("nRadLeft"), (DWORD&)g_settings.nRadLeft);
+    keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)g_settings.nRadTop);
+    keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)g_settings.bAskUpdateResH);
+    keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
 
     TCHAR szText[128];
     TCHAR szValueName[128];
@@ -9046,7 +9046,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     DWORD dwMacroCount = 0;
     if (keyRisoh.QueryDword(TEXT("dwMacroCount"), dwMacroCount) == ERROR_SUCCESS)
     {
-        m_settings.macros.clear();
+        g_settings.macros.clear();
 
         for (DWORD i = 0; i < dwMacroCount; ++i)
         {
@@ -9061,14 +9061,14 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
                 value = szText;
 
             if (!key.empty())
-                m_settings.macros.insert(std::make_pair(key, value));
+                g_settings.macros.insert(std::make_pair(key, value));
         }
     }
 
     DWORD dwNumIncludes = 0;
     if (keyRisoh.QueryDword(TEXT("dwNumIncludes"), dwNumIncludes) == ERROR_SUCCESS)
     {
-        m_settings.includes.clear();
+        g_settings.includes.clear();
 
         for (DWORD i = 0; i < dwNumIncludes; ++i)
         {
@@ -9079,17 +9079,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
                 value = szText;
 
             if (!value.empty())
-                m_settings.includes.push_back(value);
+                g_settings.includes.push_back(value);
         }
     }
 
     if (keyRisoh.QuerySz(TEXT("strSrcFont"), szText, _countof(szText)) == ERROR_SUCCESS)
-        m_settings.strSrcFont = szText;
-    keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)m_settings.nSrcFontSize);
+        g_settings.strSrcFont = szText;
+    keyRisoh.QueryDword(TEXT("nSrcFontSize"), (DWORD&)g_settings.nSrcFontSize);
 
     if (keyRisoh.QuerySz(TEXT("strBinFont"), szText, _countof(szText)) == ERROR_SUCCESS)
-        m_settings.strBinFont = szText;
-    keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)m_settings.nBinFontSize);
+        g_settings.strBinFont = szText;
+    keyRisoh.QueryDword(TEXT("nBinFontSize"), (DWORD&)g_settings.nBinFontSize);
 
     INT xVirtualScreen = GetSystemMetrics(SM_XVIRTUALSCREEN);
     INT yVirtualScreen = GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -9097,46 +9097,46 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     INT cyVirtualScreen = GetSystemMetrics(SM_CYVIRTUALSCREEN);
     INT cxMin = 200, cyMin = 180;
 
-    if (m_settings.nWindowLeft < xVirtualScreen)
-        m_settings.nWindowLeft = CW_USEDEFAULT;
-    if (m_settings.nWindowTop < yVirtualScreen)
-        m_settings.nWindowTop = CW_USEDEFAULT;
-    if (m_settings.nWindowWidth <= cxMin)
-        m_settings.nWindowWidth = 760;
-    if (m_settings.nWindowHeight <= cyMin)
-        m_settings.nWindowHeight = 480;
-    if (m_settings.nWindowLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
-        m_settings.nWindowLeft = CW_USEDEFAULT;
-    if (m_settings.nWindowTop + cyMin >= yVirtualScreen + cyVirtualScreen)
-        m_settings.nWindowTop = CW_USEDEFAULT;
-    if (m_settings.nWindowTop == CW_USEDEFAULT)
-        m_settings.nWindowLeft = CW_USEDEFAULT;
+    if (g_settings.nWindowLeft < xVirtualScreen)
+        g_settings.nWindowLeft = CW_USEDEFAULT;
+    if (g_settings.nWindowTop < yVirtualScreen)
+        g_settings.nWindowTop = CW_USEDEFAULT;
+    if (g_settings.nWindowWidth <= cxMin)
+        g_settings.nWindowWidth = 760;
+    if (g_settings.nWindowHeight <= cyMin)
+        g_settings.nWindowHeight = 480;
+    if (g_settings.nWindowLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
+        g_settings.nWindowLeft = CW_USEDEFAULT;
+    if (g_settings.nWindowTop + cyMin >= yVirtualScreen + cyVirtualScreen)
+        g_settings.nWindowTop = CW_USEDEFAULT;
+    if (g_settings.nWindowTop == CW_USEDEFAULT)
+        g_settings.nWindowLeft = CW_USEDEFAULT;
 
-    if (m_settings.nIDListLeft < xVirtualScreen)
-        m_settings.nIDListLeft = CW_USEDEFAULT;
-    if (m_settings.nIDListTop < yVirtualScreen)
-        m_settings.nIDListTop = CW_USEDEFAULT;
-    if (m_settings.nIDListWidth <= cxMin)
-        m_settings.nIDListWidth = 366;
-    if (m_settings.nIDListHeight <= cyMin)
-        m_settings.nIDListHeight = 490;
-    if (m_settings.nIDListLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
-        m_settings.nIDListLeft = CW_USEDEFAULT;
-    if (m_settings.nIDListTop + cyMin >= yVirtualScreen + cyVirtualScreen)
-        m_settings.nIDListTop = CW_USEDEFAULT;
-    if (m_settings.nIDListTop == CW_USEDEFAULT)
-        m_settings.nIDListLeft = CW_USEDEFAULT;
+    if (g_settings.nIDListLeft < xVirtualScreen)
+        g_settings.nIDListLeft = CW_USEDEFAULT;
+    if (g_settings.nIDListTop < yVirtualScreen)
+        g_settings.nIDListTop = CW_USEDEFAULT;
+    if (g_settings.nIDListWidth <= cxMin)
+        g_settings.nIDListWidth = 366;
+    if (g_settings.nIDListHeight <= cyMin)
+        g_settings.nIDListHeight = 490;
+    if (g_settings.nIDListLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
+        g_settings.nIDListLeft = CW_USEDEFAULT;
+    if (g_settings.nIDListTop + cyMin >= yVirtualScreen + cyVirtualScreen)
+        g_settings.nIDListTop = CW_USEDEFAULT;
+    if (g_settings.nIDListTop == CW_USEDEFAULT)
+        g_settings.nIDListLeft = CW_USEDEFAULT;
 
-    if (m_settings.nRadLeft < xVirtualScreen)
-        m_settings.nRadLeft = CW_USEDEFAULT;
-    if (m_settings.nRadTop < yVirtualScreen)
-        m_settings.nRadTop = CW_USEDEFAULT;
-    if (m_settings.nRadLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
-        m_settings.nRadLeft = CW_USEDEFAULT;
-    if (m_settings.nRadTop + cyMin >= yVirtualScreen + cyVirtualScreen)
-        m_settings.nRadTop = CW_USEDEFAULT;
-    if (m_settings.nRadTop == CW_USEDEFAULT)
-        m_settings.nRadLeft = CW_USEDEFAULT;
+    if (g_settings.nRadLeft < xVirtualScreen)
+        g_settings.nRadLeft = CW_USEDEFAULT;
+    if (g_settings.nRadTop < yVirtualScreen)
+        g_settings.nRadTop = CW_USEDEFAULT;
+    if (g_settings.nRadLeft + cxMin >= xVirtualScreen + cxVirtualScreen)
+        g_settings.nRadLeft = CW_USEDEFAULT;
+    if (g_settings.nRadTop + cyMin >= yVirtualScreen + cyVirtualScreen)
+        g_settings.nRadTop = CW_USEDEFAULT;
+    if (g_settings.nRadTop == CW_USEDEFAULT)
+        g_settings.nRadLeft = CW_USEDEFAULT;
 
     DWORD i, dwCount;
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
@@ -9151,7 +9151,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         {
             if (GetFileAttributes(szFile) != 0xFFFFFFFF)
             {
-                m_settings.vecRecentlyUsed.push_back(szFile);
+                g_settings.vecRecentlyUsed.push_back(szFile);
             }
         }
     }
@@ -9159,26 +9159,26 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
         if (GetFileAttributesW(szText) != 0xFFFFFFFF)
-            m_settings.strWindResExe = szText;
+            g_settings.strWindResExe = szText;
     }
 
     if (keyRisoh.QuerySz(TEXT("strCppExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
         if (GetFileAttributesW(szText) != 0xFFFFFFFF)
-            m_settings.strCppExe = szText;
+            g_settings.strCppExe = szText;
     }
 
     if (keyRisoh.QuerySz(TEXT("strPrevVersion"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        m_settings.strPrevVersion = szText;
+        g_settings.strPrevVersion = szText;
     }
 
     // update association if version > 3.8
-    if (!m_settings.strPrevVersion.empty() && m_settings.strPrevVersion > L"3.8")
+    if (!g_settings.strPrevVersion.empty() && g_settings.strPrevVersion > L"3.8")
     {
         TCHAR szName[MAX_PATH];
-        assoc_map_type::iterator it, end = m_settings.assoc_map.end();
-        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        assoc_map_type::iterator it, end = g_settings.assoc_map.end();
+        for (it = g_settings.assoc_map.begin(); it != end; ++it)
         {
             if (keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
             {
@@ -9188,9 +9188,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         UpdatePrefixDB(hwnd);
     }
 
-    keyRisoh.QueryDword(TEXT("bSepFilesByLang"), (DWORD&)m_settings.bSepFilesByLang);
-    keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)m_settings.bStoreToResFolder);
-    keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)m_settings.bSelectableByMacro);
+    keyRisoh.QueryDword(TEXT("bSepFilesByLang"), (DWORD&)g_settings.bSepFilesByLang);
+    keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)g_settings.bStoreToResFolder);
+    keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)g_settings.bSelectableByMacro);
 
     DWORD dwNumCaptions = 0;
     keyRisoh.QueryDword(TEXT("dwNumCaptions"), (DWORD&)dwNumCaptions);
@@ -9204,15 +9204,15 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
         if (keyRisoh.QuerySz(szValueName, szText, _countof(szText)) == ERROR_SUCCESS)
         {
-            m_settings.captions.push_back(szText);
+            g_settings.captions.push_back(szText);
         }
     }
 
-    keyRisoh.QueryDword(TEXT("bShowToolBar"), (DWORD&)m_settings.bShowToolBar);
+    keyRisoh.QueryDword(TEXT("bShowToolBar"), (DWORD&)g_settings.bShowToolBar);
 
     if (keyRisoh.QuerySz(L"strAtlAxWin", szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        m_settings.strAtlAxWin = szText;
+        g_settings.strAtlAxWin = szText;
     }
 
     return TRUE;
@@ -9233,51 +9233,51 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         return FALSE;
 
     if (m_splitter3.GetPaneCount() >= 2)
-        m_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+        g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
     if (m_splitter2.GetPaneCount() >= 2)
-        m_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+        g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
     if (m_splitter1.GetPaneCount() >= 1)
-        m_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
+        g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
-    BOOL bHideID = !m_db.AreMacroIDShown();
-    m_settings.bHideID = bHideID;
-    keyRisoh.SetDword(TEXT("HIDE.ID"), m_settings.bHideID);
+    BOOL bHideID = !g_db.AreMacroIDShown();
+    g_settings.bHideID = bHideID;
+    keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
 
-    BOOL bUseIDC_STATIC = m_db.DoesUseIDC_STATIC();
-    m_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-    keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), m_settings.bUseIDC_STATIC);
+    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
+    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
 
-    keyRisoh.SetDword(TEXT("ShowStatusBar"), m_settings.bShowStatusBar);
-    keyRisoh.SetDword(TEXT("ShowBinEdit"), m_settings.bShowBinEdit);
-    keyRisoh.SetDword(TEXT("AlwaysControl"), m_settings.bAlwaysControl);
-    keyRisoh.SetDword(TEXT("TreeViewWidth"), m_settings.nTreeViewWidth);
-    keyRisoh.SetDword(TEXT("BmpViewWidth"), m_settings.nBmpViewWidth);
-    keyRisoh.SetDword(TEXT("BinEditHeight"), m_settings.nBinEditHeight);
-    keyRisoh.SetDword(TEXT("bGuiByDblClick"), m_settings.bGuiByDblClick);
-    keyRisoh.SetDword(TEXT("bResumeWindowPos"), m_settings.bResumeWindowPos);
-    keyRisoh.SetDword(TEXT("bAutoLoadNearbyResH"), m_settings.bAutoLoadNearbyResH);
-    keyRisoh.SetDword(TEXT("bAutoShowIDList"), m_settings.bAutoShowIDList);
-    keyRisoh.SetDword(TEXT("bShowDotsOnDialog"), m_settings.bShowDotsOnDialog);
-    keyRisoh.SetDword(TEXT("nComboHeight"), m_settings.nComboHeight);
-    keyRisoh.SetDword(TEXT("nWindowLeft"), m_settings.nWindowLeft);
-    keyRisoh.SetDword(TEXT("nWindowTop"), m_settings.nWindowTop);
-    keyRisoh.SetDword(TEXT("nWindowWidth"), m_settings.nWindowWidth);
-    keyRisoh.SetDword(TEXT("nWindowHeight"), m_settings.nWindowHeight);
-    keyRisoh.SetDword(TEXT("bMaximized"), m_settings.bMaximized);
-    keyRisoh.SetDword(TEXT("nIDListLeft"), m_settings.nIDListLeft);
-    keyRisoh.SetDword(TEXT("nIDListTop"), m_settings.nIDListTop);
-    keyRisoh.SetDword(TEXT("nIDListWidth"), m_settings.nIDListWidth);
-    keyRisoh.SetDword(TEXT("nIDListHeight"), m_settings.nIDListHeight);
-    keyRisoh.SetDword(TEXT("nRadLeft"), m_settings.nRadLeft);
-    keyRisoh.SetDword(TEXT("nRadTop"), m_settings.nRadTop);
-    keyRisoh.SetDword(TEXT("bAskUpdateResH"), m_settings.bAskUpdateResH);
-    keyRisoh.SetDword(TEXT("bCompressByUPX"), m_settings.bCompressByUPX);
-    keyRisoh.SetSz(TEXT("strSrcFont"), m_settings.strSrcFont.c_str());
-    keyRisoh.SetDword(TEXT("nSrcFontSize"), m_settings.nSrcFontSize);
-    keyRisoh.SetSz(TEXT("strBinFont"), m_settings.strBinFont.c_str());
-    keyRisoh.SetDword(TEXT("nBinFontSize"), m_settings.nBinFontSize);
+    keyRisoh.SetDword(TEXT("ShowStatusBar"), g_settings.bShowStatusBar);
+    keyRisoh.SetDword(TEXT("ShowBinEdit"), g_settings.bShowBinEdit);
+    keyRisoh.SetDword(TEXT("AlwaysControl"), g_settings.bAlwaysControl);
+    keyRisoh.SetDword(TEXT("TreeViewWidth"), g_settings.nTreeViewWidth);
+    keyRisoh.SetDword(TEXT("BmpViewWidth"), g_settings.nBmpViewWidth);
+    keyRisoh.SetDword(TEXT("BinEditHeight"), g_settings.nBinEditHeight);
+    keyRisoh.SetDword(TEXT("bGuiByDblClick"), g_settings.bGuiByDblClick);
+    keyRisoh.SetDword(TEXT("bResumeWindowPos"), g_settings.bResumeWindowPos);
+    keyRisoh.SetDword(TEXT("bAutoLoadNearbyResH"), g_settings.bAutoLoadNearbyResH);
+    keyRisoh.SetDword(TEXT("bAutoShowIDList"), g_settings.bAutoShowIDList);
+    keyRisoh.SetDword(TEXT("bShowDotsOnDialog"), g_settings.bShowDotsOnDialog);
+    keyRisoh.SetDword(TEXT("nComboHeight"), g_settings.nComboHeight);
+    keyRisoh.SetDword(TEXT("nWindowLeft"), g_settings.nWindowLeft);
+    keyRisoh.SetDword(TEXT("nWindowTop"), g_settings.nWindowTop);
+    keyRisoh.SetDword(TEXT("nWindowWidth"), g_settings.nWindowWidth);
+    keyRisoh.SetDword(TEXT("nWindowHeight"), g_settings.nWindowHeight);
+    keyRisoh.SetDword(TEXT("bMaximized"), g_settings.bMaximized);
+    keyRisoh.SetDword(TEXT("nIDListLeft"), g_settings.nIDListLeft);
+    keyRisoh.SetDword(TEXT("nIDListTop"), g_settings.nIDListTop);
+    keyRisoh.SetDword(TEXT("nIDListWidth"), g_settings.nIDListWidth);
+    keyRisoh.SetDword(TEXT("nIDListHeight"), g_settings.nIDListHeight);
+    keyRisoh.SetDword(TEXT("nRadLeft"), g_settings.nRadLeft);
+    keyRisoh.SetDword(TEXT("nRadTop"), g_settings.nRadTop);
+    keyRisoh.SetDword(TEXT("bAskUpdateResH"), g_settings.bAskUpdateResH);
+    keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
+    keyRisoh.SetSz(TEXT("strSrcFont"), g_settings.strSrcFont.c_str());
+    keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
+    keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());
+    keyRisoh.SetDword(TEXT("nBinFontSize"), g_settings.nBinFontSize);
 
-    DWORD i, dwCount = (DWORD)m_settings.vecRecentlyUsed.size();
+    DWORD i, dwCount = (DWORD)g_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)
         dwCount = MAX_MRU;
     keyRisoh.SetDword(TEXT("FileCount"), dwCount);
@@ -9287,25 +9287,25 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     for (i = 0; i < dwCount; ++i)
     {
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("File%lu"), i);
-        keyRisoh.SetSz(szValueName, m_settings.vecRecentlyUsed[i].c_str());
+        keyRisoh.SetSz(szValueName, g_settings.vecRecentlyUsed[i].c_str());
     }
 
     {
-        assoc_map_type::const_iterator it, end = m_settings.assoc_map.end();
-        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        assoc_map_type::const_iterator it, end = g_settings.assoc_map.end();
+        for (it = g_settings.assoc_map.begin(); it != end; ++it)
         {
             keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
             //MessageBoxW(NULL, it->first.c_str(), it->second.c_str(), 0);
         }
     }
 
-    DWORD dwMacroCount = DWORD(m_settings.macros.size());
+    DWORD dwMacroCount = DWORD(g_settings.macros.size());
     keyRisoh.SetDword(TEXT("dwMacroCount"), dwMacroCount);
 
     {
         i = 0;
-        macro_map_type::const_iterator it, end = m_settings.macros.end();
-        for (it = m_settings.macros.begin(); it != end; ++it, ++i)
+        macro_map_type::const_iterator it, end = g_settings.macros.end();
+        for (it = g_settings.macros.begin(); it != end; ++it, ++i)
         {
             StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
             keyRisoh.SetSz(szValueName, it->first.c_str());
@@ -9315,30 +9315,30 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         }
     }
 
-    DWORD dwNumIncludes = DWORD(m_settings.includes.size());
+    DWORD dwNumIncludes = DWORD(g_settings.includes.size());
     keyRisoh.SetDword(TEXT("dwNumIncludes"), dwNumIncludes);
 
     {
         for (i = 0; i < dwNumIncludes; ++i)
         {
             StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
-            keyRisoh.SetSz(szValueName, m_settings.includes[i].c_str());
+            keyRisoh.SetSz(szValueName, g_settings.includes[i].c_str());
         }
     }
 
-    keyRisoh.SetSz(TEXT("strWindResExe"), m_settings.strWindResExe.c_str());
-    keyRisoh.SetSz(TEXT("strCppExe"), m_settings.strCppExe.c_str());
+    keyRisoh.SetSz(TEXT("strWindResExe"), g_settings.strWindResExe.c_str());
+    keyRisoh.SetSz(TEXT("strCppExe"), g_settings.strCppExe.c_str());
 
     // always use old style
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
     keyRisoh.SetSz(TEXT("strPrevVersion"), TEXT(RE_VERSION));
 
-    keyRisoh.SetDword(TEXT("bSepFilesByLang"), m_settings.bSepFilesByLang);
-    keyRisoh.SetDword(TEXT("bStoreToResFolder"), m_settings.bStoreToResFolder);
-    keyRisoh.SetDword(TEXT("bSelectableByMacro"), m_settings.bSelectableByMacro);
+    keyRisoh.SetDword(TEXT("bSepFilesByLang"), g_settings.bSepFilesByLang);
+    keyRisoh.SetDword(TEXT("bStoreToResFolder"), g_settings.bStoreToResFolder);
+    keyRisoh.SetDword(TEXT("bSelectableByMacro"), g_settings.bSelectableByMacro);
 
-    DWORD dwNumCaptions = DWORD(m_settings.captions.size());
+    DWORD dwNumCaptions = DWORD(g_settings.captions.size());
 
     if (dwNumCaptions > s_nMaxCaptions)
         dwNumCaptions = s_nMaxCaptions;
@@ -9348,12 +9348,12 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     for (DWORD i = 0; i < dwNumCaptions; ++i)
     {
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
-        keyRisoh.SetSz(szValueName, m_settings.captions[i].c_str());
+        keyRisoh.SetSz(szValueName, g_settings.captions[i].c_str());
     }
 
-    keyRisoh.SetDword(TEXT("bShowToolBar"), m_settings.bShowToolBar);
+    keyRisoh.SetDword(TEXT("bShowToolBar"), g_settings.bShowToolBar);
 
-    keyRisoh.SetSz(L"strAtlAxWin", m_settings.strAtlAxWin.c_str());
+    keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
 
     return TRUE;
 }
@@ -9370,16 +9370,16 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     LoadSettings(hwnd);
 
-    if (m_settings.bResumeWindowPos)
+    if (g_settings.bResumeWindowPos)
     {
-        if (m_settings.nWindowLeft != CW_USEDEFAULT)
+        if (g_settings.nWindowLeft != CW_USEDEFAULT)
         {
-            POINT pt = { m_settings.nWindowLeft, m_settings.nWindowTop };
+            POINT pt = { g_settings.nWindowLeft, g_settings.nWindowTop };
             SetWindowPosDx(&pt);
         }
-        if (m_settings.nWindowWidth != CW_USEDEFAULT)
+        if (g_settings.nWindowWidth != CW_USEDEFAULT)
         {
-            SIZE siz = { m_settings.nWindowWidth, m_settings.nWindowHeight };
+            SIZE siz = { g_settings.nWindowWidth, g_settings.nWindowHeight };
             SetWindowPosDx(NULL, &siz);
         }
     }
@@ -9412,8 +9412,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
         TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_EDITLABELS;
-    m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE,
-        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
+    m_hTreeView = CreateWindowExW(WS_EX_CLIENTEDGE, 
+        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1, 
         (HMENU)1, m_hInst, NULL);
     if (m_hTreeView == NULL)
         return FALSE;
@@ -9422,7 +9422,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     m_splitter1.SetPane(0, m_hTreeView);
     m_splitter1.SetPane(1, m_splitter2);
-    m_splitter1.SetPaneExtent(0, m_settings.nTreeViewWidth);
+    m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
 
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
@@ -9453,7 +9453,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
     ChangeStatusText(IDS_STARTING);
 
-    if (m_settings.bShowStatusBar)
+    if (g_settings.bShowStatusBar)
         ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
     else
         ShowWindow(m_hStatusBar, SW_HIDE);
@@ -9469,13 +9469,13 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     SetFocus(m_hTreeView);
     UpdateMenu();
 
-    if (m_settings.strWindResExe.size())
+    if (g_settings.strWindResExe.size())
     {
-        StringCchCopy(m_szWindresExe, _countof(m_szWindresExe), m_settings.strWindResExe.c_str());
+        StringCchCopy(m_szWindresExe, _countof(m_szWindresExe), g_settings.strWindResExe.c_str());
     }
-    if (m_settings.strCppExe.size())
+    if (g_settings.strCppExe.size())
     {
-        StringCchCopy(m_szCppExe, _countof(m_szCppExe), m_settings.strCppExe.c_str());
+        StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
     }
 
     PostMessageDx(WM_COMMAND, ID_READY);
@@ -9545,7 +9545,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     ReplaceResTypeString(strType, true);
 
     MString prefix = name.substr(0, name.find(L'_') + 1);
-    std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+    std::vector<INT> indexes = GetPrefixIndexes(g_settings, m_prefix);
     for (size_t i = 0; i < indexes.size(); ++i)
     {
         INT nIDTYPE_ = indexes[i];
@@ -9561,18 +9561,18 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         }
     }
 
-    MIdOrString type = WORD(m_db.GetValue(L"RESOURCE", strType));
+    MIdOrString type = WORD(g_db.GetValue(L"RESOURCE", strType));
     if (type.empty())
         type.m_str = strType;
 
-    WORD wName = WORD(m_db.GetResIDValue(name));
+    WORD wName = WORD(g_db.GetResIDValue(name));
     MIdOrString name_or_id(wName);
     if (wName == 0)
     {
         id_map_type::iterator it;
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
-        it = m_settings.id_map.find(strA);
-        if (it != m_settings.id_map.end())
+        it = g_settings.id_map.find(strA);
+        if (it != g_settings.id_map.end())
         {
             MStringA strA = it->second;
             if (strA[0] == 'L')
@@ -9643,7 +9643,7 @@ BOOL MMainWnd::StartDx()
     m_hIconSm = LoadSmallIconDx(IDI_MAIN);
     m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(IDR_MAINACCEL));
 
-    if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
+    if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME), 
         WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
     {
         ErrorBoxDx(TEXT("failure of CreateWindow"));
@@ -9651,7 +9651,7 @@ BOOL MMainWnd::StartDx()
     }
     assert(IsWindow(m_hwnd));
 
-    if (m_settings.bResumeWindowPos && m_settings.bMaximized)
+    if (g_settings.bResumeWindowPos && g_settings.bMaximized)
     {
         ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
     }
@@ -10756,14 +10756,14 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     return str;
 }
 
-MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang)
+MStringW GetRisohTemplate(ConstantsDB& const MIdOrString& type, WORD wLang)
 {
     HINSTANCE hInst = GetModuleHandle(NULL);
 
     MStringW strName;
     if (type.is_int())
     {
-        strName = db.GetName(L"RESOURCE", type.m_id);
+        strName = g_db.GetName(L"RESOURCE", type.m_id);
         if (strName.empty())
         {
             strName = mstr_dec_short(type.m_id);
@@ -10806,7 +10806,7 @@ MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang)
 
 ////////////////////////////////////////////////////////////////////////////
 
-#pragma comment(linker,"/manifestdependency:\"type='win32' \
+#pragma comment(linker, "/manifestdependency:\"type='win32' \
   name='Microsoft.Windows.Common-Controls' \
   version='6.0.0.0' \
   processorArchitecture='x86' \
@@ -10816,9 +10816,9 @@ MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang)
 IMPLEMENT_DYNAMIC(MOleCtrl)
 
 INT WINAPI
-WinMain(HINSTANCE   hInstance,
-        HINSTANCE   hPrevInstance,
-        LPSTR       lpCmdLine,
+WinMain(HINSTANCE   hInstance, 
+        HINSTANCE   hPrevInstance, 
+        LPSTR       lpCmdLine, 
         INT         nCmdShow)
 {
     // get Unicode command line
@@ -10887,9 +10887,9 @@ WinMain(HINSTANCE   hInstance,
 
 #if (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
-    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"),
+    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"), 
                  GetGuiResources(hProcess, GR_GDIOBJECTS));
-    DebugPrintDx(TEXT("Count of USER objects: %ld\n"),
+    DebugPrintDx(TEXT("Count of USER objects: %ld\n"), 
                  GetGuiResources(hProcess, GR_USEROBJECTS));
 #endif
 

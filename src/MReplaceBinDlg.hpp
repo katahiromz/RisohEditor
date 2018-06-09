@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -30,23 +30,21 @@
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MReplaceBinDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
-    ResEntry& m_entry;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    LangEntry& m_entry;
+    LangEntry m_entry_copy;
 
-    MReplaceBinDlg(ResEntries& entries, ResEntry& entry, ConstantsDB& db)
-        : MDialogBase(IDD_REPLACERES), m_entries(entries), m_entry(entry), m_db(db)
+    MReplaceBinDlg(LangEntry& entry)
+        : MDialogBase(IDD_REPLACERES), m_entry(entry)
     {
     }
 
@@ -69,75 +67,75 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
             StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_entry.type == WORD(table[i].value))
+            if (m_entry.m_type == WORD(table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
         k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_entry.type == TEXT("WAVE"))
+        if (m_entry.m_type == TEXT("WAVE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_entry.type == TEXT("PNG"))
+        if (m_entry.m_type == TEXT("PNG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("IMAGE"));
-        if (m_entry.type == TEXT("IMAGE"))
+        if (m_entry.m_type == TEXT("IMAGE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_entry.type == TEXT("GIF"))
+        if (m_entry.m_type == TEXT("GIF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_entry.type == TEXT("JPEG"))
+        if (m_entry.m_type == TEXT("JPEG"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_entry.type == TEXT("TIFF"))
+        if (m_entry.m_type == TEXT("TIFF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_entry.type == TEXT("AVI"))
+        if (m_entry.m_type == TEXT("AVI"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_entry.type == TEXT("EMF"))
+        if (m_entry.m_type == TEXT("EMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("ENHMETAFILE"));
-        if (m_entry.type == TEXT("ENHMETAFILE"))
+        if (m_entry.m_type == TEXT("ENHMETAFILE"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
         k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_entry.type == TEXT("WMF"))
+        if (m_entry.m_type == TEXT("WMF"))
         {
             ComboBox_SetCurSel(hCmb1, k);
         }
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, m_entry.name, IDTYPE_RESOURCE);
+        InitResNameComboBox(hCmb2, m_entry.m_name, IDTYPE_RESOURCE);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry.lang);
+        InitLangComboBox(hCmb3, m_entry.m_lang);
 
         CenterWindowDx();
         return TRUE;
@@ -172,7 +170,7 @@ public:
     {
         MIdOrString type;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(hCmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
         {
@@ -186,7 +184,7 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -206,9 +204,9 @@ public:
             return;
         }
 
-        Res_AddEntry(m_entries, type, name, lang, L"", bs.data(), TRUE);
+        TV_AddLangEntry(g_tv, type, name, lang, bs.data(), TRUE);
 
-        ResEntry entry(type, name, lang);
+        LangEntry entry(type, name, lang);
         m_entry_copy = entry;
 
         EndDialog(IDOK);

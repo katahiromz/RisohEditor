@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -38,16 +38,16 @@ BOOL IsThereWndClass(const WCHAR *pszName);
 //////////////////////////////////////////////////////////////////////////////
 
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
-void GetStyleSelect(std::vector<BYTE>& sel,
+void GetStyleSelect(std::vector<BYTE>& sel, 
                   const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
+DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, 
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszClass);
-void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
-void InitWndClassComboBox(HWND hCmb, ConstantsDB& db, LPCTSTR pszWndClass);
-void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
+void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
+void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
+void InitCtrlIDComboBox(HWND hCmb);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -59,12 +59,10 @@ public:
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
     POINT           m_pt;
-    ConstantsDB&    m_db;
     ConstantsDB::TableType  m_style_table;
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
-    RisohSettings&          m_settings;
     DlgInitRes              m_dlginit;
     BOOL                    m_bIsDlgInitSet;
     MToolBarCtrl            m_hTB;
@@ -77,11 +75,10 @@ public:
     MComboBoxAutoComplete m_cmb5;
     std::vector<BYTE> m_data;
 
-    MAddCtrlDlg(DialogRes& dialog_res, ConstantsDB& db, POINT pt,
-                RisohSettings& settings)
-        : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res),
-          m_db(db), m_bUpdating(FALSE), m_pt(pt), m_settings(settings),
-          m_dlginit(db), m_bIsDlgInitSet(FALSE)
+    MAddCtrlDlg(DialogRes& dialog_res, POINT pt)
+        : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), 
+          m_bUpdating(FALSE), m_pt(pt), 
+          m_dlginit(), m_bIsDlgInitSet(FALSE)
     {
         m_himlControls = NULL;
         m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
@@ -103,26 +100,26 @@ public:
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = m_db.GetTable(pszClass);
+            table = g_db.GetTable(pszClass);
             if (table.size())
             {
-                m_style_table.insert(m_style_table.end(),
+                m_style_table.insert(m_style_table.end(), 
                     table.begin(), table.end());
             }
         }
-        table = m_db.GetTable(TEXT("STYLE"));
+        table = g_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
-            m_style_table.insert(m_style_table.end(),
+            m_style_table.insert(m_style_table.end(), 
                 table.begin(), table.end());
         }
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = m_db.GetTable(TEXT("EXSTYLE"));
+        table = g_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
-            m_exstyle_table.insert(m_exstyle_table.end(),
+            m_exstyle_table.insert(m_exstyle_table.end(), 
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
@@ -140,7 +137,7 @@ public:
         m_bUpdating = FALSE;
     }
 
-    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table, 
                         std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
@@ -158,7 +155,7 @@ public:
     {
         std::vector<TBBUTTON> buttons;
 
-        ConstantsDB::TableType table = m_db.GetTable(TEXT("CONTROLS.ICONS"));
+        ConstantsDB::TableType table = g_db.GetTable(TEXT("CONTROLS.ICONS"));
         size_t count = table.size();
         INT nCount = INT(count);
 
@@ -169,7 +166,7 @@ public:
             m_himlControls = NULL;
         }
         m_himlControls = ImageList_LoadBitmap(
-            GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CONTROLS),
+            GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_CONTROLS), 
             16, 0, RGB(255, 0, 255));
         m_hTB.SetImageList(m_himlControls);
 
@@ -194,34 +191,34 @@ public:
         SetDlgItemInt(hwnd, edt1, m_pt.x, FALSE);
         SetDlgItemInt(hwnd, edt2, m_pt.y, FALSE);
 
-        INT cx = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
-        INT cy = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+        INT cx = g_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+        INT cy = g_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
         SetDlgItemInt(hwnd, edt4, cy, FALSE);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitClassComboBox(hCmb1, m_db, TEXT(""));
+        InitClassComboBox(hCmb1, TEXT(""));
         SubclassChildDx(m_cmb1, cmb1);
         EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCaptionComboBox(hCmb2, m_settings, TEXT(""));
+        InitCaptionComboBox(hCmb2, TEXT(""));
         SubclassChildDx(m_cmb2, cmb2);
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitCtrlIDComboBox(hCmb3, m_db);
-        if (m_db.DoesUseIDC_STATIC())
+        InitCtrlIDComboBox(hCmb3);
+        if (g_db.DoesUseIDC_STATIC())
             SetDlgItemText(hwnd, cmb3, TEXT("IDC_STATIC"));
         else
             SetDlgItemText(hwnd, cmb3, TEXT("-1"));
         SubclassChildDx(m_cmb3, cmb3);
 
         HWND hCmb4 = GetDlgItem(hwnd, cmb4);
-        InitWndClassComboBox(hCmb4, m_db, TEXT(""));
+        InitWndClassComboBox(hCmb4, TEXT(""));
         SubclassChildDx(m_cmb4, cmb4);
 
         HWND hCmb5 = GetDlgItem(hwnd, cmb5);
-        InitResNameComboBox(hCmb5, m_db, WORD(0), IDTYPE_HELP);
+        InitResNameComboBox(hCmb5, WORD(0), IDTYPE_HELP);
         SetDlgItemInt(hwnd, cmb5, 0, FALSE);
         SubclassChildDx(m_cmb5, cmb5);
 
@@ -269,7 +266,7 @@ public:
     {
         MString strCaption = GetDlgItemText(cmb2);
         mstr_trim(strCaption);
-        m_settings.AddCaption(strCaption.c_str());
+        g_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
         {
             mstr_unquote(strCaption);
@@ -287,13 +284,13 @@ public:
         {
             id = (WORD)mstr_parse_int(strID.c_str());
         }
-        else if (m_db.HasResID(strID))
+        else if (g_db.HasResID(strID))
         {
-            id = (WORD)m_db.GetResIDValue(strID);
+            id = (WORD)g_db.GetResIDValue(strID);
         }
-        else if (m_db.HasCtrlID(strID))
+        else if (g_db.HasCtrlID(strID))
         {
-            id = (WORD)m_db.GetCtrlIDValue(strID);
+            id = (WORD)g_db.GetCtrlIDValue(strID);
         }
         else
         {
@@ -317,9 +314,9 @@ public:
         ReplaceFullWithHalf(strHelp);
         mstr_trim(strHelp);
         DWORD help;
-        if (m_db.HasResID(strHelp))
+        if (g_db.HasResID(strHelp))
         {
-            help = m_db.GetResIDValue(strHelp);
+            help = g_db.GetResIDValue(strHelp);
         }
         else
         {
@@ -396,7 +393,7 @@ public:
         std::vector<BYTE> old_style_selection = m_style_selection;
         GetStyleSelect(hLst1, m_style_selection);
 
-        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
+        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table, 
                                      old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
@@ -417,7 +414,7 @@ public:
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table,
+        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table, 
                                        old_exstyle_selection, m_exstyle_selection);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 
@@ -464,7 +461,7 @@ public:
 
     void UpdateClass(HWND hwnd, HWND hLst1, const MString& strClass)
     {
-        DWORD dwType = m_db.GetValue(TEXT("CONTROL.CLASSES"), strClass);
+        DWORD dwType = g_db.GetValue(TEXT("CONTROL.CLASSES"), strClass);
         if (dwType == 0)
             return;
 
@@ -472,7 +469,7 @@ public:
         if (dwType >= 3)
         {
             ConstantsDB::TableType table;
-            table = m_db.GetTable(strClass + TEXT(".SUPERCLASS"));
+            table = g_db.GetTable(strClass + TEXT(".SUPERCLASS"));
             if (table.size())
             {
                 strSuper = table[0].name;
@@ -485,7 +482,7 @@ public:
             InitTables(strClass.c_str());
 
         MString str = strClass + TEXT(".DEFAULT.STYLE");
-        m_dwStyle = m_db.GetValue(str, TEXT("STYLE"));
+        m_dwStyle = g_db.GetValue(str, TEXT("STYLE"));
 
         GetStyleSelect(m_style_selection, m_style_table, m_dwStyle);
         InitStyleListBox(hLst1, m_style_table);
@@ -500,24 +497,24 @@ public:
         ListBox_SetTopIndex(hLst1, 0);
 
         INT cx, cy;
-        cx = m_db.GetValue(strClass + TEXT(".SIZE"), TEXT("WIDTH"));
-        cy = m_db.GetValue(strClass + TEXT(".SIZE"), TEXT("HEIGHT"));
+        cx = g_db.GetValue(strClass + TEXT(".SIZE"), TEXT("WIDTH"));
+        cy = g_db.GetValue(strClass + TEXT(".SIZE"), TEXT("HEIGHT"));
         if (cx == 0 && cy == 0)
         {
-            cx = m_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("WIDTH"));
-            cy = m_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("HEIGHT"));
+            cx = g_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("WIDTH"));
+            cy = g_db.GetValue(strSuper + TEXT(".SIZE"), TEXT("HEIGHT"));
         }
         if (cx == 0 && cy == 0)
         {
-            cx = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
-            cy = m_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
+            cx = g_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("WIDTH"));
+            cy = g_db.GetValue(TEXT("CONTROL.SIZE"), TEXT("HEIGHT"));
         }
         if (lstrcmpi(strClass.c_str(), TEXT("COMBOBOX")) == 0 ||
             lstrcmpi(strSuper.c_str(), TEXT("COMBOBOX")) == 0 ||
             lstrcmpi(strClass.c_str(), WC_COMBOBOXEX) == 0 ||
             lstrcmpi(strSuper.c_str(), WC_COMBOBOXEX) == 0)
         {
-            cy = m_settings.nComboHeight;
+            cy = g_settings.nComboHeight;
         }
         SetDlgItemInt(hwnd, edt3, cx, FALSE);
         SetDlgItemInt(hwnd, edt4, cy, FALSE);
@@ -575,7 +572,7 @@ public:
                 {
                     SetDlgItemTextW(hwnd, cmb2, pszCLSID);
                 }
-                SetDlgItemTextW(hwnd, cmb4, m_settings.strAtlAxWin.c_str());
+                SetDlgItemTextW(hwnd, cmb4, g_settings.strAtlAxWin.c_str());
                 CoTaskMemFree(pszCLSID);
             }
         }
@@ -704,10 +701,10 @@ public:
             {
                 MString text;
                 UINT nID = UINT(id - 1000);
-                if (nID == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
+                if (nID == g_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
                 {
                     // OLE controls
-                    text = m_settings.strAtlAxWin;
+                    text = g_settings.strAtlAxWin;
                     SetDlgItemTextW(hwnd, cmb4, text.c_str());
                 }
                 else
@@ -732,10 +729,10 @@ public:
             if (size_t(nID) < m_vecControls.size())
             {
                 MString text;
-                if (nID == m_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
+                if (nID == g_db.GetValue(TEXT("CONTROLS.OLE.CONTROL"), TEXT("INDEX")))
                 {
                     // OLE controls
-                    text = m_settings.strAtlAxWin;
+                    text = g_settings.strAtlAxWin;
                 }
                 else
                 {

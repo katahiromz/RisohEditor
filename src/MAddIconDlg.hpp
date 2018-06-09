@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,7 +27,7 @@
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
@@ -36,17 +36,14 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 class MAddIconDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
     LPCWSTR file;
     HICON   m_hIcon;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    LangEntry m_entry_copy;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddIconDlg(ConstantsDB& db, ResEntries& entries)
-        : MDialogBase(IDD_ADDICON), m_entries(entries), file(NULL), m_hIcon(NULL),
-          m_db(db)
+    MAddIconDlg()
+        : MDialogBase(IDD_ADDICON), file(NULL), m_hIcon(NULL)
     {
     }
 
@@ -67,7 +64,7 @@ public:
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_ICON);
+        InitResNameComboBox(hCmb2, L"", IDTYPE_ICON);
         SetWindowText(hCmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -98,7 +95,7 @@ public:
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -111,15 +108,15 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        BOOL bOverwrite = FALSE;
-        INT iEntry = Res_Find(m_entries, RT_GROUP_ICON, name, lang, FALSE);
-        if (iEntry != -1)
+        bool bOverwrite = false;
+        auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang);
+        if (entry)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                bOverwrite = TRUE;
+                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -127,7 +124,7 @@ public:
             }
         }
 
-        if (!Res_AddGroupIcon(m_entries, name, lang, file, bOverwrite))
+        if (!TV_AddGroupIcon(g_tv, name, lang, file, bOverwrite))
         {
             if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEICO);
@@ -136,8 +133,7 @@ public:
             return;
         }
 
-        ResEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = LangEntry(type, name, lang);
 
         EndDialog(IDOK);
     }

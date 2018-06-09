@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -186,19 +186,19 @@ public:
         ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
-        StringCchPrintfW(line, _countof(line),
-            L"FILEVERSION\t%u, %u, %u, %u\r\n",
-            HIWORD(m_fixed.dwFileVersionMS),
-            LOWORD(m_fixed.dwFileVersionMS),
-            HIWORD(m_fixed.dwFileVersionLS),
+        StringCchPrintfW(line, _countof(line), 
+            L"FILEVERSION\t%u, %u, %u, %u\r\n", 
+            HIWORD(m_fixed.dwFileVersionMS), 
+            LOWORD(m_fixed.dwFileVersionMS), 
+            HIWORD(m_fixed.dwFileVersionLS), 
             LOWORD(m_fixed.dwFileVersionLS));
         ret += line;
 
-        StringCchPrintfW(line, _countof(line),
-            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n",
-            HIWORD(m_fixed.dwProductVersionMS),
-            LOWORD(m_fixed.dwProductVersionMS),
-            HIWORD(m_fixed.dwProductVersionLS),
+        StringCchPrintfW(line, _countof(line), 
+            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n", 
+            HIWORD(m_fixed.dwProductVersionMS), 
+            LOWORD(m_fixed.dwProductVersionMS), 
+            HIWORD(m_fixed.dwProductVersionLS), 
             LOWORD(m_fixed.dwProductVersionLS));
         ret += line;
 

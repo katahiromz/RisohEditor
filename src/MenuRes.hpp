@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -384,10 +384,10 @@ public:
         return true;
     }
 
-    string_type Dump(MIdOrString name, const ConstantsDB& db)
+    string_type Dump(MIdOrString name)
     {
         if (IsExtended())
-            return DumpEx(name, db);
+            return DumpEx(name);
 
         string_type ret;
 
@@ -397,7 +397,7 @@ public:
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENU\r\n";
@@ -443,7 +443,7 @@ public:
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
                     }
                     ret += DumpFlags(it->fItemFlags);
                     ret += L"\r\n";
@@ -462,7 +462,7 @@ public:
         return ret;
     }
 
-    string_type DumpEx(MIdOrString name, const ConstantsDB& db)
+    string_type DumpEx(MIdOrString name)
     {
         string_type ret;
 
@@ -472,7 +472,7 @@ public:
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENUEX\r\n";
@@ -503,20 +503,20 @@ public:
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
                     }
                 }
                 if (it->dwType || it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
                     DWORD value = it->dwType;
-                    ret += db.DumpBitFieldOrZero(L"MFT_", value);
+                    ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
                 }
                 if (it->dwState || it->dwHelpId)
                 {
                     ret += L", ";
                     DWORD value = it->dwState;
-                    ret += db.DumpBitFieldOrZero(L"MFS_", value);
+                    ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
                 }
                 if (it->dwHelpId)
                 {
@@ -527,7 +527,7 @@ public:
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
+                        ret += g_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
                     }
                 }
                 ret += L"\r\n";
@@ -554,20 +554,20 @@ public:
                         }
                         else
                         {
-                            ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                            ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
                         }
                     }
                     if (it->dwType || it->dwState)
                     {
                         ret += L", ";
                         DWORD value = it->dwType;
-                        ret += db.DumpBitFieldOrZero(L"MFT_", value);
+                        ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
                     }
                     if (it->dwState)
                     {
                         ret += L", ";
                         DWORD value = it->dwState;
-                        ret += db.DumpBitFieldOrZero(L"MFS_", value);
+                        ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
                     }
                     ret += L"\r\n";
                 }

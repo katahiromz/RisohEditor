@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,7 +27,7 @@
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
@@ -36,16 +36,12 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 class MAddBitmapDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
     LPCWSTR m_file;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    LangEntry m_entry_copy;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddBitmapDlg(ConstantsDB& db, ResEntries& entries) :
-        MDialogBase(IDD_ADDBITMAP), m_entries(entries), m_file(NULL),
-        m_db(db)
+    MAddBitmapDlg() : MDialogBase(IDD_ADDBITMAP), m_file(NULL)
     {
     }
 
@@ -57,7 +53,7 @@ public:
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_BITMAP);
+        InitResNameComboBox(hCmb2, L"", IDTYPE_BITMAP);
         SetWindowText(hCmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -101,7 +97,7 @@ public:
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -109,15 +105,14 @@ public:
         if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        BOOL bOverwrite = FALSE;
-        INT iEntry = Res_Find(m_entries, RT_BITMAP, name, lang, FALSE);
-        if (iEntry != -1)
+        bool bOverwrite = false;
+        if (auto entry = g_res.find(ET_LANG, RT_BITMAP, name, lang))
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                bOverwrite = TRUE;
+                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -130,7 +125,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!Res_AddBitmap(m_entries, name, lang, file, bOverwrite))
+        if (!TV_AddBitmap(g_tv, name, lang, file, bOverwrite))
         {
             if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEBMP);
@@ -139,8 +134,7 @@ public:
             return;
         }
 
-        ResEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = LangEntry(type, name, lang);
 
         EndDialog(IDOK);
     }

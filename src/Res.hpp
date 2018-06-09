@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -36,7 +36,7 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 
-struct ResEntry;
+struct BaseEntry;
 struct EntrySet;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
@@ -109,6 +109,7 @@ TV_GetMaster(void)
     static HWND hwndTV = NULL;
     return hwndTV;
 }
+#define g_tv TV_GetMaster()
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntryType
@@ -138,7 +139,11 @@ struct EntryBase
     INT             m_cRefs = -1;
     HTREEITEM       m_hItem = NULL;
 
-    EntryBase(EntryType e_type, const MIdOrString& type,
+    EntryBase()
+    {
+    }
+
+    EntryBase(EntryType e_type, const MIdOrString& type, 
               const MIdOrString& name = L"", WORD lang = 0xFFFF)
         : m_e_type(e_type), m_type(type), m_name(name), m_lang(lang)
     {
@@ -193,8 +198,7 @@ struct EntryBase
         if (!m_type.m_id)
             return m_type.m_str;
 
-        ConstantsDB& db = DB_GetMaster();
-        MStringW label = db.GetName(L"RESOURCE", m_type.m_id);
+        MStringW label = g_db.GetName(L"RESOURCE", m_type.m_id);
         if (label.empty())
             return mstr_dec_word(m_type.m_id);
 
@@ -210,9 +214,8 @@ struct EntryBase
         if (!id)
             return m_name.m_str;
 
-        ConstantsDB& db = DB_GetMaster();
-        INT nIDTYPE_ = db.IDTypeFromResType(m_type) const
-        MStringW label = db.GetNameOfResID(nIDTYPE_, id);
+        INT nIDTYPE_ = g_db.IDTypeFromResType(m_type);
+        MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
         if (label.empty())
             return mstr_dec_word(id);
 
@@ -262,6 +265,10 @@ struct LangEntry : EntryBase
 {
     data_type m_data;
     MStringW  m_strText;
+
+    LangEntry()
+    {
+    }
 
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
         : EntryBase(ET_NAME, type, name, lang)
@@ -357,20 +364,20 @@ struct EntrySet : private std::set<EntryBase *>
     {
     }
 
-    bool search(super_type& found, EntryType e_type, const MIdOrString& type,
+    bool search(super_type& found, EntryType e_type, const MIdOrString& type, 
                 const MIdOrString& name, WORD lang = 0xFFFF)
     {
         found.clear();
 
-        for (auto item : *this)
+        for (auto entry : *this)
         {
-            if (item->match(e_type, type, name, lang))
-                found.insert(item);
+            if (entry->match(e_type, type, name, lang))
+                found.insert(entry);
         }
         return !found.empty();
     }
 
-    EntryBase *find(EntryType e_type, const MIdOrString& type,
+    EntryBase *find(EntryType e_type, const MIdOrString& type, 
               const MIdOrString& name = L"", WORD lang = 0xFFFF)
     {
         super_type found;
@@ -381,7 +388,7 @@ struct EntrySet : private std::set<EntryBase *>
         return NULL;
     }
 
-    HTREEITEM find2(EntryType e_type, const MIdOrString& type,
+    HTREEITEM find2(EntryType e_type, const MIdOrString& type, 
               const MIdOrString& name = L"", WORD lang = 0xFFFF)
     {
         if (auto entry = find(e_type, type, name, lang))
@@ -407,31 +414,32 @@ struct EntrySet : private std::set<EntryBase *>
 
     void do_delete(EntryBase *entry)
     {
+        void Res_DeleteEntry(EntryBase *entry);
         Res_DeleteEntry(entry);
     }
 
-    void search_and_delete(EntryType e_type, const MIdOrString& type,
-                           const MIdOrString& name = "", WORD lang = 0xFFFF)
+    void search_and_delete(EntryType e_type, const MIdOrString& type, 
+                           const MIdOrString& name = L"", WORD lang = 0xFFFF)
     {
         super_type found;
         search(found, e_type, type, name, lang);
-        for (auto item : found)
+        for (auto entry : found)
         {
-            do_delete(item);
+            do_delete(entry);
         }
     }
 
     UINT get_last_id(const MIdOrString& type, WORD lang) const
     {
         WORD wLastID = 0;
-        for (auto item : *this)
+        for (auto entry : *this)
         {
-            if (item->m_type != type || !item->m_name.is_int() || item->m_name.is_zero())
+            if (entry->m_type != type || !entry->m_name.is_int() || entry->m_name.is_zero())
                 continue;
-            if (item->m_lang != lang)
+            if (entry->m_lang != lang)
                 continue;
-            if (wLastID < item->name.m_id)
-                wLastID = item->name.m_id;
+            if (wLastID < entry->m_name.m_id)
+                wLastID = entry->m_name.m_id;
         }
         return wLastID;
     }
@@ -446,18 +454,21 @@ struct EntrySet : private std::set<EntryBase *>
             return FALSE;
         }
 
-        for (auto item : *this)
+        for (auto entry : *this)
         {
+            if (entry->m_e_type != ET_LANG)
+                continue;
+
+            LangEntry& le = (LangEntry&)(*entry);
+
             void *pv = NULL;
             DWORD size = 0;
-            if (!item->empty())
+            if (!le.empty())
             {
-                pv = const_cast<void *>(entry.ptr());
-                size = entry.size();
+                pv = const_cast<void *>(le.ptr());
+                size = le.size();
             }
-            if (!::UpdateResourceW(hUpdate,
-                                   item->type.ptr(), item->name.ptr(), item->lang,
-                                   pv, size))
+            if (!::UpdateResourceW(hUpdate, le.m_type.ptr(), le.m_name.ptr(), le.m_lang, pv, size))
             {
                 assert(0);
                 ::EndUpdateResourceW(hUpdate, TRUE);
@@ -467,14 +478,15 @@ struct EntrySet : private std::set<EntryBase *>
         return ::EndUpdateResourceW(hUpdate, FALSE);
     }
 
-    void DoBitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
+    void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_BITMAP;
         auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
-        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], entry->size());
+        LangEntry& le = (LangEntry&)(*entry);
+        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&le[0], le.size());
         if (hbm)
         {
             if (!item.m_title.empty())
@@ -486,18 +498,19 @@ struct EntrySet : private std::set<EntryBase *>
         }
     }
 
-    void DoIcon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
+    void do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_GROUP_ICON;
         auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
-        if (entry->size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+        LangEntry& le = (LangEntry&)(*entry);
+        if (le.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
             return;
 
-        ICONDIR& dir = (ICONDIR&)(*entry)[0];
-        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&(*entry)[sizeof(ICONDIR)];
+        ICONDIR& dir = (ICONDIR&)le[0];
+        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&le[sizeof(ICONDIR)];
 
         int cx = 0, cy = 0, bits = 0, n = 0;
         for (int m = 0; m < dir.idCount; ++m)
@@ -518,7 +531,7 @@ struct EntrySet : private std::set<EntryBase *>
         if (!entry)
             return;
 
-        HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
+        HICON hIcon = CreateIconFromResource((PBYTE)&le[0], le.size(), TRUE, 0x00030000);
         if (hIcon)
         {
             if (!item.m_title.empty())
@@ -530,25 +543,25 @@ struct EntrySet : private std::set<EntryBase *>
         }
     }
 
-    BOOL extract_cursor(const EntryBase& cur_entry, const wchar_t *file_name)
+    bool extract_cursor(const LangEntry& c_entry, const wchar_t *file_name)
     {
         ICONDIR dir = { 0, RES_CURSOR, 1 };
 
         LOCALHEADER local;
-        if (cur_entry.size() < sizeof(local))
+        if (c_entry.size() < sizeof(local))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
-        memcpy(&local, &cur_entry[0], sizeof(local));
+        memcpy(&local, &c_entry[0], sizeof(local));
 
         BITMAP bm;
-        LPBYTE pb = LPBYTE(&cur_entry[0]) + sizeof(local);
-        DWORD cb = cur_entry.size() - sizeof(local);
+        LPBYTE pb = LPBYTE(&c_entry[0]) + sizeof(local);
+        DWORD cb = c_entry.size() - sizeof(local);
         if (!PackedDIB_GetInfo(pb, cb, bm))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         ICONDIRENTRY entry;
@@ -558,12 +571,12 @@ struct EntrySet : private std::set<EntryBase *>
         entry.bReserved = 0;
         entry.xHotSpot = local.xHotSpot;
         entry.yHotSpot = local.yHotSpot;
-        entry.dwBytesInRes = cur_entry.size() - sizeof(local);
+        entry.dwBytesInRes = c_entry.size() - sizeof(local);
         entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
 
         DWORD cbLocal = sizeof(LOCALHEADER);
-        pb = LPBYTE(&cur_entry[0]) + cbLocal;
-        cb = cur_entry.size() - cbLocal;
+        pb = LPBYTE(&c_entry[0]) + cbLocal;
+        cb = c_entry.size() - cbLocal;
 
         MByteStreamEx stream;
         if (!stream.WriteRaw(dir) ||
@@ -571,52 +584,53 @@ struct EntrySet : private std::set<EntryBase *>
             !stream.WriteData(pb, cb))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         return stream.SaveToFile(file_name);
     }
 
-    BOOL
-    extract_group_cursor(const EntryBase& group, const wchar_t *file_name)
+    bool extract_group_cursor(const LangEntry& group, const wchar_t *file_name)
     {
         ICONDIR dir;
-        if (group.type != RT_GROUP_CURSOR ||
+        if (group.m_type != RT_GROUP_CURSOR ||
             group.size() < sizeof(dir))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         memcpy(&dir, &group[0], sizeof(dir));
         if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         DWORD SizeOfCursorEntries = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
         if (group.size() < sizeof(dir) + SizeOfCursorEntries)
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
-        memcpy(&GroupEntries[0], &group[sizeof(dir)],
+        memcpy(&GroupEntries[0], &group[sizeof(dir)], 
                SizeOfCursorEntries);
 
         DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.lang);
+            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
+            auto& le = (LangEntry&)*entry;
+
             LOCALHEADER local;
-            if (entry->size() >= sizeof(local))
-                memcpy(&local, &(*entry)[0], sizeof(local));
+            if (le.size() >= sizeof(local))
+                memcpy(&local, &le[0], sizeof(local));
 
             DirEntries[i].bWidth = (BYTE)GroupEntries[i].wWidth;
             DirEntries[i].bHeight = (BYTE)GroupEntries[i].wHeight;
@@ -627,7 +641,7 @@ struct EntrySet : private std::set<EntryBase *>
             DirEntries[i].bReserved = 0;
             DirEntries[i].xHotSpot = local.xHotSpot;
             DirEntries[i].yHotSpot = local.yHotSpot;
-            DirEntries[i].dwBytesInRes = entry->size() - sizeof(local);
+            DirEntries[i].dwBytesInRes = le.size() - sizeof(local);
             DirEntries[i].dwImageOffset = offset;
             offset += DirEntries[i].dwBytesInRes;
         }
@@ -636,24 +650,26 @@ struct EntrySet : private std::set<EntryBase *>
         if (!stream.WriteRaw(dir))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
         if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.lang, FALSE);
+            auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
-            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = (*entry).size() - cbLocal;
-            LPBYTE pb = LPBYTE(&(*entry)[0]) + cbLocal;
+            auto& le = (LangEntry&)*entry;
+
+            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = le.size() - cbLocal;
+            LPBYTE pb = LPBYTE(&le[0]) + cbLocal;
             if (!stream.WriteData(pb, dwSize))
             {
                 assert(0);
@@ -664,7 +680,7 @@ struct EntrySet : private std::set<EntryBase *>
         return stream.SaveToFile(file_name);
     }
 
-    BOOL extract_icon(const Entry& i_entry, const wchar_t *file_name)
+    BOOL extract_icon(const LangEntry& i_entry, const wchar_t *file_name)
     {
         ICONDIR dir = { 0, RES_ICON, 1 };
 
@@ -696,35 +712,34 @@ struct EntrySet : private std::set<EntryBase *>
             !stream.WriteData(&i_entry[0], i_entry.size()))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         return stream.SaveToFile(file_name);
     }
 
-    BOOL
-    extract_group_icon(const EntryBase& group, const wchar_t *file_name)
+    bool extract_group_icon(const LangEntry& group, const wchar_t *file_name)
     {
         ICONDIR dir;
-        if (group.type != RT_GROUP_ICON ||
+        if (group.m_type != RT_GROUP_ICON ||
             group.size() < sizeof(dir))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         memcpy(&dir, &group[0], sizeof(dir));
         if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         DWORD SizeOfIconEntries = sizeof(GRPICONDIRENTRY) * dir.idCount;
         if (group.size() < sizeof(dir) + SizeOfIconEntries)
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         std::vector<GRPICONDIRENTRY> GroupEntries(dir.idCount);
@@ -734,9 +749,11 @@ struct EntrySet : private std::set<EntryBase *>
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_ICON, GroupEntries[i].nID, group.lang);
+            auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
+
+            auto& le = (LangEntry&)*entry;
 
             DirEntries[i].bWidth = GroupEntries[i].bWidth;
             DirEntries[i].bHeight = GroupEntries[i].bHeight;
@@ -747,7 +764,7 @@ struct EntrySet : private std::set<EntryBase *>
             DirEntries[i].bReserved = 0;
             DirEntries[i].wPlanes = 1;
             DirEntries[i].wBitCount = GroupEntries[i].wBitCount;
-            DirEntries[i].dwBytesInRes = (*entry).size();
+            DirEntries[i].dwBytesInRes = le.size();
             DirEntries[i].dwImageOffset = offset;
             offset += DirEntries[i].dwBytesInRes;
         }
@@ -756,24 +773,26 @@ struct EntrySet : private std::set<EntryBase *>
         if (!stream.WriteRaw(dir))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
         if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
         {
             assert(0);
-            return FALSE;
+            return false;
         }
 
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto entry = Find2(RT_ICON, GroupEntries[i].nID, group.lang, FALSE);
+            auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
-            DWORD dwSize = (*entry).size();
-            if (!stream.WriteData(&(*entry)[0], dwSize))
+            auto& le = (LangEntry&)*entry;
+
+            DWORD dwSize = le.size();
+            if (!stream.WriteData(&le[0], dwSize))
             {
                 assert(0);
                 return FALSE;
@@ -783,6 +802,14 @@ struct EntrySet : private std::set<EntryBase *>
         return stream.SaveToFile(file_name);
     }
 };
+
+inline EntrySet&
+Res_GetMaster(void)
+{
+    static EntrySet eset;
+    return eset;
+}
+#define g_res   Res_GetMaster()
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -810,20 +837,15 @@ TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline EntrySet&
-Res_GetMaster(void)
-{
-    static EntrySet eset;
-    return eset;
-}
-
 inline bool
-Res_OnDeleteGroupCursor(EntryBase *entry);
+Res_OnDeleteGroupCursor(EntryBase *entry)
 {
-    assert(entry->m_e_type == ET_LANG);
-    assert(entry.m_type == RT_GROUP_CURSOR);
+    if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
+        return false;
 
-    MByteStreamEx bs(entry->m_data);
+    auto& le = (LangEntry&)*entry;
+
+    MByteStreamEx bs(le.m_data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -837,7 +859,7 @@ Res_OnDeleteGroupCursor(EntryBase *entry);
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, entry->lang);
+        Res_GetMaster().search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, le.m_lang);
     }
     return true;
 }
@@ -845,10 +867,12 @@ Res_OnDeleteGroupCursor(EntryBase *entry);
 inline bool
 Res_OnDeleteGroupIcon(EntryBase *entry)
 {
-    assert(entry->m_e_type == ET_LANG);
-    assert(entry.m_type == RT_GROUP_ICON);
+    if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_ICON)
+        return false;
 
-    MByteStreamEx bs(entry->m_data);
+    auto& le = (LangEntry&)*entry;
+
+    MByteStreamEx bs(le.m_data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -862,7 +886,7 @@ Res_OnDeleteGroupIcon(EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, entry->lang);
+        Res_GetMaster().search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, le.m_lang);
     }
 
     return true;
@@ -872,14 +896,14 @@ inline void
 Res_OnDeleteString(EntryBase *entry)
 {
     assert(entry->m_e_type == ET_STRING);
-    Res_GetMaster().search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->lang);
+    Res_GetMaster().search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
 }
 
 inline void
 Res_OnDeleteMessage(EntryBase *entry)
 {
     assert(entry->m_e_type == ET_MESSAGE);
-    Res_GetMaster().search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->lang);
+    Res_GetMaster().search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
 }
 
 inline INT
@@ -917,7 +941,8 @@ Res_DeleteEntry(EntryBase *entry)
 {
     HWND hwndTV = TV_GetMaster();
 
-    entry->hItem = NULL;
+    HTREEITEM hItem = entry->m_hItem;
+    entry->m_hItem = NULL;
 
     HTREEITEM hParent = NULL;
     EntryBase *pParent;
@@ -933,13 +958,7 @@ Res_DeleteEntry(EntryBase *entry)
 
     switch (entry->m_e_type)
     {
-    case ET_NONE:
-        assert(0);
-        break;
-
     case ET_TYPE:
-        break;
-
     case ET_NAME:
         break;
 
@@ -963,7 +982,8 @@ Res_DeleteEntry(EntryBase *entry)
         break;
 
     default:
-        break;
+        assert(0);
+        return;
     }
 
     Res_GetMaster().erase(entry);
@@ -1001,7 +1021,7 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 }
 
 inline HTREEITEM
-TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
+TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry, 
                HTREEITEM hInsertAfter)
 {
     assert(entry);
@@ -1065,7 +1085,7 @@ TV_GetInsertPosition(HWND hwndTV, HTREEITEM hParent, EntryBase *entry)
         return NULL;
 
     // TODO:
-    ...
+    // ...
     return NULL;
 }
 
@@ -1116,7 +1136,7 @@ TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace)
 }
 
 inline HTREEITEM
-TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
+TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, 
                 bool replace)
 {
     if (replace)
@@ -1133,9 +1153,9 @@ TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
 }
 
 inline HTREEITEM
-TV_AddStingEntry(HWND hwndTV, WORD lang)
+TV_AddStringEntry(HWND hwndTV, WORD lang)
 {
-    if (auto hItem = Res_GetMaster().find2(ET_STRING, RT_STRING, 0, lang))
+    if (auto hItem = Res_GetMaster().find2(ET_STRING, RT_STRING, (WORD)0, lang))
         return hItem;
 
     auto entry = new StringEntry(lang);
@@ -1145,7 +1165,7 @@ TV_AddStingEntry(HWND hwndTV, WORD lang)
 inline HTREEITEM
 TV_AddMessageEntry(HWND hwndTV, WORD lang)
 {
-    if (auto hItem = Res_GetMaster().find2(ET_MESSAGE, RT_MESSAGETABLE, 0, lang))
+    if (auto hItem = Res_GetMaster().find2(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang))
         return hItem;
 
     auto entry = new MessageEntry(lang);
@@ -1153,7 +1173,7 @@ TV_AddMessageEntry(HWND hwndTV, WORD lang)
 }
 
 inline HTREEITEM
-TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
+TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name, 
                 WORD lang, const EntryBase::data_type& data, bool replace)
 {
     if (replace)
@@ -1168,7 +1188,7 @@ TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
 
     if (type == RT_STRING)
     {
-        TV_AddStingEntry(hwndTV, lang);
+        TV_AddStringEntry(hwndTV, lang);
     }
     if (type == RT_MESSAGETABLE)
     {
@@ -1192,7 +1212,7 @@ TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang,
     LPVOID pv = LockResource(hGlobal);
     if (pv && dwSize)
     {
-        EntryBase::data_type data(LPBYTE(pv), LPBYTE(pv) + dwSize);
+        EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
         return TV_AddLangEntry(hwndTV, type, name, lang, data, replace);
     }
 
@@ -1200,7 +1220,7 @@ TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang,
 }
 
 inline HTREEITEM
-TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang,
+TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang, 
                 const MStringW& file_name, bool replace)
 {
     if (replace)
@@ -1227,7 +1247,7 @@ TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang,
 }
 
 inline HTREEITEM
-TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang,
+TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang, 
                   const MStringW& file_name, bool replace)
 {
     if (replace)
@@ -1254,8 +1274,8 @@ TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang,
 }
 
 inline HTREEITEM
-TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
-             const MStringW& file, bool replace = FALSE)
+TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang, 
+             const MStringW& file, bool replace = false)
 {
     MByteStreamEx stream;
     if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
@@ -1294,7 +1314,7 @@ TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
 }
 
 inline BOOL CALLBACK
-TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
+TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName, 
                    WORD wIDLanguage, LPARAM lParam)
 {
     HWND hwndTV = TV_GetMaster();
@@ -1304,7 +1324,7 @@ TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName,
 }
 
 inline BOOL CALLBACK
-TV_EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
+TV_EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
 {
     return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, TV_EnumResLangProc, lParam);
 }

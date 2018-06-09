@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,7 +33,6 @@
 class MTestDialog : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
     DialogRes& m_dialog_res;
     MIdOrString m_menu;
     WORD m_lang;
@@ -44,8 +43,8 @@ public:
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
 
-    MTestDialog(ResEntries& entries, DialogRes& dialog_res, MIdOrString menu, WORD lang, const std::vector<BYTE>& dlginit_data)
-        : m_entries(entries), m_dialog_res(dialog_res), m_menu(menu),
+    MTestDialog(DialogRes& dialog_res, MIdOrString menu, WORD lang, const std::vector<BYTE>& dlginit_data)
+        : m_dialog_res(dialog_res), m_menu(menu), 
           m_lang(lang), m_hMenu(NULL), m_dlginit_data(dlginit_data)
     {
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
@@ -92,11 +91,11 @@ public:
                 // static
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
-                    Res_DoIcon(m_entries, m_title_to_icon, item, lang);
+                    g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    Res_DoBitmap(m_entries, m_title_to_bitmap, item, lang);
+                    g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }
@@ -112,11 +111,10 @@ public:
         }
         if (!m_menu.empty())
         {
-            INT i = Res_Find2(m_entries, RT_MENU, m_menu, m_lang, FALSE);
-            if (i != -1)
+            if (auto entry = g_res.find(ET_LANG, RT_MENU, m_menu, m_lang))
             {
-                ResEntry& entry = m_entries[i];
-                m_hMenu = LoadMenuIndirect(&entry[0]);
+                auto& le = (LangEntry&)*entry;
+                m_hMenu = LoadMenuIndirect(&le[0]);
                 SetMenu(hwnd, m_hMenu);
 
                 INT cyMenu = GetSystemMetrics(SM_CYMENU);

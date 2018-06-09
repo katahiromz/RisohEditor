@@ -31,15 +31,15 @@ public:
         m_vecPanes.resize(1);
     }
 
-    BOOL CreateDx(HWND hwndParent, INT nPaneCount = 2,
-                  DWORD dwStyle = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN,
+    BOOL CreateDx(HWND hwndParent, INT nPaneCount = 2, 
+                  DWORD dwStyle = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN, 
                   DWORD dwExStyle = 0)
     {
         RECT rc;
         GetClientRect(hwndParent, &rc);
 
-        if (!CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle,
-                            rc.left, rc.top,
+        if (!CreateWindowDx(hwndParent, NULL, dwStyle, dwExStyle, 
+                            rc.left, rc.top, 
                             rc.right - rc.left, rc.bottom - rc.top))
         {
             return FALSE;
@@ -233,7 +233,7 @@ public:
 
             GetPaneRect(i, &rc);
             hDWP = DeferWindowPos(hDWP, hwndPane, NULL, 
-                rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+                rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 
                 SWP_NOZORDER | SWP_NOACTIVATE);
         }
         EndDeferWindowPos(hDWP);

@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -238,7 +238,6 @@ public:
 class MMacrosDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
     macro_map_type m_map;
     MResizable m_resizable;
     HWND m_hLst1;
@@ -246,9 +245,9 @@ public:
     HICON m_hIconSm;
     MString m_strTemp;
 
-    MMacrosDlg(RisohSettings& settings)
-        : MDialogBase(IDD_MACROS), m_settings(settings),
-          m_map(settings.macros)
+    MMacrosDlg()
+        : MDialogBase(IDD_MACROS), 
+          m_map(g_settings.macros)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);

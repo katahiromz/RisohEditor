@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -30,11 +30,9 @@ class MIdAssocDlg : public MDialogBase
 {
 public:
     typedef std::map<MString, MString> map_type;
-    RisohSettings& m_settings;
     HWND m_hLst1;
 
-    MIdAssocDlg(RisohSettings& settings)
-        : MDialogBase(IDD_IDASSOC), m_settings(settings)
+    MIdAssocDlg() : MDialogBase(IDD_IDASSOC)
     {
     }
 
@@ -45,8 +43,8 @@ public:
         LV_ITEM item;
 
         INT iItem = 0;
-        map_type::iterator it, end = m_settings.assoc_map.end();
-        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+        map_type::iterator it, end = g_settings.assoc_map.end();
+        for (it = g_settings.assoc_map.begin(); it != end; ++it)
         {
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
@@ -99,7 +97,7 @@ public:
 
     void OnPsh2(HWND hwnd)
     {
-        m_settings.ResetAssoc();
+        g_settings.ResetAssoc();
         Lst1_Init(m_hLst1);
     }
 
@@ -139,7 +137,7 @@ public:
             ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
             str2 = szText;
 
-            m_settings.assoc_map[str1] = str2;
+            g_settings.assoc_map[str1] = str2;
         }
 
         EndDialog(IDOK);

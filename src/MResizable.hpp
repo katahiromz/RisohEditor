@@ -42,9 +42,9 @@ protected:
 
         MCtrlLayout() { }
 
-        MCtrlLayout(HWND hwndCtrl, SIZE sizLA_1, SIZE sizMargin1,
-            SIZE sizLA_2, SIZE sizMargin2) : m_hwndCtrl(hwndCtrl),
-            m_sizLA_1(sizLA_1), m_sizMargin1(sizMargin1),
+        MCtrlLayout(HWND hwndCtrl, SIZE sizLA_1, SIZE sizMargin1, 
+            SIZE sizLA_2, SIZE sizMargin2) : m_hwndCtrl(hwndCtrl), 
+            m_sizLA_1(sizLA_1), m_sizMargin1(sizMargin1), 
             m_sizLA_2(sizLA_2), m_sizMargin2(sizMargin2)
         {
         }
@@ -57,7 +57,7 @@ public:
     virtual ~MResizable();
 
     // NOTE: Please call OnParentCreate after parent's WM_CREATE or WM_INITDIALOG.
-    VOID OnParentCreate(HWND hwnd, BOOL bEnableResize = TRUE,
+    VOID OnParentCreate(HWND hwnd, BOOL bEnableResize = TRUE, 
                         BOOL bShowSizeGrip = TRUE);
 
     // NOTE: Please call OnSize on parent's WM_SIZE.
@@ -65,9 +65,9 @@ public:
 
     // NOTE: Please call SetLayoutAnchor after OnParentCreate.
     // NOTE: sizLA_1 is upper left anchor, sizLA_2 is lower right anchor.
-    VOID SetLayoutAnchor(HWND hwndCtrl,
+    VOID SetLayoutAnchor(HWND hwndCtrl, 
                          MSize sizLA_1, MSize sizLA_2 = mzcLA_NO_ANCHOR);
-    VOID SetLayoutAnchor(UINT nCtrlID,
+    VOID SetLayoutAnchor(UINT nCtrlID, 
                          MSize sizLA_1, MSize sizLA_2 = mzcLA_NO_ANCHOR);
 
           layout_type *CtrlLayout(HWND hwndCtrl);
@@ -151,9 +151,9 @@ inline VOID MResizable::ShowSizeGrip(BOOL bShow/* = TRUE*/)
             GetClientRect(m_hwndParent, &ClientRect);
             INT cx = ::GetSystemMetrics(SM_CXVSCROLL);
             INT cy = ::GetSystemMetrics(SM_CYHSCROLL);
-            m_size_grip.CreateWindowDx(m_hwndParent, NULL,
-                WS_CHILD | WS_CLIPSIBLINGS | SBS_SIZEGRIP, 0,
-                ClientRect.right - cx, ClientRect.bottom - cy,
+            m_size_grip.CreateWindowDx(m_hwndParent, NULL, 
+                WS_CHILD | WS_CLIPSIBLINGS | SBS_SIZEGRIP, 0, 
+                ClientRect.right - cx, ClientRect.bottom - cy, 
                 cx, cy, reinterpret_cast<HMENU>(123456789));
         }
 
@@ -179,8 +179,8 @@ inline VOID MResizable::MoveSizeGrip()
         GetClientRect(m_hwndParent, &ClientRect);
         INT cx = ::GetSystemMetrics(SM_CXVSCROLL);
         INT cy = ::GetSystemMetrics(SM_CYHSCROLL);
-        SetWindowPos(m_size_grip, NULL,
-            ClientRect.right - cx, ClientRect.bottom - cy,
+        SetWindowPos(m_size_grip, NULL, 
+            ClientRect.right - cx, ClientRect.bottom - cy, 
             cx, cy, SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
     }
 }
@@ -227,7 +227,7 @@ inline VOID MResizable::ModifyParentStyle(BOOL bEnableResize)
         RemoveMenu(hSysMenu, SC_SIZE, MF_BYCOMMAND);
         RemoveMenu(hSysMenu, SC_RESTORE, MF_BYCOMMAND);
     }
-    RedrawWindow(m_hwndParent, NULL, NULL,
+    RedrawWindow(m_hwndParent, NULL, NULL, 
                    RDW_FRAME | RDW_INVALIDATE | RDW_ERASENOW);
     InvalidateRect(m_hwndParent, NULL, TRUE);
 }
@@ -240,7 +240,7 @@ MResizable::EnableResize(BOOL bEnableResize, BOOL bShowSizeGrip/* = TRUE*/)
     m_bResizeEnabled = bEnableResize;
 }
 
-inline VOID MResizable::OnParentCreate(HWND hwndParent, BOOL bEnableResize,
+inline VOID MResizable::OnParentCreate(HWND hwndParent, BOOL bEnableResize, 
                                        BOOL bShowSizeGrip/* = TRUE*/)
 {
     assert(hwndParent);
@@ -290,7 +290,7 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
         MRect ChildRect, NewRect;
 
         GetWindowRect(hwndCtrl, &ChildRect);
-        MapWindowPoints(NULL, m_hwndParent,
+        MapWindowPoints(NULL, m_hwndParent, 
                           reinterpret_cast<LPPOINT>(&ChildRect), 2);
 
         NewRect.left = layout.m_sizMargin1.cx +
@@ -304,8 +304,8 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
 
         if (NewRect != ChildRect)
         {
-            hDwp = ::DeferWindowPos(hDwp, hwndCtrl, NULL,
-                NewRect.left, NewRect.top,
+            hDwp = ::DeferWindowPos(hDwp, hwndCtrl, NULL, 
+                NewRect.left, NewRect.top, 
                 NewRect.Width(), NewRect.Height(), uFlags);
         }
 
@@ -325,7 +325,7 @@ inline VOID MResizable::SetLayoutAnchor(
     MRect ClientRect, ChildRect;
     GetClientRect(m_hwndParent, &ClientRect);
     GetWindowRect(hwndCtrl, &ChildRect);
-    MapWindowPoints(NULL, m_hwndParent,
+    MapWindowPoints(NULL, m_hwndParent, 
                     reinterpret_cast<LPPOINT>(&ChildRect), 2);
 
     if (sizLA_2 == mzcLA_NO_ANCHOR)

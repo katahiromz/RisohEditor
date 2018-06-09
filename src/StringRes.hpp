@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,8 +33,8 @@ struct STRING_ENTRY
     WCHAR StringValue[512];
 };
 
-BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -93,7 +93,7 @@ public:
         return true;
     }
 
-    string_type Dump(const ConstantsDB& db, WORD wName)
+    string_type Dump(WORD wName)
     {
         string_type ret;
 
@@ -114,7 +114,7 @@ public:
             }
             else
             {
-                ret += db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, i);
+                ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, i);
             }
 
             ret += L", \"";
@@ -126,7 +126,7 @@ public:
         return ret;
     }
 
-    string_type Dump(const ConstantsDB& db)
+    string_type Dump()
     {
         string_type ret;
 
@@ -146,7 +146,7 @@ public:
             }
             else
             {
-                ret += db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
+                ret += g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
             }
 
             ret += L", \"";

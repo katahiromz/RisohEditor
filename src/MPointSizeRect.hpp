@@ -464,9 +464,9 @@ inline MRect MRect::operator|(const RECT& rc2) const
 inline MRect MRect::MulDiv(INT nMultiplier, INT nDivisor) const
 {
     return MRect(
-        ::MulDiv(left, nMultiplier, nDivisor),
-        ::MulDiv(top, nMultiplier, nDivisor),
-        ::MulDiv(right, nMultiplier, nDivisor),
+        ::MulDiv(left, nMultiplier, nDivisor), 
+        ::MulDiv(top, nMultiplier, nDivisor), 
+        ::MulDiv(right, nMultiplier, nDivisor), 
         ::MulDiv(bottom, nMultiplier, nDivisor));
 }
 

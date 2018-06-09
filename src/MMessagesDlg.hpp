@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -34,9 +34,9 @@ class MAddMsgDlg;
 class MModifyMsgDlg;
 class MMessagesDlg;
 
-void InitMessageComboBox(HWND hCmb, ConstantsDB& db, MString strString);
-BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
-void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
+void InitMessageComboBox(HWND hCmb, MString strString);
+BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
+void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -44,19 +44,18 @@ class MAddMsgDlg : public MDialogBase
 {
 public:
     MESSAGE_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MessageRes& m_msg_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MAddMsgDlg(ConstantsDB& db, MESSAGE_ENTRY& entry, MessageRes& msg_res)
-        : MDialogBase(IDD_ADDMSG), m_entry(entry), m_db(db), m_msg_res(msg_res)
+    MAddMsgDlg(ConstantsDB& MESSAGE_ENTRY& entry, MessageRes& msg_res)
+        : MDialogBase(IDD_ADDMSG), m_entry(entry), m_msg_res(msg_res)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitMessageComboBox(hCmb1, m_db, L"");
+        InitMessageComboBox(hCmb1, m_L"");
         SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
@@ -66,7 +65,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        if (!MsgDlg_GetEntry(hwnd, m_entry, m_db))
+        if (!MsgDlg_GetEntry(hwnd, m_entry, g_db))
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -74,9 +73,9 @@ public:
             return;
         }
         INT value;
-        if (m_db.HasResID(m_entry.MessageID))
+        if (g_db.HasResID(m_entry.MessageID))
         {
-            value = m_db.GetResIDValue(m_entry.MessageID);
+            value = g_db.GetResIDValue(m_entry.MessageID);
         }
         else
         {
@@ -138,29 +137,28 @@ class MModifyMsgDlg : public MDialogBase
 {
 public:
     MESSAGE_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MessageRes& m_msg_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MModifyMsgDlg(ConstantsDB& db, MESSAGE_ENTRY& entry, MessageRes& msg_res)
-        : MDialogBase(IDD_MODIFYMSG), m_entry(entry), m_db(db), m_msg_res(msg_res)
+    MModifyMsgDlg(ConstantsDB& MESSAGE_ENTRY& entry, MessageRes& msg_res)
+        : MDialogBase(IDD_MODIFYMSG), m_entry(entry), m_msg_res(msg_res)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitMessageComboBox(hCmb1, m_db, L"");
+        InitMessageComboBox(hCmb1, m_L"");
         SubclassChildDx(m_cmb1, cmb1);
 
-        MsgDlg_SetEntry(hwnd, m_entry, m_db);
+        MsgDlg_SetEntry(hwnd, m_entry);
         CenterWindowDx();
         return TRUE;
     }
 
     void OnOK(HWND hwnd)
     {
-        if (!MsgDlg_GetEntry(hwnd, m_entry, m_db))
+        if (!MsgDlg_GetEntry(hwnd, m_entry, g_db))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -213,14 +211,13 @@ class MMessagesDlg : public MDialogBase
 {
 public:
     MessageRes m_msg_res;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MMessagesDlg(ConstantsDB& db, MessageRes& msg_res)
-        : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res), m_db(db)
+    MMessagesDlg(ConstantsDB& MessageRes& msg_res)
+        : MDialogBase(IDD_MESSAGES), m_msg_res(msg_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -246,7 +243,7 @@ public:
             if (it->second.empty())
                 continue;
 
-            MStringW str = m_db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
+            MStringW str = g_db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
@@ -318,7 +315,7 @@ public:
     {
         MESSAGE_ENTRY me;
         ZeroMemory(&me, sizeof(me));
-        MAddMsgDlg dialog(m_db, me, m_msg_res);
+        MAddMsgDlg dialog(m_me, m_msg_res);
         if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
@@ -362,7 +359,7 @@ public:
         ListView_SetItemState(m_hLst1, iItem, state, state);
         ListView_EnsureVisible(m_hLst1, iItem, FALSE);
 
-        ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+        ULONG dwValue = g_db.GetResIDValue(me.MessageID);
         m_msg_res.m_map[dwValue] = me.MessageValue;
     }
 
@@ -387,7 +384,7 @@ public:
             MESSAGE_ENTRY me;
             GetEntry(hwnd, iItem, me);
 
-            ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+            ULONG dwValue = g_db.GetResIDValue(me.MessageID);
             m_msg_res.m_map.erase(dwValue);
 
             ListView_DeleteItem(m_hLst1, iItem);
@@ -411,13 +408,13 @@ public:
         MESSAGE_ENTRY me;
         GetEntry(hwnd, iItem, me);
 
-        MModifyMsgDlg dialog(m_db, me, m_msg_res);
+        MModifyMsgDlg dialog(m_me, m_msg_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             MString str = mstr_quote(me.MessageValue);
             ListView_SetItemText(m_hLst1, iItem, 1, &str[0]);
 
-            ULONG dwValue = m_db.GetResIDValue(me.MessageID);
+            ULONG dwValue = g_db.GetResIDValue(me.MessageID);
             m_msg_res.m_map[dwValue] = str;
         }
     }
@@ -438,7 +435,7 @@ public:
         {
             GetEntry(hwnd, iItem, me);
 
-            DWORD dwID = m_db.GetResIDValue(me.MessageID);
+            DWORD dwID = g_db.GetResIDValue(me.MessageID);
             std::wstring str = me.MessageValue;
 
             m_msg_res.map().insert(std::make_pair(dwID, str));

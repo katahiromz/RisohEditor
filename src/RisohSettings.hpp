@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -160,7 +160,7 @@ struct RisohSettings
     {
         macros.clear();
 
-#define DEF_VALUE(x,val)         macros.insert(std::make_pair(TEXT(#x), TEXT(#val)))
+#define DEF_VALUE(x, val)         macros.insert(std::make_pair(TEXT(#x), TEXT(#val)))
         // TODO: update these values
         DEF_VALUE(_WIN32, 1);
         DEF_VALUE(__GNUC__, 7);
@@ -220,6 +220,14 @@ struct RisohSettings
 #undef DEF_LANG
     }
 };
+
+inline RisohSettings&
+RisohSettings_GetMaster(void)
+{
+    static RisohSettings s_settings;
+    return s_settings;
+}
+#define g_settings RisohSettings_GetMaster()
 
 //////////////////////////////////////////////////////////////////////////////
 

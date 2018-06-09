@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -52,9 +52,8 @@ class DlgInitRes
 public:
     typedef DlgInitEntry                entry_type;
     typedef std::vector<entry_type>     entries_type;
-    const ConstantsDB& m_db;
 
-    DlgInitRes(const ConstantsDB& db) : m_db(db) { }
+    DlgInitRes() { }
 
     bool LoadFromStream(const MByteStreamEx& stream)
     {
@@ -112,7 +111,7 @@ public:
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
         }
 
         ret += L" DLGINIT\r\n";
@@ -129,7 +128,7 @@ public:
         for (it = m_entries.begin(); it != end; ++it)
         {
             ret += L"    ";
-            ret += m_db.GetCtrlOrCmdName(it->wCtrl);
+            ret += g_db.GetCtrlOrCmdName(it->wCtrl);
             ret += L", ";
 
 // Win16 messages

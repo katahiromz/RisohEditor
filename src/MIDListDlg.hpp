@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,8 +33,8 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString GetEntityIDText(ResEntries& entries, RisohSettings& settings, ConstantsDB& db, const MString& name, INT nIDTYPE_, BOOL bFlag);
-std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
+MString GetEntityIDText(ResEntries& entries, const MString& name, INT nIDTYPE_, BOOL bFlag);
+std::vector<INT> GetPrefixIndexes(const MString& prefix);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -68,9 +68,6 @@ class MIDListDlg : public MDialogBase
 public:
     typedef std::map<MString, MString>      assoc_map_type;
     typedef std::map<MStringA, MStringA>    id_map_type;
-    RisohSettings& m_settings;
-    ResEntries& m_entries;
-    ConstantsDB& m_db;
     HWND m_hMainWnd;
     LPWSTR m_pszResH;
     INT m_nBase;
@@ -81,9 +78,9 @@ public:
     MSubclassedListView m_lv;
     MResizable m_resizable;
 
-    MIDListDlg(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
-        : MDialogBase(IDD_IDLIST), m_entries(entries), m_db(db), m_settings(settings),
-          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL),
+    MIDListDlg(ResEntries& entries)
+        : MDialogBase(IDD_IDLIST), m_entries(entries), 
+          m_hMainWnd(NULL), m_pszResH(NULL), m_nBase(10), m_hLst1(NULL), 
           m_bChanging(FALSE)
     {
         m_hIconDiamond = LoadSmallIconDx(IDI_DIAMOND);
@@ -101,7 +98,7 @@ public:
         if (prefix.empty())
             return L"";
 
-        std::vector<INT> indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+        std::vector<INT> indexes = GetPrefixIndexes(g_settings, m_prefix);
         for (INT bFlag = FALSE; bFlag <= TRUE; ++bFlag)
         {
             for (size_t i = 0; i < indexes.size(); ++i)
@@ -110,9 +107,9 @@ public:
                 if (nIDTYPE_ == IDTYPE_UNKNOWN)
                     continue;
 
-                if (m_db.IsEntityIDType(nIDTYPE_))
+                if (g_db.IsEntityIDType(nIDTYPE_))
                 {
-                    MString str2 = GetEntityIDText(m_entries, m_settings, m_db, name, nIDTYPE_, bFlag);
+                    MString str2 = GetEntityIDText(m_name, nIDTYPE_, bFlag);
                     if (!str2.empty() && ret.find(str2) == MString::npos)
                     {
                         if (ret.empty())
@@ -130,12 +127,12 @@ public:
                 {
                     if (ret.empty())
                     {
-                        ret = m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+                        ret = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                     }
                     else
                     {
                         ret += TEXT("/");
-                        ret += m_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+                        ret += g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
                     }
                 }
             }
@@ -202,8 +199,8 @@ public:
     {
         ListView_DeleteAllItems(m_hLst1);
 
-        id_map_type::const_iterator it, end = m_settings.id_map.end();
-        for (it = m_settings.id_map.begin(); it != end; ++it)
+        id_map_type::const_iterator it, end = g_settings.id_map.end();
+        for (it = g_settings.id_map.begin(); it != end; ++it)
         {
             LV_ITEM item;
 
@@ -336,7 +333,7 @@ public:
         ComboBox_GetLBText(lpDrawItem->hwndItem, lpDrawItem->itemID, szText);
 
         InflateRect(&rc, -2, -2);
-        DrawText(lpDrawItem->hDC, szText, -1, &rc,
+        DrawText(lpDrawItem->hDC, szText, -1, &rc, 
             DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX);
         InflateRect(&rc, 2, 2);
 
@@ -391,16 +388,16 @@ public:
         column.iSubItem = 2;
         ListView_InsertColumn(m_hLst1, 2, &column);
 
-        if (m_settings.bResumeWindowPos)
+        if (g_settings.bResumeWindowPos)
         {
-            if (m_settings.nIDListLeft != CW_USEDEFAULT)
+            if (g_settings.nIDListLeft != CW_USEDEFAULT)
             {
-                POINT pt = { m_settings.nIDListLeft, m_settings.nIDListTop };
+                POINT pt = { g_settings.nIDListLeft, g_settings.nIDListTop };
                 SetWindowPosDx(&pt);
             }
-            if (m_settings.nIDListWidth != CW_USEDEFAULT)
+            if (g_settings.nIDListWidth != CW_USEDEFAULT)
             {
-                SIZE siz = { m_settings.nIDListWidth, m_settings.nIDListHeight };
+                SIZE siz = { g_settings.nIDListWidth, g_settings.nIDListHeight };
                 SetWindowPosDx(NULL, &siz);
             }
         }
@@ -412,7 +409,7 @@ public:
 
     void UpdateResHIfAsk()
     {
-        if (m_settings.bAskUpdateResH)
+        if (g_settings.bAskUpdateResH)
             PostMessage(m_hMainWnd, WM_COMMAND, ID_UPDATERESHBANG, 0);
     }
 
@@ -436,20 +433,20 @@ public:
             break;
         case ID_ADDRESID:
             {
-                MAddResIDDlg dialog(m_settings, m_entries, m_db);
+                MAddResIDDlg dialog(g_settings, m_entries);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
-                    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
                     INT value = mstr_parse_int(dialog.m_str2.c_str());
                     ConstantsDB::EntryType entry(dialog.m_str1, value);
                     table.push_back(entry);
 
                     MStringA stra1 = MTextToAnsi(CP_ACP, dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(CP_ACP, dialog.m_str2).c_str();
-                    m_settings.id_map.insert(std::make_pair(stra1, stra2));
+                    g_settings.id_map.insert(std::make_pair(stra1, stra2));
 
-                    m_settings.added_ids.insert(std::make_pair(stra1, stra2));
-                    m_settings.removed_ids.erase(stra1);
+                    g_settings.added_ids.insert(std::make_pair(stra1, stra2));
+                    g_settings.removed_ids.erase(stra1);
 
                     SetItems();
                     SendMessage(m_hMainWnd, WM_COMMAND, ID_UPDATEID, 0);
@@ -468,10 +465,10 @@ public:
             str2 = szText;
             if (szText[0] != TEXT('L') && szText[0] != TEXT('"'))
             {
-                MModifyResIDDlg dialog(m_entries, m_db, str1, str2);
+                MModifyResIDDlg dialog(m_str1, str2);
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
-                    ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
                     ConstantsDB::TableType::iterator it, end = table.end();
                     for (it = table.begin(); it != end; ++it)
                     {
@@ -489,12 +486,12 @@ public:
                     MStringA stra2old = MTextToAnsi(CP_ACP, str2).c_str();
                     MStringA stra1 = MTextToAnsi(CP_ACP, dialog.m_str1).c_str();
                     MStringA stra2 = MTextToAnsi(CP_ACP, dialog.m_str2).c_str();
-                    m_settings.id_map.erase(stra1old);
-                    m_settings.id_map.insert(std::make_pair(stra1, stra2));
-                    m_settings.added_ids.erase(stra1old);
-                    m_settings.added_ids.insert(std::make_pair(stra1, stra2));
-                    m_settings.removed_ids.erase(stra1old);
-                    m_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
+                    g_settings.id_map.erase(stra1old);
+                    g_settings.id_map.insert(std::make_pair(stra1, stra2));
+                    g_settings.added_ids.erase(stra1old);
+                    g_settings.added_ids.insert(std::make_pair(stra1, stra2));
+                    g_settings.removed_ids.erase(stra1old);
+                    g_settings.removed_ids.insert(std::make_pair(stra1old, stra2old));
 
                     ListView_SetItemText(m_hLst1, iItem, 0, &str1[0]);
                     MString assoc = GetAssoc(str1);
@@ -521,7 +518,7 @@ public:
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
                 MStringA astr2 = MTextToAnsi(CP_ACP, szText).c_str();
 
-                ConstantsDB::TableType& table = m_db.m_map[L"RESOURCE.ID"];
+                ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
                 ConstantsDB::TableType::iterator it, end = table.end();
                 for (it = table.begin(); it != end; ++it)
                 {
@@ -532,10 +529,10 @@ public:
                     }
                 }
 
-                m_settings.id_map.erase(astr1);
-                if (!m_settings.added_ids.erase(astr1))
+                g_settings.id_map.erase(astr1);
+                if (!g_settings.added_ids.erase(astr1))
                 {
-                    m_settings.removed_ids.insert(std::make_pair(astr1, astr2));
+                    g_settings.removed_ids.insert(std::make_pair(astr1, astr2));
                 }
 
                 ListView_DeleteItem(m_hLst1, iItem);
@@ -657,7 +654,7 @@ public:
             for (size_t i = 0; i < vecItems.size() && i < max_count; ++i)
             {
                 INT k = ID_IDJUMP00 + INT(i);
-                InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED,
+                InsertMenu(hMenu, 0xFFFFFFFF, MF_BYPOSITION | MF_STRING | MF_ENABLED, 
                     k, vecItems[i].c_str());
             }
 
@@ -665,7 +662,7 @@ public:
             GetCursorPos(&pt);
 
             SetForegroundWindow(hwnd);
-            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
                 pt.x, pt.y, 0, hwnd, NULL);
             PostMessage(hwnd, WM_NULL, 0, 0);
             DestroyMenu(hMenu);
@@ -700,12 +697,12 @@ public:
     {
         if (m_nBase == 10)
         {
-            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, 
                 ID_BASE10, MF_BYCOMMAND);
         }
         else if (m_nBase == 16)
         {
-            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16,
+            CheckMenuRadioItem(hMenu, ID_BASE10, ID_BASE16, 
                 ID_BASE16, MF_BYCOMMAND);
         }
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
@@ -738,8 +735,8 @@ public:
         {
             RECT rc;
             GetWindowRect(hwnd, &rc);
-            m_settings.nIDListLeft = rc.left;
-            m_settings.nIDListTop = rc.top;
+            g_settings.nIDListLeft = rc.left;
+            g_settings.nIDListTop = rc.top;
         }
     }
 
@@ -751,8 +748,8 @@ public:
         {
             RECT rc;
             GetWindowRect(hwnd, &rc);
-            m_settings.nIDListWidth = rc.right - rc.left;
-            m_settings.nIDListHeight = rc.bottom - rc.top;
+            g_settings.nIDListWidth = rc.right - rc.left;
+            g_settings.nIDListHeight = rc.bottom - rc.top;
         }
 
         m_resizable.OnSize();

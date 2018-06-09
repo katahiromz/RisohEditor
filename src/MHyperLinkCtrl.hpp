@@ -15,7 +15,7 @@ class MHyperLinkCtrl : public MWindowBase
 {
 public:
     MHyperLinkCtrl() :
-        m_bGotFocus(FALSE),
+        m_bGotFocus(FALSE), 
         m_hHandCursor(LoadCursor(NULL, IDC_HAND))
     {
     }

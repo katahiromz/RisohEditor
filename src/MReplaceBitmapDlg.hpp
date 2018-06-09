@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,24 +27,21 @@
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MReplaceBitmapDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
-    ResEntry& m_entry;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    LangEntry& m_entry;
+    LangEntry m_entry_copy;
 
-    MReplaceBitmapDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry)
-        : MDialogBase(IDD_REPLACEBMP), m_entries(entries), m_entry(entry),
-          m_db(db)
+    MReplaceBitmapDlg(LangEntry& entry)
+        : MDialogBase(IDD_REPLACEBMP), m_entry(entry)
     {
     }
 
@@ -54,11 +51,11 @@ public:
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, m_entry.name, IDTYPE_BITMAP);
+        InitResNameComboBox(hCmb2, m_entry.m_name, IDTYPE_BITMAP);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry.lang);
+        InitLangComboBox(hCmb3, m_entry.m_lang);
 
         CenterWindowDx();
         return TRUE;
@@ -70,7 +67,7 @@ public:
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -83,14 +80,13 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!Res_AddBitmap(m_entries, name, lang, file, TRUE))
+        if (!TV_AddBitmap(g_tv, name, lang, file, true))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;
         }
 
-        ResEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = LangEntry(type, name, lang);
 
         EndDialog(IDOK);
     }

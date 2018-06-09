@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -34,9 +34,9 @@ class MAddStrDlg;
 class MModifyStrDlg;
 class MStringsDlg;
 
-void InitStringComboBox(HWND hCmb, ConstantsDB& db, MString strString);
-BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry, ConstantsDB& db);
+void InitStringComboBox(HWND hCmb, MString strString);
+BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
+void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -44,19 +44,18 @@ class MAddStrDlg : public MDialogBase
 {
 public:
     STRING_ENTRY& m_entry;
-    ConstantsDB& m_db;
     StringRes& m_str_res;
     MComboBoxAutoComplete m_cmb1;
 
-    MAddStrDlg(ConstantsDB& db, STRING_ENTRY& entry, StringRes& str_res)
-        : MDialogBase(IDD_ADDSTR), m_entry(entry), m_db(db), m_str_res(str_res)
+    MAddStrDlg(ConstantsDB& STRING_ENTRY& entry, StringRes& str_res)
+        : MDialogBase(IDD_ADDSTR), m_entry(entry), m_str_res(str_res)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitStringComboBox(hCmb1, m_db, L"");
+        InitStringComboBox(hCmb1, m_L"");
         SubclassChildDx(m_cmb1, cmb1);
 
         CenterWindowDx();
@@ -66,7 +65,7 @@ public:
     void OnOK(HWND hwnd)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+        if (!StrDlg_GetEntry(hwnd, m_entry, g_db))
         {
             ComboBox_SetEditSel(hCmb1, 0, -1);
             SetFocus(hCmb1);
@@ -74,9 +73,9 @@ public:
             return;
         }
         INT value;
-        if (m_db.HasResID(m_entry.StringID))
+        if (g_db.HasResID(m_entry.StringID))
         {
-            value = m_db.GetResIDValue(m_entry.StringID);
+            value = g_db.GetResIDValue(m_entry.StringID);
         }
         else
         {
@@ -138,27 +137,26 @@ class MModifyStrDlg : public MDialogBase
 {
 public:
     STRING_ENTRY& m_entry;
-    ConstantsDB& m_db;
     StringRes& m_str_res;
 
-    MModifyStrDlg(ConstantsDB& db, STRING_ENTRY& entry, StringRes& str_res)
-        : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_db(db), m_str_res(str_res)
+    MModifyStrDlg(ConstantsDB& STRING_ENTRY& entry, StringRes& str_res)
+        : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_str_res(str_res)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        InitStringComboBox(hCmb1, m_db, L"");
+        InitStringComboBox(hCmb1, m_L"");
 
-        StrDlg_SetEntry(hwnd, m_entry, m_db);
+        StrDlg_SetEntry(hwnd, m_entry);
         CenterWindowDx();
         return TRUE;
     }
 
     void OnOK(HWND hwnd)
     {
-        if (!StrDlg_GetEntry(hwnd, m_entry, m_db))
+        if (!StrDlg_GetEntry(hwnd, m_entry, g_db))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -205,14 +203,13 @@ class MStringsDlg : public MDialogBase
 {
 public:
     StringRes m_str_res;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HWND m_hLst1;
     HICON m_hIcon;
     HICON m_hIconSm;
 
-    MStringsDlg(ConstantsDB& db, StringRes& str_res)
-        : MDialogBase(IDD_STRINGS), m_str_res(str_res), m_db(db)
+    MStringsDlg(ConstantsDB& StringRes& str_res)
+        : MDialogBase(IDD_STRINGS), m_str_res(str_res), g_db()
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -238,7 +235,7 @@ public:
             if (it->second.empty())
                 continue;
 
-            MStringW str = m_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
+            MStringW str = g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
@@ -310,7 +307,7 @@ public:
     {
         STRING_ENTRY s_entry;
         ZeroMemory(&s_entry, sizeof(s_entry));
-        MAddStrDlg dialog(m_db, s_entry, m_str_res);
+        MAddStrDlg dialog(m_s_entry, m_str_res);
         if (dialog.DialogBoxDx(hwnd) != IDOK)
         {
             return;
@@ -350,7 +347,7 @@ public:
         item.pszText = &str[0];
         ListView_SetItem(m_hLst1, &item);
 
-        WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+        WORD wID = (WORD)g_db.GetResIDValue(s_entry.StringID);
         m_str_res.m_map[wID] = s_entry.StringValue;
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
@@ -379,7 +376,7 @@ public:
             STRING_ENTRY s_entry;
             GetEntry(hwnd, iItem, s_entry);
 
-            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+            WORD wID = (WORD)g_db.GetResIDValue(s_entry.StringID);
             m_str_res.m_map.erase(wID);
 
             ListView_DeleteItem(m_hLst1, iItem);
@@ -403,10 +400,10 @@ public:
         STRING_ENTRY s_entry;
         GetEntry(hwnd, iItem, s_entry);
 
-        MModifyStrDlg dialog(m_db, s_entry, m_str_res);
+        MModifyStrDlg dialog(m_s_entry, m_str_res);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
-            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+            WORD wID = (WORD)g_db.GetResIDValue(s_entry.StringID);
             m_str_res.m_map[wID] = s_entry.StringValue;
 
             MString str = mstr_quote(s_entry.StringValue);
@@ -430,7 +427,7 @@ public:
         {
             GetEntry(hwnd, iItem, s_entry);
 
-            WORD wID = (WORD)m_db.GetResIDValue(s_entry.StringID);
+            WORD wID = (WORD)g_db.GetResIDValue(s_entry.StringID);
             std::wstring str = s_entry.StringValue;
 
             m_str_res.map().insert(std::make_pair(wID, str));

@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -32,10 +32,10 @@ class MAddMItemDlg;
 class MModifyMItemDlg;
 class MEditMenuDlg;
 
-void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
-BOOL CheckCommand(ConstantsDB& db, MString strCommand);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
+void InitCtrlIDComboBox(HWND hCmb);
+BOOL CheckCommand(ConstantsDB& MString strCommand);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2);
 void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -44,22 +44,21 @@ class MAddMItemDlg : public MDialogBase
 {
 public:
     MENU_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
-        : MDialogBase(IDD_ADDMITEM), m_entry(entry), m_db(db)
+    MAddMItemDlg(ConstantsDB& MENU_ENTRY& entry)
+        : MDialogBase(IDD_ADDMITEM), m_entry(entry)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2), m_db);
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2));
         SubclassChildDx(m_cmb2, cmb2);
         SetDlgItemText(hwnd, cmb2, L"0");
 
-        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, MIdOrString(L""), IDTYPE_HELP);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_MIdOrString(L""), IDTYPE_HELP);
         SetDlgItemInt(hwnd, cmb3, 0, TRUE);
         SubclassChildDx(m_cmb3, cmb3);
 
@@ -79,7 +78,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
-        if (!CheckCommand(m_db, m_entry.szCommandID))
+        if (!CheckCommand(m_m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -125,8 +124,8 @@ public:
         ReplaceFullWithHalf(m_entry.szHelpID);
         mstr_trim(m_entry.szHelpID);
 
-        DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
-        MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
+        DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
+        MString strHelp = g_db.GetNameOfResID(IDTYPE_HELP, help);
         ReplaceFullWithHalf(strHelp);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
 
@@ -192,12 +191,11 @@ class MModifyMItemDlg : public MDialogBase
 {
 public:
     MENU_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MModifyMItemDlg(ConstantsDB& db, MENU_ENTRY& entry)
-        : MDialogBase(IDD_MODIFYMITEM), m_entry(entry), m_db(db)
+    MModifyMItemDlg(ConstantsDB& MENU_ENTRY& entry)
+        : MDialogBase(IDD_MODIFYMITEM), m_entry(entry)
     {
     }
 
@@ -205,12 +203,12 @@ public:
     {
         SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
 
-        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2), m_db);
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2));
         SetDlgItemText(hwnd, cmb2, m_entry.szCommandID);
         SubclassChildDx(m_cmb2, cmb2);
 
         MIdOrString help_id(m_entry.szHelpID);
-        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, help_id, IDTYPE_HELP);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_help_id, IDTYPE_HELP);
         SubclassChildDx(m_cmb3, cmb3);
 
         DWORD dwType, dwState;
@@ -265,7 +263,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.szCommandID, _countof(m_entry.szCommandID));
         ReplaceFullWithHalf(m_entry.szCommandID);
         mstr_trim(m_entry.szCommandID);
-        if (!CheckCommand(m_db, m_entry.szCommandID))
+        if (!CheckCommand(m_m_entry.szCommandID))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -308,8 +306,8 @@ public:
         lstrcpynW(m_entry.szFlags, str.c_str(), _countof(m_entry.szFlags));
 
         GetDlgItemTextW(hwnd, cmb3, m_entry.szHelpID, _countof(m_entry.szHelpID));
-        DWORD help = m_db.GetResIDValue(m_entry.szHelpID);
-        MString strHelp = m_db.GetNameOfResID(IDTYPE_HELP, help);
+        DWORD help = g_db.GetResIDValue(m_entry.szHelpID);
+        MString strHelp = g_db.GetNameOfResID(IDTYPE_HELP, help);
         lstrcpynW(m_entry.szHelpID, strHelp.c_str(), _countof(m_entry.szHelpID));
 
         EndDialog(IDOK);
@@ -374,14 +372,13 @@ class MEditMenuDlg : public MDialogBase
 {
 public:
     MenuRes& m_menu_res;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MEditMenuDlg(ConstantsDB& db, MenuRes& menu_res)
-        : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res), m_db(db)
+    MEditMenuDlg(ConstantsDB& MenuRes& menu_res)
+        : MDialogBase(IDD_EDITMENU), m_menu_res(menu_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -470,7 +467,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -479,7 +476,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = m_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
+                str = g_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -524,7 +521,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
+                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -573,7 +570,7 @@ public:
     {
         MENU_ENTRY m_entry;
         ZeroMemory(&m_entry, sizeof(m_entry));
-        MAddMItemDlg dialog(m_db, m_entry);
+        MAddMItemDlg dialog(m_m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK != nID)
         {
@@ -681,7 +678,7 @@ public:
         MENU_ENTRY m_entry;
         GetEntry(hwnd, m_entry, iItem);
         
-        MModifyMItemDlg dialog(m_db, m_entry);
+        MModifyMItemDlg dialog(m_m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
         {
@@ -808,10 +805,10 @@ public:
                 MenuRes::ExMenuItem exitem;
 
                 SetMenuTypeAndState(exitem.dwType, exitem.dwState, entry.szFlags);
-                exitem.menuId = m_db.GetResIDValue(entry.szCommandID);
+                exitem.menuId = g_db.GetResIDValue(entry.szCommandID);
                 exitem.bResInfo = 0;
                 exitem.text = entry.szCaption;
-                exitem.dwHelpId = m_db.GetResIDValue(entry.szHelpID);
+                exitem.dwHelpId = g_db.GetResIDValue(entry.szHelpID);
                 exitem.wDepth = entry.wDepth;
 
                 m_menu_res.exitems().push_back(exitem);
@@ -830,7 +827,7 @@ public:
                 MenuRes::MenuItem item;
 
                 SetMenuFlags(item.fItemFlags, entry.szFlags);
-                item.wMenuID = (WORD)m_db.GetResIDValue(entry.szCommandID);
+                item.wMenuID = (WORD)g_db.GetResIDValue(entry.szCommandID);
                 item.wDepth = entry.wDepth;
                 item.text = entry.szCaption;
 

@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,10 +33,10 @@ public:
     HICON m_hIcon;
     HICON m_hIconSm;
 
-    MTestParentWnd(ResEntries& entries, DialogRes& dialog_res,
-                   MIdOrString menu, WORD lang, const MByteStreamEx& stream,
+    MTestParentWnd(ResEntries& entries, DialogRes& dialog_res, 
+                   MIdOrString menu, WORD lang, const MByteStreamEx& stream, 
                    const std::vector<BYTE>& dlginit_data)
-        : m_test_dialog(entries, dialog_res, menu, lang, dlginit_data),
+        : m_test_dialog(entries, dialog_res, menu, lang, dlginit_data), 
           m_stream(stream)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);

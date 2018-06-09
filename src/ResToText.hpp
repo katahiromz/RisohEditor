@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -62,9 +62,8 @@ class ResToText
 public:
     typedef std::vector<BYTE> data_type;
 
-    ResToText(const RisohSettings& settings, const ConstantsDB& db, const ResEntries& entries)
-        : m_hwnd(NULL), m_hwndDialog(NULL), m_settings(settings), m_db(db), m_entries(entries),
-          m_bHumanReadable(TRUE), m_bNoLanguage(FALSE)
+    ResToText() : m_hwnd(NULL), m_hwndDialog(NULL), 
+                  m_bHumanReadable(TRUE), m_bNoLanguage(FALSE)
     {
     }
 
@@ -73,11 +72,6 @@ public:
 public:
     HWND m_hwnd;
     HWND m_hwndDialog;
-protected:
-    const RisohSettings& m_settings;
-    const ConstantsDB& m_db;
-    const ResEntries& m_entries;
-public:
     BOOL m_bHumanReadable;
     BOOL m_bNoLanguage;
     MString m_strFilePrefix;
@@ -448,7 +442,7 @@ ResToText::DoMenu(const ResEntry& entry)
     if (menu_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
-        str += menu_res.Dump(entry.name, m_db);
+        str += menu_res.Dump(entry.name);
         str += L"\r\n";
         return str;
     }
@@ -459,11 +453,11 @@ inline MString
 ResToText::DoDialog(const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
-    DialogRes dialog_res(m_db);
+    DialogRes dialog_res(g_db);
     if (dialog_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
-        str += dialog_res.Dump(entry.name, !!m_settings.bAlwaysControl);
+        str += dialog_res.Dump(entry.name, !!g_settings.bAlwaysControl);
         str += L"\r\n";
         return str;
     }
@@ -488,7 +482,7 @@ ResToText::DoString(const ResEntry& entry)
     MString str;
     if (entry.name.empty())
         str += GetLanguageStatement(entry.lang);
-    str += str_res.Dump(m_db);
+    str += str_res.Dump(g_db);
     str += L"\r\n\r\n";
     return str;
 }
@@ -513,7 +507,7 @@ ResToText::DoMessage(const ResEntry& entry)
         str += GetLanguageStatement(entry.lang);
 
     str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump(m_db);
+    str += msg_res.Dump(g_db);
     str += L"#endif\r\n\r\n";
     return str;
 }
@@ -522,7 +516,7 @@ inline MString
 ResToText::DoAccel(const ResEntry& entry)
 {
     MByteStreamEx stream(entry.data);
-    AccelRes accel(m_db);
+    AccelRes accel(g_db);
     if (accel.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry.lang);
@@ -540,7 +534,7 @@ ResToText::DoGroupCursor(const ResEntry& entry)
 
     if (m_bHumanReadable)
     {
-        str += DumpGroupCursorInfo(m_entries, entry.data);
+        str += DumpGroupCursorInfo(entry.data);
         str += L"\r\n";
     }
 
@@ -924,7 +918,7 @@ MString ResToText::DoDlgInit(const ResEntry& entry)
     MStringW str;
 
     MByteStreamEx stream(entry.data);
-    DlgInitRes dlginit(m_db);
+    DlgInitRes dlginit(g_db);
     if (dlginit.LoadFromStream(stream))
     {
         str += GetLanguageStatement(entry.lang);
@@ -986,7 +980,7 @@ inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& n
     }
     else
     {
-        ret += m_db.GetNameOfResID(m_db.IDTypeFromResType(type), name.m_id);
+        ret += g_db.GetNameOfResID(g_db.IDTypeFromResType(type), name.m_id);
     }
     return ret;
 }
@@ -1078,7 +1072,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        ret += LoadStringPrintfDx(IDS_ICONINFO,
+        ret += LoadStringPrintfDx(IDS_ICONINFO, 
             i, Width, Height, pEntries[i].wBitCount, nID);
     }
 
@@ -1134,7 +1128,7 @@ DumpGroupCursorInfo(const ResEntries& entries, const std::vector<BYTE>& data)
         if (Height == 0)
             Height = 256;
 
-        ret += LoadStringPrintfDx(IDS_CURSORINFO,
+        ret += LoadStringPrintfDx(IDS_CURSORINFO, 
             i, Width, Height, BitCount, xHotSpot, yHotSpot, nID);
     }
 
@@ -1160,7 +1154,7 @@ CreateBitmapFromIconOrPngDx(HWND hwnd, const ResEntry& entry, BITMAP& bm)
         BITMAP bm;
         hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
         assert(hIcon);
-        hbmIcon = CreateBitmapFromIconDx(hIcon,
+        hbmIcon = CreateBitmapFromIconDx(hIcon, 
                                          bm.bmWidth, bm.bmHeight, FALSE);
         DestroyIcon(hIcon);
     }
@@ -1192,12 +1186,12 @@ DrawBitmapDx(HBITMAP hbm, HBITMAP hbmSrc, INT x, INT y)
             bf.BlendFlags = 0;
             bf.SourceConstantAlpha = 0xFF;
             bf.AlphaFormat = AC_SRC_ALPHA;
-            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+            AlphaBlend(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight, 
                        hDC2, 0, 0, bmSrc.bmWidth, bmSrc.bmHeight, bf);
         }
         else
         {
-            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight,
+            BitBlt(hDC, x, y, bmSrc.bmWidth, bmSrc.bmHeight, 
                    hDC2, 0, 0, SRCCOPY);
         }
         SelectObject(hDC, hbm2Old);

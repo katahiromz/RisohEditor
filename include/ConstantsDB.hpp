@@ -787,9 +787,10 @@ protected:
 
 inline ConstantsDB& DB_GetMaster(void)
 {
-    static ConstantsDB db;
-    return db;
+    static ConstantsDB s_db;
+    return s_db;
 }
+#define g_db DB_GetMaster()
 
 //////////////////////////////////////////////////////////////////////////////
 

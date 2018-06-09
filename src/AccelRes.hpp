@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -52,8 +52,7 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    const ConstantsDB& m_db;
-    AccelRes(const ConstantsDB& db) : m_db(db) { }
+    AccelRes() { }
 
     bool LoadFromStream(const MByteStreamEx& stream)
     {
@@ -108,7 +107,7 @@ public:
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
         }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
@@ -126,7 +125,7 @@ public:
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += m_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                ret += g_db.GetName(L"VIRTUALKEYS", it->wAscii);
             }
             else
             {
@@ -141,7 +140,7 @@ public:
             }
             else
             {
-                ret += m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wId);
+                ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wId);
             }
 
             if (NOINVERT)

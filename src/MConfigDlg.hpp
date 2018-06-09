@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,26 +33,22 @@
 class MConfigDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
-    ConstantsDB& m_db;
-
-    MConfigDlg(RisohSettings& settings, ConstantsDB& db)
-        : MDialogBase(IDD_CONFIG), m_settings(settings), m_db(db)
+    MConfigDlg() : MDialogBase(IDD_CONFIG)
     {
     }
 
     void Reload(HWND hwnd)
     {
-        CheckDlgButton(hwnd, chx1, m_settings.bAlwaysControl ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx2, m_settings.bHideID ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx3, m_settings.bResumeWindowPos ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx4, m_settings.bAutoLoadNearbyResH ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx5, m_settings.bAutoShowIDList ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx6, m_settings.bShowDotsOnDialog ? BST_CHECKED : BST_UNCHECKED);
-        SetDlgItemInt(hwnd, edt1, m_settings.nComboHeight, FALSE);
-        CheckDlgButton(hwnd, chx7, m_settings.bAskUpdateResH ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx8, m_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
-        SetDlgItemText(hwnd, cmb1, m_settings.strAtlAxWin.c_str());
+        CheckDlgButton(hwnd, chx1, g_settings.bAlwaysControl ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx2, g_settings.bHideID ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx3, g_settings.bResumeWindowPos ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx4, g_settings.bAutoLoadNearbyResH ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx5, g_settings.bAutoShowIDList ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx6, g_settings.bShowDotsOnDialog ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemInt(hwnd, edt1, g_settings.nComboHeight, FALSE);
+        CheckDlgButton(hwnd, chx7, g_settings.bAskUpdateResH ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx8, g_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -83,36 +79,36 @@ public:
             ErrorBoxDx(IDS_ENTERINT);
             return;
         }
-        m_settings.nComboHeight = nHeight;
+        g_settings.nComboHeight = nHeight;
 
-        m_settings.bAlwaysControl = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
-        m_settings.bHideID = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
-        m_settings.bResumeWindowPos = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
-        m_settings.bAutoLoadNearbyResH = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
-        m_settings.bAutoShowIDList = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
-        m_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
-        m_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
-        m_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+        g_settings.bAlwaysControl = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+        g_settings.bHideID = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
+        g_settings.bResumeWindowPos = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
+        g_settings.bAutoLoadNearbyResH = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
+        g_settings.bAutoShowIDList = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
+        g_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
+        g_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
+        g_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
 
         TCHAR szText[64];
         GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
         mstr_trim(szText);
-        m_settings.strAtlAxWin = szText;
+        g_settings.strAtlAxWin = szText;
 
-        m_db.ShowMacroID(!m_settings.bHideID);
+        g_db.ShowMacroID(!g_settings.bHideID);
 
         EndDialog(IDOK);
     }
 
     void OnPsh1(HWND hwnd)
     {
-        MMacrosDlg dialog(m_settings);
+        MMacrosDlg dialog(g_settings);
         dialog.DialogBoxDx(hwnd);
     }
 
     void OnPsh2(HWND hwnd)
     {
-        MPathsDlg dialog(m_settings);
+        MPathsDlg dialog(g_settings);
         dialog.DialogBoxDx(hwnd);
     }
 
@@ -125,7 +121,7 @@ public:
 
     void OnPsh4(HWND hwnd)
     {
-        MFontsDlg dialog(m_settings);
+        MFontsDlg dialog(g_settings);
         dialog.DialogBoxDx(hwnd);
     }
 

@@ -158,7 +158,7 @@ inline BOOL MComboBox::LimitText(INT nMaxChars)
 
 inline BOOL MComboBox::SetEditSel(INT nStartChar, INT nEndChar)
 {
-    return (BOOL)SendMessageDx(CB_SETEDITSEL, 0,
+    return (BOOL)SendMessageDx(CB_SETEDITSEL, 0, 
                                 MAKELPARAM(nStartChar, nEndChar));
 }
 
