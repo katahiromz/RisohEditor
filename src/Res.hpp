@@ -37,8 +37,8 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 
-class ResEntry;
-// class EntrySet;
+struct ResEntry;
+struct EntrySet;
 
 typedef std::map<MIdOrString, HBITMAP>  MTitleToBitmap;
 typedef std::map<MIdOrString, HICON>    MTitleToIcon;
@@ -157,6 +157,13 @@ Res_GetTypeString(const MIdOrString& id_or_str)
     return ret;
 }
 
+inline HWND&
+Res_GetTreeViewHandle(void)
+{
+    static HWND hwndTV = NULL;
+    return hwndTV;
+}
+
 MStringW Res_GetLangName(WORD lang);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,8 +203,10 @@ struct EntryBase
     {
     }
 
-    bool match(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
+    bool match(EntryType e_type, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
     {
+        if (e_type != I_NONE && m_e_type != e_type)
+            return false;
         if (!type.is_zero() && m_type != type)
             return false;
         if (!name.is_zero() && m_name != name)
@@ -234,7 +243,6 @@ struct EntryBase
         return false;
     }
 };
-typedef std::vector<EntryBase *> EntrySet;
 
 struct TypeEntry : EntryBase
 {
@@ -423,7 +431,6 @@ struct EntrySet : private std::set<EntryBase *>
     typedef std::set<EntryBase *> super_type;
     using super_type::empty;
     using super_type::size;
-    using super_type::operator[];
     using super_type::begin;
     using super_type::end;
     using super_type::insert;
@@ -436,34 +443,27 @@ struct EntrySet : private std::set<EntryBase *>
     {
     }
 
-    bool search(EntrySet& vec, const MIdOrString& type,
+    bool search(super_type& found, EntryType e_type, const MIdOrString& type,
                 const MIdOrString& name, WORD lang = 0xFFFF)
     {
-        vecFound.clear();
+        found.clear();
 
-        return NULL;
+        for (auto item : *this)
+        {
+            if (item->match(e_type, type, name, lang))
+                found.insert(item);
+        }
+        return !found.empty();
     }
 
-    ResEntry *
-    Find2(const MIdOrString& type, 
-          const MIdOrString& name,
-          WORD lang)
+    bool intersect(const super_type& another) const
     {
-        auto entry = Find(type, name, lang);
-        if (!entry)
-            entry = Find(type, name, 0xFFFF);
-        return entry;
-    }
-
-    inline bool
-    Intersect(const EntrySet& entries2) const
-    {
-        if (size() == 0 && entries2.size() == 0)
+        if (size() == 0 && another.size() == 0)
             return false;
 
         for (auto item1 : *this)
         {
-            for (auto item2 : entries2)
+            for (auto item2 : another)
             {
                 if (*item1 == *item2)
                     return true;
@@ -472,56 +472,19 @@ struct EntrySet : private std::set<EntryBase *>
         return false;
     }
 
-    void
-    Search(EntrySet& found,
-           const MIdOrString& type, 
-           const MIdOrString& name,
-           WORD lang)
+    void search_and_delete(EntryType e_type, const MIdOrString& type,
+                           const MIdOrString& name = "", WORD lang = 0xFFFF)
     {
-        found.clear();
-
-        for (auto item : *this)
-        {
-            if (!type.is_zero() && item->type != type)
-                continue;
-            if (!name.is_zero() && item->name != name)
-                continue;
-            if (lang != 0xFFFF && item->lang != lang)
-                continue;
-
-            found.push_back(item);
-        }
-    }
-
-    void
-    SearchAndDelete(const MIdOrString& type, 
-                    const MIdOrString& name,
-                    WORD lang)
-    {
-        if (type == RT_GROUP_ICON)
-        {
-            DeleteGroupIcon(entry);
-            return;
-        }
-        if (type == RT_GROUP_CURSOR)
-        {
-            DeleteGroupCursor(entry);
-            return;
-        }
-
-        EntrySet found;
-        Search(found, entries, type, name, lang);
-
+        HWND hwndTV = Res_GetTreeViewHandle();
+        super_type found;
+        search(found, e_type, type, name, lang);
         for (auto item : found)
         {
-            entries.erase(item);
-            delete item;
+            TreeView_DeleteItem(hwndTV, item->hItem);
         }
-
-        found.clear();
     }
 
-    UINT GetLastIconID() const
+    UINT last_icon_id() const
     {
         WORD last_id = 0;
         for (auto item : *this)
@@ -534,7 +497,7 @@ struct EntrySet : private std::set<EntryBase *>
         return last_id;
     }
 
-    UINT GetLastCursorID()
+    UINT last_cursor_id()
     {
         WORD last_id = 0;
         for (auto item : *this)
@@ -1128,33 +1091,6 @@ TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
 }
 
 inline HTREEITEM
-TV_MyInsert(HWND hwnd, HTREEITEM hParent, MStringW Text, LPARAM lParam,
-            HTREEITEM hInsertAfter = TVI_LAST)
-{
-    TV_INSERTSTRUCTW Insert;
-    ZeroMemory(&Insert, sizeof(Insert));
-    Insert.hParent = hParent;
-    Insert.hInsertAfter = hInsertAfter;
-    Insert.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
-                       TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-    Insert.item.state = 0;
-    Insert.item.stateMask = 0;
-    Insert.item.pszText = &Text[0];
-    Insert.item.lParam = lParam;
-    if (HIWORD(lParam) < I_LANG)
-    {
-        Insert.item.iImage = 1;
-        Insert.item.iSelectedImage = 1;
-    }
-    else
-    {
-        Insert.item.iImage = 0;
-        Insert.item.iSelectedImage = 0;
-    }
-    return TreeView_InsertItem(hwnd, &Insert);
-}
-
-inline HTREEITEM
 TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
                       const Entries& entries, INT i, INT k)
 {
@@ -1213,98 +1149,6 @@ TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
 
     MStringW ResType = Res_GetTypeString(entries[i].type);
     return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
-}
-
-inline HTREEITEM
-TV_GetItem(HWND hwnd, const Entries& entries, const Entry& entry)
-{
-    HTREEITEM hParent = NULL;
-
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_TYPE)
-        {
-            if (entries[LOWORD(lParam)].type == entry.type)
-            {
-                hParent = hItem;
-                break;
-            }
-        }
-    }
-
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_NAME)
-        {
-            if (entries[LOWORD(lParam)].type == entry.type &&
-                entries[LOWORD(lParam)].name == entry.name)
-            {
-                hParent = hItem;
-                break;
-            }
-        }
-        else if (HIWORD(lParam) == I_STRING || HIWORD(lParam) == I_MESSAGE)
-        {
-            if (entries[LOWORD(lParam)].lang == entry.lang)
-            {
-                return hItem;
-            }
-        }
-    }
-
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_LANG)
-        {
-            if (entries[LOWORD(lParam)].type == entry.type &&
-                entries[LOWORD(lParam)].name == entry.name &&
-                entries[LOWORD(lParam)].lang == entry.lang)
-            {
-                hParent = hItem;
-                break;
-            }
-        }
-    }
-
-    return hParent;
-}
-
-inline void
-TV_DeleteItem(HWND hwnd, const Entries& entries, const Entry& entry)
-{
-    if (HTREEITEM hItem = TV_GetItem(hwnd, entries, entry))
-    {
-        HTREEITEM hParent = TreeView_GetParent(hwnd, hItem);
-        TreeView_DeleteItem(hwnd, hItem);
-        hItem = hParent;
-        if (TreeView_GetChild(hwnd, hItem) == NULL)
-        {
-            hParent = TreeView_GetParent(hwnd, hItem);
-            TreeView_DeleteItem(hwnd, hItem);
-            hItem = hParent;
-            if (TreeView_GetChild(hwnd, hItem) == NULL)
-            {
-                hParent = TreeView_GetParent(hwnd, hItem);
-                TreeView_DeleteItem(hwnd, hItem);
-            }
-        }
-    }
-}
-
-inline void
-TV_SelectEntry(HWND hwnd, const Entries& entries, const Entry& entry)
-{
-    HTREEITEM hParent = TV_GetItem(hwnd, entries, entry);
-    TreeView_SelectItem(hwnd, hParent);
 }
 
 inline HTREEITEM
@@ -1431,13 +1275,6 @@ Res_GetMaster(void)
     return eset;
 }
 
-inline HWND&
-Res_GetTreeViewHandle(void)
-{
-    static HWND hwndTV = NULL;
-    return hwndTV;
-}
-
 inline void
 TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
 {
@@ -1488,8 +1325,9 @@ inline void
 TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 {
     auto entry = TV_GetEntry(hwndTV, hItem);
+    entry->hItem = NULL;
 
-    HTREEITEM hParent = TreeView_GetParent(hwndTV, entry->m_hItem);
+    HTREEITEM hParent = TreeView_GetParent(hwndTV, hItem);
 
     switch (entry->m_e_type)
     {
@@ -1546,6 +1384,36 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 
     if (TreeView_GetChild(hwndTV, hParent) == NULL)
         TreeView_DeleteItem(hwndTV, hParent);
+}
+
+inline HTREEITEM
+TV_Insert(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
+          HTREEITEM hInsertAfter = TVI_LAST)
+{
+    assert(entry);
+
+    TV_INSERTSTRUCTW insert;
+    ZeroMemory(&insert, sizeof(insert));
+
+    insert.hParent = hParent;
+    insert.hInsertAfter = hInsertAfter;
+    insert.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
+                       TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+    insert.item.state = 0;
+    insert.item.stateMask = 0;
+    insert.item.pszText = &strText[0];
+    insert.item.lParam = (LPARAM)entry;
+    if (entry->m_e_type < I_LANG)
+    {
+        insert.item.iImage = 1;
+        insert.item.iSelectedImage = 1;
+    }
+    else
+    {
+        insert.item.iImage = 0;
+        insert.item.iSelectedImage = 0;
+    }
+    return TreeView_InsertItem(hwndTV, &insert);
 }
 
 //////////////////////////////////////////////////////////////////////////////
