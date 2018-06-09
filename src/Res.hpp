@@ -27,7 +27,6 @@
 #include <cctype>
 #include <cwchar>
 #include <set>          // for std::set
-#include <algorithm>    // for std::sort
 
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
@@ -285,16 +284,6 @@ struct LangEntry : EntryBase
         : EntryBase(ET_NAME, type, name, lang)
     {
     }
-    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
-              const data_type& data)
-        : EntryBase(ET_NAME, type, name, lang), m_data(data)
-    {
-    }
-    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
-              const MStringW& strText)
-        : EntryBase(ET_NAME, type, name, lang), m_strText(strText)
-    {
-    }
     virtual ~LangEntry()
     {
     }
@@ -339,6 +328,11 @@ struct LangEntry : EntryBase
     const void *ptr(DWORD index = 0) const
     {
         return &m_data[index];
+    }
+
+    void assign(const data_type& data)
+    {
+        m_data = data;
     }
 
     void assign(const void *ptr, size_type nSize)
@@ -521,110 +515,6 @@ struct EntrySet : private std::set<EntryBase *>
                 last_id = item->name.m_id;
         }
         return last_id;
-    }
-
-    bool AddFromRes(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
-    {
-        HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
-        if (!hResInfo)
-            return false;
-
-        DWORD dwSize = SizeofResource(hMod, hResInfo);
-        HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
-        LPVOID pv = LockResource(hGlobal);
-        if (pv && dwSize)
-        {
-            auto entry = new ResEntry(type, name, lang);
-            entry->assign(pv, dwSize);
-            push_back(entry);
-            return true;
-        }
-        return false;
-    }
-
-    bool
-    AddGroupIcon(const MIdOrString& name, WORD lang,
-                 const MStringW& file_name, BOOL replace = FALSE)
-    {
-        IconFile icon;
-        if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
-            return false;
-
-        UINT LastIconID = GetLastIconID(*this);
-        UINT NextIconID = LastIconID + 1;
-        IconFile::DataType group(icon.GetIconGroup(NextIconID));
-        Add(RT_GROUP_ICON, name, lang, L"", group, replace);
-
-        int i, nCount = icon.GetImageCount();
-        for (i = 0; i < nCount; ++i)
-        {
-            Add(RT_ICON, WORD(NextIconID + i), lang, L"", icon.GetImage(i));
-        }
-
-        return true;
-    }
-
-    bool AddGroupCursor(const MIdOrString& name, WORD lang,
-                        const MStringW& file_name, BOOL replace = FALSE)
-    {
-        CursorFile cur;
-        if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
-            return false;
-
-        UINT LastCursorID = GetLastCursorID(*this);
-        UINT NextCursorID = LastCursorID + 1;
-        CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
-        Add(RT_GROUP_CURSOR, name, lang, L"", group, replace);
-
-        int i, nCount = cur.GetImageCount();
-        for (i = 0; i < nCount; ++i)
-        {
-            Add(RT_CURSOR, WORD(NextCursorID + i), lang, L"", cur.GetImage(i));
-        }
-        return true;
-    }
-
-    bool AddBitmap(const MIdOrString& name, WORD lang,
-                   const MStringW& BitmapFile, BOOL replace = FALSE)
-    {
-        MByteStreamEx stream;
-        if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
-            return FALSE;
-
-        if (stream.size() >= 4 &&
-            (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
-             memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
-             memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
-        {
-            MBitmapDx bitmap;
-            if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
-                return FALSE;
-
-            LONG cx, cy;
-            HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
-
-            std::vector<BYTE> PackedDIB;
-            if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
-            {
-                DeleteObject(hbm);
-                return FALSE;
-            }
-            DeleteObject(hbm);
-
-            AddEntry(RT_BITMAP, name, lang, L"", PackedDIB, replace);
-        }
-        else
-        {
-            size_t FileHeadSize = sizeof(BITMAPFILEHEADER);
-            if (stream.size() < FileHeadSize)
-                return FALSE;
-
-            size_t i0 = FileHeadSize, i1 = stream.size();
-            Entry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-            Add(RT_BITMAP, name, lang, L"", HeadLess, replace);
-        }
-
-        return TRUE;
     }
 
 private:
@@ -1034,129 +924,6 @@ TV_GetEntry(HWND hwndTV, HTREEITEM hItem = NULL)
     return (EntryBase *)lParam;
 }
 
-inline HTREEITEM
-TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                      const Entries& entries, INT i, INT k)
-{
-    HTREEITEM hInsertAfter = TVI_LAST;
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == ET_LANG)
-        {
-            if (entries[LOWORD(lParam)].lang == entries[i].lang)
-                return hItem;
-        }
-    }
-
-    MStringW ResLang = Res_GetLangName(entries[i].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, ET_LANG));
-}
-
-inline HTREEITEM
-TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent, 
-                       const Entries& entries, INT i, INT k)
-{
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == ET_NAME)
-        {
-            if (entries[LOWORD(lParam)].name == entries[i].name)
-                return hItem;
-        }
-    }
-
-    MStringW ResName = Res_GetName(db, entries[i]);
-    return TV_MyInsert(hwnd, hParent, ResName, MAKELPARAM(k, ET_NAME));
-}
-
-inline HTREEITEM
-TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
-                       const Entries& entries, INT i, INT k)
-{
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == ET_TYPE)
-        {
-            if (entries[LOWORD(lParam)].type == entries[i].type)
-                return hItem;
-        }
-    }
-
-    MStringW ResType = Res_GetTypeString(entries[i].type);
-    return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, ET_TYPE));
-}
-
-inline HTREEITEM
-TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
-                       const Entries& entries, INT iEntry)
-{
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == ET_STRING)
-        {
-            if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
-                return hItem;
-        }
-    }
-
-    MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, ET_STRING));
-}
-
-inline HTREEITEM
-TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
-                        const Entries& entries, INT iEntry)
-{
-    for (HTREEITEM hItem = TreeView_GetChild(hwnd, hParent);
-         hItem != NULL;
-         hItem = TreeView_GetNextSibling(hwnd, hItem))
-    {
-        LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == ET_MESSAGE)
-        {
-            if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
-                return hItem;
-        }
-    }
-
-    MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, ET_MESSAGE));
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline void
-ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
-{
-    {
-        MTitleToBitmap::iterator it, end = title_to_bitmap.end();
-        for (it = title_to_bitmap.begin(); it != end; ++it)
-        {
-            DeleteObject(it->second);
-        }
-        title_to_bitmap.clear();
-    }
-    {
-        MTitleToIcon::iterator it, end = title_to_icon.end();
-        for (it = title_to_icon.begin(); it != end; ++it)
-        {
-            DestroyIcon(it->second);
-        }
-        title_to_icon.clear();
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1388,8 +1155,144 @@ TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
             return hItem;
     }
 
-    auto entry = new LangEntry(type, name, lang, data);
+    auto entry = new LangEntry(type, name, lang);
+    entry->assign(data);
     return TV_InsertEntry(hwndTV, entry);
+}
+
+inline HTREEITEM
+TV_AddResEntry(HWND hwndTV, HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
+{
+    HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
+    if (!hResInfo)
+        return NULL;
+
+    DWORD dwSize = SizeofResource(hMod, hResInfo);
+    HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
+    LPVOID pv = LockResource(hGlobal);
+    if (pv && dwSize)
+    {
+        EntryBase::data_type data(LPBYTE(pv), LPBYTE(pv) + dwSize);
+        return TV_AddLangEntry(hwndTV, type, name, lang, data, replace);
+    }
+    return NULL;
+}
+
+inline HTREEITEM
+TV_AddGroupIcon(HWND hwndTV, const MIdOrString& name, WORD lang,
+                const MStringW& file_name, BOOL replace)
+{
+    if (replace)
+    {
+        HTREEITEM hItem = Res_GetMaster().find(ET_LANG, RT_GROUP_ICON, name, lang);
+        TreeView_DeleteItem(hwndTV, hItem);
+    }
+
+    IconFile icon;
+    if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
+        return NULL;
+
+    UINT LastIconID = Res_GetMaster().last_icon_id();
+    UINT NextIconID = LastIconID + 1;
+
+    int i, nCount = icon.GetImageCount();
+    for (i = 0; i < nCount; ++i)
+    {
+        TV_AddLangEntry(hwndTV, RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i), FALSE);
+    }
+
+    IconFile::DataType data(icon.GetIconGroup(NextIconID));
+    return TV_AddLangEntry(hwndTV, RT_GROUP_ICON, name, lang, data, FALSE);
+}
+
+inline HTREEITEM
+TV_AddGroupCursor(HWND hwndTV, const MIdOrString& name, WORD lang,
+                  const MStringW& file_name, BOOL replace)
+{
+    if (replace)
+    {
+        HTREEITEM hItem = Res_GetMaster().find(ET_LANG, RT_GROUP_CURSOR, name, lang);
+        TreeView_DeleteItem(hwndTV, hItem);
+    }
+
+    CursorFile cur;
+    if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
+        return NULL;
+
+    UINT LastCursorID = Res_GetMaster().last_cursor_id(*this);
+    UINT NextCursorID = LastCursorID + 1;
+
+    int i, nCount = cur.GetImageCount();
+    for (i = 0; i < nCount; ++i)
+    {
+        TV_AddLangEntry(hwndTV, RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i), FALSE);
+    }
+
+    CursorFile::DataType data(cur.GetCursorGroup(NextCursorID));
+    return TV_AddLangEntry(hwndTV, RT_GROUP_CURSOR, name, lang, data, FALSE);
+}
+
+inline HTREEITEM
+TV_AddBitmap(HWND hwndTV, const MIdOrString& name, WORD lang,
+             const MStringW& file, BOOL replace = FALSE)
+{
+    MByteStreamEx stream;
+    if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
+        return NULL;
+
+    if (stream.size() >= 4 &&
+        (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
+         memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
+         memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
+    {
+        MBitmapDx bitmap;
+        if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
+            return NULL;
+
+        LONG cx, cy;
+        HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
+
+        std::vector<BYTE> PackedDIB;
+        if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
+        {
+            DeleteObject(hbm);
+            return NULL;
+        }
+        DeleteObject(hbm);
+
+        return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, PackedDIB, replace);
+    }
+
+    size_t head_size = sizeof(BITMAPFILEHEADER);
+    if (stream.size() < head_size)
+        return NULL;
+
+    size_t i0 = head_size, i1 = stream.size();
+    EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
+    return TV_AddLangEntry(hwndTV, RT_BITMAP, name, lang, HeadLess, replace);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+inline void
+ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
+{
+    {
+        MTitleToBitmap::iterator it, end = title_to_bitmap.end();
+        for (it = title_to_bitmap.begin(); it != end; ++it)
+        {
+            DeleteObject(it->second);
+        }
+        title_to_bitmap.clear();
+    }
+    {
+        MTitleToIcon::iterator it, end = title_to_icon.end();
+        for (it = title_to_icon.begin(); it != end; ++it)
+        {
+            DestroyIcon(it->second);
+        }
+        title_to_icon.clear();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
