@@ -785,6 +785,12 @@ protected:
     }
 };
 
+inline ConstantsDB& DB_GetMaster(void)
+{
+    static ConstantsDB db;
+    return db;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 #endif  // ndef CONSTANTS_DB_HPP_
