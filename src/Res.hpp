@@ -537,56 +537,6 @@ struct EntrySet : private std::set<EntryBase *>
         ...
     }
 
-    bool DeleteGroupIcon(ResEntry& entry)
-    {
-        assert(entry.M_type == RT_GROUP_ICON);
-
-        MByteStreamEx bs(entry.m_data);
-
-        ICONDIR dir;
-        if (!bs.ReadRaw(dir))
-            return false;
-
-        DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
-        std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
-        if (!bs.ReadData(&DirEntries[0], size))
-            return false;
-
-        DWORD i, nCount = dir.idCount;
-        for (i = 0; i < nCount; ++i)
-        {
-            SearchAndDelete(RT_ICON, DirEntries[i].nID, entry.lang);
-        }
-
-        SearchAndDelete(entry.m_type, entry.m_name, entry.m_lang);
-        return true;
-    }
-
-    bool DeleteGroupCursor(Entry& entry)
-    {
-        assert(entry.m_type == RT_GROUP_CURSOR);
-
-        MByteStreamEx bs(entry.m_data);
-
-        ICONDIR dir;
-        if (!bs.ReadRaw(dir))
-            return false;
-
-        DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
-        std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
-        if (!bs.ReadData(&DirEntries[0], size))
-            return false;
-
-        DWORD i, nCount = dir.idCount;
-        for (i = 0; i < nCount; ++i)
-        {
-            SearchAndDelete(RT_CURSOR, DirEntries[i].nID, entry.lang);
-        }
-
-        SearchAndDelete(entry.m_type, entry.m_name, entry.m_lang);
-        return true;
-    }
-
     bool
     AddGroupIcon(const MIdOrString& name, WORD lang,
                  const MStringW& FileName, BOOL Replace = FALSE)
@@ -700,7 +650,7 @@ public:
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, lParam);
     }
 
-    BOOL UpdateExe(HWND hwnd, LPCWSTR ExeFile) const
+    BOOL update_exe(LPCWSTR ExeFile) const
     {
         HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
 
@@ -724,6 +674,7 @@ public:
                                    pv, size))
             {
                 assert(0);
+                ::EndUpdateResourceW(hUpdate, TRUE);
                 return FALSE;
             }
         }
@@ -1191,58 +1142,6 @@ TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
     return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
 }
 
-inline void
-TV_RefreshInfo(HWND hwnd, ConstantsDB& db, Entries& entries)
-{
-    TreeView_DeleteAllItems(hwnd);
-
-    for (size_t i = entries.size(); i > 0;)
-    {
-        --i;
-        if (entries[i].empty())
-        {
-            entries.erase(entries.begin() + i);
-        }
-    }
-
-    Res_Sort(entries);
-
-    for (INT i = 0; i < INT(entries.size()); ++i)
-    {
-        if (entries[i].empty())
-            continue;
-
-        HTREEITEM hItem = NULL;
-        hItem = TV_FindOrInsertDepth1(hwnd, db, hItem, entries, i, i);
-
-        if (entries[i].type == RT_STRING)
-        {
-            TV_FindOrInsertString(hwnd, hItem, entries, i);
-        }
-        if (entries[i].type == RT_MESSAGETABLE)
-        {
-            TV_FindOrInsertMessage(hwnd, hItem, entries, i);
-        }
-    }
-
-    // NOTE: Here, i is old index. k is new index.
-    INT k = 0;
-    for (INT i = 0; i < INT(entries.size()); ++i)
-    {
-        if (entries[i].empty())
-            continue;
-
-        HTREEITEM hItem = NULL;
-        hItem = TV_FindOrInsertDepth1(hwnd, db, hItem, entries, i, k);
-        hItem = TV_FindOrInsertDepth2(hwnd, db, hItem, entries, i, k);
-        hItem = TV_FindOrInsertDepth3(hwnd, db, hItem, entries, i, k);
-        hItem = hItem;
-        ++k;
-    }
-
-    Res_EraseEmpty(entries);
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void
@@ -1278,47 +1177,67 @@ Res_GetMaster(void)
 inline void
 TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
 {
-    switch (entry->m_e_type)
+    assert(entry->m_e_type == I_LANG);
+    assert(entry.m_type == RT_GROUP_CURSOR);
+
+    MByteStreamEx bs(entry->m_data);
+
+    ICONDIR dir;
+    if (!bs.ReadRaw(dir))
+        return false;
+
+    DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
+    std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
+    if (!bs.ReadData(&DirEntries[0], size))
+        return false;
+
+    DWORD i, nCount = dir.idCount;
+    for (i = 0; i < nCount; ++i)
     {
-    case I_TYPE:
-    case I_NAME:
-    case I_LANG:
-        // TODO:
-        break;
-    default:
-        assert(0);
-        break;
+        Res_GetMaster().search_and_delete(I_LANG, RT_CURSOR, DirEntries[i].nID, entry->lang);
     }
+
+    return true;
 }
 
 inline void
 TV_OnDeleteGroupIcon(HWND hwndTV, EntryBase *entry)
 {
-    switch (entry->m_e_type)
+    assert(entry->m_e_type == I_LANG);
+    assert(entry.M_type == RT_GROUP_ICON);
+
+    MByteStreamEx bs(entry->m_data);
+
+    ICONDIR dir;
+    if (!bs.ReadRaw(dir))
+        return false;
+
+    DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
+    std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
+    if (!bs.ReadData(&DirEntries[0], size))
+        return false;
+
+    DWORD i, nCount = dir.idCount;
+    for (i = 0; i < nCount; ++i)
     {
-    case I_TYPE:
-    case I_NAME:
-    case I_LANG:
-        // TODO:
-        break;
-    default:
-        assert(0);
-        break;
+        Res_GetMaster().search_and_delete(I_LANG, RT_ICON, DirEntries[i].nID, entry->lang);
     }
+
+    return true;
 }
 
 inline void
 TV_OnDeleteString(HWND hwndTV, EntryBase *entry)
 {
     assert(entry->m_e_type == I_STRING);
-    // TODO:
+    Res_GetMaster().search_and_delete(I_LANG, RT_STRING, (WORD)0, entry->lang);
 }
 
 inline void
 TV_OnDeleteMessage(HWND hwndTV, EntryBase *entry)
 {
     assert(entry->m_e_type == I_MESSAGE);
-    // TODO:
+    Res_GetMaster().search_and_delete(I_LANG, RT_MESSAGETABLE, (WORD)0, entry->lang);
 }
 
 inline void
@@ -1336,25 +1255,9 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
         break;
 
     case I_TYPE:
-        if (entry->m_type == RT_GROUP_CURSOR)
-        {
-            TV_OnDeleteGroupCursor(HWND hwndTV, entry);
-        }
-        if (entry->m_type == RT_GROUP_ICON)
-        {
-            TV_OnDeleteGroupIcon(HWND hwndTV, entry);
-        }
         break;
 
     case I_NAME:
-        if (entry->m_type == RT_GROUP_CURSOR)
-        {
-            TV_OnDeleteGroupCursor(HWND hwndTV, entry);
-        }
-        if (entry->m_type == RT_GROUP_ICON)
-        {
-            TV_OnDeleteGroupIcon(HWND hwndTV, entry);
-        }
         break;
 
     case I_LANG:
@@ -1382,7 +1285,7 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 
     delete entry;
 
-    if (TreeView_GetChild(hwndTV, hParent) == NULL)
+    if (hParent && TreeView_GetChild(hwndTV, hParent) == NULL)
         TreeView_DeleteItem(hwndTV, hParent);
 }
 
