@@ -171,12 +171,12 @@ MStringW Res_GetLangName(WORD lang);
 
 enum EntryType
 {
-    I_NONE,     // None. Don't use.
-    I_TYPE,     // TypeEntry.
-    I_NAME,     // NameEntry.
-    I_LANG,     // LangEntry.
-    I_STRING,   // StringEntry.
-    I_MESSAGE   // MessageEntry.
+    ET_NONE,        // None. Don't use.
+    ET_TYPE,        // TypeEntry.
+    ET_NAME,        // NameEntry.
+    ET_LANG,        // LangEntry.
+    ET_STRING,      // StringEntry.
+    ET_MESSAGE      // MessageEntry.
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ struct EntryBase
 
     bool match(EntryType e_type, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
     {
-        if (e_type != I_NONE && m_e_type != e_type)
+        if (e_type != ET_NONE && m_e_type != e_type)
             return false;
         if (!type.is_zero() && m_type != type)
             return false;
@@ -218,7 +218,8 @@ struct EntryBase
 
     bool operator==(const EntryBase& entry) const
     {
-        return m_lang == entry.m_lang &&
+        return m_e_type == entry.m_e_type &&
+               m_lang == entry.m_lang &&
                m_type == entry.m_type &&
                m_name == entry.m_name;
     }
@@ -246,7 +247,7 @@ struct EntryBase
 
 struct TypeEntry : EntryBase
 {
-    TypeEntry(const MIdOrString& type) : EntryBase(I_TYPE, type)
+    TypeEntry(const MIdOrString& type) : EntryBase(ET_TYPE, type)
     {
     }
 };
@@ -254,7 +255,7 @@ struct TypeEntry : EntryBase
 struct NameEntry : EntryBase
 {
     NameEntry(const MIdOrString& type, const MIdOrString& name)
-        : EntryBase(I_NAME, type, name)
+        : EntryBase(ET_NAME, type, name)
     {
     }
 };
@@ -262,7 +263,7 @@ struct NameEntry : EntryBase
 struct StringEntry : EntryBase
 {
     StringEntry(const MIdOrString& type, WORD lang)
-        : EntryBase(I_STRING, RT_STRING, L"", lang)
+        : EntryBase(ET_STRING, RT_STRING, L"", lang)
     {
     }
 };
@@ -270,7 +271,7 @@ struct StringEntry : EntryBase
 struct MessageEntry : EntryBase
 {
     MessageEntry(const MIdOrString& type, WORD lang)
-        : EntryBase(I_STRING, RT_STRING, L"", lang)
+        : EntryBase(ET_STRING, RT_STRING, L"", lang)
     {
     }
 };
@@ -281,17 +282,17 @@ struct LangEntry : EntryBase
     MStringW  m_strText;
 
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
-        : EntryBase(I_NAME, type, name, lang)
+        : EntryBase(ET_NAME, type, name, lang)
     {
     }
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
               const data_type& data)
-        : EntryBase(I_NAME, type, name, lang), m_data(data)
+        : EntryBase(ET_NAME, type, name, lang), m_data(data)
     {
     }
     LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang,
               const MStringW& strText)
-        : EntryBase(I_NAME, type, name, lang), m_strText(strText)
+        : EntryBase(ET_NAME, type, name, lang), m_strText(strText)
     {
     }
     virtual ~LangEntry()
@@ -456,6 +457,17 @@ struct EntrySet : private std::set<EntryBase *>
         return !found.empty();
     }
 
+    HTREEITEM find(EntryType e_type, const MIdOrString& type,
+              const MIdOrString& name, WORD lang = 0xFFFF)
+    {
+        super_type found;
+        if (search(found, e_type, type, name, lang))
+        {
+            return found.begin()->m_hItem;
+        }
+        return NULL;
+    }
+
     bool intersect(const super_type& another) const
     {
         if (size() == 0 && another.size() == 0)
@@ -530,25 +542,18 @@ struct EntrySet : private std::set<EntryBase *>
         return false;
     }
 
-    BOOL Add(const MIdOrString& type, const MIdOrString& name, WORD lang,
-             const MStringW& strText, const Entry::DataType& data,
-             BOOL Replace = FALSE)
-    {
-        ...
-    }
-
     bool
     AddGroupIcon(const MIdOrString& name, WORD lang,
-                 const MStringW& FileName, BOOL Replace = FALSE)
+                 const MStringW& file_name, BOOL replace = FALSE)
     {
         IconFile icon;
-        if (!icon.LoadFromFile(FileName.c_str()) || icon.type() != RES_ICON)
+        if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
             return false;
 
         UINT LastIconID = GetLastIconID(*this);
         UINT NextIconID = LastIconID + 1;
         IconFile::DataType group(icon.GetIconGroup(NextIconID));
-        Add(RT_GROUP_ICON, name, lang, L"", group, Replace);
+        Add(RT_GROUP_ICON, name, lang, L"", group, replace);
 
         int i, nCount = icon.GetImageCount();
         for (i = 0; i < nCount; ++i)
@@ -560,16 +565,16 @@ struct EntrySet : private std::set<EntryBase *>
     }
 
     bool AddGroupCursor(const MIdOrString& name, WORD lang,
-                        const MStringW& FileName, BOOL Replace = FALSE)
+                        const MStringW& file_name, BOOL replace = FALSE)
     {
         CursorFile cur;
-        if (!cur.LoadFromFile(FileName.c_str()) || cur.type() != RES_CURSOR)
+        if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
             return false;
 
         UINT LastCursorID = GetLastCursorID(*this);
         UINT NextCursorID = LastCursorID + 1;
         CursorFile::DataType group(cur.GetCursorGroup(NextCursorID));
-        Add(RT_GROUP_CURSOR, name, lang, L"", group, Replace);
+        Add(RT_GROUP_CURSOR, name, lang, L"", group, replace);
 
         int i, nCount = cur.GetImageCount();
         for (i = 0; i < nCount; ++i)
@@ -580,7 +585,7 @@ struct EntrySet : private std::set<EntryBase *>
     }
 
     bool AddBitmap(const MIdOrString& name, WORD lang,
-                   const MStringW& BitmapFile, BOOL Replace = FALSE)
+                   const MStringW& BitmapFile, BOOL replace = FALSE)
     {
         MByteStreamEx stream;
         if (!stream.LoadFromFile(BitmapFile.c_str()) || stream.size() <= 4)
@@ -606,7 +611,7 @@ struct EntrySet : private std::set<EntryBase *>
             }
             DeleteObject(hbm);
 
-            AddEntry(RT_BITMAP, name, lang, L"", PackedDIB, Replace);
+            AddEntry(RT_BITMAP, name, lang, L"", PackedDIB, replace);
         }
         else
         {
@@ -616,7 +621,7 @@ struct EntrySet : private std::set<EntryBase *>
 
             size_t i0 = FileHeadSize, i1 = stream.size();
             Entry::DataType HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-            Add(RT_BITMAP, name, lang, L"", HeadLess, Replace);
+            Add(RT_BITMAP, name, lang, L"", HeadLess, replace);
         }
 
         return TRUE;
@@ -740,18 +745,6 @@ public:
                 if (title_to_icon[item.m_title])
                     DestroyIcon(title_to_icon[item.m_title]);
                 title_to_icon[item.m_title] = hIcon;
-            }
-        }
-    }
-
-    void Optimize()
-    {
-        for (auto entry : *this)
-        {
-            if (entry->empty())
-            {
-                erase(entry);
-                delete entry;
             }
         }
     }
@@ -1051,7 +1044,7 @@ TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
          hItem = TreeView_GetNextSibling(hwnd, hItem))
     {
         LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_LANG)
+        if (HIWORD(lParam) == ET_LANG)
         {
             if (entries[LOWORD(lParam)].lang == entries[i].lang)
                 return hItem;
@@ -1059,7 +1052,7 @@ TV_FindOrInsertDepth3(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     MStringW ResLang = Res_GetLangName(entries[i].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, I_LANG));
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(k, ET_LANG));
 }
 
 inline HTREEITEM
@@ -1071,7 +1064,7 @@ TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
          hItem = TreeView_GetNextSibling(hwnd, hItem))
     {
         LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_NAME)
+        if (HIWORD(lParam) == ET_NAME)
         {
             if (entries[LOWORD(lParam)].name == entries[i].name)
                 return hItem;
@@ -1079,7 +1072,7 @@ TV_FindOrInsertDepth2(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     MStringW ResName = Res_GetName(db, entries[i]);
-    return TV_MyInsert(hwnd, hParent, ResName, MAKELPARAM(k, I_NAME));
+    return TV_MyInsert(hwnd, hParent, ResName, MAKELPARAM(k, ET_NAME));
 }
 
 inline HTREEITEM
@@ -1091,7 +1084,7 @@ TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
          hItem = TreeView_GetNextSibling(hwnd, hItem))
     {
         LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_TYPE)
+        if (HIWORD(lParam) == ET_TYPE)
         {
             if (entries[LOWORD(lParam)].type == entries[i].type)
                 return hItem;
@@ -1099,7 +1092,7 @@ TV_FindOrInsertDepth1(HWND hwnd, const ConstantsDB& db, HTREEITEM hParent,
     }
 
     MStringW ResType = Res_GetTypeString(entries[i].type);
-    return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, I_TYPE));
+    return TV_MyInsert(hwnd, hParent, ResType, MAKELPARAM(k, ET_TYPE));
 }
 
 inline HTREEITEM
@@ -1111,7 +1104,7 @@ TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
          hItem = TreeView_GetNextSibling(hwnd, hItem))
     {
         LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_STRING)
+        if (HIWORD(lParam) == ET_STRING)
         {
             if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
                 return hItem;
@@ -1119,7 +1112,7 @@ TV_FindOrInsertString(HWND hwnd, HTREEITEM hParent,
     }
 
     MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_STRING));
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, ET_STRING));
 }
 
 inline HTREEITEM
@@ -1131,7 +1124,7 @@ TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
          hItem = TreeView_GetNextSibling(hwnd, hItem))
     {
         LPARAM lParam = TV_GetParam(hwnd, hItem);
-        if (HIWORD(lParam) == I_MESSAGE)
+        if (HIWORD(lParam) == ET_MESSAGE)
         {
             if (entries[LOWORD(lParam)].lang == entries[iEntry].lang)
                 return hItem;
@@ -1139,7 +1132,7 @@ TV_FindOrInsertMessage(HWND hwnd, HTREEITEM hParent,
     }
 
     MStringW ResLang = Res_GetLangName(entries[iEntry].lang);
-    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, I_MESSAGE));
+    return TV_MyInsert(hwnd, hParent, ResLang, MAKELPARAM(iEntry, ET_MESSAGE));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1177,7 +1170,7 @@ Res_GetMaster(void)
 inline void
 TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
 {
-    assert(entry->m_e_type == I_LANG);
+    assert(entry->m_e_type == ET_LANG);
     assert(entry.m_type == RT_GROUP_CURSOR);
 
     MByteStreamEx bs(entry->m_data);
@@ -1194,7 +1187,7 @@ TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(I_LANG, RT_CURSOR, DirEntries[i].nID, entry->lang);
+        Res_GetMaster().search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, entry->lang);
     }
 
     return true;
@@ -1203,8 +1196,8 @@ TV_OnDeleteGroupCursor(HWND hwndTV, EntryBase *entry)
 inline void
 TV_OnDeleteGroupIcon(HWND hwndTV, EntryBase *entry)
 {
-    assert(entry->m_e_type == I_LANG);
-    assert(entry.M_type == RT_GROUP_ICON);
+    assert(entry->m_e_type == ET_LANG);
+    assert(entry.m_type == RT_GROUP_ICON);
 
     MByteStreamEx bs(entry->m_data);
 
@@ -1220,7 +1213,7 @@ TV_OnDeleteGroupIcon(HWND hwndTV, EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        Res_GetMaster().search_and_delete(I_LANG, RT_ICON, DirEntries[i].nID, entry->lang);
+        Res_GetMaster().search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, entry->lang);
     }
 
     return true;
@@ -1229,15 +1222,15 @@ TV_OnDeleteGroupIcon(HWND hwndTV, EntryBase *entry)
 inline void
 TV_OnDeleteString(HWND hwndTV, EntryBase *entry)
 {
-    assert(entry->m_e_type == I_STRING);
-    Res_GetMaster().search_and_delete(I_LANG, RT_STRING, (WORD)0, entry->lang);
+    assert(entry->m_e_type == ET_STRING);
+    Res_GetMaster().search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->lang);
 }
 
 inline void
 TV_OnDeleteMessage(HWND hwndTV, EntryBase *entry)
 {
-    assert(entry->m_e_type == I_MESSAGE);
-    Res_GetMaster().search_and_delete(I_LANG, RT_MESSAGETABLE, (WORD)0, entry->lang);
+    assert(entry->m_e_type == ET_MESSAGE);
+    Res_GetMaster().search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->lang);
 }
 
 inline void
@@ -1250,17 +1243,17 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 
     switch (entry->m_e_type)
     {
-    case I_NONE:
+    case ET_NONE:
         assert(0);
         break;
 
-    case I_TYPE:
+    case ET_TYPE:
         break;
 
-    case I_NAME:
+    case ET_NAME:
         break;
 
-    case I_LANG:
+    case ET_LANG:
         if (entry->m_type == RT_GROUP_CURSOR)
         {
             TV_OnDeleteGroupCursor(HWND hwndTV, entry);
@@ -1271,11 +1264,11 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
         }
         break;
 
-    case I_STRING:
+    case ET_STRING:
         TV_OnDeleteString(HWND hwndTV, entry);
         break;
 
-    case I_MESSAGE:
+    case ET_MESSAGE:
         TV_OnDeleteMessage(HWND hwndTV, entry);
         break;
 
@@ -1290,8 +1283,8 @@ TV_OnDeleteItem(HWND hwndTV, HTREEITEM hItem)
 }
 
 inline HTREEITEM
-TV_Insert(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
-          HTREEITEM hInsertAfter = TVI_LAST)
+TV_InsertAfter(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
+               HTREEITEM hInsertAfter)
 {
     assert(entry);
 
@@ -1306,7 +1299,7 @@ TV_Insert(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
     insert.item.stateMask = 0;
     insert.item.pszText = &strText[0];
     insert.item.lParam = (LPARAM)entry;
-    if (entry->m_e_type < I_LANG)
+    if (entry->m_e_type < ET_LANG)
     {
         insert.item.iImage = 1;
         insert.item.iSelectedImage = 1;
@@ -1317,6 +1310,86 @@ TV_Insert(HWND hwndTV, HTREEITEM hParent, MStringW strText, EntryBase *entry,
         insert.item.iSelectedImage = 0;
     }
     return TreeView_InsertItem(hwndTV, &insert);
+}
+
+inline HTREEITEM
+TV_GetInsertParent(HWND hwndTV, EntryBase *entry)
+{
+    if (entry->m_e_type == ET_TYPE)
+        return NULL;
+
+    // TODO:
+    return NULL;
+}
+
+inline HTREEITEM
+TV_GetInsertPosition(HWND hwndTV, EntryBase *entry)
+{
+    if (entry->m_e_type == ET_TYPE)
+        return NULL;
+
+    // TODO:
+    return NULL;
+}
+
+inline HTREEITEM
+TV_InsertEntry(HWND hwndTV, EntryBase *entry)
+{
+    HTREEITEM hParent = TV_GetInsertParent(hwndTV, entry);
+    HTREEITEM hPosition = TV_GetInsertPosition(hwndTV, entry);
+    return TV_InsertAfter(hwndTV, hParent, ..., entry, hPosition);
+}
+
+inline HTREEITEM
+TV_AddTypeEntry(HWND hwndTV, const MIdOrString& type, bool replace)
+{
+    if (replace)
+    {
+        Res_GetMaster().search_and_delete(ET_TYPE, type);
+    }
+    else
+    {
+        if (auto hItem = Res_GetMaster().find(ET_TYPE, type))
+            return hItem;
+    }
+    auto entry = new TypeEntry(type);
+    return TV_InsertEntry(hwndTV, entry);
+}
+
+inline HTREEITEM
+TV_AddNameEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
+                bool replace)
+{
+    if (replace)
+    {
+        Res_GetMaster().search_and_delete(ET_NAME, type, name);
+    }
+    else
+    {
+        if (auto hItem = Res_GetMaster().find(ET_NAME, type, name))
+            return hItem;
+    }
+    auto entry = new NameEntry(type, name);
+    return TV_InsertEntry(hwndTV, entry);
+}
+
+
+inline HTREEITEM
+TV_AddLangEntry(HWND hwndTV, const MIdOrString& type, const MIdOrString& name,
+                WORD lang, const EntryBase::data_type& data, bool replace)
+{
+    if (replace)
+    {
+        Res_GetMaster().search_and_delete(ET_LANG, type, name, lang);
+    }
+    else
+    {
+        if (auto hItem = Res_GetMaster().find(ET_LANG, type, name, lang))
+            return hItem;
+    }
+
+    auto entry = new LangEntry(type, name, lang, data);
+    return TV_InsertEntry(hwndTV, entry);
 }
 
 //////////////////////////////////////////////////////////////////////////////
