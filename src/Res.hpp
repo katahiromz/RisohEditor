@@ -345,6 +345,14 @@ struct LangEntry : EntryBase
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet
 
+inline HTREEITEM
+TV_InsertEntry(EntryBase *entry);
+
+HTREEITEM TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name, 
+                          WORD lang, const EntryBase::data_type& data, bool replace);
+HTREEITEM TV_AddStringEntry(WORD lang);
+HTREEITEM TV_AddMessageEntry(WORD lang);
+
 struct EntrySet : private std::set<EntryBase *>
 {
     typedef std::set<EntryBase *> super_type;
@@ -416,12 +424,37 @@ struct EntrySet : private std::set<EntryBase *>
         return false;
     }
 
+    void add_entries(super_type& super, bool replace)
+    {
+        for (auto entry : super)
+        {
+            if (replace)
+            {
+                search_and_delete(ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+            }
+            else
+            {
+                if (auto hItem = find2(ET_LANG, entry->m_type, entry->m_name, entry->m_lang))
+                    continue;
+            }
+
+            if (entry->m_type == RT_STRING)
+            {
+                TV_AddStringEntry(entry->m_lang);
+            }
+            if (entry->m_type == RT_MESSAGETABLE)
+            {
+                TV_AddMessageEntry(entry->m_lang);
+            }
+
+            TV_InsertEntry(entry);
+        }
+    }
+
     HTREEITEM
     add_entry(const MIdOrString& type, const MIdOrString& name, 
               WORD lang, const EntryBase::data_type& data, bool replace)
     {
-        HTREEITEM TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name, 
-                                  WORD lang, const EntryBase::data_type& data, bool replace);
         return TV_AddLangEntry(type, name, lang, data, replace);
     }
 

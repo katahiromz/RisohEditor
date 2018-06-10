@@ -2036,7 +2036,6 @@ void MMainWnd::OnImport(HWND hwnd)
         EntrySet::super_type res;
         if (DoImport(hwnd, file, res))
         {
-            BOOL bOverwrite = TRUE;
             if (g_res.intersect(res))
             {
                 INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
@@ -2046,14 +2045,12 @@ void MMainWnd::OnImport(HWND hwnd)
                 case IDYES:
                     break;
                 case IDNO:
-                    bOverwrite = FALSE;
-                    break;
                 case IDCANCEL:
                     return;
                 }
             }
 
-            g_res.add_entries(res);
+            g_res.add_entries(res, true);
         }
         else
         {
@@ -2161,14 +2158,15 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
         return;
     }
 
-    DialogRes& dialog_res = m_rad_window.m_dialog_res;
+    auto& dialog_res = m_rad_window.m_dialog_res;
 
+    // dialog_res --> entry->m_data
     MByteStreamEx stream;
     dialog_res.SaveToStream(stream);
     entry->m_data = stream.data();
 
     MString str = GetLanguageStatement(entry->m_lang);
-    str += dialog_res.Dump(entry.name);
+    str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     str = DumpDataAsString(entry->m_data);
@@ -2177,25 +2175,8 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
-        ResEntry entry2(RT_DLGINIT, entry->m_name, entry->m_lang);
-        entry2.m_data = stream.data();
-
-        if (dialog_res.m_dlginit.empty())
-        {
-            HTREEITEM hItem = TV_GetItem(g_tv, m_entries, entry2);
-            TV_DeleteItem(g_tv, m_entries, entry2);
-            return;
-        }
-
-        INT k = INT(m_entries.size());
-        m_entries.push_back(entry2);
-
-        // insert
-        HTREEITEM hItem = NULL;
-        hItem = TV_FindOrInsertDepth1(g_tv, m_hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth2(g_tv, m_hItem, m_entries, k, k);
-        hItem = TV_FindOrInsertDepth3(g_tv, m_hItem, m_entries, k, k);
-        hItem = hItem;
+        // update RT_DLGINIT
+        g_res.add_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), true);
     }
 }
 
@@ -2234,7 +2215,7 @@ BOOL MMainWnd::DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name)
         UINT nLastID = g_res.get_last_id(RT_ICON, entry.m_lang);
         UINT nNextID = nLastID + 1;
 
-        e->name = WORD(nNextID);
+        e->m_name = WORD(nNextID);
         UpdateEntryName(*e);
     }
 
@@ -2271,7 +2252,7 @@ BOOL MMainWnd::DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
+        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
         if (!e)
             return FALSE;
 
@@ -9360,23 +9341,19 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void MMainWnd::SelectString(HWND hwnd)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_STRING, WORD(0), 0xFFFF);
-    if (found.size())
+    auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, 0xFFFF);
+    if (entry)
     {
-        ResEntry entry(RT_STRING, found[0].name, found[0].lang);
-        TV_SelectEntry(entry);
+        SelectTV(hwnd, entry, FALSE);
     }
 }
 
 void MMainWnd::SelectMessage(HWND hwnd)
 {
-    ResEntries found;
-    Res_Search(found, m_entries, RT_MESSAGETABLE, WORD(0), 0xFFFF);
-    if (found.size())
+    auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
+    if (entry)
     {
-        ResEntry entry(RT_MESSAGETABLE, found[0].name, found[0].lang);
-        TV_SelectEntry(entry);
+        SelectTV(hwnd, entry, FALSE);
     }
 }
 

@@ -67,7 +67,7 @@ public:
     {
     }
 
-    MString DumpEntry(const LangEntry& entry);
+    MString DumpEntry(const EntryBase& entry);
 
 public:
     HWND m_hwnd;
@@ -89,7 +89,7 @@ public:
     MString DoIcon(const LangEntry& entry);
     MString DoMenu(const LangEntry& entry);
     MString DoDialog(const LangEntry& entry);
-    MString DoString(const LangEntry& entry);
+    MString DoString(const EntryBase& entry);
     MString DoAccel(const LangEntry& entry);
     MString DoGroupCursor(const LangEntry& entry);
     MString DoGroupIcon(const LangEntry& entry);
@@ -98,24 +98,24 @@ public:
     MString DoAniIcon(const LangEntry& entry);
     MString DoText(const LangEntry& entry);
     MString DoImage(const LangEntry& entry);
-    MString DoMessage(const LangEntry& entry);
+    MString DoMessage(const EntryBase& entry);
     MString DoWave(const LangEntry& entry);
     MString DoAVI(const LangEntry& entry);
     MString DoDlgInit(const LangEntry& entry);
     MString DoRCData(const LangEntry& entry);
     MString DoRisohTemplate(const LangEntry& entry);
-    MString DoUnknown(const LangEntry& entry);
+    MString DoUnknown(const EntryBase& entry);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
     MString DumpEscapedName(const MIdOrString& name);
 
-    MString GetEntryFileName(const LangEntry& entry);
+    MString GetEntryFileName(const EntryBase& entry);
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 inline MString
-ResToText::GetEntryFileName(const LangEntry& entry)
+ResToText::GetEntryFileName(const EntryBase& entry)
 {
     MString ret, lang;
 
@@ -304,38 +304,42 @@ ResToText::GetEntryFileName(const LangEntry& entry)
         }
         else if (entry.m_type == L"IMAGE")
         {
-            if (entry.size() >= 4)
+            if (entry.m_e_type == ET_LANG)
             {
-                if (memcmp(&entry[0], "BM", 2) == 0)
+                LangEntry& le = (LangEntry&)entry;
+                if (le.size() >= 4)
                 {
-                    ret += L"Image_";
-                    ret += DumpEscapedName(entry.m_name);
-                    ret += L".bmp";
-                }
-                else if (memcmp(&entry[0], "GIF", 3) == 0)
-                {
-                    ret += L"Image_";
-                    ret += DumpEscapedName(entry.m_name);
-                    ret += L".gif";
-                }
-                else if (memcmp(&entry[0], "\x89\x50\x4E\x47", 4) == 0)
-                {
-                    ret += L"Image_";
-                    ret += DumpEscapedName(entry.m_name);
-                    ret += L".png";
-                }
-                else if (memcmp(&entry[0], "\xFF\xD8", 2) == 0)
-                {
-                    ret += L"Image_";
-                    ret += DumpEscapedName(entry.m_name);
-                    ret += L".jpg";
-                }
-                else if (memcmp(&entry[0], "\x4D\x4D", 2) == 0 ||
-                         memcmp(&entry[0], "\x49\x49", 2) == 0)
-                {
-                    ret += L"Image_";
-                    ret += DumpEscapedName(entry.m_name);
-                    ret += L".tif";
+                    if (memcmp(&le[0], "BM", 2) == 0)
+                    {
+                        ret += L"Image_";
+                        ret += DumpEscapedName(le.m_name);
+                        ret += L".bmp";
+                    }
+                    else if (memcmp(&le[0], "GIF", 3) == 0)
+                    {
+                        ret += L"Image_";
+                        ret += DumpEscapedName(le.m_name);
+                        ret += L".gif";
+                    }
+                    else if (memcmp(&le[0], "\x89\x50\x4E\x47", 4) == 0)
+                    {
+                        ret += L"Image_";
+                        ret += DumpEscapedName(le.m_name);
+                        ret += L".png";
+                    }
+                    else if (memcmp(&le[0], "\xFF\xD8", 2) == 0)
+                    {
+                        ret += L"Image_";
+                        ret += DumpEscapedName(le.m_name);
+                        ret += L".jpg";
+                    }
+                    else if (memcmp(&le[0], "\x4D\x4D", 2) == 0 ||
+                             memcmp(&le[0], "\x49\x49", 2) == 0)
+                    {
+                        ret += L"Image_";
+                        ret += DumpEscapedName(le.m_name);
+                        ret += L".tif";
+                    }
                 }
             }
         }
@@ -465,7 +469,7 @@ ResToText::DoDialog(const LangEntry& entry)
 }
 
 inline MString
-ResToText::DoString(const LangEntry& entry)
+ResToText::DoString(const EntryBase& entry)
 {
     EntrySet::super_type found;
     g_res.search(found, ET_LANG, RT_STRING, entry.m_name, entry.m_lang);
@@ -488,7 +492,7 @@ ResToText::DoString(const LangEntry& entry)
 }
 
 inline MString
-ResToText::DoMessage(const LangEntry& entry)
+ResToText::DoMessage(const EntryBase& entry)
 {
     EntrySet::super_type found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
@@ -790,85 +794,108 @@ ResToText::DoImage(const LangEntry& entry)
 }
 
 inline MString
-ResToText::DumpEntry(const LangEntry& entry)
+ResToText::DumpEntry(const EntryBase& entry)
 {
+    LangEntry *le = NULL;
+    if (entry.m_e_type == ET_LANG)
+        le = (LangEntry *)&entry;
+
     if (entry.m_type.m_id)
     {
-        switch (entry.m_type.m_id)
+        if (le)
         {
-        case 1: // RT_CURSOR
-            return DoCursor(entry);
-        case 2: // RT_BITMAP
-            return DoBitmap(entry);
-        case 3: // RT_ICON
-            return DoIcon(entry);
-        case 4: // RT_MENU
-            return DoMenu(entry);
-        case 5: // RT_DIALOG
-            return DoDialog(entry);
-        case 6: // RT_STRING
-            return DoString(entry);
-        case 7: // RT_FONTDIR
-            break;
-        case 8: // RT_FONT
-            break;
-        case 9: // RT_ACCELERATOR
-            return DoAccel(entry);
-        case 10: // RT_RCDATA
-            return DoRCData(entry);
-        case 11: // RT_MESSAGETABLE
-            return DoMessage(entry);
-        case 12: // RT_GROUP_CURSOR
-            return DoGroupCursor(entry);
-        case 14: // RT_GROUP_ICON
-            return DoGroupIcon(entry);
-        case 16: // RT_VERSION
-            return DoVersion(entry);
-        case 17: // RT_DLGINCLUDE
-            break;
-        case 19: // RT_PLUGPLAY
-            break;
-        case 20: // RT_VXD
-            break;
-        case 21: // RT_ANICURSOR
-            return DoAniCursor(entry);
-        case 22: // RT_ANIICON
-            return DoAniIcon(entry);
-        case 23: // RT_HTML
-            return DoText(entry);
-        case 24: // RT_MANIFEST
-            return DoText(entry);
-        case 240: // RT_DLGINIT
-            return DoDlgInit(entry);
-        default:
-            return DoUnknown(entry);
+            switch (entry.m_type.m_id)
+            {
+            case 1: // RT_CURSOR
+                return DoCursor(*le);
+            case 2: // RT_BITMAP
+                return DoBitmap(*le);
+            case 3: // RT_ICON
+                return DoIcon(*le);
+            case 4: // RT_MENU
+                return DoMenu(*le);
+            case 5: // RT_DIALOG
+                return DoDialog(*le);
+            case 6: // RT_STRING
+                return DoString(entry);
+            case 7: // RT_FONTDIR
+                break;
+            case 8: // RT_FONT
+                break;
+            case 9: // RT_ACCELERATOR
+                return DoAccel(*le);
+            case 10: // RT_RCDATA
+                return DoRCData(*le);
+            case 11: // RT_MESSAGETABLE
+                return DoMessage(entry);
+            case 12: // RT_GROUP_CURSOR
+                return DoGroupCursor(*le);
+            case 14: // RT_GROUP_ICON
+                return DoGroupIcon(*le);
+            case 16: // RT_VERSION
+                return DoVersion(*le);
+            case 17: // RT_DLGINCLUDE
+                break;
+            case 19: // RT_PLUGPLAY
+                break;
+            case 20: // RT_VXD
+                break;
+            case 21: // RT_ANICURSOR
+                return DoAniCursor(*le);
+            case 22: // RT_ANIICON
+                return DoAniIcon(*le);
+            case 23: // RT_HTML
+                return DoText(*le);
+            case 24: // RT_MANIFEST
+                return DoText(*le);
+            case 240: // RT_DLGINIT
+                return DoDlgInit(*le);
+            default:
+                return DoUnknown(entry);
+            }
+        }
+        else
+        {
+            switch (entry.m_type.m_id)
+            {
+            case 6: // RT_STRING
+                return DoString(entry);
+            case 11: // RT_MESSAGETABLE
+                return DoMessage(entry);
+            default:
+                return DoUnknown(entry);
+            }
         }
     }
     else
     {
-        MString type = entry.m_type.m_str;
-        if (type == L"PNG" || type == L"GIF" ||
-            type == L"JPEG" || type == L"TIFF" ||
-            type == L"JPG" || type == L"TIF" ||
-            type == L"EMF" || type == L"ENHMETAFILE" || type == L"WMF" ||
-            type == L"IMAGE")
+        if (le)
         {
-            return DoImage(entry);
-        }
-        else if (type == L"WAVE")
-        {
-            return DoWave(entry);
-        }
-        else if (entry.m_type == L"AVI")
-        {
-            return DoAVI(entry);
-        }
-        else if (entry.m_type == L"RISOHTEMPLATE")
-        {
-            return DoRisohTemplate(entry);
+            MString type = entry.m_type.m_str;
+            if (type == L"PNG" || type == L"GIF" ||
+                type == L"JPEG" || type == L"TIFF" ||
+                type == L"JPG" || type == L"TIF" ||
+                type == L"EMF" || type == L"ENHMETAFILE" || type == L"WMF" ||
+                type == L"IMAGE")
+            {
+                return DoImage(*le);
+            }
+            else if (type == L"WAVE")
+            {
+                return DoWave(*le);
+            }
+            else if (entry.m_type == L"AVI")
+            {
+                return DoAVI(*le);
+            }
+            else if (entry.m_type == L"RISOHTEMPLATE")
+            {
+                return DoRisohTemplate(*le);
+            }
+            return DoText(*le);
         }
     }
-    return DoText(entry);
+    return DoUnknown(entry);
 }
 
 inline MString ResToText::DoWave(const LangEntry& entry)
@@ -948,9 +975,12 @@ inline MString ResToText::DoRisohTemplate(const LangEntry& entry)
     return DoText(entry);
 }
 
-inline MString ResToText::DoUnknown(const LangEntry& entry)
+inline MString ResToText::DoUnknown(const EntryBase& entry)
 {
     MString str;
+
+    if (entry.m_e_type != ET_LANG)
+        return str;
 
     if (m_bHumanReadable)
     {
