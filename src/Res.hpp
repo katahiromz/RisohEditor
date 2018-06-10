@@ -364,7 +364,7 @@ struct EntrySet : private EntrySetBase
     {
     }
 
-    EntrySet(HWND hwndTV, const super_type& super)
+    EntrySet(const super_type& super, HWND hwndTV = NULL)
         : super_type(super), m_hwndTV(hwndTV)
     {
     }
@@ -409,9 +409,9 @@ struct EntrySet : private EntrySetBase
         return false;
     }
 
-    void add_entries(super_type& super, bool replace)
+    void add_entries(const EntrySet& another, bool replace)
     {
-        for (auto entry : super)
+        for (auto entry : another)
         {
             if (entry->m_e_type != ET_LANG)
                 continue;
@@ -1215,13 +1215,16 @@ TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name,
             return entry;
     }
 
-    if (type == RT_STRING)
+    if (g_tv)
     {
-        TV_AddStringEntry(lang);
-    }
-    if (type == RT_MESSAGETABLE)
-    {
-        TV_AddMessageEntry(lang);
+        if (type == RT_STRING)
+        {
+            TV_AddStringEntry(lang);
+        }
+        if (type == RT_MESSAGETABLE)
+        {
+            TV_AddMessageEntry(lang);
+        }
     }
 
     auto entry = Res_NewLangEntry(type, name, lang);

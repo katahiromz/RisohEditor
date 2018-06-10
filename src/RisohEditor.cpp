@@ -3648,7 +3648,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 
 void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry->m_data);
+    MByteStreamEx stream(entry.m_data);
     MessageRes mes;
     WORD nNameID = entry.m_name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
@@ -3697,7 +3697,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.m_data))
     {
-        MString str = GetLanguageStatement(entry->m_lang);
+        MString str = GetLanguageStatement(entry.m_lang);
         str += ver_res.Dump(entry.m_name);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
@@ -4043,7 +4043,7 @@ MMainWnd::SelectTV(HWND hwnd, EntryType et, const MIdOrString& type,
     HidePreview(hwnd);
     if (auto entry = g_res.find(et, type, name, lang))
     {
-        SelectTV(hwnd, entry, bDoubleClick)
+        SelectTV(hwnd, entry, bDoubleClick);
     }
 }
 
@@ -9238,6 +9238,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         (HMENU)1, m_hInst, NULL);
     if (g_tv == NULL)
         return FALSE;
+
+    g_res.m_hwndTV = g_tv;
 
     TreeView_SetImageList(g_tv, m_hImageList, TVSIL_NORMAL);
 
