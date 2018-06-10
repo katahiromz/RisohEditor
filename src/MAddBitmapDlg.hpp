@@ -125,7 +125,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!TV_AddBitmap(name, lang, file, bOverwrite))
+        if (!g_res.add_bitmap(name, lang, file, bOverwrite))
         {
             if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEBMP);

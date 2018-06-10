@@ -97,7 +97,7 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !TV_AddLangEntry(RT_ANIICON, name, lang, bs.data(), true))
+                !g_res.add_lang_entry(RT_ANIICON, name, lang, bs.data(), true))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;
@@ -105,7 +105,7 @@ public:
         }
         else
         {
-            if (!TV_AddGroupIcon(name, lang, file, true))
+            if (!g_res.add_group_icon(name, lang, file, true))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
                 return;

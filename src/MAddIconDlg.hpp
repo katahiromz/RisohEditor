@@ -124,7 +124,7 @@ public:
             }
         }
 
-        if (!TV_AddGroupIcon(name, lang, file, bOverwrite))
+        if (!g_res.add_group_icon(name, lang, file, bOverwrite))
         {
             if (bOverwrite)
                 ErrorBoxDx(IDS_CANTREPLACEICO);

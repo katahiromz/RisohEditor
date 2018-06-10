@@ -1426,11 +1426,11 @@ public:
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
-    BOOL DoExtract(const EntryBase& entry, BOOL bExporting);
-    BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry);
-    BOOL DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry);
+    BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
+    BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase *entry);
+    BOOL DoExtractCursor(LPCWSTR pszFileName, const EntryBase *entry);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *entry);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySetBase& res);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySet& res);
     BOOL DoExtractBin(LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
@@ -1442,8 +1442,8 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name);
-    BOOL DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name);
+    BOOL DoCopyGroupIcon(EntryBase *entry, const MIdOrString& new_name);
+    BOOL DoCopyGroupCursor(EntryBase *entry, const MIdOrString& new_name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -1766,7 +1766,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractIcon(ofn.lpstrFile, *entry))
+        if (!DoExtractIcon(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTICO);
         }
@@ -1805,7 +1805,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractCursor(ofn.lpstrFile, *entry))
+        if (!DoExtractCursor(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTCUR);
         }
@@ -2101,7 +2101,7 @@ void MMainWnd::OnNew(HWND hwnd)
     HidePreview(hwnd);
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL, NULL);
-    TV_DeleteAll();
+    g_res.delete_all();
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
@@ -2184,11 +2184,11 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
         // update RT_DLGINIT
-        g_res.add_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), true);
+        g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), true);
     }
 }
 
-BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& new_name)
 {
     ICONDIR dir;
     if (entry->size() < sizeof(dir))
@@ -2211,7 +2211,7 @@ BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name)
         return FALSE;
     }
 
-    const GRPICONDIRENTRY *pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
+    auto pEntries = (const GRPICONDIRENTRY *)&(*entry)[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
@@ -2223,16 +2223,14 @@ BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name)
         UINT nLastID = g_res.get_last_id(RT_ICON, entry->m_lang);
         UINT nNextID = nLastID + 1;
 
-        e->m_name = WORD(nNextID);
-        UpdateEntryName(e);
+        g_res.add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data, false);
     }
 
-    entry->m_name = name;
-    UpdateEntryName(entry);
+    g_res.add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data, false);
     return TRUE;
 }
 
-BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& new_name)
 {
     ICONDIR dir;
     if (entry->size() < sizeof(dir))
@@ -2255,7 +2253,7 @@ BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name)
         return FALSE;
     }
 
-    const GRPCURSORDIRENTRY *pEntries = (const GRPCURSORDIRENTRY *)&entry[sizeof(dir)];
+    auto pEntries = (const GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
@@ -2267,12 +2265,10 @@ BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name)
         UINT nLastID = g_res.get_last_id(RT_CURSOR, entry->m_lang);
         UINT nNextID = nLastID + 1;
 
-        e->m_name = WORD(nNextID);
-        UpdateEntryName(e);
+        g_res.add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data, false);
     }
 
-    entry->m_name = m_name;
-    UpdateEntryName(entry);
+    g_res.add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data, false);
     return TRUE;
 }
 
@@ -2457,32 +2453,22 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         EntrySetBase found;
         g_res.search(found, ET_LANG, entry->m_type, entry->m_name, 0xFFFF);
 
-        EntrySetBase renamed;
-        for (auto e : found)
-        {
-            auto new_e = new EntryBase(*e);
-            new_e->m_name = dialog.m_name;
-            renamed.insert(new_e);
-        }
-
-        g_res.add_entries(renamed, false);
-
         if (entry->m_type == RT_GROUP_ICON)
         {
-            for (auto e : renamed)
+            for (auto e : found)
             {
                 DoCopyGroupIcon(e, dialog.m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
-            for (auto e : renamed)
+            for (auto e : found)
             {
                 DoCopyGroupCursor(e, dialog.m_name);
             }
         }
 
-        entry = g_res.find(ET_LANG, entry->m_type, dialog.m_name, entry->m_lang);
+        entry = g_res.find(ET_NAME, entry->m_type, dialog.m_name);
         SelectTV(hwnd, entry, FALSE);
     }
 }
@@ -2511,50 +2497,43 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                e->m_lang = dialog.m_lang;
-                UpdateEntryLang(e);
-                DoCopyGroupIcon(found[i], e->m_name);
+                DoCopyGroupIcon(e, e->m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
-            for (size_t i = 0; i < found.size(); ++i)
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
+            for (auto e : found)
             {
-                found[i].lang = dialog.m_lang;
-                DoCopyGroupCursor(found[i], found[i].name);
+                DoCopyGroupCursor(e, e->m_name);
             }
         }
         else if (entry->m_e_type == ET_STRING)
         {
-            WORD lang = entry->m_lang;
             EntrySetBase found;
-            g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
-
+            g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
         else if (entry->m_e_type == ET_MESSAGE)
         {
-            WORD lang = entry->m_lang;
             EntrySetBase found;
-            g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), lang);
-
+            g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
         else
         {
-            WORD lang = entry->m_lang;
             EntrySetBase found;
-            g_res.search(found, ET_LANG, entry->m_type, WORD(0), lang);
-
+            g_res.search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
     }
@@ -3660,7 +3639,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 
 void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry->m_data);
+    MByteStreamEx stream(entry.m_data);
     StringRes str_res;
     WORD nNameID = entry.m_name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
@@ -4466,7 +4445,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
         if (pmaker.GetExitCode() == 0)
         {
-            EntrySetBase res;
+            EntrySet res;
             if (DoImport(hwnd, szPath3, res))
             {
                 MStringA msg;
@@ -4873,8 +4852,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     m_bLoading = TRUE;
     {
-        TV_DeleteAll();
-        TV_FromRes(hMod, true);
+        g_res.delete_all();
+        g_res.FromRes(hMod, true);
         FreeLibrary(hMod);
     }
     m_bLoading = FALSE;
@@ -5134,7 +5113,7 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res)
             }
         }
 
-        res.add_entry(header.type, header.name, header.LanguageId, data, false);
+        res.add_lang_entry(header.type, header.name, header.LanguageId, data, false);
         stream.ReadDwordAlignment();
     }
     return bAdded;
@@ -5463,9 +5442,8 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *ent
 
     return bs.SaveToFile(pszFileName);
 }
-}
 
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySetBase& res)
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySet& res)
 {
     MByteStreamEx bs;
     ResHeader header;
@@ -5561,10 +5539,10 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         StringRes str_res;
         for (auto e : found)
         {
-            if (le.m_lang != lang)
+            if (e->m_lang != lang)
                 continue;
-            MByteStreamEx stream(le.m_data);
-            if (!str_res.LoadFromStream(stream, le.m_name.m_id))
+            MByteStreamEx stream(e->m_data);
+            if (!str_res.LoadFromStream(stream, e->m_name.m_id))
                 return FALSE;
         }
 
@@ -5576,17 +5554,17 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         file.WriteSzA(t2a.c_str());
     }
 
-    found.claer();
+    found.clear();
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
     if (found.size())
     {
         MessageRes msg_res;
         for (auto e : found)
         {
-            if (le.m_lang != lang)
+            if (e->m_lang != lang)
                 continue;
-            MByteStreamEx stream(le.m_data);
-            if (!msg_res.LoadFromStream(stream, le.m_name.m_id))
+            MByteStreamEx stream(e->m_data);
+            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
                 return FALSE;
         }
 
@@ -5924,23 +5902,19 @@ void MMainWnd::DoIDStat(UINT anValues[5])
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
 
         UINT nMax = 0;
+        for (auto table_entry : table)
         {
-            ConstantsDB::TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
+            if (table_entry.name == L"IDC_STATIC")
+                continue;
+
+            if (i == 3)
             {
-                if (it->name == L"IDC_STATIC")
-                    continue;
-
-                if (i == 3)
-                {
-                    INT k = Res_Find2(RT_CURSOR, WORD(it->value), 0xFFFF, FALSE);
-                    if (k != -1)
-                        continue;   // it was Cursor.ID, not Control.ID
-                }
-
-                if (nMax < it->value)
-                    nMax = it->value;
+                if (auto e = g_res.find(ET_LANG, RT_CURSOR, WORD(table_entry.value)))
+                    continue;   // it was Cursor.ID, not Control.ID
             }
+
+            if (nMax < table_entry.value)
+                nMax = table_entry.value;
         }
 
         anNext[i] = nMax + 1;
@@ -5974,7 +5948,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
     }
 
-    MString filename = res2text.GetEntryFileName(entry);
+    MString filename = res2text.GetEntryFileName(*entry);
     if (filename.empty())
         return TRUE;
 
@@ -5990,7 +5964,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
-            return PackedDIB_Extract(filename.c_str(), &entry[0], entry.size(), FALSE);
+            return PackedDIB_Extract(filename.c_str(), &(*entry)[0], entry->size(), FALSE);
         }
         if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
@@ -6143,7 +6117,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 {
     MWaitCursor wait;
 
-    if (m_entries.empty())
+    if (g_res.empty())
     {
         ErrorBoxDx(IDS_DATAISEMPTY);
         return FALSE;
@@ -6155,10 +6129,10 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     *pch = 0;
 
     BOOL bHasExternFile = FALSE;
-    for (size_t i = 0; i < m_entries.size(); ++i)
+    for (auto e : g_res)
     {
         ResToText res2text;
-        MString filename = res2text.GetEntryFileName(m_entries[i]);
+        MString filename = res2text.GetEntryFileName(*e);
         if (filename.size())
         {
             bHasExternFile = TRUE;
@@ -6332,22 +6306,22 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry)
+BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase *entry)
 {
-    if (entry.m_type == RT_GROUP_ICON)
+    if (entry->m_type == RT_GROUP_ICON)
     {
-        return g_res.extract_group_icon(entry, pszFileName);
+        return g_res.extract_group_icon(*entry, pszFileName);
     }
-    else if (entry.m_type == RT_ICON)
+    else if (entry->m_type == RT_ICON)
     {
-        return g_res.extract_icon(entry, pszFileName);
+        return g_res.extract_icon(*entry, pszFileName);
     }
-    else if (entry.m_type == RT_ANIICON)
+    else if (entry->m_type == RT_ANIICON)
     {
         MFile file;
         DWORD cbWritten = 0;
         if (file.OpenFileForOutput(pszFileName) &&
-            file.WriteFile(&entry[0], entry.size(), &cbWritten))
+            file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
         {
             file.CloseHandle();
             return TRUE;
@@ -6356,22 +6330,22 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry)
+BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase *entry)
 {
-    if (entry.m_type == RT_GROUP_CURSOR)
+    if (entry->m_type == RT_GROUP_CURSOR)
     {
-        return g_res.extract_group_cursor(entry, pszFileName);
+        return g_res.extract_group_cursor(*entry, pszFileName);
     }
-    else if (entry.m_type == RT_CURSOR)
+    else if (entry->m_type == RT_CURSOR)
     {
-        return g_res.extract_cursor(entry, pszFileName);
+        return g_res.extract_cursor(*entry, pszFileName);
     }
-    else if (entry.m_type == RT_ANICURSOR)
+    else if (entry->m_type == RT_ANICURSOR)
     {
         MFile file;
         DWORD cbWritten = 0;
         if (file.OpenFileForOutput(pszFileName) &&
-            file.WriteFile(&entry[0], entry.size(), &cbWritten))
+            file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
         {
             file.CloseHandle();
             return TRUE;

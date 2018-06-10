@@ -264,9 +264,9 @@ public:
             if (bOK)
             {
                 if (m_strText.empty())
-                    TV_AddLangEntry(type, name, lang, stream.data(), false);
+                    g_res.add_lang_entry(type, name, lang, stream.data(), false);
                 else
-                    TV_AddLangEntry(type, name, lang, m_strText, false);
+                    g_res.add_lang_entry(type, name, lang, m_strText, false);
 
                 m_entry_copy = EntryBase(ET_LANG, type, name, lang);
                 m_entry_copy.m_strText = m_strText;
@@ -285,7 +285,7 @@ public:
         }
         if (!bAdded)
         {
-            g_res.add_entry(type, name, lang, bs.data(), bOverwrite);
+            g_res.add_lang_entry(type, name, lang, bs.data(), bOverwrite);
             m_entry_copy = EntryBase(ET_LANG, type, name, lang);
         }
 
