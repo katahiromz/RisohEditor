@@ -2443,37 +2443,40 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (!entry || entry->m_e_type != ET_NAME)
         return;
 
-    MCloneInNewNameDlg dialog((NameEntry&)*entry);
+    MCloneInNewNameDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        ResEntries found;
-        entry->m_lang = 0xFFFF;
-        Res_Search(found, m_entries, entry);
+        EntrySet::super_type found;
+        g_res.search(found, ET_LANG, entry->m_type, entry->m_name, 0xFFFF);
+
+        EntrySet::super_type renamed;
+        for (auto e : found)
+        {
+            assert(e->m_e_type == ET_LANG);
+            auto new_e = new LangEntry((LangEntry&)*e);
+            new_e->m_name = dialog.m_name;
+            renamed.insert(new_e);
+        }
+
+        g_res.add_entries(renamed, false);
+
         if (entry->m_type == RT_GROUP_ICON)
         {
-            for (size_t i = 0; i < found.size(); ++i)
+            for (auto e : renamed)
             {
-                DoCopyGroupIcon(found[i], dialog.m_name);
+                DoCopyGroupIcon((LangEntry&)*e, dialog.m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
-            for (size_t i = 0; i < found.size(); ++i)
+            for (auto e : renamed)
             {
-                DoCopyGroupCursor(found[i], dialog.m_name);
+                DoCopyGroupCursor((LangEntry&)*e, dialog.m_name);
             }
         }
-        else
-        {
-            for (size_t i = 0; i < found.size(); ++i)
-            {
-                found[i].name = dialog.m_name;
-                Res_AddEntry(found[i], TRUE);
-            }
-        }
-        TV_RefreshInfo(g_tv, m_m_entries);
-        entry.name = dialog.m_name;
-        SelectTV(hwnd, &entry, FALSE);
+
+        entry = g_res.find(ET_LANG, entry->m_type, dialog.m_name, entry->m_lang);
+        SelectTV(hwnd, entry, FALSE);
     }
 }
 
@@ -2492,7 +2495,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         return;
     }
 
-    MCloneInNewLangDlg dialog(entry);
+    MCloneInNewLangDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         if (entry->m_type == RT_GROUP_ICON)
@@ -2501,9 +2504,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                e->lang = dialog.m_lang;
+                e->m_lang = dialog.m_lang;
                 UpdateEntryLang(*e);
-                DoCopyGroupIcon(found[i], e->name);
+                DoCopyGroupIcon(found[i], e->m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
@@ -2642,7 +2645,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     HidePreview(hwnd);
 
     TV_SelectEntry(selection);
-    SelectTV(hwnd, lParam, FALSE);
+    SelectTV(hwnd, entry, FALSE);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
@@ -2707,11 +2710,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    auto& data = entry.m_data;
+    auto& data = entry->m_data;
     MByteStreamEx stream(data);
     if (entry->m_type == RT_ACCELERATOR)
     {
-        AccelRes accel_res(g_db);
+        AccelRes accel_res;
         MEditAccelDlg dialog(accel_res);
         if (accel_res.LoadFromStream(stream))
         {
@@ -2721,11 +2724,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             {
                 accel_res.Update();
                 entry->m_data = accel_res.data();
-                SelectTV(hwnd, lParam, FALSE);
+                SelectTV(hwnd, entry, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        TV_SelectEntry(entry);
+        SelectTV(hwnd, entry, FALSE);
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_MENU)
@@ -2740,7 +2743,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             {
                 menu_res.Update();
                 entry->m_data = menu_res.data();
-                SelectTV(hwnd, lParam, FALSE);
+                SelectTV(hwnd, entry, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2762,7 +2765,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (iDlgInit >= 0)
         {
             ResEntry& die = m_entries[iDlgInit];
-            DlgInitRes dlginit_res(g_db);
+            DlgInitRes dlginit_res;
             stream.assign(die.data);
             dlginit_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_dlginit.res() = dlginit_res.res();
@@ -2784,7 +2787,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry->m_type == RT_DLGINIT)
     {
-        DlgInitRes dlginit_res(g_db);
+        DlgInitRes dlginit_res;
         if (dlginit_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
@@ -2793,7 +2796,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             if (nID == IDOK)
             {
                 entry->m_data = dlginit_res.data();
-                SelectTV(hwnd, lParam, FALSE);
+                SelectTV(hwnd, entry, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2827,7 +2830,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             bool shown = g_db.AreMacroIDShown();
             g_db.ShowMacroID(false);
-            MStringW strWide = str_res.Dump(g_db);
+            MStringW strWide = str_res.Dump();
             g_db.ShowMacroID(shown);
 
             if (CompileParts(hwnd, strWide))
@@ -2866,7 +2869,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             msg_res = dialog.m_msg_res;
             bool shown = g_db.AreMacroIDShown();
             g_db.ShowMacroID(false);
-            MStringW strWide = msg_res.Dump(g_db);
+            MStringW strWide = msg_res.Dump();
             g_db.ShowMacroID(shown);
 
             if (CompileParts(hwnd, strWide))
@@ -3649,7 +3652,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const LangEntry& entry)
 void MMainWnd::PreviewAccel(HWND hwnd, const LangEntry& entry)
 {
     MByteStreamEx stream(entry->m_data);
-    AccelRes accel(g_db);
+    AccelRes accel;
     if (accel.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry->m_lang);
@@ -3746,7 +3749,7 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const LangEntry& entry)
 void MMainWnd::PreviewDialog(HWND hwnd, const LangEntry& entry)
 {
     MByteStreamEx stream(entry->m_data);
-    DialogRes dialog_res(g_db);
+    DialogRes dialog_res;
     if (dialog_res.LoadFromStream(stream))
     {
         MString str = GetLanguageStatement(entry->m_lang);
@@ -5540,7 +5543,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
                 return FALSE;
         }
 
-        MString str = str_res.Dump(g_db);;
+        MString str = str_res.Dump();
         mstr_trim(str);
         str += L"\r\n\r\n";
 
@@ -5567,7 +5570,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         str += L"    #error Ap Studio cannot edit this message table.\r\n";
         str += L"#endif\r\n";
         str += L"#ifdef MCDX_INVOKED\r\n";
-        str += msg_res.Dump(g_db);
+        str += msg_res.Dump();
         str += L"#endif\r\n\r\n";
 
         MTextToAnsi t2a(CP_UTF8, str.c_str());
@@ -7909,7 +7912,7 @@ void MMainWnd::OnTest(HWND hwnd)
         MByteStreamEx stream(entry->m_data);
 
         // detach menu
-        DialogRes dialog_res(g_db);
+        DialogRes dialog_res;
         dialog_res.LoadFromStream(stream);
 
         if (!dialog_res.m_class.empty())

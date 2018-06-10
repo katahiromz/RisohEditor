@@ -40,11 +40,11 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MCloneInNewLangDlg : public MDialogBase
 {
 public:
-    LangEntry& m_entry;
+    EntryBase& m_entry;
     WORD m_lang;
     MComboBoxAutoComplete m_cmb3;
 
-    MCloneInNewLangDlg(LangEntry& entry)
+    MCloneInNewLangDlg(EntryBase& entry)
         : MDialogBase(IDD_CLONEINNEWLANG), m_entry(entry)
     {
         m_lang = 0xFFFF;

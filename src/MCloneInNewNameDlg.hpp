@@ -37,11 +37,11 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MCloneInNewNameDlg : public MDialogBase
 {
 public:
-    LangEntry& m_entry;
+    EntryBase& m_entry;
     MIdOrString m_name;
     MComboBoxAutoComplete m_cmb2;
 
-    MCloneInNewNameDlg(LangEntry& entry)
+    MCloneInNewNameDlg(EntryBase& entry)
         : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry)
     {
     }
