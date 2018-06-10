@@ -132,13 +132,13 @@ enum EntryType
     ET_ANY,         // Any.
     ET_TYPE,        // TypeEntry.
     ET_NAME,        // NameEntry.
-    ET_LANG,        // LangEntry.
+    ET_LANG,        // EntryBase.
     ET_STRING,      // StringEntry.
     ET_MESSAGE      // MessageEntry.
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// EntryBase, TypeEntry, NameEnry, LangEntry, StringEntry, MessageEntry
+// EntryBase, TypeEntry, NameEnry, EntryBase, StringEntry, MessageEntry
 
 struct EntryBase
 {
@@ -150,6 +150,8 @@ struct EntryBase
     MIdOrString     m_name;
     WORD            m_lang = 0xFFFF;
     HTREEITEM       m_hItem = NULL;
+    data_type       m_data;
+    MStringW        m_strText;
 
     EntryBase()
     {
@@ -242,64 +244,6 @@ struct EntryBase
         MStringW Res_GetLangName(WORD lang);
         return Res_GetLangName(m_lang);
     }
-};
-
-struct TypeEntry : EntryBase
-{
-    TypeEntry(const MIdOrString& type) : EntryBase(ET_TYPE, type)
-    {
-    }
-};
-
-struct NameEntry : EntryBase
-{
-    NameEntry(const MIdOrString& type, const MIdOrString& name)
-        : EntryBase(ET_NAME, type, name)
-    {
-    }
-};
-
-struct StringEntry : EntryBase
-{
-    StringEntry(WORD lang) : EntryBase(ET_STRING, RT_STRING, L"", lang)
-    {
-    }
-};
-
-struct MessageEntry : EntryBase
-{
-    MessageEntry(WORD lang) : EntryBase(ET_MESSAGE, RT_MESSAGETABLE, L"", lang)
-    {
-    }
-};
-
-struct LangEntry : EntryBase
-{
-    data_type m_data;
-    MStringW  m_strText;
-
-    LangEntry()
-    {
-    }
-
-    LangEntry(const EntryBase& base)
-        : EntryBase(ET_LANG, base.m_type, base.m_name, base.m_lang)
-    {
-        if (base.m_e_type == ET_LANG)
-        {
-            m_data = ((LangEntry&)base).m_data;
-            m_strText = ((LangEntry&)base).m_strText;
-        }
-    }
-
-    LangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
-        : EntryBase(ET_LANG, type, name, lang)
-    {
-    }
-
-    virtual ~LangEntry()
-    {
-    }
 
     void clear_data()
     {
@@ -361,6 +305,36 @@ struct LangEntry : EntryBase
         }
     }
 };
+
+inline EntryBase *
+Res_NewTypeEntry(const MIdOrString& type)
+{
+    return new EntryBase(ET_TYPE, type);
+}
+
+inline EntryBase *
+Res_NewNameEntry(const MIdOrString& type, const MIdOrString& name)
+{
+    return new EntryBase(ET_NAME, type, name);
+}
+
+inline EntryBase *
+Res_NewStringEntry(WORD lang)
+{
+    return new EntryBase(ET_STRING, RT_STRING, WORD(0), lang);
+}
+
+inline EntryBase *
+Res_NewMessageEntry(WORD lang)
+{
+    return new EntryBase(ET_MESSAGE, RT_MESSAGETABLE, WORD(0), lang);
+}
+
+inline EntryBase *
+Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
+{
+    return new EntryBase(ET_LANG, type, name, lang);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet
@@ -444,8 +418,7 @@ struct EntrySet : private EntrySetBase
             if (entry->m_e_type != ET_LANG)
                 continue;
 
-            auto& le = (LangEntry&)*entry;
-            add_entry(entry->m_type, entry->m_name, entry->m_lang, le.m_data, replace);
+            add_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data, replace);
         }
     }
 
@@ -503,16 +476,14 @@ struct EntrySet : private EntrySetBase
             if (entry->m_e_type != ET_LANG)
                 continue;
 
-            LangEntry& le = (LangEntry&)(*entry);
-
             void *pv = NULL;
             DWORD size = 0;
-            if (!le.empty())
+            if (!(*entry).empty())
             {
-                pv = const_cast<void *>(le.ptr());
-                size = le.size();
+                pv = const_cast<void *>((*entry).ptr());
+                size = (*entry).size();
             }
-            if (!::UpdateResourceW(hUpdate, le.m_type.ptr(), le.m_name.ptr(), le.m_lang, pv, size))
+            if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(), (*entry).m_name.ptr(), (*entry).m_lang, pv, size))
             {
                 assert(0);
                 ::EndUpdateResourceW(hUpdate, TRUE);
@@ -529,8 +500,7 @@ struct EntrySet : private EntrySetBase
         if (!entry)
             return;
 
-        LangEntry& le = (LangEntry&)(*entry);
-        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&le[0], le.size());
+        HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], (*entry).size());
         if (hbm)
         {
             if (!item.m_title.empty())
@@ -549,12 +519,11 @@ struct EntrySet : private EntrySetBase
         if (!entry)
             return;
 
-        LangEntry& le = (LangEntry&)(*entry);
-        if (le.size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+        if ((*entry).size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
             return;
 
-        ICONDIR& dir = (ICONDIR&)le[0];
-        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&le[sizeof(ICONDIR)];
+        ICONDIR& dir = (ICONDIR&)(*entry)[0];
+        GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&(*entry)[sizeof(ICONDIR)];
 
         int cx = 0, cy = 0, bits = 0, n = 0;
         for (int m = 0; m < dir.idCount; ++m)
@@ -575,7 +544,7 @@ struct EntrySet : private EntrySetBase
         if (!entry)
             return;
 
-        HICON hIcon = CreateIconFromResource((PBYTE)&le[0], le.size(), TRUE, 0x00030000);
+        HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
         if (hIcon)
         {
             if (!item.m_title.empty())
@@ -587,7 +556,7 @@ struct EntrySet : private EntrySetBase
         }
     }
 
-    bool extract_cursor(const LangEntry& c_entry, const wchar_t *file_name)
+    bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name)
     {
         ICONDIR dir = { 0, RES_CURSOR, 1 };
 
@@ -634,7 +603,7 @@ struct EntrySet : private EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    bool extract_group_cursor(const LangEntry& group, const wchar_t *file_name)
+    bool extract_group_cursor(const EntryBase& group, const wchar_t *file_name)
     {
         ICONDIR dir;
         if (group.m_type != RT_GROUP_CURSOR ||
@@ -670,11 +639,9 @@ struct EntrySet : private EntrySetBase
             if (!entry)
                 continue;
 
-            auto& le = (LangEntry&)*entry;
-
             LOCALHEADER local;
-            if (le.size() >= sizeof(local))
-                memcpy(&local, &le[0], sizeof(local));
+            if (entry->size() >= sizeof(local))
+                memcpy(&local, &(*entry)[0], sizeof(local));
 
             DirEntries[i].bWidth = (BYTE)GroupEntries[i].wWidth;
             DirEntries[i].bHeight = (BYTE)GroupEntries[i].wHeight;
@@ -685,7 +652,7 @@ struct EntrySet : private EntrySetBase
             DirEntries[i].bReserved = 0;
             DirEntries[i].xHotSpot = local.xHotSpot;
             DirEntries[i].yHotSpot = local.yHotSpot;
-            DirEntries[i].dwBytesInRes = le.size() - sizeof(local);
+            DirEntries[i].dwBytesInRes = (*entry).size() - sizeof(local);
             DirEntries[i].dwImageOffset = offset;
             offset += DirEntries[i].dwBytesInRes;
         }
@@ -710,10 +677,8 @@ struct EntrySet : private EntrySetBase
             if (!entry)
                 continue;
 
-            auto& le = (LangEntry&)*entry;
-
-            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = le.size() - cbLocal;
-            LPBYTE pb = LPBYTE(&le[0]) + cbLocal;
+            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = (*entry).size() - cbLocal;
+            LPBYTE pb = LPBYTE(&(*entry)[0]) + cbLocal;
             if (!stream.WriteData(pb, dwSize))
             {
                 assert(0);
@@ -724,7 +689,7 @@ struct EntrySet : private EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    BOOL extract_icon(const LangEntry& i_entry, const wchar_t *file_name)
+    BOOL extract_icon(const EntryBase& i_entry, const wchar_t *file_name)
     {
         ICONDIR dir = { 0, RES_ICON, 1 };
 
@@ -762,7 +727,7 @@ struct EntrySet : private EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    bool extract_group_icon(const LangEntry& group, const wchar_t *file_name)
+    bool extract_group_icon(const EntryBase& group, const wchar_t *file_name)
     {
         ICONDIR dir;
         if (group.m_type != RT_GROUP_ICON ||
@@ -797,8 +762,6 @@ struct EntrySet : private EntrySetBase
             if (!entry)
                 continue;
 
-            auto& le = (LangEntry&)*entry;
-
             DirEntries[i].bWidth = GroupEntries[i].bWidth;
             DirEntries[i].bHeight = GroupEntries[i].bHeight;
             if (GroupEntries[i].wBitCount >= 8)
@@ -808,7 +771,7 @@ struct EntrySet : private EntrySetBase
             DirEntries[i].bReserved = 0;
             DirEntries[i].wPlanes = 1;
             DirEntries[i].wBitCount = GroupEntries[i].wBitCount;
-            DirEntries[i].dwBytesInRes = le.size();
+            DirEntries[i].dwBytesInRes = (*entry).size();
             DirEntries[i].dwImageOffset = offset;
             offset += DirEntries[i].dwBytesInRes;
         }
@@ -833,10 +796,8 @@ struct EntrySet : private EntrySetBase
             if (!entry)
                 continue;
 
-            auto& le = (LangEntry&)*entry;
-
-            DWORD dwSize = le.size();
-            if (!stream.WriteData(&le[0], dwSize))
+            DWORD dwSize = (*entry).size();
+            if (!stream.WriteData(&(*entry)[0], dwSize))
             {
                 assert(0);
                 return FALSE;
@@ -861,6 +822,12 @@ struct EntrySet : private EntrySetBase
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline HTREEITEM
+TV_GetItem(void)
+{
+    return TreeView_GetSelection(g_tv);
+}
+
 inline LPARAM
 TV_GetParam(HTREEITEM hItem = NULL)
 {
@@ -877,19 +844,19 @@ TV_GetParam(HTREEITEM hItem = NULL)
 }
 
 inline EntryBase *
-TV_GetEntry(HTREEITEM hItem = NULL)
+TV_GetEntry(HTREEITEM hItem = NULL, EntryType et = ET_ANY)
 {
     LPARAM lParam = TV_GetParam(hItem);
-    return (EntryBase *)lParam;
+    auto e = (EntryBase *)lParam;
+    if (et != ET_ANY && et != e->m_e_type)
+        return NULL;
+    return e;
 }
 
-inline LangEntry *
+inline EntryBase *
 TV_GetLangEntry(HTREEITEM hItem = NULL)
 {
-    auto e = TV_GetEntry(hItem);
-    if (e->m_e_type == ET_LANG)
-        return (LangEntry *)e;
-    return NULL;
+    return TV_GetEntry(hItem, ET_LANG);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -900,9 +867,7 @@ Res_OnDeleteGroupCursor(EntryBase *entry)
     if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
         return false;
 
-    auto& le = (LangEntry&)*entry;
-
-    MByteStreamEx bs(le.m_data);
+    MByteStreamEx bs(entry->m_data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -916,7 +881,7 @@ Res_OnDeleteGroupCursor(EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        g_res.search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, le.m_lang);
+        g_res.search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, (*entry).m_lang);
     }
     return true;
 }
@@ -927,9 +892,7 @@ Res_OnDeleteGroupIcon(EntryBase *entry)
     if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_ICON)
         return false;
 
-    auto& le = (LangEntry&)*entry;
-
-    MByteStreamEx bs(le.m_data);
+    MByteStreamEx bs(entry->m_data);
 
     ICONDIR dir;
     if (!bs.ReadRaw(dir))
@@ -943,7 +906,7 @@ Res_OnDeleteGroupIcon(EntryBase *entry)
     DWORD i, nCount = dir.idCount;
     for (i = 0; i < nCount; ++i)
     {
-        g_res.search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, le.m_lang);
+        g_res.search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, (*entry).m_lang);
     }
 
     return true;
@@ -1195,7 +1158,7 @@ TV_AddTypeEntry(const MIdOrString& type, bool replace)
         if (auto entry = g_res.find(ET_TYPE, type))
             return entry;
     }
-    auto entry = new TypeEntry(type);
+    auto entry = Res_NewTypeEntry(type);
     g_res.insert(entry);
     return TV_InsertEntry_(entry);
 }
@@ -1213,7 +1176,7 @@ TV_AddNameEntry(const MIdOrString& type, const MIdOrString& name,
         if (auto entry = g_res.find(ET_NAME, type, name))
             return entry;
     }
-    auto entry = new NameEntry(type, name);
+    auto entry = Res_NewNameEntry(type, name);
     g_res.insert(entry);
     return TV_InsertEntry_(entry);
 }
@@ -1224,7 +1187,7 @@ TV_AddStringEntry(WORD lang)
     if (auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, lang))
         return entry;
 
-    auto entry = new StringEntry(lang);
+    auto entry = Res_NewStringEntry(lang);
     g_res.insert(entry);
     return TV_InsertEntry_(entry);
 }
@@ -1235,7 +1198,7 @@ TV_AddMessageEntry(WORD lang)
     if (auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang))
         return entry;
 
-    auto entry = new MessageEntry(lang);
+    auto entry = Res_NewMessageEntry(lang);
     g_res.insert(entry);
     return TV_InsertEntry_(entry);
 }
@@ -1263,7 +1226,7 @@ TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name,
         TV_AddMessageEntry(lang);
     }
 
-    auto entry = new LangEntry(type, name, lang);
+    auto entry = Res_NewLangEntry(type, name, lang);
     entry->assign(data);
     g_res.insert(entry);
     return TV_InsertEntry_(entry);
@@ -1292,7 +1255,7 @@ TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name,
         TV_AddMessageEntry(lang);
     }
 
-    auto entry = new LangEntry(type, name, lang);
+    auto entry = Res_NewLangEntry(type, name, lang);
     entry->m_strText = strText;
     g_res.insert(entry);
     return TV_InsertEntry_(entry);

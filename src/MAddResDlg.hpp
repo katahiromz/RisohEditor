@@ -43,7 +43,7 @@ public:
     MIdOrString m_type;
     LPCTSTR m_file;
     MStringW m_strText;
-    LangEntry m_entry_copy;
+    EntryBase m_entry_copy;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
@@ -268,7 +268,7 @@ public:
                 else
                     TV_AddLangEntry(type, name, lang, m_strText, false);
 
-                m_entry_copy = LangEntry(type, name, lang);
+                m_entry_copy = EntryBase(ET_LANG, type, name, lang);
                 m_entry_copy.m_strText = m_strText;
                 bAdded = true;
             }
@@ -286,7 +286,7 @@ public:
         if (!bAdded)
         {
             g_res.add_entry(type, name, lang, bs.data(), bOverwrite);
-            m_entry_copy = LangEntry(type, name, lang);
+            m_entry_copy = EntryBase(ET_LANG, type, name, lang);
         }
 
         EndDialog(IDOK);

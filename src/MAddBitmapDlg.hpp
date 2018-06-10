@@ -37,7 +37,7 @@ class MAddBitmapDlg : public MDialogBase
 {
 public:
     LPCWSTR m_file;
-    LangEntry m_entry_copy;
+    EntryBase m_entry_copy;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
@@ -134,7 +134,7 @@ public:
             return;
         }
 
-        m_entry_copy = LangEntry(type, name, lang);
+        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
         EndDialog(IDOK);
     }

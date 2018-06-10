@@ -113,8 +113,7 @@ public:
         {
             if (auto entry = g_res.find(ET_LANG, RT_MENU, m_menu, m_lang))
             {
-                auto& le = (LangEntry&)*entry;
-                m_hMenu = LoadMenuIndirect(&le[0]);
+                m_hMenu = LoadMenuIndirect(&(*entry)[0]);
                 SetMenu(hwnd, m_hMenu);
 
                 INT cyMenu = GetSystemMetrics(SM_CYMENU);

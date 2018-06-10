@@ -40,10 +40,10 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MReplaceBinDlg : public MDialogBase
 {
 public:
-    LangEntry& m_entry;
-    LangEntry m_entry_copy;
+    EntryBase& m_entry;
+    EntryBase m_entry_copy;
 
-    MReplaceBinDlg(LangEntry& entry)
+    MReplaceBinDlg(EntryBase& entry)
         : MDialogBase(IDD_REPLACERES), m_entry(entry)
     {
     }
@@ -206,7 +206,7 @@ public:
 
         TV_AddLangEntry(type, name, lang, bs.data(), TRUE);
 
-        m_entry_copy = LangEntry(type, name, lang);
+        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
         EndDialog(IDOK);
     }

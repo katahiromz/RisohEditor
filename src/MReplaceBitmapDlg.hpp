@@ -37,10 +37,10 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
 class MReplaceBitmapDlg : public MDialogBase
 {
 public:
-    LangEntry& m_entry;
-    LangEntry m_entry_copy;
+    EntryBase& m_entry;
+    EntryBase m_entry_copy;
 
-    MReplaceBitmapDlg(LangEntry& entry)
+    MReplaceBitmapDlg(EntryBase& entry)
         : MDialogBase(IDD_REPLACEBMP), m_entry(entry)
     {
     }
@@ -86,7 +86,7 @@ public:
             return;
         }
 
-        m_entry_copy = LangEntry(type, name, lang);
+        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
         EndDialog(IDOK);
     }

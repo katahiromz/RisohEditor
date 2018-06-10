@@ -39,10 +39,10 @@ class MReplaceCursorDlg : public MDialogBase
 protected:
     HCURSOR   m_hCursor;
 public:
-    LangEntry& m_entry;
-    LangEntry m_entry_copy;
+    EntryBase& m_entry;
+    EntryBase m_entry_copy;
 
-    MReplaceCursorDlg(LangEntry& entry) :
+    MReplaceCursorDlg(EntryBase& entry) :
         MDialogBase(IDD_REPLACECUR), m_entry(entry)
     {
         m_hCursor = NULL;
@@ -112,8 +112,7 @@ public:
             }
         }
 
-        LangEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
         EndDialog(IDOK);
     }

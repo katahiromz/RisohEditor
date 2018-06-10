@@ -39,10 +39,10 @@ class MReplaceIconDlg : public MDialogBase
 protected:
     HICON   m_hIcon;
 public:
-    LangEntry& m_entry;
-    LangEntry m_entry_copy;
+    EntryBase& m_entry;
+    EntryBase m_entry_copy;
 
-    MReplaceIconDlg(LangEntry& entry)
+    MReplaceIconDlg(EntryBase& entry)
         : MDialogBase(IDD_REPLACEICON), m_entry(entry)
     {
         m_hIcon = NULL;
@@ -112,8 +112,7 @@ public:
             }
         }
 
-        LangEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
         EndDialog(IDOK);
     }

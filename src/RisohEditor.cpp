@@ -1417,7 +1417,7 @@ public:
 
     // preview
     VOID HidePreview(HWND hwnd);
-    BOOL Preview(HWND hwnd, const LangEntry& entry);
+    BOOL Preview(HWND hwnd, const EntryBase *entry);
 
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
@@ -1427,8 +1427,8 @@ public:
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySetBase& res);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
     BOOL DoExtract(const EntryBase& entry, BOOL bExporting);
-    BOOL DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry);
-    BOOL DoExtractCursor(LPCWSTR pszFileName, const LangEntry& entry);
+    BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry);
+    BOOL DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry);
     BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExtractBin(LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExport(LPCWSTR pszFileName);
@@ -1441,12 +1441,12 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name);
-    BOOL DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name);
+    BOOL DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name);
+    BOOL DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
-    void DoRenameEntry(NameEntry& entry, const MIdOrString& old_name, const MIdOrString& new_name);
+    void DoRenameEntry(EntryBase& entry, const MIdOrString& old_name, const MIdOrString& new_name);
     void DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
     void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
     void DoRefreshIDList(HWND hwnd);
@@ -1484,28 +1484,28 @@ protected:
     void DoAddRes(HWND hwnd, MAddResDlg& dialog);
 
     // preview
-    void PreviewIcon(HWND hwnd, const LangEntry& entry);
-    void PreviewCursor(HWND hwnd, const LangEntry& entry);
-    void PreviewGroupIcon(HWND hwnd, const LangEntry& entry);
-    void PreviewGroupCursor(HWND hwnd, const LangEntry& entry);
-    void PreviewBitmap(HWND hwnd, const LangEntry& entry);
-    void PreviewImage(HWND hwnd, const LangEntry& entry);
-    void PreviewWAVE(HWND hwnd, const LangEntry& entry);
-    void PreviewAVI(HWND hwnd, const LangEntry& entry);
-    void PreviewAccel(HWND hwnd, const LangEntry& entry);
-    void PreviewMessage(HWND hwnd, const LangEntry& entry);
-    void PreviewString(HWND hwnd, const LangEntry& entry);
-    void PreviewHtml(HWND hwnd, const LangEntry& entry);
-    void PreviewMenu(HWND hwnd, const LangEntry& entry);
-    void PreviewVersion(HWND hwnd, const LangEntry& entry);
-    void PreviewDialog(HWND hwnd, const LangEntry& entry);
-    void PreviewAniIcon(HWND hwnd, const LangEntry& entry, BOOL bIcon);
-    void PreviewStringTable(HWND hwnd, const StringEntry& entry);
-    void PreviewMessageTable(HWND hwnd, const MessageEntry& entry);
-    void PreviewRCData(HWND hwnd, const LangEntry& entry);
-    void PreviewDlgInit(HWND hwnd, const LangEntry& entry);
-    void PreviewRisohTemplate(HWND hwnd, const LangEntry& entry);
-    void PreviewUnknown(HWND hwnd, const LangEntry& entry);
+    void PreviewIcon(HWND hwnd, const EntryBase& entry);
+    void PreviewCursor(HWND hwnd, const EntryBase& entry);
+    void PreviewGroupIcon(HWND hwnd, const EntryBase& entry);
+    void PreviewGroupCursor(HWND hwnd, const EntryBase& entry);
+    void PreviewBitmap(HWND hwnd, const EntryBase& entry);
+    void PreviewImage(HWND hwnd, const EntryBase& entry);
+    void PreviewWAVE(HWND hwnd, const EntryBase& entry);
+    void PreviewAVI(HWND hwnd, const EntryBase& entry);
+    void PreviewAccel(HWND hwnd, const EntryBase& entry);
+    void PreviewMessage(HWND hwnd, const EntryBase& entry);
+    void PreviewString(HWND hwnd, const EntryBase& entry);
+    void PreviewHtml(HWND hwnd, const EntryBase& entry);
+    void PreviewMenu(HWND hwnd, const EntryBase& entry);
+    void PreviewVersion(HWND hwnd, const EntryBase& entry);
+    void PreviewDialog(HWND hwnd, const EntryBase& entry);
+    void PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon);
+    void PreviewStringTable(HWND hwnd, const EntryBase& entry);
+    void PreviewMessageTable(HWND hwnd, const EntryBase& entry);
+    void PreviewRCData(HWND hwnd, const EntryBase& entry);
+    void PreviewDlgInit(HWND hwnd, const EntryBase& entry);
+    void PreviewRisohTemplate(HWND hwnd, const EntryBase& entry);
+    void PreviewUnknown(HWND hwnd, const EntryBase& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
@@ -2187,7 +2187,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -2231,7 +2231,7 @@ BOOL MMainWnd::DoCopyGroupIcon(LangEntry& entry, const MIdOrString& name)
     return TRUE;
 }
 
-BOOL MMainWnd::DoCopyGroupCursor(LangEntry& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name)
 {
     ICONDIR dir;
     if (entry.size() < sizeof(dir))
@@ -2459,8 +2459,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         EntrySetBase renamed;
         for (auto e : found)
         {
-            assert(e->m_e_type == ET_LANG);
-            auto new_e = new LangEntry((LangEntry&)*e);
+            auto new_e = new EntryBase(*e);
             new_e->m_name = dialog.m_name;
             renamed.insert(new_e);
         }
@@ -2471,14 +2470,14 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         {
             for (auto e : renamed)
             {
-                DoCopyGroupIcon((LangEntry&)*e, dialog.m_name);
+                DoCopyGroupIcon(*e, dialog.m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             for (auto e : renamed)
             {
-                DoCopyGroupCursor((LangEntry&)*e, dialog.m_name);
+                DoCopyGroupCursor(*e, dialog.m_name);
             }
         }
 
@@ -2532,8 +2531,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 
             for (auto e : found)
             {
-                auto& le = (LangEntry&)*e;
-                g_res.add_entry(le.m_type, le.m_name, dialog.m_lang, le.m_data, false);
+                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
         else if (entry->m_e_type == ET_MESSAGE)
@@ -2544,8 +2542,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 
             for (auto e : found)
             {
-                auto& le = (LangEntry&)*e;
-                g_res.add_entry(le.m_type, le.m_name, dialog.m_lang, le.m_data, false);
+                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
         else
@@ -2556,8 +2553,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 
             for (auto e : found)
             {
-                auto& le = (LangEntry&)*e;
-                g_res.add_entry(le.m_type, le.m_name, dialog.m_lang, le.m_data, false);
+                g_res.add_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
     }
@@ -2713,10 +2709,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    auto& data = entry->m_data;
-    MByteStreamEx stream(data);
     if (entry->m_type == RT_ACCELERATOR)
     {
+        MByteStreamEx stream(entry->m_data);
         AccelRes accel_res;
         MEditAccelDlg dialog(accel_res);
         if (accel_res.LoadFromStream(stream))
@@ -2735,6 +2730,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry->m_type == RT_MENU)
     {
+        MByteStreamEx stream(entry->m_data);
         MenuRes menu_res;
         if (menu_res.LoadFromStream(stream))
         {
@@ -2762,11 +2758,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
         // load RT_DLGINIT
         m_rad_window.m_dialog_res.m_dlginit.clear();
-        if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->name, entry->m_lang)
+        if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
         {
-            auto& die = (LangEntry&)*e;
             DlgInitRes dlginit_res;
-            stream.assign(die.m_data);
+            stream.assign(e->m_data);
             dlginit_res.LoadFromStream(stream);
             m_rad_window.m_dialog_res.m_dlginit.res() = dlginit_res.res();
         }
@@ -2787,6 +2782,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry->m_type == RT_DLGINIT)
     {
+        MByteStreamEx stream(entry->m_data);
         DlgInitRes dlginit_res;
         if (dlginit_res.LoadFromStream(stream))
         {
@@ -2806,14 +2802,13 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         WORD lang = entry->m_lang;
         EntrySetBase found;
-        Res_Search(found, m_entries, RT_STRING, WORD(0), lang);
+        g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
 
         StringRes str_res;
-        EntrySetBase::iterator it, end = found.end();
-        for (it = found.begin(); it != end; ++it)
+        for (auto e : found)
         {
-            MByteStreamEx stream(it->data);
-            if (!str_res.LoadFromStream(stream, it->name.m_id))
+            MByteStreamEx stream(e->m_data);
+            if (!str_res.LoadFromStream(stream, e->m_name.m_id))
             {
                 ErrorBoxDx(IDS_CANNOTLOAD);
                 return;
@@ -2821,7 +2816,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         ChangeStatusText(IDS_EDITINGBYGUI);
-        MStringsDlg dialog(m_str_res);
+        MStringsDlg dialog(str_res);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
@@ -2834,7 +2829,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             if (CompileParts(hwnd, strWide))
             {
-                SelectTV(ET_STRING, RT_STRING, WORD(0), lang);
+                SelectTV(hwnd, ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2849,9 +2844,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         MessageRes msg_res;
         for (auto e : found)
         {
-            auto& le = (LangEntry&)*e;
-            MByteStreamEx stream(le.m_data);
-            if (!msg_res.LoadFromStream(stream, le.m_name.m_id))
+            MByteStreamEx stream(e->m_data);
+            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
             {
                 ErrorBoxDx(IDS_CANNOTLOAD);
                 return;
@@ -2871,7 +2865,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             if (CompileParts(hwnd, strWide))
             {
-                SelectTV(hwnd, ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang);
+                SelectTV(hwnd, ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -3109,13 +3103,11 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
             L"ET_MESSAGE"
         };
 
-        const ResEntry& entry = m_entries[i];
-
         WCHAR sz[64];
         MStringW type = entry->m_type.str();
-        MStringW name = entry.name.str();
+        MStringW name = entry->m_name.str();
         StringCchPrintfW(sz, _countof(sz), 
-            L"%d, %s: type:%s, name:%s, lang:0x%04X", i, apszI_[k], 
+            L"%s: type:%s, name:%s, lang:0x%04X", apszI_[entry->m_e_type], 
             type.c_str(), name.c_str(), entry->m_lang);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
@@ -3256,11 +3248,8 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
     if (bCanEditLabel)
     {
-        UINT i = LOWORD(lParam);
-        if (i < m_entries.size())
+        if (entry)
         {
-            ResEntry& entry = m_entries[i];
-
             if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
             {
                 if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
@@ -3543,7 +3532,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     }
 }
 
-void MMainWnd::PreviewIcon(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
 {
     BITMAP bm;
     m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, entry, bm));
@@ -3565,7 +3554,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewCursor(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
 {
     BITMAP bm;
     HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
@@ -3578,7 +3567,7 @@ void MMainWnd::PreviewCursor(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewGroupIcon(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, m_entries, entry));
 
@@ -3589,7 +3578,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewGroupCursor(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, m_entries, entry));
     assert(m_hBmpView);
@@ -3601,7 +3590,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewBitmap(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
 {
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
@@ -3612,7 +3601,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const LangEntry& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewImage(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 {
     MStringW str;
 
@@ -3624,7 +3613,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewWAVE(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
@@ -3634,7 +3623,7 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const LangEntry& entry)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewAVI(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
@@ -3644,7 +3633,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const LangEntry& entry)
     ShowMovie(TRUE);
 }
 
-void MMainWnd::PreviewAccel(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry->m_data);
     AccelRes accel;
@@ -3656,7 +3645,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewMessage(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry->m_data);
     MessageRes mes;
@@ -3668,7 +3657,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewString(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry->m_data);
     StringRes str_res;
@@ -3680,7 +3669,7 @@ void MMainWnd::PreviewString(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewHtml(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 {
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
@@ -3690,7 +3679,7 @@ void MMainWnd::PreviewHtml(HWND hwnd, const LangEntry& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewMenu(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry->m_data);
     MenuRes menu_res;
@@ -3702,7 +3691,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewVersion(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 {
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry->m_data))
@@ -3713,35 +3702,35 @@ void MMainWnd::PreviewVersion(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewUnknown(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewRisohTemplate(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewRCData(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewDlgInit(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewDialog(HWND hwnd, const LangEntry& entry)
+void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry->m_data);
     DialogRes dialog_res;
@@ -3753,7 +3742,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const LangEntry& entry)
     }
 }
 
-void MMainWnd::PreviewAniIcon(HWND hwnd, const LangEntry& entry, BOOL bIcon)
+void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 {
     HICON hIcon = NULL;
 
@@ -3797,7 +3786,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const LangEntry& entry, BOOL bIcon)
     ShowBmpView(TRUE);
 }
 
-void MMainWnd::PreviewStringTable(HWND hwnd, const StringEntry& entry)
+void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 {
     EntrySetBase found;
     g_res.search(found, ET_LANG, RT_STRING, (WORD)0, entry.m_lang);
@@ -3815,7 +3804,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const StringEntry& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-void MMainWnd::PreviewMessageTable(HWND hwnd, const MessageEntry& entry)
+void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
     EntrySetBase found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
@@ -3854,7 +3843,7 @@ VOID MMainWnd::HidePreview(HWND hwnd)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::Preview(HWND hwnd, const LangEntry& entry)
+BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 {
     HidePreview(hwnd);
 
@@ -4135,7 +4124,7 @@ void MMainWnd::SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::IsEditableEntry(HWND hwnd, , EntryBase *entry)
+BOOL MMainWnd::IsEditableEntry(HWND hwnd, EntryBase *entry)
 {
     if (!entry)
         return FALSE;
@@ -5532,7 +5521,6 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         StringRes str_res;
         for (auto e : found)
         {
-            auto& le = (LangEntry&)*e;
             if (le.m_lang != lang)
                 continue;
             MByteStreamEx stream(le.m_data);
@@ -5555,7 +5543,6 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         MessageRes msg_res;
         for (auto e : found)
         {
-            auto& le = (LangEntry&)*e;
             if (le.m_lang != lang)
                 continue;
             MByteStreamEx stream(le.m_data);
@@ -6199,7 +6186,6 @@ BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const EntryBase *e)
     if (e->m_e_type != ET_LANG)
         return FALSE;
 
-    auto& le = (LangEntry&)*e;
     MByteStreamEx bs(le.m_data);
     return bs.SaveToFile(pszFileName);
 }
@@ -6308,7 +6294,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry)
+BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry)
 {
     if (entry->m_type == RT_GROUP_ICON)
     {
@@ -6332,7 +6318,7 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const LangEntry& entry)
     return FALSE;
 }
 
-BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const LangEntry& entry)
+BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry)
 {
     if (entry->m_type == RT_GROUP_CURSOR)
     {
@@ -6942,7 +6928,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    MConfigDlg dialog(g_settings);
+    MConfigDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ReSetPaths(hwnd);
@@ -7021,7 +7007,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MIdAssocDlg dialog(g_settings);
+    MIdAssocDlg dialog;
     dialog.DialogBoxDx(hwnd);
     UpdatePrefixDB(hwnd);
 }
@@ -7060,7 +7046,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MPathsDlg dialog(g_settings);
+    MPathsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         ReSetPaths(hwnd);
@@ -7095,7 +7081,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    MMacrosDlg dialog(g_settings);
+    MMacrosDlg dialog;
     INT_PTR nID = dialog.DialogBoxDx(hwnd);
     switch (INT(nID))
     {
@@ -7841,7 +7827,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 if (entry->m_e_type == ET_STRING || entry->m_e_type == ET_MESSAGE)
-                    entry.name.clear();
+                    entry->m_name.clear();
 
                 DoRelangEntry(entry->m_type, entry->m_name, old_lang, new_lang);
                 return TRUE;   // accept
@@ -7853,23 +7839,18 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
-void MMainWnd::DoRenameEntry(NameEntry& entry, const MIdOrString& old_name, const MIdOrString& new_name)
+void MMainWnd::DoRenameEntry(EntryBase& entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
-    selector.lang = 0xFFFF;
-
-    for (;;)
+    for (auto e = g_res.find(ET_LANG, entry.m_type, old_name, 0xFFFF))
     {
-        INT iEntry = Res_Find2(selector, FALSE);
-        if (iEntry == -1)
-            break;
-
-        ResEntry& entry = m_entries[iEntry];
-        assert(entry.name == old_name);
-        entry.name = new_name;
+        assert(e->m_name == old_name);
+        e->m_name = new_name;
+        UpdateEntryName(e);
     }
 
-    selector.name = new_name;
-    TV_SelectEntry(selector);
+    entry.m_name = new_name;
+    UpdateEntryName(entry);
+    SelectTV(hwnd, entry, FALSE);
 }
 
 void MMainWnd::DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
@@ -7915,10 +7896,9 @@ void MMainWnd::OnTest(HWND hwnd)
 
             // load RT_DLGINIT
             std::vector<BYTE> dlginit_data;
-            if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang(
+            if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
             {
-                auto& le = (LangEntry&)*e;
-                dlginit_data = le.m_data;
+                dlginit_data = e->m_data;
             }
 
             // show test dialog
