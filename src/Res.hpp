@@ -95,20 +95,6 @@ Res_IsPlainText(const MIdOrString& type)
            type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
 }
 
-inline INT
-Res_IsTestable(const MIdOrString& type)
-{
-    return type == RT_DIALOG || type == RT_MENU;
-}
-
-inline BOOL
-Res_CanGuiEdit(const MIdOrString& type)
-{
-    return type == RT_DIALOG || type == RT_MENU ||
-           type == RT_STRING || type == RT_MESSAGETABLE ||
-           type == RT_ACCELERATOR || type == WORD(240);
-}
-
 inline BOOL
 Res_HasSample(const MIdOrString& type)
 {
@@ -164,6 +150,18 @@ struct EntryBase
     }
     virtual ~EntryBase()
     {
+    }
+
+    bool can_gui_edit() const
+    {
+        return m_type == RT_DIALOG || m_type == RT_MENU ||
+               m_type == RT_STRING || m_type == RT_MESSAGETABLE ||
+               m_type == RT_ACCELERATOR || m_type == WORD(240);
+    }
+
+    bool is_testable() const
+    {
+        return m_type == RT_DIALOG || m_type == RT_MENU;
     }
 
     bool match(EntryType e_type, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
