@@ -39,10 +39,10 @@ class MReplaceCursorDlg : public MDialogBase
 protected:
     HCURSOR   m_hCursor;
 public:
-    EntryBase& m_entry;
+    EntryBase *m_entry;
     EntryBase m_entry_copy;
 
-    MReplaceCursorDlg(EntryBase& entry) :
+    MReplaceCursorDlg(EntryBase *entry) :
         MDialogBase(IDD_REPLACECUR), m_entry(entry)
     {
         m_hCursor = NULL;
@@ -59,11 +59,11 @@ public:
 
         // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_entry.m_name, IDTYPE_CURSOR);
+        InitResNameComboBox(hCmb2, m_entry->m_name, IDTYPE_CURSOR);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry.m_lang);
+        InitLangComboBox(hCmb3, m_entry->m_lang);
 
         CenterWindowDx();
         return TRUE;
@@ -71,7 +71,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString type = m_entry.m_type;
+        MIdOrString type = m_entry->m_type;
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -135,7 +135,7 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACECUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        if (m_entry.m_type == RT_ANICURSOR)
+        if (m_entry->m_type == RT_ANICURSOR)
         {
             ofn.nFilterIndex = 2;
             ofn.lpstrDefExt = L"ani";

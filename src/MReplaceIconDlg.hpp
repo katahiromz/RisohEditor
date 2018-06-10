@@ -39,10 +39,10 @@ class MReplaceIconDlg : public MDialogBase
 protected:
     HICON   m_hIcon;
 public:
-    EntryBase& m_entry;
+    EntryBase *m_entry;
     EntryBase m_entry_copy;
 
-    MReplaceIconDlg(EntryBase& entry)
+    MReplaceIconDlg(EntryBase *entry)
         : MDialogBase(IDD_REPLACEICON), m_entry(entry)
     {
         m_hIcon = NULL;
@@ -59,11 +59,11 @@ public:
 
         // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_entry.m_name, IDTYPE_ICON);
+        InitResNameComboBox(hCmb2, m_entry->m_name, IDTYPE_ICON);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry.m_lang);
+        InitLangComboBox(hCmb3, m_entry->m_lang);
 
         CenterWindowDx();
         return TRUE;
@@ -71,7 +71,7 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString type = m_entry.m_type;
+        MIdOrString type = m_entry->m_type;
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -135,7 +135,7 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACEICO);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        if (m_entry.m_type == RT_ANIICON)
+        if (m_entry->m_type == RT_ANIICON)
         {
             ofn.nFilterIndex = 2;
             ofn.lpstrDefExt = L"ani";

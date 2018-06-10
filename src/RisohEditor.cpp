@@ -1291,11 +1291,11 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
-    void UpdateEntryName(EntryBase& e)
+    void UpdateEntryName(const EntryBase *e)
     {
         //TODO:
     }
-    void UpdateEntryLang(EntryBase& e)
+    void UpdateEntryLang(const EntryBase *e)
     {
         //TODO:
     }
@@ -1423,13 +1423,14 @@ public:
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
-    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, EntrySetBase& res);
+    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySetBase& res);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
     BOOL DoExtract(const EntryBase& entry, BOOL bExporting);
     BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry);
     BOOL DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *e);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *entry);
+    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySetBase& res);
     BOOL DoExtractBin(LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
@@ -1441,12 +1442,12 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name);
-    BOOL DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name);
+    BOOL DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name);
+    BOOL DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
-    void DoRenameEntry(EntryBase& entry, const MIdOrString& old_name, const MIdOrString& new_name);
+    void DoRenameEntry(EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
     void DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
     void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
     void DoRefreshIDList(HWND hwnd);
@@ -2041,7 +2042,7 @@ void MMainWnd::OnImport(HWND hwnd)
     ofn.lpstrDefExt = L"res";
     if (GetOpenFileNameW(&ofn))
     {
-        EntrySetBase res;
+        EntrySet res;
         if (DoImport(hwnd, file, res))
         {
             if (g_res.intersect(res))
@@ -2187,10 +2188,10 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& name)
 {
     ICONDIR dir;
-    if (entry.size() < sizeof(dir))
+    if (entry->size() < sizeof(dir))
     {
         assert(0);
         return FALSE;
@@ -2204,7 +2205,7 @@ BOOL MMainWnd::DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name)
         return FALSE;
     }
 
-    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
+    if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
     {
         assert(0);
         return FALSE;
@@ -2215,26 +2216,26 @@ BOOL MMainWnd::DoCopyGroupIcon(EntryBase& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
+        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
         if (!e)
             return FALSE;
 
-        UINT nLastID = g_res.get_last_id(RT_ICON, entry.m_lang);
+        UINT nLastID = g_res.get_last_id(RT_ICON, entry->m_lang);
         UINT nNextID = nLastID + 1;
 
         e->m_name = WORD(nNextID);
-        UpdateEntryName(*e);
+        UpdateEntryName(e);
     }
 
-    entry.m_name = name;
+    entry->m_name = name;
     UpdateEntryName(entry);
     return TRUE;
 }
 
-BOOL MMainWnd::DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name)
+BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& name)
 {
     ICONDIR dir;
-    if (entry.size() < sizeof(dir))
+    if (entry->size() < sizeof(dir))
     {
         assert(0);
         return FALSE;
@@ -2248,7 +2249,7 @@ BOOL MMainWnd::DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name)
         return FALSE;
     }
 
-    if (entry.size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
+    if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
     {
         assert(0);
         return FALSE;
@@ -2259,18 +2260,18 @@ BOOL MMainWnd::DoCopyGroupCursor(EntryBase& entry, const MIdOrString& name)
     LONG cx = 0, cy = 0;
     for (WORD i = 0; i < dir.idCount; ++i)
     {
-        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
+        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
         if (!e)
             return FALSE;
 
-        UINT nLastID = g_res.get_last_id(RT_CURSOR, entry.m_lang);
+        UINT nLastID = g_res.get_last_id(RT_CURSOR, entry->m_lang);
         UINT nNextID = nLastID + 1;
 
         e->m_name = WORD(nNextID);
-        UpdateEntryName(*e);
+        UpdateEntryName(e);
     }
 
-    entry.m_name = m_name;
+    entry->m_name = m_name;
     UpdateEntryName(entry);
     return TRUE;
 }
@@ -2470,14 +2471,14 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         {
             for (auto e : renamed)
             {
-                DoCopyGroupIcon(*e, dialog.m_name);
+                DoCopyGroupIcon(e, dialog.m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             for (auto e : renamed)
             {
-                DoCopyGroupCursor(*e, dialog.m_name);
+                DoCopyGroupCursor(e, dialog.m_name);
             }
         }
 
@@ -2511,7 +2512,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             for (auto e : found)
             {
                 e->m_lang = dialog.m_lang;
-                UpdateEntryLang(*e);
+                UpdateEntryLang(e);
                 DoCopyGroupIcon(found[i], e->m_name);
             }
         }
@@ -3330,7 +3331,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         return;
     }
 
-    BOOL bEditable = IsEditableEntry(hwnd, lParam);
+    BOOL bEditable = IsEditableEntry(hwnd, entry);
     if (bEditable)
     {
         EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
@@ -3856,47 +3857,47 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
         WORD wType = entry->m_type.m_id;
         if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
-            PreviewIcon(hwnd, entry);
+            PreviewIcon(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
-            PreviewCursor(hwnd, entry);
+            PreviewCursor(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
-            PreviewGroupIcon(hwnd, entry);
+            PreviewGroupIcon(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
-            PreviewGroupCursor(hwnd, entry);
+            PreviewGroupCursor(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
-            PreviewBitmap(hwnd, entry);
+            PreviewBitmap(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
-            PreviewAccel(hwnd, entry);
+            PreviewAccel(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_STRING)
         {
-            PreviewString(hwnd, entry);
+            PreviewString(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
-            PreviewMenu(hwnd, entry);
+            PreviewMenu(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
-            PreviewDialog(hwnd, entry);
+            PreviewDialog(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
@@ -3911,32 +3912,32 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
         }
         else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
-            PreviewMessage(hwnd, entry);
+            PreviewMessage(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_MANIFEST || wType == (WORD)(UINT_PTR)RT_HTML)
         {
-            PreviewHtml(hwnd, entry);
+            PreviewHtml(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
-            PreviewVersion(hwnd, entry);
+            PreviewVersion(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
-            PreviewRCData(hwnd, entry);
+            PreviewRCData(hwnd, *entry);
             bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
         {
-            PreviewDlgInit(hwnd, entry);
+            PreviewDlgInit(hwnd, *entry);
             bEditable = TRUE;
         }
         else
         {
-            PreviewUnknown(hwnd, entry);
+            PreviewUnknown(hwnd, *entry);
             bEditable = FALSE;
         }
     }
@@ -3948,27 +3949,27 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
             entry->m_type == L"EMF" || entry->m_type == L"ENHMETAFILE" ||
             entry->m_type == L"WMF" || entry->m_type == L"IMAGE")
         {
-            PreviewImage(hwnd, entry);
+            PreviewImage(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (entry->m_type == L"WAVE")
         {
-            PreviewWAVE(hwnd, entry);
+            PreviewWAVE(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (entry->m_type == L"AVI")
         {
-            PreviewAVI(hwnd, entry);
+            PreviewAVI(hwnd, *entry);
             bEditable = FALSE;
         }
         else if (entry->m_type == L"RISOHTEMPLATE")
         {
-            PreviewRisohTemplate(hwnd, entry);
+            PreviewRisohTemplate(hwnd, *entry);
             bEditable = TRUE;
         }
         else
         {
-            PreviewUnknown(hwnd, entry);
+            PreviewUnknown(hwnd, *entry);
             bEditable = FALSE;
         }
     }
@@ -4873,8 +4874,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     m_bLoading = TRUE;
     {
-        m_entries.clear();
-        Res_GetListFromRes(hMod, (LPARAM)&m_entries);
+        TV_DeleteAll();
+        TV_FromRes(hMod, true);
         FreeLibrary(hMod);
     }
     m_bLoading = FALSE;
@@ -5103,7 +5104,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySetBase& res)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, EntrySetBase& res)
+BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res)
 {
     MWaitCursor wait;
     MByteStreamEx stream;
@@ -5124,18 +5125,17 @@ BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, EntrySetBase& res)
         if (header.DataSize > stream.remainder())
             return FALSE;
 
-        ResEntry entry;
-        entry->m_data.resize(header.DataSize);
-        if (!stream.ReadData(&entry->m_data[0], header.DataSize))
+        EntryBase::data_type data;
+        if (header.DataSize)
         {
-            break;
+            data.resize(header.DataSize);
+            if (!stream.ReadData(&data[0], header.DataSize))
+            {
+                break;
+            }
         }
 
-        entry->m_lang = header.LanguageId;
-        entry->m_type = header.type;
-        entry->m_name = header.name;
-        res.insert(entry);
-
+        res.add_entry(header.type, header.name, header.LanguageId, data, false);
         stream.ReadDwordAlignment();
     }
     return bAdded;
@@ -5428,22 +5428,63 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *e)
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *entry)
 {
     MByteStreamEx bs;
     ResHeader header;
     if (!header.WriteTo(bs))
         return FALSE;
 
-    for (auto entry : g_res)
     {
+        if (entry->m_e_type != ET_LANG)
+            return FALSE;
+
         header.DataSize = entry->size();
         header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
             return FALSE;
 
-        header.type = entry->type;
-        header.name = entry->name;
+        header.type = entry->m_type;
+        header.name = entry->m_name;
+        header.DataVersion = 0;
+        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
+                             MEMORYFLAG_MOVEABLE;
+        header.LanguageId = entry->m_lang;
+        header.Version = 0;
+        header.Characteristics = 0;
+
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        if (!bs.WriteData(&(*entry)[0], entry->size()))
+            return FALSE;
+
+        bs.WriteDwordAlignment();
+    }
+
+    return bs.SaveToFile(pszFileName);
+}
+}
+
+BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySetBase& res)
+{
+    MByteStreamEx bs;
+    ResHeader header;
+    if (!header.WriteTo(bs))
+        return FALSE;
+
+    for (auto entry : res)
+    {
+        if (entry->m_e_type != ET_LANG)
+            continue;
+
+        header.DataSize = entry->size();
+        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
+        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
+            return FALSE;
+
+        header.type = entry->m_type;
+        header.name = entry->m_name;
         header.DataVersion = 0;
         header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
                              MEMORYFLAG_MOVEABLE;
@@ -5922,7 +5963,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
         anValues[3] = 1000;
 }
 
-inline BOOL MMainWnd::DoExtract(const EntryBase& entry, BOOL bExporting)
+inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 {
     ResToText res2text;
 
@@ -6153,14 +6194,13 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
             CreateDirectory(strResDir.c_str(), NULL);
         }
 
-        for (size_t i = 0; i < m_entries.size(); ++i)
+        for (auto e : g_res)
         {
-            if (m_entries[i].type == RT_STRING ||
-                m_entries[i].type == RT_MESSAGETABLE)
+            if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE)
             {
                 continue;
             }
-            if (!DoExtract(m_entries[i], TRUE))
+            if (!DoExtract(e, TRUE))
                 return FALSE;
         }
     }
@@ -6186,7 +6226,7 @@ BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const EntryBase *e)
     if (e->m_e_type != ET_LANG)
         return FALSE;
 
-    MByteStreamEx bs(le.m_data);
+    MByteStreamEx bs(e->m_data);
     return bs.SaveToFile(pszFileName);
 }
 
@@ -6195,9 +6235,8 @@ BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile)
     if (!CompileIfNecessary(hwnd, TRUE))
         return FALSE;
 
-    if (DoExtractRes(hwnd, pszExeFile, m_entries))
+    if (DoExtractRes(hwnd, pszExeFile, g_res))
     {
-        Res_Optimize(m_entries);
         SetFilePath(hwnd, pszExeFile, NULL);
         return TRUE;
     }
@@ -6232,7 +6271,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
     BOOL b1, b2, b3;
     if (!bOK || GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
-        b3 = g_res.update_exe(hwnd, pszExeFile);
+        b3 = g_res.update_exe(pszExeFile);
         if (b3)
         {
             SetFilePath(hwnd, pszExeFile, NULL);
@@ -6243,7 +6282,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
     {
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
         b1 = ::CopyFileW(m_szRealFile, TempFile, FALSE);
-        b2 = b1 && g_res.update_exe(hwnd, TempFile, m_entries);
+        b2 = b1 && g_res.update_exe(TempFile);
         b3 = b2 && ::CopyFileW(TempFile, pszExeFile, FALSE);
         if (b3)
         {
@@ -6296,15 +6335,15 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
 BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry)
 {
-    if (entry->m_type == RT_GROUP_ICON)
+    if (entry.m_type == RT_GROUP_ICON)
     {
         return g_res.extract_group_icon(entry, pszFileName);
     }
-    else if (entry->m_type == RT_ICON)
+    else if (entry.m_type == RT_ICON)
     {
         return g_res.extract_icon(entry, pszFileName);
     }
-    else if (entry->m_type == RT_ANIICON)
+    else if (entry.m_type == RT_ANIICON)
     {
         MFile file;
         DWORD cbWritten = 0;
@@ -6320,15 +6359,15 @@ BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase& entry)
 
 BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase& entry)
 {
-    if (entry->m_type == RT_GROUP_CURSOR)
+    if (entry.m_type == RT_GROUP_CURSOR)
     {
         return g_res.extract_group_cursor(entry, pszFileName);
     }
-    else if (entry->m_type == RT_CURSOR)
+    else if (entry.m_type == RT_CURSOR)
     {
         return g_res.extract_cursor(entry, pszFileName);
     }
-    else if (entry->m_type == RT_ANICURSOR)
+    else if (entry.m_type == RT_ANICURSOR)
     {
         MFile file;
         DWORD cbWritten = 0;
@@ -6911,7 +6950,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         str += TEXT("\r\n");
     }
 
-    MAdviceResHDlg dialog(g_settings, str);
+    MAdviceResHDlg dialog(str);
     dialog.DialogBoxDx(hwnd);
 }
 
@@ -7576,12 +7615,11 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
 std::vector<INT> GetPrefixIndexes(const MString& prefix)
 {
     std::vector<INT> ret;
-    assoc_map_type::const_iterator it, end = settings.assoc_map.end();
-    for (it = settings.assoc_map.begin(); it != end; ++it)
+    for (auto pair : g_settings.assoc_map)
     {
-        if (prefix == it->second && !it->second.empty())
+        if (prefix == pair.second && !pair.second.empty())
         {
-            INT nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", it->first));
+            INT nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", pair.first));
             ret.push_back(nIDTYPE_);
         }
     }
@@ -7839,21 +7877,21 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
-void MMainWnd::DoRenameEntry(EntryBase& entry, const MIdOrString& old_name, const MIdOrString& new_name)
+void MMainWnd::DoRenameEntry(EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
-    for (auto e = g_res.find(ET_LANG, entry.m_type, old_name, 0xFFFF))
+    while (auto e = g_res.find(ET_LANG, entry->m_type, old_name))
     {
         assert(e->m_name == old_name);
         e->m_name = new_name;
         UpdateEntryName(e);
     }
 
-    entry.m_name = new_name;
+    entry->m_name = new_name;
     UpdateEntryName(entry);
-    SelectTV(hwnd, entry, FALSE);
+    SelectTV(m_hwnd, entry, FALSE);
 }
 
-void MMainWnd::DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
+void MMainWnd::DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang)
 {
     while (auto e = g_res.find(ET_ANY, type, name, old_lang))
     {
@@ -7862,7 +7900,7 @@ void MMainWnd::DoRelangEntry(const MIdOrString& type, const MIdOrString& name, W
         UpdateEntryLang(e);
     }
 
-    SelectTV(hwnd, ET_ANY, type, name, new_lang, FALSE);
+    SelectTV(m_hwnd, ET_ANY, type, name, new_lang, FALSE);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
