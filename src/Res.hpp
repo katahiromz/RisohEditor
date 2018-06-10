@@ -55,6 +55,7 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 #ifdef USE_GLOBALS
     extern HWND g_tv;
+    extern BOOL g_deleting_all;
 #else
     inline HWND&
     TV_GetMaster(void)
@@ -63,6 +64,14 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
         return hwndTV;
     }
     #define g_tv TV_GetMaster()
+
+    inline BOOL&
+    TV_GetDeletingAll(void)
+    {
+        static BOOL s_deleting_all = FALSE;
+        return s_deleting_all;
+    }
+    #define g_deleting_all TV_GetDeletingAll()
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -363,9 +372,11 @@ EntryBase *TV_AddLangEntry(const MIdOrString& type, const MIdOrString& name,
 EntryBase *TV_AddStringEntry(WORD lang);
 EntryBase *TV_AddMessageEntry(WORD lang);
 
-struct EntrySet : private std::set<EntryBase *>
+typedef std::set<EntryBase *> EntrySetBase;
+
+struct EntrySet : private EntrySetBase
 {
-    typedef std::set<EntryBase *> super_type;
+    typedef EntrySetBase super_type;
     using super_type::empty;
     using super_type::size;
     using super_type::clear;
@@ -407,14 +418,6 @@ struct EntrySet : private std::set<EntryBase *>
         {
             return *found.begin();
         }
-        return NULL;
-    }
-
-    HTREEITEM find2(EntryType e_type, const MIdOrString& type, 
-              const MIdOrString& name = L"", WORD lang = 0xFFFF)
-    {
-        if (auto entry = find(e_type, type, name, lang))
-            return entry->m_hItem;
         return NULL;
     }
 
@@ -1008,34 +1011,37 @@ Res_DeleteEntry(EntryBase *entry)
         pParent = Res_GetParent(entry);
     }
 
-    switch (entry->m_e_type)
+    if (!g_deleting_all)
     {
-    case ET_TYPE:
-    case ET_NAME:
-        break;
-
-    case ET_LANG:
-        if (entry->m_type == RT_GROUP_CURSOR)
+        switch (entry->m_e_type)
         {
-            Res_OnDeleteGroupCursor(entry);
+        case ET_TYPE:
+        case ET_NAME:
+            break;
+
+        case ET_LANG:
+            if (entry->m_type == RT_GROUP_CURSOR)
+            {
+                Res_OnDeleteGroupCursor(entry);
+            }
+            if (entry->m_type == RT_GROUP_ICON)
+            {
+                Res_OnDeleteGroupIcon(entry);
+            }
+            break;
+
+        case ET_STRING:
+            Res_OnDeleteString(entry);
+            break;
+
+        case ET_MESSAGE:
+            Res_OnDeleteMessage(entry);
+            break;
+
+        default:
+            assert(0);
+            return;
         }
-        if (entry->m_type == RT_GROUP_ICON)
-        {
-            Res_OnDeleteGroupIcon(entry);
-        }
-        break;
-
-    case ET_STRING:
-        Res_OnDeleteString(entry);
-        break;
-
-    case ET_MESSAGE:
-        Res_OnDeleteMessage(entry);
-        break;
-
-    default:
-        assert(0);
-        return;
     }
 
     g_res.erase(entry);
@@ -1430,6 +1436,14 @@ inline BOOL
 TV_FromRes(HMODULE hMod, bool replace)
 {
     return ::EnumResourceTypesW(hMod, TV_EnumResTypeProc, replace);
+}
+
+inline void
+TV_DeleteAll(void)
+{
+    g_deleting_all = TRUE;
+    TreeView_DeleteAllItems(g_tv);
+    g_deleting_all = FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////////
