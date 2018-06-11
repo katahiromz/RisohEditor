@@ -108,10 +108,10 @@ enum EntryType
 {
     ET_ANY,         // Any.
     ET_TYPE,        // TypeEntry.
-    ET_NAME,        // NameEntry.
-    ET_LANG,        // EntryBase.
     ET_STRING,      // StringEntry.
-    ET_MESSAGE      // MessageEntry.
+    ET_MESSAGE,     // MessageEntry.
+    ET_NAME,        // NameEntry.
+    ET_LANG         // EntryBase.
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,6 +181,10 @@ struct EntryBase
     }
     bool operator<(const EntryBase& entry) const
     {
+        if (m_et < entry.m_et)
+            return true;
+        if (m_et > entry.m_et)
+            return false;
         if (m_type < entry.m_type)
             return true;
         if (m_type > entry.m_type)
@@ -371,8 +375,6 @@ struct EntrySet : protected EntrySetBase
     bool search(super_type& found, EntryType et, const MIdOrString& type, 
                 const MIdOrString& name = WORD(0), WORD lang = 0xFFFF) const
     {
-        found.clear();
-
         for (auto entry : *this)
         {
             if (entry->match(et, type, name, lang))
@@ -1117,15 +1119,21 @@ struct EntrySet : protected EntrySetBase
 
         case ET_NAME:
             search(found, ET_NAME, entry->m_type);
+            if (entry->m_type == RT_STRING)
+                search(found, ET_STRING, entry->m_type);
+            if (entry->m_type == RT_MESSAGETABLE)
+                search(found, ET_MESSAGE, entry->m_type);
             break;
 
         case ET_STRING:
             search(found, ET_STRING, entry->m_type, WORD(0), entry->m_lang);
-            break;
+			search(found, ET_NAME, entry->m_type);
+			break;
 
         case ET_MESSAGE:
             search(found, ET_MESSAGE, entry->m_type, WORD(0), entry->m_lang);
-            break;
+			search(found, ET_NAME, entry->m_type);
+			break;
 
         case ET_LANG:
             search(found, ET_LANG, entry->m_type, entry->m_name);
@@ -1225,7 +1233,7 @@ protected:
         insert.item.stateMask = 0;
         insert.item.pszText = &strText[0];
         insert.item.lParam = (LPARAM)entry;
-        if (entry->m_et < ET_LANG)
+        if (entry->m_et == ET_TYPE || entry->m_et == ET_NAME)
         {
             insert.item.iImage = 1;
             insert.item.iSelectedImage = 1;
