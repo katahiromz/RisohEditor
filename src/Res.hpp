@@ -394,7 +394,7 @@ struct EntrySet : protected EntrySetBase
         return NULL;
     }
 
-    bool intersect(const super_type& another) const
+    bool intersect(const EntrySet& another) const
     {
         if (size() == 0 && another.size() == 0)
             return false;

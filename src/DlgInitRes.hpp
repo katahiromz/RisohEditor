@@ -53,6 +53,10 @@ public:
     typedef DlgInitEntry                entry_type;
     typedef std::vector<entry_type>     entries_type;
 
+protected:
+    entries_type    m_entries;
+
+public:
     DlgInitRes() { }
 
     bool LoadFromStream(const MByteStreamEx& stream)
@@ -273,9 +277,6 @@ public:
             push_back(another[i]);
         }
     }
-
-protected:
-    entries_type    m_entries;
 };
 
 //////////////////////////////////////////////////////////////////////////////

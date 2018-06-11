@@ -2657,7 +2657,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             DlgInitRes dlginit_res;
             stream.assign(e->m_data);
             dlginit_res.LoadFromStream(stream);
-            m_rad_window.m_dialog_res.m_dlginit.res() = dlginit_res.res();
+            m_rad_window.m_dialog_res.m_dlginit = dlginit_res;
         }
 
         if (::IsWindowVisible(m_rad_window) &&
