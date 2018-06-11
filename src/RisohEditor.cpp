@@ -101,10 +101,9 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 
     if (table.size())
     {
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& entry : table)
         {
-            ListBox_AddString(hLst, it->name.c_str());
+            ListBox_AddString(hLst, entry.name.c_str());
         }
     }
 }
@@ -209,11 +208,10 @@ void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
     ConstantsDB::TableType table;
     table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
 
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == pszClass)
+        INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+        if (table_entry.name == pszClass)
         {
             ComboBox_SetCurSel(hCmb, i);
         }
@@ -227,14 +225,13 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
     ConstantsDB::TableType table;
     table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
 
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        if (it->value > 2)
+        if (table_entry.value > 2)
             continue;
 
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == pszWndClass)
+        INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+        if (table_entry.name == pszWndClass)
         {
             ComboBox_SetCurSel(hCmb, i);
         }
@@ -246,10 +243,9 @@ void InitCtrlIDComboBox(HWND hCmb)
     ConstantsDB::TableType table;
     table = g_db.GetTable(TEXT("CTRLID"));
 
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        ComboBox_AddString(hCmb, it->name.c_str());
+        ComboBox_AddString(hCmb, table_entry.name.c_str());
     }
 
     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -257,10 +253,9 @@ void InitCtrlIDComboBox(HWND hCmb)
     if (prefix.size())
     {
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            ComboBox_AddString(hCmb, it->name.c_str());
+            ComboBox_AddString(hCmb, table_entry .name.c_str());
         }
     }
     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -268,10 +263,9 @@ void InitCtrlIDComboBox(HWND hCmb)
     if (prefix.size())
     {
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            ComboBox_AddString(hCmb, it->name.c_str());
+            ComboBox_AddString(hCmb, table_entry.name.c_str());
         }
     }
     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
@@ -279,10 +273,9 @@ void InitCtrlIDComboBox(HWND hCmb)
     if (prefix.size())
     {
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            ComboBox_AddString(hCmb, it->name.c_str());
+            ComboBox_AddString(hCmb, table_entry.name.c_str());
         }
     }
 }
@@ -358,9 +351,8 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
     MIdOrString name_or_id(wName);
     if (wName == 0)
     {
-        id_map_type::iterator it;
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
-        it = g_settings.id_map.find(strA);
+        auto it = g_settings.id_map.find(strA);
         if (it != g_settings.id_map.end())
         {
             MStringA strA = it->second;
@@ -472,15 +464,14 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_)
             return;
 
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->value == id.m_id)
+            INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+            if (table_entry.value == id.m_id)
             {
                 k = i;
                 ComboBox_SetCurSel(hCmb, i);
-                SetWindowTextW(hCmb, it->name.c_str());
+                SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
@@ -491,14 +482,13 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_)
         table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->value == id.m_id)
+            INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+            if (table_entry.value == id.m_id)
             {
                 ComboBox_SetCurSel(hCmb, i);
-                SetWindowTextW(hCmb, it->name.c_str());
+                SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
@@ -522,15 +512,15 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2
             return;
 
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+
+        for (auto& table_entry : table)
         {
-            INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->value == id.m_id)
+            INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+            if (table_entry.value == id.m_id)
             {
                 k = i;
                 ComboBox_SetCurSel(hCmb, i);
-                SetWindowTextW(hCmb, it->name.c_str());
+                SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
@@ -542,15 +532,14 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2
             return;
 
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->value == id.m_id)
+            INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+            if (table_entry.value == id.m_id)
             {
                 k = i;
                 ComboBox_SetCurSel(hCmb, i);
-                SetWindowTextW(hCmb, it->name.c_str());
+                SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
@@ -561,14 +550,13 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2
         table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT i = ComboBox_AddString(hCmb, it->name.c_str());
-            if (it->value == id.m_id)
+            INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+            if (table_entry.value == id.m_id)
             {
                 ComboBox_SetCurSel(hCmb, i);
-                SetWindowTextW(hCmb, it->name.c_str());
+                SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
@@ -599,11 +587,10 @@ void InitStringComboBox(HWND hCmb, MString strString)
         return;
 
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == strString)
+        INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+        if (table_entry.name == strString)
         {
             ComboBox_SetCurSel(hCmb, i);
         }
@@ -612,11 +599,10 @@ void InitStringComboBox(HWND hCmb, MString strString)
     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_PROMPT].name;
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-    end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == strString)
+        INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+        if (table_entry.name == strString)
         {
             ComboBox_SetCurSel(hCmb, i);
         }
@@ -637,11 +623,10 @@ void InitMessageComboBox(HWND hCmb, MString strString)
         return;
 
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-    ConstantsDB::TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        INT i = ComboBox_AddString(hCmb, it->name.c_str());
-        if (it->name == strString)
+        INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
+        if (table_entry.name == strString)
         {
             ComboBox_SetCurSel(hCmb, i);
         }
@@ -1072,10 +1057,9 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
     TableType table;
     table = g_db.GetTable(L"VIRTUALKEYS");
 
-    TableType::iterator it, end = table.end();
-    for (it = table.begin(); it != end; ++it)
+    for (auto& table_entry : table)
     {
-        ComboBox_AddString(hCmb1, it->name.c_str());
+        ComboBox_AddString(hCmb1, table_entry.name.c_str());
     }
 }
 
@@ -1661,21 +1645,21 @@ void MMainWnd::UpdateMenu()
     INT i = 0;
     TCHAR szText[MAX_PATH * 2];
     static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
-    mru_type::iterator it, end = g_settings.vecRecentlyUsed.end();
-    for (it = g_settings.vecRecentlyUsed.begin(); it != end; ++it)
+
+    for (auto& recent : g_settings.vecRecentlyUsed)
     {
 #if 1
-        LPCTSTR pch = _tcsrchr(it->c_str(), TEXT('\\'));
+        LPCTSTR pch = _tcsrchr(recent.c_str(), TEXT('\\'));
         if (pch == NULL)
-            pch = _tcsrchr(it->c_str(), TEXT('/'));
+            pch = _tcsrchr(recent.c_str(), TEXT('/'));
         if (pch == NULL)
-            pch = it->c_str();
+            pch = recent.c_str();
         else
             ++pch;
         StringCchPrintf(szText, _countof(szText), TEXT("&%c  %s"), szPrefix[i], pch);
         InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, szText);
 #else
-        InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, it->c_str());
+        InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, recent.c_str());
 #endif
         ++i;
     }
@@ -1955,10 +1939,9 @@ BOOL IsThereWndClass(const WCHAR *pszName)
     }
 
     // in the window class libraries?
-    wclib_t::iterator it, end = wclib().end();
-    for (it = wclib().begin(); it != end; ++it)
+    for (auto& item : wclib())
     {
-        if (GetClassInfoEx(*it, pszName, &cls))
+        if (GetClassInfoEx(item, pszName, &cls))
             return TRUE;
     }
 
@@ -1980,10 +1963,9 @@ BOOL IsThereWndClass(const WCHAR *pszName)
 
 void FreeWCLib()
 {
-    wclib_t::iterator it, end = wclib().end();
-    for (it = wclib().begin(); it != end; ++it)
+    for (auto& item : wclib())
     {
-        FreeLibrary(*it);
+        FreeLibrary(item);
     }
     wclib().clear();
 }
@@ -4103,15 +4085,14 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res)
 MStringW MMainWnd::GetMacroDump()
 {
     MStringW ret;
-    macro_map_type::const_iterator it, end = g_settings.macros.end();
-    for (it = g_settings.macros.begin(); it != end; ++it)
+    for (auto& macro : g_settings.macros)
     {
         ret += L" -D";
-        ret += it->first;
-        if (it->second.size())
+        ret += macro.first;
+        if (macro.second.size())
         {
             ret += L"=";
-            ret += it->second;
+            ret += macro.second;
         }
     }
     ret += L" ";
@@ -5816,7 +5797,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefixes[i]);
 
         UINT nMax = 0;
-        for (auto table_entry : table)
+        for (auto& table_entry : table)
         {
             if (table_entry.name == L"IDC_STATIC")
                 continue;
@@ -6606,11 +6587,11 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
     table.clear();
     g_settings.bHasIDC_STATIC = FALSE;
-    id_map_type::iterator it, end = g_settings.id_map.end();
-    for (it = g_settings.id_map.begin(); it != end; ++it)
+
+    for (auto& pair : g_settings.id_map)
     {
-        MStringW str1 = MAnsiToWide(CP_ACP, it->first).c_str();
-        MStringW str2 = MAnsiToWide(CP_ACP, it->second).c_str();
+        MStringW str1 = MAnsiToWide(CP_ACP, pair.first).c_str();
+        MStringW str2 = MAnsiToWide(CP_ACP, pair.second).c_str();
         DWORD value2 = mstr_parse_int(str2.c_str());
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
@@ -6794,16 +6775,15 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
     {
         str += LoadStringDx(IDS_DELETENEXTIDS);
 
-        id_map_type::iterator it, end = g_settings.removed_ids.end();
-        for (it = g_settings.removed_ids.begin(); it != end; ++it)
+        for (auto& pair : g_settings.removed_ids)
         {
-            if (it->first == "IDC_STATIC")
+            if (pair.first == "IDC_STATIC")
                 continue;
 
             str += TEXT("#define ");
-            str += MAnsiToText(CP_ACP, it->first).c_str();
+            str += MAnsiToText(CP_ACP, pair.first).c_str();
             str += TEXT(" ");
-            str += MAnsiToText(CP_ACP, it->second).c_str();
+            str += MAnsiToText(CP_ACP, pair.second).c_str();
             str += TEXT("\r\n");
         }
         str += TEXT("\r\n");
@@ -6816,16 +6796,15 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
     {
         str += LoadStringDx(IDS_ADDNEXTIDS);
 
-        id_map_type::iterator it, end = g_settings.added_ids.end();
-        for (it = g_settings.added_ids.begin(); it != end; ++it)
+        for (auto& pair : g_settings.added_ids)
         {
-            if (it->first == "IDC_STATIC" && g_settings.bHasIDC_STATIC)
+            if (pair.first == "IDC_STATIC" && g_settings.bHasIDC_STATIC)
                 continue;
 
             str += TEXT("#define ");
-            str += MAnsiToText(CP_ACP, it->first).c_str();
+            str += MAnsiToText(CP_ACP, pair.first).c_str();
             str += TEXT(" ");
-            str += MAnsiToText(CP_ACP, it->second).c_str();
+            str += MAnsiToText(CP_ACP, pair.second).c_str();
             str += TEXT("\r\n");
         }
         str += TEXT("\r\n");
@@ -7502,7 +7481,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
 std::vector<INT> GetPrefixIndexes(const MString& prefix)
 {
     std::vector<INT> ret;
-    for (auto pair : g_settings.assoc_map)
+    for (auto& pair : g_settings.assoc_map)
     {
         if (prefix == pair.second && !pair.second.empty())
         {
@@ -8033,19 +8012,18 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
 void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
 {
     std::string str;
-    id_map_type::iterator it, end = g_settings.added_ids.end();
-    for (it = g_settings.added_ids.begin(); it != end; ++it)
+    for (auto& pair : g_settings.added_ids)
     {
         std::string line = "#define ";
-        if (it->first == "IDC_STATIC")
+        if (pair.first == "IDC_STATIC")
         {
             line += "IDC_STATIC -1";
         }
         else
         {
-            line += it->first;
+            line += pair.first;
             line += " ";
-            line += it->second;
+            line += pair.second;
         }
         lines.push_back(line);
     }
@@ -8683,12 +8661,11 @@ void MMainWnd::UpdatePrefixDB(HWND hwnd)
     ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID.PREFIX"];
     for (size_t i = 0; i < table.size(); ++i)
     {
-        assoc_map_type::const_iterator it, end = g_settings.assoc_map.end();
-        for (it = g_settings.assoc_map.begin(); it != end; ++it)
+        for (auto& pair : g_settings.assoc_map)
         {
-            if (table[i].name == it->first)
+            if (table[i].name == pair.first)
             {
-                table[i].value = mstr_parse_int(it->second.c_str());
+                table[i].value = mstr_parse_int(pair.second.c_str());
                 break;
             }
         }
@@ -8886,12 +8863,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!g_settings.strPrevVersion.empty() && g_settings.strPrevVersion > L"3.8")
     {
         TCHAR szName[MAX_PATH];
-        assoc_map_type::iterator it, end = g_settings.assoc_map.end();
-        for (it = g_settings.assoc_map.begin(); it != end; ++it)
+        for (auto& pair : g_settings.assoc_map)
         {
-            if (keyRisoh.QuerySz(it->first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
+            if (keyRisoh.QuerySz(pair.first.c_str(), szName, _countof(szName)) == ERROR_SUCCESS)
             {
-                it->second = szName;
+                pair.second = szName;
             }
         }
         UpdatePrefixDB(hwnd);
@@ -8999,13 +8975,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         keyRisoh.SetSz(szValueName, g_settings.vecRecentlyUsed[i].c_str());
     }
 
+    for (auto& pair : g_settings.assoc_map)
     {
-        assoc_map_type::const_iterator it, end = g_settings.assoc_map.end();
-        for (it = g_settings.assoc_map.begin(); it != end; ++it)
-        {
-            keyRisoh.SetSz(it->first.c_str(), it->second.c_str());
-            //MessageBoxW(NULL, it->first.c_str(), it->second.c_str(), 0);
-        }
+        keyRisoh.SetSz(pair.first.c_str(), pair.second.c_str());
+        //MessageBoxW(NULL, pair.first.c_str(), pair.second.c_str(), 0);
     }
 
     DWORD dwMacroCount = DWORD(g_settings.macros.size());
@@ -9013,14 +8986,13 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
     {
         i = 0;
-        macro_map_type::const_iterator it, end = g_settings.macros.end();
-        for (it = g_settings.macros.begin(); it != end; ++it, ++i)
+        for (auto& macro : g_settings.macros)
         {
             StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
-            keyRisoh.SetSz(szValueName, it->first.c_str());
+            keyRisoh.SetSz(szValueName, macro.first.c_str());
 
             StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroValue%lu"), i);
-            keyRisoh.SetSz(szValueName, it->second.c_str());
+            keyRisoh.SetSz(szValueName, macro.second.c_str());
         }
     }
 
@@ -9276,9 +9248,8 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     MIdOrString name_or_id(wName);
     if (wName == 0)
     {
-        id_map_type::iterator it;
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
-        it = g_settings.id_map.find(strA);
+        auto it = g_settings.id_map.find(strA);
         if (it != g_settings.id_map.end())
         {
             MStringA strA = it->second;
@@ -9404,12 +9375,10 @@ void MMainWnd::DoMsg(MSG& msg)
     }
     if (MItemSearchDlg::Dialogs().size())
     {
-        typedef MItemSearchDlg::dialogs_type dialogs_type;
-        dialogs_type::iterator it, end = MItemSearchDlg::Dialogs().end();
         BOOL bProcessed = FALSE;
-        for (it = MItemSearchDlg::Dialogs().begin(); it != end; ++it)
+        for (auto& item : MItemSearchDlg::Dialogs())
         {
-            if (IsDialogMessage(**it, &msg))
+            if (IsDialogMessage(*item, &msg))
             {
                 bProcessed = TRUE;
                 break;
