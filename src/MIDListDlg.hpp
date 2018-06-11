@@ -467,8 +467,8 @@ public:
                 if (dialog.DialogBoxDx(hwnd) == IDOK)
                 {
                     ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
-                    ConstantsDB::TableType::iterator it, end = table.end();
-                    for (it = table.begin(); it != end; ++it)
+                    auto end = table.end();
+                    for (auto it = table.begin(); it != end; ++it)
                     {
                         if (it->name == str1)
                         {
@@ -517,8 +517,8 @@ public:
                 MStringA astr2 = MTextToAnsi(CP_ACP, szText).c_str();
 
                 ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
+                auto end = table.end();
+                for (auto it = table.begin(); it != end; ++it)
                 {
                     if (it->name == str1)
                     {

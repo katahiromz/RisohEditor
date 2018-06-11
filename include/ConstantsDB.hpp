@@ -234,10 +234,9 @@ public:
     bool HasCtrlID(NameType name) const
     {
         TableType table = GetTable(L"CTRLID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         return false;
@@ -245,17 +244,15 @@ public:
     bool HasResID(NameType name) const
     {
         TableType table = GetTable(L"RESOURCE.ID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         table = GetTable(L"CTRLID");
-        end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         return false;
@@ -291,8 +288,8 @@ public:
     {
         const NameType name = L"IDC_STATIC";
         TableType table = GetTable(L"RESOURCE.ID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        auto end = table.end();
+        for (auto it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
             {
@@ -335,8 +332,8 @@ public:
         }
 
         table = GetTableByPrefix(L"RESOURCE.ID", prefix);
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        auto end = table.end();
+        for (auto it = table.begin(); it != end; ++it)
         {
             if (it->value == value)
                 return it->name;
@@ -384,8 +381,8 @@ public:
 
         table = GetTableByPrefix(L"RESOURCE.ID", prefix);
         {
-            TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
+            auto end = table.end();
+            for (auto it = table.begin(); it != end; ++it)
             {
                 if (it->value == value)
                     return it->name;
@@ -708,8 +705,8 @@ public:
         mstr_split(values, str, L" \t\r\n|+");
 
         ValueType value = default_value;
-        std::vector<StringType>::iterator it, end = values.end();
-        for (it = values.begin(); it != end; ++it)
+        auto end = values.end();
+        for (auto it = values.begin(); it != end; ++it)
         {
             mstr_trim(*it);
             if ((*it).empty())

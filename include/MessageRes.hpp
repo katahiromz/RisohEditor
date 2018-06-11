@@ -188,8 +188,8 @@ public:
         std::vector<MESSAGE_RESOURCE_BLOCK> Blocks;
         {
             size_t i = 0;
-            ranges_type::iterator it, end = ranges.end();
-            for (it = ranges.begin(); it != end; ++it, ++i)
+            auto end = ranges.end();
+            for (auto it = ranges.begin(); it != end; ++it, ++i)
             {
                 MESSAGE_RESOURCE_BLOCK Block;
                 Block.LowId = it->FirstId;
@@ -204,8 +204,8 @@ public:
             return false;
 
         {
-            ranges_type::iterator it, end = ranges.end();
-            for (it = ranges.begin(); it != end; ++it)
+            auto end = ranges.end();
+            for (auto it = ranges.begin(); it != end; ++it)
             {
                 for (DWORD k = it->FirstId; k <= it->LastId; ++k)
                 {

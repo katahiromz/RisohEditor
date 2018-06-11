@@ -117,8 +117,8 @@ public:
             return;
 
         m_flags = F_ALL;
-        std::set<INT>::iterator it, end = m_indeces.end();
-        it = m_indeces.begin();
+        auto end = m_indeces.end();
+        auto it = m_indeces.begin();
         {
             DialogItem& item = m_dialog_res[*it];
             m_item = item;
