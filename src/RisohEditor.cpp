@@ -2039,7 +2039,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 }
             }
 
-            g_res.add_entries(res, true);
+            g_res.merge(res, true);
         }
         else
         {
@@ -4757,10 +4757,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     if (g_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, pszNominal);
 
-    m_bLoading = TRUE;
-    RefreshTV(hwnd);
-    m_bLoading = FALSE;
-
     SetFilePath(hwnd, pszReal, pszNominal);
 
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -6669,13 +6665,13 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     strCmdLine += L'\"';
     strCmdLine += m_szCppExe;
     strCmdLine += L"\" ";
-    strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -Wp, -E \"";
+    strCmdLine += GetMacroDump();
+    strCmdLine += L" -E \"";
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
-
+    MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0); //TODO:
+ 
     BOOL bOK = FALSE;
 
     MProcessMaker pmaker;
@@ -6693,7 +6689,6 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         size_t pragma_found = strOutput.find("#pragma RisohEditor");
         if (pragma_found != MStringA::npos)
         {
-            DeleteFileW(szTempFile1);
             strOutput = strOutput.substr(pragma_found);
             bOK = ParseMacros(hwnd, pszFile, macros, strOutput);
         }
@@ -6744,9 +6739,8 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
                 data.append(&szBuf[0], cbRead);
             }
             file.CloseHandle();
-            DeleteFileW(szTempFile);
             bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
-        }
+		}
     }
     DeleteFileW(szTempFile);
 

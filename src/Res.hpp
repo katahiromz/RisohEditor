@@ -479,19 +479,19 @@ struct EntrySet : protected EntrySetBase
         HTREEITEM hItem = entry->m_hItem;
         entry->m_hItem = NULL;
 
-        EntryBase *pParent;
-        if (m_hwndTV)
-        {
-            HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
-            pParent = get_entry(hParent);
-        }
-        else
-        {
-            pParent = get_parent(entry);
-        }
+        EntryBase *pParent = NULL;
+		if (!g_deleting_all)
+		{
+			if (m_hwndTV)
+			{
+				HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
+				pParent = get_entry(hParent);
+			}
+			else
+			{
+				pParent = get_parent(entry);
+			}
 
-        if (!g_deleting_all)
-        {
             switch (entry->m_et)
             {
             case ET_TYPE:

@@ -159,7 +159,7 @@ public:
             }
 
             ret += L", ";
-            ret += mstr_hex_word(it->strText.size() + 9);
+            ret += mstr_hex_word(WORD(it->strText.size() + 9));
             ret += L", 0";
 
             const WORD *pw = reinterpret_cast<const WORD *>(it->strText.c_str());
