@@ -1693,7 +1693,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    auto e = TV_GetEntry();
+    auto e = g_res.get_entry();
     if (!e)
         return;
 
@@ -1739,7 +1739,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -1778,7 +1778,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -1817,7 +1817,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -1849,7 +1849,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -2160,7 +2160,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 {
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry || entry->m_type != RT_DIALOG)
     {
         return;
@@ -2383,7 +2383,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             {
                 if (search.bInternalText)
                 {
-                    auto entry = TV_GetEntry();
+                    auto entry = g_res.get_entry();
                     if (entry->m_e_type == ET_LANG ||
                         entry->m_e_type == ET_STRING ||
                         entry->m_e_type == ET_MESSAGE)
@@ -2443,7 +2443,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry || entry->m_e_type != ET_NAME)
         return;
 
@@ -2475,7 +2475,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return;
 
@@ -2619,17 +2619,17 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     g_res.delete_entry(entry);
     HidePreview(hwnd);
 
-    entry = TV_GetEntry();
+    entry = g_res.get_entry();
     SelectTV(hwnd, entry, FALSE);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
 {
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (entry && entry->m_type == L"WAVE")
     {
         PlaySound((LPCTSTR)&(*entry)[0], NULL, SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
@@ -2641,7 +2641,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     SelectTV(hwnd, entry, FALSE);
 }
 
@@ -2649,7 +2649,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 {
     BOOL bReopen = IsWindowVisible(m_rad_window);
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return;
 
@@ -2675,7 +2675,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 
 void MMainWnd::OnGuiEdit(HWND hwnd)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!IsEditableEntry(hwnd, entry))
         return;
 
@@ -2855,7 +2855,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
 void MMainWnd::OnEdit(HWND hwnd)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!IsEditableEntry(hwnd, entry))
         return;
 
@@ -3071,7 +3071,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     }
     else
     {
-        auto entry = TV_GetEntry();
+        auto entry = g_res.get_entry();
 
         static const LPCWSTR apszI_[] =
         {
@@ -3220,7 +3220,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
     BOOL bCanEditLabel = TRUE;
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (entry->m_e_type == ET_TYPE)
     {
         bCanEditLabel = FALSE;
@@ -3290,7 +3290,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
     }
 
-    HTREEITEM hItem = TV_GetItem();
+    auto hItem = entry->m_hItem;
     if (hItem == NULL)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -4134,7 +4134,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, EntryBase *entry)
 
 BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return FALSE;
 
@@ -4222,7 +4222,7 @@ MStringW MMainWnd::GetIncludesDump()
 
 BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry || entry->m_type != RT_MESSAGETABLE)
         return FALSE;
 
@@ -4335,7 +4335,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 
 BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 {
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return FALSE;
 
@@ -4510,7 +4510,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
         return FALSE;
     }
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return FALSE;
 
@@ -7070,7 +7070,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
     if (!CompileIfNecessary(hwnd, TRUE))
         return;
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry || entry->m_e_type == ET_TYPE)
     {
         return;
@@ -7310,7 +7310,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ALWAYSCONTROL:
         {
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
-            auto entry = TV_GetEntry();
+            auto entry = g_res.get_entry();
             SelectTV(hwnd, entry, TRUE);
         }
         break;
@@ -7602,7 +7602,7 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
         if (pnmhdr->hwndFrom == m_splitter1)
@@ -7711,7 +7711,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             return TRUE;
         case VK_F2:
             {
-                auto entry = TV_GetEntry();
+                auto entry = g_res.get_entry();
                 if (!entry || entry->m_e_type == ET_TYPE)
                 {
                     return TRUE;
@@ -7881,7 +7881,7 @@ void MMainWnd::OnTest(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (entry->m_type == RT_DIALOG)
     {
         MByteStreamEx stream(entry->m_data);
@@ -8375,7 +8375,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -8391,7 +8391,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetLangEntry();
+    auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
 
@@ -8419,7 +8419,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (!CompileIfNecessary(hwnd, FALSE))
         return;
 
-    auto entry = TV_GetEntry();
+    auto entry = g_res.get_entry();
     if (!entry)
         return;
 

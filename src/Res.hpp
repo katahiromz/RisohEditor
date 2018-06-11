@@ -54,7 +54,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 #endif
 
 #ifdef USE_GLOBALS
-    extern HWND g_tv;
     extern BOOL g_deleting_all;
 #else
     inline HWND&
@@ -108,30 +107,6 @@ inline BOOL
 Res_HasNoName(const MIdOrString& type)
 {
     return type == RT_STRING || type == RT_MESSAGETABLE;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// TV_...
-
-inline HTREEITEM
-TV_GetItem(void)
-{
-    return TreeView_GetSelection(g_tv);
-}
-
-inline LPARAM
-TV_GetParam(HTREEITEM hItem = NULL)
-{
-    if (!hItem)
-        hItem = TreeView_GetSelection(g_tv);
-
-    TV_ITEM item;
-    ZeroMemory(&item, sizeof(item));
-    item.mask = TVIF_PARAM;
-    item.hItem = hItem;
-    TreeView_GetItem(g_tv, &item);
-
-    return item.lParam;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -363,9 +338,6 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0
 
 typedef std::set<EntryBase *> EntrySetBase;
 
-EntryBase *TV_GetEntry(HTREEITEM hItem = NULL, EntryType et = ET_ANY);
-EntryBase *TV_GetLangEntry(HTREEITEM hItem = NULL);
-
 struct EntrySet : private EntrySetBase
 {
     typedef EntrySetBase super_type;
@@ -483,7 +455,7 @@ struct EntrySet : private EntrySetBase
                 return entry;
         }
 
-        if (g_tv)
+        if (m_hwndTV)
         {
             if (type == RT_STRING)
             {
@@ -510,7 +482,7 @@ struct EntrySet : private EntrySetBase
         if (m_hwndTV)
         {
             HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
-            pParent = TV_GetEntry(hParent);
+            pParent = get_entry(hParent);
         }
         else
         {
@@ -1360,8 +1332,41 @@ public:
     inline void
     on_delete_item(HTREEITEM hItem)
     {
-        if (auto entry = TV_GetEntry(hItem))
+        if (auto entry = get_entry(hItem))
             delete_entry(entry);
+    }
+
+    LPARAM get_param(HTREEITEM hItem = NULL) const
+    {
+        if (!hItem)
+            hItem = TreeView_GetSelection(m_hwndTV);
+
+        TV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_PARAM;
+        item.hItem = hItem;
+        TreeView_GetItem(m_hwndTV, &item);
+
+        return item.lParam;
+    }
+
+    EntryBase *get_entry(HTREEITEM hItem = NULL, EntryType et = ET_ANY) const
+    {
+        LPARAM lParam = get_param(hItem);
+        auto e = (EntryBase *)lParam;
+        if (et != ET_ANY && et != e->m_e_type)
+            return NULL;
+        return e;
+    }
+
+    EntryBase *get_lang_entry(HTREEITEM hItem = NULL) const
+    {
+        return get_entry(hItem, ET_LANG);
+    }
+
+    HTREEITEM get_item(void) const
+    {
+        return TreeView_GetSelection(m_hwndTV);
     }
 };
 
@@ -1398,24 +1403,6 @@ ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
         }
         title_to_icon.clear();
     }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-inline EntryBase *
-TV_GetEntry(HTREEITEM hItem, EntryType et)
-{
-    LPARAM lParam = TV_GetParam(hItem);
-    auto e = (EntryBase *)lParam;
-    if (et != ET_ANY && et != e->m_e_type)
-        return NULL;
-    return e;
-}
-
-inline EntryBase *
-TV_GetLangEntry(HTREEITEM hItem)
-{
-    return TV_GetEntry(hItem, ET_LANG);
 }
 
 //////////////////////////////////////////////////////////////////////////////
