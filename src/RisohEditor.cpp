@@ -4871,6 +4871,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
+    EntrySet res;
     MFile hInputWrite, hOutputRead;
     SetEnvironmentVariableW(L"LANG", L"en_US");
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
@@ -4880,7 +4881,12 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
 
         if (pmaker.GetExitCode() == 0)
         {
-            bSuccess = DoImport(hwnd, szPath3, g_res);
+            if (DoImport(hwnd, szPath3, res))
+            {
+                g_res.delete_all();
+                g_res.merge(res, false);
+                bSuccess = TRUE;
+            }
         }
     }
     else

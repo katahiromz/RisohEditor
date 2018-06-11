@@ -135,7 +135,7 @@ struct EntryBase
     }
 
     EntryBase(EntryType et, const MIdOrString& type, 
-              const MIdOrString& name = L"", WORD lang = 0xFFFF)
+            const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
         : m_et(et), m_type(type), m_name(name), m_lang(lang)
     {
     }
@@ -363,7 +363,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     bool search(super_type& found, EntryType et, const MIdOrString& type, 
-                const MIdOrString& name = L"", WORD lang = 0xFFFF) const
+                const MIdOrString& name = WORD(0), WORD lang = 0xFFFF) const
     {
         found.clear();
 
@@ -376,7 +376,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     EntryBase *find(EntryType et, const MIdOrString& type, 
-                    const MIdOrString& name = L"", WORD lang = 0xFFFF) const
+                    const MIdOrString& name = WORD(0), WORD lang = 0xFFFF) const
     {
         super_type found;
         if (search(found, et, type, name, lang))
@@ -402,7 +402,7 @@ struct EntrySet : protected EntrySetBase
         return false;
     }
 
-    void add_entries(const EntrySet& another, bool replace)
+    void merge(const EntrySet& another, bool replace)
     {
         for (auto entry : another)
         {
@@ -537,7 +537,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     void search_and_delete(EntryType et, const MIdOrString& type, 
-                           const MIdOrString& name = L"", WORD lang = 0xFFFF)
+                           const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
     {
         super_type found;
         search(found, et, type, name, lang);
