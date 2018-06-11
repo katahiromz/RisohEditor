@@ -371,7 +371,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     bool search(super_type& found, EntryType et, const MIdOrString& type, 
-                const MIdOrString& name, WORD lang = 0xFFFF) const
+                const MIdOrString& name = L"", WORD lang = 0xFFFF) const
     {
         found.clear();
 
@@ -1419,6 +1419,96 @@ public:
     HTREEITEM get_item(void) const
     {
         return TreeView_GetSelection(m_hwndTV);
+    }
+
+    BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name)
+    {
+        assert(entry->m_et == ET_LANG);
+        assert(entry->m_type == RT_GROUP_ICON);
+
+        ICONDIR dir;
+        if (entry->size() < sizeof(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        memcpy(&dir, &entry[0], sizeof(dir));
+
+        if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        auto pEntries = (const GRPICONDIRENTRY *)&(*entry)[sizeof(dir)];
+
+        LONG cx = 0, cy = 0;
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
+            if (!e)
+                return FALSE;
+
+            UINT nLastID = get_last_id(RT_ICON, entry->m_lang);
+            UINT nNextID = nLastID + 1;
+
+            add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data, false);
+        }
+
+        add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data, false);
+        return TRUE;
+    }
+
+    BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name)
+    {
+        assert(entry->m_et == ET_LANG);
+        assert(entry->m_type == RT_GROUP_CURSOR);
+
+        ICONDIR dir;
+        if (entry->size() < sizeof(dir))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        memcpy(&dir, &entry[0], sizeof(dir));
+
+        if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
+        {
+            assert(0);
+            return FALSE;
+        }
+
+        auto pEntries = (const GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
+
+        LONG cx = 0, cy = 0;
+        for (WORD i = 0; i < dir.idCount; ++i)
+        {
+            auto e = find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
+            if (!e)
+                return FALSE;
+
+            UINT nLastID = get_last_id(RT_CURSOR, entry->m_lang);
+            UINT nNextID = nLastID + 1;
+
+            add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data, false);
+        }
+
+        add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data, false);
+        return TRUE;
     }
 };
 

@@ -1442,8 +1442,6 @@ public:
     BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoCopyGroupIcon(EntryBase *entry, const MIdOrString& new_name);
-    BOOL DoCopyGroupCursor(EntryBase *entry, const MIdOrString& new_name);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -1462,7 +1460,7 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res);
+    BOOL CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res);
     BOOL CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen = FALSE);
     BOOL CompileMessageTable(HWND hwnd, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
@@ -2188,90 +2186,6 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::DoCopyGroupIcon(EntryBase *entry, const MIdOrString& new_name)
-{
-    ICONDIR dir;
-    if (entry->size() < sizeof(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    memcpy(&dir, &entry[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    auto pEntries = (const GRPICONDIRENTRY *)&(*entry)[sizeof(dir)];
-
-    LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
-        if (!e)
-            return FALSE;
-
-        UINT nLastID = g_res.get_last_id(RT_ICON, entry->m_lang);
-        UINT nNextID = nLastID + 1;
-
-        g_res.add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data, false);
-    }
-
-    g_res.add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data, false);
-    return TRUE;
-}
-
-BOOL MMainWnd::DoCopyGroupCursor(EntryBase *entry, const MIdOrString& new_name)
-{
-    ICONDIR dir;
-    if (entry->size() < sizeof(dir))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    memcpy(&dir, &entry[0], sizeof(dir));
-
-    if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
-    {
-        assert(0);
-        return FALSE;
-    }
-
-    auto pEntries = (const GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
-
-    LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
-    {
-        auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
-        if (!e)
-            return FALSE;
-
-        UINT nLastID = g_res.get_last_id(RT_CURSOR, entry->m_lang);
-        UINT nNextID = nLastID + 1;
-
-        g_res.add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data, false);
-    }
-
-    g_res.add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data, false);
-    return TRUE;
-}
-
 HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
 {
     HTREEITEM hNext = hItem;
@@ -2457,14 +2371,14 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         {
             for (auto e : found)
             {
-                DoCopyGroupIcon(e, dialog.m_name);
+                g_res.copy_group_icon(e, dialog.m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             for (auto e : found)
             {
-                DoCopyGroupCursor(e, dialog.m_name);
+                g_res.copy_group_cursor(e, dialog.m_name);
             }
         }
 
@@ -2497,7 +2411,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                DoCopyGroupIcon(e, e->m_name);
+                g_res.copy_group_icon(e, e->m_name);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
@@ -2506,7 +2420,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                DoCopyGroupCursor(e, e->m_name);
+                g_res.copy_group_cursor(e, e->m_name);
             }
         }
         else if (entry->m_et == ET_STRING)
@@ -4132,7 +4046,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, EntryBase *entry)
     return TRUE;
 }
 
-BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res)
+BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res)
 {
     auto entry = g_res.get_entry();
     if (!entry)
@@ -4286,7 +4200,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
 
         if (pmaker.GetExitCode() == 0)
         {
-            EntrySetBase res;
+            EntrySet res;
             if (DoImport(hwnd, szPath3, res))
             {
                 MStringA msg;
@@ -5039,7 +4953,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile)
 
         if (pmaker.GetExitCode() == 0)
         {
-            bSuccess = DoImport(hwnd, szPath3, res);
+            bSuccess = DoImport(hwnd, szPath3, g_res);
         }
         else if (strOutput.find(": no resources") != std::string::npos)
         {
