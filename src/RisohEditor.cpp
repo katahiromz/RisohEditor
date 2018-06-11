@@ -1703,9 +1703,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    if (e->m_e_type == ET_STRING || e->m_e_type == ET_MESSAGE)
+    if (e->m_et == ET_STRING || e->m_et == ET_MESSAGE)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-    if (e->m_e_type == ET_LANG)
+    if (e->m_et == ET_LANG)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
     else
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
@@ -2384,11 +2384,11 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
                 if (search.bInternalText)
                 {
                     auto entry = g_res.get_entry();
-                    if (entry->m_e_type == ET_LANG ||
-                        entry->m_e_type == ET_STRING ||
-                        entry->m_e_type == ET_MESSAGE)
+                    if (entry->m_et == ET_LANG ||
+                        entry->m_et == ET_STRING ||
+                        entry->m_et == ET_MESSAGE)
                     {
-                        if (entry->m_e_type == ET_STRING || entry->m_e_type == ET_MESSAGE)
+                        if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
                             entry->m_name.clear();
 
                         MString text = search.res2text.DumpEntry(*entry);
@@ -2444,7 +2444,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
     auto entry = g_res.get_entry();
-    if (!entry || entry->m_e_type != ET_NAME)
+    if (!entry || entry->m_et != ET_NAME)
         return;
 
     MCloneInNewNameDlg dialog(*entry);
@@ -2479,7 +2479,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     if (!entry)
         return;
 
-    switch (entry->m_e_type)
+    switch (entry->m_et)
     {
     case ET_LANG: case ET_STRING: case ET_MESSAGE:
         break;
@@ -2509,7 +2509,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 DoCopyGroupCursor(e, e->m_name);
             }
         }
-        else if (entry->m_e_type == ET_STRING)
+        else if (entry->m_et == ET_STRING)
         {
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
@@ -2518,7 +2518,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
             }
         }
-        else if (entry->m_e_type == ET_MESSAGE)
+        else if (entry->m_et == ET_MESSAGE)
         {
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
@@ -2778,7 +2778,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         SelectTV(hwnd, entry, FALSE);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry->m_type == RT_STRING && entry->m_e_type == ET_STRING)
+    else if (entry->m_type == RT_STRING && entry->m_et == ET_STRING)
     {
         WORD lang = entry->m_lang;
         EntrySetBase found;
@@ -2815,7 +2815,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
         ChangeStatusText(IDS_READY);
     }
-    else if (entry->m_type == RT_MESSAGETABLE && entry->m_e_type == ET_MESSAGE)
+    else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_MESSAGE)
     {
         WORD lang = entry->m_lang;
         EntrySetBase found;
@@ -3087,7 +3087,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         MStringW type = entry->m_type.str();
         MStringW name = entry->m_name.str();
         StringCchPrintfW(sz, _countof(sz), 
-            L"%s: type:%s, name:%s, lang:0x%04X", apszI_[entry->m_e_type], 
+            L"%s: type:%s, name:%s, lang:0x%04X", apszI_[entry->m_et], 
             type.c_str(), name.c_str(), entry->m_lang);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
@@ -3221,7 +3221,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     BOOL bCanEditLabel = TRUE;
 
     auto entry = g_res.get_entry();
-    if (entry->m_e_type == ET_TYPE)
+    if (entry->m_et == ET_TYPE)
     {
         bCanEditLabel = FALSE;
     }
@@ -3230,7 +3230,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     {
         if (entry)
         {
-            if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
+            if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
             {
                 if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
                 {
@@ -3329,7 +3329,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
     }
 
-    switch (entry->m_e_type)
+    switch (entry->m_et)
     {
     case ET_TYPE:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -4041,7 +4041,7 @@ void MMainWnd::SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick)
     m_lang = entry->m_lang;
 
     BOOL bEditable, bSelectNone = FALSE;
-    switch (entry->m_e_type)
+    switch (entry->m_et)
     {
     case ET_LANG:
         bEditable = Preview(hwnd, entry);
@@ -4110,7 +4110,7 @@ BOOL MMainWnd::IsEditableEntry(HWND hwnd, EntryBase *entry)
         return FALSE;
 
     const MIdOrString& type = entry->m_type;
-    switch (entry->m_e_type)
+    switch (entry->m_et)
     {
     case ET_LANG:
         if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
@@ -4138,7 +4138,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res)
     if (!entry)
         return FALSE;
 
-    if (entry->m_e_type == ET_LANG)
+    if (entry->m_et == ET_LANG)
     {
         MIdOrString name = entry->m_name;
         if (name.is_str() && g_db.HasResID(name.str()))
@@ -4153,7 +4153,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res)
         entry->m_name = name;
         return TRUE;
     }
-    else if (entry->m_e_type == ET_STRING)
+    else if (entry->m_et == ET_STRING)
     {
         g_res.search_and_delete(ET_NAME, RT_STRING, WORD(0), entry->m_lang);
 
@@ -4166,7 +4166,7 @@ BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySetBase& res)
 
         return TRUE;
     }
-    else if (entry->m_e_type == ET_MESSAGE)
+    else if (entry->m_et == ET_MESSAGE)
     {
         g_res.search_and_delete(ET_NAME, RT_MESSAGETABLE, WORD(0), entry->m_lang);
 
@@ -4346,7 +4346,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
     MStringA strUtf8;
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
-    if (entry->m_e_type == ET_LANG)
+    if (entry->m_et == ET_LANG)
     {
         if (Res_IsPlainText(entry->m_type))
         {
@@ -4527,7 +4527,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
             m_name == entry->m_name &&
             m_lang == entry->m_lang)
         {
-            if (entry->m_e_type == ET_LANG && entry->m_type == RT_DIALOG)
+            if (entry->m_et == ET_LANG && entry->m_type == RT_DIALOG)
             {
                 MByteStreamEx stream(entry->m_data);
                 m_rad_window.m_dialog_res.LoadFromStream(stream);
@@ -5414,7 +5414,7 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *ent
         return FALSE;
 
     {
-        if (entry->m_e_type != ET_LANG)
+        if (entry->m_et != ET_LANG)
             return FALSE;
 
         header.DataSize = entry->size();
@@ -5452,7 +5452,7 @@ BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySet& res)
 
     for (auto entry : res)
     {
-        if (entry->m_e_type != ET_LANG)
+        if (entry->m_et != ET_LANG)
             continue;
 
         header.DataSize = entry->size();
@@ -6196,7 +6196,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 
 BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const EntryBase *e)
 {
-    if (e->m_e_type != ET_LANG)
+    if (e->m_et != ET_LANG)
         return FALSE;
 
     MByteStreamEx bs(e->m_data);
@@ -7071,12 +7071,12 @@ void MMainWnd::OnEditLabel(HWND hwnd)
         return;
 
     auto entry = g_res.get_entry();
-    if (!entry || entry->m_e_type == ET_TYPE)
+    if (!entry || entry->m_et == ET_TYPE)
     {
         return;
     }
 
-    if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
+    if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
     {
         if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
         {
@@ -7625,7 +7625,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (pnmhdr->hwndFrom == g_tv)
         {
-            switch (entry->m_e_type)
+            switch (entry->m_et)
             {
             case ET_LANG:
                 OnEdit(hwnd);
@@ -7675,7 +7675,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (pnmhdr->hwndFrom == g_tv)
         {
-            switch (entry->m_e_type)
+            switch (entry->m_et)
             {
             case ET_LANG:
                 OnEdit(hwnd);
@@ -7712,12 +7712,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         case VK_F2:
             {
                 auto entry = g_res.get_entry();
-                if (!entry || entry->m_e_type == ET_TYPE)
+                if (!entry || entry->m_et == ET_TYPE)
                 {
                     return TRUE;
                 }
 
-                if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
+                if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
                 {
                     if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
                     {
@@ -7745,12 +7745,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             auto entry = (EntryBase *)lParam;
 
-            if (entry->m_e_type == ET_TYPE)
+            if (entry->m_et == ET_TYPE)
             {
                 return TRUE;    // prevent
             }
 
-            if (entry->m_e_type == ET_NAME || entry->m_e_type== ET_LANG)
+            if (entry->m_et == ET_NAME || entry->m_et== ET_LANG)
             {
                 if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
                 {
@@ -7761,8 +7761,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             StringCchCopyW(szOldText, _countof(szOldText), pszOldText);
             mstr_trim(szOldText);
 
-            if (entry->m_e_type == ET_LANG || entry->m_e_type == ET_STRING ||
-                entry->m_e_type == ET_MESSAGE)
+            if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
+                entry->m_et == ET_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -7784,12 +7784,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             auto entry = (EntryBase *)lParam;
 
-            if (!entry || entry->m_e_type == ET_TYPE)
+            if (!entry || entry->m_et == ET_TYPE)
             {
                 return FALSE;   // reject
             }
 
-            if (entry->m_e_type == ET_NAME || entry->m_e_type == ET_LANG)
+            if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
             {
                 if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
                 {
@@ -7801,7 +7801,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
             mstr_trim(szNewText);
 
-            if (entry->m_e_type == ET_NAME)
+            if (entry->m_et == ET_NAME)
             {
                 MIdOrString old_name = GetNameFromText(szOldText);
                 MIdOrString new_name = GetNameFromText(szNewText);
@@ -7823,8 +7823,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 DoRenameEntry(entry, old_name, new_name);
                 return TRUE;   // accept
             }
-            else if (entry->m_e_type == ET_LANG || entry->m_e_type == ET_STRING ||
-                     entry->m_e_type == ET_MESSAGE)
+            else if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
+                     entry->m_et == ET_MESSAGE)
             {
                 old_lang = GetLangFromText(szOldText);
                 if (old_lang == 0xFFFF)
@@ -7837,7 +7837,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (old_lang == new_lang)
                     return FALSE;   // reject
 
-                if (entry->m_e_type == ET_STRING || entry->m_e_type == ET_MESSAGE)
+                if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
                     entry->m_name.clear();
 
                 DoRelangEntry(entry->m_type, entry->m_name, old_lang, new_lang);

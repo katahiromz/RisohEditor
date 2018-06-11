@@ -304,7 +304,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         }
         else if (entry.m_type == L"IMAGE")
         {
-            if (entry.m_e_type == ET_LANG)
+            if (entry.m_et == ET_LANG)
             {
                 if (entry.size() >= 4)
                 {
@@ -953,7 +953,7 @@ inline MString ResToText::DoUnknown(const EntryBase& entry)
 {
     MString str;
 
-    if (entry.m_e_type != ET_LANG)
+    if (entry.m_et != ET_LANG)
         return str;
 
     if (m_bHumanReadable)

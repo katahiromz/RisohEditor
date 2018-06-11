@@ -129,7 +129,7 @@ struct EntryBase
 {
     typedef DWORD               size_type;
     typedef std::vector<BYTE>   data_type;
-    EntryType       m_e_type;
+    EntryType       m_et;
 
     MIdOrString     m_type;
     MIdOrString     m_name;
@@ -142,9 +142,9 @@ struct EntryBase
     {
     }
 
-    EntryBase(EntryType e_type, const MIdOrString& type, 
+    EntryBase(EntryType et, const MIdOrString& type, 
               const MIdOrString& name = L"", WORD lang = 0xFFFF)
-        : m_e_type(e_type), m_type(type), m_name(name), m_lang(lang)
+        : m_et(et), m_type(type), m_name(name), m_lang(lang)
     {
     }
     virtual ~EntryBase()
@@ -163,9 +163,9 @@ struct EntryBase
         return m_type == RT_DIALOG || m_type == RT_MENU;
     }
 
-    bool match(EntryType e_type, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
+    bool match(EntryType et, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
     {
-        if (e_type != ET_ANY && m_e_type != e_type)
+        if (et != ET_ANY && m_et != et)
             return false;
         if (!type.is_zero() && m_type != type)
             return false;
@@ -178,7 +178,7 @@ struct EntryBase
 
     bool operator==(const EntryBase& entry) const
     {
-        return m_e_type == entry.m_e_type &&
+        return m_et == entry.m_et &&
                m_lang == entry.m_lang &&
                m_type == entry.m_type &&
                m_name == entry.m_name;
@@ -338,7 +338,7 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0
 
 typedef std::set<EntryBase *> EntrySetBase;
 
-struct EntrySet : private EntrySetBase
+struct EntrySet : protected EntrySetBase
 {
     typedef EntrySetBase super_type;
     using super_type::empty;
@@ -361,24 +361,33 @@ struct EntrySet : private EntrySetBase
     {
     }
 
-    bool search(super_type& found, EntryType e_type, const MIdOrString& type, 
+    super_type *get_super()
+    {
+        return dynamic_cast<super_type *>(this);
+    }
+    const super_type *get_super() const
+    {
+        return dynamic_cast<const super_type *>(this);
+    }
+
+    bool search(super_type& found, EntryType et, const MIdOrString& type, 
                 const MIdOrString& name, WORD lang = 0xFFFF) const
     {
         found.clear();
 
         for (auto entry : *this)
         {
-            if (entry->match(e_type, type, name, lang))
+            if (entry->match(et, type, name, lang))
                 found.insert(entry);
         }
         return !found.empty();
     }
 
-    EntryBase *find(EntryType e_type, const MIdOrString& type, 
+    EntryBase *find(EntryType et, const MIdOrString& type, 
                     const MIdOrString& name = L"", WORD lang = 0xFFFF) const
     {
         super_type found;
-        if (search(found, e_type, type, name, lang))
+        if (search(found, et, type, name, lang))
         {
             return *found.begin();
         }
@@ -405,7 +414,7 @@ struct EntrySet : private EntrySetBase
     {
         for (auto entry : another)
         {
-            if (entry->m_e_type != ET_LANG)
+            if (entry->m_et != ET_LANG)
                 continue;
 
             add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data, replace);
@@ -491,7 +500,7 @@ struct EntrySet : private EntrySetBase
 
         if (!g_deleting_all)
         {
-            switch (entry->m_e_type)
+            switch (entry->m_et)
             {
             case ET_TYPE:
             case ET_NAME:
@@ -532,11 +541,11 @@ struct EntrySet : private EntrySetBase
         }
     }
 
-    void search_and_delete(EntryType e_type, const MIdOrString& type, 
+    void search_and_delete(EntryType et, const MIdOrString& type, 
                            const MIdOrString& name = L"", WORD lang = 0xFFFF)
     {
         super_type found;
-        search(found, e_type, type, name, lang);
+        search(found, et, type, name, lang);
         for (auto entry : found)
         {
             delete_entry(entry);
@@ -570,7 +579,7 @@ struct EntrySet : private EntrySetBase
 
         for (auto entry : *this)
         {
-            if (entry->m_e_type != ET_LANG)
+            if (entry->m_et != ET_LANG)
                 continue;
 
             void *pv = NULL;
@@ -1059,14 +1068,14 @@ struct EntrySet : private EntrySetBase
         if (m_hwndTV == NULL)
             return NULL;
 
-        if (entry->m_e_type == ET_TYPE)
+        if (entry->m_et == ET_TYPE)
             return NULL;
 
         auto new_entry = add_type_entry(entry->m_type, false);
         if (!new_entry)
             return NULL;
 
-        switch (entry->m_e_type)
+        switch (entry->m_et)
         {
         case ET_NAME: case ET_STRING: case ET_MESSAGE:
             return new_entry->m_hItem;
@@ -1084,22 +1093,65 @@ struct EntrySet : private EntrySetBase
         return new_entry->m_hItem;
     }
 
-    HTREEITEM get_insert_pos(HTREEITEM hParent, EntryBase *entry)
+    HTREEITEM get_insert_position(HTREEITEM hParent, EntryBase *entry)
     {
         if (m_hwndTV == NULL)
             return NULL;
 
-        if (entry->m_e_type == ET_TYPE)
-            return NULL;
+        super_type found;
 
-        // TODO:
-        // ...
-        return NULL;
+        switch (entry->m_et)
+        {
+        case ET_TYPE:
+            search(found, ET_TYPE, (WORD)0);
+            break;
+
+        case ET_NAME:
+            search(found, ET_NAME, entry->m_type);
+            break;
+
+        case ET_STRING:
+            search(found, ET_STRING, entry->m_type, WORD(0), entry->m_lang);
+            break;
+
+        case ET_MESSAGE:
+            search(found, ET_MESSAGE, entry->m_type, WORD(0), entry->m_lang);
+            break;
+
+        case ET_LANG:
+            search(found, ET_LANG, entry->m_type, entry->m_name);
+            break;
+
+        default:
+            return NULL;
+        }
+
+        EntryBase *target = NULL, *pre = NULL;
+        for (auto e : found)
+        {
+            if (*e < *entry)
+            {
+                if (!target)
+                {
+                    target = pre = e;
+                }
+                else if (*target < *e)
+                {
+                    pre = target;
+                    target = e;
+                }
+            }
+        }
+
+        if (pre)
+            return pre->m_hItem;
+
+        return TVI_FIRST;
     }
 
     EntryBase *get_parent(EntryBase *entry)
     {
-        switch (entry->m_e_type)
+        switch (entry->m_et)
         {
         case ET_NAME:
         case ET_STRING:
@@ -1121,13 +1173,13 @@ protected:
             return NULL;
 
         HTREEITEM hParent = get_insert_parent(entry);
-        if (entry->m_e_type != ET_TYPE && hParent == NULL)
+        if (entry->m_et != ET_TYPE && hParent == NULL)
             return NULL;
 
-        HTREEITEM hPosition = get_insert_pos(hParent, entry);
+        HTREEITEM hPosition = get_insert_position(hParent, entry);
 
         MStringW strText;
-        switch (entry->m_e_type)
+        switch (entry->m_et)
         {
         case ET_TYPE:
             strText = entry->get_type_label();
@@ -1168,7 +1220,7 @@ protected:
         insert.item.stateMask = 0;
         insert.item.pszText = &strText[0];
         insert.item.lParam = (LPARAM)entry;
-        if (entry->m_e_type < ET_LANG)
+        if (entry->m_et < ET_LANG)
         {
             insert.item.iImage = 1;
             insert.item.iSelectedImage = 1;
@@ -1186,19 +1238,19 @@ protected:
 
     void on_delete_string(EntryBase *entry)
     {
-        assert(entry->m_e_type == ET_STRING);
+        assert(entry->m_et == ET_STRING);
         search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
     }
 
     void on_delete_message(EntryBase *entry)
     {
-        assert(entry->m_e_type == ET_MESSAGE);
+        assert(entry->m_et == ET_MESSAGE);
         search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
     }
 
     bool on_delete_group_icon(EntryBase *entry)
     {
-        if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_ICON)
+        if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_ICON)
             return false;
 
         MByteStreamEx bs(entry->m_data);
@@ -1223,7 +1275,7 @@ protected:
 
     bool on_delete_group_cursor(EntryBase *entry)
     {
-        if (entry->m_e_type != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
+        if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
             return false;
 
         MByteStreamEx bs(entry->m_data);
@@ -1293,7 +1345,7 @@ protected:
 
     EntryBase *get_first_child(EntryBase *pParent) const
     {
-        switch (pParent->m_e_type)
+        switch (pParent->m_et)
         {
         case ET_TYPE:
             return find(ET_NAME, pParent->m_type);
@@ -1354,7 +1406,7 @@ public:
     {
         LPARAM lParam = get_param(hItem);
         auto e = (EntryBase *)lParam;
-        if (et != ET_ANY && et != e->m_e_type)
+        if (et != ET_ANY && et != e->m_et)
             return NULL;
         return e;
     }
