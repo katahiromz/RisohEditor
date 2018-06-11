@@ -353,11 +353,11 @@ struct EntrySet : protected EntrySetBase
     {
     }
 
-    super_type *get_super()
+    super_type *super()
     {
         return dynamic_cast<super_type *>(this);
     }
-    const super_type *get_super() const
+    const super_type *super() const
     {
         return dynamic_cast<const super_type *>(this);
     }
@@ -523,13 +523,16 @@ struct EntrySet : protected EntrySetBase
             }
         }
 
-        erase(entry);
-        delete entry;
-
-        if (pParent)
+        if (super()->find(entry) != super()->end())
         {
-            if (get_first_child(pParent) == NULL)
-                delete_entry(pParent);
+            erase(entry);
+            delete entry;
+
+            if (pParent)
+            {
+                if (get_first_child(pParent) == NULL)
+                    delete_entry(pParent);
+            }
         }
     }
 
@@ -557,6 +560,15 @@ struct EntrySet : protected EntrySetBase
                 wLastID = entry->m_name.m_id;
         }
         return wLastID;
+    }
+
+    void detach(EntrySet& es)
+    {
+        for (auto entry : *this)
+        {
+            entry->m_hItem = NULL;
+        }
+        super()->swap(*es.super());
     }
 
     BOOL update_exe(LPCWSTR ExeFile) const
@@ -1038,7 +1050,7 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
-    inline EntryBase *
+    EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
         if (replace)
@@ -1373,11 +1385,9 @@ public:
         g_deleting_all = FALSE;
     }
 
-    inline void
-    on_delete_item(HTREEITEM hItem)
+    void on_delete_item(EntryBase *entry)
     {
-        if (auto entry = get_entry(hItem))
-            delete_entry(entry);
+        delete_entry(entry);
     }
 
     LPARAM get_param(HTREEITEM hItem = NULL) const

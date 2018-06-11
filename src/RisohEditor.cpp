@@ -101,9 +101,9 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 
     if (table.size())
     {
-        for (auto& entry : table)
+        for (auto& table_entry : table)
         {
-            ListBox_AddString(hLst, entry.name.c_str());
+            ListBox_AddString(hLst, table_entry.name.c_str());
         }
     }
 }
@@ -7513,6 +7513,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             if (m_splitter3.GetPaneCount() >= 2)
                 g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
         }
+    }
+    else if (pnmhdr->code == TVN_DELETEITEM)
+    {
+        auto ptv = (NM_TREEVIEW *)pnmhdr;
+        g_res.on_delete_item((EntryBase *)ptv->itemOld.lParam);
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
