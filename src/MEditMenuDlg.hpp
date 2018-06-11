@@ -437,18 +437,17 @@ public:
         {
             typedef MenuRes::ExMenuItemsType exitems_type;
             exitems_type& exitems = m_menu_res.exitems();
-            exitems_type::iterator it, end = exitems.end();
-            for (it = exitems.begin(); it != end; ++it, ++i)
+            for (auto& element : exitems)
             {
-                str = mstr_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
-                if (it->text.empty() && it->menuId == 0)
+                str = mstr_repeat(LoadStringDx(IDS_INDENT), element.wDepth);
+                if (element.text.empty() && element.menuId == 0)
                 {
                     str += LoadStringDx(IDS_SEPARATOR);
-                    it->dwType |= MFT_SEPARATOR;
+                    element.dwType |= MFT_SEPARATOR;
                 }
                 else
                 {
-                    str += mstr_quote(it->text);
+                    str += mstr_quote(element.text);
                 }
 
                 ZeroMemory(&item, sizeof(item));
@@ -458,7 +457,7 @@ public:
                 item.pszText = &str[0];
                 ListView_InsertItem(m_hLst1, &item);
 
-                str = GetMenuTypeAndState(it->dwType, it->dwState);
+                str = GetMenuTypeAndState(element.dwType, element.dwState);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -467,7 +466,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, element.menuId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -476,7 +475,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = g_db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
+                str = g_db.GetNameOfResID(IDTYPE_HELP, element.dwHelpId);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;
@@ -490,17 +489,16 @@ public:
         {
             typedef MenuRes::MenuItemsType items_type;
             items_type& items = m_menu_res.items();
-            items_type::iterator it, end = items.end();
-            for (it = items.begin(); it != end; ++it, ++i)
+            for (auto& element : items)
             {
-                str = mstr_repeat(LoadStringDx(IDS_INDENT), it->wDepth);
-                if (it->text.empty() && it->wMenuID == 0)
+                str = mstr_repeat(LoadStringDx(IDS_INDENT), element.wDepth);
+                if (element.text.empty() && element.wMenuID == 0)
                 {
                     str += LoadStringDx(IDS_SEPARATOR);
                 }
                 else
                 {
-                    str += mstr_quote(it->text);
+                    str += mstr_quote(element.text);
                 }
 
                 ZeroMemory(&item, sizeof(item));
@@ -510,8 +508,8 @@ public:
                 item.pszText = &str[0];
                 ListView_InsertItem(m_hLst1, &item);
 
-                str = GetMenuFlags(it->fItemFlags);
-                if (it->text.empty() && it->wMenuID == 0)
+                str = GetMenuFlags(element.fItemFlags);
+                if (element.text.empty() && element.wMenuID == 0)
                     str += L"S ";
 
                 ZeroMemory(&item, sizeof(item));
@@ -521,7 +519,7 @@ public:
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
 
-                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
+                str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, element.wMenuID);
 
                 ZeroMemory(&item, sizeof(item));
                 item.iItem = i;

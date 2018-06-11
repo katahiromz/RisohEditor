@@ -650,17 +650,16 @@ public:
         const entries_type& entries = m_accel_res.entries();
 
         INT i = 0;
-        entries_type::const_iterator it, end = entries.end();
-        for (it = entries.begin(); it != end; ++it, ++i)
+        for (auto& entry : entries)
         {
             std::wstring str;
-            if (it->fFlags & FVIRTKEY)
+            if (entry.fFlags & FVIRTKEY)
             {
-                str = g_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                str = g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
             }
             else
             {
-                str += (WCHAR)it->wAscii;
+                str += (WCHAR)entry.wAscii;
                 str = mstr_quote(str);
             }
 
@@ -672,7 +671,7 @@ public:
             item.pszText = &str[0];
             ListView_InsertItem(m_hLst1, &item);
 
-            str = GetKeyFlags(it->fFlags);
+            str = GetKeyFlags(entry.fFlags);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -681,7 +680,7 @@ public:
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
 
-            str = GetKeyID(it->wId);
+            str = GetKeyID(entry.wId);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;

@@ -577,12 +577,11 @@ public:
         const entries_type& entries = m_dlginit_res.entries();
 
         INT i = 0;
-        entries_type::const_iterator it, end = entries.end();
-        for (it = entries.begin(); it != end; ++it, ++i)
+        for (auto& entry : entries)
         {
             MString str;
 
-            str = g_db.GetCtrlOrCmdName(it->wCtrl);
+            str = g_db.GetCtrlOrCmdName(entry.wCtrl);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
@@ -592,7 +591,7 @@ public:
             item.pszText = &str[0];
             ListView_InsertItem(m_hLst1, &item);
 
-            switch (it->wMsg)
+            switch (entry.wMsg)
             {
             case WIN16_LB_ADDSTRING:
             case LB_ADDSTRING:
@@ -607,7 +606,7 @@ public:
                 str = L"CBEM_INSERTITEM";
                 break;
             default:
-                str = mstr_hex_word(it->wMsg);
+                str = mstr_hex_word(entry.wMsg);
             }
 
             ZeroMemory(&item, sizeof(item));
@@ -617,7 +616,7 @@ public:
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
 
-            str = MAnsiToText(CP_ACP, it->strText).c_str();
+            str = MAnsiToText(CP_ACP, entry.strText).c_str();
             str = mstr_quote(str);
 
             ZeroMemory(&item, sizeof(item));

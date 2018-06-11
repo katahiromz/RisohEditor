@@ -271,10 +271,9 @@ public:
         if (m_indeces.empty())
             return TRUE;
 
-        std::set<INT>::iterator it, end = m_indeces.end();
-        for (it = m_indeces.begin(); it != end; ++it)
+        for (auto& index : m_indeces)
         {
-            DialogItem& item = m_dialog_res[*it];
+            DialogItem& item = m_dialog_res[index];
             if ((m_flags & F_HELP) || (flags & F_HELP))
                 item.m_help_id = m_item.m_help_id;
             if ((m_flags & F_STYLE) || (flags & F_STYLE))
