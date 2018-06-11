@@ -423,7 +423,7 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
     return ret;
 }
 
-void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_)
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 {
     SetWindowTextW(hCmb, id.c_str());
 
@@ -471,7 +471,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_)
     }
 }
 
-void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_1, INT nIDTYPE_2)
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
 {
     SetWindowTextW(hCmb, id.c_str());
 
@@ -4582,16 +4582,17 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     if (nFilterIndex == 3)
     {
         // .res files
+
+        UnloadResourceH(hwnd, FALSE);
+        if (g_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, szPath);
+
         EntrySet res;
         if (!DoImport(hwnd, szPath, res))
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
         }
-
-        UnloadResourceH(hwnd, FALSE);
-        if (g_settings.bAutoLoadNearbyResH)
-            CheckResourceH(hwnd, szPath);
 
         m_bLoading = TRUE;
         {
@@ -4615,15 +4616,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     if (nFilterIndex == 4)
     {
         // .rc files
+
+        UnloadResourceH(hwnd, FALSE);
+        if (g_settings.bAutoLoadNearbyResH)
+            CheckResourceH(hwnd, szPath);
+
         if (!DoLoadRC(hwnd, szPath))
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
         }
-
-        UnloadResourceH(hwnd, FALSE);
-        if (g_settings.bAutoLoadNearbyResH)
-            CheckResourceH(hwnd, szPath);
 
         m_bLoading = TRUE;
         {
@@ -4722,6 +4724,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
     }
 
+    UnloadResourceH(hwnd, FALSE);
+    if (g_settings.bAutoLoadNearbyResH)
+        CheckResourceH(hwnd, pszNominal);
+
     m_bLoading = TRUE;
     {
         g_res.delete_all();
@@ -4729,10 +4735,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         FreeLibrary(hMod);
     }
     m_bLoading = FALSE;
-
-    UnloadResourceH(hwnd, FALSE);
-    if (g_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, pszNominal);
 
     SetFilePath(hwnd, pszReal, pszNominal);
 
@@ -7461,7 +7463,7 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
     {
         if (prefix == pair.second && !pair.second.empty())
         {
-            INT nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", pair.first));
+            auto nIDTYPE_ = IDTYPE_(g_db.GetValue(L"RESOURCE.ID.TYPE", pair.first));
             ret.push_back(nIDTYPE_);
         }
     }

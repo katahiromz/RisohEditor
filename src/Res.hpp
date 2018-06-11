@@ -205,9 +205,12 @@ struct EntryBase
         if (label.empty())
             return mstr_dec_word(m_type.m_id);
 
-        label += L" (";
-        label += mstr_dec_word(m_type.m_id);
-        label += L")";
+        if (!mchr_is_digit(label[0]))
+        {
+            label += L" (";
+            label += mstr_dec_word(m_type.m_id);
+            label += L")";
+        }
         return label;
     }
 
@@ -217,14 +220,17 @@ struct EntryBase
         if (!id)
             return m_name.m_str;
 
-        INT nIDTYPE_ = g_db.IDTypeFromResType(m_type);
+        IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
         MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
-        if (label.empty())
+        if (label.empty() || m_type == RT_STRING || m_type == RT_MESSAGETABLE)
             return mstr_dec_word(id);
 
-        label += L" (";
-        label += mstr_dec_word(id);
-        label += L")";
+        if (!mchr_is_digit(label[0]))
+        {
+            label += L" (";
+            label += mstr_dec_word(id);
+            label += L")";
+        }
         return label;
     }
 
@@ -480,17 +486,17 @@ struct EntrySet : protected EntrySetBase
         entry->m_hItem = NULL;
 
         EntryBase *pParent = NULL;
-		if (!g_deleting_all)
-		{
-			if (m_hwndTV)
-			{
-				HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
-				pParent = get_entry(hParent);
-			}
-			else
-			{
-				pParent = get_parent(entry);
-			}
+        if (!g_deleting_all)
+        {
+            if (m_hwndTV)
+            {
+                HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
+                pParent = get_entry(hParent);
+            }
+            else
+            {
+                pParent = get_parent(entry);
+            }
 
             switch (entry->m_et)
             {
@@ -1174,24 +1180,24 @@ protected:
         if (m_hwndTV == NULL)
             return NULL;
 
-		MStringW strText;
-		switch (entry->m_et)
-		{
-		case ET_TYPE:
-			strText = entry->get_type_label();
-			break;
-		case ET_NAME:
-			strText = entry->get_name_label();
-			break;
-		case ET_LANG:
-		case ET_STRING:
-		case ET_MESSAGE:
-			strText = entry->get_lang_label();
-			break;
-		default:
-			assert(0);
-			break;
-		}
+        MStringW strText;
+        switch (entry->m_et)
+        {
+        case ET_TYPE:
+            strText = entry->get_type_label();
+            break;
+        case ET_NAME:
+            strText = entry->get_name_label();
+            break;
+        case ET_LANG:
+        case ET_STRING:
+        case ET_MESSAGE:
+            strText = entry->get_lang_label();
+            break;
+        default:
+            assert(0);
+            break;
+        }
 
         HTREEITEM hParent = get_insert_parent(entry);
         HTREEITEM hPosition = get_insert_position(entry);
@@ -1229,11 +1235,11 @@ protected:
             insert.item.iImage = 0;
             insert.item.iSelectedImage = 0;
         }
-		if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert))
-		{
-			entry->m_hItem = hItem;
-			return entry;
-		}
+        if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert))
+        {
+            entry->m_hItem = hItem;
+            return entry;
+        }
 
         return NULL;
     }

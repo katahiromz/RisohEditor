@@ -33,7 +33,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -129,7 +129,7 @@ public:
         }
 
         // for Names
-        INT nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
+        auto nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_entry.m_name, nIDTYPE_);
 

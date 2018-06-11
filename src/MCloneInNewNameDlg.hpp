@@ -30,7 +30,7 @@
 
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
-void InitResNameComboBox(HWND hCmb, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -125,7 +125,7 @@ public:
         }
 
         // for Names
-        INT nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
+        IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         InitResNameComboBox(hCmb2, m_entry.m_name, nIDTYPE_);
         SubclassChildDx(m_cmb2, cmb2);
