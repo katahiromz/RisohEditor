@@ -113,34 +113,33 @@ public:
         ret += L"ACCELERATORS\r\n";
         ret += L"{\r\n";
 
-        entries_type::const_iterator it, end = m_entries.end();
-        for (it = m_entries.begin(); it != end; ++it)
+        for (auto& entry : m_entries)
         {
-            bool VIRTKEY = !!(it->fFlags & FVIRTKEY);
-            bool NOINVERT = !!(it->fFlags & FNOINVERT);
-            bool SHIFT = !!(it->fFlags & FSHIFT);
-            bool CONTROL = !!(it->fFlags & FCONTROL);
-            bool ALT = !!(it->fFlags & FALT);
+            bool VIRTKEY = !!(entry.fFlags & FVIRTKEY);
+            bool NOINVERT = !!(entry.fFlags & FNOINVERT);
+            bool SHIFT = !!(entry.fFlags & FSHIFT);
+            bool CONTROL = !!(entry.fFlags & FCONTROL);
+            bool ALT = !!(entry.fFlags & FALT);
 
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += g_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                ret += g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
             }
             else
             {
                 std::string str;
-                str += (char)it->wAscii;
+                str += (char)entry.wAscii;
                 ret += MAnsiToWide(CP_ACP, mstr_quote(str));
             }
             ret += L", ";
             if (0)
             {
-                ret += mstr_dec_word(it->wId);
+                ret += mstr_dec_word(entry.wId);
             }
             else
             {
-                ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wId);
+                ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, entry.wId);
             }
 
             if (NOINVERT)

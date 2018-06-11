@@ -115,10 +115,9 @@ public:
                 table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 
                 INT i = 0;
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
+                for (auto& table_entry : table)
                 {
-                    if (text.find(it->name) == 0)
+                    if (text.find(table_entry.name) == 0)
                     {
                         text = g_db.GetName(L"RESOURCE.ID.TYPE", i);
                         SetDlgItemText(hwnd, edt2, text.c_str());

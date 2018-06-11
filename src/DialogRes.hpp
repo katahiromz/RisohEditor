@@ -1047,19 +1047,17 @@ struct DialogRes
             m_class.clear();
         }
 
-        DialogItems::iterator it, end = m_items.end();
-        for (it = m_items.begin(); it != end; ++it)
+        for (auto& item : m_items)
         {
-            it->Fixup(bRevert);
+            item.Fixup(bRevert);
         }
     }
 
     void Fixup2(bool bRevert = false)
     {
-        DialogItems::iterator it, end = m_items.end();
-        for (it = m_items.begin(); it != end; ++it)
+        for (auto& item : m_items)
         {
-            it->Fixup2(bRevert);
+            item.Fixup2(bRevert);
         }
     }
 

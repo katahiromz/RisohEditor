@@ -128,11 +128,10 @@ public:
             return ret;
         }
 
-        entries_type::const_iterator it, end = m_entries.end();
-        for (it = m_entries.begin(); it != end; ++it)
+        for (auto& entry : m_entries)
         {
             ret += L"    ";
-            ret += g_db.GetCtrlOrCmdName(it->wCtrl);
+            ret += g_db.GetCtrlOrCmdName(entry.wCtrl);
             ret += L", ";
 
 // Win16 messages
@@ -140,7 +139,7 @@ public:
 #define WIN16_CB_ADDSTRING  0x0403
 #define AFX_CB_ADDSTRING    0x1234
 
-            switch (it->wMsg)
+            switch (entry.wMsg)
             {
             case WIN16_LB_ADDSTRING:
             case LB_ADDSTRING:
@@ -155,21 +154,21 @@ public:
                 ret += mstr_hex_word(CBEM_INSERTITEM);
                 break;
             default:
-                ret += mstr_hex_word(it->wMsg);
+                ret += mstr_hex_word(entry.wMsg);
             }
 
             ret += L", ";
-            ret += mstr_hex_word(WORD(it->strText.size() + 9));
+            ret += mstr_hex_word(WORD(entry.strText.size() + 9));
             ret += L", 0";
 
-            const WORD *pw = reinterpret_cast<const WORD *>(it->strText.c_str());
-            size_t len = (it->strText.size() + 1) / 2;
+            const WORD *pw = reinterpret_cast<const WORD *>(entry.strText.c_str());
+            size_t len = (entry.strText.size() + 1) / 2;
             for (size_t k = 0; k < len; ++k)
             {
                 ret += L", ";
                 ret += mstr_hex_word(pw[k]);
             }
-            if (it->strText.size() % 2 == 0)
+            if (entry.strText.size() % 2 == 0)
             {
                 ret += L", \"\\000\"";
             }

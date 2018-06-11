@@ -147,10 +147,9 @@ public:
         set_type targets = MRadCtrl::GetTargets();
 
         std::set<INT> indeces;
-        set_type::iterator it, end = targets.end();
-        for (it = targets.begin(); it != end; ++it)
+        for (auto& target : targets)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(target);
             indeces.insert(pCtrl->m_nIndex);
         }
         return indeces;
@@ -196,10 +195,9 @@ public:
     static BOOL DeselectSelection()
     {
         BOOL bFound = FALSE;
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        for (auto& target : GetTargets())
         {
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            MRadCtrl *pCtrl = GetRadCtrl(target);
             if (pCtrl)
             {
                 DestroyWindow(pCtrl->m_hwndRubberBand);
@@ -217,7 +215,7 @@ public:
         if (GetTargets().empty())
             return;
 
-        set_type::iterator it = GetTargets().begin();
+        auto it = GetTargets().begin();
         PostMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
@@ -262,13 +260,12 @@ public:
 
     static void MoveSelection(HWND hwnd, INT dx, INT dy)
     {
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        for (auto& target : GetTargets())
         {
-            if (hwnd == *it)
+            if (hwnd == target)
                 continue;
 
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            MRadCtrl *pCtrl = GetRadCtrl(target);
             if (pCtrl)
             {
                 RECT rc;
@@ -285,13 +282,12 @@ public:
 
     static void ResizeSelection(HWND hwnd, INT cx, INT cy)
     {
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        for (auto& target : GetTargets())
         {
-            if (hwnd == *it)
+            if (hwnd == target)
                 continue;
 
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            MRadCtrl *pCtrl = GetRadCtrl(target);
             if (pCtrl && !pCtrl->m_bSizing)
             {
                 pCtrl->m_bSizing = TRUE;
@@ -1860,10 +1856,9 @@ public:
     BOOL GetSelectedItems(DialogItems& items)
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        std::set<INT>::const_iterator it, end = indeces.end();
-        for (it = indeces.begin(); it != end; ++it)
+        for (auto& index : indeces)
         {
-            DialogItem& item = m_dialog_res[*it];
+            DialogItem& item = m_dialog_res[index];
             items.push_back(item);
         }
         return !items.empty();
@@ -1925,21 +1920,20 @@ public:
 
         INT nUp = INT_MAX;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            GetWindowRect(*it, &rc);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.top < nUp)
                 nUp = rc.top;
         }
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-            GetWindowRect(*it, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(*it, NULL, rc.left, nUp, 0, 0, 
+            SetWindowPos(item, NULL, rc.left, nUp, 0, 0, 
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -1953,22 +1947,21 @@ public:
 
         INT nDown = INT_MIN;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            GetWindowRect(*it, &rc);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nDown < rc.bottom)
                 nDown = rc.bottom;
         }
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-            GetWindowRect(*it, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             INT cy = rc.bottom - rc.top;
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(*it, NULL, rc.left, nDown - cy, 0, 0, 
+            SetWindowPos(item, NULL, rc.left, nDown - cy, 0, 0, 
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -1982,21 +1975,20 @@ public:
 
         INT nLeft = INT_MAX;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            GetWindowRect(*it, &rc);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.left < nLeft)
                 nLeft = rc.left;
         }
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-            GetWindowRect(*it, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(*it, NULL, nLeft, rc.top, 0, 0, 
+            SetWindowPos(item, NULL, nLeft, rc.top, 0, 0, 
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -2010,22 +2002,21 @@ public:
 
         INT nRight = INT_MIN;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            GetWindowRect(*it, &rc);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nRight < rc.right)
                 nRight = rc.right;
         }
-        for (it = set.begin(); it != end; ++it)
+        for (auto& item : set)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
-            GetWindowRect(*it, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
+            GetWindowRect(item, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             INT cx = rc.right - rc.left;
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(*it, NULL, nRight - cx, rc.top, 0, 0, 
+            SetWindowPos(item, NULL, nRight - cx, rc.top, 0, 0, 
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -2448,13 +2439,12 @@ public:
 
     void OnFitToGrid(HWND hwnd)
     {
-        MRadCtrl::set_type::iterator it, end = MRadCtrl::GetTargets().end();
-        for (it = MRadCtrl::GetTargets().begin(); it != end; ++it)
+        for (auto& target : MRadCtrl::GetTargets())
         {
-            if (*it == m_rad_dialog)
+            if (target == m_rad_dialog)
                 continue;
 
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(target);
             if (pCtrl == NULL)
                 continue;
 

@@ -83,15 +83,14 @@ public:
             SetBkColor(hDC, RGB(0, 0, 255));
 
             HGDIOBJ hFontOld = SelectObject(hDC, m_hFont);
-            map_type::iterator it, end = m_map.end();
-            for (it = m_map.begin(); it != end; ++it)
+            for (auto& pair : m_map)
             {
                 RECT rc;
-                GetWindowRect(it->second, &rc);
+                GetWindowRect(pair.second, &rc);
                 MapWindowRect(NULL, m_hwndOwner, &rc);
 
                 TCHAR szText[32];
-                StringCchPrintf(szText, _countof(szText), TEXT("%d"), it->first);
+                StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
                 TextOut(hDC, rc.left, rc.top, szText, lstrlen(szText));
             }
             SelectObject(hDC, hFontOld);

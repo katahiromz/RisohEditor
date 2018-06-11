@@ -4265,18 +4265,17 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
                     PRIMARYLANGID(entry->m_lang), SUBLANGID(entry->m_lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
-    id_map_type::iterator it, end = g_settings.id_map.end();
-    for (it = g_settings.id_map.begin(); it != end; ++it)
+    for (auto& pair : g_settings.id_map)
     {
-        if (it->first == "IDC_STATIC")
+        if (pair.first == "IDC_STATIC")
         {
             r1.WriteFormatA("#undef IDC_STATIC\r\n");
             r1.WriteFormatA("#define IDC_STATIC -1\r\n");
         }
         else
         {
-            r1.WriteFormatA("#undef %s\r\n", it->first.c_str());
-            r1.WriteFormatA("#define %s %s\r\n", it->first.c_str(), it->second.c_str());
+            r1.WriteFormatA("#undef %s\r\n", pair.first.c_str());
+            r1.WriteFormatA("#define %s %s\r\n", pair.first.c_str(), pair.second.c_str());
         }
     }
 
@@ -5579,10 +5578,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
-        std::set<WORD>::const_iterator it, end = langs.end();
-        for (it = langs.begin(); it != end; ++it)
+        for (auto lang : langs)
         {
-            WORD lang = *it;
             if (!lang)
                 continue;
 
@@ -5592,10 +5589,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
 
         // for each language
-        end = langs.end();
-        for (it = langs.begin(); it != end; ++it)
-        {
-            WORD lang = *it;
+		for (auto lang : langs)
+		{
             if (!lang)
                 continue;
 
@@ -5620,10 +5615,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     }
     else
     {
-        std::set<WORD>::const_iterator it, end = langs.end();
-        for (it = langs.begin(); it != end; ++it)
+        for (auto lang : langs)
         {
-            WORD lang = *it;
             if (!DoWriteRCLang(file, res2text, lang))
                 return FALSE;
         }
@@ -5635,10 +5628,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
         if (g_settings.bSelectableByMacro)
         {
-            std::set<WORD>::const_iterator it, end = langs.end();
-            for (it = langs.begin(); it != end; ++it)
+            for (auto lang : langs)
             {
-                WORD lang = *it;
                 if (!lang)
                     continue;
 
@@ -5658,10 +5649,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
         else
         {
-            std::set<WORD>::const_iterator it, end = langs.end();
-            for (it = langs.begin(); it != end; ++it)
+            for (auto lang : langs)
             {
-                WORD lang = *it;
                 if (!lang)
                     continue;
                 MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
@@ -5731,17 +5720,16 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
         file.WriteSzA("\r\n");
     }
 
-    id_map_type::iterator it, end = g_settings.id_map.end();
-    for (it = g_settings.id_map.begin(); it != end; ++it)
+    for (auto& pair : g_settings.id_map)
     {
-        if (it->first == "IDC_STATIC")
+        if (pair.first == "IDC_STATIC")
         {
             file.WriteFormatA("#define IDC_STATIC -1\r\n");
         }
         else
         {
             file.WriteFormatA("#define %s %s\r\n", 
-                it->first.c_str(), it->second.c_str());
+                pair.first.c_str(), pair.second.c_str());
         }
     }
 

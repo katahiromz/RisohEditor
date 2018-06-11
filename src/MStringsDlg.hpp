@@ -229,13 +229,12 @@ public:
         const map_type& map = m_str_res.map();
 
         INT i = 0;
-        map_type::const_iterator it, end = map.end();
-        for (it = map.begin(); it != end; ++it)
+        for (auto& pair : map)
         {
-            if (it->second.empty())
+            if (pair.second.empty())
                 continue;
 
-            MStringW str = g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, it->first);
+            MStringW str = g_db.GetNameOfResID(IDTYPE_STRING, IDTYPE_PROMPT, pair.first);
 
             LV_ITEM item;
             ZeroMemory(&item, sizeof(item));
@@ -245,7 +244,7 @@ public:
             item.pszText = &str[0];
             ListView_InsertItem(m_hLst1, &item);
 
-            str = mstr_quote(it->second);
+            str = mstr_quote(pair.second);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;

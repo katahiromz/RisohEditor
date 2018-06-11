@@ -198,14 +198,13 @@ public:
     {
         ListView_DeleteAllItems(m_hLst1);
 
-        id_map_type::const_iterator it, end = g_settings.id_map.end();
-        for (it = g_settings.id_map.begin(); it != end; ++it)
+        for (auto& pair : g_settings.id_map)
         {
             LV_ITEM item;
 
-            MString text1 = MAnsiToText(CP_ACP, it->first.c_str()).c_str();
+            MString text1 = MAnsiToText(CP_ACP, pair.first.c_str()).c_str();
             MString text2 = GetAssoc(text1);
-            MString text3 = MAnsiToText(CP_ACP, it->second.c_str()).c_str();
+            MString text3 = MAnsiToText(CP_ACP, pair.second.c_str()).c_str();
             if (text2.empty())
                 text2 = L"Unknown.ID";
 

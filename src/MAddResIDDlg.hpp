@@ -51,10 +51,9 @@ public:
         const INT IDTYPE_default = IDTYPE_COMMAND;
 
         INT i = 0;
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT k = (INT)SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)it->name.c_str());
+            INT k = (INT)SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)table_entry.name.c_str());
             if (k == IDTYPE_default)
             {
                 m_bChanging = TRUE;
@@ -184,27 +183,21 @@ public:
                     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 
                     UINT nMax = 0;
+                    for (auto& table_entry : table)
                     {
-                        ConstantsDB::TableType::iterator it, end = table.end();
-                        for (it = table.begin(); it != end; ++it)
-                        {
-                            if (it->name == L"IDC_STATIC")
-                                continue;
-                            if (nMax < it->value)
-                                nMax = it->value;
-                        }
+                        if (table_entry.name == L"IDC_STATIC")
+                            continue;
+                        if (nMax < table_entry.value)
+                            nMax = table_entry.value;
                     }
 
                     INT nIDTYPE_ = IDTYPE_UNKNOWN;
+                    for (auto& pair : g_settings.assoc_map)
                     {
-                        assoc_map_type::iterator it, end = g_settings.assoc_map.end();
-                        for (it = g_settings.assoc_map.begin(); it != end; ++it)
+                        if (pair.second == prefix)
                         {
-                            if (it->second == prefix)
-                            {
-                                nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", it->first));
-                                break;
-                            }
+                            nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", pair.first));
+                            break;
                         }
                     }
 

@@ -1543,22 +1543,16 @@ public:
 inline void
 ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
 {
+    for (auto& pair : title_to_bitmap)
     {
-        MTitleToBitmap::iterator it, end = title_to_bitmap.end();
-        for (it = title_to_bitmap.begin(); it != end; ++it)
-        {
-            DeleteObject(it->second);
-        }
-        title_to_bitmap.clear();
+        DeleteObject(pair.second);
     }
+    title_to_bitmap.clear();
+    for (auto& pair : title_to_icon)
     {
-        MTitleToIcon::iterator it, end = title_to_icon.end();
-        for (it = title_to_icon.begin(); it != end; ++it)
-        {
-            DestroyIcon(it->second);
-        }
-        title_to_icon.clear();
+        DestroyIcon(pair.second);
     }
+    title_to_icon.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////////

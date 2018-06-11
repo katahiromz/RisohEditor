@@ -201,7 +201,7 @@ public:
     }
     static MWindowBase *GetUserData(HWND hwnd)
     {
-        handle_map_type::iterator it = GetHandleMap().find(hwnd);
+        auto it = GetHandleMap().find(hwnd);
         if (it == GetHandleMap().end())
             return NULL;
         return reinterpret_cast<MWindowBase *>(it->second);
@@ -1145,8 +1145,7 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         else
         {
             // for DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
-            class_to_create_map_t::const_iterator it;
-            it = MWindowBase::ClassToCreateMap().find(szClass);
+            auto it = MWindowBase::ClassToCreateMap().find(szClass);
             if (it == MWindowBase::ClassToCreateMap().end())
             {
                 assert(0);

@@ -43,21 +43,20 @@ public:
         LV_ITEM item;
 
         INT iItem = 0;
-        map_type::iterator it, end = g_settings.assoc_map.end();
-        for (it = g_settings.assoc_map.begin(); it != end; ++it)
+        for (auto& pair : g_settings.assoc_map)
         {
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
-            item.pszText = const_cast<LPTSTR>(it->first.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.first.c_str());
             ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
-            item.pszText = const_cast<LPTSTR>(it->second.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.second.c_str());
             ListView_SetItem(m_hLst1, &item);
 
             ++iItem;

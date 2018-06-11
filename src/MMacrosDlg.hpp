@@ -466,8 +466,7 @@ public:
                 if (pInfo->item.pszText == NULL)
                     return TRUE;
 
-                macro_map_type::const_iterator it;
-                it = m_map.find(pInfo->item.pszText);
+                auto it = m_map.find(pInfo->item.pszText);
                 if (it != m_map.end())
                 {
                     return TRUE;
@@ -574,21 +573,20 @@ public:
         LV_ITEM item;
         INT iItem = 0;
 
-        macro_map_type::iterator it, end = m_map.end();
-        for (it = m_map.begin(); it != end; ++it)
+        for (auto& pair : m_map)
         {
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
-            item.pszText = const_cast<LPTSTR>(it->first.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.first.c_str());
             ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
-            item.pszText = const_cast<LPTSTR>(it->second.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.second.c_str());
             ListView_SetItem(m_hLst1, &item);
 
             ++iItem;
