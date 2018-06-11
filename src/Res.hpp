@@ -56,14 +56,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 #ifdef USE_GLOBALS
     extern BOOL g_deleting_all;
 #else
-    inline HWND&
-    TV_GetMaster(void)
-    {
-        static HWND hwndTV = NULL;
-        return hwndTV;
-    }
-    #define g_tv TV_GetMaster()
-
     inline BOOL&
     TV_GetDeletingAll(void)
     {

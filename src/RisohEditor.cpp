@@ -30,7 +30,7 @@
     #define RT_MANIFEST 24
 #endif
 
-#define TV_WIDTH        250     // default g_tv width
+#define TV_WIDTH        250     // default m_hwndTV width
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
@@ -48,7 +48,6 @@ static const UINT s_nBackupMaxCount = 5;
 #ifdef USE_GLOBALS
     ConstantsDB g_db;
     RisohSettings g_settings;
-    HWND g_tv = NULL;
     BOOL g_deleting_all = FALSE;
     EntrySet g_res;
 #endif
@@ -1249,7 +1248,8 @@ protected:
     HICON       m_hIcon;        // the icon handle
     HICON       m_hIconSm;      // the small icon handle
     HACCEL      m_hAccel;       // the accelerator handle
-    HIMAGELIST  m_hImageList;   // the image list for g_tv
+    HWND        m_hwndTV;       // the tree control
+    HIMAGELIST  m_hImageList;   // the image list for m_hwndTV
     HICON       m_hFileIcon, m_hFolderIcon;
     HFONT       m_hSrcFont, m_hBinFont;
     HWND        m_hToolBar, m_hStatusBar;
@@ -1308,7 +1308,7 @@ public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
-        m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
+        m_hwndTV(NULL), m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
         m_hSrcFont(NULL), m_hBinFont(NULL), 
         m_hToolBar(NULL), m_hStatusBar(NULL), 
         m_hFindReplaceDlg(NULL)
@@ -1644,7 +1644,7 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
 {
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
     {
-        SetFocus(g_tv);
+        SetFocus(m_hwndTV);
     }
     FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
@@ -2192,7 +2192,7 @@ HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
     do
     {
         hItem = hNext;
-        hNext = TreeView_GetNextSibling(g_tv, hItem);
+        hNext = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hNext);
     return hItem;
 }
@@ -2206,7 +2206,7 @@ HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
         if (!hNext)
             break;
 
-        hChild = TreeView_GetChild(g_tv, hNext);
+        hChild = TreeView_GetChild(m_hwndTV, hNext);
         if (!hChild)
             break;
 
@@ -2281,7 +2281,7 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             item.hItem = hItem;
             item.pszText = search.szText;
             item.cchTextMax = _countof(search.szText);
-            TreeView_GetItem(g_tv, &item);
+            TreeView_GetItem(m_hwndTV, &item);
 
             if (search.bIgnoreCases)
             {
@@ -2343,12 +2343,12 @@ BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
             search.bValid = TRUE;
         }
 
-        hChild = TreeView_GetChild(g_tv, hItem);
+        hChild = TreeView_GetChild(m_hwndTV, hItem);
         if (hChild)
         {
             DoItemSearch(hChild, search);
         }
-        hNext = TreeView_GetNextSibling(g_tv, hItem);
+        hNext = TreeView_GetNextSibling(m_hwndTV, hItem);
         hItem = hNext;
     }
 
@@ -2478,8 +2478,8 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
-    HTREEITEM hRoot = TreeView_GetRoot(g_tv);
-    HTREEITEM hItem = TreeView_GetSelection(g_tv);
+    HTREEITEM hRoot = TreeView_GetRoot(m_hwndTV);
+    HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
     if (!hItem)
     {
         hItem = hRoot;
@@ -2510,8 +2510,8 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     if (DoItemSearch(hRoot, m_search))
     {
         pDialog->Done();
-        TreeView_SelectItem(g_tv, m_search.hFound);
-        TreeView_EnsureVisible(g_tv, m_search.hFound);
+        TreeView_SelectItem(m_hwndTV, m_search.hFound);
+        TreeView_EnsureVisible(m_hwndTV, m_search.hFound);
 
         PostMessageDx(MYWM_POSTSEARCH);
     }
@@ -3371,7 +3371,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
 void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 {
-    if (hwndContext != g_tv)
+    if (hwndContext != m_hwndTV)
         return;
 
     if (IsWindowVisible(m_rad_window))
@@ -6544,7 +6544,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
 
     g_deleting_all = true;
 
-    DestroyWindow(g_tv);
+    DestroyWindow(m_hwndTV);
     DestroyWindow(m_hToolBar);
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
@@ -6998,8 +6998,8 @@ void MMainWnd::OnEditLabel(HWND hwnd)
         }
     }
 
-    HTREEITEM hItem = TreeView_GetSelection(g_tv);
-    TreeView_EditLabel(g_tv, hItem);
+    HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
+    TreeView_EditLabel(m_hwndTV, hItem);
 }
 
 void MMainWnd::OnPredefMacros(HWND hwnd)
@@ -7022,53 +7022,53 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
-    HTREEITEM hItem = TreeView_GetRoot(g_tv);
+    HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
         Expand(hItem);
-        hItem = TreeView_GetNextSibling(g_tv, hItem);
+        hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(g_tv);
-    TreeView_SelectItem(g_tv, hItem);
-    TreeView_EnsureVisible(g_tv, hItem);
+    hItem = TreeView_GetRoot(m_hwndTV);
+    TreeView_SelectItem(m_hwndTV, hItem);
+    TreeView_EnsureVisible(m_hwndTV, hItem);
 }
 
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
-    HTREEITEM hItem = TreeView_GetRoot(g_tv);
+    HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
         Collapse(hItem);
-        hItem = TreeView_GetNextSibling(g_tv, hItem);
+        hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(g_tv);
-    TreeView_SelectItem(g_tv, hItem);
-    TreeView_EnsureVisible(g_tv, hItem);
+    hItem = TreeView_GetRoot(m_hwndTV);
+    TreeView_SelectItem(m_hwndTV, hItem);
+    TreeView_EnsureVisible(m_hwndTV, hItem);
 }
 
 void MMainWnd::Expand(HTREEITEM hItem)
 {
-    TreeView_Expand(g_tv, hItem, TVE_EXPAND);
-    hItem = TreeView_GetChild(g_tv, hItem);
+    TreeView_Expand(m_hwndTV, hItem, TVE_EXPAND);
+    hItem = TreeView_GetChild(m_hwndTV, hItem);
     if (hItem == NULL)
         return;
     do
     {
         Expand(hItem);
-        hItem = TreeView_GetNextSibling(g_tv, hItem);
+        hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 }
 
 void MMainWnd::Collapse(HTREEITEM hItem)
 {
-    TreeView_Expand(g_tv, hItem, TVE_COLLAPSE);
-    hItem = TreeView_GetChild(g_tv, hItem);
+    TreeView_Expand(m_hwndTV, hItem, TVE_COLLAPSE);
+    hItem = TreeView_GetChild(m_hwndTV, hItem);
     if (hItem == NULL)
         return;
     do
     {
         Collapse(hItem);
-        hItem = TreeView_GetNextSibling(g_tv, hItem);
+        hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 }
 
@@ -7537,7 +7537,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
-        if (pnmhdr->hwndFrom == g_tv)
+        if (pnmhdr->hwndFrom == m_hwndTV)
         {
             switch (entry->m_et)
             {
@@ -7587,7 +7587,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == NM_RETURN)
     {
-        if (pnmhdr->hwndFrom == g_tv)
+        if (pnmhdr->hwndFrom == m_hwndTV)
         {
             switch (entry->m_et)
             {
@@ -7639,8 +7639,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     }
                 }
 
-                HTREEITEM hItem = TreeView_GetSelection(g_tv);
-                TreeView_EditLabel(g_tv, hItem);
+                HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
+                TreeView_EditLabel(m_hwndTV, hItem);
             }
             return TRUE;
         }
@@ -9121,17 +9121,17 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
         TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_EDITLABELS;
-    g_tv = CreateWindowExW(WS_EX_CLIENTEDGE, 
+    m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE, 
         WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1, 
         (HMENU)1, m_hInst, NULL);
-    if (g_tv == NULL)
+    if (m_hwndTV == NULL)
         return FALSE;
 
-    g_res.m_hwndTV = g_tv;
+    g_res.m_hwndTV = m_hwndTV;
 
-    TreeView_SetImageList(g_tv, m_hImageList, TVSIL_NORMAL);
+    TreeView_SetImageList(m_hwndTV, m_hImageList, TVSIL_NORMAL);
 
-    m_splitter1.SetPane(0, g_tv);
+    m_splitter1.SetPane(0, m_hwndTV);
     m_splitter1.SetPane(1, m_splitter2);
     m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
 
@@ -9177,7 +9177,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     }
 
     DragAcceptFiles(hwnd, TRUE);
-    SetFocus(g_tv);
+    SetFocus(m_hwndTV);
     UpdateMenu();
 
     if (g_settings.strWindResExe.size())
