@@ -367,29 +367,6 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
     EntrySetBase found;
     g_res.search(found, ET_LANG, type, name_or_id);
 
-    if (nIDTYPE_ == IDTYPE_RESOURCE)
-    {
-        for (auto e : found)
-        {
-            MIdOrString type = e->m_type;
-            if (Res_IsEntityType(type))
-            {
-                g_res.delete_entry(e);
-                continue;
-            }
-            if (type == RT_GROUP_CURSOR || type == RT_BITMAP ||
-                type == RT_DIALOG || type == RT_GROUP_ICON ||
-                type == RT_RCDATA)
-            {
-                g_res.delete_entry(e);
-                continue;
-            }
-        }
-    }
-
-    found.clear();
-    g_res.search(found, ET_LANG, type, name_or_id);
-
     MString ret;
     if (found.size())
     {
@@ -4763,7 +4740,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         ShowIDList(hwnd, TRUE);
     }
-    DoRefresh(hwnd);
 
     return TRUE;
 }
@@ -6670,7 +6646,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     strCmdLine += L" -E \"";
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';
-    MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0); //TODO:
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
  
     BOOL bOK = FALSE;
 

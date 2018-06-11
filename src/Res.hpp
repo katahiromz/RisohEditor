@@ -1073,7 +1073,7 @@ struct EntrySet : protected EntrySetBase
             return NULL;
 
         if (entry->m_et == ET_TYPE)
-            return NULL;
+            return TVI_ROOT;
 
         auto new_entry = add_type_entry(entry->m_type, false);
         if (!new_entry)
@@ -1097,13 +1097,12 @@ struct EntrySet : protected EntrySetBase
         return new_entry->m_hItem;
     }
 
-    HTREEITEM get_insert_position(HTREEITEM hParent, EntryBase *entry)
+    HTREEITEM get_insert_position(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
             return NULL;
 
         super_type found;
-
         switch (entry->m_et)
         {
         case ET_TYPE:
@@ -1130,25 +1129,24 @@ struct EntrySet : protected EntrySetBase
             return NULL;
         }
 
-        EntryBase *target = NULL, *pre = NULL;
+        EntryBase *target = NULL;
         for (auto e : found)
         {
             if (*e < *entry)
             {
                 if (!target)
                 {
-                    target = pre = e;
+                    target = e;
                 }
                 else if (*target < *e)
                 {
-                    pre = target;
                     target = e;
                 }
             }
         }
 
-        if (pre)
-            return pre->m_hItem;
+        if (target)
+            return target->m_hItem;
 
         return TVI_FIRST;
     }
@@ -1176,30 +1174,27 @@ protected:
         if (m_hwndTV == NULL)
             return NULL;
 
+		MStringW strText;
+		switch (entry->m_et)
+		{
+		case ET_TYPE:
+			strText = entry->get_type_label();
+			break;
+		case ET_NAME:
+			strText = entry->get_name_label();
+			break;
+		case ET_LANG:
+		case ET_STRING:
+		case ET_MESSAGE:
+			strText = entry->get_lang_label();
+			break;
+		default:
+			assert(0);
+			break;
+		}
+
         HTREEITEM hParent = get_insert_parent(entry);
-        if (entry->m_et != ET_TYPE && hParent == NULL)
-            return NULL;
-
-        HTREEITEM hPosition = get_insert_position(hParent, entry);
-
-        MStringW strText;
-        switch (entry->m_et)
-        {
-        case ET_TYPE:
-            strText = entry->get_type_label();
-            break;
-        case ET_NAME:
-            strText = entry->get_name_label();
-            break;
-        case ET_LANG:
-        case ET_STRING:
-        case ET_MESSAGE:
-            strText = entry->get_lang_label();
-            break;
-        default:
-            assert(0);
-            break;
-        }
+        HTREEITEM hPosition = get_insert_position(entry);
 
         return on_insert_after(hParent, strText, entry, hPosition);
     }
@@ -1234,8 +1229,11 @@ protected:
             insert.item.iImage = 0;
             insert.item.iSelectedImage = 0;
         }
-        if (TreeView_InsertItem(m_hwndTV, &insert))
-            return entry;
+		if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert))
+		{
+			entry->m_hItem = hItem;
+			return entry;
+		}
 
         return NULL;
     }
