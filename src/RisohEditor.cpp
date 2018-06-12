@@ -1188,9 +1188,11 @@ Res_GetLangName(WORD lang)
     }
     else
     {
-        GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64);
-        StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
-    }
+        if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64))
+	        StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
+		else
+			StringCchPrintfW(sz, _countof(sz), L"%u", lang);
+	}
     return MStringW(sz);
 }
 
@@ -1252,14 +1254,28 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
-    void UpdateEntryName(const EntryBase *e)
+    void UpdateEntryName(LPWSTR pszText, EntryBase *e)
     {
-        //TODO:
+		TV_ITEM item;
+		ZeroMemory(&item, sizeof(item));
+		item.mask = TVIF_TEXT;
+		item.hItem = e->m_hItem;
+		e->m_strLabel = e->get_name_label();
+		item.pszText = &e->m_strLabel[0];
+		lstrcpyW(pszText, item.pszText);
+		TreeView_SetItem(m_hwnd, &item);
     }
-    void UpdateEntryLang(const EntryBase *e)
+    void UpdateEntryLang(LPWSTR pszText, EntryBase *e)
     {
-        //TODO:
-    }
+		TV_ITEM item;
+		ZeroMemory(&item, sizeof(item));
+		item.mask = TVIF_TEXT;
+		item.hItem = e->m_hItem;
+		e->m_strLabel = e->get_lang_label();
+		item.pszText = &e->m_strLabel[0];
+		lstrcpyW(pszText, item.pszText);
+		TreeView_SetItem(m_hwnd, &item);
+	}
     void RefreshTV(HWND hwnd)
     {
         // TODO:
@@ -1406,8 +1422,8 @@ public:
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
-    void DoRenameEntry(EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
-    void DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
+    void DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
+    void DoRelangEntry(LPWSTR pszText, const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang);
     void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
     void DoRefreshIDList(HWND hwnd);
 
@@ -7625,6 +7641,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszOldText = pInfo->item.pszText;
+			//MessageBoxW(NULL, pszOldText, NULL, 0);
 
             auto entry = (EntryBase *)lParam;
 
@@ -7703,7 +7720,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (old_name == new_name)
                     return FALSE;   // reject
 
-                DoRenameEntry(entry, old_name, new_name);
+                DoRenameEntry(pszNewText, entry, old_name, new_name);
                 return TRUE;   // accept
             }
             else if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
@@ -7723,7 +7740,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
                     entry->m_name.clear();
 
-                DoRelangEntry(entry->m_type, entry->m_name, old_lang, new_lang);
+                DoRelangEntry(pszNewText, entry->m_type, entry->m_name, old_lang, new_lang);
                 return TRUE;   // accept
             }
 
@@ -7733,27 +7750,26 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
-void MMainWnd::DoRenameEntry(EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
+void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
     while (auto e = g_res.find(ET_LANG, entry->m_type, old_name))
     {
         assert(e->m_name == old_name);
         e->m_name = new_name;
-        UpdateEntryName(e);
     }
 
     entry->m_name = new_name;
-    UpdateEntryName(entry);
+    UpdateEntryName(pszText, entry);
     SelectTV(m_hwnd, entry, FALSE);
 }
 
-void MMainWnd::DoRelangEntry(const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang)
+void MMainWnd::DoRelangEntry(LPWSTR pszText, const MIdOrString& type, const MIdOrString& name, WORD old_lang, WORD new_lang)
 {
     while (auto e = g_res.find(ET_ANY, type, name, old_lang))
     {
         assert(e->m_lang == old_lang);
         e->m_lang = new_lang;
-        UpdateEntryLang(e);
+        UpdateEntryLang(pszText, e);
     }
 
     SelectTV(m_hwnd, ET_ANY, type, name, new_lang, FALSE);
