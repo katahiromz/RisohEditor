@@ -128,15 +128,16 @@ struct EntryBase
     WORD            m_lang = 0xFFFF;
     HTREEITEM       m_hItem = NULL;
     data_type       m_data;
+    MStringW        m_strLabel;
     MStringW        m_strText;
 
-    EntryBase()
+    EntryBase() : m_lang(0xFFFF), m_hItem(NULL)
     {
     }
 
     EntryBase(EntryType et, const MIdOrString& type, 
             const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
-        : m_et(et), m_type(type), m_name(name), m_lang(lang)
+        : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL)
     {
     }
     virtual ~EntryBase()
@@ -260,7 +261,7 @@ struct EntryBase
 
     bool empty() const
     {
-        return size() == 0 && m_strText.empty();
+        return size() == 0;
     }
     size_type size() const
     {
@@ -484,63 +485,16 @@ struct EntrySet : protected EntrySetBase
 
     void delete_entry(EntryBase *entry)
     {
-        HTREEITEM hItem = entry->m_hItem;
-        entry->m_hItem = NULL;
+        if (!entry)
+            return;
 
-        EntryBase *pParent = NULL;
-        if (!g_deleting_all)
+        if (m_hwndTV)
         {
-            if (m_hwndTV)
-            {
-                HTREEITEM hParent = TreeView_GetParent(m_hwndTV, hItem);
-                pParent = get_entry(hParent);
-            }
-            else
-            {
-                pParent = get_parent(entry);
-            }
-
-            switch (entry->m_et)
-            {
-            case ET_TYPE:
-            case ET_NAME:
-                break;
-
-            case ET_LANG:
-                if (entry->m_type == RT_GROUP_CURSOR)
-                {
-                    on_delete_group_cursor(entry);
-                }
-                if (entry->m_type == RT_GROUP_ICON)
-                {
-                    on_delete_group_icon(entry);
-                }
-                break;
-
-            case ET_STRING:
-                on_delete_string(entry);
-                break;
-
-            case ET_MESSAGE:
-                on_delete_message(entry);
-                break;
-
-            default:
-                assert(0);
-                return;
-            }
+            TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
         }
-
-        if (super()->find(entry) != super()->end())
+        else
         {
-            erase(entry);
-            delete entry;
-
-            if (pParent)
-            {
-                if (get_first_child(pParent) == NULL)
-                    delete_entry(pParent);
-            }
+            on_delete_item(entry);
         }
     }
 
@@ -1127,13 +1081,13 @@ struct EntrySet : protected EntrySetBase
 
         case ET_STRING:
             search(found, ET_STRING, entry->m_type, WORD(0), entry->m_lang);
-			search(found, ET_NAME, entry->m_type);
-			break;
+            search(found, ET_NAME, entry->m_type);
+            break;
 
         case ET_MESSAGE:
             search(found, ET_MESSAGE, entry->m_type, WORD(0), entry->m_lang);
-			search(found, ET_NAME, entry->m_type);
-			break;
+            search(found, ET_NAME, entry->m_type);
+            break;
 
         case ET_LANG:
             search(found, ET_LANG, entry->m_type, entry->m_name);
@@ -1167,27 +1121,29 @@ struct EntrySet : protected EntrySetBase
 
     EntryBase *get_parent(EntryBase *entry)
     {
+        EntryBase *parent;
         switch (entry->m_et)
         {
         case ET_NAME:
         case ET_STRING:
         case ET_MESSAGE:
-            return find(ET_TYPE, entry->m_type);
+            parent = find(ET_TYPE, entry->m_type);
+            break;
 
         case ET_LANG:
-            return find(ET_NAME, entry->m_type, entry->m_name);
+            parent = find(ET_NAME, entry->m_type, entry->m_name);
+            break;
 
         default:
-            return NULL;
+            parent = NULL;
+            break;
         }
+        return parent;
     }
 
 protected:
-    EntryBase *on_insert_entry(EntryBase *entry)
+    MStringW get_label(const EntryBase *entry)
     {
-        if (m_hwndTV == NULL)
-            return NULL;
-
         MStringW strText;
         switch (entry->m_et)
         {
@@ -1206,21 +1162,29 @@ protected:
             assert(0);
             break;
         }
+        return strText;
+    }
+
+    EntryBase *on_insert_entry(EntryBase *entry)
+    {
+        if (m_hwndTV == NULL)
+            return NULL;
 
         HTREEITEM hParent = get_insert_parent(entry);
         HTREEITEM hPosition = get_insert_position(entry);
 
-        return on_insert_after(hParent, strText, entry, hPosition);
+        return on_insert_after(hParent, entry, hPosition);
     }
 
     EntryBase *
-    on_insert_after(HTREEITEM hParent, MStringW strText, EntryBase *entry, 
-                    HTREEITEM hInsertAfter)
+    on_insert_after(HTREEITEM hParent, EntryBase *entry, HTREEITEM hInsertAfter)
     {
         assert(entry);
 
         if (m_hwndTV == NULL)
             return entry;
+
+        entry->m_strLabel = get_label(entry);
 
         TV_INSERTSTRUCTW insert;
         ZeroMemory(&insert, sizeof(insert));
@@ -1231,7 +1195,7 @@ protected:
                            TVIF_IMAGE | TVIF_SELECTEDIMAGE;
         insert.item.state = 0;
         insert.item.stateMask = 0;
-        insert.item.pszText = &strText[0];
+        insert.item.pszText = &entry->m_strLabel[0];
         insert.item.lParam = (LPARAM)entry;
         if (entry->m_et == ET_TYPE || entry->m_et == ET_NAME)
         {
@@ -1359,19 +1323,24 @@ protected:
         return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
     }
 
-    EntryBase *get_first_child(EntryBase *pParent) const
+    EntryBase *get_first_child(EntryBase *parent) const
     {
-        switch (pParent->m_et)
+        EntryBase *child;
+        switch (parent->m_et)
         {
         case ET_TYPE:
-            return find(ET_NAME, pParent->m_type);
+            child = find(ET_NAME, parent->m_type);
+            break;
 
         case ET_NAME:
-            return find(ET_LANG, pParent->m_type);
+            child = find(ET_LANG, parent->m_type, parent->m_name);
+            break;
 
         default:
-            return NULL;
+            child = NULL;
+            break;
         }
+        return child;
     }
 
 public:
@@ -1399,7 +1368,56 @@ public:
 
     void on_delete_item(EntryBase *entry)
     {
-        delete_entry(entry);
+        HTREEITEM hItem = entry->m_hItem;
+        entry->m_hItem = NULL;
+
+        EntryBase *parent = NULL;
+        if (!g_deleting_all && entry->m_et != ET_TYPE)
+        {
+            parent = get_parent(entry);
+
+            switch (entry->m_et)
+            {
+            case ET_TYPE:
+            case ET_NAME:
+                break;
+
+            case ET_LANG:
+                if (entry->m_type == RT_GROUP_CURSOR)
+                {
+                    on_delete_group_cursor(entry);
+                }
+                if (entry->m_type == RT_GROUP_ICON)
+                {
+                    on_delete_group_icon(entry);
+                }
+                break;
+
+            case ET_STRING:
+                on_delete_string(entry);
+                break;
+
+            case ET_MESSAGE:
+                on_delete_message(entry);
+                break;
+
+            default:
+                assert(0);
+                return;
+            }
+        }
+
+        if (super()->find(entry) != super()->end())
+        {
+            erase(entry);
+            delete entry;
+
+            if (parent)
+            {
+                if (get_first_child(parent) == NULL)
+                    delete_entry(parent);
+            }
+        }
     }
 
     LPARAM get_param(HTREEITEM hItem = NULL) const

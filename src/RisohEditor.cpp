@@ -2493,11 +2493,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
         return;
 
     auto entry = g_res.get_entry();
-    g_res.delete_entry(entry);
-    HidePreview(hwnd);
-
-    entry = g_res.get_entry();
-    SelectTV(hwnd, entry, FALSE);
+	TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
@@ -2956,12 +2952,12 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
             L"ET_MESSAGE"
         };
 
-        WCHAR sz[64];
+        WCHAR sz[128];
         MStringW type = entry->m_type.str();
         MStringW name = entry->m_name.str();
         StringCchPrintfW(sz, _countof(sz), 
-            L"%s: type:%s, name:%s, lang:0x%04X", apszI_[entry->m_et], 
-            type.c_str(), name.c_str(), entry->m_lang);
+            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p", apszI_[entry->m_et], 
+            type.c_str(), name.c_str(), entry->m_lang, entry, entry->hItem);
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
 }
@@ -7483,7 +7479,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == TVN_DELETEITEM)
     {
         auto ptv = (NM_TREEVIEW *)pnmhdr;
-        g_res.on_delete_item((EntryBase *)ptv->itemOld.lParam);
+		auto entry = (EntryBase *)ptv->itemOld.lParam;
+        g_res.on_delete_item(entry);
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
