@@ -1213,7 +1213,7 @@ protected:
     HACCEL      m_hAccel;       // the accelerator handle
     HWND        m_hwndTV;       // the tree control
     HIMAGELIST  m_hImageList;   // the image list for m_hwndTV
-    INT         m_nCmdLock;
+    INT         m_nCommandLock;
     HICON       m_hFileIcon, m_hFolderIcon;
     HFONT       m_hSrcFont, m_hBinFont;
     HWND        m_hToolBar, m_hStatusBar;
@@ -1286,7 +1286,7 @@ public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
-        m_hwndTV(NULL), m_hImageList(NULL), m_nCmdLock(0),
+        m_hwndTV(NULL), m_hImageList(NULL), m_nCommandLock(0),
         m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL), 
         m_hToolBar(NULL), m_hStatusBar(NULL), 
         m_hFindReplaceDlg(NULL)
@@ -1401,15 +1401,9 @@ public:
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
-    BOOL DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
-    BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase *entry);
-    BOOL DoExtractCursor(LPCWSTR pszFileName, const EntryBase *entry);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *entry);
-    BOOL DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySet& res);
-    BOOL DoExtractBin(LPCWSTR pszFileName, const EntryBase *e);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
     BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
@@ -1696,14 +1690,14 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     {
         if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
         {
-            if (!DoExtractRes(hwnd, ofn.lpstrFile, e))
+            if (!g_res.extract_res(ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
         }
         else
         {
-            if (!DoExtractBin(ofn.lpstrFile, e))
+            if (!g_res.extract_bin(ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
@@ -1743,7 +1737,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractIcon(ofn.lpstrFile, entry))
+        if (!g_res.extract_icon(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTICO);
         }
@@ -1782,7 +1776,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     }
     if (GetSaveFileNameW(&ofn))
     {
-        if (!DoExtractCursor(ofn.lpstrFile, entry))
+        if (!g_res.extract_cursor(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTCUR);
         }
@@ -2018,7 +2012,7 @@ void MMainWnd::OnImport(HWND hwnd)
     if (GetOpenFileNameW(&ofn))
     {
         EntrySet res;
-        if (DoImport(hwnd, file, res))
+        if (res.import_res(file))
         {
             if (g_res.intersect(res))
             {
@@ -4179,7 +4173,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
-            if (DoImport(hwnd, szPath3, res))
+            if (res.import_res(szPath3))
             {
                 MStringA msg;
                 bSuccess = CareWindresResult(hwnd, msg, res);
@@ -4337,7 +4331,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
-            if (DoImport(hwnd, szPath3, res))
+            if (res.import_res(szPath3))
             {
                 MStringA msg;
                 bSuccess = CareWindresResult(hwnd, msg, res);
@@ -4607,7 +4601,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             CheckResourceH(hwnd, szPath);
 
         EntrySet res;
-        if (!DoImport(hwnd, szPath, res))
+        if (!res.import_res(szPath))
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
@@ -4756,10 +4750,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         g_res.delete_all();
         g_res.FromRes(hMod, true);
-        FreeLibrary(hMod);
     }
     m_bLoading = FALSE;
 
+    FreeLibrary(hMod);
     SetFilePath(hwnd, pszReal, pszNominal);
 
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -4879,7 +4873,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
 
         if (pmaker.GetExitCode() == 0)
         {
-            if (DoImport(hwnd, szPath3, res))
+            if (res.import_res(szPath3))
             {
                 g_res.delete_all();
                 g_res.merge(res, false);
@@ -4939,7 +4933,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 
         if (pmaker.GetExitCode() == 0)
         {
-            bSuccess = DoImport(hwnd, szPath3, res);
+            bSuccess = res.import_res(szPath3);
         }
         else if (strOutput.find(": no resources") != std::string::npos)
         {
@@ -4980,43 +4974,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
     return bSuccess;
-}
-
-BOOL MMainWnd::DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res)
-{
-    MWaitCursor wait;
-    MByteStreamEx stream;
-    if (!stream.LoadFromFile(ResFile))
-        return FALSE;
-
-    BOOL bAdded = FALSE;
-    ResHeader header;
-    while (header.ReadFrom(stream))
-    {
-        bAdded = TRUE;
-        if (header.DataSize == 0)
-        {
-            stream.ReadDwordAlignment();
-            continue;
-        }
-
-        if (header.DataSize > stream.remainder())
-            return FALSE;
-
-        EntryBase::data_type data;
-        if (header.DataSize)
-        {
-            data.resize(header.DataSize);
-            if (!stream.ReadData(&data[0], header.DataSize))
-            {
-                break;
-            }
-        }
-
-        res.add_lang_entry(header.type, header.name, header.LanguageId, data, false);
-        stream.ReadDwordAlignment();
-    }
-    return bAdded;
 }
 
 void MMainWnd::OnFind(HWND hwnd)
@@ -5304,81 +5261,6 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
     }
     return 0;
-}
-
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntryBase *entry)
-{
-    MByteStreamEx bs;
-    ResHeader header;
-    if (!header.WriteTo(bs))
-        return FALSE;
-
-    {
-        if (entry->m_et != ET_LANG)
-            return FALSE;
-
-        header.DataSize = entry->size();
-        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
-        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
-            return FALSE;
-
-        header.type = entry->m_type;
-        header.name = entry->m_name;
-        header.DataVersion = 0;
-        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
-                             MEMORYFLAG_MOVEABLE;
-        header.LanguageId = entry->m_lang;
-        header.Version = 0;
-        header.Characteristics = 0;
-
-        if (!header.WriteTo(bs))
-            return FALSE;
-
-        if (!bs.WriteData(&(*entry)[0], entry->size()))
-            return FALSE;
-
-        bs.WriteDwordAlignment();
-    }
-
-    return bs.SaveToFile(pszFileName);
-}
-
-BOOL MMainWnd::DoExtractRes(HWND hwnd, LPCWSTR pszFileName, const EntrySet& res)
-{
-    MByteStreamEx bs;
-    ResHeader header;
-    if (!header.WriteTo(bs))
-        return FALSE;
-
-    for (auto entry : res)
-    {
-        if (entry->m_et != ET_LANG)
-            continue;
-
-        header.DataSize = entry->size();
-        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
-        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
-            return FALSE;
-
-        header.type = entry->m_type;
-        header.name = entry->m_name;
-        header.DataVersion = 0;
-        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
-                             MEMORYFLAG_MOVEABLE;
-        header.LanguageId = entry->m_lang;
-        header.Version = 0;
-        header.Characteristics = 0;
-
-        if (!header.WriteTo(bs))
-            return FALSE;
-
-        if (!bs.WriteData(&(*entry)[0], entry->size()))
-            return FALSE;
-
-        bs.WriteDwordAlignment();
-    }
-
-    return bs.SaveToFile(pszFileName);
 }
 
 BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
@@ -5877,11 +5759,11 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
@@ -5890,7 +5772,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
@@ -5899,11 +5781,11 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
-            return DoExtractCursor(filename.c_str(), entry);
+            return g_res.extract_cursor(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
-            return DoExtractIcon(filename.c_str(), entry);
+            return g_res.extract_icon(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
@@ -5917,95 +5799,93 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_DLGINCLUDE)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_PLUGPLAY)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_VXD)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
-            return DoExtractCursor(filename.c_str(), entry);
+            return g_res.extract_cursor(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
-            return DoExtractIcon(filename.c_str(), entry);
+            return g_res.extract_icon(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_HTML)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
     }
     else
     {
         if (entry->m_type == L"AVI")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"PNG")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"GIF")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"JPEG")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"JPG")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"TIFF")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"TIF")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"EMF")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"ENHMETAFILE")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"WMF")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"WAVE")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"IMAGE")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"RISOHTEMPLATE")
         {
-            return DoExtractBin(filename.c_str(), entry);
+            return g_res.extract_bin(filename.c_str(), entry);
         }
     }
-    return DoExtractBin(filename.c_str(), entry);
+    return g_res.extract_bin(filename.c_str(), entry);
 }
 
 BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 {
-    MWaitCursor wait;
-
     if (g_res.empty())
     {
         ErrorBoxDx(IDS_DATAISEMPTY);
@@ -6083,21 +5963,12 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     return bOK;
 }
 
-BOOL MMainWnd::DoExtractBin(LPCWSTR pszFileName, const EntryBase *e)
-{
-    if (e->m_et != ET_LANG)
-        return FALSE;
-
-    MByteStreamEx bs(e->m_data);
-    return bs.SaveToFile(pszFileName);
-}
-
 BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile)
 {
     if (!CompileIfNecessary(hwnd, TRUE))
         return FALSE;
 
-    if (DoExtractRes(hwnd, pszExeFile, g_res))
+    if (g_res.extract_res(pszExeFile, g_res))
     {
         SetFilePath(hwnd, pszExeFile, NULL);
         return TRUE;
@@ -6195,61 +6066,13 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoExtractIcon(LPCWSTR pszFileName, const EntryBase *entry)
-{
-    if (entry->m_type == RT_GROUP_ICON)
-    {
-        return g_res.extract_group_icon(*entry, pszFileName);
-    }
-    else if (entry->m_type == RT_ICON)
-    {
-        return g_res.extract_icon(*entry, pszFileName);
-    }
-    else if (entry->m_type == RT_ANIICON)
-    {
-        MFile file;
-        DWORD cbWritten = 0;
-        if (file.OpenFileForOutput(pszFileName) &&
-            file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
-        {
-            file.CloseHandle();
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase *entry)
-{
-    if (entry->m_type == RT_GROUP_CURSOR)
-    {
-        return g_res.extract_group_cursor(*entry, pszFileName);
-    }
-    else if (entry->m_type == RT_CURSOR)
-    {
-        return g_res.extract_cursor(*entry, pszFileName);
-    }
-    else if (entry->m_type == RT_ANICURSOR)
-    {
-        MFile file;
-        DWORD cbWritten = 0;
-        if (file.OpenFileForOutput(pszFileName) &&
-            file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
-        {
-            file.CloseHandle();
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
     WCHAR file[MAX_PATH], *pch;
 
     ChangeStatusText(IDS_EXECUTINGCMD);
-    ++m_nCmdLock;
+    ++m_nCommandLock;
 
     DragQueryFileW(hdrop, 0, file, _countof(file));
     DragFinish(hdrop);
@@ -6264,7 +6087,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     else if (lstrcmpiW(pch, L".ico") == 0)
     {
         MAddIconDlg dialog;
-        dialog.file = file;
+        dialog.m_file = file;
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
@@ -6386,9 +6209,9 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     {
         DoLoadFile(hwnd, file);
     }
-    --m_nCmdLock;
+    --m_nCommandLock;
 
-    if (m_nCmdLock == 0 && !::IsWindow(m_rad_window))
+    if (m_nCommandLock == 0 && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
 }
 
@@ -7036,7 +6859,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (!::IsWindow(m_rad_window) && id >= 100)
         ChangeStatusText(IDS_EXECUTINGCMD);
 
-    ++m_nCmdLock;
+    ++m_nCommandLock;
     BOOL bUpdateStatus = TRUE;
     switch (id)
     {
@@ -7355,9 +7178,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         bUpdateStatus = FALSE;
         break;
     }
-    --m_nCmdLock;
+    --m_nCommandLock;
 
-    if (m_nCmdLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
+    if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
 
 #if !defined(NDEBUG) && (WINVER >= 0x0500)

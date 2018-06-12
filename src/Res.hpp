@@ -31,10 +31,12 @@
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
+#include "MFile.hpp"
 #include "PackedDIB.hpp"
 #include "MBitmapDx.hpp"
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
+#include "ResHeader.hpp"
 
 struct BaseEntry;
 struct EntrySet;
@@ -1577,6 +1579,172 @@ public:
 
         add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data, false);
         return TRUE;
+    }
+
+    BOOL extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
+    {
+        MByteStreamEx bs;
+        ResHeader header;
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        if (entry->m_et != ET_LANG)
+            return FALSE;
+
+        header.DataSize = entry->size();
+        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
+        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
+            return FALSE;
+
+        header.type = entry->m_type;
+        header.name = entry->m_name;
+        header.DataVersion = 0;
+        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
+                             MEMORYFLAG_MOVEABLE;
+        header.LanguageId = entry->m_lang;
+        header.Version = 0;
+        header.Characteristics = 0;
+
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        if (!bs.WriteData(&(*entry)[0], entry->size()))
+            return FALSE;
+
+        bs.WriteDwordAlignment();
+
+        return bs.SaveToFile(pszFileName);
+    }
+
+    BOOL extract_res(LPCWSTR pszFileName, const EntrySet& res) const
+    {
+        MByteStreamEx bs;
+        ResHeader header;
+        if (!header.WriteTo(bs))
+            return FALSE;
+
+        for (auto entry : res)
+        {
+            if (entry->m_et != ET_LANG)
+                continue;
+
+            header.DataSize = entry->size();
+            header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
+            if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
+                return FALSE;
+
+            header.type = entry->m_type;
+            header.name = entry->m_name;
+            header.DataVersion = 0;
+            header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
+                                 MEMORYFLAG_MOVEABLE;
+            header.LanguageId = entry->m_lang;
+            header.Version = 0;
+            header.Characteristics = 0;
+
+            if (!header.WriteTo(bs))
+                return FALSE;
+
+            if (!bs.WriteData(&(*entry)[0], entry->size()))
+                return FALSE;
+
+            bs.WriteDwordAlignment();
+        }
+
+        return bs.SaveToFile(pszFileName);
+    }
+
+    BOOL extract_cursor(LPCWSTR pszFileName, const EntryBase *entry)
+    {
+        if (entry->m_type == RT_GROUP_CURSOR)
+        {
+            return extract_group_cursor(*entry, pszFileName);
+        }
+        else if (entry->m_type == RT_CURSOR)
+        {
+            return extract_cursor(*entry, pszFileName);
+        }
+        else if (entry->m_type == RT_ANICURSOR)
+        {
+            MFile file;
+            DWORD cbWritten = 0;
+            if (file.OpenFileForOutput(pszFileName) &&
+                file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
+            {
+                file.CloseHandle();
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry)
+    {
+        if (entry->m_type == RT_GROUP_ICON)
+        {
+            return extract_group_icon(*entry, pszFileName);
+        }
+        else if (entry->m_type == RT_ICON)
+        {
+            return extract_icon(*entry, pszFileName);
+        }
+        else if (entry->m_type == RT_ANIICON)
+        {
+            MFile file;
+            DWORD cbWritten = 0;
+            if (file.OpenFileForOutput(pszFileName) &&
+                file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
+            {
+                file.CloseHandle();
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e)
+    {
+        if (e->m_et != ET_LANG)
+            return FALSE;
+
+        MByteStreamEx bs(e->m_data);
+        return bs.SaveToFile(pszFileName);
+    }
+
+    BOOL import_res(LPCWSTR pszResFile)
+    {
+        MByteStreamEx stream;
+        if (!stream.LoadFromFile(pszResFile))
+            return FALSE;
+
+        BOOL bAdded = FALSE;
+        ResHeader header;
+        while (header.ReadFrom(stream))
+        {
+            bAdded = TRUE;
+            if (header.DataSize == 0)
+            {
+                stream.ReadDwordAlignment();
+                continue;
+            }
+
+            if (header.DataSize > stream.remainder())
+                return FALSE;
+
+            EntryBase::data_type data;
+            if (header.DataSize)
+            {
+                data.resize(header.DataSize);
+                if (!stream.ReadData(&data[0], header.DataSize))
+                {
+                    break;
+                }
+            }
+
+            add_lang_entry(header.type, header.name, header.LanguageId, data, false);
+            stream.ReadDwordAlignment();
+        }
+        return bAdded;
     }
 };
 

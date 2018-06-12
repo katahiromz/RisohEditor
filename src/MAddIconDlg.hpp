@@ -36,14 +36,14 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 class MAddIconDlg : public MDialogBase
 {
 public:
-    LPCWSTR file;
+    LPCWSTR m_file;
     HICON   m_hIcon;
     EntryBase m_entry_copy;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
     MAddIconDlg()
-        : MDialogBase(IDD_ADDICON), file(NULL), m_hIcon(NULL)
+        : MDialogBase(IDD_ADDICON), m_file(NULL), m_hIcon(NULL)
     {
     }
 
@@ -54,10 +54,10 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, file);
+        SetDlgItemTextW(hwnd, edt1, m_file);
         if (m_hIcon)
             DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), m_file, 0);
         Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
 
         DragAcceptFiles(hwnd, TRUE);
