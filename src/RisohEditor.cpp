@@ -1385,7 +1385,7 @@ public:
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoImport(HWND hwnd, LPCWSTR ResFile, EntrySet& res);
-    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile);
+    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
     BOOL DoExtractIcon(LPCWSTR pszFileName, const EntryBase *entry);
@@ -2944,20 +2944,20 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
 
         static const LPCWSTR apszI_[] =
         {
-            L"ET_ANY", 
-            L"ET_TYPE", 
-            L"ET_NAME", 
-            L"ET_LANG", 
-            L"ET_STRING", 
-            L"ET_MESSAGE"
+            L"ET_ANY",
+            L"ET_TYPE",
+            L"ET_STRING",
+            L"ET_MESSAGE",
+            L"ET_NAME",
+            L"ET_LANG"
         };
 
         WCHAR sz[128];
         MStringW type = entry->m_type.str();
         MStringW name = entry->m_name.str();
         StringCchPrintfW(sz, _countof(sz), 
-            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p", apszI_[entry->m_et], 
-            type.c_str(), name.c_str(), entry->m_lang, entry, entry->hItem);
+            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p: strLabel:%s", apszI_[entry->m_et], 
+            type.c_str(), name.c_str(), entry->m_lang, entry, entry->m_hItem, entry->m_strLabel.c_str());
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
 }
@@ -4592,7 +4592,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
-            g_res = res;
+            g_res.delete_all();
+            g_res.merge(res, true);
             RefreshTV(hwnd);
         }
         m_bLoading = FALSE;
@@ -4616,7 +4617,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
-        if (!DoLoadRC(hwnd, szPath))
+        EntrySet res;
+        if (!DoLoadRC(hwnd, szPath, res))
         {
             ErrorBoxDx(IDS_CANNOTOPEN);
             return FALSE;
@@ -4625,7 +4627,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
-            RefreshTV(hwnd);
+            g_res.delete_all();
+            g_res.merge(res, false);
         }
         m_bLoading = FALSE;
 
@@ -4869,7 +4872,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
     return bSuccess;
 }
 
-BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile)
+BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     MWaitCursor wait;
 
@@ -4909,7 +4912,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile)
 
         if (pmaker.GetExitCode() == 0)
         {
-            bSuccess = DoImport(hwnd, szPath3, g_res);
+            bSuccess = DoImport(hwnd, szPath3, res);
         }
         else if (strOutput.find(": no resources") != std::string::npos)
         {
@@ -7479,7 +7482,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == TVN_DELETEITEM)
     {
         auto ptv = (NM_TREEVIEW *)pnmhdr;
-		auto entry = (EntryBase *)ptv->itemOld.lParam;
+        auto entry = (EntryBase *)ptv->itemOld.lParam;
         g_res.on_delete_item(entry);
     }
     else if (pnmhdr->code == NM_DBLCLK)
