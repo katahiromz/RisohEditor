@@ -2144,7 +2144,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     if (dialog_res.m_dlginit.SaveToStream(stream))
     {
         // update RT_DLGINIT
-        g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), true);
+        g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), false);
     }
 }
 
@@ -4739,7 +4739,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = TRUE;
     {
         g_res.delete_all();
-        g_res.FromRes(hMod, true);
+        g_res.from_res(hMod, true);
     }
     m_bLoading = FALSE;
 
@@ -4829,24 +4829,24 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     std::string strOutput;
     BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
-                                m_szMcdxExe, GetMacroDump(), GetIncludesDump());
+		                        m_szMcdxExe, GetMacroDump(), GetIncludesDump());
 
-    if (!bSuccess)
-    {
-        if (strOutput.empty())
-        {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ShowBinEdit(FALSE);
-        }
-        else
-        {
-            MAnsiToWide a2w(CP_ACP, strOutput.c_str());
-            ErrorBoxDx(a2w.c_str());
+	if (!bSuccess)
+	{
+		if (strOutput.empty())
+		{
+			SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+			ShowBinEdit(FALSE);
+		}
+		else
+		{
+			MAnsiToWide a2w(CP_ACP, strOutput.c_str());
+			ErrorBoxDx(a2w.c_str());
 
-            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-            ShowBinEdit(TRUE, TRUE);
-        }
-    }
+			SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+			ShowBinEdit(TRUE, TRUE);
+		}
+	}
 
     HidePreview(hwnd);
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -7232,10 +7232,10 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             if (!CompileIfNecessary(hwnd, FALSE))
                 return TRUE;
         }
-        if (IsWindow(m_rad_window))
-        {
-            DestroyWindow(m_rad_window);
-        }
+		if (IsWindow(m_rad_window))
+		{
+			DestroyWindow(m_rad_window);
+		}
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
@@ -7244,7 +7244,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
             SelectTV(hwnd, entry, FALSE);
         }
-    }
+	}
     else if (pnmhdr->code == NM_RETURN)
     {
         if (pnmhdr->hwndFrom == m_hwndTV)
@@ -7505,7 +7505,7 @@ void MMainWnd::OnTest(HWND hwnd)
     }
     else if (entry->m_type == RT_MENU)
     {
-        HMENU hMenu = LoadMenuIndirect(&entry[0]);
+        HMENU hMenu = LoadMenuIndirect(&(*entry)[0]);
         if (hMenu)
         {
             MTestMenuDlg dialog(hMenu);

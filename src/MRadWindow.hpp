@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful, 
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -69,8 +69,9 @@ public:
     POINT           m_pt;
     INT             m_nImageType;
 
-    MRadCtrl() : m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL), 
-        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE), 
+    MRadCtrl() :
+        m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
         m_nIndex(-1)
     {
         m_pt.x = m_pt.y = -1;
@@ -79,13 +80,13 @@ public:
 
     static HICON& Icon()
     {
-        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL), 
+        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL),
                                         MAKEINTRESOURCE(IDI_ICO));
         return s_hIcon;
     }
     static HBITMAP& Bitmap()
     {
-        static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL), 
+        static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL),
                                           MAKEINTRESOURCE(IDB_BMP));
         return s_hbm;
     }
@@ -147,9 +148,10 @@ public:
         set_type targets = MRadCtrl::GetTargets();
 
         std::set<INT> indeces;
-        for (auto& target : targets)
+        set_type::iterator it, end = targets.end();
+        for (it = targets.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(target);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
             indeces.insert(pCtrl->m_nIndex);
         }
         return indeces;
@@ -195,9 +197,10 @@ public:
     static BOOL DeselectSelection()
     {
         BOOL bFound = FALSE;
-        for (auto& target : GetTargets())
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = GetRadCtrl(target);
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
             if (pCtrl)
             {
                 DestroyWindow(pCtrl->m_hwndRubberBand);
@@ -215,7 +218,7 @@ public:
         if (GetTargets().empty())
             return;
 
-        auto it = GetTargets().begin();
+        set_type::iterator it = GetTargets().begin();
         PostMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
@@ -260,12 +263,13 @@ public:
 
     static void MoveSelection(HWND hwnd, INT dx, INT dy)
     {
-        for (auto& target : GetTargets())
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
         {
-            if (hwnd == target)
+            if (hwnd == *it)
                 continue;
 
-            MRadCtrl *pCtrl = GetRadCtrl(target);
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
             if (pCtrl)
             {
                 RECT rc;
@@ -282,12 +286,13 @@ public:
 
     static void ResizeSelection(HWND hwnd, INT cx, INT cy)
     {
-        for (auto& target : GetTargets())
+        set_type::iterator it, end = GetTargets().end();
+        for (it = GetTargets().begin(); it != end; ++it)
         {
-            if (hwnd == target)
+            if (hwnd == *it)
                 continue;
 
-            MRadCtrl *pCtrl = GetRadCtrl(target);
+            MRadCtrl *pCtrl = GetRadCtrl(*it);
             if (pCtrl && !pCtrl->m_bSizing)
             {
                 pCtrl->m_bSizing = TRUE;
@@ -488,6 +493,9 @@ public:
 
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
+		if (hwnd != m_hwnd)
+			return;
+
         GetCursorPos(&m_pt);
 
         if (fDoubleClick)
@@ -671,9 +679,9 @@ public:
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
     HBRUSH          m_hbrBack;
-    POINT           m_pt;
 
-    MRadDialog() : m_index_visible(FALSE), m_bMovingSizing(FALSE)
+    MRadDialog()
+        : m_index_visible(FALSE), m_bMovingSizing(FALSE)
     {
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
         m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
@@ -698,9 +706,9 @@ public:
 
     enum TARGET
     {
-        TARGET_NEXT, 
-        TARGET_PREV, 
-        TARGET_FIRST, 
+        TARGET_NEXT,
+        TARGET_PREV,
+        TARGET_FIRST,
         TARGET_LAST
     };
 
@@ -1179,8 +1187,9 @@ public:
     DialogItemClipboard m_clipboard;
 
     MRadWindow()
-        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(), 
-          m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
+        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
+          m_hIcon(NULL), m_hIconSm(NULL),
+          m_clipboard(m_dialog_res)
     {
     }
 
@@ -1195,11 +1204,11 @@ public:
                 // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
-                    g_res.do_icon(m_title_to_icon, item, lang);
+					g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    g_res.do_bitmap(m_title_to_bitmap, item, lang);
+					g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }
@@ -1572,7 +1581,7 @@ public:
         {
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-                MAKEWPARAM(item.m_pt.x, item.m_pt.y), 
+                MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
         return 0;
@@ -1705,8 +1714,8 @@ public:
         UpdateRes();
 
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-            MAKEWPARAM(item.m_pt.x, item.m_pt.y), 
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
         InvalidateRect(m_rad_dialog, NULL, TRUE);
@@ -1747,8 +1756,8 @@ public:
         UpdateRes();
 
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-            MAKEWPARAM(item.m_pt.x, item.m_pt.y), 
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
         InvalidateRect(m_rad_dialog, NULL, TRUE);
@@ -1792,8 +1801,8 @@ public:
         UpdateRes();
 
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-            MAKEWPARAM(rc.left, rc.top), 
+        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            MAKEWPARAM(rc.left, rc.top),
             MAKELPARAM(rc.right - rc.left, rc.bottom - rc.top));
 
         return 0;
@@ -1813,7 +1822,7 @@ public:
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
-        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_pt);
+        MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1856,9 +1865,10 @@ public:
     BOOL GetSelectedItems(DialogItems& items)
     {
         std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        for (auto& index : indeces)
+        std::set<INT>::const_iterator it, end = indeces.end();
+        for (it = indeces.begin(); it != end; ++it)
         {
-            DialogItem& item = m_dialog_res[index];
+            DialogItem& item = m_dialog_res[*it];
             items.push_back(item);
         }
         return !items.empty();
@@ -1920,20 +1930,21 @@ public:
 
         INT nUp = INT_MAX;
         RECT rc;
-        for (auto& item : set)
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
         {
-            GetWindowRect(item, &rc);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.top < nUp)
                 nUp = rc.top;
         }
-        for (auto& item : set)
+        for (it = set.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
-            GetWindowRect(item, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(item, NULL, rc.left, nUp, 0, 0, 
+            SetWindowPos(*it, NULL, rc.left, nUp, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -1947,21 +1958,22 @@ public:
 
         INT nDown = INT_MIN;
         RECT rc;
-        for (auto& item : set)
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
         {
-            GetWindowRect(item, &rc);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nDown < rc.bottom)
                 nDown = rc.bottom;
         }
-        for (auto& item : set)
+        for (it = set.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
-            GetWindowRect(item, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             INT cy = rc.bottom - rc.top;
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(item, NULL, rc.left, nDown - cy, 0, 0, 
+            SetWindowPos(*it, NULL, rc.left, nDown - cy, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -1975,20 +1987,21 @@ public:
 
         INT nLeft = INT_MAX;
         RECT rc;
-        for (auto& item : set)
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
         {
-            GetWindowRect(item, &rc);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.left < nLeft)
                 nLeft = rc.left;
         }
-        for (auto& item : set)
+        for (it = set.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
-            GetWindowRect(item, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(item, NULL, nLeft, rc.top, 0, 0, 
+            SetWindowPos(*it, NULL, nLeft, rc.top, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -2002,21 +2015,22 @@ public:
 
         INT nRight = INT_MIN;
         RECT rc;
-        for (auto& item : set)
+        MRadCtrl::set_type::iterator it, end = set.end();
+        for (it = set.begin(); it != end; ++it)
         {
-            GetWindowRect(item, &rc);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nRight < rc.right)
                 nRight = rc.right;
         }
-        for (auto& item : set)
+        for (it = set.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(item);
-            GetWindowRect(item, &rc);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             INT cx = rc.right - rc.left;
             pCtrl->m_bMoving = TRUE;
-            SetWindowPos(item, NULL, nRight - cx, rc.top, 0, 0, 
+            SetWindowPos(*it, NULL, nRight - cx, rc.top, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
@@ -2439,12 +2453,13 @@ public:
 
     void OnFitToGrid(HWND hwnd)
     {
-        for (auto& target : MRadCtrl::GetTargets())
+        MRadCtrl::set_type::iterator it, end = MRadCtrl::GetTargets().end();
+        for (it = MRadCtrl::GetTargets().begin(); it != end; ++it)
         {
-            if (target == m_rad_dialog)
+            if (*it == m_rad_dialog)
                 continue;
 
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(target);
+            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
             if (pCtrl == NULL)
                 continue;
 
@@ -2471,8 +2486,8 @@ public:
             pCtrl->m_bLocking = FALSE;
 
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
-                MAKEWPARAM(item.m_pt.x, item.m_pt.y), 
+            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+                MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
         UpdateRes();

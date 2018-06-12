@@ -68,7 +68,7 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 #endif
 
 #ifndef ID_DELETEITEM
-    #define ID_DELETEITEM   999
+    #define ID_DELETEITEM   239
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1360,7 @@ public:
     }
 
 public:
-    BOOL FromRes(HMODULE hMod, bool replace)
+    BOOL from_res(HMODULE hMod, bool replace)
     {
         EnumResStruct ers;
         ers.replace = replace;
@@ -1476,7 +1476,7 @@ public:
     {
         LPARAM lParam = get_param(hItem);
         auto e = (EntryBase *)lParam;
-        if (et != ET_ANY && et != e->m_et)
+        if (!e || (et != ET_ANY && et != e->m_et))
             return NULL;
         return e;
     }
