@@ -673,15 +673,6 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
     return n == 1;
 }
 
-LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
-{
-    static WCHAR TempFile[MAX_PATH];
-    WCHAR szPath[MAX_PATH];
-    GetTempPathW(_countof(szPath), szPath);
-    GetTempFileNameW(szPath, L"KRE", 0, TempFile);
-    return TempFile;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // specialized tool bar
 
@@ -1402,7 +1393,6 @@ public:
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
-    BOOL DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
     BOOL DoExport(LPCWSTR pszFileName);
     void DoIDStat(UINT anValues[5]);
@@ -4835,140 +4825,28 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     return DoLoadResH(hwnd, szPath);
 }
 
-BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
-{
-    MWaitCursor wait;
-
-    WCHAR szPath3[MAX_PATH];
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
-
-    MStringW strCmdLine;
-    strCmdLine += L'\"';
-    strCmdLine += m_szMcdxExe;
-    strCmdLine += L"\" ";
-    strCmdLine += GetMacroDump();
-    strCmdLine += GetIncludesDump();
-    strCmdLine += L" -o \"";
-    strCmdLine += szPath3;
-    strCmdLine += L"\" -J rc -O res \"";
-    strCmdLine += szRCFile;
-    strCmdLine += L'\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
-
-    BOOL bSuccess = FALSE;
-
-    MProcessMaker pmaker;
-    pmaker.SetShowWindow(SW_HIDE);
-    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
-    EntrySet res;
-    MFile hInputWrite, hOutputRead;
-    SetEnvironmentVariableW(L"LANG", L"en_US");
-    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
-    {
-        pmaker.ReadAll(strOutput, hOutputRead);
-
-        if (pmaker.GetExitCode() == 0)
-        {
-            if (res.import_res(szPath3))
-            {
-                g_res.delete_all();
-                g_res.merge(res, false);
-                res.delete_all();
-                bSuccess = TRUE;
-            }
-        }
-    }
-    else
-    {
-        MStringA msg;
-        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
-    }
-
-    DeleteFileW(szPath3);
-
-    return bSuccess;
-}
-
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
-    MWaitCursor wait;
-
-    WCHAR szPath3[MAX_PATH];
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
-
-    MStringW strCmdLine;
-    strCmdLine += L'\"';
-    strCmdLine += m_szWindresExe;
-    strCmdLine += L"\" -DRC_INVOKED ";
-    strCmdLine += GetMacroDump();
-    strCmdLine += GetIncludesDump();
-    strCmdLine += L" -o \"";
-    strCmdLine += szPath3;
-    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
-    strCmdLine += m_szCppExe;
-    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
-    strCmdLine += szRCFile;
-    strCmdLine += L'\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
-
-    BOOL bSuccess = FALSE;
-
-    MProcessMaker pmaker;
-    pmaker.SetShowWindow(SW_HIDE);
-    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
-
     std::string strOutput;
-    MFile hInputWrite, hOutputRead;
-    SetEnvironmentVariableW(L"LANG", L"en_US");
-    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
-        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
-    {
-        pmaker.ReadAll(strOutput, hOutputRead);
+    BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
+                                m_szMcdxExe, GetMacroDump(), GetIncludesDump());
 
-        if (pmaker.GetExitCode() == 0)
+    if (!bSuccess)
+    {
+        if (strOutput.empty())
         {
-            bSuccess = res.import_res(szPath3);
+            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+            ShowBinEdit(FALSE);
         }
-        else if (strOutput.find(": no resources") != std::string::npos)
+        else
         {
-            bSuccess = TRUE;
-            strOutput.clear();
+            MAnsiToWide a2w(CP_ACP, strOutput.c_str());
+            ErrorBoxDx(a2w.c_str());
+
+            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+            ShowBinEdit(TRUE, TRUE);
         }
     }
-    else
-    {
-        MStringA msg;
-        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
-    }
-
-    if (bSuccess)
-    {
-        DeleteFileW(szPath3);
-        bSuccess = DoLoadMsgTables(hwnd, szRCFile, strOutput);
-    }
-
-    if (strOutput.empty())
-    {
-        SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-        ShowBinEdit(FALSE);
-    }
-    else
-    {
-        MAnsiToWide a2w(CP_ACP, strOutput.c_str());
-        ErrorBoxDx(a2w.c_str());
-
-        SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-        ShowBinEdit(TRUE, TRUE);
-    }
-#ifdef NDEBUG
-    DeleteFileW(szPath3);
-#endif
 
     HidePreview(hwnd);
     PostMessageW(hwnd, WM_SIZE, 0, 0);
@@ -8844,6 +8722,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+    MWaitCursor wait;
     m_id_list_dlg.m_hMainWnd = hwnd;
 
     DoLoadLangInfo();

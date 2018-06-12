@@ -60,7 +60,6 @@
 // RisohEditor.cpp
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
-LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 ////////////////////////////////////////////////////////////////////////////

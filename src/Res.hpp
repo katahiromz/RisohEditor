@@ -31,7 +31,7 @@
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
-#include "MFile.hpp"
+#include "MProcessMaker.hpp"
 #include "PackedDIB.hpp"
 #include "MBitmapDx.hpp"
 #include "ConstantsDB.hpp"
@@ -642,7 +642,7 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
-    bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name)
+    bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name) const
     {
         ICONDIR dir = { 0, RES_CURSOR, 1 };
 
@@ -689,7 +689,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    bool extract_group_cursor(const EntryBase& group, const wchar_t *file_name)
+    bool extract_group_cursor(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
         if (group.m_type != RT_GROUP_CURSOR ||
@@ -775,7 +775,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    BOOL extract_icon(const EntryBase& i_entry, const wchar_t *file_name)
+    BOOL extract_icon(const EntryBase& i_entry, const wchar_t *file_name) const
     {
         ICONDIR dir = { 0, RES_ICON, 1 };
 
@@ -813,7 +813,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
-    bool extract_group_icon(const EntryBase& group, const wchar_t *file_name)
+    bool extract_group_icon(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
         if (group.m_type != RT_GROUP_ICON ||
@@ -1654,7 +1654,7 @@ public:
         return bs.SaveToFile(pszFileName);
     }
 
-    BOOL extract_cursor(LPCWSTR pszFileName, const EntryBase *entry)
+    BOOL extract_cursor(LPCWSTR pszFileName, const EntryBase *entry) const
     {
         if (entry->m_type == RT_GROUP_CURSOR)
         {
@@ -1678,7 +1678,7 @@ public:
         return FALSE;
     }
 
-    BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry)
+    BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const
     {
         if (entry->m_type == RT_GROUP_ICON)
         {
@@ -1702,7 +1702,7 @@ public:
         return FALSE;
     }
 
-    BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e)
+    BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
     {
         if (e->m_et != ET_LANG)
             return FALSE;
@@ -1745,6 +1745,119 @@ public:
             stream.ReadDwordAlignment();
         }
         return bAdded;
+    }
+
+    BOOL load_msg_table(LPCWSTR pszRCFile, std::string& strOutput, const MString& strMcdxExe,
+        const MStringW& strMacrosDump, const MStringW& strIncludesDump)
+    {
+        WCHAR szPath3[MAX_PATH];
+        lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+        MFile r3(szPath3, TRUE);
+        r3.CloseHandle();
+
+        MStringW strCmdLine;
+        strCmdLine += L'\"';
+        strCmdLine += strMcdxExe;
+        strCmdLine += L"\" ";
+        strCmdLine += strMacrosDump;
+        strCmdLine += strIncludesDump;
+        strCmdLine += L" -o \"";
+        strCmdLine += szPath3;
+        strCmdLine += L"\" -J rc -O res \"";
+        strCmdLine += pszRCFile;
+        strCmdLine += L'\"';
+        //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+
+        BOOL bSuccess = FALSE;
+
+        MProcessMaker pmaker;
+        pmaker.SetShowWindow(SW_HIDE);
+        pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+        EntrySet res;
+        MFile hInputWrite, hOutputRead;
+        SetEnvironmentVariableW(L"LANG", L"en_US");
+        if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+            pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+        {
+            pmaker.ReadAll(strOutput, hOutputRead);
+
+            if (pmaker.GetExitCode() == 0)
+            {
+                if (res.import_res(szPath3))
+                {
+                    bSuccess = TRUE;
+                }
+            }
+        }
+
+        DeleteFileW(szPath3);
+        return bSuccess;
+    }
+
+    BOOL load_rc(LPCWSTR pszRCFile, std::string& strOutput,
+        const MString& strWindresExe, const MString& strCppExe, const MString& strMcdxExe, 
+        const MStringW& strMacrosDump, const MStringW& strIncludesDump)
+    {
+        WCHAR szPath3[MAX_PATH];
+        lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+        MFile r3(szPath3, TRUE);
+        r3.CloseHandle();
+
+        MStringW strCmdLine;
+        strCmdLine += L'\"';
+        strCmdLine += strWindresExe;
+        strCmdLine += L"\" -DRC_INVOKED ";
+        strCmdLine += strMacrosDump;
+        strCmdLine += strIncludesDump;
+        strCmdLine += L" -o \"";
+        strCmdLine += szPath3;
+        strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+        strCmdLine += strCppExe;
+        strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+        strCmdLine += pszRCFile;
+        strCmdLine += L'\"';
+        //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+
+        BOOL bSuccess = FALSE;
+
+        MProcessMaker pmaker;
+        pmaker.SetShowWindow(SW_HIDE);
+        pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+        MFile hInputWrite, hOutputRead;
+        SetEnvironmentVariableW(L"LANG", L"en_US");
+        if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+            pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+        {
+            pmaker.ReadAll(strOutput, hOutputRead);
+
+            if (pmaker.GetExitCode() == 0)
+            {
+                bSuccess = import_res(szPath3);
+            }
+            else if (strOutput.find(": no resources") != std::string::npos)
+            {
+                bSuccess = TRUE;
+                strOutput.clear();
+            }
+        }
+
+        if (bSuccess)
+        {
+            EntrySet es;
+            bSuccess = es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump);
+            if (bSuccess)
+            {
+                merge(es, false);
+            }
+        }
+
+#ifdef NDEBUG
+        DeleteFileW(szPath3);
+#endif
+
+        return bSuccess;
     }
 };
 
