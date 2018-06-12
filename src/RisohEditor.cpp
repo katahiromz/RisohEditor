@@ -6243,7 +6243,6 @@ BOOL MMainWnd::DoExtractCursor(LPCWSTR pszFileName, const EntryBase *entry)
     return FALSE;
 }
 
-
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
@@ -6726,7 +6725,13 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
         DoRefreshIDList(hwnd);
     }
 
-    //...TODO:
+    EntrySet res;
+    g_res.copy_to(res);
+    g_res.delete_all();
+    g_res.merge(res, false);
+    res.delete_all();
+
+    InvalidateRect(m_hwndTV, NULL, TRUE);
 }
 
 void MMainWnd::OnAdviceResH(HWND hwnd)

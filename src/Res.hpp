@@ -488,7 +488,7 @@ struct EntrySet : protected EntrySetBase
 
     void delete_entry(EntryBase *entry)
     {
-        if (!entry || !entry->m_hItem)
+        if (!entry)
             return;
 
         if (m_hwndTV)
@@ -1364,6 +1364,15 @@ public:
         ers.replace = replace;
         ers.this_ = this;
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
+    }
+
+    void copy_to(EntrySet& es)
+    {
+        for (auto entry : *this)
+        {
+            if (entry->m_et == ET_LANG)
+                es.add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data, false);
+        }
     }
 
     void delete_all(void)
