@@ -1418,6 +1418,7 @@ public:
     void ReSetPaths(HWND hwnd);
 
     BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
+    void DeleteItem(HWND hwnd, LPARAM lParam);
 
 protected:
     // parsing resource IDs
@@ -2211,6 +2212,11 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
 
+void MMainWnd::DeleteItem(HWND hwnd, LPARAM lParam)
+{
+    g_res.delete_entry((EntryBase *)lParam);
+}
+
 BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 {
     HTREEITEM hNext, hChild;
@@ -2493,7 +2499,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
         return;
 
     auto entry = g_res.get_entry();
-	TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+    TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
@@ -5588,8 +5594,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
 
         // for each language
-		for (auto lang : langs)
-		{
+        for (auto lang : langs)
+        {
             if (!lang)
                 continue;
 
@@ -6705,7 +6711,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
             }
             file.CloseHandle();
             bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
-		}
+        }
     }
     DeleteFileW(szTempFile);
 
@@ -7341,6 +7347,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_COLLAPSE_ALL:
         OnCollapseAll(hwnd);
+        break;
+    case ID_DELETEITEM:
+        DeleteItem(hwnd, (LPARAM)hwndCtl);
         break;
     default:
         bUpdateStatus = FALSE;

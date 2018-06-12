@@ -65,6 +65,10 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define g_deleting_all TV_GetDeletingAll()
 #endif
 
+#ifndef ID_DELETEITEM
+    #define ID_DELETEITEM   999
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
@@ -447,7 +451,6 @@ struct EntrySet : protected EntrySetBase
 
         auto entry = Res_NewLangEntry(type, name, lang);
         entry->m_strText = strText;
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -479,7 +482,6 @@ struct EntrySet : protected EntrySetBase
 
         auto entry = Res_NewLangEntry(type, name, lang);
         entry->assign(data);
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -980,7 +982,6 @@ struct EntrySet : protected EntrySetBase
             return entry;
 
         auto entry = Res_NewStringEntry(lang);
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -991,7 +992,6 @@ struct EntrySet : protected EntrySetBase
             return entry;
 
         auto entry = Res_NewMessageEntry(lang);
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -1008,7 +1008,6 @@ struct EntrySet : protected EntrySetBase
                 return entry;
         }
         auto entry = Res_NewNameEntry(type, name);
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -1025,7 +1024,6 @@ struct EntrySet : protected EntrySetBase
                 return entry;
         }
         auto entry = Res_NewTypeEntry(type);
-        insert(entry);
         return on_insert_entry(entry);
     }
 
@@ -1168,7 +1166,10 @@ protected:
     EntryBase *on_insert_entry(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
+        {
+            insert(entry);
             return NULL;
+        }
 
         HTREEITEM hParent = get_insert_parent(entry);
         HTREEITEM hPosition = get_insert_position(entry);
@@ -1184,32 +1185,34 @@ protected:
         if (m_hwndTV == NULL)
             return entry;
 
+        TV_INSERTSTRUCTW insert_struct;
+        ZeroMemory(&insert_struct, sizeof(insert_struct));
+
+        insert_struct.hParent = hParent;
+        insert_struct.hInsertAfter = hInsertAfter;
+        insert_struct.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
+                                  TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+        insert_struct.item.state = 0;
+        insert_struct.item.stateMask = 0;
+
         entry->m_strLabel = get_label(entry);
+        insert_struct.item.pszText = &entry->m_strLabel[0];
 
-        TV_INSERTSTRUCTW insert;
-        ZeroMemory(&insert, sizeof(insert));
-
-        insert.hParent = hParent;
-        insert.hInsertAfter = hInsertAfter;
-        insert.item.mask = TVIF_TEXT | TVIF_STATE | TVIF_PARAM |
-                           TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-        insert.item.state = 0;
-        insert.item.stateMask = 0;
-        insert.item.pszText = &entry->m_strLabel[0];
-        insert.item.lParam = (LPARAM)entry;
+        insert_struct.item.lParam = (LPARAM)entry;
         if (entry->m_et == ET_TYPE || entry->m_et == ET_NAME)
         {
-            insert.item.iImage = 1;
-            insert.item.iSelectedImage = 1;
+            insert_struct.item.iImage = 1;
+            insert_struct.item.iSelectedImage = 1;
         }
         else
         {
-            insert.item.iImage = 0;
-            insert.item.iSelectedImage = 0;
+            insert_struct.item.iImage = 0;
+            insert_struct.item.iSelectedImage = 0;
         }
-        if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert))
+        if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert_struct))
         {
             entry->m_hItem = hItem;
+            insert(entry);
             return entry;
         }
 
@@ -1277,6 +1280,7 @@ protected:
         return true;
     }
 
+public:
     struct EnumResStruct
     {
         bool replace;
@@ -1415,7 +1419,11 @@ public:
             if (parent)
             {
                 if (get_first_child(parent) == NULL)
-                    delete_entry(parent);
+                {
+                    // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
+                    // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
+                    PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)parent);
+                }
             }
         }
     }
