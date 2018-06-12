@@ -1355,8 +1355,8 @@ public:
     BOOL SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
 
     void UpdateMenu();
-    void SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick);
-    void SelectTV(HWND hwnd, EntryType et, const MIdOrString& type,
+    void SelectTV(EntryBase *entry, BOOL bDoubleClick);
+    void SelectTV(EntryType et, const MIdOrString& type,
                   const MIdOrString& name, WORD lang, BOOL bDoubleClick);
 
     BOOL IsEditableEntry(HWND hwnd, EntryBase *entry);
@@ -1385,7 +1385,7 @@ public:
     void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
 
     // preview
-    VOID HidePreview(HWND hwnd);
+    VOID HidePreview();
     BOOL Preview(HWND hwnd, const EntryBase *entry);
 
     // actions
@@ -1817,7 +1817,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     MReplaceBinDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -2058,7 +2058,7 @@ void MMainWnd::OnOpen(HWND hwnd)
 
 void MMainWnd::OnNew(HWND hwnd)
 {
-    HidePreview(hwnd);
+    HidePreview();
     OnUnloadResH(hwnd);
     SetFilePath(hwnd, NULL, NULL);
     g_res.delete_all();
@@ -2357,7 +2357,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         }
 
         entry = g_res.find(ET_NAME, entry->m_type, dialog.m_name);
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
     }
 }
 
@@ -2526,7 +2526,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
     auto entry = g_res.get_entry();
-    SelectTV(hwnd, entry, FALSE);
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::OnCompile(HWND hwnd)
@@ -2539,7 +2539,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 
     if (!Edit_GetModify(m_hSrcEdit))
     {
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
         return;
     }
 
@@ -2553,7 +2553,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     Edit_SetModify(m_hSrcEdit, FALSE);
     if (CompileParts(hwnd, strWide, bReopen))
     {
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
     }
 }
 
@@ -2589,7 +2589,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_MENU)
@@ -2608,7 +2608,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_DIALOG)
@@ -2659,7 +2659,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_STRING && entry->m_et == ET_STRING)
@@ -2693,7 +2693,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             if (CompileParts(hwnd, strWide))
             {
-                SelectTV(hwnd, ET_STRING, RT_STRING, WORD(0), lang, FALSE);
+                SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2729,7 +2729,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
             if (CompileParts(hwnd, strWide))
             {
-                SelectTV(hwnd, ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
+                SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2744,7 +2744,7 @@ void MMainWnd::OnEdit(HWND hwnd)
         return;
 
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
-    SelectTV(hwnd, entry, TRUE);
+    SelectTV(entry, TRUE);
 }
 
 void MMainWnd::OnOpenReadMe(HWND hwnd)
@@ -3692,7 +3692,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-VOID MMainWnd::HidePreview(HWND hwnd)
+VOID MMainWnd::HidePreview()
 {
     m_hBmpView.DestroyView();
 
@@ -3709,7 +3709,7 @@ VOID MMainWnd::HidePreview(HWND hwnd)
 
 BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 {
-    HidePreview(hwnd);
+    HidePreview();
 
     MStringW str = DumpDataAsString(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
@@ -3900,19 +3900,19 @@ void MMainWnd::UpdateOurToolBar(INT iType)
 }
 
 void
-MMainWnd::SelectTV(HWND hwnd, EntryType et, const MIdOrString& type,
+MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
                    const MIdOrString& name, WORD lang, BOOL bDoubleClick)
 {
-    HidePreview(hwnd);
+    HidePreview();
     if (auto entry = g_res.find(et, type, name, lang))
     {
-        SelectTV(hwnd, entry, bDoubleClick);
+        SelectTV(entry, bDoubleClick);
     }
 }
 
-void MMainWnd::SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick)
+void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 {
-    HidePreview(hwnd);
+    HidePreview();
 
     if (!entry)
     {
@@ -3928,14 +3928,14 @@ void MMainWnd::SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick)
     switch (entry->m_et)
     {
     case ET_LANG:
-        bEditable = Preview(hwnd, entry);
+        bEditable = Preview(m_hwnd, entry);
         ShowBinEdit(TRUE);
         break;
 
     case ET_STRING:
         m_hBmpView.DestroyView();
         SetWindowTextW(m_hBinEdit, NULL);
-        PreviewStringTable(hwnd, *entry);
+        PreviewStringTable(m_hwnd, *entry);
         ShowBinEdit(FALSE);
         bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
@@ -3944,7 +3944,7 @@ void MMainWnd::SelectTV(HWND hwnd, EntryBase *entry, BOOL bDoubleClick)
     case ET_MESSAGE:
         m_hBmpView.DestroyView();
         SetWindowTextW(m_hBinEdit, NULL);
-        PreviewMessageTable(hwnd, *entry);
+        PreviewMessageTable(m_hwnd, *entry);
         ShowBinEdit(FALSE);
         bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
@@ -4247,7 +4247,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
                 TextAnsi = MWideToAnsi(CP_ACP, strWide);
                 entry->m_data.assign(TextAnsi.begin(), TextAnsi.end());
             }
-            SelectTV(hwnd, entry, FALSE);
+            SelectTV(entry, FALSE);
 
             return TRUE;    // success
         }
@@ -4855,7 +4855,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
         }
     }
 
-    HidePreview(hwnd);
+    HidePreview();
     PostMessageW(hwnd, WM_SIZE, 0, 0);
 
     return bSuccess;
@@ -5976,7 +5976,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+            SelectTV(&dialog.m_entry_copy, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
@@ -5986,7 +5986,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+            SelectTV(&dialog.m_entry_copy, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".wav") == 0)
@@ -6006,7 +6006,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+            SelectTV(&dialog.m_entry_copy, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".png") == 0)
@@ -6883,7 +6883,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         {
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
             auto entry = g_res.get_entry();
-            SelectTV(hwnd, entry, TRUE);
+            SelectTV(entry, TRUE);
         }
         break;
     case ID_MRUFILE0:
@@ -7249,7 +7249,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         if (!m_bLoading && entry)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
-            SelectTV(hwnd, entry, FALSE);
+            SelectTV(entry, FALSE);
         }
     }
     else if (pnmhdr->code == NM_RETURN)
@@ -7439,7 +7439,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 
     entry->m_name = new_name;
     UpdateEntryName(pszText, entry);
-    SelectTV(m_hwnd, entry, FALSE);
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
@@ -7474,6 +7474,8 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         e->m_lang = new_lang;
         UpdateEntryLang(pszText, e);
     }
+
+	SelectTV(entry, FALSE);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
@@ -7965,7 +7967,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -7981,7 +7983,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     MReplaceIconDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -7997,7 +7999,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     MReplaceCursorDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -8009,7 +8011,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     MAddBitmapDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -8025,7 +8027,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     MReplaceBitmapDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -8038,7 +8040,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -8150,13 +8152,13 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     if (dialog.m_strText.empty())
     {
         DoRefreshIDList(hwnd);
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
     {
         DoRefreshIDList(hwnd);
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
         if (CompileParts(hwnd, dialog.m_strText, FALSE))
         {
             Edit_SetModify(m_hSrcEdit, FALSE);
@@ -8169,7 +8171,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             UpdateOurToolBar(2);
         }
         //Res_DeleteTemplate(m_entries);
-        SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        SelectTV(&dialog.m_entry_copy, FALSE);
     }
 }
 
@@ -8911,7 +8913,7 @@ void MMainWnd::SelectString(HWND hwnd)
     auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, 0xFFFF);
     if (entry)
     {
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
     }
 }
 
@@ -8920,7 +8922,7 @@ void MMainWnd::SelectMessage(HWND hwnd)
     auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
     if (entry)
     {
-        SelectTV(hwnd, entry, FALSE);
+        SelectTV(entry, FALSE);
     }
 }
 
@@ -8974,7 +8976,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 
     if (found.size())
     {
-        SelectTV(hwnd, *found.begin(), FALSE);
+        SelectTV(*found.begin(), FALSE);
 
         SetForegroundWindow(m_hwnd);
         BringWindowToTop(m_hwnd);
