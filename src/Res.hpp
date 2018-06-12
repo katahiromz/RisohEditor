@@ -65,6 +65,9 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define g_deleting_all TV_GetDeletingAll()
 #endif
 
+#ifndef ID_CLEANUPDUST
+    #define ID_CLEANUPDUST  998
+#endif
 #ifndef ID_DELETEITEM
     #define ID_DELETEITEM   999
 #endif
@@ -358,13 +361,15 @@ struct EntrySet : protected EntrySetBase
     using super_type::swap;
 
     HWND m_hwndTV;
+    INT m_nLock;
+    super_type m_dust;
 
-    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV)
+    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV), m_nLock(0)
     {
     }
 
     EntrySet(const super_type& super, HWND hwndTV = NULL)
-        : super_type(super), m_hwndTV(hwndTV)
+        : super_type(super), m_hwndTV(hwndTV), m_nLock(0)
     {
     }
 
@@ -487,12 +492,21 @@ struct EntrySet : protected EntrySetBase
 
     void delete_entry(EntryBase *entry)
     {
-        if (!entry)
+        if (!entry || !entry->m_hItem)
             return;
 
         if (m_hwndTV)
         {
-            TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+            if (m_nLock)
+            {
+                // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
+                // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
+                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry);
+            }
+            else
+            {
+                TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+            }
         }
         else
         {
@@ -1372,8 +1386,7 @@ public:
 
     void on_delete_item(EntryBase *entry)
     {
-        HTREEITEM hItem = entry->m_hItem;
-        entry->m_hItem = NULL;
+        m_nLock++;
 
         EntryBase *parent = NULL;
         if (!g_deleting_all && entry->m_et != ET_TYPE)
@@ -1407,25 +1420,44 @@ public:
 
             default:
                 assert(0);
-                return;
+                break;
             }
         }
 
         if (super()->find(entry) != super()->end())
         {
+            if (m_hwndTV && !g_deleting_all)
+            {
+                //delete entry;    // do it in cleanup_dust
+            }
+            else
+            {
+                delete entry;
+            }
+            m_dust.insert(entry);
+
+            entry->m_hItem = NULL;
             erase(entry);
-            delete entry;
 
             if (parent)
             {
                 if (get_first_child(parent) == NULL)
                 {
-                    // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
-                    // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
-                    PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)parent);
+                    delete_entry(parent);
                 }
             }
         }
+
+        m_nLock--;
+    }
+
+    void cleanup_dust()
+    {
+        for (auto entry : m_dust)
+        {
+            delete entry;
+        }
+        m_dust.clear();
     }
 
     LPARAM get_param(HTREEITEM hItem = NULL) const

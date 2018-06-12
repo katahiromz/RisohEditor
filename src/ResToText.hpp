@@ -869,7 +869,7 @@ ResToText::DumpEntry(const EntryBase& entry)
             return DoRisohTemplate(entry);
         }
     }
-	return DoUnknown(entry);
+    return DoUnknown(entry);
 }
 
 inline MString ResToText::DoWave(const EntryBase& entry)

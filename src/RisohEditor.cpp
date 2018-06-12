@@ -6496,6 +6496,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyCursor(MSplitterWnd::CursorNS());
     DestroyCursor(MSplitterWnd::CursorWE());
 
+    g_res.cleanup_dust();
     g_deleting_all = true;
 
     DestroyWindow(m_hwndTV);
@@ -7351,11 +7352,20 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_DELETEITEM:
         DeleteItem(hwnd, (LPARAM)hwndCtl);
         break;
+    case ID_CLEANUPDUST:
+        g_res.cleanup_dust();
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
     }
     --s_nCount;
+
+    MSG msg;
+    if (s_nCount == 0 && !PeekMessage(&msg, hwnd, WM_COMMAND, WM_COMMAND, PM_NOREMOVE))
+    {
+        g_res.cleanup_dust();
+    }
 
     if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
         ChangeStatusText(IDS_READY);
