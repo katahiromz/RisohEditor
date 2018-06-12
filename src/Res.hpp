@@ -310,6 +310,34 @@ struct EntryBase
             m_data.clear();
         }
     }
+
+    BOOL is_editable() const
+    {
+        if (!this)
+            return FALSE;
+
+        const MIdOrString& type = m_type;
+        switch (m_et)
+        {
+        case ET_LANG:
+            if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
+                type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
+                type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
+            {
+                ;
+            }
+            else
+            {
+                return FALSE;
+            }
+            break;
+        case ET_STRING: case ET_MESSAGE:
+            break;
+        default:
+            return FALSE;
+        }
+        return TRUE;
+    }
 };
 
 inline EntryBase *

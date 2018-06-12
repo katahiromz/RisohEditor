@@ -1359,7 +1359,6 @@ public:
     void SelectTV(EntryType et, const MIdOrString& type,
                   const MIdOrString& name, WORD lang, BOOL bDoubleClick);
 
-    BOOL IsEditableEntry(HWND hwnd, EntryBase *entry);
     BOOL CompileIfNecessary(HWND hwnd, BOOL bReopen = FALSE);
     BOOL ReCompileOnSelChange(HWND hwnd, BOOL bReopen = FALSE);
     void SelectString(HWND hwnd);
@@ -2560,7 +2559,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 void MMainWnd::OnGuiEdit(HWND hwnd)
 {
     auto entry = g_res.get_entry();
-    if (!IsEditableEntry(hwnd, entry))
+    if (!entry->is_editable())
         return;
 
     if (!entry->can_gui_edit())
@@ -2740,7 +2739,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 void MMainWnd::OnEdit(HWND hwnd)
 {
     auto entry = g_res.get_entry();
-    if (!IsEditableEntry(hwnd, entry))
+    if (!entry->is_editable())
         return;
 
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -3194,7 +3193,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         return;
     }
 
-    BOOL bEditable = IsEditableEntry(hwnd, entry);
+    BOOL bEditable = entry->is_editable();
     if (bEditable)
     {
         EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
@@ -3714,94 +3713,76 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
     MStringW str = DumpDataAsString(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
-    BOOL bEditable = FALSE;
     if (entry->m_type.m_id != 0)
     {
         WORD wType = entry->m_type.m_id;
         if (wType == (WORD)(UINT_PTR)RT_ICON)
         {
             PreviewIcon(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_CURSOR)
         {
             PreviewCursor(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_ICON)
         {
             PreviewGroupIcon(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
             PreviewGroupCursor(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_BITMAP)
         {
             PreviewBitmap(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
             PreviewAccel(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_STRING)
         {
             PreviewString(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
             PreviewMenu(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
             PreviewDialog(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_ANIICON)
         {
             PreviewAniIcon(hwnd, *entry, TRUE);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_ANICURSOR)
         {
             PreviewAniIcon(hwnd, *entry, FALSE);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
             PreviewMessage(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_MANIFEST || wType == (WORD)(UINT_PTR)RT_HTML)
         {
             PreviewHtml(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_VERSION)
         {
             PreviewVersion(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
             PreviewRCData(hwnd, *entry);
-            bEditable = TRUE;
         }
         else if (wType == (WORD)(UINT_PTR)RT_DLGINIT)
         {
             PreviewDlgInit(hwnd, *entry);
-            bEditable = TRUE;
         }
         else
         {
             PreviewUnknown(hwnd, *entry);
-            bEditable = FALSE;
         }
     }
     else
@@ -3813,32 +3794,27 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
             entry->m_type == L"WMF" || entry->m_type == L"IMAGE")
         {
             PreviewImage(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (entry->m_type == L"WAVE")
         {
             PreviewWAVE(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (entry->m_type == L"AVI")
         {
             PreviewAVI(hwnd, *entry);
-            bEditable = FALSE;
         }
         else if (entry->m_type == L"RISOHTEMPLATE")
         {
             PreviewRisohTemplate(hwnd, *entry);
-            bEditable = TRUE;
         }
         else
         {
             PreviewUnknown(hwnd, *entry);
-            bEditable = FALSE;
         }
     }
 
     PostMessageW(hwnd, WM_SIZE, 0, 0);
-    return bEditable;
+    return entry->is_editable();
 }
 
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
@@ -3986,34 +3962,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     }
 
     PostMessageDx(WM_SIZE);
-}
-
-BOOL MMainWnd::IsEditableEntry(HWND hwnd, EntryBase *entry)
-{
-    if (!entry)
-        return FALSE;
-
-    const MIdOrString& type = entry->m_type;
-    switch (entry->m_et)
-    {
-    case ET_LANG:
-        if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
-            type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
-            type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
-        {
-            ;
-        }
-        else
-        {
-            return FALSE;
-        }
-        break;
-    case ET_STRING: case ET_MESSAGE:
-        break;
-    default:
-        return FALSE;
-    }
-    return TRUE;
 }
 
 BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res)
