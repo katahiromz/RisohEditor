@@ -1189,10 +1189,10 @@ Res_GetLangName(WORD lang)
     else
     {
         if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64))
-	        StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
-		else
-			StringCchPrintfW(sz, _countof(sz), L"%u", lang);
-	}
+            StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
+        else
+            StringCchPrintfW(sz, _countof(sz), L"%u", lang);
+    }
     return MStringW(sz);
 }
 
@@ -1213,6 +1213,7 @@ protected:
     HACCEL      m_hAccel;       // the accelerator handle
     HWND        m_hwndTV;       // the tree control
     HIMAGELIST  m_hImageList;   // the image list for m_hwndTV
+    INT         m_nCmdLock;
     HICON       m_hFileIcon, m_hFolderIcon;
     HFONT       m_hSrcFont, m_hBinFont;
     HWND        m_hToolBar, m_hStatusBar;
@@ -1256,26 +1257,26 @@ protected:
 
     void UpdateEntryName(LPWSTR pszText, EntryBase *e)
     {
-		TV_ITEM item;
-		ZeroMemory(&item, sizeof(item));
-		item.mask = TVIF_TEXT;
-		item.hItem = e->m_hItem;
-		e->m_strLabel = e->get_name_label();
-		item.pszText = &e->m_strLabel[0];
-		lstrcpyW(pszText, item.pszText);
-		TreeView_SetItem(m_hwnd, &item);
+        TV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_TEXT;
+        item.hItem = e->m_hItem;
+        e->m_strLabel = e->get_name_label();
+        item.pszText = &e->m_strLabel[0];
+        lstrcpyW(pszText, item.pszText);
+        TreeView_SetItem(m_hwnd, &item);
     }
     void UpdateEntryLang(LPWSTR pszText, EntryBase *e)
     {
-		TV_ITEM item;
-		ZeroMemory(&item, sizeof(item));
-		item.mask = TVIF_TEXT;
-		item.hItem = e->m_hItem;
-		e->m_strLabel = e->get_lang_label();
-		item.pszText = &e->m_strLabel[0];
-		lstrcpyW(pszText, item.pszText);
-		TreeView_SetItem(m_hwnd, &item);
-	}
+        TV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_TEXT;
+        item.hItem = e->m_hItem;
+        e->m_strLabel = e->get_lang_label();
+        item.pszText = &e->m_strLabel[0];
+        lstrcpyW(pszText, item.pszText);
+        TreeView_SetItem(m_hwnd, &item);
+    }
     void RefreshTV(HWND hwnd)
     {
         // TODO:
@@ -1285,8 +1286,8 @@ public:
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
-        m_hwndTV(NULL), m_hImageList(NULL), m_hFileIcon(NULL), m_hFolderIcon(NULL), 
-        m_hSrcFont(NULL), m_hBinFont(NULL), 
+        m_hwndTV(NULL), m_hImageList(NULL), m_nCmdLock(0),
+        m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL), 
         m_hToolBar(NULL), m_hStatusBar(NULL), 
         m_hFindReplaceDlg(NULL)
     {
@@ -2034,6 +2035,7 @@ void MMainWnd::OnImport(HWND hwnd)
             }
 
             g_res.merge(res, true);
+            res.delete_all();
         }
         else
         {
@@ -4616,6 +4618,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             m_bUpxCompressed = FALSE;
             g_res.delete_all();
             g_res.merge(res, true);
+            res.delete_all();
             RefreshTV(hwnd);
         }
         m_bLoading = FALSE;
@@ -4651,6 +4654,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             m_bUpxCompressed = FALSE;
             g_res.delete_all();
             g_res.merge(res, false);
+            res.delete_all();
         }
         m_bLoading = FALSE;
 
@@ -4879,6 +4883,7 @@ BOOL MMainWnd::DoLoadMsgTables(HWND hwnd, LPCWSTR szRCFile, MStringA& strOutput)
             {
                 g_res.delete_all();
                 g_res.merge(res, false);
+                res.delete_all();
                 bSuccess = TRUE;
             }
         }
@@ -6245,6 +6250,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     WCHAR file[MAX_PATH], *pch;
 
     ChangeStatusText(IDS_EXECUTINGCMD);
+    ++m_nCmdLock;
 
     DragQueryFileW(hdrop, 0, file, _countof(file));
     DragFinish(hdrop);
@@ -6252,165 +6258,139 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     SetForegroundWindow(hwnd);
 
     pch = wcsrchr(file, L'.');
-    if (pch)
+    if (!pch)
     {
-        if (lstrcmpiW(pch, L".ico") == 0)
+        ErrorBoxDx(IDS_CANNOTOPEN);
+    }
+    else if (lstrcmpiW(pch, L".ico") == 0)
+    {
+        MAddIconDlg dialog;
+        dialog.file = file;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            MAddIconDlg dialog;
-            dialog.file = file;
-            dialog.DialogBoxDx(hwnd);
             DoRefreshIDList(hwnd);
             SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
-            ChangeStatusText(IDS_READY);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
-        {
-            MAddCursorDlg dialog;
-            dialog.m_file = file;
-            dialog.DialogBoxDx(hwnd);
-            DoRefreshIDList(hwnd);
-            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
-            ChangeStatusText(IDS_READY);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".wav") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_type = L"WAVE";
-            dialog.m_file = file;
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
-        {
-            MAddBitmapDlg dialog;
-            dialog.m_file = file;
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoRefreshIDList(hwnd);
-                SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".png") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"PNG";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".gif") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"GIF";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
-                 lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"JPEG";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"TIFF";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".avi") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"AVI";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".res") == 0)
-        {
-            DoLoadFile(hwnd, file);
-            ChangeStatusText(IDS_READY);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".rc") == 0)
-        {
-            DoLoadFile(hwnd, file);
-            ChangeStatusText(IDS_READY);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".h") == 0)
-        {
-            UnloadResourceH(hwnd);
-            CheckResourceH(hwnd, file);
-            if (m_szResourceH[0] && g_settings.bAutoShowIDList)
-            {
-                ShowIDList(hwnd, TRUE);
-            }
-            DoRefresh(hwnd);
-            ChangeStatusText(IDS_READY);
-            return;
-        }
-        else if (lstrcmpiW(pch, L".wmf") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"WMF";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
-        }
-        else if (lstrcmpiW(pch, L".emf") == 0)
-        {
-            MAddResDlg dialog;
-            dialog.m_file = file;
-            dialog.m_type = L"EMF";
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                DoAddRes(hwnd, dialog);
-                ChangeStatusText(IDS_READY);
-            }
-            return;
         }
     }
+    else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
+    {
+        MAddCursorDlg dialog;
+        dialog.m_file = file;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoRefreshIDList(hwnd);
+            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        }
+    }
+    else if (lstrcmpiW(pch, L".wav") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_type = L"WAVE";
+        dialog.m_file = file;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
+    {
+        MAddBitmapDlg dialog;
+        dialog.m_file = file;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoRefreshIDList(hwnd);
+            SelectTV(hwnd, &dialog.m_entry_copy, FALSE);
+        }
+    }
+    else if (lstrcmpiW(pch, L".png") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"PNG";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".gif") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"GIF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
+             lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"JPEG";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"TIFF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".avi") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"AVI";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".h") == 0)
+    {
+        UnloadResourceH(hwnd);
+        CheckResourceH(hwnd, file);
+        if (m_szResourceH[0] && g_settings.bAutoShowIDList)
+        {
+            ShowIDList(hwnd, TRUE);
+        }
+        DoRefresh(hwnd);
+    }
+    else if (lstrcmpiW(pch, L".wmf") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"WMF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else if (lstrcmpiW(pch, L".emf") == 0)
+    {
+        MAddResDlg dialog;
+        dialog.m_file = file;
+        dialog.m_type = L"EMF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            DoAddRes(hwnd, dialog);
+        }
+    }
+    else
+    {
+        DoLoadFile(hwnd, file);
+    }
+    --m_nCmdLock;
 
-    DoLoadFile(hwnd, file);
-    ChangeStatusText(IDS_READY);
+    if (m_nCmdLock == 0 && !::IsWindow(m_rad_window))
+        ChangeStatusText(IDS_READY);
 }
 
 void MMainWnd::OnLoadResH(HWND hwnd)
@@ -6474,6 +6454,22 @@ void MMainWnd::OnDestroy(HWND hwnd)
     
     SaveSettings(hwnd);
 
+    //DestroyIcon(m_hIcon);     // LR_SHARED
+    DestroyIcon(m_hIconSm);
+    DestroyAcceleratorTable(m_hAccel);
+    ImageList_Destroy(m_hImageList);
+    DestroyIcon(m_hFileIcon);
+    DestroyIcon(m_hFolderIcon);
+    DeleteObject(m_hSrcFont);
+    DeleteObject(m_hBinFont);
+
+    //DestroyIcon(MRadCtrl::Icon());    // LR_SHARED
+    DeleteObject(MRadCtrl::Bitmap());
+    DestroyCursor(MSplitterWnd::CursorNS());
+    DestroyCursor(MSplitterWnd::CursorWE());
+
+    g_deleting_all = TRUE;
+
     if (IsWindow(m_rad_window))
     {
         DestroyWindow(m_rad_window);
@@ -6497,23 +6493,6 @@ void MMainWnd::OnDestroy(HWND hwnd)
     {
         DestroyWindow(m_id_list_dlg);
     }
-
-    //DestroyIcon(m_hIcon);     // LR_SHARED
-    DestroyIcon(m_hIconSm);
-    DestroyAcceleratorTable(m_hAccel);
-    ImageList_Destroy(m_hImageList);
-    DestroyIcon(m_hFileIcon);
-    DestroyIcon(m_hFolderIcon);
-    DeleteObject(m_hSrcFont);
-    DeleteObject(m_hBinFont);
-
-    //DestroyIcon(MRadCtrl::Icon());    // LR_SHARED
-    DeleteObject(MRadCtrl::Bitmap());
-    DestroyCursor(MSplitterWnd::CursorNS());
-    DestroyCursor(MSplitterWnd::CursorWE());
-
-    g_res.cleanup_dust();
-    g_deleting_all = true;
 
     DestroyWindow(m_hwndTV);
     DestroyWindow(m_hToolBar);
@@ -7052,8 +7031,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     if (!::IsWindow(m_rad_window) && id >= 100)
         ChangeStatusText(IDS_EXECUTINGCMD);
 
-    static INT s_nCount = 0;
-    ++s_nCount;
+    ++m_nCmdLock;
     BOOL bUpdateStatus = TRUE;
     switch (id)
     {
@@ -7368,22 +7346,13 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_DELETEITEM:
         DeleteItem(hwnd, (LPARAM)hwndCtl);
         break;
-    case ID_CLEANUPDUST:
-        g_res.cleanup_dust();
-        break;
     default:
         bUpdateStatus = FALSE;
         break;
     }
-    --s_nCount;
+    --m_nCmdLock;
 
-    MSG msg;
-    if (s_nCount == 0 && !PeekMessage(&msg, hwnd, WM_COMMAND, WM_COMMAND, PM_NOREMOVE))
-    {
-        g_res.cleanup_dust();
-    }
-
-    if (bUpdateStatus && !::IsWindow(m_rad_window) && s_nCount == 0)
+    if (m_nCmdLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
 
 #if !defined(NDEBUG) && (WINVER >= 0x0500)
@@ -7564,7 +7533,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
-        if (!m_bLoading)
+        if (!m_bLoading && entry)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
             SelectTV(hwnd, entry, FALSE);
@@ -7641,7 +7610,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszOldText = pInfo->item.pszText;
-			//MessageBoxW(NULL, pszOldText, NULL, 0);
+            //MessageBoxW(NULL, pszOldText, NULL, 0);
 
             auto entry = (EntryBase *)lParam;
 

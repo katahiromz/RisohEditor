@@ -158,7 +158,6 @@
 #define ID_USEIDC_STATIC        236
 #define ID_EXPAND_ALL           237
 #define ID_COLLAPSE_ALL         238
-#define ID_CLEANUPDUST          998
 #define ID_DELETEITEM           999
 
 #define IDD_REPLACERES          100

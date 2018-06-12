@@ -65,9 +65,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define g_deleting_all TV_GetDeletingAll()
 #endif
 
-#ifndef ID_CLEANUPDUST
-    #define ID_CLEANUPDUST  998
-#endif
 #ifndef ID_DELETEITEM
     #define ID_DELETEITEM   999
 #endif
@@ -362,7 +359,6 @@ struct EntrySet : protected EntrySetBase
 
     HWND m_hwndTV;
     INT m_nLock;
-    super_type m_dust;
 
     EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV), m_nLock(0)
     {
@@ -1372,6 +1368,7 @@ public:
 
     void delete_all(void)
     {
+        BOOL old_deleting_all = g_deleting_all;
         g_deleting_all = TRUE;
         if (m_hwndTV)
         {
@@ -1381,7 +1378,7 @@ public:
         {
             search_and_delete(ET_ANY, (WORD)0, (WORD)0, 0xFFFF);
         }
-        g_deleting_all = FALSE;
+        g_deleting_all = old_deleting_all;
     }
 
     void on_delete_item(EntryBase *entry)
@@ -1426,17 +1423,16 @@ public:
 
         if (super()->find(entry) != super()->end())
         {
+            entry->m_hItem = NULL;
             if (m_hwndTV && !g_deleting_all)
             {
-                //delete entry;    // do it in cleanup_dust
+                //delete entry;
             }
             else
             {
                 delete entry;
             }
-            m_dust.insert(entry);
 
-            entry->m_hItem = NULL;
             erase(entry);
 
             if (parent)
@@ -1449,15 +1445,6 @@ public:
         }
 
         m_nLock--;
-    }
-
-    void cleanup_dust()
-    {
-        for (auto entry : m_dust)
-        {
-            delete entry;
-        }
-        m_dust.clear();
     }
 
     LPARAM get_param(HTREEITEM hItem = NULL) const
