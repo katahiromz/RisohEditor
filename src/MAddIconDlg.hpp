@@ -116,7 +116,6 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        bool bOverwrite = false;
         auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang);
         if (entry)
         {
@@ -124,7 +123,6 @@ public:
             switch (id)
             {
             case IDYES:
-                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -132,12 +130,9 @@ public:
             }
         }
 
-        if (!g_res.add_group_icon(name, lang, file, bOverwrite))
+        if (!g_res.add_group_icon(name, lang, file))
         {
-            if (bOverwrite)
-                ErrorBoxDx(IDS_CANTREPLACEICO);
-            else
-                ErrorBoxDx(IDS_CANNOTADDICON);
+            ErrorBoxDx(IDS_CANNOTADDICON);
             return;
         }
 

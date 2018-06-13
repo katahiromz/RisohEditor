@@ -1422,7 +1422,6 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res);
     BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
     BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
@@ -2015,11 +2014,12 @@ void MMainWnd::OnImport(HWND hwnd)
                     break;
                 case IDNO:
                 case IDCANCEL:
+                    res.delete_all();
                     return;
                 }
             }
 
-            g_res.merge(res, true);
+            g_res.merge(res);
             res.delete_all();
         }
         else
@@ -2190,7 +2190,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
         }
         else
         {
-            g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data(), false);
+            g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data());
         }
     }
 }
@@ -2445,7 +2445,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
         }
         else if (entry->m_et == ET_MESSAGE)
@@ -2454,7 +2454,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
         }
         else
@@ -2463,7 +2463,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
             for (auto e : found)
             {
-                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data, false);
+                g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
         }
     }
@@ -3042,7 +3042,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         MStringW type = entry->m_type.str();
         MStringW name = entry->m_name.str();
         StringCchPrintfW(sz, _countof(sz), 
-            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p: strLabel:%s", apszI_[entry->m_et], 
+            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p, strLabel:%s", apszI_[entry->m_et], 
             type.c_str(), name.c_str(), entry->m_lang, entry, entry->m_hItem, entry->m_strLabel.c_str());
         MsgBoxDx(sz, MB_ICONINFORMATION);
     }
@@ -4045,20 +4045,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res)
-{
-    EntrySetBase found;
-    res.search(found, ET_LANG, type, name, lang);
-    if (found.empty())
-        return FALSE;
-
-    for (auto entry : found)
-    {
-        entry->m_name = name;
-    }
-    return TRUE;
-}
-
 MStringW MMainWnd::GetMacroDump()
 {
     MStringW ret;
@@ -4174,7 +4160,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
             if (res.import_res(szPath3))
             {
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
-                g_res.merge(res, true);
+                g_res.merge(res);
             }
             res.delete_all();
         }
@@ -4260,7 +4246,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             if (res.import_res(szPath3))
             {
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
-                g_res.merge(res, true);
+                g_res.merge(res);
             }
             res.delete_all();
         }
@@ -4409,13 +4395,23 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             Sleep(500);
             if (res.import_res(szPath3))
             {
-                bSuccess = CareWindresResult(type, name, lang, strOutput, res);
-                if (bSuccess)
+                if (g_res.intersect(res))
                 {
-                    auto e = *res.begin();
-                    entry->m_data = e->m_data;
-                    res.delete_all();
+                    INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
+                                       MB_ICONINFORMATION | MB_YESNOCANCEL);
+                    switch (nID)
+                    {
+                    case IDYES:
+                        break;
+                    case IDNO:
+                    case IDCANCEL:
+						res.delete_all();
+						return FALSE;
+                    }
                 }
+
+                g_res.merge(res);
+                res.delete_all();
             }
         }
     }
@@ -4676,7 +4672,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             m_bUpxCompressed = FALSE;
             g_res.delete_all();
-            g_res.merge(res, true);
+            g_res.merge(res);
             res.delete_all();
             RefreshTV(hwnd);
         }
@@ -4712,7 +4708,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             m_bUpxCompressed = FALSE;
             g_res.delete_all();
-            g_res.merge(res, false);
+            g_res.merge(res);
             res.delete_all();
         }
         m_bLoading = FALSE;
@@ -4814,7 +4810,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = TRUE;
     {
         g_res.delete_all();
-        g_res.from_res(hMod, true);
+        g_res.from_res(hMod);
     }
     m_bLoading = FALSE;
 
@@ -6506,7 +6502,7 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
     EntrySet res;
     g_res.copy_to(res);
     g_res.delete_all();
-    g_res.merge(res, false);
+    g_res.merge(res);
     res.delete_all();
 
     InvalidateRect(m_hwndTV, NULL, TRUE);

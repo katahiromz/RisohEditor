@@ -266,7 +266,7 @@ public:
                 bOK = false;
             }
 
-            if (type == RT_MESSAGETABLE)
+            if (type == RT_STRING || type == RT_MESSAGETABLE)
             {
                 name = 1;
             }
@@ -274,9 +274,9 @@ public:
             if (bOK)
             {
                 if (m_strText.empty())
-                    g_res.add_lang_entry(type, name, lang, stream.data(), false);
+                    g_res.add_lang_entry(type, name, lang, stream.data());
                 else
-                    g_res.add_lang_entry(type, name, lang, false);
+                    g_res.add_lang_entry(type, name, lang);
 
                 m_type = type;
                 m_name = name;
@@ -289,15 +289,12 @@ public:
         MByteStreamEx bs;
         if (!bOK && !bs.LoadFromFile(file.c_str()))
         {
-            if (bOverwrite)
-                ErrorBoxDx(IDS_CANNOTREPLACE);
-            else
-                ErrorBoxDx(IDS_CANNOTADDRES);
+            ErrorBoxDx(IDS_CANNOTADDRES);
             return;
         }
         if (!bAdded)
         {
-            g_res.add_lang_entry(type, name, lang, bs.data(), bOverwrite);
+            g_res.add_lang_entry(type, name, lang, bs.data());
 
             m_type = type;
             m_name = name;

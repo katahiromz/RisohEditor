@@ -114,14 +114,12 @@ public:
         if (!CheckLangComboBox(hCmb3, lang))
             return;
 
-        bool bOverwrite = false;
         if (auto entry = g_res.find(ET_LANG, RT_BITMAP, name, lang))
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -134,12 +132,9 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!g_res.add_bitmap(name, lang, file, bOverwrite))
+        if (!g_res.add_bitmap(name, lang, file))
         {
-            if (bOverwrite)
-                ErrorBoxDx(IDS_CANTREPLACEBMP);
-            else
-                ErrorBoxDx(IDS_CANTADDBMP);
+            ErrorBoxDx(IDS_CANTADDBMP);
             return;
         }
 

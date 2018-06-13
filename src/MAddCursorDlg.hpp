@@ -109,14 +109,12 @@ public:
         if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
             bAni = TRUE;
 
-        bool bOverwrite = false;
         if (auto entry = g_res.find(ET_LANG, (bAni ? RT_ANICURSOR : RT_GROUP_CURSOR), name, lang))
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -128,23 +126,17 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !g_res.add_lang_entry(RT_ANICURSOR, name, lang, bs.data(), bOverwrite))
+                !g_res.add_lang_entry(RT_ANICURSOR, name, lang, bs.data()))
             {
-                if (bOverwrite)
-                    ErrorBoxDx(IDS_CANTREPLACECUR);
-                else
-                    ErrorBoxDx(IDS_CANNOTADDCUR);
+                ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
             }
         }
         else
         {
-            if (!g_res.add_group_cursor(name, lang, file, bOverwrite))
+            if (!g_res.add_group_cursor(name, lang, file))
             {
-                if (bOverwrite)
-                    ErrorBoxDx(IDS_CANTREPLACECUR);
-                else
-                    ErrorBoxDx(IDS_CANNOTADDCUR);
+                ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
             }
         }

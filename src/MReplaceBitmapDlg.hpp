@@ -80,7 +80,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        if (!g_res.add_bitmap(name, lang, file, true))
+        if (!g_res.add_bitmap(name, lang, file))
         {
             ErrorBoxDx(IDS_CANTREPLACEBMP);
             return;

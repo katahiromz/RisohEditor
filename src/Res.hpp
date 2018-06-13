@@ -438,37 +438,29 @@ struct EntrySet : protected EntrySetBase
         {
             for (auto item2 : another)
             {
-                if (*item1 == *item2)
+                if (*item1 == *item2 && item1->size())
                     return true;
             }
         }
         return false;
     }
 
-    void merge(const EntrySet& another, bool replace)
+    void merge(const EntrySet& another)
     {
         for (auto entry : another)
         {
             if (entry->m_et != ET_LANG)
                 continue;
 
-            add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data, replace);
+            add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data);
         }
     }
 
     EntryBase *
-    add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
-                   WORD lang, bool replace)
+    add_lang_entry(const MIdOrString& type, const MIdOrString& name, WORD lang)
     {
-        if (replace)
-        {
-            search_and_delete(ET_LANG, type, name, lang);
-        }
-        else
-        {
-            if (auto entry = find(ET_LANG, type, name, lang))
-                return entry;
-        }
+        if (auto entry = find(ET_LANG, type, name, lang))
+            return entry;
 
         if (type == RT_STRING)
         {
@@ -485,16 +477,12 @@ struct EntrySet : protected EntrySetBase
 
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
-                   WORD lang, const EntryBase::data_type& data, bool replace)
+                   WORD lang, const EntryBase::data_type& data)
     {
-        if (replace)
+        if (auto entry = find(ET_LANG, type, name, lang))
         {
-            search_and_delete(ET_LANG, type, name, lang);
-        }
-        else
-        {
-            if (auto entry = find(ET_LANG, type, name, lang))
-                return entry;
+            entry->m_data = data;
+            return entry;
         }
 
         if (m_hwndTV)
@@ -526,6 +514,7 @@ struct EntrySet : protected EntrySetBase
                 // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
                 // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
                 PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry);
+				DebugPrintDx(L"delete_entry PostMessage: %p\n", entry);
             }
             else
             {
@@ -920,8 +909,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     EntryBase *
-    add_bitmap(const MIdOrString& name, WORD lang, 
-               const MStringW& file, bool replace = false)
+    add_bitmap(const MIdOrString& name, WORD lang, const MStringW& file)
     {
         MByteStreamEx stream;
         if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
@@ -947,7 +935,7 @@ struct EntrySet : protected EntrySetBase
             }
             DeleteObject(hbm);
 
-            return add_lang_entry(RT_BITMAP, name, lang, PackedDIB, replace);
+            return add_lang_entry(RT_BITMAP, name, lang, PackedDIB);
         }
 
         size_t head_size = sizeof(BITMAPFILEHEADER);
@@ -956,19 +944,13 @@ struct EntrySet : protected EntrySetBase
 
         size_t i0 = head_size, i1 = stream.size();
         EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
-        return add_lang_entry(RT_BITMAP, name, lang, HeadLess, replace);
+        return add_lang_entry(RT_BITMAP, name, lang, HeadLess);
     }
 
     EntryBase *
     add_group_icon(const MIdOrString& name, WORD lang, 
-                   const MStringW& file_name, bool replace)
+                   const MStringW& file_name)
     {
-        if (replace)
-        {
-            auto entry = find(ET_LANG, RT_GROUP_ICON, name, lang);
-            delete_entry(entry);
-        }
-
         IconFile icon;
         if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
             return NULL;
@@ -979,23 +961,17 @@ struct EntrySet : protected EntrySetBase
         int i, nCount = icon.GetImageCount();
         for (i = 0; i < nCount; ++i)
         {
-            add_lang_entry(RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i), FALSE);
+            add_lang_entry(RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i));
         }
 
         IconFile::DataType data(icon.GetIconGroup(NextIconID));
-        return add_lang_entry(RT_GROUP_ICON, name, lang, data, FALSE);
+        return add_lang_entry(RT_GROUP_ICON, name, lang, data);
     }
 
     EntryBase *
     add_group_cursor(const MIdOrString& name, WORD lang, 
-                     const MStringW& file_name, bool replace)
+                     const MStringW& file_name)
     {
-        if (replace)
-        {
-            auto entry = find(ET_LANG, RT_GROUP_CURSOR, name, lang);
-            delete_entry(entry);
-        }
-
         CursorFile cur;
         if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
             return NULL;
@@ -1006,11 +982,11 @@ struct EntrySet : protected EntrySetBase
         int i, nCount = cur.GetImageCount();
         for (i = 0; i < nCount; ++i)
         {
-            add_lang_entry(RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i), FALSE);
+            add_lang_entry(RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i));
         }
 
         CursorFile::DataType data(cur.GetCursorGroup(NextCursorID));
-        return add_lang_entry(RT_GROUP_CURSOR, name, lang, data, FALSE);
+        return add_lang_entry(RT_GROUP_CURSOR, name, lang, data);
     }
 
     EntryBase *
@@ -1034,17 +1010,11 @@ struct EntrySet : protected EntrySetBase
     }
 
     EntryBase *
-    add_name_entry(const MIdOrString& type, const MIdOrString& name, bool replace)
+    add_name_entry(const MIdOrString& type, const MIdOrString& name)
     {
-        if (replace)
-        {
-            search_and_delete(ET_NAME, type, name);
-        }
-        else
-        {
-            if (auto entry = find(ET_NAME, type, name))
-                return entry;
-        }
+        if (auto entry = find(ET_NAME, type, name))
+            return entry;
+
         auto entry = Res_NewNameEntry(type, name);
         return on_insert_entry(entry);
     }
@@ -1052,15 +1022,8 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
-        if (replace)
-        {
-            search_and_delete(ET_TYPE, type);
-        }
-        else
-        {
-            if (auto entry = find(ET_TYPE, type))
-                return entry;
-        }
+        if (auto entry = find(ET_TYPE, type))
+            return entry;
         auto entry = Res_NewTypeEntry(type);
         return on_insert_entry(entry);
     }
@@ -1089,7 +1052,7 @@ struct EntrySet : protected EntrySetBase
             return NULL;
         }
 
-        new_entry = add_name_entry(entry->m_type, entry->m_name, false);
+        new_entry = add_name_entry(entry->m_type, entry->m_name);
         if (!new_entry)
             return NULL;
         return new_entry->m_hItem;
@@ -1325,12 +1288,11 @@ protected:
 public:
     struct EnumResStruct
     {
-        bool replace;
         EntrySet *this_;
     };
 
     EntryBase *
-    add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang, bool replace)
+    add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
     {
         HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
         if (!hResInfo)
@@ -1342,7 +1304,7 @@ public:
         if (pv && dwSize)
         {
             EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
-            return add_lang_entry(type, name, lang, data, replace);
+            return add_lang_entry(type, name, lang, data);
         }
 
         return NULL;
@@ -1353,7 +1315,7 @@ public:
                     WORD wIDLanguage, LPARAM lParam)
     {
         auto ers = (EnumResStruct *)lParam;
-        ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage, ers->replace);
+        ers->this_->add_res_entry(hMod, lpszType, lpszName, wIDLanguage);
         return TRUE;
     }
 
@@ -1371,6 +1333,8 @@ public:
 
     EntryBase *get_first_child(EntryBase *parent) const
     {
+		if (!parent)
+			return NULL;
         EntryBase *child;
         switch (parent->m_et)
         {
@@ -1390,10 +1354,9 @@ public:
     }
 
 public:
-    BOOL from_res(HMODULE hMod, bool replace)
+    BOOL from_res(HMODULE hMod)
     {
         EnumResStruct ers;
-        ers.replace = replace;
         ers.this_ = this;
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
     }
@@ -1403,7 +1366,7 @@ public:
         for (auto entry : *this)
         {
             if (entry->m_et == ET_LANG)
-                es.add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data, false);
+                es.add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data);
         }
     }
 
@@ -1486,30 +1449,14 @@ public:
                     if (get_first_child(parent))
                         break;
                 }
-                if (m_check_et == ET_STRING)
+                else if (m_check_et == ET_TYPE && parent->m_et == ET_TYPE)
                 {
-                    if (parent->m_et == ET_STRING || parent->m_et == ET_NAME)
-                    {
-                        parent = get_parent(parent);
-                        if (get_first_child(parent))
-                            break;
-                    }
-                }
-                if (m_check_et == ET_MESSAGE)
-                {
-                    if (parent->m_et == ET_MESSAGE || parent->m_et == ET_NAME)
-                    {
-                        parent = get_parent(parent);
-                        if (get_first_child(parent))
-                            break;
-                    }
-                }
-                if (m_check_et == ET_TYPE)
-                {
-                    if (parent->m_et == ET_TYPE || parent->m_et == ET_NAME)
+                    parent = get_parent(parent);
+                    if (get_first_child(parent))
                         break;
                 }
-                delete_entry(parent);
+				if (parent)
+	                delete_entry(parent);
             } while (0);
         }
 
@@ -1587,10 +1534,10 @@ public:
             UINT nLastID = get_last_id(RT_ICON, entry->m_lang);
             UINT nNextID = nLastID + 1;
 
-            add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data, false);
+            add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data);
         }
 
-        add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data, false);
+        add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data);
         return TRUE;
     }
 
@@ -1632,10 +1579,10 @@ public:
             UINT nLastID = get_last_id(RT_CURSOR, entry->m_lang);
             UINT nNextID = nLastID + 1;
 
-            add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data, false);
+            add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data);
         }
 
-        add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data, false);
+        add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data);
         return TRUE;
     }
 
@@ -1801,7 +1748,7 @@ public:
                 }
             }
 
-            add_lang_entry(header.type, header.name, header.LanguageId, data, false);
+            add_lang_entry(header.type, header.name, header.LanguageId, data);
             stream.ReadDwordAlignment();
         }
         return bAdded;
@@ -1907,7 +1854,7 @@ public:
             bSuccess = es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump);
             if (bSuccess)
             {
-                merge(es, false);
+                merge(es);
             }
         }
 

@@ -204,7 +204,7 @@ public:
             return;
         }
 
-        g_res.add_lang_entry(type, name, lang, bs.data(), TRUE);
+        g_res.add_lang_entry(type, name, lang, bs.data());
 
         m_entry_copy = EntryBase(ET_LANG, type, name, lang);
 
