@@ -40,10 +40,12 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang);
 class MAddResDlg : public MDialogBase
 {
 public:
-    MIdOrString m_type;
-    LPCTSTR m_file;
+	MIdOrString m_type;
+	MIdOrString m_name;
+	WORD m_lang;
+	MStringW m_strTemplate;
+	LPCTSTR m_file;
     MStringW m_strText;
-    EntryBase m_entry_copy;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
@@ -266,10 +268,12 @@ public:
                 if (m_strText.empty())
                     g_res.add_lang_entry(type, name, lang, stream.data(), false);
                 else
-                    g_res.add_lang_entry(type, name, lang, m_strText, false);
+                    g_res.add_lang_entry(type, name, lang, false);
 
-                m_entry_copy = EntryBase(ET_LANG, type, name, lang);
-                m_entry_copy.m_strText = m_strText;
+                m_type = type;
+                m_name = name;
+                m_lang = lang;
+                m_strTemplate = m_strText;
                 bAdded = true;
             }
         }
@@ -286,7 +290,11 @@ public:
         if (!bAdded)
         {
             g_res.add_lang_entry(type, name, lang, bs.data(), bOverwrite);
-            m_entry_copy = EntryBase(ET_LANG, type, name, lang);
+
+            m_type = type;
+            m_name = name;
+            m_lang = lang;
+            m_strTemplate.clear();
         }
 
         EndDialog(IDOK);

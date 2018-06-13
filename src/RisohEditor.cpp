@@ -8146,30 +8146,29 @@ void MMainWnd::OnAddManifest(HWND hwnd)
 
 void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 {
-    if (dialog.m_strText.empty())
+    if (dialog.m_strTemplate.empty())
     {
         DoRefreshIDList(hwnd);
-        SelectTV(&dialog.m_entry_copy, FALSE);
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
     {
         DoRefreshIDList(hwnd);
-        SelectTV(&dialog.m_entry_copy, FALSE);
-        if (CompileParts(dialog.m_strText, FALSE))
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        if (CompileParts(dialog.m_strTemplate, FALSE))
         {
             Edit_SetModify(m_hSrcEdit, FALSE);
         }
         else
         {
-            SetWindowTextW(m_hSrcEdit, dialog.m_strText.c_str());
+            SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
             UpdateOurToolBar(2);
         }
-        //Res_DeleteTemplate(m_entries);
-        SelectTV(&dialog.m_entry_copy, FALSE);
-    }
+		SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+	}
 }
 
 void MMainWnd::OnAddDialog(HWND hwnd)

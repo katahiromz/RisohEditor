@@ -135,7 +135,6 @@ struct EntryBase
     HTREEITEM       m_hItem = NULL;
     data_type       m_data;
     MStringW        m_strLabel;
-    MStringW        m_strText;
 
     EntryBase() : m_lang(0xFFFF), m_hItem(NULL)
     {
@@ -254,7 +253,6 @@ struct EntryBase
     void clear_data()
     {
         m_data.clear();
-        m_strText.clear();
     }
 
     void clear()
@@ -459,7 +457,7 @@ struct EntrySet : protected EntrySetBase
 
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
-              WORD lang, const MString& strText, bool replace)
+                   WORD lang, bool replace)
     {
         if (replace)
         {
@@ -481,7 +479,6 @@ struct EntrySet : protected EntrySetBase
         }
 
         auto entry = Res_NewLangEntry(type, name, lang);
-        entry->m_strText = strText;
         return on_insert_entry(entry);
     }
 
