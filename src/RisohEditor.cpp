@@ -8116,7 +8116,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     MReplaceBitmapDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(&dialog.m_entry_copy, FALSE);
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
     }
 }
 

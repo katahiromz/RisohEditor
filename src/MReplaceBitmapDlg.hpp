@@ -38,10 +38,13 @@ class MReplaceBitmapDlg : public MDialogBase
 {
 public:
     EntryBase& m_entry;
-    EntryBase m_entry_copy;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
 
     MReplaceBitmapDlg(EntryBase& entry)
-        : MDialogBase(IDD_REPLACEBMP), m_entry(entry)
+        : MDialogBase(IDD_REPLACEBMP), m_entry(entry),
+          m_type(entry.m_type), m_name(entry.m_name), m_lang(entry.m_lang)
     {
     }
 
@@ -86,7 +89,9 @@ public:
             return;
         }
 
-        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
+        m_type = type;
+        m_name = name;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }
