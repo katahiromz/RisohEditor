@@ -121,7 +121,7 @@ enum EntryType
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// EntryBase, TypeEntry, NameEnry, EntryBase, StringEntry, MessageEntry
+// EntryBase
 
 struct EntryBase
 {
@@ -387,13 +387,14 @@ struct EntrySet : protected EntrySetBase
 
     HWND m_hwndTV;
     INT m_nLock;
+    EntryType m_check_et;
 
-    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV), m_nLock(0)
+    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV), m_nLock(0), m_check_et(ET_ANY)
     {
     }
 
     EntrySet(const super_type& super, HWND hwndTV = NULL)
-        : super_type(super), m_hwndTV(hwndTV), m_nLock(0)
+        : super_type(super), m_hwndTV(hwndTV), m_nLock(0), m_check_et(ET_ANY)
     {
     }
 
@@ -513,14 +514,6 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
-	void delete_entry(HTREEITEM hItem)
-	{
-		if (hItem == NULL)
-			return;
-		auto entry = get_entry(hItem);
-		delete_entry(entry);
-	}
-
     void delete_entry(EntryBase *entry)
     {
         if (!entry)
@@ -532,7 +525,7 @@ struct EntrySet : protected EntrySetBase
             {
                 // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
                 // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
-                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry->m_hItem);
+                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry);
             }
             else
             {
@@ -1164,6 +1157,9 @@ struct EntrySet : protected EntrySetBase
 
     EntryBase *get_parent(EntryBase *entry)
     {
+        if (!entry)
+            return NULL;
+
         EntryBase *parent;
         switch (entry->m_et)
         {
@@ -1210,6 +1206,7 @@ protected:
 
     EntryBase *on_insert_entry(EntryBase *entry)
     {
+        DebugPrintDx(L"on_insert_entry: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
         if (m_hwndTV == NULL)
         {
             insert(entry);
@@ -1427,6 +1424,10 @@ public:
 
     void on_delete_item(EntryBase *entry)
     {
+        if (!entry)
+            return;
+
+        DebugPrintDx(L"on_delete_item: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
         m_nLock++;
 
         EntryBase *parent = NULL;
@@ -1471,16 +1472,26 @@ public:
             erase(entry);
             delete entry;
 
-            if (!m_hwndTV || !g_deleting_all)
+            do
             {
-                if (parent)
+                if (m_hwndTV && g_deleting_all)
+                    break;
+                if (!parent)
+                    break;
+                if (get_first_child(parent))
+                    break;
+                if (m_check_et == ET_NAME && parent->m_et == ET_NAME)
                 {
-                    if (get_first_child(parent) == NULL)
-                    {
-                        delete_entry(parent);
-                    }
+                    parent = get_parent(parent);
+                    if (get_first_child(parent))
+                        break;
                 }
-            }
+                else if (m_check_et == ET_TYPE && (parent->m_et == ET_TYPE || parent->m_et == ET_NAME))
+                {
+                    break;
+                }
+                delete_entry(parent);
+            } while (0);
         }
 
         m_nLock--;

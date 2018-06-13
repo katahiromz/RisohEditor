@@ -2180,7 +2180,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     stream.clear();
-    if (dialog_res.m_dlginit.SaveToStream(stream) && dialog_res.m_dlginit.size())
+    if (dialog_res.m_dlginit.SaveToStream(stream))
     {
         // update RT_DLGINIT
         if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
@@ -2262,7 +2262,9 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 
 void MMainWnd::DeleteItem(HWND hwnd, LPARAM lParam)
 {
-    g_res.delete_entry((HTREEITEM)lParam);
+    auto entry = (EntryBase *)lParam;
+    DebugPrintDx(L"MMainWnd::DeleteItem: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
+    g_res.delete_entry(entry);
 }
 
 BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
@@ -2547,6 +2549,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
         return;
 
     auto entry = g_res.get_entry();
+    g_res.m_check_et = entry->m_et;
     TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
 }
 
@@ -4199,6 +4202,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             {
                 bSuccess = CareWindresResult(RT_MESSAGETABLE, name, lang, strOutput, res);
             }
+            res.delete_all();
         }
     }
     else
@@ -4346,6 +4350,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                 {
                     auto e = *res.begin();
                     entry->m_data = e->m_data;
+                    res.delete_all();
                 }
             }
         }
@@ -7432,7 +7437,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
 void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
-    while (auto e = g_res.find(ET_LANG, entry->m_type, old_name))
+    EntrySetBase found;
+    g_res.search(found, ET_LANG, entry->m_type, old_name);
+    for (auto e : found)
     {
         assert(e->m_name == old_name);
         e->m_name = new_name;
@@ -7445,23 +7452,28 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 
 void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
 {
+    EntrySetBase found;
     switch (entry->m_et)
     {
     case ET_STRING:
-        while (auto e = g_res.find(ET_LANG, entry->m_type, (WORD)0, old_lang))
+        g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+        for (auto e : found)
         {
             assert(e->m_lang == old_lang);
             e->m_lang = new_lang;
             UpdateEntryLang(pszText, e);
         }
+        found.clear();
         break;
     case ET_MESSAGE:
-        while (auto e = g_res.find(ET_LANG, entry->m_type, (WORD)0, old_lang))
+        g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+        for (auto e : found)
         {
             assert(e->m_lang == old_lang);
             e->m_lang = new_lang;
             UpdateEntryLang(pszText, e);
         }
+        found.clear();
         break;
     case ET_LANG:
         break;
@@ -7469,7 +7481,8 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         return;
     }
 
-    while (auto e = g_res.find(ET_ANY, entry->m_type, entry->m_name, old_lang))
+    g_res.search(found, ET_ANY, entry->m_type, entry->m_name, old_lang);
+    for (auto e : found)
     {
         assert(e->m_lang == old_lang);
         e->m_lang = new_lang;
