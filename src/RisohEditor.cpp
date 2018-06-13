@@ -3935,6 +3935,15 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         return;
     }
 
+    auto parent = g_res.get_parent(entry);
+    while (parent && parent->m_hItem)
+    {
+        TreeView_Expand(m_hwndTV, parent->m_hItem, TVE_EXPAND);
+        parent = g_res.get_parent(parent);
+    }
+    TreeView_SelectItem(m_hwndTV, entry->m_hItem);
+    TreeView_EnsureVisible(m_hwndTV, entry->m_hItem);
+
     m_type = entry->m_type;
     m_name = entry->m_name;
     m_lang = entry->m_lang;
@@ -5993,7 +6002,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(&dialog.m_entry_copy, FALSE);
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".png") == 0)
@@ -7462,7 +7471,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         UpdateEntryLang(pszText, e);
     }
 
-	SelectTV(entry, FALSE);
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::OnTest(HWND hwnd)
@@ -7998,7 +8007,8 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     MAddBitmapDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(&dialog.m_entry_copy, FALSE);
+        DoRefreshIDList(hwnd);
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
     }
 }
 
