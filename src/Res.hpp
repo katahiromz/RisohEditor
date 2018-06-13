@@ -630,7 +630,7 @@ struct EntrySet : protected EntrySetBase
         if (!entry)
             return;
 
-        if ((*entry).size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
+        if (entry->size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
             return;
 
         ICONDIR& dir = (ICONDIR&)(*entry)[0];
@@ -1523,7 +1523,7 @@ public:
             return FALSE;
         }
 
-        memcpy(&dir, &entry[0], sizeof(dir));
+        memcpy(&dir, &(*entry)[0], sizeof(dir));
 
         if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
         {
@@ -1568,7 +1568,7 @@ public:
             return FALSE;
         }
 
-        memcpy(&dir, &entry[0], sizeof(dir));
+        memcpy(&dir, &(*entry)[0], sizeof(dir));
 
         if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
         {
