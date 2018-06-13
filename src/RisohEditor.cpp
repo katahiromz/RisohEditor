@@ -5972,7 +5972,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(&dialog.m_entry_copy, FALSE);
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
@@ -7963,7 +7963,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(&dialog.m_entry_copy, FALSE);
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
     }
 }
 
