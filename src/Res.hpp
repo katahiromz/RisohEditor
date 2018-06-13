@@ -965,7 +965,7 @@ struct EntrySet : protected EntrySetBase
         if (replace)
         {
             auto entry = find(ET_LANG, RT_GROUP_ICON, name, lang);
-            TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+            delete_entry(entry);
         }
 
         IconFile icon;
@@ -992,7 +992,7 @@ struct EntrySet : protected EntrySetBase
         if (replace)
         {
             auto entry = find(ET_LANG, RT_GROUP_CURSOR, name, lang);
-            TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+            delete_entry(entry);
         }
 
         CursorFile cur;
@@ -1460,22 +1460,17 @@ public:
         if (super()->find(entry) != super()->end())
         {
             entry->m_hItem = NULL;
-            if (m_hwndTV && !g_deleting_all)
-            {
-                //delete entry;
-            }
-            else
-            {
-                delete entry;
-            }
-
             erase(entry);
+            delete entry;
 
-            if (parent)
+            if (!m_hwndTV || !g_deleting_all)
             {
-                if (get_first_child(parent) == NULL)
+                if (parent)
                 {
-                    delete_entry(parent);
+                    if (get_first_child(parent) == NULL)
+                    {
+                        delete_entry(parent);
+                    }
                 }
             }
         }

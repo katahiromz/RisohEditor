@@ -3143,7 +3143,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     BOOL bCanEditLabel = TRUE;
 
     auto entry = g_res.get_entry();
-    if (entry->m_et == ET_TYPE)
+    if (!entry || entry->m_et == ET_TYPE)
     {
         bCanEditLabel = FALSE;
     }
@@ -3232,7 +3232,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         return;
     }
 
-    BOOL bEditable = entry->is_editable();
+    BOOL bEditable = entry && entry->is_editable();
     if (bEditable)
     {
         EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
@@ -3251,7 +3251,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
     }
 
-    switch (entry->m_et)
+    switch (entry ? entry->m_et : ET_ANY)
     {
     case ET_TYPE:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
