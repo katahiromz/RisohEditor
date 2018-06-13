@@ -36,6 +36,10 @@
     #endif
 #endif
 
+#ifndef _countof
+	#define _countof(array)		(sizeof(array) / sizeof(array[0]))
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct MIdOrString;
