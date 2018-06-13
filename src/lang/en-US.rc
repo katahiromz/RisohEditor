@@ -290,7 +290,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Please enter the resource language."
     IDS_FILENOTFOUND, "File cannot found."
     IDS_CANNOTREPLACE, "Unable to replace."
-    IDS_EXERESFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Binary Resources (*.res)|*.res|All Files (*.*)|*.*|"
+    IDS_EXERESFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|All Files (*.*)|*.*|"
     IDS_SAVEAS, "Save As"
     IDS_CANNOTADDICON, "Unable to add the icon."
     IDS_ADDICON, "Add Icon"

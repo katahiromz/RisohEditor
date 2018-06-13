@@ -292,7 +292,7 @@ STRINGTABLE
     IDS_ENTERLANG, "リソースの言語を入力して下さい。"
     IDS_FILENOTFOUND, "ファイルが見つかりません。"
     IDS_CANNOTREPLACE, "リソースの置き換えができませんでした。"
-    IDS_EXERESFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|バイナリ リソース (*.res)|*.res|すべてのファイル (*.*)|*.*|"
+    IDS_EXERESFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RCファイル (*.rc)|*.rc|バイナリ リソース (*.res)|*.res|すべてのファイル (*.*)|*.*|"
     IDS_SAVEAS, "名前を付けて保存"
     IDS_CANNOTADDICON, "アイコンの追加ができませんでした。"
     IDS_ADDICON, "アイコンの追加"

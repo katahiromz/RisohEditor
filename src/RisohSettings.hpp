@@ -87,6 +87,7 @@ struct RisohSettings
     BOOL                bShowToolBar;
     BOOL                bHasIDC_STATIC;
     MString             strAtlAxWin;
+    INT                 nSaveFilterIndex;
 
     RisohSettings()
     {

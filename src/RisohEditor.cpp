@@ -1352,17 +1352,17 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
+    BOOL SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
 
     void UpdateMenu();
     void SelectTV(EntryBase *entry, BOOL bDoubleClick);
     void SelectTV(EntryType et, const MIdOrString& type,
                   const MIdOrString& name, WORD lang, BOOL bDoubleClick);
 
-    BOOL CompileIfNecessary(HWND hwnd, BOOL bReopen = FALSE);
-    BOOL ReCompileOnSelChange(HWND hwnd, BOOL bReopen = FALSE);
-    void SelectString(HWND hwnd);
-    void SelectMessage(HWND hwnd);
+    BOOL CompileIfNecessary(BOOL bReopen = FALSE);
+    BOOL ReCompileOnSelChange(BOOL bReopen = FALSE);
+    void SelectString(void);
+    void SelectMessage(void);
     BOOL CreateOurToolBar(HWND hwndParent);
     void UpdateOurToolBar(INT iType);
 
@@ -1400,9 +1400,9 @@ public:
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
-    BOOL DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoSaveAs(HWND hwnd, LPCWSTR pszExeFile);
-    BOOL DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile);
+    BOOL DoSaveResAs(LPCWSTR pszExeFile);
+    BOOL DoSaveAs(LPCWSTR pszExeFile);
+    BOOL DoSaveExeAs(LPCWSTR pszExeFile);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -1422,9 +1422,9 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res);
-    BOOL CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen = FALSE);
-    BOOL CompileMessageTable(HWND hwnd, const MStringW& strWide);
+    BOOL CareWindresResult(MStringA& msg, EntrySet& res);
+    BOOL CompileParts(const MStringW& strWide, BOOL bReopen = FALSE);
+    BOOL CompileMessageTable(const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
@@ -1572,7 +1572,7 @@ void MMainWnd::OnSysColorChange(HWND hwnd)
 
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
     {
         return FALSE;
     }
@@ -1650,7 +1650,7 @@ void MMainWnd::UpdateMenu()
 
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     auto e = g_res.get_entry();
@@ -1696,7 +1696,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -1735,7 +1735,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 
 void MMainWnd::OnExtractCursor(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -1774,7 +1774,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
 
 void MMainWnd::OnExtractBitmap(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -1806,7 +1806,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 
 void MMainWnd::OnReplaceBin(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -1822,7 +1822,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 
 void MMainWnd::OnAbout(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
 #if 1
@@ -1849,7 +1849,7 @@ void MMainWnd::OnAbout(HWND hwnd)
 
 void MMainWnd::OnFonts(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MFontsDlg dialog;
@@ -1867,7 +1867,7 @@ void MMainWnd::OnFonts(HWND hwnd)
 
 void MMainWnd::OnExport(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MExportOptionsDlg dialog;
@@ -1950,7 +1950,7 @@ void FreeWCLib()
 
 void MMainWnd::OnLoadWCLib(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     WCHAR file[MAX_PATH] = TEXT("");
@@ -1982,7 +1982,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 
 void MMainWnd::OnImport(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     WCHAR file[MAX_PATH] = TEXT("");
@@ -2029,7 +2029,7 @@ void MMainWnd::OnImport(HWND hwnd)
 
 void MMainWnd::OnOpen(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     WCHAR szFile[MAX_PATH];
@@ -2059,13 +2059,20 @@ void MMainWnd::OnNew(HWND hwnd)
 {
     HidePreview();
     OnUnloadResH(hwnd);
-    SetFilePath(hwnd, NULL, NULL);
+    SetFilePath(NULL, NULL);
     g_res.delete_all();
 }
 
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    enum
+    {
+        FI_EXE = 1,
+        FI_RC,
+        FI_RES
+    };
+
+    if (!CompileIfNecessary(TRUE))
         return;
 
     WCHAR szFile[MAX_PATH];
@@ -2074,25 +2081,43 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
+    static const LPWSTR s_apszExt[] =
+    {
+        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
+    };
     LPWSTR pch = wcsrchr(szFile, L'.');
-    if (lstrcmpiW(pch, L".rc") == 0)
-        szFile[0] = 0;
+    for (auto ext : s_apszExt)
+    {
+        if (lstrcmpiW(pch, ext) == 0)
+            *pch = 0;
+    }
 
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
+
+    ofn.nFilterIndex = g_settings.nSaveFilterIndex;
     if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
-        ofn.nFilterIndex = 2;
-        ofn.lpstrDefExt = L"res";
+        if (ofn.nFilterIndex = FI_EXE)
+            ofn.nFilterIndex = FI_RC;
     }
-    else
+
+    switch (ofn.nFilterIndex)
     {
-        ofn.nFilterIndex = 1;
+    case FI_EXE:
         ofn.lpstrDefExt = L"exe";
+        break;
+    case FI_RC:
+        ofn.lpstrDefExt = L"rc";
+        break;
+    case FI_RES:
+        ofn.lpstrDefExt = L"res";
+        break;
     }
+
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
@@ -2100,19 +2125,33 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
     if (GetSaveFileNameW(&ofn))
     {
-        if (ofn.nFilterIndex == 2)
+        g_settings.nSaveFilterIndex = ofn.nFilterIndex;
+        switch (ofn.nFilterIndex)
         {
-            if (!DoSaveResAs(hwnd, szFile))
+        case FI_EXE:
+            if (!DoSaveAs(szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
-        }
-        else
-        {
-            if (!DoSaveAs(hwnd, szFile))
+            break;
+        case FI_RC:
+            {
+                MExportOptionsDlg export_options;
+                if (export_options.DialogBoxDx(hwnd) != IDOK)
+                    return;
+
+                if (!DoExport(szFile))
+                {
+                    ErrorBoxDx(IDS_CANTEXPORT);
+                }
+            }
+            break;
+        case FI_RES:
+            if (!DoSaveResAs(szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
+            break;
         }
     }
 }
@@ -2503,7 +2542,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 
 void MMainWnd::OnDeleteRes(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_entry();
@@ -2550,7 +2589,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (CompileParts(hwnd, strWide, bReopen))
+    if (CompileParts(strWide, bReopen))
     {
         SelectTV(entry, FALSE);
     }
@@ -2567,7 +2606,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
     {
         return;
     }
@@ -2690,7 +2729,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringW strWide = str_res.Dump();
             g_db.ShowMacroID(shown);
 
-            if (CompileParts(hwnd, strWide))
+            if (CompileParts(strWide))
             {
                 SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
@@ -2726,7 +2765,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringW strWide = msg_res.Dump();
             g_db.ShowMacroID(shown);
 
-            if (CompileParts(hwnd, strWide))
+            if (CompileParts(strWide))
             {
                 SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
             }
@@ -3964,7 +4003,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::CareWindresResult(HWND hwnd, MStringA& msg, EntrySet& res)
+BOOL MMainWnd::CareWindresResult(MStringA& msg, EntrySet& res)
 {
     auto entry = g_res.get_entry();
     if (!entry)
@@ -4051,7 +4090,7 @@ MStringW MMainWnd::GetIncludesDump()
     return ret;
 }
 
-BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
+BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
 {
     auto entry = g_res.get_entry();
     if (!entry || entry->m_type != RT_MESSAGETABLE)
@@ -4121,7 +4160,7 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
             if (res.import_res(szPath3))
             {
                 MStringA msg;
-                bSuccess = CareWindresResult(hwnd, msg, res);
+                bSuccess = CareWindresResult(msg, res);
                 if (msg.size())
                 {
                     strOutput.append(msg);
@@ -4159,12 +4198,12 @@ BOOL MMainWnd::CompileMessageTable(HWND hwnd, const MStringW& strWide)
         DeleteFileW(szPath3);
     }
 
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
 
     return bSuccess;
 }
 
-BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
+BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
 {
     auto entry = g_res.get_entry();
     if (!entry)
@@ -4172,7 +4211,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
     if (entry->m_type == RT_MESSAGETABLE)
     {
-        return CompileMessageTable(hwnd, strWide);
+        return CompileMessageTable(strWide);
     }
 
     MStringA strUtf8;
@@ -4279,7 +4318,7 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
             if (res.import_res(szPath3))
             {
                 MStringA msg;
-                bSuccess = CareWindresResult(hwnd, msg, res);
+                bSuccess = CareWindresResult(msg, res);
                 if (msg.size())
                 {
                     strOutput.append(msg);
@@ -4319,23 +4358,23 @@ BOOL MMainWnd::CompileParts(HWND hwnd, const MStringW& strWide, BOOL bReopen)
 
         if (bReopen && entry->m_type == RT_DIALOG)
         {
-            PostMessage(hwnd, MYWM_REOPENRAD, 0, 0);
+            PostMessage(m_hwnd, MYWM_REOPENRAD, 0, 0);
         }
     }
 
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
 
     return bSuccess;
 }
 
-BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
+BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 {
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
     MStringW strWide;
     strWide.resize(cchText);
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
-    if (!CompileParts(hwnd, strWide))
+    if (!CompileParts(strWide))
     {
         return FALSE;
     }
@@ -4369,7 +4408,7 @@ BOOL MMainWnd::ReCompileOnSelChange(HWND hwnd, BOOL bReopen/* = FALSE*/)
     return TRUE;
 }
 
-BOOL MMainWnd::CompileIfNecessary(HWND hwnd, BOOL bReopen/* = FALSE*/)
+BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 {
     if (Edit_GetModify(m_hSrcEdit))
     {
@@ -4377,7 +4416,7 @@ BOOL MMainWnd::CompileIfNecessary(HWND hwnd, BOOL bReopen/* = FALSE*/)
         switch (id)
         {
         case IDYES:
-            return ReCompileOnSelChange(hwnd, bReopen);
+            return ReCompileOnSelChange(bReopen);
         case IDNO:
             Edit_SetModify(m_hSrcEdit, FALSE);
             if (IsWindow(m_rad_window))
@@ -4562,7 +4601,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        SetFilePath(hwnd, szPath, NULL);
+        SetFilePath(szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -4597,7 +4636,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        SetFilePath(hwnd, szPath, NULL);
+        SetFilePath(szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -4699,7 +4738,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = FALSE;
 
     FreeLibrary(hMod);
-    SetFilePath(hwnd, pszReal, pszNominal);
+    SetFilePath(pszReal, pszNominal);
 
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
     {
@@ -5796,28 +5835,28 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     return bOK;
 }
 
-BOOL MMainWnd::DoSaveResAs(HWND hwnd, LPCWSTR pszExeFile)
+BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return FALSE;
 
     if (g_res.extract_res(pszExeFile, g_res))
     {
-        SetFilePath(hwnd, pszExeFile, NULL);
+        SetFilePath(pszExeFile, NULL);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL MMainWnd::DoSaveAs(HWND hwnd, LPCWSTR pszExeFile)
+BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return TRUE;
 
-    return DoSaveExeAs(hwnd, pszExeFile);
+    return DoSaveExeAs(pszExeFile);
 }
 
-BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
+BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
     if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
     {
@@ -5840,7 +5879,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
         b3 = g_res.update_exe(pszExeFile);
         if (b3)
         {
-            SetFilePath(hwnd, pszExeFile, NULL);
+            SetFilePath(pszExeFile, NULL);
             return TRUE;
         }
     }
@@ -5853,7 +5892,7 @@ BOOL MMainWnd::DoSaveExeAs(HWND hwnd, LPCWSTR pszExeFile)
         if (b3)
         {
             DeleteFileW(TempFile);
-            SetFilePath(hwnd, pszExeFile, NULL);
+            SetFilePath(pszExeFile, NULL);
             if (g_settings.bCompressByUPX)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
@@ -6050,7 +6089,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
     {
         return;
     }
@@ -6392,7 +6431,7 @@ void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
 
 void MMainWnd::OnAdviceResH(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MString str;
@@ -6450,7 +6489,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
 
 void MMainWnd::OnUnloadResH(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     UnloadResourceH(hwnd);
@@ -6458,7 +6497,7 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
 
 void MMainWnd::OnConfig(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MConfigDlg dialog;
@@ -6537,7 +6576,7 @@ void MMainWnd::OnIDList(HWND hwnd)
 
 void MMainWnd::OnIdAssoc(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MIdAssocDlg dialog;
@@ -6547,7 +6586,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 
 void MMainWnd::OnShowLangs(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MLangsDlg dialog;
@@ -6568,7 +6607,7 @@ void MMainWnd::OnShowHideToolBar(HWND hwnd)
 
 void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     DoRefresh(hwnd, TRUE);
@@ -6576,7 +6615,7 @@ void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
 
 void MMainWnd::OnSetPaths(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MPathsDlg dialog;
@@ -6588,7 +6627,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
 
 void MMainWnd::OnEditLabel(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     auto entry = g_res.get_entry();
@@ -6611,7 +6650,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 
 void MMainWnd::OnPredefMacros(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, TRUE))
+    if (!CompileIfNecessary(TRUE))
         return;
 
     MMacrosDlg dialog;
@@ -7184,7 +7223,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (!m_bLoading)
         {
-            if (!CompileIfNecessary(hwnd, FALSE))
+            if (!CompileIfNecessary(FALSE))
                 return TRUE;
         }
         if (IsWindow(m_rad_window))
@@ -7428,7 +7467,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
 void MMainWnd::OnTest(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_entry();
@@ -7908,7 +7947,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 
 void MMainWnd::OnAddIcon(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddIconDlg dialog;
@@ -7921,7 +7960,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 
 void MMainWnd::OnReplaceIcon(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -7937,7 +7976,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
 
 void MMainWnd::OnReplaceCursor(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_lang_entry();
@@ -7953,7 +7992,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
 
 void MMainWnd::OnAddBitmap(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddBitmapDlg dialog;
@@ -7965,7 +8004,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 
 void MMainWnd::OnReplaceBitmap(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     auto entry = g_res.get_entry();
@@ -7981,7 +8020,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
 
 void MMainWnd::OnAddCursor(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddCursorDlg dialog;
@@ -7994,7 +8033,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 
 void MMainWnd::OnAddRes(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8006,7 +8045,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
 
 void MMainWnd::OnAddMenu(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8019,7 +8058,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
 
 void MMainWnd::OnAddStringTable(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8032,7 +8071,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
 
 void MMainWnd::OnAddMessageTable(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8045,7 +8084,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
 
 void MMainWnd::OnAddHtml(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8058,7 +8097,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
 
 void MMainWnd::OnAddAccel(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8071,7 +8110,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
 
 void MMainWnd::OnAddVerInfo(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8084,7 +8123,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
 
 void MMainWnd::OnAddManifest(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8107,7 +8146,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     {
         DoRefreshIDList(hwnd);
         SelectTV(&dialog.m_entry_copy, FALSE);
-        if (CompileParts(hwnd, dialog.m_strText, FALSE))
+        if (CompileParts(dialog.m_strText, FALSE))
         {
             Edit_SetModify(m_hSrcEdit, FALSE);
         }
@@ -8125,7 +8164,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 
 void MMainWnd::OnAddDialog(HWND hwnd)
 {
-    if (!CompileIfNecessary(hwnd, FALSE))
+    if (!CompileIfNecessary(FALSE))
         return;
 
     MAddResDlg dialog;
@@ -8136,11 +8175,11 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
-BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
+BOOL MMainWnd::SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
     if (pszRealFile == 0 || pszRealFile[0] == 0)
     {
-        SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
 
@@ -8160,11 +8199,11 @@ BOOL MMainWnd::SetFilePath(HWND hwnd, LPCWSTR pszRealFile, LPCWSTR pszNominal)
         pch = wcsrchr(szPath, L'/');
     if (pch)
     {
-        SetWindowTextW(hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch + 1));
+        SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch + 1));
     }
     else
     {
-        SetWindowTextW(hwnd, LoadStringDx(IDS_APPNAME));
+        SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
     }
 
     g_settings.AddFile(m_szNominalFile);
@@ -8310,6 +8349,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bShowToolBar = TRUE;
 
     g_settings.strAtlAxWin = L"AtlAxWin110";
+
+    g_settings.nSaveFilterIndex = 1;
 }
 
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
@@ -8557,6 +8598,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         g_settings.strAtlAxWin = szText;
     }
 
+    keyRisoh.QueryDword(TEXT("nSaveFilterIndex"), (DWORD&)g_settings.nSaveFilterIndex);
+
     return TRUE;
 }
 
@@ -8692,6 +8735,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bShowToolBar"), g_settings.bShowToolBar);
 
     keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
+
+    keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
 
     return TRUE;
 }
@@ -8856,7 +8901,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-void MMainWnd::SelectString(HWND hwnd)
+void MMainWnd::SelectString(void)
 {
     auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, 0xFFFF);
     if (entry)
@@ -8865,7 +8910,7 @@ void MMainWnd::SelectString(HWND hwnd)
     }
 }
 
-void MMainWnd::SelectMessage(HWND hwnd)
+void MMainWnd::SelectMessage()
 {
     auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
     if (entry)
@@ -8888,12 +8933,12 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         INT nIDTYPE_ = indexes[i];
         if (nIDTYPE_ == IDTYPE_STRING || nIDTYPE_ == IDTYPE_PROMPT)
         {
-            SelectString(hwnd);
+            SelectString();
             return;
         }
         if (nIDTYPE_ == IDTYPE_MESSAGE)
         {
-            SelectMessage(hwnd);
+            SelectMessage();
             return;
         }
     }
