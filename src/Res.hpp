@@ -55,22 +55,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
 
-#ifdef USE_GLOBALS
-    extern BOOL g_deleting_all;
-#else
-    inline BOOL&
-    TV_GetDeletingAll(void)
-    {
-        static BOOL s_deleting_all = FALSE;
-        return s_deleting_all;
-    }
-    #define g_deleting_all TV_GetDeletingAll()
-#endif
-
-#ifndef ID_DELETEITEM
-    #define ID_DELETEITEM   239
-#endif
-
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
@@ -133,20 +117,41 @@ struct EntryBase
     MIdOrString     m_name;
     WORD            m_lang = 0xFFFF;
     HTREEITEM       m_hItem = NULL;
+    int             m_valid = 1;
     data_type       m_data;
     MStringW        m_strLabel;
 
-    EntryBase() : m_lang(0xFFFF), m_hItem(NULL)
+    EntryBase() : m_lang(0xFFFF), m_hItem(NULL), m_valid(1)
     {
     }
 
     EntryBase(EntryType et, const MIdOrString& type, 
             const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
-        : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL)
+        : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
     {
     }
+
     virtual ~EntryBase()
     {
+    }
+
+    bool valid() const
+    {
+        if (m_et == ET_LANG)
+        {
+            if (m_valid == 2)
+                return true;
+            return !empty();
+        }
+        if (!m_hItem)
+            return false;
+        return m_valid >= 1;
+    }
+
+    void mark_invalid()
+    {
+        m_valid = 0;
+        m_data.clear();
     }
 
     bool can_gui_edit() const
@@ -371,6 +376,9 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet
 
+// https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
+// NOTE: It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
+
 typedef std::set<EntryBase *> EntrySetBase;
 
 struct EntrySet : protected EntrySetBase
@@ -386,15 +394,13 @@ struct EntrySet : protected EntrySetBase
     using super_type::swap;
 
     HWND m_hwndTV;
-    INT m_nLock;
-    EntryType m_check_et;
 
-    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV), m_nLock(0), m_check_et(ET_ANY)
+    EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV)
     {
     }
 
     EntrySet(const super_type& super, HWND hwndTV = NULL)
-        : super_type(super), m_hwndTV(hwndTV), m_nLock(0), m_check_et(ET_ANY)
+        : super_type(super), m_hwndTV(hwndTV)
     {
     }
 
@@ -408,25 +414,32 @@ struct EntrySet : protected EntrySetBase
     }
 
     bool search(super_type& found, EntryType et, const MIdOrString& type, 
-                const MIdOrString& name = WORD(0), WORD lang = 0xFFFF) const
+                const MIdOrString& name = WORD(0), WORD lang = 0xFFFF, bool invalid_ok = false) const
     {
         for (auto entry : *this)
         {
+            if (!entry->valid() && !invalid_ok)
+                continue;
             if (entry->match(et, type, name, lang))
                 found.insert(entry);
         }
         return !found.empty();
     }
 
-    EntryBase *find(EntryType et, const MIdOrString& type, 
-                    const MIdOrString& name = WORD(0), WORD lang = 0xFFFF) const
+    EntryBase *find(EntryType et, const MIdOrString& type, const MIdOrString& name = WORD(0),
+                    WORD lang = 0xFFFF, bool invalid_ok = false) const
     {
         super_type found;
-        if (search(found, et, type, name, lang))
+        if (search(found, et, type, name, lang, invalid_ok))
         {
             return *found.begin();
         }
         return NULL;
+    }
+
+    EntryBase *find(EntryBase *entry, bool invalid_ok = false) const
+    {
+        return find(entry->m_et, entry->m_type, entry->m_name, entry->m_lang, invalid_ok);
     }
 
     bool intersect(const EntrySet& another) const
@@ -459,7 +472,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, WORD lang)
     {
-        if (auto entry = find(ET_LANG, type, name, lang))
+        if (auto entry = find(ET_LANG, type, name, lang, true))
             return entry;
 
         if (type == RT_STRING)
@@ -479,7 +492,7 @@ struct EntrySet : protected EntrySetBase
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
                    WORD lang, const EntryBase::data_type& data)
     {
-        if (auto entry = find(ET_LANG, type, name, lang))
+        if (auto entry = find(ET_LANG, type, name, lang, true))
         {
             entry->m_data = data;
             return entry;
@@ -504,26 +517,73 @@ struct EntrySet : protected EntrySetBase
 
     void delete_entry(EntryBase *entry)
     {
-        if (!entry)
-            return;
-
-        if (m_hwndTV)
+        EntryBase *parent = get_parent(entry);
+        switch (entry->m_et)
         {
-            if (m_nLock)
+        case ET_LANG:
+            if (entry->m_type == RT_GROUP_CURSOR)
             {
-                // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
-                // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
-                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry);
-				DebugPrintDx(L"delete_entry PostMessage: %p\n", entry);
+                on_delete_group_cursor(entry);
             }
-            else
+            if (entry->m_type == RT_GROUP_ICON)
+            {
+                on_delete_group_icon(entry);
+            }
+            break;
+
+        case ET_STRING:
+            on_delete_string(entry);
+            break;
+
+        case ET_MESSAGE:
+            on_delete_message(entry);
+            break;
+
+        default:
+            break;
+        }
+
+        entry->mark_invalid();
+
+        do
+        {
+            if (!parent)
+                break;
+            if (get_first_child(parent))
+                break;
+            if (parent)
+                delete_entry(parent);
+        } while (0);
+    }
+
+    void search_invalid(super_type& found)
+    {
+        for (auto entry : *this)
+        {
+            if (!entry->valid())
+                found.insert(entry);
+            if (is_childless_parent(entry))
+                found.insert(entry);
+        }
+    }
+
+    void delete_invalid()
+    {
+        super_type found;
+        search_invalid(found);
+
+        for (auto entry : found)
+        {
+            if (super()->find(entry) == super()->end())
+                continue;
+
+            if (entry->m_hItem)
             {
                 TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
             }
-        }
-        else
-        {
-            on_delete_item(entry);
+
+            erase(entry);
+            delete entry;
         }
     }
 
@@ -1143,6 +1203,26 @@ struct EntrySet : protected EntrySetBase
         return parent;
     }
 
+    bool is_childless_parent(EntryBase *entry) const
+    {
+        assert(entry);
+        switch (entry->m_et)
+        {
+        case ET_TYPE:
+            return !find(ET_NAME, entry->m_type);
+        case ET_NAME:
+            return !find(ET_LANG, entry->m_type, entry->m_name);
+        case ET_STRING:
+            return false;
+        case ET_MESSAGE:
+            return false;
+        case ET_LANG:
+            return false;
+        default:
+            return false;
+        }
+    }
+
 protected:
     MStringW get_label(const EntryBase *entry)
     {
@@ -1333,8 +1413,9 @@ public:
 
     EntryBase *get_first_child(EntryBase *parent) const
     {
-		if (!parent)
-			return NULL;
+        if (!parent)
+            return NULL;
+
         EntryBase *child;
         switch (parent->m_et)
         {
@@ -1361,7 +1442,7 @@ public:
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
     }
 
-    void copy_to(EntrySet& es)
+    void copy_to(EntrySet& es) const
     {
         for (auto entry : *this)
         {
@@ -1372,8 +1453,6 @@ public:
 
     void delete_all(void)
     {
-        BOOL old_deleting_all = g_deleting_all;
-        g_deleting_all = TRUE;
         if (m_hwndTV)
         {
             TreeView_DeleteAllItems(m_hwndTV);
@@ -1381,86 +1460,18 @@ public:
         else
         {
             search_and_delete(ET_ANY, (WORD)0, (WORD)0, 0xFFFF);
+            delete_invalid();
         }
-        g_deleting_all = old_deleting_all;
     }
 
     void on_delete_item(EntryBase *entry)
     {
-        if (!entry)
+        if (!entry || super()->find(entry) == super()->end())
             return;
 
         DebugPrintDx(L"on_delete_item: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
-        m_nLock++;
-
-        EntryBase *parent = NULL;
-        if (!g_deleting_all && entry->m_et != ET_TYPE)
-        {
-            parent = get_parent(entry);
-
-            switch (entry->m_et)
-            {
-            case ET_TYPE:
-            case ET_NAME:
-                break;
-
-            case ET_LANG:
-                if (entry->m_type == RT_GROUP_CURSOR)
-                {
-                    on_delete_group_cursor(entry);
-                }
-                if (entry->m_type == RT_GROUP_ICON)
-                {
-                    on_delete_group_icon(entry);
-                }
-                break;
-
-            case ET_STRING:
-                on_delete_string(entry);
-                break;
-
-            case ET_MESSAGE:
-                on_delete_message(entry);
-                break;
-
-            default:
-                assert(0);
-                break;
-            }
-        }
-
-        if (super()->find(entry) != super()->end())
-        {
-            entry->m_hItem = NULL;
-            erase(entry);
-            delete entry;
-
-            do
-            {
-                if (m_hwndTV && g_deleting_all)
-                    break;
-                if (!parent)
-                    break;
-                if (get_first_child(parent))
-                    break;
-                if (m_check_et == ET_NAME && parent->m_et == ET_NAME)
-                {
-                    parent = get_parent(parent);
-                    if (get_first_child(parent))
-                        break;
-                }
-                else if (m_check_et == ET_TYPE && parent->m_et == ET_TYPE)
-                {
-                    parent = get_parent(parent);
-                    if (get_first_child(parent))
-                        break;
-                }
-				if (parent)
-	                delete_entry(parent);
-            } while (0);
-        }
-
-        m_nLock--;
+        entry->m_hItem = NULL;
+        delete_entry(entry);
     }
 
     LPARAM get_param(HTREEITEM hItem = NULL) const
@@ -1480,8 +1491,10 @@ public:
     EntryBase *get_entry(HTREEITEM hItem = NULL, EntryType et = ET_ANY) const
     {
         LPARAM lParam = get_param(hItem);
+        if (!lParam)
+            return NULL;
         auto e = (EntryBase *)lParam;
-        if (!e || (et != ET_ANY && et != e->m_et))
+        if (et != ET_ANY && et != e->m_et)
             return NULL;
         return e;
     }
@@ -1676,7 +1689,7 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
-				file.FlushFileBuffers();
+                file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }
@@ -1701,7 +1714,7 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
-				file.FlushFileBuffers();
+                file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }

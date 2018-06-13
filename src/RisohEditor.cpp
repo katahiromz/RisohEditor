@@ -48,7 +48,6 @@ static const UINT s_nBackupMaxCount = 5;
 #ifdef USE_GLOBALS
     ConstantsDB g_db;
     RisohSettings g_settings;
-    BOOL g_deleting_all = FALSE;
     EntrySet g_res;
 #endif
 
@@ -1418,7 +1417,6 @@ public:
     void ReSetPaths(HWND hwnd);
 
     BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
-    void DeleteItem(HWND hwnd, LPARAM lParam);
 
 protected:
     // parsing resource IDs
@@ -2261,13 +2259,6 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
 
-void MMainWnd::DeleteItem(HWND hwnd, LPARAM lParam)
-{
-    auto entry = (EntryBase *)lParam;
-    DebugPrintDx(L"MMainWnd::DeleteItem: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
-    g_res.delete_entry(entry);
-}
-
 BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
 {
     HTREEITEM hNext, hChild;
@@ -2549,9 +2540,11 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
-    auto entry = g_res.get_entry();
-    g_res.m_check_et = entry->m_et;
-    TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+    if (auto entry = g_res.get_entry())
+    {
+        if (g_res.super()->find(entry) != g_res.end())
+            TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
+    }
 }
 
 void MMainWnd::OnPlay(HWND hwnd)
@@ -4279,43 +4272,37 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
 BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen)
 {
-    auto entry = g_res.find(ET_LANG, type, name, lang);
-    if (!entry)
-        return FALSE;
-
-    if (entry->m_type == RT_STRING)
+    if (type == RT_STRING)
     {
         return CompileStringTable(strOutput, name, lang, strWide);
     }
-    if (entry->m_type == RT_MESSAGETABLE)
+    if (type == RT_MESSAGETABLE)
     {
         return CompileMessageTable(strOutput, name, lang, strWide);
     }
 
     MStringA strUtf8;
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
-    if (entry->m_et == ET_LANG)
+    if (Res_IsPlainText(type))
     {
-        if (Res_IsPlainText(entry->m_type))
+        EntryBase::data_type data;
+        if (strWide.find(L"\"UTF-8\"") != MStringW::npos || type == L"RISOHTEMPLATE")
         {
-            if (strWide.find(L"\"UTF-8\"") != MStringW::npos ||
-                entry->m_type == L"RISOHTEMPLATE")
-            {
-                entry->m_data.assign(strUtf8.begin(), strUtf8.end());
+            data.assign(strUtf8.begin(), strUtf8.end());
 
-                static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
-                entry->m_data.insert(entry->m_data.begin(), &bom[0], &bom[3]);
-            }
-            else
-            {
-                MStringA TextAnsi;
-                TextAnsi = MWideToAnsi(CP_ACP, strWide);
-                entry->m_data.assign(TextAnsi.begin(), TextAnsi.end());
-            }
-            SelectTV(entry, FALSE);
-
-            return TRUE;    // success
+            static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
+            data.insert(data.begin(), &bom[0], &bom[3]);
         }
+        else
+        {
+            MStringA TextAnsi;
+            TextAnsi = MWideToAnsi(CP_ACP, strWide);
+            data.assign(TextAnsi.begin(), TextAnsi.end());
+        }
+
+        auto entry = g_res.add_lang_entry(type, name, lang);
+        SelectTV(entry, FALSE);
+        return TRUE;    // success
     }
 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
@@ -4335,8 +4322,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", 
-                    PRIMARYLANGID(entry->m_lang), SUBLANGID(entry->m_lang));
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(m_lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
     for (auto& pair : g_settings.id_map)
@@ -4395,6 +4381,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             Sleep(500);
             if (res.import_res(szPath3))
             {
+                for (auto entry : res)
+                {
+                    if (entry->m_et != ET_LANG)
+                        continue;
+                    entry->m_name = name;
+                    entry->m_lang = lang;
+                }
+
                 if (g_res.intersect(res))
                 {
                     INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
@@ -4405,13 +4399,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                         break;
                     case IDNO:
                     case IDCANCEL:
-						res.delete_all();
-						return FALSE;
+                        res.delete_all();
+                        return FALSE;
                     }
                 }
 
                 g_res.merge(res);
                 res.delete_all();
+                bSuccess = true;
             }
         }
     }
@@ -4434,7 +4429,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         DeleteFileW(szPath2);
         DeleteFileW(szPath3);
 
-        if (bReopen && entry->m_type == RT_DIALOG)
+        if (bReopen && type == RT_DIALOG)
         {
             PostMessage(m_hwnd, MYWM_REOPENRAD, 0, 0);
         }
@@ -6239,7 +6234,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyCursor(MSplitterWnd::CursorNS());
     DestroyCursor(MSplitterWnd::CursorWE());
 
-    g_deleting_all = TRUE;
+    g_res.delete_all();
+    g_res.delete_invalid();
 
     if (IsWindow(m_rad_window))
     {
@@ -7122,14 +7118,14 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_COLLAPSE_ALL:
         OnCollapseAll(hwnd);
         break;
-    case ID_DELETEITEM:
-        DeleteItem(hwnd, (LPARAM)hwndCtl);
-        break;
     default:
         bUpdateStatus = FALSE;
         break;
     }
     --m_nCommandLock;
+
+    if (m_nCommandLock == 0)
+        g_res.delete_invalid();
 
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
@@ -7558,6 +7554,9 @@ void MMainWnd::OnTest(HWND hwnd)
         return;
 
     auto entry = g_res.get_entry();
+    if (!entry)
+        return;
+
     if (entry->m_type == RT_DIALOG)
     {
         MByteStreamEx stream(entry->m_data);
@@ -8234,6 +8233,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     {
         DoRefreshIDList(hwnd);
         SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+
         MStringA strOutput;
         if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
         {
@@ -8246,6 +8246,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
+
         if (dialog.m_type == RT_STRING)
             SelectTV(ET_STRING, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
         else if (dialog.m_type == RT_MESSAGETABLE)

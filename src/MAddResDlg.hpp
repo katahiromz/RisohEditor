@@ -275,8 +275,6 @@ public:
             {
                 if (m_strText.empty())
                     g_res.add_lang_entry(type, name, lang, stream.data());
-                else
-                    g_res.add_lang_entry(type, name, lang);
 
                 m_type = type;
                 m_name = name;
