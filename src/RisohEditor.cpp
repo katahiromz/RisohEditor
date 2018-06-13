@@ -1427,7 +1427,7 @@ protected:
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd, BOOL bRefresh = TRUE);
-    void SetErrorMessage(const MStringA& strOutput);
+    void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
     void ReadResHLines(FILE *fp, std::vector<MStringA>& lines);
@@ -2565,17 +2565,32 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
-void MMainWnd::SetErrorMessage(const MStringA& strOutput)
+void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
 {
-    if (strOutput.empty())
+    if (bBox)
     {
-        SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+        if (strOutput.empty())
+        {
+            MWideToAnsi ansi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+            MessageBoxA(m_hwnd, ansi.c_str(), NULL, MB_ICONERROR);
+        }
+        else
+        {
+            MessageBoxA(m_hwnd, strOutput.c_str(), NULL, MB_ICONERROR);
+        }
     }
     else
     {
-        SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+        if (strOutput.empty())
+        {
+            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+        }
+        else
+        {
+            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+        }
+        ShowBinEdit(TRUE, TRUE);
     }
-    ShowBinEdit(TRUE, TRUE);
 }
 
 void MMainWnd::OnCompile(HWND hwnd)
@@ -8242,7 +8257,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         else
         {
             UpdateOurToolBar(2);
-            SetErrorMessage(strOutput);
+            SetErrorMessage(strOutput, TRUE);
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
