@@ -1424,6 +1424,7 @@ protected:
     // parsing resource IDs
     BOOL CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res);
     BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
+    BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
@@ -4046,56 +4047,16 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 
 BOOL MMainWnd::CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res)
 {
-    auto entry = g_res.find(ET_LANG, type, name, lang);
-    if (!entry)
+    EntrySetBase found;
+    res.search(found, ET_LANG, type, name, lang);
+    if (found.empty())
         return FALSE;
 
-    if (entry->m_et == ET_LANG)
+    for (auto entry : found)
     {
-        MIdOrString name = entry->m_name;
-        if (name.is_str() && g_db.HasResID(name.str()))
-        {
-            name = (WORD)g_db.GetResIDValue(name.c_str());
-        }
-        if (res.size() != 1 || (*res.begin())->m_lang != entry->m_lang)
-        {
-            msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_RESMISMATCH));
-            return FALSE;
-        }
         entry->m_name = name;
-        return TRUE;
     }
-    else if (entry->m_et == ET_STRING)
-    {
-        g_res.search_and_delete(ET_NAME, RT_STRING, WORD(0), entry->m_lang);
-
-        for (auto e : res)
-        {
-            // TODO:
-            msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-    else if (entry->m_et == ET_MESSAGE)
-    {
-        g_res.search_and_delete(ET_NAME, RT_MESSAGETABLE, WORD(0), entry->m_lang);
-
-        for (auto e : res)
-        {
-            // TODO:
-            msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTADDRES));
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-    else
-    {
-        // FIXME
-        return TRUE;
-    }
+    return TRUE;
 }
 
 MStringW MMainWnd::GetMacroDump()
@@ -4131,12 +4092,8 @@ MStringW MMainWnd::GetIncludesDump()
     return ret;
 }
 
-BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
-    auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang);
-    if (!entry || entry->m_type != RT_MESSAGETABLE)
-        return FALSE;
-
     MStringA strUtf8;
     strUtf8 = MWideToAnsi(CP_UTF8, strWide);
 
@@ -4157,8 +4114,110 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", 
-                    PRIMARYLANGID(entry->m_lang), SUBLANGID(entry->m_lang));
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
+    r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
+
+    for (auto& pair : g_settings.id_map)
+    {
+        if (pair.first == "IDC_STATIC")
+        {
+            r1.WriteFormatA("#undef IDC_STATIC\r\n");
+            r1.WriteFormatA("#define IDC_STATIC -1\r\n");
+        }
+        else
+        {
+            r1.WriteFormatA("#undef %s\r\n", pair.first.c_str());
+            r1.WriteFormatA("#define %s %s\r\n", pair.first.c_str(), pair.second.c_str());
+        }
+    }
+
+    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    r1.FlushFileBuffers();
+    r1.CloseHandle();
+
+    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
+    DWORD cbWritten;
+    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.FlushFileBuffers();
+    r2.CloseHandle();
+
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += m_szWindresExe;
+    strCmdLine += L"\" -DRC_INVOKED ";
+    strCmdLine += GetMacroDump();
+    strCmdLine += GetIncludesDump();
+    strCmdLine += L" -o \"";
+    strCmdLine += szPath3;
+    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+    strCmdLine += m_szCppExe;
+    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+    strCmdLine += szPath1;
+    strCmdLine += '\"';
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    BOOL bSuccess = FALSE;
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+    {
+        pmaker.ReadAll(strOutput, hOutputRead);
+
+        if (pmaker.GetExitCode() == 0)
+        {
+            EntrySet res;
+            Sleep(500);
+            if (res.import_res(szPath3))
+            {
+                g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
+                g_res.merge(res, true);
+            }
+            res.delete_all();
+        }
+    }
+    else
+    {
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
+    }
+
+#ifdef NDEBUG
+    DeleteFileW(szPath1);
+    DeleteFileW(szPath2);
+    DeleteFileW(szPath3);
+#endif
+
+    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
+
+    return bSuccess;
+}
+
+BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+{
+    MStringA strUtf8;
+    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
+
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+
+    // Source file #1
+    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    MFile r1(szPath1, TRUE);
+
+    // Source file #2 (#included)
+    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    MFile r2(szPath2, TRUE);
+
+    // Output resource object file (imported)
+    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+
+    if (m_szResourceH[0])
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    r1.WriteFormatA("#include <windows.h>\r\n");
+    r1.WriteFormatA("#include <commctrl.h>\r\n");
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.FlushFileBuffers();
@@ -4200,7 +4259,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             Sleep(500);
             if (res.import_res(szPath3))
             {
-                bSuccess = CareWindresResult(RT_MESSAGETABLE, name, lang, strOutput, res);
+                g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+                g_res.merge(res, true);
             }
             res.delete_all();
         }
@@ -4237,6 +4297,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     if (!entry)
         return FALSE;
 
+    if (entry->m_type == RT_STRING)
+    {
+        return CompileStringTable(strOutput, name, lang, strWide);
+    }
     if (entry->m_type == RT_MESSAGETABLE)
     {
         return CompileMessageTable(strOutput, name, lang, strWide);
@@ -8186,7 +8250,12 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        if (dialog.m_type == RT_STRING)
+            SelectTV(ET_STRING, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
+        else if (dialog.m_type == RT_MESSAGETABLE)
+            SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
+        else
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
     }
 }
 

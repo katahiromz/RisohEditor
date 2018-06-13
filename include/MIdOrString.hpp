@@ -228,50 +228,53 @@ struct MIdOrString
         return m_id != w;
     }
 
-    MString& str() const
+    MString str() const
     {
-        static MString s_str;
         if (m_id == 0)
         {
             if (m_str.size())
             {
-                s_str = m_str;
-                return s_str;
+				return m_str;
             }
         }
-        s_str = mstr_dec_short(m_id);
-        return s_str;
+		return mstr_dec_short(m_id);
     }
 
-    MString& str_or_empty() const
+    MString str_or_empty() const
     {
-        static MString s_str;
         if (m_id == 0)
         {
             if (m_str.size())
             {
-                s_str = m_str;
+                return m_str;
             }
             else
             {
-                s_str.clear();
+				return TEXT("");
             }
         }
         else
         {
-            s_str = mstr_dec_short(m_id);
+            return mstr_dec_short(m_id);
         }
-        return s_str;
     }
 
     const TCHAR *c_str() const
     {
-        return str().c_str();
+		static MString s_str[15];
+		static int s_rotate = 0;
+		s_rotate = (s_rotate + 1) % _countof(s_str);
+		s_str[s_rotate] = str();
+        return s_str[s_rotate].c_str();
     }
 
     const TCHAR *c_str_or_empty() const
     {
-        return str_or_empty().c_str();
+		static MString s_str[15];
+		static int s_rotate = 0;
+		s_rotate = (s_rotate + 1) % _countof(s_str);
+		s_str[s_rotate] = str_or_empty();
+		return s_str[s_rotate].c_str();
     }
 
     MString quoted_wstr() const

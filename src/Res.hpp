@@ -1486,9 +1486,28 @@ public:
                     if (get_first_child(parent))
                         break;
                 }
-                else if (m_check_et == ET_TYPE && (parent->m_et == ET_TYPE || parent->m_et == ET_NAME))
+                if (m_check_et == ET_STRING)
                 {
-                    break;
+                    if (parent->m_et == ET_STRING || parent->m_et == ET_NAME)
+                    {
+                        parent = get_parent(parent);
+                        if (get_first_child(parent))
+                            break;
+                    }
+                }
+                if (m_check_et == ET_MESSAGE)
+                {
+                    if (parent->m_et == ET_MESSAGE || parent->m_et == ET_NAME)
+                    {
+                        parent = get_parent(parent);
+                        if (get_first_child(parent))
+                            break;
+                    }
+                }
+                if (m_check_et == ET_TYPE)
+                {
+                    if (parent->m_et == ET_TYPE || parent->m_et == ET_NAME)
+                        break;
                 }
                 delete_entry(parent);
             } while (0);

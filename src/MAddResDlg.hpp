@@ -180,13 +180,21 @@ public:
             }
         }
 
-        if (type == RT_STRING || type == RT_MESSAGETABLE)
+        if (type == RT_STRING)
         {
             WCHAR sz[16];
             GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
             if (sz[0] == 0)
-                SetDlgItemTextW(hwnd, cmb2, L"1");
+                SetDlgItemTextW(hwnd, cmb2, L"");
+        }
+        if (type == RT_MESSAGETABLE)
+        {
+            WCHAR sz[16];
+            GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            mstr_trim(sz);
+            if (sz[0] == 0)
+                SetDlgItemTextW(hwnd, cmb2, L"");
         }
 
         if (type == RT_VERSION)
@@ -237,7 +245,7 @@ public:
             bOK = TRUE;
             if (Res_HasNoName(type))
             {
-                g_res.search_and_delete(ET_NAME, type, L"", lang);
+                g_res.search_and_delete(ET_NAME, type, (WORD)0, lang);
             }
 
             MByteStreamEx stream;
@@ -258,7 +266,7 @@ public:
                 bOK = false;
             }
 
-            if (type == RT_STRING || type == RT_MESSAGETABLE)
+            if (type == RT_MESSAGETABLE)
             {
                 name = 1;
             }
