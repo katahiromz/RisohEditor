@@ -38,7 +38,9 @@ class MAddCursorDlg : public MDialogBase
 public:
     LPCWSTR   m_file;
     HCURSOR   m_hCursor;
-    EntryBase m_entry_copy;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
@@ -74,6 +76,12 @@ public:
         SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
+
+        if (m_file)
+        {
+            SetFocus(hCmb2);
+            return FALSE;
+        }
         return TRUE;
     }
 
@@ -141,7 +149,9 @@ public:
             }
         }
 
-        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
+        m_type = type;
+        m_name = name;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }
