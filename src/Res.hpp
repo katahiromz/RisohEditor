@@ -513,6 +513,14 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+	void delete_entry(HTREEITEM hItem)
+	{
+		if (hItem == NULL)
+			return;
+		auto entry = get_entry(hItem);
+		delete_entry(entry);
+	}
+
     void delete_entry(EntryBase *entry)
     {
         if (!entry)
@@ -524,7 +532,7 @@ struct EntrySet : protected EntrySetBase
             {
                 // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
                 // It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
-                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry);
+                PostMessage(GetParent(m_hwndTV), WM_COMMAND, ID_DELETEITEM, (LPARAM)entry->m_hItem);
             }
             else
             {
@@ -1691,6 +1699,7 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
+				file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }
@@ -1715,6 +1724,7 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
+				file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }
@@ -1767,13 +1777,11 @@ public:
         return bAdded;
     }
 
-    BOOL load_msg_table(LPCWSTR pszRCFile, std::string& strOutput, const MString& strMcdxExe,
+    BOOL load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& strMcdxExe,
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
     {
         WCHAR szPath3[MAX_PATH];
         lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-        MFile r3(szPath3, TRUE);
-        r3.CloseHandle();
 
         MStringW strCmdLine;
         strCmdLine += L'\"';
@@ -1804,6 +1812,7 @@ public:
 
             if (pmaker.GetExitCode() == 0)
             {
+                Sleep(500);
                 if (res.import_res(szPath3))
                 {
                     bSuccess = TRUE;
@@ -1815,14 +1824,12 @@ public:
         return bSuccess;
     }
 
-    BOOL load_rc(LPCWSTR pszRCFile, std::string& strOutput,
+    BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
         const MString& strWindresExe, const MString& strCppExe, const MString& strMcdxExe, 
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
     {
         WCHAR szPath3[MAX_PATH];
         lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-        MFile r3(szPath3, TRUE);
-        r3.CloseHandle();
 
         MStringW strCmdLine;
         strCmdLine += L'\"';
@@ -1854,9 +1861,10 @@ public:
 
             if (pmaker.GetExitCode() == 0)
             {
+                Sleep(500);
                 bSuccess = import_res(szPath3);
             }
-            else if (strOutput.find(": no resources") != std::string::npos)
+            else if (strOutput.find(": no resources") != MStringA::npos)
             {
                 bSuccess = TRUE;
                 strOutput.clear();

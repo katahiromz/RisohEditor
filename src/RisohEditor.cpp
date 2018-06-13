@@ -1422,26 +1422,27 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CareWindresResult(MStringA& msg, EntrySet& res);
-    BOOL CompileParts(const MStringW& strWide, BOOL bReopen = FALSE);
-    BOOL CompileMessageTable(const MStringW& strWide);
+    BOOL CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res);
+    BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
+    BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd, BOOL bRefresh = TRUE);
+    void SetErrorMessage(const MStringA& strOutput);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
-    void ReadResHLines(FILE *fp, std::vector<std::string>& lines);
-    void UpdateResHLines(std::vector<std::string>& lines);
+    void ReadResHLines(FILE *fp, std::vector<MStringA>& lines);
+    void UpdateResHLines(std::vector<MStringA>& lines);
 
-    void JoinLinesByBackslash(std::vector<std::string>& lines);
-    void DeleteIncludeGuard(std::vector<std::string>& lines);
-    void AddAdditionalMacroLines(std::vector<std::string>& lines);
-    void DeleteSpecificMacroLines(std::vector<std::string>& lines);
-    void AddApStudioBlock(std::vector<std::string>& lines);
-    void DeleteApStudioBlock(std::vector<std::string>& lines);
-    void AddHeadComment(std::vector<std::string>& lines);
-    void DeleteHeadComment(std::vector<std::string>& lines);
+    void JoinLinesByBackslash(std::vector<MStringA>& lines);
+    void DeleteIncludeGuard(std::vector<MStringA>& lines);
+    void AddAdditionalMacroLines(std::vector<MStringA>& lines);
+    void DeleteSpecificMacroLines(std::vector<MStringA>& lines);
+    void AddApStudioBlock(std::vector<MStringA>& lines);
+    void DeleteApStudioBlock(std::vector<MStringA>& lines);
+    void AddHeadComment(std::vector<MStringA>& lines);
+    void DeleteHeadComment(std::vector<MStringA>& lines);
     void DoAddRes(HWND hwnd, MAddResDlg& dialog);
 
     // preview
@@ -2179,7 +2180,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     stream.clear();
-    if (dialog_res.m_dlginit.SaveToStream(stream))
+    if (dialog_res.m_dlginit.SaveToStream(stream) && dialog_res.m_dlginit.size())
     {
         // update RT_DLGINIT
         if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
@@ -2261,7 +2262,7 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 
 void MMainWnd::DeleteItem(HWND hwnd, LPARAM lParam)
 {
-    g_res.delete_entry((EntryBase *)lParam);
+    g_res.delete_entry((HTREEITEM)lParam);
 }
 
 BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
@@ -2567,6 +2568,19 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+void MMainWnd::SetErrorMessage(const MStringA& strOutput)
+{
+    if (strOutput.empty())
+    {
+        SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
+    }
+    else
+    {
+        SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
+    }
+    ShowBinEdit(TRUE, TRUE);
+}
+
 void MMainWnd::OnCompile(HWND hwnd)
 {
     BOOL bReopen = IsWindowVisible(m_rad_window);
@@ -2589,9 +2603,14 @@ void MMainWnd::OnCompile(HWND hwnd)
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
     Edit_SetModify(m_hSrcEdit, FALSE);
-    if (CompileParts(strWide, bReopen))
+    MStringA strOutput;
+    if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
         SelectTV(entry, FALSE);
+    }
+    else
+    {
+        SetErrorMessage(strOutput);
     }
 }
 
@@ -2729,9 +2748,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringW strWide = str_res.Dump();
             g_db.ShowMacroID(shown);
 
-            if (CompileParts(strWide))
+            MStringA strOutput;
+            if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
             {
                 SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
+            }
+            else
+            {
+                SetErrorMessage(strOutput);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2765,9 +2789,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringW strWide = msg_res.Dump();
             g_db.ShowMacroID(shown);
 
-            if (CompileParts(strWide))
+            MStringA strOutput;
+            if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
             {
                 SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
+            }
+            else
+            {
+                SetErrorMessage(strOutput);
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
@@ -2925,12 +2954,12 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        std::string strOutput;
+        MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
-            if (strOutput.find("[OK]") != std::string::npos)
+            if (strOutput.find("[OK]") != MStringA::npos)
             {
                 bSuccess = TRUE;
             }
@@ -2960,12 +2989,12 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        std::string strOutput;
+        MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
-            if (strOutput.find("Unpacked") != std::string::npos)
+            if (strOutput.find("Unpacked") != MStringA::npos)
                 bSuccess = TRUE;
         }
     }
@@ -3212,8 +3241,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
     }
 
-    auto hItem = entry->m_hItem;
-    if (hItem == NULL)
+    if (!entry || !entry->m_hItem)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -3658,6 +3686,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
         if (file.OpenFileForOutput(szTempFile) &&
             file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
+            file.FlushFileBuffers();
             file.CloseHandle();
             if (bIcon)
             {
@@ -4012,9 +4041,9 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     PostMessageDx(WM_SIZE);
 }
 
-BOOL MMainWnd::CareWindresResult(MStringA& msg, EntrySet& res)
+BOOL MMainWnd::CareWindresResult(const MIdOrString& type, const MIdOrString& name, WORD lang, MStringA& msg, EntrySet& res)
 {
-    auto entry = g_res.get_entry();
+    auto entry = g_res.find(ET_LANG, type, name, lang);
     if (!entry)
         return FALSE;
 
@@ -4025,7 +4054,7 @@ BOOL MMainWnd::CareWindresResult(MStringA& msg, EntrySet& res)
         {
             name = (WORD)g_db.GetResIDValue(name.c_str());
         }
-        if (g_res.size() != 1 || (*res.begin())->m_lang != entry->m_lang)
+        if (res.size() != 1 || (*res.begin())->m_lang != entry->m_lang)
         {
             msg += MWideToAnsi(CP_ACP, LoadStringDx(IDS_RESMISMATCH));
             return FALSE;
@@ -4099,9 +4128,9 @@ MStringW MMainWnd::GetIncludesDump()
     return ret;
 }
 
-BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
+BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
-    auto entry = g_res.get_entry();
+    auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang);
     if (!entry || entry->m_type != RT_MESSAGETABLE)
         return FALSE;
 
@@ -4120,8 +4149,6 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
 
     // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
 
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -4131,11 +4158,13 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
                     PRIMARYLANGID(entry->m_lang), SUBLANGID(entry->m_lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    r1.FlushFileBuffers();
     r1.CloseHandle();
 
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.FlushFileBuffers();
     r2.CloseHandle();
 
     MStringW strCmdLine;
@@ -4156,7 +4185,6 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
     BOOL bSuccess = FALSE;
-    std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
@@ -4166,14 +4194,10 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
+            Sleep(500);
             if (res.import_res(szPath3))
             {
-                MStringA msg;
-                bSuccess = CareWindresResult(msg, res);
-                if (msg.size())
-                {
-                    strOutput.append(msg);
-                }
+                bSuccess = CareWindresResult(RT_MESSAGETABLE, name, lang, strOutput, res);
             }
         }
     }
@@ -4185,15 +4209,6 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
 
     if (!bSuccess)
     {
-        if (strOutput.empty())
-        {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-        }
-        else
-        {
-            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-        }
-        ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
         DeleteFileW(szPath1);
         DeleteFileW(szPath2);
@@ -4212,15 +4227,15 @@ BOOL MMainWnd::CompileMessageTable(const MStringW& strWide)
     return bSuccess;
 }
 
-BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
+BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen)
 {
-    auto entry = g_res.get_entry();
+    auto entry = g_res.find(ET_LANG, type, name, lang);
     if (!entry)
         return FALSE;
 
     if (entry->m_type == RT_MESSAGETABLE)
     {
-        return CompileMessageTable(strWide);
+        return CompileMessageTable(strOutput, name, lang, strWide);
     }
 
     MStringA strUtf8;
@@ -4261,8 +4276,6 @@ BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
 
     // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
 
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -4287,11 +4300,13 @@ BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
     }
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    r1.FlushFileBuffers();
     r1.CloseHandle();
 
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.FlushFileBuffers();
     r2.CloseHandle();
 
     MStringW strCmdLine;
@@ -4314,7 +4329,6 @@ BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
     BOOL bSuccess = FALSE;
-    std::string strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
@@ -4324,35 +4338,25 @@ BOOL MMainWnd::CompileParts(const MStringW& strWide, BOOL bReopen)
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
+            Sleep(500);
             if (res.import_res(szPath3))
             {
-                MStringA msg;
-                bSuccess = CareWindresResult(msg, res);
-                if (msg.size())
+                bSuccess = CareWindresResult(type, name, lang, strOutput, res);
+                if (bSuccess)
                 {
-                    strOutput.append(msg);
+                    auto e = *res.begin();
+                    entry->m_data = e->m_data;
                 }
             }
         }
     }
     else
     {
-        MStringA msg;
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
     if (!bSuccess)
     {
-        if (strOutput.empty())
-        {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-        }
-        else
-        {
-            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-        }
-        //MessageBoxA(NULL, strOutput.c_str(), NULL, 0);
-        ShowBinEdit(TRUE, TRUE);
 #ifdef NDEBUG
         DeleteFileW(szPath1);
         DeleteFileW(szPath2);
@@ -4383,14 +4387,13 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     strWide.resize(cchText);
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
-    if (!CompileParts(strWide))
+    auto entry = g_res.get_entry();
+    MStringA strOutput;
+    if (!CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide))
     {
+        SetErrorMessage(strOutput);
         return FALSE;
     }
-
-    auto entry = g_res.get_entry();
-    if (!entry)
-        return FALSE;
 
     Edit_SetModify(m_hSrcEdit, FALSE);
 
@@ -4830,7 +4833,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
-    std::string strOutput;
+    MStringA strOutput;
     BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
                                 m_szMcdxExe, GetMacroDump(), GetIncludesDump());
 
@@ -5934,12 +5937,12 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        std::string strOutput;
+        MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead);
 
         if (pmaker.GetExitCode() == 0)
         {
-            if (strOutput.find("Packed") != std::string::npos)
+            if (strOutput.find("Packed") != MStringA::npos)
                 bSuccess = TRUE;
         }
     }
@@ -6329,6 +6332,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         StringCchPrintfA(buf, _countof(buf), "%s\n", macros[i].c_str());
         file1.WriteSzA(buf, &cbWritten);
     }
+    file1.FlushFileBuffers();
     file1.CloseHandle();
 
     MString strCmdLine;
@@ -6348,7 +6352,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-    std::string strOutput;
+    MStringA strOutput;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
@@ -6376,6 +6380,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
 
     MFile file(szTempFile, TRUE);
+    file.FlushFileBuffers();
     file.CloseHandle();
 
     MString strCmdLine;
@@ -6403,7 +6408,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
         {
             DWORD cbRead;
             CHAR szBuf[512];
-            std::string data;
+            MStringA data;
             while (file.ReadFile(szBuf, 512, &cbRead) && cbRead)
             {
                 data.append(&szBuf[0], cbRead);
@@ -7539,12 +7544,12 @@ void MMainWnd::OnTest(HWND hwnd)
     }
 }
 
-void MMainWnd::JoinLinesByBackslash(std::vector<std::string>& lines)
+void MMainWnd::JoinLinesByBackslash(std::vector<MStringA>& lines)
 {
     // join by '\\'
     for (size_t i = 0; i < lines.size(); ++i)
     {
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         if (line.size())
         {
             if (line[line.size() - 1] == '\\')
@@ -7558,14 +7563,14 @@ void MMainWnd::JoinLinesByBackslash(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
+void MMainWnd::DeleteIncludeGuard(std::vector<MStringA>& lines)
 {
     size_t k0 = -1, k1 = -1;
-    std::string name0;
+    MStringA name0;
 
     for (size_t i = 0; i < lines.size(); ++i)
     {
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
         if (*pch != '#')
             continue;
@@ -7581,7 +7586,7 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
             {
                 ++pch;
             }
-            std::string name(pch0, pch);
+            MStringA name(pch0, pch);
 
             if (name0.empty())
             {
@@ -7610,7 +7615,7 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
             {
                 ++pch;
             }
-            std::string name(pch0, pch);
+            MStringA name(pch0, pch);
             if (name0 == name)
             {
                 k1 = i;
@@ -7630,7 +7635,7 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
     for (size_t i = lines.size(); i > 0; )
     {
         --i;
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
         if (*pch != '#')
             continue;
@@ -7651,13 +7656,13 @@ void MMainWnd::DeleteIncludeGuard(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::AddHeadComment(std::vector<std::string>& lines)
+void MMainWnd::AddHeadComment(std::vector<MStringA>& lines)
 {
     if (m_szNominalFile[0])
     {
         WCHAR title[64];
         GetFileTitleW(m_szNominalFile, title, _countof(title));
-        std::string line = "// ";
+        MStringA line = "// ";
         line += MWideToAnsi(CP_ACP, title).c_str();
         lines.insert(lines.begin(), line);
     }
@@ -7665,16 +7670,16 @@ void MMainWnd::AddHeadComment(std::vector<std::string>& lines)
     lines.insert(lines.begin(), "//{{NO_DEPENDENCIES}}");
 }
 
-void MMainWnd::DeleteHeadComment(std::vector<std::string>& lines)
+void MMainWnd::DeleteHeadComment(std::vector<MStringA>& lines)
 {
     for (size_t i = 0; i < lines.size(); ++i)
     {
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         if (line.find("//") == 0)
         {
-            if (line.find("{{NO_DEPENDENCIES}}") != std::string::npos ||
-                line.find("Microsoft Visual C++") != std::string::npos ||
-                line.find(".rc") != std::string::npos)
+            if (line.find("{{NO_DEPENDENCIES}}") != MStringA::npos ||
+                line.find("Microsoft Visual C++") != MStringA::npos ||
+                line.find(".rc") != MStringA::npos)
             {
                 lines.erase(lines.begin() + i);
                 --i;
@@ -7683,12 +7688,12 @@ void MMainWnd::DeleteHeadComment(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
+void MMainWnd::DeleteSpecificMacroLines(std::vector<MStringA>& lines)
 {
     for (size_t i = lines.size(); i > 0; )
     {
         --i;
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
         if (*pch != '#')
             continue;
@@ -7704,7 +7709,7 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
             {
                 ++pch;
             }
-            std::string name(pch0, pch);
+            MStringA name(pch0, pch);
 
             if (g_settings.removed_ids.find(name) != g_settings.removed_ids.end())
             {
@@ -7714,12 +7719,12 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
+void MMainWnd::AddAdditionalMacroLines(std::vector<MStringA>& lines)
 {
-    std::string str;
+    MStringA str;
     for (auto& pair : g_settings.added_ids)
     {
-        std::string line = "#define ";
+        MStringA line = "#define ";
         if (pair.first == "IDC_STATIC")
         {
             line += "IDC_STATIC -1";
@@ -7734,7 +7739,7 @@ void MMainWnd::AddAdditionalMacroLines(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::AddApStudioBlock(std::vector<std::string>& lines)
+void MMainWnd::AddApStudioBlock(std::vector<MStringA>& lines)
 {
     UINT anValues[5];
     DoIDStat(anValues);
@@ -7757,13 +7762,13 @@ void MMainWnd::AddApStudioBlock(std::vector<std::string>& lines)
     lines.push_back("#endif");
 }
 
-void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
+void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
 {
     bool inside = false, found = false;
     size_t nest = 0, k = -1;
     for (size_t i = 0; i < lines.size(); ++i)
     {
-        std::string& line = lines[i];
+        MStringA& line = lines[i];
         const char *pch = mstr_skip_space(&line[0]);
         if (*pch != '#')
             continue;
@@ -7779,7 +7784,7 @@ void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
             {
                 ++pch;
             }
-            std::string name(pch0, pch);
+            MStringA name(pch0, pch);
 
             if (name == "APSTUDIO_INVOKED")
             {
@@ -7805,7 +7810,7 @@ void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
             {
                 ++pch;
             }
-            std::string name(pch0, pch);
+            MStringA name(pch0, pch);
 
             if (name == "_APS_NEXT_RESOURCE_VALUE")
             {
@@ -7824,7 +7829,7 @@ void MMainWnd::DeleteApStudioBlock(std::vector<std::string>& lines)
     }
 }
 
-void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
+void MMainWnd::UpdateResHLines(std::vector<MStringA>& lines)
 {
     JoinLinesByBackslash(lines);
     DeleteIncludeGuard(lines);
@@ -7836,7 +7841,7 @@ void MMainWnd::UpdateResHLines(std::vector<std::string>& lines)
     AddHeadComment(lines);
 }
 
-void MMainWnd::ReadResHLines(FILE *fp, std::vector<std::string>& lines)
+void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 {
     // read lines
     CHAR buf[512];
@@ -7924,7 +7929,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             return;
         }
 
-        std::vector<std::string> lines;
+        std::vector<MStringA> lines;
 
         ReadResHLines(fp, lines);
 
@@ -8155,20 +8160,21 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     else
     {
         DoRefreshIDList(hwnd);
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
-        if (CompileParts(dialog.m_strTemplate, FALSE))
+        SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+        MStringA strOutput;
+        if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
         {
             Edit_SetModify(m_hSrcEdit, FALSE);
         }
         else
         {
-            SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+            UpdateOurToolBar(2);
+            SetErrorMessage(strOutput);
             Edit_SetModify(m_hSrcEdit, TRUE);
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
-            UpdateOurToolBar(2);
         }
-		SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
-	}
+        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+    }
 }
 
 void MMainWnd::OnAddDialog(HWND hwnd)
