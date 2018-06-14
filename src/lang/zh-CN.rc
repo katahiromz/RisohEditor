@@ -83,7 +83,7 @@ IDR_MAINMENU MENU
             MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "编辑标签(&I)...\tF2", ID_EDITLABEL
+        MENUITEM "更改名称/语言(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "复制为其他名称(&N)...", ID_COPYASNEWNAME
         MENUITEM "复制为其他语言(&L)...", ID_COPYASNEWLANG
@@ -172,7 +172,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "编辑标签(&I)...\tF2", ID_EDITLABEL
+        MENUITEM "更改名称/语言(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "复制为其他名称(&N)...", ID_COPYASNEWNAME
         MENUITEM "复制为其他语言(&L)...", ID_COPYASNEWLANG

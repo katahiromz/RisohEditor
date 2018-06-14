@@ -83,7 +83,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Ed&it Label...\tF2", ID_EDITLABEL
+        MENUITEM "C&hange Name/Language\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clone In New &Name...", ID_COPYASNEWNAME
         MENUITEM "Clone In New &Language...", ID_COPYASNEWLANG
@@ -172,7 +172,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "Ed&it Label...\tF2", ID_EDITLABEL
+        MENUITEM "C&hange Name/Language\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clone As New &Name...", ID_COPYASNEWNAME
         MENUITEM "Clone As New &Language...", ID_COPYASNEWLANG

@@ -83,7 +83,7 @@ IDR_MAINMENU MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "ラベルを編集(&I)\tF2", ID_EDITLABEL
+        MENUITEM "名前/言語を変更(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", ID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", ID_COPYASNEWLANG
@@ -174,7 +174,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "バイナリ リソース項目を抽出(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "ラベルを編集(&I)\tF2", ID_EDITLABEL
+        MENUITEM "名前/言語を変更(&H)\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", ID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", ID_COPYASNEWLANG
