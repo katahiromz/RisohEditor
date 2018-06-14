@@ -41,14 +41,14 @@ class MCloneInNewLangDlg : public MDialogBase
 {
 public:
     EntryBase *m_entry;
-	MIdOrString m_type;
-	MIdOrString m_name;
-	WORD m_lang;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
     MComboBoxAutoComplete m_cmb3;
 
     MCloneInNewLangDlg(EntryBase* entry)
         : MDialogBase(IDD_CLONEINNEWLANG), m_entry(entry),
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(0xFFFF)
+          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
     }
 
@@ -126,6 +126,12 @@ public:
         WORD lang;
         if (!CheckLangComboBox(hCmb3, lang))
             return;
+
+        if (lang == m_lang)
+        {
+            ErrorBoxDx(IDS_SAMELANG);
+            return;
+        }
 
         if (g_res.find(ET_LANG, m_type, m_name, lang))
         {

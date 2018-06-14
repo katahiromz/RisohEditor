@@ -426,6 +426,7 @@ STRINGTABLE
     IDS_DLGINIT1, "You can specify initialization of combo boxes and list boxes by setting initialization data in the RT_DLGINIT resource data of the same name as the dialog resource. "
     IDS_DLGINIT2, "When the WM_INITDIALOG message arrives, the application can initialize the dialog by calling the ExecuteDlgInitDx function of the attached file ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3, "Please specify a list of character strings separated by line breaks for RT_DLGINIT."
+    IDS_SAMELANG, "It's the same language."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

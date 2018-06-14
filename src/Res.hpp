@@ -1535,11 +1535,11 @@ public:
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, new_lang);
+            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
             if (!e)
                 return FALSE;
 
-            UINT nLastID = get_last_id(RT_ICON, entry->m_lang);
+            UINT nLastID = get_last_id(RT_ICON, new_lang);
             UINT nNextID = nLastID + 1;
 
             add_lang_entry(RT_ICON, WORD(nNextID), new_lang, e->m_data);

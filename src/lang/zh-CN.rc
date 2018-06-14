@@ -426,6 +426,7 @@ STRINGTABLE
     IDS_DLGINIT1, "您可以通过在与对话框同名的RT_DLGINIT资源数据中设置初始化数据来指定组合框和列表框的初始化. "
     IDS_DLGINIT2, "当WM_INITDIALOG消息到达时, 您可以通过调用附加文件“DlgInit/DlgInit.h”的ExecuteDlgInitDx函数来初始化对话框.\r\n\r\n"
     IDS_DLGINIT3, "请指定用换行符分隔的RT_DLGINIT字符串列表."
+    IDS_SAMELANG, "这是相同的语言."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

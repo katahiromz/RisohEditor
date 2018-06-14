@@ -2382,18 +2382,18 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         {
             for (auto e : found)
             {
-                g_res.copy_group_icon(e, dialog.m_name, dialog.m_lang);
+                g_res.copy_group_icon(e, dialog.m_name, e->m_lang);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             for (auto e : found)
             {
-                g_res.copy_group_cursor(e, dialog.m_name, dialog.m_lang);
+                g_res.copy_group_cursor(e, dialog.m_name, e->m_lang);
             }
         }
 
-        SelectTV(ET_NAME, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_NAME, dialog.m_type, dialog.m_name, 0xFFFF, FALSE);
     }
 }
 
