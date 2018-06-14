@@ -430,7 +430,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 {
     SetWindowTextW(hCmb, id.c_str());
 
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         return;
 
     INT k = -1;
@@ -478,7 +478,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
 {
     SetWindowTextW(hCmb, id.c_str());
 
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         return;
 
     INT k = -1;
@@ -557,7 +557,7 @@ void InitStringComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         return;
 
     ConstantsDB::TableType table;
@@ -593,7 +593,7 @@ void InitMessageComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
 
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         return;
 
     ConstantsDB::TableType table;
@@ -1018,7 +1018,7 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
 
 MStringW GetKeyID(UINT wId)
 {
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         return mstr_dec_short((SHORT)wId);
 
     return g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, wId);
@@ -2773,10 +2773,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         {
             str_res = dialog.m_str_res;
 
-            bool shown = g_db.AreMacroIDShown();
-            g_db.ShowMacroID(false);
+			bool shown = !g_settings.bHideID;
+			g_settings.bHideID = false;
             MStringW strWide = str_res.Dump();
-            g_db.ShowMacroID(shown);
+			g_settings.bHideID = !shown;
 
             MStringA strOutput;
             if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
@@ -2814,10 +2814,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (nID == IDOK)
         {
             msg_res = dialog.m_msg_res;
-            bool shown = g_db.AreMacroIDShown();
-            g_db.ShowMacroID(false);
+            bool shown = !g_settings.bHideID;
+			g_settings.bHideID = false;
             MStringW strWide = msg_res.Dump();
-            g_db.ShowMacroID(shown);
+			g_settings.bHideID = !shown;
 
             MStringA strOutput;
             if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
@@ -3243,7 +3243,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_ALWAYSCONTROL, MF_UNCHECKED);
 
-    if (!g_db.AreMacroIDShown())
+    if (g_settings.bHideID)
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_UNCHECKED);
@@ -6668,11 +6668,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
-    BOOL bHideID = !g_db.AreMacroIDShown();
-    bHideID = !bHideID;
-    g_settings.bHideID = bHideID;
-
-    g_db.ShowMacroID(!g_settings.bHideID);
+	g_settings.bHideID = !g_settings.bHideID;
 
     UpdateNames();
 
@@ -6790,6 +6786,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
     auto entry = g_res.get_entry();
+
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
@@ -6803,6 +6800,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
     auto entry = g_res.get_entry();
+
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
@@ -8534,10 +8532,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
-    BOOL bHideID = !g_db.AreMacroIDShown();
-    keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)bHideID);
-    g_db.ShowMacroID(!bHideID);
-    g_settings.bHideID = bHideID;
+    keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
 
     BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
     keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)bUseIDC_STATIC);
@@ -8772,8 +8767,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (m_splitter1.GetPaneCount() >= 1)
         g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
-    BOOL bHideID = !g_db.AreMacroIDShown();
-    g_settings.bHideID = bHideID;
     keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
 
     BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();

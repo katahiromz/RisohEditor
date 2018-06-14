@@ -31,6 +31,7 @@
 
 #include "MString.hpp"
 #include "MIdOrString.hpp"
+#include "RisohSettings.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -258,19 +259,6 @@ public:
         return false;
     }
 
-    bool AreMacroIDShown() const
-    {
-        return !GetValue(L"HIDE.ID", L"HIDE.ID");
-    }
-
-    void ShowMacroID(bool bShown = true)
-    {
-        TableType& table = m_map[L"HIDE.ID"];
-        table.clear();
-        EntryType entry(L"HIDE.ID", !bShown);
-        table.push_back(entry);
-    }
-
     bool DoesUseIDC_STATIC() const
     {
         return !!GetValue(L"USE.IDC_STATIC", L"USE.IDC_STATIC");
@@ -304,7 +292,7 @@ public:
 
     StringType GetNameOfResID(IDTYPE_ nIDTYPE_, ValueType value) const
     {
-        if (!AreMacroIDShown())
+		if (g_settings.bHideID)
         {
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
@@ -343,7 +331,7 @@ public:
         {
             if (value == -1 || value == 0xFFFF)
             {
-                if (DoesUseIDC_STATIC() && AreMacroIDShown())
+                if (DoesUseIDC_STATIC() && !g_settings.bHideID)
                     return L"IDC_STATIC";
                 return L"-1";
             }

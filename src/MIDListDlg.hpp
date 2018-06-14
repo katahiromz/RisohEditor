@@ -226,7 +226,14 @@ public:
                     {
                         text2 = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
                         if (text2.empty())
-                            text2 = mstr_dec(entry->m_type.m_id);
+                        {
+                            if (m_nBase == 10)
+                                text2 = mstr_dec(entry->m_type.m_id);
+                            else if (m_nBase == 16)
+                                text2 = mstr_hex(entry->m_type.m_id);
+                            else
+                                assert(0);
+                        }
                     }
                     else
                     {
@@ -401,9 +408,12 @@ public:
     {
         ListView_DeleteAllItems(m_hLst1);
 
-        for (auto& pair : g_settings.id_map)
+        if (!g_settings.bHideID)
         {
-            SetItem(pszIDType, pair.first, pair.second);
+            for (auto& pair : g_settings.id_map)
+            {
+                SetItem(pszIDType, pair.first, pair.second);
+            }
         }
 
         EntrySetBase found;
@@ -415,9 +425,20 @@ public:
             if (entry->m_name.m_id)
             {
                 auto strName = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
-                if (strName.empty())
-                    strName = mstr_dec(entry->m_name.m_id);
+                if (strName.empty() || g_settings.bHideID)
+                {
+                    if (m_nBase == 10)
+                        strName = mstr_dec(entry->m_name.m_id);
+                    else if (m_nBase == 16)
+                        strName = mstr_hex(entry->m_name.m_id);
+                    else
+                        assert(0);
+                }
+
                 auto strValue = mstr_dec(entry->m_name.m_id);
+                if (m_nBase == 16)
+                    strValue = mstr_hex(entry->m_name.m_id);
+
                 MWideToAnsi strNameA(CP_ACP, strName);
                 MWideToAnsi strValueA(CP_ACP, strValue);
                 SetItem(pszIDType, strNameA.c_str(), strValueA.c_str(), entry);

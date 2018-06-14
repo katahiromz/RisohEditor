@@ -95,8 +95,6 @@ public:
         mstr_trim(szText);
         g_settings.strAtlAxWin = szText;
 
-        g_db.ShowMacroID(!g_settings.bHideID);
-
         EndDialog(IDOK);
     }
 
