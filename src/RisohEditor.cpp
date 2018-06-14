@@ -299,9 +299,11 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"RT_MENU";
         else if (str == L"Bitmap.ID")
             str = L"RT_BITMAP";
-        else if (str == L"RCData.ID")
-            str = L"RT_RCDATA";
-    }
+		else if (str == L"RCData.ID")
+			str = L"RT_RCDATA";
+		else if (str == L"Html.ID")
+			str = L"RT_HTML";
+	}
     else
     {
         if (str == L"RT_GROUP_CURSOR")
@@ -322,7 +324,9 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"Bitmap.ID";
         else if (str == L"RT_RCDATA")
             str = L"RCData.ID";
-    }
+		else if (str == L"RT_HTML")
+			str = L"Html.ID";
+	}
 }
 
 MString
@@ -4707,6 +4711,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
+        SelectTV(NULL, FALSE);
 
         return TRUE;
     }
@@ -4741,6 +4746,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
+        SelectTV(NULL, FALSE);
 
         return TRUE;
     }
@@ -4842,6 +4848,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         ShowIDList(hwnd, TRUE);
     }
+    SelectTV(NULL, FALSE);
 
     return TRUE;
 }
@@ -9090,9 +9097,19 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     if (type.empty())
         type.m_str = strType;
 
-    WORD wName = WORD(g_db.GetResIDValue(name));
-    MIdOrString name_or_id(wName);
-    if (wName == 0)
+	MIdOrString name_or_id;
+	if (name[0] == L'\"')
+	{
+		MString name_clone = name;
+		mstr_unquote(name_clone);
+		name_or_id = name_clone.c_str();
+	}
+	else
+	{
+		name_or_id = WORD(g_db.GetResIDValue(name));
+	}
+
+    if (name_or_id == (WORD)0)
     {
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
         auto it = g_settings.id_map.find(strA);

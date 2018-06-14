@@ -194,63 +194,239 @@ public:
         SetItems(szText);
     }
 
+    void SetItem(LPCTSTR pszIDType, const MStringA& first, const MStringA& second, const EntryBase *entry = NULL)
+    {
+        if (entry && entry->m_et == ET_LANG)
+        {
+            if (entry->m_type == RT_ICON || entry->m_type == RT_CURSOR ||
+                entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+            {
+                // ignore
+                return;
+            }
+        }
+
+        LV_ITEM item;
+
+        MString text1 = MAnsiToText(CP_ACP, first.c_str()).c_str();
+        MString text2 = GetAssoc(text1);
+        MString text3 = MAnsiToText(CP_ACP, second.c_str()).c_str();
+        if (text2.empty() || text2 == L"Resource.ID" || text2 == L"Unknown.ID")
+        {
+            if (entry)
+            {
+                auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+                if (nIDTYPE_ != IDTYPE_UNKNOWN)
+                {
+                    text2 = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
+                }
+                else
+                {
+                    if (entry->m_type.is_int())
+                    {
+                        text2 = g_db.GetName(L"RESOURCE", entry->m_type.m_id);
+                        if (text2.empty())
+                            text2 = mstr_dec(entry->m_type.m_id);
+                    }
+                    else
+                    {
+                        text2 = entry->m_type.c_str();
+                    }
+                }
+            }
+        }
+        if (text2.empty())
+            text2 = L"Unknown.ID";
+        if (text2 == L"Resource.ID")
+            return;
+
+        if (pszIDType && text2.find(pszIDType) == MString::npos &&
+            lstrcmp(pszIDType, LoadStringDx(IDS_ALL)) != 0)
+        {
+            return;
+        }
+
+        INT iItem = ListView_GetItemCount(m_hLst1);
+
+        for (INT i = 0; i < iItem; ++i)
+        {
+            WCHAR szText[64];
+            ZeroMemory(&item, sizeof(item));
+            item.iItem = i;
+            item.iSubItem = 0;
+            item.mask = LVIF_TEXT;
+            item.pszText = szText;
+            item.cchTextMax = _countof(szText);
+            ListView_GetItem(m_hLst1, &item);
+
+            if (lstrcmpW(item.pszText, text1.c_str()) != 0)
+                continue;
+
+            item.iSubItem = 1;
+            ListView_GetItem(m_hLst1, &item);
+            if (wcsstr(item.pszText, text2.c_str()) == NULL)
+                continue;
+
+            item.iSubItem = 2;
+            ListView_GetItem(m_hLst1, &item);
+            if (lstrcmpW(item.pszText, text3.c_str()) != 0)
+                continue;
+
+            return; // there is the same item
+        }
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT | LVIF_PARAM;
+        item.iSubItem = 0;
+        item.pszText = &text1[0];
+        item.lParam = iItem;
+        ListView_InsertItem(m_hLst1, &item);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = &text2[0];
+        ListView_SetItem(m_hLst1, &item);
+
+        if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
+        {
+            int value = mstr_parse_int(text3.c_str(), true);
+
+            TCHAR szText[32];
+            if (m_nBase == 10)
+                StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
+            else if (m_nBase == 16)
+                StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
+            else
+                assert(0);
+
+            text3 = szText;
+        }
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 2;
+        item.pszText = &text3[0];
+        ListView_SetItem(m_hLst1, &item);
+    }
+
+    MStringW GetItemText(INT i)
+    {
+        MStringW ret;
+
+        WCHAR szText[64];
+        LV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = i;
+        item.iSubItem = 0;
+        item.mask = LVIF_TEXT;
+        item.pszText = szText;
+        item.cchTextMax = _countof(szText);
+        ListView_GetItem(m_hLst1, &item);
+
+        ret = item.pszText;
+        ret += L"\x7F";
+
+        item.iSubItem = 1;
+        ListView_GetItem(m_hLst1, &item);
+
+        ret += item.pszText;
+        ret += L"\x7F";
+
+        item.iSubItem = 2;
+        ListView_GetItem(m_hLst1, &item);
+
+        ret += item.pszText;
+        return ret;
+    }
+
+    void MakeUnique()
+    {
+        WCHAR szText[128];
+        INT k = ComboBox_GetCurSel(m_hCmb1);
+        ComboBox_GetLBText(m_hCmb1, k, szText);
+        MStringW strText = szText;
+
+        BOOL bAll = (strText == LoadStringDx(IDS_ALL));
+
+        INT iItem = ListView_GetItemCount(m_hLst1);
+        for (INT i = 0; i < iItem; ++i)
+        {
+            MStringW str = GetItemText(i);
+            std::vector<MStringW> vec;
+            mstr_split(vec, str, L"\x7F");
+            str = vec[1];
+            if (!bAll)
+            {
+                str = strText;
+            }
+            else
+            {
+                mstr_split(vec, str, L"/");
+                std::sort(vec.begin(), vec.end());
+                vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+                str = mstr_join(vec, L"/");
+            }
+
+            LV_ITEM item;
+            ZeroMemory(&item, sizeof(item));
+            item.mask = LVIF_TEXT;
+            item.iItem = i;
+            item.iSubItem = 1;
+            item.pszText = &str[0];
+            ListView_SetItem(m_hLst1, &item);
+        }
+        iItem = ListView_GetItemCount(m_hLst1);
+        for (INT i = 0; i < iItem - 1; ++i)
+        {
+            MStringW str0 = GetItemText(i);
+            MStringW str1 = GetItemText(i + 1);
+            if (str0 == str1)
+            {
+                ListView_DeleteItem(m_hLst1, i);
+                --i;
+                --iItem;
+            }
+        }
+
+        INT i = ComboBox_FindStringExact(m_hCmb1, -1, L"Resource.ID");
+        if (i != CB_ERR)
+            ComboBox_DeleteString(m_hCmb1, i);
+    }
+
     void SetItems(LPCTSTR pszIDType = NULL)
     {
         ListView_DeleteAllItems(m_hLst1);
 
         for (auto& pair : g_settings.id_map)
         {
-            LV_ITEM item;
+            SetItem(pszIDType, pair.first, pair.second);
+        }
 
-            MString text1 = MAnsiToText(CP_ACP, pair.first.c_str()).c_str();
-            MString text2 = GetAssoc(text1);
-            MString text3 = MAnsiToText(CP_ACP, pair.second.c_str()).c_str();
-            if (text2.empty())
-                text2 = L"Unknown.ID";
+        EntrySetBase found;
+        g_res.search(found, ET_LANG);
 
-            if (pszIDType && text2.find(pszIDType) == MString::npos &&
-                lstrcmp(pszIDType, LoadStringDx(IDS_ALL)) != 0)
+        for (auto entry : found)
+        {
+            auto nIDTYPE_ = g_db.IDTypeFromResType(entry->m_type);
+            if (entry->m_name.m_id)
             {
-                continue;
+                auto strName = g_db.GetNameOfIDTypeValue(nIDTYPE_, entry->m_name.m_id);
+                if (strName.empty())
+                    strName = mstr_dec(entry->m_name.m_id);
+                auto strValue = mstr_dec(entry->m_name.m_id);
+                MWideToAnsi strNameA(CP_ACP, strName);
+                MWideToAnsi strValueA(CP_ACP, strValue);
+                SetItem(pszIDType, strNameA.c_str(), strValueA.c_str(), entry);
             }
-
-            INT iItem = ListView_GetItemCount(m_hLst1);
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT | LVIF_PARAM;
-            item.iSubItem = 0;
-            item.pszText = &text1[0];
-            item.lParam = iItem;
-            ListView_InsertItem(m_hLst1, &item);
-
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 1;
-            item.pszText = &text2[0];
-            ListView_SetItem(m_hLst1, &item);
-
-            if (text3[0] != TEXT('"') && text3[0] != TEXT('L'))
+            else
             {
-                int value = mstr_parse_int(text3.c_str(), true);
-
-                TCHAR szText[32];
-                if (m_nBase == 10)
-                    StringCchPrintf(szText, _countof(szText), TEXT("%d"), value);
-                else if (m_nBase == 16)
-                    StringCchPrintf(szText, _countof(szText), TEXT("0x%X"), value);
-                else
-                    assert(0);
-
-                text3 = szText;
+                MWideToAnsi strNameA(CP_ACP, entry->m_name.quoted_wstr());
+                SetItem(pszIDType, strNameA.c_str(), strNameA.c_str(), entry);
             }
-
-            ZeroMemory(&item, sizeof(item));
-            item.iItem = iItem;
-            item.mask = LVIF_TEXT;
-            item.iSubItem = 2;
-            item.pszText = &text3[0];
-            ListView_SetItem(m_hLst1, &item);
         }
 
         ListView_SortItems(m_hLst1, CompareFunc, (LPARAM)this);
@@ -274,14 +450,18 @@ public:
                         INT ret = ComboBox_FindStringExact(m_hCmb1, -1, types[k].c_str());
                         if (ret == CB_ERR)
                         {
-                            ComboBox_AddString(m_hCmb1, types[k].c_str());
+                            if (!types[k].empty())
+                                ComboBox_AddString(m_hCmb1, types[k].c_str());
                         }
                     }
                 }
             }
-            ComboBox_SetCurSel(m_hCmb1, 0);
+            if (pszIDType == NULL)
+                ComboBox_SelectString(m_hCmb1, -1, LoadStringDx(IDS_ALL));
             m_bChanging = FALSE;
         }
+
+        MakeUnique();
     }
 
     void OnMeasureItem(HWND hwnd, MEASUREITEMSTRUCT * lpMeasureItem)
