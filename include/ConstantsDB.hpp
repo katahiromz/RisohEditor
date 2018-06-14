@@ -399,6 +399,18 @@ public:
         return (ValueType)mstr_parse_int(name.c_str());
     }
 
+    ValueType GetValueI(CategoryType category, NameType name) const
+    {
+        const TableType& table = GetTable(category);
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (lstrcmpiW(it->name.c_str(), name.c_str()) == 0)
+                return it->value;
+        }
+        return (ValueType)mstr_parse_int(name.c_str());
+    }
+
     ValuesType GetValues(CategoryType category, NameType name) const
     {
         ValuesType ret;

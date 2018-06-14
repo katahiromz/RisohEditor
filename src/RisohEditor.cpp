@@ -901,7 +901,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         if (strLang.find(L'_') != MStringW::npos)
         {
-            if (INT nValue = g_db.GetValue(L"LANGUAGES", strLang.c_str()))
+            if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
             {
                 lang = (WORD)nValue;
                 break;
@@ -914,7 +914,7 @@ WORD LangFromText(LPWSTR pszLang)
             auto i = str.find(L'-');
             if (i != MString::npos)
                 str[i] = L'_';
-            if (INT nValue = g_db.GetValue(L"LANGUAGES", str.c_str()))
+            if (INT nValue = g_db.GetValueI(L"LANGUAGES", str.c_str()))
             {
                 lang = (WORD)nValue;
                 break;
