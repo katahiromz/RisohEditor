@@ -3248,7 +3248,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_UNCHECKED);
 
-    if (g_db.DoesUseIDC_STATIC())
+    if (g_settings.bHasIDC_STATIC)
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_UNCHECKED);
@@ -6644,10 +6644,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
-    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
-    bUseIDC_STATIC = !bUseIDC_STATIC;
-    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-    g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+	g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
 
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
@@ -8533,14 +8530,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         return FALSE;
 
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
-
-    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
-    keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)bUseIDC_STATIC);
-    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-    g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
-    g_db.AddIDC_STATIC();
-    g_settings.AddIDC_STATIC();
-
+    keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bHasIDC_STATIC);
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)g_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)g_settings.bAlwaysControl);
@@ -8768,11 +8758,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
         g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
     keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
-
-    BOOL bUseIDC_STATIC = g_db.DoesUseIDC_STATIC();
-    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
     keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
-
     keyRisoh.SetDword(TEXT("ShowStatusBar"), g_settings.bShowStatusBar);
     keyRisoh.SetDword(TEXT("ShowBinEdit"), g_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), g_settings.bAlwaysControl);

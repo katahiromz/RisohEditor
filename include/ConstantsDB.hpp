@@ -259,19 +259,6 @@ public:
         return false;
     }
 
-    bool DoesUseIDC_STATIC() const
-    {
-        return !!GetValue(L"USE.IDC_STATIC", L"USE.IDC_STATIC");
-    }
-
-    void UseIDC_STATIC(bool bUse = true)
-    {
-        TableType& table = m_map[L"USE.IDC_STATIC"];
-        table.clear();
-        EntryType entry(L"USE.IDC_STATIC", bUse);
-        table.push_back(entry);
-    }
-
     void AddIDC_STATIC()
     {
         const NameType name = L"IDC_STATIC";
@@ -331,7 +318,7 @@ public:
         {
             if (value == -1 || value == 0xFFFF)
             {
-                if (DoesUseIDC_STATIC() && !g_settings.bHideID)
+                if (g_settings.bHasIDC_STATIC && !g_settings.bHideID)
                     return L"IDC_STATIC";
                 return L"-1";
             }
