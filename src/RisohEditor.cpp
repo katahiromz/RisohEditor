@@ -2218,12 +2218,13 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
-    static const LPWSTR s_apszExt[] =
+    static const LPWSTR s_DotExts[] =
     {
         L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
     };
     LPWSTR pch = wcsrchr(szFile, L'.');
-    for (auto ext : s_apszExt)
+    BOOL bIsExe = (lstrcmpiW(pch, L".exe") == 0);
+    for (auto ext : s_DotExts)
     {
         if (lstrcmpiW(pch, ext) == 0)
             *pch = 0;
@@ -2236,9 +2237,9 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
 
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bIsExe)
     {
-        if (ofn.nFilterIndex = FI_EXE)
+        if (ofn.nFilterIndex == FI_EXE)
             ofn.nFilterIndex = FI_RC;
     }
 
