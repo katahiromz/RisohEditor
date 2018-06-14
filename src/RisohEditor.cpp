@@ -3192,6 +3192,14 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    EntrySetBase found;
+    g_res.search(found, ET_LANG);
+
+    if (found.empty())
+        EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_GRAYED);
+    else
+        EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_ENABLED);
+
     if (g_settings.bShowToolBar)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
     else
@@ -3322,6 +3330,10 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
     case ET_NAME:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -3336,8 +3348,16 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
     case ET_LANG:
+        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
         if (entry->m_type == RT_GROUP_ICON || entry->m_type == RT_ICON ||
             entry->m_type == RT_ANIICON)
         {
@@ -3416,6 +3436,10 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
         break;
     default:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -3429,6 +3453,10 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
     }
 }
