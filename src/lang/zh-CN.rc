@@ -430,6 +430,12 @@ STRINGTABLE
     IDS_SAMENAME, "这是相同的资源名称."
     IDS_CANTSAVETOEXE, "无法从非EXE文件中另存为EXE."
     IDS_CANTSTARTSEARCH, "无法开始搜索."
+    IDS_AMERICA, "美国"
+    IDS_ENGLISH, "英语"
+    IDS_CHINA, "中国"
+    IDS_CHINESE, "中文"
+    IDS_RUSSIA, "俄国"
+    IDS_RUSSIAN, "俄语"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

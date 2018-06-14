@@ -79,7 +79,7 @@ public:
         MString str1 = GetDlgItemText(hwnd, edt1);
         ReplaceFullWithHalf(str1);
         mstr_trim(str1);
-        CharUpper(&str1[0]);
+        CharUpperW(&str1[0]);
         if (str1.empty())
         {
             HWND hEdt1 = GetDlgItem(hwnd, edt1);

@@ -247,8 +247,8 @@ struct EntryBase
 
     MStringW get_lang_label() const
     {
-        MStringW Res_GetLangName(WORD lang);
-        return Res_GetLangName(m_lang);
+        MStringW TextFromLang(WORD lang);
+        return TextFromLang(m_lang);
     }
 
     void clear_data()

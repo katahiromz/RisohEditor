@@ -87,7 +87,7 @@ public:
 
         mstr_trim(strInput);
         MString strInputUpper = strInput;
-        CharUpper(&strInputUpper[0]);
+        CharUpperW(&strInputUpper[0]);
 
         INT iItem = FindString(-1, strInput.c_str());
         if (iItem == CB_ERR)
@@ -102,7 +102,7 @@ public:
         {
             GetLBText(i, szText);
             MString strText = szText;
-            CharUpper(&strText[0]);
+            CharUpperW(&strText[0]);
             if (strText.find(strInputUpper) == 0)
             {
                 return;

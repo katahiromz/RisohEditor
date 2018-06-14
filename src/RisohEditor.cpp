@@ -760,6 +760,9 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     {
         WCHAR sz[MAX_PATH];
         StringCchPrintfW(sz, _countof(sz), L"%s (%u)", entry.str.c_str(), entry.LangID);
+        if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
+            continue;
+
         INT k = ComboBox_AddString(hCmb3, sz);
         if (langid == entry.LangID)
         {
@@ -790,6 +793,11 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
                     continue;
             }
         }
+
+        LV_FINDINFO find = { LVFI_STRING, sz1 };
+        INT iFound = ListView_FindItem(hLst1, -1, &find);
+        if (iFound != -1)
+            continue;
 
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
@@ -877,42 +885,130 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     return TRUE;
 }
 
+WORD LangFromText(LPWSTR pszLang)
+{
+    WORD lang = 0xFFFF;
+
+    ReplaceFullWithHalf(pszLang);
+    MStringW strLang = pszLang;
+    mstr_trim(strLang);
+    lstrcpyW(pszLang, strLang.c_str());
+
+    do
+    {
+        if (strLang[0] == 0)
+            break;
+
+        if (lstrcmpiW(pszLang, L"America") == 0 ||
+            lstrcmpiW(pszLang, L"United States") == 0 ||
+            lstrcmpiW(pszLang, L"US") == 0 ||
+            lstrcmpiW(pszLang, L"USA") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_AMERICA)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_ENGLISH)) == 0)
+        {
+            lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+            break;
+        }
+
+        if (lstrcmpiW(pszLang, L"Chinese") == 0 ||
+            lstrcmpiW(pszLang, L"PRC") == 0 ||
+            lstrcmpiW(pszLang, L"CHN") == 0 ||
+            lstrcmpiW(pszLang, L"CN") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_CHINESE)) == 0)
+        {
+            lang = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+            break;
+        }
+
+        if (lstrcmpiW(pszLang, L"Russia") == 0 ||
+            lstrcmpiW(pszLang, L"Russian") == 0 ||
+            lstrcmpiW(pszLang, L"RUS") == 0 ||
+            lstrcmpiW(pszLang, L"RU") == 0 ||
+            lstrcmpiW(pszLang, L"RU") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_RUSSIAN)) == 0)
+        {
+            lang = MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA);
+            break;
+        }
+
+        if (mchr_is_digit(strLang[0]))
+        {
+            // strLang is numeric
+            int nValue = mstr_parse_int(pszLang);
+            if (nValue < 0 || 0xFFFF <= nValue)
+                break;
+
+            lang = WORD(nValue);
+        }
+
+        if (lang == 0xFFFF)
+        {
+            for (auto& entry : g_Langs)
+            {
+                if (lstrcmpiW(entry.str.c_str(), pszLang) == 0)
+                {
+                    lang = entry.LangID;
+                    break;
+                }
+            }
+        }
+
+        if (lang == 0xFFFF)
+        {
+            if (WCHAR *pch = wcsrchr(pszLang, L'('))
+            {
+                ++pch;
+                if (mchr_is_digit(*pch))
+                {
+                    int nValue = mstr_parse_int(pch);
+                    if (nValue < 0 || 0xFFFF <= nValue)
+                        break;
+
+                    lang = WORD(nValue);
+                }
+            }
+        }
+
+        if (lang == 0xFFFF)
+        {
+            for (auto& entry : g_Langs)
+            {
+                if (wcsstr(entry.str.c_str(), pszLang) != NULL)
+                {
+                    lang = entry.LangID;
+                    break;
+                }
+            }
+        }
+
+        if (lang == 0xFFFF)
+        {
+            CharUpperW(&strLang[0]);
+            for (auto& entry : g_Langs)
+            {
+                MStringW strEntry = entry.str;
+                CharUpperW(&strEntry[0]);
+
+                if (wcsstr(strEntry.c_str(), pszLang) != NULL)
+                {
+                    lang = entry.LangID;
+                    break;
+                }
+            }
+        }
+    } while (0);
+
+    return lang;
+}
+
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
 
-    MStringW str = szLang;
-    mstr_trim(str);
-    lstrcpynW(szLang, str.c_str(), _countof(szLang));
-
-    do
-    {
-        if (szLang[0] == 0)
-            break;
-
-        if (mchr_is_digit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
-        {
-            int nValue = mstr_parse_int(szLang);
-            if (nValue < 0 || 0xFFFF < nValue)
-                break;
-
-            lang = WORD(nValue);
-            if (lang == 0xFFFF)
-                break;
-        }
-        else
-        {
-            INT i = ComboBox_FindStringExact(hCmb3, -1, szLang);
-            if (i == CB_ERR || i >= INT(g_Langs.size()))
-                break;
-
-            lang = g_Langs[i].LangID;
-            if (lang == 0xFFFF)
-                break;
-        }
-        return TRUE;    // success
-    } while (0);
+    lang = LangFromText(szLang);;
+    if (lang != 0xFFFF)
+        return TRUE;
 
     // error
     ComboBox_SetEditSel(hCmb3, 0, -1);
@@ -1164,7 +1260,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
     entry.LangID = LANGIDFROMLCID(lcid);
 
-    WCHAR sz[MAX_PATH] = L"";
+    WCHAR sz[128] = L"";
     if (lcid == 0)
         return TRUE;
     if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
@@ -1175,10 +1271,32 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     return TRUE;
 }
 
-MStringW
-Res_GetLangName(WORD lang)
+BOOL CALLBACK
+EnumEngLocalesProc(LPWSTR lpLocaleString)
 {
-    WCHAR sz[64], szLoc[64];
+    LANG_ENTRY entry;
+    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
+    entry.LangID = LANGIDFROMLCID(lcid);
+
+    WCHAR sz1[128] = L"", sz2[128] = L"";
+    if (lcid == 0)
+        return TRUE;
+    if (!GetLocaleInfoW(lcid, LOCALE_SENGLANGUAGE, sz1, _countof(sz1)))
+        return TRUE;
+    if (!GetLocaleInfoW(lcid, LOCALE_SENGCOUNTRY, sz2, _countof(sz2)))
+        return TRUE;
+
+    entry.str = sz1;
+    entry.str += L" (";
+    entry.str += sz2;
+    entry.str += L")";
+    g_Langs.push_back(entry);
+    return TRUE;
+}
+
+MStringW TextFromLang(WORD lang)
+{
+    WCHAR sz[128], szLoc[128];
     LCID lcid = MAKELCID(lang, SORT_DEFAULT);
     if (lcid == 0)
     {
@@ -1186,7 +1304,7 @@ Res_GetLangName(WORD lang)
     }
     else
     {
-        if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, 64))
+        if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, _countof(szLoc)))
             StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
         else
             StringCchPrintfW(sz, _countof(sz), L"%u", lang);
@@ -2273,7 +2391,7 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
 {
     if (pSearch->bIgnoreCases)
-        CharUpper(&text[0]);
+        CharUpperW(&text[0]);
 
     if (text.find(pSearch->strText) == MString::npos)
         return false;
@@ -2373,7 +2491,7 @@ BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
 {
     if (search.bIgnoreCases)
     {
-        CharUpper(&search.strText[0]);
+        CharUpperW(&search.strText[0]);
     }
 
     auto hThread = (HANDLE)_beginthreadex(NULL, 0, search_proc, &search, 0, NULL);
@@ -2533,7 +2651,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 
     if (m_search.bIgnoreCases)
     {
-        CharUpper(&m_search.strText[0]);
+        CharUpperW(&m_search.strText[0]);
     }
 
     m_search.bCancelled = FALSE;
@@ -4685,12 +4803,15 @@ INT MMainWnd::CheckData(VOID)
 void MMainWnd::DoLoadLangInfo(VOID)
 {
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
+    EnumSystemLocalesW(EnumEngLocalesProc, LCID_SUPPORTED);
+
     {
         LANG_ENTRY entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
         entry.str = LoadStringDx(IDS_NEUTRAL);
         g_Langs.push_back(entry);
     }
+
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
@@ -5031,8 +5152,8 @@ BOOL MMainWnd::OnFindNext(HWND hwnd)
 
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
-        CharUpper(szText);
-        CharUpper(&str[0]);
+        CharUpperW(szText);
+        CharUpperW(&str[0]);
     }
 
     MString substr = str.substr(ibegin, iend - ibegin);
@@ -5079,8 +5200,8 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
-        CharUpper(szText);
-        CharUpper(&str[0]);
+        CharUpperW(szText);
+        CharUpperW(&str[0]);
     }
 
     MString substr = str.substr(ibegin, iend - ibegin);
@@ -5126,8 +5247,8 @@ BOOL MMainWnd::OnReplaceNext(HWND hwnd)
 
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
-        CharUpper(szText);
-        CharUpper(&str[0]);
+        CharUpperW(szText);
+        CharUpperW(&str[0]);
     }
 
     MString substr = str.substr(ibegin, iend - ibegin);
@@ -5178,8 +5299,8 @@ BOOL MMainWnd::OnReplacePrev(HWND hwnd)
 
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
-        CharUpper(szText);
-        CharUpper(&str[0]);
+        CharUpperW(szText);
+        CharUpperW(&str[0]);
     }
 
     MString substr = str.substr(ibegin, iend - ibegin);
@@ -5557,7 +5678,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
                 MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
                 MString lang_name2 = lang_name1;
-                CharUpper(&lang_name2[0]);
+                CharUpperW(&lang_name2[0]);
                 file.WriteSzA("#ifdef LANGUAGE_");
                 MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
                 file.WriteSzA(lang2_w2a.c_str());
@@ -7212,49 +7333,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #endif
 }
 
-WORD GetLangFromText(const WCHAR *pszLang, BOOL bFirstAction = TRUE)
-{
-    WCHAR szText[128];
-    StringCchCopyW(szText, _countof(szText), pszLang);
-
-    ReplaceFullWithHalf(szText);
-
-    if (szText[0] == 0)
-    {
-        return 0;
-    }
-    else if (mchr_is_digit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
-    {
-        return WORD(mstr_parse_int(szText));
-    }
-    else
-    {
-        MStringW str = szText;
-        size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
-        {
-            return WORD(mstr_parse_int(&str[i + 1]));
-        }
-        for (auto& entry : g_Langs)
-        {
-            WCHAR szText[MAX_PATH];
-
-            StringCchCopyW(szText, _countof(szText), entry.str.c_str());
-            if (lstrcmpiW(szText, szText) == 0)
-            {
-                return entry.LangID;
-            }
-            StringCchPrintfW(szText, _countof(szText), L"%s (%u)", entry.str.c_str(), entry.LangID);
-            if (lstrcmpiW(szText, szText) == 0)
-            {
-                return entry.LangID;
-            }
-        }
-    }
-
-    return WORD(0xFFFF);
-}
-
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
     WCHAR szText[128];
@@ -7490,7 +7568,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
                 entry->m_et == ET_MESSAGE)
             {
-                old_lang = GetLangFromText(szOldText);
+                old_lang = LangFromText(szOldText);
                 if (old_lang == 0xFFFF)
                 {
                     return TRUE;    // prevent
@@ -7539,9 +7617,9 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 if (old_name.is_str())
-                    CharUpper(&old_name.m_str[0]);
+                    CharUpperW(&old_name.m_str[0]);
                 if (new_name.is_str())
-                    CharUpper(&new_name.m_str[0]);
+                    CharUpperW(&new_name.m_str[0]);
 
                 if (old_name == new_name)
                     return FALSE;   // reject
@@ -7552,11 +7630,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             else if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
                      entry->m_et == ET_MESSAGE)
             {
-                old_lang = GetLangFromText(szOldText);
+                old_lang = LangFromText(szOldText);
                 if (old_lang == 0xFFFF)
                     return FALSE;   // reject
 
-                WORD new_lang = GetLangFromText(szNewText);
+                WORD new_lang = LangFromText(szNewText);
                 if (new_lang == 0xFFFF)
                     return FALSE;   // reject
 
@@ -9129,7 +9207,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
             if (strA[0] == 'L')
                 strA = strA.substr(1);
             mstr_unquote(strA);
-            CharUpperA(&strA[0]);
+			CharUpperA(&strA[0]);
             name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
         }
     }

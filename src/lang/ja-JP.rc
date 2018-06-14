@@ -432,6 +432,12 @@ STRINGTABLE
     IDS_SAMENAME, "同じリソース名です。"
     IDS_CANTSAVETOEXE, "EXEではないファイルからEXEに保存できません。"
     IDS_CANTSTARTSEARCH, "検索を開始できません。"
+    IDS_AMERICA, "米国"
+    IDS_ENGLISH, "英語"
+    IDS_CHINA, "中華人民共和国"
+    IDS_CHINESE, "中国語"
+    IDS_RUSSIA, "ロシア"
+    IDS_RUSSIAN, "ロシア語"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

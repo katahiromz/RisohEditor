@@ -360,6 +360,12 @@
 #define IDS_SAMENAME            251
 #define IDS_CANTSAVETOEXE       252
 #define IDS_CANTSTARTSEARCH     253
+#define IDS_AMERICA             254
+#define IDS_ENGLISH             255
+#define IDS_CHINA               256
+#define IDS_CHINESE             257
+#define IDS_RUSSIA              258
+#define IDS_RUSSIAN             259
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
