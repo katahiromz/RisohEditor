@@ -4351,7 +4351,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
-            Sleep(500);
+            Sleep(FILE_WAIT_TIME);
             if (res.import_res(szPath3))
             {
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
@@ -4438,7 +4438,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
-            Sleep(500);
+            Sleep(FILE_WAIT_TIME);
             if (res.import_res(szPath3))
             {
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
@@ -4582,7 +4582,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         if (pmaker.GetExitCode() == 0)
         {
             EntrySet res;
-            Sleep(500);
+            Sleep(FILE_WAIT_TIME);
             if (res.import_res(szPath3))
             {
                 for (auto entry : res)

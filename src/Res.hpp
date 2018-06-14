@@ -55,6 +55,10 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
 
+#ifndef FILE_WAIT_TIME
+    #define FILE_WAIT_TIME  1000
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 inline BOOL
@@ -1691,7 +1695,6 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
-                file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }
@@ -1716,7 +1719,6 @@ public:
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
-                file.FlushFileBuffers();
                 file.CloseHandle();
                 return TRUE;
             }
@@ -1803,7 +1805,7 @@ public:
 
             if (pmaker.GetExitCode() == 0)
             {
-                Sleep(500);
+                Sleep(FILE_WAIT_TIME);
                 if (import_res(szPath3))
                 {
                     bSuccess = TRUE;
@@ -1852,7 +1854,7 @@ public:
 
             if (pmaker.GetExitCode() == 0)
             {
-                Sleep(500);
+                Sleep(FILE_WAIT_TIME);
                 bSuccess = import_res(szPath3);
             }
             else if (strOutput.find(": no resources") != MStringA::npos)
