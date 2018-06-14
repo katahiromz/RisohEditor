@@ -877,41 +877,45 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
+
     MStringW str = szLang;
     mstr_trim(str);
     lstrcpynW(szLang, str.c_str(), _countof(szLang));
 
-    if (szLang[0] == 0)
+    do
     {
-        ComboBox_SetEditSel(hCmb3, 0, -1);
-        SetFocus(hCmb3);
-        MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG), 
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (mchr_is_digit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
-    {
-        lang = WORD(mstr_parse_int(szLang));
-    }
-    else
-    {
-        INT i = ComboBox_GetCurSel(hCmb3);
-        if (i == CB_ERR || i >= INT(g_Langs.size()))
-        {
-            i = ComboBox_FindStringExact(hCmb3, -1, szLang);
-            if (i == CB_ERR || i >= INT(g_Langs.size()))
-            {
-                ComboBox_SetEditSel(hCmb3, 0, -1);
-                SetFocus(hCmb3);
-                MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG), 
-                            NULL, MB_ICONERROR);
-                return FALSE;
-            }
-        }
-        lang = g_Langs[i].LangID;
-    }
+        if (szLang[0] == 0)
+            break;
 
-    return TRUE;
+        if (mchr_is_digit(szLang[0]) || szLang[0] == L'-' || szLang[0] == L'+')
+        {
+            int nValue = mstr_parse_int(szLang);
+            if (nValue < 0 || 0xFFFF < nValue)
+                break;
+
+            lang = WORD(nValue);
+            if (lang == 0xFFFF)
+                break;
+        }
+        else
+        {
+            INT i = ComboBox_FindStringExact(hCmb3, -1, szLang);
+            if (i == CB_ERR || i >= INT(g_Langs.size()))
+                break;
+
+            lang = g_Langs[i].LangID;
+            if (lang == 0xFFFF)
+                break;
+        }
+        return TRUE;    // success
+    } while (0);
+
+    // error
+    ComboBox_SetEditSel(hCmb3, 0, -1);
+    SetFocus(hCmb3);
+    MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                NULL, MB_ICONERROR);
+    return FALSE;
 }
 
 BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
