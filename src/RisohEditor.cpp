@@ -5270,6 +5270,8 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 
     for (auto entry : g_res)
     {
+		if (entry->m_et != ET_LANG)
+			continue;
         if (entry->m_lang != lang)
             continue;
         if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
@@ -5909,11 +5911,12 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
 
         for (auto e : g_res)
         {
+			if (e->m_et != ET_LANG)
+				continue;
             if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE)
-            {
                 continue;
-            }
-            if (!DoExtract(e, TRUE))
+
+			if (!DoExtract(e, TRUE))
                 return FALSE;
         }
     }
