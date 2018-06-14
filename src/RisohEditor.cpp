@@ -899,6 +899,28 @@ WORD LangFromText(LPWSTR pszLang)
         if (strLang[0] == 0)
             break;
 
+        if (strLang.find(L'_') != MStringW::npos)
+        {
+            if (INT nValue = g_db.GetValue(L"LANGUAGES", strLang.c_str()))
+            {
+                lang = (WORD)nValue;
+                break;
+            }
+        }
+
+        if (strLang.find(L'-') != MStringW::npos)
+        {
+            MStringW str = strLang;
+            auto i = str.find(L'-');
+            if (i != MString::npos)
+                str[i] = L'_';
+            if (INT nValue = g_db.GetValue(L"LANGUAGES", str.c_str()))
+            {
+                lang = (WORD)nValue;
+                break;
+            }
+        }
+
         if (lstrcmpiW(pszLang, L"America") == 0 ||
             lstrcmpiW(pszLang, L"United States") == 0 ||
             lstrcmpiW(pszLang, L"US") == 0 ||
