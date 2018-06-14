@@ -115,6 +115,7 @@ public:
             switch (id)
             {
             case IDYES:
+                g_res.delete_entry(entry);
                 break;
             case IDNO:
             case IDCANCEL:

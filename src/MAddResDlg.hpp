@@ -175,7 +175,6 @@ public:
         if (!Res_HasSample(type) && !Edt1_CheckFile(hEdt1, file))
             return;
 
-        bool bOverwrite = false;
         if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
             if (file.empty() && Res_HasSample(type))
@@ -188,7 +187,7 @@ public:
             switch (id)
             {
             case IDYES:
-                bOverwrite = true;
+                g_res.delete_entry(entry);
                 break;
             case IDNO:
             case IDCANCEL:
