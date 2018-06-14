@@ -2392,6 +2392,13 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
                 g_res.copy_group_cursor(e, dialog.m_name, e->m_lang);
             }
         }
+        else
+        {
+            for (auto e : found)
+            {
+                g_res.add_lang_entry(e->m_type, dialog.m_name, e->m_lang, e->m_data);
+            }
+        }
 
         SelectTV(ET_NAME, dialog.m_type, dialog.m_name, 0xFFFF, FALSE);
     }

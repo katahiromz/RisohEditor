@@ -1530,12 +1530,14 @@ public:
             return FALSE;
         }
 
-        auto pEntries = (const GRPICONDIRENTRY *)&(*entry)[sizeof(dir)];
+        auto data = entry->m_data;
+        auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
+        auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
+            auto e = find(ET_LANG, RT_ICON, old_entries[i].nID, entry->m_lang);
             if (!e)
                 return FALSE;
 
@@ -1543,9 +1545,10 @@ public:
             UINT nNextID = nLastID + 1;
 
             add_lang_entry(RT_ICON, WORD(nNextID), new_lang, e->m_data);
+            new_entries[i].nID = (WORD)nNextID;
         }
 
-        add_lang_entry(RT_GROUP_ICON, new_name, new_lang, entry->m_data);
+        add_lang_entry(RT_GROUP_ICON, new_name, new_lang, data);
         return TRUE;
     }
 
@@ -1575,12 +1578,14 @@ public:
             return FALSE;
         }
 
-        auto pEntries = (const GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
+        auto data = entry->m_data;
+        auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
+        auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto e = find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry->m_lang);
+            auto e = find(ET_LANG, RT_CURSOR, old_entries[i].nID, entry->m_lang);
             if (!e)
                 return FALSE;
 
@@ -1588,9 +1593,10 @@ public:
             UINT nNextID = nLastID + 1;
 
             add_lang_entry(RT_CURSOR, WORD(nNextID), new_lang, e->m_data);
+            new_entries[i].nID = (WORD)nNextID;
         }
 
-        add_lang_entry(RT_GROUP_CURSOR, new_name, new_lang, entry->m_data);
+        add_lang_entry(RT_GROUP_CURSOR, new_name, new_lang, data);
         return TRUE;
     }
 
