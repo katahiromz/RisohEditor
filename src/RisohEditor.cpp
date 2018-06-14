@@ -2183,7 +2183,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     stream.clear();
-    if (dialog_res.m_dlginit.SaveToStream(stream))
+    if (dialog_res.m_dlginit.SaveToStream(stream) && !dialog_res.m_dlginit.empty())
     {
         // update RT_DLGINIT
         if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
