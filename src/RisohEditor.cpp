@@ -6789,28 +6789,28 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
+    auto entry = g_res.get_entry();
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
         Expand(hItem);
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(m_hwndTV);
-    TreeView_SelectItem(m_hwndTV, hItem);
-    TreeView_EnsureVisible(m_hwndTV, hItem);
+
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
+    auto entry = g_res.get_entry();
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
         Collapse(hItem);
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
-    hItem = TreeView_GetRoot(m_hwndTV);
-    TreeView_SelectItem(m_hwndTV, hItem);
-    TreeView_EnsureVisible(m_hwndTV, hItem);
+
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::Expand(HTREEITEM hItem)
@@ -6991,7 +6991,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         {
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
             auto entry = g_res.get_entry();
-            SelectTV(entry, TRUE);
+            SelectTV(entry, FALSE);
         }
         break;
     case ID_MRUFILE0:

@@ -1459,6 +1459,7 @@ public:
         }
     }
 
+    // for TVN_DELETEITEM
     void on_delete_item(EntryBase *entry)
     {
         if (!entry || super()->find(entry) == super()->end())
