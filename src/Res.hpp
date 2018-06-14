@@ -1778,7 +1778,7 @@ public:
         MStringW strCmdLine;
         strCmdLine += L'\"';
         strCmdLine += strMcdxExe;
-        strCmdLine += L"\" ";
+        strCmdLine += L"\" -DMCDX_INVOKED=1 ";
         strCmdLine += strMacrosDump;
         strCmdLine += strIncludesDump;
         strCmdLine += L" -o \"";
@@ -1794,7 +1794,6 @@ public:
         pmaker.SetShowWindow(SW_HIDE);
         pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-        EntrySet res;
         MFile hInputWrite, hOutputRead;
         SetEnvironmentVariableW(L"LANG", L"en_US");
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
@@ -1805,7 +1804,7 @@ public:
             if (pmaker.GetExitCode() == 0)
             {
                 Sleep(500);
-                if (res.import_res(szPath3))
+                if (import_res(szPath3))
                 {
                     bSuccess = TRUE;
                 }

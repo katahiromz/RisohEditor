@@ -133,7 +133,6 @@
 #define ID_ADDMANIFEST          211
 #define ID_EDITLABEL            212
 #define ID_SETPATHS             213
-#define ID_USEOLDLANGSTMT       214
 #define ID_SETDEFAULTS          215
 #define ID_BASE10               216
 #define ID_BASE16               217

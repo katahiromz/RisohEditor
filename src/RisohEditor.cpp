@@ -1249,6 +1249,7 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
+    void UpdateNames(void);
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
     {
         TV_ITEM item;
@@ -1257,8 +1258,8 @@ protected:
         item.hItem = e->m_hItem;
         e->m_strLabel = e->get_name_label();
         item.pszText = &e->m_strLabel[0];
-		if (pszText)
-			lstrcpyW(pszText, item.pszText);
+        if (pszText)
+            lstrcpyW(pszText, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
     }
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
@@ -1360,6 +1361,12 @@ public:
     void SelectTV(EntryType et, const MIdOrString& type,
                   const MIdOrString& name, WORD lang, BOOL bDoubleClick);
 
+	template <typename T_DIALOG>
+    void SelectTV(EntryType et, const T_DIALOG& dialog, BOOL bDoubleClick)
+    {
+        SelectTV(et, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+    }
+
     BOOL CompileIfNecessary(BOOL bReopen = FALSE);
     BOOL ReCompileOnSelChange(BOOL bReopen = FALSE);
     void SelectString(void);
@@ -1373,7 +1380,6 @@ public:
     void OnPredefMacros(HWND hwnd);
     void OnEditLabel(HWND hwnd);
     void OnSetPaths(HWND hwnd);
-    void OnUseOldStyleLangStmt(HWND hwnd);
     void OnShowLangs(HWND hwnd);
     void OnShowHideToolBar(HWND hwnd);
 
@@ -1817,7 +1823,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     MReplaceBinDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -3182,8 +3188,6 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
-    CheckMenuItem(hMenu, ID_USEOLDLANGSTMT, MF_BYCOMMAND | MF_CHECKED);
-
     if (g_settings.bShowToolBar)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
     else
@@ -4177,7 +4181,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
             {
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
                 g_res.merge(res);
-				bSuccess = true;
+                bSuccess = true;
             }
             res.delete_all();
         }
@@ -4264,7 +4268,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             {
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
                 g_res.merge(res);
-				bSuccess = true;
+                bSuccess = true;
             }
             res.delete_all();
         }
@@ -4703,7 +4707,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefreshTV(hwnd);
 
         return TRUE;
     }
@@ -4738,7 +4741,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefreshTV(hwnd);
 
         return TRUE;
     }
@@ -5265,14 +5267,14 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     strLang += L"\r\n";
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
 
-    for (auto entry : g_res)
+    EntrySetBase found;
+
+    g_res.search(found, ET_LANG, WORD(0), WORD(0), lang);
+    for (auto entry : found)
     {
-		if (entry->m_et != ET_LANG)
-			continue;
-        if (entry->m_lang != lang)
-            continue;
         if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
             continue;
+
         MString str = res2text.DumpEntry(*entry);
         if (!str.empty())
         {
@@ -5283,8 +5285,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         }
     }
 
-    EntrySetBase found;
-
+    found.clear();
     g_res.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
     if (found.size())
     {
@@ -5430,7 +5431,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     // get languages
     std::set<WORD> langs;
-    for (auto& res : g_res)
+    EntrySetBase found;
+    g_res.search(found, ET_LANG);
+    for (auto res : found)
     {
         langs.insert(res->m_lang);
     }
@@ -5868,7 +5871,9 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     *pch = 0;
 
     BOOL bHasExternFile = FALSE;
-    for (auto e : g_res)
+    EntrySetBase found;
+    g_res.search(found, ET_LANG);
+    for (auto e : found)
     {
         ResToText res2text;
         MString filename = res2text.GetEntryFileName(*e);
@@ -5906,14 +5911,13 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
             CreateDirectory(strResDir.c_str(), NULL);
         }
 
-        for (auto e : g_res)
+        EntrySetBase found;
+        g_res.search(found, ET_LANG);
+        for (auto e : found)
         {
-			if (e->m_et != ET_LANG)
-				continue;
             if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE)
                 continue;
-
-			if (!DoExtract(e, TRUE))
+            if (!DoExtract(e, TRUE))
                 return FALSE;
         }
     }
@@ -6062,7 +6066,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+            SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
@@ -6072,7 +6076,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+            SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".wav") == 0)
@@ -6092,7 +6096,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             DoRefreshIDList(hwnd);
-            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+            SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".png") == 0)
@@ -6154,7 +6158,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefreshTV(hwnd);
+        UpdateNames();
     }
     else if (lstrcmpiW(pch, L".wmf") == 0)
     {
@@ -6220,7 +6224,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefreshTV(hwnd);
+        UpdateNames();
     }
 }
 
@@ -6602,7 +6606,11 @@ void MMainWnd::OnConfig(HWND hwnd)
     {
         ReSetPaths(hwnd);
         ReCreateFonts(hwnd);
-        DoRefreshTV(hwnd);
+
+        UpdateNames();
+
+        auto entry = g_res.get_entry();
+        SelectTV(entry, FALSE);
     }
 }
 
@@ -6640,6 +6648,17 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+void MMainWnd::UpdateNames(void)
+{
+    EntrySetBase found;
+    g_res.search(found, ET_NAME);
+
+    for (auto entry : found)
+    {
+        UpdateEntryName(entry);
+    }
+}
+
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
@@ -6650,13 +6669,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 
     g_db.ShowMacroID(!g_settings.bHideID);
 
-    EntrySetBase found;
-    g_res.search(found, ET_NAME);
-
-    for (auto entry : found)
-    {
-        UpdateEntryName(entry);
-    }
+    UpdateNames();
 
     ShowIDList(hwnd, bListOpen);
 
@@ -6714,15 +6727,6 @@ void MMainWnd::OnShowHideToolBar(HWND hwnd)
         ShowWindow(m_hToolBar, SW_HIDE);
 
     PostMessageDx(WM_SIZE);
-}
-
-void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
-{
-    if (!CompileIfNecessary(TRUE))
-        return;
-
-    DoRefreshTV(hwnd);
-    DoRefreshIDList(hwnd);
 }
 
 void MMainWnd::OnSetPaths(HWND hwnd)
@@ -7138,9 +7142,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_SETPATHS:
         OnSetPaths(hwnd);
         break;
-    case ID_USEOLDLANGSTMT:
-        OnUseOldStyleLangStmt(hwnd);
-        break;
     case ID_SETDEFAULTS:
         SetDefaultSettings(hwnd);
         break;
@@ -7384,7 +7385,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_KEYDOWN)
     {
-        TV_KEYDOWN *pTVKD = (TV_KEYDOWN *)pnmhdr;
+        auto pTVKD = (TV_KEYDOWN *)pnmhdr;
         switch (pTVKD->wVKey)
         {
         case VK_DELETE:
@@ -7412,6 +7413,15 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             return TRUE;
         }
     }
+    else if (pnmhdr->code == TVN_GETINFOTIP)
+    {
+        auto pGetInfoTip = (NMTVGETINFOTIP *)pnmhdr;
+        if (auto entry = g_res.get_entry())
+        {
+            StringCchCopyW(pGetInfoTip->pszText, pGetInfoTip->cchTextMax,
+                           entry->m_strLabel.c_str());
+        }
+    }
     else
     {
         static WORD old_lang = 0xFFFF;
@@ -7419,7 +7429,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
         if (pnmhdr->code == TVN_BEGINLABELEDIT)
         {
-            TV_DISPINFO *pInfo = (TV_DISPINFO *)pnmhdr;
+            auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszOldText = pInfo->item.pszText;
@@ -7457,7 +7467,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         }
         else if (pnmhdr->code == TVN_ENDLABELEDIT)
         {
-            TV_DISPINFO *pInfo = (TV_DISPINFO *)pnmhdr;
+            auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszNewText = pInfo->item.pszText;
@@ -8078,7 +8088,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8094,7 +8104,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     MReplaceIconDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8110,7 +8120,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     MReplaceCursorDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8123,7 +8133,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8139,7 +8149,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     MReplaceBitmapDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8152,7 +8162,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         DoRefreshIDList(hwnd);
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8264,7 +8274,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     if (dialog.m_strTemplate.empty())
     {
         DoRefreshIDList(hwnd);
-        SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(ET_LANG, dialog, FALSE);
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
@@ -8290,7 +8300,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         else if (dialog.m_type == RT_MESSAGETABLE)
             SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
         else
-            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+            SelectTV(ET_LANG, dialog, FALSE);
     }
 }
 
@@ -8926,8 +8936,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
-        TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES |
-        TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_EDITLABELS;
+        TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
+        TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
     m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE, 
         WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1, 
         (HMENU)1, m_hInst, NULL);

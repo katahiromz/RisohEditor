@@ -43,6 +43,7 @@ target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 # resource object extension
 if (MSVC)
     set(DOTRES ".res")
+    add_definitions(-DMSVC=1)
 else()
     set(DOTRES ".o")
 endif()
