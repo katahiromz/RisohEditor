@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,10 +27,10 @@
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -39,14 +39,14 @@ class MReplaceCursorDlg : public MDialogBase
 protected:
     HCURSOR   m_hCursor;
 public:
-    ResEntries& m_entries;
-    ResEntry& m_entry;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    EntryBase *m_entry;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
 
-    MReplaceCursorDlg(ConstantsDB& db, ResEntries& entries, ResEntry& entry) :
-        MDialogBase(IDD_REPLACECUR), m_entries(entries), m_entry(entry),
-        m_db(db)
+    MReplaceCursorDlg(EntryBase *entry) :
+        MDialogBase(IDD_REPLACECUR), m_entry(entry),
+          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
         m_hCursor = NULL;
     }
@@ -62,11 +62,11 @@ public:
 
         // for name
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, m_entry.name, IDTYPE_CURSOR);
+        InitResNameComboBox(hCmb2, m_entry->m_name, IDTYPE_CURSOR);
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, m_entry.lang);
+        InitLangComboBox(hCmb3, m_entry->m_lang);
 
         CenterWindowDx();
         return TRUE;
@@ -74,11 +74,11 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        MIdOrString type = m_entry.type;
+        MIdOrString type = m_entry->m_type;
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -100,7 +100,7 @@ public:
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !Res_AddEntry(m_entries, RT_ANICURSOR, name, lang, L"", bs.data(), TRUE))
+                !g_res.add_lang_entry(RT_ANICURSOR, name, lang, bs.data()))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
@@ -108,15 +108,19 @@ public:
         }
         else
         {
-            if (!Res_AddGroupCursor(m_entries, name, lang, file, TRUE))
+            if (auto entry = g_res.find(ET_LANG, m_type, m_name, m_lang))
+                g_res.delete_entry(entry);
+
+            if (!g_res.add_group_cursor(name, lang, file))
             {
                 ErrorBoxDx(IDS_CANTREPLACECUR);
                 return;
             }
         }
 
-        ResEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_type = type;
+        m_name = name;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }
@@ -139,7 +143,7 @@ public:
         ofn.lpstrTitle = LoadStringDx(IDS_REPLACECUR);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
             OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        if (m_entry.type == RT_ANICURSOR)
+        if (m_entry->m_type == RT_ANICURSOR)
         {
             ofn.nFilterIndex = 2;
             ofn.lpstrDefExt = L"ani";

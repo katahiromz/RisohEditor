@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -59,7 +59,7 @@ public:
 
         Destroy();
 
-        if (!CreateWindowDx(hwndOwner, NULL, WS_CHILD | WS_VISIBLE | WS_DISABLED,
+        if (!CreateWindowDx(hwndOwner, NULL, WS_CHILD | WS_VISIBLE | WS_DISABLED, 
             WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT))
         {
             return FALSE;
@@ -83,15 +83,14 @@ public:
             SetBkColor(hDC, RGB(0, 0, 255));
 
             HGDIOBJ hFontOld = SelectObject(hDC, m_hFont);
-            map_type::iterator it, end = m_map.end();
-            for (it = m_map.begin(); it != end; ++it)
+            for (auto& pair : m_map)
             {
                 RECT rc;
-                GetWindowRect(it->second, &rc);
+                GetWindowRect(pair.second, &rc);
                 MapWindowRect(NULL, m_hwndOwner, &rc);
 
                 TCHAR szText[32];
-                StringCchPrintf(szText, _countof(szText), TEXT("%d"), it->first);
+                StringCchPrintf(szText, _countof(szText), TEXT("%d"), pair.first);
                 TextOut(hDC, rc.left, rc.top, szText, lstrlen(szText));
             }
             SelectObject(hDC, hFontOld);

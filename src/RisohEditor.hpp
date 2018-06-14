@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -60,7 +60,6 @@
 // RisohEditor.cpp
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath);
 BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size);
-LPWSTR GetTempFileNameDx(LPCWSTR pszPrefix3Chars);
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -128,7 +127,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 ////////////////////////////////////////////////////////////////////////////
 
 // TODO: Update the version number
-#define RE_VERSION  "4.8"
+#define RE_VERSION  "4.9"
 
 ////////////////////////////////////////////////////////////////////////////
 

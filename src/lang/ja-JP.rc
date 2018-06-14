@@ -280,8 +280,8 @@ IDR_POPUPMENUS MENU
 // TODO: Update the version numbers
 STRINGTABLE
 {
-    IDS_APPNAME, "リソーエディタ 4.8 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - リソーエディタ 4.8 by 片山博文MZ"
+    IDS_APPNAME, "リソーエディタ 4.9 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - リソーエディタ 4.9 by 片山博文MZ"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE, "保存できませんでした。"
@@ -292,7 +292,7 @@ STRINGTABLE
     IDS_ENTERLANG, "リソースの言語を入力して下さい。"
     IDS_FILENOTFOUND, "ファイルが見つかりません。"
     IDS_CANNOTREPLACE, "リソースの置き換えができませんでした。"
-    IDS_EXERESFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|バイナリ リソース (*.res)|*.res|すべてのファイル (*.*)|*.*|"
+    IDS_EXERESFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RCファイル (*.rc)|*.rc|バイナリ リソース (*.res)|*.res|すべてのファイル (*.*)|*.*|"
     IDS_SAVEAS, "名前を付けて保存"
     IDS_CANNOTADDICON, "アイコンの追加ができませんでした。"
     IDS_ADDICON, "アイコンの追加"
@@ -307,7 +307,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "ビットマップの置き換えができませんでした。"
     IDS_REPLACEBMP, "ビットマップの置き換え"
     IDS_ERRORCODE, "エラーコード %dが発生しました。"
-    IDS_VERSIONINFO, "リソーエディタ Version 4.8\r\n\r\n片山博文MZ\r\nかたやまひろふみえむぜっど\r\n\r\nライセンス: GPLv3 (フリーソフト)"
+    IDS_VERSIONINFO, "リソーエディタ Version 4.9\r\n\r\n片山博文MZ\r\nかたやまひろふみえむぜっど\r\n\r\nライセンス: GPLv3 (フリーソフト)"
     IDS_ADDRES, "リソースの追加"
     IDS_CANNOTADDRES, "リソースの追加ができませんでした。"
     IDS_CANTADDBMP, "ビットマップの追加ができませんでした。"
@@ -428,6 +428,8 @@ STRINGTABLE
     IDS_DLGINIT1, "ダイアログと同名のRT_DLGINITリソースデータに初期化データを設定して、コンボボックスとリストボックスの初期化を指定できます。"
     IDS_DLGINIT2, "WM_INITDIALOGメッセージが来た時に、付属のファイル「DlgInit/DlgInit.h」のExecuteDlgInitDx関数を呼び出せば、ダイアログの初期化を実行できます。\r\n\r\n"
     IDS_DLGINIT3, "RT_DLGINITに使う改行区切りの文字列のリストを指定して下さい。"
+    IDS_SAMELANG, "同じ言語です。"
+    IDS_SAMENAME, "同じリソース名です。"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

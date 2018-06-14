@@ -119,8 +119,8 @@ LPCTSTR MZCAPI GetStringDx(INT nStringID);
 LPCTSTR MZCAPI GetStringDx(LPCTSTR psz);
 BOOL MZCAPI GetWindowPosDx(HWND hwnd, POINT *ppt = NULL, SIZE *psiz = NULL);
 BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc);
-BOOL MZCAPI SetWindowPosDx(HWND hwnd, LPPOINT ppt = NULL, LPSIZE psiz = NULL,
-    HWND hwndInsertAfter = NULL,
+BOOL MZCAPI SetWindowPosDx(HWND hwnd, LPPOINT ppt = NULL, LPSIZE psiz = NULL, 
+    HWND hwndInsertAfter = NULL, 
     UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 BOOL MZCAPI SetWindowPosDx(HWND hwnd, const RECT *prc);
 LPSTR MZCAPI MakeFilterDx(LPSTR psz);
@@ -164,13 +164,13 @@ public:
     bool            m_bDynamicCreated;
 
     MWindowBase() :
-        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(NULL), m_fnOldProc(NULL),
+        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(NULL), m_fnOldProc(NULL), 
         m_pwndSub(NULL), m_bDynamicCreated(false)
     {
     }
 
     MWindowBase(HWND hwnd) :
-        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(hwnd), m_fnOldProc(NULL),
+        m_dwWindowBaseMagic(0xFEEDFEED), m_hwnd(hwnd), m_fnOldProc(NULL), 
         m_pwndSub(NULL), m_bDynamicCreated(false)
     {
     }
@@ -201,7 +201,7 @@ public:
     }
     static MWindowBase *GetUserData(HWND hwnd)
     {
-        handle_map_type::iterator it = GetHandleMap().find(hwnd);
+        auto it = GetHandleMap().find(hwnd);
         if (it == GetHandleMap().end())
             return NULL;
         return reinterpret_cast<MWindowBase *>(it->second);
@@ -290,15 +290,15 @@ public:
 
     BOOL RegisterClassDx();
 
-    BOOL CreateWindowDx(HWND hwndParent, LPCTSTR pszText,
-                        DWORD Style = WS_OVERLAPPEDWINDOW, DWORD ExStyle = 0,
-                        INT x = CW_USEDEFAULT, INT y = CW_USEDEFAULT,
-                        INT cx = CW_USEDEFAULT, INT cy = CW_USEDEFAULT,
+    BOOL CreateWindowDx(HWND hwndParent, LPCTSTR pszText, 
+                        DWORD Style = WS_OVERLAPPEDWINDOW, DWORD ExStyle = 0, 
+                        INT x = CW_USEDEFAULT, INT y = CW_USEDEFAULT, 
+                        INT cx = CW_USEDEFAULT, INT cy = CW_USEDEFAULT, 
                         HMENU hMenu = NULL);
-    BOOL CreateAsChildDx(HWND hwndParent, LPCTSTR pszText,
-                         DWORD Style = WS_CHILD | WS_VISIBLE,
-                         DWORD ExStyle = 0, INT nCtrlID = -1,
-                         INT x = CW_USEDEFAULT, INT y = CW_USEDEFAULT,
+    BOOL CreateAsChildDx(HWND hwndParent, LPCTSTR pszText, 
+                         DWORD Style = WS_CHILD | WS_VISIBLE, 
+                         DWORD ExStyle = 0, INT nCtrlID = -1, 
+                         INT x = CW_USEDEFAULT, INT y = CW_USEDEFAULT, 
                          INT cx = CW_USEDEFAULT, INT cy = CW_USEDEFAULT);
 
     BOOL Attach(HWND hwnd)
@@ -347,7 +347,7 @@ public:
         return child.SubclassDx(::GetDlgItem(m_hwnd, nItemID));
     }
 
-    INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
+    INT MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, 
                  UINT uType = MB_ICONINFORMATION);
 
     INT MsgBoxDx(UINT nStringID, UINT nTitleID, UINT uType)
@@ -439,14 +439,14 @@ public:
     BOOL MZCAPI GetWindowPosDx(POINT *ppt = NULL, SIZE *psiz = NULL);
     BOOL MZCAPI GetWindowPosDx(RECT *prc);
 
-    static BOOL SetWindowPosDx(HWND hwnd,
-                               LPPOINT ppt = NULL, LPSIZE psiz = NULL,
-                               HWND hwndInsertAfter = NULL,
+    static BOOL SetWindowPosDx(HWND hwnd, 
+                               LPPOINT ppt = NULL, LPSIZE psiz = NULL, 
+                               HWND hwndInsertAfter = NULL, 
                                UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
     static BOOL SetWindowPosDx(HWND hwnd, const RECT *prc);
 
-    BOOL SetWindowPosDx(LPPOINT ppt = NULL, LPSIZE psiz = NULL,
-                        HWND hwndInsertAfter = NULL,
+    BOOL SetWindowPosDx(LPPOINT ppt = NULL, LPSIZE psiz = NULL, 
+                        HWND hwndInsertAfter = NULL, 
                         UINT uFlags = SWP_NOACTIVATE | SWP_NOOWNERZORDER);
     BOOL SetWindowPosDx(const RECT *prc);
 
@@ -466,7 +466,7 @@ public:
         INT cxSmall = GetSystemMetrics(SM_CXSMICON);
         INT cySmall = GetSystemMetrics(SM_CYSMICON);
         return HICON(LoadImage(GetModuleHandle(NULL), 
-                               MAKEINTRESOURCE(id),
+                               MAKEINTRESOURCE(id), 
                                IMAGE_ICON, cxSmall, cySmall, 0));
     }
 
@@ -619,19 +619,19 @@ public:
     }
 
     MDialogBase(HWND hwndOwner, INT nDialogID)
-        : m_bModal(FALSE), m_hwndOwner(hwndOwner),
+        : m_bModal(FALSE), m_hwndOwner(hwndOwner), 
           m_pDialogName(MAKEINTRESOURCE(nDialogID))
     {
     }
 
     MDialogBase(HWND hwndOwner, LPCTSTR pDialogName)
-        : m_bModal(FALSE), m_hwndOwner(hwndOwner),
+        : m_bModal(FALSE), m_hwndOwner(hwndOwner), 
           m_pDialogName(pDialogName)
     {
     }
 
     MDialogBase(INT nDialogID)
-        : m_bModal(FALSE), m_hwndOwner(NULL),
+        : m_bModal(FALSE), m_hwndOwner(NULL), 
           m_pDialogName(MAKEINTRESOURCE(nDialogID))
     {
     }
@@ -936,8 +936,8 @@ inline BOOL MZCAPI GetWindowPosDx(HWND hwnd, RECT *prc)
 }
 
 inline BOOL MZCAPI
-SetWindowPosDx(HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
-    HWND hwndInsertAfter/* = NULL*/,
+SetWindowPosDx(HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/, 
+    HWND hwndInsertAfter/* = NULL*/, 
     UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
 {
     if (hwndInsertAfter == NULL)
@@ -1015,7 +1015,7 @@ inline HBITMAP MZCAPI Create24BppBitmapDx(INT width, INT height)
     bi.bmiHeader.biCompression = BI_RGB;
     HDC hDC = CreateCompatibleDC(NULL);
     LPVOID pvBits;
-    HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS,
+    HBITMAP hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS, 
                                    &pvBits, NULL, 0);
     DeleteDC(hDC);
     return hbm;
@@ -1104,7 +1104,7 @@ PopupMenuDx(HWND hwnd, HWND hContext, UINT nMenuID, INT iSubMenu, INT x, INT y)
     }
 
     SetForegroundWindow(hwnd);
-    TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+    TrackPopupMenu(hSubMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
         x, y, 0, hwnd, NULL);
     PostMessage(hwnd, WM_NULL, 0, 0);
     DestroyMenu(hMenu);
@@ -1145,8 +1145,7 @@ MWindowBase::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         else
         {
             // for DECLARE_DYNAMIC/IMPLEMENT_DYNAMIC
-            class_to_create_map_t::const_iterator it;
-            it = MWindowBase::ClassToCreateMap().find(szClass);
+            auto it = MWindowBase::ClassToCreateMap().find(szClass);
             if (it == MWindowBase::ClassToCreateMap().end())
             {
                 assert(0);
@@ -1216,36 +1215,36 @@ inline BOOL MWindowBase::RegisterClassDx()
 }
 
 inline BOOL MWindowBase::CreateWindowDx(
-    HWND hwndParent, LPCTSTR pszText,
-    DWORD Style/* = WS_OVERLAPPEDWINDOW*/, DWORD ExStyle/* = 0*/,
-    INT x/* = CW_USEDEFAULT*/, INT y/* = CW_USEDEFAULT*/,
-    INT cx/* = CW_USEDEFAULT*/, INT cy/* = CW_USEDEFAULT*/,
+    HWND hwndParent, LPCTSTR pszText, 
+    DWORD Style/* = WS_OVERLAPPEDWINDOW*/, DWORD ExStyle/* = 0*/, 
+    INT x/* = CW_USEDEFAULT*/, INT y/* = CW_USEDEFAULT*/, 
+    INT cx/* = CW_USEDEFAULT*/, INT cy/* = CW_USEDEFAULT*/, 
     HMENU hMenu/* = NULL*/)
 {
     if (!RegisterClassDx())
         return FALSE;
 
-    HWND hwnd = ::CreateWindowEx(ExStyle, GetWndClassNameDx(),
-        GetStringDx(pszText), Style, x, y, cx, cy, hwndParent,
+    HWND hwnd = ::CreateWindowEx(ExStyle, GetWndClassNameDx(), 
+        GetStringDx(pszText), Style, x, y, cx, cy, hwndParent, 
         hMenu, GetModuleHandle(NULL), this);
     return Attach(hwnd);
 }
 
 inline BOOL
 MWindowBase::CreateAsChildDx(
-    HWND hwndParent, LPCTSTR pszText,
-    DWORD Style/* = WS_CHILD | WS_VISIBLE*/,
-    DWORD ExStyle/* = 0*/, INT nCtrlID/* = -1*/,
-    INT x/* = CW_USEDEFAULT*/, INT y/* = CW_USEDEFAULT*/,
+    HWND hwndParent, LPCTSTR pszText, 
+    DWORD Style/* = WS_CHILD | WS_VISIBLE*/, 
+    DWORD ExStyle/* = 0*/, INT nCtrlID/* = -1*/, 
+    INT x/* = CW_USEDEFAULT*/, INT y/* = CW_USEDEFAULT*/, 
     INT cx/* = CW_USEDEFAULT*/, INT cy/* = CW_USEDEFAULT*/)
 {
     Style |= WS_CHILD;
-    return CreateWindowDx(hwndParent, pszText, Style, ExStyle,
+    return CreateWindowDx(hwndParent, pszText, Style, ExStyle, 
         x, y, cx, cy, (HMENU)(INT_PTR)nCtrlID);
 }
 
 inline INT
-MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
+MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle, 
                       UINT uType/* = MB_ICONINFORMATION*/)
 {
     MString Title;
@@ -1275,7 +1274,7 @@ MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
     }
 
     MWindowBase::HookCenterMsgBoxDx(TRUE);
-    INT nID = ::MessageBox(m_hwnd, GetStringDx(pszString),
+    INT nID = ::MessageBox(m_hwnd, GetStringDx(pszString), 
                            Title.c_str(), uType);
     MWindowBase::HookCenterMsgBoxDx(FALSE);
 
@@ -1335,7 +1334,7 @@ inline /*static*/ VOID MWindowBase::CenterWindowDx(HWND hwnd)
         RepositionPointDx(&pt, siz, &rcWorkArea);
     }
 
-    ::SetWindowPos(hwnd, NULL, pt.x, pt.y, 0, 0,
+    ::SetWindowPos(hwnd, NULL, pt.x, pt.y, 0, 0, 
                    SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
@@ -1367,8 +1366,8 @@ inline BOOL MZCAPI MWindowBase::GetWindowPosDx(RECT *prc)
 
 inline /*static*/ BOOL
 MWindowBase::SetWindowPosDx(
-    HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
-    HWND hwndInsertAfter/* = NULL*/,
+    HWND hwnd, LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/, 
+    HWND hwndInsertAfter/* = NULL*/, 
     UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
 {
     assert(IsWindow(hwnd));
@@ -1383,8 +1382,8 @@ inline /*static*/ BOOL MWindowBase::SetWindowPosDx(HWND hwnd, const RECT *prc)
 
 inline BOOL
 MWindowBase::SetWindowPosDx(
-    LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/,
-    HWND hwndInsertAfter/* = NULL*/,
+    LPPOINT ppt/* = NULL*/, LPSIZE psiz/* = NULL*/, 
+    HWND hwndInsertAfter/* = NULL*/, 
     UINT uFlags/* = SWP_NOACTIVATE | SWP_NOOWNERZORDER*/)
 {
     assert(IsWindow(m_hwnd));
@@ -1512,9 +1511,9 @@ MDialogBase::CreateDialogIndirectDx(HWND hwndOwner, const VOID *ptr)
         m_hwndOwner = hwndOwner;
     }
     m_bModal = FALSE;
-    HWND hwnd = ::CreateDialogIndirectParam(::GetModuleHandle(NULL),
-        reinterpret_cast<const DLGTEMPLATE *>(ptr),
-        m_hwndOwner, MDialogBase::DialogProc,
+    HWND hwnd = ::CreateDialogIndirectParam(::GetModuleHandle(NULL), 
+        reinterpret_cast<const DLGTEMPLATE *>(ptr), 
+        m_hwndOwner, MDialogBase::DialogProc, 
         reinterpret_cast<LPARAM>(this));
     if (hwnd == NULL)
     {
@@ -1531,10 +1530,10 @@ MDialogBase::DialogBoxIndirectDx(HWND hwndOwner, const VOID *ptr)
         m_hwndOwner = hwndOwner;
     }
     m_bModal = TRUE;
-    INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL),
-                                           (const DLGTEMPLATE *)ptr,
-                                           m_hwndOwner,
-                                           MDialogBase::DialogProc,
+    INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL), 
+                                           (const DLGTEMPLATE *)ptr, 
+                                           m_hwndOwner, 
+                                           MDialogBase::DialogProc, 
                                            reinterpret_cast<LPARAM>(this));
     return nID;
 }
@@ -1547,8 +1546,8 @@ MDialogBase::CreateDialogDx(HWND hwndOwner, LPCTSTR pDialogName)
         m_hwndOwner = hwndOwner;
     }
     m_bModal = FALSE;
-    HWND hwnd = ::CreateDialogParam(::GetModuleHandle(NULL), pDialogName,
-                                    m_hwndOwner, MDialogBase::DialogProc,
+    HWND hwnd = ::CreateDialogParam(::GetModuleHandle(NULL), pDialogName, 
+                                    m_hwndOwner, MDialogBase::DialogProc, 
                                     reinterpret_cast<LPARAM>(this));
     if (hwnd == NULL)
     {
@@ -1565,7 +1564,7 @@ MDialogBase::DialogBoxDx(HWND hwndOwner, LPCTSTR pDialogName)
         m_hwndOwner = hwndOwner;
     }
     m_bModal = TRUE;
-    INT_PTR nID = ::DialogBoxParam(::GetModuleHandle(NULL),
+    INT_PTR nID = ::DialogBoxParam(::GetModuleHandle(NULL), 
         pDialogName, m_hwndOwner, MDialogBase::DialogProc, (LPARAM)this);
     return nID;
 }

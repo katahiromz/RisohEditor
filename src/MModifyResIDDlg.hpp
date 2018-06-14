@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,13 +33,11 @@ void ReplaceFullWithHalf(MStringW& strText);
 class MModifyResIDDlg : public MDialogBase
 {
 public:
-    ConstantsDB& m_db;
-    ResEntries& m_entries;
     MString m_str1;
     MString m_str2;
 
-    MModifyResIDDlg(ResEntries& entries, ConstantsDB& db, MString str1, MString str2)
-        : MDialogBase(IDD_MODIFYRESID), m_entries(entries), m_db(db), m_str1(str1), m_str2(str2)
+    MModifyResIDDlg(MString str1, MString str2)
+        : MDialogBase(IDD_MODIFYRESID), m_str1(str1), m_str2(str2)
     {
     }
 
@@ -114,15 +112,14 @@ public:
                 MString text = GetDlgItemText(hwnd, edt1);
 
                 ConstantsDB::TableType table;
-                table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+                table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 
                 INT i = 0;
-                ConstantsDB::TableType::iterator it, end = table.end();
-                for (it = table.begin(); it != end; ++it)
+                for (auto& table_entry : table)
                 {
-                    if (text.find(it->name) == 0)
+                    if (text.find(table_entry.name) == 0)
                     {
-                        text = m_db.GetName(L"RESOURCE.ID.TYPE", i);
+                        text = g_db.GetName(L"RESOURCE.ID.TYPE", i);
                         SetDlgItemText(hwnd, edt2, text.c_str());
                         i = -1;
                         break;

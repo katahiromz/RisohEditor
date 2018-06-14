@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -384,10 +384,10 @@ public:
         return true;
     }
 
-    string_type Dump(MIdOrString name, const ConstantsDB& db)
+    string_type Dump(MIdOrString name)
     {
         if (IsExtended())
-            return DumpEx(name, db);
+            return DumpEx(name);
 
         string_type ret;
 
@@ -397,55 +397,54 @@ public:
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENU\r\n";
         ret += L"{\r\n";
 
         WORD wDepth = 0;
-        MenuItemsType::iterator it, end = m_items.end();
-        for (it = m_items.begin(); it != end; ++it)
+        for (auto& item : m_items)
         {
-            while (it->wDepth < wDepth)
+            while (item.wDepth < wDepth)
             {
                 --wDepth;
                 ret += string_type((wDepth + 1) * 4, L' ');
                 ret += L"}\r\n";
             }
-            wDepth = it->wDepth;
-            if (it->fItemFlags & MF_POPUP)
+            wDepth = item.wDepth;
+            if (item.fItemFlags & MF_POPUP)
             {
-                ret += string_type((it->wDepth + 1) * 4, L' ');
+                ret += string_type((item.wDepth + 1) * 4, L' ');
                 ret += L"POPUP \"";
-                ret += mstr_escape(it->text);
+                ret += mstr_escape(item.text);
                 ret += L"\"";
-                ret += DumpFlags(it->fItemFlags);
+                ret += DumpFlags(item.fItemFlags);
                 ret += L"\r\n";
-                ret += string_type((it->wDepth + 1) * 4, L' ');
+                ret += string_type((item.wDepth + 1) * 4, L' ');
                 ret += L"{\r\n";
             }
             else
             {
-                ret += string_type((it->wDepth + 1) * 4, L' ');
-                if (it->wMenuID == 0 && it->text.empty())
+                ret += string_type((item.wDepth + 1) * 4, L' ');
+                if (item.wMenuID == 0 && item.text.empty())
                 {
                     ret += L"MENUITEM SEPARATOR\r\n";
                 }
                 else
                 {
                     ret += L"MENUITEM \"";
-                    ret += mstr_escape(it->text);
+                    ret += mstr_escape(item.text);
                     ret += L"\", ";
                     if (0)
                     {
-                        ret += mstr_dec_word(it->wMenuID);
+                        ret += mstr_dec_word(item.wMenuID);
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wMenuID);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.wMenuID);
                     }
-                    ret += DumpFlags(it->fItemFlags);
+                    ret += DumpFlags(item.fItemFlags);
                     ret += L"\r\n";
                 }
             }
@@ -462,7 +461,7 @@ public:
         return ret;
     }
 
-    string_type DumpEx(MIdOrString name, const ConstantsDB& db)
+    string_type DumpEx(MIdOrString name)
     {
         string_type ret;
 
@@ -472,102 +471,101 @@ public:
         }
         else
         {
-            ret += db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
         }
 
         ret += L" MENUEX\r\n";
         ret += L"{\r\n";
 
         WORD wDepth = 0;
-        ExMenuItemsType::iterator it, end = m_exitems.end();
-        for (it = m_exitems.begin(); it != end; ++it)
+        for (auto& item : m_exitems)
         {
-            while (it->wDepth < wDepth)
+            while (item.wDepth < wDepth)
             {
                 --wDepth;
                 ret += string_type((wDepth + 1) * 4, L' ');
                 ret += L"}\r\n";
             }
-            wDepth = it->wDepth;
-            if (it->bResInfo & 0x01)
+            wDepth = item.wDepth;
+            if (item.bResInfo & 0x01)
             {
-                ret += string_type((it->wDepth + 1) * 4, L' ');
+                ret += string_type((item.wDepth + 1) * 4, L' ');
                 ret += L"POPUP ";
-                ret += mstr_quote(it->text);
-                if (it->menuId || it->dwType || it->dwState || it->dwHelpId)
+                ret += mstr_quote(item.text);
+                if (item.menuId || item.dwType || item.dwState || item.dwHelpId)
                 {
                     ret += L", ";
                     if (0)
                     {
-                        ret += mstr_dec_dword(it->menuId);
+                        ret += mstr_dec_dword(item.menuId);
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId);
                     }
                 }
-                if (it->dwType || it->dwState || it->dwHelpId)
+                if (item.dwType || item.dwState || item.dwHelpId)
                 {
                     ret += L", ";
-                    DWORD value = it->dwType;
-                    ret += db.DumpBitFieldOrZero(L"MFT_", value);
+                    DWORD value = item.dwType;
+                    ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
                 }
-                if (it->dwState || it->dwHelpId)
+                if (item.dwState || item.dwHelpId)
                 {
                     ret += L", ";
-                    DWORD value = it->dwState;
-                    ret += db.DumpBitFieldOrZero(L"MFS_", value);
+                    DWORD value = item.dwState;
+                    ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
                 }
-                if (it->dwHelpId)
+                if (item.dwHelpId)
                 {
                     ret += L", ";
                     if (0)
                     {
-                        ret += mstr_dec_dword(it->dwHelpId);
+                        ret += mstr_dec_dword(item.dwHelpId);
                     }
                     else
                     {
-                        ret += db.GetNameOfResID(IDTYPE_HELP, it->dwHelpId);
+                        ret += g_db.GetNameOfResID(IDTYPE_HELP, item.dwHelpId);
                     }
                 }
                 ret += L"\r\n";
-                ret += string_type((it->wDepth + 1) * 4, L' ');
+                ret += string_type((item.wDepth + 1) * 4, L' ');
                 ret += L"{\r\n";
             }
             else
             {
-                ret += string_type((it->wDepth + 1) * 4, L' ');
-                if (it->menuId == 0 && it->text.empty())
+                ret += string_type((item.wDepth + 1) * 4, L' ');
+                if (item.menuId == 0 && item.text.empty())
                 {
                     ret += L"MENUITEM SEPARATOR\r\n";
                 }
                 else
                 {
                     ret += L"MENUITEM ";
-                    ret += mstr_quote(it->text);
-                    if (it->menuId || it->dwType || it->dwState)
+                    ret += mstr_quote(item.text);
+                    if (item.menuId || item.dwType || item.dwState)
                     {
                         ret += L", ";
                         if (0)
                         {
-                            ret += mstr_dec_dword(it->menuId);
+                            ret += mstr_dec_dword(item.menuId);
                         }
                         else
                         {
-                            ret += db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->menuId);
+                            ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId);
                         }
                     }
-                    if (it->dwType || it->dwState)
+                    if (item.dwType || item.dwState)
                     {
                         ret += L", ";
-                        DWORD value = it->dwType;
-                        ret += db.DumpBitFieldOrZero(L"MFT_", value);
+                        DWORD value = item.dwType;
+                        ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
                     }
-                    if (it->dwState)
+                    if (item.dwState)
                     {
                         ret += L", ";
-                        DWORD value = it->dwState;
-                        ret += db.DumpBitFieldOrZero(L"MFS_", value);
+                        DWORD value = item.dwState;
+                        ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
                     }
                     ret += L"\r\n";
                 }

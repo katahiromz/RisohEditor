@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -32,15 +32,13 @@ class MPathsDlg;
 class MPathsDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
     HWND m_hLst1;
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
     std::vector<MString> m_list;
 
-    MPathsDlg(RisohSettings& settings)
-        : MDialogBase(IDD_PATHS), m_settings(settings)
+    MPathsDlg() : MDialogBase(IDD_PATHS)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -169,9 +167,9 @@ public:
             return;
         }
 
-        m_settings.includes = m_list;
-        m_settings.strWindResExe = strWindResExe;
-        m_settings.strCppExe = strCppExe;
+        g_settings.includes = m_list;
+        g_settings.strWindResExe = strWindResExe;
+        g_settings.strCppExe = strCppExe;
 
         EndDialog(IDOK);
     }
@@ -418,15 +416,15 @@ public:
 
         m_list.clear();
 
-        DWORD dwNumIncludes = DWORD(m_settings.includes.size());
+        DWORD dwNumIncludes = DWORD(g_settings.includes.size());
         for (DWORD i = 0; i < dwNumIncludes; ++i)
         {
-            m_list.push_back(m_settings.includes[i]);
-            ListBox_AddString(m_hLst1, m_settings.includes[i].c_str());
+            m_list.push_back(g_settings.includes[i]);
+            ListBox_AddString(m_hLst1, g_settings.includes[i].c_str());
         }
 
-        SetDlgItemText(hwnd, cmb1, m_settings.strWindResExe.c_str());
-        SetDlgItemText(hwnd, cmb2, m_settings.strCppExe.c_str());
+        SetDlgItemText(hwnd, cmb1, g_settings.strWindResExe.c_str());
+        SetDlgItemText(hwnd, cmb2, g_settings.strCppExe.c_str());
 
         m_resizable.OnParentCreate(hwnd);
 

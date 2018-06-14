@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -60,8 +60,8 @@ IDR_MAINFRAME       RCDATA "res/RCDATA.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 
-#if !defined(_MSC_VER)
-1 MANIFEST "RisohEditor.exe.manifest"
+#if !defined(MSVC)
+1 24 "RisohEditor.exe.manifest"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -94,8 +94,8 @@ IDR_UNKNOWNRESID    999 "res/999.bin"
 
 // TODO: Update the version numbers
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     4, 8, 0, 0
-PRODUCTVERSION  4, 8, 0, 0
+FILEVERSION     4, 9, 0, 0
+PRODUCTVERSION  4, 9, 0, 0
 FILEOS          VOS_NT_WINDOWS32
 FILETYPE        VFT_APP
 {
@@ -107,10 +107,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "4.8\0"
+            VALUE "FileVersion", "4.9\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "4.8\0"
+            VALUE "ProductVersion", "4.9\0"
         }
     }
 #endif
@@ -122,10 +122,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "4.8\0"
+            VALUE "FileVersion", "4.9\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "4.8\0"
+            VALUE "ProductVersion", "4.9\0"
         }
     }
 #endif
@@ -137,10 +137,10 @@ FILETYPE        VFT_APP
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "4.8\0"
+            VALUE "FileVersion", "4.9\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2018 片山博文MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "4.8\0"
+            VALUE "ProductVersion", "4.9\0"
         }
     }
 #endif

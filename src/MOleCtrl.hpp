@@ -19,8 +19,8 @@ class MOleCtrl;
 struct MDispException;
 
 void MZCAPI
-InvokeDx(IDispatch *disp, const WCHAR *pszName, UINT cArgs, VARIANT *pArray,
-         WORD wFlags = DISPATCH_METHOD,
+InvokeDx(IDispatch *disp, const WCHAR *pszName, UINT cArgs, VARIANT *pArray, 
+         WORD wFlags = DISPATCH_METHOD, 
          VARIANT *pResult = NULL); // throws MDispException
 
 ////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ struct MVariant : VARIANT
     IUnknown *DetachUnknown();
     IDispatch *DetachDispatch();
 
-    void InvokeDx(const WCHAR *pszName, UINT cArgs, VARIANT *pArray,
+    void InvokeDx(const WCHAR *pszName, UINT cArgs, VARIANT *pArray, 
                   WORD wFlags = DISPATCH_METHOD, VARIANT *pResult = NULL)
     {
         assert(vt == VT_DISPATCH);
@@ -178,7 +178,7 @@ struct MDispException
 // NOTE: IMPLEMENT_DYNAMIC(MOleCtrl) is required in a *.cpp source file.
 
 class MOleCtrl :
-    public MWindowBase, public IOleClientSite, public IOleInPlaceSite,
+    public MWindowBase, public IOleClientSite, public IOleInPlaceSite, 
     public IOleInPlaceFrame, public IOleControlSite, public IDispatch
 {
 public:
@@ -353,7 +353,7 @@ InvokeDx(IDispatch *disp, const WCHAR *pszName, UINT cArgs, VARIANT *pArray,
     }
 
     UINT uArgErr;
-    hr = disp->Invoke(dispid, IID_NULL, LOCALE_SYSTEM_DEFAULT, wFlags,
+    hr = disp->Invoke(dispid, IID_NULL, LOCALE_SYSTEM_DEFAULT, wFlags, 
                       &params, pResult, NULL, &uArgErr);
     if (FAILED(hr))
     {
@@ -458,7 +458,7 @@ inline IDispatch *MVariant::DetachDispatch()
 // inlines
 
 
-inline MOleCtrl::MOleCtrl() : m_cRefs(1), m_hwndParent(NULL),
+inline MOleCtrl::MOleCtrl() : m_cRefs(1), m_hwndParent(NULL), 
     m_pUnknown(NULL), m_pWebBrowser2(NULL)
 {
     ZeroMemory(&m_clsid, sizeof(m_clsid));
@@ -484,7 +484,7 @@ inline BOOL MOleCtrl::CreateInstanceByProgID(OLECHAR *progid)
 
 inline BOOL MOleCtrl::CreateInstanceByCLSID(const CLSID& clsid)
 {
-    ::CoCreateInstance(clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER,
+    ::CoCreateInstance(clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER, 
                        IID_IUnknown, reinterpret_cast<void **>(&m_pUnknown));
     if (!m_pUnknown)
         return FALSE;
@@ -863,7 +863,7 @@ inline STDMETHODIMP MOleCtrl::GetMoniker(DWORD dwAssign, DWORD dwWhichMoniker, L
 
 inline STDMETHODIMP MOleCtrl::GetContainer(IOleContainer **ppContainer)
 {
-    return QueryInterface(IID_IOleContainer,
+    return QueryInterface(IID_IOleContainer, 
                           reinterpret_cast<void **>(ppContainer));
 }
 
@@ -919,7 +919,7 @@ inline STDMETHODIMP MOleCtrl::GetWindowContext(IOleInPlaceFrame **ppFrame, IOleI
 
     if (ppFrame)
     {
-        QueryInterface(IID_IOleInPlaceFrame,
+        QueryInterface(IID_IOleInPlaceFrame, 
                        reinterpret_cast<void **>(ppFrame));
     }
 
@@ -1159,7 +1159,7 @@ inline void MOleCtrl::OnPaint(HWND hwnd)
         if (SUCCEEDED(hr))
         {
             IViewObject *pView;
-            hr = pioo->QueryInterface(IID_IViewObject,
+            hr = pioo->QueryInterface(IID_IViewObject, 
                                       reinterpret_cast<void **>(&pView));
             if (SUCCEEDED(hr))
             {
@@ -1169,7 +1169,7 @@ inline void MOleCtrl::OnPaint(HWND hwnd)
                 rect.right = m_rc.right;
                 rect.bottom = m_rc.bottom;
 
-                pView->Draw(DVASPECT_CONTENT, ~0, NULL, NULL, 0,
+                pView->Draw(DVASPECT_CONTENT, ~0, NULL, NULL, 0, 
                             hDC, &rect, &rect, NULL, 0);
                 pView->Release();
             }

@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,13 +33,10 @@ class MFontsDlg;
 class MFontsDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
     HFONT m_hSrcFont;
     HFONT m_hBinFont;
 
-    MFontsDlg(RisohSettings& settings) :
-        MDialogBase(IDD_FONTS), m_settings(settings),
-        m_hSrcFont(NULL), m_hBinFont(NULL)
+    MFontsDlg() : MDialogBase(IDD_FONTS), m_hSrcFont(NULL), m_hBinFont(NULL)
     {
     }
 
@@ -83,20 +80,20 @@ public:
     {
         MString str;
 
-        str = m_settings.strSrcFont;
+        str = g_settings.strSrcFont;
         str += L", ";
-        str += mstr_dec_short(m_settings.nSrcFontSize);
+        str += mstr_dec_short(g_settings.nSrcFontSize);
         str += L"pt";
         SetDlgItemText(hwnd, edt1, str.c_str());
-        m_hSrcFont = CreateMyFont(m_settings.strSrcFont.c_str(), m_settings.nSrcFontSize);
+        m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
         SetWindowFont(GetDlgItem(hwnd, stc1), m_hSrcFont, TRUE);
 
-        str = m_settings.strBinFont;
+        str = g_settings.strBinFont;
         str += L", ";
-        str += mstr_dec_short(m_settings.nBinFontSize);
+        str += mstr_dec_short(g_settings.nBinFontSize);
         str += L"pt";
         SetDlgItemText(hwnd, edt2, str.c_str());
-        m_hBinFont = CreateMyFont(m_settings.strBinFont.c_str(), m_settings.nBinFontSize);
+        m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
         SetWindowFont(GetDlgItem(hwnd, stc2), m_hBinFont, TRUE);
 
         CenterWindowDx();
@@ -122,15 +119,15 @@ public:
             return;
         }
 
-        m_settings.strSrcFont = str1.substr(0, k1);
-        m_settings.nSrcFontSize = mstr_parse_int(str1.substr(k1 + 2).c_str());
+        g_settings.strSrcFont = str1.substr(0, k1);
+        g_settings.nSrcFontSize = mstr_parse_int(str1.substr(k1 + 2).c_str());
         DestroySrcFont();
-        m_hSrcFont = CreateMyFont(m_settings.strSrcFont.c_str(), m_settings.nSrcFontSize);
+        m_hSrcFont = CreateMyFont(g_settings.strSrcFont.c_str(), g_settings.nSrcFontSize);
 
-        m_settings.strBinFont = str2.substr(0, k2);
-        m_settings.nBinFontSize = mstr_parse_int(str2.substr(k2 + 2).c_str());
+        g_settings.strBinFont = str2.substr(0, k2);
+        g_settings.nBinFontSize = mstr_parse_int(str2.substr(k2 + 2).c_str());
         DestroyBinFont();
-        m_hBinFont = CreateMyFont(m_settings.strBinFont.c_str(), m_settings.nBinFontSize);
+        m_hBinFont = CreateMyFont(g_settings.strBinFont.c_str(), g_settings.nBinFontSize);
 
         EndDialog(IDOK);
     }

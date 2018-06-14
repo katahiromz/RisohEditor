@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -29,30 +29,28 @@
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 void ReplaceFullWithHalf(LPWSTR pszText);
-MStringW GetRisohTemplate(ConstantsDB& db, const MIdOrString& type, WORD wLang);
+MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang);
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MAddResDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
-    ConstantsDB& m_db;
-    MIdOrString m_type;
-    LPCTSTR m_file;
-    MStringW m_strTemplate;
-    ResEntry m_entry_copy;
+	MIdOrString m_type;
+	MIdOrString m_name;
+	WORD m_lang;
+	MStringW m_strTemplate;
+	LPCTSTR m_file;
+    MStringW m_strText;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddResDlg(ResEntries& entries, ConstantsDB& db)
-        : MDialogBase(IDD_ADDRES), m_entries(entries), m_db(db),
-          m_type(0xFFFF), m_file(NULL)
+    MAddResDlg() : MDialogBase(IDD_ADDRES), m_type(0xFFFF), m_file(NULL)
     {
     }
 
@@ -63,7 +61,9 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        ConstantsDB::TableType table;
+
+        table = g_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
@@ -74,61 +74,17 @@ public:
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
-        k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_type == TEXT("WAVE"))
+
+        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+        for (size_t i = 0; i < table.size(); ++i)
         {
-            ComboBox_SetCurSel(hCmb1, k);
+            k = ComboBox_AddString(hCmb1, table[i].name.c_str());
+            if (m_type == table[i].name.c_str())
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
         }
-        k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_type == TEXT("PNG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("IMAGE"));
-        if (m_type == TEXT("IMAGE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_type == TEXT("GIF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_type == TEXT("JPEG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_type == TEXT("TIFF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_type == TEXT("AVI"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_type == TEXT("EMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("ENHMETAFILE"));
-        if (m_type == TEXT("ENHMETAFILE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_type == TEXT("WMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("RISOHTEMPLATE"));
-        if (m_type == TEXT("RISOHTEMPLATE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
+
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -168,7 +124,7 @@ public:
     {
         MIdOrString type;
 
-        const ConstantsDB::TableType& table = m_db.GetTable(L"RESOURCE");
+        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(m_cmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
         {
@@ -182,13 +138,21 @@ public:
             }
         }
 
-        if (type == RT_STRING || type == RT_MESSAGETABLE)
+        if (type == RT_STRING)
         {
             WCHAR sz[16];
             GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
             if (sz[0] == 0)
-                SetDlgItemTextW(hwnd, cmb2, L"1");
+                SetDlgItemTextW(hwnd, cmb2, L"");
+        }
+        if (type == RT_MESSAGETABLE)
+        {
+            WCHAR sz[16];
+            GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
+            mstr_trim(sz);
+            if (sz[0] == 0)
+                SetDlgItemTextW(hwnd, cmb2, L"");
         }
 
         if (type == RT_VERSION)
@@ -198,7 +162,7 @@ public:
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
-        if (!Res_HasNoName(type) && !CheckNameComboBox(m_db, hCmb2, name))
+        if (!Res_HasNoName(type) && !CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -211,9 +175,8 @@ public:
         if (!Res_HasSample(type) && !Edt1_CheckFile(hEdt1, file))
             return;
 
-        BOOL bOverwrite = FALSE;
-        INT iEntry = Res_Find(m_entries, type, name, lang, FALSE);
-        if (iEntry != -1)
+        bool bOverwrite = false;
+        if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
             if (file.empty() && Res_HasSample(type))
             {
@@ -225,7 +188,7 @@ public:
             switch (id)
             {
             case IDYES:
-                bOverwrite = TRUE;
+                bOverwrite = true;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -233,14 +196,14 @@ public:
             }
         }
 
-        BOOL bOK = FALSE;
-        BOOL bAdded = FALSE;
+        bool bOK = false;
+        bool bAdded = false;
         if (file.empty() && Res_HasSample(type))
         {
             bOK = TRUE;
             if (Res_HasNoName(type))
             {
-                Res_DeleteNames(m_entries, type, lang);
+                g_res.search_and_delete(ET_NAME, type, (WORD)0, lang);
             }
 
             MByteStreamEx stream;
@@ -250,15 +213,15 @@ public:
                 type == RT_MANIFEST || type == RT_MESSAGETABLE ||
                 type == RT_DLGINIT)
             {
-                m_strTemplate = GetRisohTemplate(m_db, type, lang);
+                m_strText = GetRisohTemplate(m_type, lang);
             }
             else if (type == L"RISOHTEMPLATE")
             {
-                m_strTemplate = L" ";
+                m_strText = L" ";
             }
             else
             {
-                bOK = FALSE;
+                bOK = false;
             }
 
             if (type == RT_STRING || type == RT_MESSAGETABLE)
@@ -268,27 +231,31 @@ public:
 
             if (bOK)
             {
-                Res_AddEntry(m_entries, type, name, lang, m_strTemplate, stream.data(), FALSE);
-                ResEntry entry(type, name, lang, m_strTemplate);
-                m_entry_copy = entry;
-                bAdded = TRUE;
+                if (m_strText.empty())
+                    g_res.add_lang_entry(type, name, lang, stream.data());
+
+                m_type = type;
+                m_name = name;
+                m_lang = lang;
+                m_strTemplate = m_strText;
+                bAdded = true;
             }
         }
 
         MByteStreamEx bs;
         if (!bOK && !bs.LoadFromFile(file.c_str()))
         {
-            if (bOverwrite)
-                ErrorBoxDx(IDS_CANNOTREPLACE);
-            else
-                ErrorBoxDx(IDS_CANNOTADDRES);
+            ErrorBoxDx(IDS_CANNOTADDRES);
             return;
         }
         if (!bAdded)
         {
-            Res_AddEntry(m_entries, type, name, lang, L"", bs.data(), bOverwrite);
-            ResEntry entry(type, name, lang);
-            m_entry_copy = entry;
+            g_res.add_lang_entry(type, name, lang, bs.data());
+
+            m_type = type;
+            m_name = name;
+            m_lang = lang;
+            m_strTemplate.clear();
         }
 
         EndDialog(IDOK);
@@ -341,8 +308,8 @@ public:
             strIDType = strIDType.substr(0, k);
         }
 
-        WORD nRT_ = (WORD)m_db.GetValue(L"RESOURCE", strIDType);
-        INT iType = m_db.IDTypeFromResType(nRT_);
+        WORD nRT_ = (WORD)g_db.GetValue(L"RESOURCE", strIDType);
+        INT iType = g_db.IDTypeFromResType(nRT_);
         if (nRT_ != 0)
         {
             type = nRT_;
@@ -378,7 +345,7 @@ public:
             SetDlgItemText(hwnd, stc1, NULL);
         }
 
-        MString prefix = m_db.GetName(L"RESOURCE.ID.PREFIX", iType);
+        MString prefix = g_db.GetName(L"RESOURCE.ID.PREFIX", iType);
         if (prefix.empty())
             return;
 
@@ -386,7 +353,7 @@ public:
         if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
             ConstantsDB::TableType table;
-            table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+            table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
             for (size_t i = 0; i < table.size(); ++i)
             {
                 ComboBox_AddString(m_cmb2, table[i].name.c_str());

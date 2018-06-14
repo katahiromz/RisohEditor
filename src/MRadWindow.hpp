@@ -66,15 +66,13 @@ public:
     BOOL            m_bSizing;
     BOOL            m_bLocking;
     INT             m_nIndex;
-    ConstantsDB&    m_db;
-    RisohSettings&  m_settings;
     POINT           m_pt;
     INT             m_nImageType;
 
-    MRadCtrl(ConstantsDB& db, RisohSettings& settings) :
+    MRadCtrl() :
         m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
         m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
-        m_nIndex(-1), m_db(db), m_settings(settings)
+        m_nIndex(-1)
     {
         m_pt.x = m_pt.y = -1;
         m_nImageType = 0;
@@ -495,6 +493,9 @@ public:
 
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
+		if (hwnd != m_hwnd)
+			return;
+
         GetCursorPos(&m_pt);
 
         if (fDoubleClick)
@@ -671,19 +672,16 @@ class MRadDialog : public MDialogBase
 {
 public:
     BOOL            m_index_visible;
-    ConstantsDB&    m_db;
     POINT           m_ptClicked;
     POINT           m_ptDragging;
     MIndexLabels    m_labels;
-    RisohSettings&  m_settings;
     BOOL            m_bMovingSizing;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
     HBRUSH          m_hbrBack;
 
-    MRadDialog(RisohSettings& settings, ConstantsDB& db)
-        : m_index_visible(FALSE), m_db(db), m_settings(settings),
-          m_bMovingSizing(FALSE)
+    MRadDialog()
+        : m_index_visible(FALSE), m_bMovingSizing(FALSE)
     {
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
         m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
@@ -1058,7 +1056,7 @@ public:
 
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
-        MRadCtrl *pCtrl = new MRadCtrl(m_db, m_settings);
+        MRadCtrl *pCtrl = new MRadCtrl();
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
@@ -1118,7 +1116,7 @@ public:
         HGDIOBJ hbmOld = SelectObject(hDC, hbm8x8);
         {
             FillRect(hDC, &rc8x8, (HBRUSH)(COLOR_3DFACE + 1));
-            if (m_settings.bShowDotsOnDialog)
+            if (g_settings.bShowDotsOnDialog)
             {
                 for (int y = 0; y < 8; y += 4)
                 {
@@ -1178,22 +1176,19 @@ public:
 class MRadWindow : public MWindowBase
 {
 public:
-    ResEntries&     m_entries;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
     MRadDialog      m_rad_dialog;
     DialogRes       m_dialog_res;
-    RisohSettings&  m_settings;
     HICON           m_hIcon;
     HICON           m_hIconSm;
     MTitleToBitmap  m_title_to_bitmap;
     MTitleToIcon    m_title_to_icon;
     DialogItemClipboard m_clipboard;
 
-    MRadWindow(ResEntries& entries, ConstantsDB& db, RisohSettings& settings)
-        : m_entries(entries),
-          m_xDialogBaseUnit(0), m_yDialogBaseUnit(0), m_rad_dialog(settings, db),
-          m_dialog_res(db), m_settings(settings), m_hIcon(NULL), m_hIconSm(NULL),
+    MRadWindow()
+        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
+          m_hIcon(NULL), m_hIconSm(NULL),
           m_clipboard(m_dialog_res)
     {
     }
@@ -1209,11 +1204,11 @@ public:
                 // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
-                    Res_DoIcon(m_entries, m_title_to_icon, item, lang);
+					g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
-                    Res_DoBitmap(m_entries, m_title_to_bitmap, item, lang);
+					g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }
@@ -1478,11 +1473,11 @@ public:
         SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
-        if (m_settings.bResumeWindowPos)
+        if (g_settings.bResumeWindowPos)
         {
-            if (m_settings.nRadLeft != CW_USEDEFAULT)
+            if (g_settings.nRadLeft != CW_USEDEFAULT)
             {
-                POINT pt = { m_settings.nRadLeft, m_settings.nRadTop };
+                POINT pt = { g_settings.nRadLeft, g_settings.nRadTop };
                 SetWindowPosDx(&pt);
             }
             else
@@ -1755,7 +1750,7 @@ public:
         if (lstrcmpi(szClass, TEXT("COMBOBOX")) == 0 ||
             lstrcmpi(szClass, WC_COMBOBOXEX) == 0)
         {
-            item.m_siz.cy = m_settings.nComboHeight;
+            item.m_siz.cy = g_settings.nComboHeight;
         }
 
         UpdateRes();
@@ -1827,7 +1822,7 @@ public:
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
-        MAddCtrlDlg dialog(m_dialog_res, m_rad_dialog.m_db, pt, m_settings);
+        MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1837,8 +1832,7 @@ public:
 
     void OnCtrlProp(HWND hwnd)
     {
-        MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces(),
-                            m_settings, m_rad_dialog.m_db);
+        MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces());
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -1848,7 +1842,7 @@ public:
 
     void OnDlgProp(HWND hwnd)
     {
-        MDlgPropDlg dialog(m_dialog_res, m_settings, m_rad_dialog.m_db);
+        MDlgPropDlg dialog(m_dialog_res);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             ReCreateRadDialog(hwnd);
@@ -2414,8 +2408,8 @@ public:
         RECT rc;
         GetWindowRect(hwnd, &rc);
 
-        m_settings.nRadLeft = rc.left;
-        m_settings.nRadTop = rc.top;
+        g_settings.nRadLeft = rc.left;
+        g_settings.nRadTop = rc.top;
     }
 
     void OnSize(HWND hwnd, UINT state, int cx, int cy)

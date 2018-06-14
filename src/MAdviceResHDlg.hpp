@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -31,11 +31,10 @@
 class MAdviceResHDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
     MString m_str;
 
-    MAdviceResHDlg(RisohSettings& settings, const MString& str) :
-        MDialogBase(IDD_ADVICERESH), m_settings(settings), m_str(str)
+    MAdviceResHDlg(const MString& str) :
+        MDialogBase(IDD_ADVICERESH),  m_str(str)
     {
     }
 
@@ -57,8 +56,8 @@ public:
     void OnPsh1(HWND hwnd)
     {
         m_str.clear();
-        m_settings.added_ids.clear();
-        m_settings.removed_ids.clear();
+        g_settings.added_ids.clear();
+        g_settings.removed_ids.clear();
         SetDlgItemText(hwnd, edt1, NULL);
     }
 

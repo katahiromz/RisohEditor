@@ -133,7 +133,6 @@
 #define ID_ADDMANIFEST          211
 #define ID_EDITLABEL            212
 #define ID_SETPATHS             213
-#define ID_USEOLDLANGSTMT       214
 #define ID_SETDEFAULTS          215
 #define ID_BASE10               216
 #define ID_BASE16               217
@@ -357,6 +356,8 @@
 #define IDS_DLGINIT1            247
 #define IDS_DLGINIT2            248
 #define IDS_DLGINIT3            249
+#define IDS_SAMELANG            250
+#define IDS_SAMENAME            251
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

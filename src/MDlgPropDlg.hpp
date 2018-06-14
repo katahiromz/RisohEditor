@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -33,15 +33,15 @@ class MDlgPropDlg;
 
 void InitFontComboBox(HWND hCmb);
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
-void GetStyleSelect(std::vector<BYTE>& sel,
+void GetStyleSelect(std::vector<BYTE>& sel, 
                     const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
+DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, 
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
-void InitResNameComboBox(HWND hCmb, ConstantsDB& db, MIdOrString id, INT nIDTYPE_);
-void InitCaptionComboBox(HWND hCmb, RisohSettings& settings, LPCTSTR pszCaption);
+void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
+void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
 void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,6 @@ class MDlgPropDlg : public MDialogBase
 public:
     DialogRes&      m_dialog_res;
     BOOL            m_bUpdating;
-    ConstantsDB&    m_db;
-    RisohSettings&  m_settings;
     DWORD           m_dwStyle;
     DWORD           m_dwExStyle;
     ConstantsDB::TableType  m_style_table;
@@ -63,9 +61,8 @@ public:
     MComboBoxAutoComplete m_cmb3;
     MComboBoxAutoComplete m_cmb6;
 
-    MDlgPropDlg(DialogRes& dialog_res, RisohSettings& settings, ConstantsDB& db) :
-        MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE),
-        m_db(db), m_settings(settings)
+    MDlgPropDlg(DialogRes& dialog_res) :
+        MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE)
     {
     }
 
@@ -76,26 +73,26 @@ public:
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = m_db.GetTable(pszClass);
+            table = g_db.GetTable(pszClass);
             if (table.size())
             {
-                m_style_table.insert(m_style_table.end(),
+                m_style_table.insert(m_style_table.end(), 
                     table.begin(), table.end());
             }
         }
-        table = m_db.GetTable(TEXT("PARENT.STYLE"));
+        table = g_db.GetTable(TEXT("PARENT.STYLE"));
         if (table.size())
         {
-            m_style_table.insert(m_style_table.end(),
+            m_style_table.insert(m_style_table.end(), 
                 table.begin(), table.end());
         }
         m_style_selection.resize(m_style_table.size());
 
         m_exstyle_table.clear();
-        table = m_db.GetTable(TEXT("EXSTYLE"));
+        table = g_db.GetTable(TEXT("EXSTYLE"));
         if (table.size())
         {
-            m_exstyle_table.insert(m_exstyle_table.end(),
+            m_exstyle_table.insert(m_exstyle_table.end(), 
                 table.begin(), table.end());
         }
         m_exstyle_selection.resize(m_exstyle_table.size());
@@ -107,10 +104,10 @@ public:
 
         ConstantsDB::TableType table;
 
-        table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         MStringW prefix = table[IDTYPE_MENU].name;
 
-        table = m_db.GetTable(L"RESOURCE.ID");
+        table = g_db.GetTable(L"RESOURCE.ID");
         for (size_t i = 0; i < table.size(); ++i)
         {
             if (table[i].name.find(prefix) == 0)
@@ -132,7 +129,7 @@ public:
         m_bUpdating = FALSE;
     }
 
-    void ApplySelection(HWND hLst, ConstantsDB::TableType& table,
+    void ApplySelection(HWND hLst, ConstantsDB::TableType& table, 
                         std::vector<BYTE>& sel, DWORD dwValue)
     {
         m_bUpdating = TRUE;
@@ -155,7 +152,7 @@ public:
         }
 
         SubclassChildDx(m_cmb1, cmb1);
-        InitCaptionComboBox(m_cmb1, m_settings, strCaption.c_str());
+        InitCaptionComboBox(m_cmb1, strCaption.c_str());
         SendDlgItemMessage(hwnd, cmb1, CB_LIMITTEXT, 64, 0);
 
         if (m_dialog_res.IsExtended())
@@ -203,9 +200,9 @@ public:
         SetDlgItemTextW(hwnd, cmb2, m_dialog_res.m_class.c_str_or_empty());
         SendDlgItemMessage(hwnd, cmb2, CB_LIMITTEXT, 64, 0);
 
-        MStringW strHelp = m_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
+        MStringW strHelp = g_db.GetNameOfResID(IDTYPE_HELP, m_dialog_res.m_help_id);
         SetDlgItemText(hwnd, cmb3, strHelp.c_str());
-        InitResNameComboBox(GetDlgItem(hwnd, cmb3), m_db, L"", IDTYPE_HELP);
+        InitResNameComboBox(GetDlgItem(hwnd, cmb3), L"", IDTYPE_HELP);
         SubclassChildDx(m_cmb3, cmb3);
         SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
 
@@ -219,7 +216,7 @@ public:
         if (m_dialog_res.m_menu.empty())
             ;
         else if (m_dialog_res.m_menu.is_int())
-            strMenu = m_db.GetNameOfResID(IDTYPE_MENU, m_dialog_res.m_menu.m_id);
+            strMenu = g_db.GetNameOfResID(IDTYPE_MENU, m_dialog_res.m_menu.m_id);
         else
             strMenu = m_dialog_res.m_menu.str();
         SetDlgItemTextW(hwnd, cmb6, strMenu.c_str());
@@ -302,7 +299,7 @@ public:
 
         MString strCaption = GetDlgItemText(cmb1);
         mstr_trim(strCaption);
-        m_settings.AddCaption(strCaption.c_str());
+        g_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
         {
             mstr_unquote(strCaption);
@@ -320,9 +317,9 @@ public:
         ReplaceFullWithHalf(strHelp);
         mstr_trim(strHelp);
         DWORD help;
-        if (m_db.HasResID(strHelp))
+        if (g_db.HasResID(strHelp))
         {
-            help = m_db.GetResIDValue(strHelp);
+            help = g_db.GetResIDValue(strHelp);
         }
         else
         {
@@ -334,9 +331,9 @@ public:
         MString strMenu = GetDlgItemText(cmb6);
         mstr_trim(strMenu);
         MIdOrString menu(strMenu.c_str());
-        if (menu.is_str() && m_db.HasResID(menu.c_str()))
+        if (menu.is_str() && g_db.HasResID(menu.c_str()))
         {
-            menu = (WORD)m_db.GetResIDValue(menu.c_str());
+            menu = (WORD)g_db.GetResIDValue(menu.c_str());
         }
 
         MString strStyle = GetDlgItemText(edt6);
@@ -407,7 +404,7 @@ public:
         GetStyleSelect(hLst1, m_style_selection);
 
         DWORD dwOldStyle = m_dwStyle;
-        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table,
+        m_dwStyle = AnalyseStyleDiff(m_dwStyle, m_style_table, 
                                      old_style_selection, m_style_selection);
         ApplySelection(hLst1, m_style_table, m_style_selection, m_dwStyle);
 
@@ -464,7 +461,7 @@ public:
         std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(hLst2, m_exstyle_selection);
 
-        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table,
+        m_dwExStyle = AnalyseStyleDiff(m_dwExStyle, m_exstyle_table, 
                                        old_exstyle_selection, m_exstyle_selection);
         ApplySelection(hLst2, m_exstyle_table, m_exstyle_selection, m_dwExStyle);
 

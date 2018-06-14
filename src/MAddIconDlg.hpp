@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -27,7 +27,7 @@
 #include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(ConstantsDB& db, HWND hCmb2, MIdOrString& name);
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 
@@ -36,17 +36,16 @@ BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 class MAddIconDlg : public MDialogBase
 {
 public:
-    ResEntries& m_entries;
-    LPCWSTR file;
+    LPCWSTR m_file;
     HICON   m_hIcon;
-    ConstantsDB& m_db;
-    ResEntry m_entry_copy;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
 
-    MAddIconDlg(ConstantsDB& db, ResEntries& entries)
-        : MDialogBase(IDD_ADDICON), m_entries(entries), file(NULL), m_hIcon(NULL),
-          m_db(db)
+    MAddIconDlg()
+        : MDialogBase(IDD_ADDICON), m_file(NULL), m_hIcon(NULL)
     {
     }
 
@@ -57,17 +56,17 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, file);
+        SetDlgItemTextW(hwnd, edt1, m_file);
         if (m_hIcon)
             DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), file, 0);
+        m_hIcon = ExtractIcon(GetModuleHandle(NULL), m_file, 0);
         Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
 
         DragAcceptFiles(hwnd, TRUE);
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_db, L"", IDTYPE_ICON);
+        InitResNameComboBox(hCmb2, L"", IDTYPE_ICON);
         SetWindowText(hCmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -77,6 +76,12 @@ public:
         SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
+
+        if (m_file)
+        {
+            SetFocus(hCmb2);
+            return FALSE;
+        }
         return TRUE;
     }
 
@@ -98,7 +103,7 @@ public:
 
         MIdOrString name;
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        if (!CheckNameComboBox(m_db, hCmb2, name))
+        if (!CheckNameComboBox(hCmb2, name))
             return;
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
@@ -111,15 +116,13 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        BOOL bOverwrite = FALSE;
-        INT iEntry = Res_Find(m_entries, RT_GROUP_ICON, name, lang, FALSE);
-        if (iEntry != -1)
+        auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang);
+        if (entry)
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                bOverwrite = TRUE;
                 break;
             case IDNO:
             case IDCANCEL:
@@ -127,17 +130,15 @@ public:
             }
         }
 
-        if (!Res_AddGroupIcon(m_entries, name, lang, file, bOverwrite))
+        if (!g_res.add_group_icon(name, lang, file))
         {
-            if (bOverwrite)
-                ErrorBoxDx(IDS_CANTREPLACEICO);
-            else
-                ErrorBoxDx(IDS_CANNOTADDICON);
+            ErrorBoxDx(IDS_CANNOTADDICON);
             return;
         }
 
-        ResEntry entry(type, name, lang);
-        m_entry_copy = entry;
+        m_type = type;
+        m_name = name;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }

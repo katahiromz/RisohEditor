@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -238,7 +238,6 @@ public:
 class MMacrosDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
     macro_map_type m_map;
     MResizable m_resizable;
     HWND m_hLst1;
@@ -246,9 +245,9 @@ public:
     HICON m_hIconSm;
     MString m_strTemp;
 
-    MMacrosDlg(RisohSettings& settings)
-        : MDialogBase(IDD_MACROS), m_settings(settings),
-          m_map(settings.macros)
+    MMacrosDlg()
+        : MDialogBase(IDD_MACROS), 
+          m_map(g_settings.macros)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -467,8 +466,7 @@ public:
                 if (pInfo->item.pszText == NULL)
                     return TRUE;
 
-                macro_map_type::const_iterator it;
-                it = m_map.find(pInfo->item.pszText);
+                auto it = m_map.find(pInfo->item.pszText);
                 if (it != m_map.end())
                 {
                     return TRUE;
@@ -575,21 +573,20 @@ public:
         LV_ITEM item;
         INT iItem = 0;
 
-        macro_map_type::iterator it, end = m_map.end();
-        for (it = m_map.begin(); it != end; ++it)
+        for (auto& pair : m_map)
         {
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 0;
-            item.pszText = const_cast<LPTSTR>(it->first.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.first.c_str());
             ListView_InsertItem(m_hLst1, &item);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = iItem;
             item.mask = LVIF_TEXT;
             item.iSubItem = 1;
-            item.pszText = const_cast<LPTSTR>(it->second.c_str());
+            item.pszText = const_cast<LPTSTR>(pair.second.c_str());
             ListView_SetItem(m_hLst1, &item);
 
             ++iItem;

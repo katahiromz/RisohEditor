@@ -1,3 +1,9 @@
+# CMake minimum version
+cmake_minimum_required(VERSION 2.4)
+
+# use new policy
+cmake_policy(SET CMP0046 NEW)
+
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
@@ -31,12 +37,13 @@ add_executable(RisohEditor WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     RisohEditor.exe.manifest)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg)
+target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # resource object extension
 if (MSVC)
     set(DOTRES ".res")
+    add_definitions(-DMSVC=1)
 else()
     set(DOTRES ".o")
 endif()

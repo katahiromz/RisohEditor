@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -29,18 +29,15 @@
 class MExportOptionsDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
-
-    MExportOptionsDlg(RisohSettings& settings)
-        : MDialogBase(IDD_EXP_OPTIONS), m_settings(settings)
+    MExportOptionsDlg() : MDialogBase(IDD_EXP_OPTIONS)
     {
     }
 
     void Reload(HWND hwnd)
     {
-        CheckDlgButton(hwnd, chx1, m_settings.bSepFilesByLang ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx2, m_settings.bStoreToResFolder ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx3, m_settings.bSelectableByMacro ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx1, g_settings.bSepFilesByLang ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx2, g_settings.bStoreToResFolder ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx3, g_settings.bSelectableByMacro ? BST_CHECKED : BST_UNCHECKED);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -53,9 +50,9 @@ public:
 
     void OnOK(HWND hwnd)
     {
-        m_settings.bSepFilesByLang = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
-        m_settings.bStoreToResFolder = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
-        m_settings.bSelectableByMacro = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
+        g_settings.bSepFilesByLang = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+        g_settings.bStoreToResFolder = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
+        g_settings.bSelectableByMacro = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
 
         EndDialog(IDOK);
     }

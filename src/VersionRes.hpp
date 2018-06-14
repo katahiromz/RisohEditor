@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -159,16 +159,15 @@ public:
         ret += MStringW(depth * 4, L' ');
         ret += L"{\r\n";
 
-        Vars::const_iterator it, end = var.vars.end();
-        for (it = var.vars.begin(); it != end; ++it)
+        for (auto& item : var.vars)
         {
             if (var.key == L"StringFileInfo")
             {
-                ret += DumpBlock(*it, depth + 1);
+                ret += DumpBlock(item, depth + 1);
             }
             else
             {
-                ret += DumpValue(it->head.wType, *it, depth + 1);
+                ret += DumpValue(item.head.wType, item, depth + 1);
             }
         }
 
@@ -186,19 +185,19 @@ public:
         ret += name.str();
         ret += L" VERSIONINFO\r\n";
 
-        StringCchPrintfW(line, _countof(line),
-            L"FILEVERSION\t%u, %u, %u, %u\r\n",
-            HIWORD(m_fixed.dwFileVersionMS),
-            LOWORD(m_fixed.dwFileVersionMS),
-            HIWORD(m_fixed.dwFileVersionLS),
+        StringCchPrintfW(line, _countof(line), 
+            L"FILEVERSION\t%u, %u, %u, %u\r\n", 
+            HIWORD(m_fixed.dwFileVersionMS), 
+            LOWORD(m_fixed.dwFileVersionMS), 
+            HIWORD(m_fixed.dwFileVersionLS), 
             LOWORD(m_fixed.dwFileVersionLS));
         ret += line;
 
-        StringCchPrintfW(line, _countof(line),
-            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n",
-            HIWORD(m_fixed.dwProductVersionMS),
-            LOWORD(m_fixed.dwProductVersionMS),
-            HIWORD(m_fixed.dwProductVersionLS),
+        StringCchPrintfW(line, _countof(line), 
+            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n", 
+            HIWORD(m_fixed.dwProductVersionMS), 
+            LOWORD(m_fixed.dwProductVersionMS), 
+            HIWORD(m_fixed.dwProductVersionLS), 
             LOWORD(m_fixed.dwProductVersionLS));
         ret += line;
 
@@ -211,10 +210,9 @@ public:
         ret += L"{\r\n";
 
         const std::vector<Var>& vars = m_vars[0].vars;
-        std::vector<Var>::const_iterator it, end = vars.end();
-        for (it = vars.begin(); it != end; ++it)
+        for (auto& item : vars)
         {
-            ret += DumpBlock(*it, 1);
+            ret += DumpBlock(item, 1);
         }
         ret += L"}\r\n";
 

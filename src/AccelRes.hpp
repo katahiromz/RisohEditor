@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -52,8 +52,7 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    const ConstantsDB& m_db;
-    AccelRes(const ConstantsDB& db) : m_db(db) { }
+    AccelRes() { }
 
     bool LoadFromStream(const MByteStreamEx& stream)
     {
@@ -108,40 +107,39 @@ public:
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_ACCEL, id_or_str.m_id);
         }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
         ret += L"{\r\n";
 
-        entries_type::const_iterator it, end = m_entries.end();
-        for (it = m_entries.begin(); it != end; ++it)
+        for (auto& entry : m_entries)
         {
-            bool VIRTKEY = !!(it->fFlags & FVIRTKEY);
-            bool NOINVERT = !!(it->fFlags & FNOINVERT);
-            bool SHIFT = !!(it->fFlags & FSHIFT);
-            bool CONTROL = !!(it->fFlags & FCONTROL);
-            bool ALT = !!(it->fFlags & FALT);
+            bool VIRTKEY = !!(entry.fFlags & FVIRTKEY);
+            bool NOINVERT = !!(entry.fFlags & FNOINVERT);
+            bool SHIFT = !!(entry.fFlags & FSHIFT);
+            bool CONTROL = !!(entry.fFlags & FCONTROL);
+            bool ALT = !!(entry.fFlags & FALT);
 
             ret += L"    ";
             if (VIRTKEY)
             {
-                ret += m_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                ret += g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
             }
             else
             {
                 std::string str;
-                str += (char)it->wAscii;
+                str += (char)entry.wAscii;
                 ret += MAnsiToWide(CP_ACP, mstr_quote(str));
             }
             ret += L", ";
             if (0)
             {
-                ret += mstr_dec_word(it->wId);
+                ret += mstr_dec_word(entry.wId);
             }
             else
             {
-                ret += m_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, it->wId);
+                ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, entry.wId);
             }
 
             if (NOINVERT)

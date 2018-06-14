@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -24,6 +24,7 @@
 #include <vector>
 #include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
+#include "RisohSettings.hpp"
 #include "DlgInitRes.hpp"
 
 #ifndef BS_PUSHBOX
@@ -111,9 +112,9 @@ inline bool IDToPredefClass(WORD w, MStringW& name)
     return false;
 }
 
-inline void FixClassName(const ConstantsDB& db, MStringW& cls)
+inline void FixClassName(MStringW& cls)
 {
-    ConstantsDB::TableType table = db.GetTable(L"CONTROL.CLASSES");
+    ConstantsDB::TableType table = g_db.GetTable(L"CONTROL.CLASSES");
     for (size_t i = 0; i < table.size(); ++i)
     {
         if (lstrcmpiW(table[i].name.c_str(), cls.c_str()) == 0)
@@ -330,7 +331,7 @@ struct DialogItem
         return true;
     }
 
-    MStringW Dump(const ConstantsDB& db, bool bAlwaysControl = false)
+    MStringW Dump(bool bAlwaysControl = false)
     {
         MStringW cls;
 
@@ -352,53 +353,53 @@ struct DialogItem
     #define BS_TYPEMASK     0x0000000F
 #endif
                 if ((m_style & BS_TYPEMASK) == BS_AUTO3STATE)
-                    return _do_AUTO3STATE(db);
+                    return _do_AUTO3STATE();
                 if ((m_style & BS_TYPEMASK) == BS_AUTOCHECKBOX)
-                    return _do_AUTOCHECKBOX(db);
+                    return _do_AUTOCHECKBOX();
                 if ((m_style & BS_TYPEMASK) == BS_AUTORADIOBUTTON)
-                    return _do_AUTORADIOBUTTON(db);
+                    return _do_AUTORADIOBUTTON();
                 if ((m_style & BS_TYPEMASK) == BS_CHECKBOX)
-                    return _do_CHECKBOX(db);
+                    return _do_CHECKBOX();
                 if ((m_style & BS_TYPEMASK) == BS_DEFPUSHBUTTON)
-                    return _do_DEFPUSHBUTTON(db);
+                    return _do_DEFPUSHBUTTON();
                 if ((m_style & BS_TYPEMASK) == BS_GROUPBOX)
-                    return _do_GROUPBOX(db);
+                    return _do_GROUPBOX();
                 if ((m_style & BS_TYPEMASK) == BS_PUSHBUTTON)
-                    return _do_PUSHBUTTON(db);
+                    return _do_PUSHBUTTON();
                 if ((m_style & BS_TYPEMASK) == BS_PUSHBOX ||
                     (m_style & BS_TYPEMASK) == 0xC)
                 {
-                    return _do_PUSHBOX(db);
+                    return _do_PUSHBOX();
                 }
                 if ((m_style & BS_TYPEMASK) == BS_RADIOBUTTON)
-                    return _do_RADIOBUTTON(db);
+                    return _do_RADIOBUTTON();
                 if ((m_style & BS_TYPEMASK) == BS_3STATE)
-                    return _do_STATE3(db);
+                    return _do_STATE3();
             }
             if (lstrcmpiW(cls.c_str(), L"STATIC") == 0)
             {
                 if ((m_style & SS_TYPEMASK) == SS_LEFT)
-                    return _do_LTEXT(db);
+                    return _do_LTEXT();
                 if ((m_style & SS_TYPEMASK) == SS_CENTER)
-                    return _do_CTEXT(db);
+                    return _do_CTEXT();
                 if ((m_style & SS_TYPEMASK) == SS_RIGHT)
-                    return _do_RTEXT(db);
+                    return _do_RTEXT();
                 if ((m_style & SS_TYPEMASK) == SS_ICON)
-                    return _do_ICON(db);
+                    return _do_ICON();
             }
             if (m_title.empty())
             {
                 if (lstrcmpiW(cls.c_str(), L"EDIT") == 0)
-                    return _do_EDITTEXT(db);
+                    return _do_EDITTEXT();
                 if (lstrcmpiW(cls.c_str(), L"COMBOBOX") == 0)
-                    return _do_COMBOBOX(db);
+                    return _do_COMBOBOX();
                 if (lstrcmpiW(cls.c_str(), L"LISTBOX") == 0)
-                    return _do_LISTBOX(db);
+                    return _do_LISTBOX();
                 if (lstrcmpiW(cls.c_str(), L"SCROLLBAR") == 0)
-                    return _do_SCROLLBAR(db);
+                    return _do_SCROLLBAR();
             }
         }
-        return DumpControl(db, cls);
+        return DumpControl(cls);
     }
 
     bool IsStdComboBox() const
@@ -430,7 +431,7 @@ struct DialogItem
         return false;
     }
 
-    MStringW DumpControl(const ConstantsDB& db, MStringW& cls)
+    MStringW DumpControl(MStringW& cls)
     {
         MStringW ret;
 
@@ -438,7 +439,7 @@ struct DialogItem
 
         if (IsStaticIcon())
         {
-            ret += db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
         }
         else
         {
@@ -446,7 +447,7 @@ struct DialogItem
         }
 
         ret += L", ";
-        ret += db.GetNameOfResID(IDTYPE_CONTROL, m_id);
+        ret += g_db.GetNameOfResID(IDTYPE_CONTROL, m_id);
         ret += L", ";
         if (m_class.is_int())
         {
@@ -458,7 +459,7 @@ struct DialogItem
         else
         {
             cls = m_class.str();
-            FixClassName(db, cls);
+            FixClassName(cls);
             ret += mstr_quote(cls);
         }
 
@@ -466,7 +467,7 @@ struct DialogItem
         {
             DWORD value = m_style;
             DWORD def_value = WS_CHILD | WS_VISIBLE;
-            ret += db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, def_value);
+            ret += g_db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, def_value);
         }
 
         ret += L", ";
@@ -481,12 +482,12 @@ struct DialogItem
         {
             ret += L", ";
             DWORD value = m_ex_style;
-            ret += db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
+            ret += g_db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
         }
         if (m_help_id)
         {
             ret += L", ";
-            ret += db.GetNameOfResID(IDTYPE_HELP, m_help_id);
+            ret += g_db.GetNameOfResID(IDTYPE_HELP, m_help_id);
         }
         if (m_extra.size() && m_extra.size() % 2 == 0)
         {
@@ -505,10 +506,9 @@ struct DialogItem
         return ret;
     }
 
-    MStringW _do_CONTROL(bool bNeedsText,
-                         const ConstantsDB& db,
-                         const MStringW& ctrl,
-                         const MStringW& cls,
+    MStringW _do_CONTROL(bool bNeedsText, 
+                         const MStringW& ctrl, 
+                         const MStringW& cls, 
                          DWORD DefStyle)
     {
         MStringW ret;
@@ -519,7 +519,7 @@ struct DialogItem
         {
             if (IsStaticIcon())
             {
-                ret += db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
+                ret += g_db.GetNameOfResID(IDTYPE_ICON, m_title.m_id);
             }
             else
             {
@@ -528,7 +528,7 @@ struct DialogItem
             ret += L", ";
         }
 
-        ret += db.GetNameOfResID(IDTYPE_CONTROL, m_id);
+        ret += g_db.GetNameOfResID(IDTYPE_CONTROL, m_id);
         ret += L", ";
         ret += mstr_dec_short((SHORT)m_pt.x);
         ret += L", ";
@@ -550,18 +550,18 @@ struct DialogItem
                 value &= ~BS_TYPEMASK;
                 value |= BS_PUSHBOX;
             }
-            ret += db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, DefStyle);
+            ret += g_db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, DefStyle);
         }
         if (m_ex_style || m_help_id)
         {
             ret += L", ";
             DWORD value = m_ex_style;
-            ret += db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
+            ret += g_db.DumpBitFieldOrZero(L"EXSTYLE", L"", value);
         }
         if (m_help_id)
         {
             ret += L", ";
-            ret += db.GetNameOfResID(IDTYPE_HELP, m_help_id);
+            ret += g_db.GetNameOfResID(IDTYPE_HELP, m_help_id);
         }
         if (m_extra.size() && m_extra.size() % 2 == 0)
         {
@@ -579,95 +579,93 @@ struct DialogItem
         return ret;
     }
 
-    MStringW _do_BUTTON(const ConstantsDB& db,
-                            const MStringW& ctrl, DWORD DefStyle)
+    MStringW _do_BUTTON(const MStringW& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(true, db, ctrl, L"BUTTON", DefStyle);
+        return _do_CONTROL(true, ctrl, L"BUTTON", DefStyle);
     }
 
-    MStringW _do_TEXT(const ConstantsDB& db,
-                          const MStringW& ctrl, DWORD DefStyle)
+    MStringW _do_TEXT(const MStringW& ctrl, DWORD DefStyle)
     {
-        return _do_CONTROL(true, db, ctrl, L"STATIC", DefStyle);
+        return _do_CONTROL(true, ctrl, L"STATIC", DefStyle);
     }
 
-    MStringW _do_AUTO3STATE(const ConstantsDB& db)
+    MStringW _do_AUTO3STATE()
     {
-        return _do_BUTTON(db, L"AUTO3STATE", (BS_AUTO3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"AUTO3STATE", (BS_AUTO3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_AUTOCHECKBOX(const ConstantsDB& db)
+    MStringW _do_AUTOCHECKBOX()
     {
-        return _do_BUTTON(db, L"AUTOCHECKBOX", (BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"AUTOCHECKBOX", (BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_AUTORADIOBUTTON(const ConstantsDB& db)
+    MStringW _do_AUTORADIOBUTTON()
     {
-        return _do_BUTTON(db, L"AUTORADIOBUTTON", (BS_AUTORADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"AUTORADIOBUTTON", (BS_AUTORADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_CHECKBOX(const ConstantsDB& db)
+    MStringW _do_CHECKBOX()
     {
-        return _do_BUTTON(db, L"CHECKBOX", (BS_CHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"CHECKBOX", (BS_CHECKBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_DEFPUSHBUTTON(const ConstantsDB& db)
+    MStringW _do_DEFPUSHBUTTON()
     {
-        return _do_BUTTON(db, L"DEFPUSHBUTTON", (BS_DEFPUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"DEFPUSHBUTTON", (BS_DEFPUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_GROUPBOX(const ConstantsDB& db)
+    MStringW _do_GROUPBOX()
     {
-        return _do_BUTTON(db, L"GROUPBOX", (BS_GROUPBOX | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"GROUPBOX", (BS_GROUPBOX | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_PUSHBUTTON(const ConstantsDB& db)
+    MStringW _do_PUSHBUTTON()
     {
-        return _do_BUTTON(db, L"PUSHBUTTON", (BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"PUSHBUTTON", (BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_PUSHBOX(const ConstantsDB& db)
+    MStringW _do_PUSHBOX()
     {
-        return _do_BUTTON(db, L"PUSHBOX", (BS_PUSHBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"PUSHBOX", (BS_PUSHBOX | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_RADIOBUTTON(const ConstantsDB& db)
+    MStringW _do_RADIOBUTTON()
     {
-        return _do_BUTTON(db, L"RADIOBUTTON", (BS_RADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"RADIOBUTTON", (BS_RADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_STATE3(const ConstantsDB& db)
+    MStringW _do_STATE3()
     {
-        return _do_BUTTON(db, L"STATE3", (BS_3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        return _do_BUTTON(L"STATE3", (BS_3STATE | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_LTEXT(const ConstantsDB& db)
+    MStringW _do_LTEXT()
     {
-        return _do_TEXT(db, L"LTEXT", (SS_LEFT | WS_GROUP | WS_CHILD | WS_VISIBLE));
+        return _do_TEXT(L"LTEXT", (SS_LEFT | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_CTEXT(const ConstantsDB& db)
+    MStringW _do_CTEXT()
     {
-        return _do_TEXT(db, L"CTEXT", (SS_CENTER | WS_GROUP | WS_CHILD | WS_VISIBLE));
+        return _do_TEXT(L"CTEXT", (SS_CENTER | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_RTEXT(const ConstantsDB& db)
+    MStringW _do_RTEXT()
     {
-        return _do_TEXT(db, L"RTEXT", (SS_RIGHT | WS_GROUP | WS_CHILD | WS_VISIBLE));
+        return _do_TEXT(L"RTEXT", (SS_RIGHT | WS_GROUP | WS_CHILD | WS_VISIBLE));
     }
-    MStringW _do_EDITTEXT(const ConstantsDB& db)
+    MStringW _do_EDITTEXT()
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, db, L"EDITTEXT", L"EDIT",
+        return _do_CONTROL(false, L"EDITTEXT", L"EDIT", 
                            ES_LEFT | WS_BORDER | WS_TABSTOP | WS_CHILD | WS_VISIBLE);
     }
-    MStringW _do_COMBOBOX(const ConstantsDB& db)
+    MStringW _do_COMBOBOX()
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, db, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(false, L"COMBOBOX", L"COMBOBOX", WS_CHILD | WS_VISIBLE);
     }
-    MStringW _do_ICON(const ConstantsDB& db)
+    MStringW _do_ICON()
     {
-        return _do_CONTROL(true, db, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(true, L"ICON", L"STATIC", SS_ICON | WS_CHILD | WS_VISIBLE);
     }
-    MStringW _do_LISTBOX(const ConstantsDB& db)
+    MStringW _do_LISTBOX()
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, db, L"LISTBOX", L"LISTBOX",
+        return _do_CONTROL(false, L"LISTBOX", L"LISTBOX", 
                            LBS_NOTIFY | WS_BORDER | WS_CHILD | WS_VISIBLE);
     }
-    MStringW _do_SCROLLBAR(const ConstantsDB& db)
+    MStringW _do_SCROLLBAR()
     {
         assert(m_title.empty());
-        return _do_CONTROL(false, db, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
+        return _do_CONTROL(false, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
     void Fixup(bool bRevert = false)
@@ -749,7 +747,6 @@ typedef std::vector<DialogItem> DialogItems;
 
 struct DialogRes
 {
-    const ConstantsDB&          m_db;
     WORD                        m_version;
     WORD                        m_signature;
     DWORD                       m_help_id;
@@ -773,7 +770,7 @@ struct DialogRes
     MIdOrString                 m_old_class;
     DlgInitRes                  m_dlginit;
 
-    DialogRes(const ConstantsDB& db) : m_db(db), m_dlginit(db)
+    DialogRes()
     {
         m_version = 0;
         m_signature = 0;
@@ -897,7 +894,7 @@ struct DialogRes
         }
         else
         {
-            ret += m_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
         }
 
         if (IsExtended())
@@ -921,7 +918,7 @@ struct DialogRes
         if (IsExtended() && m_help_id)
         {
             ret += L", ";
-            ret += m_db.GetNameOfResID(IDTYPE_HELP, m_help_id);
+            ret += g_db.GetNameOfResID(IDTYPE_HELP, m_help_id);
         }
         ret += L"\r\n";
 
@@ -953,7 +950,7 @@ struct DialogRes
             else if ((value & DS_SHELLFONT) == DS_SETFONT)
                 value &= ~DS_SETFONT;
 
-            MStringW str = m_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
+            MStringW str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
             if (value)
             {
                 if (!str.empty())
@@ -974,7 +971,7 @@ struct DialogRes
         if (m_ex_style)
         {
             DWORD value = m_ex_style;
-            MStringW str = m_db.DumpBitField(L"EXSTYLE", L"", value);
+            MStringW str = g_db.DumpBitField(L"EXSTYLE", L"", value);
             if (value)
             {
                 if (!str.empty())
@@ -1015,7 +1012,7 @@ struct DialogRes
         for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
-            ret += m_items[i].Dump(m_db, bAlwaysControl);
+            ret += m_items[i].Dump(g_settings.bAlwaysControl);
             ret += L"\r\n";
         }
 
@@ -1050,19 +1047,17 @@ struct DialogRes
             m_class.clear();
         }
 
-        DialogItems::iterator it, end = m_items.end();
-        for (it = m_items.begin(); it != end; ++it)
+        for (auto& item : m_items)
         {
-            it->Fixup(bRevert);
+            item.Fixup(bRevert);
         }
     }
 
     void Fixup2(bool bRevert = false)
     {
-        DialogItems::iterator it, end = m_items.end();
-        for (it = m_items.begin(); it != end; ++it)
+        for (auto& item : m_items)
         {
-            it->Fixup2(bRevert);
+            item.Fixup2(bRevert);
         }
     }
 
@@ -1369,7 +1364,7 @@ public:
     UINT m_uCF_DIALOGITEMS;
 
     DialogItemClipboard(DialogRes& dialog_res)
-        : m_dialog_res(dialog_res),
+        : m_dialog_res(dialog_res), 
         m_uCF_DIALOGITEMS(::RegisterClipboardFormat(TEXT("RisohEditor_DialogItem_ClipboardData")))
     {
     }

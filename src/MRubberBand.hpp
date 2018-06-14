@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -55,13 +55,13 @@ public:
         return NULL;
     }
 
-    BOOL CreateDx(HWND hwndParent, HWND hwndTarget, BOOL bVisible = FALSE,
+    BOOL CreateDx(HWND hwndParent, HWND hwndTarget, BOOL bVisible = FALSE, 
                   INT x = 0, INT y = 0, INT cx = 0, INT cy = 0)
     {
         m_hwndTarget = hwndTarget;
         DWORD style = (bVisible ? WS_VISIBLE : 0) | WS_CHILD | WS_THICKFRAME;
         DWORD exstyle = WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_TOPMOST;
-        BOOL bOK = CreateAsChildDx(hwndParent, NULL, style, exstyle, -1,
+        BOOL bOK = CreateAsChildDx(hwndParent, NULL, style, exstyle, -1, 
                                    x, y, cx, cy);
         if (bOK)
         {
@@ -115,8 +115,8 @@ public:
         GetIdealClientRect(&rc);
         MapWindowRect(m_hwnd, GetParent(m_hwndTarget), &rc);
 
-        SetWindowPos(m_hwndTarget, NULL,
-            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+        SetWindowPos(m_hwndTarget, NULL, 
+            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 
             SWP_NOACTIVATE | SWP_NOZORDER);
 
         InvalidateRect(m_hwnd, NULL, TRUE);
@@ -133,8 +133,8 @@ public:
 
         InflateRect(&rc, 2 * m_nGripSize, 2 * m_nGripSize);
 
-        SetWindowPos(m_hwnd, NULL,
-            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+        SetWindowPos(m_hwnd, NULL, 
+            rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 
             SWP_NOACTIVATE | SWP_NOZORDER);
 
         InvalidateRect(m_hwnd, NULL, TRUE);
@@ -264,8 +264,8 @@ public:
         INT ay[] = { m_nGripSize, cy / 2, cy - m_nGripSize };
         INT ahits[] =
         {
-            HTTOPLEFT,    HTTOP,    HTTOPRIGHT,
-            HTLEFT,                 HTRIGHT,
+            HTTOPLEFT,    HTTOP,    HTTOPRIGHT, 
+            HTLEFT,                 HTRIGHT, 
             HTBOTTOMLEFT, HTBOTTOM, HTBOTTOMRIGHT
         };
 
@@ -282,15 +282,15 @@ public:
 
                 if (hDC)
                 {
-                    Rectangle(hDC,
-                        ax[i] - m_nGripSize, ay[k] - m_nGripSize,
+                    Rectangle(hDC, 
+                        ax[i] - m_nGripSize, ay[k] - m_nGripSize, 
                         ax[i] + m_nGripSize, ay[k] + m_nGripSize);
                 }
                 else if (ppt)
                 {
                     RECT rect;
-                    SetRect(&rect,
-                        ax[i] - m_nGripSize, ay[k] - m_nGripSize,
+                    SetRect(&rect, 
+                        ax[i] - m_nGripSize, ay[k] - m_nGripSize, 
                         ax[i] + m_nGripSize, ay[k] + m_nGripSize);
                     if (PtInRect(&rect, *ppt))
                     {
@@ -300,7 +300,7 @@ public:
                 else
                 {
                     HRGN hRgn2 = CreateRectRgn(
-                        ax[i] - m_nGripSize, ay[k] - m_nGripSize,
+                        ax[i] - m_nGripSize, ay[k] - m_nGripSize, 
                         ax[i] + m_nGripSize, ay[k] + m_nGripSize);
                     UnionRgn(hRgn, hRgn, hRgn2);
                     DeleteObject(hRgn2);

@@ -34,26 +34,29 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-#define IDTYPE_UNKNOWN      0   // Unknown.ID
-#define IDTYPE_CURSOR       1   // Cursor.ID
-#define IDTYPE_BITMAP       2   // Bitmap.ID
-#define IDTYPE_MENU         3   // Menu.ID
-#define IDTYPE_DIALOG       4   // Dialog.ID
-#define IDTYPE_STRING       5   // String.ID
-#define IDTYPE_ACCEL        6   // Accel.ID
-#define IDTYPE_ICON         7   // Icon.ID
-#define IDTYPE_ANICURSOR    8   // AniCursor.ID
-#define IDTYPE_ANIICON      9   // AniIcon.ID
-#define IDTYPE_HTML         10   // Html.ID
-#define IDTYPE_HELP         11  // Help.ID
-#define IDTYPE_COMMAND      12  // Command.ID
-#define IDTYPE_CONTROL      13  // Control.ID
-#define IDTYPE_RESOURCE     14  // Resource.ID
-#define IDTYPE_MESSAGE      15  // Message.ID
-#define IDTYPE_WINDOW       16  // Window.ID
-#define IDTYPE_NEWCOMMAND   17  // New.Command.ID
-#define IDTYPE_PROMPT       18  // Prompt.ID
-#define IDTYPE_RCDATA       19  // RCData.ID
+enum IDTYPE_
+{
+    IDTYPE_UNKNOWN      = 0,  // Unknown.ID
+    IDTYPE_CURSOR       = 1,  // Cursor.ID
+    IDTYPE_BITMAP       = 2,  // Bitmap.ID
+    IDTYPE_MENU         = 3,  // Menu.ID
+    IDTYPE_DIALOG       = 4,  // Dialog.ID
+    IDTYPE_STRING       = 5,  // String.ID
+    IDTYPE_ACCEL        = 6,  // Accel.ID
+    IDTYPE_ICON         = 7,  // Icon.ID
+    IDTYPE_ANICURSOR    = 8,  // AniCursor.ID
+    IDTYPE_ANIICON      = 9,  // AniIcon.ID
+    IDTYPE_HTML         = 10, // Html.ID
+    IDTYPE_HELP         = 11, // Help.ID
+    IDTYPE_COMMAND      = 12, // Command.ID
+    IDTYPE_CONTROL      = 13, // Control.ID
+    IDTYPE_RESOURCE     = 14, // Resource.ID
+    IDTYPE_MESSAGE      = 15, // Message.ID
+    IDTYPE_WINDOW       = 16, // Window.ID
+    IDTYPE_NEWCOMMAND   = 17, // New.Command.ID
+    IDTYPE_PROMPT       = 18, // Prompt.ID
+    IDTYPE_RCDATA       = 19  // RCData.ID
+};
 
 class ConstantsDB
 {
@@ -84,7 +87,7 @@ public:
     typedef std::map<CategoryType, TableType> MapType;
     MapType m_map;
 
-    bool IsEntityIDType(INT nIDTYPE_) const
+    bool IsEntityIDType(IDTYPE_ nIDTYPE_) const
     {
         switch (nIDTYPE_)
         {
@@ -104,7 +107,7 @@ public:
         return false;
     }
 
-    INT IDTypeFromResType(const MIdOrString& type) const
+    IDTYPE_ IDTypeFromResType(const MIdOrString& type) const
     {
         if (type == RT_CURSOR)
         {
@@ -231,10 +234,9 @@ public:
     bool HasCtrlID(NameType name) const
     {
         TableType table = GetTable(L"CTRLID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         return false;
@@ -242,17 +244,15 @@ public:
     bool HasResID(NameType name) const
     {
         TableType table = GetTable(L"RESOURCE.ID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         table = GetTable(L"CTRLID");
-        end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            if (it->name == name)
+            if (table_entry.name == name)
                 return true;
         }
         return false;
@@ -288,8 +288,8 @@ public:
     {
         const NameType name = L"IDC_STATIC";
         TableType table = GetTable(L"RESOURCE.ID");
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        auto end = table.end();
+        for (auto it = table.begin(); it != end; ++it)
         {
             if (it->name == name)
             {
@@ -302,7 +302,7 @@ public:
         m_map[L"RESOURCE.ID"] = table;
     }
 
-    StringType GetNameOfResID(INT nIDTYPE_, ValueType value) const
+    StringType GetNameOfResID(IDTYPE_ nIDTYPE_, ValueType value) const
     {
         if (!AreMacroIDShown())
         {
@@ -332,8 +332,8 @@ public:
         }
 
         table = GetTableByPrefix(L"RESOURCE.ID", prefix);
-        TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        auto end = table.end();
+        for (auto it = table.begin(); it != end; ++it)
         {
             if (it->value == value)
                 return it->name;
@@ -374,15 +374,15 @@ public:
         return mstr_dec_word(WORD(value));
     }
 
-    StringType GetNameOfIDTypeValue(INT nIDTYPE_, ValueType value) const
+    StringType GetNameOfIDTypeValue(IDTYPE_ nIDTYPE_, ValueType value) const
     {
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
         StringType prefix = table[nIDTYPE_].name;
 
         table = GetTableByPrefix(L"RESOURCE.ID", prefix);
         {
-            TableType::iterator it, end = table.end();
-            for (it = table.begin(); it != end; ++it)
+            auto end = table.end();
+            for (auto it = table.begin(); it != end; ++it)
             {
                 if (it->value == value)
                     return it->name;
@@ -410,7 +410,7 @@ public:
         return ret;
     }
 
-    StringType GetNameOfResID(INT nIDTYPE_1, INT nIDTYPE_2, ValueType value) const
+    StringType GetNameOfResID(IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2, ValueType value) const
     {
         StringType ret = GetNameOfResID(nIDTYPE_1, value);
         if (mchr_is_digit(ret[0]) || ret[0] == L'-')
@@ -705,8 +705,8 @@ public:
         mstr_split(values, str, L" \t\r\n|+");
 
         ValueType value = default_value;
-        std::vector<StringType>::iterator it, end = values.end();
-        for (it = values.begin(); it != end; ++it)
+        auto end = values.end();
+        for (auto it = values.begin(); it != end; ++it)
         {
             mstr_trim(*it);
             if ((*it).empty())
@@ -784,6 +784,17 @@ protected:
         return ret;
     }
 };
+
+#ifdef USE_GLOBALS
+    extern ConstantsDB g_db;
+#else
+    inline ConstantsDB& DB_GetMaster(void)
+    {
+        static ConstantsDB s_db;
+        return s_db;
+    }
+    #define g_db DB_GetMaster()
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 

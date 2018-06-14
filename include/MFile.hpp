@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     13      /* Version 13 */
+#define MZC4_MFILE_HPP_     14      /* Version 14 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
@@ -29,6 +29,16 @@ class MFile;
         (static_cast<DWORD>(lo) | \
             (static_cast<DWORDLONG>(static_cast<DWORD>(hi)) << 32))
 #endif
+
+inline LPWSTR
+GetTempFileNameDx(LPCWSTR pszPrefix3Chars)
+{
+    static WCHAR TempFile[MAX_PATH];
+    WCHAR szPath[MAX_PATH];
+    GetTempPathW(_countof(szPath), szPath);
+    GetTempFileNameW(szPath, L"KRE", 0, TempFile);
+    return TempFile;
+}
 
 ////////////////////////////////////////////////////////////////////////////
 

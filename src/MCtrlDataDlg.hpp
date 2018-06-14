@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -51,7 +51,7 @@ public:
         MString str = GetDlgItemText(edt1);
 
         std::vector<MString> vec;
-        mstr_split(vec, str, TEXT(" \t\n\r\f\v,"));
+        mstr_split(vec, str, TEXT(" \t\n\r\f\v, "));
 
         if (vec.size() > 0x10000 / sizeof(WORD))
         {

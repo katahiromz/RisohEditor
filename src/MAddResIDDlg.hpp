@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -26,7 +26,7 @@
 #include "resource.h"
 #include "RisohSettings.hpp"
 
-std::vector<INT> GetPrefixIndexes(RisohSettings& settings, ConstantsDB& db, const MString& prefix);
+std::vector<INT> GetPrefixIndexes(const MString& prefix);
 void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -34,15 +34,11 @@ void ReplaceFullWithHalf(MStringW& strText);
 class MAddResIDDlg : public MDialogBase
 {
 public:
-    RisohSettings& m_settings;
-    ResEntries& m_entries;
-    ConstantsDB& m_db;
     MString m_str1;
     MString m_str2;
     BOOL m_bChanging;
 
-    MAddResIDDlg(RisohSettings& settings, ResEntries& entries, ConstantsDB& db)
-        : MDialogBase(IDD_ADDRESID), m_settings(settings), m_entries(entries), m_db(db)
+    MAddResIDDlg() : MDialogBase(IDD_ADDRESID)
     {
         m_bChanging = FALSE;
     }
@@ -50,15 +46,14 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         ConstantsDB::TableType table;
-        table = m_db.GetTable(L"RESOURCE.ID.TYPE");
+        table = g_db.GetTable(L"RESOURCE.ID.TYPE");
 
         const INT IDTYPE_default = IDTYPE_COMMAND;
 
         INT i = 0;
-        ConstantsDB::TableType::iterator it, end = table.end();
-        for (it = table.begin(); it != end; ++it)
+        for (auto& table_entry : table)
         {
-            INT k = (INT)SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)it->name.c_str());
+            INT k = (INT)SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)table_entry.name.c_str());
             if (k == IDTYPE_default)
             {
                 m_bChanging = TRUE;
@@ -68,7 +63,7 @@ public:
             ++i;
         }
 
-        table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         m_bChanging = TRUE;
         SetDlgItemTextW(hwnd, edt1, table[IDTYPE_default].name.c_str());
         m_bChanging = FALSE;
@@ -109,7 +104,7 @@ public:
         m_str2 = str2;
 
         MStringA str1a = MTextToAnsi(CP_ACP, str1).c_str();
-        if (m_settings.id_map.find(str1a) != m_settings.id_map.end())
+        if (g_settings.id_map.find(str1a) != g_settings.id_map.end())
         {
             HWND hEdt1 = GetDlgItem(hwnd, edt1);
             Edit_SetSel(hEdt1, 0, -1);
@@ -140,7 +135,7 @@ public:
                 MString prefix = name.substr(0, name.find(L'_') + 1);
 
                 std::vector<INT> indexes;
-                indexes = GetPrefixIndexes(m_settings, m_db, prefix);
+                indexes = GetPrefixIndexes(prefix);
                 if (indexes.empty() || indexes.size() >= 2)
                 {
                     m_bChanging = TRUE;
@@ -150,7 +145,7 @@ public:
                 }
 
                 ConstantsDB::TableType table;
-                table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+                table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 
                 m_bChanging = TRUE;
                 SendDlgItemMessage(hwnd, cmb1, CB_SETCURSEL, indexes[0], 0);
@@ -165,7 +160,7 @@ public:
                 if (k != -1)
                 {
                     ConstantsDB::TableType table;
-                    table = m_db.GetTable(L"RESOURCE.ID.PREFIX");
+                    table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 
                     MString name = GetDlgItemText(hwnd, cmb1);
                     m_bChanging = TRUE;
@@ -185,30 +180,24 @@ public:
                 if (prefix.size())
                 {
                     ConstantsDB::TableType table;
-                    table = m_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+                    table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 
                     UINT nMax = 0;
+                    for (auto& table_entry : table)
                     {
-                        ConstantsDB::TableType::iterator it, end = table.end();
-                        for (it = table.begin(); it != end; ++it)
-                        {
-                            if (it->name == L"IDC_STATIC")
-                                continue;
-                            if (nMax < it->value)
-                                nMax = it->value;
-                        }
+                        if (table_entry.name == L"IDC_STATIC")
+                            continue;
+                        if (nMax < table_entry.value)
+                            nMax = table_entry.value;
                     }
 
                     INT nIDTYPE_ = IDTYPE_UNKNOWN;
+                    for (auto& pair : g_settings.assoc_map)
                     {
-                        assoc_map_type::iterator it, end = m_settings.assoc_map.end();
-                        for (it = m_settings.assoc_map.begin(); it != end; ++it)
+                        if (pair.second == prefix)
                         {
-                            if (it->second == prefix)
-                            {
-                                nIDTYPE_ = INT(m_db.GetValue(L"RESOURCE.ID.TYPE", it->first));
-                                break;
-                            }
+                            nIDTYPE_ = INT(g_db.GetValue(L"RESOURCE.ID.TYPE", pair.first));
+                            break;
                         }
                     }
 

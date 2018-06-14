@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -228,7 +228,7 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIco
     }
 
     HICON hIcon;
-    hIcon = CreateIconFromResourceEx(pb, dwSize, bIcon, 0x00030000,
+    hIcon = CreateIconFromResourceEx(pb, dwSize, bIcon, 0x00030000, 
                                      bm.bmWidth, bm.bmHeight, 0);
     assert(hIcon);
     return hIcon;
@@ -345,7 +345,7 @@ HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz)
 
     if (PackedDIB_Extract(szTempFile, ptr, siz, FALSE))
     {
-        hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0,
+        hbm = (HBITMAP)LoadImageW(NULL, szTempFile, IMAGE_BITMAP, 0, 0, 
                                   LR_LOADFROMFILE | LR_COLOR);
     }
 

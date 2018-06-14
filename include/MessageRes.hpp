@@ -69,8 +69,8 @@ typedef struct _MESSAGE_RESOURCE_ENTRY_HEADER {
         WCHAR MessageValue[512];
     };
 
-    BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
-    void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry, ConstantsDB& db);
+    BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
+    void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -188,8 +188,8 @@ public:
         std::vector<MESSAGE_RESOURCE_BLOCK> Blocks;
         {
             size_t i = 0;
-            ranges_type::iterator it, end = ranges.end();
-            for (it = ranges.begin(); it != end; ++it, ++i)
+            auto end = ranges.end();
+            for (auto it = ranges.begin(); it != end; ++it, ++i)
             {
                 MESSAGE_RESOURCE_BLOCK Block;
                 Block.LowId = it->FirstId;
@@ -204,8 +204,8 @@ public:
             return false;
 
         {
-            ranges_type::iterator it, end = ranges.end();
-            for (it = ranges.begin(); it != end; ++it)
+            auto end = ranges.end();
+            for (auto it = ranges.begin(); it != end; ++it)
             {
                 for (DWORD k = it->FirstId; k <= it->LastId; ++k)
                 {
@@ -252,7 +252,7 @@ public:
         return ret;
     }
 #else
-    string_type Dump(const ConstantsDB& db, WORD wName) const
+    string_type Dump(WORD wName) const
     {
         MStringW ret;
 
@@ -263,7 +263,7 @@ public:
         for (it = m_map.begin(); it != end; ++it)
         {
             ret += WIDE("    ");
-            ret += db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
+            ret += g_db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
             ret += WIDE(", \"");
             ret += mstr_escape(it->second);
             ret += WIDE("\"\r\n");
@@ -272,9 +272,9 @@ public:
         ret += WIDE("}\r\n");
         return ret;
     }
-    string_type Dump(const ConstantsDB& db) const
+    string_type Dump() const
     {
-        return Dump(db, 1);
+        return Dump(1);
     }
 #endif
 

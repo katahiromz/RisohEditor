@@ -8,7 +8,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -31,13 +31,13 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Cmb1_InitVirtualKeys(HWND hCmb1, ConstantsDB& db);
+void Cmb1_InitVirtualKeys(HWND hCmb1);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
-BOOL CheckCommand(ConstantsDB& db, MString& strCommand);
+BOOL CheckCommand(MString& strCommand);
 void ReplaceFullWithHalf(LPWSTR pszText);
-void InitCtrlIDComboBox(HWND hCmb, ConstantsDB& db);
+void InitCtrlIDComboBox(HWND hCmb);
 
-std::wstring GetKeyID(ConstantsDB& db, UINT wId);
+std::wstring GetKeyID(UINT wId);
 
 class MAddKeyDlg;
 class MModifyKeyDlg;
@@ -49,12 +49,11 @@ class MAddKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MAddKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_ADDKEY), m_entry(entry), m_db(db)
+    MAddKeyDlg(ACCEL_ENTRY& entry) :
+        MDialogBase(IDD_ADDKEY), m_entry(entry)
     {
     }
 
@@ -63,11 +62,11 @@ public:
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        Cmb1_InitVirtualKeys(hCmb1, m_db);
+        Cmb1_InitVirtualKeys(hCmb1);
         SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCtrlIDComboBox(hCmb2, m_db);
+        InitCtrlIDComboBox(hCmb2);
         SetDlgItemText(hwnd, cmb2, L"");
         SubclassChildDx(m_cmb2, cmb2);
 
@@ -107,7 +106,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_db, m_entry.sz2))
+        if (!CheckCommand(m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -167,24 +166,23 @@ class MModifyKeyDlg : public MDialogBase
 {
 public:
     ACCEL_ENTRY& m_entry;
-    ConstantsDB& m_db;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
 
-    MModifyKeyDlg(ACCEL_ENTRY& entry, ConstantsDB& db) :
-        MDialogBase(IDD_MODIFYKEY), m_entry(entry), m_db(db)
+    MModifyKeyDlg(ACCEL_ENTRY& entry) :
+        MDialogBase(IDD_MODIFYKEY), m_entry(entry)
     {
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitCtrlIDComboBox(hCmb2, m_db);
+        InitCtrlIDComboBox(hCmb2);
         SubclassChildDx(m_cmb2, cmb2);
         SetDlgItemTextW(hwnd, cmb2, m_entry.sz2);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        Cmb1_InitVirtualKeys(hCmb1, m_db);
+        Cmb1_InitVirtualKeys(hCmb1);
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
         SubclassChildDx(m_cmb1, cmb1);
 
@@ -204,7 +202,7 @@ public:
         if (wFlags & FVIRTKEY)
         {
             HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-            Cmb1_InitVirtualKeys(hCmb1, m_db);
+            Cmb1_InitVirtualKeys(hCmb1);
 
             INT i = ComboBox_FindStringExact(hCmb1, -1, m_entry.sz0);
             if (i != CB_ERR)
@@ -249,7 +247,7 @@ public:
         GetDlgItemTextW(hwnd, cmb2, m_entry.sz2, _countof(m_entry.sz2));
         ReplaceFullWithHalf(m_entry.sz2);
         mstr_trim(m_entry.sz2);
-        if (!CheckCommand(m_db, m_entry.sz2))
+        if (!CheckCommand(m_entry.sz2))
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
@@ -265,7 +263,7 @@ public:
         case chx1:
             if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
             {
-                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1), m_db);
+                Cmb1_InitVirtualKeys(GetDlgItem(hwnd, cmb1));
             }
             else
             {
@@ -319,14 +317,13 @@ class MEditAccelDlg : public MDialogBase
 {
 public:
     AccelRes& m_accel_res;
-    ConstantsDB& m_db;
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
     HWND m_hLst1;
 
-    MEditAccelDlg(AccelRes& accel_res, ConstantsDB& db)
-        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res), m_db(db)
+    MEditAccelDlg(AccelRes& accel_res)
+        : MDialogBase(IDD_EDITACCEL), m_accel_res(accel_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
@@ -407,7 +404,7 @@ public:
     {
         ACCEL_ENTRY entry;
 
-        MAddKeyDlg dialog(entry, m_db);
+        MAddKeyDlg dialog(entry);
         if (IDOK != dialog.DialogBoxDx(hwnd))
         {
             return;
@@ -456,7 +453,7 @@ public:
         ListView_GetItemText(m_hLst1, iItem, 1, a_entry.sz1, _countof(a_entry.sz1));
         ListView_GetItemText(m_hLst1, iItem, 2, a_entry.sz2, _countof(a_entry.sz2));
 
-        MModifyKeyDlg dialog(a_entry, m_db);
+        MModifyKeyDlg dialog(a_entry);
         if (IDOK == dialog.DialogBoxDx(hwnd))
         {
             ListView_SetItemText(m_hLst1, iItem, 0, a_entry.sz0);
@@ -490,7 +487,7 @@ public:
             entry.fFlags = wFlags;
             if (wFlags & FVIRTKEY)
             {
-                entry.wAscii = (WORD)m_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
+                entry.wAscii = (WORD)g_db.GetValue(L"VIRTUALKEYS", a_entry.sz0);
             }
             else
             {
@@ -505,7 +502,7 @@ public:
                     entry.wAscii = (WORD)mstr_parse_int(a_entry.sz0);
                 }
             }
-            entry.wId = (WORD)m_db.GetResIDValue(a_entry.sz2);
+            entry.wId = (WORD)g_db.GetResIDValue(a_entry.sz2);
 
             m_accel_res.entries().push_back(entry);
         }
@@ -653,17 +650,16 @@ public:
         const entries_type& entries = m_accel_res.entries();
 
         INT i = 0;
-        entries_type::const_iterator it, end = entries.end();
-        for (it = entries.begin(); it != end; ++it, ++i)
+        for (auto& entry : entries)
         {
             std::wstring str;
-            if (it->fFlags & FVIRTKEY)
+            if (entry.fFlags & FVIRTKEY)
             {
-                str = m_db.GetName(L"VIRTUALKEYS", it->wAscii);
+                str = g_db.GetName(L"VIRTUALKEYS", entry.wAscii);
             }
             else
             {
-                str += (WCHAR)it->wAscii;
+                str += (WCHAR)entry.wAscii;
                 str = mstr_quote(str);
             }
 
@@ -675,7 +671,7 @@ public:
             item.pszText = &str[0];
             ListView_InsertItem(m_hLst1, &item);
 
-            str = GetKeyFlags(it->fFlags);
+            str = GetKeyFlags(entry.fFlags);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
@@ -684,7 +680,7 @@ public:
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
 
-            str = GetKeyID(m_db, it->wId);
+            str = GetKeyID(entry.wId);
 
             ZeroMemory(&item, sizeof(item));
             item.iItem = i;
