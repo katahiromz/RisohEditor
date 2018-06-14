@@ -1038,40 +1038,40 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_string_entry(WORD lang)
     {
-		auto entry = find(ET_STRING, RT_STRING, (WORD)0, lang, true);
+        auto entry = find(ET_STRING, RT_STRING, (WORD)0, lang, true);
         if (!entry)
-			entry = Res_NewStringEntry(lang);
+            entry = Res_NewStringEntry(lang);
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_message_entry(WORD lang)
     {
-		auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, true);
+        auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, true);
         if (!entry)
-			entry = Res_NewMessageEntry(lang);
+            entry = Res_NewMessageEntry(lang);
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_name_entry(const MIdOrString& type, const MIdOrString& name)
     {
-		auto entry = find(ET_NAME, type, name, 0xFFFF, true);
-		if (!entry)
-		{
-			entry = Res_NewNameEntry(type, name);
-		}
+        auto entry = find(ET_NAME, type, name, 0xFFFF, true);
+        if (!entry)
+        {
+            entry = Res_NewNameEntry(type, name);
+        }
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
-		auto entry = find(ET_TYPE, type, (WORD)0, 0xFFFF, true);
-		if (!entry)
-		{
-			entry = Res_NewTypeEntry(type);
-		}
+        auto entry = find(ET_TYPE, type, (WORD)0, 0xFFFF, true);
+        if (!entry)
+        {
+            entry = Res_NewTypeEntry(type);
+        }
         return on_insert_entry(entry);
     }
 
@@ -1126,12 +1126,12 @@ struct EntrySet : protected EntrySetBase
             break;
 
         case ET_STRING:
-            search(found, ET_STRING, entry->m_type, WORD(0), entry->m_lang);
+            search(found, ET_STRING, entry->m_type);
             search(found, ET_NAME, entry->m_type);
             break;
 
         case ET_MESSAGE:
-            search(found, ET_MESSAGE, entry->m_type, WORD(0), entry->m_lang);
+            search(found, ET_MESSAGE, entry->m_type);
             search(found, ET_NAME, entry->m_type);
             break;
 
