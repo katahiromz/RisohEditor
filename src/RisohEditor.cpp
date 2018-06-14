@@ -2493,32 +2493,18 @@ search_proc(void *arg)
         }
     }
 
+    pSearch->bRunning = FALSE;
     return 0;
 }
 
 BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
 {
+    MWaitCursor wait;
+
     if (search.bIgnoreCases)
-    {
         CharUpperW(&search.strText[0]);
-    }
 
-    auto hThread = (HANDLE)_beginthreadex(NULL, 0, search_proc, &search, 0, NULL);
-    if (hThread == NULL)
-    {
-        ErrorBoxDx(IDS_CANTSTARTSEARCH);
-        return NULL;
-    }
-
-    while (!search.bCancelled && IsWindow(search.res2text.m_hwndDialog) &&
-           !search.pFound)
-    {
-        if (WaitForSingleObject(hThread, 100) != WAIT_TIMEOUT)
-            break;
-        DoEvents();
-    }
-
-    CloseHandle(hThread);
+    search_proc(&search);
 
     return search.pFound != NULL;
 }

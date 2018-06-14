@@ -90,10 +90,18 @@ public:
     {
         Dialogs().insert(this);
 
-        CheckRadioButton(hwnd, rad1, rad2, rad2);
+        if (m_search.bDownward)
+            CheckRadioButton(hwnd, rad1, rad2, rad2);
+        else
+            CheckRadioButton(hwnd, rad1, rad2, rad1);
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+
+        if (!m_search.bIgnoreCases)
+            CheckDlgButton(hwnd, chx1, BST_CHECKED);
+        if (m_search.bInternalText)
+            CheckDlgButton(hwnd, chx2, BST_CHECKED);
 
         CenterWindowDx();
         return TRUE;
