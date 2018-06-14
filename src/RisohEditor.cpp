@@ -906,6 +906,7 @@ WORD LangFromText(LPWSTR pszLang)
             lstrcmpiW(pszLang, LoadStringDx(IDS_AMERICA)) == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_ENGLISH)) == 0)
         {
+            // American English
             lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
             break;
         }
@@ -914,8 +915,10 @@ WORD LangFromText(LPWSTR pszLang)
             lstrcmpiW(pszLang, L"PRC") == 0 ||
             lstrcmpiW(pszLang, L"CHN") == 0 ||
             lstrcmpiW(pszLang, L"CN") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_CHINA)) == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_CHINESE)) == 0)
         {
+            // Chinese
             lang = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
             break;
         }
@@ -924,9 +927,10 @@ WORD LangFromText(LPWSTR pszLang)
             lstrcmpiW(pszLang, L"Russian") == 0 ||
             lstrcmpiW(pszLang, L"RUS") == 0 ||
             lstrcmpiW(pszLang, L"RU") == 0 ||
-            lstrcmpiW(pszLang, L"RU") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_RUSSIA)) == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_RUSSIAN)) == 0)
         {
+            // Russian
             lang = MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA);
             break;
         }
@@ -943,6 +947,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         if (lang == 0xFFFF)
         {
+            // whole match
             for (auto& entry : g_Langs)
             {
                 if (lstrcmpiW(entry.str.c_str(), pszLang) == 0)
@@ -955,6 +960,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         if (lang == 0xFFFF)
         {
+            // numeric after parenthesis
             if (WCHAR *pch = wcsrchr(pszLang, L'('))
             {
                 ++pch;
@@ -971,6 +977,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         if (lang == 0xFFFF)
         {
+            // partial match
             for (auto& entry : g_Langs)
             {
                 if (wcsstr(entry.str.c_str(), pszLang) != NULL)
@@ -983,6 +990,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         if (lang == 0xFFFF)
         {
+            // ignore case, partial match
             CharUpperW(&strLang[0]);
             for (auto& entry : g_Langs)
             {
@@ -9207,7 +9215,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
             if (strA[0] == 'L')
                 strA = strA.substr(1);
             mstr_unquote(strA);
-			CharUpperA(&strA[0]);
+            CharUpperA(&strA[0]);
             name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
         }
     }
