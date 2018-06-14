@@ -117,11 +117,11 @@ struct EntryBase
     MIdOrString     m_name;
     WORD            m_lang = 0xFFFF;
     HTREEITEM       m_hItem = NULL;
-    int             m_valid = 1;
+    bool            m_valid = true;
     data_type       m_data;
     MStringW        m_strLabel;
 
-    EntryBase() : m_lang(0xFFFF), m_hItem(NULL), m_valid(1)
+    EntryBase() : m_lang(0xFFFF), m_hItem(NULL), m_valid(true)
     {
     }
 
@@ -138,19 +138,15 @@ struct EntryBase
     bool valid() const
     {
         if (m_et == ET_LANG)
-        {
-            if (m_valid == 2)
-                return true;
             return !empty();
-        }
         if (!m_hItem)
             return false;
-        return m_valid >= 1;
+        return m_valid;
     }
 
     void mark_invalid()
     {
-        m_valid = 0;
+        m_valid = false;
         m_data.clear();
     }
 
@@ -472,31 +468,15 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, WORD lang)
     {
-        if (auto entry = find(ET_LANG, type, name, lang, true))
-            return entry;
-
-        if (type == RT_STRING)
-        {
-            add_string_entry(lang);
-        }
-        if (type == RT_MESSAGETABLE)
-        {
-            add_message_entry(lang);
-        }
-
-        auto entry = Res_NewLangEntry(type, name, lang);
-        return on_insert_entry(entry);
+        EntryBase::data_type data;
+        return add_lang_entry(type, name, lang, data);
     }
 
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
                    WORD lang, const EntryBase::data_type& data)
     {
-        if (auto entry = find(ET_LANG, type, name, lang, true))
-        {
-            entry->m_data = data;
-            return entry;
-        }
+        auto entry = find(ET_LANG, type, name, lang, true);
 
         if (m_hwndTV)
         {
@@ -510,8 +490,12 @@ struct EntrySet : protected EntrySetBase
             }
         }
 
-        auto entry = Res_NewLangEntry(type, name, lang);
-        entry->assign(data);
+        if (!entry)
+        {
+            entry = Res_NewLangEntry(type, name, lang);
+        }
+
+        entry->m_data = data;
         return on_insert_entry(entry);
     }
 
@@ -577,7 +561,7 @@ struct EntrySet : protected EntrySetBase
             if (super()->find(entry) == super()->end())
                 continue;
 
-            if (entry->m_hItem)
+            if (entry->m_hItem && entry == get_entry(entry->m_hItem))
             {
                 TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
             }
@@ -603,6 +587,8 @@ struct EntrySet : protected EntrySetBase
         WORD wLastID = 0;
         for (auto entry : *this)
         {
+            if (!entry->valid())
+                continue;
             if (entry->m_type != type || !entry->m_name.is_int() || entry->m_name.is_zero())
                 continue;
             if (entry->m_lang != lang)
@@ -976,8 +962,8 @@ struct EntrySet : protected EntrySetBase
             return NULL;
 
         if (stream.size() >= 4 &&
-            (memcmp(&stream[0], "\xFF\xD8\xFF", 3)== 0 ||    // JPEG
-             memcmp(&stream[0], "GIF", 3) == 0 ||            // GIF
+            (memcmp(&stream[0], "\xFF\xD8\xFF", 3) == 0 ||    // JPEG
+             memcmp(&stream[0], "GIF", 3) == 0 ||             // GIF
              memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
         {
             MBitmapDx bitmap;
@@ -1052,39 +1038,40 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_string_entry(WORD lang)
     {
-        if (auto entry = find(ET_STRING, RT_STRING, (WORD)0, lang))
-            return entry;
-
-        auto entry = Res_NewStringEntry(lang);
+		auto entry = find(ET_STRING, RT_STRING, (WORD)0, lang, true);
+        if (!entry)
+			entry = Res_NewStringEntry(lang);
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_message_entry(WORD lang)
     {
-        if (auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang))
-            return entry;
-
-        auto entry = Res_NewMessageEntry(lang);
+		auto entry = find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, true);
+        if (!entry)
+			entry = Res_NewMessageEntry(lang);
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_name_entry(const MIdOrString& type, const MIdOrString& name)
     {
-        if (auto entry = find(ET_NAME, type, name))
-            return entry;
-
-        auto entry = Res_NewNameEntry(type, name);
+		auto entry = find(ET_NAME, type, name, 0xFFFF, true);
+		if (!entry)
+		{
+			entry = Res_NewNameEntry(type, name);
+		}
         return on_insert_entry(entry);
     }
 
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
-        if (auto entry = find(ET_TYPE, type))
-            return entry;
-        auto entry = Res_NewTypeEntry(type);
+		auto entry = find(ET_TYPE, type, (WORD)0, 0xFFFF, true);
+		if (!entry)
+		{
+			entry = Res_NewTypeEntry(type);
+		}
         return on_insert_entry(entry);
     }
 
@@ -1223,7 +1210,6 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
-protected:
     MStringW get_label(const EntryBase *entry)
     {
         MStringW strText;
@@ -1250,8 +1236,10 @@ protected:
     EntryBase *on_insert_entry(EntryBase *entry)
     {
         DebugPrintDx(L"on_insert_entry: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
+
         if (m_hwndTV == NULL)
         {
+            entry->m_valid = true;
             insert(entry);
             return NULL;
         }
@@ -1267,8 +1255,16 @@ protected:
     {
         assert(entry);
 
+        entry->m_valid = true;
+
         if (m_hwndTV == NULL)
             return entry;
+
+        if (entry->m_hItem && entry == get_entry(entry->m_hItem))
+        {
+            insert(entry);
+            return entry;
+        }
 
         TV_INSERTSTRUCTW insert_struct;
         ZeroMemory(&insert_struct, sizeof(insert_struct));
@@ -1365,7 +1361,6 @@ protected:
         return true;
     }
 
-public:
     struct EnumResStruct
     {
         EntrySet *this_;

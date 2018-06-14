@@ -40,10 +40,13 @@ protected:
     HICON   m_hIcon;
 public:
     EntryBase *m_entry;
-    EntryBase m_entry_copy;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
 
     MReplaceIconDlg(EntryBase *entry)
-        : MDialogBase(IDD_REPLACEICON), m_entry(entry)
+        : MDialogBase(IDD_REPLACEICON), m_entry(entry),
+          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
         m_hIcon = NULL;
     }
@@ -105,6 +108,9 @@ public:
         }
         else
         {
+            if (auto entry = g_res.find(ET_LANG, m_type, m_name, m_lang))
+                g_res.delete_entry(entry);
+
             if (!g_res.add_group_icon(name, lang, file))
             {
                 ErrorBoxDx(IDS_CANTREPLACEICO);
@@ -112,7 +118,9 @@ public:
             }
         }
 
-        m_entry_copy = EntryBase(ET_LANG, type, name, lang);
+        m_type = type;
+        m_name = name;
+        m_lang = lang;
 
         EndDialog(IDOK);
     }
