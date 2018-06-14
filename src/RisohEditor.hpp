@@ -34,6 +34,7 @@
 #include <commdlg.h>
 #include <mbstring.h>
 #include <mmsystem.h>
+#include <process.h>
 
 #include <algorithm>    // for std::sort
 #include <string>       // for std::string, std::wstring

@@ -431,6 +431,7 @@ STRINGTABLE
     IDS_SAMELANG, "同じ言語です。"
     IDS_SAMENAME, "同じリソース名です。"
     IDS_CANTSAVETOEXE, "EXEではないファイルからEXEに保存できません。"
+    IDS_CANTSTARTSEARCH, "検索を開始できません。"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

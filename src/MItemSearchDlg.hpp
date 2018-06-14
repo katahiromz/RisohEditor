@@ -25,6 +25,7 @@
 #include "resource.h"
 
 #include "ResToText.hpp"
+#include "Res.hpp"
 #include <set>
 
 struct ITEM_SEARCH;
@@ -35,26 +36,14 @@ class MItemSearchDlg;
 struct ITEM_SEARCH
 {
     ResToText   res2text;
-    BOOL        bIgnoreCases;
-    BOOL        bDownward;
-    BOOL        bInternalText;
-    BOOL        bRunning;
-    BOOL        bCancelled;
+    BOOL        bIgnoreCases = TRUE;
+    BOOL        bDownward = TRUE;
+    BOOL        bInternalText = TRUE;
+    BOOL        bRunning = FALSE;
+    BOOL        bCancelled = FALSE;
     MString     strText;
-    BOOL        bFindFirst;
-    BOOL        bValid;
-    HTREEITEM   hCurrent;
-    HTREEITEM   hFound;
-    TV_ITEM     item;
-    TCHAR       szText[80];
-    ITEM_SEARCH() : res2text()
-    {
-        bIgnoreCases = TRUE;
-        bDownward = TRUE;
-        bInternalText = FALSE;
-        bRunning = FALSE;
-        bCancelled = FALSE;
-    }
+    EntryBase  *pCurrent = NULL;
+    EntryBase  *pFound = NULL;
 };
 
 class MItemSearchDlg : public MDialogBase
@@ -65,10 +54,9 @@ public:
     ITEM_SEARCH& m_search;
 
     MItemSearchDlg(ITEM_SEARCH& search) 
-        : MDialogBase(IDD_ITEMSEARCH), m_search(search)
+        : MDialogBase(IDD_ITEMSEARCH), m_search(search),
+          m_hIcon(LoadIconDx(IDI_FIND)), m_hIconSm(LoadSmallIconDx(IDI_FIND))
     {
-        m_hIcon = LoadIconDx(IDI_FIND);
-        m_hIconSm = LoadSmallIconDx(IDI_FIND);
     }
 
     virtual ~MItemSearchDlg()
@@ -115,6 +103,7 @@ public:
     {
         if (m_search.bRunning)
             return;
+
         m_search.strText = GetDlgItemText(edt1);
         m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
         m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;

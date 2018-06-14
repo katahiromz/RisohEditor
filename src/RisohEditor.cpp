@@ -1427,8 +1427,7 @@ public:
 
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
-
-    BOOL DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search);
+    BOOL DoItemSearch(ITEM_SEARCH& search);
 
 protected:
     // parsing resource IDs
@@ -2271,107 +2270,130 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
 
-BOOL MMainWnd::DoItemSearch(HTREEITEM hItem, ITEM_SEARCH& search)
+bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
 {
-    HTREEITEM hNext, hChild;
-    TV_ITEM& item = search.item;
+    if (pSearch->bIgnoreCases)
+        CharUpper(&text[0]);
 
-    while (hItem)
+    if (text.find(pSearch->strText) == MString::npos)
+        return false;
+
+    if (pSearch->bDownward)
     {
-        if (search.bCancelled || !IsWindow(search.res2text.m_hwndDialog))
-            break;
-
-        if (search.bFindFirst && search.hFound)
+        if (*pSearch->pCurrent < *entry)
         {
-            return TRUE;
-        }
-
-        DoEvents();
-
-        if (!search.bDownward && hItem == search.hCurrent)
-        {
-            search.bValid = FALSE;
-        }
-
-        if (search.bValid)
-        {
-            ZeroMemory(&item, sizeof(item));
-            item.mask = TVIF_HANDLE | TVIF_TEXT;
-            item.hItem = hItem;
-            item.pszText = search.szText;
-            item.cchTextMax = _countof(search.szText);
-            TreeView_GetItem(m_hwndTV, &item);
-
-            if (search.bIgnoreCases)
+            if (pSearch->pFound)
             {
-                CharUpper(search.szText);
-            }
-
-            BOOL bFound = FALSE;
-            if (_tcsstr(search.szText, search.strText.c_str()) != NULL)
-            {
-                bFound = TRUE;
+                if (*entry < *pSearch->pFound)
+                {
+                    pSearch->pFound = entry;
+                    return true;
+                }
             }
             else
             {
-                if (search.bInternalText)
-                {
-                    auto entry = g_res.get_entry();
-                    if (entry->m_et == ET_LANG ||
-                        entry->m_et == ET_STRING ||
-                        entry->m_et == ET_MESSAGE)
-                    {
-                        if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
-                            entry->m_name.clear();
-
-                        MString text = search.res2text.DumpEntry(*entry);
-
-                        if (search.bIgnoreCases)
-                        {
-                            CharUpper(&text[0]);
-                        }
-                        if (_tcsstr(text.c_str(), search.strText.c_str()) != NULL)
-                        {
-                            bFound = TRUE;
-                        }
-                    }
-                }
+                pSearch->pFound = entry;
+                return true;
             }
-            if (bFound)
+        }
+    }
+    else
+    {
+        if (*entry < *pSearch->pCurrent)
+        {
+            if (pSearch->pFound)
             {
-                if (search.bValid)
+                if (*pSearch->pFound < *entry)
                 {
-                    if (search.bFindFirst)
-                    {
-                        if (search.hFound == NULL)
-                        {
-                            search.hFound = hItem;
-                            return TRUE;
-                        }
-                    }
-                    else
-                    {
-                        search.hFound = hItem;
-                    }
+                    pSearch->pFound = entry;
+                    return true;
                 }
             }
+            else
+            {
+                pSearch->pFound = entry;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static unsigned __stdcall
+search_proc(void *arg)
+{
+    auto pSearch = (ITEM_SEARCH *)arg;
+    ResToText& res2text = pSearch->res2text;
+    MString text;
+
+    for (auto entry : g_res)
+    {
+        if (!entry->valid())
+            continue;
+
+        EntryBase e = *entry;
+
+        // check label
+        text = e.m_strLabel;
+        if (CheckTextForSearch(pSearch, entry, text))
+        {
+            //MessageBoxW(NULL, e.m_strLabel.c_str(), L"OK", 0);
+            continue;
         }
 
-        if (search.bDownward && hItem == search.hCurrent)
+        // check internal text
+        if (pSearch->bInternalText)
         {
-            search.bValid = TRUE;
-        }
+            switch (e.m_et)
+            {
+            case ET_LANG:
+                break;
+            case ET_STRING:
+                e.m_name.clear();
+                break;
+            case ET_MESSAGE:
+                break;
+            default:
+                continue;
+            }
 
-        hChild = TreeView_GetChild(m_hwndTV, hItem);
-        if (hChild)
-        {
-            DoItemSearch(hChild, search);
+            text = pSearch->res2text.DumpEntry(e);
+            if (CheckTextForSearch(pSearch, entry, text))
+            {
+                //MessageBoxW(NULL, (e.m_strLabel + L"<>" + text).c_str(), NULL, 0);
+                continue;
+            }
         }
-        hNext = TreeView_GetNextSibling(m_hwndTV, hItem);
-        hItem = hNext;
     }
 
-    return search.hFound != NULL;
+    return 0;
+}
+
+BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
+{
+    if (search.bIgnoreCases)
+    {
+        CharUpper(&search.strText[0]);
+    }
+
+    auto hThread = (HANDLE)_beginthreadex(NULL, 0, search_proc, &search, 0, NULL);
+    if (hThread == NULL)
+    {
+        ErrorBoxDx(IDS_CANTSTARTSEARCH);
+        return NULL;
+    }
+
+    while (!search.bCancelled && IsWindow(search.res2text.m_hwndDialog) &&
+           !search.pFound)
+    {
+        if (WaitForSingleObject(hThread, 100) != WAIT_TIMEOUT)
+            break;
+        DoEvents();
+    }
+
+    CloseHandle(hThread);
+
+    return search.pFound != NULL;
 }
 
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
@@ -2487,10 +2509,14 @@ void MMainWnd::OnItemSearch(HWND hwnd)
         SetFocus(hDlg);
         return;
     }
+
+    // create dialog
     MItemSearchDlg *pDialog = new MItemSearchDlg(m_search);
     pDialog->CreateDialogDx(hwnd);
+
     m_search.res2text.m_hwnd = hwnd;
     m_search.res2text.m_hwndDialog = *pDialog;
+
     ShowWindow(*pDialog, SW_SHOWNORMAL);
     UpdateWindow(*pDialog);
 }
@@ -2503,14 +2529,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
-    HTREEITEM hRoot = TreeView_GetRoot(m_hwndTV);
-    HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
-    if (!hItem)
-    {
-        hItem = hRoot;
-        if (!m_search.bDownward)
-            hItem = GetLastLeaf(hItem);
-    }
+    auto entry = g_res.get_entry();
 
     if (m_search.bIgnoreCases)
     {
@@ -2518,32 +2537,21 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     }
 
     m_search.bCancelled = FALSE;
-    m_search.hFound = NULL;
-    m_search.hCurrent = hItem;
+    m_search.pFound = NULL;
+    m_search.pCurrent = entry;
 
-    if (m_search.bDownward)
-    {
-        m_search.bFindFirst = TRUE;
-        m_search.bValid = FALSE;
-    }
-    else
-    {
-        m_search.bFindFirst = FALSE;
-        m_search.bValid = TRUE;
-    }
-
-    if (DoItemSearch(hRoot, m_search))
+    if (DoItemSearch(m_search) && m_search.pFound)
     {
         pDialog->Done();
-        TreeView_SelectItem(m_hwndTV, m_search.hFound);
-        TreeView_EnsureVisible(m_hwndTV, m_search.hFound);
+        TreeView_SelectItem(m_hwndTV, m_search.pFound->m_hItem);
+        TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
 
         PostMessageDx(MYWM_POSTSEARCH);
     }
     else
     {
         pDialog->Done();
-        if (!m_search.hFound && !m_search.bCancelled)
+        if (!m_search.pFound && !m_search.bCancelled)
         {
             EnableWindow(*pDialog, FALSE);
             MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
@@ -2773,10 +2781,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         {
             str_res = dialog.m_str_res;
 
-			bool shown = !g_settings.bHideID;
-			g_settings.bHideID = false;
+            bool shown = !g_settings.bHideID;
+            g_settings.bHideID = false;
             MStringW strWide = str_res.Dump();
-			g_settings.bHideID = !shown;
+            g_settings.bHideID = !shown;
 
             MStringA strOutput;
             if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
@@ -2815,9 +2823,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         {
             msg_res = dialog.m_msg_res;
             bool shown = !g_settings.bHideID;
-			g_settings.bHideID = false;
+            g_settings.bHideID = false;
             MStringW strWide = msg_res.Dump();
-			g_settings.bHideID = !shown;
+            g_settings.bHideID = !shown;
 
             MStringA strOutput;
             if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
@@ -4883,8 +4891,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
 BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 {
-    g_db.m_map[L"RESOURCE.ID"].clear();
-    g_db.AddIDC_STATIC();
     g_settings.AddIDC_STATIC();
     g_settings.bHasIDC_STATIC = FALSE;
 
@@ -6023,8 +6029,8 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     {
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
         if (::CopyFileW(m_szRealFile, TempFile, FALSE) &&
-			g_res.update_exe(TempFile) &&
-			::CopyFileW(TempFile, pszExeFile, FALSE))
+            g_res.update_exe(TempFile) &&
+            ::CopyFileW(TempFile, pszExeFile, FALSE))
         {
             DeleteFileW(TempFile);
             SetFilePath(pszExeFile, NULL);
@@ -6037,7 +6043,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         DeleteFileW(TempFile);
     }
 
-	ErrorBoxDx(IDS_CANTSAVETOEXE);
+    ErrorBoxDx(IDS_CANTSAVETOEXE);
     return FALSE;
 }
 
@@ -6398,7 +6404,6 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         if (str1 == L"IDC_STATIC")
             g_settings.bHasIDC_STATIC = TRUE;
     }
-    g_db.AddIDC_STATIC();
     g_settings.AddIDC_STATIC();
 
     lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
@@ -6672,7 +6677,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
-	g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
+    g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
 
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
@@ -6693,7 +6698,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
-	g_settings.bHideID = !g_settings.bHideID;
+    g_settings.bHideID = !g_settings.bHideID;
 
     UpdateNames();
 

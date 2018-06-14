@@ -259,27 +259,9 @@ public:
         return false;
     }
 
-    void AddIDC_STATIC()
-    {
-        const NameType name = L"IDC_STATIC";
-        TableType table = GetTable(L"RESOURCE.ID");
-        auto end = table.end();
-        for (auto it = table.begin(); it != end; ++it)
-        {
-            if (it->name == name)
-            {
-                table.erase(it);
-                break;
-            }
-        }
-        EntryType entry(name, -1);
-        table.push_back(entry);
-        m_map[L"RESOURCE.ID"] = table;
-    }
-
     StringType GetNameOfResID(IDTYPE_ nIDTYPE_, ValueType value) const
     {
-		if (g_settings.bHideID)
+        if (g_settings.bHideID)
         {
             if (nIDTYPE_ == IDTYPE_CONTROL)
                 return mstr_dec_short((SHORT)value);
