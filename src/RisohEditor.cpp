@@ -1249,7 +1249,7 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
-    void UpdateEntryName(LPWSTR pszText, EntryBase *e)
+    void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
     {
         TV_ITEM item;
         ZeroMemory(&item, sizeof(item));
@@ -1257,10 +1257,11 @@ protected:
         item.hItem = e->m_hItem;
         e->m_strLabel = e->get_name_label();
         item.pszText = &e->m_strLabel[0];
-        lstrcpyW(pszText, item.pszText);
+		if (pszText)
+			lstrcpyW(pszText, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
     }
-    void UpdateEntryLang(LPWSTR pszText, EntryBase *e)
+    void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
     {
         TV_ITEM item;
         ZeroMemory(&item, sizeof(item));
@@ -1268,7 +1269,8 @@ protected:
         item.hItem = e->m_hItem;
         e->m_strLabel = e->get_lang_label();
         item.pszText = &e->m_strLabel[0];
-        lstrcpyW(pszText, item.pszText);
+		if (pszText)
+			lstrcpyW(pszText, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
     }
     void RefreshTV(HWND hwnd)
@@ -6643,19 +6645,30 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
     bUseIDC_STATIC = !bUseIDC_STATIC;
     g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
     g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
-
-    DoRefresh(hwnd, TRUE);
 }
 
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
+    BOOL bListOpen = IsWindow(m_id_list_dlg);
+
     BOOL bHideID = !g_db.AreMacroIDShown();
     bHideID = !bHideID;
     g_settings.bHideID = bHideID;
 
     g_db.ShowMacroID(!g_settings.bHideID);
 
-    DoRefresh(hwnd, TRUE);
+    EntrySetBase found;
+    g_res.search(found, ET_NAME);
+
+    for (auto entry : found)
+    {
+        UpdateEntryName(entry);
+    }
+
+    ShowIDList(hwnd, bListOpen);
+
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
@@ -7532,7 +7545,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
     }
 
     entry->m_name = new_name;
-    UpdateEntryName(pszText, entry);
+    UpdateEntryName(entry, pszText);
     SelectTV(entry, FALSE);
 }
 
@@ -7547,7 +7560,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         {
             assert(e->m_lang == old_lang);
             e->m_lang = new_lang;
-            UpdateEntryLang(pszText, e);
+            UpdateEntryLang(e, pszText);
         }
         found.clear();
         break;
@@ -7557,7 +7570,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         {
             assert(e->m_lang == old_lang);
             e->m_lang = new_lang;
-            UpdateEntryLang(pszText, e);
+            UpdateEntryLang(e, pszText);
         }
         found.clear();
         break;
@@ -7572,7 +7585,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     {
         assert(e->m_lang == old_lang);
         e->m_lang = new_lang;
-        UpdateEntryLang(pszText, e);
+        UpdateEntryLang(e, pszText);
     }
 
     SelectTV(entry, FALSE);

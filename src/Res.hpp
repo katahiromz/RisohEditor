@@ -409,7 +409,7 @@ struct EntrySet : protected EntrySetBase
         return dynamic_cast<const super_type *>(this);
     }
 
-    bool search(super_type& found, EntryType et, const MIdOrString& type, 
+    bool search(super_type& found, EntryType et, const MIdOrString& type = WORD(0), 
                 const MIdOrString& name = WORD(0), WORD lang = 0xFFFF, bool invalid_ok = false) const
     {
         for (auto entry : *this)
@@ -422,7 +422,8 @@ struct EntrySet : protected EntrySetBase
         return !found.empty();
     }
 
-    EntryBase *find(EntryType et, const MIdOrString& type, const MIdOrString& name = WORD(0),
+    EntryBase *find(EntryType et, const MIdOrString& type = WORD(0),
+                    const MIdOrString& name = WORD(0),
                     WORD lang = 0xFFFF, bool invalid_ok = false) const
     {
         super_type found;
@@ -571,7 +572,7 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
-    void search_and_delete(EntryType et, const MIdOrString& type, 
+    void search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
                            const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
     {
         super_type found;
