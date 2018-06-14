@@ -615,7 +615,6 @@ struct EntrySet : protected EntrySetBase
 
         if (hUpdate == NULL)
         {
-            assert(0);
             return FALSE;
         }
 

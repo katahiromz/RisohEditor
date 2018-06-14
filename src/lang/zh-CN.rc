@@ -428,6 +428,7 @@ STRINGTABLE
     IDS_DLGINIT3, "请指定用换行符分隔的RT_DLGINIT字符串列表."
     IDS_SAMELANG, "这是相同的语言."
     IDS_SAMENAME, "这是相同的资源名称."
+    IDS_CANTSAVETOEXE, "无法从非EXE文件中另存为EXE."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

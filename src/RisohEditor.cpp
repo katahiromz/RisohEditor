@@ -5983,11 +5983,9 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     if (memcmp(ab, "MZ", 2) != 0)
         bOK = FALSE;
 
-    BOOL b1, b2, b3;
     if (!bOK || GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
-        b3 = g_res.update_exe(pszExeFile);
-        if (b3)
+        if (g_res.update_exe(pszExeFile))
         {
             SetFilePath(pszExeFile, NULL);
             return TRUE;
@@ -5996,10 +5994,9 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     else
     {
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
-        b1 = ::CopyFileW(m_szRealFile, TempFile, FALSE);
-        b2 = b1 && g_res.update_exe(TempFile);
-        b3 = b2 && ::CopyFileW(TempFile, pszExeFile, FALSE);
-        if (b3)
+        if (::CopyFileW(m_szRealFile, TempFile, FALSE) &&
+			g_res.update_exe(TempFile) &&
+			::CopyFileW(TempFile, pszExeFile, FALSE))
         {
             DeleteFileW(TempFile);
             SetFilePath(pszExeFile, NULL);
@@ -6012,6 +6009,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         DeleteFileW(TempFile);
     }
 
+	ErrorBoxDx(IDS_CANTSAVETOEXE);
     return FALSE;
 }
 

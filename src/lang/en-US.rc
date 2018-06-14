@@ -428,6 +428,7 @@ STRINGTABLE
     IDS_DLGINIT3, "Please specify a list of character strings separated by line breaks for RT_DLGINIT."
     IDS_SAMELANG, "It's the same language."
     IDS_SAMENAME, "It's the same resource name."
+    IDS_CANTSAVETOEXE, "Unable to save as EXE from a non-EXE file."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

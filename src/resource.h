@@ -358,6 +358,7 @@
 #define IDS_DLGINIT3            249
 #define IDS_SAMELANG            250
 #define IDS_SAMENAME            251
+#define IDS_CANTSAVETOEXE       252
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
