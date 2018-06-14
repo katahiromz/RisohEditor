@@ -7416,7 +7416,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == TVN_GETINFOTIP)
     {
         auto pGetInfoTip = (NMTVGETINFOTIP *)pnmhdr;
-        if (auto entry = g_res.get_entry())
+        auto entry = (EntryBase *)pGetInfoTip->lParam;
+        if (g_res.super()->find(entry) != g_res.super()->end())
         {
             StringCchCopyW(pGetInfoTip->pszText, pGetInfoTip->cchTextMax,
                            entry->m_strLabel.c_str());
