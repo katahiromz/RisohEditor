@@ -299,11 +299,11 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"RT_MENU";
         else if (str == L"Bitmap.ID")
             str = L"RT_BITMAP";
-		else if (str == L"RCData.ID")
-			str = L"RT_RCDATA";
-		else if (str == L"Html.ID")
-			str = L"RT_HTML";
-	}
+        else if (str == L"RCData.ID")
+            str = L"RT_RCDATA";
+        else if (str == L"Html.ID")
+            str = L"RT_HTML";
+    }
     else
     {
         if (str == L"RT_GROUP_CURSOR")
@@ -324,9 +324,9 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
             str = L"Bitmap.ID";
         else if (str == L"RT_RCDATA")
             str = L"RCData.ID";
-		else if (str == L"RT_HTML")
-			str = L"Html.ID";
-	}
+        else if (str == L"RT_HTML")
+            str = L"Html.ID";
+    }
 }
 
 MString
@@ -1365,7 +1365,7 @@ public:
     void SelectTV(EntryType et, const MIdOrString& type,
                   const MIdOrString& name, WORD lang, BOOL bDoubleClick);
 
-	template <typename T_DIALOG>
+    template <typename T_DIALOG>
     void SelectTV(EntryType et, const T_DIALOG& dialog, BOOL bDoubleClick)
     {
         SelectTV(et, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
@@ -9097,17 +9097,17 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     if (type.empty())
         type.m_str = strType;
 
-	MIdOrString name_or_id;
-	if (name[0] == L'\"')
-	{
-		MString name_clone = name;
-		mstr_unquote(name_clone);
-		name_or_id = name_clone.c_str();
-	}
-	else
-	{
-		name_or_id = WORD(g_db.GetResIDValue(name));
-	}
+    MIdOrString name_or_id;
+    if (name[0] == L'\"')
+    {
+        MString name_clone = name;
+        mstr_unquote(name_clone);
+        name_or_id = name_clone.c_str();
+    }
+    else
+    {
+        name_or_id = WORD(g_db.GetResIDValue(name));
+    }
 
     if (name_or_id == (WORD)0)
     {

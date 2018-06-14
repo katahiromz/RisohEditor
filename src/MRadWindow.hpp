@@ -493,8 +493,8 @@ public:
 
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
-		if (hwnd != m_hwnd)
-			return;
+        if (hwnd != m_hwnd)
+            return;
 
         GetCursorPos(&m_pt);
 
@@ -1204,11 +1204,11 @@ public:
                 // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
-					g_res.do_icon(m_title_to_icon, item, lang);
+                    g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
-					g_res.do_bitmap(m_title_to_bitmap, item, lang);
+                    g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }

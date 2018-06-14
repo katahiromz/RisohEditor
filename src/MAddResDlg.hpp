@@ -40,11 +40,11 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang);
 class MAddResDlg : public MDialogBase
 {
 public:
-	MIdOrString m_type;
-	MIdOrString m_name;
-	WORD m_lang;
-	MStringW m_strTemplate;
-	LPCTSTR m_file;
+    MIdOrString m_type;
+    MIdOrString m_name;
+    WORD m_lang;
+    MStringW m_strTemplate;
+    LPCTSTR m_file;
     MStringW m_strText;
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;

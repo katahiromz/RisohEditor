@@ -38,14 +38,14 @@ class MCloneInNewNameDlg : public MDialogBase
 {
 public:
     EntryBase *m_entry;
-	MIdOrString m_type;
+    MIdOrString m_type;
     MIdOrString m_name;
-	WORD m_lang;
+    WORD m_lang;
     MComboBoxAutoComplete m_cmb2;
 
     MCloneInNewNameDlg(EntryBase *entry)
         : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry), 
-		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
+          m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
     }
 
