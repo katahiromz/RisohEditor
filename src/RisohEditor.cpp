@@ -4172,6 +4172,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
             {
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
                 g_res.merge(res);
+				bSuccess = true;
             }
             res.delete_all();
         }
@@ -4258,6 +4259,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             {
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
                 g_res.merge(res);
+				bSuccess = true;
             }
             res.delete_all();
         }
