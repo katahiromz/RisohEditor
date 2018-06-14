@@ -427,6 +427,7 @@ STRINGTABLE
     IDS_DLGINIT2, "When the WM_INITDIALOG message arrives, the application can initialize the dialog by calling the ExecuteDlgInitDx function of the attached file ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3, "Please specify a list of character strings separated by line breaks for RT_DLGINIT."
     IDS_SAMELANG, "It's the same language."
+    IDS_SAMENAME, "It's the same resource name."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

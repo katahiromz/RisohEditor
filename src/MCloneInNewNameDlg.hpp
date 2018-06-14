@@ -121,6 +121,12 @@ public:
         if (!CheckNameComboBox(hCmb2, name))
             return;
 
+        if (m_name == name)
+        {
+            ErrorBoxDx(IDS_SAMENAME);
+            return;
+        }
+
         if (g_res.find(ET_NAME, m_type, name, m_lang))
         {
             if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)

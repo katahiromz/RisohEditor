@@ -1269,13 +1269,9 @@ protected:
         item.hItem = e->m_hItem;
         e->m_strLabel = e->get_lang_label();
         item.pszText = &e->m_strLabel[0];
-		if (pszText)
-			lstrcpyW(pszText, item.pszText);
+        if (pszText)
+            lstrcpyW(pszText, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
-    }
-    void RefreshTV(HWND hwnd)
-    {
-        // TODO:
     }
 
 public:
@@ -1413,7 +1409,7 @@ public:
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
     void DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
     void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
-    void DoRefresh(HWND hwnd, BOOL bRefreshAll = FALSE);
+    void DoRefreshTV(HWND hwnd);
     void DoRefreshIDList(HWND hwnd);
 
     HTREEITEM GetLastItem(HTREEITEM hItem);
@@ -4698,7 +4694,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             g_res.delete_all();
             g_res.merge(res);
             res.delete_all();
-            RefreshTV(hwnd);
         }
         m_bLoading = FALSE;
 
@@ -4708,7 +4703,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefresh(hwnd);
+        DoRefreshTV(hwnd);
 
         return TRUE;
     }
@@ -4743,7 +4738,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefresh(hwnd);
+        DoRefreshTV(hwnd);
 
         return TRUE;
     }
@@ -6159,7 +6154,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefresh(hwnd);
+        DoRefreshTV(hwnd);
     }
     else if (lstrcmpiW(pch, L".wmf") == 0)
     {
@@ -6225,7 +6220,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         {
             ShowIDList(hwnd, TRUE);
         }
-        DoRefresh(hwnd);
+        DoRefreshTV(hwnd);
     }
 }
 
@@ -6520,13 +6515,8 @@ void MMainWnd::DoRefreshIDList(HWND hwnd)
     ShowIDList(hwnd, IsWindow(m_id_list_dlg));
 }
 
-void MMainWnd::DoRefresh(HWND hwnd, BOOL bRefreshAll)
+void MMainWnd::DoRefreshTV(HWND hwnd)
 {
-    if (bRefreshAll)
-    {
-        DoRefreshIDList(hwnd);
-    }
-
     EntrySet res;
     g_res.copy_to(res);
     g_res.delete_all();
@@ -6612,7 +6602,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     {
         ReSetPaths(hwnd);
         ReCreateFonts(hwnd);
-        DoRefresh(hwnd);
+        DoRefreshTV(hwnd);
     }
 }
 
@@ -6645,6 +6635,9 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
     bUseIDC_STATIC = !bUseIDC_STATIC;
     g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
     g_db.UseIDC_STATIC(!!bUseIDC_STATIC);
+
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::OnHideIDMacros(HWND hwnd)
@@ -6728,7 +6721,8 @@ void MMainWnd::OnUseOldStyleLangStmt(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    DoRefresh(hwnd, TRUE);
+    DoRefreshTV(hwnd);
+    DoRefreshIDList(hwnd);
 }
 
 void MMainWnd::OnSetPaths(HWND hwnd)
@@ -7045,7 +7039,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnAdviceResH(hwnd);
         break;
     case ID_UPDATEID:
-        DoRefresh(hwnd, FALSE);
+        DoRefreshTV(hwnd);
         break;
     case ID_OPENREADME:
         OnOpenReadMe(hwnd);
@@ -7123,7 +7117,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         m_rad_window.OnRefresh(m_rad_window);
         break;
     case ID_REFRESHALL:
-        DoRefresh(hwnd, TRUE);
+        DoRefreshTV(hwnd);
+        DoRefreshIDList(hwnd);
         break;
     case ID_EXPORT:
         OnExport(hwnd);
@@ -7132,7 +7127,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnFonts(hwnd);
         break;
     case ID_REFRESH:
-        DoRefresh(hwnd, FALSE);
+        DoRefreshTV(hwnd);
         break;
     case ID_PREDEFMACROS:
         OnPredefMacros(hwnd);
