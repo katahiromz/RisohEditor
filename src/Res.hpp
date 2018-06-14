@@ -1504,7 +1504,7 @@ public:
         return TreeView_GetSelection(m_hwndTV);
     }
 
-    BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name)
+    BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
     {
         assert(entry->m_et == ET_LANG);
         assert(entry->m_type == RT_GROUP_ICON);
@@ -1535,21 +1535,21 @@ public:
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
-            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, entry->m_lang);
+            auto e = find(ET_LANG, RT_ICON, pEntries[i].nID, new_lang);
             if (!e)
                 return FALSE;
 
             UINT nLastID = get_last_id(RT_ICON, entry->m_lang);
             UINT nNextID = nLastID + 1;
 
-            add_lang_entry(RT_ICON, WORD(nNextID), e->m_lang, e->m_data);
+            add_lang_entry(RT_ICON, WORD(nNextID), new_lang, e->m_data);
         }
 
-        add_lang_entry(RT_GROUP_ICON, new_name, entry->m_lang, entry->m_data);
+        add_lang_entry(RT_GROUP_ICON, new_name, new_lang, entry->m_data);
         return TRUE;
     }
 
-    BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name)
+    BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
     {
         assert(entry->m_et == ET_LANG);
         assert(entry->m_type == RT_GROUP_CURSOR);
@@ -1584,13 +1584,13 @@ public:
             if (!e)
                 return FALSE;
 
-            UINT nLastID = get_last_id(RT_CURSOR, entry->m_lang);
+            UINT nLastID = get_last_id(RT_CURSOR, new_lang);
             UINT nNextID = nLastID + 1;
 
-            add_lang_entry(RT_CURSOR, WORD(nNextID), e->m_lang, e->m_data);
+            add_lang_entry(RT_CURSOR, WORD(nNextID), new_lang, e->m_data);
         }
 
-        add_lang_entry(RT_GROUP_CURSOR, new_name, entry->m_lang, entry->m_data);
+        add_lang_entry(RT_GROUP_CURSOR, new_name, new_lang, entry->m_data);
         return TRUE;
     }
 

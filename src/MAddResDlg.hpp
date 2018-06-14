@@ -61,7 +61,9 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
+        ConstantsDB::TableType table;
+
+        table = g_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
@@ -72,61 +74,17 @@ public:
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
-        k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_type == TEXT("WAVE"))
+
+        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+        for (size_t i = 0; i < table.size(); ++i)
         {
-            ComboBox_SetCurSel(hCmb1, k);
+            k = ComboBox_AddString(hCmb1, table[i].name.c_str());
+            if (m_type == table[i].name.c_str())
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
         }
-        k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_type == TEXT("PNG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("IMAGE"));
-        if (m_type == TEXT("IMAGE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_type == TEXT("GIF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_type == TEXT("JPEG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_type == TEXT("TIFF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_type == TEXT("AVI"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_type == TEXT("EMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("ENHMETAFILE"));
-        if (m_type == TEXT("ENHMETAFILE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_type == TEXT("WMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("RISOHTEMPLATE"));
-        if (m_type == TEXT("RISOHTEMPLATE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
+
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
 

@@ -2368,7 +2368,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (!entry || entry->m_et != ET_NAME)
         return;
 
-    MCloneInNewNameDlg dialog(*entry);
+    MCloneInNewNameDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         EntrySetBase found;
@@ -2378,19 +2378,18 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         {
             for (auto e : found)
             {
-                g_res.copy_group_icon(e, dialog.m_name);
+                g_res.copy_group_icon(e, dialog.m_name, dialog.m_lang);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             for (auto e : found)
             {
-                g_res.copy_group_cursor(e, dialog.m_name);
+                g_res.copy_group_cursor(e, dialog.m_name, dialog.m_lang);
             }
         }
 
-        entry = g_res.find(ET_NAME, entry->m_type, dialog.m_name);
-        SelectTV(entry, FALSE);
+        SelectTV(ET_NAME, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
     }
 }
 
@@ -2409,7 +2408,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         return;
     }
 
-    MCloneInNewLangDlg dialog(*entry);
+    MCloneInNewLangDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         if (entry->m_type == RT_GROUP_ICON)
@@ -2418,7 +2417,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                g_res.copy_group_icon(e, e->m_name);
+                g_res.copy_group_icon(e, e->m_name, dialog.m_lang);
             }
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
@@ -2427,7 +2426,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
             for (auto e : found)
             {
-                g_res.copy_group_cursor(e, e->m_name);
+                g_res.copy_group_cursor(e, e->m_name, dialog.m_lang);
             }
         }
         else if (entry->m_et == ET_STRING)

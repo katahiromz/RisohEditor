@@ -37,12 +37,15 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
 class MCloneInNewNameDlg : public MDialogBase
 {
 public:
-    EntryBase& m_entry;
+    EntryBase *m_entry;
+	MIdOrString m_type;
     MIdOrString m_name;
+	WORD m_lang;
     MComboBoxAutoComplete m_cmb2;
 
-    MCloneInNewNameDlg(EntryBase& entry)
-        : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry)
+    MCloneInNewNameDlg(EntryBase *entry)
+        : MDialogBase(IDD_CLONEINNEWNAME), m_entry(entry), 
+		  m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
     }
 
@@ -62,72 +65,34 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
+        ConstantsDB::TableType table;
+
+        table = g_db.GetTable(L"RESOURCE");
         for (size_t i = 0; i < table.size(); ++i)
         {
             WCHAR sz[MAX_PATH];
             StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table[i].name.c_str(), table[i].value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_entry.m_type == WORD(table[i].value))
+            if (m_type == WORD(table[i].value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
-        k = ComboBox_AddString(hCmb1, TEXT("WAVE"));
-        if (m_entry.m_type == TEXT("WAVE"))
+
+        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+        for (size_t i = 0; i < table.size(); ++i)
         {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("PNG"));
-        if (m_entry.m_type == TEXT("PNG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("IMAGE"));
-        if (m_entry.m_type == TEXT("IMAGE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("GIF"));
-        if (m_entry.m_type == TEXT("GIF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("JPEG"));
-        if (m_entry.m_type == TEXT("JPEG"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("TIFF"));
-        if (m_entry.m_type == TEXT("TIFF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("AVI"));
-        if (m_entry.m_type == TEXT("AVI"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("EMF"));
-        if (m_entry.m_type == TEXT("EMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("ENHMETAFILE"));
-        if (m_entry.m_type == TEXT("ENHMETAFILE"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
-        }
-        k = ComboBox_AddString(hCmb1, TEXT("WMF"));
-        if (m_entry.m_type == TEXT("WMF"))
-        {
-            ComboBox_SetCurSel(hCmb1, k);
+            k = ComboBox_AddString(hCmb1, table[i].name.c_str());
+            if (m_type == table[i].name.c_str())
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
         }
 
         // for Names
-        IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_entry.m_type);
+        IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
-        InitResNameComboBox(hCmb2, m_entry.m_name, nIDTYPE_);
+        InitResNameComboBox(hCmb2, m_name, nIDTYPE_);
         SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
@@ -156,7 +121,7 @@ public:
         if (!CheckNameComboBox(hCmb2, name))
             return;
 
-        if (g_res.find(ET_NAME, m_entry.m_type, name, m_entry.m_lang))
+        if (g_res.find(ET_NAME, m_type, name, m_lang))
         {
             if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
             {
