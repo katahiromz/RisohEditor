@@ -124,9 +124,10 @@ public:
 
         if (bAni)
         {
+            type = RT_ANICURSOR;
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
-                !g_res.add_lang_entry(RT_ANICURSOR, name, lang, bs.data()))
+                !g_res.add_lang_entry(type, name, lang, bs.data()))
             {
                 ErrorBoxDx(IDS_CANNOTADDCUR);
                 return;
