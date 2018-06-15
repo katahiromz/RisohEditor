@@ -1552,13 +1552,14 @@ public:
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
-    BOOL DoExport(LPCWSTR pszFileName);
+    BOOL DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
     void DoIDStat(UINT anValues[5]);
     BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
-    BOOL DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName);
+    BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
+    BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
     BOOL DoSaveResAs(LPCWSTR pszExeFile);
     BOOL DoSaveAs(LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(LPCWSTR pszExeFile);
@@ -2296,13 +2297,20 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             break;
         case FI_RC:
             {
-                MExportOptionsDlg export_options;
-                if (export_options.DialogBoxDx(hwnd) != IDOK)
+                MSaveOptionsDlg save_options;
+                if (save_options.DialogBoxDx(hwnd) != IDOK)
                     return;
 
-                if (!DoExport(szFile))
+                WCHAR szResH[MAX_PATH] = L"";
+                if (DoExport(szFile, szResH))
                 {
-                    ErrorBoxDx(IDS_CANTEXPORT);
+                    StringCchCopyW(m_szRealFile, _countof(m_szRealFile), szFile);
+                    StringCchCopyW(m_szNominalFile, _countof(m_szNominalFile), szFile);
+                    StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+                }
+                else
+                {
+                    ErrorBoxDx(IDS_CANNOTSAVE);
                 }
             }
             break;
@@ -5766,10 +5774,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     return TRUE;
 }
 
-BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
+BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
-    DoBackupFile(pszFileName);
-    MFile file(pszFileName, TRUE);
+    DoBackupFile(pszResH);
+    MFile file(pszResH, TRUE);
     if (!file)
         return FALSE;
 
@@ -5820,6 +5828,30 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszRCFile, LPCWSTR pszFileName)
     file.WriteFormatA("#endif\r\n");
 
     return TRUE;
+}
+
+BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
+{
+    assert(pszExeFile);
+
+    WCHAR szResH[MAX_PATH];
+    StringCchCopyW(szResH, _countof(szResH), pszExeFile);
+
+    LPWSTR pch = wcsrchr(szResH, L'\\');
+    if (!pch)
+        pch = wcsrchr(szResH, L'/');
+    if (!pch)
+        return FALSE;
+
+    *pch = 0;
+    StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
+
+    if (DoWriteResH(szResH))
+    {
+        StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 void MMainWnd::DoIDStat(UINT anValues[5])
@@ -6049,7 +6081,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
     return g_res.extract_bin(filename.c_str(), entry);
 }
 
-BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
+BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 {
     if (g_res.empty())
     {
@@ -6058,7 +6090,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     }
 
     WCHAR szPath[MAX_PATH];
-    StringCchCopy(szPath, _countof(szPath), pszFileName);
+    StringCchCopy(szPath, _countof(szPath), pszRCFile);
     WCHAR *pch = mstrrchr(szPath, L'\\');
     *pch = 0;
 
@@ -6115,14 +6147,17 @@ BOOL MMainWnd::DoExport(LPCWSTR pszFileName)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH && !g_settings.id_map.empty())
+    if (m_szResourceH[0] || !g_settings.id_map.empty())
     {
-        StringCchCopyW(pch, _countof(szPath), L"\\resource.h");
-        bOK = DoWriteResH(pszFileName, szPath) && DoWriteRC(pszFileName, szPath);
+        *pch = 0;
+        StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
+        bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath);
+        if (bOK && pszResHFile)
+            lstrcpyW(pszResHFile, szPath);
     }
     else
     {
-        bOK = DoWriteRC(pszFileName, NULL);
+        bOK = DoWriteRC(pszRCFile, NULL);
     }
 
     SetCurrentDirectory(szCurDir);
@@ -6173,6 +6208,10 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         if (g_res.update_exe(pszExeFile))
         {
             SetFilePath(pszExeFile, NULL);
+
+            if (m_szResourceH[0] || !g_settings.id_map.empty())
+                return DoWriteResHOfExe(pszExeFile);
+
             return TRUE;
         }
     }
@@ -6189,6 +6228,10 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
             }
+
+            if (m_szResourceH[0] || !g_settings.id_map.empty())
+                return DoWriteResHOfExe(pszExeFile);
+
             return TRUE;
         }
         DeleteFileW(TempFile);
@@ -8168,7 +8211,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // create new
-        if (!DoWriteResH(NULL, szResH))
+        if (!DoWriteResH(szResH))
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
             ShowIDList(hwnd, bListOpen);

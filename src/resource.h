@@ -207,6 +207,7 @@
 #define IDD_ADDDLGINIT          154
 #define IDD_MODIFYDLGINIT       155
 #define IDD_STRINGLIST          156
+#define IDD_SAVE_OPTIONS        157
 
 #define IDS_APPNAME             101
 #define IDS_TITLEWITHFILE       102

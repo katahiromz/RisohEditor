@@ -1,4 +1,4 @@
-// MExportOptionsDlg.hpp --- "Export Options" Dialog
+// MSaveOptionsDlg.hpp --- "Save Options" Dialog
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MEXPORTOPTIONSDLG_HPP_
-#define MZC4_MEXPORTOPTIONSDLG_HPP_
+#ifndef MZC4_MSAVEOPTIONSDLG_HPP_
+#define MZC4_MSAVEOPTIONSDLG_HPP_
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
@@ -26,10 +26,10 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MExportOptionsDlg : public MDialogBase
+class MSaveOptionsDlg : public MDialogBase
 {
 public:
-    MExportOptionsDlg() : MDialogBase(IDD_EXP_OPTIONS)
+    MSaveOptionsDlg() : MDialogBase(IDD_SAVE_OPTIONS)
     {
     }
 
@@ -84,4 +84,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-#endif  // ndef MZC4_MEXPORTOPTIONSDLG_HPP_
+#endif  // ndef MZC4_MSAVEOPTIONSDLG_HPP_
