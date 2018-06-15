@@ -7270,7 +7270,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnAdviceResH(hwnd);
         break;
     case ID_UPDATEID:
-        UpdateNames(hwnd);
+        UpdateNames();
         break;
     case ID_OPENREADME:
         OnOpenReadMe(hwnd);
