@@ -53,6 +53,33 @@ static const UINT s_nBackupMaxCount = 5;
 //////////////////////////////////////////////////////////////////////////////
 // useful global functions
 
+BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
+{
+    WCHAR sz[MAX_PATH];
+    StringCchCopy(sz, _countof(sz), pszPath);
+    StringCchCat(sz, _countof(sz), L"\\*");
+
+    BOOL bFound = FALSE;
+    WIN32_FIND_DATA find;
+    HANDLE hFind = FindFirstFile(sz, &find);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            MString str = find.cFileName;
+            if (str != L"." && str != L"..")
+            {
+                bFound = TRUE;
+                break;
+            }
+        } while (FindNextFile(hFind, &find));
+
+        FindClose(hFind);
+    }
+
+    return !bFound;
+}
+
 // replace some fullwidth characters with halfwidth characters
 void ReplaceFullWithHalf(LPWSTR pszText)
 {
@@ -1632,9 +1659,6 @@ public:
     void DoRefreshTV(HWND hwnd);
     void DoRefreshIDList(HWND hwnd);
 
-    HTREEITEM GetLastItem(HTREEITEM hItem);
-    HTREEITEM GetLastLeaf(HTREEITEM hItem);
-
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
     BOOL DoItemSearch(ITEM_SEARCH& search);
@@ -1782,14 +1806,17 @@ protected:
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd out-of-line functions
 
+// system color settings was changed
 void MMainWnd::OnSysColorChange(HWND hwnd)
 {
+    // notify the window children
     m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
     m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
     m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
     m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
 }
 
+// check whether it needs compilation
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     if (!CompileIfNecessary(TRUE))
@@ -1799,12 +1826,14 @@ LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
+// reopen the RADical window
 LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     OnGuiEdit(hwnd);
     return 0;
 }
 
+// report the position and size to the status bar
 LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     INT x = (SHORT)LOWORD(wParam);
@@ -1816,12 +1845,14 @@ LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// clear the status bar
 LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     ChangeStatusText(TEXT(""));
     return 0;
 }
 
+// if activated, then set focus to m_hwndTV
 void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
 {
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
@@ -1831,6 +1862,7 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
     FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
 
+// update the menu for recently used files
 void MMainWnd::UpdateMenu()
 {
     HMENU hMenu = GetMenu(m_hwnd);
@@ -1868,6 +1900,7 @@ void MMainWnd::UpdateMenu()
     }
 }
 
+// extract the binary as a file
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -1914,6 +1947,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     }
 }
 
+// extract an icon as an *.ico file
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -1953,6 +1987,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     }
 }
 
+// extract a cursor as an *.cur or *.ani file
 void MMainWnd::OnExtractCursor(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -1992,6 +2027,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     }
 }
 
+// extract a bitmap as an *.bmp file
 void MMainWnd::OnExtractBitmap(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -2024,6 +2060,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     }
 }
 
+// replace the resource data by a binary file
 void MMainWnd::OnReplaceBin(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -2040,6 +2077,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     }
 }
 
+// version info
 void MMainWnd::OnAbout(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -2067,6 +2105,7 @@ void MMainWnd::OnAbout(HWND hwnd)
 #endif
 }
 
+// show the MFontsDlg to allow the user to change the font settings
 void MMainWnd::OnFonts(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -2085,6 +2124,7 @@ void MMainWnd::OnFonts(HWND hwnd)
     }
 }
 
+// export all the resource items to an RC file
 void MMainWnd::OnExport(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -2116,14 +2156,16 @@ void MMainWnd::OnExport(HWND hwnd)
     }
 }
 
+// the window class libraries
 typedef std::set<HMODULE> wclib_t;
 
-wclib_t& wclib()
+static wclib_t& wclib()
 {
     static wclib_t s_wclib;
     return s_wclib;
 }
 
+// is there a window class that is named pszName?
 BOOL IsThereWndClass(const WCHAR *pszName)
 {
     if (!pszName || pszName[0] == 0)
@@ -2159,6 +2201,7 @@ BOOL IsThereWndClass(const WCHAR *pszName)
     return FALSE;   // failure
 }
 
+// release the window class libraries
 void FreeWCLib()
 {
     for (auto& item : wclib())
@@ -2168,6 +2211,7 @@ void FreeWCLib()
     wclib().clear();
 }
 
+// load a window class library
 void MMainWnd::OnLoadWCLib(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -2200,6 +2244,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     }
 }
 
+// import the resource data additionally
 void MMainWnd::OnImport(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -2248,6 +2293,7 @@ void MMainWnd::OnImport(HWND hwnd)
     }
 }
 
+// open a file
 void MMainWnd::OnOpen(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -2276,6 +2322,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     }
 }
 
+// clear all the resource data
 void MMainWnd::OnNew(HWND hwnd)
 {
     HidePreview();
@@ -2284,6 +2331,7 @@ void MMainWnd::OnNew(HWND hwnd)
     g_res.delete_all();
 }
 
+// save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
     enum
@@ -2438,35 +2486,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     }
 }
 
-HTREEITEM MMainWnd::GetLastItem(HTREEITEM hItem)
-{
-    HTREEITEM hNext = hItem;
-    do
-    {
-        hItem = hNext;
-        hNext = TreeView_GetNextSibling(m_hwndTV, hItem);
-    } while (hNext);
-    return hItem;
-}
-
-HTREEITEM MMainWnd::GetLastLeaf(HTREEITEM hItem)
-{
-    HTREEITEM hNext, hChild;
-    for (;;)
-    {
-        hNext = GetLastItem(hItem);
-        if (!hNext)
-            break;
-
-        hChild = TreeView_GetChild(m_hwndTV, hNext);
-        if (!hChild)
-            break;
-
-        hItem = hChild;
-    }
-    return hItem;
-}
-
+// update the fonts by the font settings
 void MMainWnd::ReCreateFonts(HWND hwnd)
 {
     if (m_hBinFont)
@@ -2504,7 +2524,8 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
 
-bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
+// check the text for item search
+static bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
 {
     if (pSearch->bIgnoreCases)
         CharUpperW(&text[0]);
@@ -2553,6 +2574,7 @@ bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
     return false;
 }
 
+// a function for item search
 static unsigned __stdcall
 search_proc(void *arg)
 {
@@ -2604,6 +2626,7 @@ search_proc(void *arg)
     return 0;
 }
 
+// do item search
 BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
 {
     MWaitCursor wait;
@@ -2616,6 +2639,7 @@ BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
     return search.pFound != NULL;
 }
 
+// clone the resource item in new name
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -2654,6 +2678,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     }
 }
 
+// clone the resource item in new language
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -2720,6 +2745,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     }
 }
 
+// show the item search dialog
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
     if (!MItemSearchDlg::Dialogs().empty())
@@ -2741,6 +2767,7 @@ void MMainWnd::OnItemSearch(HWND hwnd)
     UpdateWindow(*pDialog);
 }
 
+// do item search
 void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
     if (!IsWindow(pDialog->m_hwnd))
@@ -2781,6 +2808,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     }
 }
 
+// delete a resource item
 void MMainWnd::OnDeleteRes(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -2793,6 +2821,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     }
 }
 
+// play the sound
 void MMainWnd::OnPlay(HWND hwnd)
 {
     auto entry = g_res.get_lang_entry();
@@ -2802,6 +2831,7 @@ void MMainWnd::OnPlay(HWND hwnd)
     }
 }
 
+// cancel edit
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
     Edit_SetModify(m_hSrcEdit, FALSE);
@@ -2811,6 +2841,7 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// set error message
 void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
 {
     if (bBox)
@@ -2839,6 +2870,7 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
     }
 }
 
+// compile the source text
 void MMainWnd::OnCompile(HWND hwnd)
 {
     BOOL bReopen = IsWindowVisible(m_rad_window);
@@ -2872,6 +2904,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     }
 }
 
+// do GUI edit
 void MMainWnd::OnGuiEdit(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -3062,6 +3095,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
 }
 
+// do text edit
 void MMainWnd::OnEdit(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -3072,6 +3106,7 @@ void MMainWnd::OnEdit(HWND hwnd)
     SelectTV(entry, TRUE);
 }
 
+// open README
 void MMainWnd::OnOpenReadMe(HWND hwnd)
 {
     WCHAR szPath[MAX_PATH];
@@ -3102,6 +3137,7 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
+// Open READMEJP (Japanese)
 void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 {
     WCHAR szPath[MAX_PATH];
@@ -3132,6 +3168,7 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
+// Open HYOJUNKA.txt (Japanese)
 void MMainWnd::OnOpenHyojunka(HWND hwnd)
 {
     WCHAR szPath[MAX_PATH];
@@ -3162,6 +3199,7 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
+// open the license text file
 void MMainWnd::OnOpenLicense(HWND hwnd)
 {
     WCHAR szPath[MAX_PATH];
@@ -3192,6 +3230,7 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
+// do UPX test to check whether the file is compressed or not
 BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
     MStringW strCmdLine;
@@ -3227,6 +3266,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     return bSuccess;
 }
 
+// do UPX extract to decompress the file
 BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
     MStringW strCmdLine;
@@ -3260,6 +3300,7 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
     return bSuccess;
 }
 
+// for debugging purpose
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
     if (0)
@@ -3302,6 +3343,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     }
 }
 
+// show the movie or not
 void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
 {
     if (bShow)
@@ -3317,6 +3359,7 @@ void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
     }
 }
 
+// show the image file or not
 void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
 {
     ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
@@ -3339,6 +3382,7 @@ void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
     SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
 }
 
+// show the status bar or not
 void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
 {
     if (bShow)
@@ -3347,6 +3391,7 @@ void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
         ShowWindow(m_hStatusBar, SW_HIDE);
 }
 
+// show the binary/error EDIT control or not
 void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
 {
     if (bShow && (g_settings.bShowBinEdit || bShowError))
@@ -3367,6 +3412,7 @@ void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
     }
 }
 
+// the main window has moved
 void MMainWnd::OnMove(HWND hwnd, int x, int y)
 {
     RECT rc;
@@ -3378,6 +3424,7 @@ void MMainWnd::OnMove(HWND hwnd, int x, int y)
     }
 }
 
+// the main window has changed in size
 void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 {
     SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
@@ -3418,6 +3465,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
     MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
 }
 
+// update the menus
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     EntrySetBase found;
@@ -3689,6 +3737,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     }
 }
 
+// the context menu is shown
 void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 {
     if (hwndContext != m_hwndTV)
@@ -3746,6 +3795,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     }
 }
 
+// preview the icon resource
 void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
 {
     BITMAP bm;
@@ -3768,6 +3818,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the cursor resource
 void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
 {
     BITMAP bm;
@@ -3781,6 +3832,7 @@ void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the group icon resource
 void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, entry));
@@ -3792,6 +3844,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the group cursor resource
 void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
 {
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, entry));
@@ -3804,6 +3857,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the bitmap resource
 void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
 {
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
@@ -3815,6 +3869,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the image resource
 void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 {
     MStringW str;
@@ -3827,6 +3882,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the WAVE resource
 void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3837,6 +3893,7 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
     ShowBmpView(TRUE);
 }
 
+// preview the AVI resource
 void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3847,6 +3904,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
     ShowMovie(TRUE);
 }
 
+// preview the RT_ACCELERATOR resource
 void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry.m_data);
@@ -3859,6 +3917,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the message table resource
 void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry.m_data);
@@ -3871,6 +3930,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the string resource
 void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry.m_data);
@@ -3883,6 +3943,7 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the HTML resource
 void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 {
     MTextType type;
@@ -3893,6 +3954,7 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the menu resource
 void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry.m_data);
@@ -3905,6 +3967,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the version resource
 void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 {
     VersionRes ver_res;
@@ -3916,6 +3979,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the unknown resource
 void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3923,6 +3987,7 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the RISOHTEMPLATE resource
 void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3930,6 +3995,7 @@ void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3937,6 +4003,7 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the DLGINIT resource
 void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 {
     ResToText res2text;
@@ -3944,6 +4011,7 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the dialog template resource
 void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
 {
     MByteStreamEx stream(entry.m_data);
@@ -3956,6 +4024,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the animation icon resource
 void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 {
     HICON hIcon = NULL;
@@ -4001,6 +4070,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
     ShowBmpView(TRUE);
 }
 
+// preview the string table resource
 void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 {
     EntrySetBase found;
@@ -4019,6 +4089,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// preview the message table resource
 void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
     EntrySetBase found;
@@ -4043,6 +4114,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
+// hide the preview
 VOID MMainWnd::HidePreview()
 {
     m_hBmpView.DestroyView();
@@ -4058,6 +4130,7 @@ VOID MMainWnd::HidePreview()
     PostMessageDx(WM_SIZE);
 }
 
+// do preview the resource item
 BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 {
     HidePreview();
@@ -4169,6 +4242,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
     return entry->is_editable();
 }
 
+// create the toolbar
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
 {
     HWND hwndTB;
@@ -4194,6 +4268,7 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
     return TRUE;
 }
 
+// update the toolbar
 void MMainWnd::UpdateOurToolBar(INT iType)
 {
     while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
@@ -4227,6 +4302,7 @@ void MMainWnd::UpdateOurToolBar(INT iType)
         ShowWindow(m_hToolBar, SW_HIDE);
 }
 
+// select an item in the tree control
 void
 MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
                    const MIdOrString& name, WORD lang, BOOL bDoubleClick)
@@ -4238,6 +4314,7 @@ MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
     }
 }
 
+// select an item in the tree control
 void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 {
     HidePreview();
@@ -4325,6 +4402,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     PostMessageDx(WM_SIZE);
 }
 
+// dump all the macros
 MStringW MMainWnd::GetMacroDump()
 {
     MStringW ret;
@@ -4342,6 +4420,7 @@ MStringW MMainWnd::GetMacroDump()
     return ret;
 }
 
+// dump all the #include's
 MStringW MMainWnd::GetIncludesDump()
 {
     MStringW ret;
@@ -4358,6 +4437,7 @@ MStringW MMainWnd::GetIncludesDump()
     return ret;
 }
 
+// compile the string table
 BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
     MStringA strUtf8;
@@ -4467,6 +4547,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     return bSuccess;
 }
 
+// compile the message table
 BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
     MStringA strUtf8;
@@ -4569,6 +4650,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     return bSuccess;
 }
 
+// compile a resource item source
 BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen)
 {
     if (type == RT_STRING)
@@ -4743,6 +4825,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     return bSuccess;
 }
 
+// recompile the resource item on selection change.
+// reopen if necessary
 BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 {
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
@@ -4783,6 +4867,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     return TRUE;
 }
 
+// compile the source if necessary
 BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 {
     if (Edit_GetModify(m_hSrcEdit))
@@ -4804,6 +4889,7 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
     return TRUE;
 }
 
+// check the data folder
 BOOL MMainWnd::CheckDataFolder(VOID)
 {
     WCHAR szPath[MAX_PATH], *pch;
@@ -4848,6 +4934,7 @@ BOOL MMainWnd::CheckDataFolder(VOID)
     return TRUE;
 }
 
+// check the data and the helper programs
 INT MMainWnd::CheckData(VOID)
 {
     if (!CheckDataFolder())
@@ -4916,6 +5003,7 @@ INT MMainWnd::CheckData(VOID)
     return 0;   // success
 }
 
+// load the language information
 void MMainWnd::DoLoadLangInfo(VOID)
 {
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
@@ -4931,6 +5019,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
+// load a file
 BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BOOL bForceDecompress)
 {
     MWaitCursor wait;
@@ -5126,6 +5215,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     return TRUE;
 }
 
+// unload resource.h
 BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 {
     g_settings.AddIDC_STATIC();
@@ -5143,6 +5233,7 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
     return TRUE;
 }
 
+// check the resource.h file
 BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 {
     UnloadResourceH(hwnd);
@@ -5195,6 +5286,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     return DoLoadResH(hwnd, szPath);
 }
 
+// load an RC file
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     MStringA strOutput;
@@ -5223,6 +5315,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     return bSuccess;
 }
 
+// find the text
 void MMainWnd::OnFind(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5241,6 +5334,7 @@ void MMainWnd::OnFind(HWND hwnd)
     m_hFindReplaceDlg = FindText(&m_fr);
 }
 
+// find next
 BOOL MMainWnd::OnFindNext(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5289,6 +5383,7 @@ BOOL MMainWnd::OnFindNext(HWND hwnd)
     return TRUE;
 }
 
+// find previous
 BOOL MMainWnd::OnFindPrev(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5334,6 +5429,7 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
     return TRUE;
 }
 
+// replace next
 BOOL MMainWnd::OnReplaceNext(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5386,6 +5482,7 @@ BOOL MMainWnd::OnReplaceNext(HWND hwnd)
     return TRUE;
 }
 
+// replace previous
 BOOL MMainWnd::OnReplacePrev(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5438,6 +5535,7 @@ BOOL MMainWnd::OnReplacePrev(HWND hwnd)
     return TRUE;
 }
 
+// do replace
 BOOL MMainWnd::OnReplace(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5458,6 +5556,7 @@ BOOL MMainWnd::OnReplace(HWND hwnd)
     return TRUE;
 }
 
+// replace all
 BOOL MMainWnd::OnReplaceAll(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
@@ -5477,6 +5576,7 @@ BOOL MMainWnd::OnReplaceAll(HWND hwnd)
     return TRUE;
 }
 
+// do the find message for FindText/ReplaceText API
 LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     if (m_fr.Flags & FR_DIALOGTERM)
@@ -5508,33 +5608,6 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
     }
     return 0;
-}
-
-BOOL IsEmptyDirectoryDx(LPCTSTR pszPath)
-{
-    WCHAR sz[MAX_PATH];
-    StringCchCopy(sz, _countof(sz), pszPath);
-    StringCchCat(sz, _countof(sz), L"\\*");
-
-    BOOL bFound = FALSE;
-    WIN32_FIND_DATA find;
-    HANDLE hFind = FindFirstFile(sz, &find);
-    if (hFind != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            MString str = find.cFileName;
-            if (str != L"." && str != L"..")
-            {
-                bFound = TRUE;
-                break;
-            }
-        } while (FindNextFile(hFind, &find));
-
-        FindClose(hFind);
-    }
-
-    return !bFound;
 }
 
 BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
@@ -8475,6 +8548,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     }
 }
 
+// add a message table resource
 void MMainWnd::OnAddMessageTable(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8488,6 +8562,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     }
 }
 
+// add an HTML resource
 void MMainWnd::OnAddHtml(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8501,6 +8576,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     }
 }
 
+// add an RT_ACCELERATOR resource
 void MMainWnd::OnAddAccel(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8514,6 +8590,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     }
 }
 
+// add a version info resource
 void MMainWnd::OnAddVerInfo(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8527,6 +8604,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     }
 }
 
+// add a manifest resource
 void MMainWnd::OnAddManifest(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8540,6 +8618,7 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     }
 }
 
+// add a resource item
 void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 {
     if (dialog.m_strTemplate.empty())
@@ -8575,6 +8654,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     }
 }
 
+// add a dialog template
 void MMainWnd::OnAddDialog(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8588,6 +8668,7 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
+// set the file paths and update the settings, the title bar and the menu
 BOOL MMainWnd::SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
     if (pszRealFile == 0 || pszRealFile[0] == 0)
@@ -8624,6 +8705,7 @@ BOOL MMainWnd::SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal)
     return TRUE;
 }
 
+// set the default settings
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
     g_settings.bShowBinEdit = TRUE;
@@ -8766,6 +8848,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nSaveFilterIndex = 1;
 }
 
+// update the prefix DB
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
 {
     // update "RESOURCE.ID.PREFIX" table
@@ -8783,6 +8866,7 @@ void MMainWnd::UpdatePrefixDB(HWND hwnd)
     }
 }
 
+// load the settings
 BOOL MMainWnd::LoadSettings(HWND hwnd)
 {
     SetDefaultSettings(hwnd);
@@ -9006,6 +9090,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     return TRUE;
 }
 
+// save the settings
 BOOL MMainWnd::SaveSettings(HWND hwnd)
 {
     MRegKey key(HKCU, TEXT("Software"), TRUE);
@@ -9138,6 +9223,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     return TRUE;
 }
 
+// WM_CREATE
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     MWaitCursor wait;
@@ -9266,6 +9352,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     return TRUE;
 }
 
+// the window procedure of the main window
 /*virtual*/ LRESULT CALLBACK
 MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -9298,6 +9385,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
+// select the string entry in the tree control
 void MMainWnd::SelectString(void)
 {
     auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, 0xFFFF);
@@ -9307,6 +9395,7 @@ void MMainWnd::SelectString(void)
     }
 }
 
+// select the message entry in the tree control
 void MMainWnd::SelectMessage()
 {
     auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
@@ -9316,6 +9405,7 @@ void MMainWnd::SelectMessage()
     }
 }
 
+// do ID jump now!
 void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 {
     if (strType == L"Unknown.ID")
@@ -9384,6 +9474,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     }
 }
 
+// do ID jump now!
 LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     INT iItem = (INT)wParam;
@@ -9407,6 +9498,7 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// do something after find
 LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     m_fr.Flags = FR_DOWN;
@@ -9422,6 +9514,7 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// start up the program
 BOOL MMainWnd::StartDx()
 {
     MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(IDC_CURSORNS));
@@ -9452,6 +9545,7 @@ BOOL MMainWnd::StartDx()
     return TRUE;
 }
 
+// do one window message
 void MMainWnd::DoEvents()
 {
     MSG msg;
@@ -9461,6 +9555,7 @@ void MMainWnd::DoEvents()
     }
 }
 
+// do the window messages
 void MMainWnd::DoMsg(MSG& msg)
 {
     if (IsWindow(m_rad_window.m_rad_dialog))
@@ -9502,6 +9597,7 @@ void MMainWnd::DoMsg(MSG& msg)
     DispatchMessage(&msg);
 }
 
+// the main loop
 INT_PTR MMainWnd::RunDx()
 {
     MSG msg;
@@ -9521,6 +9617,7 @@ INT_PTR MMainWnd::RunDx()
 
 //////////////////////////////////////////////////////////////////////////////
 
+// get the LANGUAGE statement
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 {
     MString strPrim, strSub;
@@ -10542,6 +10639,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     return str;
 }
 
+// get the RISOHTEMPLATE text
 MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 {
     HINSTANCE hInst = GetModuleHandle(NULL);
@@ -10592,6 +10690,7 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 
 ////////////////////////////////////////////////////////////////////////////
 
+// the manifest information
 #pragma comment(linker, "/manifestdependency:\"type='win32' \
   name='Microsoft.Windows.Common-Controls' \
   version='6.0.0.0' \
@@ -10599,8 +10698,10 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
   publicKeyToken='6595b64144ccf1df' \
   language='*'\"")
 
+// We will dynamically create the MOleCtrl instances
 IMPLEMENT_DYNAMIC(MOleCtrl)
 
+// the main function of the windows application
 INT WINAPI
 WinMain(HINSTANCE   hInstance, 
         HINSTANCE   hPrevInstance, 
