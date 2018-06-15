@@ -31,15 +31,11 @@ The word "risoh" means "ideal" in Japanese.
 
 Those are standard control ID macros defined in <dlgs.h>.
 
-### Question 3. I can't find my resource IDs in [List of Resource IDs] Window.
-
-At first, please configure [ID Association] settings from [File] Menu --> [ID Association]. You have to load the "resource.h" file to get the resource ID names correctly.
-
-### Question 4. Why can't I add a control data to my dialog item?
+### Question 3. Why can't I add a control data to my dialog item?
 
 Make the dialog box extended.
 
-### Question 5. What is mcdx?
+### Question 4. What is mcdx?
 
 It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
 
