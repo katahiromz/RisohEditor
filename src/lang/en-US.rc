@@ -1196,16 +1196,18 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Re&set All", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 90
+IDD_EXP_OPTIONS DIALOG 0, 0, 205, 145
 CAPTION "Export Options"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 5, 195, 14
-    AUTOCHECKBOX "Store the external files into the &res folder", chx2, 5, 25, 195, 14
-    AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 45, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 75, 70, 60, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 140, 70, 60, 14
+    ICON IDI_MAIN, IDC_STATIC, 5, 10, 20, 20
+    LTEXT "Exporting a RC file will generate some related files. You can choose the following options:", IDC_STATIC, 37, 10, 160, 40
+    AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 195, 14
+    AUTOCHECKBOX "Store the external files into the &res folder", chx2, 5, 80, 195, 14
+    AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 195, 14
+    DEFPUSHBUTTON "OK", IDOK, 74, 124, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 140, 124, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 210

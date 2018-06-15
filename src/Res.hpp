@@ -1777,11 +1777,17 @@ public:
         WCHAR szPath3[MAX_PATH];
         lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
 
+        MFile r3(szPath3, TRUE);
+        r3.FlushFileBuffers();
+        r3.CloseHandle();
+        Sleep(FILE_WAIT_TIME);
+
         MStringW strCmdLine;
         strCmdLine += L'\"';
         strCmdLine += strMcdxExe;
         strCmdLine += L"\" -DMCDX_INVOKED=1 ";
         strCmdLine += strMacrosDump;
+        strCmdLine += L' ';
         strCmdLine += strIncludesDump;
         strCmdLine += L" -o \"";
         strCmdLine += szPath3;
@@ -1824,11 +1830,17 @@ public:
         WCHAR szPath3[MAX_PATH];
         lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
 
+		MFile r3(szPath3, TRUE);
+		r3.FlushFileBuffers();
+		r3.CloseHandle();
+		Sleep(FILE_WAIT_TIME);
+
         MStringW strCmdLine;
         strCmdLine += L'\"';
         strCmdLine += strWindresExe;
         strCmdLine += L"\" -DRC_INVOKED ";
         strCmdLine += strMacrosDump;
+        strCmdLine += L' ';
         strCmdLine += strIncludesDump;
         strCmdLine += L" -o \"";
         strCmdLine += szPath3;

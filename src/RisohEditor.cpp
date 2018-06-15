@@ -4265,7 +4265,7 @@ MStringW MMainWnd::GetIncludesDump()
         const MStringW& str = g_settings.includes[i];
         if (str.empty())
             continue;
-        
+
         ret += L" -I";
         ret += str;
     }
@@ -4290,6 +4290,11 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
     // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+
+    MFile r3(szPath3, TRUE);
+    r3.FlushFileBuffers();
+    r3.CloseHandle();
+    Sleep(FILE_WAIT_TIME);
 
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -4394,6 +4399,11 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
     // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+
+    MFile r3(szPath3, TRUE);
+    r3.FlushFileBuffers();
+    r3.CloseHandle();
+    Sleep(FILE_WAIT_TIME);
 
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -4521,6 +4531,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     // Output resource object file (imported)
     lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    MFile r3(szPath3, TRUE);
+    r3.FlushFileBuffers();
+    r3.CloseHandle();
+    Sleep(FILE_WAIT_TIME);
 
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -5101,7 +5115,6 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     MStringA strOutput;
     BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
                                 m_szMcdxExe, GetMacroDump(), GetIncludesDump());
-
     if (!bSuccess)
     {
         if (strOutput.empty())
