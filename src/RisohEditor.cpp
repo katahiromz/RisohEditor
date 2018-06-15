@@ -5610,6 +5610,7 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// write a language-specific RC file
 BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n\r\n");
@@ -5686,8 +5687,10 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
+// "." or ".."
 #define ISDOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
 
+// delete a directory (a folder)
 BOOL DeleteDirectoryDx(LPCTSTR pszDir)
 {
     TCHAR szDirOld[MAX_PATH];
@@ -5724,6 +5727,7 @@ BOOL DeleteDirectoryDx(LPCTSTR pszDir)
     return RemoveDirectory(pszDir);
 }
 
+// do backup a folder
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
     if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
@@ -5744,6 +5748,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
     return TRUE;
 }
 
+// do backup a file
 BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 {
     if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
@@ -5759,6 +5764,7 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
     return TRUE;
 }
 
+// write a RC file
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 {
     ResToText res2text;
@@ -5924,6 +5930,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     return TRUE;
 }
 
+// write the resource.h file
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
     DoBackupFile(pszResH);
@@ -5980,6 +5987,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     return TRUE;
 }
 
+// write the resource.h file
 BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
 {
     assert(pszExeFile);
@@ -6004,6 +6012,7 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
     return FALSE;
 }
 
+// do statistics for resource IDs
 void MMainWnd::DoIDStat(UINT anValues[5])
 {
     const size_t count = 4;
@@ -6054,6 +6063,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
         anValues[3] = 1000;
 }
 
+// extract the resource data to a file
 inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 {
     ResToText res2text;
@@ -6231,6 +6241,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
     return g_res.extract_bin(filename.c_str(), entry);
 }
 
+// do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 {
     if (g_res.empty())
@@ -6315,6 +6326,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     return bOK;
 }
 
+// save the resource data as a *.res file
 BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 {
     if (!CompileIfNecessary(TRUE))
@@ -6328,6 +6340,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
     return FALSE;
 }
 
+// save the file
 BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 {
     if (!CompileIfNecessary(TRUE))
@@ -6336,6 +6349,7 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
     return DoSaveExeAs(pszExeFile);
 }
 
+// open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
     if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
@@ -6400,6 +6414,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     return FALSE;
 }
 
+// do compress the file by UPX.exe
 BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 {
     MStringW strCmdLine;
@@ -6433,6 +6448,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
+// WM_DROPFILES
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
@@ -6582,6 +6598,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         ChangeStatusText(IDS_READY);
 }
 
+// open the dialog to load the resource.h
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -6620,6 +6637,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     }
 }
 
+// load the resource.h file
 void MMainWnd::OnLoadResHBang(HWND hwnd)
 {
     if (m_szResourceH[0])
@@ -6633,6 +6651,7 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
     }
 }
 
+// WM_DESTROY
 void MMainWnd::OnDestroy(HWND hwnd)
 {
     if (m_szUpxTempFile[0])
@@ -6696,6 +6715,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     PostQuitMessage(0);
 }
 
+// parse the macros
 BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str)
 {
     std::vector<MStringA> lines;
@@ -6764,6 +6784,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     return TRUE;
 }
 
+// parse the resource.h file
 BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 {
     MStringA str(psz, len);
@@ -6855,6 +6876,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     return bOK;
 }
 
+// load the resource.h
 BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 {
     UnloadResourceH(hwnd);
@@ -6905,11 +6927,13 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     return bOK;
 }
 
+// refresh the ID list window
 void MMainWnd::DoRefreshIDList(HWND hwnd)
 {
     ShowIDList(hwnd, IsWindow(m_id_list_dlg));
 }
 
+// refresh the treeview
 void MMainWnd::DoRefreshTV(HWND hwnd)
 {
     EntrySet res;
@@ -6921,6 +6945,7 @@ void MMainWnd::DoRefreshTV(HWND hwnd)
     InvalidateRect(m_hwndTV, NULL, TRUE);
 }
 
+// advice the change for resource.h file
 void MMainWnd::OnAdviceResH(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -6979,6 +7004,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+// unload the resource.h info
 void MMainWnd::OnUnloadResH(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -6987,6 +7013,7 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
     UnloadResourceH(hwnd);
 }
 
+// the configuration dialog
 void MMainWnd::OnConfig(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -7005,6 +7032,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     }
 }
 
+// reset the path settings
 void MMainWnd::ReSetPaths(HWND hwnd)
 {
     if (g_settings.strWindResExe.size())
@@ -7028,6 +7056,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
     }
 }
 
+// use IDC_STATIC macro or not
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
     g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
@@ -7036,6 +7065,7 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// update the name of the tree control
 void MMainWnd::UpdateNames(void)
 {
     EntrySetBase found;
@@ -7047,6 +7077,7 @@ void MMainWnd::UpdateNames(void)
     }
 }
 
+// show/hide the ID macros
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
@@ -7061,6 +7092,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// show/hide the ID list window
 void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
 {
     if (bShow)
@@ -7077,11 +7109,13 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
     }
 }
 
+// show the ID list window
 void MMainWnd::OnIDList(HWND hwnd)
 {
     ShowIDList(hwnd, TRUE);
 }
 
+// show the ID association dialog
 void MMainWnd::OnIdAssoc(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -7092,6 +7126,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     UpdatePrefixDB(hwnd);
 }
 
+// show the language list
 void MMainWnd::OnShowLangs(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -7101,6 +7136,7 @@ void MMainWnd::OnShowLangs(HWND hwnd)
     dialog.DialogBoxDx(hwnd);
 }
 
+// show/hide the toolbar
 void MMainWnd::OnShowHideToolBar(HWND hwnd)
 {
     g_settings.bShowToolBar = !g_settings.bShowToolBar;
@@ -7113,6 +7149,7 @@ void MMainWnd::OnShowHideToolBar(HWND hwnd)
     PostMessageDx(WM_SIZE);
 }
 
+// the paths dialog
 void MMainWnd::OnSetPaths(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -7125,6 +7162,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
     }
 }
 
+// start changing the resource name/language
 void MMainWnd::OnEditLabel(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -7148,6 +7186,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
     TreeView_EditLabel(m_hwndTV, hItem);
 }
 
+// the predefined macro dialog
 void MMainWnd::OnPredefMacros(HWND hwnd)
 {
     if (!CompileIfNecessary(TRUE))
@@ -7166,6 +7205,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     }
 }
 
+// expand all the tree control items
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -7180,6 +7220,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// unexpand all the tree control items
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -7194,6 +7235,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// expand the treeview items
 void MMainWnd::Expand(HTREEITEM hItem)
 {
     TreeView_Expand(m_hwndTV, hItem, TVE_EXPAND);
@@ -7207,6 +7249,7 @@ void MMainWnd::Expand(HTREEITEM hItem)
     } while (hItem);
 }
 
+// unexpand the treeview items
 void MMainWnd::Collapse(HTREEITEM hItem)
 {
     TreeView_Expand(m_hwndTV, hItem, TVE_COLLAPSE);
@@ -7220,6 +7263,7 @@ void MMainWnd::Collapse(HTREEITEM hItem)
     } while (hItem);
 }
 
+// WM_COMMAND
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     MWaitCursor wait;
@@ -7565,6 +7609,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #endif
 }
 
+// get the resource name from text
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
     WCHAR szText[128];
@@ -7604,6 +7649,7 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     }
 }
 
+// get the IDTYPE_ values by the specified prefix
 std::vector<INT> GetPrefixIndexes(const MString& prefix)
 {
     std::vector<INT> ret;
@@ -7618,6 +7664,7 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
     return ret;
 }
 
+// WM_NOTIFY
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
@@ -7883,6 +7930,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
+// change the name of the resource entries
 void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
     EntrySetBase found;
@@ -7898,6 +7946,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
     SelectTV(entry, FALSE);
 }
 
+// change the language of the resource entries
 void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
 {
     EntrySetBase found;
@@ -7940,6 +7989,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     SelectTV(entry, FALSE);
 }
 
+// do resource test
 void MMainWnd::OnTest(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8008,6 +8058,7 @@ void MMainWnd::OnTest(HWND hwnd)
     }
 }
 
+// join the lines by '\\'
 void MMainWnd::JoinLinesByBackslash(std::vector<MStringA>& lines)
 {
     // join by '\\'
@@ -8027,6 +8078,7 @@ void MMainWnd::JoinLinesByBackslash(std::vector<MStringA>& lines)
     }
 }
 
+// delete the include guard
 void MMainWnd::DeleteIncludeGuard(std::vector<MStringA>& lines)
 {
     size_t k0 = -1, k1 = -1;
@@ -8120,6 +8172,7 @@ void MMainWnd::DeleteIncludeGuard(std::vector<MStringA>& lines)
     }
 }
 
+// add the head comments
 void MMainWnd::AddHeadComment(std::vector<MStringA>& lines)
 {
     if (m_szNominalFile[0])
@@ -8134,6 +8187,7 @@ void MMainWnd::AddHeadComment(std::vector<MStringA>& lines)
     lines.insert(lines.begin(), "//{{NO_DEPENDENCIES}}");
 }
 
+// delete the head comments
 void MMainWnd::DeleteHeadComment(std::vector<MStringA>& lines)
 {
     for (size_t i = 0; i < lines.size(); ++i)
@@ -8152,6 +8206,7 @@ void MMainWnd::DeleteHeadComment(std::vector<MStringA>& lines)
     }
 }
 
+// delete the specific macro lines
 void MMainWnd::DeleteSpecificMacroLines(std::vector<MStringA>& lines)
 {
     for (size_t i = lines.size(); i > 0; )
@@ -8183,6 +8238,7 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<MStringA>& lines)
     }
 }
 
+// add additional macro lines
 void MMainWnd::AddAdditionalMacroLines(std::vector<MStringA>& lines)
 {
     MStringA str;
@@ -8203,6 +8259,7 @@ void MMainWnd::AddAdditionalMacroLines(std::vector<MStringA>& lines)
     }
 }
 
+// add the '#ifdef APSTUDIO_INVOKED ... #endif' block
 void MMainWnd::AddApStudioBlock(std::vector<MStringA>& lines)
 {
     UINT anValues[5];
@@ -8226,6 +8283,7 @@ void MMainWnd::AddApStudioBlock(std::vector<MStringA>& lines)
     lines.push_back("#endif");
 }
 
+// delete the '#ifdef APSTUDIO_INVOKED ... #endif' block
 void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
 {
     bool inside = false, found = false;
@@ -8293,6 +8351,7 @@ void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
     }
 }
 
+// helper method for MMainWnd::OnUpdateResHBang
 void MMainWnd::UpdateResHLines(std::vector<MStringA>& lines)
 {
     JoinLinesByBackslash(lines);
@@ -8305,6 +8364,7 @@ void MMainWnd::UpdateResHLines(std::vector<MStringA>& lines)
     AddHeadComment(lines);
 }
 
+// helper method for MMainWnd::OnUpdateResHBang
 void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 {
     // read lines
@@ -8320,6 +8380,7 @@ void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
     }
 }
 
+// do save or update the resource.h file
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
@@ -8423,6 +8484,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     ShowIDList(hwnd, bListOpen);
 }
 
+// add an icon resource
 void MMainWnd::OnAddIcon(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8436,6 +8498,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     }
 }
 
+// replace the icon resource
 void MMainWnd::OnReplaceIcon(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8452,6 +8515,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     }
 }
 
+// replace the cursor resource
 void MMainWnd::OnReplaceCursor(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8468,6 +8532,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     }
 }
 
+// add a bitmap resource
 void MMainWnd::OnAddBitmap(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8481,6 +8546,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     }
 }
 
+// replace the bitmap resource
 void MMainWnd::OnReplaceBitmap(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8497,6 +8563,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     }
 }
 
+// add a cursor
 void MMainWnd::OnAddCursor(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8510,6 +8577,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     }
 }
 
+// add a resource item
 void MMainWnd::OnAddRes(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8522,6 +8590,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
     }
 }
 
+// add a menu
 void MMainWnd::OnAddMenu(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
@@ -8535,6 +8604,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     }
 }
 
+// add a string table
 void MMainWnd::OnAddStringTable(HWND hwnd)
 {
     if (!CompileIfNecessary(FALSE))
