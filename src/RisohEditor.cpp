@@ -2304,9 +2304,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 WCHAR szResH[MAX_PATH] = L"";
                 if (DoExport(szFile, szResH))
                 {
-                    StringCchCopyW(m_szRealFile, _countof(m_szRealFile), szFile);
-                    StringCchCopyW(m_szNominalFile, _countof(m_szNominalFile), szFile);
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+                    SetFilePath(szFile, szFile);
                 }
                 else
                 {
