@@ -1536,6 +1536,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
     mstr_trim(str);
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
+        // numeric
         LONG n = mstr_parse_int(str.c_str());
         str = mstr_hex(n);
     }
@@ -9015,9 +9016,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.captions.clear();
 
     g_settings.bShowToolBar = TRUE;
-
     g_settings.strAtlAxWin = L"AtlAxWin110";
-
     g_settings.nSaveFilterIndex = 1;
 }
 
@@ -9400,18 +9399,23 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     MWaitCursor wait;
-    m_id_list_dlg.m_hMainWnd = hwnd;
+    ChangeStatusText(IDS_STARTING);
 
-    DoLoadLangInfo();
+    m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
+    DoLoadLangInfo();   // load the language information
+
+    // check the data
     INT nRet = CheckData();
     if (nRet)
-        return FALSE;
+        return FALSE;   // failure
 
+    // load the RisohEditor settings
     LoadSettings(hwnd);
 
     if (g_settings.bResumeWindowPos)
     {
+        // resume the main window pos
         if (g_settings.nWindowLeft != CW_USEDEFAULT)
         {
             POINT pt = { g_settings.nWindowLeft, g_settings.nWindowTop };
@@ -9424,31 +9428,36 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         }
     }
 
+    // create the image list for treeview
     m_hImageList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 3, 1);
     if (m_hImageList == NULL)
         return FALSE;
-    m_hFileIcon = LoadSmallIconDx(IDI_FILE);
-    m_hFolderIcon = LoadSmallIconDx(IDI_FOLDER);
+
+    m_hFileIcon = LoadSmallIconDx(IDI_FILE);        // load a file icon
+    m_hFolderIcon = LoadSmallIconDx(IDI_FOLDER);    // load a folder icon
+
+    // add these icons
     ImageList_AddIcon(m_hImageList, m_hFileIcon);
     ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
+    // create the toolbar
     if (!CreateOurToolBar(hwnd))
         return FALSE;
 
     DWORD style, exstyle;
 
+    // create the splitter windows
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
     if (!m_splitter1.CreateDx(hwnd, 2, style))
         return FALSE;
-
     style = WS_CHILD | WS_VISIBLE | SWS_VERT | SWS_BOTTOMALIGN;
     if (!m_splitter2.CreateDx(m_splitter1, 2, style))
         return FALSE;
-
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
     if (!m_splitter3.CreateDx(m_splitter2, 1, style))
         return FALSE;
 
+    // create a treeview (tree control) window
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
         TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
@@ -9458,23 +9467,20 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (m_hwndTV == NULL)
         return FALSE;
 
+    // store the treeview handl to g_res (important!)
     g_res.m_hwndTV = m_hwndTV;
 
+    // set the imagelists to treeview
     TreeView_SetImageList(m_hwndTV, m_hImageList, TVSIL_NORMAL);
 
-    m_splitter1.SetPane(0, m_hwndTV);
-    m_splitter1.SetPane(1, m_splitter2);
-    m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
-
+    // create the binary EDIT control
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     exstyle = WS_EX_CLIENTEDGE;
     m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
-    m_splitter2.SetPane(0, m_splitter3);
-    m_splitter2.SetPane(1, m_hBinEdit);
-    m_splitter2.SetPaneExtent(1, BE_HEIGHT);
 
+    // create source EDIT control
     style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
         ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
@@ -9483,34 +9489,51 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (!m_hBmpView.CreateDx(m_splitter3, 4))
         return FALSE;
 
-    m_splitter3.SetPane(0, m_hSrcEdit);
-    //m_splitter3.SetPane(1, m_hBmpView);
-
+    // create status bar
     style = WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP | CCS_BOTTOM;
     m_hStatusBar = CreateStatusWindow(style, LoadStringDx(IDS_STARTING), hwnd, 8);
     if (m_hStatusBar == NULL)
         return FALSE;
 
+    // setup the status bar
     INT anWidths[] = { -1 };
     SendMessage(m_hStatusBar, SB_SETPARTS, 1, (LPARAM)anWidths);
-    ChangeStatusText(IDS_STARTING);
 
+    // show the status bar or not
     if (g_settings.bShowStatusBar)
         ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
     else
         ShowWindow(m_hStatusBar, SW_HIDE);
 
+    // set the pane contents of splitters
+    m_splitter1.SetPane(0, m_hwndTV);
+    m_splitter1.SetPane(1, m_splitter2);
+    m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
+    m_splitter2.SetPane(0, m_splitter3);
+    m_splitter2.SetPane(1, m_hBinEdit);
+    m_splitter2.SetPaneExtent(1, BE_HEIGHT);
+    m_splitter3.SetPane(0, m_hSrcEdit);
+    //m_splitter3.SetPane(1, m_hBmpView);
+
+    // create the fonts
     ReCreateFonts(hwnd);
 
     if (m_argc >= 2)
     {
+        // load the file now
         DoLoadFile(hwnd, m_targv[1]);
     }
 
+    // enable file dropping
     DragAcceptFiles(hwnd, TRUE);
+
+    // set focus to treeview
     SetFocus(m_hwndTV);
+
+    // update the menu
     UpdateMenu();
 
+    // store the file paths from settings
     if (g_settings.strWindResExe.size())
     {
         StringCchCopy(m_szWindresExe, _countof(m_szWindresExe), g_settings.strWindResExe.c_str());
@@ -9520,9 +9543,10 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
     }
 
+    // OK, ready
     PostMessageDx(WM_COMMAND, ID_READY);
 
-    return TRUE;
+    return TRUE;    // success
 }
 
 // the window procedure of the main window
@@ -9582,27 +9606,34 @@ void MMainWnd::SelectMessage()
 void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 {
     if (strType == L"Unknown.ID")
-        return;
+        return;     // ignore Unknown.ID jump
 
+    // revert the resource type string
     Res_ReplaceResTypeString(strType, true);
 
+    // get the prefix
     MString prefix = name.substr(0, name.find(L'_') + 1);
-    std::vector<INT> indexes = GetPrefixIndexes(prefix);
+
+    // get the IDTYPE_'s from the prefix
+    auto indexes = GetPrefixIndexes(prefix);
     for (size_t i = 0; i < indexes.size(); ++i)
     {
         INT nIDTYPE_ = indexes[i];
         if (nIDTYPE_ == IDTYPE_STRING || nIDTYPE_ == IDTYPE_PROMPT)
         {
+            // select the string entry
             SelectString();
-            return;
+            return;     // done
         }
         if (nIDTYPE_ == IDTYPE_MESSAGE)
         {
+            // select the message entry
             SelectMessage();
-            return;
+            return;     // done
         }
     }
 
+    // get the type value
     MIdOrString type = WORD(g_db.GetValue(L"RESOURCE", strType));
     if (type.empty())
         type.m_str = strType;
@@ -9610,12 +9641,14 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     MIdOrString name_or_id;
     if (name[0] == L'\"')
     {
+        // string type
         MString name_clone = name;
         mstr_unquote(name_clone);
         name_or_id = name_clone.c_str();
     }
     else
     {
+        // numeric type
         name_or_id = WORD(g_db.GetResIDValue(name));
     }
 
@@ -9654,18 +9687,21 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (iItem == -1)
         return 0;
 
+    // get the 1st and 2nd subitem texts
     TCHAR szText[128];
     ListView_GetItemText(m_id_list_dlg.m_hLst1, iItem, 0, szText, _countof(szText));
-    MString name = szText;
+    MString name = szText;      // 1st is name
     ListView_GetItemText(m_id_list_dlg.m_hLst1, iItem, 1, szText, _countof(szText));
-    MString strTypes = szText;
+    MString strTypes = szText;  // 2nd is types
 
+    // split the text to the types by slash
     std::vector<MString> vecTypes;
     mstr_split(vecTypes, strTypes, L"/");
 
     if (vecTypes.empty() || vecTypes.size() <= size_t(lParam))
         return 0;
 
+    // do ID jump
     OnIDJumpBang2(hwnd, name, vecTypes[lParam]);
 
     return 0;
@@ -9677,11 +9713,13 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
     m_fr.Flags = FR_DOWN;
     if (m_search.bInternalText)
     {
-        lstrcpyn(m_szFindWhat, m_search.strText.c_str(), _countof(m_szFindWhat));
+        StringCchCopy(m_szFindWhat, _countof(m_szFindWhat), m_search.strText.c_str());
         if (!m_search.bIgnoreCases)
         {
             m_fr.Flags |= FR_MATCHCASE;
         }
+
+        // do search the text from source
         OnFindNext(hwnd);
     }
     return 0;
@@ -9690,13 +9728,18 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // start up the program
 BOOL MMainWnd::StartDx()
 {
+    // get cursors for MSplitterWnd
     MSplitterWnd::CursorNS() = LoadCursor(m_hInst, MAKEINTRESOURCE(IDC_CURSORNS));
     MSplitterWnd::CursorWE() = LoadCursor(m_hInst, MAKEINTRESOURCE(IDC_CURSORWE));
 
+    // get the main icon
     m_hIcon = LoadIconDx(IDI_MAIN);
     m_hIconSm = LoadSmallIconDx(IDI_MAIN);
+
+    // get the access keys
     m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(IDR_MAINACCEL));
 
+    // create the main window
     if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME), 
         WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
     {
@@ -9705,6 +9748,7 @@ BOOL MMainWnd::StartDx()
     }
     assert(IsWindow(m_hwnd));
 
+    // maximize or not
     if (g_settings.bResumeWindowPos && g_settings.bMaximized)
     {
         ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
@@ -9713,6 +9757,7 @@ BOOL MMainWnd::StartDx()
     {
         ShowWindow(m_hwnd, SW_SHOWNORMAL);
     }
+
     UpdateWindow(m_hwnd);
 
     return TRUE;
@@ -9731,6 +9776,7 @@ void MMainWnd::DoEvents()
 // do the window messages
 void MMainWnd::DoMsg(MSG& msg)
 {
+    // do the popup windows
     if (IsWindow(m_rad_window.m_rad_dialog))
     {
         if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
@@ -9741,16 +9787,20 @@ void MMainWnd::DoMsg(MSG& msg)
         if (::IsDialogMessage(m_id_list_dlg, &msg))
             return;
     }
-    if (m_hAccel && IsWindow(m_hwnd))
-    {
-        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
-            return;
-    }
     if (IsWindow(m_hFindReplaceDlg))
     {
         if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
             return;
     }
+
+    // do access keys
+    if (m_hAccel && IsWindow(m_hwnd))
+    {
+        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            return;
+    }
+
+    // do the item search dialogs
     if (MItemSearchDlg::Dialogs().size())
     {
         BOOL bProcessed = FALSE;
@@ -9766,6 +9816,7 @@ void MMainWnd::DoMsg(MSG& msg)
             return;
     }
 
+    // the default processing
     TranslateMessage(&msg);
     DispatchMessage(&msg);
 }
@@ -9777,12 +9828,14 @@ INT_PTR MMainWnd::RunDx()
 
     while (BOOL bGot = ::GetMessage(&msg, NULL, 0, 0))
     {
-        if (bGot < 0)
+        if (bGot < 0)   // fatal error
         {
             DebugPrintDx(TEXT("Application fatal error: %ld\n"), GetLastError());
             DebugBreak();
             return -1;
         }
+
+        // do messaging
         DoMsg(msg);
     }
     return INT(msg.wParam);
@@ -9797,6 +9850,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 
 #define SWITCH_SUBLANG() switch (SUBLANGID(langid))
 
+    // try to get the primary language name and the sub-language name
     switch (PRIMARYLANGID(langid))
     {
     case LANG_NEUTRAL: strPrim = TEXT("LANG_NEUTRAL");
@@ -10783,6 +10837,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     if (bOldStyle)
         strSub.clear();
 
+    // sub-language
     if (strSub.empty())
     {
         switch (SUBLANGID(langid))
@@ -10797,6 +10852,8 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
             break;
         }
     }
+
+    // sub-language
     if (strSub.empty())
     {
         StringCchPrintf(szText, _countof(szText), TEXT("0x%04X"), SUBLANGID(langid));
@@ -10804,11 +10861,13 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
     }
 #undef SWITCH_SUBLANG
 
+    // output the LANGUAGE statement
     MString str = TEXT("LANGUAGE ");
     str += strPrim;
     str += TEXT(", ");
     str += strSub;
     str += TEXT("\r\n");
+
     return str;
 }
 
@@ -10818,21 +10877,25 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     HINSTANCE hInst = GetModuleHandle(NULL);
 
     MStringW strName;
-    if (type.is_int())
+    if (type.is_int())  // numeric resource type
     {
+        // convert the value to the name
         strName = g_db.GetName(L"RESOURCE", type.m_id);
         if (strName.empty())
         {
+            // store the numeric text
             strName = mstr_dec_short(type.m_id);
         }
     }
-    else
+    else    // string resource type
     {
         strName = type.m_str;
     }
-    if (strName.empty())
-        return NULL;
 
+    if (strName.empty())
+        return NULL;    // failure
+
+    // try to find the RISOHTEMPLATE resource
     WORD LangID = PRIMARYLANGID(wLang);
     HRSRC hRsrc = NULL;
     if (hRsrc == NULL)
@@ -10848,19 +10911,23 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     if (hRsrc == NULL)
         return L"";
 
+    // get the pointer and byte size
     HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
     DWORD cb = SizeofResource(hInst, hRsrc);
     const BYTE *pb = (const BYTE *)LockResource(hGlobal);
+
+    // ignore the BOM if any
     if (memcmp(pb, "\xEF\xBB\xBF", 3) == 0)
     {
         pb += 3;
         cb -= 3;
     }
 
+    // convert the UTF-8 text to the UTF-16 text (wide)
     MStringA utf8((LPCSTR)(pb), (LPCSTR)(pb) + cb);
-
     MAnsiToWide wide(CP_UTF8, utf8);
-    return wide.c_str();
+
+    return wide.c_str();    // return the wide
 }
 
 ////////////////////////////////////////////////////////////////////////////
