@@ -436,6 +436,7 @@ STRINGTABLE
     IDS_CHINESE, "中文"
     IDS_RUSSIA, "俄国"
     IDS_RUSSIAN, "俄语"
+    IDS_WANNAGENRESH, "你想生成文件 'resource.h' 吗?"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

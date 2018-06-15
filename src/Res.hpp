@@ -56,7 +56,10 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 #endif
 
 #ifndef FILE_WAIT_TIME
-    #define FILE_WAIT_TIME  1000
+    #define FILE_WAIT_TIME      (1200)          // 1.2 seconds
+#endif
+#ifndef PROCESS_TIMEOUT
+    #define PROCESS_TIMEOUT     (10 * 1000)     // 10 seconds
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1807,7 +1810,7 @@ public:
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
         {
-            pmaker.ReadAll(strOutput, hOutputRead);
+            pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
             if (pmaker.GetExitCode() == 0)
             {
@@ -1862,7 +1865,7 @@ public:
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
         {
-            pmaker.ReadAll(strOutput, hOutputRead);
+            pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
             if (pmaker.GetExitCode() == 0)
             {

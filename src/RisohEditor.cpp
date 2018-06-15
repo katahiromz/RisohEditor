@@ -3135,7 +3135,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         MStringA strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -3170,7 +3170,7 @@ BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         MStringA strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -4358,7 +4358,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -4450,7 +4450,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -4598,7 +4598,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -6209,7 +6209,12 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             SetFilePath(pszExeFile, NULL);
 
             if (m_szResourceH[0] || !g_settings.id_map.empty())
-                return DoWriteResHOfExe(pszExeFile);
+            {
+                if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+                {
+                    return DoWriteResHOfExe(pszExeFile);
+                }
+            }
 
             return TRUE;
         }
@@ -6229,8 +6234,12 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             }
 
             if (m_szResourceH[0] || !g_settings.id_map.empty())
-                return DoWriteResHOfExe(pszExeFile);
-
+            {
+                if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+                {
+                    return DoWriteResHOfExe(pszExeFile);
+                }
+            }
             return TRUE;
         }
         DeleteFileW(TempFile);
@@ -6261,7 +6270,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         MStringA strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -6680,7 +6689,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        pmaker.ReadAll(strOutput, hOutputRead);
+        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
         pmaker.CloseAll();
 
         size_t pragma_found = strOutput.find("#pragma RisohEditor");
