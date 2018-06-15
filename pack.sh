@@ -69,7 +69,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
         if cp build/mcdx.exe "$RE_BIN_DIR/data/bin"; then
             echo Copying Stage 4...
             mkdir "$RE_BIN_DIR/OLE"
-            if cp -f src/MOleCtrl.hpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
+            if cp -f src/MOleCtrl.hpp include/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
                 echo Copying Stage 5...
                 mkdir "$RE_BIN_DIR/MyWndCtrl"
                 if cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"; then
