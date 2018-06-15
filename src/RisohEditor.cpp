@@ -22,12 +22,8 @@
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
-#ifndef INVALID_FILE_ATTRIBUTES
-    #define INVALID_FILE_ATTRIBUTES     ((DWORD)-1)
-#endif
-
 #ifndef RT_MANIFEST
-    #define RT_MANIFEST 24
+    #define RT_MANIFEST 24      // manifest resource
 #endif
 
 #define TV_WIDTH        250     // default m_hwndTV width
@@ -39,20 +35,97 @@
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
+// the maximum number of captions to remember
 static const DWORD s_nMaxCaptions = 10;
+
+// the maximum number of backup
 static const UINT s_nBackupMaxCount = 5;
 
 //////////////////////////////////////////////////////////////////////////////
-// globals
+// global variables
 
 #ifdef USE_GLOBALS
-    ConstantsDB g_db;
-    RisohSettings g_settings;
-    EntrySet g_res;
+    ConstantsDB g_db;           // constants database
+    RisohSettings g_settings;   // settings
+    EntrySet g_res;             // the set of resource items
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
+// useful global functions
 
+// replace some fullwidth characters with halfwidth characters
+void ReplaceFullWithHalf(LPWSTR pszText)
+{
+    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
+    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
+
+    for (DWORD i = 0; pszText[i]; ++i)
+    {
+        size_t k = strFullWidth.find(pszText[i]);
+        if (k != MStringW::npos)
+        {
+            pszText[i] = strHalfWidth[k];
+        }
+    }
+}
+
+// replace some fullwidth characters with halfwidth characters
+void ReplaceFullWithHalf(MStringW& strText)
+{
+    ReplaceFullWithHalf(&strText[0]);
+}
+
+// get the path of a shortcut file
+BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
+{
+    BOOL                bRes = FALSE;
+    WIN32_FIND_DATAW    find;
+    IShellLinkW*        pShellLink;
+    IPersistFile*       pPersistFile;
+    HRESULT             hRes;
+
+    pszPath[0] = 0;
+    hRes = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, 
+                            IID_IShellLinkW, (void **)&pShellLink);
+    if (SUCCEEDED(hRes))
+    {
+        hRes = pShellLink->QueryInterface(IID_IPersistFile, 
+                                          (void **)&pPersistFile);
+        if (SUCCEEDED(hRes))
+        {
+            hRes = pPersistFile->Load(pszLnkFile, STGM_READ);
+            if (SUCCEEDED(hRes))
+            {
+                pShellLink->Resolve(hwnd, SLR_NO_UI | SLR_UPDATE);
+
+                hRes = pShellLink->GetPath(pszPath, MAX_PATH, &find, 0);
+                if (SUCCEEDED(hRes) && 0 != pszPath[0])
+                {
+                    bRes = TRUE;
+                }
+            }
+            pPersistFile->Release();
+        }
+        pShellLink->Release();
+    }
+    return bRes;
+}
+
+// dump a file
+BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
+{
+    using namespace std;
+    FILE *fp;
+    _wfopen_s(&fp, filename, L"wb");
+    int n = (int)fwrite(pv, size, 1, fp);
+    fclose(fp);
+    return n == 1;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// window styles
+
+// store the window style info to a vector
 void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
 {
     for (size_t i = 0; i < sel.size(); ++i)
@@ -61,6 +134,7 @@ void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
     }
 }
 
+// store the window style info to a vector
 void GetStyleSelect(std::vector<BYTE>& sel, 
                     const ConstantsDB::TableType& table, DWORD dwValue)
 {
@@ -74,6 +148,7 @@ void GetStyleSelect(std::vector<BYTE>& sel,
     }
 }
 
+// analyse the difference of two window styles
 DWORD AnalyseStyleDiff(
     DWORD dwValue, ConstantsDB::TableType& table, 
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
@@ -94,6 +169,7 @@ DWORD AnalyseStyleDiff(
     return dwValue;
 }
 
+// initialize the style list box
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 {
     ListBox_ResetContent(hLst);
@@ -107,6 +183,10 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// font names
+
+// the callback for InitFontComboBox
 static int CALLBACK
 EnumFontFamProc(
     ENUMLOGFONT *lpelf, 
@@ -120,6 +200,7 @@ EnumFontFamProc(
     return TRUE;
 }
 
+// initialize the font combobox
 void InitFontComboBox(HWND hCmb)
 {
     HDC hDC = CreateCompatibleDC(NULL);
@@ -127,6 +208,7 @@ void InitFontComboBox(HWND hCmb)
     DeleteDC(hDC);
 }
 
+// character set information
 typedef struct CharSetInfo
 {
     BYTE CharSet;
@@ -157,6 +239,7 @@ static const CharSetInfo s_charset_entries[] =
     { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") }, 
 };
 
+// initialize the charset combobox
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
 {
     ComboBox_ResetContent(hCmb);
@@ -180,6 +263,7 @@ void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
     }
 }
 
+// get charset value from the charset combobox
 BYTE GetCharSetFromComboBox(HWND hCmb)
 {
     INT i = ComboBox_GetCurSel(hCmb);
@@ -190,6 +274,10 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     return DEFAULT_CHARSET;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// misc.
+
+// initialize the caption combobox
 void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption)
 {
     ComboBox_ResetContent(hCmb);
@@ -200,6 +288,7 @@ void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption)
     ComboBox_SetText(hCmb, pszCaption);
 }
 
+// initialize the control class combobox
 void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
 {
     ComboBox_ResetContent(hCmb);
@@ -217,6 +306,7 @@ void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
     }
 }
 
+// initialize the window class combobox
 void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 {
     ComboBox_ResetContent(hCmb);
@@ -237,6 +327,7 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
     }
 }
 
+// initialize the control ID combobox
 void InitCtrlIDComboBox(HWND hCmb)
 {
     ConstantsDB::TableType table;
@@ -279,7 +370,11 @@ void InitCtrlIDComboBox(HWND hCmb)
     }
 }
 
-void ReplaceResTypeString(MString& str, bool bRevert = false)
+//////////////////////////////////////////////////////////////////////////////
+// resources
+
+// switch between a resource ID and an IDTYPE_
+void Res_ReplaceResTypeString(MString& str, bool bRevert = false)
 {
     if (bRevert)
     {
@@ -329,8 +424,9 @@ void ReplaceResTypeString(MString& str, bool bRevert = false)
     }
 }
 
+// get the entity resource ID text for MIDListDlg
 MString
-GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
+Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
 {
     MIdOrString type;
     switch (nIDTYPE_)
@@ -383,7 +479,7 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
                 {
                     res_name = mstr_dec(e->m_type.m_id);
                 }
-                ReplaceResTypeString(res_name, false);
+                Res_ReplaceResTypeString(res_name, false);
             }
             else
             {
@@ -420,12 +516,14 @@ GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
             }
         }
     }
+
     mstr_replace_all(ret, L"][", L"/");
     mstr_replace_all(ret, L"[", L"");
     mstr_replace_all(ret, L"]", L"");
     return ret;
 }
 
+// initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 {
     SetWindowTextW(hCmb, id.c_str());
@@ -474,6 +572,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
     }
 }
 
+// initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
 {
     SetWindowTextW(hCmb, id.c_str());
@@ -542,6 +641,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
     }
 }
 
+// check the command ID text
 BOOL CheckCommand(MString strCommand)
 {
     mstr_trim(strCommand);
@@ -553,6 +653,7 @@ BOOL CheckCommand(MString strCommand)
     return g_db.HasResID(strCommand);
 }
 
+// initialize the resource string ID combobox
 void InitStringComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
@@ -589,6 +690,7 @@ void InitStringComboBox(HWND hCmb, MString strString)
     }
 }
 
+// initialize the resource message ID combobox
 void InitMessageComboBox(HWND hCmb, MString strString)
 {
     SetWindowText(hCmb, strString.c_str());
@@ -616,6 +718,7 @@ void InitMessageComboBox(HWND hCmb, MString strString)
 //////////////////////////////////////////////////////////////////////////////
 // languages
 
+// structure for language information
 struct LANG_ENTRY
 {
     WORD LangID;
@@ -628,132 +731,7 @@ struct LANG_ENTRY
 };
 std::vector<LANG_ENTRY> g_Langs;
 
-//////////////////////////////////////////////////////////////////////////////
-// useful global functions
-
-BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
-{
-    BOOL                bRes = FALSE;
-    WIN32_FIND_DATAW    find;
-    IShellLinkW*        pShellLink;
-    IPersistFile*       pPersistFile;
-    HRESULT             hRes;
-
-    pszPath[0] = 0;
-    hRes = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, 
-                            IID_IShellLinkW, (void **)&pShellLink);
-    if (SUCCEEDED(hRes))
-    {
-        hRes = pShellLink->QueryInterface(IID_IPersistFile, 
-                                          (void **)&pPersistFile);
-        if (SUCCEEDED(hRes))
-        {
-            hRes = pPersistFile->Load(pszLnkFile, STGM_READ);
-            if (SUCCEEDED(hRes))
-            {
-                pShellLink->Resolve(hwnd, SLR_NO_UI | SLR_UPDATE);
-
-                hRes = pShellLink->GetPath(pszPath, MAX_PATH, &find, 0);
-                if (SUCCEEDED(hRes) && 0 != pszPath[0])
-                {
-                    bRes = TRUE;
-                }
-            }
-            pPersistFile->Release();
-        }
-        pShellLink->Release();
-    }
-    return bRes;
-}
-
-BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
-{
-    using namespace std;
-    FILE *fp;
-    _wfopen_s(&fp, filename, L"wb");
-    int n = (int)fwrite(pv, size, 1, fp);
-    fclose(fp);
-    return n == 1;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// specialized tool bar
-
-TBBUTTON g_buttons0[] =
-{
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
-};
-
-TBBUTTON g_buttons1[] =
-{
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
-};
-
-TBBUTTON g_buttons2[] =
-{
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE }, 
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT }, 
-};
-
-TBBUTTON g_buttons3[] =
-{
-    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON }, 
-    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR }, 
-    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG }, 
-    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU }, 
-    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO }, 
-};
-
-TBBUTTON g_buttons4[] =
-{
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
-};
-
-TBBUTTON g_buttons5[] =
-{
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
-};
-
-VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
-{
-    for (INT i = 0; i < nCount; ++i)
-    {
-        if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
-            continue;
-
-        INT_PTR id = pButtons[i].iString;
-        LPWSTR psz = LoadStringDx(INT(id));
-        id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
-        pButtons[i].iString = id;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-void ReplaceFullWithHalf(LPWSTR pszText)
-{
-    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
-    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
-
-    for (DWORD i = 0; pszText[i]; ++i)
-    {
-        size_t k = strFullWidth.find(pszText[i]);
-        if (k != MStringW::npos)
-        {
-            pszText[i] = strHalfWidth[k];
-        }
-    }
-}
-
-void ReplaceFullWithHalf(MStringW& strText)
-{
-    ReplaceFullWithHalf(&strText[0]);
-}
-
+// initialize the language combobox
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
     for (auto& entry : g_Langs)
@@ -771,6 +749,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     }
 }
 
+// initialize the language listview
 void InitLangListView(HWND hLst1, LPCTSTR pszText)
 {
     ListView_DeleteAllItems(hLst1);
@@ -817,74 +796,7 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
     }
 }
 
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
-{
-    WCHAR szType[MAX_PATH];
-    GetWindowTextW(hCmb1, szType, _countof(szType));
-    ReplaceFullWithHalf(szType);
-    MStringW str = szType;
-    mstr_trim(str);
-    lstrcpynW(szType, str.c_str(), _countof(szType));
-
-    if (szType[0] == 0)
-    {
-        ComboBox_SetEditSel(hCmb1, 0, -1);
-        SetFocus(hCmb1);
-        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE), 
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (mchr_is_digit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
-    {
-        type = WORD(mstr_parse_int(szType));
-    }
-    else
-    {
-        MStringW str = szType;
-        size_t i = str.rfind(L'('); // ')'
-        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
-        {
-            type = WORD(mstr_parse_int(&str[i + 1]));
-        }
-        else
-        {
-            type = szType;
-        }
-    }
-
-    return TRUE;
-}
-
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
-{
-    WCHAR szName[MAX_PATH];
-    GetWindowTextW(hCmb2, szName, _countof(szName));
-    MStringW str = szName;
-    ReplaceFullWithHalf(str);
-    mstr_trim(str);
-    lstrcpynW(szName, str.c_str(), _countof(szName));
-    if (szName[0] == 0)
-    {
-        ComboBox_SetEditSel(hCmb2, 0, -1);
-        SetFocus(hCmb2);
-        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME), 
-                    NULL, MB_ICONERROR);
-        return FALSE;
-    }
-    else if (mchr_is_digit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
-    {
-        name = WORD(mstr_parse_int(szName));
-    }
-    else
-    {
-        if (g_db.HasResID(szName))
-            name = (WORD)g_db.GetResIDValue(szName);
-        else
-            name = szName;
-    }
-    return TRUE;
-}
-
+// get the language ID from a text
 WORD LangFromText(LPWSTR pszLang)
 {
     WORD lang = 0xFFFF;
@@ -1031,6 +943,7 @@ WORD LangFromText(LPWSTR pszLang)
     return lang;
 }
 
+// verify the language combobox
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
     WCHAR szLang[MAX_PATH];
@@ -1048,6 +961,199 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     return FALSE;
 }
 
+// callback function for MMainWnd::DoLoadLangInfo
+static BOOL CALLBACK
+EnumLocalesProc(LPWSTR lpLocaleString)
+{
+    LANG_ENTRY entry;
+    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
+    entry.LangID = LANGIDFROMLCID(lcid);
+
+    WCHAR sz[128] = L"";
+    if (lcid == 0)
+        return TRUE;
+    if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
+        return TRUE;
+
+    entry.str = sz;
+    g_Langs.push_back(entry);
+    return TRUE;
+}
+
+// callback function for MMainWnd::DoLoadLangInfo
+static BOOL CALLBACK
+EnumEngLocalesProc(LPWSTR lpLocaleString)
+{
+    LANG_ENTRY entry;
+    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
+    entry.LangID = LANGIDFROMLCID(lcid);
+
+    WCHAR sz1[128] = L"", sz2[128] = L"";
+    if (lcid == 0)
+        return TRUE;
+    if (!GetLocaleInfoW(lcid, LOCALE_SENGLANGUAGE, sz1, _countof(sz1)))
+        return TRUE;
+    if (!GetLocaleInfoW(lcid, LOCALE_SENGCOUNTRY, sz2, _countof(sz2)))
+        return TRUE;
+
+    entry.str = sz1;
+    entry.str += L" (";
+    entry.str += sz2;
+    entry.str += L")";
+    g_Langs.push_back(entry);
+    return TRUE;
+}
+
+// get the text from a language ID
+MStringW TextFromLang(WORD lang)
+{
+    WCHAR sz[128], szLoc[128];
+    LCID lcid = MAKELCID(lang, SORT_DEFAULT);
+    if (lcid == 0)
+    {
+        StringCchPrintfW(sz, _countof(sz), L"%s (0)", LoadStringDx(IDS_NEUTRAL));
+    }
+    else
+    {
+        if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, _countof(szLoc)))
+            StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
+        else
+            StringCchPrintfW(sz, _countof(sz), L"%u", lang);
+    }
+    return MStringW(sz);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// specialized tool bar
+
+TBBUTTON g_buttons0[] =
+{
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
+};
+
+TBBUTTON g_buttons1[] =
+{
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
+};
+
+TBBUTTON g_buttons2[] =
+{
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE }, 
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT }, 
+};
+
+TBBUTTON g_buttons3[] =
+{
+    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON }, 
+    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR }, 
+    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG }, 
+    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU }, 
+    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO }, 
+};
+
+TBBUTTON g_buttons4[] =
+{
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
+};
+
+TBBUTTON g_buttons5[] =
+{
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
+};
+
+// store the toolbar strings
+VOID ToolBar_StoreStrings(HWND hwnd, INT nCount, TBBUTTON *pButtons)
+{
+    for (INT i = 0; i < nCount; ++i)
+    {
+        if (pButtons[i].idCommand == 0 || (pButtons[i].fsStyle & BTNS_SEP))
+            continue;
+
+        // replace the resource string ID with a toolbar string ID
+        INT_PTR id = pButtons[i].iString;
+        LPWSTR psz = LoadStringDx(INT(id));
+        id = SendMessageW(hwnd, TB_ADDSTRING, 0, (LPARAM)psz);
+        pButtons[i].iString = id;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+// verify the resource type combobox
+BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
+{
+    WCHAR szType[MAX_PATH];
+    GetWindowTextW(hCmb1, szType, _countof(szType));
+    ReplaceFullWithHalf(szType);
+    MStringW str = szType;
+    mstr_trim(str);
+    lstrcpynW(szType, str.c_str(), _countof(szType));
+
+    if (szType[0] == 0)
+    {
+        ComboBox_SetEditSel(hCmb1, 0, -1);
+        SetFocus(hCmb1);
+        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE), 
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    else if (mchr_is_digit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
+    {
+        type = WORD(mstr_parse_int(szType));
+    }
+    else
+    {
+        MStringW str = szType;
+        size_t i = str.rfind(L'('); // ')'
+        if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
+        {
+            type = WORD(mstr_parse_int(&str[i + 1]));
+        }
+        else
+        {
+            type = szType;
+        }
+    }
+
+    return TRUE;
+}
+
+// verify the resource name combobox
+BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
+{
+    WCHAR szName[MAX_PATH];
+    GetWindowTextW(hCmb2, szName, _countof(szName));
+    MStringW str = szName;
+    ReplaceFullWithHalf(str);
+    mstr_trim(str);
+    lstrcpynW(szName, str.c_str(), _countof(szName));
+    if (szName[0] == 0)
+    {
+        ComboBox_SetEditSel(hCmb2, 0, -1);
+        SetFocus(hCmb2);
+        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME), 
+                    NULL, MB_ICONERROR);
+        return FALSE;
+    }
+    else if (mchr_is_digit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
+    {
+        name = WORD(mstr_parse_int(szName));
+    }
+    else
+    {
+        if (g_db.HasResID(szName))
+            name = (WORD)g_db.GetResIDValue(szName);
+        else
+            name = szName;
+    }
+    return TRUE;
+}
+
+// verify the file textbox
 BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 {
     WCHAR szFile[MAX_PATH];
@@ -1069,7 +1175,8 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 
 //////////////////////////////////////////////////////////////////////////////
 
-MStringW DumpDataAsString(const std::vector<BYTE>& data)
+// dump data as a text
+MStringW DumpDataAsText(const std::vector<BYTE>& data)
 {
     MStringW ret;
     WCHAR sz[64];
@@ -1142,6 +1249,7 @@ MStringW DumpDataAsString(const std::vector<BYTE>& data)
     return ret;
 }
 
+// get the text from a command ID
 MStringW GetKeyID(UINT wId)
 {
     if (g_settings.bHideID)
@@ -1150,6 +1258,7 @@ MStringW GetKeyID(UINT wId)
     return g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, wId);
 }
 
+// initialize the virtual key combobox
 void Cmb1_InitVirtualKeys(HWND hCmb1)
 {
     ComboBox_ResetContent(hCmb1);
@@ -1164,6 +1273,7 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
     }
 }
 
+// verify the virtual key combobox
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 {
     if (bVirtKey)
@@ -1206,6 +1316,7 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 //////////////////////////////////////////////////////////////////////////////
 // STRING_ENTRY
 
+// helper function for MAddStrDlg and MModifyStrDlg
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
@@ -1232,6 +1343,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
     return TRUE;
 }
 
+// helper function for MAddStrDlg and MModifyStrDlg
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
@@ -1245,6 +1357,7 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 //////////////////////////////////////////////////////////////////////////////
 // MESSAGE_ENTRY
 
+// helper function for MAddMsgDlg and MModifyMsgDlg
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
@@ -1271,6 +1384,7 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
     return TRUE;
 }
 
+// helper function for MAddMsgDlg and MModifyMsgDlg
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
     SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
@@ -1282,75 +1396,14 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-BOOL CALLBACK
-EnumLocalesProc(LPWSTR lpLocaleString)
-{
-    LANG_ENTRY entry;
-    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
-    entry.LangID = LANGIDFROMLCID(lcid);
-
-    WCHAR sz[128] = L"";
-    if (lcid == 0)
-        return TRUE;
-    if (!GetLocaleInfoW(lcid, LOCALE_SLANGUAGE, sz, _countof(sz)))
-        return TRUE;
-
-    entry.str = sz;
-    g_Langs.push_back(entry);
-    return TRUE;
-}
-
-BOOL CALLBACK
-EnumEngLocalesProc(LPWSTR lpLocaleString)
-{
-    LANG_ENTRY entry;
-    LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
-    entry.LangID = LANGIDFROMLCID(lcid);
-
-    WCHAR sz1[128] = L"", sz2[128] = L"";
-    if (lcid == 0)
-        return TRUE;
-    if (!GetLocaleInfoW(lcid, LOCALE_SENGLANGUAGE, sz1, _countof(sz1)))
-        return TRUE;
-    if (!GetLocaleInfoW(lcid, LOCALE_SENGCOUNTRY, sz2, _countof(sz2)))
-        return TRUE;
-
-    entry.str = sz1;
-    entry.str += L" (";
-    entry.str += sz2;
-    entry.str += L")";
-    g_Langs.push_back(entry);
-    return TRUE;
-}
-
-MStringW TextFromLang(WORD lang)
-{
-    WCHAR sz[128], szLoc[128];
-    LCID lcid = MAKELCID(lang, SORT_DEFAULT);
-    if (lcid == 0)
-    {
-        StringCchPrintfW(sz, _countof(sz), L"%s (0)", LoadStringDx(IDS_NEUTRAL));
-    }
-    else
-    {
-        if (GetLocaleInfo(lcid, LOCALE_SLANGUAGE, szLoc, _countof(szLoc)))
-            StringCchPrintfW(sz, _countof(sz), L"%s (%u)", szLoc, lang);
-        else
-            StringCchPrintfW(sz, _countof(sz), L"%u", lang);
-    }
-    return MStringW(sz);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// MMainWnd
+// MMainWnd --- the main window
 
 class MMainWnd : public MWindowBase
 {
 protected:
     INT         m_argc;         // number of command line parameters
     TCHAR **    m_targv;        // command line parameters
-    BOOL        m_bLoading;
+    BOOL        m_bLoading;     // loading now?
 
     // handles
     HINSTANCE   m_hInst;        // the instance handle
@@ -1359,24 +1412,27 @@ protected:
     HACCEL      m_hAccel;       // the accelerator handle
     HWND        m_hwndTV;       // the tree control
     HIMAGELIST  m_hImageList;   // the image list for m_hwndTV
-    INT         m_nCommandLock;
-    HICON       m_hFileIcon, m_hFolderIcon;
-    HFONT       m_hSrcFont, m_hBinFont;
-    HWND        m_hToolBar, m_hStatusBar;
-    HWND        m_hFindReplaceDlg;
+    INT         m_nCommandLock; // the lock count of WM_COMMAND message
+    HICON       m_hFileIcon;    // the file icon
+    HICON       m_hFolderIcon;  // the folder icon
+    HFONT       m_hSrcFont;     // the source font
+    HFONT       m_hBinFont;     // the binary font
+    HWND        m_hToolBar;     // the toolbar window handle
+    HWND        m_hStatusBar;   // the status bar handle
+    HWND        m_hFindReplaceDlg;  // the find/replace dialog handle
 
     // path strings
-    WCHAR       m_szDataFolder[MAX_PATH];
-    WCHAR       m_szConstantsFile[MAX_PATH];
-    WCHAR       m_szCppExe[MAX_PATH];
-    WCHAR       m_szWindresExe[MAX_PATH];
-    WCHAR       m_szUpxExe[MAX_PATH];
-    WCHAR       m_szMcdxExe[MAX_PATH];
-    WCHAR       m_szRealFile[MAX_PATH];
-    WCHAR       m_szNominalFile[MAX_PATH];
-    WCHAR       m_szResourceH[MAX_PATH];
-    WCHAR       m_szUpxTempFile[MAX_PATH];
-    BOOL        m_bUpxCompressed;
+    WCHAR       m_szDataFolder[MAX_PATH];       // the data folder location
+    WCHAR       m_szConstantsFile[MAX_PATH];    // the Constants.txt file location
+    WCHAR       m_szCppExe[MAX_PATH];           // the cpp.exe location
+    WCHAR       m_szWindresExe[MAX_PATH];       // the windres.exe location
+    WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
+    WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
+    WCHAR       m_szRealFile[MAX_PATH];         // the real file location
+    WCHAR       m_szNominalFile[MAX_PATH];      // the nominal file location
+    WCHAR       m_szResourceH[MAX_PATH];        // the resource.h file location
+    WCHAR       m_szUpxTempFile[MAX_PATH];      // the temporary file location for UPX processing
+    BOOL        m_bUpxCompressed;               // is the real file compressed?
 
     // selection
     MIdOrString     m_type;
@@ -1384,17 +1440,20 @@ protected:
     WORD            m_lang;
 
     // classes
-    MRadWindow      m_rad_window;
-    MEditCtrl       m_hBinEdit, m_hSrcEdit;
-    MBmpView        m_hBmpView;
-    MSplitterWnd    m_splitter1, m_splitter2, m_splitter3;
-    MIDListDlg      m_id_list_dlg;
-    ITEM_SEARCH     m_search;
+    MRadWindow      m_rad_window;               // the RADical window
+    MEditCtrl       m_hBinEdit;                 // the EDIT control for binary
+    MEditCtrl       m_hSrcEdit;                 // the EDIT control for source
+    MBmpView        m_hBmpView;                 // the bitmap view
+    MSplitterWnd    m_splitter1;                // 1st splitter window
+    MSplitterWnd    m_splitter2;                // 2nd splitter window
+    MSplitterWnd    m_splitter3;                // 3rd splitter window
+    MIDListDlg      m_id_list_dlg;              // the ID List window
+    ITEM_SEARCH     m_search;                   // the search options
 
     // find/replace
-    FINDREPLACE     m_fr;
-    TCHAR           m_szFindWhat[80];
-    TCHAR           m_szReplaceWith[80];
+    FINDREPLACE     m_fr;                       // the find/replace structure
+    TCHAR           m_szFindWhat[80];           // the source text for find/replace
+    TCHAR           m_szReplaceWith[80];        // the destination text for replace
 
     MString GetLanguageStatement(WORD langid)
     {
@@ -1402,6 +1461,7 @@ protected:
     }
 
     void UpdateNames(void);
+
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
     {
         TV_ITEM item;
@@ -1428,6 +1488,7 @@ protected:
     }
 
 public:
+    // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
         m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
@@ -2359,7 +2420,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    str = DumpDataAsString(entry->m_data);
+    str = DumpDataAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     stream.clear();
@@ -4001,7 +4062,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 {
     HidePreview();
 
-    MStringW str = DumpDataAsString(entry->m_data);
+    MStringW str = DumpDataAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     if (entry->m_type.m_id != 0)
@@ -9260,7 +9321,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     if (strType == L"Unknown.ID")
         return;
 
-    ReplaceResTypeString(strType, true);
+    Res_ReplaceResTypeString(strType, true);
 
     MString prefix = name.substr(0, name.find(L'_') + 1);
     std::vector<INT> indexes = GetPrefixIndexes(prefix);

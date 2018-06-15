@@ -33,9 +33,6 @@ struct STRING_ENTRY
     WCHAR StringValue[512];
 };
 
-BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
-void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
-
 //////////////////////////////////////////////////////////////////////////////
 
 class StringRes
