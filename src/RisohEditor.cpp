@@ -322,17 +322,17 @@ void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
     }
 
     // set data (charset values)
-    for (auto& entry : s_charset_entries)
+    for (UINT i = 0; i < _countof(s_charset_entries); ++i)
     {
-        ComboBox_SetItemData(hCmb, i, entry.CharSet);
+        ComboBox_SetItemData(hCmb, i, s_charset_entries[i].CharSet);
     }
 
     // select DEFAULT_CHARSET
     ComboBox_SetCurSel(hCmb, 1);
 
-    for (auto& entry : s_charset_entries)
+    for (UINT i = 0; i < _countof(s_charset_entries); ++i)
     {
-        if (entry.CharSet == CharSet)
+        if (s_charset_entries[i].CharSet == CharSet)
         {
             // charset was matched
             ComboBox_SetCurSel(hCmb, i);
@@ -1739,7 +1739,7 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
+    BOOL UpdateFileInfo(LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
 
     void UpdateMenu();
     void SelectTV(EntryBase *entry, BOOL bDoubleClick);
@@ -2472,7 +2472,7 @@ void MMainWnd::OnNew(HWND hwnd)
 {
     HidePreview();
     OnUnloadResH(hwnd);
-    SetFilePath(NULL, NULL);
+    UpdateFileInfo(NULL, NULL);
     g_res.delete_all();
 }
 
@@ -2576,7 +2576,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 if (DoExport(szFile, szResH))
                 {
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
-                    SetFilePath(szFile, szFile);
+                    UpdateFileInfo(szFile, szFile);
                 }
                 else
                 {
@@ -5212,7 +5212,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        SetFilePath(szPath, NULL);
+        UpdateFileInfo(szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -5247,7 +5247,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        SetFilePath(szPath, NULL);
+        UpdateFileInfo(szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -5349,7 +5349,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = FALSE;
 
     FreeLibrary(hMod);
-    SetFilePath(pszReal, pszNominal);
+    UpdateFileInfo(pszReal, pszNominal);
 
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
     {
@@ -6438,7 +6438,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 
     if (g_res.extract_res(pszExeFile, g_res))
     {
-        SetFilePath(pszExeFile, NULL);
+        UpdateFileInfo(pszExeFile, NULL);
         return TRUE;
     }
     return FALSE;
@@ -6475,7 +6475,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     {
         if (g_res.update_exe(pszExeFile))
         {
-            SetFilePath(pszExeFile, NULL);
+            UpdateFileInfo(pszExeFile, NULL);
 
             if (m_szResourceH[0] || !g_settings.id_map.empty())
             {
@@ -6496,7 +6496,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             ::CopyFileW(TempFile, pszExeFile, FALSE))
         {
             DeleteFileW(TempFile);
-            SetFilePath(pszExeFile, NULL);
+            UpdateFileInfo(pszExeFile, NULL);
             if (g_settings.bCompressByUPX)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
@@ -8842,10 +8842,10 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
-// set the file paths and update the settings, the title bar and the menu
-BOOL MMainWnd::SetFilePath(LPCWSTR pszRealFile, LPCWSTR pszNominal)
+// set the file-related info
+BOOL MMainWnd::UpdateFileInfo(LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
-    if (pszRealFile == 0 || pszRealFile[0] == 0)
+    if (pszRealFile == NULL || pszRealFile[0] == 0)
     {
         SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
