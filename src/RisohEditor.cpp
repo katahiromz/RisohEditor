@@ -892,7 +892,7 @@ WORD LangFromText(LPWSTR pszLang)
     ReplaceFullWithHalf(pszLang);
     MStringW strLang = pszLang;
     mstr_trim(strLang);
-    lstrcpyW(pszLang, strLang.c_str());
+    StringCchCopyW(pszLang, MAX_PATH, strLang.c_str());
 
     do
     {
@@ -1036,7 +1036,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
 
-    lang = LangFromText(szLang);;
+    lang = LangFromText(szLang);
     if (lang != 0xFFFF)
         return TRUE;
 
@@ -1411,7 +1411,7 @@ protected:
         e->m_strLabel = e->get_name_label();
         item.pszText = &e->m_strLabel[0];
         if (pszText)
-            lstrcpyW(pszText, item.pszText);
+            StringCchCopyW(pszText, MAX_PATH, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
     }
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
@@ -1423,7 +1423,7 @@ protected:
         e->m_strLabel = e->get_lang_label();
         item.pszText = &e->m_strLabel[0];
         if (pszText)
-            lstrcpyW(pszText, item.pszText);
+            StringCchCopyW(pszText, MAX_PATH, item.pszText);
         TreeView_SetItem(m_hwndTV, &item);
     }
 
@@ -2241,7 +2241,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
-    static const LPWSTR s_DotExts[] =
+    static const LPCWSTR s_DotExts[] =
     {
         L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
     };
@@ -6152,7 +6152,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
         bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath);
         if (bOK && pszResHFile)
-            lstrcpyW(pszResHFile, szPath);
+            StringCchCopyW(pszResHFile, MAX_PATH, szPath);
     }
     else
     {
@@ -7618,7 +7618,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else
     {
         static WORD old_lang = 0xFFFF;
-        static WCHAR szOldText[128] = L"";
+        static WCHAR szOldText[MAX_PATH] = L"";
 
         if (pnmhdr->code == TVN_BEGINLABELEDIT)
         {
@@ -7682,7 +7682,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
             }
 
-            WCHAR szNewText[128];
+            WCHAR szNewText[MAX_PATH];
             StringCchCopyW(szNewText, _countof(szNewText), pszNewText);
             mstr_trim(szNewText);
 
