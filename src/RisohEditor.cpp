@@ -2241,16 +2241,33 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
+    LPWSTR pch = wcsrchr(szFile, L'.');
+
+    static const LPCWSTR s_Exes[] =
+    {
+        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui"
+    };
+    BOOL bIsExe = FALSE;
+    for (auto ext : s_Exes)
+    {
+        if (lstrcmpiW(pch, ext) == 0)
+        {
+            bIsExe = TRUE;
+            break;
+        }
+    }
+
     static const LPCWSTR s_DotExts[] =
     {
         L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
     };
-    LPWSTR pch = wcsrchr(szFile, L'.');
-    BOOL bIsExe = (lstrcmpiW(pch, L".exe") == 0);
     for (auto ext : s_DotExts)
     {
         if (lstrcmpiW(pch, ext) == 0)
+        {
             *pch = 0;
+            break;
+        }
     }
 
     OPENFILENAMEW ofn;
