@@ -530,8 +530,7 @@ void Res_ReplaceResTypeString(MString& str, bool bRevert = false)
 }
 
 // get the entity resource ID text for MIDListDlg
-MString
-Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
+MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
 {
     // convert an IDTYPE_ to a resource type
     MIdOrString type;
@@ -1427,7 +1426,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
 //////////////////////////////////////////////////////////////////////////////
 
 // dump data as a text
-MStringW DumpDataAsText(const std::vector<BYTE>& data)
+MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 {
     MStringW ret;
     WCHAR sz[64];
@@ -2084,7 +2083,7 @@ protected:
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd out-of-line functions
 
-// system color settings was changed
+// WM_SYSCOLORCHANGE: system color settings was changed
 void MMainWnd::OnSysColorChange(HWND hwnd)
 {
     // notify the window children
@@ -2134,7 +2133,7 @@ LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// if activated, then set focus to m_hwndTV
+// WM_ACTIVATE: if activated, then set focus to m_hwndTV
 void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
 {
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
@@ -2655,8 +2654,13 @@ void MMainWnd::OnOpen(HWND hwnd)
 // clear all the resource data
 void MMainWnd::OnNew(HWND hwnd)
 {
+    // close preview
     HidePreview();
+
+    // unload the resource.h file
     OnUnloadResH(hwnd);
+
+    // update the file info
     UpdateFileInfo(NULL, NULL);
 
     // clean up
@@ -2783,6 +2787,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 {
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry || entry->m_type != RT_DIALOG)
     {
@@ -2800,7 +2805,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    str = DumpDataAsText(entry->m_data);
+    str = DumpBinaryAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
     stream.clear();
@@ -3744,7 +3749,7 @@ void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
     }
 }
 
-// the main window has moved
+// WM_MOVE: the main window has moved
 void MMainWnd::OnMove(HWND hwnd, int x, int y)
 {
     RECT rc;
@@ -3756,10 +3761,13 @@ void MMainWnd::OnMove(HWND hwnd, int x, int y)
     }
 }
 
-// the main window has changed in size
+// WM_SIZE: the main window has changed in size
 void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 {
+    // auto move and resize the toolbar
     SendMessageW(m_hToolBar, TB_AUTOSIZE, 0, 0);
+
+    // auto move and resize the status bar
     SendMessageW(m_hStatusBar, WM_SIZE, 0, 0);
 
     RECT rc, ClientRect;
@@ -3797,7 +3805,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
     MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
 }
 
-// update the menus
+// WM_INITMENU: update the menus
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
     EntrySetBase found;
@@ -4069,7 +4077,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     }
 }
 
-// the context menu is shown
+// WM_CONTEXTMENU: the context menu is shown
 void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 {
     if (hwndContext != m_hwndTV)
@@ -4446,7 +4454,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-// hide the preview
+// close the preview
 VOID MMainWnd::HidePreview()
 {
     m_hBmpView.DestroyView();
@@ -4465,11 +4473,14 @@ VOID MMainWnd::HidePreview()
 // do preview the resource item
 BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 {
+    // close the preview
     HidePreview();
 
-    MStringW str = DumpDataAsText(entry->m_data);
+    // show the binary
+    MStringW str = DumpBinaryAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
+    // do preview the resource item
     if (entry->m_type.m_id != 0)
     {
         WORD wType = entry->m_type.m_id;
@@ -4570,23 +4581,25 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
         }
     }
 
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+    // recalculate the splitter
+    PostMessageDx(WM_SIZE);
+
     return entry->is_editable();
 }
 
 // create the toolbar
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
 {
-    HWND hwndTB;
-    hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL, 
+    // create a toolbar
+    HWND hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL, 
         WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST, 
         0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
     if (hwndTB == NULL)
         return FALSE;
 
+    // initialize
     SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
     SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
-
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
@@ -4603,9 +4616,11 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
 // update the toolbar
 void MMainWnd::UpdateOurToolBar(INT iType)
 {
+    // delete all the buttons of toolbar
     while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
         ;
 
+    // add the buttons
     switch (iType)
     {
     case 0:
@@ -4628,6 +4643,7 @@ void MMainWnd::UpdateOurToolBar(INT iType)
         break;
     }
 
+    // show/hide the toolbar by settings
     if (g_settings.bShowToolBar)
         ShowWindow(m_hToolBar, SW_SHOWNOACTIVATE);
     else
@@ -4639,9 +4655,13 @@ void
 MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
                    const MIdOrString& name, WORD lang, BOOL bDoubleClick)
 {
+    // close the preview
     HidePreview();
+
+    // find the entry
     if (auto entry = g_res.find(et, type, name, lang))
     {
+        // select it
         SelectTV(entry, bDoubleClick);
     }
 }
@@ -4649,14 +4669,16 @@ MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
 // select an item in the tree control
 void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 {
+    // close the preview
     HidePreview();
 
-    if (!entry)
+    if (!entry)     // not selected
     {
         UpdateOurToolBar(3);
         return;
     }
 
+    // expand the parent and ensure visible
     auto parent = g_res.get_parent(entry);
     while (parent && parent->m_hItem)
     {
@@ -4694,6 +4716,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         ShowBinEdit(FALSE);
         bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
+        break;
 
     default:
         m_hBmpView.DestroyView();
@@ -4703,10 +4726,12 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         m_hBmpView.DeleteTempFile();
     }
 
-    if (bEditable)
+    if (bEditable)  // editable
     {
+        // make it not read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
+        // update the toolbar
         if (Edit_GetModify(m_hSrcEdit))
         {
             UpdateOurToolBar(2);
@@ -4726,11 +4751,14 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     }
     else
     {
+        // make it read-only
         Edit_SetReadOnly(m_hSrcEdit, TRUE);
 
+        // update the toolbar
         UpdateOurToolBar(3);
     }
 
+    // recalculate the splitter
     PostMessageDx(WM_SIZE);
 }
 
@@ -4876,7 +4904,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     DeleteFileW(szPath3);
 #endif
 
-    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
+    // recalculate the splitter
+    PostMessageDx(WM_SIZE);
 
     return bSuccess;
 }
@@ -4981,7 +5010,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         DeleteFileW(szPath3);
     }
 
-    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
+    // recalculate the splitter
+    PostMessageDx(WM_SIZE);
 
     return bSuccess;
 }
@@ -5146,7 +5176,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         }
     }
 
-    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
+    // recalculate the splitter
+    PostMessageDx(WM_SIZE);
 
     return bSuccess;
 }
@@ -5645,7 +5676,9 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     }
 
     HidePreview();
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+
+    // recalculate the splitter
+    PostMessageDx(WM_SIZE);
 
     return bSuccess;
 }
@@ -6742,7 +6775,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bSuccess;
 }
 
-// WM_DROPFILES
+// WM_DROPFILES: file(s) has been dropped
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
@@ -6947,7 +6980,7 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
     }
 }
 
-// WM_DESTROY
+// WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
     if (m_szUpxTempFile[0])
@@ -7447,6 +7480,7 @@ void MMainWnd::OnShowHideToolBar(HWND hwnd)
     else
         ShowWindow(m_hToolBar, SW_HIDE);
 
+    // recalculate the splitter
     PostMessageDx(WM_SIZE);
 }
 
@@ -9583,7 +9617,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     return TRUE;
 }
 
-// WM_CREATE
+// WM_CREATE: the main window is to be created
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     MWaitCursor wait;
