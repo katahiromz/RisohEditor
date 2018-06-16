@@ -3462,9 +3462,14 @@ void MMainWnd::OnEdit(HWND hwnd)
 // open README
 void MMainWnd::OnOpenReadMe(HWND hwnd)
 {
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
         return;
 
@@ -3493,9 +3498,14 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
 // Open READMEJP (Japanese)
 void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 {
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
         return;
 
@@ -3524,9 +3534,14 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 // Open HYOJUNKA.txt (Japanese)
 void MMainWnd::OnOpenHyojunka(HWND hwnd)
 {
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
         return;
 
@@ -3555,9 +3570,14 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
 // open the license text file
 void MMainWnd::OnOpenLicense(HWND hwnd)
 {
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
         return;
 
@@ -5343,9 +5363,18 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 // check the data folder
 BOOL MMainWnd::CheckDataFolder(VOID)
 {
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH], *pch;
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
+    if (pch == NULL)
+        return FALSE;
+
+    // find the data folder
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"\\data");
     if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -5362,24 +5391,25 @@ BOOL MMainWnd::CheckDataFolder(VOID)
                     StringCchCopyW(pch, diff, L"\\..\\..\\..\\..\\data");
                     if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
                     {
-                        return FALSE;
+                        return FALSE;   // not found
                     }
                 }
             }
         }
     }
+    // found. store to m_szDataFolder
     StringCchCopyW(m_szDataFolder, _countof(m_szDataFolder), szPath);
 
-    DWORD cch = GetEnvironmentVariableW(L"PATH", NULL, 0);
-
+    // get the PATH environment variable
     MStringW env, str;
+    DWORD cch = GetEnvironmentVariableW(L"PATH", NULL, 0);
     env.resize(cch);
     GetEnvironmentVariableW(L"PATH", &env[0], cch);
 
+    // add "data/bin" to the PATH variable
     str = m_szDataFolder;
     str += L"\\bin;";
     str += env;
-
     SetEnvironmentVariableW(L"PATH", str.c_str());
 
     return TRUE;
@@ -5430,10 +5460,18 @@ INT MMainWnd::CheckData(VOID)
         return -5;  // failure
     }
 
-    // mcdx.exe
+    // get the module path filename of this module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
+    if (pch == NULL)
+        return -6;
+
+    // mcdx.exe
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"\\mcdx.exe");
     if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
@@ -5457,9 +5495,13 @@ INT MMainWnd::CheckData(VOID)
 // load the language information
 void MMainWnd::DoLoadLangInfo(VOID)
 {
+    // enumerate localized languages
     EnumSystemLocalesW(EnumLocalesProc, LCID_SUPPORTED);
+
+    // enumerate English languages
     EnumSystemLocalesW(EnumEngLocalesProc, LCID_SUPPORTED);
 
+    // add the neutral language
     {
         LANG_ENTRY entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
@@ -5467,6 +5509,7 @@ void MMainWnd::DoLoadLangInfo(VOID)
         g_Langs.push_back(entry);
     }
 
+    // sort
     std::sort(g_Langs.begin(), g_Langs.end());
 }
 
@@ -5476,6 +5519,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
 
+    // if it was a shortcut file, then resolve it
+    // pszFileName --> szPath
     if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
     {
         GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
@@ -5485,6 +5530,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pchPart);
     }
 
+    // find the dot extension
     LPWSTR pch = wcsrchr(szPath, L'.');
     if (nFilterIndex == 0 || nFilterIndex == 1)
     {
@@ -5498,10 +5544,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         // .res files
 
+        // reload the resource.h if necessary
         UnloadResourceH(hwnd, FALSE);
         if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
+        // do import to the res variable
         EntrySet res;
         if (!res.import_res(szPath))
         {
@@ -5509,6 +5557,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             return FALSE;
         }
 
+        // load it now
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
@@ -5522,12 +5571,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
+        // update the file info
         UpdateFileInfo(FT_RES, szPath, NULL);
 
+        // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
             ShowIDList(hwnd, TRUE);
         }
+
+        // select none
         SelectTV(NULL, FALSE);
 
         return TRUE;
@@ -5537,10 +5590,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         // .rc files
 
+        // reload the resource.h if necessary
         UnloadResourceH(hwnd, FALSE);
         if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
+        // load the RC file to the res variable
         EntrySet res;
         if (!DoLoadRC(hwnd, szPath, res))
         {
@@ -5548,6 +5603,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             return FALSE;
         }
 
+        // load it now
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
@@ -5561,12 +5617,16 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
+        // update the file info
         UpdateFileInfo(FT_RC, szPath, NULL);
 
+        // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
             ShowIDList(hwnd, TRUE);
         }
+
+        // select none
         SelectTV(NULL, FALSE);
 
         return TRUE;
@@ -5699,18 +5759,16 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     UnloadResourceH(hwnd);
 
     TCHAR szPath[MAX_PATH];
-    lstrcpyn(szPath, pszPath, _countof(szPath));
+    StringCchCopy(szPath, _countof(szPath), pszPath);
 
+    // find the last '\\' or '/'
     TCHAR *pch = _tcsrchr(szPath, TEXT('\\'));
     if (pch == NULL)
-    {
         pch = _tcsrchr(szPath, TEXT('/'));
-    }
     if (pch == NULL)
-    {
         return FALSE;
-    }
 
+    // find the nearest resource.h file
     ++pch;
     size_t diff = pch - szPath;
     StringCchCopy(pch, diff, TEXT("resource.h"));
@@ -5734,7 +5792,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
                             StringCchCopy(pch, diff, TEXT("..\\..\\..\\src\\resource.h"));
                             if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
                             {
-                                return FALSE;
+                                return FALSE;   // not found
                             }
                         }
                     }
@@ -5743,17 +5801,20 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
         }
     }
 
+    // load the resource.h file
     return DoLoadResH(hwnd, szPath);
 }
 
 // load an RC file
 BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
+    // load the RC file to the res variable
     MStringA strOutput;
     BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
                                 m_szMcdxExe, GetMacroDump(), GetIncludesDump());
     if (!bSuccess)
     {
+        // failed. show error message
         if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
@@ -5769,6 +5830,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
         }
     }
 
+    // close the preview
     HidePreview();
 
     // recalculate the splitter
@@ -5781,16 +5843,19 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 void MMainWnd::OnFind(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return;
-    if (!IsWindowVisible(m_hSrcEdit))
-        return;
+        return;     // there is no text in m_hSrcEdit
 
+    if (!IsWindowVisible(m_hSrcEdit))
+        return;     // m_hSrcEdit was not visible
+
+    // close the find/replace dialog if any
     if (IsWindow(m_hFindReplaceDlg))
     {
         SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
         m_hFindReplaceDlg = NULL;
     }
 
+    // show the find dialog
     m_fr.hwndOwner = hwnd;
     m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
     m_hFindReplaceDlg = FindText(&m_fr);
@@ -5800,48 +5865,63 @@ void MMainWnd::OnFind(HWND hwnd)
 BOOL MMainWnd::OnFindNext(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
+
     if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was not visible
+
+    // if the text to find was empty, then show the dialog
     if (m_szFindWhat[0] == 0)
     {
         OnFind(hwnd);
         return FALSE;
     }
 
+    // get the selection
     DWORD ibegin, iend;
     SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
 
+    // m_szFindWhat --> szText
     TCHAR szText[_countof(m_szFindWhat)];
-    lstrcpyn(szText, m_szFindWhat, _countof(szText));
+    StringCchCopy(szText, _countof(szText), m_szFindWhat);
     if (szText[0] == 0)
         return FALSE;
 
+    // get the text of m_hSrcEdit
     MString str = GetWindowText(m_hSrcEdit);
     if (str.empty())
         return FALSE;
 
+    // make the text uppercase if necessary
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
         CharUpperW(szText);
         CharUpperW(&str[0]);
     }
 
+    // get the selection text
     MString substr = str.substr(ibegin, iend - ibegin);
     if (substr == szText)
     {
+        // if the selected text was szText, move the starting position
         ibegin += (DWORD)substr.size();
     }
-    
 
+    // find the string
     size_t i = str.find(szText, ibegin);
     if (i == MString::npos)
-        return FALSE;
+        return FALSE;   // not found
 
+    // found
     ibegin = (DWORD)i;
     iend = ibegin + lstrlen(m_szFindWhat);
+
+    // set the text selection
     SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+
+    // ensure the text visible
     SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+
     return TRUE;
 }
 
@@ -5849,45 +5929,62 @@ BOOL MMainWnd::OnFindNext(HWND hwnd)
 BOOL MMainWnd::OnFindPrev(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
     if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was not visible
+
+    // if the text to find was empty, then show the dialog
     if (m_szFindWhat[0] == 0)
     {
         OnFind(hwnd);
         return FALSE;
     }
 
+    // get the text selection
     DWORD ibegin, iend;
     SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
 
+    // m_szFindWhat --> szText
     TCHAR szText[_countof(m_szFindWhat)];
-    lstrcpyn(szText, m_szFindWhat, _countof(szText));
+    StringCchCopy(szText, _countof(szText), m_szFindWhat);
     if (szText[0] == 0)
         return FALSE;
 
+    // get the text of m_hSrcEdit
     MString str = GetWindowText(m_hSrcEdit);
     if (str.empty())
         return FALSE;
 
+    // make the text uppercase if necessary
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
         CharUpperW(szText);
         CharUpperW(&str[0]);
     }
 
+    // get the selection text
     MString substr = str.substr(ibegin, iend - ibegin);
     if (substr == szText)
+    {
+        // if the selected text was szText, move the starting position
         --ibegin;
+    }
 
+    // find the string barkward
     size_t i = str.rfind(szText, ibegin);
     if (i == MString::npos)
         return FALSE;
 
+    // found
     ibegin = (DWORD)i;
     iend = ibegin + lstrlen(m_szFindWhat);
+
+    // set the text selection
     SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+
+    // ensure the text visible
     SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+
     return TRUE;
 }
 
@@ -5895,52 +5992,69 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
 BOOL MMainWnd::OnReplaceNext(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
     if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was not visible
     if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was read-only
+
+    // if the text to find was empty, then show the dialog
     if (m_szFindWhat[0] == 0)
     {
         OnReplace(hwnd);
         return FALSE;
     }
 
+    // get the text selection
     DWORD ibegin, iend;
     SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
 
+    // m_szFindWhat --> szText
     TCHAR szText[_countof(m_szFindWhat)];
-    lstrcpyn(szText, m_szFindWhat, _countof(szText));
+    StringCchCopy(szText, _countof(szText), m_szFindWhat);
     if (szText[0] == 0)
         return FALSE;
 
+    // get the text of m_hSrcEdit
     MString str = GetWindowText(m_hSrcEdit);
     if (str.empty())
         return FALSE;
 
+    // make the text uppercase if necessary
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
         CharUpperW(szText);
         CharUpperW(&str[0]);
     }
 
+    // get the selection text
     MString substr = str.substr(ibegin, iend - ibegin);
     if (substr == szText)
     {
+        // if the selected text was szText, replace it and move the starting position
         SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
-        Edit_SetModify(m_hSrcEdit, TRUE);
         str.replace(ibegin, iend - ibegin, m_szReplaceWith);
         ibegin += lstrlen(m_szReplaceWith);
+
+        // make it modified
+        Edit_SetModify(m_hSrcEdit, TRUE);
     }
 
+    // find the text
     size_t i = str.find(szText, ibegin);
     if (i == MString::npos)
-        return FALSE;
+        return FALSE;   // not found
 
+    // found
     ibegin = (DWORD)i;
     iend = ibegin + lstrlen(m_szFindWhat);
+
+    // set the text selection
     SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+
+    // ensure the text visible
     SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+
     return TRUE;
 }
 
@@ -5948,52 +6062,69 @@ BOOL MMainWnd::OnReplaceNext(HWND hwnd)
 BOOL MMainWnd::OnReplacePrev(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
     if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was not visible
     if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was read-only
+
+    // if the text to find was empty, then show the dialog
     if (m_szFindWhat[0] == 0)
     {
         OnReplace(hwnd);
         return FALSE;
     }
 
+    // get the text selection
     DWORD ibegin, iend;
     SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
 
+    // m_szFindWhat --> szText
     TCHAR szText[_countof(m_szFindWhat)];
-    lstrcpyn(szText, m_szFindWhat, _countof(szText));
+    StringCchCopy(szText, _countof(szText), m_szFindWhat);
     if (szText[0] == 0)
         return FALSE;
 
+    // get the text of m_hSrcEdit
     MString str = GetWindowText(m_hSrcEdit);
     if (str.empty())
         return FALSE;
 
+    // make the text to find uppercase if necessary
     if (!(m_fr.Flags & FR_MATCHCASE))
     {
         CharUpperW(szText);
         CharUpperW(&str[0]);
     }
 
+    // get the selection text
     MString substr = str.substr(ibegin, iend - ibegin);
     if (substr == szText)
     {
+        // if the selected text was szText, replace it and move the starting position
         SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
-        Edit_SetModify(m_hSrcEdit, TRUE);
         str.replace(ibegin, iend - ibegin, m_szReplaceWith);
         --ibegin;
+
+        // make it modified
+        Edit_SetModify(m_hSrcEdit, TRUE);
     }
 
+    // find the string barkward
     size_t i = str.rfind(szText, ibegin);
     if (i == MString::npos)
         return FALSE;
 
+    // found
     ibegin = (DWORD)i;
     iend = ibegin + lstrlen(m_szFindWhat);
+
+    // set the text selection
     SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
+
+    // ensure the text visible
     SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+
     return TRUE;
 }
 
@@ -6001,20 +6132,24 @@ BOOL MMainWnd::OnReplacePrev(HWND hwnd)
 BOOL MMainWnd::OnReplace(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
     if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was not visible
     if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was read-only
+
+    // close the find/replace dialog if any
     if (IsWindow(m_hFindReplaceDlg))
     {
         SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
         m_hFindReplaceDlg = NULL;
     }
 
+    // replace the text
     m_fr.hwndOwner = hwnd;
     m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
     m_hFindReplaceDlg = ReplaceText(&m_fr);
+
     return TRUE;
 }
 
@@ -6022,19 +6157,29 @@ BOOL MMainWnd::OnReplace(HWND hwnd)
 BOOL MMainWnd::OnReplaceAll(HWND hwnd)
 {
     if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;
+        return FALSE;   // there is no text in m_hSrcEdit
+    if (!IsWindowVisible(m_hSrcEdit))
+        return FALSE;   // m_hSrcEdit was not visible
     if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;
+        return FALSE;   // m_hSrcEdit was read-only
 
+    // get the text selection
     DWORD istart, iend;
     SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&istart, (LPARAM)&iend);
 
+    // move the caret to the top
     SendMessage(m_hSrcEdit, EM_SETSEL, 0, 0);
+
+    // repeat replacing until failure
     while (OnReplaceNext(hwnd))
         ;
 
+    // restore the text selection
     SendMessage(m_hSrcEdit, EM_SETSEL, istart, iend);
+
+    // ensure the text visible
     SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+
     return TRUE;
 }
 
@@ -10135,6 +10280,8 @@ void MMainWnd::DoMsg(MSG& msg)
         if (::IsDialogMessage(m_id_list_dlg, &msg))
             return;
     }
+
+    // close the find/replace dialog if any
     if (IsWindow(m_hFindReplaceDlg))
     {
         if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
