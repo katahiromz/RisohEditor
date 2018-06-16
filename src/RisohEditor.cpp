@@ -2396,9 +2396,11 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (!entry)
         return;
 
+    // show the dialog
     MReplaceBinDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -2409,6 +2411,7 @@ void MMainWnd::OnAbout(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the dialog
     MVersionInfoDlg dialog;
     dialog.DialogBoxDx(hwnd);
 }
@@ -2441,6 +2444,7 @@ void MMainWnd::OnExport(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the "export options" dialog
     MExportOptionsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) != IDOK)
         return;
@@ -2986,6 +2990,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (!entry || entry->m_et != ET_NAME)
         return;
 
+    // show the dialog
     MCloneInNewNameDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -3014,6 +3019,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
             }
         }
 
+        // select the entry
         SelectTV(ET_NAME, dialog.m_type, dialog.m_name, 0xFFFF, FALSE);
     }
 }
@@ -3034,6 +3040,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         return;
     }
 
+    // show the dialog
     MCloneInNewLangDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -3228,8 +3235,10 @@ void MMainWnd::OnCompile(HWND hwnd)
     if (!entry)
         return;
 
+    // is it not modified?
     if (!Edit_GetModify(m_hSrcEdit))
     {
+        // select the entry
         SelectTV(entry, FALSE);
         return;
     }
@@ -3245,6 +3254,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
+        // select the entry
         SelectTV(entry, FALSE);
     }
     else
@@ -3274,10 +3284,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         MByteStreamEx stream(entry->m_data);
         AccelRes accel_res;
-        MEditAccelDlg dialog(accel_res);
         if (accel_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
+
+            // show the dialog
+            MEditAccelDlg dialog(accel_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
@@ -3286,7 +3298,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+        // select the entry
         SelectTV(entry, FALSE);
+
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_MENU)
@@ -3296,6 +3311,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (menu_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
+            // show the dialog
             MEditMenuDlg dialog(menu_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
@@ -3305,7 +3321,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+        // select the entry
         SelectTV(entry, FALSE);
+
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_DIALOG)
@@ -3348,6 +3367,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (dlginit_res.LoadFromStream(stream))
         {
             ChangeStatusText(IDS_EDITINGBYGUI);
+
+            // show the dialog
             MDlgInitDlg dialog(dlginit_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
@@ -3356,7 +3377,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+        // select the entry
         SelectTV(entry, FALSE);
+
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_STRING && entry->m_et == ET_STRING)
@@ -3377,6 +3401,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         ChangeStatusText(IDS_EDITINGBYGUI);
+
+        // show the dialog
         MStringsDlg dialog(str_res);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
@@ -3391,6 +3417,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringA strOutput;
             if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
             {
+                // select the entry
                 SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
             else
@@ -3419,6 +3446,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         ChangeStatusText(IDS_EDITINGBYGUI);
+
+        // show the dialog
         MMessagesDlg dialog(msg_res);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
@@ -3432,6 +3461,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringA strOutput;
             if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
             {
+                // select the entry
                 SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
             }
             else
@@ -3452,6 +3482,8 @@ void MMainWnd::OnEdit(HWND hwnd)
         return;
 
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+    // select the entry
     SelectTV(entry, TRUE);
 }
 
@@ -5158,8 +5190,12 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             data.assign(TextAnsi.begin(), TextAnsi.end());
         }
 
+        // add a language entry
         auto entry = g_res.add_lang_entry(type, name, lang);
+
+        // select the added entry
         SelectTV(entry, FALSE);
+
         return TRUE;    // success
     }
 
@@ -5726,6 +5762,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         ShowIDList(hwnd, TRUE);
     }
+
+    // select none
     SelectTV(NULL, FALSE);
 
     return TRUE;
@@ -7061,92 +7099,116 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
     else if (lstrcmpiW(pch, L".ico") == 0)
     {
+        // show the dialog
         MAddIconDlg dialog;
         dialog.m_file = file;
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // refresh the ID list window
             DoRefreshIDList(hwnd);
+
+            // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
     {
+        // show the dialog
         MAddCursorDlg dialog;
         dialog.m_file = file;
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // refresh the ID list window
             DoRefreshIDList(hwnd);
+
+            // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".wav") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_type = L"WAVE";
         dialog.m_file = file;
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
     {
+        // show the dialog
         MAddBitmapDlg dialog;
         dialog.m_file = file;
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // refresh the ID list window
             DoRefreshIDList(hwnd);
+
+            // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
         }
     }
     else if (lstrcmpiW(pch, L".png") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"PNG";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".gif") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"GIF";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
              lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"JPEG";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"TIFF";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".avi") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"AVI";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
@@ -7162,21 +7224,25 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
     else if (lstrcmpiW(pch, L".wmf") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"WMF";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
     else if (lstrcmpiW(pch, L".emf") == 0)
     {
+        // show the dialog
         MAddResDlg dialog;
         dialog.m_file = file;
         dialog.m_type = L"EMF";
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add a resource item
             DoAddRes(hwnd, dialog);
         }
     }
@@ -7599,6 +7665,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
         str += TEXT("\r\n");
     }
 
+    // show the dialog
     MAdviceResHDlg dialog(str);
     dialog.DialogBoxDx(hwnd);
 }
@@ -7618,6 +7685,7 @@ void MMainWnd::OnConfig(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MConfigDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -7626,6 +7694,7 @@ void MMainWnd::OnConfig(HWND hwnd)
 
         UpdateNames();
 
+        // select the entry to update the text
         auto entry = g_res.get_entry();
         SelectTV(entry, FALSE);
     }
@@ -7660,6 +7729,7 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
     g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
 
+    // select the entry to update the text
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
@@ -7687,6 +7757,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 
     ShowIDList(hwnd, bListOpen);
 
+    // select the entry to update the text
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
@@ -7720,6 +7791,7 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the dialog
     MIdAssocDlg dialog;
     dialog.DialogBoxDx(hwnd);
 
@@ -7733,6 +7805,7 @@ void MMainWnd::OnShowLangs(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the dialog
     MLangsDlg dialog;
     dialog.DialogBoxDx(hwnd);
 }
@@ -7757,6 +7830,7 @@ void MMainWnd::OnSetPaths(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the dialog
     MPathsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -7794,6 +7868,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the dialog
     MMacrosDlg dialog;
     INT_PTR nID = dialog.DialogBoxDx(hwnd);
     switch (INT(nID))
@@ -7819,6 +7894,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 
+    // select the entry
     SelectTV(entry, FALSE);
 }
 
@@ -7834,6 +7910,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 
+    // select the entry
     SelectTV(entry, FALSE);
 }
 
@@ -8017,6 +8094,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ALWAYSCONTROL:
         {
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
+
+            // select the entry to update the text
             auto entry = g_res.get_entry();
             SelectTV(entry, FALSE);
         }
@@ -8333,6 +8412,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         if (!m_bLoading && entry)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
+
+            // select the entry to update the text
             SelectTV(entry, FALSE);
         }
     }
@@ -8536,6 +8617,8 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 
     entry->m_name = new_name;
     UpdateEntryName(entry, pszText);
+
+    // select the entry to update the text
     SelectTV(entry, FALSE);
 }
 
@@ -8579,6 +8662,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         UpdateEntryLang(e, pszText);
     }
 
+    // select the entry
     SelectTV(entry, FALSE);
 }
 
@@ -8644,6 +8728,7 @@ void MMainWnd::OnTest(HWND hwnd)
         HMENU hMenu = LoadMenuIndirect(&(*entry)[0]);
         if (hMenu)
         {
+            // show the dialog
             MTestMenuDlg dialog(hMenu);
             dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
             DestroyMenu(hMenu);
@@ -9083,10 +9168,14 @@ void MMainWnd::OnAddIcon(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddIconDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // refresh the ID list window
         DoRefreshIDList(hwnd);
+
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9101,9 +9190,11 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     if (!entry)
         return;
 
+    // show the dialog
     MReplaceIconDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9118,9 +9209,11 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     if (!entry)
         return;
 
+    // show the dialog
     MReplaceCursorDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9131,10 +9224,14 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddBitmapDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // refresh the ID list window
         DoRefreshIDList(hwnd);
+
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9149,9 +9246,11 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (!entry)
         return;
 
+    // show the dialog
     MReplaceBitmapDlg dialog(*entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9162,10 +9261,14 @@ void MMainWnd::OnAddCursor(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddCursorDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // refresh the ID list window
         DoRefreshIDList(hwnd);
+
+        // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
 }
@@ -9176,9 +9279,11 @@ void MMainWnd::OnAddRes(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9189,10 +9294,12 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_MENU;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9203,10 +9310,12 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_STRING;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9217,10 +9326,12 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_MESSAGETABLE;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9231,10 +9342,12 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_HTML;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9245,10 +9358,12 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_ACCELERATOR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9259,10 +9374,12 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_VERSION;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9273,10 +9390,12 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_MANIFEST;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -9284,30 +9403,45 @@ void MMainWnd::OnAddManifest(HWND hwnd)
 // add a resource item
 void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 {
-    if (dialog.m_strTemplate.empty())
+    if (dialog.m_strTemplate.empty())   // already added
     {
+        // refresh the ID list window
         DoRefreshIDList(hwnd);
+
+        // select it
         SelectTV(ET_LANG, dialog, FALSE);
+
+        // clear the modification flag
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
     else
     {
-        DoRefreshIDList(hwnd);
+        // dialog.m_strTemplate --> m_hSrcEdit
         SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
 
+        // compile dialog.m_strTemplate
         MStringA strOutput;
         if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
         {
+            // success. clear the modification flag
             Edit_SetModify(m_hSrcEdit, FALSE);
         }
         else
         {
+            // failure
             UpdateOurToolBar(2);
+
+            // set the error message
             SetErrorMessage(strOutput, TRUE);
+
+            // set the modification flag
             Edit_SetModify(m_hSrcEdit, TRUE);
+
+            // make it non-read-only
             Edit_SetReadOnly(m_hSrcEdit, FALSE);
         }
 
+        // select the added entry
         if (dialog.m_type == RT_STRING)
             SelectTV(ET_STRING, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
         else if (dialog.m_type == RT_MESSAGETABLE)
@@ -9323,10 +9457,12 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_DIALOG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // add a resource item
         DoAddRes(hwnd, dialog);
     }
 }
@@ -10092,6 +10228,7 @@ void MMainWnd::SelectString(void)
 {
     if (auto entry = g_res.find(ET_STRING, RT_STRING))
     {
+        // select the entry
         SelectTV(entry, FALSE);
     }
 }
@@ -10101,6 +10238,7 @@ void MMainWnd::SelectMessage()
 {
     if (auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE))
     {
+        // select the entry
         SelectTV(entry, FALSE);
     }
 }
