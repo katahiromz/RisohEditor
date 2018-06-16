@@ -430,7 +430,7 @@ STRINGTABLE
     IDS_DLGINIT3, "RT_DLGINITに使う改行区切りの文字列のリストを指定して下さい。"
     IDS_SAMELANG, "同じ言語です。"
     IDS_SAMENAME, "同じリソース名です。"
-    IDS_CANTSAVETOEXE, "EXEではないファイルからEXEに保存できません。"
+    IDS_CANTSAVETOEXE, "実行可能ではないファイルからEXEに保存できません。"
     IDS_CANTSTARTSEARCH, "検索を開始できません。"
     IDS_AMERICA, "米国"
     IDS_ENGLISH, "英語"

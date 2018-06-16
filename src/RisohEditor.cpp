@@ -1684,6 +1684,14 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd --- the main window
 
+enum FileType
+{
+    FT_NONE,
+    FT_EXECUTABLE,
+    FT_RC,
+    FT_RES
+};
+
 class MMainWnd : public MWindowBase
 {
 protected:
@@ -1707,13 +1715,16 @@ protected:
     HWND        m_hStatusBar;   // the status bar handle
     HWND        m_hFindReplaceDlg;  // the find/replace dialog handle
 
-    // path strings
+    // data and sub-programs
     WCHAR       m_szDataFolder[MAX_PATH];       // the data folder location
     WCHAR       m_szConstantsFile[MAX_PATH];    // the Constants.txt file location
     WCHAR       m_szCppExe[MAX_PATH];           // the cpp.exe location
     WCHAR       m_szWindresExe[MAX_PATH];       // the windres.exe location
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
+
+    // file info
+    FileType    m_file_type;
     WCHAR       m_szRealFile[MAX_PATH];         // the real file location
     WCHAR       m_szNominalFile[MAX_PATH];      // the nominal file location
     WCHAR       m_szResourceH[MAX_PATH];        // the resource.h file location
@@ -1749,7 +1760,7 @@ public:
         m_hwndTV(NULL), m_hImageList(NULL), m_nCommandLock(0),
         m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL), 
         m_hToolBar(NULL), m_hStatusBar(NULL), 
-        m_hFindReplaceDlg(NULL)
+        m_hFindReplaceDlg(NULL), m_file_type(FT_NONE)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1826,7 +1837,7 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL UpdateFileInfo(LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
+    BOOL UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
 
     void UpdateMenu();
     void SelectTV(EntryBase *entry, BOOL bDoubleClick);
@@ -2660,7 +2671,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
 
     // update the file info
-    UpdateFileInfo(NULL, NULL);
+    UpdateFileInfo(FT_NONE, NULL, NULL);
 
     // clean up
     g_res.delete_all();
@@ -2679,28 +2690,19 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // store m_szNominalFile to szFile
     WCHAR szFile[MAX_PATH];
     StringCchCopyW(szFile, _countof(szFile), m_szNominalFile);
 
+    // if not found, then make it empty
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
+    // was it an executable?
+    BOOL bWasExecutable = m_file_type == FT_EXECUTABLE;
+
+    // delete the filename extension
     LPWSTR pch = wcsrchr(szFile, L'.');
-
-    static const LPCWSTR s_Exes[] =
-    {
-        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui"
-    };
-    BOOL bIsExe = FALSE;
-    for (auto ext : s_Exes)
-    {
-        if (lstrcmpiW(pch, ext) == 0)
-        {
-            bIsExe = TRUE;
-            break;
-        }
-    }
-
     static const LPCWSTR s_DotExts[] =
     {
         L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
@@ -2720,13 +2722,15 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
 
+    // use the prefered filter by the entry
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bIsExe)
+    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
     {
         if (ofn.nFilterIndex == FI_EXE)
             ofn.nFilterIndex = FI_RC;
     }
 
+    // use the preferred extension
     switch (ofn.nFilterIndex)
     {
     case FI_EXE:
@@ -2736,6 +2740,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         ofn.lpstrDefExt = L"rc";        // the default extension
         break;
     case FI_RES:
+    default:
         ofn.lpstrDefExt = L"res";       // the default extension
         break;
     }
@@ -2745,9 +2750,12 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
         g_settings.nSaveFilterIndex = ofn.nFilterIndex;
+
         switch (ofn.nFilterIndex)
         {
         case FI_EXE:
@@ -2766,7 +2774,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 if (DoExport(szFile, szResH))
                 {
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
-                    UpdateFileInfo(szFile, szFile);
+                    UpdateFileInfo(FT_RC, szFile, szFile);
                 }
                 else
                 {
@@ -5427,7 +5435,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        UpdateFileInfo(szPath, NULL);
+        UpdateFileInfo(FT_RES, szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -5466,7 +5474,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         m_bLoading = FALSE;
 
-        UpdateFileInfo(szPath, NULL);
+        UpdateFileInfo(FT_RC, szPath, NULL);
 
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
@@ -5569,7 +5577,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bLoading = FALSE;
 
     FreeLibrary(hMod);
-    UpdateFileInfo(pszReal, pszNominal);
+    UpdateFileInfo(FT_EXECUTABLE, pszReal, pszNominal);
 
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
     {
@@ -6660,7 +6668,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 
     if (g_res.extract_res(pszExeFile, g_res))
     {
-        UpdateFileInfo(pszExeFile, NULL);
+        UpdateFileInfo(FT_RES, pszExeFile, NULL);
         return TRUE;
     }
     return FALSE;
@@ -6684,25 +6692,34 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         return FALSE;
     }
 
-    MFile file(m_szRealFile);
-    BYTE ab[2] = { 0 };
-    DWORD dwSize;
-    BOOL bOK = file.ReadFile(ab, sizeof(ab), &dwSize);
-    file.CloseHandle();
-
-    if (memcmp(ab, "MZ", 2) != 0)
-        bOK = FALSE;
-
-    if (!bOK || GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
+    // check whether it is executable or not
+    BOOL bExecutable;
     {
+        MFile file(m_szRealFile);
+        BYTE ab[2] = { 0 };
+        DWORD dwSize;
+        bExecutable = file.ReadFile(ab, sizeof(ab), &dwSize);
+        file.CloseHandle();
+        if (memcmp(ab, "MZ", 2) != 0)
+            bExecutable = FALSE;
+    }
+
+    if (!bExecutable ||
+        GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
+    {
+        // update pszExeFile
         if (g_res.update_exe(pszExeFile))
         {
-            UpdateFileInfo(pszExeFile, NULL);
+            // update file info
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, NULL);
 
+            // is there any resource ID?
             if (m_szResourceH[0] || !g_settings.id_map.empty())
             {
+                // query
                 if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
                 {
+                    // write the resource.h file
                     return DoWriteResHOfExe(pszExeFile);
                 }
             }
@@ -6717,32 +6734,43 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             g_res.update_exe(TempFile) &&
             ::CopyFileW(TempFile, pszExeFile, FALSE))
         {
+            // delete the temporary file
             DeleteFileW(TempFile);
-            UpdateFileInfo(pszExeFile, NULL);
+
+            // update file info
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, NULL);
+
+            // do compress by UPX
             if (g_settings.bCompressByUPX)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
             }
 
+            // is there any resource ID?
             if (m_szResourceH[0] || !g_settings.id_map.empty())
             {
+                // query
                 if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
                 {
+                    // write the resource.h file
                     return DoWriteResHOfExe(pszExeFile);
                 }
             }
+
             return TRUE;
         }
+        // delete the temporary file
         DeleteFileW(TempFile);
     }
 
     ErrorBoxDx(IDS_CANTSAVETOEXE);
-    return FALSE;
+    return FALSE;   // failure
 }
 
 // do compress the file by UPX.exe
 BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 {
+    // build the command line
     MStringW strCmdLine;
     strCmdLine += L"\"";
     strCmdLine += pszUpx;
@@ -6753,6 +6781,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 
     BOOL bSuccess = FALSE;
 
+    // create a UPX process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -6761,13 +6790,14 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all output
         MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
             if (strOutput.find("Packed") != MStringA::npos)
-                bSuccess = TRUE;
+                bSuccess = TRUE;    // success
         }
     }
 
@@ -9066,8 +9096,10 @@ void MMainWnd::OnAddDialog(HWND hwnd)
 }
 
 // set the file-related info
-BOOL MMainWnd::UpdateFileInfo(LPCWSTR pszRealFile, LPCWSTR pszNominal)
+BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
+    m_file_type = ft;
+
     if (pszRealFile == NULL || pszRealFile[0] == 0)
     {
         SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
