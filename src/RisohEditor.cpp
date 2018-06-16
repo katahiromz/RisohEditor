@@ -1907,7 +1907,7 @@ public:
     BOOL DoSaveAs(LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(LPCWSTR pszExeFile);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
-    BOOL DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile);
+    BOOL DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
     void DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name);
     void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
@@ -1927,7 +1927,7 @@ protected:
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
-    BOOL UnloadResourceH(HWND hwnd, BOOL bRefresh = TRUE);
+    BOOL UnloadResourceH(HWND hwnd);
     void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
     MStringW GetMacroDump();
     MStringW GetIncludesDump();
@@ -3479,7 +3479,7 @@ void MMainWnd::OnEdit(HWND hwnd)
 // open README
 void MMainWnd::OnOpenReadMe(HWND hwnd)
 {
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -3515,7 +3515,7 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
 // Open READMEJP (Japanese)
 void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 {
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -3551,7 +3551,7 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 // Open HYOJUNKA.txt (Japanese)
 void MMainWnd::OnOpenHyojunka(HWND hwnd)
 {
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -3587,7 +3587,7 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
 // open the license text file
 void MMainWnd::OnOpenLicense(HWND hwnd)
 {
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -3657,7 +3657,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 }
 
 // do UPX extract to decompress the file
-BOOL MMainWnd::DoUpxExtract(LPCWSTR pszUpx, LPCWSTR pszFile)
+BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
     MStringW strCmdLine;
     strCmdLine += L"\"";
@@ -5387,7 +5387,7 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 // check the data folder
 BOOL MMainWnd::CheckDataFolder(VOID)
 {
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH], *pch;
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -5484,7 +5484,7 @@ INT MMainWnd::CheckData(VOID)
         return -5;  // failure
     }
 
-    // get the module path filename of this module
+    // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
@@ -5543,6 +5543,19 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
 
+    // see also: IDS_EXERESRCFILTER
+    enum FilterIndex
+    {
+        FI_NONE = 0,
+        FI_EXECUTABLE = 1,
+        FI_RES = 2,
+        FI_RC = 3,
+        FI_ALL = 4
+    };
+
+    if (nFilterIndex == FI_ALL)
+        nFilterIndex = FI_NONE;
+
     // if it was a shortcut file, then resolve it
     // pszFileName --> szPath
     if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
@@ -5556,20 +5569,20 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // find the dot extension
     LPWSTR pch = wcsrchr(szPath, L'.');
-    if (nFilterIndex == 0 || nFilterIndex == 1)
+    if (nFilterIndex == FI_NONE || nFilterIndex == FI_EXECUTABLE)
     {
         if (pch && lstrcmpiW(pch, L".res") == 0)
-            nFilterIndex = 3;
+            nFilterIndex = FI_RES;
         else if (pch && lstrcmpiW(pch, L".rc") == 0)
-            nFilterIndex = 4;
+            nFilterIndex = FI_RC;
     }
 
-    if (nFilterIndex == 3)
+    if (nFilterIndex == FI_RES)
     {
         // .res files
 
         // reload the resource.h if necessary
-        UnloadResourceH(hwnd, FALSE);
+        UnloadResourceH(hwnd);
         if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
@@ -5610,12 +5623,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
-    if (nFilterIndex == 4)
+    if (nFilterIndex == FI_RC)
     {
         // .rc files
 
         // reload the resource.h if necessary
-        UnloadResourceH(hwnd, FALSE);
+        UnloadResourceH(hwnd);
         if (g_settings.bAutoLoadNearbyResH)
             CheckResourceH(hwnd, szPath);
 
@@ -5662,10 +5675,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_szUpxTempFile[0] = 0;
     }
 
-    LPWSTR pszReal = szPath;
-    LPWSTR pszNominal = szPath;
+    LPWSTR pszReal = szPath;        // the real path
+    LPWSTR pszNominal = szPath;     // the nominal path
+
+    // check whether it was compressed
     m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszReal);
-    if (m_bUpxCompressed)
+    if (m_bUpxCompressed)   // it was compressed
     {
         LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszReal);
 
@@ -5676,6 +5691,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
         else
         {
+            // confirm to the user to decompress
             nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
             if (nID == IDCANCEL)
                 return FALSE;
@@ -5683,32 +5699,37 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
         if (nID == IDYES)
         {
+            // build a temporary file path
             WCHAR szTempPath[MAX_PATH];
             GetTempPathW(_countof(szTempPath), szTempPath);
-
             WCHAR szTempFile[MAX_PATH];
             GetTempFileNameW(szTempPath, L"UPX", 0, szTempFile);
 
+            // pszReal --> szTempFile (to be decompressed)
             if (!CopyFileW(pszReal, szTempFile, FALSE) ||
-                !DoUpxExtract(m_szUpxExe, szTempFile))
+                !DoUpxDecompress(m_szUpxExe, szTempFile))
             {
                 DeleteFileW(szTempFile);
                 ErrorBoxDx(IDS_CANTUPXEXTRACT);
                 return FALSE;
             }
 
+            // decompressed
             StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
+
+            // update the real path
             pszReal = m_szUpxTempFile;
         }
     }
 
-    // executable files
+    // load an executable files
     HMODULE hMod;
-    MString strReal = pszReal;
+    MString strReal = pszReal;      // the real path
     hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
         LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
     if (hMod == NULL)
     {
+        // replace the path
         #ifdef _WIN64
             mstr_replace_all(strReal, 
                 L"C:\\Program Files\\", 
@@ -5718,14 +5739,18 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
                 L"C:\\Program Files (x86)\\", 
                 L"C:\\Program Files\\");
         #endif
+
+        // retry to load
         hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
             LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
         if (hMod)
         {
+            // ok, succeeded
             StringCchCopy(pszReal, _countof(szPath), strReal.c_str());
         }
         else
         {
+            // retry again
             hMod = LoadLibraryW(pszReal);
             if (hMod == NULL)
             {
@@ -5735,21 +5760,26 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         }
     }
 
-    UnloadResourceH(hwnd, FALSE);
+    // unload the resource.h file
+    UnloadResourceH(hwnd);
     if (g_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, pszNominal);
 
+    // load all the resource items from the executable
     m_bLoading = TRUE;
     {
-        // load from resource
         g_res.delete_all();
         g_res.from_res(hMod);
     }
     m_bLoading = FALSE;
 
+    // free the executable
     FreeLibrary(hMod);
-    UpdateFileInfo(FT_EXECUTABLE, pszReal, pszNominal);
 
+    // update the file info (using the real path)
+    UpdateFileInfo(FT_EXECUTABLE, strReal.c_str(), pszNominal);
+
+    // open the ID list window if necessary
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
     {
         ShowIDList(hwnd, TRUE);
@@ -5772,9 +5802,6 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
     g_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
     ShowIDList(hwnd, FALSE);
-    if (bRefresh)
-    {
-    }
 
     return TRUE;
 }
@@ -5782,6 +5809,7 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
 // check the resource.h file
 BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 {
+    // unload the resource.h file
     UnloadResourceH(hwnd);
 
     TCHAR szPath[MAX_PATH];
@@ -7206,12 +7234,16 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
     else if (lstrcmpiW(pch, L".h") == 0)
     {
+        // unload the resource.h file
         UnloadResourceH(hwnd);
+
         CheckResourceH(hwnd, file);
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
         {
             ShowIDList(hwnd, TRUE);
         }
+
+        // update the names
         UpdateNames();
     }
     else if (lstrcmpiW(pch, L".wmf") == 0)
@@ -7532,7 +7564,11 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 // load the resource.h
 BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 {
+    // unload the resource.h file
     UnloadResourceH(hwnd);
+
+    // update the names
+    UpdateNames();
 
     WCHAR szTempFile[MAX_PATH];
     StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"R1"));
@@ -7668,7 +7704,11 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // unload the resource.h file
     UnloadResourceH(hwnd);
+
+    // update the names
+    UpdateNames();
 }
 
 // the configuration dialog
@@ -9453,7 +9493,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         // clear the modification flag
         Edit_SetModify(m_hSrcEdit, FALSE);
     }
-    else
+    else        // use dialog.m_strTemplate
     {
         // dialog.m_strTemplate --> m_hSrcEdit
         SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
@@ -9719,14 +9759,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 {
     SetDefaultSettings(hwnd);
 
+    // open the "HKEY_CURRENT_USER\Software" key
     MRegKey key(HKCU, TEXT("Software"));
     if (!key)
         return FALSE;
 
+    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ" key
     MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"));
     if (!keySoftware)
         return FALSE;
 
+    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor" key
     MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"));
     if (!keyRisoh)
         return FALSE;
@@ -9959,6 +10002,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 
+    // update pane extent settings
     if (m_splitter3.GetPaneCount() >= 2)
         g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
     if (m_splitter2.GetPaneCount() >= 2)
@@ -10265,6 +10309,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // select the string entry in the tree control
 void MMainWnd::SelectString(void)
 {
+    // find the string entry
     if (auto entry = g_res.find(ET_STRING, RT_STRING))
     {
         // select the entry
@@ -10275,6 +10320,7 @@ void MMainWnd::SelectString(void)
 // select the message entry in the tree control
 void MMainWnd::SelectMessage()
 {
+    // find the message table entry
     if (auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE))
     {
         // select the entry
@@ -10372,6 +10418,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 // do ID jump now!
 LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    // the item index
     INT iItem = (INT)wParam;
     if (iItem == -1)
         return 0;
@@ -10400,7 +10447,9 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // do something after find
 LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    // reset the direction
     m_fr.Flags = FR_DOWN;
+
     if (m_search.bInternalText)
     {
         // m_search.strText --> m_szFindWhat
@@ -10414,6 +10463,7 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
         // do search the text from source
         OnFindNext(hwnd);
     }
+
     return 0;
 }
 
@@ -11568,8 +11618,10 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 // get the RISOHTEMPLATE text
 MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 {
+    // get this application module
     HINSTANCE hInst = GetModuleHandle(NULL);
 
+    // type --> strName
     MStringW strName;
     if (type.is_int())  // numeric resource type
     {
