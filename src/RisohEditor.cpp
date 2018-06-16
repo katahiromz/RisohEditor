@@ -1320,7 +1320,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     // trim and store it to str and szType
     MStringW str = szType;
     mstr_trim(str);
-    lstrcpynW(szType, str.c_str(), _countof(szType));
+    StringCchCopyW(szType, _countof(szType), str.c_str());
 
     if (szType[0] == 0)  // an empty string
     {
@@ -1368,7 +1368,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     // trim and store it to str and szType
     MStringW str = szName;
     mstr_trim(str);
-    lstrcpynW(szName, str.c_str(), _countof(szName));
+    StringCchCopyW(szName, _countof(szName), str.c_str());
 
     if (szName[0] == 0) // an empty string
     {
@@ -1406,7 +1406,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
     // trim and store to str and szFile
     MStringW str = szFile;
     mstr_trim(str);
-    lstrcpynW(szFile, str.c_str(), _countof(szFile));
+    StringCchCopyW(szFile, _countof(szFile), str.c_str());
 
     if (::GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)    // not exists
     {
@@ -2276,12 +2276,12 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     if (entry->m_type == RT_ANIICON)
     {
         ofn.nFilterIndex = 2;
-        ofn.lpstrDefExt = L"ani";
+        ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
         ofn.nFilterIndex = 1;
-        ofn.lpstrDefExt = L"ico";
+        ofn.lpstrDefExt = L"ico";   // the default extension
     }
 
     // let the user choose the path
@@ -2323,12 +2323,12 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     if (entry->m_type == RT_ANICURSOR)
     {
         ofn.nFilterIndex = 2;
-        ofn.lpstrDefExt = L"ani";
+        ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
         ofn.nFilterIndex = 1;
-        ofn.lpstrDefExt = L"cur";
+        ofn.lpstrDefExt = L"cur";   // the default extension
     }
 
     // let the user choose the path
@@ -2365,7 +2365,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTBMP);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"bmp";
+    ofn.lpstrDefExt = L"bmp";   // the default extension
 
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
@@ -2403,26 +2403,8 @@ void MMainWnd::OnAbout(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-#if 1
     MVersionInfoDlg dialog;
     dialog.DialogBoxDx(hwnd);
-#else
-    MSGBOXPARAMSW params;
-
-    ZeroMemory(&params, sizeof(params));
-    params.cbSize = sizeof(params);
-    params.hwndOwner = hwnd;
-    params.hInstance = m_hInst;
-    params.lpszText = LoadStringDx(IDS_VERSIONINFO);
-    params.lpszCaption = LoadStringDx(IDS_APPNAME);
-    params.dwStyle = MB_OK | MB_USERICON;
-    params.lpszIcon = MAKEINTRESOURCEW(IDI_MAIN);
-    params.dwLanguageId = LANG_USER_DEFAULT;
-
-    MWindowBase::HookCenterMsgBoxDx(TRUE);
-    MessageBoxIndirectW(&params);
-    MWindowBase::HookCenterMsgBoxDx(FALSE);
-#endif
 }
 
 // show the MFontsDlg to allow the user to change the font settings
@@ -2431,6 +2413,7 @@ void MMainWnd::OnFonts(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // show the fonts dialog
     MFontsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
@@ -2468,9 +2451,12 @@ void MMainWnd::OnExport(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXPORT);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"rc";
+    ofn.lpstrDefExt = L"rc";    // the default extension
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // do export!
         if (!DoExport(file))
         {
             ErrorBoxDx(IDS_CANTEXPORT);
@@ -2480,12 +2466,7 @@ void MMainWnd::OnExport(HWND hwnd)
 
 // the window class libraries
 typedef std::set<HMODULE> wclib_t;
-
-static wclib_t& wclib()
-{
-    static wclib_t s_wclib;
-    return s_wclib;
-}
+wclib_t s_wclib;
 
 // is there a window class that is named pszName?
 BOOL IsThereWndClass(const WCHAR *pszName)
@@ -2497,14 +2478,14 @@ BOOL IsThereWndClass(const WCHAR *pszName)
     if (GetClassInfoEx(NULL, pszName, &cls) ||
         GetClassInfoEx(GetModuleHandle(NULL), pszName, &cls))
     {
-        return TRUE;
+        return TRUE;    // already exists
     }
 
     // in the window class libraries?
-    for (auto& item : wclib())
+    for (auto& library : s_wclib)
     {
-        if (GetClassInfoEx(item, pszName, &cls))
-            return TRUE;
+        if (GetClassInfoEx(library, pszName, &cls))
+            return TRUE;    // found
     }
 
     // CLSID?
@@ -2513,12 +2494,12 @@ BOOL IsThereWndClass(const WCHAR *pszName)
         pszName[19] == L'-' && pszName[24] == L'-' &&
         pszName[37] == L'}')
     {
-        return TRUE;
+        return TRUE;        // it's a CLSID
     }
 
-    // ATL OLE controls?
+    // ATL OLE control?
     if (std::wstring(pszName).find(L"AtlAxWin") == 0)
-        return TRUE;
+        return TRUE;        // it's an ATL OLE control
 
     return FALSE;   // failure
 }
@@ -2526,11 +2507,11 @@ BOOL IsThereWndClass(const WCHAR *pszName)
 // release the window class libraries
 void FreeWCLib()
 {
-    for (auto& item : wclib())
+    for (auto& library : s_wclib)
     {
-        FreeLibrary(item);
+        FreeLibrary(library);
     }
-    wclib().clear();
+    s_wclib.clear();
 }
 
 // load a window class library
@@ -2551,13 +2532,17 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"dll";
+    ofn.lpstrDefExt = L"dll";       // the default extension
+
+    // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
+        // load the window class library
         HMODULE hMod = LoadLibraryW(file);
         if (hMod)
         {
-            wclib().insert(hMod);
+            // success. add it
+            s_wclib.insert(hMod);
         }
         else
         {
@@ -2584,28 +2569,46 @@ void MMainWnd::OnImport(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_IMPORTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"res";
+    ofn.lpstrDefExt = L"res";       // the default extension
+
+    // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
+        // import the file
         EntrySet res;
         if (res.import_res(file))
         {
+            // is it overlapped?
             if (g_res.intersect(res))
             {
+                // query overwrite
                 INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
                                    MB_ICONINFORMATION | MB_YESNOCANCEL);
                 switch (nID)
                 {
                 case IDYES:
+                    // delete the overlapped
+                    for (auto entry : res)
+                    {
+                        if (entry->m_et != ET_LANG)
+                            continue;
+
+                        g_res.search_and_delete(ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+                    }
                     break;
+
                 case IDNO:
                 case IDCANCEL:
+                    // clean up
                     res.delete_all();
                     return;
                 }
             }
 
+            // merge
             g_res.merge(res);
+
+            // clean up
             res.delete_all();
         }
         else
@@ -2621,9 +2624,11 @@ void MMainWnd::OnOpen(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // store the nominal path
     WCHAR szFile[MAX_PATH];
-    lstrcpynW(szFile, m_szNominalFile, _countof(szFile));
+    StringCchCopyW(szFile, _countof(szFile), m_szNominalFile);
 
+    // if path was not valid, make it empty
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
@@ -2637,9 +2642,12 @@ void MMainWnd::OnOpen(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"exe";
+    ofn.lpstrDefExt = L"exe";       // the default extension
+
+    // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
+        // load the file
         DoLoadFile(hwnd, szFile, ofn.nFilterIndex);
     }
 }
@@ -2650,13 +2658,15 @@ void MMainWnd::OnNew(HWND hwnd)
     HidePreview();
     OnUnloadResH(hwnd);
     UpdateFileInfo(NULL, NULL);
+
+    // clean up
     g_res.delete_all();
 }
 
 // save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    enum
+    enum FilterIndex
     {
         FI_EXE = 1,
         FI_RC,
@@ -2667,7 +2677,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH];
-    lstrcpynW(szFile, m_szNominalFile, _countof(szFile));
+    StringCchCopyW(szFile, _countof(szFile), m_szNominalFile);
 
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
@@ -2717,13 +2727,13 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     switch (ofn.nFilterIndex)
     {
     case FI_EXE:
-        ofn.lpstrDefExt = L"exe";
+        ofn.lpstrDefExt = L"exe";       // the default extension
         break;
     case FI_RC:
-        ofn.lpstrDefExt = L"rc";
+        ofn.lpstrDefExt = L"rc";        // the default extension
         break;
     case FI_RES:
-        ofn.lpstrDefExt = L"res";
+        ofn.lpstrDefExt = L"res";       // the default extension
         break;
     }
 
@@ -4768,15 +4778,15 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
-    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
 
     // Source file #2 (#included)
-    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
     MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
 
     MFile r3(szPath3, TRUE);
     r3.FlushFileBuffers();
@@ -4850,6 +4860,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
                 g_res.merge(res);
                 bSuccess = true;
             }
+
+            // clean up
             res.delete_all();
         }
     }
@@ -4878,15 +4890,15 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
-    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
 
     // Source file #2 (#included)
-    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
     MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
 
     MFile r3(szPath3, TRUE);
     r3.FlushFileBuffers();
@@ -4943,6 +4955,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
                 g_res.merge(res);
                 bSuccess = true;
             }
+
+            // clean up
             res.delete_all();
         }
     }
@@ -5012,15 +5026,15 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
-    lstrcpynW(szPath1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
 
     // Source file #2 (#included)
-    lstrcpynW(szPath2, GetTempFileNameDx(L"R2"), MAX_PATH);
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
     MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
-    lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+    StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
     MFile r3(szPath3, TRUE);
     r3.FlushFileBuffers();
     r3.CloseHandle();
@@ -5099,7 +5113,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
                 g_res.search_and_delete(ET_LANG, type, name, lang);
                 g_res.merge(res);
+
+                // clean up
                 res.delete_all();
+
                 bSuccess = true;
             }
         }
@@ -5226,7 +5243,7 @@ BOOL MMainWnd::CheckDataFolder(VOID)
             }
         }
     }
-    lstrcpynW(m_szDataFolder, szPath, MAX_PATH);
+    StringCchCopyW(m_szDataFolder, _countof(m_szDataFolder), szPath);
 
     DWORD cch = GetEnvironmentVariableW(L"PATH", NULL, 0);
 
@@ -5370,8 +5387,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
+
+            // renewal
             g_res.delete_all();
             g_res.merge(res);
+
+            // clean up
             res.delete_all();
         }
         m_bLoading = FALSE;
@@ -5405,8 +5426,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = TRUE;
         {
             m_bUpxCompressed = FALSE;
+
+            // renewal
             g_res.delete_all();
             g_res.merge(res);
+
+            // clean up
             res.delete_all();
         }
         m_bLoading = FALSE;
@@ -5463,7 +5488,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
                 return FALSE;
             }
 
-            lstrcpynW(m_szUpxTempFile, szTempFile, _countof(m_szUpxTempFile));
+            StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
             pszReal = m_szUpxTempFile;
         }
     }
@@ -5507,6 +5532,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     m_bLoading = TRUE;
     {
+        // load from resource
         g_res.delete_all();
         g_res.from_res(hMod);
     }
@@ -6893,7 +6919,9 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_LOADRESH);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = L"h";
+    ofn.lpstrDefExt = L"h";     // the default extension
+
+    // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
         DoLoadResH(hwnd, szFile);
@@ -6944,6 +6972,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyCursor(MSplitterWnd::CursorNS());
     DestroyCursor(MSplitterWnd::CursorWE());
 
+    // clean up
     g_res.delete_all();
     g_res.delete_invalid();
 
@@ -7047,7 +7076,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
     }
     g_settings.AddIDC_STATIC();
 
-    lstrcpynW(m_szResourceH, pszFile, _countof(m_szResourceH));
+    StringCchCopyW(m_szResourceH, _countof(m_szResourceH), pszFile);
 
     return TRUE;
 }
@@ -7088,7 +7117,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     }
 
     WCHAR szTempFile1[MAX_PATH];
-    lstrcpynW(szTempFile1, GetTempFileNameDx(L"R1"), MAX_PATH);
+    StringCchCopyW(szTempFile1, _countof(szTempFile1), GetTempFileNameDx(L"R1"));
 
     DWORD cbWritten;
     MFile file1(szTempFile1, TRUE);
@@ -7150,7 +7179,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     UnloadResourceH(hwnd);
 
     WCHAR szTempFile[MAX_PATH];
-    lstrcpynW(szTempFile, GetTempFileNameDx(L"R1"), MAX_PATH);
+    StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"R1"));
 
     MFile file(szTempFile, TRUE);
     file.FlushFileBuffers();
@@ -7204,12 +7233,16 @@ void MMainWnd::DoRefreshIDList(HWND hwnd)
 // refresh the treeview
 void MMainWnd::DoRefreshTV(HWND hwnd)
 {
+    // refresh the resource items
     EntrySet res;
-    g_res.copy_to(res);
+    res.merge(g_res);
     g_res.delete_all();
     g_res.merge(res);
+
+    // clean up
     res.delete_all();
 
+    // redraw
     InvalidateRect(m_hwndTV, NULL, TRUE);
 }
 
@@ -7883,17 +7916,8 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
     WCHAR szText[128];
     StringCchCopyW(szText, _countof(szText), pszText);
 
-    MStringW strFullWidth = LoadStringDx(IDS_FULLWIDTH);
-    MStringW strHalfWidth = LoadStringDx(IDS_HALFWIDTH);
-
-    for (DWORD i = 0; szText[i]; ++i)
-    {
-        size_t k = strFullWidth.find(szText[i]);
-        if (k != MStringW::npos)
-        {
-            szText[i] = strHalfWidth[k];
-        }
-    }
+    // replace the fullwidth characters with halfwidth characters
+    ReplaceFullWithHalf(szText);
 
     if (szText[0] == 0)
     {
@@ -8706,7 +8730,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             return;
         }
 
-        lstrcpynW(m_szResourceH, szResH, MAX_PATH);
+        StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
     }
     else
     {
@@ -9021,10 +9045,10 @@ BOOL MMainWnd::UpdateFileInfo(LPCWSTR pszRealFile, LPCWSTR pszNominal)
     WCHAR szPath[MAX_PATH], *pch;
 
     GetFullPathNameW(pszRealFile, _countof(szPath), szPath, &pch);
-    lstrcpynW(m_szRealFile, szPath, _countof(m_szRealFile));
+    StringCchCopyW(m_szRealFile, _countof(m_szRealFile), szPath);
 
     GetFullPathNameW(pszNominal, _countof(szPath), szPath, &pch);
-    lstrcpynW(m_szNominalFile, szPath, _countof(m_szNominalFile));
+    StringCchCopyW(m_szNominalFile, _countof(m_szNominalFile), szPath);
 
     pch = wcsrchr(szPath, L'\\');
     if (pch == NULL)

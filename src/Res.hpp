@@ -1444,15 +1444,6 @@ public:
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
     }
 
-    void copy_to(EntrySet& es) const
-    {
-        for (auto entry : *this)
-        {
-            if (entry->m_et == ET_LANG)
-                es.add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data);
-        }
-    }
-
     void delete_all(void)
     {
         if (m_hwndTV)
