@@ -2002,25 +2002,29 @@ public:
         // load the file to the stream
         MByteStreamEx stream;
         if (!stream.LoadFromFile(pszResFile))
-            return FALSE;
+            return FALSE;   // failure
 
         BOOL bAdded = FALSE;
         ResHeader header;
-        while (header.ReadFrom(stream))
+        while (header.ReadFrom(stream))     // repeat reading
         {
+            // header was loaded
+
             bAdded = TRUE;
-            if (header.DataSize == 0)
+            if (header.DataSize == 0)   // no data
             {
                 stream.ReadDwordAlignment();
-                continue;
+                continue;   // go to next
             }
 
             if (header.DataSize > stream.remainder())
-                return FALSE;
+                return FALSE;   // invalid size
 
+            // read the data
             EntryBase::data_type data;
             if (header.DataSize)
             {
+                // store to data
                 data.resize(header.DataSize);
                 if (!stream.ReadData(&data[0], header.DataSize))
                 {
@@ -2028,9 +2032,13 @@ public:
                 }
             }
 
+            // add a language entry with data
             add_lang_entry(header.type, header.name, header.LanguageId, data);
+
+            // adjust the alignment
             stream.ReadDwordAlignment();
         }
+
         return bAdded;
     }
 
@@ -2038,14 +2046,16 @@ public:
     BOOL load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& strMcdxExe,
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
     {
+        // get the temporary file path
         WCHAR szPath3[MAX_PATH];
-        lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+        StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
 
+        // create the temporary file and wait
         MFile r3(szPath3, TRUE);
-        r3.FlushFileBuffers();
         r3.CloseHandle();
         Sleep(FILE_WAIT_TIME);
 
+        // build the command line text
         MStringW strCmdLine;
         strCmdLine += L'\"';
         strCmdLine += strMcdxExe;
@@ -2062,6 +2072,7 @@ public:
 
         BOOL bSuccess = FALSE;
 
+        // create an mcdx.exe process
         MProcessMaker pmaker;
         pmaker.SetShowWindow(SW_HIDE);
         pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -2071,11 +2082,15 @@ public:
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
         {
+            // read all with timeout
             pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
             if (pmaker.GetExitCode() == 0)
             {
+                // wait
                 Sleep(FILE_WAIT_TIME);
+
+                // import from the temporary file
                 if (import_res(szPath3))
                 {
                     bSuccess = TRUE;
@@ -2083,7 +2098,11 @@ public:
             }
         }
 
+#ifdef NDEBUG
+        // delete the temporary file
         DeleteFileW(szPath3);
+#endif
+
         return bSuccess;
     }
 
@@ -2092,14 +2111,16 @@ public:
         const MString& strWindresExe, const MString& strCppExe, const MString& strMcdxExe, 
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
     {
+        // get the temporary file path
         WCHAR szPath3[MAX_PATH];
-        lstrcpynW(szPath3, GetTempFileNameDx(L"R3"), MAX_PATH);
+        StringCchCopyW(szPath3, _countof(szPath3), GetTempFileNameDx(L"R3"));
 
+        // create the temporary file and wait
         MFile r3(szPath3, TRUE);
-        r3.FlushFileBuffers();
         r3.CloseHandle();
         Sleep(FILE_WAIT_TIME);
 
+        // build the command line text
         MStringW strCmdLine;
         strCmdLine += L'\"';
         strCmdLine += strWindresExe;
@@ -2118,6 +2139,7 @@ public:
 
         BOOL bSuccess = FALSE;
 
+        // create a windres.exe process
         MProcessMaker pmaker;
         pmaker.SetShowWindow(SW_HIDE);
         pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -2127,15 +2149,20 @@ public:
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
         {
+            // read all with timeout
             pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
             if (pmaker.GetExitCode() == 0)
             {
+                // wait
                 Sleep(FILE_WAIT_TIME);
+
+                // import the resource from the temporary file
                 bSuccess = import_res(szPath3);
             }
             else if (strOutput.find(": no resources") != MStringA::npos)
             {
+                // there is no resource data
                 bSuccess = TRUE;
                 strOutput.clear();
             }
@@ -2143,6 +2170,7 @@ public:
 
         if (bSuccess)
         {
+            // load the message table if any
             EntrySet es;
             bSuccess = es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump);
             if (bSuccess)
@@ -2152,6 +2180,7 @@ public:
         }
 
 #ifdef NDEBUG
+        // delete the temporary file
         DeleteFileW(szPath3);
 #endif
 
