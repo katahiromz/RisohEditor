@@ -1281,115 +1281,158 @@ public:
         }
     }
 
+    // NOTE: We have to do subclassing all the children controls and their descendants
+    //       to modify the hittesting.
+
+    // do subclassing a control and its descendants
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
+        // make it an MRadCtrl
         MRadCtrl *pCtrl = new MRadCtrl();
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
 
-        if (nIndex != -1)
+        if (nIndex != -1)   // a top control?
         {
+            // update the index-to-control mapping
             MRadCtrl::IndexToCtrlMap()[nIndex] = hCtrl;
         }
 
         pCtrl->PostSubclass();
 
+#ifndef NDEBUG
         MString text = GetWindowText(hCtrl);
         DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
+#endif
 
+        // do subclassing its children
         DoSubclassChildren(hCtrl);
     }
 
+    // do subclassing the children
     void DoSubclassChildren(HWND hwnd, BOOL bTop = FALSE)
     {
         HWND hCtrl = GetTopWindow(hwnd);
-        if (bTop)
+        if (bTop)   // a top control?
         {
             INT nIndex = 0;
             while (hCtrl)
             {
-                DoSubclass(hCtrl, nIndex++);
+                // do subclassing
+                DoSubclass(hCtrl, nIndex);
 
+                // increment the index
+                ++nIndex;
+
+                // get the next control
                 hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
             }
         }
-        else
+        else    // not a top control
         {
             while (hCtrl)
             {
+                // subclass the non-top control
                 DoSubclass(hCtrl, -1);
+
+                // get the next
                 hCtrl = GetWindow(hCtrl, GW_HWNDNEXT);
             }
         }
     }
 
+    // create the background brush
     BOOL ReCreateBackBrush()
     {
+        // delete the previous
         if (m_hbrBack)
         {
             DeleteObject(m_hbrBack);
             m_hbrBack = NULL;
         }
 
+        // 3D face collor
         COLORREF rgb = GetSysColor(COLOR_3DFACE);
+
+        // calculate another color
         DWORD dwTotal = GetRValue(rgb) + GetGValue(rgb) + GetBValue(rgb);
         rgb = (dwTotal < 255) ? RGB(255, 255, 255) : RGB(0, 0, 0);
 
+        // an 8x8-pixel rectangle
         RECT rc8x8 = { 0, 0, 8, 8 };
 
+        // create an 8x8 bitmap
         HBITMAP hbm8x8 = Create24BppBitmapDx(8, 8);
-        HDC hDC = CreateCompatibleDC(NULL);
-        HGDIOBJ hbmOld = SelectObject(hDC, hbm8x8);
+        if (HDC hDC = CreateCompatibleDC(NULL))
         {
-            FillRect(hDC, &rc8x8, (HBRUSH)(COLOR_3DFACE + 1));
-            if (g_settings.bShowDotsOnDialog)
+            HGDIOBJ hbmOld = SelectObject(hDC, hbm8x8);
             {
-                for (int y = 0; y < 8; y += 4)
+                FillRect(hDC, &rc8x8, (HBRUSH)(COLOR_3DFACE + 1));
+                if (g_settings.bShowDotsOnDialog)
                 {
-                    for (int x = 0; x < 8; x += 4)
+                    for (int y = 0; y < 8; y += 4)
                     {
-                        SetPixelV(hDC, x, y, rgb);
+                        for (int x = 0; x < 8; x += 4)
+                        {
+                            SetPixelV(hDC, x, y, rgb);
+                        }
                     }
                 }
             }
+            SelectObject(hDC, hbmOld);
+            DeleteDC(hDC);
         }
-        SelectObject(hDC, hbmOld);
+
+        // create a packed DIB
         std::vector<BYTE> data;
         PackedDIB_CreateFromHandle(data, hbm8x8);
         DeleteObject(hbm8x8);
 
+        // create the brush
         m_hbrBack = CreateDIBPatternBrushPt(&data[0], DIB_RGB_COLORS);
         return m_hbrBack != NULL;
     }
 
+    // MRadDialog WM_SYSCOLORCHANGE
     void OnSysColorChange(HWND hwnd)
     {
+        // recreate the back brush
         ReCreateBackBrush();
+
+        // redraw
         InvalidateRect(hwnd, NULL, TRUE);
     }
 
+    // MRadDialog WM_INITDIALOG
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        // update the background brush
         OnSysColorChange(hwnd);
 
+        // initialize
         MRadCtrl::GetTargets().clear();
         MRadCtrl::GetLastSel() = NULL;
         MRadCtrl::IndexToCtrlMap().clear();
 
+        // move this dialog
         POINT pt = { 0, 0 };
         SetWindowPosDx(hwnd, &pt);
 
+        // do subclassing the children of this dialog
         DoSubclassChildren(hwnd, TRUE);
 
+        // if indeces are visible
         if (m_index_visible)
-            ShowHideLabels(TRUE);
+            ShowHideLabels(TRUE);   // show the labels
 
+        // do subclassing this dialog
         SubclassDx(hwnd);
 
         return FALSE;
     }
 
+    // show/hide the labels
     void ShowHideLabels(BOOL bShow = TRUE)
     {
         m_index_visible = bShow;
@@ -1399,6 +1442,9 @@ public:
             m_labels.Destroy();
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// MRadWindow --- the RADical window
 
 class MRadWindow : public MWindowBase
 {
