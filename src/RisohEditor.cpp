@@ -2497,7 +2497,7 @@ BOOL IsThereWndClass(const WCHAR *pszName)
     return FALSE;   // failure
 }
 
-// release the window class libraries
+// release all the window class libraries
 void FreeWCLib()
 {
     for (auto& library : s_wclib)
@@ -2663,11 +2663,14 @@ void MMainWnd::OnNew(HWND hwnd)
 // save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
+    // see also: IDS_EXERESFILTER
     enum FilterIndex
     {
-        FI_EXE = 1,
-        FI_RC,
-        FI_RES
+        FI_NONE = 0,
+        FI_EXECUTABLE = 1,
+        FI_RC = 2,
+        FI_RES = 3,
+        FI_ALL = 4
     };
 
     if (!CompileIfNecessary(TRUE))
@@ -2682,7 +2685,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         szFile[0] = 0;
 
     // was it an executable?
-    BOOL bWasExecutable = m_file_type == FT_EXECUTABLE;
+    BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
 
     // delete the filename extension
     LPWSTR pch = wcsrchr(szFile, L'.');
@@ -2709,14 +2712,19 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
     if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
     {
-        if (ofn.nFilterIndex == FI_EXE)
+        if (ofn.nFilterIndex == FI_EXECUTABLE)
             ofn.nFilterIndex = FI_RC;
+    }
+    if (bWasExecutable)
+    {
+        if (ofn.nFilterIndex == FI_NONE || ofn.nFilterIndex == FI_ALL)
+            ofn.nFilterIndex == FI_EXECUTABLE;
     }
 
     // use the preferred extension
     switch (ofn.nFilterIndex)
     {
-    case FI_EXE:
+    case FI_EXECUTABLE:
         ofn.lpstrDefExt = L"exe";       // the default extension
         break;
     case FI_RC:
@@ -2732,31 +2740,39 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+                OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
 
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // save the filter index to the settings
         g_settings.nSaveFilterIndex = ofn.nFilterIndex;
 
         switch (ofn.nFilterIndex)
         {
-        case FI_EXE:
+        case FI_EXECUTABLE:
+            // save it
             if (!DoSaveAs(szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
             break;
         case FI_RC:
+            // export and save it
             {
+                // show "save options" dialog
                 MSaveOptionsDlg save_options;
                 if (save_options.DialogBoxDx(hwnd) != IDOK)
                     return;
 
+                // export
                 WCHAR szResH[MAX_PATH] = L"";
-                if (DoExport(szFile, szResH))
+                if (DoExport(szFile, szResH))   // succeeded
                 {
+                    // save the resource.h path
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+
+                    // update the file info
                     UpdateFileInfo(FT_RC, szFile, szFile);
                 }
                 else
@@ -2766,10 +2782,14 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             }
             break;
         case FI_RES:
+            // save the *.res file
             if (!DoSaveResAs(szFile))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
+            break;
+        default:
+            assert(0);
             break;
         }
     }
@@ -2791,13 +2811,16 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     dialog_res.SaveToStream(stream);
     entry->m_data = stream.data();
 
+    // entry->m_lang + dialog_res --> str --> m_hSrcEdit (text)
     MString str = GetLanguageStatement(entry->m_lang);
     str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // entry->m_data --> m_hBinEdit (binary)
     str = DumpBinaryAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
 
+    // care DLGINIT
     stream.clear();
     if (dialog_res.m_dlginit.SaveToStream(stream) && !dialog_res.m_dlginit.empty())
     {
@@ -2816,6 +2839,7 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 // update the fonts by the font settings
 void MMainWnd::ReCreateFonts(HWND hwnd)
 {
+    // delete the fonts
     if (m_hBinFont)
     {
         DeleteObject(m_hBinFont);
@@ -2827,13 +2851,16 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
         m_hSrcFont = NULL;
     }
 
+    // initialize LOGFONT structures
     LOGFONTW lfBin, lfSrc;
     ZeroMemory(&lfBin, sizeof(lfBin));
     ZeroMemory(&lfSrc, sizeof(lfSrc));
 
+    // set lfFaceName from settings
     StringCchCopy(lfBin.lfFaceName, _countof(lfBin.lfFaceName), g_settings.strBinFont.c_str());
     StringCchCopy(lfSrc.lfFaceName, _countof(lfSrc.lfFaceName), g_settings.strSrcFont.c_str());
 
+    // calculate the height
     if (HDC hDC = CreateCompatibleDC(NULL))
     {
         lfBin.lfHeight = -MulDiv(g_settings.nBinFontSize, GetDeviceCaps(hDC, LOGPIXELSY), 72);
@@ -2841,12 +2868,13 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
         DeleteDC(hDC);
     }
 
+    // create the fonts
     m_hBinFont = CreateFontIndirectW(&lfBin);
     assert(m_hBinFont);
-
     m_hSrcFont = ::CreateFontIndirectW(&lfSrc);
     assert(m_hSrcFont);
 
+    // set the fonts to the controls
     SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
     SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
 }
@@ -2854,51 +2882,56 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
 // check the text for item search
 static bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString text)
 {
+    // make the text uppercase to ignore case
     if (pSearch->bIgnoreCases)
         CharUpperW(&text[0]);
 
+    // find?
     if (text.find(pSearch->strText) == MString::npos)
-        return false;
+        return false;   // not found
 
-    if (pSearch->bDownward)
+    if (pSearch->bDownward)     // go downward
     {
+        // check the position
         if (pSearch->pCurrent == NULL || *pSearch->pCurrent < *entry)
         {
-            if (pSearch->pFound)
+            if (pSearch->pFound)    // already found
             {
-                if (*entry < *pSearch->pFound)
+                if (*entry < *pSearch->pFound)  // compare with the found one
                 {
                     pSearch->pFound = entry;
-                    return true;
+                    return true;    // found
                 }
             }
-            else
+            else    // not found yet
             {
-                pSearch->pFound = entry;
-                return true;
+                pSearch->pFound = entry;    // found
+                return true;    // found
             }
         }
     }
-    else
+    else    // go upward
     {
+        // check the position
         if (pSearch->pCurrent == NULL || *entry < *pSearch->pCurrent)
         {
-            if (pSearch->pFound)
+            if (pSearch->pFound)    // already found
             {
-                if (*pSearch->pFound < *entry)
+                if (*pSearch->pFound < *entry)  // compare with the found one
                 {
                     pSearch->pFound = entry;
-                    return true;
+                    return true;    // found
                 }
             }
             else
             {
                 pSearch->pFound = entry;
-                return true;
+                return true;    // found
             }
         }
     }
-    return false;
+
+    return false;    // not found
 }
 
 // a function for item search
@@ -2930,11 +2963,11 @@ search_proc(void *arg)
             switch (e.m_et)
             {
             case ET_LANG:
+            case ET_MESSAGE:
                 break;
             case ET_STRING:
+                // ignore the name
                 e.m_name.clear();
-                break;
-            case ET_MESSAGE:
                 break;
             default:
                 continue;
@@ -2949,7 +2982,7 @@ search_proc(void *arg)
         }
     }
 
-    pSearch->bRunning = FALSE;
+    pSearch->bRunning = FALSE;  // finish
     return 0;
 }
 
@@ -2978,24 +3011,25 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     MCloneInNewNameDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // search the ET_LANG entries
         EntrySetBase found;
         g_res.search(found, ET_LANG, entry->m_type, entry->m_name, 0xFFFF);
 
-        if (entry->m_type == RT_GROUP_ICON)
+        if (entry->m_type == RT_GROUP_ICON)     // group icon
         {
             for (auto e : found)
             {
                 g_res.copy_group_icon(e, dialog.m_name, e->m_lang);
             }
         }
-        else if (entry->m_type == RT_GROUP_CURSOR)
+        else if (entry->m_type == RT_GROUP_CURSOR)  // group cursor
         {
             for (auto e : found)
             {
                 g_res.copy_group_cursor(e, dialog.m_name, e->m_lang);
             }
         }
-        else
+        else    // otherwise
         {
             for (auto e : found)
             {
@@ -3019,20 +3053,23 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
     switch (entry->m_et)
     {
     case ET_LANG: case ET_STRING: case ET_MESSAGE:
-        break;
+        break;      // ok
 
     default:
-        return;
+        return;     // unable to copy the language
     }
 
     // show the dialog
     MCloneInNewLangDlg dialog(entry);
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        if (entry->m_type == RT_GROUP_ICON)
+        if (entry->m_type == RT_GROUP_ICON)     // group icon
         {
+            // search the group icons
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
+
+            // copy them
             for (auto e : found)
             {
                 g_res.copy_group_icon(e, e->m_name, dialog.m_lang);
@@ -3040,8 +3077,11 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
+            // search the group cursors
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
+
+            // copy them
             for (auto e : found)
             {
                 g_res.copy_group_cursor(e, e->m_name, dialog.m_lang);
@@ -3049,8 +3089,11 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         }
         else if (entry->m_et == ET_STRING)
         {
+            // search the strings
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
+
+            // copy them
             for (auto e : found)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
@@ -3058,8 +3101,11 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         }
         else if (entry->m_et == ET_MESSAGE)
         {
+            // search the messagetables
             EntrySetBase found;
             g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+
+            // copy them
             for (auto e : found)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
@@ -3067,8 +3113,11 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         }
         else
         {
+            // search the entries
             EntrySetBase found;
             g_res.search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
+
+            // copy them
             for (auto e : found)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
@@ -3080,8 +3129,10 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 // show the item search dialog
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
+    // is there "item search" dialogs?
     if (!MItemSearchDlg::Dialogs().empty())
     {
+        // bring it to the top
         HWND hDlg = **MItemSearchDlg::Dialogs().begin();
         SetForegroundWindow(hDlg);
         SetFocus(hDlg);
@@ -3092,9 +3143,11 @@ void MMainWnd::OnItemSearch(HWND hwnd)
     MItemSearchDlg *pDialog = new MItemSearchDlg(m_search);
     pDialog->CreateDialogDx(hwnd);
 
+    // set the window handles to m_search.res2text
     m_search.res2text.m_hwnd = hwnd;
     m_search.res2text.m_hwndDialog = *pDialog;
 
+    // show it
     ShowWindow(*pDialog, SW_SHOWNORMAL);
     UpdateWindow(*pDialog);
 }
@@ -3102,7 +3155,8 @@ void MMainWnd::OnItemSearch(HWND hwnd)
 // do item search
 void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
-    if (!IsWindow(pDialog->m_hwnd))
+    // is it visible?
+    if (!IsWindowVisible(pDialog->m_hwnd))
     {
         assert(0);
         return;
@@ -3116,13 +3170,17 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         CharUpperW(&m_search.strText[0]);
     }
 
+    // initialize
     m_search.bCancelled = FALSE;
     m_search.pFound = NULL;
     m_search.pCurrent = entry;
 
+    // start searching
     if (DoItemSearch(m_search) && m_search.pFound)
     {
-        pDialog->Done();
+        pDialog->Done();    // uninitialize
+
+        // select the found one
         TreeView_SelectItem(m_hwndTV, m_search.pFound->m_hItem);
         TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
 
@@ -3131,13 +3189,18 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     }
     else
     {
-        pDialog->Done();
-        if (!m_search.pFound && !m_search.bCancelled)
+        pDialog->Done();    // uninitialize
+
+        // is it not cancelled?
+        if (!m_search.bCancelled)
         {
+            // "no more item" message
             EnableWindow(*pDialog, FALSE);
             MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
             EnableWindow(*pDialog, TRUE);
         }
+
+        // set focus to the dialog
         SetFocus(*pDialog);
     }
 }
@@ -3208,6 +3271,8 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
         {
             SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
         }
+
+        // show m_hBinEdit
         ShowBinEdit(TRUE, TRUE);
     }
 }
@@ -3232,12 +3297,16 @@ void MMainWnd::OnCompile(HWND hwnd)
 
     ChangeStatusText(IDS_COMPILING);
 
+    // m_hSrcEdit --> strWide
     INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
     MStringW strWide;
     strWide.resize(cchText);
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
+    // clear the modification flag
     Edit_SetModify(m_hSrcEdit, FALSE);
+
+    // compile the strWide text
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
@@ -3246,6 +3315,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     }
     else
     {
+        // failed
         SetErrorMessage(strOutput);
     }
 }
@@ -3256,12 +3326,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry->is_editable())
-        return;
+        return;     // not editable
 
     if (!entry->can_gui_edit())
-    {
-        return;
-    }
+        return;     // unable to edit by GUI?
 
     if (!CompileIfNecessary(FALSE))
     {
@@ -5792,7 +5860,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 }
 
 // unload resource.h
-BOOL MMainWnd::UnloadResourceH(HWND hwnd, BOOL bRefresh)
+BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 {
     g_settings.AddIDC_STATIC();
     g_settings.bHasIDC_STATIC = FALSE;

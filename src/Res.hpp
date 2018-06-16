@@ -24,6 +24,7 @@
 
 #include <windows.h>
 #include <commctrl.h>
+
 #include <cctype>
 #include <cwchar>
 #include <set>          // for std::set
@@ -64,6 +65,7 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// is the resource type an resource entity type
 inline BOOL
 Res_IsEntityType(const MIdOrString& type)
 {
@@ -76,6 +78,7 @@ Res_IsEntityType(const MIdOrString& type)
     return TRUE;
 }
 
+// is the resource type an plain text type
 inline INT
 Res_IsPlainText(const MIdOrString& type)
 {
@@ -83,15 +86,7 @@ Res_IsPlainText(const MIdOrString& type)
            type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
 }
 
-inline BOOL
-Res_HasSample(const MIdOrString& type)
-{
-    return type == RT_ACCELERATOR || type == RT_DIALOG ||
-           type == RT_MENU || type == RT_STRING || type == RT_VERSION ||
-           type == RT_HTML || type == RT_MANIFEST || type == RT_MESSAGETABLE ||
-           type == WORD(240) || type == L"RISOHTEMPLATE";
-}
-
+// does the resource type have no name?
 inline BOOL
 Res_HasNoName(const MIdOrString& type)
 {
@@ -118,30 +113,34 @@ struct EntryBase
 {
     typedef DWORD               size_type;
     typedef std::vector<BYTE>   data_type;
-    EntryType       m_et;
+    EntryType       m_et;                   // entry type
 
-    MIdOrString     m_type;
-    MIdOrString     m_name;
-    WORD            m_lang = 0xFFFF;
-    HTREEITEM       m_hItem = NULL;
-    bool            m_valid = true;
-    data_type       m_data;
-    MStringW        m_strLabel;
+    MIdOrString     m_type;                 // resource type
+    MIdOrString     m_name;                 // resource name
+    WORD            m_lang = 0xFFFF;        // resource language
+    HTREEITEM       m_hItem = NULL;         // treeview item handle
+    bool            m_valid = true;         // "is it valid?" flag
+    data_type       m_data;                 // the item data
+    MStringW        m_strLabel;             // the label string
 
+    // constructor
     EntryBase() : m_lang(0xFFFF), m_hItem(NULL), m_valid(true)
     {
     }
 
+    // constructor
     EntryBase(EntryType et, const MIdOrString& type, 
             const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
         : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
     {
     }
 
+    // destructor
     virtual ~EntryBase()
     {
     }
 
+    // is it valid?
     bool valid() const
     {
         if (m_et == ET_LANG)
@@ -151,12 +150,14 @@ struct EntryBase
         return m_valid;
     }
 
+    // make it invalid
     void mark_invalid()
     {
         m_valid = false;
         m_data.clear();
     }
 
+    // can it be editted by GUI?
     bool can_gui_edit() const
     {
         return m_type == RT_DIALOG || m_type == RT_MENU ||
@@ -164,12 +165,15 @@ struct EntryBase
                m_type == RT_ACCELERATOR || m_type == WORD(240);
     }
 
+    // is it testable?
     bool is_testable() const
     {
         return m_type == RT_DIALOG || m_type == RT_MENU;
     }
 
-    bool match(EntryType et, const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF) const
+    // pattern match
+    bool match(EntryType et, const MIdOrString& type, const MIdOrString& name,
+               WORD lang = 0xFFFF) const
     {
         if (et != ET_ANY && m_et != et)
             return false;
@@ -182,6 +186,7 @@ struct EntryBase
         return true;
     }
 
+    // compare
     bool operator==(const EntryBase& entry) const
     {
         return m_et == entry.m_et &&
@@ -214,6 +219,7 @@ struct EntryBase
         return false;
     }
 
+    // get the resource type label
     MStringW get_type_label() const
     {
         if (!m_type.m_id)
@@ -232,6 +238,7 @@ struct EntryBase
         return label;
     }
 
+    // get the resource name label
     MStringW get_name_label() const
     {
         WORD id = m_name.m_id;
@@ -252,17 +259,20 @@ struct EntryBase
         return label;
     }
 
+    // get the resource language label
     MStringW get_lang_label() const
     {
         MStringW TextFromLang(WORD lang);
         return TextFromLang(m_lang);
     }
 
+    // clear the data
     void clear_data()
     {
         m_data.clear();
     }
 
+    // clear all
     void clear()
     {
         clear_data();
@@ -271,14 +281,17 @@ struct EntryBase
         m_type = (WORD)0;
     }
 
+    // is it empty?
     bool empty() const
     {
         return size() == 0;
     }
+    // the size of data
     size_type size() const
     {
         return size_type(m_data.size());
     }
+    // the index accessor
     BYTE& operator[](DWORD index)
     {
         assert(index <= m_data.size());
@@ -290,6 +303,7 @@ struct EntryBase
         return m_data[index];
     }
 
+    // the pointer to data
     void *ptr(DWORD index = 0)
     {
         return &m_data[index];
@@ -299,11 +313,11 @@ struct EntryBase
         return &m_data[index];
     }
 
+    // assign the data
     void assign(const data_type& data)
     {
         m_data = data;
     }
-
     void assign(const void *ptr, size_type nSize)
     {
         if (ptr && nSize)
@@ -317,6 +331,7 @@ struct EntryBase
         }
     }
 
+    // is it editable?
     BOOL is_editable() const
     {
         if (!this)
@@ -396,17 +411,20 @@ struct EntrySet : protected EntrySetBase
     using super_type::erase;
     using super_type::swap;
 
-    HWND m_hwndTV;
+    HWND m_hwndTV;      // the treeview handle
 
+    // constructor
     EntrySet(HWND hwndTV = NULL) : m_hwndTV(hwndTV)
     {
     }
 
+    // constructor
     EntrySet(const super_type& super, HWND hwndTV = NULL)
         : super_type(super), m_hwndTV(hwndTV)
     {
     }
 
+    // the super class pointer
     super_type *super()
     {
         return dynamic_cast<super_type *>(this);
@@ -416,6 +434,7 @@ struct EntrySet : protected EntrySetBase
         return dynamic_cast<const super_type *>(this);
     }
 
+    // search by pattern matching
     bool search(super_type& found, EntryType et, const MIdOrString& type = WORD(0), 
                 const MIdOrString& name = WORD(0), WORD lang = 0xFFFF, bool invalid_ok = false) const
     {
@@ -429,6 +448,7 @@ struct EntrySet : protected EntrySetBase
         return !found.empty();
     }
 
+    // find by pattern matching
     EntryBase *find(EntryType et, const MIdOrString& type = WORD(0),
                     const MIdOrString& name = WORD(0),
                     WORD lang = 0xFFFF, bool invalid_ok = false) const
@@ -440,12 +460,12 @@ struct EntrySet : protected EntrySetBase
         }
         return NULL;
     }
-
     EntryBase *find(EntryBase *entry, bool invalid_ok = false) const
     {
         return find(entry->m_et, entry->m_type, entry->m_name, entry->m_lang, invalid_ok);
     }
 
+    // is it overlapped with another?
     bool intersect(const EntrySet& another) const
     {
         if (size() == 0 && another.size() == 0)
@@ -462,6 +482,7 @@ struct EntrySet : protected EntrySetBase
         return false;
     }
 
+    // merge another
     void merge(const EntrySet& another)
     {
         for (auto entry : another)
@@ -473,13 +494,13 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
+    // add a language entry
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, WORD lang)
     {
         EntryBase::data_type data;
         return add_lang_entry(type, name, lang, data);
     }
-
     EntryBase *
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
                    WORD lang, const EntryBase::data_type& data)
@@ -507,9 +528,10 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+    // delete an entry (and related entries)
     void delete_entry(EntryBase *entry)
     {
-        EntryBase *parent = get_parent(entry);
+        // delete the related entries
         switch (entry->m_et)
         {
         case ET_LANG:
@@ -535,19 +557,22 @@ struct EntrySet : protected EntrySetBase
             break;
         }
 
+        // mark it as invalid. real deletion is done in delete_invalid
         entry->mark_invalid();
 
+        // delete the parent if necessary
         do
         {
+            EntryBase *parent = get_parent(entry);
             if (!parent)
                 break;
             if (get_first_child(parent))
                 break;
-            if (parent)
-                delete_entry(parent);
+            delete_entry(parent);
         } while (0);
     }
 
+    // search the invalid entries
     void search_invalid(super_type& found)
     {
         for (auto entry : *this)
@@ -559,37 +584,47 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
+    // delete the invalid entries
     void delete_invalid()
     {
+        // search the invalid
         super_type found;
         search_invalid(found);
 
+        // for all the invalid entries
         for (auto entry : found)
         {
             if (super()->find(entry) == super()->end())
-                continue;
+                continue;   // not owned. skip it
 
-            if (entry->m_hItem && entry == get_entry(entry->m_hItem))
+            if (m_hwndTV && entry->m_hItem && entry == get_entry(entry->m_hItem))
             {
+                // delete from treeview
                 TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
             }
 
+            // real delete
             erase(entry);
             delete entry;
         }
     }
 
+    // search and delete
     void search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
                            const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
     {
+        // search
         super_type found;
         search(found, et, type, name, lang);
+
+        // delete
         for (auto entry : found)
         {
             delete_entry(entry);
         }
     }
 
+    // get last ID of the specified type and language
     UINT get_last_id(const MIdOrString& type, WORD lang) const
     {
         WORD wLastID = 0;
@@ -607,6 +642,7 @@ struct EntrySet : protected EntrySetBase
         return wLastID;
     }
 
+    // detach the set
     void detach(EntrySet& es)
     {
         for (auto entry : *this)
@@ -616,20 +652,23 @@ struct EntrySet : protected EntrySetBase
         super()->swap(*es.super());
     }
 
+    // update the executable
     BOOL update_exe(LPCWSTR ExeFile) const
     {
+        // begin the update
         HANDLE hUpdate = ::BeginUpdateResourceW(ExeFile, TRUE);
-
         if (hUpdate == NULL)
         {
-            return FALSE;
+            return FALSE;   // failure
         }
 
+        // for all the language entries
         for (auto entry : *this)
         {
             if (entry->m_et != ET_LANG)
                 continue;
 
+            // get the pointer and size
             void *pv = NULL;
             DWORD size = 0;
             if (!(*entry).empty())
@@ -637,16 +676,26 @@ struct EntrySet : protected EntrySetBase
                 pv = const_cast<void *>((*entry).ptr());
                 size = (*entry).size();
             }
-            if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(), (*entry).m_name.ptr(), (*entry).m_lang, pv, size))
+
+            // skip the empty entries
+            if (!pv || !size)
+                continue;
+
+            // do update
+            if (!::UpdateResourceW(hUpdate, (*entry).m_type.ptr(), (*entry).m_name.ptr(),
+                                   (*entry).m_lang, pv, size))
             {
                 assert(0);
-                ::EndUpdateResourceW(hUpdate, TRUE);
-                return FALSE;
+                ::EndUpdateResourceW(hUpdate, TRUE);    // discard
+                return FALSE;   // failure
             }
         }
+
+        // finish
         return ::EndUpdateResourceW(hUpdate, FALSE);
     }
 
+    // helper method for MRadWindow and MTestDialog
     void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_BITMAP;
@@ -666,6 +715,7 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
+    // helper method for MRadWindow and MTestDialog
     void do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_GROUP_ICON;
@@ -710,6 +760,7 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
+    // extract the cursor as a *.cur file
     bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name) const
     {
         ICONDIR dir = { 0, RES_CURSOR, 1 };
@@ -757,6 +808,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
+    // extract the group cursor as a *.cur file
     bool extract_group_cursor(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
@@ -843,6 +895,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
+    // extract the icon as a *.ico file
     BOOL extract_icon(const EntryBase& i_entry, const wchar_t *file_name) const
     {
         ICONDIR dir = { 0, RES_ICON, 1 };
@@ -881,6 +934,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
+    // extract the group icon as a *.ico file
     bool extract_group_icon(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
@@ -961,6 +1015,7 @@ struct EntrySet : protected EntrySetBase
         return stream.SaveToFile(file_name);
     }
 
+    // add a bitmap entry
     EntryBase *
     add_bitmap(const MIdOrString& name, WORD lang, const MStringW& file)
     {
@@ -1000,6 +1055,7 @@ struct EntrySet : protected EntrySetBase
         return add_lang_entry(RT_BITMAP, name, lang, HeadLess);
     }
 
+    // add a group icon
     EntryBase *
     add_group_icon(const MIdOrString& name, WORD lang, 
                    const MStringW& file_name)
@@ -1021,6 +1077,7 @@ struct EntrySet : protected EntrySetBase
         return add_lang_entry(RT_GROUP_ICON, name, lang, data);
     }
 
+    // add a group cursor
     EntryBase *
     add_group_cursor(const MIdOrString& name, WORD lang, 
                      const MStringW& file_name)
@@ -1042,6 +1099,7 @@ struct EntrySet : protected EntrySetBase
         return add_lang_entry(RT_GROUP_CURSOR, name, lang, data);
     }
 
+    // add a string entry
     EntryBase *
     add_string_entry(WORD lang)
     {
@@ -1051,6 +1109,7 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+    // add a message entry
     EntryBase *
     add_message_entry(WORD lang)
     {
@@ -1060,6 +1119,7 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+    // add a name entry
     EntryBase *
     add_name_entry(const MIdOrString& type, const MIdOrString& name)
     {
@@ -1071,6 +1131,7 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+    // add a type entry
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
@@ -1082,6 +1143,7 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
+    // insert the parent(s) to be insert there
     HTREEITEM get_insert_parent(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
@@ -1112,6 +1174,7 @@ struct EntrySet : protected EntrySetBase
         return new_entry->m_hItem;
     }
 
+    // get the insertion position
     HTREEITEM get_insert_position(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
@@ -1172,6 +1235,7 @@ struct EntrySet : protected EntrySetBase
         return TVI_FIRST;
     }
 
+    // get the parent entry
     EntryBase *get_parent(EntryBase *entry)
     {
         if (!entry)
@@ -1197,6 +1261,7 @@ struct EntrySet : protected EntrySetBase
         return parent;
     }
 
+    // is it a childless entry?
     bool is_childless_parent(EntryBase *entry) const
     {
         assert(entry);
@@ -1217,6 +1282,7 @@ struct EntrySet : protected EntrySetBase
         }
     }
 
+    // get the label for a treeview item
     MStringW get_label(const EntryBase *entry)
     {
         MStringW strText;
@@ -1240,6 +1306,7 @@ struct EntrySet : protected EntrySetBase
         return strText;
     }
 
+    // helper method for entry insertion
     EntryBase *on_insert_entry(EntryBase *entry)
     {
         DebugPrintDx(L"on_insert_entry: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
@@ -1256,7 +1323,6 @@ struct EntrySet : protected EntrySetBase
 
         return on_insert_after(hParent, entry, hPosition);
     }
-
     EntryBase *
     on_insert_after(HTREEITEM hParent, EntryBase *entry, HTREEITEM hInsertAfter)
     {
@@ -1307,18 +1373,21 @@ struct EntrySet : protected EntrySetBase
         return NULL;
     }
 
+    // helper method to delete the strings
     void on_delete_string(EntryBase *entry)
     {
         assert(entry->m_et == ET_STRING);
         search_and_delete(ET_LANG, RT_STRING, (WORD)0, entry->m_lang);
     }
 
+    // helper method to delete the messages
     void on_delete_message(EntryBase *entry)
     {
         assert(entry->m_et == ET_MESSAGE);
         search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, entry->m_lang);
     }
 
+    // helper method to delete the group icon
     bool on_delete_group_icon(EntryBase *entry)
     {
         if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_ICON)
@@ -1344,6 +1413,7 @@ struct EntrySet : protected EntrySetBase
         return true;
     }
 
+    // helper method to delete the group cursor
     bool on_delete_group_cursor(EntryBase *entry)
     {
         if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
@@ -1373,6 +1443,7 @@ struct EntrySet : protected EntrySetBase
         EntrySet *this_;
     };
 
+    // add a resource entry from an executable module
     EntryBase *
     add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
     {
@@ -1392,6 +1463,7 @@ struct EntrySet : protected EntrySetBase
         return NULL;
     }
 
+    // callback to insert the resource in the executable
     static BOOL CALLBACK
     EnumResLangProc(HMODULE hMod, LPCWSTR lpszType, LPCWSTR lpszName, 
                     WORD wIDLanguage, LPARAM lParam)
@@ -1401,18 +1473,21 @@ struct EntrySet : protected EntrySetBase
         return TRUE;
     }
 
+    // callback to insert the resource in the executable
     static BOOL CALLBACK
     EnumResNameProc(HMODULE hMod, LPCWSTR lpszType, LPWSTR lpszName, LPARAM lParam)
     {
         return ::EnumResourceLanguagesW(hMod, lpszType, lpszName, EnumResLangProc, lParam);
     }
 
+    // callback to insert the resource in the executable
     static BOOL CALLBACK
     EnumResTypeProc(HMODULE hMod, LPWSTR lpszType, LPARAM lParam)
     {
         return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
     }
 
+    // get the 1st child
     EntryBase *get_first_child(EntryBase *parent) const
     {
         if (!parent)
@@ -1437,6 +1512,7 @@ struct EntrySet : protected EntrySetBase
     }
 
 public:
+    // add the resources in the executable module
     BOOL from_res(HMODULE hMod)
     {
         EnumResStruct ers;
@@ -1444,6 +1520,7 @@ public:
         return ::EnumResourceTypesW(hMod, EnumResTypeProc, (LPARAM)&ers);
     }
 
+    // delete all the entries
     void delete_all(void)
     {
         if (m_hwndTV)
@@ -1468,6 +1545,7 @@ public:
         delete_entry(entry);
     }
 
+    // get the LPARAM parameter of the currently selected or the specified handle
     LPARAM get_param(HTREEITEM hItem = NULL) const
     {
         if (!hItem)
@@ -1482,6 +1560,7 @@ public:
         return item.lParam;
     }
 
+    // get the entry pointer of the currently selected or the specified info
     EntryBase *get_entry(HTREEITEM hItem = NULL, EntryType et = ET_ANY) const
     {
         LPARAM lParam = get_param(hItem);
@@ -1493,16 +1572,19 @@ public:
         return e;
     }
 
+    // get a language entry of the currently selected or the specified handle
     EntryBase *get_lang_entry(HTREEITEM hItem = NULL) const
     {
         return get_entry(hItem, ET_LANG);
     }
 
+    // get the selected item handle of treeview
     HTREEITEM get_item(void) const
     {
         return TreeView_GetSelection(m_hwndTV);
     }
 
+    // copy the group icon
     BOOL copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
     {
         assert(entry->m_et == ET_LANG);
@@ -1551,6 +1633,7 @@ public:
         return TRUE;
     }
 
+    // copy the group cursor
     BOOL copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, WORD new_lang)
     {
         assert(entry->m_et == ET_LANG);
@@ -1599,6 +1682,7 @@ public:
         return TRUE;
     }
 
+    // extract the resource data as an *.res file
     BOOL extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
     {
         MByteStreamEx bs;
@@ -1633,7 +1717,6 @@ public:
 
         return bs.SaveToFile(pszFileName);
     }
-
     BOOL extract_res(LPCWSTR pszFileName, const EntrySet& res) const
     {
         MByteStreamEx bs;
@@ -1672,6 +1755,7 @@ public:
         return bs.SaveToFile(pszFileName);
     }
 
+    // extract the cursor as an *.cur or *.ani file
     BOOL extract_cursor(LPCWSTR pszFileName, const EntryBase *entry) const
     {
         if (entry->m_type == RT_GROUP_CURSOR)
@@ -1696,6 +1780,7 @@ public:
         return FALSE;
     }
 
+    // extract the icon as an *.ico file
     BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const
     {
         if (entry->m_type == RT_GROUP_ICON)
@@ -1720,6 +1805,7 @@ public:
         return FALSE;
     }
 
+    // extract the resource data as a binary file
     BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
     {
         if (e->m_et != ET_LANG)
@@ -1729,6 +1815,7 @@ public:
         return bs.SaveToFile(pszFileName);
     }
 
+    // import the resource data from the specified *.res file
     BOOL import_res(LPCWSTR pszResFile)
     {
         MByteStreamEx stream;
@@ -1765,6 +1852,7 @@ public:
         return bAdded;
     }
 
+    // load the message table from a *.rc file
     BOOL load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& strMcdxExe,
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
     {
@@ -1817,6 +1905,7 @@ public:
         return bSuccess;
     }
 
+    // load the resources from a *.rc file
     BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
         const MString& strWindresExe, const MString& strCppExe, const MString& strMcdxExe, 
         const MStringW& strMacrosDump, const MStringW& strIncludesDump)
@@ -1888,6 +1977,7 @@ public:
     }
 };
 
+// g_res
 #ifdef USE_GLOBALS
     extern EntrySet g_res;
 #else

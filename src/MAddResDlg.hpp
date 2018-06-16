@@ -120,6 +120,11 @@ public:
         return FALSE;
     }
 
+    bool HasSample(const MIdOrString& type, WORD wLang) const
+    {
+        return !GetRisohTemplate(type, wLang).empty();
+    }
+
     void OnOK(HWND hwnd)
     {
         MIdOrString type;
@@ -172,12 +177,12 @@ public:
 
         std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!Res_HasSample(type) && !Edt1_CheckFile(hEdt1, file))
+        if (HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
             return;
 
         if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
-            if (file.empty() && Res_HasSample(type))
+            if (file.empty() && HasSample(type, lang))
             {
                 ErrorBoxDx(IDS_ALREADYEXISTS);
                 return;
@@ -197,7 +202,7 @@ public:
 
         bool bOK = false;
         bool bAdded = false;
-        if (file.empty() && Res_HasSample(type))
+        if (file.empty() && HasSample(type, lang))
         {
             bOK = TRUE;
             if (Res_HasNoName(type))
@@ -206,11 +211,7 @@ public:
             }
 
             MByteStreamEx stream;
-            if (type == RT_ACCELERATOR || type == RT_DIALOG ||
-                type == RT_MENU || type == RT_STRING ||
-                type == RT_VERSION || type == RT_HTML ||
-                type == RT_MANIFEST || type == RT_MESSAGETABLE ||
-                type == RT_DLGINIT)
+            if (HasSample(type, lang))
             {
                 m_strText = GetRisohTemplate(m_type, lang);
             }
@@ -326,7 +327,7 @@ public:
             type.m_str = strIDType;
         }
 
-        if (Res_HasSample(type))
+        if (HasSample(type, m_lang))
         {
             SetDlgItemText(hwnd, stc2, LoadStringDx(IDS_OPTIONAL));
         }
