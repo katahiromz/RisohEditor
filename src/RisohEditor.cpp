@@ -2200,7 +2200,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         return;
 
     auto e = g_res.get_entry();
-    if (!e)
+    if (!e)     // not selected
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
@@ -2209,22 +2209,30 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
+
+    // use the prefered filter by the entry
     if (e->m_et == ET_STRING || e->m_et == ET_MESSAGE)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+
     if (e->m_et == ET_LANG)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
     else
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+
     ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
+    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"res";
+    ofn.lpstrDefExt = L"res";   // the default extension
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // extract it to a file
         if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
         {
+            // it was a *.res file
             if (!g_res.extract_res(ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
@@ -2232,6 +2240,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         }
         else
         {
+            // it was not a *.res file
             if (!g_res.extract_bin(ofn.lpstrFile, e))
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
@@ -2251,16 +2260,19 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
     ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
+    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+
+    // use the prefered filter by the entry
     if (entry->m_type == RT_ANIICON)
     {
         ofn.nFilterIndex = 2;
@@ -2271,8 +2283,11 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = L"ico";
     }
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // extract it to an *.ico or *.ani file
         if (!g_res.extract_icon(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTICO);
@@ -2286,21 +2301,25 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get a selected language entry
     auto entry = g_res.get_lang_entry();
-    if (!entry)
+    if (!entry)     // not selected
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
     ofn.lpstrFile = szFile;
-    ofn.nMaxFile = MAX_PATH;
+    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+
+    // use the prefered filter by the entry
     if (entry->m_type == RT_ANICURSOR)
     {
         ofn.nFilterIndex = 2;
@@ -2311,8 +2330,11 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
         ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = L"cur";
     }
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // extract it to an *.cur or *.ani file
         if (!g_res.extract_cursor(ofn.lpstrFile, entry))
         {
             ErrorBoxDx(IDS_CANTEXTRACTCUR);
@@ -2326,11 +2348,13 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get a selected language entry
     auto entry = g_res.get_lang_entry();
-    if (!entry)
+    if (!entry)     // not selected
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2342,10 +2366,12 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
         OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
     ofn.lpstrDefExt = L"bmp";
+
+    // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
-        BOOL PNG;
-        PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
+        // extract a bitmap as an *.bmp or *.png file
+        BOOL PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
         if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), PNG))
         {
             ErrorBoxDx(IDS_CANTEXTRACTBMP);
@@ -2359,6 +2385,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // get a selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
