@@ -40,50 +40,56 @@ class MRadDialog;
 class MRadWindow;
 
 //////////////////////////////////////////////////////////////////////////////
+// constants
 
-#define MYWM_CTRLMOVE           (WM_USER + 100)
-#define MYWM_CTRLSIZE           (WM_USER + 101)
+// user-defined window messages
+#define MYWM_CTRLMOVE           (WM_USER + 100)     // control was moved
+#define MYWM_CTRLSIZE           (WM_USER + 101)     // control was resized
 #ifndef MYWM_SELCHANGE
-    #define MYWM_SELCHANGE      (WM_USER + 102)
+    #define MYWM_SELCHANGE      (WM_USER + 102)     // selection was changed
 #endif
-#define MYWM_DLGSIZE            (WM_USER + 103)
-#define MYWM_DELETESEL          (WM_USER + 104)
-#define MYWM_MOVESIZEREPORT     (WM_USER + 105)
-#define MYWM_CLEARSTATUS        (WM_USER + 106)
-#define MYWM_COMPILECHECK       (WM_USER + 107)
-#define MYWM_REOPENRAD          (WM_USER + 108)
-#define MYWM_GETUNITS           (WM_USER + 109)
+#define MYWM_DLGSIZE            (WM_USER + 103)     // dialog was resized
+#define MYWM_DELETESEL          (WM_USER + 104)     // selection was deleted
+#define MYWM_MOVESIZEREPORT     (WM_USER + 105)     // report moving/resizing
+#define MYWM_CLEARSTATUS        (WM_USER + 106)     // clear status
+#define MYWM_COMPILECHECK       (WM_USER + 107)     // compilation check
+#define MYWM_REOPENRAD          (WM_USER + 108)     // reopen the RADical window
+#define MYWM_GETUNITS           (WM_USER + 109)     // get the dialog base units
 
-#define GRID_SIZE 5
+#define GRID_SIZE   5   // grid size
+
+//////////////////////////////////////////////////////////////////////////////
+// MRadCtrl --- the RADical controls
 
 class MRadCtrl : public MWindowBase
 {
 public:
-    DWORD           m_dwMagic;
-    BOOL            m_bTopCtrl;
-    HWND            m_hwndRubberBand;
-    BOOL            m_bMoving;
-    BOOL            m_bSizing;
-    BOOL            m_bLocking;
-    INT             m_nIndex;
-    POINT           m_pt;
-    INT             m_nImageType;
+    DWORD           m_dwMagic;          // magic number to verify the instance
+    BOOL            m_bTopCtrl;         // is it a top control?
+    HWND            m_hwndRubberBand;   // the rubber band window
+    BOOL            m_bMoving;          // is it moving?
+    BOOL            m_bSizing;          // is it resizing?
+    BOOL            m_bLocking;         // is it locked?
+    INT             m_nIndex;           // the control index
+    POINT           m_pt;               // the position
+    INT             m_nImageType;       // the image type
 
-    MRadCtrl() :
-        m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
-        m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE),
-        m_nIndex(-1)
+    // constructor
+    MRadCtrl() : m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+                 m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE), m_nIndex(-1)
     {
         m_pt.x = m_pt.y = -1;
         m_nImageType = 0;
     }
 
+    // the default icon
     static HICON& Icon()
     {
-        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL),
-                                        MAKEINTRESOURCE(IDI_ICO));
+        static HICON s_hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICO));
         return s_hIcon;
     }
+
+    // the default bitmap
     static HBITMAP& Bitmap()
     {
         static HBITMAP s_hbm = LoadBitmap(GetModuleHandle(NULL),
@@ -91,6 +97,7 @@ public:
         return s_hbm;
     }
 
+    // is the window a group box?
     static BOOL IsGroupBox(HWND hCtrl)
     {
         WCHAR szClass[8];
@@ -102,6 +109,7 @@ public:
         return FALSE;
     }
 
+    // call me after subclassing
     void PostSubclass()
     {
         SIZE siz;
@@ -130,6 +138,7 @@ public:
         }
     }
 
+    // the targets (the selected window handles)
     typedef std::set<HWND> set_type;
     static set_type& GetTargets()
     {
@@ -137,26 +146,28 @@ public:
         return s_set;
     }
 
+    // the last selection (the selected window handle)
     static HWND& GetLastSel()
     {
         static HWND s_hwnd = NULL;
         return s_hwnd;
     }
 
+    // get the target control indexes
     static std::set<INT> GetTargetIndeces()
     {
         set_type targets = MRadCtrl::GetTargets();
 
         std::set<INT> indeces;
-        set_type::iterator it, end = targets.end();
-        for (it = targets.begin(); it != end; ++it)
+        for (auto target : targets)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            auto pCtrl = MRadCtrl::GetRadCtrl(target);
             indeces.insert(pCtrl->m_nIndex);
         }
         return indeces;
     }
 
+    // the index-to-control mapping
     typedef std::map<INT, HWND> map_type;
     static map_type& IndexToCtrlMap()
     {
@@ -164,119 +175,144 @@ public:
         return s_map;
     }
 
+    // get the rubber band that is associated to the MRadCtrl
     MRubberBand *GetRubberBand()
     {
         MWindowBase *base = GetUserData(m_hwndRubberBand);
         if (base)
         {
-            MRubberBand *band = static_cast<MRubberBand *>(base);
-            return band;
+            return static_cast<MRubberBand *>(base);
         }
         return NULL;
     }
 
+    // get the MRadCtrl from a window handle
     static MRadCtrl *GetRadCtrl(HWND hwnd)
     {
         MWindowBase *base = GetUserData(hwnd);
         if (base)
         {
-            MRadCtrl *pCtrl;
-            pCtrl = static_cast<MRadCtrl *>(base);
+            auto pCtrl = static_cast<MRadCtrl *>(base);
             if (pCtrl->m_dwMagic == 0xDEADFACE)
                 return pCtrl;
         }
         return NULL;
     }
 
+    // is the user dragging on the dialog face
     static BOOL& GetRangeSelect(void)
     {
         static BOOL s_bRangeSelect = FALSE;
         return s_bRangeSelect;
     }
 
+    // deselect the selection
     static BOOL DeselectSelection()
     {
-        BOOL bFound = FALSE;
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        BOOL bFound = FALSE;    // not found yet
+
+        for (auto target : GetTargets())
         {
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            MRadCtrl *pCtrl = GetRadCtrl(target);
             if (pCtrl)
             {
+                bFound = TRUE;  // found
+
+                // destroy the rubber band of the control
                 DestroyWindow(pCtrl->m_hwndRubberBand);
                 pCtrl->m_hwndRubberBand = NULL;
-                bFound = TRUE;
             }
         }
+
+        // clear the target set
         GetTargets().clear();
+
+        // clear the last selection
         GetLastSel() = NULL;
-        return bFound;
+
+        return bFound;  // found or not
     }
 
+    // delete the selection
     static void DeleteSelection()
     {
         if (GetTargets().empty())
             return;
 
-        set_type::iterator it = GetTargets().begin();
+        // send MYWM_DELETESEL message to the parent of the target
+        auto it = GetTargets().begin();
         PostMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
+    // deselect this control
     void Deselect()
     {
+        // delete the rubber band of this control
         MRubberBand *band = GetRubberBand();
         if (band)
-        {
             DestroyWindow(*band);
-        }
-        GetTargets().erase(m_hwnd);
         m_hwndRubberBand = NULL;
+
+        // remove the control from targets
+        GetTargets().erase(m_hwnd);
+
+        // clear the last selection
         GetLastSel() = NULL;
     }
 
-    BOOL IsSelected()
+    // is it selected?
+    BOOL IsSelected() const
     {
         return IsWindow(m_hwndRubberBand);
     }
 
+    // select the control
     static void Select(HWND hwnd)
     {
-        if (hwnd == NULL)
-            return;
-
-        MRadCtrl *pCtrl = GetRadCtrl(hwnd);
+        // get the RADical control instance
+        auto pCtrl = GetRadCtrl(hwnd);
         if (pCtrl == NULL)
             return;
 
-        MRubberBand *band = new MRubberBand;
+        // create the rubber band for the control
+        auto band = new MRubberBand;
         band->CreateDx(GetParent(hwnd), hwnd, TRUE);
         pCtrl->m_hwndRubberBand = *band;
 
+        // if not group box
         if (!MRadCtrl::IsGroupBox(hwnd))
         {
+            // go to bottom! (for better hittest)
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
         }
 
+        // add the handle to the targets
         GetTargets().insert(hwnd);
+
+        // set the handle to the last selection
         GetLastSel() = hwnd;
     }
 
+    // move the selected RADical controls
     static void MoveSelection(HWND hwnd, INT dx, INT dy)
     {
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        // for each target
+        for (auto target : GetTargets())
         {
-            if (hwnd == *it)
-                continue;
+            if (hwnd == target)
+                continue;   // care the others only
 
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
-            if (pCtrl)
+            if (auto pCtrl = GetRadCtrl(target))    // RADical control?
             {
+                // get the window rectangle relative to the parent
                 RECT rc;
                 GetWindowRect(*pCtrl, &rc);
                 MapWindowPoints(NULL, ::GetParent(*pCtrl), (LPPOINT)&rc, 2);
+
+                // move the offset by dx and dy
                 OffsetRect(&rc, dx, dy);
 
+                // move it
                 pCtrl->m_bMoving = TRUE;
                 pCtrl->SetWindowPosDx((LPPOINT)&rc);
                 pCtrl->m_bMoving = FALSE;
@@ -284,24 +320,27 @@ public:
         }
     }
 
+    // resize the selected RADical controls
     static void ResizeSelection(HWND hwnd, INT cx, INT cy)
     {
-        set_type::iterator it, end = GetTargets().end();
-        for (it = GetTargets().begin(); it != end; ++it)
+        // for each target
+        for (auto target : GetTargets())
         {
-            if (hwnd == *it)
-                continue;
+            if (hwnd == target)
+                continue;   // care the others only
 
-            MRadCtrl *pCtrl = GetRadCtrl(*it);
+            // is it a resizing RADical control?
+            auto pCtrl = GetRadCtrl(target);
             if (pCtrl && !pCtrl->m_bSizing)
             {
+                // resize it
                 pCtrl->m_bSizing = TRUE;
                 SIZE siz = { cx , cy };
                 pCtrl->SetWindowPosDx(NULL, &siz);
                 pCtrl->m_bSizing = FALSE;
 
-                MRubberBand *band = pCtrl->GetRubberBand();
-                if (band)
+                // also move the rubber band
+                if (auto band = pCtrl->GetRubberBand();)
                 {
                     band->FitToTarget();
                 }
@@ -309,6 +348,7 @@ public:
         }
     }
 
+    // range selection
     struct RANGE_SELECT
     {
         RECT rc;
@@ -322,39 +362,51 @@ public:
         RECT *prc = &prs->rc;
         RECT rc;
 
-        if (MRadCtrl *pCtrl = GetRadCtrl(hwnd))
+        // is it a RADical control?
+        if (auto pCtrl = GetRadCtrl(hwnd))
         {
-            if (pCtrl->m_bTopCtrl)
-            {
-                GetWindowRect(*pCtrl, &rc);
+            // is it a top control?
+            if (!pCtrl->m_bTopCtrl)
+                return;
 
-                if (prc->left <= rc.left && prc->top <= rc.top &&
-                    rc.right <= prc->right && rc.bottom <= prc->bottom)
+            // get the window rectangle of the control
+            GetWindowRect(*pCtrl, &rc);
+
+            // the control in range?
+            if (prc->left <= rc.left && prc->top <= rc.top &&
+                rc.right <= prc->right && rc.bottom <= prc->bottom)
+            {
+                // is [Ctrl] key down?
+                if (prs->bCtrlDown)
                 {
-                    if (prs->bCtrlDown)
+                    // is the control selected?
+                    if (pCtrl->IsSelected())
                     {
-                        if (pCtrl->IsSelected())
-                        {
-                            pCtrl->Deselect();
-                        }
-                        else
-                        {
-                            MRadCtrl::Select(*pCtrl);
-                        }
+                        // deselect
+                        pCtrl->Deselect();
                     }
                     else
                     {
-                        if (!pCtrl->IsSelected())
-                        {
-                            MRadCtrl::Select(*pCtrl);
-                        }
+                        // select
+                        MRadCtrl::Select(*pCtrl);
+                    }
+                }
+                else
+                {
+                    // is the control not selected?
+                    if (!pCtrl->IsSelected())
+                    {
+                        // select
+                        MRadCtrl::Select(*pCtrl);
                     }
                 }
             }
         }
-        return TRUE;
+
+        return TRUE;    // continue
     }
 
+    // do range selection
     static void DoRangeSelect(HWND hwndParent, const RECT *prc, BOOL bCtrlDown)
     {
         RANGE_SELECT rs;
@@ -363,6 +415,7 @@ public:
         EnumChildWindows(hwndParent, RangeSelectProc, (LPARAM)&rs);
     }
 
+    // the window procedure of MRadCtrl
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -390,10 +443,14 @@ public:
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
     }
 
+    // MRadCtrl WM_ERASEBKGND
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
     {
+        // get the window class name of MRadCtrl
         WCHAR szClass[64];
         GetClassNameW(hwnd, szClass, 64);
+
+        // special rendering for specific classes
         if (lstrcmpiW(szClass, TOOLBARCLASSNAMEW) == 0 ||
             lstrcmpiW(szClass, REBARCLASSNAMEW) == 0 ||
             lstrcmpiW(szClass, WC_PAGESCROLLERW) == 0)
@@ -404,153 +461,197 @@ public:
             return TRUE;
         }
 
+        // otherwise default processing
         return (BOOL)DefaultProcDx();
     }
 
+    // MRadCtrl WM_NCRBUTTONDOWN/WM_NCRBUTTONDBLCLK
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
         if (fDoubleClick)
             return;
 
+        // emulate clicking to select the control
         OnNCLButtonDown(hwnd, FALSE, x, y, codeHitTest);
         OnNCLButtonUp(hwnd, x, y, codeHitTest);
+
+        // send WM_NCRBUTTONDOWN to the parent
         SendMessage(GetParent(hwnd), WM_NCRBUTTONDOWN, (WPARAM)hwnd, MAKELPARAM(x, y));
     }
 
+    // MRadCtrl WM_NCRBUTTONUP
     void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // consume
     }
 
+    // MRadCtrl WM_NCLBUTTONDOWN/WM_NCLBUTTONDBLCLK
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
+        // consume
     }
 
+    // MRadCtrl WM_LBUTTONUP
     void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
     {
+        // consume
     }
 
+    // MRadCtrl WM_MOUSEMOVE
     void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
     {
+        // consume
     }
 
+    // MRadCtrl WM_MOVE
     void OnMove(HWND hwnd, int x, int y)
     {
         if (!m_bTopCtrl)
         {
+            // if not a top control, do default processing
             DefaultProcDx(hwnd, WM_MOVE, 0, MAKELPARAM(x, y));
             return;
         }
 
+        // if not locked
         if (!m_bLocking)
         {
             if (!m_bMoving)
             {
+                // move the selected controls by the difference of positions
                 POINT pt;
                 GetCursorPos(&pt);
                 MoveSelection(hwnd, pt.x - m_pt.x, pt.y - m_pt.y);
-                m_pt = pt;
+                m_pt = pt;  // remember the position
             }
 
-            MRubberBand *band = GetRubberBand();
-            if (band)
+            // move the rubber band
+            if (auto band = GetRubberBand())
             {
                 band->FitToTarget();
             }
 
+            // redraw
             RECT rc;
             GetClientRect(hwnd, &rc);
             InvalidateRect(hwnd, &rc, TRUE);
 
+            // send MYWM_CTRLMOVE to the parent
             SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
         }
     }
 
+    // MRadCtrl WM_SIZE
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+        // default processing
         DefaultProcDx(hwnd, WM_SIZE, state, MAKELPARAM(cx, cy));
-        if (!m_bTopCtrl)
-        {
-            return;
-        }
 
+        if (!m_bTopCtrl)
+            return;     // not a top control
+
+        // is it not locked
         if (!m_bLocking)
         {
+            // resize if necessary
             if (!m_bSizing)
                 ResizeSelection(hwnd, cx, cy);
 
+            // send MYWM_CTRLSIZE to the parent
             SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
+
+            // redraw
             InvalidateRect(hwnd, NULL, TRUE);
         }
     }
 
+    // MRadCtrl WM_KEYDOWN/WM_KEYUP
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
         if (fDown)
         {
+            // send WM_KEYDOWN to the parent
             FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, SendMessage);
         }
     }
 
+    // MRadCtrl WM_NCLBUTTONDOWN/WM_NCLBUTTONDBLCLK
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
         if (hwnd != m_hwnd)
-            return;
+            return;     // invalid
 
+        // update the position
         GetCursorPos(&m_pt);
 
         if (fDoubleClick)
-            return;
+            return;     // ignore double clicks
 
+        // ignore if not on the caption
         if (codeHitTest != HTCAPTION)
             return;
 
-        if (GetKeyState(VK_CONTROL) < 0)
+        if (GetKeyState(VK_CONTROL) < 0)    // [Ctrl] key is down
         {
             if (m_hwndRubberBand)
             {
+                // deselect this control
                 Deselect();
-                return;
+                return;     // finish
             }
         }
-        else if (GetKeyState(VK_SHIFT) < 0)
+        else if (GetKeyState(VK_SHIFT) < 0)     // [Shift] key is down
         {
             if (m_hwndRubberBand)
             {
-                return;
+                return;     // finish
             }
         }
         else
         {
-            if (m_hwndRubberBand)
+            if (!m_hwndRubberBand)
             {
-                ;
-            }
-            else
-            {
+                // deselect the selected controls
                 DeselectSelection();
             }
         }
 
+        // if no rubber band that is associated to this control
         if (m_hwndRubberBand == NULL)
         {
+            // select this control
             Select(hwnd);
         }
 
+        // enable dragging by emulating the title bar dragging
         DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
+
+        // if not group box
         if (!IsGroupBox(hwnd))
+        {
+            // go to bottom (for better hittest)
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+        }
     }
 
+    // MRadCtrl WM_NCMOUSEMOVE
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // default processing
         DefWindowProc(hwnd, WM_NCMOUSEMOVE, codeHitTest, MAKELPARAM(x, y));
     }
 
+    // MRadCtrl WM_NCLBUTTONUP
     void OnNCLButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // finish moving
         m_bMoving = FALSE;
+
+        // clear the position
         m_pt.x = -1;
         m_pt.y = -1;
+
+        // default processing
         DefWindowProc(hwnd, WM_NCLBUTTONUP, codeHitTest, MAKELPARAM(x, y));
     }
 
@@ -563,100 +664,139 @@ public:
         POINT pt;
     };
 
-    static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
+    // the helper function for hittest
+    static BOOL CALLBACK EnumHitTestChildProc(HWND hwnd, LPARAM lParam)
     {
         // NOTE: EnumChildWindows scans not only children but descendants.
-        MYHITTEST *pmht = (MYHITTEST *)lParam;
+
+        auto pmht = (MYHITTEST *)lParam;
+
+        // get the window rectangle
         RECT rc;
         GetWindowRect(hwnd, &rc);
-        if (!PtInRect(&rc, pmht->pt))
-            return TRUE;
 
-        if (MRubberBand *pBand = MRubberBand::GetRubberBand(hwnd))
+        // the point in the rectangle?
+        if (!PtInRect(&rc, pmht->pt))
+            return TRUE;    // if not, ignore
+
+        // the control has a rubber band?
+        if (auto pBand = MRubberBand::GetRubberBand(hwnd))
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(pBand->m_hwndTarget);
+            // the rubber band's target is the control?
+            auto pCtrl = MRadCtrl::GetRadCtrl(pBand->m_hwndTarget);
             if (pCtrl && pCtrl->m_bTopCtrl)
             {
+                // clear the candidate
                 pmht->hCandidate = NULL;
+
+                // if the window is sgroupbox
                 if (IsGroupBox(*pCtrl))
                 {
+                    // set to hGroupBox
                     pmht->hGroupBox = *pCtrl;
                 }
                 else
                 {
+                    // otherwise, set to the last target
                     pmht->hLast = pBand->m_hwndTarget;
                 }
             }
         }
-        else if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+        else if (auto pCtrl = MRadCtrl::GetRadCtrl(hwnd))   // is it a RADical control?
         {
-            if (pCtrl->m_bTopCtrl)
+            if (pCtrl->m_bTopCtrl)  // a top control
             {
+                // set to the last target
                 pmht->hLast = hwnd;
+
+                // is it not group box?
                 if (!IsGroupBox(hwnd))
                 {
+                    // it's a candidate
                     pmht->hCandidate = hwnd;
                 }
             }
         }
-        return TRUE;
+
+        return TRUE;    // continue
     }
 
+    // MRadCtrl WM_NCHITTEST
     UINT OnNCHitTest(HWND hwnd, int x, int y)
     {
-        if (m_bTopCtrl)
+        if (m_bTopCtrl)     // a top control?
         {
+            // get the window rectangle
             RECT rc;
             GetWindowRect(hwnd, &rc);
 
+            // if the position is out of rectangle, ignore it
             POINT pt = { x, y };
             if (!PtInRect(&rc, pt))
                 return HTTRANSPARENT;
 
+            // it has a rubber band?
             if (m_hwndRubberBand)
             {
+                // get the window rectangle of the rubber band
                 RECT rcBand;
                 GetWindowRect(m_hwndRubberBand, &rcBand);
 
+                // create the region object
                 HRGN hRgn = CreateRectRgn(0, 0, 0, 0);
                 GetWindowRgn(m_hwndRubberBand, hRgn);
                 OffsetRgn(hRgn, rcBand.left, rcBand.top);
 
-                if (PtInRegion(hRgn, x, y))
+                if (PtInRegion(hRgn, x, y))     // if in the region
                 {
+                    // delete the region object
                     DeleteObject(hRgn);
-                    return HTTRANSPARENT;
+
+                    return HTTRANSPARENT;   // ignore
                 }
+
+                // delete the region object
                 DeleteObject(hRgn);
             }
 
+            // initialize a MYHITTEST
             MYHITTEST mht;
             mht.hParent = GetParent(hwnd);
             mht.hCandidate = NULL;
             mht.hLast = NULL;
             mht.hGroupBox = NULL;
             mht.pt = pt;
-            EnumChildWindows(mht.hParent, EnumChildProc, (LPARAM)&mht);
+
+            // try to hittest
+            EnumChildWindows(mht.hParent, EnumHitTestChildProc, (LPARAM)&mht);
 
             //if (GetAsyncKeyState(VK_RBUTTON) < 0)
             //    DebugBreak();
 
             if (mht.hCandidate == hwnd && hwnd != mht.hGroupBox)
             {
-                return HTCAPTION;
+                // there is a candidate and it is not group box
+                return HTCAPTION;   // emulate caption hittest
             }
+
             if (!mht.hCandidate && mht.hLast == hwnd)
             {
-                return HTCAPTION;
+                // there is no candidate, but last one is this control
+                return HTCAPTION;   // emulate caption hittest
             }
+
             if (mht.hCandidate == hwnd)
             {
-                return HTCAPTION;
+                // there is candidate
+                return HTCAPTION;   // emulate caption hittest
             }
         }
+
+        // ignore
         return HTTRANSPARENT;
     }
 
+    // called in WM_NCDESTROY
     virtual void PostNcDestroy()
     {
         if (m_bTopCtrl)
@@ -664,30 +804,38 @@ public:
             DebugPrintDx("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
         }
         MWindowBase::PostNcDestroy();
+
+        // delete the MRadCtrl instance
         delete this;
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// MRadDialog --- RADical dialog
+
 class MRadDialog : public MDialogBase
 {
 public:
-    BOOL            m_index_visible;
-    POINT           m_ptClicked;
-    POINT           m_ptDragging;
-    MIndexLabels    m_labels;
-    BOOL            m_bMovingSizing;
-    INT             m_xDialogBaseUnit;
-    INT             m_yDialogBaseUnit;
-    HBRUSH          m_hbrBack;
+    BOOL            m_index_visible;        // indeces are visible
+    POINT           m_ptClicked;            // the clicked position
+    POINT           m_ptDragging;           // the dragging position
+    MIndexLabels    m_labels;               // the labels
+    BOOL            m_bMovingSizing;        // moving and/or resizing
+    INT             m_xDialogBaseUnit;      // the X dialog base unit
+    INT             m_yDialogBaseUnit;      // the Y dialog base unit
+    HBRUSH          m_hbrBack;              // the background brush
 
-    MRadDialog()
-        : m_index_visible(FALSE), m_bMovingSizing(FALSE)
+    // contructor
+    MRadDialog() : m_index_visible(FALSE), m_bMovingSizing(FALSE)
     {
+        // get the dialog base units
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
         m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
 
+        // reset the clicked position
         m_ptClicked.x = m_ptClicked.y = -1;
 
+        // create the label font
         HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
         LOGFONT lf;
         GetObject(hFont, sizeof(lf), &lf);
@@ -695,12 +843,14 @@ public:
         hFont = ::CreateFontIndirect(&lf);
         m_labels.m_hFont = hFont;
 
+        // create the background brush
         m_hbrBack = NULL;
         ReCreateBackBrush();
     }
 
     ~MRadDialog()
     {
+        // delete the brush
         DeleteObject(m_hbrBack);
     }
 
@@ -722,8 +872,8 @@ public:
 
     static BOOL CALLBACK GetTargetProc(HWND hwnd, LPARAM lParam)
     {
-        GET_TARGET *get_target = (GET_TARGET *)lParam;
-        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwnd))
+        auto get_target = (GET_TARGET *)lParam;
+        if (auto pCtrl = MRadCtrl::GetRadCtrl(hwnd))
         {
             if (pCtrl->m_dwMagic != 0xDEADFACE || !pCtrl->m_bTopCtrl)
             {

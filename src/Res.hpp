@@ -485,12 +485,12 @@ struct EntrySet : protected EntrySetBase
 
         for (auto item1 : *this)
         {
-            if (item1.m_et != ET_LANG)
+            if (item1->m_et != ET_LANG)
                 continue;
 
             for (auto item2 : another)
             {
-                if (item2.m_et != ET_LANG)
+                if (item2->m_et != ET_LANG)
                     continue;
 
                 if (*item1 == *item2 && item1->valid() && item2->valid())
