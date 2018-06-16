@@ -116,8 +116,7 @@ public:
         if (!Edt1_CheckFile(hEdt1, file))
             return;
 
-        auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang);
-        if (entry)
+        if (auto entry = g_res.find(ET_LANG, RT_GROUP_ICON, name, lang))
         {
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)

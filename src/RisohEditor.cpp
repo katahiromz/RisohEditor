@@ -655,11 +655,10 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 
     INT k = -1;     // not matched yet
     MStringW prefix;
-    ConstantsDB::TableType table;
     if (nIDTYPE_ != IDTYPE_UNKNOWN)
     {
         // get the prefix from an IDTYPE_ value
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_].name;
         if (prefix.empty())
             return;     // unable to get
@@ -685,7 +684,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
         // not found
 
         // get the prefix of Resource.ID
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
 
         // get the resource IDs by the prefix
@@ -1742,49 +1741,6 @@ protected:
     TCHAR           m_szFindWhat[80];           // the source text for find/replace
     TCHAR           m_szReplaceWith[80];        // the destination text for replace
 
-    MString GetLanguageStatement(WORD langid)
-    {
-        return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
-    }
-
-    void UpdateNames(void);
-
-    void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
-    {
-        // update name label
-        e->m_strLabel = e->get_name_label();
-
-        // set the label text
-        TV_ITEM item;
-        ZeroMemory(&item, sizeof(item));
-        item.mask = TVIF_TEXT | TVIF_HANDLE;
-        item.hItem = e->m_hItem;
-        item.pszText = &e->m_strLabel[0];
-        TreeView_SetItem(m_hwndTV, &item);
-
-        // update pszText if any
-        if (pszText)
-            StringCchCopyW(pszText, MAX_PATH, item.pszText);
-    }
-
-    void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
-    {
-        // update lang label
-        e->m_strLabel = e->get_lang_label();
-
-        // set the label text
-        TV_ITEM item;
-        ZeroMemory(&item, sizeof(item));
-        item.mask = TVIF_TEXT | TVIF_HANDLE;
-        item.hItem = e->m_hItem;
-        item.pszText = &e->m_strLabel[0];
-        TreeView_SetItem(m_hwndTV, &item);
-
-        // update pszText if any
-        if (pszText)
-            StringCchCopyW(pszText, MAX_PATH, item.pszText);
-    }
-
 public:
     // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
@@ -2078,6 +2034,50 @@ protected:
     BOOL OnReplace(HWND hwnd);
     BOOL OnReplaceAll(HWND hwnd);
     LRESULT OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam);
+
+protected:
+    MString GetLanguageStatement(WORD langid)
+    {
+        return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
+    }
+
+    void UpdateNames(void);
+
+    void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
+    {
+        // update name label
+        e->m_strLabel = e->get_name_label();
+
+        // set the label text
+        TV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_TEXT | TVIF_HANDLE;
+        item.hItem = e->m_hItem;
+        item.pszText = &e->m_strLabel[0];
+        TreeView_SetItem(m_hwndTV, &item);
+
+        // update pszText if any
+        if (pszText)
+            StringCchCopyW(pszText, MAX_PATH, item.pszText);
+    }
+
+    void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
+    {
+        // update lang label
+        e->m_strLabel = e->get_lang_label();
+
+        // set the label text
+        TV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.mask = TVIF_TEXT | TVIF_HANDLE;
+        item.hItem = e->m_hItem;
+        item.pszText = &e->m_strLabel[0];
+        TreeView_SetItem(m_hwndTV, &item);
+
+        // update pszText if any
+        if (pszText)
+            StringCchCopyW(pszText, MAX_PATH, item.pszText);
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2581,8 +2581,7 @@ void MMainWnd::OnImport(HWND hwnd)
             if (g_res.intersect(res))
             {
                 // query overwrite
-                INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
-                                   MB_ICONINFORMATION | MB_YESNOCANCEL);
+                INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
                 switch (nID)
                 {
                 case IDYES:
@@ -7093,7 +7092,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         }
     }
 
-    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
+    auto& table = g_db.m_map[L"RESOURCE.ID"];
     table.clear();
     g_settings.bHasIDC_STATIC = FALSE;
 
@@ -7457,6 +7456,8 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 
     MIdAssocDlg dialog;
     dialog.DialogBoxDx(hwnd);
+
+    // update the prefix database
     UpdatePrefixDB(hwnd);
 }
 
@@ -9192,9 +9193,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
         DeleteDC(hDC);
     }
 
-    ConstantsDB::TableType table1, table2;
-    table1 = g_db.GetTable(L"RESOURCE.ID.TYPE");
-    table2 = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+    auto table1 = g_db.GetTable(L"RESOURCE.ID.TYPE");
+    auto table2 = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     assert(table1.size() == table2.size());
 
     g_settings.assoc_map.clear();
@@ -9242,17 +9242,18 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nSaveFilterIndex = 1;
 }
 
-// update the prefix DB
+// update the prefix data
 void MMainWnd::UpdatePrefixDB(HWND hwnd)
 {
     // update "RESOURCE.ID.PREFIX" table
-    ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID.PREFIX"];
+    auto& table = g_db.m_map[L"RESOURCE.ID.PREFIX"];
     for (size_t i = 0; i < table.size(); ++i)
     {
         for (auto& pair : g_settings.assoc_map)
         {
-            if (table[i].name == pair.first)
+            if (table[i].name == pair.first)    // matched
             {
+                // update the value
                 table[i].value = mstr_parse_int(pair.second.c_str());
                 break;
             }
