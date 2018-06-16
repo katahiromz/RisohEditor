@@ -821,7 +821,7 @@ public:
     POINT           m_ptClicked;            // the clicked position
     POINT           m_ptDragging;           // the dragging position
     MIndexLabels    m_labels;               // the labels
-    BOOL            m_bMovingSizing;        // moving and/or resizing
+    BOOL            m_bMovingSizing;        // the lock of moving and/or resizing
     INT             m_xDialogBaseUnit;      // the X dialog base unit
     INT             m_yDialogBaseUnit;      // the Y dialog base unit
     HBRUSH          m_hbrBack;              // the background brush
@@ -1532,7 +1532,7 @@ public:
     // create an MRadWindow window
     BOOL CreateDx(HWND hwndParent)
     {
-        // set the moving/resizing flag
+        // lock the moving/resizing
         BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
         m_rad_dialog.m_bMovingSizing = TRUE;
 
@@ -1619,24 +1619,26 @@ public:
         }
     }
 
+    // adjust MRadWindow's position and size to MRadDialog's client area
     void FitToRadDialog()
     {
+        // get the window rectangle
         RECT rc;
         GetWindowRect(m_rad_dialog, &rc);
-        SIZE siz;
-        siz.cx = rc.right - rc.left;
-        siz.cy = rc.bottom - rc.top;
+        SIZE siz = SizeFromRectDx(&rc);
 
+        // adjust the rectangle
+        SetRect(&rc, 0, 0, siz.cx, siz.cy);
         DWORD style = GetWindowLong(m_hwnd, GWL_STYLE);
         DWORD exstyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
-        SetRect(&rc, 0, 0, siz.cx, siz.cy);
         AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
-        siz.cx = rc.right - rc.left;
-        siz.cy = rc.bottom - rc.top;
+        // resize the MRadWindow
+        siz = SizeFromRectDx(&rc);
         SetWindowPosDx(NULL, &siz);
     }
 
+    // the window class name
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("katahiromz's MRadWindow Class");
@@ -1644,22 +1646,30 @@ public:
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
+        // no class icon
         wcx.hIcon = NULL;
-        wcx.hbrBackground = GetStockBrush(DKGRAY_BRUSH);
         wcx.hIconSm = NULL;
+
+        // dark gray background
+        wcx.hbrBackground = GetStockBrush(DKGRAY_BRUSH);
     }
 
+    // recreate the MRadDialog window
     BOOL ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex = -1)
     {
         assert(IsWindow(hwnd));
 
+        // lock moving/resizing
         BOOL bMovingSizingOld = m_rad_dialog.m_bMovingSizing;
         m_rad_dialog.m_bMovingSizing = TRUE;
+
+        // destroy MRadDialog window if any
         if (m_rad_dialog)
         {
             DestroyWindow(m_rad_dialog);
         }
 
+        // get the resource data
         m_dialog_res.Fixup(false);
         std::vector<BYTE> data = m_dialog_res.data();
 #if 0
@@ -1669,6 +1679,7 @@ public:
 #endif
         m_dialog_res.Fixup(true);
 
+        // create the MRadDialog window from data
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))
         {
             m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
@@ -1676,22 +1687,29 @@ public:
         }
         assert(IsWindow(m_rad_dialog));
 
+        // adjust the MRadWindow's size to MRadDialog
         FitToRadDialog();
+
+        // unlock
         m_rad_dialog.m_bMovingSizing = bMovingSizingOld;
 
+        // show the dialog
         ShowWindow(m_rad_dialog, SW_SHOWNOACTIVATE);
         UpdateWindow(m_rad_dialog);
 
+        // make it foreground
         SetForegroundWindow(hwnd);
 
+        // update the mappings
         update_maps();
 
+        // select the RADical control of the specified index
         if (nSelectStartIndex != -1)
         {
             HWND hwndNext = MRadDialog::GetFirstCtrl(hwnd);
             while (hwndNext)
             {
-                if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndNext))
+                if (auto pCtrl = MRadCtrl::GetRadCtrl(hwndNext))
                 {
                     if (pCtrl->m_nIndex >= nSelectStartIndex)
                         MRadCtrl::Select(hwndNext);
@@ -1703,15 +1721,20 @@ public:
         return TRUE;
     }
 
+    // update the mappings
     void update_maps()
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
 
-        HWND hCtrl = GetTopWindow(m_rad_dialog);
-        while (hCtrl)
+        // for all the RADical controls
+        for (HWND hCtrl = GetTopWindow(m_rad_dialog);
+             hCtrl;
+             hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT))
         {
-            if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
+            // is it a RADical control?
+            if (auto pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
             {
+                // get the size
                 SIZE siz;
                 GetWindowPosDx(hCtrl, NULL, &siz);
 
@@ -1741,6 +1764,8 @@ public:
                             siz.cx = 8;
                         if (siz.cy <= 8)
                             siz.cy = 8;
+
+                        // resize
                         SetWindowPosDx(hCtrl, NULL, &siz);
                     }
                 }
@@ -1768,22 +1793,27 @@ public:
                             siz.cx = 8;
                         if (siz.cy <= 8)
                             siz.cy = 8;
+
+                        // resize
                         SetWindowPosDx(hCtrl, NULL, &siz);
                     }
                 }
             }
-
-            hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT);
         }
     }
 
+    // MRadWindow WM_CREATE
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     {
+        // create the icons
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+
+        // set the icons
         SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
+        // resume the window position if necessary
         if (g_settings.bResumeWindowPos)
         {
             if (g_settings.nRadLeft != CW_USEDEFAULT)
@@ -1801,14 +1831,18 @@ public:
             CenterWindowDx(hwnd);
         }
 
+        // create the RADical dialog (MRadDialog)
         return ReCreateRadDialog(hwnd);
     }
 
+    // MRadWindow WM_DESTROY
     void OnDestroy(HWND hwnd)
     {
+        // post ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
+        // destroy the icons
         if (m_hIcon)
         {
             DestroyIcon(m_hIcon);
@@ -1821,6 +1855,7 @@ public:
         }
     }
 
+    // the window procedure of MRadWindow
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -1846,6 +1881,7 @@ public:
         return DefaultProcDx();
     }
 
+    // MRadWindow WM_SYSCOLORCHANGE
     void OnSysColorChange(HWND hwnd)
     {
         m_rad_dialog.SendMessageDx(WM_SYSCOLORCHANGE);
