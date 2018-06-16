@@ -18,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_RUBBER_BAND_HPP_
-#define MZC4_RUBBER_BAND_HPP_
+#define MZC4_RUBBER_BAND_HPP_       5   // Version 5
 
 class MRubberBand;
 
@@ -179,6 +179,8 @@ public:
     void GetRect(HWND hwnd, LPRECT prc)
     {
         GetWindowRect(hwnd, prc);
+
+        // NOTE: The coordinates of the window region are relative to the upper left corner of the window rectangle.
         OffsetRect(prc, -prc->left, -prc->top);
         assert(prc->left == 0 && prc->top == 0);
     }

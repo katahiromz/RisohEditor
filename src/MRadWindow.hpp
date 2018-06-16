@@ -2149,6 +2149,7 @@ public:
         return 0;
     }
 
+    // update the resource
     void UpdateRes()
     {
         // notify the update of dialog resource to the owner window
@@ -2240,7 +2241,7 @@ public:
         // recreate MRadDialog
         ReCreateRadDialog(hwnd);
 
-        // update resource
+        // update the resource
         UpdateRes();
     }
 
@@ -2499,7 +2500,7 @@ public:
         if (indeces.empty())
             return;
 
-        // find two items to swap
+        // move the dialog items
         DialogItems items1, items2;
         for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
@@ -2512,8 +2513,6 @@ public:
                 items2.push_back(m_dialog_res[i]);
             }
         }
-
-        // swap
         m_dialog_res.m_items = items1;
         m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), items2.begin(), items2.end());
 
@@ -2521,9 +2520,10 @@ public:
         OnRefresh(hwnd);
     }
 
+    // able to make it bottom index?
     BOOL CanIndexBottom() const
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return FALSE;
 
@@ -2548,13 +2548,14 @@ public:
         return FALSE;
     }
 
+    // make it bottom index
     void IndexBottom(HWND hwnd)
     {
         auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
-        // find two items to swap
+        // move the dialog items
         DialogItems items1, items2;
         for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
@@ -2568,7 +2569,7 @@ public:
             }
         }
 
-        // swawp
+        // swap
         m_dialog_res.m_items = items1;
         m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), items2.begin(), items2.end());
 
@@ -2576,6 +2577,7 @@ public:
         OnRefresh(hwnd);
     }
 
+    // able to decrement the control index?
     BOOL CanIndexMinus() const
     {
         auto indeces = MRadCtrl::GetTargetIndeces();
@@ -2585,12 +2587,14 @@ public:
         return TRUE;
     }
 
+    // decrement the control index
     void IndexMinus(HWND hwnd)
     {
         auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
+        // move the dialog items
         for (INT i = 0; i < m_dialog_res.m_cItems - 1; ++i)
         {
             if (indeces.find(i + 1) != indeces.end())
@@ -2603,6 +2607,7 @@ public:
         OnRefresh(hwnd);
     }
 
+    // able to increment the control index?
     BOOL CanIndexPlus() const
     {
         auto indeces = MRadCtrl::GetTargetIndeces();
@@ -2612,12 +2617,14 @@ public:
         return TRUE;
     }
 
+    // increment the control index
     void IndexPlus(HWND hwnd)
     {
         auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
+        // move the dialog items
         for (INT i = m_dialog_res.m_cItems - 1; i > 0; --i)
         {
             if (indeces.find(i - 1) != indeces.end())
@@ -2637,14 +2644,17 @@ public:
         if (!fDown)
             return;     // ignore WM_KEYUP
 
+        // get the target
         HWND hwndTarget = MRadCtrl::GetLastSel();
         if (hwndTarget == NULL && !MRadCtrl::GetTargets().empty())
         {
             hwndTarget = *MRadCtrl::GetTargets().begin();
         }
 
+        // get the target control
         auto pCtrl = MRadCtrl::GetRadCtrl(hwndTarget);
 
+        // for each case of virtual key
         switch (vk)
         {
         case VK_TAB:
@@ -2900,7 +2910,7 @@ public:
         UpdateRes();
     }
 
-    // fit to the grid
+    // fit the coordinates to the grid
     void FitToGrid(POINT *ppt)
     {
         ppt->x = (ppt->x + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
@@ -2964,6 +2974,8 @@ public:
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
+
+        // update the resource
         UpdateRes();
     }
 };

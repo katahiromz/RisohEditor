@@ -20,74 +20,74 @@
 #ifndef RISOHSETTINGS_HPP
 #define RISOHSETTINGS_HPP
 
-//////////////////////////////////////////////////////////////////////////////
-
 #include "MWindowBase.hpp"
 #include <vector>
 #include <map>
 
-#define MAX_MRU         5       // the number of most recently used files
+//////////////////////////////////////////////////////////////////////////////
 
-typedef std::vector<MString>            mru_type;
-typedef std::map<MString, MString>      assoc_map_type;
-typedef std::map<MStringA, MStringA>    id_map_type;
-typedef std::map<MString, MString>      macro_map_type;
-typedef std::vector<MString>            include_dirs_type;
-typedef std::vector<MString>            captions_type;
+#define MAX_MRU     5       // the number of most recently used (MRU) files
+
+typedef std::vector<MString>            mru_type;           // MRU list type
+typedef std::map<MString, MString>      assoc_map_type;     // association type
+typedef std::map<MStringA, MStringA>    id_map_type;        // ID mapping type
+typedef std::map<MString, MString>      macro_map_type;     // macros type
+typedef std::vector<MString>            include_dirs_type;  // includes type
+typedef std::vector<MString>            captions_type;      // captions type
 
 //////////////////////////////////////////////////////////////////////////////
 
 struct RisohSettings
 {
-    BOOL        bShowBinEdit;
-    BOOL        bAlwaysControl;
-    BOOL        bShowStatusBar;
-    INT         nTreeViewWidth;
-    INT         nBmpViewWidth;
-    INT         nBinEditHeight;
-    BOOL        bGuiByDblClick;
-    BOOL        bResumeWindowPos;
-    BOOL        bAutoLoadNearbyResH;
-    BOOL        bAutoShowIDList;
-    BOOL        bHideID;
-    BOOL        bUseIDC_STATIC;
-    BOOL        bShowDotsOnDialog;
-    INT         nComboHeight;
-    mru_type    vecRecentlyUsed;
-    INT         nWindowLeft;
-    INT         nWindowTop;
-    INT         nWindowWidth;
-    INT         nWindowHeight;
-    BOOL        bMaximized;
-    INT         nIDListLeft;
-    INT         nIDListTop;
-    INT         nIDListWidth;
-    INT         nIDListHeight;
-    INT         nRadLeft;
-    INT         nRadTop;
-    BOOL        bAskUpdateResH;
-    BOOL        bCompressByUPX;
-    MString     strSrcFont;
-    INT         nSrcFontSize;
-    MString     strBinFont;
-    INT         nBinFontSize;
-    assoc_map_type      assoc_map;
-    id_map_type         id_map;
-    id_map_type         added_ids;
-    id_map_type         removed_ids;
-    macro_map_type      macros;
-    include_dirs_type   includes;
-    MString             strWindResExe;
-    MString             strCppExe;
-    MString             strPrevVersion;
-    BOOL                bSepFilesByLang;
-    BOOL                bStoreToResFolder;
-    BOOL                bSelectableByMacro;
-    captions_type       captions;
-    BOOL                bShowToolBar;
-    BOOL                bHasIDC_STATIC;
-    MString             strAtlAxWin;
-    INT                 nSaveFilterIndex;
+    BOOL        bShowBinEdit;           // show the binary EDIT control?
+    BOOL        bAlwaysControl;         // always show CONTROL statements?
+    BOOL        bShowStatusBar;         // show the status bar?
+    INT         nTreeViewWidth;         // the treeview width
+    INT         nBmpViewWidth;          // the MBmpview width
+    INT         nBinEditHeight;         // the binary EDIT control height
+    BOOL        bGuiByDblClick;         // start GUI edit by double click?
+    BOOL        bResumeWindowPos;       // resume the window position?
+    BOOL        bAutoLoadNearbyResH;    // auto loading resource.h?
+    BOOL        bAutoShowIDList;        // auto show ID list window?
+    BOOL        bHideID;                // don't show ID macros?
+    BOOL        bUseIDC_STATIC;         // use IDC_STATIC?
+    BOOL        bShowDotsOnDialog;      // show dots on the dialog?
+    INT         nComboHeight;           // the combobox height
+    mru_type    vecRecentlyUsed;        // the MRU files
+    INT         nWindowLeft;            // the main window X coordinate
+    INT         nWindowTop;             // the main window Y coordinate
+    INT         nWindowWidth;           // the main window width
+    INT         nWindowHeight;          // the main window height
+    BOOL        bMaximized;             // is the main window maximized?
+    INT         nIDListLeft;            // the ID list X coordinate
+    INT         nIDListTop;             // the ID list Y coordinate
+    INT         nIDListWidth;           // the ID list width
+    INT         nIDListHeight;          // the ID list height
+    INT         nRadLeft;               // the RAD window X coordinate
+    INT         nRadTop;                // the RAD window Y coordinate
+    BOOL        bAskUpdateResH;         // ask update the resource.h file?
+    BOOL        bCompressByUPX;         // compress the file by UPX?
+    MString     strSrcFont;             // the source view font name
+    INT         nSrcFontSize;           // the source view font size in points
+    MString     strBinFont;             // the binary view font name
+    INT         nBinFontSize;           // the binary view font size in points
+    assoc_map_type      assoc_map;      // the ID association
+    id_map_type         id_map;         // the macro ID mapping
+    id_map_type         added_ids;      // the added macro IDs
+    id_map_type         removed_ids;    // the removed macro IDs
+    macro_map_type      macros;         // the predefined macros
+    include_dirs_type   includes;       // the #include's directories
+    MString             strWindResExe;  // the windres.exe location
+    MString             strCppExe;      // the cpp.exe location
+    MString             strPrevVersion;     // the previous RisohEditor version
+    BOOL                bSepFilesByLang;    // separate the RC file by languages?
+    BOOL                bStoreToResFolder;  // store to the "res" folder?
+    BOOL                bSelectableByMacro; // choose languages by macros?
+    captions_type       captions;           // the remembered captions
+    BOOL                bShowToolBar;       // show the toolbar?
+    BOOL                bHasIDC_STATIC;     // 
+    MString             strAtlAxWin;        // ATL OLE control name
+    INT                 nSaveFilterIndex;   // the filter index on save
 
     RisohSettings()
     {
