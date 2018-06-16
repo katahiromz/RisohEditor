@@ -857,13 +857,20 @@ public:
                     k, vecItems[i].c_str());
             }
 
+            // get the cursor position
             POINT pt;
             GetCursorPos(&pt);
 
+            // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
             SetForegroundWindow(hwnd);
+
             TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
                 pt.x, pt.y, 0, hwnd, NULL);
+
+            // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
             PostMessage(hwnd, WM_NULL, 0, 0);
+
+            // destroy the menu
             DestroyMenu(hMenu);
         }
         else

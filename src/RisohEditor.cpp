@@ -3137,6 +3137,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         TreeView_SelectItem(m_hwndTV, m_search.pFound->m_hItem);
         TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
 
+        // recalculate the splitter
         PostMessageDx(MYWM_POSTSEARCH);
     }
     else
@@ -3158,8 +3159,10 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected entry
     if (auto entry = g_res.get_entry())
     {
+        // delete it
         if (g_res.super()->find(entry) != g_res.end())
             TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
     }
@@ -3168,9 +3171,11 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
 // play the sound
 void MMainWnd::OnPlay(HWND hwnd)
 {
+    // is it a WAVE sound?
     auto entry = g_res.get_lang_entry();
     if (entry && entry->m_type == L"WAVE")
     {
+        // play the sound
         PlaySound((LPCTSTR)&(*entry)[0], NULL, SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
     }
 }
@@ -3178,9 +3183,11 @@ void MMainWnd::OnPlay(HWND hwnd)
 // cancel edit
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
+    // clear modification flag
     Edit_SetModify(m_hSrcEdit, FALSE);
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
+    // reselect to update the m_hSrcEdit
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
@@ -3190,6 +3197,7 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
 {
     if (bBox)
     {
+        // show the message box
         if (strOutput.empty())
         {
             MWideToAnsi ansi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
@@ -3202,6 +3210,7 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
     }
     else
     {
+        // show the message in m_hBinEdit
         if (strOutput.empty())
         {
             SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
@@ -3759,10 +3768,12 @@ void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
 // WM_MOVE: the main window has moved
 void MMainWnd::OnMove(HWND hwnd, int x, int y)
 {
-    RECT rc;
-    GetWindowRect(hwnd, &rc);
+    // is the window maximized or minimized?
     if (!IsZoomed(hwnd) && !IsIconic(hwnd))
     {
+        // if so, then remember the position
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
         g_settings.nWindowLeft = rc.left;
         g_settings.nWindowTop = rc.top;
     }
@@ -3779,28 +3790,40 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 
     RECT rc, ClientRect;
 
+    // is the main window maximized?
     if (IsZoomed(hwnd))
     {
         g_settings.bMaximized = TRUE;
     }
-    else if (!IsIconic(hwnd))
+    else if (IsIconic(hwnd))   // is it minimized?
     {
+        ;
+    }
+    else
+    {
+        // not maximized nor minimized
+        // remember the size
         GetWindowRect(hwnd, &rc);
         g_settings.nWindowWidth = rc.right - rc.left;
         g_settings.nWindowHeight = rc.bottom - rc.top;
         g_settings.bMaximized = FALSE;
     }
 
+    // get the client rectangle from the main window
     GetClientRect(hwnd, &ClientRect);
     SIZE sizClient = SizeFromRectDx(&ClientRect);
 
     INT x = 0, y = 0;
+
+    // reserve the toolbar space
     if (::IsWindowVisible(m_hToolBar))
     {
         GetWindowRect(m_hToolBar, &rc);
         y += rc.bottom - rc.top;
         sizClient.cy -= rc.bottom - rc.top;
     }
+
+    // reserve the status bar space
     if (::IsWindowVisible(m_hStatusBar))
     {
         INT anWidths[] = { ClientRect.right - CX_STATUS_PART, -1 };
@@ -3809,6 +3832,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
         sizClient.cy -= rc.bottom - rc.top;
     }
 
+    // notify the size change to m_splitter1
     MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
 }
 
@@ -4088,17 +4112,21 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 {
     if (hwndContext != m_hwndTV)
-        return;
+        return;     // ignore
 
+    // if RADical window is displayed
     if (IsWindowVisible(m_rad_window))
     {
+        // destroy it
         DestroyWindow(m_rad_window);
     }
 
+    // get screen coordinates from xPos and yPos
     POINT pt = {(INT)xPos, (INT)yPos};
     HTREEITEM hItem;
     if (xPos == -1 && yPos == -1)
     {
+        // context menu from keyboard
         hItem = TreeView_GetSelection(hwndContext);
 
         RECT rc;
@@ -4108,6 +4136,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     }
     else
     {
+        // context menu from mouse
         ScreenToClient(hwndContext, &pt);
 
         TV_HITTESTINFO HitTest;
@@ -4118,22 +4147,29 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
         hItem = HitTest.hItem;
     }
 
+    // select the item
     TreeView_SelectItem(hwndContext, hItem);
 
+    // load the menu
     HMENU hMenu = LoadMenuW(m_hInst, MAKEINTRESOURCEW(IDR_POPUPMENUS));
     OnInitMenu(hwnd, hMenu);
     HMENU hSubMenu = ::GetSubMenu(hMenu, 0);
     if (hMenu == NULL || hSubMenu == NULL)
         return;
 
+    // convert the client coordinates to the screen coordinates
     ClientToScreen(hwndContext, &pt);
 
+    // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
     SetForegroundWindow(hwndContext);
-    INT id;
+
     UINT Flags = TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD;
-    id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0, 
-                        hwndContext, NULL);
+    INT id = TrackPopupMenu(hSubMenu, Flags, pt.x, pt.y, 0, hwndContext, NULL);
+
+    // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
     PostMessageW(hwndContext, WM_NULL, 0, 0);
+
+    // destroy the menu
     DestroyMenu(hMenu);
 
     if (id)
@@ -4145,11 +4181,15 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 // preview the icon resource
 void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
 {
+    // create a bitmap object from the entry and set it to m_hBmpView
     BITMAP bm;
     m_hBmpView.SetBitmap(CreateBitmapFromIconOrPngDx(hwnd, entry, bm));
 
+    // create the icon
     MStringW str;
     HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
+
+    // dump info to m_hSrcEdit
     if (hIcon)
     {
         str = DumpIconInfo(bm, TRUE);
@@ -4158,62 +4198,79 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
     {
         str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     }
-    DestroyIcon(hIcon);
-
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // destroy the icon
+    DestroyIcon(hIcon);
+
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the cursor resource
 void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
 {
+    // create a cursor object from the entry and set it to m_hBmpView
     BITMAP bm;
     HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
     m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
-    MStringW str = DumpIconInfo(bm, FALSE);
-    DestroyCursor(hCursor);
 
+    // dump info to m_hSrcEdit
+    MStringW str = DumpIconInfo(bm, FALSE);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // destroy the cursor
+    DestroyCursor(hCursor);
+
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the group icon resource
 void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
 {
+    // create a bitmap object from the entry and set it to m_hBmpView
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, entry));
 
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the group cursor resource
 void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
 {
+    // create a bitmap object from the entry and set it to m_hBmpView
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, entry));
     assert(m_hBmpView);
 
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the bitmap resource
 void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
 {
+    // create a bitmap object from the entry and set it to m_hBmpView
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
-    ShowBmpView(TRUE);
 
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
+
+    // show m_hBmpView
+    ShowBmpView(TRUE);
 }
 
 // preview the image resource
@@ -4221,33 +4278,45 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 {
     MStringW str;
 
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     str += res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // set the entry image to m_hBmpView
     m_hBmpView.SetImage(&entry[0], entry.size());
+
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the WAVE resource
 void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // make it playable
     m_hBmpView.SetPlay();
+
+    // show m_hBmpView
     ShowBmpView(TRUE);
 }
 
 // preview the AVI resource
 void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
+    // set the AVI
     m_hBmpView.SetMedia(&entry[0], entry.size());
+
+    // show m_hBmpView
     ShowMovie(TRUE);
 }
 
@@ -4258,6 +4327,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
     AccelRes accel;
     if (accel.LoadFromStream(stream))
     {
+        // dump the text to m_hSrcEdit
         MString str = GetLanguageStatement(entry.m_lang);
         str += accel.Dump(entry.m_name);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4272,6 +4342,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
     WORD nNameID = entry.m_name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
     {
+        // dump the text to m_hSrcEdit
         MStringW str = mes.Dump(nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
@@ -4285,6 +4356,7 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
     WORD nNameID = entry.m_name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
     {
+        // dump the text to m_hSrcEdit
         MStringW str = str_res.Dump(nNameID);
         SetWindowTextW(m_hSrcEdit, str.c_str());
     }
@@ -4295,9 +4367,12 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 {
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
+
     MStringW str;
     if (entry.size())
         str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
+
+    // dump the text to m_hSrcEdit
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
@@ -4308,6 +4383,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
     MenuRes menu_res;
     if (menu_res.LoadFromStream(stream))
     {
+        // dump the text to m_hSrcEdit
         MString str = GetLanguageStatement(entry.m_lang);
         str += menu_res.Dump(entry.m_name);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4320,6 +4396,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.m_data))
     {
+        // dump the text to m_hSrcEdit
         MString str = GetLanguageStatement(entry.m_lang);
         str += ver_res.Dump(entry.m_name);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4329,6 +4406,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 // preview the unknown resource
 void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4337,6 +4415,7 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 // preview the RISOHTEMPLATE resource
 void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4345,6 +4424,7 @@ void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4353,6 +4433,7 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 // preview the DLGINIT resource
 void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 {
+    // dump the text to m_hSrcEdit
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4365,6 +4446,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
     DialogRes dialog_res;
     if (dialog_res.LoadFromStream(stream))
     {
+        // dump the text to m_hSrcEdit
         MString str = GetLanguageStatement(entry.m_lang);
         str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
         SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4431,6 +4513,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
             return;
     }
 
+    // dump the text to m_hSrcEdit
     MString str = GetLanguageStatement(entry.m_lang);
     str += str_res.Dump();
     SetWindowTextW(m_hSrcEdit, str.c_str());
@@ -4450,6 +4533,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
             return;
     }
 
+    // dump the text to m_hSrcEdit
     MString str;
     str += GetLanguageStatement(entry.m_lang);
     str += L"#ifdef APSTUDIO_INVOKED\r\n";
@@ -4464,16 +4548,19 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 // close the preview
 VOID MMainWnd::HidePreview()
 {
-    m_hBmpView.DestroyView();
-
+    // clear m_hBinEdit
     SetWindowTextW(m_hBinEdit, NULL);
     Edit_SetModify(m_hBinEdit, FALSE);
 
+    // clear m_hSrcEdit
     SetWindowTextW(m_hSrcEdit, NULL);
     Edit_SetModify(m_hSrcEdit, FALSE);
 
+    // close and hide m_hBmpView
+    m_hBmpView.DestroyView();
     ShowBmpView(FALSE);
 
+    // recalculate the splitter
     PostMessageDx(WM_SIZE);
 }
 
