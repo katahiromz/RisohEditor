@@ -341,7 +341,7 @@ public:
                 pCtrl->m_bSizing = FALSE;
 
                 // also move the rubber band
-                if (auto band = pCtrl->GetRubberBand();)
+                if (auto band = pCtrl->GetRubberBand())
                 {
                     band->FitToTarget();
                 }
@@ -368,7 +368,7 @@ public:
         {
             // is it a top control?
             if (!pCtrl->m_bTopCtrl)
-                return;
+                return TRUE;    // continue
 
             // get the window rectangle of the control
             GetWindowRect(*pCtrl, &rc);
@@ -1887,45 +1887,62 @@ public:
         m_rad_dialog.SendMessageDx(WM_SYSCOLORCHANGE);
     }
 
+    // MRadWindow MYWM_GETUNITS
     LRESULT OnGetUnits(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // store the dialog base units
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
         return 0;
     }
 
+    // MRadWindow WM_ACTIVATE
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
     {
         if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
         {
+            // check whether compilation requires or not
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             if (!SendMessage(hwndOwner, MYWM_COMPILECHECK, (WPARAM)hwnd, 0))
             {
                 return;
             }
+
+            // reopen MRadWindow if necessary
             PostMessage(hwndOwner, MYWM_REOPENRAD, 0, 0);
         }
+
+        // default processing
         FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, DefWindowProc);
     }
 
+    // MRadWindow MYWM_SELCHANGE
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // get the owner window
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
 
+        // is there the last selection?
         HWND hwndSel = MRadCtrl::GetLastSel();
-        if (hwndSel == NULL)
+        if (hwndSel == NULL)    // no
         {
-            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
-            return 0;
-        }
-        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndSel);
-        if (pCtrl == NULL)
-        {
+            // clear the status
             PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
             return 0;
         }
 
+        // get the MRadCtrl pointer
+        auto pCtrl = MRadCtrl::GetRadCtrl(hwndSel);
+        if (pCtrl == NULL)
+        {
+            // clear the status
+            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            return 0;
+        }
+
+        // check the index
         if (size_t(pCtrl->m_nIndex) < m_dialog_res.m_items.size())
         {
+            // report the position and size of the index
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
@@ -1934,9 +1951,10 @@ public:
         return 0;
     }
 
+    // MRadWindow WM_INITMENUPOPUP
     void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
     {
-        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        auto set = MRadCtrl::GetTargets();
         if (set.empty())
         {
             EnableMenuItem(hMenu, ID_DELCTRL, MF_GRAYED);
@@ -2020,78 +2038,94 @@ public:
         }
     }
 
+    // MRadWindow MYWM_DELETESEL
     LRESULT OnDeleteSel(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        std::set<INT>::reverse_iterator rit, rend = indeces.rend();
-        for (rit = indeces.rbegin(); rit != rend; ++rit)
+        // delete the selected dialog items from m_dialog_res
+        auto indeces = MRadCtrl::GetTargetIndeces();
+        auto rend = indeces.rend();
+        for (auto rit = indeces.rbegin(); rit != rend; ++rit)
         {
             m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + *rit);
             m_dialog_res.m_cItems--;
         }
 
+        // recreate the MRadDialog
         ReCreateRadDialog(hwnd);
+
+        // update the resource
         UpdateRes();
 
         return 0;
     }
 
+    // MRadWindow MYWM_CTRLMOVE
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         HWND hwndCtrl = (HWND)wParam;
-        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
-        if (pCtrl == NULL)
-            return 0;
 
+        auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+        if (pCtrl == NULL)
+            return 0;   // invalid
+
+        // check the index
         if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
-            return 0;
+            return 0;   // invalid
 
         DebugPrintDx("OnCtrlMove: %d\n", pCtrl->m_nIndex);
 
+        // get the rectangle of the control in dialog coordinates
         RECT rc;
         GetWindowRect(*pCtrl, &rc);
         MapWindowRect(NULL, m_rad_dialog, &rc);
-
         ClientToDialog(&rc);
 
+        // update DialogItem position
         DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
         item.m_pt.x = rc.left;
         item.m_pt.y = rc.top;
 
+        // update resource
         UpdateRes();
 
+        // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
+        // redraw
         InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
 
+    // MRadWindow MYWM_CTRLSIZE
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         HWND hwndCtrl = (HWND)wParam;
-        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
+        auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
         if (pCtrl == NULL)
-            return 0;
+            return 0;   // invalid
 
+        // check the index
         if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
-            return 0;
+            return 0;   // invalid
 
         DebugPrintDx("OnCtrlSize: %d\n", pCtrl->m_nIndex);
 
+        // get the rectangle of the control in dialog coordinates
         RECT rc;
         GetWindowRect(*pCtrl, &rc);
         MapWindowRect(NULL, m_rad_dialog, &rc);
-
         ClientToDialog(&rc);
 
+        // update DialogItem size
         DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
         item.m_siz.cx = rc.right - rc.left;
         item.m_siz.cy = rc.bottom - rc.top;
 
+        // if it was combobox, then apply the settings
         TCHAR szClass[64];
         GetClassName(hwndCtrl, szClass, _countof(szClass));
         if (lstrcmpi(szClass, TEXT("COMBOBOX")) == 0 ||
@@ -2100,13 +2134,16 @@ public:
             item.m_siz.cy = g_settings.nComboHeight;
         }
 
+        // update the resource
         UpdateRes();
 
+        // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
+        // redraw
         InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
@@ -2114,39 +2151,28 @@ public:
 
     void UpdateRes()
     {
+        // notify the update of dialog resource to the owner window
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_UPDATEDLGRES, 0);
 
+        // redraw the labels
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
 
-    LRESULT OnCtrlDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
-    {
-        HWND hwndCtrl = (HWND)wParam;
-        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl);
-        if (pCtrl == NULL)
-            return 0;
-
-        if (pCtrl->m_nIndex == -1)
-            return 0;
-
-        m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + pCtrl->m_nIndex);
-        m_dialog_res.m_cItems--;
-        UpdateRes();
-
-        return 0;
-    }
-
+    // MRadWindow MYWM_DLGSIZE
     LRESULT OnDlgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // get the rectangle of the dialog in dialog coordinates
         RECT rc;
         GetWindowRect(m_rad_dialog, &rc);
         ClientToDialog(&rc);
 
+        // update m_dialog_res
         m_dialog_res.m_siz.cx = rc.right - rc.left;
         m_dialog_res.m_siz.cy = rc.bottom - rc.top;
         UpdateRes();
 
+        // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(rc.left, rc.top),
@@ -2155,65 +2181,82 @@ public:
         return 0;
     }
 
+    // called from MMainWnd WM_COMMAND ID_ADDCTRL
     void OnAddCtrl(HWND hwnd)
     {
-        POINT pt = m_rad_dialog.m_ptClicked;
-        ClientToDialog(&pt);
-        if (pt.x < 0 || pt.y < 0)
-            pt.x = pt.y = 0;
-
+        // get the client area
         RECT rc;
         GetClientRect(hwnd, &rc);
+
+        // use the clicked position
+        POINT pt = m_rad_dialog.m_ptClicked;
+
+        // adjust the position
+        if (pt.x < 0 || pt.y < 0)
+            pt.x = pt.y = 0;
         if (rc.right - 30 < pt.x)
             pt.x = rc.right - 30;
         if (rc.bottom - 30 < pt.y)
             pt.y = rc.bottom - 30;
 
+        ClientToDialog(&pt);
+
+        // show the dialog
         MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            ReCreateRadDialog(hwnd);
-            UpdateRes();
+            // refresh
+            OnRefresh(hwnd);
         }
     }
 
+    // called from MMainWnd WM_COMMAND ID_CTRLPROP
     void OnCtrlProp(HWND hwnd)
     {
+        // show the dialog
         MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces());
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            ReCreateRadDialog(hwnd);
-            UpdateRes();
+            // refresh
+            OnRefresh(hwnd);
         }
     }
 
+    // called from MMainWnd WM_COMMAND ID_DLGPROP
     void OnDlgProp(HWND hwnd)
     {
+        // show the dialog
         MDlgPropDlg dialog(m_dialog_res);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            ReCreateRadDialog(hwnd);
-            UpdateRes();
+            // refresh
+            OnRefresh(hwnd);
         }
     }
 
+    // refresh
     void OnRefresh(HWND hwnd)
     {
+        // recreate MRadDialog
         ReCreateRadDialog(hwnd);
+
+        // update resource
         UpdateRes();
     }
 
+    // show/hide the indeces
     void OnShowHideIndex(HWND hwnd)
     {
         m_rad_dialog.m_index_visible = !m_rad_dialog.m_index_visible;
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
     }
 
+    // get the selected dialog items
     BOOL GetSelectedItems(DialogItems& items)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
-        std::set<INT>::const_iterator it, end = indeces.end();
-        for (it = indeces.begin(); it != end; ++it)
+        auto indeces = MRadCtrl::GetTargetIndeces();
+        auto end = indeces.end();
+        for (auto it = indeces.begin(); it != end; ++it)
         {
             DialogItem& item = m_dialog_res[*it];
             items.push_back(item);
@@ -2221,6 +2264,7 @@ public:
         return !items.empty();
     }
 
+    // MRadWindow WM_COMMAND
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         DialogItems items;
@@ -2236,6 +2280,7 @@ public:
                 s_nShift = 0;
             }
             return;
+
         case ID_COPY:
             if (GetSelectedItems(items))
             {
@@ -2243,6 +2288,7 @@ public:
                 s_nShift = 0;
             }
             return;
+
         case ID_PASTE:
             if (m_clipboard.Paste(hwnd, items))
             {
@@ -2259,37 +2305,46 @@ public:
                     m_dialog_res.m_cItems++;
                     m_dialog_res.m_items.push_back(items[i]);
                 }
-                ReCreateRadDialog(hwnd, nIndex);
-                UpdateRes();
+
+                OnRefresh(hwnd);
             }
             return;
         }
 
+        // notify WM_COMMAND to the owner window
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
         FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, SendMessage);
     }
 
+    // called from MMainWnd WM_COMMAND ID_TOPALIGN
     void OnTopAlign(HWND hwnd)
     {
-        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        auto set = MRadCtrl::GetTargets();
         if (set.size() < 2)
-            return;
+            return;     
 
-        INT nUp = INT_MAX;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+
+        // the highest Y coordinate --> nUp
+        INT nUp = INT_MAX;
+        auto end = set.end();
+        for (auto it = set.begin(); it != end; ++it)
         {
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.top < nUp)
                 nUp = rc.top;
         }
-        for (it = set.begin(); it != end; ++it)
+
+        // move the selected controls to the highest Y coordinate
+        for (auto it = set.begin(); it != end; ++it)
         {
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            // get the coordinates of the control
+            auto pCtrl = MRadCtrl::GetRadCtrl(*it);
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
+
+            // move it
             pCtrl->m_bMoving = TRUE;
             SetWindowPos(*it, NULL, rc.left, nUp, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
@@ -2297,56 +2352,74 @@ public:
         }
     }
 
+    // called from MMainWnd WM_COMMAND ID_BOTTOMALIGN
     void OnBottomAlign(HWND hwnd)
     {
-        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        auto set = MRadCtrl::GetTargets();
         if (set.size() < 2)
             return;
 
-        INT nDown = INT_MIN;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+
+        // the lowest Y coordinate --> nDown
+        INT nDown = INT_MIN;
+        auto end = set.end();
+        for (auto it = set.begin(); it != end; ++it)
         {
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nDown < rc.bottom)
                 nDown = rc.bottom;
         }
-        for (it = set.begin(); it != end; ++it)
+
+        // move the selected controls to the lowest Y coordinate
+        for (auto it = set.begin(); it != end; ++it)
         {
+            // get the coordinates of the control
             MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
+
+            // the height
             INT cy = rc.bottom - rc.top;
+
+            // move it
             pCtrl->m_bMoving = TRUE;
             SetWindowPos(*it, NULL, rc.left, nDown - cy, 0, 0,
-                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+                         SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             pCtrl->m_bMoving = FALSE;
         }
     }
 
+    // called from MMainWnd WM_COMMAND ID_LEFTALIGN
     void OnLeftAlign(HWND hwnd)
     {
-        MRadCtrl::set_type set = MRadCtrl::GetTargets();
+        auto set = MRadCtrl::GetTargets();
         if (set.size() < 2)
             return;
 
-        INT nLeft = INT_MAX;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+
+        // the leftest X coordinate --> nLeft
+        INT nLeft = INT_MAX;
+        auto end = set.end();
+        for (auto it = set.begin(); it != end; ++it)
         {
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (rc.left < nLeft)
                 nLeft = rc.left;
         }
-        for (it = set.begin(); it != end; ++it)
+
+        // move the selected controls to the leftest coordinate
+        for (auto it = set.begin(); it != end; ++it)
         {
+            // get the coordinates of the control
             MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
+
+            // move it
             pCtrl->m_bMoving = TRUE;
             SetWindowPos(*it, NULL, nLeft, rc.top, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
@@ -2354,28 +2427,37 @@ public:
         }
     }
 
+    // called from MMainWnd WM_COMMAND ID_RIGHTALIGN
     void OnRightAlign(HWND hwnd)
     {
         MRadCtrl::set_type set = MRadCtrl::GetTargets();
         if (set.size() < 2)
             return;
 
-        INT nRight = INT_MIN;
         RECT rc;
-        MRadCtrl::set_type::iterator it, end = set.end();
-        for (it = set.begin(); it != end; ++it)
+
+        // the rightest X coordinate --> nRight
+        INT nRight = INT_MIN;
+        auto end = set.end();
+        for (auto it = set.begin(); it != end; ++it)
         {
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
             if (nRight < rc.right)
                 nRight = rc.right;
         }
-        for (it = set.begin(); it != end; ++it)
+
+        for (auto it = set.begin(); it != end; ++it)
         {
+            // get the coordinates of the control
             MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
             GetWindowRect(*it, &rc);
             MapWindowRect(NULL, m_rad_dialog, &rc);
+
+            // the width
             INT cx = rc.right - rc.left;
+
+            // move it
             pCtrl->m_bMoving = TRUE;
             SetWindowPos(*it, NULL, nRight - cx, rc.top, 0, 0,
                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
@@ -2383,11 +2465,12 @@ public:
         }
     }
 
+    // able to make it top index?
     BOOL CanIndexTop() const
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
-            return FALSE;
+            return FALSE;   // no
 
         INT iSelected = -1;
         INT iUnselected = -1;
@@ -2396,7 +2479,7 @@ public:
             if (indeces.find(i) != indeces.end())
             {
                 if (iUnselected != -1)
-                    return TRUE;
+                    return TRUE;    // yes
 
                 iSelected = i;
             }
@@ -2406,15 +2489,17 @@ public:
             }
         }
 
-        return FALSE;
+        return FALSE;   // no
     }
 
+    // make it top index
     void IndexTop(HWND hwnd)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
+        // find two items to swap
         DialogItems items1, items2;
         for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
@@ -2427,11 +2512,13 @@ public:
                 items2.push_back(m_dialog_res[i]);
             }
         }
+
+        // swap
         m_dialog_res.m_items = items1;
         m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), items2.begin(), items2.end());
 
-        ReCreateRadDialog(hwnd);
-        UpdateRes();
+        // refresh
+        OnRefresh(hwnd);
     }
 
     BOOL CanIndexBottom() const
@@ -2440,6 +2527,7 @@ public:
         if (indeces.empty())
             return FALSE;
 
+        // find two items to swap
         INT iSelected = -1;
         INT iUnselected = -1;
         for (INT i = m_dialog_res.m_cItems - 1; i >= 0; --i)
@@ -2462,10 +2550,11 @@ public:
 
     void IndexBottom(HWND hwnd)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
+        // find two items to swap
         DialogItems items1, items2;
         for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
@@ -2478,16 +2567,18 @@ public:
                 items2.push_back(m_dialog_res[i]);
             }
         }
+
+        // swawp
         m_dialog_res.m_items = items1;
         m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), items2.begin(), items2.end());
 
-        ReCreateRadDialog(hwnd);
-        UpdateRes();
+        // refresh
+        OnRefresh(hwnd);
     }
 
     BOOL CanIndexMinus() const
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty() || indeces.count(0) > 0)
             return FALSE;
 
@@ -2496,7 +2587,7 @@ public:
 
     void IndexMinus(HWND hwnd)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
@@ -2508,13 +2599,13 @@ public:
             }
         }
 
-        ReCreateRadDialog(hwnd);
-        UpdateRes();
+        // refresh
+        OnRefresh(hwnd);
     }
 
     BOOL CanIndexPlus() const
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty() || indeces.count(m_dialog_res.m_cItems - 1) > 0)
             return FALSE;
 
@@ -2523,7 +2614,7 @@ public:
 
     void IndexPlus(HWND hwnd)
     {
-        std::set<INT> indeces = MRadCtrl::GetTargetIndeces();
+        auto indeces = MRadCtrl::GetTargetIndeces();
         if (indeces.empty())
             return;
 
@@ -2535,15 +2626,16 @@ public:
             }
         }
 
-        ReCreateRadDialog(hwnd);
-        UpdateRes();
+        // refresh
+        OnRefresh(hwnd);
     }
 
+    // MRadWindow WM_KEYDOWN/WM_KEYUP
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
         RECT rc;
         if (!fDown)
-            return;
+            return;     // ignore WM_KEYUP
 
         HWND hwndTarget = MRadCtrl::GetLastSel();
         if (hwndTarget == NULL && !MRadCtrl::GetTargets().empty())
@@ -2551,7 +2643,7 @@ public:
             hwndTarget = *MRadCtrl::GetTargets().begin();
         }
 
-        MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndTarget);
+        auto pCtrl = MRadCtrl::GetRadCtrl(hwndTarget);
 
         switch (vk)
         {
@@ -2595,6 +2687,7 @@ public:
                 MRadCtrl::Select(hwndNext);
             }
             break;
+
         case VK_UP:
             if (pCtrl == NULL)
             {
@@ -2615,6 +2708,7 @@ public:
                 MRadCtrl::MoveSelection(NULL, 0, -1);
             }
             break;
+
         case VK_DOWN:
             if (pCtrl == NULL)
             {
@@ -2635,6 +2729,7 @@ public:
                 MRadCtrl::MoveSelection(NULL, 0, +1);
             }
             break;
+
         case VK_LEFT:
             if (pCtrl == NULL)
             {
@@ -2655,6 +2750,7 @@ public:
                 MRadCtrl::MoveSelection(NULL, -1, 0);
             }
             break;
+
         case VK_RIGHT:
             if (pCtrl == NULL)
             {
@@ -2675,9 +2771,11 @@ public:
                 MRadCtrl::MoveSelection(NULL, +1, 0);
             }
             break;
+
         case VK_DELETE: // Del
             MRadCtrl::DeleteSelection();
             break;
+
         case 'A':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
@@ -2685,6 +2783,7 @@ public:
                 SelectAll(hwnd);
             }
             break;
+
         case 'C':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
@@ -2692,6 +2791,7 @@ public:
                 PostMessageDx(WM_COMMAND, ID_COPY);
             }
             break;
+
         case 'D':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
@@ -2699,6 +2799,7 @@ public:
                 PostMessageDx(WM_COMMAND, ID_SHOWHIDEINDEX);
             }
             break;
+
         case 'V':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
@@ -2706,6 +2807,7 @@ public:
                 PostMessageDx(WM_COMMAND, ID_PASTE);
             }
             break;
+
         case 'X':
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
@@ -2713,35 +2815,44 @@ public:
                 PostMessageDx(WM_COMMAND, ID_CUT);
             }
             break;
+
         default:
             return;
         }
     }
 
+    // select all the RADical controls
     void SelectAll(HWND hwnd)
     {
         MRadCtrl::DeselectSelection();
-        HWND hwndNext = MRadDialog::GetFirstCtrl(hwnd);
-        while (hwndNext)
+
+        // select all
+        for (HWND hwndNext = MRadDialog::GetFirstCtrl(hwnd);
+             hwndNext;
+             hwndNext = m_rad_dialog.GetNextCtrl(hwndNext))
         {
             MRadCtrl::Select(hwndNext);
-            hwndNext = m_rad_dialog.GetNextCtrl(hwndNext);
         }
     }
 
+    // MRadWindow WM_CONTEXTMENU
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     {
+        // show the popup menu
         PopupMenuDx(hwnd, hwndContext, IDR_POPUPMENUS, 1, xPos, yPos);
     }
 
+    // get the dialog base units
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)
     {
+        // use m_dialog_res.GetBaseUnits
         m_xDialogBaseUnit = m_dialog_res.GetBaseUnits(m_yDialogBaseUnit);
         if (m_xDialogBaseUnit == 0)
         {
             return FALSE;
         }
 
+        // update
         xDialogBaseUnit = m_xDialogBaseUnit;
         yDialogBaseUnit = m_yDialogBaseUnit;
         m_rad_dialog.m_xDialogBaseUnit = m_xDialogBaseUnit;
@@ -2750,36 +2861,46 @@ public:
         return TRUE;
     }
 
+    // MRadWindow WM_MOVE
     void OnMove(HWND hwnd, int x, int y)
     {
         RECT rc;
         GetWindowRect(hwnd, &rc);
 
+        // remember the position
         g_settings.nRadLeft = rc.left;
         g_settings.nRadTop = rc.top;
     }
 
+    // MRadWindow WM_SIZE
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         if (m_rad_dialog.m_bMovingSizing)
-            return;
+            return;     // in locking
 
+        // get the client rectangle of MRadWindow
         RECT rc;
-
         GetClientRect(m_hwnd, &rc);
         SIZE siz = SizeFromRectDx(&rc);
+
+        // resize m_rad_dialog
         m_rad_dialog.m_bMovingSizing = TRUE;
         MoveWindow(m_rad_dialog, 0, 0, siz.cx, siz.cy, TRUE);
         m_rad_dialog.m_bMovingSizing = FALSE;
 
+        // get the client rectangle of MRadDialog
         GetClientRect(m_rad_dialog, &rc);
         siz = SizeFromRectDx(&rc);
+
+        // Change m_dialog_res.m_siz
         ClientToDialog(&siz);
         m_dialog_res.m_siz = siz;
 
+        // update the resource
         UpdateRes();
     }
 
+    // fit to the grid
     void FitToGrid(POINT *ppt)
     {
         ppt->x = (ppt->x + GRID_SIZE / 2) / GRID_SIZE * GRID_SIZE;
@@ -2800,38 +2921,44 @@ public:
 
     void OnFitToGrid(HWND hwnd)
     {
-        MRadCtrl::set_type::iterator it, end = MRadCtrl::GetTargets().end();
-        for (it = MRadCtrl::GetTargets().begin(); it != end; ++it)
+        for (auto& target : MRadCtrl::GetTargets())
         {
-            if (*it == m_rad_dialog)
+            // ignore if target was m_rad_dialog
+            if (target == m_rad_dialog)
                 continue;
 
-            MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(*it);
+            // get the target control
+            auto pCtrl = MRadCtrl::GetRadCtrl(target);
             if (pCtrl == NULL)
                 continue;
 
+            // check the index
             if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
                 continue;
 
+            // get the dialog item
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
             FitToGrid(&item.m_pt);
             FitToGrid(&item.m_siz);
 
+            // get the position and size in client coordinates
             POINT pt = item.m_pt;
             SIZE siz = item.m_siz;
             DebugPrintDx("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
             DialogToClient(&pt);
             DialogToClient(&siz);
 
+            // move and resize the control
             pCtrl->m_bLocking = TRUE;
             pCtrl->SetWindowPosDx(&pt, &siz);
-            MRubberBand *pBand = pCtrl->GetRubberBand();
+            auto pBand = pCtrl->GetRubberBand();
             if (pBand)
             {
                 pBand->FitToTarget();
             }
             pCtrl->m_bLocking = FALSE;
 
+            // report moving/resizing to the owner window
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
             PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),

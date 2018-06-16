@@ -77,7 +77,17 @@ public:
 
     void clear_maps()
     {
-        ClearMaps(m_title_to_bitmap, m_title_to_icon);
+        for (auto& pair : m_title_to_bitmap)
+        {
+            DeleteObject(pair.second);
+        }
+        m_title_to_bitmap.clear();
+
+        for (auto& pair : m_title_to_icon)
+        {
+            DestroyIcon(pair.second);
+        }
+        m_title_to_icon.clear();
     }
 
     void create_maps(WORD lang)
