@@ -177,7 +177,7 @@ public:
 
         std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
+        if (!HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
             return;
 
         if (auto entry = g_res.find(ET_LANG, type, name, lang))
