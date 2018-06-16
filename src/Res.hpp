@@ -2203,21 +2203,4 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline void
-ClearMaps(MTitleToBitmap& title_to_bitmap, MTitleToIcon& title_to_icon)
-{
-    for (auto& pair : title_to_bitmap)
-    {
-        DeleteObject(pair.second);
-    }
-    title_to_bitmap.clear();
-    for (auto& pair : title_to_icon)
-    {
-        DestroyIcon(pair.second);
-    }
-    title_to_icon.clear();
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 #endif  // ndef RES_HPP_

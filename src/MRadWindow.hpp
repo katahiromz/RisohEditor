@@ -60,6 +60,7 @@ class MRadWindow;
 
 //////////////////////////////////////////////////////////////////////////////
 // MRadCtrl --- the RADical controls
+// NOTE: An MRadCtrl is a dialog control, subclassed by MRadDialog.
 
 class MRadCtrl : public MWindowBase
 {
@@ -854,7 +855,8 @@ public:
         DeleteObject(m_hbrBack);
     }
 
-    enum TARGET
+    // the target types to get
+    enum TARGET_TYPE
     {
         TARGET_NEXT,        // get the next target
         TARGET_PREV,        // get the previous target
@@ -862,9 +864,10 @@ public:
         TARGET_LAST         // get the last target
     };
 
+    // the structure to get the target control
     struct GET_TARGET
     {
-        TARGET target;
+        TARGET_TYPE target;
         HWND hwndTarget;
         INT m_nIndex;
         INT m_nCurrentIndex;
@@ -1445,50 +1448,72 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 // MRadWindow --- the RADical window
+// NOTE: An MRadWindow contains an MRadDialog.
 
 class MRadWindow : public MWindowBase
 {
 public:
-    INT             m_xDialogBaseUnit;
-    INT             m_yDialogBaseUnit;
-    MRadDialog      m_rad_dialog;
-    DialogRes       m_dialog_res;
-    HICON           m_hIcon;
-    HICON           m_hIconSm;
-    MTitleToBitmap  m_title_to_bitmap;
-    MTitleToIcon    m_title_to_icon;
-    DialogItemClipboard m_clipboard;
+    INT             m_xDialogBaseUnit;      // the X dialog base unit
+    INT             m_yDialogBaseUnit;      // the Y dialog base unit
+    MRadDialog      m_rad_dialog;           // the MRadDialog instance
+    DialogRes       m_dialog_res;           // the dialog resource
+    HICON           m_hIcon;                // the icon
+    HICON           m_hIconSm;              // the small icon
+    MTitleToBitmap  m_title_to_bitmap;      // a title-to-bitmap mapping
+    MTitleToIcon    m_title_to_icon;        // a title-to-icon mapping
+    DialogItemClipboard m_clipboard;        // a clipboard manager
 
-    MRadWindow()
-        : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-          m_hIcon(NULL), m_hIconSm(NULL),
-          m_clipboard(m_dialog_res)
+    // constructor
+    MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
+                   m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
     {
     }
 
+    // create the mappings
     void create_maps(WORD lang)
     {
+        // for all the dialog items
         for (size_t i = 0; i < m_dialog_res.size(); ++i)
         {
-            DialogItem& item = m_dialog_res[i];
+            auto& item = m_dialog_res[i];
+            // is it a STATIC control?
             if (item.m_class == 0x0082 ||
                 lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
             {
-                // static control
                 if ((item.m_style & SS_TYPEMASK) == SS_ICON)
                 {
+                    // icon
                     g_res.do_icon(m_title_to_icon, item, lang);
                 }
                 else if ((item.m_style & SS_TYPEMASK) == SS_BITMAP)
                 {
+                    // bitmap
                     g_res.do_bitmap(m_title_to_bitmap, item, lang);
                 }
             }
         }
     }
 
+    // clear the mappings
+    void clear_maps()
+    {
+        for (auto& pair : m_title_to_bitmap)
+        {
+            DeleteObject(pair.second);
+        }
+        m_title_to_bitmap.clear();
+
+        for (auto& pair : m_title_to_icon)
+        {
+            DestroyIcon(pair.second);
+        }
+        m_title_to_icon.clear();
+    }
+
+    // destructor
     ~MRadWindow()
     {
+        // delete the icons
         if (m_hIcon)
         {
             DestroyIcon(m_hIcon);
@@ -1499,31 +1524,39 @@ public:
             DestroyIcon(m_hIconSm);
             m_hIconSm = NULL;
         }
+
+        // clear the mappings
         clear_maps();
     }
 
-    void clear_maps()
-    {
-        ClearMaps(m_title_to_bitmap, m_title_to_icon);
-    }
-
+    // create an MRadWindow window
     BOOL CreateDx(HWND hwndParent)
     {
+        // set the moving/resizing flag
         BOOL bMovingSizing = m_rad_dialog.m_bMovingSizing;
         m_rad_dialog.m_bMovingSizing = TRUE;
+
+        // create the window
         DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
         if (CreateWindowDx(hwndParent, MAKEINTRESOURCE(IDS_RADWINDOW), style))
         {
+            // show it
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
+
+            // resume the moving/resizing flag
             m_rad_dialog.m_bMovingSizing = bMovingSizing;
-            return TRUE;
+
+            return TRUE;    // success
         }
+
+        // resume the moving/resizing flag
         m_rad_dialog.m_bMovingSizing = bMovingSizing;
 
-        return FALSE;
+        return FALSE;   // failure
     }
 
+    // convert the coordinates
     void ClientToDialog(POINT *ppt)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
@@ -1531,6 +1564,7 @@ public:
         ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
     }
 
+    // convert the coordinates
     void ClientToDialog(SIZE *psiz)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
@@ -1538,6 +1572,7 @@ public:
         psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
     }
 
+    // convert the coordinates
     void ClientToDialog(RECT *prc)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
@@ -1547,6 +1582,7 @@ public:
         prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
     }
 
+    // convert the coordinates
     void DialogToClient(POINT *ppt)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
@@ -1554,6 +1590,7 @@ public:
         ppt->y = (ppt->y * m_yDialogBaseUnit + 4) / 8;
     }
 
+    // convert the coordinates
     void DialogToClient(SIZE *psiz)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
@@ -1561,6 +1598,7 @@ public:
         psiz->cy = (psiz->cy * m_yDialogBaseUnit + 4) / 8;
     }
 
+    // convert the coordinates
     void DialogToClient(RECT *prc)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
