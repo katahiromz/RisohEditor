@@ -245,6 +245,7 @@ DWORD AnalyseStyleDiff(
 // initialize the style list box
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 {
+    // clear all the items of listbox
     ListBox_ResetContent(hLst);
 
     for (auto& table_entry : table)
@@ -265,9 +266,12 @@ EnumFontFamProc(
     LPARAM lParam)
 {
     HWND hCmb = HWND(lParam);
+
+    // ignore vertical fonts
     if (lpelf->elfLogFont.lfFaceName[0] != TEXT('@'))
         ComboBox_AddString(hCmb, lpelf->elfLogFont.lfFaceName);
-    return TRUE;
+
+    return TRUE;    // continue
 }
 
 // initialize the font combobox
@@ -312,7 +316,7 @@ static const CharSetInfo s_charset_entries[] =
 // initialize the charset combobox
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
 {
-    // clear all
+    // clear all the items of combobox
     ComboBox_ResetContent(hCmb);
 
     // add entries to combobox
@@ -344,14 +348,15 @@ void InitCharSetComboBox(HWND hCmb, BYTE CharSet)
 // get charset value from the charset combobox
 BYTE GetCharSetFromComboBox(HWND hCmb)
 {
+    // get current selection of combobox
     INT i = ComboBox_GetCurSel(hCmb);
-    if (i == CB_ERR)
-        return DEFAULT_CHARSET;
+    if (i == CB_ERR)    // not selected
+        return DEFAULT_CHARSET;     // return the default value
 
     if (i < _countof(s_charset_entries))
-        return s_charset_entries[i].CharSet;
+        return s_charset_entries[i].CharSet;    // return the charset value
 
-    return DEFAULT_CHARSET;
+    return DEFAULT_CHARSET;     // return the default value
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -360,7 +365,7 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
 // initialize the caption combobox
 void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption)
 {
-    // clear all
+    // clear all the items of combobox
     ComboBox_ResetContent(hCmb);
 
     // add captions from settings
@@ -376,7 +381,7 @@ void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption)
 // initialize the control class combobox
 void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
 {
-    // clear all
+    // clear all the items of combobox
     ComboBox_ResetContent(hCmb);
 
     auto table = g_db.GetTable(TEXT("CONTROL.CLASSES"));
@@ -394,6 +399,7 @@ void InitClassComboBox(HWND hCmb, LPCTSTR pszClass)
 // initialize the window class combobox
 void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 {
+    // clear all the items of combobox
     ComboBox_ResetContent(hCmb);
 
     // get the control classes
@@ -709,42 +715,56 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
 
     INT k = -1; // not found yet
     MStringW prefix;
-    ConstantsDB::TableType table;
     if (nIDTYPE_1 != IDTYPE_UNKNOWN)
     {
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        // get the prefix from nIDTYPE_1
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_1].name;
         if (prefix.empty())
             return;
 
+        // get the resource IDs from the prefix
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
 
+        // add the resource IDs
         for (auto& table_entry : table)
         {
+            // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)
+            if (table_entry.value == id.m_id)   // matched
             {
-                k = i;
+                k = i;  // found
+
+                // select it in combobox
                 ComboBox_SetCurSel(hCmb, i);
+
+                // set its text to combobox
                 SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
     }
     if (nIDTYPE_2 != IDTYPE_UNKNOWN)
     {
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        // get the prefix from nIDTYPE_2
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[nIDTYPE_2].name;
         if (prefix.empty())
             return;
 
+        // get the resource IDs from the prefix
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         for (auto& table_entry : table)
         {
+            // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)
+            if (table_entry.value == id.m_id)   // matched
             {
-                k = i;
+                k = i;  // found
+
+                // select it in combobox
                 ComboBox_SetCurSel(hCmb, i);
+
+                // set its text to combobox
                 SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
@@ -753,15 +773,24 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
     if (k == -1 &&
         nIDTYPE_1 != IDTYPE_RESOURCE && g_db.IsEntityIDType(nIDTYPE_1))
     {
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        // not found
+
+        // get the prefix from IDTYPE_RESOURCE
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         prefix = table[IDTYPE_RESOURCE].name;
+
+        // get the resource IDs from the prefix
         table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
         for (auto& table_entry : table)
         {
+            // add an item to combobox
             INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-            if (table_entry.value == id.m_id)
+            if (table_entry.value == id.m_id)   // matched
             {
+                // select it in combobox
                 ComboBox_SetCurSel(hCmb, i);
+
+                // set its text to combobox
                 SetWindowTextW(hCmb, table_entry.name.c_str());
             }
         }
@@ -771,46 +800,64 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
 // check the command ID text
 BOOL CheckCommand(MString strCommand)
 {
-    mstr_trim(strCommand);
+    // trim the string
+     mstr_trim(strCommand);
+
     if (('0' <= strCommand[0] && strCommand[0] <= '9') ||
         strCommand[0] == '-' || strCommand[0] == '+')
     {
-        return TRUE;
+        // a numeric command ID
+        return TRUE;    // OK
     }
-    return g_db.HasResID(strCommand);
+
+    return g_db.HasResID(strCommand);   // is it resource ID name?
 }
 
 // initialize the resource string ID combobox
 void InitStringComboBox(HWND hCmb, MString strString)
 {
+    // set the text to combobox
     SetWindowText(hCmb, strString.c_str());
 
     if (g_settings.bHideID)
-        return;
+        return;     // don't use macro IDs
 
+    // get the prefix from IDTYPE_STRING
     auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_STRING].name;
     if (prefix.empty())
         return;
 
+    // get the resource IDs from the prefix
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+
+    // add the resource IDs
     for (auto& table_entry : table)
     {
+        // add an item to combobox
         INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-        if (table_entry.name == strString)
+        if (table_entry.name == strString)  // matched
         {
+            // select it
             ComboBox_SetCurSel(hCmb, i);
         }
     }
 
+    // get the prefix from IDTYPE_PROMPT
     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     prefix = table[IDTYPE_PROMPT].name;
+
+    // get the resource IDs from the prefix
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+
+    // add the resource IDs
     for (auto& table_entry : table)
     {
+        // add an item to combobox
         INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-        if (table_entry.name == strString)
+        if (table_entry.name == strString)  // matched
         {
+            // select it
             ComboBox_SetCurSel(hCmb, i);
         }
     }
@@ -819,23 +866,29 @@ void InitStringComboBox(HWND hCmb, MString strString)
 // initialize the resource message ID combobox
 void InitMessageComboBox(HWND hCmb, MString strString)
 {
+    // set the text to combobox
     SetWindowText(hCmb, strString.c_str());
 
     if (g_settings.bHideID)
-        return;
+        return;     // don't use macro IDs
 
+    // get the prefix from IDTYPE_MESSAGE
     auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
     MStringW prefix = table[IDTYPE_MESSAGE].name;
     if (prefix.empty())
         return;
 
+    // get the resource IDs from the prefix
     table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+
+    // add the resource IDs
     for (auto& table_entry : table)
     {
+        // add an item to combobox
         INT i = ComboBox_AddString(hCmb, table_entry.name.c_str());
-        if (table_entry.name == strString)
+        if (table_entry.name == strString)  // matched
         {
-            ComboBox_SetCurSel(hCmb, i);
+            ComboBox_SetCurSel(hCmb, i);    // select it
         }
     }
 }
@@ -846,9 +899,10 @@ void InitMessageComboBox(HWND hCmb, MString strString)
 // structure for language information
 struct LANG_ENTRY
 {
-    WORD LangID;
-    MStringW str;
+    WORD LangID;    // language ID
+    MStringW str;   // string
 
+    // for sorting
     bool operator<(const LANG_ENTRY& ent) const
     {
         return str < ent.str;
@@ -859,17 +913,22 @@ std::vector<LANG_ENTRY> g_Langs;
 // initialize the language combobox
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
+    // for all the elements of g_Langs
     for (auto& entry : g_Langs)
     {
+        // build the text
         WCHAR sz[MAX_PATH];
         StringCchPrintfW(sz, _countof(sz), L"%s (%u)", entry.str.c_str(), entry.LangID);
-        if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
-            continue;
 
+        // search the text
+        if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
+            continue;   // found
+
+        // add the text as a new item to combobox
         INT k = ComboBox_AddString(hCmb3, sz);
-        if (langid == entry.LangID)
+        if (langid == entry.LangID)     // matched
         {
-            ComboBox_SetCurSel(hCmb3, k);
+            ComboBox_SetCurSel(hCmb3, k);   // select it
         }
     }
 }
@@ -877,18 +936,21 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
 // initialize the language listview
 void InitLangListView(HWND hLst1, LPCTSTR pszText)
 {
+    // delete all the items of listview
     ListView_DeleteAllItems(hLst1);
 
     WCHAR sz1[64], sz2[64];
     LV_ITEM item;
     INT iItem = 0;
-    for (auto& entry : g_Langs)
+    for (auto& entry : g_Langs)     // for all the items of g_Langs
     {
+        // build two texts of an entry
         StringCchPrintfW(sz1, _countof(sz1), L"%s", entry.str.c_str());
         StringCchPrintfW(sz2, _countof(sz2), L"%u", entry.LangID);
 
         if (pszText)
         {
+            // filtering by pszText
             MString str = sz1;
             if (str.find(pszText) == MString::npos)
             {
@@ -898,11 +960,13 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
             }
         }
 
+        // if it exists, don't add it
         LV_FINDINFO find = { LVFI_STRING, sz1 };
         INT iFound = ListView_FindItem(hLst1, -1, &find);
         if (iFound != -1)
             continue;
 
+        // add it
         ZeroMemory(&item, sizeof(item));
         item.iItem = iItem;
         item.mask = LVIF_TEXT;
@@ -911,22 +975,23 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
         ListView_InsertItem(hLst1, &item);
 
         ZeroMemory(&item, sizeof(item));
-        item.iItem = iItem;
-        item.mask = LVIF_TEXT;
         item.iSubItem = 1;
         item.pszText = sz2;
         ListView_SetItem(hLst1, &item);
 
-        ++iItem;
+        ++iItem;    // next item index
     }
 }
 
 // get the language ID from a text
 WORD LangFromText(LPWSTR pszLang)
 {
-    WORD lang = 0xFFFF;
+    WORD lang = 0xFFFF;     // not found yet
 
+    // replace the fullwidth characters with halfwidth characters
     ReplaceFullWithHalf(pszLang);
+
+    // trim and store to pszLang and strLang
     MStringW strLang = pszLang;
     mstr_trim(strLang);
     StringCchCopyW(pszLang, MAX_PATH, strLang.c_str());
@@ -934,30 +999,36 @@ WORD LangFromText(LPWSTR pszLang)
     do
     {
         if (strLang[0] == 0)
-            break;
+            break;  // it's empty. invalid
 
-        if (strLang.find(L'_') != MStringW::npos)
+        if (strLang.find(L'_') != MStringW::npos)   // found '_' ?
         {
+            // maybe en_US, or jp_JP etc.
             if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
             {
-                lang = (WORD)nValue;
+                lang = (WORD)nValue;    // found
                 break;
             }
         }
 
-        if (strLang.find(L'-') != MStringW::npos)
+        if (strLang.find(L'-') != MStringW::npos)   // found '-' ?
         {
             MStringW str = strLang;
+
+            // replace '-' with '_'
             auto i = str.find(L'-');
             if (i != MString::npos)
                 str[i] = L'_';
+
+            // maybe en_US, or jp_JP etc.
             if (INT nValue = g_db.GetValueI(L"LANGUAGES", str.c_str()))
             {
-                lang = (WORD)nValue;
+                lang = (WORD)nValue;    // found
                 break;
             }
         }
 
+        // is it American English?
         if (lstrcmpiW(pszLang, L"America") == 0 ||
             lstrcmpiW(pszLang, L"United States") == 0 ||
             lstrcmpiW(pszLang, L"US") == 0 ||
@@ -970,6 +1041,7 @@ WORD LangFromText(LPWSTR pszLang)
             break;
         }
 
+        // is it Chinese?
         if (lstrcmpiW(pszLang, L"Chinese") == 0 ||
             lstrcmpiW(pszLang, L"PRC") == 0 ||
             lstrcmpiW(pszLang, L"CHN") == 0 ||
@@ -982,6 +1054,7 @@ WORD LangFromText(LPWSTR pszLang)
             break;
         }
 
+        // is it Russian?
         if (lstrcmpiW(pszLang, L"Russia") == 0 ||
             lstrcmpiW(pszLang, L"Russian") == 0 ||
             lstrcmpiW(pszLang, L"RUS") == 0 ||
@@ -994,22 +1067,23 @@ WORD LangFromText(LPWSTR pszLang)
             break;
         }
 
+        // is it numeric?
         if (mchr_is_digit(strLang[0]))
         {
             // strLang is numeric
             int nValue = mstr_parse_int(pszLang);
             if (nValue < 0 || 0xFFFF <= nValue)
-                break;
+                break;  // invalid
 
             lang = WORD(nValue);
         }
 
-        if (lang == 0xFFFF)
+        if (lang == 0xFFFF)     // not found yet?
         {
             // whole match
             for (auto& entry : g_Langs)
             {
-                if (lstrcmpiW(entry.str.c_str(), pszLang) == 0)
+                if (lstrcmpiW(entry.str.c_str(), pszLang) == 0) // matched
                 {
                     lang = entry.LangID;
                     break;
@@ -1017,7 +1091,7 @@ WORD LangFromText(LPWSTR pszLang)
             }
         }
 
-        if (lang == 0xFFFF)
+        if (lang == 0xFFFF)     // not found yet?
         {
             // numeric after parenthesis
             if (WCHAR *pch = wcsrchr(pszLang, L'('))
@@ -1027,14 +1101,14 @@ WORD LangFromText(LPWSTR pszLang)
                 {
                     int nValue = mstr_parse_int(pch);
                     if (nValue < 0 || 0xFFFF <= nValue)
-                        break;
+                        break;  // invalid
 
                     lang = WORD(nValue);
                 }
             }
         }
 
-        if (lang == 0xFFFF)
+        if (lang == 0xFFFF)     // not found yet?
         {
             // partial match
             for (auto& entry : g_Langs)
@@ -1047,7 +1121,7 @@ WORD LangFromText(LPWSTR pszLang)
             }
         }
 
-        if (lang == 0xFFFF)
+        if (lang == 0xFFFF)     // not found yet?
         {
             // ignore case, partial match
             CharUpperW(&strLang[0]);
@@ -1071,25 +1145,28 @@ WORD LangFromText(LPWSTR pszLang)
 // verify the language combobox
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
+    // get the text from combobox
     WCHAR szLang[MAX_PATH];
     GetWindowTextW(hCmb3, szLang, _countof(szLang));
 
+    // get the language ID from texts
     lang = LangFromText(szLang);
     if (lang != 0xFFFF)
-        return TRUE;
+        return TRUE;    // success
 
     // error
     ComboBox_SetEditSel(hCmb3, 0, -1);
     SetFocus(hCmb3);
     MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
                 NULL, MB_ICONERROR);
-    return FALSE;
+    return FALSE;   // failure
 }
 
 // callback function for MMainWnd::DoLoadLangInfo
 static BOOL CALLBACK
 EnumLocalesProc(LPWSTR lpLocaleString)
 {
+    // get the locale ID from string
     LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
 
     LANG_ENTRY entry;
@@ -1114,6 +1191,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
 static BOOL CALLBACK
 EnumEngLocalesProc(LPWSTR lpLocaleString)
 {
+    // get the locale ID from string
     LCID lcid = mstr_parse_int(lpLocaleString, false, 16);
 
     LANG_ENTRY entry;
@@ -1145,6 +1223,7 @@ MStringW TextFromLang(WORD lang)
 {
     WCHAR sz[128], szLoc[128];
 
+    // get the locale ID
     LCID lcid = MAKELCID(lang, SORT_DEFAULT);
     if (lcid == 0)
     {
@@ -1307,6 +1386,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     }
     else
     {
+        // a non-numeric name
         if (g_db.HasResID(szName))
             name = (WORD)g_db.GetResIDValue(szName);    // a valued name
         else
@@ -1433,13 +1513,14 @@ MStringW GetKeyID(UINT wId)
 // initialize the virtual key combobox
 void Cmb1_InitVirtualKeys(HWND hCmb1)
 {
-    // clear all
+    // clear all the items of combobox
     ComboBox_ResetContent(hCmb1);
 
+    // add items to combobox
     auto table = g_db.GetTable(L"VIRTUALKEYS");
-
     for (auto& table_entry : table)
     {
+        // add an item to combobox
         ComboBox_AddString(hCmb1, table_entry.name.c_str());
     }
 }
@@ -1447,41 +1528,45 @@ void Cmb1_InitVirtualKeys(HWND hCmb1)
 // verify the virtual key combobox
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 {
+    BOOL bOK;
     if (bVirtKey)
     {
+        // a virtual key
         INT i = ComboBox_FindStringExact(hCmb1, -1, str.c_str());
         if (i == CB_ERR)
         {
-            BOOL bOK;
+            // not a string. is it numeric?
             i = GetDlgItemInt(hwnd, cmb1, &bOK, TRUE);
             if (!bOK)
             {
-                return FALSE;
+                return FALSE;   // not a string nor a numeric. invalid
             }
             str = mstr_dec(i);
         }
     }
     else
     {
-        BOOL bOK;
+        // a non-virtual key
         INT i = GetDlgItemInt(hwnd, cmb1, &bOK, TRUE);
-        if (!bOK)
+        if (bOK)
         {
+            // a numeric
+            str = mstr_dec(i);
+        }
+        else
+        {
+            // not a numeric. is it a string?
             LPCWSTR pch = str.c_str();
             MStringW str2;
             if (!guts_quote(str2, pch) || str2.size() != 1)
             {
-                return FALSE;
+                return FALSE;   // invalid
             }
             str = mstr_quote(str2);
         }
-        else
-        {
-            str = mstr_dec(i);
-        }
     }
 
-    return TRUE;
+    return TRUE;    // success
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1490,38 +1575,54 @@ BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, MStringW& str)
 // helper function for MAddStrDlg and MModifyStrDlg
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
+    // get the text from combobox
+    // replace the fullwidth characters with halfwidth characters
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
+
+    // trim
     mstr_trim(str);
+
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
+        // numeric
         LONG n = mstr_parse_int(str.c_str());
         str = mstr_dec_word(WORD(n));
     }
     else if (!g_db.HasResID(str))
     {
-        return FALSE;
+        // non-numeric and not resource ID. invalid
+        return FALSE;   // failure
     }
-    lstrcpynW(entry.StringID, str.c_str(), _countof(entry.StringID));
 
+    // store the string to entry.StringID
+    StringCchCopyW(entry.StringID, _countof(entry.StringID), str.c_str());
+
+    // get the text from EDIT control
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
-    mstr_trim(str);
+    mstr_trim(str);     // trim it
+
+    // unquote if quoted
     if (str[0] == L'"')
     {
         mstr_unquote(str);
     }
-    lstrcpynW(entry.StringValue, str.c_str(), _countof(entry.StringValue));
-    return TRUE;
+
+    // store the text to entry.StringValue
+    StringCchCopyW(entry.StringValue, _countof(entry.StringValue), str.c_str());
+
+    return TRUE;    // success
 }
 
 // helper function for MAddStrDlg and MModifyStrDlg
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 {
+    // store entry.StringID to combobox
     SetDlgItemTextW(hwnd, cmb1, entry.StringID);
 
+    // store the quoted entry.StringValue to the EDIT control
     MStringW str = entry.StringValue;
     str = mstr_quote(str);
-
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
 
@@ -1531,39 +1632,54 @@ void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry)
 // helper function for MAddMsgDlg and MModifyMsgDlg
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
+    // get the text from combobox
+    // replace the fullwidth characters with halfwidth characters
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
+
+    // trim
     mstr_trim(str);
+
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         // numeric
         LONG n = mstr_parse_int(str.c_str());
-        str = mstr_hex(n);
+        str = mstr_hex(n);      // make it hexidemical
     }
     else if (!g_db.HasResID(str))
     {
-        return FALSE;
+        // non-numeric and not resource ID. invalid
+        return FALSE;   // failure
     }
-    lstrcpynW(entry.MessageID, str.c_str(), _countof(entry.MessageID));
 
+    // store the string to entry.MessageID
+    StringCchCopyW(entry.MessageID, _countof(entry.MessageID), str.c_str());
+
+    // get the text from EDIT control
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
-    mstr_trim(str);
+    mstr_trim(str);     // trim it
+
+    // unquote if quoted
     if (str[0] == L'"')
     {
         mstr_unquote(str);
     }
-    lstrcpynW(entry.MessageValue, str.c_str(), _countof(entry.MessageValue));
-    return TRUE;
+
+    // store the text to entry.MessageValue
+    StringCchCopyW(entry.MessageValue, _countof(entry.MessageValue), str.c_str());
+
+    return TRUE;    // success
 }
 
 // helper function for MAddMsgDlg and MModifyMsgDlg
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 {
+    // get the text from combobox
     SetDlgItemTextW(hwnd, cmb1, entry.MessageID);
 
+    // set the quoted entry.MessageValue to the EDIT control
     MStringW str = entry.MessageValue;
     str = mstr_quote(str);
-
     SetDlgItemTextW(hwnd, edt1, str.c_str());
 }
 
@@ -1636,27 +1752,38 @@ protected:
 
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
     {
+        // update name label
+        e->m_strLabel = e->get_name_label();
+
+        // set the label text
         TV_ITEM item;
         ZeroMemory(&item, sizeof(item));
         item.mask = TVIF_TEXT | TVIF_HANDLE;
         item.hItem = e->m_hItem;
-        e->m_strLabel = e->get_name_label();
         item.pszText = &e->m_strLabel[0];
+        TreeView_SetItem(m_hwndTV, &item);
+
+        // update pszText if any
         if (pszText)
             StringCchCopyW(pszText, MAX_PATH, item.pszText);
-        TreeView_SetItem(m_hwndTV, &item);
     }
+
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
     {
+        // update lang label
+        e->m_strLabel = e->get_lang_label();
+
+        // set the label text
         TV_ITEM item;
         ZeroMemory(&item, sizeof(item));
         item.mask = TVIF_TEXT | TVIF_HANDLE;
         item.hItem = e->m_hItem;
-        e->m_strLabel = e->get_lang_label();
         item.pszText = &e->m_strLabel[0];
+        TreeView_SetItem(m_hwndTV, &item);
+
+        // update pszText if any
         if (pszText)
             StringCchCopyW(pszText, MAX_PATH, item.pszText);
-        TreeView_SetItem(m_hwndTV, &item);
     }
 
 public:
@@ -1706,13 +1833,18 @@ public:
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
         MWindowBase::ModifyWndClassDx(wcx);
+
+        // set a class menu
         wcx.lpszMenuName = MAKEINTRESOURCE(IDR_MAINMENU);
+
+        // change the window icon
         wcx.hIcon = m_hIcon;
         wcx.hIconSm = m_hIconSm;
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
     {
+        // the window class name of the main window
         return TEXT("katahiromz's RisohEditor");
     }
 
@@ -1810,7 +1942,8 @@ public:
 
 protected:
     // parsing resource IDs
-    BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
+    BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
+                      WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
     BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
@@ -1981,11 +2114,15 @@ LRESULT MMainWnd::OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // report the position and size to the status bar
 LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    // position
     INT x = (SHORT)LOWORD(wParam);
     INT y = (SHORT)HIWORD(wParam);
+
+    // size
     INT cx = (SHORT)LOWORD(lParam);
     INT cy = (SHORT)HIWORD(lParam);
 
+    // set the text to status bar
     ChangeStatusText(LoadStringPrintfDx(IDS_COORD, x, y, cx, cy));
     return 0;
 }
@@ -2004,6 +2141,7 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
     {
         SetFocus(m_hwndTV);
     }
+
     FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
 
@@ -2011,19 +2149,26 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
 void MMainWnd::UpdateMenu()
 {
     HMENU hMenu = GetMenu(m_hwnd);
+
+    // get 'File' menu
     HMENU hFileMenu = GetSubMenu(hMenu, 0);
+
+    // get Most Recently Used menu from 'File' menu
     HMENU hMruMenu = GetSubMenu(hFileMenu, GetMenuItemCount(hFileMenu) - 3);
     assert(hMruMenu);
+
+    // delete all the menu items from MRU menu
     while (DeleteMenu(hMruMenu, 0, MF_BYPOSITION))
         ;
 
-    INT i = 0;
     TCHAR szText[MAX_PATH * 2];
     static const TCHAR szPrefix[] = TEXT("123456789ABCDEF0");
 
+    // add the MRU menu items to the MRU menu
+    INT i = 0;
     for (auto& recent : g_settings.vecRecentlyUsed)
     {
-#if 1
+        // get the file title
         LPCTSTR pch = _tcsrchr(recent.c_str(), TEXT('\\'));
         if (pch == NULL)
             pch = _tcsrchr(recent.c_str(), TEXT('/'));
@@ -2031,16 +2176,19 @@ void MMainWnd::UpdateMenu()
             pch = recent.c_str();
         else
             ++pch;
+
+        // build the text
         StringCchPrintf(szText, _countof(szText), TEXT("&%c  %s"), szPrefix[i], pch);
+
+        // insert an item to the MRU menu
         InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, szText);
-#else
-        InsertMenu(hMruMenu, i, MF_BYPOSITION | MF_STRING, ID_MRUFILE0 + i, recent.c_str());
-#endif
-        ++i;
+
+        ++i;    // increment the index
     }
 
     if (g_settings.vecRecentlyUsed.empty())
     {
+        // set the "(none)" item if empty
         InsertMenu(hMruMenu, 0, MF_BYPOSITION | MF_STRING | MF_GRAYED, -1, LoadStringDx(IDS_NONE));
     }
 }
@@ -2259,10 +2407,12 @@ void MMainWnd::OnFonts(HWND hwnd)
     MFontsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // update m_hBinFont and set it to m_hBinEdit
         DeleteObject(m_hBinFont);
         m_hBinFont = dialog.DetachBinFont();
         SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
 
+        // update m_hSrcFont and set it to m_hSrcEdit
         DeleteObject(m_hSrcFont);
         m_hSrcFont = dialog.DetachSrcFont();
         SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
@@ -4796,7 +4946,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 }
 
 // compile a resource item source
-BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name, WORD lang, const MStringW& strWide, BOOL bReopen)
+BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
+                            WORD lang, const MStringW& strWide, BOOL bReopen)
 {
     if (type == RT_STRING)
     {
@@ -4919,21 +5070,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                     entry->m_lang = lang;
                 }
 
-                if (g_res.intersect(res))
-                {
-                    INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, 
-                                       MB_ICONINFORMATION | MB_YESNOCANCEL);
-                    switch (nID)
-                    {
-                    case IDYES:
-                        break;
-                    case IDNO:
-                    case IDCANCEL:
-                        res.delete_all();
-                        return FALSE;
-                    }
-                }
-
+                g_res.search_and_delete(ET_LANG, type, name, lang);
                 g_res.merge(res);
                 res.delete_all();
                 bSuccess = true;
