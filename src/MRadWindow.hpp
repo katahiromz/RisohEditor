@@ -856,10 +856,10 @@ public:
 
     enum TARGET
     {
-        TARGET_NEXT,
-        TARGET_PREV,
-        TARGET_FIRST,
-        TARGET_LAST
+        TARGET_NEXT,        // get the next target
+        TARGET_PREV,        // get the previous target
+        TARGET_FIRST,       // get the first target
+        TARGET_LAST         // get the last target
     };
 
     struct GET_TARGET
@@ -870,15 +870,19 @@ public:
         INT m_nCurrentIndex;
     };
 
+    // EnumChildWindows' callback function to get the target
     static BOOL CALLBACK GetTargetProc(HWND hwnd, LPARAM lParam)
     {
         auto get_target = (GET_TARGET *)lParam;
         if (auto pCtrl = MRadCtrl::GetRadCtrl(hwnd))
         {
-            if (pCtrl->m_dwMagic != 0xDEADFACE || !pCtrl->m_bTopCtrl)
-            {
-                return TRUE;
-            }
+            if (pCtrl->m_dwMagic != 0xDEADFACE)
+                return TRUE;    // invalid
+
+            if (!pCtrl->m_bTopCtrl)
+                return TRUE;    // not a top control?
+
+            // get the target and the index
             switch (get_target->target)
             {
             case TARGET_PREV:
@@ -889,6 +893,7 @@ public:
                     get_target->hwndTarget = pCtrl->m_hwnd;
                 }
                 break;
+
             case TARGET_NEXT:
                 if (get_target->m_nCurrentIndex < pCtrl->m_nIndex &&
                     pCtrl->m_nIndex < get_target->m_nIndex)
@@ -897,6 +902,7 @@ public:
                     get_target->hwndTarget = pCtrl->m_hwnd;
                 }
                 break;
+
             case TARGET_FIRST:
                 if (pCtrl->m_nIndex < get_target->m_nIndex)
                 {
@@ -904,6 +910,7 @@ public:
                     get_target->hwndTarget = pCtrl->m_hwnd;
                 }
                 break;
+
             case TARGET_LAST:
                 if (pCtrl->m_nIndex > get_target->m_nIndex)
                 {
@@ -913,12 +920,13 @@ public:
                 break;
             }
         }
-        return TRUE;
+
+        return TRUE;    // continue
     }
 
     HWND GetNextCtrl(HWND hwndCtrl) const
     {
-        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
+        if (auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
         {
             GET_TARGET get_target;
             get_target.target = TARGET_NEXT;
@@ -933,7 +941,7 @@ public:
 
     HWND GetPrevCtrl(HWND hwndCtrl) const
     {
-        if (MRadCtrl *pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
+        if (auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
         {
             GET_TARGET get_target;
             get_target.target = TARGET_PREV;
@@ -966,6 +974,7 @@ public:
         return get_target.hwndTarget;
     }
 
+    // the dialog procedure of MRadDialog
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -981,23 +990,32 @@ public:
         return 0;
     }
 
+    // MRadDialog WM_RBUTTONDOWN
     void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
+        // clicked on the MRadDialog
+
+        // if [Shift] and/or [Ctrl] was pressed, then ignore
         if (::GetKeyState(VK_SHIFT) < 0 || ::GetKeyState(VK_CONTROL) < 0)
             return;
 
+        // update the clicked position
         m_ptClicked.x = x;
         m_ptClicked.y = y;
 
+        // deselect the controls
         MRadCtrl::DeselectSelection();
     }
 
+    // MRadDialog MYWM_SELCHANGE
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // notify MYWM_SELCHANGE to the parent
         PostMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
         return 0;
     }
 
+    // get the normalized rectangle from two points
     void NormalizeRect(RECT *prc, POINT pt0, POINT pt1)
     {
         if (pt0.x < pt1.x)
@@ -1023,6 +1041,7 @@ public:
         }
     }
 
+    // draw the dragging rectangle
     void DrawDragSelect(HWND hwnd)
     {
         if (HDC hDC = GetDC(hwnd))
@@ -1036,84 +1055,119 @@ public:
         }
     }
 
+    // MRadDialog WM_LBUTTONDOWN/WM_LBUTTONDBLCLK
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
+        // update the clicked position
         m_ptClicked.x = x;
         m_ptClicked.y = y;
 
+        // if not [Shift] nor [Ctrl] pressed
         if (::GetKeyState(VK_SHIFT) >= 0 && ::GetKeyState(VK_CONTROL) >= 0)
         {
+            // deselect the controls
             MRadCtrl::DeselectSelection();
         }
 
+        // if not range selection
         if (!MRadCtrl::GetRangeSelect())
         {
+            // update the dragging position
             m_ptDragging = m_ptClicked;
 
+            // draw the dragging selection
             DrawDragSelect(hwnd);
 
+            // enable the range selection
             MRadCtrl::GetRangeSelect() = TRUE;
+
+            // start mouse capturing
             SetCapture(hwnd);
         }
     }
 
+    // MRadDialog WM_MOUSEMOVE
     void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
     {
-        if (MRadCtrl::GetRangeSelect())
+        if (MRadCtrl::GetRangeSelect())     // in range selection
         {
+            // erase the previous dragging selection
             DrawDragSelect(hwnd);
 
+            // update the dragging position
             m_ptDragging.x = x;
             m_ptDragging.y = y;
 
+            // draw the new dragging selection
             DrawDragSelect(hwnd);
         }
     }
 
+    // MRadDialog WM_CAPTURECHANGED
     void OnCaptureChanged(HWND hwnd)
     {
-        if (MRadCtrl::GetRangeSelect())
+        if (MRadCtrl::GetRangeSelect())     // in range selection
         {
+            // erase the previous dragging selection
             DrawDragSelect(hwnd);
+
+            // disable range selection
             MRadCtrl::GetRangeSelect() = FALSE;
         }
     }
 
+    // MRadDialog WM_LBUTTONUP
     void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
     {
-        if (MRadCtrl::GetRangeSelect())
+        if (MRadCtrl::GetRangeSelect())     // in range selection
         {
+            // get the rectangle from two points
             RECT rc;
             NormalizeRect(&rc, m_ptClicked, m_ptDragging);
 
+            // convert it to the screen coordinates
             MapWindowRect(hwnd, NULL, &rc);
 
+            // if [Shift] and [Ctrl] keys are not pressed
             if (GetAsyncKeyState(VK_SHIFT) >= 0 &&
                 GetAsyncKeyState(VK_CONTROL) >= 0)
             {
+                // deselect the controls
                 MRadCtrl::DeselectSelection();
             }
 
+            // release the capture
             ReleaseCapture();
+
+            // disable range selection
             MRadCtrl::GetRangeSelect() = FALSE;
 
+            // is [Ctrl] key down?
             BOOL bCtrlDown = GetAsyncKeyState(VK_CONTROL) < 0;
+
+            // ???
             MRadCtrl::DoRangeSelect(hwnd, &rc, bCtrlDown);
         }
     }
 
+    // MRadDialog WM_ERASEBKGND
     BOOL OnEraseBkgnd(HWND hwnd, HDC hdc)
     {
+        // create the background brush if necessary
         if (m_hbrBack == NULL)
             ReCreateBackBrush();
 
+        // get the client rectangle
         RECT rc;
         GetClientRect(hwnd, &rc);
+
+        // fill the rectangle by the brush
         FillRect(hdc, &rc, m_hbrBack);
 
-        return TRUE;
+        return TRUE;    // processed
     }
 
+    // the window procedure of MRadDialog
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -1142,64 +1196,87 @@ public:
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
     }
 
+    // MRadDialog WM_SIZE
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
+        // moving or resizing?
         if (m_bMovingSizing)
-            return;
+            return;     // ignore
 
+        // send MYWM_DLGSIZE to the parent
         SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
     }
 
+    // MRadDialog MYWM_DELETESEL
     LRESULT OnDeleteSel(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // send MYWM_DELETESEL to the parent
         SendMessage(GetParent(hwnd), MYWM_DELETESEL, wParam, lParam);
         return 0;
     }
 
+    // MRadDialog MYWM_CTRLMOVE
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // send MYWM_CTRLMOVE to the parent
         SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, wParam, lParam);
         return 0;
     }
 
+    // MRadDialog MYWM_CTRLSIZE
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
+        // send MYWM_CTRLSIZE to the parent
         SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, wParam, lParam);
         return 0;
     }
 
+    // MRadDialog WM_NCLBUTTONDOWN/WM_NCLBUTTONDBLCLK
     void OnNCLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
+        // eat
     }
 
+    // MRadDialog WM_NCLBUTTONUP
     void OnNCLButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // eat
     }
 
+    // MRadDialog WM_NCRBUTTONDOWN/WM_NCRBUTTONDBLCLK
     void OnNCRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT codeHitTest)
     {
         if (fDoubleClick)
             return;
 
+        // update the clicked position
         m_ptClicked.x = x;
         m_ptClicked.y = y;
+        // into screen coordinates
         ScreenToClient(hwnd, &m_ptClicked);
 
+        // send WM_CONTEXTMENU to the parent
         FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
     }
 
+    // MRadDialog WM_NCRBUTTONUP
     void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // eat
     }
 
+    // MRadDialog WM_NCMOUSEMOVE
     void OnNCMouseMove(HWND hwnd, int x, int y, UINT codeHitTest)
     {
+        // eat
     }
 
+    // MRadDialog WM_KEYDOWN/WM_KEYUP
     void OnKey(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
     {
         if (fDown)
         {
+            // send it to the parent
             FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, SendMessage);
         }
     }
