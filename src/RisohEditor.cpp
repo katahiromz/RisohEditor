@@ -22,10 +22,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
-#ifndef RT_MANIFEST
-    #define RT_MANIFEST 24      // manifest resource type
-#endif
-
 #define TV_WIDTH        250     // default m_hwndTV width
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hBinEdit height
@@ -6217,7 +6213,7 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// write a language-specific RC file
+// write a language-specific RC text
 BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n\r\n");
@@ -6297,7 +6293,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 // do backup a folder
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
+    if (GetFileAttributes(pszPath) != INVALID_FILE_ATTRIBUTES)
     {
         if (nCount < s_nBackupMaxCount)
         {
@@ -6318,7 +6314,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 // do backup a file
 BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) != 0xFFFFFFFF)
+    if (GetFileAttributes(pszPath) != INVALID_FILE_ATTRIBUTES)
     {
         if (nCount < s_nBackupMaxCount)
         {
@@ -7055,6 +7051,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         pch = wcsrchr(file, L'/');
     if (pch == NULL)
         pch = file;
+    else
+        ++pch;
 
     pch = wcsrchr(pch, L'.');
     if (!pch)
@@ -8988,7 +8986,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         return;
     }
 
-    if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == 0xFFFFFFFF)
+    if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
     {
         WCHAR szResH[MAX_PATH];
 
@@ -9340,6 +9338,8 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNomin
 
     if (pszRealFile == NULL || pszRealFile[0] == 0)
     {
+        m_szRealFile[0] = 0;
+        m_szNominalFile[0] = 0;
         SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
@@ -9349,26 +9349,32 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNomin
 
     WCHAR szPath[MAX_PATH], *pch;
 
+    // pszRealFile --> szPath --> m_szRealFile (full path)
     GetFullPathNameW(pszRealFile, _countof(szPath), szPath, &pch);
     StringCchCopyW(m_szRealFile, _countof(m_szRealFile), szPath);
 
+    // pszNominal --> szPath --> m_szNominalFile (full path)
     GetFullPathNameW(pszNominal, _countof(szPath), szPath, &pch);
     StringCchCopyW(m_szNominalFile, _countof(m_szNominalFile), szPath);
 
+    // find the last '\\' or '/'
     pch = wcsrchr(szPath, L'\\');
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
-    if (pch)
-    {
-        SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch + 1));
-    }
+    if (pch == NULL)
+        pch = szPath;
     else
-    {
-        SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
-    }
+        ++pch;
 
+    // set the file title to the title bar
+    SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch));
+
+    // add to the recently used files
     g_settings.AddFile(m_szNominalFile);
+
+    // update the menu
     UpdateMenu();
+
     return TRUE;
 }
 
@@ -9404,6 +9410,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
+
+    // get GUI font
     GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(lf), &lf);
 
     ZeroMemory(&lfBin, sizeof(lfBin));
@@ -9579,6 +9587,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     TCHAR szText[128];
     TCHAR szValueName[128];
 
+    // load the macros
     DWORD dwMacroCount = 0;
     if (keyRisoh.QueryDword(TEXT("dwMacroCount"), dwMacroCount) == ERROR_SUCCESS)
     {
@@ -9601,6 +9610,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         }
     }
 
+    // load the includes
     DWORD dwNumIncludes = 0;
     if (keyRisoh.QueryDword(TEXT("dwNumIncludes"), dwNumIncludes) == ERROR_SUCCESS)
     {
@@ -9675,17 +9685,19 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         g_settings.nRadLeft = CW_USEDEFAULT;
 
     DWORD i, dwCount;
+
+    TCHAR szFormat[32], szFile[MAX_PATH];
+
+    // load the recently used files
     keyRisoh.QueryDword(TEXT("FileCount"), dwCount);
     if (dwCount > MAX_MRU)
         dwCount = MAX_MRU;
-
-    TCHAR szFormat[32], szFile[MAX_PATH];
     for (i = 0; i < dwCount; ++i)
     {
         StringCchPrintf(szFormat, _countof(szFormat), TEXT("File%lu"), i);
         if (keyRisoh.QuerySz(szFormat, szFile, _countof(szFile)) == ERROR_SUCCESS)
         {
-            if (GetFileAttributes(szFile) != 0xFFFFFFFF)
+            if (GetFileAttributes(szFile) != INVALID_FILE_ATTRIBUTES)
             {
                 g_settings.vecRecentlyUsed.push_back(szFile);
             }
@@ -9694,13 +9706,13 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
     if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        if (GetFileAttributesW(szText) != 0xFFFFFFFF)
+        if (GetFileAttributesW(szText) != INVALID_FILE_ATTRIBUTES)
             g_settings.strWindResExe = szText;
     }
 
     if (keyRisoh.QuerySz(TEXT("strCppExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        if (GetFileAttributesW(szText) != 0xFFFFFFFF)
+        if (GetFileAttributesW(szText) != INVALID_FILE_ATTRIBUTES)
             g_settings.strCppExe = szText;
     }
 
@@ -9727,12 +9739,11 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)g_settings.bStoreToResFolder);
     keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)g_settings.bSelectableByMacro);
 
+    // load the captions
     DWORD dwNumCaptions = 0;
     keyRisoh.QueryDword(TEXT("dwNumCaptions"), (DWORD&)dwNumCaptions);
-
     if (dwNumCaptions > s_nMaxCaptions)
         dwNumCaptions = s_nMaxCaptions;
-
     captions_type captions;
     for (DWORD i = 0; i < dwNumCaptions; ++i)
     {
@@ -9758,14 +9769,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 // save the settings
 BOOL MMainWnd::SaveSettings(HWND hwnd)
 {
+    // open HKEY_CURRENT_USER\Software
     MRegKey key(HKCU, TEXT("Software"), TRUE);
     if (!key)
         return FALSE;
 
+    // create HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ
     MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"), TRUE);
     if (!keySoftware)
         return FALSE;
 
+    // create HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor
     MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"), TRUE);
     if (!keyRisoh)
         return FALSE;
@@ -9809,49 +9823,50 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());
     keyRisoh.SetDword(TEXT("nBinFontSize"), g_settings.nBinFontSize);
 
-    DWORD i, dwCount = (DWORD)g_settings.vecRecentlyUsed.size();
+    DWORD i, dwCount;
+
+    // save the recently used files
+    dwCount = (DWORD)g_settings.vecRecentlyUsed.size();
     if (dwCount > MAX_MRU)
         dwCount = MAX_MRU;
     keyRisoh.SetDword(TEXT("FileCount"), dwCount);
-
     TCHAR szValueName[128];
-
     for (i = 0; i < dwCount; ++i)
     {
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("File%lu"), i);
         keyRisoh.SetSz(szValueName, g_settings.vecRecentlyUsed[i].c_str());
     }
 
+    // save the ID association mapping
     for (auto& pair : g_settings.assoc_map)
     {
         keyRisoh.SetSz(pair.first.c_str(), pair.second.c_str());
         //MessageBoxW(NULL, pair.first.c_str(), pair.second.c_str(), 0);
     }
 
+    // save the macros
     DWORD dwMacroCount = DWORD(g_settings.macros.size());
     keyRisoh.SetDword(TEXT("dwMacroCount"), dwMacroCount);
-
+    i = 0;
+    for (auto& macro : g_settings.macros)
     {
-        i = 0;
-        for (auto& macro : g_settings.macros)
-        {
-            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
-            keyRisoh.SetSz(szValueName, macro.first.c_str());
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroName%lu"), i);
+        keyRisoh.SetSz(szValueName, macro.first.c_str());
 
-            StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroValue%lu"), i);
-            keyRisoh.SetSz(szValueName, macro.second.c_str());
-        }
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("MacroValue%lu"), i);
+        keyRisoh.SetSz(szValueName, macro.second.c_str());
+        ++i;
     }
 
+    // save the includes
     DWORD dwNumIncludes = DWORD(g_settings.includes.size());
     keyRisoh.SetDword(TEXT("dwNumIncludes"), dwNumIncludes);
-
+    i = 0;
+    for (auto& strInclude : g_settings.includes)
     {
-        for (i = 0; i < dwNumIncludes; ++i)
-        {
-            StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
-            keyRisoh.SetSz(szValueName, g_settings.includes[i].c_str());
-        }
+        StringCchPrintf(szValueName, _countof(szValueName), TEXT("Include%lu"), i);
+        keyRisoh.SetSz(szValueName, strInclude.c_str());
+        ++i;
     }
 
     keyRisoh.SetSz(TEXT("strWindResExe"), g_settings.strWindResExe.c_str());
@@ -9866,13 +9881,11 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bStoreToResFolder"), g_settings.bStoreToResFolder);
     keyRisoh.SetDword(TEXT("bSelectableByMacro"), g_settings.bSelectableByMacro);
 
+    // save the captions
     DWORD dwNumCaptions = DWORD(g_settings.captions.size());
-
     if (dwNumCaptions > s_nMaxCaptions)
         dwNumCaptions = s_nMaxCaptions;
-
     keyRisoh.SetDword(TEXT("dwNumCaptions"), dwNumCaptions);
-
     for (DWORD i = 0; i < dwNumCaptions; ++i)
     {
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
@@ -9880,9 +9893,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     }
 
     keyRisoh.SetDword(TEXT("bShowToolBar"), g_settings.bShowToolBar);
-
     keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
-
     keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
 
     return TRUE;
@@ -9926,6 +9937,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (m_hImageList == NULL)
         return FALSE;
 
+    // load some icons
     m_hFileIcon = LoadSmallIconDx(IDI_FILE);        // load a file icon
     m_hFolderIcon = LoadSmallIconDx(IDI_FOLDER);    // load a folder icon
 
@@ -10078,8 +10090,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // select the string entry in the tree control
 void MMainWnd::SelectString(void)
 {
-    auto entry = g_res.find(ET_STRING, RT_STRING, (WORD)0, 0xFFFF);
-    if (entry)
+    if (auto entry = g_res.find(ET_STRING, RT_STRING))
     {
         SelectTV(entry, FALSE);
     }
@@ -10088,8 +10099,7 @@ void MMainWnd::SelectString(void)
 // select the message entry in the tree control
 void MMainWnd::SelectMessage()
 {
-    auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, 0xFFFF);
-    if (entry)
+    if (auto entry = g_res.find(ET_MESSAGE, RT_MESSAGETABLE))
     {
         SelectTV(entry, FALSE);
     }
@@ -10131,42 +10141,51 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     if (type.empty())
         type.m_str = strType;
 
+    // name --> name_or_id
     MIdOrString name_or_id;
     if (name[0] == L'\"')
     {
-        // string type
+        // non-numeric name
         MString name_clone = name;
-        mstr_unquote(name_clone);
+        mstr_unquote(name_clone);   // unquote
         name_or_id = name_clone.c_str();
     }
     else
     {
-        // numeric type
+        // numeric name
         name_or_id = WORD(g_db.GetResIDValue(name));
     }
 
-    if (name_or_id == (WORD)0)
+    if (name_or_id == (WORD)0)  // name_or_id was empty
     {
+        // name --> strA (ANSI)
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
+
+        // find strA from g_settings.id_map
         auto it = g_settings.id_map.find(strA);
-        if (it != g_settings.id_map.end())
+        if (it != g_settings.id_map.end())  // found
         {
             MStringA strA = it->second;
             if (strA[0] == 'L')
                 strA = strA.substr(1);
+
+            // unquote
             mstr_unquote(strA);
+
+            // make it uppercase
             CharUpperA(&strA[0]);
+
+            // resource name
             name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
         }
     }
 
-    EntrySetBase found;
-    g_res.search(found, ET_LANG, type, name_or_id, 0xFFFF);
-
-    if (found.size())
+    if (auto entry = g_res.find(ET_LANG, type, name_or_id, 0xFFFF))
     {
-        SelectTV(*found.begin(), FALSE);
+        // select the entry
+        SelectTV(entry, FALSE);
 
+        // set focus to the main window
         SetForegroundWindow(m_hwnd);
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
@@ -10191,6 +10210,7 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
     std::vector<MString> vecTypes;
     mstr_split(vecTypes, strTypes, L"/");
 
+    // ignore if no type
     if (vecTypes.empty() || vecTypes.size() <= size_t(lParam))
         return 0;
 
@@ -10206,7 +10226,9 @@ LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
     m_fr.Flags = FR_DOWN;
     if (m_search.bInternalText)
     {
+        // m_search.strText --> m_szFindWhat
         StringCchCopy(m_szFindWhat, _countof(m_szFindWhat), m_search.strText.c_str());
+
         if (!m_search.bIgnoreCases)
         {
             m_fr.Flags |= FR_MATCHCASE;
