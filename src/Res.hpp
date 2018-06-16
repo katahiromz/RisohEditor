@@ -65,7 +65,7 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// is the resource type an resource entity type
+// is the resource type an "entity type" ?
 inline BOOL
 Res_IsEntityType(const MIdOrString& type)
 {
@@ -78,7 +78,7 @@ Res_IsEntityType(const MIdOrString& type)
     return TRUE;
 }
 
-// is the resource type an plain text type
+// is the resource type a "plain text" type?
 inline INT
 Res_IsPlainText(const MIdOrString& type)
 {
@@ -86,7 +86,7 @@ Res_IsPlainText(const MIdOrString& type)
            type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
 }
 
-// does the resource type have no name?
+// has the resource type no name?
 inline BOOL
 Res_HasNoName(const MIdOrString& type)
 {
@@ -94,7 +94,7 @@ Res_HasNoName(const MIdOrString& type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// EntryType
+// EntryType --- the entry type
 
 enum EntryType
 {
@@ -109,28 +109,30 @@ enum EntryType
 ///////////////////////////////////////////////////////////////////////////////
 // EntryBase
 
+#define BAD_LANG    0xFFFF      // invalid language value
+
 struct EntryBase
 {
     typedef DWORD               size_type;
     typedef std::vector<BYTE>   data_type;
-    EntryType       m_et;                   // entry type
 
+    EntryType       m_et;                   // entry type
     MIdOrString     m_type;                 // resource type
     MIdOrString     m_name;                 // resource name
-    WORD            m_lang = 0xFFFF;        // resource language
+    WORD            m_lang = BAD_LANG;      // resource language
     HTREEITEM       m_hItem = NULL;         // treeview item handle
     bool            m_valid = true;         // "is it valid?" flag
     data_type       m_data;                 // the item data
     MStringW        m_strLabel;             // the label string
 
     // constructor
-    EntryBase() : m_lang(0xFFFF), m_hItem(NULL), m_valid(true)
+    EntryBase() : m_lang(BAD_LANG), m_hItem(NULL), m_valid(true)
     {
     }
 
     // constructor
     EntryBase(EntryType et, const MIdOrString& type, 
-            const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
+            const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
         : m_et(et), m_type(type), m_name(name), m_lang(lang), m_hItem(NULL), m_valid(true)
     {
     }
@@ -145,8 +147,10 @@ struct EntryBase
     {
         if (m_et == ET_LANG)
             return !empty();
+
         if (!m_hItem)
             return false;
+
         return m_valid;
     }
 
@@ -173,7 +177,7 @@ struct EntryBase
 
     // pattern match
     bool match(EntryType et, const MIdOrString& type, const MIdOrString& name,
-               WORD lang = 0xFFFF) const
+               WORD lang = BAD_LANG) const
     {
         if (et != ET_ANY && m_et != et)
             return false;
@@ -181,7 +185,7 @@ struct EntryBase
             return false;
         if (!name.is_zero() && m_name != name)
             return false;
-        if (lang != 0xFFFF && m_lang != lang)
+        if (lang != BAD_LANG && m_lang != lang)
             return false;
         return true;
     }
@@ -223,18 +227,23 @@ struct EntryBase
     MStringW get_type_label() const
     {
         if (!m_type.m_id)
-            return m_type.m_str;
+            return m_type.m_str;    // string name type
+
+        // it was integer name type
 
         MStringW label = g_db.GetName(L"RESOURCE", m_type.m_id);
-        if (label.empty())
-            return mstr_dec_word(m_type.m_id);
+        if (label.empty())  // unable to get the label
+            return mstr_dec_word(m_type.m_id);  // returns the numeric text
 
-        if (!mchr_is_digit(label[0]))
+        // got the label
+        if (!mchr_is_digit(label[0]))   // first character is not digit
         {
+            // add a parenthesis pair and numeric text
             label += L" (";
             label += mstr_dec_word(m_type.m_id);
             label += L")";
         }
+
         return label;
     }
 
@@ -243,15 +252,22 @@ struct EntryBase
     {
         WORD id = m_name.m_id;
         if (!id)
-            return m_name.m_str;
+            return m_name.m_str;        // string name resource name
 
+        // get an IDTYPE_ value
         IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
+
+        // get the label from an IDTYPE_ value
         MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
         if (label.empty() || m_type == RT_STRING || m_type == RT_MESSAGETABLE)
-            return mstr_dec_word(id);
-
-        if (!mchr_is_digit(label[0]))
         {
+            return mstr_dec_word(id);   // returns numeric text
+        }
+
+        // got the label 
+        if (!mchr_is_digit(label[0]))   // first character is not digit
+        {
+            // add a parenthesis pair and numeric text
             label += L" (";
             label += mstr_dec_word(id);
             label += L")";
@@ -262,6 +278,7 @@ struct EntryBase
     // get the resource language label
     MStringW get_lang_label() const
     {
+        // use an external helper function
         MStringW TextFromLang(WORD lang);
         return TextFromLang(m_lang);
     }
@@ -276,7 +293,7 @@ struct EntryBase
     void clear()
     {
         clear_data();
-        m_lang = 0xFFFF;
+        m_lang = BAD_LANG;
         m_name = (WORD)0;
         m_type = (WORD)0;
     }
@@ -386,7 +403,7 @@ Res_NewMessageEntry(WORD lang)
 }
 
 inline EntryBase *
-Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = 0xFFFF)
+Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = BAD_LANG)
 {
     return new EntryBase(ET_LANG, type, name, lang);
 }
@@ -436,7 +453,7 @@ struct EntrySet : protected EntrySetBase
 
     // search by pattern matching
     bool search(super_type& found, EntryType et, const MIdOrString& type = WORD(0), 
-                const MIdOrString& name = WORD(0), WORD lang = 0xFFFF, bool invalid_ok = false) const
+                const MIdOrString& name = WORD(0), WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         for (auto entry : *this)
         {
@@ -451,7 +468,7 @@ struct EntrySet : protected EntrySetBase
     // find by pattern matching
     EntryBase *find(EntryType et, const MIdOrString& type = WORD(0),
                     const MIdOrString& name = WORD(0),
-                    WORD lang = 0xFFFF, bool invalid_ok = false) const
+                    WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         super_type found;
         if (search(found, et, type, name, lang, invalid_ok))
@@ -611,7 +628,7 @@ struct EntrySet : protected EntrySetBase
 
     // search and delete
     void search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
-                           const MIdOrString& name = WORD(0), WORD lang = 0xFFFF)
+                           const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
     {
         // search
         super_type found;
@@ -1123,7 +1140,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_name_entry(const MIdOrString& type, const MIdOrString& name)
     {
-        auto entry = find(ET_NAME, type, name, 0xFFFF, true);
+        auto entry = find(ET_NAME, type, name, BAD_LANG, true);
         if (!entry)
         {
             entry = Res_NewNameEntry(type, name);
@@ -1135,7 +1152,7 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_type_entry(const MIdOrString& type, bool replace)
     {
-        auto entry = find(ET_TYPE, type, (WORD)0, 0xFFFF, true);
+        auto entry = find(ET_TYPE, type, (WORD)0, BAD_LANG, true);
         if (!entry)
         {
             entry = Res_NewTypeEntry(type);
@@ -1529,7 +1546,7 @@ public:
         }
         else
         {
-            search_and_delete(ET_ANY, (WORD)0, (WORD)0, 0xFFFF);
+            search_and_delete(ET_ANY, (WORD)0, (WORD)0, BAD_LANG);
             delete_invalid();
         }
     }

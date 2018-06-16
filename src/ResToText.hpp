@@ -353,7 +353,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
 
     if (ret.size())
     {
-        if (entry.m_lang != 0 && entry.m_lang != 0xFFFF)
+        if (entry.m_lang != 0 && entry.m_lang != BAD_LANG)
         {
             WCHAR sz[32];
             StringCchPrintfW(sz, _countof(sz), L"%u_", entry.m_lang);
@@ -1114,7 +1114,7 @@ DumpGroupCursorInfo(const std::vector<BYTE>& data)
         WORD xHotSpot = 0;
         WORD yHotSpot = 0;
 
-        if (auto entry = g_res.find(ET_LANG, RT_CURSOR, nID, 0xFFFF))
+        if (auto entry = g_res.find(ET_LANG, RT_CURSOR, nID))
         {
             auto& cursor_entry = (EntryBase&)*entry;
             LOCALHEADER header;

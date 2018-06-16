@@ -980,7 +980,7 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
 // get the language ID from a text
 WORD LangFromText(LPWSTR pszLang)
 {
-    WORD lang = 0xFFFF;     // not found yet
+    WORD lang = BAD_LANG;     // not found yet
 
     // replace the fullwidth characters with halfwidth characters
     ReplaceFullWithHalf(pszLang);
@@ -1066,13 +1066,13 @@ WORD LangFromText(LPWSTR pszLang)
         {
             // strLang is numeric
             int nValue = mstr_parse_int(pszLang);
-            if (nValue < 0 || 0xFFFF <= nValue)
+            if (nValue < 0 || BAD_LANG <= nValue)
                 break;  // invalid
 
             lang = WORD(nValue);
         }
 
-        if (lang == 0xFFFF)     // not found yet?
+        if (lang == BAD_LANG)     // not found yet?
         {
             // whole match
             for (auto& entry : g_Langs)
@@ -1085,7 +1085,7 @@ WORD LangFromText(LPWSTR pszLang)
             }
         }
 
-        if (lang == 0xFFFF)     // not found yet?
+        if (lang == BAD_LANG)     // not found yet?
         {
             // numeric after parenthesis
             if (WCHAR *pch = wcsrchr(pszLang, L'('))
@@ -1094,7 +1094,7 @@ WORD LangFromText(LPWSTR pszLang)
                 if (mchr_is_digit(*pch))
                 {
                     int nValue = mstr_parse_int(pch);
-                    if (nValue < 0 || 0xFFFF <= nValue)
+                    if (nValue < 0 || BAD_LANG <= nValue)
                         break;  // invalid
 
                     lang = WORD(nValue);
@@ -1102,7 +1102,7 @@ WORD LangFromText(LPWSTR pszLang)
             }
         }
 
-        if (lang == 0xFFFF)     // not found yet?
+        if (lang == BAD_LANG)     // not found yet?
         {
             // partial match
             for (auto& entry : g_Langs)
@@ -1115,7 +1115,7 @@ WORD LangFromText(LPWSTR pszLang)
             }
         }
 
-        if (lang == 0xFFFF)     // not found yet?
+        if (lang == BAD_LANG)     // not found yet?
         {
             // ignore case, partial match
             CharUpperW(&strLang[0]);
@@ -1145,7 +1145,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 
     // get the language ID from texts
     lang = LangFromText(szLang);
-    if (lang != 0xFFFF)
+    if (lang != BAD_LANG)
         return TRUE;    // success
 
     // error
@@ -1787,7 +1787,7 @@ public:
 
         m_bUpxCompressed = FALSE;
 
-        m_lang = 0xFFFF;
+        m_lang = BAD_LANG;
 
         ZeroMemory(&m_fr, sizeof(m_fr));
         m_fr.lStructSize = sizeof(m_fr);
@@ -3013,7 +3013,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     {
         // search the ET_LANG entries
         EntrySetBase found;
-        g_res.search(found, ET_LANG, entry->m_type, entry->m_name, 0xFFFF);
+        g_res.search(found, ET_LANG, entry->m_type, entry->m_name);
 
         if (entry->m_type == RT_GROUP_ICON)     // group icon
         {
@@ -3038,7 +3038,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
         }
 
         // select the entry
-        SelectTV(ET_NAME, dialog.m_type, dialog.m_name, 0xFFFF, FALSE);
+        SelectTV(ET_NAME, dialog.m_type, dialog.m_name, BAD_LANG, FALSE);
     }
 }
 
@@ -8632,7 +8632,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else
     {
-        static WORD old_lang = 0xFFFF;
+        static WORD old_lang = BAD_LANG;
         static WCHAR szOldText[MAX_PATH] = L"";
 
         if (pnmhdr->code == TVN_BEGINLABELEDIT)
@@ -8665,7 +8665,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 entry->m_et == ET_MESSAGE)
             {
                 old_lang = LangFromText(szOldText);
-                if (old_lang == 0xFFFF)
+                if (old_lang == BAD_LANG)
                 {
                     return TRUE;    // prevent
                 }
@@ -8727,11 +8727,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                      entry->m_et == ET_MESSAGE)
             {
                 old_lang = LangFromText(szOldText);
-                if (old_lang == 0xFFFF)
+                if (old_lang == BAD_LANG)
                     return FALSE;   // reject
 
                 WORD new_lang = LangFromText(szNewText);
-                if (new_lang == 0xFFFF)
+                if (new_lang == BAD_LANG)
                     return FALSE;   // reject
 
                 if (old_lang == new_lang)
@@ -9590,9 +9590,9 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 
         // select the added entry
         if (dialog.m_type == RT_STRING)
-            SelectTV(ET_STRING, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
+            SelectTV(ET_STRING, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
         else if (dialog.m_type == RT_MESSAGETABLE)
-            SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, 0xFFFF, FALSE);
+            SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
         else
             SelectTV(ET_LANG, dialog, FALSE);
     }
@@ -10447,7 +10447,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         name_or_id = WORD(g_db.GetResIDValue(name));
     }
 
-    if (name_or_id == (WORD)0)  // name_or_id was empty
+    if (name_or_id.empty())  // name_or_id was empty
     {
         // name --> strA (ANSI)
         MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
@@ -10471,7 +10471,8 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         }
     }
 
-    if (auto entry = g_res.find(ET_LANG, type, name_or_id, 0xFFFF))
+    // find the entry
+    if (auto entry = g_res.find(ET_LANG, type, name_or_id))
     {
         // select the entry
         SelectTV(entry, FALSE);
