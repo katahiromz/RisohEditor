@@ -2879,7 +2879,7 @@ static bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString t
 
     if (pSearch->bDownward)
     {
-        if (*pSearch->pCurrent < *entry)
+        if (pSearch->pCurrent == NULL || *pSearch->pCurrent < *entry)
         {
             if (pSearch->pFound)
             {
@@ -2898,7 +2898,7 @@ static bool CheckTextForSearch(ITEM_SEARCH *pSearch, EntryBase *entry, MString t
     }
     else
     {
-        if (*entry < *pSearch->pCurrent)
+        if (pSearch->pCurrent == NULL || *entry < *pSearch->pCurrent)
         {
             if (pSearch->pFound)
             {
@@ -6818,7 +6818,13 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
     SetForegroundWindow(hwnd);
 
-    pch = wcsrchr(file, L'.');
+    pch = wcsrchr(file, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(file, L'/');
+    if (pch == NULL)
+        pch = file;
+
+    pch = wcsrchr(pch, L'.');
     if (!pch)
     {
         ErrorBoxDx(IDS_CANNOTOPEN);
