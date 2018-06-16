@@ -589,10 +589,12 @@ struct EntrySet : protected EntrySetBase
         {
             EntryBase *parent = get_parent(entry);
             if (!parent)
-                break;
-            if (get_first_child(parent))
-                break;
-            delete_entry(parent);
+                break;  // no parent
+
+            if (get_child(parent))
+                break;  // no child
+
+            delete_entry(parent);   // delete the parent
         } while (0);
     }
 
@@ -1235,23 +1237,23 @@ struct EntrySet : protected EntrySetBase
         return on_insert_entry(entry);
     }
 
-    // insert the parent(s) to be insert there
+    // insert or get the parent entry to be insert there
     HTREEITEM get_insert_parent(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
-            return NULL;
+            return NULL;    // no treeview handle
 
         if (entry->m_et == ET_TYPE)
-            return TVI_ROOT;
+            return TVI_ROOT;    // the root handle
 
         auto new_entry = add_type_entry(entry->m_type, false);
         if (!new_entry)
-            return NULL;
+            return NULL;    // unable to add
 
         switch (entry->m_et)
         {
         case ET_NAME: case ET_STRING: case ET_MESSAGE:
-            return new_entry->m_hItem;
+            return new_entry->m_hItem;  // success
 
         case ET_LANG:
             break;
@@ -1260,23 +1262,26 @@ struct EntrySet : protected EntrySetBase
             return NULL;
         }
 
+        // add the name entry
         new_entry = add_name_entry(entry->m_type, entry->m_name);
         if (!new_entry)
-            return NULL;
-        return new_entry->m_hItem;
+            return NULL;    // unable to add
+
+        return new_entry->m_hItem;  // success
     }
 
     // get the insertion position
     HTREEITEM get_insert_position(EntryBase *entry)
     {
         if (m_hwndTV == NULL)
-            return NULL;
+            return NULL;    // no treeview handle
 
+        // get the entries to determine the position
         super_type found;
         switch (entry->m_et)
         {
         case ET_TYPE:
-            search(found, ET_TYPE, (WORD)0);
+            search(found, ET_TYPE);
             break;
 
         case ET_NAME:
@@ -1305,33 +1310,34 @@ struct EntrySet : protected EntrySetBase
             return NULL;
         }
 
+        // determine the target
         EntryBase *target = NULL;
         for (auto e : found)
         {
             if (*e < *entry)
             {
-                if (!target)
+                if (!target)    // there is no target yet
                 {
-                    target = e;
+                    target = e;     // set the target
                 }
-                else if (*target < *e)
+                else if (*target < *e)  // check the position
                 {
-                    target = e;
+                    target = e;     // set the new target
                 }
             }
         }
 
         if (target)
-            return target->m_hItem;
+            return target->m_hItem;     // returns the target
 
-        return TVI_FIRST;
+        return TVI_FIRST;   // insert as a first
     }
 
     // get the parent entry
     EntryBase *get_parent(EntryBase *entry)
     {
         if (!entry)
-            return NULL;
+            return NULL;    // no parent
 
         EntryBase *parent;
         switch (entry->m_et)
@@ -1339,17 +1345,20 @@ struct EntrySet : protected EntrySetBase
         case ET_NAME:
         case ET_STRING:
         case ET_MESSAGE:
+            // parent is a type entry
             parent = find(ET_TYPE, entry->m_type);
             break;
 
         case ET_LANG:
+            // parent is a name entry
             parent = find(ET_NAME, entry->m_type, entry->m_name);
             break;
 
         default:
-            parent = NULL;
+            parent = NULL;  // no parent
             break;
         }
+
         return parent;
     }
 
@@ -1361,16 +1370,15 @@ struct EntrySet : protected EntrySetBase
         {
         case ET_TYPE:
             return !find(ET_NAME, entry->m_type);
+
         case ET_NAME:
             return !find(ET_LANG, entry->m_type, entry->m_name);
+
         case ET_STRING:
-            return false;
         case ET_MESSAGE:
-            return false;
         case ET_LANG:
-            return false;
         default:
-            return false;
+            return false;   // not parent
         }
     }
 
@@ -1378,23 +1386,29 @@ struct EntrySet : protected EntrySetBase
     MStringW get_label(const EntryBase *entry)
     {
         MStringW strText;
+
+        // get the preferred label by the entry type
         switch (entry->m_et)
         {
         case ET_TYPE:
             strText = entry->get_type_label();
             break;
+
         case ET_NAME:
             strText = entry->get_name_label();
             break;
+
         case ET_LANG:
         case ET_STRING:
         case ET_MESSAGE:
             strText = entry->get_lang_label();
             break;
+
         default:
             assert(0);
             break;
         }
+
         return strText;
     }
 
@@ -1403,16 +1417,20 @@ struct EntrySet : protected EntrySetBase
     {
         DebugPrintDx(L"on_insert_entry: %p, %s, %s, %u, %s\n", entry, entry->m_type.c_str(), entry->m_name.c_str(), entry->m_lang, entry->m_strLabel.c_str());
 
-        if (m_hwndTV == NULL)
+        if (m_hwndTV == NULL)   // no treeview handle
         {
             entry->m_valid = true;
             insert(entry);
             return NULL;
         }
 
+        // get/insert the insertion parent
         HTREEITEM hParent = get_insert_parent(entry);
+
+        // get the insertion position
         HTREEITEM hPosition = get_insert_position(entry);
 
+        // ok, insert it
         return on_insert_after(hParent, entry, hPosition);
     }
     EntryBase *
@@ -1420,17 +1438,20 @@ struct EntrySet : protected EntrySetBase
     {
         assert(entry);
 
+        // make it valid
         entry->m_valid = true;
 
         if (m_hwndTV == NULL)
-            return entry;
+            return entry;   // no treeview handle
 
         if (entry->m_hItem && entry == get_entry(entry->m_hItem))
         {
+            // it already has its item handle
             insert(entry);
             return entry;
         }
 
+        // initialize the TV_INSERTSTRUCT structure
         TV_INSERTSTRUCTW insert_struct;
         ZeroMemory(&insert_struct, sizeof(insert_struct));
 
@@ -1455,14 +1476,18 @@ struct EntrySet : protected EntrySetBase
             insert_struct.item.iImage = 0;
             insert_struct.item.iSelectedImage = 0;
         }
+
+        // insert it to the treeview
         if (auto hItem = TreeView_InsertItem(m_hwndTV, &insert_struct))
         {
-            entry->m_hItem = hItem;
-            insert(entry);
+            entry->m_hItem = hItem;     // set the item handle
+
+            insert(entry);  // insert the entry pointer to this instance
+
             return entry;
         }
 
-        return NULL;
+        return NULL;    // failure
     }
 
     // helper method to delete the strings
@@ -1482,52 +1507,63 @@ struct EntrySet : protected EntrySetBase
     // helper method to delete the group icon
     bool on_delete_group_icon(EntryBase *entry)
     {
+        // validate the entry
         if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_ICON)
-            return false;
+            return false;   // invalid
 
+        // store the data to the stream
         MByteStreamEx bs(entry->m_data);
 
+        // read the header from the stream
         ICONDIR dir;
         if (!bs.ReadRaw(dir))
-            return false;
+            return false;   // unable to read
 
+        // read the dir entries from the stream
         DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
         std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
         if (!bs.ReadData(&DirEntries[0], size))
-            return false;
+            return false;   // unable to read
 
+        // delete the related RT_ICON entries
         DWORD i, nCount = dir.idCount;
         for (i = 0; i < nCount; ++i)
         {
             search_and_delete(ET_LANG, RT_ICON, DirEntries[i].nID, (*entry).m_lang);
         }
 
-        return true;
+        return true;    // success
     }
 
     // helper method to delete the group cursor
     bool on_delete_group_cursor(EntryBase *entry)
     {
+        // validate the entry
         if (entry->m_et != ET_LANG || entry->m_type != RT_GROUP_CURSOR)
-            return false;
+            return false;   // invalid
 
+        // store the data to the stream
         MByteStreamEx bs(entry->m_data);
 
+        // read the header from the stream
         ICONDIR dir;
         if (!bs.ReadRaw(dir))
-            return false;
+            return false;   // unable to read
 
+        // read the dir entries from the stream
         DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
         std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
         if (!bs.ReadData(&DirEntries[0], size))
-            return false;
+            return false;   // unable to read
 
+        // delete the related RT_CURSOR entries
         DWORD i, nCount = dir.idCount;
         for (i = 0; i < nCount; ++i)
         {
             search_and_delete(ET_LANG, RT_CURSOR, DirEntries[i].nID, (*entry).m_lang);
         }
-        return true;
+
+        return true;    // success
     }
 
     struct EnumResStruct
@@ -1539,20 +1575,23 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_res_entry(HMODULE hMod, LPCWSTR type, LPCWSTR name, WORD lang)
     {
+        // find the resource in hMod
         HRSRC hResInfo = FindResourceExW(hMod, type, name, lang);
         if (!hResInfo)
             return NULL;
 
+        // get the size and the pointer
         DWORD dwSize = SizeofResource(hMod, hResInfo);
         HGLOBAL hGlobal = LoadResource(hMod, hResInfo);
         LPVOID pv = LockResource(hGlobal);
         if (pv && dwSize)
         {
+            // got it. add a language entry
             EntryBase::data_type data((LPBYTE)(pv), (LPBYTE)(pv) + dwSize);
             return add_lang_entry(type, name, lang, data);
         }
 
-        return NULL;
+        return NULL;    // unable to get
     }
 
     // callback to insert the resource in the executable
@@ -1579,12 +1618,13 @@ struct EntrySet : protected EntrySetBase
         return ::EnumResourceNamesW(hMod, lpszType, EnumResNameProc, lParam);
     }
 
-    // get the 1st child
-    EntryBase *get_first_child(EntryBase *parent) const
+    // get the child if any
+    EntryBase *get_child(EntryBase *parent) const
     {
         if (!parent)
-            return NULL;
+            return NULL;    // no parent, no child
 
+        // get child
         EntryBase *child;
         switch (parent->m_et)
         {
@@ -1597,9 +1637,10 @@ struct EntrySet : protected EntrySetBase
             break;
 
         default:
-            child = NULL;
+            child = NULL;   // no child
             break;
         }
+
         return child;
     }
 
@@ -1682,27 +1723,32 @@ public:
         assert(entry->m_et == ET_LANG);
         assert(entry->m_type == RT_GROUP_ICON);
 
+        // check the size
         ICONDIR dir;
         if (entry->size() < sizeof(dir))
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // entry --> dir
         memcpy(&dir, &(*entry)[0], sizeof(dir));
 
+        // check the format
         if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // check the size
         if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPICONDIRENTRY))
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // get the pointers of old and new entries
         auto data = entry->m_data;
         auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
         auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
@@ -1710,17 +1756,23 @@ public:
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find the RT_ICON entry
             auto e = find(ET_LANG, RT_ICON, old_entries[i].nID, entry->m_lang);
             if (!e)
                 return FALSE;
 
+            // get the next ID
             UINT nLastID = get_last_id(RT_ICON, new_lang);
             UINT nNextID = nLastID + 1;
 
+            // add a RT_ICON entry
             add_lang_entry(RT_ICON, WORD(nNextID), new_lang, e->m_data);
+
+            // update the ID in new_entries
             new_entries[i].nID = (WORD)nNextID;
         }
 
+        // add a RT_GROUP_ICON entry
         add_lang_entry(RT_GROUP_ICON, new_name, new_lang, data);
         return TRUE;
     }
@@ -1731,27 +1783,32 @@ public:
         assert(entry->m_et == ET_LANG);
         assert(entry->m_type == RT_GROUP_CURSOR);
 
+        // check the size
         ICONDIR dir;
         if (entry->size() < sizeof(dir))
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // entry --> dir
         memcpy(&dir, &(*entry)[0], sizeof(dir));
 
+        // check the format
         if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // check the size
         if (entry->size() < sizeof(dir) + dir.idCount * sizeof(GRPCURSORDIRENTRY))
         {
             assert(0);
-            return FALSE;
+            return FALSE;   // invalid
         }
 
+        // get the pointers of old and new entries
         auto data = entry->m_data;
         auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
         auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
@@ -1759,36 +1816,46 @@ public:
         LONG cx = 0, cy = 0;
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find the RT_CURSOR entry
             auto e = find(ET_LANG, RT_CURSOR, old_entries[i].nID, entry->m_lang);
             if (!e)
                 return FALSE;
 
+            // get the next ID
             UINT nLastID = get_last_id(RT_CURSOR, new_lang);
             UINT nNextID = nLastID + 1;
 
             add_lang_entry(RT_CURSOR, WORD(nNextID), new_lang, e->m_data);
+
+            // update the ID in new_entries
             new_entries[i].nID = (WORD)nNextID;
         }
 
+        // add a RT_GROUP_CURSOR entry
         add_lang_entry(RT_GROUP_CURSOR, new_name, new_lang, data);
         return TRUE;
     }
 
-    // extract the resource data as an *.res file
+    // extract one resource item as an *.res file
     BOOL extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
     {
-        MByteStreamEx bs;
+        // check the entry type
+        if (entry->m_et != ET_LANG)
+            return FALSE;   // invalid
+
+        MByteStreamEx bs;   // the stream
+
+        // write the header to the stream
         ResHeader header;
         if (!header.WriteTo(bs))
-            return FALSE;
-
-        if (entry->m_et != ET_LANG)
-            return FALSE;
+            return FALSE;   // unable to write
 
         header.DataSize = entry->size();
         header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
+
+        // check the header size
         if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
-            return FALSE;
+            return FALSE;   // invalid
 
         header.type = entry->m_type;
         header.name = entry->m_name;
@@ -1800,31 +1867,40 @@ public:
         header.Characteristics = 0;
 
         if (!header.WriteTo(bs))
-            return FALSE;
+            return FALSE;   // unable to write
 
         if (!bs.WriteData(&(*entry)[0], entry->size()))
-            return FALSE;
+            return FALSE;   // unable to write
 
+        // adjust the alignment
         bs.WriteDwordAlignment();
 
+        // save the stream to a *.res file
         return bs.SaveToFile(pszFileName);
     }
+
+    // extract some resource items as an *.res file
     BOOL extract_res(LPCWSTR pszFileName, const EntrySet& res) const
     {
-        MByteStreamEx bs;
+        MByteStreamEx bs;   // the stream
+
+        // write the header to the stream
         ResHeader header;
         if (!header.WriteTo(bs))
-            return FALSE;
+            return FALSE;   // unable to write
 
+        // for all the language entries in res
         for (auto entry : res)
         {
             if (entry->m_et != ET_LANG)
                 continue;
 
             header.DataSize = entry->size();
+
+            // check the header size
             header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
             if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
-                return FALSE;
+                return FALSE;   // invalid
 
             header.type = entry->m_type;
             header.name = entry->m_name;
@@ -1835,15 +1911,19 @@ public:
             header.Version = 0;
             header.Characteristics = 0;
 
+            // write the header to the stream
             if (!header.WriteTo(bs))
-                return FALSE;
+                return FALSE;   // unable to write
 
+            // write the data to the stream
             if (!bs.WriteData(&(*entry)[0], entry->size()))
-                return FALSE;
+                return FALSE;   // unable to write
 
+            // adjust the alignment
             bs.WriteDwordAlignment();
         }
 
+        // save the stream to an *.res file
         return bs.SaveToFile(pszFileName);
     }
 
@@ -1852,24 +1932,28 @@ public:
     {
         if (entry->m_type == RT_GROUP_CURSOR)
         {
+            // RT_GROUP_CURSOR
             return extract_group_cursor(*entry, pszFileName);
         }
         else if (entry->m_type == RT_CURSOR)
         {
+            // RT_CURSOR
             return extract_cursor(*entry, pszFileName);
         }
         else if (entry->m_type == RT_ANICURSOR)
         {
+            // RT_ANICURSOR
             MFile file;
             DWORD cbWritten = 0;
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
+                // written to the file
                 file.CloseHandle();
-                return TRUE;
+                return TRUE;    // success
             }
+            return FALSE;   // failure
         }
-        return FALSE;
     }
 
     // extract the icon as an *.ico file
@@ -1877,32 +1961,37 @@ public:
     {
         if (entry->m_type == RT_GROUP_ICON)
         {
+            // RT_GROUP_ICON
             return extract_group_icon(*entry, pszFileName);
         }
         else if (entry->m_type == RT_ICON)
         {
+            // RT_ICON
             return extract_icon(*entry, pszFileName);
         }
         else if (entry->m_type == RT_ANIICON)
         {
+            // RT_ANIICON
             MFile file;
             DWORD cbWritten = 0;
             if (file.OpenFileForOutput(pszFileName) &&
                 file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
             {
+                // written to the file
                 file.CloseHandle();
-                return TRUE;
+                return TRUE;    // success
             }
+            return FALSE;   // failure
         }
-        return FALSE;
     }
 
     // extract the resource data as a binary file
     BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
     {
         if (e->m_et != ET_LANG)
-            return FALSE;
+            return FALSE;   // invalid
 
+        // write the resource data to a binary file
         MByteStreamEx bs(e->m_data);
         return bs.SaveToFile(pszFileName);
     }
@@ -1910,6 +1999,7 @@ public:
     // import the resource data from the specified *.res file
     BOOL import_res(LPCWSTR pszResFile)
     {
+        // load the file to the stream
         MByteStreamEx stream;
         if (!stream.LoadFromFile(pszResFile))
             return FALSE;
