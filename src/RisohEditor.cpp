@@ -1242,8 +1242,9 @@ MStringW TextFromLang(WORD lang)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// specialized tool bar
+// the specialized toolbar
 
+// buttons info #0
 TBBUTTON g_buttons0[] =
 {
     { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
@@ -1251,6 +1252,7 @@ TBBUTTON g_buttons0[] =
     { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
 };
 
+// buttons info #1
 TBBUTTON g_buttons1[] =
 {
     { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
@@ -1258,12 +1260,14 @@ TBBUTTON g_buttons1[] =
     { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
 };
 
+// buttons info #2
 TBBUTTON g_buttons2[] =
 {
     { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE }, 
     { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT }, 
 };
 
+// buttons info #3
 TBBUTTON g_buttons3[] =
 {
     { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON }, 
@@ -1273,11 +1277,13 @@ TBBUTTON g_buttons3[] =
     { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO }, 
 };
 
+// buttons info #4
 TBBUTTON g_buttons4[] =
 {
     { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
 };
 
+// buttons info #5
 TBBUTTON g_buttons5[] =
 {
     { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
@@ -1427,6 +1433,7 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
     WCHAR sz[64];
     DWORD addr, size = DWORD(data.size());
 
+    // is it empty?
     if (data.empty())
     {
         return ret;
@@ -1434,64 +1441,73 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
 
     ret.reserve(data.size() * 3);   // for speed
 
+    // add the head
     ret +=
         L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
         L"--------  -----------------------  -----------------------  ----------------\r\n";
 
-    for (addr = 0; ; ++addr)
+    // for all the addresses
+    bool ending_flag = false;
+    for (addr = 0; !ending_flag; ++addr)
     {
-        if ((addr & 0xF) == 0)
+        if ((addr & 0xF) != 0)
+            continue;
+
+        // add the address
+        StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
+        ret += sz;
+
+        ending_flag = false;
+
+        // add the data
+        for (DWORD i = 0; i < 16; ++i)
         {
-            StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
-            ret += sz;
+            // add a space if the lowest digit was 8
+            if (i == 8)
+                ret += L' ';
 
-            bool flag = false;
-            for (DWORD i = 0; i < 16; ++i)
+            // add 3 characters
+            DWORD offset = addr + i;    // the address to output
+            if (offset < size)
             {
-                if (i == 8)
-                    ret += L' ';
-                DWORD offset = addr + i;
-                if (offset < size)
-                {
-                    StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
-                    ret += sz;
-                }
-                else
-                {
-                    ret += L"   ";
-                    flag = true;
-                }
+                StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
+                ret += sz;
             }
-
-            ret += L' ';
-
-            for (DWORD i = 0; i < 16; ++i)
+            else
             {
-                DWORD offset = addr + i;
-                if (offset < size)
-                {
-                    if (data[offset] == 0)
-                        ret += L' ';
-                    else if (data[offset] < 0x20 || data[offset] > 0x7F)
-                        ret += L'.';
-                    else
-                        ret += WCHAR(data[offset]);
-                }
-                else
-                {
-                    ret += L' ';
-                    flag = true;
-                }
+                ret += L"   ";
+                ending_flag = true;
             }
-
-            ret += L"\r\n";
-
-            if (flag)
-                break;
         }
+
+        // add the separation space
+        ret += L' ';
+
+        // add the characters
+        for (DWORD i = 0; i < 16; ++i)
+        {
+            DWORD offset = addr + i;    // the address to output
+            if (offset < size)
+            {
+                if (data[offset] == 0)
+                    ret += L' ';        // the NUL character
+                else if (data[offset] < 0x20 || data[offset] > 0x7F)
+                    ret += L'.';        // invisible character
+                else
+                    ret += WCHAR(data[offset]);     // otherwise
+            }
+            else
+            {
+                ret += L' ';            // out of range
+                ending_flag = true;
+            }
+        }
+
+        // add a newline
+        ret += L"\r\n";
     }
 
-    return ret;
+    return ret;     // the result
 }
 
 // get the text from a command ID
@@ -2049,42 +2065,8 @@ protected:
     }
 
     void UpdateNames(void);
-
-    void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL)
-    {
-        // update name label
-        e->m_strLabel = e->get_name_label();
-
-        // set the label text
-        TV_ITEM item;
-        ZeroMemory(&item, sizeof(item));
-        item.mask = TVIF_TEXT | TVIF_HANDLE;
-        item.hItem = e->m_hItem;
-        item.pszText = &e->m_strLabel[0];
-        TreeView_SetItem(m_hwndTV, &item);
-
-        // update pszText if any
-        if (pszText)
-            StringCchCopyW(pszText, MAX_PATH, item.pszText);
-    }
-
-    void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL)
-    {
-        // update lang label
-        e->m_strLabel = e->get_lang_label();
-
-        // set the label text
-        TV_ITEM item;
-        ZeroMemory(&item, sizeof(item));
-        item.mask = TVIF_TEXT | TVIF_HANDLE;
-        item.hItem = e->m_hItem;
-        item.pszText = &e->m_strLabel[0];
-        TreeView_SetItem(m_hwndTV, &item);
-
-        // update pszText if any
-        if (pszText)
-            StringCchCopyW(pszText, MAX_PATH, item.pszText);
-    }
+    void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
+    void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2261,6 +2243,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
@@ -2307,7 +2290,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
-    // get a selected language entry
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)     // not selected
         return;
@@ -2354,7 +2337,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
-    // get a selected language entry
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)     // not selected
         return;
@@ -2391,7 +2374,7 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    // get a selected language entry
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
@@ -2986,6 +2969,7 @@ BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
 // clone the resource item in new name
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
+    // get the selected name entry
     auto entry = g_res.get_entry();
     if (!entry || entry->m_et != ET_NAME)
         return;
@@ -3027,6 +3011,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 // clone the resource item in new language
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
         return;
@@ -3123,6 +3108,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         return;
     }
 
+    // get the selected entry
     auto entry = g_res.get_entry();
 
     if (m_search.bIgnoreCases)
@@ -3231,6 +3217,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 {
     BOOL bReopen = IsWindowVisible(m_rad_window);
 
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
         return;
@@ -3266,6 +3253,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 // do GUI edit
 void MMainWnd::OnGuiEdit(HWND hwnd)
 {
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry->is_editable())
         return;
@@ -3477,6 +3465,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 // do text edit
 void MMainWnd::OnEdit(HWND hwnd)
 {
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry->is_editable())
         return;
@@ -3722,6 +3711,7 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     }
     else
     {
+        // get the selected entry
         auto entry = g_res.get_entry();
 
         static const LPCWSTR apszI_[] =
@@ -3902,6 +3892,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
     BOOL bCanEditLabel = TRUE;
 
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry || entry->m_et == ET_TYPE)
     {
@@ -5337,6 +5328,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     strWide.resize(cchText);
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
+    // get the selected entry
     auto entry = g_res.get_entry();
     MStringA strOutput;
     if (!CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide))
@@ -7746,6 +7738,42 @@ void MMainWnd::UpdateNames(void)
     }
 }
 
+void MMainWnd::UpdateEntryName(EntryBase *e, LPWSTR pszText)
+{
+    // update name label
+    e->m_strLabel = e->get_name_label();
+
+    // set the label text
+    TV_ITEM item;
+    ZeroMemory(&item, sizeof(item));
+    item.mask = TVIF_TEXT | TVIF_HANDLE;
+    item.hItem = e->m_hItem;
+    item.pszText = &e->m_strLabel[0];
+    TreeView_SetItem(m_hwndTV, &item);
+
+    // update pszText if any
+    if (pszText)
+        StringCchCopyW(pszText, MAX_PATH, item.pszText);
+}
+
+void MMainWnd::UpdateEntryLang(EntryBase *e, LPWSTR pszText)
+{
+    // update lang label
+    e->m_strLabel = e->get_lang_label();
+
+    // set the label text
+    TV_ITEM item;
+    ZeroMemory(&item, sizeof(item));
+    item.mask = TVIF_TEXT | TVIF_HANDLE;
+    item.hItem = e->m_hItem;
+    item.pszText = &e->m_strLabel[0];
+    TreeView_SetItem(m_hwndTV, &item);
+
+    // update pszText if any
+    if (pszText)
+        StringCchCopyW(pszText, MAX_PATH, item.pszText);
+}
+
 // show/hide the ID macros
 void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
@@ -7844,6 +7872,7 @@ void MMainWnd::OnEditLabel(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // get the selected type entry
     auto entry = g_res.get_entry();
     if (!entry || entry->m_et == ET_TYPE)
     {
@@ -7885,6 +7914,7 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 // expand all the tree control items
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
+    // get the selected entry
     auto entry = g_res.get_entry();
 
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
@@ -7901,6 +7931,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
 // unexpand all the tree control items
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
+    // get the selected entry
     auto entry = g_res.get_entry();
 
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
@@ -8340,7 +8371,10 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
     MWaitCursor wait;
+
+    // get the selected entry
     auto entry = g_res.get_entry();
+
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
         if (pnmhdr->hwndFrom == m_splitter1)
@@ -8457,6 +8491,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             return TRUE;
         case VK_F2:
             {
+                // get the selected type entry
                 auto entry = g_res.get_entry();
                 if (!entry || entry->m_et == ET_TYPE)
                 {
@@ -8672,6 +8707,7 @@ void MMainWnd::OnTest(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
         return;
@@ -9186,6 +9222,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
@@ -9205,6 +9242,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry)
         return;
@@ -9242,6 +9280,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
         return;
