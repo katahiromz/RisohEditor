@@ -146,7 +146,7 @@ struct EntryBase
     bool valid() const
     {
         if (m_et == ET_LANG)
-            return !empty();
+            return !empty() && m_valid;
 
         if (!m_hItem)
             return false;
@@ -362,19 +362,14 @@ struct EntryBase
                 type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
                 type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
             {
-                ;
+                return TRUE;
             }
-            else
-            {
-                return FALSE;
-            }
-            break;
+            return FALSE;
         case ET_STRING: case ET_MESSAGE:
-            break;
+            return TRUE;
         default:
             return FALSE;
         }
-        return TRUE;
     }
 };
 
@@ -490,13 +485,20 @@ struct EntrySet : protected EntrySetBase
 
         for (auto item1 : *this)
         {
+            if (item1.m_et != ET_LANG)
+                continue;
+
             for (auto item2 : another)
             {
-                if (*item1 == *item2 && item1->size())
-                    return true;
+                if (item2.m_et != ET_LANG)
+                    continue;
+
+                if (*item1 == *item2 && item1->valid() && item2->valid())
+                    return true;    // found
             }
         }
-        return false;
+
+        return false;   // not found
     }
 
     // merge another
@@ -505,7 +507,7 @@ struct EntrySet : protected EntrySetBase
         for (auto entry : another)
         {
             if (entry->m_et != ET_LANG)
-                continue;
+                continue;   // we will merge the ET_LANG entries only
 
             add_lang_entry(entry->m_type, entry->m_name, entry->m_lang, entry->m_data);
         }
@@ -522,10 +524,9 @@ struct EntrySet : protected EntrySetBase
     add_lang_entry(const MIdOrString& type, const MIdOrString& name, 
                    WORD lang, const EntryBase::data_type& data)
     {
-        auto entry = find(ET_LANG, type, name, lang, true);
-
-        if (m_hwndTV)
+        if (m_hwndTV)   // it has the treeview handle
         {
+            // add the related entries
             if (type == RT_STRING)
             {
                 add_string_entry(lang);
@@ -536,12 +537,18 @@ struct EntrySet : protected EntrySetBase
             }
         }
 
+        // find the entry
+        auto entry = find(ET_LANG, type, name, lang, true);
         if (!entry)
         {
+            // if not found, then create it
             entry = Res_NewLangEntry(type, name, lang);
         }
 
+        // store the data
         entry->m_data = data;
+
+        // finish
         return on_insert_entry(entry);
     }
 
@@ -594,8 +601,11 @@ struct EntrySet : protected EntrySetBase
     {
         for (auto entry : *this)
         {
+            // add the invalid
             if (!entry->valid())
                 found.insert(entry);
+
+            // add the childless
             if (is_childless_parent(entry))
                 found.insert(entry);
         }
@@ -647,26 +657,23 @@ struct EntrySet : protected EntrySetBase
         WORD wLastID = 0;
         for (auto entry : *this)
         {
+            // invalid?
             if (!entry->valid())
                 continue;
+
+            // not matched?
             if (entry->m_type != type || !entry->m_name.is_int() || entry->m_name.is_zero())
                 continue;
+
+            // not matched language?
             if (entry->m_lang != lang)
                 continue;
+
+            // update wLastID if necessary
             if (wLastID < entry->m_name.m_id)
                 wLastID = entry->m_name.m_id;
         }
         return wLastID;
-    }
-
-    // detach the set
-    void detach(EntrySet& es)
-    {
-        for (auto entry : *this)
-        {
-            entry->m_hItem = NULL;
-        }
-        super()->swap(*es.super());
     }
 
     // update the executable
@@ -716,17 +723,23 @@ struct EntrySet : protected EntrySetBase
     void do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_BITMAP;
+
+        // find the entry
         auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
+        // create the bitmap object
         HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], (*entry).size());
         if (hbm)
         {
-            if (!item.m_title.empty())
+            if (!item.m_title.empty())  // title is not empty
             {
+                // delete the previous
                 if (title_to_bitmap[item.m_title])
                     DeleteObject(title_to_bitmap[item.m_title]);
+
+                // update title_to_bitmap
                 title_to_bitmap[item.m_title] = hbm;
             }
         }
@@ -736,16 +749,21 @@ struct EntrySet : protected EntrySetBase
     void do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     {
         MIdOrString type = RT_GROUP_ICON;
+
+        // find the entry
         auto entry = find(ET_LANG, type, item.m_title, lang);
         if (!entry)
             return;
 
+        // too small?
         if (entry->size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
             return;
 
+        // get the entries information
         ICONDIR& dir = (ICONDIR&)(*entry)[0];
         GRPICONDIRENTRY *pGroupIcon = (GRPICONDIRENTRY *)&(*entry)[sizeof(ICONDIR)];
 
+        // get the largest icon image
         int cx = 0, cy = 0, bits = 0, n = 0;
         for (int m = 0; m < dir.idCount; ++m)
         {
@@ -760,18 +778,23 @@ struct EntrySet : protected EntrySetBase
             }
         }
 
+        // find the entry of the largest icon
         type = RT_ICON;
         entry = find(ET_LANG, type, pGroupIcon[n].nID, lang);
         if (!entry)
             return;
 
+        // create an icon object
         HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
         if (hIcon)
         {
-            if (!item.m_title.empty())
+            if (!item.m_title.empty())  // the title was not empty
             {
+                // delete the previous
                 if (title_to_icon[item.m_title])
                     DestroyIcon(title_to_icon[item.m_title]);
+
+                // update title_to_icon
                 title_to_icon[item.m_title] = hIcon;
             }
         }
@@ -780,25 +803,29 @@ struct EntrySet : protected EntrySetBase
     // extract the cursor as a *.cur file
     bool extract_cursor(const EntryBase& c_entry, const wchar_t *file_name) const
     {
-        ICONDIR dir = { 0, RES_CURSOR, 1 };
-
+        // copy the header
         LOCALHEADER local;
         if (c_entry.size() < sizeof(local))
         {
             assert(0);
-            return false;
+            return false;   // too small
         }
         memcpy(&local, &c_entry[0], sizeof(local));
 
-        BITMAP bm;
+        // get the remainder pointer and size
         LPBYTE pb = LPBYTE(&c_entry[0]) + sizeof(local);
         DWORD cb = c_entry.size() - sizeof(local);
+
+        // get the BITMAP info
+        BITMAP bm;
         if (!PackedDIB_GetInfo(pb, cb, bm))
         {
             assert(0);
-            return false;
+            return false;   // unable to get
         }
 
+        // store data to the structures
+        ICONDIR dir = { 0, RES_CURSOR, 1 };
         ICONDIRENTRY entry;
         entry.bWidth = (BYTE)bm.bmWidth;
         entry.bHeight = (BYTE)(bm.bmHeight / 2);
@@ -809,10 +836,7 @@ struct EntrySet : protected EntrySetBase
         entry.dwBytesInRes = c_entry.size() - sizeof(local);
         entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
 
-        DWORD cbLocal = sizeof(LOCALHEADER);
-        pb = LPBYTE(&c_entry[0]) + cbLocal;
-        cb = c_entry.size() - cbLocal;
-
+        // write them to the stream
         MByteStreamEx stream;
         if (!stream.WriteRaw(dir) ||
             !stream.WriteData(&entry, sizeof(entry)) ||
@@ -822,6 +846,7 @@ struct EntrySet : protected EntrySetBase
             return false;
         }
 
+        // save the stream to a file
         return stream.SaveToFile(file_name);
     }
 
@@ -829,43 +854,51 @@ struct EntrySet : protected EntrySetBase
     bool extract_group_cursor(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
-        if (group.m_type != RT_GROUP_CURSOR ||
-            group.size() < sizeof(dir))
+        if (group.m_type != RT_GROUP_CURSOR || group.size() < sizeof(dir))
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // group --> dir
         memcpy(&dir, &group[0], sizeof(dir));
         if (dir.idReserved != 0 || dir.idType != RES_CURSOR || dir.idCount == 0)
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // check the size
         DWORD SizeOfCursorEntries = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
         if (group.size() < sizeof(dir) + SizeOfCursorEntries)
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // group --> GroupEntries
         std::vector<GRPCURSORDIRENTRY> GroupEntries(dir.idCount);
         memcpy(&GroupEntries[0], &group[sizeof(dir)], 
                SizeOfCursorEntries);
 
+        // set the current offset
         DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
+
+        // store the entries to DirEntries
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find the RT_CURSOR
             auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
             if (!entry)
-                continue;
+                continue;   // not found
 
+            // get the LOCALHEADER header
             LOCALHEADER local;
             if (entry->size() >= sizeof(local))
                 memcpy(&local, &(*entry)[0], sizeof(local));
 
+            // GroupEntries[i] --> DirEntries[i]
             DirEntries[i].bWidth = (BYTE)GroupEntries[i].wWidth;
             DirEntries[i].bHeight = (BYTE)GroupEntries[i].wHeight;
             if (GroupEntries[i].wBitCount >= 8)
@@ -877,46 +910,55 @@ struct EntrySet : protected EntrySetBase
             DirEntries[i].yHotSpot = local.yHotSpot;
             DirEntries[i].dwBytesInRes = (*entry).size() - sizeof(local);
             DirEntries[i].dwImageOffset = offset;
+
+            // move the offset
             offset += DirEntries[i].dwBytesInRes;
         }
 
+        // write the header to the stream
         MByteStreamEx stream;
         if (!stream.WriteRaw(dir))
         {
             assert(0);
-            return false;
+            return false;   // unable to write
         }
 
+        // write the dir entries to the stream
         DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
         if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
         {
             assert(0);
-            return false;
+            return false;   // unable to write
         }
 
+        // write the images to the stream
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find RT_CURSOR
             auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
-            DWORD cbLocal = sizeof(LOCALHEADER), dwSize = (*entry).size() - cbLocal;
+            DWORD cbLocal = sizeof(LOCALHEADER);
+
+            // get the current pointer and size
             LPBYTE pb = LPBYTE(&(*entry)[0]) + cbLocal;
+            DWORD dwSize = (*entry).size() - cbLocal;
             if (!stream.WriteData(pb, dwSize))
             {
                 assert(0);
-                return FALSE;
+                return FALSE;   // unable to write
             }
         }
 
+        // save the stream to a file
         return stream.SaveToFile(file_name);
     }
 
     // extract the icon as a *.ico file
     BOOL extract_icon(const EntryBase& i_entry, const wchar_t *file_name) const
     {
-        ICONDIR dir = { 0, RES_ICON, 1 };
-
+        // get the BITMAP info
         BITMAP bm;
         if (!PackedDIB_GetInfo(&i_entry[0], i_entry.size(), bm))
         {
@@ -929,6 +971,8 @@ struct EntrySet : protected EntrySetBase
             DeleteObject(hbm);
         }
 
+        // store
+        ICONDIR dir = { 0, RES_ICON, 1 };
         ICONDIRENTRY entry;
         entry.bWidth = (BYTE)bm.bmWidth;
         entry.bHeight = (BYTE)bm.bmHeight;
@@ -939,6 +983,7 @@ struct EntrySet : protected EntrySetBase
         entry.dwBytesInRes = i_entry.size();
         entry.dwImageOffset = sizeof(dir) + sizeof(ICONDIRENTRY);
 
+        // write the data to the straem
         MByteStreamEx stream;
         if (!stream.WriteRaw(dir) ||
             !stream.WriteData(&entry, sizeof(entry)) ||
@@ -948,6 +993,7 @@ struct EntrySet : protected EntrySetBase
             return false;
         }
 
+        // save the stream to a file
         return stream.SaveToFile(file_name);
     }
 
@@ -955,38 +1001,48 @@ struct EntrySet : protected EntrySetBase
     bool extract_group_icon(const EntryBase& group, const wchar_t *file_name) const
     {
         ICONDIR dir;
-        if (group.m_type != RT_GROUP_ICON ||
-            group.size() < sizeof(dir))
+
+        // check the format
+        if (group.m_type != RT_GROUP_ICON || group.size() < sizeof(dir))
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // group --> dir
         memcpy(&dir, &group[0], sizeof(dir));
+
+        // check the dir
         if (dir.idReserved != 0 || dir.idType != RES_ICON || dir.idCount == 0)
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // check the size
         DWORD SizeOfIconEntries = sizeof(GRPICONDIRENTRY) * dir.idCount;
         if (group.size() < sizeof(dir) + SizeOfIconEntries)
         {
             assert(0);
-            return false;
+            return false;   // invalid
         }
 
+        // group --> GroupEntries
         std::vector<GRPICONDIRENTRY> GroupEntries(dir.idCount);
         memcpy(&GroupEntries[0], &group[sizeof(dir)], SizeOfIconEntries);
 
+        // set the current offset
         DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
+
         std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find the RT_ICON entry
             auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
+            // GroupEntries[i] --> DirEntries[i]
             DirEntries[i].bWidth = GroupEntries[i].bWidth;
             DirEntries[i].bHeight = GroupEntries[i].bHeight;
             if (GroupEntries[i].wBitCount >= 8)
@@ -998,37 +1054,45 @@ struct EntrySet : protected EntrySetBase
             DirEntries[i].wBitCount = GroupEntries[i].wBitCount;
             DirEntries[i].dwBytesInRes = (*entry).size();
             DirEntries[i].dwImageOffset = offset;
+
+            // move the offset
             offset += DirEntries[i].dwBytesInRes;
         }
 
+        // write the header
         MByteStreamEx stream;
         if (!stream.WriteRaw(dir))
         {
             assert(0);
-            return false;
+            return false;   // unable to write
         }
 
+        // write the dir entries
         DWORD SizeOfDirEntries = sizeof(ICONDIRENTRY) * dir.idCount;
         if (!stream.WriteData(&DirEntries[0], SizeOfDirEntries))
         {
             assert(0);
-            return false;
+            return false;   // unable to write
         }
 
+        // write the images
         for (WORD i = 0; i < dir.idCount; ++i)
         {
+            // find the RT_ICON entry
             auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
             if (!entry)
                 continue;
 
+            // write it
             DWORD dwSize = (*entry).size();
             if (!stream.WriteData(&(*entry)[0], dwSize))
             {
                 assert(0);
-                return FALSE;
+                return false;   // unable to write
             }
         }
 
+        // save the stream to a file
         return stream.SaveToFile(file_name);
     }
 
@@ -1036,15 +1100,18 @@ struct EntrySet : protected EntrySetBase
     EntryBase *
     add_bitmap(const MIdOrString& name, WORD lang, const MStringW& file)
     {
+        // load the data from an *.bmp file
         MByteStreamEx stream;
         if (!stream.LoadFromFile(file.c_str()) || stream.size() <= 4)
             return NULL;
 
+        // is it a JPEG, GIF or PNG image?
         if (stream.size() >= 4 &&
             (memcmp(&stream[0], "\xFF\xD8\xFF", 3) == 0 ||    // JPEG
              memcmp(&stream[0], "GIF", 3) == 0 ||             // GIF
              memcmp(&stream[0], "\x89\x50\x4E\x47", 4) == 0)) // PNG
         {
+            // create a bitmap object from memory
             MBitmapDx bitmap;
             if (!bitmap.CreateFromMemory(&stream[0], (DWORD)stream.size()))
                 return NULL;
@@ -1052,6 +1119,7 @@ struct EntrySet : protected EntrySetBase
             LONG cx, cy;
             HBITMAP hbm = bitmap.GetHBITMAP32(cx, cy);
 
+            // create a packed DIB from bitmap handle
             std::vector<BYTE> PackedDIB;
             if (!PackedDIB_CreateFromHandle(PackedDIB, hbm))
             {
@@ -1060,13 +1128,16 @@ struct EntrySet : protected EntrySetBase
             }
             DeleteObject(hbm);
 
+            // add the entry
             return add_lang_entry(RT_BITMAP, name, lang, PackedDIB);
         }
 
+        // check the size
         size_t head_size = sizeof(BITMAPFILEHEADER);
         if (stream.size() < head_size)
-            return NULL;
+            return NULL;    // invalid
 
+        // add the entry
         size_t i0 = head_size, i1 = stream.size();
         EntryBase::data_type HeadLess(&stream[i0], &stream[i0] + (i1 - i0));
         return add_lang_entry(RT_BITMAP, name, lang, HeadLess);
@@ -1077,19 +1148,23 @@ struct EntrySet : protected EntrySetBase
     add_group_icon(const MIdOrString& name, WORD lang, 
                    const MStringW& file_name)
     {
+        // load the data from an *.ico file
         IconFile icon;
         if (!icon.LoadFromFile(file_name.c_str()) || icon.type() != RES_ICON)
             return NULL;
 
+        // get the next icon ID
         UINT LastIconID = get_last_id(RT_ICON, lang);
         UINT NextIconID = LastIconID + 1;
 
+        // add the icon images (RT_ICON)
         int i, nCount = icon.GetImageCount();
         for (i = 0; i < nCount; ++i)
         {
             add_lang_entry(RT_ICON, WORD(NextIconID + i), lang, icon.GetImage(i));
         }
 
+        // add the entry
         IconFile::DataType data(icon.GetIconGroup(NextIconID));
         return add_lang_entry(RT_GROUP_ICON, name, lang, data);
     }
@@ -1099,19 +1174,23 @@ struct EntrySet : protected EntrySetBase
     add_group_cursor(const MIdOrString& name, WORD lang, 
                      const MStringW& file_name)
     {
+        // load the data from an *.cur file
         CursorFile cur;
         if (!cur.LoadFromFile(file_name.c_str()) || cur.type() != RES_CURSOR)
             return NULL;
 
+        // get the next cursor ID
         UINT LastCursorID = get_last_id(RT_CURSOR, lang);
         UINT NextCursorID = LastCursorID + 1;
 
+        // add the cursor images (RT_CURSOR)
         int i, nCount = cur.GetImageCount();
         for (i = 0; i < nCount; ++i)
         {
             add_lang_entry(RT_CURSOR, WORD(NextCursorID + i), lang, cur.GetImage(i));
         }
 
+        // add the entry
         CursorFile::DataType data(cur.GetCursorGroup(NextCursorID));
         return add_lang_entry(RT_GROUP_CURSOR, name, lang, data);
     }
@@ -1142,9 +1221,7 @@ struct EntrySet : protected EntrySetBase
     {
         auto entry = find(ET_NAME, type, name, BAD_LANG, true);
         if (!entry)
-        {
             entry = Res_NewNameEntry(type, name);
-        }
         return on_insert_entry(entry);
     }
 
@@ -1154,9 +1231,7 @@ struct EntrySet : protected EntrySetBase
     {
         auto entry = find(ET_TYPE, type, (WORD)0, BAD_LANG, true);
         if (!entry)
-        {
             entry = Res_NewTypeEntry(type);
-        }
         return on_insert_entry(entry);
     }
 
