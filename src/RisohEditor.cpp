@@ -3816,7 +3816,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     strCmdLine += L"\"";
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // create an upx.exe process
     MProcessMaker pmaker;
@@ -3836,12 +3836,12 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
             if (strOutput.find("[OK]") != MStringA::npos)
             {
                 // success
-                bSuccess = TRUE;
+                bOK = TRUE;
             }
         }
     }
 
-    return bSuccess;
+    return bOK;
 }
 
 // do UPX extract to decompress the file
@@ -3856,7 +3856,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
     strCmdLine += L"\"";
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // create the upx.exe process
     MProcessMaker pmaker;
@@ -3869,16 +3869,15 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
     {
         // read all with timeout
         MStringA strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
-        if (pmaker.GetExitCode() == 0)
+        if (pmaker.GetExitCode() == 0 && bOK)
         {
-            if (strOutput.find("Unpacked") != MStringA::npos)
-                bSuccess = TRUE;        // success
+            bOK = (strOutput.find("Unpacked") != MStringA::npos);
         }
     }
 
-    return bSuccess;
+    return bOK;
 }
 
 // for debugging purpose
@@ -5232,7 +5231,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // wait for the file operation
     Sleep(FILE_WAIT_TIME);
@@ -5247,10 +5246,12 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         // read all with timeout
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
-        if (pmaker.GetExitCode() == 0)
+        if (pmaker.GetExitCode() == 0 && bOK)
         {
+            bOK = FALSE;
+
             // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
@@ -5262,7 +5263,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
                 g_res.merge(res);
 
-                bSuccess = true;
+                bOK = TRUE;
             }
 
             // clean res up
@@ -5284,7 +5285,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    return bSuccess;
+    return bOK;
 }
 
 // compile the message table
@@ -5340,7 +5341,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     strCmdLine += L'\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // wait for the file operation
     Sleep(FILE_WAIT_TIME);
@@ -5355,10 +5356,12 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         // read all with timeout
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
-        if (pmaker.GetExitCode() == 0)
+        if (pmaker.GetExitCode() == 0 && bOK)
         {
+            bOK = FALSE;
+
             // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
@@ -5369,7 +5372,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
                 // merge
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
                 g_res.merge(res);
-                bSuccess = true;
+                bOK = TRUE;
             }
 
             // clean res up
@@ -5392,7 +5395,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    return bSuccess;
+    return bOK;
 }
 
 // compile a resource item source
@@ -5500,7 +5503,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // wait for the file operation
     Sleep(FILE_WAIT_TIME);
@@ -5515,10 +5518,13 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         // read all with timeout
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
-        if (pmaker.GetExitCode() == 0)
+        // check the exit code
+        if (pmaker.GetExitCode() == 0 && bOK)
         {
+            bOK = FALSE;
+
             // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
@@ -5542,7 +5548,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                 // clean res up
                 res.delete_all();
 
-                bSuccess = true;
+                bOK = TRUE;
             }
         }
     }
@@ -5558,7 +5564,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     DeleteFileW(szPath3);
 #endif
 
-    if (bSuccess)
+    if (bOK)
     {
         if (bReopen && type == RT_DIALOG)
         {
@@ -5569,7 +5575,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    return bSuccess;
+    return bOK;
 }
 
 // recompile the resource item on selection change.
@@ -6127,9 +6133,9 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     // load the RC file to the res variable
     MStringA strOutput;
-    BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe,
-                                m_szMcdxExe, GetMacroDump(), GetIncludesDump());
-    if (!bSuccess)
+    BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe,
+                           m_szMcdxExe, GetMacroDump(), GetIncludesDump());
+    if (!bOK)
     {
         // failed. show error message
         if (strOutput.empty())
@@ -6153,7 +6159,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    return bSuccess;
+    return bOK;
 }
 
 // find the text
@@ -7461,7 +7467,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     strCmdLine += L"\"";
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
-    BOOL bSuccess = FALSE;
+    BOOL bOK = FALSE;
 
     // create a UPX process
     MProcessMaker pmaker;
@@ -7474,16 +7480,15 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     {
         // read all output
         MStringA strOutput;
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
-        if (pmaker.GetExitCode() == 0)
+        if (pmaker.GetExitCode() == 0 && bOK)
         {
-            if (strOutput.find("Packed") != MStringA::npos)
-                bSuccess = TRUE;    // success
+            bOK = (strOutput.find("Packed") != MStringA::npos);
         }
     }
 
-    return bSuccess;
+    return bOK;
 }
 
 // WM_DROPFILES: file(s) has been dropped
@@ -8000,18 +8005,23 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         // read all with timeout
-        pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
         pmaker.CloseAll();
 
-        // find the special pragma
-        size_t pragma_found = strOutput.find("#pragma RisohEditor");
-        if (pragma_found != MStringA::npos)
+        if (bOK)
         {
-            // get text after the special pragma
-            strOutput = strOutput.substr(pragma_found);
+            bOK = FALSE;
 
-            // parse macros
-            bOK = ParseMacros(hwnd, pszFile, macros, strOutput);
+            // find the special pragma
+            size_t pragma_found = strOutput.find("#pragma RisohEditor");
+            if (pragma_found != MStringA::npos)
+            {
+                // get text after the special pragma
+                strOutput = strOutput.substr(pragma_found);
+
+                // parse macros
+                bOK = ParseMacros(hwnd, pszFile, macros, strOutput);
+            }
         }
     }
 
@@ -8040,46 +8050,35 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 
     // build a command line
     MString strCmdLine;
-    strCmdLine += L"-E -dM -DRC_INVOKED -o \"";
+    strCmdLine += L'"';
+    strCmdLine += m_szCppExe;
+    strCmdLine += L"\" -E -dM -DRC_INVOKED -o \"";
     strCmdLine += szTempFile;
     strCmdLine += L"\" -x none \"";
     strCmdLine += pszFile;
     strCmdLine += L"\"";
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
-    // create a cpp.exe process
     BOOL bOK = FALSE;
-    SHELLEXECUTEINFOW info;
-    ZeroMemory(&info, sizeof(info));
-    info.cbSize = sizeof(info);
-    info.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE | SEE_MASK_FLAG_NO_UI;
-    info.hwnd = hwnd;
-    info.lpFile = m_szCppExe;   // cpp.exe
-    info.lpParameters = &strCmdLine[0];
-    info.nShow = SW_HIDE;       // hidden
 
-    if (ShellExecuteExW(&info))
+    // create a cpp.exe process
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MStringA strOutput;
+    MFile hInputWrite, hOutputRead;
+    if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
+        pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
-        // wait the finish
-        WaitForSingleObject(info.hProcess, INFINITE);
-        CloseHandle(info.hProcess);     // close the handle
+        // read all with timeout
+        bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.CloseAll();
 
-        // wait for the file operation
-        Sleep(FILE_WAIT_TIME);
-
-        // read the temporary file
-        if (file.OpenFileForInput(szTempFile))
+        if (bOK)
         {
-            // read all
-            MStringA data;
-            bOK = file.ReadAll(data, PROCESS_TIMEOUT);
-            file.CloseHandle();     // close the handle
-
-            if (bOK)
-            {
-                // parse the resource.h
-                bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
-            }
+            // parse the resource.h
+            bOK = ParseResH(hwnd, pszFile, &strOutput[0], DWORD(strOutput.size()));
         }
     }
 
