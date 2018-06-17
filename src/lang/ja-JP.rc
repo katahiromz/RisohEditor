@@ -426,7 +426,7 @@ STRINGTABLE
     IDS_STRING, "文字列"
     IDS_DATAISINVALID, "データが無効です。"
     IDS_DLGINIT1, "ダイアログと同名のRT_DLGINITリソースデータに初期化データを設定して、コンボボックスとリストボックスの初期化を指定できます。"
-    IDS_DLGINIT2, "WM_INITDIALOGメッセージが来た時に、付属のファイル「DlgInit/DlgInit.h」のExecuteDlgInitDx関数を呼び出せば、ダイアログの初期化を実行できます。\r\n\r\n"
+    IDS_DLGINIT2, "WM_INITDIALOGメッセージが来た時に、付属のファイル 'DlgInit/DlgInit.h' のExecuteDlgInitDx関数を呼び出せば、ダイアログの初期化を実行できます。\r\n\r\n"
     IDS_DLGINIT3, "RT_DLGINITに使う改行区切りの文字列のリストを指定して下さい。"
     IDS_SAMELANG, "同じ言語です。"
     IDS_SAMENAME, "同じリソース名です。"
@@ -438,7 +438,7 @@ STRINGTABLE
     IDS_CHINESE, "中国語"
     IDS_RUSSIA, "ロシア"
     IDS_RUSSIAN, "ロシア語"
-    IDS_WANNAGENRESH, "「resource.h」ファイルも出力しますか？"
+    IDS_WANNAGENRESH, "'resource.h' ファイルも出力しますか？"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
@@ -995,11 +995,11 @@ FONT 9, "MS UI Gothic"
 }
 
 IDD_ADVICERESH DIALOG 0, 0, 209, 184
-CAPTION "ファイル「resource.h」変更の提案"
+CAPTION "ファイル 'resource.h' 変更の提案"
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 FONT 9, "MS UI Gothic"
 {
-    LTEXT "次のようにファイル「resource.h」を変更して下さい。", -1, 10, 10, 195, 20
+    LTEXT "次のようにファイル 'resource.h' を変更して下さい。", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_MULTILINE | ES_READONLY
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
     PUSHBUTTON "変更点のクリア(&C)", psh1, 10, 165, 90, 14
