@@ -7336,8 +7336,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         bExecutable = file.ReadFile(ab, sizeof(ab), &dwSize);
         file.CloseHandle(); // close the handle
 
-        if (memcmp(ab, "MZ", 2) != 0)
-            bExecutable = FALSE;
+        bExecutable = (memcmp(ab, "MZ", 2) == 0);
     }
 
     if (!bExecutable ||
@@ -8006,19 +8005,16 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
         // read the temporary file
         if (file.OpenFileForInput(szTempFile))
         {
-            DWORD cbRead;
-            CHAR szBuf[512];
-
             // read all
             MStringA data;
-            while (file.ReadFile(szBuf, 512, &cbRead) && cbRead)
-            {
-                data.append(&szBuf[0], cbRead);
-            }
+            bOK = file.ReadAll(data, PROCESS_TIMEOUT);
             file.CloseHandle();     // close the handle
 
-            // parse the resource.h
-            bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
+            if (bOK)
+            {
+                // parse the resource.h
+                bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
+            }
         }
     }
 
