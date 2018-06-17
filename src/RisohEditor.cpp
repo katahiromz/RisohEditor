@@ -7437,16 +7437,23 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
     MWaitCursor wait;
-    WCHAR file[MAX_PATH], *pch;
+    ChangeStatusText(IDS_EXECUTINGCMD);     // executing command
 
-    ChangeStatusText(IDS_EXECUTINGCMD);
+    // add the command lock
     ++m_nCommandLock;
 
+    WCHAR file[MAX_PATH], *pch;
+
+    // get the dropped file path
     DragQueryFileW(hdrop, 0, file, _countof(file));
+
+    // free hdrop
     DragFinish(hdrop);
 
+    // make the window foreground
     SetForegroundWindow(hwnd);
 
+    // find the file title
     pch = wcsrchr(file, L'\\');
     if (pch == NULL)
         pch = wcsrchr(file, L'/');
@@ -7455,9 +7462,11 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     else
         ++pch;
 
+    // find the dot extension
     pch = wcsrchr(pch, L'.');
     if (!pch)
     {
+        // no extension
         ErrorBoxDx(IDS_CANNOTOPEN);
     }
     else if (lstrcmpiW(pch, L".ico") == 0)
@@ -7615,10 +7624,14 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     }
     else
     {
+        // otherwise, load the file
         DoLoadFile(hwnd, file);
     }
+
+    // remove the command lock
     --m_nCommandLock;
 
+    // show "ready" if just unlocked
     if (m_nCommandLock == 0 && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
 }
@@ -7631,12 +7644,14 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         return;
     }
 
+    // (resource.h file path) --> szFile
     WCHAR szFile[MAX_PATH];
     if (m_szResourceH[0])
         StringCchCopyW(szFile, _countof(szFile), m_szResourceH);
     else
         StringCchCopyW(szFile, _countof(szFile), L"resource.h");
 
+    // if it does not exist, clear the file path
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
@@ -7656,11 +7671,17 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
+        // load the resource.h file
         DoLoadResH(hwnd, szFile);
+
+        // is the resource.h file loaded?
         if (m_szResourceH[0])
         {
+            // show the ID list window
             ShowIDList(hwnd, TRUE);
         }
+
+        // update the names
         UpdateNames();
     }
 }
@@ -7682,12 +7703,14 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // ???...
     if (m_szUpxTempFile[0])
     {
         DeleteFileW(m_szUpxTempFile);
         m_szUpxTempFile[0] = 0;
     }
 
+    // save the settings
     SaveSettings(hwnd);
 
     //DestroyIcon(m_hIcon);     // LR_SHARED
@@ -7708,29 +7731,13 @@ void MMainWnd::OnDestroy(HWND hwnd)
     g_res.delete_all();
     g_res.delete_invalid();
 
-    if (IsWindow(m_rad_window))
-    {
-        DestroyWindow(m_rad_window);
-    }
-    if (IsWindow(m_hBinEdit))
-    {
-        DestroyWindow(m_hBinEdit);
-    }
-    if (IsWindow(m_hSrcEdit))
-    {
-        DestroyWindow(m_hSrcEdit);
-    }
-
+    // destroy the window's
+    DestroyWindow(m_rad_window);
+    DestroyWindow(m_hBinEdit);
+    DestroyWindow(m_hSrcEdit);
     m_hBmpView.DestroyView();
-    if (IsWindow(m_hBmpView))
-    {
-        DestroyWindow(m_hBmpView);
-    }
-
-    if (IsWindow(m_id_list_dlg))
-    {
-        DestroyWindow(m_id_list_dlg);
-    }
+    DestroyWindow(m_hBmpView);
+    DestroyWindow(m_id_list_dlg);
 
     DestroyWindow(m_hwndTV);
     DestroyWindow(m_hToolBar);
@@ -7747,9 +7754,12 @@ void MMainWnd::OnDestroy(HWND hwnd)
 // parse the macros
 BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str)
 {
+    // split text to lines by "\n"
     std::vector<MStringA> lines;
     mstr_trim(str);
     mstr_split(lines, str, "\n");
+
+    // ...
 
     size_t len = lines.size() - 1;
     if (macros.size() < len)
