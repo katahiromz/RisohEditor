@@ -96,7 +96,7 @@ public:
         if (ich != std::wstring::npos && lstrcmpiW(&file[ich], L".ani") == 0)
             bAni = TRUE;
 
-        if (bAni)
+        if (bAni)   // animation cursor (*.ani)
         {
             MByteStream bs;
             if (!bs.LoadFromFile(file.c_str()) ||
@@ -106,7 +106,7 @@ public:
                 return;
             }
         }
-        else
+        else    // normal cursor (*.cur)
         {
             if (auto entry = g_res.find(ET_LANG, m_type, m_name, m_lang))
                 g_res.delete_entry(entry);
