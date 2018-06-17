@@ -5386,8 +5386,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             EntrySet res;
             if (res.import_res(szPath3))
             {
-                bOK = TRUE;
                 // resource type check
+                bOK = TRUE;
                 for (auto entry : res)
                 {
                     if (entry->m_type != RT_MESSAGETABLE)

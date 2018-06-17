@@ -188,6 +188,7 @@ public:
             case IDYES:
                 g_res.search_and_delete(ET_LANG, type, name, lang);
                 break;
+
             case IDNO:
             case IDCANCEL:
                 return;
