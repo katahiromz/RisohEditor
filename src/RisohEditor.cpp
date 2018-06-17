@@ -4314,7 +4314,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_EXTRACTICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTCURSOR, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTBITMAP, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_EXTRACTBIN, MF_ENABLED);
         EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);

@@ -1839,44 +1839,36 @@ public:
     // extract one resource item as an *.res file
     BOOL extract_res(LPCWSTR pszFileName, const EntryBase *entry) const
     {
-        // check the entry type
-        if (entry->m_et != ET_LANG)
-            return FALSE;   // invalid
+        EntrySet found;
 
-        MByteStreamEx bs;   // the stream
+        switch (entry->m_et)
+        {
+        case ET_ANY:
+            search(found, ET_LANG);
+            break;
 
-        // write the header to the stream
-        ResHeader header;
-        if (!header.WriteTo(bs))
-            return FALSE;   // unable to write
+        case ET_TYPE:
+            search(found, ET_LANG, entry->m_type);
+            break;
 
-        header.DataSize = entry->size();
-        header.HeaderSize = header.GetHeaderSize(entry->m_type, entry->m_name);
+        case ET_STRING:
+        case ET_MESSAGE:
+            search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
+            break;
 
-        // check the header size
-        if (header.HeaderSize == 0 || header.HeaderSize >= 0x10000)
-            return FALSE;   // invalid
+        case ET_NAME:
+            search(found, ET_LANG, entry->m_type, entry->m_name);
+            break;
 
-        header.type = entry->m_type;
-        header.name = entry->m_name;
-        header.DataVersion = 0;
-        header.MemoryFlags = MEMORYFLAG_DISCARDABLE | MEMORYFLAG_PURE |
-                             MEMORYFLAG_MOVEABLE;
-        header.LanguageId = entry->m_lang;
-        header.Version = 0;
-        header.Characteristics = 0;
+        case ET_LANG:
+            search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+            break;
 
-        if (!header.WriteTo(bs))
-            return FALSE;   // unable to write
+        default:
+            return FALSE;
+        }
 
-        if (!bs.WriteData(&(*entry)[0], entry->size()))
-            return FALSE;   // unable to write
-
-        // adjust the alignment
-        bs.WriteDwordAlignment();
-
-        // save the stream to a *.res file
-        return bs.SaveToFile(pszFileName);
+        return extract_res(pszFileName, found);
     }
 
     // extract some resource items as an *.res file
@@ -1953,8 +1945,8 @@ public:
                 return TRUE;    // success
             }
         }
-		return FALSE;   // failure
-	}
+        return FALSE;   // failure
+    }
 
     // extract the icon as an *.ico file
     BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const
@@ -1982,8 +1974,8 @@ public:
                 return TRUE;    // success
             }
         }
-		return FALSE;   // failure
-	}
+        return FALSE;   // failure
+    }
 
     // extract the resource data as a binary file
     BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
