@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     15      /* Version 15 */
+#define MZC4_MFILE_HPP_     16      /* Version 16 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
@@ -720,11 +720,8 @@ inline BOOL MFile::ReadAll(MStringA& data)
     DWORD cbRead;
     CHAR szBuf[1024];
 
-    while (ReadFile(szBuf, sizeof(szBuf), &cbRead))
+    while (ReadFile(szBuf, sizeof(szBuf), &cbRead) && cbRead)
     {
-        if (cbRead == 0)
-            continue;
-
         data.append(szBuf, cbRead);
     }
 
@@ -736,13 +733,10 @@ inline BOOL MFile::ReadAll(MStringA& data, DWORD dwTimeout)
     DWORD cbRead, dwTick = GetTickCount();
     CHAR szBuf[1024];
 
-    while (ReadFile(szBuf, sizeof(szBuf), &cbRead))
+    while (ReadFile(szBuf, sizeof(szBuf), &cbRead) && cbRead)
     {
         if (GetTickCount() - dwTick >= dwTimeout)
             return FALSE;
-
-        if (cbRead == 0)
-            continue;
 
         data.append(szBuf, cbRead);
     }
