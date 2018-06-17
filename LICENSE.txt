@@ -1,6 +1,3 @@
-WARNING: PLEASE DON'T LOAD UNTRUSTED FILE ON THE INTERNET.
-         LOADING A BAD FILE MAY HURT YOUR SYSTEM.
----------------------------------------------------
 RisohEditor is a resource editor for Win32 development,
 created by Katayama Hirofumi MZ (katahiromz). RisohEditor
 was released under the terms of GNU GENERAL PUBLIC LICENSE
