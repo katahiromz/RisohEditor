@@ -283,8 +283,10 @@ public:
         // if not group box
         if (!MRadCtrl::IsGroupBox(hwnd))
         {
-            // go to bottom! (for better hittest)
+            // go to bottom! (for better hittest & drawing)
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+
+            // NOTE: The index top control is drawed at background. The index bottom control is drawed on foreground.
         }
 
         // add the handle to the targets
@@ -631,8 +633,10 @@ public:
         // if not group box
         if (!IsGroupBox(hwnd))
         {
-            // go to bottom (for better hittest)
+            // go to bottom (for better hittest & drawing)
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
+
+            // NOTE: The index top control is drawed at background. The index bottom control is drawed on foreground.
         }
     }
 
