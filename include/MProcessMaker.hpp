@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     12   /* Version 12 */
+#define MZC4_MPROCESSMAKER_HPP_     13   /* Version 13 */
 
 #include "MFile.hpp"
 #include <tchar.h>
@@ -78,8 +78,8 @@ public:
           STARTUPINFO& StartupInfo();
     const STARTUPINFO& StartupInfo() const;
 
-    void ReadAll(std::string& strOutput, MFile& hOutputRead);
-    void ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeout);
+    BOOL ReadAll(std::string& strOutput, MFile& hOutputRead);
+    BOOL ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeout);
 
 protected:
     PROCESS_INFORMATION     m_pi;
@@ -504,7 +504,7 @@ inline BOOL MProcessMaker::PrepareForRedirect(
     return TRUE;
 }
 
-inline void
+inline BOOL
 MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
 {
     strOutput.clear();
@@ -516,7 +516,7 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
         if (cbAvail == 0)
         {
             if (!IsRunning())
-                break;
+                return TRUE;
 
             continue;
         }
@@ -534,9 +534,11 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead)
             strOutput.append(szBuf, cbRead);
         }
     }
+
+    return FALSE;
 }
 
-inline void
+inline BOOL
 MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeout)
 {
     DWORD dwTick = GetTickCount();
@@ -551,7 +553,7 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeo
         if (cbAvail == 0)
         {
             if (!IsRunning())
-                break;
+                return TRUE;
 
             continue;
         }
@@ -569,6 +571,8 @@ MProcessMaker::ReadAll(std::string& strOutput, MFile& hOutputRead, DWORD dwTimeo
             strOutput.append(szBuf, cbRead);
         }
     }
+
+    return FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////
