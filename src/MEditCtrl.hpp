@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MEDITCTRL_HPP_
-#define MZC4_MEDITCTRL_HPP_     3   /* Version 3 */
+#define MZC4_MEDITCTRL_HPP_     4   /* Version 4 */
 
 class MEditCtrl;
 
@@ -77,6 +77,7 @@ public:
     INT GetFirstVisibleLine() const;
 
     static void SetCtrlAHookDx(BOOL bHook);
+    static BOOL DoMsgCtrlA(MSG *pMsg);
 
 protected:
     static HHOOK& OldHookProc();
@@ -375,6 +376,30 @@ inline /*static*/ void MEditCtrl::SetCtrlAHookDx(BOOL bHook)
         UnhookWindowsHookEx(OldHookProc());
         OldHookProc() = NULL;
     }
+}
+
+inline /*static*/ BOOL MEditCtrl::DoMsgCtrlA(MSG *pMsg)
+{
+    WCHAR szClass[8] = L"";
+    GetClassNameW(pMsg->hwnd, szClass, _countof(szClass));
+
+    if (lstrcmpiW(szClass, L"EDIT") == 0)
+    {
+        if (pMsg->message == WM_KEYDOWN)
+        {
+            if (pMsg->wParam == 'A' &&
+                GetAsyncKeyState(VK_CONTROL) < 0 &&
+                GetAsyncKeyState(VK_SHIFT) >= 0 &&
+                GetAsyncKeyState(VK_MENU) >= 0)
+            {
+                PeekMessage(pMsg, pMsg->hwnd, WM_KEYDOWN, WM_KEYDOWN, PM_REMOVE);
+                PostMessage(pMsg->hwnd, EM_SETSEL, 0, -1);
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////
