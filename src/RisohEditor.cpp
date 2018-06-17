@@ -3830,6 +3830,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
         // read all with timeout
         MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
@@ -3870,6 +3871,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
         // read all with timeout
         MStringA strOutput;
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
@@ -5247,6 +5249,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     {
         // read all with timeout
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
@@ -5357,6 +5360,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     {
         // read all with timeout
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
@@ -5519,6 +5523,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     {
         // read all with timeout
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         // check the exit code
         if (pmaker.GetExitCode() == 0 && bOK)
@@ -7481,6 +7486,7 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
         // read all output
         MStringA strOutput;
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
@@ -8008,7 +8014,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     {
         // read all with timeout
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
-        pmaker.CloseAll();
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
         if (bOK)
         {
@@ -8072,12 +8078,18 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
         // read all with timeout
         bOK = pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
-        pmaker.CloseAll();
+        pmaker.WaitForSingleObject(PROCESS_TIMEOUT);
 
-        if (bOK)
+        if (bOK && pmaker.GetExitCode() == 0)
         {
-            // parse the resource.h
-            bOK = ParseResH(hwnd, pszFile, &strOutput[0], DWORD(strOutput.size()));
+            strOutput.clear();
+            MFile file(szTempFile);
+            bOK = file.ReadAll(strOutput);
+            if (bOK)
+            {
+                // parse the resource.h
+                bOK = ParseResH(hwnd, pszFile, &strOutput[0], DWORD(strOutput.size()));
+            }
         }
     }
 

@@ -1952,9 +1952,9 @@ public:
                 file.CloseHandle();
                 return TRUE;    // success
             }
-            return FALSE;   // failure
         }
-    }
+		return FALSE;   // failure
+	}
 
     // extract the icon as an *.ico file
     BOOL extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const
