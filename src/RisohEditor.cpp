@@ -6752,9 +6752,16 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         // create "lang" directory path
         TCHAR szLangDir[MAX_PATH];
         StringCchCopy(szLangDir, _countof(szLangDir), pszFileName);
+
+        // find the last '\\' or '/'
         TCHAR *pch = mstrrchr(szLangDir, TEXT('\\'));
+        if (pch == NULL)
+            pch = mstrrchr(szLangDir, TEXT('/'));
+        if (pch == NULL)
+            return FALSE;
+
+        // build the lang directory path
         size_t diff = pch - szLangDir;
-        *pch = 0;
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
@@ -6914,8 +6921,11 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 
         // change extension to .rc
         LPTSTR pch = mstrrchr(szFileTitle, TEXT('.'));
-        *pch = 0;
-        StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
+        if (pch)
+        {
+            *pch = 0;
+            StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
+        }
 
         // write file title
         file.WriteSzA("// ");
@@ -6964,6 +6974,7 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
     WCHAR szResH[MAX_PATH];
     StringCchCopyW(szResH, _countof(szResH), pszExeFile);
 
+    // find the last '\\' or '/'
     LPWSTR pch = wcsrchr(szResH, L'\\');
     if (!pch)
         pch = wcsrchr(szResH, L'/');
@@ -6971,6 +6982,7 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
         return FALSE;
 
     // build the "resource.h" file path
+    ++pch;
     *pch = 0;
     StringCchCatW(szResH, _countof(szResH), L"resource.h");
 
@@ -6981,7 +6993,8 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
         StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
         return TRUE;
     }
-    return FALSE;
+
+    return FALSE;   // failure
 }
 
 // do statistics for resource IDs
@@ -9718,6 +9731,11 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         {
             StringCchCopyW(szResH, _countof(szResH), m_szNominalFile);
             WCHAR *pch = wcsrchr(szResH, L'\\');
+            if (pch == NULL)
+                pch = wcsrchr(szResH, L'/');
+            if (pch == NULL)
+                return; // failure
+
             *pch = 0;
             StringCchCatW(pch, _countof(szResH), L"\\resource.h");
         }
