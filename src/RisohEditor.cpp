@@ -2083,6 +2083,7 @@ void MMainWnd::OnSysColorChange(HWND hwnd)
 // check whether it needs compilation
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
     {
         return FALSE;
@@ -2183,9 +2184,11 @@ void MMainWnd::UpdateMenu()
 // extract the binary as a file
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
+    // get the selected entry
     auto e = g_res.get_entry();
     if (!e)
         return;     // not selected
@@ -2248,6 +2251,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         FI_ALL = 3
     };
 
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2304,6 +2308,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
         FI_ALL = 3
     };
 
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2352,6 +2357,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
 // extract a bitmap as an *.bmp file
 void MMainWnd::OnExtractBitmap(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2390,6 +2396,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 // replace the resource data by a binary file
 void MMainWnd::OnReplaceBin(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -2410,7 +2417,8 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
 // version info
 void MMainWnd::OnAbout(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the dialog
@@ -2421,7 +2429,8 @@ void MMainWnd::OnAbout(HWND hwnd)
 // show the MFontsDlg to allow the user to change the font settings
 void MMainWnd::OnFonts(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the fonts dialog
@@ -2443,6 +2452,7 @@ void MMainWnd::OnFonts(HWND hwnd)
 // export all the resource items to an RC file
 void MMainWnd::OnExport(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -2531,6 +2541,7 @@ void FreeWCLib()
 // load a window class library
 void MMainWnd::OnLoadWCLib(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -2569,6 +2580,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 // import the resource data additionally
 void MMainWnd::OnImport(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2636,6 +2648,7 @@ void MMainWnd::OnImport(HWND hwnd)
 // open a file
 void MMainWnd::OnOpen(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2696,6 +2709,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         FI_ALL = 4
     };
 
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -3240,6 +3254,7 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 // delete a resource item
 void MMainWnd::OnDeleteRes(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -3364,6 +3379,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     if (!entry->can_gui_edit())
         return;     // unable to edit by GUI?
 
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
     {
         return;
@@ -7297,6 +7313,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 // save the resource data as a *.res file
 BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return FALSE;
 
@@ -7311,6 +7328,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 // save the file
 BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return TRUE;
 
@@ -7649,6 +7667,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 // open the dialog to load the resource.h
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
     {
         return;
@@ -8049,6 +8068,7 @@ void MMainWnd::DoRefreshTV(HWND hwnd)
 // advice the change for resource.h file
 void MMainWnd::OnAdviceResH(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -8109,6 +8129,7 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
 // unload the resource.h info
 void MMainWnd::OnUnloadResH(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
@@ -8122,6 +8143,7 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
 // the configuration dialog
 void MMainWnd::OnConfig(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -8272,7 +8294,8 @@ void MMainWnd::OnIDList(HWND hwnd)
 // show the ID association dialog
 void MMainWnd::OnIdAssoc(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the dialog
@@ -8286,7 +8309,8 @@ void MMainWnd::OnIdAssoc(HWND hwnd)
 // show the language list
 void MMainWnd::OnShowLangs(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the dialog
@@ -8312,7 +8336,8 @@ void MMainWnd::OnShowHideToolBar(HWND hwnd)
 // the paths dialog
 void MMainWnd::OnSetPaths(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the dialog
@@ -8326,7 +8351,8 @@ void MMainWnd::OnSetPaths(HWND hwnd)
 // start changing the resource name/language
 void MMainWnd::OnEditLabel(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // get the selected type entry
@@ -8351,7 +8377,8 @@ void MMainWnd::OnEditLabel(HWND hwnd)
 // the predefined macro dialog
 void MMainWnd::OnPredefMacros(HWND hwnd)
 {
-    if (!CompileIfNecessary(TRUE))
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
         return;
 
     // show the dialog
@@ -8918,6 +8945,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     {
         if (!m_bLoading)
         {
+            // compile if necessary
             if (!CompileIfNecessary(FALSE))
                 return TRUE;
         }
@@ -9207,6 +9235,7 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 // do resource test
 void MMainWnd::OnTest(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9720,6 +9749,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 // add an icon resource
 void MMainWnd::OnAddIcon(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9738,6 +9768,7 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 // replace the icon resource
 void MMainWnd::OnReplaceIcon(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9758,6 +9789,7 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
 // replace the cursor resource
 void MMainWnd::OnReplaceCursor(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9778,6 +9810,7 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
 // add a bitmap resource
 void MMainWnd::OnAddBitmap(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9796,6 +9829,7 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 // replace the bitmap resource
 void MMainWnd::OnReplaceBitmap(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9816,6 +9850,7 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
 // add a cursor
 void MMainWnd::OnAddCursor(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9834,6 +9869,7 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 // add a resource item
 void MMainWnd::OnAddRes(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9849,6 +9885,7 @@ void MMainWnd::OnAddRes(HWND hwnd)
 // add a menu
 void MMainWnd::OnAddMenu(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9865,6 +9902,7 @@ void MMainWnd::OnAddMenu(HWND hwnd)
 // add a string table
 void MMainWnd::OnAddStringTable(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9881,6 +9919,7 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
 // add a message table resource
 void MMainWnd::OnAddMessageTable(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9897,6 +9936,7 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
 // add an HTML resource
 void MMainWnd::OnAddHtml(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9913,6 +9953,7 @@ void MMainWnd::OnAddHtml(HWND hwnd)
 // add an RT_ACCELERATOR resource
 void MMainWnd::OnAddAccel(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9929,6 +9970,7 @@ void MMainWnd::OnAddAccel(HWND hwnd)
 // add a version info resource
 void MMainWnd::OnAddVerInfo(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -9945,6 +9987,7 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
 // add a manifest resource
 void MMainWnd::OnAddManifest(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -10012,6 +10055,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
 // add a dialog template
 void MMainWnd::OnAddDialog(HWND hwnd)
 {
+    // compile if necessary
     if (!CompileIfNecessary(FALSE))
         return;
 
