@@ -4690,8 +4690,10 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
         if (file.OpenFileForOutput(szTempFile) &&
             file.WriteFile(&entry[0], entry.size(), &cbWritten))
         {
-            file.FlushFileBuffers();
-            file.CloseHandle();
+            file.FlushFileBuffers();    // flush
+            file.CloseHandle();         // close the handle
+            Sleep(FILE_WAIT_TIME);      // wait for the file operation
+
             if (bIcon)
             {
                 hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON,
@@ -5161,8 +5163,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
+    MFile r3(szPath3, TRUE);    // create
+    r3.CloseHandle();   // close the handle
 
     // dump the head to Source file #1
     if (m_szResourceH[0])
@@ -5188,13 +5190,13 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     }
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.CloseHandle();
+    r1.CloseHandle();   // close the handle
 
     // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.CloseHandle();
+    r2.CloseHandle();   // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -5211,9 +5213,11 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += szPath1;
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
-    Sleep(FILE_WAIT_TIME);
 
     BOOL bSuccess = FALSE;
+
+    // wait for the file operation
+    Sleep(FILE_WAIT_TIME);
 
     // create a windres.exe process
     MProcessMaker pmaker;
@@ -5229,6 +5233,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
         if (pmaker.GetExitCode() == 0)
         {
+            // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
             // import res
@@ -5283,8 +5288,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
 
-    MFile r3(szPath3, TRUE);
-    r3.CloseHandle();
+    MFile r3(szPath3, TRUE);    // create the file
+    r3.CloseHandle();   // close the handle
 
     // dump the head to Source file #1
     if (m_szResourceH[0])
@@ -5294,15 +5299,14 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.FlushFileBuffers();
-    r1.CloseHandle();
+    r1.CloseHandle();       // close the handle
 
     // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();
-    r2.CloseHandle();
+    r2.FlushFileBuffers();  // flush
+    r2.CloseHandle();       // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -5320,6 +5324,9 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
     BOOL bSuccess = FALSE;
 
+    // wait for the file operation
+    Sleep(FILE_WAIT_TIME);
+
     // create the mcdx.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -5334,6 +5341,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
         if (pmaker.GetExitCode() == 0)
         {
+            // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
             // import res
@@ -5424,9 +5432,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
     MFile r3(szPath3, TRUE);
-    r3.FlushFileBuffers();
-    r3.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
+    r3.CloseHandle();   // close the handle
 
     // dump the head to Source file #1
     if (m_szResourceH[0])
@@ -5452,13 +5458,13 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     }
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.CloseHandle();
+    r1.CloseHandle();   // close the handle
 
     // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.CloseHandle();
+    r2.CloseHandle();   // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -5478,6 +5484,9 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     BOOL bSuccess = FALSE;
 
+    // wait for the file operation
+    Sleep(FILE_WAIT_TIME);
+
     // create a windres.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -5492,6 +5501,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
         if (pmaker.GetExitCode() == 0)
         {
+            // wait for the file operation
             Sleep(FILE_WAIT_TIME);
 
             // import res
@@ -7320,11 +7330,12 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     // check whether it is executable or not
     BOOL bExecutable;
     {
-        MFile file(m_szRealFile);
+        MFile file(m_szRealFile);   // open the file for input
         BYTE ab[2] = { 0 };
         DWORD dwSize;
         bExecutable = file.ReadFile(ab, sizeof(ab), &dwSize);
-        file.CloseHandle();
+        file.CloseHandle(); // close the handle
+
         if (memcmp(ab, "MZ", 2) != 0)
             bExecutable = FALSE;
     }
@@ -7895,8 +7906,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         StringCchPrintfA(buf, _countof(buf), "%s\n", macros[i].c_str());
         file1.WriteSzA(buf, &cbWritten);
     }
-    file1.FlushFileBuffers();
-    file1.CloseHandle();
+    file1.CloseHandle();    // close the handle
 
     // build the command line text
     MString strCmdLine;
@@ -7911,6 +7921,9 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
+
+    // wait for the file operation
+    Sleep(FILE_WAIT_TIME);
 
     // create a cpp.exe process
     MProcessMaker pmaker;
@@ -7959,7 +7972,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 
     // create a temporary file
     MFile file(szTempFile, TRUE);
-    file.CloseHandle();
+    file.CloseHandle();     // close the handle
 
     // build a command line
     MString strCmdLine;
@@ -7985,8 +7998,9 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     {
         // wait the finish
         WaitForSingleObject(info.hProcess, INFINITE);
-        CloseHandle(info.hProcess);
+        CloseHandle(info.hProcess);     // close the handle
 
+        // wait for the file operation
         Sleep(FILE_WAIT_TIME);
 
         // read the temporary file
@@ -8001,7 +8015,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
             {
                 data.append(&szBuf[0], cbRead);
             }
-            file.CloseHandle();
+            file.CloseHandle();     // close the handle
 
             // parse the resource.h
             bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
