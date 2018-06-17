@@ -12302,16 +12302,13 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 IMPLEMENT_DYNAMIC(MOleCtrl)
 
 // the main function of the windows application
+extern "C"
 INT WINAPI
-WinMain(HINSTANCE   hInstance,
-        HINSTANCE   hPrevInstance,
-        LPSTR       lpCmdLine,
-        INT         nCmdShow)
+wWinMain(HINSTANCE   hInstance,
+         HINSTANCE   hPrevInstance,
+         LPWSTR       lpCmdLine,
+         INT         nCmdShow)
 {
-    // get Unicode command line
-    INT argc = 0;
-    LPWSTR *targv = CommandLineToArgvW(GetCommandLineW(), &argc);
-
     // initialize the libraries
     OleInitialize(NULL);
 
@@ -12344,7 +12341,7 @@ WinMain(HINSTANCE   hInstance,
     int ret;
     MEditCtrl::SetCtrlAHookDx(TRUE);
     {
-        MMainWnd app(argc, targv, hInstance);
+        MMainWnd app(__argc, __targv, hInstance);
 
         if (app.StartDx())
         {
@@ -12365,9 +12362,6 @@ WinMain(HINSTANCE   hInstance,
     FreeLibrary(hinstRichEdit);
     OleUninitialize();
     FreeWCLib();
-
-    // free command line
-    LocalFree(targv);
 
     // check object counts
     assert(MacroParser::BaseAst::alive_count() == 0);

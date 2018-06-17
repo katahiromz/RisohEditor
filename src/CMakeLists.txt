@@ -46,7 +46,11 @@ if (MSVC)
     add_definitions(-DMSVC=1)
 else()
     set(DOTRES ".o")
+    list(APPEND CMAKE_CXX_LINK_FLAGS -municode)
 endif()
+
+# use Unicode
+add_definitions(-DUNICODE=1 -D_UNICODE=1)
 
 # messagetables.res or messagetables.o
 add_custom_target(messagetables ALL
