@@ -9597,12 +9597,14 @@ void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 // do save or update the resource.h file
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
-    // ...
+    // ???...
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
+    // destroy the ID list window
     DestroyWindow(m_id_list_dlg);
 
-    if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)
+    // query update to the user
+    if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)    // don't update
     {
         ShowIDList(hwnd, bListOpen);
         return;
@@ -9610,9 +9612,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 
     if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
     {
+        // build new "resource.h" file path
         WCHAR szResH[MAX_PATH];
-
-        // build file path
         if (m_szNominalFile[0])
         {
             StringCchCopyW(szResH, _countof(szResH), m_szNominalFile);
@@ -9625,8 +9626,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             StringCchCopyW(szResH, _countof(szResH), L"resource.h");
         }
 
-        if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)
-            szResH[0] = 0;
+        if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)  // not exists
+            szResH[0] = 0;  // clear the path
 
         // initialize OPENFILENAME structure
         OPENFILENAMEW ofn;
@@ -9640,9 +9641,11 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
                     OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"h";
+
+        // let the user choose the path
         if (!GetSaveFileNameW(&ofn))
         {
-            return;
+            return;     // cancelled
         }
 
         // create new
@@ -9650,13 +9653,15 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
             ShowIDList(hwnd, bListOpen);
-            return;
+            return;     // failure
         }
 
+        // szResH --> m_szResourceH
         StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
     }
-    else
+    else    // update the resource.h file by modification
     {
+        // do backup the resource.h file
         DoBackupFile(m_szResourceH);
 
         // open file
@@ -9669,15 +9674,15 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             return;
         }
 
+        // read the resource.h lines
         std::vector<MStringA> lines;
-
         ReadResHLines(fp, lines);
-
         fclose(fp);
 
+        // modify the lines
         UpdateResHLines(lines);
 
-        // write now
+        // reopen the file to write
         _wfopen_s(&fp, m_szResourceH, L"w");
         if (!fp)
         {
@@ -9685,6 +9690,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             ShowIDList(hwnd, bListOpen);
             return;
         }
+
+        // write now
         for (size_t i = 0; i < lines.size(); ++i)
         {
             fprintf(fp, "%s\n", lines[i].c_str());
@@ -9696,6 +9703,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     g_settings.added_ids.clear();
     g_settings.removed_ids.clear();
 
+    // reopen the ID list window if necessary
     ShowIDList(hwnd, bListOpen);
 }
 
@@ -10010,10 +10018,12 @@ void MMainWnd::OnAddDialog(HWND hwnd)
 // set the file-related info
 BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNominal)
 {
+    // set the file type
     m_file_type = ft;
 
     if (pszRealFile == NULL || pszRealFile[0] == 0)
     {
+        // clear the file infp
         m_szRealFile[0] = 0;
         m_szNominalFile[0] = 0;
         SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
@@ -10583,7 +10593,6 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     MWaitCursor wait;
-    ChangeStatusText(IDS_STARTING);
 
     m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
@@ -10679,6 +10688,9 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_hStatusBar = CreateStatusWindow(style, LoadStringDx(IDS_STARTING), hwnd, 8);
     if (m_hStatusBar == NULL)
         return FALSE;
+
+    // set the status text
+    ChangeStatusText(IDS_STARTING);
 
     // setup the status bar
     INT anWidths[] = { -1 };
