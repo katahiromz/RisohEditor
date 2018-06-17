@@ -186,7 +186,7 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 
     int n = (int)fwrite(pv, size, 1, fp);   // write
 
-    fclose(fp);     // close
+    fclose(fp);     // close the files
 
     return n == 1;  // success or not
 }
@@ -5929,7 +5929,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
-    // ???...
+    // delete the temporary decompressed file
     if (m_szUpxTempFile[0])
     {
         DeleteFileW(m_szUpxTempFile);
@@ -5960,10 +5960,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         if (nID == IDYES)   // try to decompress
         {
             // build a temporary file path
-            WCHAR szTempPath[MAX_PATH];
-            GetTempPathW(_countof(szTempPath), szTempPath);
             WCHAR szTempFile[MAX_PATH];
-            GetTempFileNameW(szTempPath, L"UPX", 0, szTempFile);
+            StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
 
             // pszReal --> szTempFile (to be decompressed)
             if (!CopyFileW(pszReal, szTempFile, FALSE) ||
@@ -7338,27 +7336,48 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
-    // ???...
     if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
     {
-        ErrorBoxDx(IDS_CANTSAVEUPXED);
-        return FALSE;
+        // build a temporary file path
+        WCHAR szTempFile[MAX_PATH];
+        StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
+
+        // check file existence
+        if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
+        {
+            // update pszExeFile
+            pszExeFile = m_szRealFile;
+            if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
+            {
+                ErrorBoxDx(IDS_CANTSAVETOEXE);
+                return FALSE
+            }
+        }
+
+        // pszExeFile --> szTempFile (to be decompressed)
+        if (!CopyFileW(pszExeFile, szTempFile, FALSE) ||
+            !DoUpxDecompress(m_szUpxExe, szTempFile))
+        {
+            DeleteFileW(szTempFile);
+            ErrorBoxDx(IDS_CANTUPXEXTRACT);
+            return FALSE;   // failure
+        }
+        // decompressed.
+
+        // szTempFile --> both of m_szUpxTempFile and m_szRealFile
+        StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
+        StringCchCopyW(m_szRealFile, _countof(m_szUpxTempFile), szTempFile);
+
+        // update pszExeFile
+        pszExeFile = m_szUpxTempFile;
     }
 
-    // check whether it is executable or not
-    BOOL bExecutable;
-    {
-        MFile file(m_szRealFile);   // open the file for input
-        BYTE ab[2] = { 0 };
-        DWORD dwSize;
-        bExecutable = file.ReadFile(ab, sizeof(ab), &dwSize);
-        file.CloseHandle(); // close the handle
+    // check whether it is an executable or not
+    DWORD dwBinaryType;
+    BOOL bExecutable = ::GetBinaryTypeW(m_szRealFile, &dwBinaryType);
 
-        bExecutable = (memcmp(ab, "MZ", 2) == 0);
-    }
-
-    if (!bExecutable ||
-        GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
+    // is it not executable?
+    if (!bExecutable)
     {
         // there is no source executable file. try to update pszExeFile
         if (g_res.update_exe(pszExeFile))   // success
@@ -7380,7 +7399,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             return TRUE;    // success
         }
     }
-    else
+    else    // it was an executable
     {
         // build a temporary file path
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
@@ -7732,7 +7751,7 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
-    // ???...
+    // delete the temporary decompressed file if any
     if (m_szUpxTempFile[0])
     {
         DeleteFileW(m_szUpxTempFile);
@@ -9258,12 +9277,13 @@ void MMainWnd::OnTest(HWND hwnd)
         }
         else
         {
-            // ???...
+            // detach the dialog template menu (it will be used after)
             MIdOrString menu = dialog_res.m_menu;
             dialog_res.m_menu.clear();
             stream.clear();
 
-            // TODO: OLE support
+            // fixup for "MOleCtrl", "AtlAxWin*" and/or "{...}" window classes.
+            // see also: DialogRes::Fixup2
             dialog_res.Fixup2(false);
             dialog_res.SaveToStream(stream);
             dialog_res.Fixup2(true);
@@ -9278,8 +9298,9 @@ void MMainWnd::OnTest(HWND hwnd)
             // show test dialog
             if (dialog_res.m_style & WS_CHILD)
             {
-                // dialog_res is a child dialog. create its parent
-                MTestParentWnd *window = new MTestParentWnd(dialog_res, menu, entry->m_lang, stream, dlginit_data);
+                // dialog_res is a child dialog. create its parent (with menu if any)
+                auto window = new MTestParentWnd(dialog_res, menu, entry->m_lang,
+                                                 stream, dlginit_data);
                 window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
@@ -9289,7 +9310,7 @@ void MMainWnd::OnTest(HWND hwnd)
             }
             else
             {
-                // it's a non-child dialog. show the test dialog
+                // it's a non-child dialog. show the test dialog (with menu if any)
                 MTestDialog dialog(dialog_res, menu, entry->m_lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
             }
@@ -9636,7 +9657,7 @@ void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 // do save or update the resource.h file
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
-    // ???...
+    // check whether the ID list window is open or not
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
     // destroy the ID list window
@@ -9716,7 +9737,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         // read the resource.h lines
         std::vector<MStringA> lines;
         ReadResHLines(fp, lines);
-        fclose(fp);
+        fclose(fp);     // close the files
 
         // modify the lines
         UpdateResHLines(lines);
@@ -9735,10 +9756,11 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         {
             fprintf(fp, "%s\n", lines[i].c_str());
         }
-        fclose(fp);
+
+        fclose(fp);     // close the files
     }
 
-    // clear modification
+    // clear modification of IDs
     g_settings.added_ids.clear();
     g_settings.removed_ids.clear();
 

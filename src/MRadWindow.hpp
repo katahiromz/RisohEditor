@@ -356,10 +356,11 @@ public:
         BOOL bCtrlDown;
     };
 
+    // callback function for DoRangeSelect
     static BOOL CALLBACK
     RangeSelectProc(HWND hwnd, LPARAM lParam)
     {
-        RANGE_SELECT *prs = (RANGE_SELECT *)lParam;
+        auto prs = (RANGE_SELECT *)lParam;
         RECT *prc = &prs->rc;
         RECT rc;
 
@@ -413,7 +414,7 @@ public:
         RANGE_SELECT rs;
         rs.rc = *prc;
         rs.bCtrlDown = bCtrlDown;
-        EnumChildWindows(hwndParent, RangeSelectProc, (LPARAM)&rs);
+        ::EnumChildWindows(hwndParent, RangeSelectProc, (LPARAM)&rs);
     }
 
     // the window procedure of MRadCtrl
@@ -1148,7 +1149,7 @@ public:
             // is [Ctrl] key down?
             BOOL bCtrlDown = GetAsyncKeyState(VK_CONTROL) < 0;
 
-            // ???...
+            // update the selection status of the controls
             MRadCtrl::DoRangeSelect(hwnd, &rc, bCtrlDown);
         }
     }
