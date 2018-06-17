@@ -1148,7 +1148,7 @@ public:
             // is [Ctrl] key down?
             BOOL bCtrlDown = GetAsyncKeyState(VK_CONTROL) < 0;
 
-            // ???
+            // ???...
             MRadCtrl::DoRangeSelect(hwnd, &rc, bCtrlDown);
         }
     }

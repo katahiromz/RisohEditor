@@ -5357,20 +5357,11 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
-    if (!bSuccess)
-    {
 #ifdef NDEBUG
-        DeleteFileW(szPath1);
-        DeleteFileW(szPath2);
-        DeleteFileW(szPath3);
+    DeleteFileW(szPath1);
+    DeleteFileW(szPath2);
+    DeleteFileW(szPath3);
 #endif
-    }
-    else
-    {
-        DeleteFileW(szPath1);
-        DeleteFileW(szPath2);
-        DeleteFileW(szPath3);
-    }
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
@@ -5533,20 +5524,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
-    if (!bSuccess)
-    {
 #ifdef NDEBUG
-        DeleteFileW(szPath1);
-        DeleteFileW(szPath2);
-        DeleteFileW(szPath3);
+    DeleteFileW(szPath1);
+    DeleteFileW(szPath2);
+    DeleteFileW(szPath3);
 #endif
-    }
-    else
-    {
-        DeleteFileW(szPath1);
-        DeleteFileW(szPath2);
-        DeleteFileW(szPath3);
 
+    if (bSuccess)
+    {
         if (bReopen && type == RT_DIALOG)
         {
             PostMessageDx(MYWM_REOPENRAD);
@@ -5559,33 +5544,35 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     return bSuccess;
 }
 
-//...
-
 // recompile the resource item on selection change.
 // reopen if necessary
 BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 {
-    INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    MStringW strWide;
-    strWide.resize(cchText);
-    GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
+    MStringW strWide = GetWindowTextW(m_hSrcEdit);
 
     // get the selected entry
     auto entry = g_res.get_entry();
+    if (!entry)
+        return FALSE;   // no selection
+
+    // compile the entry
     MStringA strOutput;
     if (!CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide))
     {
         SetErrorMessage(strOutput);
-        return FALSE;
+        return FALSE;   // failure
     }
 
+    // compiled. clear the modification flag
     Edit_SetModify(m_hSrcEdit, FALSE);
 
+    // destroy the RADical window if any
     if (IsWindow(m_rad_window))
     {
         DestroyWindow(m_rad_window);
     }
 
+    // reopen if necessary
     if (bReopen)
     {
         if (m_type == entry->m_type &&
@@ -5609,21 +5596,29 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 {
     if (Edit_GetModify(m_hSrcEdit))
     {
+        // the modification flag is set. query to compile
         INT id = MsgBoxDx(IDS_COMPILENOW, MB_ICONINFORMATION | MB_YESNOCANCEL);
         switch (id)
         {
         case IDYES:
+            // ok, let's compile
             return ReCompileOnSelChange(bReopen);
+
         case IDNO:
+            // clear the modification flag
             Edit_SetModify(m_hSrcEdit, FALSE);
+
+            // destroy the RADical window if any
             if (IsWindow(m_rad_window))
                 DestroyWindow(m_rad_window);
             break;
+
         case IDCANCEL:
-            return FALSE;
+            return FALSE;   // cancelled
         }
     }
-    return TRUE;
+
+    return TRUE;    // go
 }
 
 // check the data folder
@@ -5663,6 +5658,7 @@ BOOL MMainWnd::CheckDataFolder(VOID)
             }
         }
     }
+
     // found. store to m_szDataFolder
     StringCchCopyW(m_szDataFolder, _countof(m_szDataFolder), szPath);
 
@@ -5798,7 +5794,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     if (nFilterIndex == FI_ALL)
         nFilterIndex = FI_NONE;
 
-    // if it was a shortcut file, then resolve it
+    // if it was a shortcut file, then resolve it.
     // pszFileName --> szPath
     if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
     {
@@ -5819,10 +5815,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             nFilterIndex = FI_RC;
     }
 
-    if (nFilterIndex == FI_RES)
+    if (nFilterIndex == FI_RES)     // .res files
     {
-        // .res files
-
         // reload the resource.h if necessary
         UnloadResourceH(hwnd);
         if (g_settings.bAutoLoadNearbyResH)
@@ -5865,10 +5859,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
-    if (nFilterIndex == FI_RC)
+    if (nFilterIndex == FI_RC)  // .rc files
     {
-        // .rc files
-
         // reload the resource.h if necessary
         UnloadResourceH(hwnd);
         if (g_settings.bAutoLoadNearbyResH)
@@ -5911,6 +5903,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
+    // ???...
     if (m_szUpxTempFile[0])
     {
         DeleteFileW(m_szUpxTempFile);
@@ -5924,22 +5917,21 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszReal);
     if (m_bUpxCompressed)   // it was compressed
     {
-        LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszReal);
-
         INT nID;
         if (bForceDecompress)
         {
-            nID = IDYES;
+            nID = IDYES;    // no veto for you
         }
         else
         {
             // confirm to the user to decompress
+            LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszReal);
             nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
             if (nID == IDCANCEL)
-                return FALSE;
+                return FALSE;   // cancelled
         }
 
-        if (nID == IDYES)
+        if (nID == IDYES)   // try to decompress
         {
             // build a temporary file path
             WCHAR szTempPath[MAX_PATH];
@@ -5953,7 +5945,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             {
                 DeleteFileW(szTempFile);
                 ErrorBoxDx(IDS_CANTUPXEXTRACT);
-                return FALSE;
+                return FALSE;   // failure
             }
 
             // decompressed
@@ -5965,10 +5957,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     }
 
     // load an executable files
-    HMODULE hMod;
     MString strReal = pszReal;      // the real path
-    hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
-        LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
+    HMODULE hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+                                  LOAD_LIBRARY_AS_IMAGE_RESOURCE |
+                                  LOAD_WITH_ALTERED_SEARCH_PATH);
     if (hMod == NULL)
     {
         // replace the path
@@ -5997,7 +5989,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             if (hMod == NULL)
             {
                 ErrorBoxDx(IDS_CANNOTOPEN);
-                return FALSE;
+                return FALSE;       // failure
             }
         }
     }
@@ -6030,19 +6022,21 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     // select none
     SelectTV(NULL, FALSE);
 
-    return TRUE;
+    return TRUE;    // success
 }
 
 // unload resource.h
 BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 {
+    // reset the settings of the resource.h file
     g_settings.AddIDC_STATIC();
     g_settings.bHasIDC_STATIC = FALSE;
-
     g_settings.id_map.clear();
     g_settings.added_ids.clear();
     g_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
+
+    // hide the ID list window
     ShowIDList(hwnd, FALSE);
 
     return TRUE;
@@ -6054,6 +6048,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     // unload the resource.h file
     UnloadResourceH(hwnd);
 
+    // pszPath --> szPath
     TCHAR szPath[MAX_PATH];
     StringCchCopy(szPath, _countof(szPath), pszPath);
 
@@ -6062,10 +6057,11 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     if (pch == NULL)
         pch = _tcsrchr(szPath, TEXT('/'));
     if (pch == NULL)
-        return FALSE;
+        pch = szPath;
+    else
+        ++pch;
 
     // find the nearest resource.h file
-    ++pch;
     size_t diff = pch - szPath;
     StringCchCopy(pch, diff, TEXT("resource.h"));
     if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -6482,30 +6478,31 @@ BOOL MMainWnd::OnReplaceAll(HWND hwnd)
 // do the find message for FindText/ReplaceText API
 LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    if (m_fr.Flags & FR_DIALOGTERM)
+    if (m_fr.Flags & FR_DIALOGTERM)     // to be destroyed
     {
         m_hFindReplaceDlg = NULL;
         SetFocus(m_hSrcEdit);
         return 0;
     }
-    if (m_fr.Flags & FR_REPLACEALL)
+
+    if (m_fr.Flags & FR_REPLACEALL)     // do replace all
     {
         OnReplaceAll(hwnd);
     }
-    else if (m_fr.Flags & FR_REPLACE)
+    else if (m_fr.Flags & FR_REPLACE)   // do replace once
     {
         if (m_fr.Flags & FR_DOWN)
             OnReplaceNext(hwnd);
         else
             OnReplacePrev(hwnd);
     }
-    else if (m_fr.Flags & FR_FINDNEXT)
+    else if (m_fr.Flags & FR_FINDNEXT)  // do find
     {
-        if (m_fr.Flags & FR_DOWN)
+        if (m_fr.Flags & FR_DOWN)       // find downward
         {
             OnFindNext(hwnd);
         }
-        else
+        else    // find upward
         {
             OnFindPrev(hwnd);
         }
@@ -6516,65 +6513,89 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // write a language-specific RC text
 BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
+    // dump a comment and a LANGUAGE statement
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n\r\n");
     MString strLang = ::GetLanguageStatement(lang, TRUE);
     strLang += L"\r\n";
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
 
+    // search the language entries
     EntrySetBase found;
-
     g_res.search(found, ET_LANG, WORD(0), WORD(0), lang);
+
+    // for all found entries
     for (auto entry : found)
     {
+        // ignore the string or message tables
         if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
             continue;
 
+        // dump the entry
         MString str = res2text.DumpEntry(*entry);
         if (!str.empty())
         {
-            mstr_trim(str);
+            mstr_trim(str);     // trim
+
+            // convert the text to UTF-8
             MTextToAnsi t2a(CP_UTF8, str.c_str());
             file.WriteSzA(t2a.c_str());
+
+            // add newlines
             file.WriteSzA("\r\n\r\n");
         }
     }
 
+    // search the string tables
     found.clear();
     g_res.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
     if (found.size())
     {
+        // found --> str_res
         StringRes str_res;
         for (auto e : found)
         {
             if (e->m_lang != lang)
-                continue;
+                continue;       // must be same language
+
             MByteStreamEx stream(e->m_data);
             if (!str_res.LoadFromStream(stream, e->m_name.m_id))
                 return FALSE;
         }
 
+        // dump
         MString str = str_res.Dump();
+
+        // trim
         mstr_trim(str);
+
+        // append newlines
         str += L"\r\n\r\n";
 
+        // convert the text to UTF-8
         MTextToAnsi t2a(CP_UTF8, str.c_str());
+
+        // write it
         file.WriteSzA(t2a.c_str());
     }
 
+    // search the message tables
     found.clear();
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
     if (found.size())
     {
+        // found --> msg_res
         MessageRes msg_res;
         for (auto e : found)
         {
             if (e->m_lang != lang)
-                continue;
+                continue;       // must be same language
+
             MByteStreamEx stream(e->m_data);
             if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
                 return FALSE;
         }
 
+        // dump it
         MString str;
         str += L"#ifdef APSTUDIO_INVOKED\r\n";
         str += L"    #error Ap Studio cannot edit this message table.\r\n";
@@ -6583,7 +6604,10 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
         str += msg_res.Dump();
         str += L"#endif\r\n\r\n";
 
+        // convert it to UTF-8
         MTextToAnsi t2a(CP_UTF8, str.c_str());
+
+        // write it
         file.WriteSzA(t2a.c_str());
     }
 
@@ -6593,37 +6617,52 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 // do backup a folder
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) != INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributes(pszPath) == INVALID_FILE_ATTRIBUTES)
+        return TRUE;    // no files to be backup'ed
+
+    if (nCount < s_nBackupMaxCount)     // less than max count
     {
-        if (nCount < s_nBackupMaxCount)
-        {
-            MString strPath = pszPath;
-            strPath += L"-old";
-            DoBackupFolder(strPath.c_str(), nCount + 1);
-            return MoveFileEx(pszPath, strPath.c_str(),
-                MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
-        }
-        else
-        {
-            DeleteDirectoryDx(pszPath);
-        }
+        MString strPath = pszPath;
+        strPath += L"-old";     // add "-old" to the path
+
+        // do backup the "old" folder (recursively)
+        DoBackupFolder(strPath.c_str(), nCount + 1);
+
+        // rename the current folder as an "old" folder
+        return MoveFileEx(pszPath, strPath.c_str(),
+            MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
+    else
+    {
+        // unable to create one more backup. delete it
+        DeleteDirectoryDx(pszPath);
+    }
+
     return TRUE;
 }
 
 // do backup a file
 BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) != INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributes(pszPath) == INVALID_FILE_ATTRIBUTES)
+        return TRUE;
+
+    if (nCount < s_nBackupMaxCount)     // less than max count
     {
-        if (nCount < s_nBackupMaxCount)
-        {
-            MString strPath = pszPath;
-            strPath += L"-old";
-            DoBackupFile(strPath.c_str(), nCount + 1);
-            return CopyFile(pszPath, strPath.c_str(), FALSE);
-        }
+        MString strPath = pszPath;
+        strPath += L"-old";         // add "-old" to the path
+
+        // do backup the "old" file (recursively)
+        DoBackupFile(strPath.c_str(), nCount + 1);
+
+        // copy the current file as an "old" file
+        return CopyFile(pszPath, strPath.c_str(), FALSE);
     }
+    else
+    {
+        // otherwise overwritten
+    }
+
     return TRUE;
 }
 
@@ -6631,15 +6670,18 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 {
     ResToText res2text;
-    res2text.m_bHumanReadable = FALSE;
-    res2text.m_bNoLanguage = TRUE;
+    res2text.m_bHumanReadable = FALSE;  // it's not human-friendly
+    res2text.m_bNoLanguage = TRUE;      // no LANGUAGE statements generated
 
+    // at first, backup it
     DoBackupFile(pszFileName);
+
+    // create a RC file
     MFile file(pszFileName, TRUE);
     if (!file)
         return FALSE;
 
-    // dump header
+    // dump heading
     if (pszResH && pszResH[0])
         file.WriteFormatA("#include \"resource.h\"\r\n");
     file.WriteFormatA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
@@ -6648,7 +6690,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     file.WriteFormatA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
     file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
-    // get languages
+    // get the used languages
     std::set<WORD> langs;
     EntrySetBase found;
     g_res.search(found, ET_LANG);
@@ -6657,9 +6699,11 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         langs.insert(res->m_lang);
     }
 
+    // add "res/" to the prefix if necessary
     if (g_settings.bStoreToResFolder)
         res2text.m_strFilePrefix = L"res/";
 
+    // use the "lang" folder?
     if (g_settings.bSepFilesByLang)
     {
         // dump neutral
@@ -6715,8 +6759,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     }
     else
     {
+        // don't use the "lang" folder
         for (auto lang : langs)
         {
+            // write it for each language
             if (!DoWriteRCLang(file, res2text, lang))
                 return FALSE;
         }
@@ -6725,25 +6771,36 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     // dump language includes
     if (g_settings.bSepFilesByLang)
     {
+        // write a C++ comment to make a section
         file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
+
         if (g_settings.bSelectableByMacro)
         {
-            for (auto lang : langs)
+            for (auto lang : langs)     // for each language
             {
                 if (!lang)
-                    continue;
+                    continue;       // ignore neutral language
 
+                // get the language name (such as en_US, ja_JP, etc.) from database
                 MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
+
+                // make uppercase one
                 MString lang_name2 = lang_name1;
                 CharUpperW(&lang_name2[0]);
+
+                // write "#ifdef LANGUAGE_...\r\n"
                 file.WriteSzA("#ifdef LANGUAGE_");
                 MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
                 file.WriteSzA(lang2_w2a.c_str());
                 file.WriteSzA("\r\n");
+
+                // write "#define \"lang/....rc\"\r\n"
                 file.WriteSzA("    #include \"lang/");
                 MWideToAnsi lang1_w2a(CP_ACP, lang_name1.c_str());
                 file.WriteSzA(lang1_w2a.c_str());
                 file.WriteSzA(".rc\"\r\n");
+
+                // write "#endif\r\n"
                 file.WriteSzA("#endif\r\n");
             }
         }
@@ -6752,8 +6809,12 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             for (auto lang : langs)
             {
                 if (!lang)
-                    continue;
+                    continue;   // ignore the neutral language
+
+                // get the language name (such as en_US, ja_JP, etc.) from database
                 MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
+
+                // write "#include \"lang/....rc\"\r\n"
                 file.WriteSzA("#include \"lang/");
                 file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
                 file.WriteSzA(".rc\"\r\n");
@@ -6763,14 +6824,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
 
+    file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n\r\n");
+
     // write three TEXTINCLUDE's
-    file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n");
-    file.WriteSzA("\r\n");
     file.WriteSzA("1 TEXTINCLUDE\r\n");
     file.WriteSzA("BEGIN\r\n");
     file.WriteSzA("    \"resource.h\\0\"\r\n");
-    file.WriteSzA("END\r\n");
-    file.WriteSzA("\r\n");
+    file.WriteSzA("END\r\n\r\n");
+
     file.WriteSzA("2 TEXTINCLUDE\r\n");
     file.WriteSzA("BEGIN\r\n");
     file.WriteSzA("    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
@@ -6778,14 +6839,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     file.WriteSzA("    \"#include <commctrl.h>\\r\\n\"\r\n");
     file.WriteSzA("    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
     file.WriteSzA("    \"\\0\"\r\n");
-    file.WriteSzA("END\r\n");
-    file.WriteSzA("\r\n");
+    file.WriteSzA("END\r\n\r\n");
+
     file.WriteSzA("3 TEXTINCLUDE\r\n");
     file.WriteSzA("BEGIN\r\n");
     file.WriteSzA("    \"\\r\\n\"\r\n");
     file.WriteSzA("    \"\\0\"\r\n");
-    file.WriteSzA("END\r\n");
-    file.WriteSzA("\r\n");
+    file.WriteSzA("END\r\n\r\n");
+
     file.WriteSzA("#endif    // APSTUDIO_INVOKED\r\n");
 
     file.WriteSzA("//////////////////////////////////////////////////////////////////////////////\r\n");
@@ -6796,14 +6857,19 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 // write the resource.h file
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
+    // do backup the resource.h file
     DoBackupFile(pszResH);
+
+    // create the resource.h file
     MFile file(pszResH, TRUE);
     if (!file)
         return FALSE;
 
+    // write a heading
     file.WriteSzA("//{{NO_DEPENDENCIES}}\r\n");
     file.WriteSzA("// Microsoft Visual C++ Compatible\r\n");
 
+    // write the RC file info if necessary
     if (pszRCFile)
     {
         // get file title
@@ -6821,6 +6887,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         file.WriteSzA("\r\n");
     }
 
+    // write the macro definitions
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
@@ -6834,9 +6901,11 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         }
     }
 
+    // do statistics about resource IDs
     UINT anValues[5];
     DoIDStat(anValues);
 
+    // dump the statistics
     file.WriteFormatA("#ifdef APSTUDIO_INVOKED\r\n");
     file.WriteFormatA("    #ifndef APSTUDIO_READONLY_SYMBOLS\r\n");
     file.WriteFormatA("        #define _APS_NO_MFC                 %u\r\n", anValues[0]);
@@ -6855,6 +6924,7 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
 {
     assert(pszExeFile);
 
+    // pszExeFile --> szResH
     WCHAR szResH[MAX_PATH];
     StringCchCopyW(szResH, _countof(szResH), pszExeFile);
 
@@ -6864,11 +6934,14 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
     if (!pch)
         return FALSE;
 
+    // build the "resource.h" file path
     *pch = 0;
-    StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
+    StringCchCatW(szResH, _countof(szResH), L"resource.h");
 
+    // write the "resource.h" file
     if (DoWriteResH(szResH))
     {
+        // szResH --> m_szResourceH
         StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
         return TRUE;
     }
@@ -6879,6 +6952,7 @@ BOOL MMainWnd::DoWriteResHOfExe(LPCWSTR pszExeFile)
 void MMainWnd::DoIDStat(UINT anValues[5])
 {
     const size_t count = 4;
+
     INT anNext[count];
     MString prefixes[count];
     prefixes[0] = g_settings.assoc_map[L"Resource.ID"];
@@ -6930,17 +7004,16 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 {
     ResToText res2text;
 
-    if (bExporting)
+    if (bExporting && g_settings.bStoreToResFolder)
     {
-        if (g_settings.bStoreToResFolder)
-        {
-            res2text.m_strFilePrefix = L"res\\";
-        }
+        // add "res\\" to the prefix if necessary
+        res2text.m_strFilePrefix = L"res\\";
     }
 
+    // get the entry file name
     MString filename = res2text.GetEntryFileName(*entry);
     if (filename.empty())
-        return TRUE;
+        return TRUE;        // no need to extract
 
     //MessageBox(NULL, filename.c_str(), NULL, 0);
 
@@ -7100,6 +7173,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
             return g_res.extract_bin(filename.c_str(), entry);
         }
     }
+
     return g_res.extract_bin(filename.c_str(), entry);
 }
 
@@ -7108,18 +7182,30 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 {
     if (g_res.empty())
     {
+        // unable to export the empty data
         ErrorBoxDx(IDS_DATAISEMPTY);
         return FALSE;
     }
 
+    // pszRCFile --> szPath
     WCHAR szPath[MAX_PATH];
     StringCchCopy(szPath, _countof(szPath), pszRCFile);
+
+    // find the '\\' or '/' character
     WCHAR *pch = mstrrchr(szPath, L'\\');
+    if (!pch)
+        pch = mstrrchr(szPath, L'/');
+    if (!pch)
+        return FALSE;   // failure
+
     *pch = 0;
 
-    BOOL bHasExternFile = FALSE;
+    // search the language entries
     EntrySetBase found;
     g_res.search(found, ET_LANG);
+
+    // check whether there is an external file to be extracted
+    BOOL bHasExternFile = FALSE;
     for (auto e : found)
     {
         ResToText res2text;
@@ -7131,6 +7217,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         }
     }
 
+    // if g_settings.bStoreToResFolder is set, then check the folder is not empty
     if (!IsEmptyDirectoryDx(szPath))
     {
         if (bHasExternFile && !g_settings.bStoreToResFolder)
@@ -7140,16 +7227,15 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         }
     }
 
-    *pch = 0;
-
+    // save the current directory and move the current directory
     WCHAR szCurDir[MAX_PATH];
     GetCurrentDirectory(_countof(szCurDir), szCurDir);
-
     if (!SetCurrentDirectory(szPath))
         return FALSE;
 
     if (bHasExternFile)
     {
+        // create the "res" folder (with backuping) if necessary
         if (g_settings.bStoreToResFolder)
         {
             MString strResDir = szPath;
@@ -7158,8 +7244,11 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
             CreateDirectory(strResDir.c_str(), NULL);
         }
 
+        // search the language entries
         EntrySetBase found;
         g_res.search(found, ET_LANG);
+
+        // extract each data if necessary
         for (auto e : found)
         {
             if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE)
@@ -7172,17 +7261,24 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     BOOL bOK = FALSE;
     if (m_szResourceH[0] || !g_settings.id_map.empty())
     {
+        // build the resource.h file path
         *pch = 0;
         StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
+
+        // write the resource.h file and the RC file
         bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath);
+
+        // szPath --> pszResHFile
         if (bOK && pszResHFile)
             StringCchCopyW(pszResHFile, MAX_PATH, szPath);
     }
     else
     {
+        // write the RC file
         bOK = DoWriteRC(pszRCFile, NULL);
     }
 
+    // resume the current directory
     SetCurrentDirectory(szCurDir);
 
     return bOK;
@@ -7214,6 +7310,7 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
+    // ???...
     if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
     {
         ErrorBoxDx(IDS_CANTSAVEUPXED);
@@ -7235,8 +7332,8 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
     if (!bExecutable ||
         GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES)
     {
-        // update pszExeFile
-        if (g_res.update_exe(pszExeFile))
+        // there is no source executable file. try to update pszExeFile
+        if (g_res.update_exe(pszExeFile))   // success
         {
             // update file info
             UpdateFileInfo(FT_EXECUTABLE, pszExeFile, NULL);
@@ -7252,12 +7349,15 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
                 }
             }
 
-            return TRUE;
+            return TRUE;    // success
         }
     }
     else
     {
+        // build a temporary file path
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
+
+        // m_szRealFile --> TempFile --> pszExeFile
         if (::CopyFileW(m_szRealFile, TempFile, FALSE) &&
             g_res.update_exe(TempFile) &&
             ::CopyFileW(TempFile, pszExeFile, FALSE))
@@ -7285,8 +7385,9 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
                 }
             }
 
-            return TRUE;
+            return TRUE;    // success
         }
+
         // delete the temporary file
         DeleteFileW(TempFile);
     }

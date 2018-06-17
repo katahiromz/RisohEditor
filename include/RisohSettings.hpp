@@ -80,7 +80,7 @@ struct RisohSettings
     MString             strWindResExe;  // the windres.exe location
     MString             strCppExe;      // the cpp.exe location
     MString             strPrevVersion;     // the previous RisohEditor version
-    BOOL                bSepFilesByLang;    // separate the RC file by languages?
+    BOOL                bSepFilesByLang;    // use the "lang" folder to export and/or save?
     BOOL                bStoreToResFolder;  // store to the "res" folder?
     BOOL                bSelectableByMacro; // choose languages by macros?
     captions_type       captions;           // the remembered captions
