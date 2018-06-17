@@ -2756,7 +2756,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (bWasExecutable)
     {
         if (ofn.nFilterIndex == RFFI_NONE || ofn.nFilterIndex == RFFI_ALL)
-            ofn.nFilterIndex == RFFI_EXECUTABLE;
+            ofn.nFilterIndex = RFFI_EXECUTABLE;
     }
 
     // use the preferred extension
@@ -7698,7 +7698,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 void MMainWnd::OnLoadResH(HWND hwnd)
 {
     // compile if necessary
-    if (!CompileIfNecessary(TRUE))
+    if (!CompileIfNecessary(FALSE))
     {
         return;
     }
@@ -7752,6 +7752,7 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
     {
         MString strFile = m_szResourceH;
         DoLoadResH(hwnd, strFile.c_str());
+
         if (m_szResourceH[0])
         {
             ShowIDList(hwnd, TRUE);
@@ -7925,18 +7926,19 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
             continue;
 
         // find "#define "
-        size_t found0 = line.find("#define ");
+        size_t found0 = line.find("#define");
         if (found0 == MStringA::npos)
             continue;
 
         // parse the line
-        line = line.substr(strlen("#define "));
+        line = line.substr(strlen("#define"));
+        mstr_trim(line);
         size_t found1 = line.find_first_of(" \t");
         size_t found2 = line.find('(');
         if (found1 == MStringA::npos)
-            continue;
+            continue;   // without space is an invalid #define
         if (found2 != MStringA::npos && found2 < found1)
-            continue;
+            continue;   // we ignore the function-like macros
 
         // push the macro
         macros.push_back(line.substr(0, found1));
@@ -8036,9 +8038,6 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 {
     // unload the resource.h file
     UnloadResourceH(hwnd);
-
-    // update the names
-    UpdateNames();
 
     // (new temporary file path) --> szTempFile
     WCHAR szTempFile[MAX_PATH];

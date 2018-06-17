@@ -1981,9 +1981,9 @@ public:
                 file.CloseHandle();
                 return TRUE;    // success
             }
-            return FALSE;   // failure
         }
-    }
+		return FALSE;   // failure
+	}
 
     // extract the resource data as a binary file
     BOOL extract_bin(LPCWSTR pszFileName, const EntryBase *e) const
