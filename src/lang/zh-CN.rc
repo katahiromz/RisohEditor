@@ -327,7 +327,7 @@ STRINGTABLE
     IDS_COMPILE, "编译 (F8)"
     IDS_CANCELEDIT, "取消编辑 (Ctrl+E)"
     IDS_CANNOTSTARTUP, "编译器启动失败"
-    IDS_RESMISMATCH, "资源名称或语言不匹配."
+    IDS_RESMISMATCH, "资源类型不匹配."
     IDS_SAMPLETEXT, "这是一个模板"
     IDS_GUIEDIT, "GUI编辑模式 (Ctrl+G)"
     IDS_ALREADYEXISTS, "已存在"

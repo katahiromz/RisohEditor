@@ -329,7 +329,7 @@ STRINGTABLE
     IDS_COMPILE, "コンパイル (F8)"
     IDS_CANCELEDIT, "編集をキャンセル (Ctrl+E)"
     IDS_CANNOTSTARTUP, "リソースコンパイラが起動できませんでした。"
-    IDS_RESMISMATCH, "リソースの名前または言語が一致しません。"
+    IDS_RESMISMATCH, "リソースの種類が一致しません。"
     IDS_SAMPLETEXT, "これはサンプルです。"
     IDS_GUIEDIT, "GUI編集 (Ctrl+G)"
     IDS_ALREADYEXISTS, "すでに存在します。"

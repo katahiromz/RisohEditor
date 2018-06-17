@@ -182,17 +182,11 @@ public:
 
         if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
-            if (file.empty() && HasSample(type, lang))
-            {
-                ErrorBoxDx(IDS_ALREADYEXISTS);
-                return;
-            }
-
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
-                g_res.delete_entry(entry);
+                g_res.search_and_delete(ET_LANG, type, name, lang);
                 break;
             case IDNO:
             case IDCANCEL:

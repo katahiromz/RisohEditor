@@ -327,7 +327,7 @@ STRINGTABLE
     IDS_COMPILE, "Compile (F8)"
     IDS_CANCELEDIT, "Cancel Edit (Ctrl+E)"
     IDS_CANNOTSTARTUP, "Unable to start up the resource compiler."
-    IDS_RESMISMATCH, "Resource name or language was mismatched."
+    IDS_RESMISMATCH, "Resource type was mismatched."
     IDS_SAMPLETEXT, "This is a sample."
     IDS_GUIEDIT, "Edit by GUI (Ctrl+G)"
     IDS_ALREADYEXISTS, "Already exists."

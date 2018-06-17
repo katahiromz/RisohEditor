@@ -3353,13 +3353,13 @@ void MMainWnd::OnCompile(HWND hwnd)
     strWide.resize(cchText);
     GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
 
-    // clear the modification flag
-    Edit_SetModify(m_hSrcEdit, FALSE);
-
     // compile the strWide text
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
+        // clear the modification flag
+        Edit_SetModify(m_hSrcEdit, FALSE);
+
         // select the entry
         SelectTV(entry, FALSE);
     }
@@ -5262,11 +5262,24 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
             EntrySet res;
             if (res.import_res(szPath3))
             {
-                // merge
-                g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
-                g_res.merge(res);
-
+                // resource type check
                 bOK = TRUE;
+                for (auto entry : res)
+                {
+                    if (entry->m_type != RT_STRING)
+                    {
+                        ErrorBoxDx(IDS_RESMISMATCH);
+                        bOK = FALSE;
+                        break;
+                    }
+                }
+
+                if (bOK)
+                {
+                    // merge
+                    g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
+                    g_res.merge(res);
+                }
             }
 
             // clean res up
@@ -5373,10 +5386,24 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             EntrySet res;
             if (res.import_res(szPath3))
             {
-                // merge
-                g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
-                g_res.merge(res);
                 bOK = TRUE;
+                // resource type check
+                for (auto entry : res)
+                {
+                    if (entry->m_type != RT_MESSAGETABLE)
+                    {
+                        ErrorBoxDx(IDS_RESMISMATCH);
+                        bOK = FALSE;
+                        break;
+                    }
+                }
+
+                if (bOK)
+                {
+                    // merge
+                    g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+                    g_res.merge(res);
+                }
             }
 
             // clean res up
@@ -5537,23 +5564,34 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             EntrySet res;
             if (res.import_res(szPath3))
             {
-                // adjust names and languages
+                bOK = TRUE;
                 for (auto entry : res)
                 {
                     if (entry->m_et != ET_LANG)
                         continue;
+
+                    // resource type check
+                    if (entry->m_type != type)
+                    {
+                        ErrorBoxDx(IDS_RESMISMATCH);
+                        bOK = FALSE;
+                        break;
+                    }
+
+                    // adjust names and languages
                     entry->m_name = name;
                     entry->m_lang = lang;
                 }
 
-                // merge
-                g_res.search_and_delete(ET_LANG, type, name, lang);
-                g_res.merge(res);
+                if (bOK)
+                {
+                    // merge
+                    g_res.search_and_delete(ET_LANG, type, name, lang);
+                    g_res.merge(res);
+                }
 
                 // clean res up
                 res.delete_all();
-
-                bOK = TRUE;
             }
         }
     }
