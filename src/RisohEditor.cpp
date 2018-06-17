@@ -1924,7 +1924,7 @@ protected:
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
-    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
+    BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
     void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
     MStringW GetMacroDump() const;
@@ -2243,12 +2243,12 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 // extract an icon as an *.ico file
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
-    enum FilterIndex    // see IDS_ICOFILTER
+    enum IconFilterIndex  // see also: IDS_ICOFILTER
     {
-        FI_NONE = 0,
-        FI_ICO = 1,
-        FI_ANI = 2,
-        FI_ALL = 3
+        IFI_NONE = 0,
+        IFI_ICO = 1,
+        IFI_ANI = 2,
+        IFI_ALL = 3
     };
 
     // compile if necessary
@@ -2277,12 +2277,12 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     // use the prefered filter by the entry
     if (entry->m_type == RT_ANIICON)
     {
-        ofn.nFilterIndex = FI_ANI;
+        ofn.nFilterIndex = IFI_ANI;
         ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
-        ofn.nFilterIndex = FI_ICO;
+        ofn.nFilterIndex = IFI_ICO;
         ofn.lpstrDefExt = L"ico";   // the default extension
     }
 
@@ -2300,12 +2300,12 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 // extract a cursor as an *.cur or *.ani file
 void MMainWnd::OnExtractCursor(HWND hwnd)
 {
-    enum FilterIndex        // see IDS_CURFILTER
+    enum CursorFilterIndex      // see also: IDS_CURFILTER
     {
-        FI_NONE = 0,
-        FI_CUR = 1,
-        FI_ANI = 2,
-        FI_ALL = 3
+        CFI_NONE = 0,
+        CFI_CUR = 1,
+        CFI_ANI = 2,
+        CFI_ALL = 3
     };
 
     // compile if necessary
@@ -2334,12 +2334,12 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     // use the prefered filter by the entry
     if (entry->m_type == RT_ANICURSOR)
     {
-        ofn.nFilterIndex = FI_ANI;
+        ofn.nFilterIndex = CFI_ANI;
         ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
-        ofn.nFilterIndex = FI_CUR;
+        ofn.nFilterIndex = CFI_CUR;
         ofn.lpstrDefExt = L"cur";   // the default extension
     }
 
@@ -2700,13 +2700,13 @@ void MMainWnd::OnNew(HWND hwnd)
 // save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    enum FilterIndex        // see IDS_EXERESFILTER
+    enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
     {
-        FI_NONE = 0,
-        FI_EXECUTABLE = 1,
-        FI_RC = 2,
-        FI_RES = 3,
-        FI_ALL = 4
+        RFFI_NONE = 0,
+        RFFI_EXECUTABLE = 1,
+        RFFI_RC = 2,
+        RFFI_RES = 3,
+        RFFI_ALL = 4
     };
 
     // compile if necessary
@@ -2750,25 +2750,27 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
     if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
     {
-        if (ofn.nFilterIndex == FI_EXECUTABLE)
-            ofn.nFilterIndex = FI_RC;
+        if (ofn.nFilterIndex == RFFI_EXECUTABLE)
+            ofn.nFilterIndex = RFFI_RC;
     }
     if (bWasExecutable)
     {
-        if (ofn.nFilterIndex == FI_NONE || ofn.nFilterIndex == FI_ALL)
-            ofn.nFilterIndex == FI_EXECUTABLE;
+        if (ofn.nFilterIndex == RFFI_NONE || ofn.nFilterIndex == RFFI_ALL)
+            ofn.nFilterIndex == RFFI_EXECUTABLE;
     }
 
     // use the preferred extension
     switch (ofn.nFilterIndex)
     {
-    case FI_EXECUTABLE:
+    case RFFI_EXECUTABLE:
         ofn.lpstrDefExt = L"exe";       // the default extension
         break;
-    case FI_RC:
+
+    case RFFI_RC:
         ofn.lpstrDefExt = L"rc";        // the default extension
         break;
-    case FI_RES:
+
+    case RFFI_RES:
     default:
         ofn.lpstrDefExt = L"res";       // the default extension
         break;
@@ -2786,14 +2788,14 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         // save the filter index to the settings
         g_settings.nSaveFilterIndex = ofn.nFilterIndex;
 
-        if (ofn.nFilterIndex == FI_ALL)
+        if (ofn.nFilterIndex == RFFI_ALL)
         {
-            ofn.nFilterIndex = FI_EXECUTABLE;
+            ofn.nFilterIndex = RFFI_EXECUTABLE;
         }
 
         switch (ofn.nFilterIndex)
         {
-        case FI_EXECUTABLE:
+        case RFFI_EXECUTABLE:
             // save it
             if (!DoSaveAs(szFile))
             {
@@ -2801,7 +2803,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             }
             break;
 
-        case FI_RC:
+        case RFFI_RC:
             // export and save it
             {
                 // show "save options" dialog
@@ -2826,7 +2828,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             }
             break;
 
-        case FI_RES:
+        case RFFI_RES:
             // save the *.res file
             if (!DoSaveResAs(szFile))
             {
@@ -5807,18 +5809,17 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     MWaitCursor wait;
     WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
 
-    // see also: IDS_EXERESRCFILTER
-    enum FilterIndex
+    enum LoadFilterIndex        // see also: IDS_EXERESRCFILTER
     {
-        FI_NONE = 0,
-        FI_EXECUTABLE = 1,
-        FI_RES = 2,
-        FI_RC = 3,
-        FI_ALL = 4
+        LFI_NONE = 0,
+        LFI_EXECUTABLE = 1,
+        LFI_RES = 2,
+        LFI_RC = 3,
+        LFI_ALL = 4
     };
 
-    if (nFilterIndex == FI_ALL)
-        nFilterIndex = FI_NONE;
+    if (nFilterIndex == LFI_ALL)
+        nFilterIndex = LFI_NONE;
 
     // if it was a shortcut file, then resolve it.
     // pszFileName --> szPath
@@ -5833,15 +5834,15 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // find the dot extension
     LPWSTR pch = wcsrchr(szPath, L'.');
-    if (nFilterIndex == FI_NONE || nFilterIndex == FI_EXECUTABLE)
+    if (nFilterIndex == LFI_NONE || nFilterIndex == LFI_EXECUTABLE)
     {
         if (pch && lstrcmpiW(pch, L".res") == 0)
-            nFilterIndex = FI_RES;
+            nFilterIndex = LFI_RES;
         else if (pch && lstrcmpiW(pch, L".rc") == 0)
-            nFilterIndex = FI_RC;
+            nFilterIndex = LFI_RC;
     }
 
-    if (nFilterIndex == FI_RES)     // .res files
+    if (nFilterIndex == LFI_RES)     // .res files
     {
         // reload the resource.h if necessary
         UnloadResourceH(hwnd);
@@ -5885,7 +5886,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
-    if (nFilterIndex == FI_RC)  // .rc files
+    if (nFilterIndex == LFI_RC)  // .rc files
     {
         // reload the resource.h if necessary
         UnloadResourceH(hwnd);
@@ -7336,40 +7337,45 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
 {
-    if (m_bUpxCompressed && m_szUpxTempFile[0] == 0)
+    // is the file compressed?
+    if (m_bUpxCompressed)
     {
-        // build a temporary file path
-        WCHAR szTempFile[MAX_PATH];
-        StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
-
-        // check file existence
-        if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
+        // is there the temporary decompressed file?
+        if (GetFileAttributesW(m_szUpxTempFile) == INVALID_FILE_ATTRIBUTES)
         {
-            // update pszExeFile
-            pszExeFile = m_szRealFile;
+            // build a temporary file path
+            WCHAR szTempFile[MAX_PATH];
+            StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
+
+            // check file existence
             if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
             {
-                ErrorBoxDx(IDS_CANTSAVETOEXE);
-                return FALSE
+                // update pszExeFile
+                pszExeFile = m_szRealFile;
+                if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
+                {
+                    ErrorBoxDx(IDS_CANTSAVETOEXE);
+                    return FALSE;
+                }
             }
+
+            // pszExeFile --> szTempFile (to be decompressed)
+            if (!CopyFileW(pszExeFile, szTempFile, FALSE) ||
+                !DoUpxDecompress(m_szUpxExe, szTempFile))
+            {
+                DeleteFileW(szTempFile);
+                ErrorBoxDx(IDS_CANTUPXEXTRACT);
+                return FALSE;   // failure
+            }
+            // decompressed.
+
+            // szTempFile --> both of m_szUpxTempFile and m_szRealFile
+            StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
+            StringCchCopyW(m_szRealFile, _countof(m_szUpxTempFile), szTempFile);
+
+            // update pszExeFile
+            pszExeFile = m_szUpxTempFile;
         }
-
-        // pszExeFile --> szTempFile (to be decompressed)
-        if (!CopyFileW(pszExeFile, szTempFile, FALSE) ||
-            !DoUpxDecompress(m_szUpxExe, szTempFile))
-        {
-            DeleteFileW(szTempFile);
-            ErrorBoxDx(IDS_CANTUPXEXTRACT);
-            return FALSE;   // failure
-        }
-        // decompressed.
-
-        // szTempFile --> both of m_szUpxTempFile and m_szRealFile
-        StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
-        StringCchCopyW(m_szRealFile, _countof(m_szUpxTempFile), szTempFile);
-
-        // update pszExeFile
-        pszExeFile = m_szUpxTempFile;
     }
 
     // check whether it is an executable or not
@@ -7796,66 +7802,84 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_splitter2);
     DestroyWindow(m_splitter3);
 
+    // post WM_QUIT message to quit the application
     PostQuitMessage(0);
 }
 
 // parse the macros
-BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str)
+BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
+                           const std::vector<MStringA>& macros, MStringA& str)
 {
     // split text to lines by "\n"
     std::vector<MStringA> lines;
     mstr_trim(str);
     mstr_split(lines, str, "\n");
 
-    // ...
+    // erase the first line (the special pragma)
+    lines.erase(lines.begin());
 
-    size_t len = lines.size() - 1;
-    if (macros.size() < len)
-        len = macros.size();
+    // check the line count
+    size_t line_count = lines.size();
+    if (macros.size() < line_count)
+        line_count = macros.size();
 
-    for (size_t i = 0; i < len; ++i)
+    for (size_t i = 0; i < line_count; ++i)
     {
         auto& macro = macros[i];
-        auto& line = lines[i + 1];
-        using namespace MacroParser;
+        auto& line = lines[i];
 
+        // scan the line lexically
+        using namespace MacroParser;
         StringScanner scanner(line);
 
+        // tokenize it
         TokenStream stream(scanner);
         stream.read_tokens();
+
+        // and parse it
         Parser parser(stream);
-        if (parser.parse())
+        if (parser.parse())     // successful
         {
             if (is_str(parser.ast()))
             {
+                // it's a string value macro
                 string_type value;
-                if (eval_string(parser.ast(), value))
+                if (eval_string(parser.ast(), value))   // evaluate
                 {
+                    // add an ID mapping's pair
                     g_settings.id_map[macro] = value;
                 }
             }
             else
             {
+                // it's an integer value macro
                 int value = 0;
-                if (eval_int(parser.ast(), value))
+                if (eval_int(parser.ast(), value))  // evaluate
                 {
+                    // convert to a string by base m_id_list_dlg.m_nBase
                     char sz[32];
                     if (m_id_list_dlg.m_nBase == 16)
                         StringCchPrintfA(sz, _countof(sz), "0x%X", value);
                     else
                         StringCchPrintfA(sz, _countof(sz), "%d", value);
 
+                    // ignore some special macros
                     if (macro != "WIN32" && macro != "WINNT" && macro != "i386")
+                    {
+                        // add an ID mapping's pair
                         g_settings.id_map[macro] = sz;
+                    }
                 }
             }
         }
     }
 
+    // clear the resource IDs in the constants database
     auto& table = g_db.m_map[L"RESOURCE.ID"];
     table.clear();
     g_settings.bHasIDC_STATIC = FALSE;
 
+    // add the resource ID entries to the "RESOURCE.ID" table from the ID mapping
     for (auto& pair : g_settings.id_map)
     {
         MStringW str1 = MAnsiToWide(CP_ACP, pair.first).c_str();
@@ -7866,8 +7890,11 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
         if (str1 == L"IDC_STATIC")
             g_settings.bHasIDC_STATIC = TRUE;
     }
+
+    // add IDC_STATIC macro
     g_settings.AddIDC_STATIC();
 
+    // save the resource.h file location to m_szResourceH
     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), pszFile);
 
     return TRUE;
