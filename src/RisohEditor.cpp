@@ -8424,17 +8424,26 @@ void MMainWnd::Collapse(HTREEITEM hItem)
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     MWaitCursor wait;
+
     if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
     {
+        // the source EDIT control was modified.
+        // change the toolbar
         UpdateOurToolBar(2);
+
+        // show "ready" status
         ChangeStatusText(IDS_READY);
         return;
     }
 
+    // show "executing command..." status
     if (!::IsWindow(m_rad_window) && id >= 100)
         ChangeStatusText(IDS_EXECUTINGCMD);
 
+    // add a command lock
     ++m_nCommandLock;
+
+    // execute the command
     BOOL bUpdateStatus = TRUE;
     switch (id)
     {
@@ -8759,15 +8768,19 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         bUpdateStatus = FALSE;
         break;
     }
+
+    // remove the command lock
     --m_nCommandLock;
 
     if (m_nCommandLock == 0)
-        g_res.delete_invalid();
+        g_res.delete_invalid();     // clean up invalids
 
+    // show "ready" status if ready
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
         ChangeStatusText(IDS_READY);
 
 #if !defined(NDEBUG) && (WINVER >= 0x0500)
+    // show object counts (for debugging purpose)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
     StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"),
@@ -8780,6 +8793,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 // get the resource name from text
 MIdOrString GetNameFromText(const WCHAR *pszText)
 {
+    // pszText --> szText
     WCHAR szText[128];
     StringCchCopyW(szText, _countof(szText), pszText);
 
@@ -8788,23 +8802,28 @@ MIdOrString GetNameFromText(const WCHAR *pszText)
 
     if (szText[0] == 0)
     {
-        return (WORD)0;
+        return (WORD)0;     // empty
     }
     else if (mchr_is_digit(szText[0]) || szText[0] == L'-' || szText[0] == L'+')
     {
+        // numeric
         return WORD(mstr_parse_int(szText));
     }
     else
     {
+        // string value
         MStringW str = szText;
+
+        // is there parenthesis?
         size_t i = str.rfind(L'('); // ')'
         if (i != MStringW::npos && mchr_is_digit(str[i + 1]))
         {
+            // parse the text after the last parenthesis
             return WORD(mstr_parse_int(&str[i + 1]));
         }
 
-        MIdOrString id(szText);
-        return id;
+        // string
+        return MIdOrString(szText);
     }
 }
 
@@ -9098,14 +9117,18 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 // change the name of the resource entries
 void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
+    // search the old named language entries
     EntrySetBase found;
     g_res.search(found, ET_LANG, entry->m_type, old_name);
+
+    // rename them
     for (auto e : found)
     {
         assert(e->m_name == old_name);
         e->m_name = new_name;
     }
 
+    // update the entry name
     entry->m_name = new_name;
     UpdateEntryName(entry, pszText);
 
@@ -9117,10 +9140,14 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
 {
     EntrySetBase found;
+
     switch (entry->m_et)
     {
     case ET_STRING:
+        // serach the resource strings
         g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+
+        // replace the language
         for (auto e : found)
         {
             assert(e->m_lang == old_lang);
@@ -9129,8 +9156,12 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         }
         found.clear();
         break;
+
     case ET_MESSAGE:
+        // serach the resource messages
         g_res.search(found, ET_LANG, entry->m_type, (WORD)0, old_lang);
+
+        // replace the language
         for (auto e : found)
         {
             assert(e->m_lang == old_lang);
@@ -9139,17 +9170,23 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
         }
         found.clear();
         break;
+
     case ET_LANG:
         break;
+
     default:
         return;
     }
 
+    // search the old named old language entries
     g_res.search(found, ET_ANY, entry->m_type, entry->m_name, old_lang);
     for (auto e : found)
     {
+        // replace the language
         assert(e->m_lang == old_lang);
         e->m_lang = new_lang;
+
+        // update the language
         UpdateEntryLang(e, pszText);
     }
 
@@ -9170,18 +9207,19 @@ void MMainWnd::OnTest(HWND hwnd)
 
     if (entry->m_type == RT_DIALOG)
     {
-        MByteStreamEx stream(entry->m_data);
-
-        // detach menu
+        // entry->m_data --> stream --> dialog_res
         DialogRes dialog_res;
+        MByteStreamEx stream(entry->m_data);
         dialog_res.LoadFromStream(stream);
 
         if (!dialog_res.m_class.empty())
         {
+            // TODO: support the classed dialogs
             ErrorBoxDx(IDS_CANTTESTCLASSDLG);
         }
         else
         {
+            // ???...
             MIdOrString menu = dialog_res.m_menu;
             dialog_res.m_menu.clear();
             stream.clear();
@@ -9191,7 +9229,7 @@ void MMainWnd::OnTest(HWND hwnd)
             dialog_res.SaveToStream(stream);
             dialog_res.Fixup2(true);
 
-            // load RT_DLGINIT
+            // load RT_DLGINIT if any
             std::vector<BYTE> dlginit_data;
             if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
             {
@@ -9201,15 +9239,18 @@ void MMainWnd::OnTest(HWND hwnd)
             // show test dialog
             if (dialog_res.m_style & WS_CHILD)
             {
+                // dialog_res is a child dialog. create its parent
                 MTestParentWnd *window = new MTestParentWnd(dialog_res, menu, entry->m_lang, stream, dlginit_data);
                 window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
+                // show it
                 ShowWindow(*window, SW_SHOWNORMAL);
                 UpdateWindow(*window);
             }
             else
             {
+                // it's a non-child dialog. show the test dialog
                 MTestDialog dialog(dialog_res, menu, entry->m_lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
             }
@@ -9217,12 +9258,15 @@ void MMainWnd::OnTest(HWND hwnd)
     }
     else if (entry->m_type == RT_MENU)
     {
+        // load a menu from memory
         HMENU hMenu = LoadMenuIndirect(&(*entry)[0]);
         if (hMenu)
         {
             // show the dialog
             MTestMenuDlg dialog(hMenu);
             dialog.DialogBoxDx(hwnd, IDD_MENUTEST);
+
+            // unload the menu
             DestroyMenu(hMenu);
         }
     }
@@ -9553,6 +9597,7 @@ void MMainWnd::ReadResHLines(FILE *fp, std::vector<MStringA>& lines)
 // do save or update the resource.h file
 void MMainWnd::OnUpdateResHBang(HWND hwnd)
 {
+    // ...
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
     DestroyWindow(m_id_list_dlg);
