@@ -7767,10 +7767,12 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
 
     for (size_t i = 0; i < len; ++i)
     {
-        const MStringA& macro = macros[i];
-        const MStringA& line = lines[i + 1];
+        auto& macro = macros[i];
+        auto& line = lines[i + 1];
         using namespace MacroParser;
+
         StringScanner scanner(line);
+
         TokenStream stream(scanner);
         stream.read_tokens();
         Parser parser(stream);
@@ -7826,21 +7828,28 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& ma
 // parse the resource.h file
 BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 {
+    // split text to lines by "\n"
     MStringA str(psz, len);
     std::vector<MStringA> lines, macros;
     mstr_split(lines, str, "\n");
 
-    for (size_t i = 0; i < lines.size(); ++i)
+    for (auto& line : lines)
     {
-        MStringA& line = lines[i];
+        // trim
         mstr_trim(line);
         if (line.empty())
-            continue;
+            continue;   // empty ones are ignored
+
+        // the macro that begins with "_" will be ignored
         if (line.find("#define _") != MStringA::npos)
             continue;
+
+        // find "#define "
         size_t found0 = line.find("#define ");
         if (found0 == MStringA::npos)
             continue;
+
+        // parse the line
         line = line.substr(strlen("#define "));
         size_t found1 = line.find_first_of(" \t");
         size_t found2 = line.find('(');
@@ -7848,6 +7857,8 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
             continue;
         if (found2 != MStringA::npos && found2 < found1)
             continue;
+
+        // push the macro
         macros.push_back(line.substr(0, found1));
     }
 
@@ -7855,21 +7866,30 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
     if (macros.empty())
     {
+        // no macros to 
         return TRUE;
     }
 
+    // (new temporary file path) --> szTempFile1
     WCHAR szTempFile1[MAX_PATH];
     StringCchCopyW(szTempFile1, _countof(szTempFile1), GetTempFileNameDx(L"R1"));
 
-    DWORD cbWritten;
+    // create the temporary file
     MFile file1(szTempFile1, TRUE);
-    char buf[MAX_PATH + 64];
+
+    // pszFile --> szFile
     WCHAR szFile[MAX_PATH];
     StringCchCopyW(szFile, _countof(szFile), pszFile);
+
+    // write the heading
+    DWORD cbWritten;
     file1.WriteSzA("#include \"", &cbWritten);
     file1.WriteSzA(MTextToAnsi(CP_ACP, szFile).c_str(), &cbWritten);
     file1.WriteSzA("\"\n", &cbWritten);
-    file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);
+    file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);    // the special pragma
+
+    // write the macro names (in order to retrieve the value after)
+    char buf[MAX_PATH + 64];
     for (size_t i = 0; i < macros.size(); ++i)
     {
         StringCchPrintfA(buf, _countof(buf), "%s\n", macros[i].c_str());
@@ -7878,9 +7898,10 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     file1.FlushFileBuffers();
     file1.CloseHandle();
 
+    // build the command line text
     MString strCmdLine;
     strCmdLine += L'\"';
-    strCmdLine += m_szCppExe;
+    strCmdLine += m_szCppExe;       // cpp.exe
     strCmdLine += L"\" ";
     strCmdLine += GetIncludesDump();
     strCmdLine += GetMacroDump();
@@ -7891,6 +7912,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
 
     BOOL bOK = FALSE;
 
+    // create a cpp.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -7900,18 +7922,25 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
         pmaker.CloseAll();
 
+        // find the special pragma
         size_t pragma_found = strOutput.find("#pragma RisohEditor");
         if (pragma_found != MStringA::npos)
         {
+            // get text after the special pragma
             strOutput = strOutput.substr(pragma_found);
+
+            // parse macros
             bOK = ParseMacros(hwnd, pszFile, macros, strOutput);
         }
     }
 
+    // delete the temporary file
     DeleteFileW(szTempFile1);
+
     return bOK;
 }
 
@@ -7924,13 +7953,15 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     // update the names
     UpdateNames();
 
+    // (new temporary file path) --> szTempFile
     WCHAR szTempFile[MAX_PATH];
     StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"R1"));
 
+    // create a temporary file
     MFile file(szTempFile, TRUE);
-    file.FlushFileBuffers();
     file.CloseHandle();
 
+    // build a command line
     MString strCmdLine;
     strCmdLine += L"-E -dM -DRC_INVOKED -o \"";
     strCmdLine += szTempFile;
@@ -7939,32 +7970,45 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     strCmdLine += L"\"";
     //MessageBoxW(hwnd, szCmdLine, NULL, 0);
 
+    // create a cpp.exe process
     BOOL bOK = FALSE;
     SHELLEXECUTEINFOW info;
     ZeroMemory(&info, sizeof(info));
     info.cbSize = sizeof(info);
     info.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE | SEE_MASK_FLAG_NO_UI;
     info.hwnd = hwnd;
-    info.lpFile = m_szCppExe;
+    info.lpFile = m_szCppExe;   // cpp.exe
     info.lpParameters = &strCmdLine[0];
-    info.nShow = SW_HIDE;
+    info.nShow = SW_HIDE;       // hidden
+
     if (ShellExecuteExW(&info))
     {
+        // wait the finish
         WaitForSingleObject(info.hProcess, INFINITE);
         CloseHandle(info.hProcess);
+
+        Sleep(FILE_WAIT_TIME);
+
+        // read the temporary file
         if (file.OpenFileForInput(szTempFile))
         {
             DWORD cbRead;
             CHAR szBuf[512];
+
+            // read all
             MStringA data;
             while (file.ReadFile(szBuf, 512, &cbRead) && cbRead)
             {
                 data.append(&szBuf[0], cbRead);
             }
             file.CloseHandle();
+
+            // parse the resource.h
             bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
         }
     }
+
+    // delete the temporary file
     DeleteFileW(szTempFile);
 
     return bOK;
@@ -8075,9 +8119,9 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
+        // refresh PATHs and fonts and entry names
         ReSetPaths(hwnd);
         ReCreateFonts(hwnd);
-
         UpdateNames();
 
         // select the entry to update the text
@@ -8089,22 +8133,28 @@ void MMainWnd::OnConfig(HWND hwnd)
 // reset the path settings
 void MMainWnd::ReSetPaths(HWND hwnd)
 {
+    // windres.exe
     if (g_settings.strWindResExe.size())
     {
+        // g_settings.strWindResExe --> m_szWindresExe
         StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), g_settings.strWindResExe.c_str());
     }
     else
     {
+        // g_settings.m_szDataFolder + L"\\bin\\windres.exe" --> m_szWindresExe
         StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
         StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
     }
 
+    // cpp.exe
     if (g_settings.strCppExe.size())
     {
+        // g_settings.strCppExe --> m_szCppExe
         StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
     }
     else
     {
+        // m_szDataFolder + "\\bin\\cpp.exe" --> m_szCppExe
         StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
         StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
     }
@@ -8113,6 +8163,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 // use IDC_STATIC macro or not
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
+    // toggle the flag
     g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
 
     // select the entry to update the text
@@ -8173,6 +8224,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
 {
     BOOL bListOpen = IsWindow(m_id_list_dlg);
 
+    // toggle the flag
     g_settings.bHideID = !g_settings.bHideID;
 
     UpdateNames();
@@ -8235,6 +8287,7 @@ void MMainWnd::OnShowLangs(HWND hwnd)
 // show/hide the toolbar
 void MMainWnd::OnShowHideToolBar(HWND hwnd)
 {
+    // toggle the flag
     g_settings.bShowToolBar = !g_settings.bShowToolBar;
 
     if (g_settings.bShowToolBar)
@@ -8508,16 +8561,25 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         bUpdateStatus = FALSE;
         break;
     case ID_STATUSBAR:
+        // toggle the flag
         g_settings.bShowStatusBar = !g_settings.bShowStatusBar;
+
+        // show/hide the scroll bar
         ShowStatusBar(g_settings.bShowStatusBar);
+
+        // relayout
         PostMessageDx(WM_SIZE);
         break;
     case ID_BINARYPANE:
+        // toggle the flag
         g_settings.bShowBinEdit = !g_settings.bShowBinEdit;
+
+        // show/hide the binary EDIT control
         ShowBinEdit(g_settings.bShowBinEdit);
         break;
     case ID_ALWAYSCONTROL:
         {
+            // toggle the flag
             g_settings.bAlwaysControl = !g_settings.bAlwaysControl;
 
             // select the entry to update the text
