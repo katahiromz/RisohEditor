@@ -8082,13 +8082,16 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
 
         if (bOK && pmaker.GetExitCode() == 0)
         {
-            strOutput.clear();
+            // read all from szTempFile
+            MStringA data;
             MFile file(szTempFile);
-            bOK = file.ReadAll(strOutput);
+            bOK = file.ReadAll(data);
+            file.CloseHandle();
+
             if (bOK)
             {
                 // parse the resource.h
-                bOK = ParseResH(hwnd, pszFile, &strOutput[0], DWORD(strOutput.size()));
+                bOK = ParseResH(hwnd, pszFile, &data[0], DWORD(data.size()));
             }
         }
     }
