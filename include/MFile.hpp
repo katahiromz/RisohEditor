@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MFILE_HPP_
-#define MZC4_MFILE_HPP_     14      /* Version 14 */
+#define MZC4_MFILE_HPP_     15      /* Version 15 */
 
 #ifndef _INC_WINDOWS
     #include <windows.h>
@@ -761,7 +761,6 @@ inline /*static*/ HANDLE MFile::CloneHandleDx(HANDLE hFile)
                       FALSE, DUPLICATE_SAME_ACCESS);
     return hDup;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 
