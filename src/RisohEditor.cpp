@@ -8046,8 +8046,10 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         }
     }
 
+#ifdef NDEBUG
     // delete the temporary file
     DeleteFileW(szTempFile1);
+#endif
 
     return bOK;
 }
@@ -8109,8 +8111,10 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
         }
     }
 
+#ifdef NDEBUG
     // delete the temporary file
     DeleteFileW(szTempFile);
+#endif
 
     return bOK;
 }
