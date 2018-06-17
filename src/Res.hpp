@@ -57,10 +57,10 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 #endif
 
 #ifndef FILE_WAIT_TIME
-    #define FILE_WAIT_TIME      (1200)          // 1.2 seconds
+    #define FILE_WAIT_TIME      (800)           // 0.8 seconds
 #endif
 #ifndef PROCESS_TIMEOUT
-    #define PROCESS_TIMEOUT     (10 * 1000)     // 10 seconds
+    #define PROCESS_TIMEOUT     (5 * 1000)      // 5 seconds
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
