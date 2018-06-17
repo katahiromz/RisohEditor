@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, 
+//
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ static const UINT s_nBackupMaxCount = 5;
 // useful global functions
 
 // "." or ".."
-#define ISDOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
+#define IS_DOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
 
 // delete a directory (a folder)
 BOOL DeleteDirectoryDx(LPCTSTR pszDir)
@@ -68,7 +68,7 @@ BOOL DeleteDirectoryDx(LPCTSTR pszDir)
     {
         do
         {
-            if (!ISDOTS(find.cFileName))
+            if (!IS_DOTS(find.cFileName))
             {
                 if (find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 {
@@ -150,11 +150,11 @@ BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 
     // NOTE: CoInitialize/CoInitializeEx call required before this
     pszPath[0] = 0;
-    hRes = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, 
+    hRes = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
                             IID_IShellLinkW, (void **)&pShellLink);
     if (SUCCEEDED(hRes))
     {
-        hRes = pShellLink->QueryInterface(IID_IPersistFile, 
+        hRes = pShellLink->QueryInterface(IID_IPersistFile,
                                           (void **)&pPersistFile);
         if (SUCCEEDED(hRes))
         {
@@ -191,6 +191,90 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
     return n == 1;  // success or not
 }
 
+// dump data as a text
+MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
+{
+    MStringW ret;
+    WCHAR sz[64];
+    DWORD addr, size = DWORD(data.size());
+
+    // is it empty?
+    if (data.empty())
+    {
+        return ret;
+    }
+
+    ret.reserve(data.size() * 3);   // for speed
+
+    // add the head
+    ret +=
+        L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
+        L"--------  -----------------------  -----------------------  ----------------\r\n";
+
+    // for all the addresses
+    bool ending_flag = false;
+    for (addr = 0; !ending_flag; ++addr)
+    {
+        if ((addr & 0xF) != 0)
+            continue;
+
+        // add the address
+        StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
+        ret += sz;
+
+        ending_flag = false;
+
+        // add the data
+        for (DWORD i = 0; i < 16; ++i)
+        {
+            // add a space if the lowest digit was 8
+            if (i == 8)
+                ret += L' ';
+
+            // add 3 characters
+            DWORD offset = addr + i;    // the address to output
+            if (offset < size)
+            {
+                StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
+                ret += sz;
+            }
+            else
+            {
+                ret += L"   ";
+                ending_flag = true;
+            }
+        }
+
+        // add the separation space
+        ret += L' ';
+
+        // add the characters
+        for (DWORD i = 0; i < 16; ++i)
+        {
+            DWORD offset = addr + i;    // the address to output
+            if (offset < size)
+            {
+                if (data[offset] == 0)
+                    ret += L' ';        // the NUL character
+                else if (data[offset] < 0x20 || data[offset] > 0x7F)
+                    ret += L'.';        // invisible character
+                else
+                    ret += WCHAR(data[offset]);     // otherwise
+            }
+            else
+            {
+                ret += L' ';            // out of range
+                ending_flag = true;
+            }
+        }
+
+        // add a newline
+        ret += L"\r\n";
+    }
+
+    return ret;     // the result
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // window styles
 
@@ -204,7 +288,7 @@ void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel)
 }
 
 // store the window style info to a vector
-void GetStyleSelect(std::vector<BYTE>& sel, 
+void GetStyleSelect(std::vector<BYTE>& sel,
                     const ConstantsDB::TableType& table, DWORD dwValue)
 {
     sel.resize(table.size());
@@ -219,7 +303,7 @@ void GetStyleSelect(std::vector<BYTE>& sel,
 
 // analyse the difference of two window styles
 DWORD AnalyseStyleDiff(
-    DWORD dwValue, ConstantsDB::TableType& table, 
+    DWORD dwValue, ConstantsDB::TableType& table,
     std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel)
 {
     assert(old_sel.size() == new_sel.size());
@@ -255,11 +339,10 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 
 // the callback for InitFontComboBox
 static int CALLBACK
-EnumFontFamProc(
-    ENUMLOGFONT *lpelf, 
-    NEWTEXTMETRIC *lpntm, 
-    int FontType, 
-    LPARAM lParam)
+EnumFontFamProc(ENUMLOGFONT *lpelf,
+                NEWTEXTMETRIC *lpntm,
+                INT FontType,
+                LPARAM lParam)
 {
     HWND hCmb = HWND(lParam);
 
@@ -279,34 +362,34 @@ void InitFontComboBox(HWND hCmb)
 }
 
 // character set information
-typedef struct CharSetInfo
+typedef struct CharSetData
 {
     BYTE CharSet;
     LPCTSTR name;
-} CharSetInfo;
+} CharSetData;
 
-static const CharSetInfo s_charset_entries[] =
+static const CharSetData s_charset_entries[] =
 {
-    { ANSI_CHARSET, TEXT("ANSI_CHARSET") }, 
-    { DEFAULT_CHARSET, TEXT("DEFAULT_CHARSET") }, 
-    { SYMBOL_CHARSET, TEXT("SYMBOL_CHARSET") }, 
-    { SHIFTJIS_CHARSET, TEXT("SHIFTJIS_CHARSET") }, 
-    { HANGEUL_CHARSET, TEXT("HANGEUL_CHARSET") }, 
-    { HANGUL_CHARSET, TEXT("HANGUL_CHARSET") }, 
-    { GB2312_CHARSET, TEXT("GB2312_CHARSET") }, 
-    { CHINESEBIG5_CHARSET, TEXT("CHINESEBIG5_CHARSET") }, 
-    { OEM_CHARSET, TEXT("OEM_CHARSET") }, 
-    { JOHAB_CHARSET, TEXT("JOHAB_CHARSET") }, 
-    { HEBREW_CHARSET, TEXT("HEBREW_CHARSET") }, 
-    { ARABIC_CHARSET, TEXT("ARABIC_CHARSET") }, 
-    { GREEK_CHARSET, TEXT("GREEK_CHARSET") }, 
-    { TURKISH_CHARSET, TEXT("TURKISH_CHARSET") }, 
-    { VIETNAMESE_CHARSET, TEXT("VIETNAMESE_CHARSET") }, 
-    { THAI_CHARSET, TEXT("THAI_CHARSET") }, 
-    { EASTEUROPE_CHARSET, TEXT("EASTEUROPE_CHARSET") }, 
-    { RUSSIAN_CHARSET, TEXT("RUSSIAN_CHARSET") }, 
-    { MAC_CHARSET, TEXT("MAC_CHARSET") }, 
-    { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") }, 
+    { ANSI_CHARSET, TEXT("ANSI_CHARSET") },
+    { DEFAULT_CHARSET, TEXT("DEFAULT_CHARSET") },
+    { SYMBOL_CHARSET, TEXT("SYMBOL_CHARSET") },
+    { SHIFTJIS_CHARSET, TEXT("SHIFTJIS_CHARSET") },
+    { HANGEUL_CHARSET, TEXT("HANGEUL_CHARSET") },
+    { HANGUL_CHARSET, TEXT("HANGUL_CHARSET") },
+    { GB2312_CHARSET, TEXT("GB2312_CHARSET") },
+    { CHINESEBIG5_CHARSET, TEXT("CHINESEBIG5_CHARSET") },
+    { OEM_CHARSET, TEXT("OEM_CHARSET") },
+    { JOHAB_CHARSET, TEXT("JOHAB_CHARSET") },
+    { HEBREW_CHARSET, TEXT("HEBREW_CHARSET") },
+    { ARABIC_CHARSET, TEXT("ARABIC_CHARSET") },
+    { GREEK_CHARSET, TEXT("GREEK_CHARSET") },
+    { TURKISH_CHARSET, TEXT("TURKISH_CHARSET") },
+    { VIETNAMESE_CHARSET, TEXT("VIETNAMESE_CHARSET") },
+    { THAI_CHARSET, TEXT("THAI_CHARSET") },
+    { EASTEUROPE_CHARSET, TEXT("EASTEUROPE_CHARSET") },
+    { RUSSIAN_CHARSET, TEXT("RUSSIAN_CHARSET") },
+    { MAC_CHARSET, TEXT("MAC_CHARSET") },
+    { BALTIC_CHARSET, TEXT("BALTIC_CHARSET") },
 };
 
 // initialize the charset combobox
@@ -419,7 +502,7 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass)
 // initialize the control ID combobox
 void InitCtrlIDComboBox(HWND hCmb)
 {
-    // add control IDs
+    // add the control IDs
     auto table = g_db.GetTable(TEXT("CTRLID"));
     for (auto& table_entry : table)
     {
@@ -795,7 +878,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ n
 BOOL CheckCommand(MString strCommand)
 {
     // trim the string
-     mstr_trim(strCommand);
+    mstr_trim(strCommand);
 
     if (('0' <= strCommand[0] && strCommand[0] <= '9') ||
         strCommand[0] == '-' || strCommand[0] == '+')
@@ -902,13 +985,13 @@ struct LANG_ENTRY
         return str < ent.str;
     }
 };
-std::vector<LANG_ENTRY> g_Langs;
+std::vector<LANG_ENTRY> g_langs;
 
 // initialize the language combobox
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
-    // for all the elements of g_Langs
-    for (auto& entry : g_Langs)
+    // for all the elements of g_langs
+    for (auto& entry : g_langs)
     {
         // build the text
         WCHAR sz[MAX_PATH];
@@ -936,7 +1019,7 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
     WCHAR sz1[64], sz2[64];
     LV_ITEM item;
     INT iItem = 0;
-    for (auto& entry : g_Langs)     // for all the items of g_Langs
+    for (auto& entry : g_langs)     // for all the items of g_langs
     {
         // build two texts of an entry
         StringCchPrintfW(sz1, _countof(sz1), L"%s", entry.str.c_str());
@@ -1075,7 +1158,7 @@ WORD LangFromText(LPWSTR pszLang)
         if (lang == BAD_LANG)     // not found yet?
         {
             // whole match
-            for (auto& entry : g_Langs)
+            for (auto& entry : g_langs)
             {
                 if (lstrcmpiW(entry.str.c_str(), pszLang) == 0) // matched
                 {
@@ -1105,7 +1188,7 @@ WORD LangFromText(LPWSTR pszLang)
         if (lang == BAD_LANG)     // not found yet?
         {
             // partial match
-            for (auto& entry : g_Langs)
+            for (auto& entry : g_langs)
             {
                 if (wcsstr(entry.str.c_str(), pszLang) != NULL)
                 {
@@ -1119,7 +1202,7 @@ WORD LangFromText(LPWSTR pszLang)
         {
             // ignore case, partial match
             CharUpperW(&strLang[0]);
-            for (auto& entry : g_Langs)
+            for (auto& entry : g_langs)
             {
                 MStringW strEntry = entry.str;
                 CharUpperW(&strEntry[0]);
@@ -1176,7 +1259,7 @@ EnumLocalesProc(LPWSTR lpLocaleString)
     entry.str = sz;     // store the text
 
     // add it
-    g_Langs.push_back(entry);
+    g_langs.push_back(entry);
 
     return TRUE;    // continue
 }
@@ -1207,7 +1290,7 @@ EnumEngLocalesProc(LPWSTR lpLocaleString)
     entry.str += L")";
 
     // add it
-    g_Langs.push_back(entry);
+    g_langs.push_back(entry);
 
     return TRUE;    // continue
 }
@@ -1247,46 +1330,46 @@ MStringW TextFromLang(WORD lang)
 // buttons info #0
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 // buttons info #1
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 }, 
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST }, 
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
+    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
 };
 
 // buttons info #2
 TBBUTTON g_buttons2[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE }, 
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT }, 
+    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
+    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
 };
 
 // buttons info #3
 TBBUTTON g_buttons3[] =
 {
-    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON }, 
-    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR }, 
-    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG }, 
-    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU }, 
-    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO }, 
+    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON },
+    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR },
+    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG },
+    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU },
+    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO },
 };
 
 // buttons info #4
 TBBUTTON g_buttons4[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT }, 
+    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
 };
 
 // buttons info #5
 TBBUTTON g_buttons5[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT }, 
+    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
 };
 
 // store the toolbar strings
@@ -1327,7 +1410,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
         ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
         SetFocus(hCmb1);    // set focus
         // show error message
-        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE), 
+        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
                     NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
@@ -1375,7 +1458,7 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
         ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
         SetFocus(hCmb2);    // set focus
         // show error message
-        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME), 
+        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
                     NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
@@ -1413,7 +1496,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
         Edit_SetSel(hEdt1, 0, -1);  // select all
         SetFocus(hEdt1);    // set focus
         // show error message
-        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND), 
+        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND),
                     NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
@@ -1422,92 +1505,6 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
     file = szFile;
 
     return TRUE;    // success
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-// dump data as a text
-MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
-{
-    MStringW ret;
-    WCHAR sz[64];
-    DWORD addr, size = DWORD(data.size());
-
-    // is it empty?
-    if (data.empty())
-    {
-        return ret;
-    }
-
-    ret.reserve(data.size() * 3);   // for speed
-
-    // add the head
-    ret +=
-        L"+ADDRESS  +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F  0123456789ABCDEF\r\n"
-        L"--------  -----------------------  -----------------------  ----------------\r\n";
-
-    // for all the addresses
-    bool ending_flag = false;
-    for (addr = 0; !ending_flag; ++addr)
-    {
-        if ((addr & 0xF) != 0)
-            continue;
-
-        // add the address
-        StringCchPrintfW(sz, _countof(sz), L"%08lX  ", addr);
-        ret += sz;
-
-        ending_flag = false;
-
-        // add the data
-        for (DWORD i = 0; i < 16; ++i)
-        {
-            // add a space if the lowest digit was 8
-            if (i == 8)
-                ret += L' ';
-
-            // add 3 characters
-            DWORD offset = addr + i;    // the address to output
-            if (offset < size)
-            {
-                StringCchPrintfW(sz, _countof(sz), L"%02X ", data[offset]);
-                ret += sz;
-            }
-            else
-            {
-                ret += L"   ";
-                ending_flag = true;
-            }
-        }
-
-        // add the separation space
-        ret += L' ';
-
-        // add the characters
-        for (DWORD i = 0; i < 16; ++i)
-        {
-            DWORD offset = addr + i;    // the address to output
-            if (offset < size)
-            {
-                if (data[offset] == 0)
-                    ret += L' ';        // the NUL character
-                else if (data[offset] < 0x20 || data[offset] > 0x7F)
-                    ret += L'.';        // invisible character
-                else
-                    ret += WCHAR(data[offset]);     // otherwise
-            }
-            else
-            {
-                ret += L' ';            // out of range
-                ending_flag = true;
-            }
-        }
-
-        // add a newline
-        ret += L"\r\n";
-    }
-
-    return ret;     // the result
 }
 
 // get the text from a command ID
@@ -1696,6 +1693,7 @@ void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 //////////////////////////////////////////////////////////////////////////////
 // MMainWnd --- the main window
 
+// the file type
 enum FileType
 {
     FT_NONE,
@@ -1767,11 +1765,11 @@ protected:
 public:
     // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
-        m_argc(argc), m_targv(targv), m_bLoading(FALSE), 
-        m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL), 
+        m_argc(argc), m_targv(targv), m_bLoading(FALSE),
+        m_hInst(hInst), m_hIcon(NULL), m_hIconSm(NULL), m_hAccel(NULL),
         m_hwndTV(NULL), m_hImageList(NULL), m_nCommandLock(0),
-        m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL), 
-        m_hToolBar(NULL), m_hStatusBar(NULL), 
+        m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL),
+        m_hToolBar(NULL), m_hStatusBar(NULL),
         m_hFindReplaceDlg(NULL), m_file_type(FT_NONE)
     {
         m_szDataFolder[0] = 0;
@@ -1929,8 +1927,8 @@ protected:
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
     void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
-    MStringW GetMacroDump();
-    MStringW GetIncludesDump();
+    MStringW GetMacroDump() const;
+    MStringW GetIncludesDump() const;
     void ReadResHLines(FILE *fp, std::vector<MStringA>& lines);
     void UpdateResHLines(std::vector<MStringA>& lines);
 
@@ -2075,7 +2073,7 @@ protected:
 // WM_SYSCOLORCHANGE: system color settings was changed
 void MMainWnd::OnSysColorChange(HWND hwnd)
 {
-    // notify the window children
+    // notify the main window children
     m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
     m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
     m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
@@ -2127,18 +2125,19 @@ void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimi
 {
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
     {
+        // set focus to the treeview
         SetFocus(m_hwndTV);
     }
 
+    // default processing
     FORWARD_WM_ACTIVATE(hwnd, state, hwndActDeact, fMinimized, CallWindowProcDx);
 }
 
 // update the menu for recently used files
 void MMainWnd::UpdateMenu()
 {
-    HMENU hMenu = GetMenu(m_hwnd);
-
     // get 'File' menu
+    HMENU hMenu = GetMenu(m_hwnd);
     HMENU hFileMenu = GetSubMenu(hMenu, 0);
 
     // get Most Recently Used menu from 'File' menu
@@ -2188,11 +2187,12 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         return;
 
     auto e = g_res.get_entry();
-    if (!e)     // not selected
-        return;
+    if (!e)
+        return;     // not selected
 
     WCHAR szFile[MAX_PATH] = L"";
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2211,7 +2211,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
     ofn.lpstrDefExt = L"res";   // the default extension
 
     // let the user choose the path
@@ -2240,6 +2240,14 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 // extract an icon as an *.ico file
 void MMainWnd::OnExtractIcon(HWND hwnd)
 {
+    enum FilterIndex    // see IDS_ICOFILTER
+    {
+        FI_NONE = 0,
+        FI_ICO = 1,
+        FI_ANI = 2,
+        FI_ALL = 3
+    };
+
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2250,6 +2258,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 
     WCHAR szFile[MAX_PATH] = L"";
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2259,17 +2268,17 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTICO);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
 
     // use the prefered filter by the entry
     if (entry->m_type == RT_ANIICON)
     {
-        ofn.nFilterIndex = 2;
+        ofn.nFilterIndex = FI_ANI;
         ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
-        ofn.nFilterIndex = 1;
+        ofn.nFilterIndex = FI_ICO;
         ofn.lpstrDefExt = L"ico";   // the default extension
     }
 
@@ -2287,6 +2296,14 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
 // extract a cursor as an *.cur or *.ani file
 void MMainWnd::OnExtractCursor(HWND hwnd)
 {
+    enum FilterIndex        // see IDS_CURFILTER
+    {
+        FI_NONE = 0,
+        FI_CUR = 1,
+        FI_ANI = 2,
+        FI_ALL = 3
+    };
+
     if (!CompileIfNecessary(FALSE))
         return;
 
@@ -2297,6 +2314,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
 
     WCHAR szFile[MAX_PATH] = L"";
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2306,17 +2324,17 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTCUR);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
 
     // use the prefered filter by the entry
     if (entry->m_type == RT_ANICURSOR)
     {
-        ofn.nFilterIndex = 2;
+        ofn.nFilterIndex = FI_ANI;
         ofn.lpstrDefExt = L"ani";   // the default extension
     }
     else
     {
-        ofn.nFilterIndex = 1;
+        ofn.nFilterIndex = FI_CUR;
         ofn.lpstrDefExt = L"cur";   // the default extension
     }
 
@@ -2344,6 +2362,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
 
     WCHAR szFile[MAX_PATH] = L"";
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2353,15 +2372,15 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     ofn.nMaxFile = MAX_PATH;
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTBMP);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
     ofn.lpstrDefExt = L"bmp";   // the default extension
 
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
         // extract a bitmap as an *.bmp or *.png file
-        BOOL PNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
-        if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), PNG))
+        BOOL bPNG = (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"png") == 0);
+        if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), bPNG))
         {
             ErrorBoxDx(IDS_CANTEXTRACTBMP);
         }
@@ -2434,6 +2453,7 @@ void MMainWnd::OnExport(HWND hwnd)
 
     WCHAR file[MAX_PATH] = TEXT("");
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2443,7 +2463,7 @@ void MMainWnd::OnExport(HWND hwnd)
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_EXPORT);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-        OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+                OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"rc";    // the default extension
 
     // let the user choose the path
@@ -2503,6 +2523,7 @@ void FreeWCLib()
     for (auto& library : s_wclib)
     {
         FreeLibrary(library);
+        //library = NULL;
     }
     s_wclib.clear();
 }
@@ -2515,6 +2536,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
 
     WCHAR file[MAX_PATH] = TEXT("");
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2524,7 +2546,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_LOADWCLIB);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+                OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"dll";       // the default extension
 
     // let the user choose the path
@@ -2552,6 +2574,7 @@ void MMainWnd::OnImport(HWND hwnd)
 
     WCHAR file[MAX_PATH] = TEXT("");
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2561,7 +2584,7 @@ void MMainWnd::OnImport(HWND hwnd)
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_IMPORTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+                OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"res";       // the default extension
 
     // let the user choose the path
@@ -2579,7 +2602,7 @@ void MMainWnd::OnImport(HWND hwnd)
                 switch (nID)
                 {
                 case IDYES:
-                    // delete the overlapped
+                    // delete the overlapped entries
                     for (auto entry : res)
                     {
                         if (entry->m_et != ET_LANG)
@@ -2624,6 +2647,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2633,7 +2657,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_OPEN);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+                OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"exe";       // the default extension
 
     // let the user choose the path
@@ -2663,8 +2687,7 @@ void MMainWnd::OnNew(HWND hwnd)
 // save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    // see also: IDS_EXERESFILTER
-    enum FilterIndex
+    enum FilterIndex        // see IDS_EXERESFILTER
     {
         FI_NONE = 0,
         FI_EXECUTABLE = 1,
@@ -2702,6 +2725,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         }
     }
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -2748,6 +2772,11 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         // save the filter index to the settings
         g_settings.nSaveFilterIndex = ofn.nFilterIndex;
 
+        if (ofn.nFilterIndex == FI_ALL)
+        {
+            ofn.nFilterIndex = FI_EXECUTABLE;
+        }
+
         switch (ofn.nFilterIndex)
         {
         case FI_EXECUTABLE:
@@ -2757,6 +2786,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
             break;
+
         case FI_RC:
             // export and save it
             {
@@ -2781,6 +2811,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 }
             }
             break;
+
         case FI_RES:
             // save the *.res file
             if (!DoSaveResAs(szFile))
@@ -2788,6 +2819,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
             break;
+
         default:
             assert(0);
             break;
@@ -3280,6 +3312,7 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
 // compile the source text
 void MMainWnd::OnCompile(HWND hwnd)
 {
+    // needs reopen?
     BOOL bReopen = IsWindowVisible(m_rad_window);
 
     // get the selected entry
@@ -3338,10 +3371,12 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 
     if (entry->m_type == RT_ACCELERATOR)
     {
-        MByteStreamEx stream(entry->m_data);
+        // entry->m_data --> accel_res
         AccelRes accel_res;
+        MByteStreamEx stream(entry->m_data);
         if (accel_res.LoadFromStream(stream))
         {
+            // editing...
             ChangeStatusText(IDS_EDITINGBYGUI);
 
             // show the dialog
@@ -3349,43 +3384,58 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                // update accel_res
                 accel_res.Update();
+
+                // accel_res --> entry->m_data
                 entry->m_data = accel_res.data();
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
 
+        // ready
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_MENU)
     {
-        MByteStreamEx stream(entry->m_data);
+        // entry->m_data --> menu_res
         MenuRes menu_res;
+        MByteStreamEx stream(entry->m_data);
         if (menu_res.LoadFromStream(stream))
         {
+            // editing...
             ChangeStatusText(IDS_EDITINGBYGUI);
+
             // show the dialog
             MEditMenuDlg dialog(menu_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                // update menu_res
                 menu_res.Update();
+
+                // menu_res --> entry->m_data
                 entry->m_data = menu_res.data();
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
 
+        // ready
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_DIALOG)
     {
-        // load RT_DIALOG
+        // entry->m_data --> m_rad_window.m_dialog_res
         MByteStreamEx stream(entry->m_data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
         m_rad_window.m_dialog_res.m_lang_id = entry->m_lang;
@@ -3405,23 +3455,29 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))
         {
+            // recreate the RADical dialog
             m_rad_window.ReCreateRadDialog(m_rad_window);
         }
         else
         {
+            // create the RADical dialog
             if (!m_rad_window.CreateDx(m_hwnd))
             {
                 ErrorBoxDx(IDS_DLGFAIL);
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
     }
     else if (entry->m_type == RT_DLGINIT)
     {
-        MByteStreamEx stream(entry->m_data);
+        // entry->m_data --> dlginit_res
         DlgInitRes dlginit_res;
+        MByteStreamEx stream(entry->m_data);
         if (dlginit_res.LoadFromStream(stream))
         {
+            // editing...
             ChangeStatusText(IDS_EDITINGBYGUI);
 
             // show the dialog
@@ -3429,22 +3485,28 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                // dlginit_res --> entry->m_data
                 entry->m_data = dlginit_res.data();
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
 
+        // ready
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_STRING && entry->m_et == ET_STRING)
     {
+        // g_res --> found
         WORD lang = entry->m_lang;
         EntrySetBase found;
         g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
 
+        // found --> str_res
         StringRes str_res;
         for (auto e : found)
         {
@@ -3456,6 +3518,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
 
+        // editing...
         ChangeStatusText(IDS_EDITINGBYGUI);
 
         // show the dialog
@@ -3463,17 +3526,20 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            // dialog --> str_res
             str_res = dialog.m_str_res;
 
+            // dump (with disabling macro IDs)
             bool shown = !g_settings.bHideID;
             g_settings.bHideID = false;
             MStringW strWide = str_res.Dump();
             g_settings.bHideID = !shown;
 
+            // compile the dumped result
             MStringA strOutput;
             if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
             {
-                // select the entry
+                // select the entry to update the source
                 SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
             else
@@ -3481,15 +3547,21 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
                 SetErrorMessage(strOutput);
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+        // ready
         ChangeStatusText(IDS_READY);
     }
     else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_MESSAGE)
     {
+        // g_res --> found
         WORD lang = entry->m_lang;
         EntrySetBase found;
         g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), lang);
 
+        // found --> msg_res
         MessageRes msg_res;
         for (auto e : found)
         {
@@ -3501,6 +3573,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
 
+        // editing...
         ChangeStatusText(IDS_EDITINGBYGUI);
 
         // show the dialog
@@ -3508,12 +3581,16 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            // dialog --> msg_res
             msg_res = dialog.m_msg_res;
+
+            // dump (with disabling macro IDs)
             bool shown = !g_settings.bHideID;
             g_settings.bHideID = false;
             MStringW strWide = msg_res.Dump();
             g_settings.bHideID = !shown;
 
+            // compile the dumped result
             MStringA strOutput;
             if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
             {
@@ -3525,7 +3602,11 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
                 SetErrorMessage(strOutput);
             }
         }
+
+        // make it non-read-only
         Edit_SetReadOnly(m_hSrcEdit, FALSE);
+
+        // ready
         ChangeStatusText(IDS_READY);
     }
 }
@@ -3538,6 +3619,7 @@ void MMainWnd::OnEdit(HWND hwnd)
     if (!entry->is_editable())
         return;
 
+    // make it non-read-only
     Edit_SetReadOnly(m_hSrcEdit, FALSE);
 
     // select the entry
@@ -3556,9 +3638,11 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
-        return;
+        pch = szPath;
+    else
+        ++pch;
 
-    ++pch;
+    // find the "README.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"README.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -3577,6 +3661,8 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
             }
         }
     }
+
+    // open it
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -3592,9 +3678,11 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
-        return;
+        pch = szPath;
+    else
+        ++pch;
 
-    ++pch;
+    // find the "READMEJP.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"READMEJP.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -3613,6 +3701,8 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
             }
         }
     }
+
+    // open it
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -3628,9 +3718,11 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
-        return;
+        pch = szPath;
+    else
+        ++pch;
 
-    ++pch;
+    // find the "HYOJUNKA.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"HYOJUNKA.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -3649,6 +3741,8 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
             }
         }
     }
+
+    // open it
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -3664,9 +3758,11 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     if (pch == NULL)
         pch = wcsrchr(szPath, L'/');
     if (pch == NULL)
-        return;
+        pch = szPath;
+    else
+        ++pch;
 
-    ++pch;
+    // find the "LICENSE.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"LICENSE.txt");
     if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
@@ -3685,12 +3781,15 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
             }
         }
     }
+
+    // open it
     ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
 }
 
 // do UPX test to check whether the file is compressed or not
 BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
+    // build the command line text
     MStringW strCmdLine;
     strCmdLine += L"\"";
     strCmdLine += pszUpx;
@@ -3701,6 +3800,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 
     BOOL bSuccess = FALSE;
 
+    // create an upx.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -3709,6 +3809,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
@@ -3716,6 +3817,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
         {
             if (strOutput.find("[OK]") != MStringA::npos)
             {
+                // success
                 bSuccess = TRUE;
             }
         }
@@ -3727,6 +3829,7 @@ BOOL MMainWnd::DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile)
 // do UPX extract to decompress the file
 BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 {
+    // build the command line text
     MStringW strCmdLine;
     strCmdLine += L"\"";
     strCmdLine += pszUpx;
@@ -3737,6 +3840,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 
     BOOL bSuccess = FALSE;
 
+    // create the upx.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -3745,13 +3849,14 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         MStringA strOutput;
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
             if (strOutput.find("Unpacked") != MStringA::npos)
-                bSuccess = TRUE;
+                bSuccess = TRUE;        // success
         }
     }
 
@@ -3761,45 +3866,28 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 // for debugging purpose
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
-    if (0)
-    {
-        TCHAR szMsg[256];
-        FormatMessage(
-            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS, 
-            GetModuleHandle(NULL), 
-            MSGID_HELLO, 0, 
-            szMsg, _countof(szMsg), NULL);
-        MessageBox(hwnd, szMsg, TEXT("MSGID_HELLO"), MB_ICONINFORMATION);
-        FormatMessage(
-            FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS, 
-            GetModuleHandle(NULL), 
-            MSGID_SAMPLE, 0, 
-            szMsg, _countof(szMsg), NULL);
-        MessageBox(hwnd, szMsg, TEXT("MSGID_SAMPLE"), MB_ICONINFORMATION);
-    }
-    else
-    {
-        // get the selected entry
-        auto entry = g_res.get_entry();
+    // get the selected entry
+    auto entry = g_res.get_entry();
+    if (!entry)
+        return;
 
-        static const LPCWSTR apszI_[] =
-        {
-            L"ET_ANY",
-            L"ET_TYPE",
-            L"ET_STRING",
-            L"ET_MESSAGE",
-            L"ET_NAME",
-            L"ET_LANG"
-        };
+    static const LPCWSTR apszI_[] =
+    {
+        L"ET_ANY",
+        L"ET_TYPE",
+        L"ET_STRING",
+        L"ET_MESSAGE",
+        L"ET_NAME",
+        L"ET_LANG"
+    };
 
-        WCHAR sz[128];
-        MStringW type = entry->m_type.str();
-        MStringW name = entry->m_name.str();
-        StringCchPrintfW(sz, _countof(sz), 
-            L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p, strLabel:%s", apszI_[entry->m_et], 
-            type.c_str(), name.c_str(), entry->m_lang, entry, entry->m_hItem, entry->m_strLabel.c_str());
-        MsgBoxDx(sz, MB_ICONINFORMATION);
-    }
+    WCHAR sz[128];
+    MStringW type = entry->m_type.str();
+    MStringW name = entry->m_name.str();
+    StringCchPrintfW(sz, _countof(sz),
+        L"%s: type:%s, name:%s, lang:0x%04X, entry:%p, hItem:%p, strLabel:%s", apszI_[entry->m_et],
+        type.c_str(), name.c_str(), entry->m_lang, entry, entry->m_hItem, entry->m_strLabel.c_str());
+    MsgBoxDx(sz, MB_ICONINFORMATION);
 }
 
 // show the movie or not
@@ -3807,6 +3895,7 @@ void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
 {
     if (bShow)
     {
+        // show the movie
         ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
         ShowWindow(m_hSrcEdit, SW_HIDE);
         m_splitter3.SetPaneCount(1);
@@ -3814,6 +3903,7 @@ void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
     }
     else
     {
+        // hide the movie
         ShowBmpView(FALSE);
     }
 }
@@ -3824,20 +3914,30 @@ void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
     ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
     if (bShow)
     {
+        // show m_hBmpView
         ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
         m_splitter3.SetPaneCount(2);
         m_splitter3.SetPane(0, m_hSrcEdit);
         m_splitter3.SetPane(1, m_hBmpView);
+
+        // resume the width
         m_splitter3.SetPaneExtent(1, g_settings.nBmpViewWidth);
     }
     else
     {
         if (m_splitter3.GetPaneCount() >= 2)
+        {
+            // remember the m_hBmpView width
             g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+        }
+
+        // hide m_hBmpView
         ShowWindow(m_hBmpView, SW_HIDE);
         m_splitter3.SetPaneCount(1);
         m_splitter3.SetPane(0, m_hSrcEdit);
     }
+
+    // update m_hBmpView's scroll info
     SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
 }
 
@@ -3855,16 +3955,24 @@ void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
 {
     if (bShow && (g_settings.bShowBinEdit || bShowError))
     {
+        // show the binary EDIT control
         ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
         m_splitter2.SetPaneCount(2);
         m_splitter2.SetPane(0, m_splitter3);
         m_splitter2.SetPane(1, m_hBinEdit);
+
+        // resume the height
         m_splitter2.SetPaneExtent(1, g_settings.nBinEditHeight);
     }
     else
     {
         if (m_splitter2.GetPaneCount() >= 2)
+        {
+            // remember the binary EDIT control's height
             g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
+        }
+
+        // hide the binary EDIT control
         ShowWindow(m_hBinEdit, SW_HIDE);
         m_splitter2.SetPaneCount(1);
         m_splitter2.SetPane(0, m_splitter3);
@@ -3919,6 +4027,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
     GetClientRect(hwnd, &ClientRect);
     SIZE sizClient = SizeFromRectDx(&ClientRect);
 
+    // currently, the upper left corner of the client rectangle is (0, 0)
     INT x = 0, y = 0;
 
     // reserve the toolbar space
@@ -3945,6 +4054,7 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 // WM_INITMENU: update the menus
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    // search the language entries
     EntrySetBase found;
     g_res.search(found, ET_LANG);
 
@@ -4281,6 +4391,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
 
     if (id)
     {
+        // execute the command
         SendMessageW(hwnd, WM_COMMAND, id, 0);
     }
 }
@@ -4383,11 +4494,9 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
 // preview the image resource
 void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 {
-    MStringW str;
-
     // dump the text to m_hSrcEdit
     ResToText res2text;
-    str += res2text.DumpEntry(entry);
+    MStringW str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
     // set the entry image to m_hBmpView
@@ -4430,8 +4539,9 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 // preview the RT_ACCELERATOR resource
 void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry.m_data);
+    // entry.m_data --> stream --> accel
     AccelRes accel;
+    MByteStreamEx stream(entry.m_data);
     if (accel.LoadFromStream(stream))
     {
         // dump the text to m_hSrcEdit
@@ -4444,8 +4554,9 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
 // preview the message table resource
 void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry.m_data);
+    // entry.m_data --> stream --> mes
     MessageRes mes;
+    MByteStreamEx stream(entry.m_data);
     WORD nNameID = entry.m_name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
     {
@@ -4458,8 +4569,9 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
 // preview the string resource
 void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry.m_data);
+    // entry.m_data --> stream --> str_res
     StringRes str_res;
+    MByteStreamEx stream(entry.m_data);
     WORD nNameID = entry.m_name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
     {
@@ -4472,9 +4584,9 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
 // preview the HTML resource
 void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 {
+    // load a text file
     MTextType type;
     type.nNewLine = MNEWLINE_CRLF;
-
     MStringW str;
     if (entry.size())
         str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
@@ -4486,8 +4598,9 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 // preview the menu resource
 void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry.m_data);
+    // entry.m_data --> stream --> menu_res
     MenuRes menu_res;
+    MByteStreamEx stream(entry.m_data);
     if (menu_res.LoadFromStream(stream))
     {
         // dump the text to m_hSrcEdit
@@ -4500,6 +4613,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
 // preview the version resource
 void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 {
+    // entry.m_data --> ver_res
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.m_data))
     {
@@ -4549,8 +4663,9 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 // preview the dialog template resource
 void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
 {
-    MByteStreamEx stream(entry.m_data);
+    // entry.m_data --> stream --> dialog_res
     DialogRes dialog_res;
+    MByteStreamEx stream(entry.m_data);
     if (dialog_res.LoadFromStream(stream))
     {
         // dump the text to m_hSrcEdit
@@ -4579,12 +4694,12 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
             file.CloseHandle();
             if (bIcon)
             {
-                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON, 
+                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_ICON,
                     0, 0, LR_LOADFROMFILE);
             }
             else
             {
-                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_CURSOR, 
+                hIcon = (HICON)LoadImage(NULL, szTempFile, IMAGE_CURSOR,
                     0, 0, LR_LOADFROMFILE);
             }
         }
@@ -4609,9 +4724,11 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 // preview the string table resource
 void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 {
+    // search the strings
     EntrySetBase found;
     g_res.search(found, ET_LANG, RT_STRING, (WORD)0, entry.m_lang);
 
+    // found --> str_res
     StringRes str_res;
     for (auto e : found)
     {
@@ -4629,9 +4746,11 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 // preview the message table resource
 void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
+    // search the message tables
     EntrySetBase found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
 
+    // found --> msg_res
     MessageRes msg_res;
     for (auto e : found)
     {
@@ -4792,8 +4911,8 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
 {
     // create a toolbar
-    HWND hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL, 
-        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST, 
+    HWND hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
+        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
         0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
     if (hwndTB == NULL)
         return FALSE;
@@ -4807,7 +4926,6 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
-
     m_hToolBar = hwndTB;
     UpdateOurToolBar(3);
 
@@ -4897,34 +5015,59 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     switch (entry->m_et)
     {
     case ET_LANG:
+        // do preview
         bEditable = Preview(m_hwnd, entry);
+        // show the binary EDIT control
         ShowBinEdit(TRUE);
         break;
 
     case ET_STRING:
+        // clean up m_hBmpView
         m_hBmpView.DestroyView();
-        SetWindowTextW(m_hBinEdit, NULL);
-        PreviewStringTable(m_hwnd, *entry);
-        ShowBinEdit(FALSE);
-        bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
+
+        // show the string table
+        PreviewStringTable(m_hwnd, *entry);
+
+        // hide the binary EDIT control
+        SetWindowTextW(m_hBinEdit, NULL);
+        ShowBinEdit(FALSE);
+
+        // it's editable
+        bEditable = TRUE;
         break;
 
     case ET_MESSAGE:
+        // clean up m_hBmpView
         m_hBmpView.DestroyView();
-        SetWindowTextW(m_hBinEdit, NULL);
-        PreviewMessageTable(m_hwnd, *entry);
-        ShowBinEdit(FALSE);
-        bEditable = TRUE;
         m_hBmpView.DeleteTempFile();
+
+        // show the message table
+        PreviewMessageTable(m_hwnd, *entry);
+
+        // hide the binary EDIT control
+        SetWindowTextW(m_hBinEdit, NULL);
+        ShowBinEdit(FALSE);
+
+        // it's editable
+        bEditable = TRUE;
         break;
 
     default:
+        // otherwise
+        // clean up m_hBmpView
         m_hBmpView.DestroyView();
-        ShowBinEdit(FALSE);
-        bEditable = FALSE;
-        bSelectNone = TRUE;
         m_hBmpView.DeleteTempFile();
+
+        // hide the binary EDIT control
+        SetWindowTextW(m_hBinEdit, NULL);
+        ShowBinEdit(FALSE);
+
+        // it's non editable
+        bEditable = FALSE;
+
+        // select none
+        bSelectNone = TRUE;
     }
 
     if (bEditable)  // editable
@@ -4964,11 +5107,12 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 }
 
 // dump all the macros
-MStringW MMainWnd::GetMacroDump()
+MStringW MMainWnd::GetMacroDump() const
 {
     MStringW ret;
-    for (auto& macro : g_settings.macros)
+    for (auto& macro : g_settings.macros)   // for each predefined macros
     {
+        // " -Dmacro=contents"
         ret += L" -D";
         ret += macro.first;
         if (macro.second.size())
@@ -4982,12 +5126,13 @@ MStringW MMainWnd::GetMacroDump()
 }
 
 // dump all the #include's
-MStringW MMainWnd::GetIncludesDump()
+MStringW MMainWnd::GetIncludesDump() const
 {
     MStringW ret;
-    for (size_t i = 0; i < g_settings.includes.size(); ++i)
+    for (auto& path : g_settings.includes)
     {
-        const MStringW& str = g_settings.includes[i];
+        // " -Ipath"
+        auto& str = path;
         if (str.empty())
             continue;
 
@@ -5001,8 +5146,8 @@ MStringW MMainWnd::GetIncludesDump()
 // compile the string table
 BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
-    MStringA strUtf8;
-    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
+    // convert strWide to UTF-8
+    MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
@@ -5016,12 +5161,10 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
-
     MFile r3(szPath3, TRUE);
-    r3.FlushFileBuffers();
     r3.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
+    // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
@@ -5029,6 +5172,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
+    // dump the macros
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
@@ -5044,15 +5188,15 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     }
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.FlushFileBuffers();
     r1.CloseHandle();
 
+    // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();
     r2.CloseHandle();
 
+    // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
@@ -5067,35 +5211,44 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += szPath1;
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+    Sleep(FILE_WAIT_TIME);
 
+    BOOL bSuccess = FALSE;
+
+    // create a windres.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-    BOOL bSuccess = FALSE;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
-            EntrySet res;
             Sleep(FILE_WAIT_TIME);
+
+            // import res
+            EntrySet res;
             if (res.import_res(szPath3))
             {
+                // merge
                 g_res.search_and_delete(ET_LANG, RT_STRING, (WORD)0, lang);
                 g_res.merge(res);
+
                 bSuccess = true;
             }
 
-            // clean up
+            // clean res up
             res.delete_all();
         }
     }
     else
     {
+        // error message
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
@@ -5114,8 +5267,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 // compile the message table
 BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
-    MStringA strUtf8;
-    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
+    // convert strWide to UTF-8
+    MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
     WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
@@ -5131,10 +5284,9 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
 
     MFile r3(szPath3, TRUE);
-    r3.FlushFileBuffers();
     r3.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
+    // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
@@ -5145,12 +5297,14 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     r1.FlushFileBuffers();
     r1.CloseHandle();
 
+    // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r2.FlushFileBuffers();
     r2.CloseHandle();
 
+    // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szMcdxExe;
@@ -5164,34 +5318,41 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     strCmdLine += L'\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
+    BOOL bSuccess = FALSE;
+
+    // create the mcdx.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-    BOOL bSuccess = FALSE;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
-            EntrySet res;
             Sleep(FILE_WAIT_TIME);
+
+            // import res
+            EntrySet res;
             if (res.import_res(szPath3))
             {
+                // merge
                 g_res.search_and_delete(ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
                 g_res.merge(res);
                 bSuccess = true;
             }
 
-            // clean up
+            // clean res up
             res.delete_all();
         }
     }
     else
     {
+        // error message
         MStringA msg;
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
@@ -5230,8 +5391,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         return CompileMessageTable(strOutput, name, lang, strWide);
     }
 
-    MStringA strUtf8;
-    strUtf8 = MWideToAnsi(CP_UTF8, strWide);
+    // strWide --> strUtf8 (in UTF-8)
+    MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
     if (Res_IsPlainText(type))
     {
         EntryBase::data_type data;
@@ -5239,13 +5400,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         {
             data.assign(strUtf8.begin(), strUtf8.end());
 
+            // add a UTF-8 BOM to data
             static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
             data.insert(data.begin(), &bom[0], &bom[3]);
         }
         else
         {
-            MStringA TextAnsi;
-            TextAnsi = MWideToAnsi(CP_ACP, strWide);
+            // strWide --> data (in ANSI)
+            MStringA TextAnsi = MWideToAnsi(CP_ACP, strWide).c_str();
             data.assign(TextAnsi.begin(), TextAnsi.end());
         }
 
@@ -5275,6 +5437,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r3.CloseHandle();
     Sleep(FILE_WAIT_TIME);
 
+    // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
@@ -5282,6 +5445,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(m_lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
+    // dump the macros
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
@@ -5297,15 +5461,15 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     }
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.FlushFileBuffers();
     r1.CloseHandle();
 
+    // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();
     r2.CloseHandle();
 
+    // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
@@ -5321,23 +5485,29 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
+    BOOL bSuccess = FALSE;
+
+    // create a windres.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
-    BOOL bSuccess = FALSE;
     MFile hInputWrite, hOutputRead;
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        // read all with timeout
         pmaker.ReadAll(strOutput, hOutputRead, PROCESS_TIMEOUT);
 
         if (pmaker.GetExitCode() == 0)
         {
-            EntrySet res;
             Sleep(FILE_WAIT_TIME);
+
+            // import res
+            EntrySet res;
             if (res.import_res(szPath3))
             {
+                // adjust names and languages
                 for (auto entry : res)
                 {
                     if (entry->m_et != ET_LANG)
@@ -5346,10 +5516,11 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                     entry->m_lang = lang;
                 }
 
+                // merge
                 g_res.search_and_delete(ET_LANG, type, name, lang);
                 g_res.merge(res);
 
-                // clean up
+                // clean res up
                 res.delete_all();
 
                 bSuccess = true;
@@ -5358,6 +5529,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     }
     else
     {
+        // error message
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
@@ -5377,7 +5549,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
         if (bReopen && type == RT_DIALOG)
         {
-            PostMessage(m_hwnd, MYWM_REOPENRAD, 0, 0);
+            PostMessageDx(MYWM_REOPENRAD);
         }
     }
 
@@ -5386,6 +5558,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     return bSuccess;
 }
+
+//...
 
 // recompile the resource item on selection change.
 // reopen if necessary
@@ -5598,11 +5772,11 @@ void MMainWnd::DoLoadLangInfo(VOID)
         LANG_ENTRY entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
         entry.str = LoadStringDx(IDS_NEUTRAL);
-        g_Langs.push_back(entry);
+        g_langs.push_back(entry);
     }
 
     // sort
-    std::sort(g_Langs.begin(), g_Langs.end());
+    std::sort(g_langs.begin(), g_langs.end());
 }
 
 // load a file
@@ -5799,12 +5973,12 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     {
         // replace the path
         #ifdef _WIN64
-            mstr_replace_all(strReal, 
-                L"C:\\Program Files\\", 
+            mstr_replace_all(strReal,
+                L"C:\\Program Files\\",
                 L"C:\\Program Files (x86)\\");
         #else
-            mstr_replace_all(strReal, 
-                L"C:\\Program Files (x86)\\", 
+            mstr_replace_all(strReal,
+                L"C:\\Program Files (x86)\\",
                 L"C:\\Program Files\\");
         #endif
 
@@ -5932,7 +6106,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     // load the RC file to the res variable
     MStringA strOutput;
-    BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe, 
+    BOOL bSuccess = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe,
                                 m_szMcdxExe, GetMacroDump(), GetIncludesDump());
     if (!bSuccess)
     {
@@ -6426,7 +6600,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
             MString strPath = pszPath;
             strPath += L"-old";
             DoBackupFolder(strPath.c_str(), nCount + 1);
-            return MoveFileEx(pszPath, strPath.c_str(), 
+            return MoveFileEx(pszPath, strPath.c_str(),
                 MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
         }
         else
@@ -6655,7 +6829,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         }
         else
         {
-            file.WriteFormatA("#define %s %s\r\n", 
+            file.WriteFormatA("#define %s %s\r\n",
                 pair.first.c_str(), pair.second.c_str());
         }
     }
@@ -7365,6 +7539,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
         szFile[0] = 0;
 
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -7374,7 +7549,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_LOADRESH);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+                OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
     ofn.lpstrDefExt = L"h";     // the default extension
 
     // let the user choose the path
@@ -7411,7 +7586,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
         DeleteFileW(m_szUpxTempFile);
         m_szUpxTempFile[0] = 0;
     }
-    
+
     SaveSettings(hwnd);
 
     //DestroyIcon(m_hIcon);     // LR_SHARED
@@ -7602,7 +7777,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
- 
+
     BOOL bOK = FALSE;
 
     MProcessMaker pmaker;
@@ -8422,8 +8597,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 #if !defined(NDEBUG) && (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
-    StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"), 
-             GetGuiResources(hProcess, GR_GDIOBJECTS), 
+    StringCchPrintf(szText, _countof(szText), TEXT("GDI:%ld, USER:%ld"),
+             GetGuiResources(hProcess, GR_GDIOBJECTS),
              GetGuiResources(hProcess, GR_USEROBJECTS));
     ChangeStatusText(szText);
 #endif
@@ -8854,7 +9029,7 @@ void MMainWnd::OnTest(HWND hwnd)
             if (dialog_res.m_style & WS_CHILD)
             {
                 MTestParentWnd *window = new MTestParentWnd(dialog_res, menu, entry->m_lang, stream, dlginit_data);
-                window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND), 
+                window->CreateWindowDx(hwnd, LoadStringDx(IDS_PARENTWND),
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
                 ShowWindow(*window, SW_SHOWNORMAL);
@@ -9235,7 +9410,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)
             szResH[0] = 0;
 
-        // query file name
+        // initialize OPENFILENAME structure
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -9245,7 +9420,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         ofn.nMaxFile = _countof(szResH);
         ofn.lpstrTitle = LoadStringDx(IDS_SAVERESH);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
-            OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+                    OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
         ofn.lpstrDefExt = L"h";
         if (!GetSaveFileNameW(&ofn))
         {
@@ -10253,8 +10428,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     style = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP |
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
         TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
-    m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE, 
-        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1, 
+    m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE,
+        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
         (HMENU)1, m_hInst, NULL);
     if (m_hwndTV == NULL)
         return FALSE;
@@ -10551,7 +10726,7 @@ BOOL MMainWnd::StartDx()
     m_hAccel = ::LoadAccelerators(m_hInst, MAKEINTRESOURCE(IDR_MAINACCEL));
 
     // create the main window
-    if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME), 
+    if (!CreateWindowDx(NULL, MAKEINTRESOURCE(IDS_APPNAME),
         WS_OVERLAPPEDWINDOW, 0, CW_USEDEFAULT, CW_USEDEFAULT, 760, 480))
     {
         ErrorBoxDx(TEXT("failure of CreateWindow"));
@@ -11760,9 +11935,9 @@ IMPLEMENT_DYNAMIC(MOleCtrl)
 
 // the main function of the windows application
 INT WINAPI
-WinMain(HINSTANCE   hInstance, 
-        HINSTANCE   hPrevInstance, 
-        LPSTR       lpCmdLine, 
+WinMain(HINSTANCE   hInstance,
+        HINSTANCE   hPrevInstance,
+        LPSTR       lpCmdLine,
         INT         nCmdShow)
 {
     // get Unicode command line
@@ -11831,9 +12006,9 @@ WinMain(HINSTANCE   hInstance,
 
 #if (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
-    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"), 
+    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"),
                  GetGuiResources(hProcess, GR_GDIOBJECTS));
-    DebugPrintDx(TEXT("Count of USER objects: %ld\n"), 
+    DebugPrintDx(TEXT("Count of USER objects: %ld\n"),
                  GetGuiResources(hProcess, GR_USEROBJECTS));
 #endif
 

@@ -296,7 +296,7 @@ STRINGTABLE
     IDS_SAVEAS, "名前を付けて保存"
     IDS_CANNOTADDICON, "アイコンの追加ができませんでした。"
     IDS_ADDICON, "アイコンの追加"
-    IDS_ICOFILTER, "アイコン ファイル (*.ico)|*.ico|すべてのファイル (*.*)|*.*|"
+    IDS_ICOFILTER, "アイコン ファイル (*.ico)|*.ico|アニメ アイコン (*.ani)|*.ani|すべてのファイル (*.*)|*.*|"
     IDS_REPLACEICO, "アイコンの置き換え"
     IDS_CANTREPLACEICO, "アイコンの置き換えができませんでした。"
     IDS_EXISTSOVERWRITE, "項目はすでに存在します。上書きしますか？"
