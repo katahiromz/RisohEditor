@@ -1012,7 +1012,7 @@ struct DialogRes
         for (WORD i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
-            ret += m_items[i].Dump(g_settings.bAlwaysControl);
+            ret += m_items[i].Dump(!!g_settings.bAlwaysControl);
             ret += L"\r\n";
         }
 

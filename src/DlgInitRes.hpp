@@ -44,6 +44,15 @@ struct DlgInitEntry
     WORD        wMsg;
     MStringA    strText;
     BOOL        bInvalid = TRUE;
+
+    DlgInitEntry()
+    {
+    }
+    
+    DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str, BOOL invalid = TRUE)
+        : wCtrl(ctrl), wMsg(msg), strText(str), bInvalid(invalid)
+    {
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////

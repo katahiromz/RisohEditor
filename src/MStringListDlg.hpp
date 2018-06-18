@@ -83,7 +83,7 @@ public:
         m_dlginit.Erase(m_nCtrl);
         for (size_t i = 0; i < lines.size(); ++i)
         {
-            DlgInitEntry entry = { m_nCtrl, WORD(-1), lines[i] };
+            DlgInitEntry entry(m_nCtrl, WORD(-1), lines[i], TRUE);
             m_dlginit.push_back(entry);
         }
         EndDialog(IDOK);
