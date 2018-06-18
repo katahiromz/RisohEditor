@@ -70,26 +70,26 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        ConstantsDB::TableType table;
         EnableWindow(hCmb1, FALSE);
 
-        table = g_db.GetTable(L"RESOURCE");
-        for (size_t i = 0; i < table.size(); ++i)
+        auto table = g_db.GetTable(L"RESOURCE");
+        for (auto& table_entry : table)
         {
             WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table[i].name.c_str(), table[i].value);
+            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+                             table_entry.name.c_str(), table_entry.value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_entry->m_type == WORD(table[i].value))
+            if (m_entry->m_type == WORD(table_entry.value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
 
         table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (size_t i = 0; i < table.size(); ++i)
+        for (auto& table_entry : table)
         {
-            k = ComboBox_AddString(hCmb1, table[i].name.c_str());
-            if (m_type == table[i].name.c_str())
+            k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
+            if (m_type == table_entry.name.c_str())
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }

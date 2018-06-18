@@ -316,9 +316,8 @@ public:
         if (!stream.WriteRaw(header))
             return false;
 
-        for (size_t i = 0; i < m_items.size(); ++i)
+        for (auto& item : m_items)
         {
-            const MenuItem& item = m_items[i];
             WORD fItemFlags = item.fItemFlags;
             if (fItemFlags & MF_POPUP)
             {
@@ -355,11 +354,9 @@ public:
             return false;
         }
 
-        for (size_t i = 0; i < m_exitems.size(); ++i)
+        for (auto& exitem : m_exitems)
         {
             stream.WriteDwordAlignment();
-
-            const ExMenuItem& exitem = m_exitems[i];
 
             MENUEX_TEMPLATE_ITEM_HEADER item_header;
             item_header.dwType = exitem.dwType;

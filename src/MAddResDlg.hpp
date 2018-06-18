@@ -61,25 +61,25 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        ConstantsDB::TableType table;
 
-        table = g_db.GetTable(L"RESOURCE");
-        for (size_t i = 0; i < table.size(); ++i)
+        auto table = g_db.GetTable(L"RESOURCE");
+        for (auto& table_entry : table)
         {
             WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table[i].name.c_str(), table[i].value);
+            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+                             table_entry.name.c_str(), table_entry.value);
             k = ComboBox_AddString(hCmb1, sz);
-            if (m_type == WORD(table[i].value))
+            if (m_type == WORD(table_entry.value))
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
 
         table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (size_t i = 0; i < table.size(); ++i)
+        for (auto& table_entry : table)
         {
-            k = ComboBox_AddString(hCmb1, table[i].name.c_str());
-            if (m_type == table[i].name.c_str())
+            k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
+            if (m_type == table_entry.name.c_str())
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
@@ -347,11 +347,10 @@ public:
         ComboBox_ResetContent(m_cmb2);
         if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
-            ConstantsDB::TableType table;
-            table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
-            for (size_t i = 0; i < table.size(); ++i)
+            auto table = g_db.GetTableByPrefix(L"RESOURCE.ID", prefix);
+            for (auto& table_entry : table)
             {
-                ComboBox_AddString(m_cmb2, table[i].name.c_str());
+                ComboBox_AddString(m_cmb2, table_entry.name.c_str());
             }
         }
     }

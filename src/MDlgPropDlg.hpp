@@ -102,17 +102,15 @@ public:
     {
         ComboBox_ResetContent(hCmb);
 
-        ConstantsDB::TableType table;
-
-        table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
+        auto table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
         MStringW prefix = table[IDTYPE_MENU].name;
 
         table = g_db.GetTable(L"RESOURCE.ID");
-        for (size_t i = 0; i < table.size(); ++i)
+        for (auto& table_entry : table)
         {
-            if (table[i].name.find(prefix) == 0)
+            if (table_entry.name.find(prefix) == 0)
             {
-                ComboBox_AddString(hCmb, table[i].name.c_str());
+                ComboBox_AddString(hCmb, table_entry.name.c_str());
             }
         }
     }
