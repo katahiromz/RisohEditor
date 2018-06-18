@@ -289,7 +289,11 @@ public:
             if ((m_flags & F_CY) || (flags & F_CY))
                 item.m_siz.cy = m_item.m_siz.cy;
             if ((m_flags & F_ID) || (flags & F_ID))
+            {
+                m_dialog_res.m_dlginit.Erase(item.m_id);
+                m_dlginit.ReplaceCtrl(item.m_id, m_item.m_id);
                 item.m_id = m_item.m_id;
+            }
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
             {
                 item.m_class = m_item.m_class;
@@ -328,7 +332,7 @@ public:
         if (m_flags & F_SLIST)
         {
             m_dlginit.ReplaceInvalid(m_item.m_id);
-            DialogItem& item = m_dialog_res[*m_indeces.begin()];
+            auto& item = m_dialog_res[*m_indeces.begin()];
             if (item.IsStdComboBox())
             {
                 m_dlginit.ReplaceMsg(m_item.m_id, CB_ADDSTRING);
@@ -343,6 +347,7 @@ public:
             }
             m_dialog_res.m_dlginit.Erase(m_item.m_id);
             m_dialog_res.m_dlginit.Union(m_dlginit);
+            m_dialog_res.m_dlginit.EraseInvalid();
         }
 
         return TRUE;

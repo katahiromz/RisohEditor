@@ -81,7 +81,6 @@ public:
           m_dlginit(), m_bIsDlgInitSet(FALSE)
     {
         m_himlControls = NULL;
-        m_dialog_res.m_dlginit.Filter(m_dlginit, WORD(-1));
     }
 
     ~MAddCtrlDlg()
@@ -378,6 +377,7 @@ public:
             }
             m_dialog_res.m_dlginit.Erase(item.m_id);
             m_dialog_res.m_dlginit.Union(m_dlginit);
+            m_dialog_res.m_dlginit.EraseInvalid();
         }
 
         EndDialog(IDOK);

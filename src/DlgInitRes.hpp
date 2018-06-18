@@ -43,6 +43,7 @@ struct DlgInitEntry
     WORD        wCtrl;
     WORD        wMsg;
     MStringA    strText;
+    BOOL        bInvalid = TRUE;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -81,6 +82,8 @@ public:
                     return false;
             }
 
+            entry.bInvalid = FALSE;
+
             m_entries.push_back(entry);
         }
 
@@ -89,9 +92,11 @@ public:
 
     bool SaveToStream(MByteStreamEx& stream) const
     {
-        for (size_t i = 0; i < m_entries.size(); ++i)
+        for (auto& entry : m_entries)
         {
-            const DlgInitEntry& entry = m_entries[i];
+            if (entry.bInvalid)
+                continue;
+
             DWORD dwLen = DWORD(entry.strText.size() + 1);
             if (!stream.WriteWord(entry.wCtrl) ||
                 !stream.WriteWord(entry.wMsg) ||
@@ -224,13 +229,24 @@ public:
         return stream.data();
     }
 
+    void ReplaceCtrl(WORD wOldCtrl, WORD wNewCtrl)
+    {
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].wCtrl == wOldCtrl)
+            {
+                m_entries[i].wCtrl = wNewCtrl;
+            }
+        }
+    }
     void ReplaceInvalid(WORD wCtrl)
     {
         for (size_t i = 0; i < size(); ++i)
         {
-            if (m_entries[i].wCtrl == WORD(-1))
+            if (m_entries[i].bInvalid)
             {
                 m_entries[i].wCtrl = wCtrl;
+                m_entries[i].bInvalid = FALSE;
             }
         }
     }
@@ -267,7 +283,14 @@ public:
     }
     void EraseInvalid()
     {
-        Erase(WORD(-1));
+        for (size_t i = 0; i < size(); ++i)
+        {
+            if (m_entries[i].bInvalid)
+            {
+                m_entries.erase(m_entries.begin() + i);
+                --i;
+            }
+        }
     }
     void Union(const DlgInitRes& another)
     {
