@@ -69,21 +69,56 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
 inline BOOL
 Res_IsEntityType(const MIdOrString& type)
 {
-    if (type == RT_CURSOR || type == RT_ICON)
-        return FALSE;
-    if (type == RT_STRING || type == RT_MESSAGETABLE)
-        return FALSE;
-    if (type == RT_VERSION || type == RT_MANIFEST)
-        return FALSE;
+    MStringW name;
+    if (type.m_id)
+    {
+        name = g_db.GetName(L"RESOURCE", type.m_id);
+        if (name.empty())
+            name = mstr_dec_word(type.m_id);
+    }
+    else
+    {
+        name = type.str();
+    }
+
+    auto table = g_db.GetTable(L"NON.ENTITY.RESOURCE.TYPE");
+    for (auto& table_entry : table)
+    {
+        if (table_entry.name == name)
+        {
+            return FALSE;
+        }
+    }
+
     return TRUE;
 }
 
 // is the resource type a "plain text" type?
-inline INT
+inline BOOL
 Res_IsPlainText(const MIdOrString& type)
 {
-    return type == RT_HTML || type == RT_MANIFEST ||
-           type == RT_DLGINCLUDE || type == L"RISOHTEMPLATE";
+    MStringW name;
+    if (type.m_id)
+    {
+        name = g_db.GetName(L"RESOURCE", type.m_id);
+        if (name.empty())
+            name = mstr_dec_word(type.m_id);
+    }
+    else
+    {
+        name = type.str();
+    }
+
+    auto table = g_db.GetTable(L"PLAIN.TEXT.RESOURCE.TYPE");
+    for (auto& table_entry : table)
+    {
+        if (table_entry.name == name)
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }
 
 // has the resource type no name?
