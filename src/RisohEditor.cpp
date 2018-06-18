@@ -2870,17 +2870,15 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
 
     // care DLGINIT
     stream.clear();
-    if (dialog_res.m_dlginit.SaveToStream(stream) && !dialog_res.m_dlginit.empty())
+
+    dialog_res.m_dlginit.SaveToStream(stream);
+    if (!dialog_res.m_dlginit.empty())  // add or update
     {
-        // update RT_DLGINIT
-        if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
-        {
-            e->m_data = stream.data();
-        }
-        else
-        {
-            g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data());
-        }
+        g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data());
+    }
+    else    // delete
+    {
+        g_res.search_and_delete(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang);
     }
 }
 
