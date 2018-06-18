@@ -5463,7 +5463,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         }
 
         // add a language entry
-        auto entry = g_res.add_lang_entry(type, name, lang);
+        auto entry = g_res.add_lang_entry(type, name, lang, data);
 
         // select the added entry
         SelectTV(entry, FALSE);
