@@ -194,8 +194,8 @@ IDR_POPUPMENUS MENU
         BEGIN
             MENUITEM "To &Top", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "&Minus", ID_CTRLINDEXMINUS
-            MENUITEM "&Plus", ID_CTRLINDEXPLUS
+            MENUITEM "&Decrement Index", ID_CTRLINDEXMINUS
+            MENUITEM "&Increment Index", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
             MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
