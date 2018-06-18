@@ -571,6 +571,10 @@ struct EntrySet : protected EntrySetBase
             {
                 on_delete_group_icon(entry);
             }
+            if (entry->m_type == RT_DIALOG)
+            {
+                on_delete_dialog(entry);
+            }
             break;
 
         case ET_STRING:
@@ -1492,6 +1496,13 @@ struct EntrySet : protected EntrySetBase
         }
 
         return NULL;    // failure
+    }
+
+    // helper method to delete the dialog
+    void on_delete_dialog(EntryBase *entry)
+    {
+        assert(entry->m_et == ET_LANG && entry->m_type == RT_DIALOG);
+        search_and_delete(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang);
     }
 
     // helper method to delete the strings
