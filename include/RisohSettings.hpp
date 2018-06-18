@@ -88,6 +88,7 @@ struct RisohSettings
     BOOL                bHasIDC_STATIC;     // 
     MString             strAtlAxWin;        // ATL OLE control name
     INT                 nSaveFilterIndex;   // the filter index on save
+    BOOL                bWordWrap;          // do word wrap?
 
     RisohSettings()
     {

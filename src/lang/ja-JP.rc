@@ -118,6 +118,7 @@ IDR_MAINMENU MENU
         MENUITEM "常に&CONTROL文", ID_ALWAYSCONTROL
         MENUITEM "&IDマクロを使用しない", ID_HIDEIDMACROS
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
+        MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM SEPARATOR
         MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS
         MENUITEM "フォント設定(&F)...", ID_FONTS
@@ -949,6 +950,7 @@ FONT 9, "MS UI Gothic"
     RTEXT "コンボボックスの高さ(&B):", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
+    AUTOCHECKBOX "行の折り返し(&W)", chx9, 135, 125, 70, 14
     AUTOCHECKBOX """&resource.h"" の更新を尋ねる", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "EXE保存時に&UPXで圧縮する", chx8, 5, 165, 200, 14
     PUSHBUTTON "フォント設定(&F)...", psh4, 5, 185, 200, 14

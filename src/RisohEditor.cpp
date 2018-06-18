@@ -1805,6 +1805,7 @@ public:
     BOOL LoadSettings(HWND hwnd);
     BOOL SaveSettings(HWND hwnd);
     void UpdatePrefixDB(HWND hwnd);
+    BOOL ReCreateSrcEdit(HWND hwnd);
 
     virtual void ModifyWndClassDx(WNDCLASSEX& wcx)
     {
@@ -1992,6 +1993,7 @@ protected:
     void OnCollapseAll(HWND hwnd);
     void Expand(HTREEITEM hItem);
     void Collapse(HTREEITEM hItem);
+    void OnWordWrap(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -4071,6 +4073,11 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
 // WM_INITMENU: update the menus
 void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 {
+    if (g_settings.bWordWrap)
+        CheckMenuItem(hMenu, ID_WORD_WRAP, MF_BYCOMMAND | MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, ID_WORD_WRAP, MF_BYCOMMAND | MF_UNCHECKED);
+
     // search the language entries
     EntrySetBase found;
     g_res.search(found, ET_LANG);
@@ -8263,9 +8270,16 @@ void MMainWnd::OnConfig(HWND hwnd)
     MConfigDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        // refresh PATHs and fonts and entry names
+        // refresh PATHs
         ReSetPaths(hwnd);
+
+        // update word wrapping
+        ReCreateSrcEdit(hwnd);
+
+        // update the fonts
         ReCreateFonts(hwnd);
+
+        // update the labels of the entries
         UpdateNames();
 
         // select the entry to update the text
@@ -8538,6 +8552,22 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     } while (hItem);
 
     // select the entry
+    SelectTV(entry, FALSE);
+}
+
+void MMainWnd::OnWordWrap(HWND hwnd)
+{
+    // switch the flag
+    g_settings.bWordWrap = !g_settings.bWordWrap;
+
+    // create the source EDIT control
+    ReCreateSrcEdit(hwnd);
+
+    // reset fonts
+    ReCreateFonts(hwnd);
+
+    // select the entry
+    auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
 
@@ -8912,6 +8942,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_COLLAPSE_ALL:
         OnCollapseAll(hwnd);
+        break;
+    case ID_WORD_WRAP:
+        OnWordWrap(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -10378,6 +10411,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bShowToolBar = TRUE;
     g_settings.strAtlAxWin = L"AtlAxWin110";
     g_settings.nSaveFilterIndex = 1;
+    g_settings.bWordWrap = FALSE;
 }
 
 // update the prefix data
@@ -10625,6 +10659,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     keyRisoh.QueryDword(TEXT("nSaveFilterIndex"), (DWORD&)g_settings.nSaveFilterIndex);
+    keyRisoh.QueryDword(TEXT("bWordWrap"), (DWORD&)g_settings.bWordWrap);
 
     return TRUE;
 }
@@ -10759,8 +10794,26 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bShowToolBar"), g_settings.bShowToolBar);
     keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
     keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
+    keyRisoh.SetDword(TEXT("bWordWrap"), g_settings.bWordWrap);
 
     return TRUE;
+}
+
+BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
+{
+    if (IsWindow(m_hSrcEdit))
+        DestroyWindow(m_hSrcEdit);
+
+    DWORD style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
+        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+    if (!g_settings.bWordWrap)
+    {
+        style |= WS_HSCROLL | ES_AUTOHSCROLL;
+    }
+
+    DWORD exstyle = WS_EX_CLIENTEDGE;
+    return m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
 }
 
 // WM_CREATE: the main window is to be created
@@ -10849,11 +10902,10 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
 
     // create source EDIT control
-    style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
-        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
-    exstyle = WS_EX_CLIENTEDGE;
-    m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
+    if (!ReCreateSrcEdit(hwnd))
+        return FALSE;
+
+    // create MBmpView
     if (!m_hBmpView.CreateDx(m_splitter3, 4))
         return FALSE;
 

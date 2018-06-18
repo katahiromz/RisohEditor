@@ -48,6 +48,7 @@ public:
         SetDlgItemInt(hwnd, edt1, g_settings.nComboHeight, FALSE);
         CheckDlgButton(hwnd, chx7, g_settings.bAskUpdateResH ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx8, g_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx9, g_settings.bWordWrap ? BST_CHECKED : BST_UNCHECKED);
         SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
     }
 
@@ -89,6 +90,7 @@ public:
         g_settings.bShowDotsOnDialog = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
         g_settings.bAskUpdateResH = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
         g_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
+        g_settings.bWordWrap = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
         TCHAR szText[64];
         GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
