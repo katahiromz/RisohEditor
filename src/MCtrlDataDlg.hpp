@@ -85,7 +85,7 @@ public:
         MString str;
         if (m_data.size() >= 2)
         {
-            const WORD *pw = (const WORD *)&m_data[0];
+            auto pw = (const WORD *)&m_data[0];
             for (size_t i = 0; i < m_data.size() / 2; ++i)
             {
                 str += mstr_hex_word(*pw++);

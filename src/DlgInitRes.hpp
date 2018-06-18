@@ -161,7 +161,7 @@ public:
             ret += mstr_hex_word(WORD(entry.strText.size() + 1));
             ret += L", 0";
 
-            const WORD *pw = reinterpret_cast<const WORD *>(entry.strText.c_str());
+            auto pw = reinterpret_cast<const UNALIGNED WORD *>(entry.strText.c_str());
             size_t len = (entry.strText.size() + 1) / 2;
             for (size_t k = 0; k < len; ++k)
             {
