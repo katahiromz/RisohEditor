@@ -118,7 +118,7 @@ public:
             ret += g_db.GetNameOfResID(IDTYPE_DIALOG, id_or_str.m_id);
         }
 
-        ret += L" DLGINIT\r\n";
+        ret += L" 240\r\n";
         ret += L"{\r\n";
 
         if (m_entries.size() == 0)
@@ -158,7 +158,7 @@ public:
             }
 
             ret += L", ";
-            ret += mstr_hex_word(WORD(entry.strText.size() + 9));
+            ret += mstr_hex_word(WORD(entry.strText.size() + 1));
             ret += L", 0";
 
             const WORD *pw = reinterpret_cast<const WORD *>(entry.strText.c_str());
