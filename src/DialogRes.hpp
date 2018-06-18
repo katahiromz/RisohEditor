@@ -129,19 +129,20 @@ inline void FixClassName(MStringW& cls)
 
 struct DialogItem
 {
-    DWORD               m_help_id;
-    DWORD               m_style;
-    DWORD               m_ex_style;
-    POINT               m_pt;
-    SIZE                m_siz;
-    WORD                m_id;
-    MIdOrString         m_class;
-    MIdOrString         m_title;
-    std::vector<BYTE>   m_extra;
-    DWORD               m_old_style, m_old_ex_style;
-    MIdOrString         m_old_title;
-    SIZE                m_sizOld;
-    MIdOrString         m_old_class;
+    DWORD                   m_help_id;
+    DWORD                   m_style;
+    DWORD                   m_ex_style;
+    POINT                   m_pt;
+    SIZE                    m_siz;
+    WORD                    m_id;
+    MIdOrString             m_class;
+    MIdOrString             m_title;
+    std::vector<BYTE>       m_extra;
+    DWORD                   m_old_style, m_old_ex_style;
+    MIdOrString             m_old_title;
+    SIZE                    m_sizOld;
+    MIdOrString             m_old_class;
+    std::vector<MStringA>   m_str_list;
 
     DialogItem()
     {
@@ -765,10 +766,10 @@ struct DialogRes
     MIdOrString                 m_type_face;
     DialogItems                 m_items;
     DWORD                       m_old_style, m_old_ex_style;
-    LANGID                      m_lang_id;
+    MIdOrString                 m_name;
+    LANGID                      m_lang;
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
-    DlgInitRes                  m_dlginit;
 
     DialogRes()
     {
@@ -786,7 +787,7 @@ struct DialogRes
         m_weight = FW_NORMAL;
         m_italic = false;
         m_charset = DEFAULT_CHARSET;
-        m_lang_id = 0;
+        m_lang = 0;
     }
 
     DialogItem& operator[](size_t i)
@@ -875,6 +876,80 @@ struct DialogRes
             }
         }
         return false;
+    }
+
+    INT GetDlgItem(WORD id) const
+    {
+        for (size_t k = 0; k < size(); ++k)
+        {
+            if ((*this)[k].m_id == id)
+                return INT(k);
+        }
+        return -1;
+    }
+
+    bool LoadDlgInitData(const MByteStreamEx::data_type& data)
+    {
+        MByteStreamEx stream(data);
+        DlgInitRes dlginit;
+        if (dlginit.LoadFromStream(stream))
+        {
+            for (auto& item : m_items)
+            {
+                item.m_str_list.clear();
+            }
+
+            for (size_t i = 0; i < dlginit.size(); ++i)
+            {
+                INT iItem = GetDlgItem(dlginit[i].wCtrl);
+                if (iItem != -1 && iItem < INT(m_items.size()))
+                {
+                    m_items[iItem].m_str_list.push_back(dlginit[i].strText);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    bool SaveDlgInitData(MByteStreamEx::data_type& data) const
+    {
+        std::set<WORD> ids;
+        for (auto& item : m_items)
+        {
+            ids.insert(item.m_id);
+        }
+
+        DlgInitRes dlginit;
+        for (auto& id : ids)
+        {
+            INT iItem = GetDlgItem(id);
+            if (iItem != -1 && iItem < INT(m_items.size()))
+            {
+                auto& item = m_items[iItem];
+                for (auto& str : item.m_str_list)
+                {
+                    if (item.IsListBox())
+                    {
+                        DlgInitEntry entry(id, LB_ADDSTRING, str);
+                        dlginit.push_back(entry);
+                    }
+                    else if (item.IsStdComboBox())
+                    {
+                        DlgInitEntry entry(id, CB_ADDSTRING, str);
+                        dlginit.push_back(entry);
+                    }
+                    else if (item.IsExtComboBox())
+                    {
+                        DlgInitEntry entry(id, CBEM_INSERTITEM, str);
+                        dlginit.push_back(entry);
+                    }
+                }
+            }
+        }
+
+        data = dlginit.data();
+        return !dlginit.empty();
     }
 
     std::vector<BYTE> data() const

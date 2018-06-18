@@ -2869,19 +2869,6 @@ void MMainWnd::OnUpdateDlgRes(HWND hwnd)
     // entry->m_data --> m_hBinEdit (binary)
     str = DumpBinaryAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
-
-    // care DLGINIT
-    stream.clear();
-
-    dialog_res.m_dlginit.SaveToStream(stream);
-    if (!dialog_res.m_dlginit.empty())  // add or update
-    {
-        g_res.add_lang_entry(RT_DLGINIT, entry->m_name, entry->m_lang, stream.data());
-    }
-    else    // delete
-    {
-        g_res.search_and_delete(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang);
-    }
 }
 
 // update the fonts by the font settings
@@ -3456,18 +3443,15 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         // entry->m_data --> m_rad_window.m_dialog_res
         MByteStreamEx stream(entry->m_data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
-        m_rad_window.m_dialog_res.m_lang_id = entry->m_lang;
+        m_rad_window.m_dialog_res.m_lang = entry->m_lang;
+        m_rad_window.m_dialog_res.m_name = entry->m_name;
         m_rad_window.clear_maps();
         m_rad_window.create_maps(entry->m_lang);
 
         // load RT_DLGINIT
-        m_rad_window.m_dialog_res.m_dlginit.clear();
         if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, entry->m_lang))
         {
-            DlgInitRes dlginit_res;
-            stream.assign(e->m_data);
-            dlginit_res.LoadFromStream(stream);
-            m_rad_window.m_dialog_res.m_dlginit = dlginit_res;
+            m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
         }
 
         if (::IsWindowVisible(m_rad_window) &&
@@ -8555,6 +8539,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+// toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
     // switch the flag

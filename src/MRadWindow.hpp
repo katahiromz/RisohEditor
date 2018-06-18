@@ -1470,7 +1470,7 @@ public:
 
     // constructor
     MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-                   m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
+          m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
     {
     }
 
@@ -2211,6 +2211,16 @@ public:
         MAddCtrlDlg dialog(m_dialog_res, pt);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            // add an RT_DLGINIT entry if necesssary
+            MByteStreamEx::data_type data;
+            if (m_dialog_res.SaveDlgInitData(data))
+            {
+                if (!data.empty())
+                {
+                    g_res.add_lang_entry(RT_DLGINIT, m_dialog_res.m_name, m_dialog_res.m_lang, data);
+                }
+            }
+
             // refresh
             OnRefresh(hwnd);
         }
@@ -2223,6 +2233,28 @@ public:
         MCtrlPropDlg dialog(m_dialog_res, MRadCtrl::GetTargetIndeces());
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            auto type = RT_DLGINIT;
+            auto name = m_dialog_res.m_name;
+            auto lang = m_dialog_res.m_lang;
+
+            // add or delete an RT_DLGINIT entry if necesssary
+            MByteStreamEx::data_type data;
+            if (m_dialog_res.SaveDlgInitData(data))
+            {
+                if (data.empty())
+                {
+                    g_res.search_and_delete(ET_LANG, type, name, lang);
+                }
+                else
+                {
+                    g_res.add_lang_entry(type, name, lang, data);
+                }
+            }
+            else
+            {
+                g_res.search_and_delete(ET_LANG, type, name, lang);
+            }
+
             // refresh
             OnRefresh(hwnd);
         }

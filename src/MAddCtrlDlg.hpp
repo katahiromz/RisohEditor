@@ -63,8 +63,6 @@ public:
     ConstantsDB::TableType  m_exstyle_table;
     std::vector<BYTE>       m_style_selection;
     std::vector<BYTE>       m_exstyle_selection;
-    DlgInitRes              m_dlginit;
-    BOOL                    m_bIsDlgInitSet;
     MToolBarCtrl            m_hTB;
     HIMAGELIST              m_himlControls;
     std::vector<std::wstring> m_vecControls;
@@ -74,11 +72,11 @@ public:
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
     std::vector<BYTE> m_data;
+    std::vector<MStringA> m_str_list;
 
     MAddCtrlDlg(DialogRes& dialog_res, POINT pt)
         : MDialogBase(IDD_ADDCTRL), m_dialog_res(dialog_res), 
-          m_bUpdating(FALSE), m_pt(pt), 
-          m_dlginit(), m_bIsDlgInitSet(FALSE)
+          m_bUpdating(FALSE), m_pt(pt)
     {
         m_himlControls = NULL;
     }
@@ -343,6 +341,7 @@ public:
         item.m_class = strClass.c_str();
         item.m_title = strCaption.c_str();
         item.m_extra = m_data;
+        item.m_str_list = m_str_list;
 
         if (lstrcmpiW(strClass.c_str(), L"STATIC") == 0)
         {
@@ -359,26 +358,6 @@ public:
 
         m_dialog_res.m_cItems++;
         m_dialog_res.m_items.push_back(item);
-
-        if (m_bIsDlgInitSet)
-        {
-            m_dlginit.ReplaceInvalid(item.m_id);
-            if (item.IsStdComboBox())
-            {
-                m_dlginit.ReplaceMsg(item.m_id, CB_ADDSTRING);
-            }
-            else if (item.IsListBox())
-            {
-                m_dlginit.ReplaceMsg(item.m_id, LB_ADDSTRING);
-            }
-            else if (item.IsExtComboBox())
-            {
-                m_dlginit.ReplaceMsg(item.m_id, CBEM_INSERTITEM);
-            }
-            m_dialog_res.m_dlginit.Erase(item.m_id);
-            m_dialog_res.m_dlginit.Union(m_dlginit);
-            m_dialog_res.m_dlginit.EraseInvalid();
-        }
 
         EndDialog(IDOK);
     }
@@ -580,10 +559,10 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        MStringListDlg dialog(m_dlginit);
+        MStringListDlg dialog(m_str_list);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
-            m_bIsDlgInitSet = TRUE;
+            ;
         }
     }
 

@@ -43,14 +43,13 @@ struct DlgInitEntry
     WORD        wCtrl;
     WORD        wMsg;
     MStringA    strText;
-    BOOL        bInvalid = TRUE;
 
     DlgInitEntry()
     {
     }
     
-    DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str, BOOL invalid = TRUE)
-        : wCtrl(ctrl), wMsg(msg), strText(str), bInvalid(invalid)
+    DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str)
+        : wCtrl(ctrl), wMsg(msg), strText(str)
     {
     }
 };
@@ -91,8 +90,6 @@ public:
                     return false;
             }
 
-            entry.bInvalid = FALSE;
-
             m_entries.push_back(entry);
         }
 
@@ -103,9 +100,6 @@ public:
     {
         for (auto& entry : m_entries)
         {
-            if (entry.bInvalid)
-                continue;
-
             DWORD dwLen = DWORD(entry.strText.size() + 1);
             if (!stream.WriteWord(entry.wCtrl) ||
                 !stream.WriteWord(entry.wMsg) ||
@@ -236,77 +230,6 @@ public:
         MByteStreamEx stream;
         SaveToStream(stream);
         return stream.data();
-    }
-
-    void ReplaceCtrl(WORD wOldCtrl, WORD wNewCtrl)
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].wCtrl == wOldCtrl)
-            {
-                m_entries[i].wCtrl = wNewCtrl;
-            }
-        }
-    }
-    void ReplaceInvalid(WORD wCtrl)
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].bInvalid)
-            {
-                m_entries[i].wCtrl = wCtrl;
-                m_entries[i].bInvalid = FALSE;
-            }
-        }
-    }
-    void ReplaceMsg(WORD wCtrl, WORD wMsg)
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].wCtrl == wCtrl)
-            {
-                m_entries[i].wMsg = wMsg;
-            }
-        }
-    }
-    void Filter(DlgInitRes& destination, WORD wCtrl)
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].wCtrl == wCtrl)
-            {
-                destination.push_back(m_entries[i]);
-            }
-        }
-    }
-    void Erase(WORD wCtrl)
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].wCtrl == wCtrl)
-            {
-                m_entries.erase(m_entries.begin() + i);
-                --i;
-            }
-        }
-    }
-    void EraseInvalid()
-    {
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_entries[i].bInvalid)
-            {
-                m_entries.erase(m_entries.begin() + i);
-                --i;
-            }
-        }
-    }
-    void Union(const DlgInitRes& another)
-    {
-        for (size_t i = 0; i < another.size(); ++i)
-        {
-            push_back(another[i]);
-        }
     }
 };
 

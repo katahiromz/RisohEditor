@@ -75,7 +75,6 @@ public:
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
     std::set<INT>       m_indeces;
-    DlgInitRes          m_dlginit;
     DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -98,8 +97,6 @@ public:
           m_bUpdating(FALSE), m_indeces(indeces)
     {
         m_himlControls = NULL;
-        DialogItem& item = m_dialog_res[*m_indeces.begin()];
-        m_dialog_res.m_dlginit.Filter(m_dlginit, item.m_id);
     }
 
     ~MCtrlPropDlg()
@@ -263,6 +260,9 @@ public:
 
         flags |= F_EXTRA;
 
+        if (!item.m_str_list.empty())
+            flags |= F_SLIST;
+
         return flags;
     }
 
@@ -289,11 +289,7 @@ public:
             if ((m_flags & F_CY) || (flags & F_CY))
                 item.m_siz.cy = m_item.m_siz.cy;
             if ((m_flags & F_ID) || (flags & F_ID))
-            {
-                m_dialog_res.m_dlginit.Erase(item.m_id);
-                m_dlginit.ReplaceCtrl(item.m_id, m_item.m_id);
                 item.m_id = m_item.m_id;
-            }
             if ((m_flags & F_CLASS) || (flags & F_CLASS))
             {
                 item.m_class = m_item.m_class;
@@ -314,6 +310,17 @@ public:
             {
                 item.m_extra = m_item.m_extra;
             }
+            if ((m_flags & F_SLIST) || (flags & F_SLIST))
+            {
+                if (m_item.IsStdComboBox() || m_item.IsListBox() || m_item.IsExtComboBox())
+                {
+                    item.m_str_list = m_item.m_str_list;
+                }
+                else
+                {
+                    item.m_str_list.clear();
+                }
+            }
             if (lstrcmpiW(item.m_class.c_str(), L"STATIC") == 0)
             {
                 DWORD style = item.m_style;
@@ -329,45 +336,22 @@ public:
             }
         }
 
-        if (m_flags & F_SLIST)
-        {
-            m_dlginit.ReplaceInvalid(m_item.m_id);
-            auto& item = m_dialog_res[*m_indeces.begin()];
-            if (item.IsStdComboBox())
-            {
-                m_dlginit.ReplaceMsg(m_item.m_id, CB_ADDSTRING);
-            }
-            else if (item.IsListBox())
-            {
-                m_dlginit.ReplaceMsg(m_item.m_id, LB_ADDSTRING);
-            }
-            else if (item.IsExtComboBox())
-            {
-                m_dlginit.ReplaceMsg(m_item.m_id, CBEM_INSERTITEM);
-            }
-            m_dialog_res.m_dlginit.Erase(m_item.m_id);
-            m_dialog_res.m_dlginit.Union(m_dlginit);
-            m_dialog_res.m_dlginit.EraseInvalid();
-        }
-
         return TRUE;
     }
 
     void InitTables(LPCTSTR pszClass)
     {
-        ConstantsDB::TableType table;
-
         m_style_table.clear();
         if (pszClass && pszClass[0])
         {
-            table = g_db.GetTable(pszClass);
+            auto table = g_db.GetTable(pszClass);
             if (table.size())
             {
                 m_style_table.insert(m_style_table.end(), 
                     table.begin(), table.end());
             }
         }
-        table = g_db.GetTable(TEXT("STYLE"));
+        auto table = g_db.GetTable(TEXT("STYLE"));
         if (table.size())
         {
             m_style_table.insert(m_style_table.end(), 
@@ -543,18 +527,9 @@ public:
             MStringW name = g_db.GetNameOfResID(IDTYPE_CONTROL, m_item.m_id);
             SetDlgItemTextW(hwnd, cmb3, name.c_str());
         }
-        EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
         if (m_flags & F_CLASS)
         {
             SetDlgItemText(hwnd, cmb4, m_item.m_class.c_str());
-
-            if (m_item.m_class == L"COMBOBOX" ||
-                m_item.m_class == L"LISTBOX" ||
-                m_item.m_class == L"ComboBoxEx32")
-            {
-                if (m_indeces.size() == 1)
-                    EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
-            }
         }
         if (m_flags & F_TITLE)
         {
@@ -592,6 +567,10 @@ public:
         if (!(m_flags & F_CY))
         {
             SetDlgItemTextW(hwnd, edt4, NULL);
+        }
+        if (!m_item.IsStdComboBox() && !m_item.IsListBox() && !m_item.IsExtComboBox())
+        {
+            EnableWindow(GetDlgItem(hwnd, psh3), FALSE);
         }
 
         CenterWindowDx();
@@ -738,10 +717,11 @@ public:
         else
             SetDlgItemText(hwnd, cmb4, strClass.c_str());
 
-        if (strClass == L"COMBOBOX" || strClass == L"LISTBOX" ||
-            strClass == L"ComboBoxEx32")
+        m_item.m_class = strClass.c_str();
+        if (m_item.IsStdComboBox() || m_item.IsListBox() ||
+            m_item.IsExtComboBox())
         {
-            EnableWindow(GetDlgItem(hwnd, psh3), m_indeces.size() == 1);
+            EnableWindow(GetDlgItem(hwnd, psh3), TRUE);
         }
         else
         {
@@ -794,7 +774,7 @@ public:
 
     void OnPsh3(HWND hwnd)
     {
-        MStringListDlg dialog(m_dlginit, m_item.m_id);
+        MStringListDlg dialog(m_item.m_str_list);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             m_flags |= F_SLIST;

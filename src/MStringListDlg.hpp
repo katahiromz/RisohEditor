@@ -29,11 +29,10 @@
 class MStringListDlg : public MDialogBase
 {
 public:
-    DlgInitRes& m_dlginit;
-    WORD m_nCtrl;
+    std::vector<MStringA>& m_str_list;
 
-    MStringListDlg(DlgInitRes& dlginit, WORD nCtrl = -1) :
-        MDialogBase(IDD_STRINGLIST), m_dlginit(dlginit), m_nCtrl(nCtrl)
+    MStringListDlg(std::vector<MStringA>& str_list) :
+        MDialogBase(IDD_STRINGLIST), m_str_list(str_list)
     {
     }
 
@@ -43,15 +42,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        std::vector<MStringA> vec;
-        for (size_t i = 0; i < m_dlginit.size(); ++i)
-        {
-            if (m_dlginit[i].wCtrl == m_nCtrl)
-            {
-                vec.push_back(m_dlginit[i].strText);
-            }
-        }
-        MStringA text = mstr_join(vec, "\r\n");
+        MStringA text = mstr_join(m_str_list, "\r\n");
         SetDlgItemTextA(hwnd, edt1, text.c_str());
 
         MString str = LoadStringDx(IDS_DLGINIT1);
@@ -69,23 +60,19 @@ public:
 
         if (str.empty())
         {
-            m_dlginit.clear();
+            m_str_list.clear();
             EndDialog(IDOK);
             return;
         }
 
         MStringA strA = MTextToAnsi(CP_ACP, str.c_str()).c_str();
+        mstr_trim(strA);
 
         std::vector<MStringA> lines;
         mstr_replace_all(strA, "\r", "");
         mstr_split(lines, strA, "\n");
+        m_str_list = lines;
 
-        m_dlginit.Erase(m_nCtrl);
-        for (size_t i = 0; i < lines.size(); ++i)
-        {
-            DlgInitEntry entry(m_nCtrl, WORD(-1), lines[i], TRUE);
-            m_dlginit.push_back(entry);
-        }
         EndDialog(IDOK);
     }
 
