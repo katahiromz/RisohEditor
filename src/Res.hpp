@@ -257,6 +257,10 @@ struct EntryBase
         // get an IDTYPE_ value
         IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);
 
+        // RT_DLGINIT uses dialog name
+        if (m_type == RT_DLGINIT)
+            nIDTYPE_ = IDTYPE_DIALOG;
+
         // get the label from an IDTYPE_ value
         MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
         if (label.empty() || m_type == RT_STRING || m_type == RT_MESSAGETABLE)
