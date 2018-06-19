@@ -101,30 +101,29 @@ public:
         if (HDC hDC = GetDC(hwnd))
         {
             HGDIOBJ hFontOld = SelectObject(hDC, hFont);
+            INT y = rcClient.top;
+            for (size_t i = 0; i < lines.size(); ++i)
             {
-                INT y = rcClient.top;
-                for (size_t i = 0; i < lines.size(); ++i)
-                {
-                    if (INT(i) == iLine)
-                        break;
+                if (INT(i) == iLine)
+                    break;
 
-                    auto& line = lines[i];
+                auto& line = lines[i];
 
-                    UINT uFormat;
-                    uFormat = DT_CALCRECT | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_NOPREFIX |
-                              DT_NOPREFIX | DT_TOP;
-                    if (g_settings.bWordWrap)
-                        uFormat |= DT_WORDBREAK;
+                UINT uFormat = DT_CALCRECT | DT_EDITCONTROL | DT_EXPANDTABS |
+                               DT_LEFT | DT_NOPREFIX | DT_NOPREFIX | DT_TOP;
+                if (g_settings.bWordWrap)
+                    uFormat |= DT_WORDBREAK;
 
-                    RECT rc = rcClient;
-                    DrawText(hDC, line.c_str(), -1, &rc, uFormat);
+                RECT rc = rcClient;
+                DrawText(hDC, line.c_str(), -1, &rc, uFormat);
 
-                    SIZE siz = SizeFromRectDx(&rc);
-                    y += siz.cy;
-                }
-
-                DrawIconEx(hDC, rcClient.left, y, m_hIconMark, MARK_WIDTH, MARK_HEIGHT, 0, NULL, DI_NORMAL);
+                SIZE siz = SizeFromRectDx(&rc);
+                y += siz.cy;
             }
+
+            DrawIconEx(hDC, rcClient.left, y, m_hIconMark, MARK_WIDTH, MARK_HEIGHT,
+                       0, NULL, DI_NORMAL);
+
             SelectObject(hDC, hFontOld);
             ReleaseDC(hwnd, hDC);
         }
