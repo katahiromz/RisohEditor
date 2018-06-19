@@ -101,6 +101,7 @@ public:
         if (HDC hDC = GetDC(hwnd))
         {
             HGDIOBJ hFontOld = SelectObject(hDC, hFont);
+
             INT y = rcClient.top;
             for (size_t i = 0; i < lines.size(); ++i)
             {
@@ -119,6 +120,12 @@ public:
 
                 SIZE siz = SizeFromRectDx(&rc);
                 y += siz.cy;
+            }
+
+            {
+                SIZE siz;
+                GetTextExtentPoint32(hDC, TEXT("Mg"), 2, &siz);
+                y += (siz.cy - MARK_HEIGHT + 1) / 2 + 1;
             }
 
             DrawIconEx(hDC, rcClient.left, y, m_hIconMark, MARK_WIDTH, MARK_HEIGHT,
