@@ -3348,6 +3348,10 @@ void MMainWnd::OnCompile(HWND hwnd)
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
+		// clear the control selection
+		MRadCtrl::GetTargets().clear();
+		m_hSrcEdit.ClearIndeces();
+
         // clear the modification flag
         Edit_SetModify(m_hSrcEdit, FALSE);
 
