@@ -11123,7 +11123,7 @@ LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return 0;
     }
 
-    auto& indeces = MRadCtrl::GetTargetIndeces();
+    auto indeces = MRadCtrl::GetTargetIndeces();
     m_hSrcEdit.SetIndeces(indeces);
     return 0;
 }
