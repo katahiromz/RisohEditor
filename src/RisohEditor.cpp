@@ -1749,7 +1749,7 @@ protected:
     // classes
     MRadWindow      m_rad_window;               // the RADical window
     MEditCtrl       m_hBinEdit;                 // the EDIT control for binary
-    MEditCtrl       m_hSrcEdit;                 // the EDIT control for source
+    MSrcEdit        m_hSrcEdit;                 // the EDIT control for source
     MBmpView        m_hBmpView;                 // the bitmap view
     MSplitterWnd    m_splitter1;                // 1st splitter window
     MSplitterWnd    m_splitter2;                // 2nd splitter window
@@ -2001,6 +2001,7 @@ protected:
     LRESULT OnReopenRad(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
 
     void OnAddBitmap(HWND hwnd);
@@ -10786,19 +10787,31 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
 BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
 {
+    BOOL bModify = Edit_GetModify(m_hSrcEdit);
+
     if (IsWindow(m_hSrcEdit))
         DestroyWindow(m_hSrcEdit);
 
     DWORD style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
-        ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
-        ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
+                  ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
+                  ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     if (!g_settings.bWordWrap)
     {
         style |= WS_HSCROLL | ES_AUTOHSCROLL;
     }
 
     DWORD exstyle = WS_EX_CLIENTEDGE;
-    return m_hSrcEdit.CreateAsChildDx(m_splitter3, NULL, style, exstyle, 2);
+
+    HWND hSrcEdit = ::CreateWindowEx(exstyle, L"EDIT", NULL, style,
+        0, 0, 1, 1, m_splitter3, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
+    if (hSrcEdit)
+    {
+        m_hSrcEdit.SubclassDx(hSrcEdit);
+
+        Edit_SetModify(m_hSrcEdit, bModify);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 // WM_CREATE: the main window is to be created
@@ -10981,6 +10994,8 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_REOPENRAD, OnReopenRad);
         DO_MESSAGE(MYWM_POSTSEARCH, OnPostSearch);
         DO_MESSAGE(MYWM_IDJUMPBANG, OnIDJumpBang);
+        DO_MESSAGE(MYWM_SELCHANGE, OnRadSelChange);
+        
     default:
         if (uMsg == s_uFindMsg)
         {
@@ -11098,6 +11113,19 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
     }
+}
+
+LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if (!IsWindow(m_rad_window))
+    {
+        m_hSrcEdit.ClearIndeces();
+        return 0;
+    }
+
+    auto& indeces = MRadCtrl::GetTargetIndeces();
+    m_hSrcEdit.SetIndeces(indeces);
+    return 0;
 }
 
 // do ID jump now!

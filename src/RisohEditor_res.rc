@@ -38,6 +38,7 @@ IDI_MAIN            ICON "res/RisohEditor.ico"
 IDI_ICO             ICON "res/ico.ico"
 IDI_SMILY           ICON "res/smily.ico"
 IDI_FIND            ICON "res/find.ico"
+IDI_MARK            ICON "res/mark.ico"
 
 IDI_FILE            ICON "res/file.ico"
 IDI_FOLDER          ICON "res/folder.ico"

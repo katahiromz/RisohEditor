@@ -16,6 +16,7 @@
 #define IDI_FOLDER              105
 #define IDI_PLAY                106
 #define IDI_DIAMOND             107
+#define IDI_MARK                108
 
 #define IDB_BMP                 100
 #define IDB_CONTROLS            101

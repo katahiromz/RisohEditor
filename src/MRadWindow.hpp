@@ -486,25 +486,25 @@ public:
     // MRadCtrl WM_NCRBUTTONUP
     void OnNCRButtonUp(HWND hwnd, int x, int y, UINT codeHitTest)
     {
-        // consume
+        // eat
     }
 
-    // MRadCtrl WM_NCLBUTTONDOWN/WM_NCLBUTTONDBLCLK
+    // MRadCtrl WM_LBUTTONDOWN/WM_LBUTTONDBLCLK
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
-        // consume
+        // eat
     }
 
     // MRadCtrl WM_LBUTTONUP
     void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
     {
-        // consume
+        // eat
     }
 
     // MRadCtrl WM_MOUSEMOVE
     void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
     {
-        // consume
+        // eat
     }
 
     // MRadCtrl WM_MOVE
@@ -1013,6 +1013,9 @@ public:
 
         // deselect the controls
         MRadCtrl::DeselectSelection();
+
+        // notify MYWM_SELCHANGE to the parent
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog MYWM_SELCHANGE
@@ -1092,6 +1095,9 @@ public:
             // start mouse capturing
             SetCapture(hwnd);
         }
+
+        // notify MYWM_SELCHANGE to the parent
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_MOUSEMOVE
@@ -1156,6 +1162,9 @@ public:
             // update the selection status of the controls
             MRadCtrl::DoRangeSelect(hwnd, &rc, bCtrlDown);
         }
+
+        // notify MYWM_SELCHANGE to the parent
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_ERASEBKGND
@@ -1723,6 +1732,9 @@ public:
             }
         }
 
+        // notify MYWM_SELCHANGE to the parent
+        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+
         return TRUE;
     }
 
@@ -1847,6 +1859,10 @@ public:
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
+        // notify selection change to the owner
+        MRadCtrl::GetTargetIndeces().clear();
+        PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+
         // destroy the icons
         if (m_hIcon)
         {
@@ -1930,16 +1946,23 @@ public:
         HWND hwndSel = MRadCtrl::GetLastSel();
         if (hwndSel == NULL)    // no
         {
-            // clear the status
+			// report the selection change to the owner window
+			PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+		
+			// clear the status
             PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
-            return 0;
+
+			return 0;
         }
 
         // get the MRadCtrl pointer
         auto pCtrl = MRadCtrl::GetRadCtrl(hwndSel);
         if (pCtrl == NULL)
         {
-            // clear the status
+			// report the selection change to the owner window
+			PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+
+			// clear the status
             PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
             return 0;
         }
@@ -1953,6 +1976,9 @@ public:
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
+
+        // report the selection change to the owner window
+        PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
         return 0;
     }
 
