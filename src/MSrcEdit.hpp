@@ -34,7 +34,7 @@ protected:
 public:
     enum
     {
-        MARK_WIDTH = 10, MARK_HEIGHT = 10
+        MARK_WIDTH = 9, MARK_HEIGHT = 9
     };
 
     MSrcEdit()
@@ -206,8 +206,6 @@ public:
         InvalidateRect(hwnd, NULL, TRUE);
         DrawMarks(hwnd);
     }
-
-    
 
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
