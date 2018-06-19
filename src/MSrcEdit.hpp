@@ -34,7 +34,7 @@ protected:
 public:
     enum
     {
-        MARK_WIDTH = 12, MARK_HEIGHT = 12
+        MARK_WIDTH = 10, MARK_HEIGHT = 10
     };
 
     MSrcEdit()
