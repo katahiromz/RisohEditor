@@ -66,6 +66,9 @@ public:
 
     void DrawMarks(HWND hwnd)
     {
+        if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
+            return;
+
         for (auto& index : m_indeces)
         {
             DrawMark(hwnd, 7 + index);
@@ -74,6 +77,9 @@ public:
 
     void DrawMark(HWND hwnd, INT iLine)
     {
+        if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
+            return;
+
         MString strText = GetWindowText();
         HFONT hFont = GetWindowFont(hwnd);
 
@@ -201,9 +207,12 @@ public:
         DrawMarks(hwnd);
     }
 
+    
+
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+        LRESULT result;
         switch (uMsg)
         {
         HANDLE_MSG(hwnd, WM_PAINT, OnPaint);
@@ -216,10 +225,27 @@ public:
         HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMouseMove);
         HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLButtonUp);
         HANDLE_MSG(hwnd, WM_MOUSEWHEEL, OnMouseWheel);
+
+        case EM_SETMODIFY:
+            result = DefaultProcDx();
+            InvalidateRect(hwnd, NULL, TRUE);
+            DrawMarks(hwnd);
+            return result;
+
+        case EM_LINESCROLL:
+        case EM_REPLACESEL:
+        case EM_SCROLL:
+        case EM_SCROLLCARET:
+        case EM_SETMARGINS:
+        case EM_SETREADONLY:
+        case EM_SETSEL:
+            return DefaultProcDx();
+
         case WM_PRINTCLIENT:
             DefaultProcDx();
             DrawMarks(hwnd);
             break;
+
         default:
             return DefaultProcDx();
         }
