@@ -792,10 +792,12 @@ struct DialogRes
 
     DialogItem& operator[](size_t i)
     {
+        assert(i < size());
         return m_items[i];
     }
     const DialogItem& operator[](size_t i) const
     {
+        assert(i < size());
         return m_items[i];
     }
     size_t size() const
