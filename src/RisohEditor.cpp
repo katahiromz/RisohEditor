@@ -46,6 +46,9 @@ static const UINT s_nBackupMaxCount = 5;
     EntrySet g_res;             // the set of resource items
 #endif
 
+typedef HRESULT (WINAPI *SETWINDOWTHEME)(HWND, LPCWSTR, LPCWSTR);
+static SETWINDOWTHEME s_pSetWindowTheme = NULL;
+
 //////////////////////////////////////////////////////////////////////////////
 // useful global functions
 
@@ -10889,6 +10892,12 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     // store the treeview handl to g_res (important!)
     g_res.m_hwndTV = m_hwndTV;
 
+    if (s_pSetWindowTheme)
+    {
+        // apply Explorer's visual style
+        (*s_pSetWindowTheme)(m_hwndTV, L"Explorer", NULL);
+    }
+
     // set the imagelists to treeview
     TreeView_SetImageList(m_hwndTV, m_hImageList, TVSIL_NORMAL);
 
@@ -12399,7 +12408,7 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 #pragma comment(linker, "/manifestdependency:\"type='win32' \
   name='Microsoft.Windows.Common-Controls' \
   version='6.0.0.0' \
-  processorArchitecture='x86' \
+  processorArchitecture='*' \
   publicKeyToken='6595b64144ccf1df' \
   language='*'\"")
 
@@ -12432,10 +12441,13 @@ wWinMain(HINSTANCE   hInstance,
                  ICC_NATIVEFNTCTL_CLASS |
                  ICC_STANDARD_CLASSES |
                  ICC_LINK_CLASS;
-    InitCommonControlsEx(&iccx);
+    InitCommonControlsEx(&iccx);    
 
     // load RichEdit
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
+
+    HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
+    s_pSetWindowTheme = (SETWINDOWTHEME)GetProcAddress(hinstUXTheme, "SetWindowTheme");
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
@@ -12465,6 +12477,7 @@ wWinMain(HINSTANCE   hInstance,
 
     // free the libraries
     FreeLibrary(hinstRichEdit);
+    FreeLibrary(hinstUXTheme);
     OleUninitialize();
     FreeWCLib();
 
