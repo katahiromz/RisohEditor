@@ -9,16 +9,17 @@ FILETYPE        VFT_APP
     {
         BLOCK "040904E4"
         {
-            VALUE "CompanyName", "Your Company\0"
-            VALUE "FileDescription", "Your Application\0"
+            VALUE "CompanyName", "My Company\0"
+            VALUE "FileDescription", "My Application\0"
             VALUE "FileVersion", "0.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017 Katayama Hirofumi MZ. All rights reserved.\0"
-            VALUE "ProductName", "Your Product\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017 My Company. All rights reserved.\0"
+            VALUE "ProductName", "My Product\0"
             VALUE "ProductVersion", "0.0\0"
         }
     }
     BLOCK "VarFileInfo"
     {
+        // English (U.S.)
         VALUE "Translation", 0x0409, 0x04E4
     }
 }
