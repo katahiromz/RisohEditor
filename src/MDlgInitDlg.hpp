@@ -78,20 +78,53 @@ public:
 
         if (!g_db.HasResID(m_entry.sz0))
         {
-            m_cmb1.SetEditSel(0, -1);
-            SetFocus(m_cmb1);
-            ErrorBoxDx(IDS_NOSUCHID);
-            return;
+            BOOL bTranslated = FALSE;
+            INT nValue = GetDlgItemInt(hwnd, cmb1, &bTranslated, TRUE);
+            if (!bTranslated)
+            {
+                if (mchr_is_digit(m_entry.sz0[0]) || 
+                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+')
+                {
+                    nValue = mstr_parse_int(m_entry.sz0);
+                    SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
+                }
+                else
+                {
+                    m_cmb1.SetEditSel(0, -1);
+                    SetFocus(m_cmb1);
+                    ErrorBoxDx(IDS_NOSUCHID);
+                    return;
+                }
+            }
+            SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
+            auto text = GetDlgItemText(hwnd, cmb1);
+            StringCchCopy(m_entry.sz0, _countof(m_entry.sz0), text.c_str());
         }
 
         if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
             lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
             lstrcmpW(m_entry.sz1, L"CBEM_INSERTITEM") != 0)
         {
-            m_cmb2.SetEditSel(0, -1);
-            SetFocus(m_cmb2);
-            ErrorBoxDx(IDS_DATAISINVALID);
-            return;
+            BOOL bTranslated = FALSE;
+            INT nValue = GetDlgItemInt(hwnd, cmb2, &bTranslated, TRUE);
+            if (!bTranslated)
+            {
+                if (mchr_is_digit(m_entry.sz1[0]) || 
+                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+')
+                {
+                    nValue = mstr_parse_int(m_entry.sz1);
+                }
+                else
+                {
+                    m_cmb2.SetEditSel(0, -1);
+                    SetFocus(m_cmb2);
+                    ErrorBoxDx(IDS_DATAISINVALID);
+                    return;
+                }
+            }
+            auto text = mstr_hex_word(nValue);
+            SetDlgItemText(hwnd, cmb2, text.c_str());
+            StringCchCopy(m_entry.sz1, _countof(m_entry.sz1), text.c_str());
         }
 
         EndDialog(IDOK);
@@ -182,20 +215,52 @@ public:
 
         if (!g_db.HasResID(m_entry.sz0))
         {
-            m_cmb1.SetEditSel(0, -1);
-            SetFocus(m_cmb1);
-            ErrorBoxDx(IDS_NOSUCHID);
-            return;
+            BOOL bTranslated = FALSE;
+            INT nValue = GetDlgItemInt(hwnd, cmb1, &bTranslated, TRUE);
+            if (!bTranslated)
+            {
+                if (mchr_is_digit(m_entry.sz0[0]) || 
+                    m_entry.sz0[0] == L'-' || m_entry.sz0[0] == L'+')
+                {
+                    nValue = mstr_parse_int(m_entry.sz0);
+                }
+                else
+                {
+                    m_cmb1.SetEditSel(0, -1);
+                    SetFocus(m_cmb1);
+                    ErrorBoxDx(IDS_NOSUCHID);
+                    return;
+                }
+            }
+            SetDlgItemInt(hwnd, cmb1, nValue, TRUE);
+            auto text = GetDlgItemText(hwnd, cmb1);
+            StringCchCopy(m_entry.sz0, _countof(m_entry.sz0), text.c_str());
         }
 
         if (lstrcmpW(m_entry.sz1, L"LB_ADDSTRING") != 0 &&
             lstrcmpW(m_entry.sz1, L"CB_ADDSTRING") != 0 &&
             lstrcmpW(m_entry.sz1, L"CBEM_INSERTITEM") != 0)
         {
-            m_cmb2.SetEditSel(0, -1);
-            SetFocus(m_cmb2);
-            ErrorBoxDx(IDS_DATAISINVALID);
-            return;
+            BOOL bTranslated = FALSE;
+            INT nValue = GetDlgItemInt(hwnd, cmb2, &bTranslated, TRUE);
+            if (!bTranslated)
+            {
+                if (mchr_is_digit(m_entry.sz1[0]) ||
+                    m_entry.sz1[0] == L'-' || m_entry.sz1[0] == L'+')
+                {
+                    nValue = mstr_parse_int(m_entry.sz1);
+                }
+                else
+                {
+                    m_cmb2.SetEditSel(0, -1);
+                    SetFocus(m_cmb2);
+                    ErrorBoxDx(IDS_DATAISINVALID);
+                    return;
+                }
+            }
+            auto text = mstr_hex_word(nValue);
+            SetDlgItemText(hwnd, cmb2, text.c_str());
+            StringCchCopy(m_entry.sz1, _countof(m_entry.sz1), text.c_str());
         }
 
         EndDialog(IDOK);
@@ -425,8 +490,7 @@ public:
             }
             else
             {
-                assert(0);
-                entry.wMsg = 0;
+                entry.wMsg = mstr_parse_int(die.sz1);
             }
 
             entry.strText = MTextToAnsi(CP_ACP, die.sz2).c_str();
@@ -607,6 +671,7 @@ public:
                 break;
             default:
                 str = mstr_hex_word(entry.wMsg);
+                break;
             }
 
             ZeroMemory(&item, sizeof(item));
@@ -625,6 +690,8 @@ public:
             item.iSubItem = 2;
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
+
+            ++i;
         }
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
