@@ -32,13 +32,15 @@ protected:
     std::set<INT> m_indeces;
 
 public:
+    INT m_iItemToBeSelected;
     enum
     {
-        MARK_WIDTH = 9, MARK_HEIGHT = 9
+        MARK_WIDTH = 9, MARK_HEIGHT = 9, HEADLINES = 7
     };
 
     MSrcEdit()
     {
+        m_iItemToBeSelected = -1;
         m_hIconMark = HICON(LoadImage(GetModuleHandle(NULL),
             MAKEINTRESOURCE(IDI_MARK),
             IMAGE_ICON, MARK_WIDTH, MARK_HEIGHT, 0));
@@ -71,47 +73,53 @@ public:
 
         for (auto& index : m_indeces)
         {
-            DrawMark(hwnd, 7 + index);
+            DrawMark(hwnd, index);
         }
     }
 
-    void DrawMark(HWND hwnd, INT iLine)
+    RECT GetTextArea(HWND hwnd)
     {
-        if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
-            return;
-
-        MString strText = GetWindowText();
-        HFONT hFont = GetWindowFont(hwnd);
-
-        RECT rcClient;
-        GetClientRect(hwnd, &rcClient);
+        RECT rcTextArea;
+        GetClientRect(hwnd, &rcTextArea);
 
         LRESULT margins = DefaultProcDx(hwnd, EM_GETMARGINS, 0, 0);
-        rcClient.left += LOWORD(margins);
-        rcClient.right -= HIWORD(margins);
+        rcTextArea.left += LOWORD(margins);
+        rcTextArea.right -= HIWORD(margins);
 
-        SIZE sizClient = SizeFromRectDx(&rcClient);
+        return rcTextArea;
+    }
 
-        INT iFirstLine = DefaultProcDx(hwnd, EM_GETFIRSTVISIBLELINE, 0, 0);
+    INT LogLineToPosY(HWND hwnd, INT iLogLine)
+    {
+        // get the text
+        MString strText = GetWindowText();
 
-        iLine -= iFirstLine;
-        if (iLine < 0)
-            return;
-
-        INT ich = DefaultProcDx(hwnd, EM_LINEINDEX, iFirstLine, 0);
-        strText = strText.substr(ich);
-
+        // split the text to lines
         std::vector<MString> lines;
         mstr_split(lines, strText, TEXT("\n"));
 
+        // get the font
+        HFONT hFont = GetWindowFont(hwnd);
+
+        // get the text area
+        RECT rcTextArea = GetTextArea(hwnd);
+        SIZE sizClient = SizeFromRectDx(&rcTextArea);
+
+        // get the scroll pos (it's a physical line index)
+        INT iFirstPhysLine = GetScrollPos(hwnd, SB_VERT);
+        INT iPhysLine = 0;
+        INT cy = 0, cyLine = 0;
         if (HDC hDC = GetDC(hwnd))
         {
             HGDIOBJ hFontOld = SelectObject(hDC, hFont);
 
-            INT y = rcClient.top;
+            TEXTMETRIC tm;
+            GetTextMetrics(hDC, &tm);
+            cyLine = tm.tmHeight;
+
             for (size_t i = 0; i < lines.size(); ++i)
             {
-                if (INT(i) == iLine)
+                if (iLogLine == INT(i))
                     break;
 
                 auto& line = lines[i];
@@ -121,21 +129,101 @@ public:
                 if (g_settings.bWordWrap)
                     uFormat |= DT_WORDBREAK;
 
-                RECT rc = rcClient;
+                RECT rc = rcTextArea;
                 DrawText(hDC, line.c_str(), -1, &rc, uFormat);
 
                 SIZE siz = SizeFromRectDx(&rc);
-                y += siz.cy;
+                cy += siz.cy;
             }
 
+            SelectObject(hDC, hFontOld);
+            ReleaseDC(hwnd, hDC);
+        }
+
+        // the physical Y coordinate
+        return rcTextArea.top + cy - cyLine * iFirstPhysLine;
+    }
+
+    INT PosYToLogLine(HWND hwnd, INT nPosY)
+    {
+        // get the text
+        MString strText = GetWindowText();
+
+        // split the text to lines
+        std::vector<MString> lines;
+        mstr_split(lines, strText, TEXT("\n"));
+
+        // get the font
+        HFONT hFont = GetWindowFont(hwnd);
+
+        // get the text area
+        RECT rcTextArea = GetTextArea(hwnd);
+        SIZE sizClient = SizeFromRectDx(&rcTextArea);
+
+        // get the scroll pos (it's a physical line number)
+        INT yScrollPos = GetScrollPos(hwnd, SB_VERT);
+
+        INT iLogLine = 0, iPhysLine = 0, iFirstPhysLine;
+        INT cy = 0, cyLine = 0;
+        if (HDC hDC = GetDC(hwnd))
+        {
+            HGDIOBJ hFontOld = SelectObject(hDC, hFont);
+
+            TEXTMETRIC tm;
+            GetTextMetrics(hDC, &tm);
+            cyLine = tm.tmHeight;
+
+            for (size_t i = 0; i < lines.size(); ++i)
             {
-                SIZE siz;
-                GetTextExtentPoint32(hDC, TEXT("Mg"), 2, &siz);
-                y += (siz.cy - MARK_HEIGHT + 1) / 2 + 1;
+                if (nPosY <= rcTextArea.top + cy - cyLine * iFirstPhysLine)
+                    return iLogLine;
+
+                if (iLogLine == INT(i))
+                    break;
+
+                auto& line = lines[i];
+
+                UINT uFormat = DT_CALCRECT | DT_EDITCONTROL | DT_EXPANDTABS |
+                               DT_LEFT | DT_NOPREFIX | DT_NOPREFIX | DT_TOP;
+                if (g_settings.bWordWrap)
+                    uFormat |= DT_WORDBREAK;
+
+                RECT rc = rcTextArea;
+                DrawText(hDC, line.c_str(), -1, &rc, uFormat);
+
+                SIZE siz = SizeFromRectDx(&rc);
+                cy += siz.cy;
+                ++iLogLine;
             }
 
-            DrawIconEx(hDC, rcClient.left, y, m_hIconMark, MARK_WIDTH, MARK_HEIGHT,
-                       0, NULL, DI_NORMAL);
+            SelectObject(hDC, hFontOld);
+            ReleaseDC(hwnd, hDC);
+        }
+
+        return -1;
+    }
+
+    void DrawMark(HWND hwnd, INT iItem)
+    {
+        if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
+            return;
+
+        RECT rcTextArea = GetTextArea(hwnd);
+
+        INT nPosY = LogLineToPosY(hwnd, HEADLINES + iItem);
+
+        if (HDC hDC = GetDC(hwnd))
+        {
+            HFONT hFont = GetWindowFont(hwnd);
+            HGDIOBJ hFontOld = SelectObject(hDC, hFont);
+
+            TEXTMETRIC tm;
+            GetTextMetrics(hDC, &tm);
+
+            nPosY += (tm.tmHeight - MARK_HEIGHT) / 2;
+
+            DrawIconEx(hDC, rcTextArea.left, nPosY, m_hIconMark,
+                       MARK_WIDTH, MARK_HEIGHT, 0, NULL, DI_NORMAL);
 
             SelectObject(hDC, hFontOld);
             ReleaseDC(hwnd, hDC);
