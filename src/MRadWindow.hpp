@@ -296,6 +296,15 @@ public:
         GetLastSel() = hwnd;
     }
 
+    static void SelectByIndex(INT nIndex)
+    {
+        auto it = IndexToCtrlMap().find(nIndex);
+        if (it != IndexToCtrlMap().end())
+        {
+            Select(it->second);
+        }
+    }
+
     // move the selected RADical controls
     static void MoveSelection(HWND hwnd, INT dx, INT dy)
     {
