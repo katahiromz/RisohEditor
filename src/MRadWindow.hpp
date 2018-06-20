@@ -640,7 +640,7 @@ public:
         DefWindowProc(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(x, y));
 
         // if not group box
-        if (!IsGroupBox(hwnd))
+        if (!IsGroupBox(hwnd) && IsWindow(hwnd))
         {
             // go to bottom (for better hittest & drawing)
             SetWindowPosDx(hwnd, NULL, NULL, HWND_BOTTOM);
