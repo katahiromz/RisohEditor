@@ -3868,6 +3868,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
+            DebugPrintDx("%s\n", strOutput.c_str());
             bOK = (strOutput.find("Unpacked") != MStringA::npos);
         }
     }
