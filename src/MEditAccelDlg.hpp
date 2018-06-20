@@ -688,6 +688,8 @@ public:
             item.iSubItem = 2;
             item.pszText = &str[0];
             ListView_SetItem(m_hLst1, &item);
+
+            ++i;
         }
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
