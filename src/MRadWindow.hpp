@@ -2906,6 +2906,7 @@ public:
         case 'L':
             pCtrl->DoTest();
             break;
+
         default:
             return;
         }
