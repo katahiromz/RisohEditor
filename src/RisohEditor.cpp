@@ -1997,6 +1997,7 @@ protected:
     void Expand(HTREEITEM hItem);
     void Collapse(HTREEITEM hItem);
     void OnWordWrap(HWND hwnd);
+    void OnSrcEditSelect(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -8547,6 +8548,18 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+void MMainWnd::OnSrcEditSelect(HWND hwnd)
+{
+    INT iItem = m_hSrcEdit.m_iItemToBeSelected;
+    if (iItem != -1)
+    {
+        MRadCtrl::DeselectSelection();
+        MRadCtrl::SelectByIndex(iItem);
+
+        m_hSrcEdit.m_iItemToBeSelected = -1;
+    }
+}
+
 // toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
@@ -8712,15 +8725,19 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_CTRLINDEXTOP:
         m_rad_window.IndexTop(m_rad_window);
+        m_hSrcEdit.ClearIndeces();
         break;
     case ID_CTRLINDEXBOTTOM:
         m_rad_window.IndexBottom(m_rad_window);
+        m_hSrcEdit.ClearIndeces();
         break;
     case ID_CTRLINDEXMINUS:
         m_rad_window.IndexMinus(m_rad_window);
+        m_hSrcEdit.ClearIndeces();
         break;
     case ID_CTRLINDEXPLUS:
         m_rad_window.IndexPlus(m_rad_window);
+        m_hSrcEdit.ClearIndeces();
         break;
     case ID_SHOWHIDEINDEX:
         m_rad_window.OnShowHideIndex(m_rad_window);
@@ -8938,6 +8955,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_WORD_WRAP:
         OnWordWrap(hwnd);
+        break;
+    case ID_SRCEDITSELECT:
+        OnSrcEditSelect(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

@@ -107,6 +107,7 @@ public:
 
         // get the scroll pos (it's a physical line index)
         INT iFirstPhysLine = GetScrollPos(hwnd, SB_VERT);
+
         INT iPhysLine = 0;
         INT cy = 0, cyLine = 0;
         if (HDC hDC = GetDC(hwnd))
@@ -160,10 +161,10 @@ public:
         RECT rcTextArea = GetTextArea(hwnd);
         SIZE sizClient = SizeFromRectDx(&rcTextArea);
 
-        // get the scroll pos (it's a physical line number)
-        INT yScrollPos = GetScrollPos(hwnd, SB_VERT);
+        // get the scroll pos (it's a physical line index)
+        INT iFirstPhysLine = GetScrollPos(hwnd, SB_VERT);
 
-        INT iLogLine = 0, iPhysLine = 0, iFirstPhysLine;
+        INT iLogLine = 0;
         INT cy = 0, cyLine = 0;
         if (HDC hDC = GetDC(hwnd))
         {
@@ -176,10 +177,9 @@ public:
             for (size_t i = 0; i < lines.size(); ++i)
             {
                 if (nPosY <= rcTextArea.top + cy - cyLine * iFirstPhysLine)
-                    return iLogLine;
-
-                if (iLogLine == INT(i))
-                    break;
+                {
+                    return iLogLine - 1;
+                }
 
                 auto& line = lines[i];
 
@@ -267,6 +267,14 @@ public:
     void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
         DefaultProcDx();
+
+        if (fDoubleClick)
+        {
+            INT iLogLine = PosYToLogLine(hwnd, y);
+            m_iItemToBeSelected = iLogLine - HEADLINES;
+            SendMessage(GetParent(hwnd), WM_COMMAND, ID_SRCEDITSELECT, 0);
+        }
+
         InvalidateRect(hwnd, NULL, TRUE);
         DrawMarks(hwnd);
     }
