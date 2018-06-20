@@ -8713,6 +8713,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_DELCTRL:
         MRadCtrl::DeleteSelection();
+        m_hSrcEdit.ClearIndeces();
         break;
     case ID_ADDCTRL:
         m_rad_window.OnAddCtrl(m_rad_window);
