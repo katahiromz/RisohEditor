@@ -483,6 +483,8 @@ public:
                 item.iSubItem = 3;
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
+
+                ++i;
             }
         }
         else
@@ -536,6 +538,8 @@ public:
                 item.iSubItem = 3;
                 item.pszText = &str[0];
                 ListView_SetItem(m_hLst1, &item);
+
+                ++i;
             }
         }
 
