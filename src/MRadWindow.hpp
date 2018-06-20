@@ -301,6 +301,12 @@ public:
         auto it = IndexToCtrlMap().find(nIndex);
         if (it != IndexToCtrlMap().end())
         {
+            HWND hwndCtrl = it->second;
+            assert(MRadCtrl::GetRadCtrl(hwndCtrl));
+            if (auto pCtrl = MRadCtrl::GetRadCtrl(hwndCtrl))
+            {
+                assert(pCtrl->m_nIndex == nIndex);
+            }
             Select(it->second);
         }
     }
