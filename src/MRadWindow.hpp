@@ -814,6 +814,20 @@ public:
         // delete the MRadCtrl instance
         delete this;
     }
+
+    void DoTest()
+    {
+        WCHAR szText[256];
+        MStringW str = GetWindowTextW();
+        StringCchPrintfW(szText, _countof(szText),
+            L"MRadCtrl:%p, m_hwnd:%p, m_dwMagic:0x%08X, m_bTopCtrl:%d, m_nIndex:%d, "
+            L"str:%s, IndexToCtrlMap()[m_nIndex]: %p",
+            this, m_hwnd, m_dwMagic, m_bTopCtrl, m_nIndex,
+            str.c_str(), IndexToCtrlMap()[m_nIndex]
+        );
+
+        MessageBoxW(NULL, szText, L"MRadCtrl::DoTest()", MB_ICONINFORMATION);
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2889,6 +2903,9 @@ public:
             }
             break;
 
+        case 'L':
+            pCtrl->DoTest();
+            break;
         default:
             return;
         }
