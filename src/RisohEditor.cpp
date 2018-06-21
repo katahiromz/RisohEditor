@@ -5141,7 +5141,7 @@ void MMainWnd::UpdateToolBarStatus()
     case ET_NAME:
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
-        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, TBSTATE_ENABLED);
         break;
 
     case ET_LANG:
