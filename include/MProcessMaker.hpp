@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MPROCESSMAKER_HPP_
-#define MZC4_MPROCESSMAKER_HPP_     13   /* Version 13 */
+#define MZC4_MPROCESSMAKER_HPP_     14   /* Version 14 */
 
 #include "MFile.hpp"
 #include <tchar.h>
@@ -232,7 +232,7 @@ inline DWORD MProcessMaker::WaitForSingleObjectEx(
 inline BOOL MProcessMaker::IsRunning() const
 {
 	DWORD dwWait = ::WaitForSingleObject(m_pi.hProcess, 0);
-    return dwWait == WAIT_TIMEOUT && GetExitCode() == STILL_ACTIVE;
+    return dwWait == WAIT_TIMEOUT;
 }
 
 inline bool MProcessMaker::operator!() const

@@ -28,6 +28,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Open...\tCtrl+O", ID_OPEN
         MENUITEM "Save &As...\tCtrl+S", ID_SAVEAS
+        MENUITEM "Save &As With Co&mpression...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM "&Export...\tCtrl+P", ID_EXPORT

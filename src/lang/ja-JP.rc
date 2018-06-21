@@ -28,6 +28,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "開く(&O)...\tCtrl+O", ID_OPEN
         MENUITEM "名前を付けて保存(&A)...\tCtrl+S", ID_SAVEAS
+        MENUITEM "名前を付けて圧縮保存(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "エクスポート(&E)...\tCtrl+P", ID_EXPORT

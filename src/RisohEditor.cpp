@@ -1738,10 +1738,8 @@ protected:
 
     // file info
     FileType    m_file_type;
-    WCHAR       m_szRealFile[MAX_PATH];         // the real file location
-    WCHAR       m_szNominalFile[MAX_PATH];      // the nominal file location
+    WCHAR       m_szFile[MAX_PATH];             // the file location
     WCHAR       m_szResourceH[MAX_PATH];        // the resource.h file location
-    WCHAR       m_szUpxTempFile[MAX_PATH];      // the temporary file location for UPX processing
     BOOL        m_bUpxCompressed;               // is the real file compressed?
 
     // selection
@@ -1781,10 +1779,8 @@ public:
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
         m_szMcdxExe[0] = 0;
-        m_szRealFile[0] = 0;
-        m_szNominalFile[0] = 0;
+        m_szFile[0] = 0;
         m_szResourceH[0] = 0;
-        m_szUpxTempFile[0] = 0;
 
         m_bUpxCompressed = FALSE;
 
@@ -1851,7 +1847,7 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNominal = NULL);
+    BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile);
 
     void UpdateMenu();
     void SelectTV(EntryBase *entry, BOOL bDoubleClick);
@@ -1907,7 +1903,8 @@ public:
     BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
     BOOL DoSaveResAs(LPCWSTR pszExeFile);
     BOOL DoSaveAs(LPCWSTR pszExeFile);
-    BOOL DoSaveExeAs(LPCWSTR pszExeFile);
+    BOOL DoSaveAsCompression(LPCWSTR pszExeFile);
+    BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -1998,6 +1995,7 @@ protected:
     void Collapse(HTREEITEM hItem);
     void OnWordWrap(HWND hwnd);
     void OnSrcEditSelect(HWND hwnd);
+    void OnSaveAsWithCompression(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -2661,7 +2659,7 @@ void MMainWnd::OnOpen(HWND hwnd)
 
     // store the nominal path
     WCHAR szFile[MAX_PATH];
-    StringCchCopyW(szFile, _countof(szFile), m_szNominalFile);
+    StringCchCopyW(szFile, _countof(szFile), m_szFile);
 
     // if path was not valid, make it empty
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
@@ -2698,7 +2696,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
 
     // update the file info
-    UpdateFileInfo(FT_NONE, NULL, NULL);
+    UpdateFileInfo(FT_NONE, NULL);
 
     // clean up
     g_res.delete_all();
@@ -2720,9 +2718,9 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    // store m_szNominalFile to szFile
+    // store m_szFile to szFile
     WCHAR szFile[MAX_PATH];
-    StringCchCopyW(szFile, _countof(szFile), m_szNominalFile);
+    StringCchCopyW(szFile, _countof(szFile), m_szFile);
 
     // if not found, then make it empty
     if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
@@ -2755,7 +2753,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
     // use the prefered filter by the entry
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (GetFileAttributesW(m_szRealFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
+    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
     {
         if (ofn.nFilterIndex == RFFI_EXECUTABLE)
             ofn.nFilterIndex = RFFI_RC;
@@ -2826,7 +2824,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
 
                     // update the file info
-                    UpdateFileInfo(FT_RC, szFile, szFile);
+                    UpdateFileInfo(FT_RC, szFile);
                 }
                 else
                 {
@@ -3879,6 +3877,12 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 // for debugging purpose
 void MMainWnd::OnDebugTreeNode(HWND hwnd)
 {
+    WCHAR sz[MAX_PATH * 2 + 32];
+
+    // show the file paths
+    StringCchPrintfW(sz, _countof(sz), L"%s\n\n%s", m_szFile, m_szResourceH);
+    MsgBoxDx(sz, MB_ICONINFORMATION);
+
     // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
@@ -3894,7 +3898,6 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
         L"ET_LANG"
     };
 
-    WCHAR sz[128];
     MStringW type = entry->m_type.str();
     MStringW name = entry->m_name.str();
     StringCchPrintfW(sz, _countof(sz),
@@ -5920,7 +5923,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = FALSE;
 
         // update the file info
-        UpdateFileInfo(FT_RES, szPath, NULL);
+        UpdateFileInfo(FT_RES, szPath);
 
         // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -5964,7 +5967,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = FALSE;
 
         // update the file info
-        UpdateFileInfo(FT_RC, szPath, NULL);
+        UpdateFileInfo(FT_RC, szPath);
 
         // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -5978,18 +5981,11 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         return TRUE;
     }
 
-    // delete the temporary decompressed file
-    if (m_szUpxTempFile[0])
-    {
-        DeleteFileW(m_szUpxTempFile);
-        m_szUpxTempFile[0] = 0;
-    }
-
-    LPWSTR pszReal = szPath;        // the real path
-    LPWSTR pszNominal = szPath;     // the nominal path
+    LPWSTR pszPath = szPath;        // the real path
 
     // check whether it was compressed
-    m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszReal);
+    MStringW strToOpen = pszPath;
+    m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszPath);
     if (m_bUpxCompressed)   // it was compressed
     {
         INT nID;
@@ -6000,7 +5996,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         else
         {
             // confirm to the user to decompress
-            LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszReal);
+            LPWSTR szMsg = LoadStringPrintfDx(IDS_FILEISUPXED, pszPath);
             nID = MsgBoxDx(szMsg, MB_ICONINFORMATION | MB_YESNOCANCEL);
             if (nID == IDCANCEL)
                 return FALSE;   // cancelled
@@ -6012,8 +6008,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             WCHAR szTempFile[MAX_PATH];
             StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
 
-            // pszReal --> szTempFile (to be decompressed)
-            if (!CopyFileW(pszReal, szTempFile, FALSE) ||
+            // pszPath --> szTempFile (to be decompressed)
+            if (!CopyFileW(pszPath, szTempFile, FALSE) ||
                 !DoUpxDecompress(m_szUpxExe, szTempFile))
             {
                 DeleteFileW(szTempFile);
@@ -6022,46 +6018,49 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             }
 
             // decompressed
-            StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
-
-            // update the real path
-            pszReal = m_szUpxTempFile;
+            strToOpen = szTempFile;
         }
     }
 
     // load an executable files
-    MString strReal = pszReal;      // the real path
-    HMODULE hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+    HMODULE hMod = LoadLibraryExW(strToOpen.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
                                   LOAD_LIBRARY_AS_IMAGE_RESOURCE |
                                   LOAD_WITH_ALTERED_SEARCH_PATH);
     if (hMod == NULL)
     {
         // replace the path
         #ifdef _WIN64
-            mstr_replace_all(strReal,
+            mstr_replace_all(strToOpen,
                 L"C:\\Program Files\\",
                 L"C:\\Program Files (x86)\\");
         #else
-            mstr_replace_all(strReal,
+            mstr_replace_all(strToOpen,
                 L"C:\\Program Files (x86)\\",
                 L"C:\\Program Files\\");
         #endif
 
         // retry to load
-        hMod = LoadLibraryExW(strReal.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
+        hMod = LoadLibraryExW(strToOpen.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE |
             LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_WITH_ALTERED_SEARCH_PATH);
         if (hMod)
         {
             // ok, succeeded
-            StringCchCopy(pszReal, _countof(szPath), strReal.c_str());
+            StringCchCopy(pszPath, _countof(szPath), strToOpen.c_str());
         }
         else
         {
             // retry again
-            hMod = LoadLibraryW(pszReal);
+            hMod = LoadLibraryW(strToOpen.c_str());
             if (hMod == NULL)
             {
                 ErrorBoxDx(IDS_CANNOTOPEN);
+
+                // delete the decompressed file if any
+                if (m_bUpxCompressed)
+                {
+                    ::DeleteFileW(strToOpen.c_str());
+                }
+
                 return FALSE;       // failure
             }
         }
@@ -6070,7 +6069,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     // unload the resource.h file
     UnloadResourceH(hwnd);
     if (g_settings.bAutoLoadNearbyResH)
-        CheckResourceH(hwnd, pszNominal);
+        CheckResourceH(hwnd, pszPath);
 
     // load all the resource items from the executable
     m_bLoading = TRUE;
@@ -6084,7 +6083,13 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     FreeLibrary(hMod);
 
     // update the file info (using the real path)
-    UpdateFileInfo(FT_EXECUTABLE, strReal.c_str(), pszNominal);
+    UpdateFileInfo(FT_EXECUTABLE, pszPath);
+
+    // delete the decompressed file if any
+    if (m_bUpxCompressed)
+    {
+        ::DeleteFileW(strToOpen.c_str());
+    }
 
     // open the ID list window if necessary
     if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -7379,7 +7384,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 
     if (g_res.extract_res(pszExeFile, g_res))
     {
-        UpdateFileInfo(FT_RES, pszExeFile, NULL);
+        UpdateFileInfo(FT_RES, pszExeFile);
         return TRUE;
     }
     return FALSE;
@@ -7395,53 +7400,41 @@ BOOL MMainWnd::DoSaveAs(LPCWSTR pszExeFile)
     return DoSaveExeAs(pszExeFile);
 }
 
+BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return TRUE;
+
+    return DoSaveExeAs(pszExeFile, TRUE);
+}
+
 // open the dialog to save the EXE file
-BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
+BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
     // is the file compressed?
     if (m_bUpxCompressed)
     {
-        // is there the temporary decompressed file?
-        if (GetFileAttributesW(m_szUpxTempFile) == INVALID_FILE_ATTRIBUTES)
+        // build a temporary file path
+        WCHAR szTempFile[MAX_PATH];
+        StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
+
+        // m_szFile --> szTempFile (decompressed)
+        if (!CopyFileW(m_szFile, szTempFile, FALSE) ||
+            !DoUpxDecompress(m_szUpxExe, szTempFile))
         {
-            // build a temporary file path
-            WCHAR szTempFile[MAX_PATH];
-            StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
-
-            // check file existence
-            if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
-            {
-                // update pszExeFile
-                pszExeFile = m_szRealFile;
-                if (GetFileAttributesW(pszExeFile) == INVALID_FILE_ATTRIBUTES)
-                {
-                    ErrorBoxDx(IDS_CANTSAVETOEXE);
-                    return FALSE;
-                }
-            }
-
-            // pszExeFile --> szTempFile (to be decompressed)
-            if (!CopyFileW(pszExeFile, szTempFile, FALSE) ||
-                !DoUpxDecompress(m_szUpxExe, szTempFile))
-            {
-                DeleteFileW(szTempFile);
-                ErrorBoxDx(IDS_CANTUPXEXTRACT);
-                return FALSE;   // failure
-            }
-            // decompressed.
-
-            // szTempFile --> both of m_szUpxTempFile and m_szRealFile
-            StringCchCopyW(m_szUpxTempFile, _countof(m_szUpxTempFile), szTempFile);
-            StringCchCopyW(m_szRealFile, _countof(m_szUpxTempFile), szTempFile);
-
-            // update pszExeFile
-            pszExeFile = m_szUpxTempFile;
+            DeleteFileW(szTempFile);
+            ErrorBoxDx(IDS_CANTUPXEXTRACT);
+            return FALSE;   // failure
         }
+
+        // szTempFile --> m_szFile
+        StringCchCopyW(m_szFile, _countof(m_szFile), szTempFile);
     }
 
     // check whether it is an executable or not
     DWORD dwBinaryType;
-    BOOL bExecutable = ::GetBinaryTypeW(m_szRealFile, &dwBinaryType);
+    BOOL bExecutable = ::GetBinaryTypeW(m_szFile, &dwBinaryType);
 
     // is it not executable?
     if (!bExecutable)
@@ -7450,7 +7443,13 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         if (g_res.update_exe(pszExeFile))   // success
         {
             // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, NULL);
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile);
+
+            // do compress by UPX
+            if (g_settings.bCompressByUPX || bCompression)
+            {
+                DoUpxCompress(m_szUpxExe, pszExeFile);
+            }
 
             // is there any resource ID?
             if (m_szResourceH[0] || !g_settings.id_map.empty())
@@ -7471,8 +7470,8 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
         // build a temporary file path
         LPWSTR TempFile = GetTempFileNameDx(L"ERE");
 
-        // m_szRealFile --> TempFile --> pszExeFile
-        if (::CopyFileW(m_szRealFile, TempFile, FALSE) &&
+        // m_szFile --> TempFile --> pszExeFile
+        if (::CopyFileW(m_szFile, TempFile, FALSE) &&
             g_res.update_exe(TempFile) &&
             ::CopyFileW(TempFile, pszExeFile, FALSE))
         {
@@ -7480,10 +7479,10 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile)
             DeleteFileW(TempFile);
 
             // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, NULL);
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile);
 
             // do compress by UPX
-            if (g_settings.bCompressByUPX)
+            if (g_settings.bCompressByUPX || bCompression)
             {
                 DoUpxCompress(m_szUpxExe, pszExeFile);
             }
@@ -7819,13 +7818,6 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
-    // delete the temporary decompressed file if any
-    if (m_szUpxTempFile[0])
-    {
-        DeleteFileW(m_szUpxTempFile);
-        m_szUpxTempFile[0] = 0;
-    }
-
     // save the settings
     SaveSettings(hwnd);
 
@@ -8561,6 +8553,151 @@ void MMainWnd::OnSrcEditSelect(HWND hwnd)
     }
 }
 
+void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
+{
+    enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
+    {
+        RFFI_NONE = 0,
+        RFFI_EXECUTABLE = 1,
+        RFFI_RC = 2,
+        RFFI_RES = 3,
+        RFFI_ALL = 4
+    };
+
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
+    // store m_szFile to szFile
+    WCHAR szFile[MAX_PATH];
+    StringCchCopyW(szFile, _countof(szFile), m_szFile);
+
+    // if not found, then make it empty
+    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+        szFile[0] = 0;
+
+    // was it an executable?
+    BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
+
+    // delete the filename extension
+    LPWSTR pch = wcsrchr(szFile, L'.');
+    static const LPCWSTR s_DotExts[] =
+    {
+        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
+    };
+    for (auto ext : s_DotExts)
+    {
+        if (lstrcmpiW(pch, ext) == 0)
+        {
+            *pch = 0;
+            break;
+        }
+    }
+
+    // initialize OPENFILENAME structure
+    OPENFILENAMEW ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
+
+    // use the prefered filter by the entry
+    ofn.nFilterIndex = g_settings.nSaveFilterIndex;
+    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
+    {
+        if (ofn.nFilterIndex == RFFI_EXECUTABLE)
+            ofn.nFilterIndex = RFFI_RC;
+    }
+    if (bWasExecutable)
+    {
+        if (ofn.nFilterIndex == RFFI_NONE || ofn.nFilterIndex == RFFI_ALL)
+            ofn.nFilterIndex = RFFI_EXECUTABLE;
+    }
+
+    // use the preferred extension
+    switch (ofn.nFilterIndex)
+    {
+    case RFFI_EXECUTABLE:
+        ofn.lpstrDefExt = L"exe";       // the default extension
+        break;
+
+    case RFFI_RC:
+        ofn.lpstrDefExt = L"rc";        // the default extension
+        break;
+
+    case RFFI_RES:
+    default:
+        ofn.lpstrDefExt = L"res";       // the default extension
+        break;
+    }
+
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
+    ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+                OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+
+    // let the user choose the path
+    if (GetSaveFileNameW(&ofn))
+    {
+        // save the filter index to the settings
+        g_settings.nSaveFilterIndex = ofn.nFilterIndex;
+
+        if (ofn.nFilterIndex == RFFI_ALL)
+        {
+            ofn.nFilterIndex = RFFI_EXECUTABLE;
+        }
+
+        switch (ofn.nFilterIndex)
+        {
+        case RFFI_EXECUTABLE:
+            // save it
+            if (!DoSaveAsCompression(szFile))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+            break;
+
+        case RFFI_RC:
+            // export and save it
+            {
+                // show "save options" dialog
+                MSaveOptionsDlg save_options;
+                if (save_options.DialogBoxDx(hwnd) != IDOK)
+                    return;
+
+                // export
+                WCHAR szResH[MAX_PATH] = L"";
+                if (DoExport(szFile, szResH))   // succeeded
+                {
+                    // save the resource.h path
+                    StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+
+                    // update the file info
+                    UpdateFileInfo(FT_RC, szFile);
+                }
+                else
+                {
+                    ErrorBoxDx(IDS_CANNOTSAVE);
+                }
+            }
+            break;
+
+        case RFFI_RES:
+            // save the *.res file
+            if (!DoSaveResAs(szFile))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+            break;
+
+        default:
+            assert(0);
+            break;
+        }
+    }
+}
+
 // toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
@@ -8960,6 +9097,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SRCEDITSELECT:
         OnSrcEditSelect(hwnd);
+        break;
+    case ID_SAVEASCOMPRESS:
+        OnSaveAsWithCompression(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -9590,10 +9730,10 @@ void MMainWnd::DeleteIncludeGuard(std::vector<MStringA>& lines)
 // add the head comments
 void MMainWnd::AddHeadComment(std::vector<MStringA>& lines)
 {
-    if (m_szNominalFile[0])
+    if (m_szFile[0])
     {
         WCHAR title[64];
-        GetFileTitleW(m_szNominalFile, title, _countof(title));
+        GetFileTitleW(m_szFile, title, _countof(title));
         MStringA line = "// ";
         line += MWideToAnsi(CP_ACP, title).c_str();
         lines.insert(lines.begin(), line);
@@ -9815,9 +9955,9 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     {
         // build new "resource.h" file path
         WCHAR szResH[MAX_PATH];
-        if (m_szNominalFile[0])
+        if (m_szFile[0])
         {
-            StringCchCopyW(szResH, _countof(szResH), m_szNominalFile);
+            StringCchCopyW(szResH, _countof(szResH), m_szFile);
             WCHAR *pch = wcsrchr(szResH, L'\\');
             if (pch == NULL)
                 pch = wcsrchr(szResH, L'/');
@@ -10238,32 +10378,24 @@ void MMainWnd::OnAddDialog(HWND hwnd)
 }
 
 // set the file-related info
-BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNominal)
+BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile)
 {
     // set the file type
     m_file_type = ft;
 
-    if (pszRealFile == NULL || pszRealFile[0] == 0)
+    if (pszFile == NULL || pszFile[0] == 0)
     {
         // clear the file infp
-        m_szRealFile[0] = 0;
-        m_szNominalFile[0] = 0;
+        m_szFile[0] = 0;
         SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
         return TRUE;
     }
 
-    if (pszNominal == NULL)
-        pszNominal = pszRealFile;
-
     WCHAR szPath[MAX_PATH], *pch;
 
-    // pszRealFile --> szPath --> m_szRealFile (full path)
-    GetFullPathNameW(pszRealFile, _countof(szPath), szPath, &pch);
-    StringCchCopyW(m_szRealFile, _countof(m_szRealFile), szPath);
-
-    // pszNominal --> szPath --> m_szNominalFile (full path)
-    GetFullPathNameW(pszNominal, _countof(szPath), szPath, &pch);
-    StringCchCopyW(m_szNominalFile, _countof(m_szNominalFile), szPath);
+    // pszFile --> szPath --> m_szFile (full path)
+    GetFullPathNameW(pszFile, _countof(szPath), szPath, &pch);
+    StringCchCopyW(m_szFile, _countof(m_szFile), szPath);
 
     // find the last '\\' or '/'
     pch = wcsrchr(szPath, L'\\');
@@ -10278,7 +10410,7 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszRealFile, LPCWSTR pszNomin
     SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch));
 
     // add to the recently used files
-    g_settings.AddFile(m_szNominalFile);
+    g_settings.AddFile(m_szFile);
 
     // update the menu
     UpdateMenu();

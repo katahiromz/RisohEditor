@@ -160,6 +160,7 @@
 #define ID_COLLAPSE_ALL         238
 #define ID_WORD_WRAP            239
 #define ID_SRCEDITSELECT        240
+#define ID_SAVEASCOMPRESS       241
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

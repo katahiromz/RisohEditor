@@ -28,6 +28,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "打开(&O)...\tCtrl+O", ID_OPEN
         MENUITEM "另存为(&A)...\tCtrl+S", ID_SAVEAS
+        MENUITEM "另存压缩(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "导入(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "导出(&E)...\tCtrl+P", ID_EXPORT
