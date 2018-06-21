@@ -1200,6 +1200,21 @@ WORD LangFromText(LPWSTR pszLang)
             break;
         }
 
+        // is it UK?
+        if (lstrcmpiW(pszLang, L"United Kingdom") == 0 ||
+            lstrcmpiW(pszLang, L"Great Britain") == 0 ||
+            lstrcmpiW(pszLang, L"British") == 0 ||
+            lstrcmpiW(pszLang, L"UK") == 0 ||
+            lstrcmpiW(pszLang, L"GB") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_UNITEDKINGDOM)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_GREATBRITAIN)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_BRITISH)) == 0)
+        {
+            // Russian
+            lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK);
+            break;
+        }
+
         // is it numeric?
         if (mchr_is_digit(strLang[0]))
         {

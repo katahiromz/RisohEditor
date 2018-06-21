@@ -392,6 +392,9 @@
 #define IDS_TOOL_IMPORT         274
 #define IDS_TOOL_EXTRACT        275
 #define IDS_TOOL_GUIEDIT        276
+#define IDS_UNITEDKINGDOM       277
+#define IDS_GREATBRITAIN        278
+#define IDS_BRITISH             279
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

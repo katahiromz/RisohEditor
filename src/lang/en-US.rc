@@ -455,7 +455,11 @@ STRINGTABLE
     IDS_TOOL_IMPORT, "Import..."
     IDS_TOOL_EXTRACT, "Extract..."
     IDS_TOOL_GUIEDIT, "Edit by GUI"
+    IDS_UNITEDKINGDOM, "United Kingdom"
+    IDS_GREATBRITAIN, "Great Britain"
+    IDS_BRITISH, "British"
 }
+
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
 CAPTION "Replace Resource"
