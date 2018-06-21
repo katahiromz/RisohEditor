@@ -161,6 +161,7 @@
 #define ID_WORD_WRAP            239
 #define ID_SRCEDITSELECT        240
 #define ID_SAVEASCOMPRESS       241
+#define ID_CLONE                242
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

@@ -2050,6 +2050,7 @@ protected:
     void OnWordWrap(HWND hwnd);
     void OnSrcEditSelect(HWND hwnd);
     void OnSaveAsWithCompression(HWND hwnd);
+    void OnClone(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -8614,6 +8615,32 @@ void MMainWnd::OnSrcEditSelect(HWND hwnd)
     }
 }
 
+void MMainWnd::OnClone(HWND hwnd)
+{
+    auto entry = g_res.get_entry();
+    if (!entry)
+        return;
+
+    switch (entry->m_et)
+    {
+    case ET_TYPE:
+        break;
+
+    case ET_NAME:
+        OnCopyAsNewName(hwnd);
+        break;
+
+    case ET_LANG:
+    case ET_STRING:
+    case ET_MESSAGE:
+        OnCopyAsNewLang(hwnd);
+        break;
+
+    default:
+        break;
+    }
+}
+
 void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 {
     enum ResFileFilterIndex     // see also: IDS_EXEFILTER
@@ -9075,6 +9102,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SAVEASCOMPRESS:
         OnSaveAsWithCompression(hwnd);
+        break;
+    case ID_CLONE:
+        OnClone(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
