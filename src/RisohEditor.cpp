@@ -5072,6 +5072,17 @@ void MMainWnd::UpdateToolBarStatus()
     EntrySetBase found;
     g_res.search(found, ET_LANG);
 
+    if (found.empty())
+    {
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, 0);
+    }
+    else
+    {
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, TBSTATE_ENABLED);
+    }
+
     BOOL bCanEditLabel = TRUE;
 
     // get the selected entry
