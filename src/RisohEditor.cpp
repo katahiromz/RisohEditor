@@ -8818,8 +8818,12 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 
     SetForegroundWindow(m_hwnd);
 
-    TrackPopupMenu(hAddMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON,
-                   pt.x, pt.y, 0, m_hwnd, &rcItem);
+    TPMPARAMS params;
+    ZeroMemory(&params, sizeof(params));
+    params.cbSize = sizeof(params);
+    params.rcExclude = rcItem;
+    UINT uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_TOPALIGN | TPM_VERTICAL;
+    TrackPopupMenuEx(hAddMenu, uFlags, pt.x, pt.y, m_hwnd, &params);
 
     SendMessageDx(WM_NULL);
 }
