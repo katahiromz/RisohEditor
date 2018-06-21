@@ -28,7 +28,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Open...\tCtrl+O", ID_OPEN
         MENUITEM "Save &As...\tCtrl+S", ID_SAVEAS
-        MENUITEM "Save &As With Co&mpression...", ID_SAVEASCOMPRESS
+        MENUITEM "Save With Co&mpression...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM "&Export...\tCtrl+P", ID_EXPORT
@@ -439,6 +439,8 @@ STRINGTABLE
     IDS_RUSSIA, "Russia"
     IDS_RUSSIAN, "Russian"
     IDS_WANNAGENRESH, "Do you wanna generate file 'resource.h'?"
+    IDS_EXEFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|All Files (*.*)|*.*|"
+    IDS_SAVEASCOMPRESS, "Save With Compressed"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

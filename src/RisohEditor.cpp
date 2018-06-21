@@ -8562,13 +8562,11 @@ void MMainWnd::OnSrcEditSelect(HWND hwnd)
 
 void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 {
-    enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
+    enum ResFileFilterIndex     // see also: IDS_EXEFILTER
     {
-        RFFI_NONE = 0,
-        RFFI_EXECUTABLE = 1,
-        RFFI_RC = 2,
-        RFFI_RES = 3,
-        RFFI_ALL = 4
+        RFFI2_NONE = 0,
+        RFFI2_EXECUTABLE = 1,
+        RFFI2_ALL = 3
     };
 
     // compile if necessary
@@ -8585,20 +8583,10 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 
     // was it an executable?
     BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
-
-    // delete the filename extension
-    LPWSTR pch = wcsrchr(szFile, L'.');
-    static const LPCWSTR s_DotExts[] =
+    if (!bWasExecutable)
     {
-        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
-    };
-    for (auto ext : s_DotExts)
-    {
-        if (lstrcmpiW(pch, ext) == 0)
-        {
-            *pch = 0;
-            break;
-        }
+        ErrorBoxDx(IDS_CANTSAVETOEXE);
+        return;
     }
 
     // initialize OPENFILENAME structure
@@ -8609,98 +8597,24 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
 
     // use the prefered filter by the entry
-    ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
-    {
-        if (ofn.nFilterIndex == RFFI_EXECUTABLE)
-            ofn.nFilterIndex = RFFI_RC;
-    }
-    if (bWasExecutable)
-    {
-        if (ofn.nFilterIndex == RFFI_NONE || ofn.nFilterIndex == RFFI_ALL)
-            ofn.nFilterIndex = RFFI_EXECUTABLE;
-    }
+    ofn.nFilterIndex = RFFI2_EXECUTABLE;
 
     // use the preferred extension
-    switch (ofn.nFilterIndex)
-    {
-    case RFFI_EXECUTABLE:
-        ofn.lpstrDefExt = L"exe";       // the default extension
-        break;
-
-    case RFFI_RC:
-        ofn.lpstrDefExt = L"rc";        // the default extension
-        break;
-
-    case RFFI_RES:
-    default:
-        ofn.lpstrDefExt = L"res";       // the default extension
-        break;
-    }
+    ofn.lpstrDefExt = L"exe";       // the default extension
 
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
-    ofn.lpstrTitle = LoadStringDx(IDS_SAVEAS);
+    ofn.lpstrTitle = LoadStringDx(IDS_SAVEASCOMPRESS);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
                 OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
 
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
-        // save the filter index to the settings
-        g_settings.nSaveFilterIndex = ofn.nFilterIndex;
-
-        if (ofn.nFilterIndex == RFFI_ALL)
+        // save it
+        if (!DoSaveAsCompression(szFile))
         {
-            ofn.nFilterIndex = RFFI_EXECUTABLE;
-        }
-
-        switch (ofn.nFilterIndex)
-        {
-        case RFFI_EXECUTABLE:
-            // save it
-            if (!DoSaveAsCompression(szFile))
-            {
-                ErrorBoxDx(IDS_CANNOTSAVE);
-            }
-            break;
-
-        case RFFI_RC:
-            // export and save it
-            {
-                // show "save options" dialog
-                MSaveOptionsDlg save_options;
-                if (save_options.DialogBoxDx(hwnd) != IDOK)
-                    return;
-
-                // export
-                WCHAR szResH[MAX_PATH] = L"";
-                if (DoExport(szFile, szResH))   // succeeded
-                {
-                    // save the resource.h path
-                    StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
-
-                    // update the file info
-                    UpdateFileInfo(FT_RC, szFile, FALSE);
-                }
-                else
-                {
-                    ErrorBoxDx(IDS_CANNOTSAVE);
-                }
-            }
-            break;
-
-        case RFFI_RES:
-            // save the *.res file
-            if (!DoSaveResAs(szFile))
-            {
-                ErrorBoxDx(IDS_CANNOTSAVE);
-            }
-            break;
-
-        default:
-            assert(0);
-            break;
+            ErrorBoxDx(IDS_CANNOTSAVE);
         }
     }
 }

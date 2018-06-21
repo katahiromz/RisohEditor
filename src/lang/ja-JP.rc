@@ -441,6 +441,8 @@ STRINGTABLE
     IDS_RUSSIA, "ロシア"
     IDS_RUSSIAN, "ロシア語"
     IDS_WANNAGENRESH, "'resource.h' ファイルも出力しますか？"
+    IDS_EXEFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui||すべてのファイル (*.*)|*.*|"
+    IDS_SAVEASCOMPRESS, "名前を付けて圧縮保存"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

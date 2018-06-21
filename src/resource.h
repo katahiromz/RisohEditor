@@ -372,6 +372,8 @@
 #define IDS_RUSSIA              258
 #define IDS_RUSSIAN             259
 #define IDS_WANNAGENRESH        260
+#define IDS_EXEFILTER           261
+#define IDS_SAVEASCOMPRESS      262
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
