@@ -6102,6 +6102,13 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 // unload resource.h
 BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 {
+    // delete all the macro IDs
+    auto it = g_db.m_map.find(L"RESOURCE.ID");
+    if (it != g_db.m_map.end())
+    {
+        it->second.clear();
+    }
+
     // reset the settings of the resource.h file
     g_settings.AddIDC_STATIC();
     g_settings.bHasIDC_STATIC = FALSE;
@@ -6109,6 +6116,9 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     g_settings.added_ids.clear();
     g_settings.removed_ids.clear();
     m_szResourceH[0] = 0;
+
+    // update the names
+    UpdateNames();
 
     // hide the ID list window
     ShowIDList(hwnd, FALSE);
@@ -8236,9 +8246,6 @@ void MMainWnd::OnUnloadResH(HWND hwnd)
 
     // unload the resource.h file
     UnloadResourceH(hwnd);
-
-    // update the names
-    UpdateNames();
 }
 
 // the configuration dialog
