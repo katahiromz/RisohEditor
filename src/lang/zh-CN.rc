@@ -441,6 +441,17 @@ STRINGTABLE
     IDS_WANNAGENRESH, "你想生成文件 'resource.h' 吗?"
     IDS_EXEFILTER, "资源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|全部文件 (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "另存压缩"
+    IDS_TOOL_NEW, "新建"
+    IDS_TOOL_OPEN, "打开..."
+    IDS_TOOL_SAVE, "另存为..."
+    IDS_TOOL_EXPAND, "全部展开"
+    IDS_TOOL_COLLAPSE, "全部折叠"
+    IDS_TOOL_PLUS, "新增项目..."
+    IDS_TOOL_MINUS, "删除项目"
+    IDS_TOOL_CHANGE, "更改名称/语言"
+    IDS_TOOL_CLONE, "复制为其他名称/语言"
+    IDS_TOOL_RECOMPILE, "重新编译"
+    IDS_TOOL_CANCELEDIT, "取消修改"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

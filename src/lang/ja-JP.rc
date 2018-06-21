@@ -443,6 +443,17 @@ STRINGTABLE
     IDS_WANNAGENRESH, "'resource.h' ファイルも出力しますか？"
     IDS_EXEFILTER, "実行可能ファイル (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui||すべてのファイル (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "名前を付けて圧縮保存"
+    IDS_TOOL_NEW, "新規作成"
+    IDS_TOOL_OPEN, "開く..."
+    IDS_TOOL_SAVE, "保存する..."
+    IDS_TOOL_EXPAND, "すべて展開"
+    IDS_TOOL_COLLAPSE, "すべて折りたたむ"
+    IDS_TOOL_PLUS, "項目の追加..."
+    IDS_TOOL_MINUS, "項目の削除"
+    IDS_TOOL_CHANGE, "名前/言語を変更"
+    IDS_TOOL_CLONE, "別の名前/言語で複製"
+    IDS_TOOL_RECOMPILE, "再コンパイル"
+    IDS_TOOL_CANCELEDIT, "編集をキャンセル"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

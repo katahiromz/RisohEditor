@@ -375,6 +375,17 @@
 #define IDS_WANNAGENRESH        260
 #define IDS_EXEFILTER           261
 #define IDS_SAVEASCOMPRESS      262
+#define IDS_TOOL_NEW            263
+#define IDS_TOOL_OPEN           264
+#define IDS_TOOL_SAVE           265
+#define IDS_TOOL_EXPAND         266
+#define IDS_TOOL_COLLAPSE       267
+#define IDS_TOOL_PLUS           268
+#define IDS_TOOL_MINUS          269
+#define IDS_TOOL_CHANGE         270
+#define IDS_TOOL_CLONE          271
+#define IDS_TOOL_RECOMPILE      272
+#define IDS_TOOL_CANCELEDIT     273
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
