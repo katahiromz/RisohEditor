@@ -6120,6 +6120,10 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
     // update the names
     UpdateNames();
 
+    // select the selected entry
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE);
+
     // hide the ID list window
     ShowIDList(hwnd, FALSE);
 
