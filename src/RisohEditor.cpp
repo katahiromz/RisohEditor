@@ -1424,8 +1424,8 @@ TBBUTTON g_buttons1[] =
 // buttons info #2
 TBBUTTON g_buttons2[] =
 {
-    { 9, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_COMPILE },
-    { 10, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_CANCELEDIT },
+    { 9, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_RECOMPILE },
+    { 10, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CANCELEDIT },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
     { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
@@ -1966,7 +1966,9 @@ public:
     void SelectString(void);
     void SelectMessage(void);
     BOOL CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools);
-    void UpdateOurToolBar(INT iType);
+    void UpdateOurToolBarButtons(INT iType);
+    void UpdateToolBarStatus();
+
 
     // ID list
     void OnIDList(HWND hwnd);
@@ -4341,6 +4343,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
+
     case ET_LANG:
         EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
         EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
@@ -4393,7 +4396,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
             EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
         }
 
-        if (entry->m_type == RT_DIALOG || entry->m_type == RT_MENU)
+        if (entry->is_testable())
         {
             EnableMenuItem(hMenu, ID_TEST, MF_ENABLED);
         }
@@ -4411,6 +4414,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         else
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
         break;
+
     case ET_STRING: case ET_MESSAGE:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -4429,6 +4433,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
         EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
         break;
+
     default:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
         EnableMenuItem(hMenu, ID_REPLACECURSOR, MF_GRAYED);
@@ -5056,13 +5061,121 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools)
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
 
     m_hToolBar = hwndTB;
-    UpdateOurToolBar(3);
+    UpdateOurToolBarButtons(3);
 
     return TRUE;
 }
 
-// update the toolbar
-void MMainWnd::UpdateOurToolBar(INT iType)
+void MMainWnd::UpdateToolBarStatus()
+{
+    // search the language entries
+    EntrySetBase found;
+    g_res.search(found, ET_LANG);
+
+    BOOL bCanEditLabel = TRUE;
+
+    // get the selected entry
+    auto entry = g_res.get_entry();
+    if (!entry || entry->m_et == ET_TYPE)
+    {
+        bCanEditLabel = FALSE;
+    }
+
+    if (bCanEditLabel)
+    {
+        if (entry)
+        {
+            if (entry->m_et == ET_NAME || entry->m_et == ET_LANG)
+            {
+                if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+                {
+                    bCanEditLabel = FALSE;
+                }
+            }
+        }
+        else
+        {
+            bCanEditLabel = FALSE;
+        }
+    }
+
+    if (bCanEditLabel)
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EDITLABEL, TBSTATE_ENABLED);
+    else
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EDITLABEL, 0);
+
+    if (!entry || !entry->m_hItem)
+    {
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_GUIEDIT, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, 0);
+        return;
+    }
+
+    BOOL bEditable = entry && entry->is_editable();
+    if (bEditable)
+    {
+        if (entry->can_gui_edit())
+        {
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_GUIEDIT, TBSTATE_ENABLED);
+        }
+        else
+        {
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_GUIEDIT, 0);
+        }
+    }
+    else
+    {
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_GUIEDIT, 0);
+    }
+
+
+    switch (entry ? entry->m_et : ET_ANY)
+    {
+    case ET_TYPE:
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        break;
+
+    case ET_NAME:
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        break;
+
+    case ET_LANG:
+        if (entry->is_testable())
+        {
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, TBSTATE_ENABLED);
+        }
+        else
+        {
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
+        }
+
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
+        if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        else
+            SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, TBSTATE_ENABLED);
+        break;
+
+    case ET_STRING: case ET_MESSAGE:
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_TEST, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, TBSTATE_ENABLED);
+        break;
+
+    default:
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_DELETERES, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_CLONE, 0);
+        break;
+    }
+}
+
+// update the toolbar buttons
+void MMainWnd::UpdateOurToolBarButtons(INT iType)
 {
     // delete all the buttons of toolbar
     while (SendMessageW(m_hToolBar, TB_DELETEBUTTON, 0, 0))
@@ -5087,6 +5200,8 @@ void MMainWnd::UpdateOurToolBar(INT iType)
         SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
         break;
     }
+
+    UpdateToolBarStatus();
 
     // show/hide the toolbar by settings
     if (g_settings.bShowToolBar)
@@ -5119,7 +5234,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 
     if (!entry)     // not selected
     {
-        UpdateOurToolBar(3);
+        UpdateOurToolBarButtons(3);
         return;
     }
 
@@ -5204,19 +5319,19 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         // update the toolbar
         if (Edit_GetModify(m_hSrcEdit))
         {
-            UpdateOurToolBar(2);
+            UpdateOurToolBarButtons(2);
         }
         else if (entry->is_testable())
         {
-            UpdateOurToolBar(0);
+            UpdateOurToolBarButtons(0);
         }
         else if (entry->can_gui_edit())
         {
-            UpdateOurToolBar(4);
+            UpdateOurToolBarButtons(4);
         }
         else
         {
-            UpdateOurToolBar(3);
+            UpdateOurToolBarButtons(3);
         }
     }
     else
@@ -5225,7 +5340,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         Edit_SetReadOnly(m_hSrcEdit, TRUE);
 
         // update the toolbar
-        UpdateOurToolBar(3);
+        UpdateOurToolBarButtons(3);
     }
 
     // recalculate the splitter
@@ -8824,7 +8939,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         // the source EDIT control was modified.
         // change the toolbar
-        UpdateOurToolBar(2);
+        UpdateOurToolBarButtons(2);
 
         // show "ready" status
         ChangeStatusText(IDS_READY);
@@ -9186,6 +9301,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     }
 
+    UpdateToolBarStatus();
+
     // remove the command lock
     --m_nCommandLock;
 
@@ -9262,13 +9379,12 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 // WM_NOTIFY
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
-    MWaitCursor wait;
-
     // get the selected entry
     auto entry = g_res.get_entry();
 
     if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
+        MWaitCursor wait;
         if (pnmhdr->hwndFrom == m_splitter1)
         {
             if (m_splitter1.GetPaneCount() >= 1)
@@ -9287,12 +9403,14 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_DELETEITEM)
     {
+        MWaitCursor wait;
         auto ptv = (NM_TREEVIEW *)pnmhdr;
         auto entry = (EntryBase *)ptv->itemOld.lParam;
         g_res.on_delete_item(entry);
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
+        MWaitCursor wait;
         if (pnmhdr->hwndFrom == m_hwndTV)
         {
             switch (entry->m_et)
@@ -9323,6 +9441,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_SELCHANGING)
     {
+        MWaitCursor wait;
         if (!m_bLoading)
         {
             // compile if necessary
@@ -9336,6 +9455,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
     {
+        MWaitCursor wait;
         if (!m_bLoading && entry)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
@@ -9346,6 +9466,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == NM_RETURN)
     {
+        MWaitCursor wait;
         if (pnmhdr->hwndFrom == m_hwndTV)
         {
             switch (entry->m_et)
@@ -9376,6 +9497,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_KEYDOWN)
     {
+        MWaitCursor wait;
         auto pTVKD = (TV_KEYDOWN *)pnmhdr;
         switch (pTVKD->wVKey)
         {
@@ -9407,6 +9529,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_GETINFOTIP)
     {
+        MWaitCursor wait;
         auto pGetInfoTip = (NMTVGETINFOTIP *)pnmhdr;
         auto entry = (EntryBase *)pGetInfoTip->lParam;
         if (g_res.super()->find(entry) != g_res.super()->end())
@@ -9427,6 +9550,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         }
         else if (pnmhdr->code == TVN_BEGINLABELEDIT)
         {
+            MWaitCursor wait;
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
@@ -9465,6 +9589,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         }
         else if (pnmhdr->code == TVN_ENDLABELEDIT)
         {
+            MWaitCursor wait;
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             HTREEITEM hItem = pInfo->item.hItem;
@@ -10422,7 +10547,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         else
         {
             // failure
-            UpdateOurToolBar(2);
+            UpdateOurToolBarButtons(2);
 
             // set the error message
             SetErrorMessage(strOutput, TRUE);
