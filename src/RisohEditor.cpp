@@ -1742,6 +1742,8 @@ protected:
     WCHAR       m_szResourceH[MAX_PATH];        // the resource.h file location
     BOOL        m_bUpxCompressed;               // is the real file compressed?
 
+    BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed);
+
     // selection
     MIdOrString     m_type;
     MIdOrString     m_name;
@@ -1847,7 +1849,6 @@ public:
     // utilities
     BOOL CheckDataFolder(VOID);
     INT CheckData(VOID);
-    BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile);
 
     void UpdateMenu();
     void SelectTV(EntryBase *entry, BOOL bDoubleClick);
@@ -2696,7 +2697,7 @@ void MMainWnd::OnNew(HWND hwnd)
     OnUnloadResH(hwnd);
 
     // update the file info
-    UpdateFileInfo(FT_NONE, NULL);
+    UpdateFileInfo(FT_NONE, NULL, FALSE);
 
     // clean up
     g_res.delete_all();
@@ -2824,7 +2825,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
 
                     // update the file info
-                    UpdateFileInfo(FT_RC, szFile);
+                    UpdateFileInfo(FT_RC, szFile, FALSE);
                 }
                 else
                 {
@@ -5911,8 +5912,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // load it now
         m_bLoading = TRUE;
         {
-            m_bUpxCompressed = FALSE;
-
             // renewal
             g_res.delete_all();
             g_res.merge(res);
@@ -5923,7 +5922,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = FALSE;
 
         // update the file info
-        UpdateFileInfo(FT_RES, szPath);
+        UpdateFileInfo(FT_RES, szPath, FALSE);
 
         // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -5955,8 +5954,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // load it now
         m_bLoading = TRUE;
         {
-            m_bUpxCompressed = FALSE;
-
             // renewal
             g_res.delete_all();
             g_res.merge(res);
@@ -5967,7 +5964,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         m_bLoading = FALSE;
 
         // update the file info
-        UpdateFileInfo(FT_RC, szPath);
+        UpdateFileInfo(FT_RC, szPath, FALSE);
 
         // show ID list if necessary
         if (m_szResourceH[0] && g_settings.bAutoShowIDList)
@@ -5985,8 +5982,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // check whether it was compressed
     MStringW strToOpen = pszPath;
-    m_bUpxCompressed = DoUpxTest(m_szUpxExe, pszPath);
-    if (m_bUpxCompressed)   // it was compressed
+    BOOL bCompressed = DoUpxTest(m_szUpxExe, pszPath);
+    if (bCompressed)   // it was compressed
     {
         INT nID;
         if (bForceDecompress)
@@ -6056,7 +6053,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
                 ErrorBoxDx(IDS_CANNOTOPEN);
 
                 // delete the decompressed file if any
-                if (m_bUpxCompressed)
+                if (bCompressed)
                 {
                     ::DeleteFileW(strToOpen.c_str());
                 }
@@ -6083,10 +6080,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     FreeLibrary(hMod);
 
     // update the file info (using the real path)
-    UpdateFileInfo(FT_EXECUTABLE, pszPath);
+    UpdateFileInfo(FT_EXECUTABLE, pszPath, bCompressed);
 
     // delete the decompressed file if any
-    if (m_bUpxCompressed)
+    if (bCompressed)
     {
         ::DeleteFileW(strToOpen.c_str());
     }
@@ -7384,7 +7381,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
 
     if (g_res.extract_res(pszExeFile, g_res))
     {
-        UpdateFileInfo(FT_RES, pszExeFile);
+        UpdateFileInfo(FT_RES, pszExeFile, FALSE);
         return TRUE;
     }
     return FALSE;
@@ -7443,7 +7440,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         if (g_res.update_exe(pszExeFile))   // success
         {
             // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile);
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
             // do compress by UPX
             if (g_settings.bCompressByUPX || bCompression)
@@ -7479,7 +7476,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
             DeleteFileW(TempFile);
 
             // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile);
+            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
             // do compress by UPX
             if (g_settings.bCompressByUPX || bCompression)
@@ -8674,7 +8671,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
 
                     // update the file info
-                    UpdateFileInfo(FT_RC, szFile);
+                    UpdateFileInfo(FT_RC, szFile, FALSE);
                 }
                 else
                 {
@@ -10378,10 +10375,10 @@ void MMainWnd::OnAddDialog(HWND hwnd)
 }
 
 // set the file-related info
-BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile)
+BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 {
-    // set the file type
     m_file_type = ft;
+    m_bUpxCompressed = bCompressed;
 
     if (pszFile == NULL || pszFile[0] == 0)
     {
