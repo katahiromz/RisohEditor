@@ -56,6 +56,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        // accept file dropping
         DragAcceptFiles(hwnd, TRUE);
 
         // for Types
@@ -74,7 +75,6 @@ public:
                 ComboBox_SetCurSel(hCmb1, k);
             }
         }
-
         table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
         for (auto& table_entry : table)
         {
@@ -85,9 +85,11 @@ public:
             }
         }
 
+        // enable input complete
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
 
+        // set 1 to the name if it's a RT_VERSION
         if (m_type == RT_VERSION)
         {
             SetDlgItemInt(hwnd, cmb2, 1, FALSE);
@@ -104,8 +106,10 @@ public:
             SetDlgItemTextW(hwnd, edt1, m_file);
         }
 
+        // do centering the dialog
         CenterWindowDx();
 
+        // move focus to help the user input
         if (m_type == 0xFFFF)
         {
             SetFocus(GetDlgItem(hwnd, cmb1));
@@ -115,6 +119,7 @@ public:
             SetFocus(GetDlgItem(hwnd, cmb2));
         }
 
+        // select the type
         OnCmb1(hwnd);
 
         return FALSE;
@@ -129,7 +134,8 @@ public:
     {
         MIdOrString type;
 
-        const ConstantsDB::TableType& table = g_db.GetTable(L"RESOURCE");
+        // cmb1 --> (iType, type)
+        auto table = g_db.GetTable(L"RESOURCE");
         INT iType = ComboBox_GetCurSel(m_cmb1);
         if (iType != CB_ERR && iType < INT(table.size()))
         {
@@ -145,125 +151,158 @@ public:
 
         if (type == RT_STRING)
         {
+            // edt1 --> sz (trimmed)
             WCHAR sz[16];
             GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
+
+            // clear the name if sz is empty
             if (sz[0] == 0)
-                SetDlgItemTextW(hwnd, cmb2, L"");
+                SetDlgItemTextW(hwnd, cmb2, NULL);
         }
         if (type == RT_MESSAGETABLE)
         {
+            // edt1 --> sz (trimmed)
             WCHAR sz[16];
             GetDlgItemTextW(hwnd, edt1, sz, _countof(sz));
             mstr_trim(sz);
+
+            // clear the name if sz is empty
             if (sz[0] == 0)
-                SetDlgItemTextW(hwnd, cmb2, L"");
+                SetDlgItemTextW(hwnd, cmb2, NULL);
         }
 
+        // if RT_VERSION, the name is one
         if (type == RT_VERSION)
         {
             SetDlgItemTextW(hwnd, cmb2, L"1");
         }
 
+        // check the name combobox cmb2
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         MIdOrString name;
         if (!Res_HasNoName(type) && !CheckNameComboBox(hCmb2, name))
-            return;
+            return;     // failure
 
+        // check the language combobox cmb3
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         WORD lang;
         if (!CheckLangComboBox(hCmb3, lang))
-            return;
+            return;     // failure
 
+        // get the file path from edt1
         std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
-        if (!HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
-            return;
 
+        // if there is no sample for the type, check if the file path exists
+        if (!HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
+            return;     // failure
+
+        // find the language entry by type, name, lang
         if (auto entry = g_res.find(ET_LANG, type, name, lang))
         {
+            // query overwriting
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
             switch (id)
             {
             case IDYES:
+                // delete the overlapped entries
                 g_res.search_and_delete(ET_LANG, type, name, lang);
                 break;
 
             case IDNO:
             case IDCANCEL:
-                return;
+                return;     // cancelled
             }
         }
 
         bool bOK = false;
         bool bAdded = false;
+
+        // if there is sample and no file was specified, then
         if (file.empty() && HasSample(type, lang))
         {
-            bOK = TRUE;
+            bOK = true;     // assume OK
+
             if (Res_HasNoName(type))
             {
+                // if this type has no name, clear the related entries
                 g_res.search_and_delete(ET_NAME, type, (WORD)0, lang);
             }
 
-            MByteStreamEx stream;
             if (HasSample(type, lang))
             {
+                // if the type has sample, then store the template text
                 m_strText = GetRisohTemplate(m_type, lang);
             }
             else if (type == L"RISOHTEMPLATE")
             {
+                // if the type is RISOHTEMPLATE, then store a blank text
                 m_strText = L" ";
             }
             else
             {
+                // otherwise it's not OK
                 bOK = false;
             }
 
+            // set one to the name if it's RT_STRING or RT_MESSAGETABLE
             if (type == RT_STRING || type == RT_MESSAGETABLE)
             {
                 name = 1;
             }
 
-            if (bOK)
+            if (bOK)    // it's OK
             {
-                if (m_strText.empty())
-                    g_res.add_lang_entry(type, name, lang, stream.data());
+                // add an empty entry (data will be set later)
+                g_res.add_lang_entry(type, name, lang);
+                bAdded = true;
 
+                // store the result
                 m_type = type;
                 m_name = name;
                 m_lang = lang;
-                m_strTemplate = m_strText;
-                bAdded = true;
+                m_strTemplate = m_strText;  // the template text
             }
         }
 
+        // try to load the file if not OK
         MByteStreamEx bs;
         if (!bOK && !bs.LoadFromFile(file.c_str()))
         {
+            // error
             ErrorBoxDx(IDS_CANNOTADDRES);
             return;
         }
+
+        // if not added yet, then
         if (!bAdded)
         {
+            // add the data from the file
             g_res.add_lang_entry(type, name, lang, bs.data());
 
+            // store the result
             m_type = type;
             m_name = name;
             m_lang = lang;
-            m_strTemplate.clear();
+            m_strTemplate.clear();  // no template text
         }
 
+        // finish the dialog
         EndDialog(IDOK);
     }
 
-    void OnPsh1(HWND hwnd)
+    void OnPsh1(HWND hwnd)  // "browse"
     {
+        // get the text (trimmed)
         MStringW strFile = GetDlgItemText(edt1);
         mstr_trim(strFile);
 
+        // strFile --> szFile
         WCHAR szFile[MAX_PATH];
-        lstrcpynW(szFile, strFile.c_str(), _countof(szFile));
+        StringCchCopyW(szFile, _countof(szFile), strFile.c_str());
 
+        // initialize OPENFILENAME structure
         OPENFILENAMEW ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
@@ -273,36 +312,42 @@ public:
         ofn.nMaxFile = _countof(szFile);
         ofn.lpstrTitle = LoadStringDx(IDS_ADDRES);
         ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_FILEMUSTEXIST |
-            OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-        ofn.lpstrDefExt = L"bin";
-        if (GetOpenFileNameW(&ofn))
+                    OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
+        ofn.lpstrDefExt = L"bin";   // the default extension
+        if (GetOpenFileNameW(&ofn)) // "OK" button was pressed
         {
+            // set the file path
             SetDlgItemTextW(hwnd, edt1, szFile);
         }
     }
 
     void OnPsh2(HWND hwnd)
     {
+        // show the ID list window
         SendMessage(GetParent(hwnd), WM_COMMAND, ID_IDLIST, 0);
     }
 
     void OnCmb1(HWND hwnd)
     {
-        MIdOrString type;
-
+        // get the text of combobox cmb1
         INT iSel = ComboBox_GetCurSel(m_cmb1);
         TCHAR szText[64];
         if (iSel == CB_ERR || ComboBox_GetLBText(m_cmb1, iSel, szText) == CB_ERR)
             szText[0] = 0;
 
+        // szText --> strIDType (trimmed)
         MString strIDType = szText;
         mstr_trim(strIDType);
+
+        // cut off the text from " (" to end
         size_t k = strIDType.find(L" (");
         if (k != MString::npos)
         {
             strIDType = strIDType.substr(0, k);
         }
 
+        // the resource type (RT_*) --> (type, iType)
+        MIdOrString type;
         WORD nRT_ = (WORD)g_db.GetValue(L"RESOURCE", strIDType);
         INT iType = g_db.IDTypeFromResType(nRT_);
         if (nRT_ != 0)
@@ -324,26 +369,32 @@ public:
 
         if (HasSample(type, m_lang))
         {
+            // if there is a sample for this type, the file path is optional
             SetDlgItemText(hwnd, stc2, LoadStringDx(IDS_OPTIONAL));
         }
         else
         {
+            // the file path is non-optional
             SetDlgItemText(hwnd, stc2, NULL);
         }
 
         if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_VERSION)
         {
+            // the name is optional if RT_STRING, RT_MESSAGETABLE or RT_VERSION
             SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_OPTIONAL));
         }
         else
         {
+            // otherwise the name is non-optional
             SetDlgItemText(hwnd, stc1, NULL);
         }
 
+        // iType (IDTYPE_*) --> prefix
         MString prefix = g_db.GetName(L"RESOURCE.ID.PREFIX", iType);
         if (prefix.empty())
             return;
 
+        // prefix --> m_cmb2
         ComboBox_ResetContent(m_cmb2);
         if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
@@ -362,36 +413,44 @@ public:
         case IDOK:
             OnOK(hwnd);
             break;
+
         case IDCANCEL:
             EndDialog(IDCANCEL);
             break;
-        case psh1:
+
+        case psh1:      // browse
             OnPsh1(hwnd);
             break;
-        case psh2:
+
+        case psh2:      // show the resource ID list
             OnPsh2(hwnd);
             break;
+
         case cmb1:
             if (codeNotify == CBN_SELCHANGE)
             {
+                // selection of cmb1 was changed
                 OnCmb1(hwnd);
             }
             else if (codeNotify == CBN_EDITCHANGE)
             {
-                m_cmb1.OnEditChange();
+                // the text of cmb1 was changed
+                m_cmb1.OnEditChange();  // input completion
                 OnCmb1(hwnd);
             }
             break;
+
         case cmb2:
             if (codeNotify == CBN_EDITCHANGE)
             {
-                m_cmb2.OnEditChange();
+                m_cmb2.OnEditChange();  // input completion
             }
             break;
+
         case cmb3:
             if (codeNotify == CBN_EDITCHANGE)
             {
-                m_cmb3.OnEditChange();
+                m_cmb3.OnEditChange();  // input completion
             }
             break;
         }
@@ -399,6 +458,7 @@ public:
 
     void OnDropFiles(HWND hwnd, HDROP hdrop)
     {
+        // file(s) has dropped
         WCHAR file[MAX_PATH];
         DragQueryFileW(hdrop, 0, file, _countof(file));
         SetDlgItemTextW(hwnd, edt1, file);
