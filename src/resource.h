@@ -391,6 +391,7 @@
 #define IDS_TOOL_CANCELEDIT     273
 #define IDS_TOOL_IMPORT         274
 #define IDS_TOOL_EXTRACT        275
+#define IDS_TOOL_GUIEDIT        276
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
