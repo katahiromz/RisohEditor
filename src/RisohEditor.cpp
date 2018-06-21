@@ -8810,35 +8810,40 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
     HMENU hEditMenu = GetSubMenu(hMenu, 1);
     HMENU hAddMenu = GetSubMenu(hEditMenu, 2);
 
+    // the button rectangle
     RECT rcItem = pToolBar->rcButton;
 
+    // get the hot point
     POINT pt;
     pt.x = rcItem.left;
     pt.y = rcItem.bottom;
     ClientToScreen(m_hToolBar, &pt);
 
+    // get the monitor info
     HMONITOR hMon = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
     MONITORINFO mi;
     ZeroMemory(&mi, sizeof(mi));
     mi.cbSize = sizeof(mi);
     GetMonitorInfo(hMon, &mi);
 
-    UINT uFlags;
+    // by the hot point, change the menu alignment
+    UINT uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL;
     if (pt.y >= (mi.rcWork.top + mi.rcWork.bottom) / 2)
     {
-        uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN | TPM_VERTICAL;
+        uFlags |= TPM_BOTTOMALIGN;
         pt.x = rcItem.left;
         pt.y = rcItem.top;
         ClientToScreen(m_hToolBar, &pt);
     }
     else
     {
-        uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_TOPALIGN | TPM_VERTICAL;
+        uFlags |= TPM_TOPALIGN;
     }
 
     // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
     SetForegroundWindow(m_hwnd);
 
+    // show the popup menu
     TPMPARAMS params;
     ZeroMemory(&params, sizeof(params));
     params.cbSize = sizeof(params);
