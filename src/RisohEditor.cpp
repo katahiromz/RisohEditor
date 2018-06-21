@@ -8836,6 +8836,7 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
         uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_TOPALIGN | TPM_VERTICAL;
     }
 
+    // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
     SetForegroundWindow(m_hwnd);
 
     TPMPARAMS params;
@@ -8844,6 +8845,7 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
     params.rcExclude = rcItem;
     TrackPopupMenuEx(hAddMenu, uFlags, pt.x, pt.y, m_hwnd, &params);
 
+    // See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms648002.aspx
     SendMessageDx(WM_NULL);
 }
 
