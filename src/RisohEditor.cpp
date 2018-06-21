@@ -8805,6 +8805,7 @@ void MMainWnd::OnSrcEditSelect(HWND hwnd)
 
 void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 {
+    // TODO: If you edited "Edit" menu, then you may have to update the below codes
     HMENU hMenu = GetMenu(hwnd);
     HMENU hEditMenu = GetSubMenu(hMenu, 1);
     HMENU hAddMenu = GetSubMenu(hEditMenu, 2);
@@ -8816,13 +8817,31 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
     pt.y = rcItem.bottom;
     ClientToScreen(m_hToolBar, &pt);
 
+    HMONITOR hMon = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi;
+    ZeroMemory(&mi, sizeof(mi));
+    mi.cbSize = sizeof(mi);
+    GetMonitorInfo(hMon, &mi);
+
+    UINT uFlags;
+    if (pt.y >= (mi.rcWork.top + mi.rcWork.bottom) / 2)
+    {
+        uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN | TPM_VERTICAL;
+        pt.x = rcItem.left;
+        pt.y = rcItem.top;
+        ClientToScreen(m_hToolBar, &pt);
+    }
+    else
+    {
+        uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_TOPALIGN | TPM_VERTICAL;
+    }
+
     SetForegroundWindow(m_hwnd);
 
     TPMPARAMS params;
     ZeroMemory(&params, sizeof(params));
     params.cbSize = sizeof(params);
     params.rcExclude = rcItem;
-    UINT uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_TOPALIGN | TPM_VERTICAL;
     TrackPopupMenuEx(hAddMenu, uFlags, pt.x, pt.y, m_hwnd, &params);
 
     SendMessageDx(WM_NULL);
