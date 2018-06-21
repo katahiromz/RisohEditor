@@ -20,6 +20,7 @@
 
 #define IDB_BMP                 100
 #define IDB_CONTROLS            101
+#define IDB_TOOLBAR             102
 
 #define ID_NEW                  100
 #define ID_OPEN                 101
@@ -162,6 +163,7 @@
 #define ID_SRCEDITSELECT        240
 #define ID_SAVEASCOMPRESS       241
 #define ID_CLONE                242
+#define ID_ADDBANG              243
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

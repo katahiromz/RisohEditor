@@ -51,6 +51,7 @@ IDR_BOUNCEANICUR    ANICURSOR "res/bounce.ani"
 
 IDB_BMP             BITMAP "res/bmp.bmp"
 IDB_CONTROLS        BITMAP "res/controls.bmp"
+IDB_TOOLBAR         BITMAP "res/tools.bmp"
 
 IDR_MAINFRAME       WAVE "res/wa.wav"
 IDR_MAINFRAME       GIF "res/anime.gif"

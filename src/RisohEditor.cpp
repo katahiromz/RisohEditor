@@ -1386,46 +1386,92 @@ MStringW TextFromLang(WORD lang)
 // buttons info #0
 TBBUTTON g_buttons0[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { 11, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 12, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TEST },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
+    { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
+    { 2, ID_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_SAVE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 3, ID_EXPAND_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPAND },
+    { 4, ID_COLLAPSE_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_COLLAPSE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 5, ID_ADDBANG, TBSTATE_ENABLED, BTNS_AUTOSIZE | BTNS_DROPDOWN, {0}, 0, IDS_TOOL_PLUS },
+    { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
+    { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
+    { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
 };
 
 // buttons info #1
 TBBUTTON g_buttons1[] =
 {
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP | BTNS_AUTOSIZE, {0}, 0, 0 },
-    { -1, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEST },
+    { 12, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TEST },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
+    { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
+    { 2, ID_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_SAVE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 3, ID_EXPAND_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPAND },
+    { 4, ID_COLLAPSE_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_COLLAPSE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 5, ID_ADDBANG, TBSTATE_ENABLED, BTNS_AUTOSIZE | BTNS_DROPDOWN, {0}, 0, IDS_TOOL_PLUS },
+    { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
+    { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
+    { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
 };
 
 // buttons info #2
 TBBUTTON g_buttons2[] =
 {
-    { -1, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_COMPILE },
-    { -1, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_CANCELEDIT },
+    { 9, ID_COMPILE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_COMPILE },
+    { 10, ID_CANCELEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_CANCELEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
+    { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
+    { 2, ID_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_SAVE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 3, ID_EXPAND_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPAND },
+    { 4, ID_COLLAPSE_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_COLLAPSE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 5, ID_ADDBANG, TBSTATE_ENABLED, BTNS_AUTOSIZE | BTNS_DROPDOWN, {0}, 0, IDS_TOOL_PLUS },
+    { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
+    { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
+    { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
 };
 
 // buttons info #3
 TBBUTTON g_buttons3[] =
 {
-    { -1, ID_ADDICON, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDICON },
-    { -1, ID_ADDCURSOR, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDCURSOR },
-    { -1, ID_ADDDIALOG, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDDIALOG },
-    { -1, ID_ADDMENU, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDMENU },
-    { -1, ID_ADDVERINFO, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_ADDVERINFO },
+    { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
+    { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
+    { 2, ID_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_SAVE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 3, ID_EXPAND_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPAND },
+    { 4, ID_COLLAPSE_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_COLLAPSE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 5, ID_ADDBANG, TBSTATE_ENABLED, BTNS_AUTOSIZE | BTNS_DROPDOWN, {0}, 0, IDS_TOOL_PLUS },
+    { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
+    { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
+    { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
 };
 
 // buttons info #4
 TBBUTTON g_buttons4[] =
 {
-    { -1, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_GUIEDIT },
-};
-
-// buttons info #5
-TBBUTTON g_buttons5[] =
-{
-    { -1, ID_TEXTEDIT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, IDS_TEXTEDIT },
+    { 11, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_GUIEDIT },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
+    { 1, ID_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_OPEN },
+    { 2, ID_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_SAVE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 3, ID_EXPAND_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPAND },
+    { 4, ID_COLLAPSE_ALL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_COLLAPSE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 5, ID_ADDBANG, TBSTATE_ENABLED, BTNS_AUTOSIZE | BTNS_DROPDOWN, {0}, 0, IDS_TOOL_PLUS },
+    { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
+    { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
+    { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
 };
 
 // store the toolbar strings
@@ -1780,6 +1826,7 @@ protected:
     HWND        m_hToolBar;     // the toolbar window handle
     HWND        m_hStatusBar;   // the status bar handle
     HWND        m_hFindReplaceDlg;  // the find/replace dialog handle
+    HIMAGELIST  m_himlTools;        // the image list for the toolbar
 
     // data and sub-programs
     WCHAR       m_szDataFolder[MAX_PATH];       // the data folder location
@@ -1826,7 +1873,7 @@ public:
         m_hwndTV(NULL), m_hImageList(NULL), m_nCommandLock(0),
         m_hFileIcon(NULL), m_hFolderIcon(NULL), m_hSrcFont(NULL), m_hBinFont(NULL),
         m_hToolBar(NULL), m_hStatusBar(NULL),
-        m_hFindReplaceDlg(NULL), m_file_type(FT_NONE)
+        m_hFindReplaceDlg(NULL), m_himlTools(NULL), m_file_type(FT_NONE)
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
@@ -1918,7 +1965,7 @@ public:
     BOOL ReCompileOnSelChange(BOOL bReopen = FALSE);
     void SelectString(void);
     void SelectMessage(void);
-    BOOL CreateOurToolBar(HWND hwndParent);
+    BOOL CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools);
     void UpdateOurToolBar(INT iType);
 
     // ID list
@@ -2051,6 +2098,7 @@ protected:
     void OnSrcEditSelect(HWND hwnd);
     void OnSaveAsWithCompression(HWND hwnd);
     void OnClone(HWND hwnd);
+    void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -4986,11 +5034,11 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
 }
 
 // create the toolbar
-BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
+BOOL MMainWnd::CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools)
 {
     // create a toolbar
     HWND hwndTB = CreateWindowW(TOOLBARCLASSNAME, NULL,
-        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_WRAPABLE | TBSTYLE_LIST,
+        WS_CHILD | WS_VISIBLE | CCS_TOP | TBSTYLE_LIST | TBSTYLE_TOOLTIPS,
         0, 0, 0, 0, hwndParent, (HMENU)1, GetWindowInstance(hwndParent), NULL);
     if (hwndTB == NULL)
         return FALSE;
@@ -4998,12 +5046,15 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent)
     // initialize
     SendMessageW(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
     SendMessageW(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(0, 0));
+    SendMessageW(hwndTB, TB_SETIMAGELIST, 0, (LPARAM)himlTools);
+    SendMessageW(hwndTB, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_MIXEDBUTTONS);
+
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons0), g_buttons0);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons1), g_buttons1);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons2), g_buttons2);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons3), g_buttons3);
     ToolBar_StoreStrings(hwndTB, _countof(g_buttons4), g_buttons4);
-    ToolBar_StoreStrings(hwndTB, _countof(g_buttons5), g_buttons5);
+
     m_hToolBar = hwndTB;
     UpdateOurToolBar(3);
 
@@ -5034,9 +5085,6 @@ void MMainWnd::UpdateOurToolBar(INT iType)
         break;
     case 4:
         SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons4), (LPARAM)g_buttons4);
-        break;
-    case 5:
-        SendMessageW(m_hToolBar, TB_ADDBUTTONS, _countof(g_buttons5), (LPARAM)g_buttons5);
         break;
     }
 
@@ -7890,6 +7938,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyIcon(m_hIconSm);
     DestroyAcceleratorTable(m_hAccel);
     ImageList_Destroy(m_hImageList);
+    ImageList_Destroy(m_himlTools);
     DestroyIcon(m_hFileIcon);
     DestroyIcon(m_hFolderIcon);
     DeleteObject(m_hSrcFont);
@@ -8615,6 +8664,27 @@ void MMainWnd::OnSrcEditSelect(HWND hwnd)
     }
 }
 
+void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
+{
+    HMENU hMenu = GetMenu(hwnd);
+    HMENU hEditMenu = GetSubMenu(hMenu, 1);
+    HMENU hAddMenu = GetSubMenu(hEditMenu, 2);
+
+    RECT rcItem = pToolBar->rcButton;
+
+    POINT pt;
+    pt.x = rcItem.left;
+    pt.y = rcItem.bottom;
+    ClientToScreen(m_hToolBar, &pt);
+
+    SetForegroundWindow(m_hwnd);
+
+    TrackPopupMenu(hAddMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON,
+                   pt.x, pt.y, 0, m_hwnd, &rcItem);
+
+    SendMessageDx(WM_NULL);
+}
+
 void MMainWnd::OnClone(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -9106,6 +9176,11 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_CLONE:
         OnClone(hwnd);
         break;
+    case ID_ADDBANG:
+        MessageBoxA(NULL, "OK", NULL, 0);
+        break;
+    //    OnAddBang(hwnd);
+    //    break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -9345,7 +9420,12 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         static WORD old_lang = BAD_LANG;
         static WCHAR szOldText[MAX_PATH] = L"";
 
-        if (pnmhdr->code == TVN_BEGINLABELEDIT)
+        if (pnmhdr->code == TBN_DROPDOWN)
+        {
+            auto pToolBar = (NMTOOLBAR *)pnmhdr;
+            OnAddBang(hwnd, pToolBar);
+        }
+        else if (pnmhdr->code == TVN_BEGINLABELEDIT)
         {
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
@@ -11024,9 +11104,21 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     ImageList_AddIcon(m_hImageList, m_hFileIcon);
     ImageList_AddIcon(m_hImageList, m_hFolderIcon);
 
-    // create the toolbar
-    if (!CreateOurToolBar(hwnd))
+    // create the tool image list for toolbar
+    m_himlTools = (HIMAGELIST)ImageList_LoadBitmap(m_hInst, MAKEINTRESOURCE(IDB_TOOLBAR),
+                                                   32, 8, RGB(255, 0, 255));
+    if (m_himlTools == NULL)
+    {
+        DWORD dwError = GetLastError();
+        DebugPrintDx(L"GetLastError(): %ld\n", dwError);
         return FALSE;
+    }
+
+    // create the toolbar
+    if (!CreateOurToolBar(hwnd, m_himlTools))
+    {
+        return FALSE;
+    }
 
     DWORD style, exstyle;
 
