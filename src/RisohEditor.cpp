@@ -1010,6 +1010,21 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
             ComboBox_SetCurSel(hCmb3, k);   // select it
         }
     }
+
+    auto table = g_db.GetTable(L"LANGUAGES");
+    for (auto& table_entry : table)
+    {
+        // build the text
+        WCHAR sz[MAX_PATH];
+        StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table_entry.name.c_str(), table_entry.value);
+
+        // search the text
+        if (ComboBox_FindStringExact(hCmb3, -1, sz) != CB_ERR)
+            continue;   // found
+
+        // add the text as a new item to combobox
+        ComboBox_AddString(hCmb3, sz);
+    }
 }
 
 // initialize the language listview
@@ -1053,7 +1068,46 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
         item.pszText = sz1;
         ListView_InsertItem(hLst1, &item);
 
+        item.iSubItem = 1;
+        item.pszText = sz2;
+        ListView_SetItem(hLst1, &item);
+
+        ++iItem;    // next item index
+    }
+
+    auto table = g_db.GetTable(L"LANGUAGES");
+    for (auto& table_entry : table)
+    {
+        // build two texts of an entry
+        StringCchPrintfW(sz1, _countof(sz1), L"%s", table_entry.name.c_str());
+        StringCchPrintfW(sz2, _countof(sz2), L"%lu", table_entry.value);
+
+        if (pszText)
+        {
+            // filtering by pszText
+            MString str = sz1;
+            if (str.find(pszText) == MString::npos)
+            {
+                str = sz2;
+                if (str.find(pszText) == MString::npos)
+                    continue;
+            }
+        }
+
+        // if it exists, don't add it
+        LV_FINDINFO find = { LVFI_STRING, sz1 };
+        INT iFound = ListView_FindItem(hLst1, -1, &find);
+        if (iFound != -1)
+            continue;
+
+        // add it
         ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = sz1;
+        ListView_InsertItem(hLst1, &item);
+
         item.iSubItem = 1;
         item.pszText = sz2;
         ListView_SetItem(hLst1, &item);
