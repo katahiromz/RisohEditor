@@ -216,13 +216,13 @@ public:
             }
         }
 
-        bool bOK = false;
+        bool bTemplateToAdd = false;
         bool bAdded = false;
 
         // if there is sample and no file was specified, then
         if (file.empty() && HasSample(type, lang))
         {
-            bOK = true;     // assume OK
+            bTemplateToAdd = true;     // assume OK
 
             if (Res_HasNoName(type))
             {
@@ -243,22 +243,22 @@ public:
             else
             {
                 // otherwise it's not OK
-                bOK = false;
+                bTemplateToAdd = false;
             }
 
             // set one to the name if it's RT_STRING or RT_MESSAGETABLE
             if (type == RT_STRING || type == RT_MESSAGETABLE)
             {
-                name = 1;
+                name = 1;   // it will be fixed later
             }
 
-            if (bOK)    // it's OK
+            if (bTemplateToAdd)    // it's OK
             {
                 // add an empty entry (data will be set later)
                 g_res.add_lang_entry(type, name, lang);
                 bAdded = true;
 
-                // store the result
+                // store the results
                 m_type = type;
                 m_name = name;
                 m_lang = lang;
@@ -268,7 +268,7 @@ public:
 
         // try to load the file if not OK
         MByteStreamEx bs;
-        if (!bOK && !bs.LoadFromFile(file.c_str()))
+        if (!bTemplateToAdd && !bs.LoadFromFile(file.c_str()))
         {
             // error
             ErrorBoxDx(IDS_CANNOTADDRES);
@@ -281,7 +281,7 @@ public:
             // add the data from the file
             g_res.add_lang_entry(type, name, lang, bs.data());
 
-            // store the result
+            // store the results
             m_type = type;
             m_name = name;
             m_lang = lang;
@@ -415,6 +415,7 @@ public:
             break;
 
         case IDCANCEL:
+            // cancel the dialog
             EndDialog(IDCANCEL);
             break;
 
