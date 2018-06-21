@@ -431,8 +431,7 @@ public:
         using namespace std;
         m_map.clear();
 
-        FILE *fp;
-        _wfopen_s(&fp, FileName, L"rb");
+        FILE *fp = _wfopen(FileName, L"rb");
         if (fp == NULL)
             return false;
 
@@ -464,25 +463,24 @@ public:
 
             // "[name], value, mask"
             static const wchar_t *s_delim = L" ,\r\n";
-            wchar_t *context;
             WCHAR *pch0, *pch1, *pch2;
             pch0 = &line[0];
             if (*pch0 == L',')
             {
                 pch0 = &line[0];
                 *pch0 = 0;
-                pch1 = wcstok_s(pch0 + 1, s_delim, &context);
+                pch1 = wcstok(pch0 + 1, s_delim);
             }
             else
             {
-                pch0 = wcstok_s(&line[0], s_delim, &context);
+                pch0 = wcstok(&line[0], s_delim);
                 if (pch0 == NULL)
                     continue;
-                pch1 = wcstok_s(NULL, s_delim, &context);
+                pch1 = wcstok(NULL, s_delim);
             }
             if (pch1 == NULL)
                 continue;
-            pch2 = wcstok_s(NULL, s_delim, &context);
+            pch2 = wcstok(NULL, s_delim);
 
             NameType name = pch0;
             mstr_trim(name);

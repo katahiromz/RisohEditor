@@ -184,8 +184,7 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 {
     using namespace std;
 
-    FILE *fp;
-    _wfopen_s(&fp, filename, L"wb");        // open
+    FILE *fp = _wfopen(filename, L"wb");        // open
 
     int n = (int)fwrite(pv, size, 1, fp);   // write
 
@@ -10008,8 +10007,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         DoBackupFile(m_szResourceH);
 
         // open file
-        FILE *fp;
-        _wfopen_s(&fp, m_szResourceH, L"r");
+        FILE *fp = _wfopen(m_szResourceH, L"r");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);
@@ -10026,7 +10024,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         UpdateResHLines(lines);
 
         // reopen the file to write
-        _wfopen_s(&fp, m_szResourceH, L"w");
+        fp = _wfopen(m_szResourceH, L"w");
         if (!fp)
         {
             ErrorBoxDx(IDS_CANTWRITERESH);

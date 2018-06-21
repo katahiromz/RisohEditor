@@ -290,9 +290,7 @@ public:
 
         FILE *fp;
 #ifdef UNICODE
-        _wfopen_s(&fp, FileName, L"rb");
-#elif defined(_WIN32)
-        fopen_s(&fp, FileName, "rb");
+        fp = _wfopen(FileName, L"rb");
 #else
         fp = fopen(FileName, "rb");
 #endif
@@ -323,9 +321,7 @@ public:
     {
         FILE *fp;
 #ifdef UNICODE
-        _wfopen_s(&fp, FileName, L"wb");
-#elif defined(_WIN32)
-        fopen_s(&fp, FileName, "wb");
+        fp = _wfopen(FileName, L"wb");
 #else
         fp = fopen(FileName, "wb");
 #endif
