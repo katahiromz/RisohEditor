@@ -5068,11 +5068,7 @@ BOOL MMainWnd::CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools)
 
 void MMainWnd::UpdateToolBarStatus()
 {
-    // search the language entries
-    EntrySetBase found;
-    g_res.search(found, ET_LANG);
-
-    if (found.empty())
+    if (TreeView_GetCount(m_hwndTV) == 0)
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, 0);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, 0);
