@@ -8869,12 +8869,12 @@ void MMainWnd::OnExtractBang(HWND hwnd)
         if (entry->m_type == RT_ICON || entry->m_type == RT_GROUP_ICON ||
             entry->m_type == RT_ANIICON)
         {
-            OnExtractCursor(hwnd);
+            OnExtractIcon(hwnd);
         }
         else if (entry->m_type == RT_CURSOR || entry->m_type == RT_GROUP_CURSOR ||
                  entry->m_type == RT_ANICURSOR)
         {
-            OnExtractIcon(hwnd);
+            OnExtractCursor(hwnd);
         }
         else if (entry->m_type == RT_BITMAP)
         {
