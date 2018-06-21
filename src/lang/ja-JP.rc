@@ -454,6 +454,8 @@ STRINGTABLE
     IDS_TOOL_CLONE, "別の名前/言語で複製"
     IDS_TOOL_RECOMPILE, "再コンパイル"
     IDS_TOOL_CANCELEDIT, "編集をキャンセル"
+    IDS_TOOL_IMPORT, "インポート..."
+    IDS_TOOL_EXTRACT, "抽出..."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

@@ -1387,7 +1387,6 @@ MStringW TextFromLang(WORD lang)
 TBBUTTON g_buttons0[] =
 {
     { 11, ID_GUIEDIT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_GUIEDIT },
-    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 12, ID_TEST, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TEST },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 0, ID_NEW, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_NEW },
@@ -1401,6 +1400,9 @@ TBBUTTON g_buttons0[] =
     { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
     { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
+    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
 };
 
 // buttons info #1
@@ -1419,6 +1421,9 @@ TBBUTTON g_buttons1[] =
     { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
     { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
+    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
 };
 
 // buttons info #2
@@ -1438,6 +1443,9 @@ TBBUTTON g_buttons2[] =
     { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
     { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
+    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
 };
 
 // buttons info #3
@@ -1454,6 +1462,9 @@ TBBUTTON g_buttons3[] =
     { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
     { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
+    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
 };
 
 // buttons info #4
@@ -1472,6 +1483,9 @@ TBBUTTON g_buttons4[] =
     { 6, ID_DELETERES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_MINUS },
     { 7, ID_EDITLABEL, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CHANGE },
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
+    { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
+    { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
+    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
 };
 
 // store the toolbar strings
@@ -2101,6 +2115,7 @@ protected:
     void OnSaveAsWithCompression(HWND hwnd);
     void OnClone(HWND hwnd);
     void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
+    void OnExtractBang(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -5072,11 +5087,13 @@ void MMainWnd::UpdateToolBarStatus()
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, 0);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXTRACTBANG, 0);
     }
     else
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, TBSTATE_ENABLED);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXTRACTBANG, TBSTATE_ENABLED);
     }
 
     BOOL bCanEditLabel = TRUE;
@@ -8833,6 +8850,47 @@ void MMainWnd::OnClone(HWND hwnd)
     }
 }
 
+void MMainWnd::OnExtractBang(HWND hwnd)
+{
+    auto entry = g_res.get_entry();
+    if (!entry)
+        return;
+
+    switch (entry->m_et)
+    {
+    case ET_TYPE:
+    case ET_NAME:
+    case ET_STRING:
+    case ET_MESSAGE:
+        OnExtractBin(hwnd);
+        break;
+
+    case ET_LANG:
+        if (entry->m_type == RT_ICON || entry->m_type == RT_GROUP_ICON ||
+            entry->m_type == RT_ANIICON)
+        {
+            OnExtractCursor(hwnd);
+        }
+        else if (entry->m_type == RT_CURSOR || entry->m_type == RT_GROUP_CURSOR ||
+                 entry->m_type == RT_ANICURSOR)
+        {
+            OnExtractIcon(hwnd);
+        }
+        else if (entry->m_type == RT_BITMAP)
+        {
+            OnExtractBitmap(hwnd);
+        }
+        else
+        {
+            OnExtractBin(hwnd);
+        }
+        break;
+
+    default:
+        break;
+    }
+}
+
 void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 {
     enum ResFileFilterIndex     // see also: IDS_EXEFILTER
@@ -9299,10 +9357,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnClone(hwnd);
         break;
     case ID_ADDBANG:
-        MessageBoxA(NULL, "OK", NULL, 0);
         break;
-    //    OnAddBang(hwnd);
-    //    break;
+    case ID_EXTRACTBANG:
+        OnExtractBang(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;

@@ -164,6 +164,7 @@
 #define ID_SAVEASCOMPRESS       241
 #define ID_CLONE                242
 #define ID_ADDBANG              243
+#define ID_EXTRACTBANG          245
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101
@@ -388,6 +389,8 @@
 #define IDS_TOOL_CLONE          271
 #define IDS_TOOL_RECOMPILE      272
 #define IDS_TOOL_CANCELEDIT     273
+#define IDS_TOOL_IMPORT         274
+#define IDS_TOOL_EXTRACT        275
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
