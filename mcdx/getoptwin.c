@@ -13,8 +13,6 @@
  */
 #if !defined(__GNUC__) && !defined(HAVE_GETOPT_H)
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

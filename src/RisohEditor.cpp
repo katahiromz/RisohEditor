@@ -1134,17 +1134,14 @@ WORD LangFromText(LPWSTR pszLang)
         if (strLang[0] == 0)
             break;  // it's empty. invalid
 
-        if (strLang.find(L'_') != MStringW::npos)   // found '_' ?
+        // maybe en_US, or jp_JP etc.
+        if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
         {
-            // maybe en_US, or jp_JP etc.
-            if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
-            {
-                lang = (WORD)nValue;    // found
-                break;
-            }
+            lang = (WORD)nValue;    // found
+            break;
         }
 
-        if (strLang.find(L'-') != MStringW::npos)   // found '-' ?
+        // maybe en-US, or jp-JP etc.
         {
             MStringW str = strLang;
 
