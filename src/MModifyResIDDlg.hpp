@@ -48,7 +48,8 @@ public:
         int value = mstr_parse_int(m_str2.c_str(), true);
         SetDlgItemInt(hwnd, edt3, value, TRUE);
 
-        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(SHRT_MAX, SHRT_MIN));
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0,
+                           MAKELPARAM((WORD)SHRT_MAX, (WORD)SHRT_MIN));
 
         CenterWindowDx();
         return TRUE;
