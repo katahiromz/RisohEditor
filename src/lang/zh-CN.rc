@@ -464,6 +464,8 @@ STRINGTABLE
     IDS_GERMAN, "德语"
     IDS_SPAIN, "西班牙"
     IDS_SPANISH, "西班牙语"
+    IDS_INVALIDLANG, "无法识别的语言."
+    IDS_INVALIDNAME, "资源名称无效."
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

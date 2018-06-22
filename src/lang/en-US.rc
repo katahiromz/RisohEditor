@@ -464,6 +464,8 @@ STRINGTABLE
     IDS_GERMAN, "German"
     IDS_SPAIN, "Spain"
     IDS_SPANISH, "Spanish"
+    IDS_INVALIDLANG, "Unrecognizable language."
+    IDS_INVALIDNAME, "Invalid resource name."
 }
 
 

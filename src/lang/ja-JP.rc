@@ -466,6 +466,8 @@ STRINGTABLE
     IDS_GERMAN, "ドイツ語"
     IDS_SPAIN, "スペイン"
     IDS_SPANISH, "スペイン語"
+    IDS_INVALIDLANG, "認識できない言語です。"
+    IDS_INVALIDNAME, "不正なリソース名です。"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

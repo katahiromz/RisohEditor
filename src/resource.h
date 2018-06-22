@@ -401,6 +401,8 @@
 #define IDS_GERMAN              283
 #define IDS_SPAIN               284
 #define IDS_SPANISH             285
+#define IDS_INVALIDLANG         286
+#define IDS_INVALIDNAME         287
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

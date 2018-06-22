@@ -9765,6 +9765,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             if (entry->m_et == ET_NAME)
             {
+                // rename the name
                 MIdOrString old_name = GetNameFromText(szOldText);
                 MIdOrString new_name = GetNameFromText(szNewText);
 
@@ -9772,7 +9773,10 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 if (new_name.empty())
+                {
+                    ErrorBoxDx(IDS_INVALIDNAME);
                     return FALSE;   // reject
+                }
 
                 if (old_name.is_str())
                     CharUpperW(&old_name.m_str[0]);
@@ -9782,11 +9786,17 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 if (old_name == new_name)
                     return FALSE;   // reject
 
+                // check if it already exists
+                if (auto e = g_res.find(ET_LANG, entry->m_type, new_name))
+                {
+                    ErrorBoxDx(IDS_ALREADYEXISTS);
+                    return FALSE;   // reject
+                }
+
                 DoRenameEntry(pszNewText, entry, old_name, new_name);
                 return TRUE;   // accept
             }
-            else if (entry->m_et == ET_LANG || entry->m_et == ET_STRING ||
-                     entry->m_et == ET_MESSAGE)
+            else if (entry->m_et == ET_LANG)
             {
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -9794,10 +9804,46 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
                 WORD new_lang = LangFromText(szNewText);
                 if (new_lang == BAD_LANG)
+                {
+                    ErrorBoxDx(IDS_INVALIDLANG);
                     return FALSE;   // reject
+                }
 
                 if (old_lang == new_lang)
                     return FALSE;   // reject
+
+                // check if it already exists
+                if (auto e = g_res.find(ET_LANG, entry->m_type, entry->m_name, new_lang))
+                {
+                    ErrorBoxDx(IDS_ALREADYEXISTS);
+                    return FALSE;   // reject
+                }
+
+                DoRelangEntry(pszNewText, entry, old_lang, new_lang);
+                return TRUE;   // accept
+            }
+            else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
+            {
+                old_lang = LangFromText(szOldText);
+                if (old_lang == BAD_LANG)
+                    return FALSE;   // reject
+
+                WORD new_lang = LangFromText(szNewText);
+                if (new_lang == BAD_LANG)
+                {
+                    ErrorBoxDx(IDS_INVALIDLANG);
+                    return FALSE;   // reject
+                }
+
+                if (old_lang == new_lang)
+                    return FALSE;   // reject
+
+                // check if it already exists
+                if (auto e = g_res.find(ET_LANG, entry->m_type, WORD(0), new_lang))
+                {
+                    ErrorBoxDx(IDS_ALREADYEXISTS);
+                    return FALSE;   // reject
+                }
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
                 return TRUE;   // accept
