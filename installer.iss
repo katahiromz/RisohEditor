@@ -12,7 +12,7 @@
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName=RisohEditor
-AppVerName=RisohEditor 4.9.8
+AppVerName=RisohEditor 5.0.0
 AppPublisher=Katayama Hirofumi MZ
 AppPublisherURL=http://katahiromz.web.fc2.com/
 AppSupportURL=http://katahiromz.web.fc2.com/
@@ -22,7 +22,7 @@ DefaultGroupName=RisohEditor
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=.
-OutputBaseFilename=risoheditor-4.9.8-setup
+OutputBaseFilename=risoheditor-5.0.0-setup
 SetupIconFile=src\res\RisohEditor.ico
 Compression=lzma
 SolidCompression=yes
@@ -31,9 +31,9 @@ VersionInfoCompany=Katayama Hirofumi MZ
 VersionInfoCopyright=Copyright (C) 2017-2018 Katayama Hirofumi MZ.
 VersionInfoDescription=Win32 Resource Editor
 VersionInfoProductName=RisohEditor
-VersionInfoProductTextVersion=4.9.8
-VersionInfoProductVersion=4.9.8
-VersionInfoVersion=4.9.8
+VersionInfoProductTextVersion=5.0.0
+VersionInfoProductVersion=5.0.0
+VersionInfoVersion=5.0.0
 
 [Languages]
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
