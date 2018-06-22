@@ -1163,6 +1163,7 @@ WORD LangFromText(LPWSTR pszLang)
 
         // is it American English?
         if (lstrcmpiW(pszLang, L"America") == 0 ||
+            lstrcmpiW(pszLang, L"American") == 0 ||
             lstrcmpiW(pszLang, L"United States") == 0 ||
             lstrcmpiW(pszLang, L"USA") == 0 ||
             lstrcmpiW(pszLang, L"US") == 0 ||
