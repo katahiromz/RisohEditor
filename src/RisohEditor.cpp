@@ -1164,8 +1164,8 @@ WORD LangFromText(LPWSTR pszLang)
         // is it American English?
         if (lstrcmpiW(pszLang, L"America") == 0 ||
             lstrcmpiW(pszLang, L"United States") == 0 ||
-            lstrcmpiW(pszLang, L"US") == 0 ||
             lstrcmpiW(pszLang, L"USA") == 0 ||
+            lstrcmpiW(pszLang, L"US") == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_AMERICA)) == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_ENGLISH)) == 0)
         {
@@ -1204,6 +1204,7 @@ WORD LangFromText(LPWSTR pszLang)
         if (lstrcmpiW(pszLang, L"United Kingdom") == 0 ||
             lstrcmpiW(pszLang, L"Great Britain") == 0 ||
             lstrcmpiW(pszLang, L"British") == 0 ||
+            lstrcmpiW(pszLang, L"GBR") == 0 ||
             lstrcmpiW(pszLang, L"UK") == 0 ||
             lstrcmpiW(pszLang, L"GB") == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_UNITEDKINGDOM)) == 0 ||
@@ -1212,6 +1213,45 @@ WORD LangFromText(LPWSTR pszLang)
         {
             // Russian
             lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK);
+            break;
+        }
+
+        // is it French?
+        if (lstrcmpiW(pszLang, L"French") == 0 ||
+            lstrcmpiW(pszLang, L"France") == 0 ||
+            lstrcmpiW(pszLang, L"FRA") == 0 ||
+            lstrcmpiW(pszLang, L"FR") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_FRANCE)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_FRENCH)) == 0)
+        {
+            // French
+            lang = MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH);
+            break;
+        }
+
+        // is it Germany?
+        if (lstrcmpiW(pszLang, L"Germany") == 0 ||
+            lstrcmpiW(pszLang, L"German") == 0 ||
+            lstrcmpiW(pszLang, L"DEU") == 0 ||
+            lstrcmpiW(pszLang, L"DE") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_GERMANY)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_GERMAN)) == 0)
+        {
+            // Germany
+            lang = MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN);
+            break;
+        }
+
+        // is it Spanish?
+        if (lstrcmpiW(pszLang, L"Spanish") == 0 ||
+            lstrcmpiW(pszLang, L"Spain") == 0 ||
+            lstrcmpiW(pszLang, L"ESP") == 0 ||
+            lstrcmpiW(pszLang, L"ES") == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_SPANISH)) == 0 ||
+            lstrcmpiW(pszLang, LoadStringDx(IDS_SPAIN)) == 0)
+        {
+            // Spanish
+            lang = MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH);
             break;
         }
 

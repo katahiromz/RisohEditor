@@ -458,6 +458,12 @@ STRINGTABLE
     IDS_UNITEDKINGDOM, "英国"
     IDS_GREATBRITAIN, "大不列颠"
     IDS_BRITISH, "英国的"
+    IDS_FRANCE, "法国"
+    IDS_FRENCH, "法语"
+    IDS_GERMANY, "德国"
+    IDS_GERMAN, "德语"
+    IDS_SPAIN, "西班牙"
+    IDS_SPANISH, "西班牙语"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

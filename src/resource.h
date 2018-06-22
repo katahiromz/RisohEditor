@@ -395,6 +395,12 @@
 #define IDS_UNITEDKINGDOM       277
 #define IDS_GREATBRITAIN        278
 #define IDS_BRITISH             279
+#define IDS_FRANCE              280
+#define IDS_FRENCH              281
+#define IDS_GERMANY             282
+#define IDS_GERMAN              283
+#define IDS_SPAIN               284
+#define IDS_SPANISH             285
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001

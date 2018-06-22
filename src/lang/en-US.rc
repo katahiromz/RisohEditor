@@ -458,6 +458,12 @@ STRINGTABLE
     IDS_UNITEDKINGDOM, "United Kingdom"
     IDS_GREATBRITAIN, "Great Britain"
     IDS_BRITISH, "British"
+    IDS_FRANCE, "France"
+    IDS_FRENCH, "French"
+    IDS_GERMANY, "Germany"
+    IDS_GERMAN, "German"
+    IDS_SPAIN, "Spain"
+    IDS_SPANISH, "Spanish"
 }
 
 
