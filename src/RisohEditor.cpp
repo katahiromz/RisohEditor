@@ -1201,12 +1201,11 @@ WORD LangFromText(LPWSTR pszLang)
             break;
         }
 
-        // is it UK?
+        // is it British?
         if (lstrcmpiW(pszLang, L"United Kingdom") == 0 ||
             lstrcmpiW(pszLang, L"Great Britain") == 0 ||
             lstrcmpiW(pszLang, L"British") == 0 ||
             lstrcmpiW(pszLang, L"GBR") == 0 ||
-            lstrcmpiW(pszLang, L"UK") == 0 ||
             lstrcmpiW(pszLang, L"GB") == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_UNITEDKINGDOM)) == 0 ||
             lstrcmpiW(pszLang, LoadStringDx(IDS_GREATBRITAIN)) == 0 ||
