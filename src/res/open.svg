@@ -9,15 +9,34 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="64"
-   height="64"
-   viewBox="0 0 16.933333 16.933334"
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666665 8.4666669"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="open.svg">
+   sodipodi:docname="open.svg"
+   inkscape:export-filename="C:\Users\katahiromz\Desktop\bitmap.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
-     id="defs2" />
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart-8"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path852-4"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)" />
+    </marker>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,32 +44,38 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="15.072355"
-     inkscape:cy="29.133736"
+     inkscape:zoom="11.2"
+     inkscape:cx="25.808048"
+     inkscape:cy="15.090711"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
-     showgrid="false"
+     showgrid="true"
      units="px"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-center="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
      inkscape:snap-bbox="true"
      inkscape:bbox-paths="true"
      inkscape:bbox-nodes="true"
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-bbox-midpoints="true"
-     inkscape:object-paths="true"
-     inkscape:snap-intersection-paths="true"
-     inkscape:snap-midpoints="true"
-     inkscape:snap-smooth-nodes="true"
-     inkscape:snap-object-midpoints="true"
-     inkscape:snap-center="true"
-     inkscape:snap-text-baseline="true"
-     inkscape:snap-page="true"
-     inkscape:snap-global="true"
      inkscape:window-width="1366"
      inkscape:window-height="705"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:snap-global="true"
+     inkscape:snap-others="false"
+     inkscape:snap-page="true"
+     inkscape:snap-nodes="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid10" />
+  </sodipodi:namedview>
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -59,7 +84,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -67,39 +92,28 @@
      inkscape:label="レイヤー 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-280.06665)">
-    <g
-       id="g823">
-      <g
-         transform="translate(0.55527155,0.11446815)"
-         id="g4560">
-        <rect
-           style="fill:#ffff57;fill-opacity:1;stroke:#000000;stroke-width:0.65987206;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect817"
-           width="11.621564"
-           height="12.371144"
-           x="3.7772717"
-           y="282.23328"
-           rx="1.2190475"
-           ry="1.4287583" />
-        <rect
-           style="fill:#ffff57;fill-opacity:1;stroke:#000000;stroke-width:0.56659895;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect817-2"
-           width="11.344784"
-           height="8.8122559"
-           x="-160.90981"
-           y="329.0264"
-           rx="1.1900145"
-           ry="1.0177382"
-           transform="matrix(1,0,0.48908719,0.8722349,0,0)" />
-      </g>
-      <rect
-         y="280.06665"
-         x="1.7841656e-006"
-         height="16.933332"
-         width="16.933332"
-         id="rect4543"
-         style="fill:#0000ff;fill-opacity:0.10096154;stroke:none;stroke-width:2.11666656;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
+     transform="translate(0,-288.53332)">
+    <rect
+       style="fill:#0000ff;fill-opacity:0.10096154;stroke:none;stroke-width:1.05833328;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4543"
+       width="8.4666662"
+       height="8.4666662"
+       x="-5.2041704e-016"
+       y="288.53333" />
+    <path
+       style="fill:#ffff00;fill-opacity:1;stroke:#000000;stroke-width:1.95991158;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 3.3808594 4.0039062 C 2.6179294 4.0039062 2.0039062 4.6536157 2.0039062 5.4609375 L 2.0039062 9.4238281 C 1.99649 9.5079041 1.9804688 9.5895873 1.9804688 9.6757812 L 1.9804688 26.324219 C 1.9804687 27.815597 3.1155522 29.015625 4.5253906 29.015625 L 21.474609 29.015625 C 22.884448 29.015625 24.019531 27.815597 24.019531 26.324219 L 24.019531 9.6757812 C 24.019531 8.1844025 22.884448 6.984375 21.474609 6.984375 L 13.931641 6.984375 L 13.931641 5.4609375 C 13.931641 4.6536157 13.317617 4.0039062 12.554688 4.0039062 L 3.3808594 4.0039062 z "
+       transform="matrix(0.26458333,0,0,0.26458333,0,288.53332)"
+       id="rect4862" />
+    <rect
+       style="fill:#ffff00;fill-opacity:1;stroke:#000000;stroke-width:0.48942181;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4862-7"
+       width="5.9425092"
+       height="4.6363621"
+       x="59.844238"
+       y="297.39392"
+       rx="0.68614542"
+       ry="0.56647909"
+       transform="matrix(1,0,-0.19502072,0.98079912,0,0)" />
   </g>
 </svg>
