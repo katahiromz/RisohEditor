@@ -164,6 +164,7 @@
 #define ID_CLONE                242
 #define ID_ADDBANG              243
 #define ID_EXTRACTBANG          245
+#define ID_JUMPTOMATOME         246
 
 #define IDD_REPLACERES          100
 #define IDD_ADDICON             101

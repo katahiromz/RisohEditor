@@ -2167,6 +2167,7 @@ protected:
     void OnClone(HWND hwnd);
     void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
     void OnExtractBang(HWND hwnd);
+    void OnJumpToMatome(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -8906,6 +8907,14 @@ void MMainWnd::OnClone(HWND hwnd)
     }
 }
 
+void MMainWnd::OnJumpToMatome(HWND hwnd)
+{
+    static const WCHAR szURL[] =
+        L"http://www.geocities.jp/katayama_hirofumi_mz/risoheditor";
+
+    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
+}
+
 void MMainWnd::OnExtractBang(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -9412,6 +9421,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_EXTRACTBANG:
         OnExtractBang(hwnd);
+        break;
+    case ID_JUMPTOMATOME:
+        OnJumpToMatome(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
