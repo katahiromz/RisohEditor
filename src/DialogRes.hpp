@@ -1115,7 +1115,7 @@ struct DialogRes
             m_old_class = m_class;
 
             m_style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
-            m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG;
+            m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS;
             m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                          WS_EX_LAYERED | WS_EX_TRANSPARENT);
             m_ex_style |= WS_EX_NOACTIVATE | WS_EX_MDICHILD;
