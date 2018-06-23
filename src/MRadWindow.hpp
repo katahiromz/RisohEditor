@@ -56,6 +56,7 @@ class MRadWindow;
 #define MYWM_REOPENRAD          (WM_USER + 108)     // reopen the RADical window
 #define MYWM_GETUNITS           (WM_USER + 109)     // get the dialog base units
 #define MYWM_UPDATEDLGRES       (WM_USER + 110)     // update the dialog res
+#define MYWM_REDRAW             (WM_USER + 111)     // redraw MRadDialog
 
 #define GRID_SIZE   5   // grid size
 
@@ -337,6 +338,8 @@ public:
                 pCtrl->m_bMoving = FALSE;
             }
         }
+
+        PostMessage(GetParent(hwnd), MYWM_REDRAW, 0, 0);
     }
 
     // resize the selected RADical controls
@@ -365,6 +368,8 @@ public:
                 }
             }
         }
+
+        PostMessage(GetParent(hwnd), MYWM_REDRAW, 0, 0);
     }
 
     // range selection
@@ -457,10 +462,18 @@ public:
             HANDLE_MSG(hwnd, WM_NCRBUTTONDBLCLK, OnNCRButtonDown);
             HANDLE_MSG(hwnd, WM_NCRBUTTONUP, OnNCRButtonUp);
             HANDLE_MSG(hwnd, WM_ERASEBKGND, OnEraseBkgnd);
+            HANDLE_MESSAGE(hwnd, MYWM_REDRAW, OnRedraw);
             case WM_MOVING: case WM_SIZING:
                 return 0;
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    // MRadCtrl MYWM_REDRAW
+    LRESULT OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        PostMessage(GetParent(hwnd), MYWM_REDRAW, 0, 0);
+        return 0;
     }
 
     // MRadCtrl WM_ERASEBKGND
@@ -554,7 +567,7 @@ public:
             // redraw
             RECT rc;
             GetClientRect(hwnd, &rc);
-            InvalidateRect(hwnd, &rc, FALSE);
+            InvalidateRect(hwnd, &rc, TRUE);
 
             // send MYWM_CTRLMOVE to the parent
             SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
@@ -581,7 +594,7 @@ public:
             SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
 
             // redraw
-            InvalidateRect(hwnd, NULL, FALSE);
+            InvalidateRect(hwnd, NULL, TRUE);
         }
     }
 
@@ -1024,6 +1037,7 @@ public:
             HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRButtonDown);
             HANDLE_MSG(hwnd, WM_RBUTTONDBLCLK, OnRButtonDown);
             HANDLE_MESSAGE(hwnd, MYWM_SELCHANGE, OnSelChange);
+            HANDLE_MESSAGE(hwnd, MYWM_REDRAW, OnRedraw);
         }
         return 0;
     }
@@ -1046,6 +1060,13 @@ public:
 
         // notify MYWM_SELCHANGE to the parent
         SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+    }
+
+    // MRadDialog MYWM_REDRAW
+    LRESULT OnRedraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        InvalidateRect(hwnd, NULL, TRUE);
+        return 0;
     }
 
     // MRadDialog MYWM_SELCHANGE
@@ -2157,6 +2178,9 @@ public:
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
+        // redraw
+        PostMessage(m_rad_dialog, MYWM_REDRAW, 0, 0);
+
         return 0;
     }
 
@@ -2202,6 +2226,9 @@ public:
         SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
+
+        // redraw
+        PostMessage(m_rad_dialog, MYWM_REDRAW, 0, 0);
 
         return 0;
     }
