@@ -29,7 +29,7 @@
 class MSrcEdit : public MEditCtrl
 {
 protected:
-    std::set<INT> m_indeces;
+    std::unordered_set<INT> m_indeces;
 
 public:
     INT m_iItemToBeSelected;
@@ -60,7 +60,7 @@ public:
         InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
-    void SetIndeces(const std::set<INT>& indeces)
+    void SetIndeces(const std::unordered_set<INT>& indeces)
     {
         m_indeces = indeces;
         InvalidateRect(m_hwnd, NULL, TRUE);

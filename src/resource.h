@@ -52,7 +52,6 @@
 #define ID_CTRLPROP             128
 #define ID_DLGPROP              129
 #define ID_DESTROYRAD           130
-#define ID_UPDATEDLGRES         131
 #define ID_CTRLINDEXTOP         132
 #define ID_CTRLINDEXBOTTOM      133
 #define ID_CTRLINDEXMINUS       134

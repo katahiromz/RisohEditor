@@ -32,7 +32,7 @@
 #include "IconRes.hpp"
 #include "resource.h"
 #include <map>
-#include <set>
+#include <unordered_set>     // for std::unordered_set
 #include <climits>
 
 class MRadCtrl;
@@ -55,6 +55,7 @@ class MRadWindow;
 #define MYWM_COMPILECHECK       (WM_USER + 107)     // compilation check
 #define MYWM_REOPENRAD          (WM_USER + 108)     // reopen the RADical window
 #define MYWM_GETUNITS           (WM_USER + 109)     // get the dialog base units
+#define MYWM_UPDATEDLGRES       (WM_USER + 110)     // update the dialog res
 
 #define GRID_SIZE   5   // grid size
 
@@ -140,7 +141,7 @@ public:
     }
 
     // the targets (the selected window handles)
-    typedef std::set<HWND> set_type;
+    typedef std::unordered_set<HWND> set_type;
     static set_type& GetTargets()
     {
         static set_type s_set;
@@ -155,11 +156,11 @@ public:
     }
 
     // get the target control indexes
-    static std::set<INT> GetTargetIndeces()
+    static std::unordered_set<INT> GetTargetIndeces()
     {
         set_type targets = MRadCtrl::GetTargets();
 
-        std::set<INT> indeces;
+        std::unordered_set<INT> indeces;
         for (auto target : targets)
         {
             auto pCtrl = MRadCtrl::GetRadCtrl(target);
@@ -242,7 +243,7 @@ public:
 
         // send MYWM_DELETESEL message to the parent of the target
         auto it = GetTargets().begin();
-        PostMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
+        SendMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
     // deselect this control
@@ -553,7 +554,7 @@ public:
             // redraw
             RECT rc;
             GetClientRect(hwnd, &rc);
-            InvalidateRect(hwnd, &rc, TRUE);
+            InvalidateRect(hwnd, &rc, FALSE);
 
             // send MYWM_CTRLMOVE to the parent
             SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
@@ -580,7 +581,7 @@ public:
             SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
 
             // redraw
-            InvalidateRect(hwnd, NULL, TRUE);
+            InvalidateRect(hwnd, NULL, FALSE);
         }
     }
 
@@ -1044,14 +1045,14 @@ public:
         MRadCtrl::DeselectSelection();
 
         // notify MYWM_SELCHANGE to the parent
-        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog MYWM_SELCHANGE
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         // notify MYWM_SELCHANGE to the parent
-        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
+        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
         return 0;
     }
 
@@ -1126,7 +1127,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_MOUSEMOVE
@@ -1193,7 +1194,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_ERASEBKGND
@@ -1762,7 +1763,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        PostMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
 
         return TRUE;
     }
@@ -1886,11 +1887,11 @@ public:
     {
         // post ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
+        SendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
         // notify selection change to the owner
         MRadCtrl::GetTargetIndeces().clear();
-        PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+        SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
         // destroy the icons
         if (m_hIcon)
@@ -1958,7 +1959,7 @@ public:
             }
 
             // reopen MRadWindow if necessary
-            PostMessage(hwndOwner, MYWM_REOPENRAD, 0, 0);
+            SendMessage(hwndOwner, MYWM_REOPENRAD, 0, 0);
         }
 
         // default processing
@@ -1976,10 +1977,10 @@ public:
         if (hwndSel == NULL)    // no
         {
 			// report the selection change to the owner window
-			PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+			SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 		
 			// clear the status
-            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
 
 			return 0;
         }
@@ -1989,10 +1990,10 @@ public:
         if (pCtrl == NULL)
         {
 			// report the selection change to the owner window
-			PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+			SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
 			// clear the status
-            PostMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
             return 0;
         }
 
@@ -2001,13 +2002,13 @@ public:
         {
             // report the position and size of the index
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
-            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
+            SendMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
 
         // report the selection change to the owner window
-        PostMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+        SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
         return 0;
     }
 
@@ -2103,11 +2104,13 @@ public:
     {
         // delete the selected dialog items from m_dialog_res
         auto indeces = MRadCtrl::GetTargetIndeces();
-        auto rend = indeces.rend();
-        for (auto rit = indeces.rbegin(); rit != rend; ++rit)
+        for (size_t i = m_dialog_res.size(); i > 0;)
         {
-            m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + *rit);
-            m_dialog_res.m_cItems--;
+            --i;
+            if (indeces.find(i) != indeces.end())
+            {
+                m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + i);
+            }
         }
 
         // recreate the MRadDialog
@@ -2150,12 +2153,9 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
-
-        // redraw
-        InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
@@ -2199,12 +2199,9 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
-
-        // redraw
-        InvalidateRect(m_rad_dialog, NULL, TRUE);
 
         return 0;
     }
@@ -2214,7 +2211,7 @@ public:
     {
         // notify the update of dialog resource to the owner window
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, ID_UPDATEDLGRES, 0);
+        SendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
 
         // redraw the labels
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
@@ -2235,7 +2232,7 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(rc.left, rc.top),
             MAKELPARAM(rc.right - rc.left, rc.bottom - rc.top));
 
@@ -2890,7 +2887,7 @@ public:
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+C
-                PostMessageDx(WM_COMMAND, ID_COPY);
+                SendMessageDx(WM_COMMAND, ID_COPY);
             }
             break;
 
@@ -2898,7 +2895,7 @@ public:
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+D
-                PostMessageDx(WM_COMMAND, ID_SHOWHIDEINDEX);
+                SendMessageDx(WM_COMMAND, ID_SHOWHIDEINDEX);
             }
             break;
 
@@ -2906,7 +2903,7 @@ public:
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+V
-                PostMessageDx(WM_COMMAND, ID_PASTE);
+                SendMessageDx(WM_COMMAND, ID_PASTE);
             }
             break;
 
@@ -2914,7 +2911,7 @@ public:
             if (GetAsyncKeyState(VK_CONTROL) < 0)
             {
                 // Ctrl+X
-                PostMessageDx(WM_COMMAND, ID_CUT);
+                SendMessageDx(WM_COMMAND, ID_CUT);
             }
             break;
 
@@ -3066,7 +3063,7 @@ public:
 
             // report moving/resizing to the owner window
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-            PostMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }

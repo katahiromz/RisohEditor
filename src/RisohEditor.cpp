@@ -2153,7 +2153,6 @@ protected:
     void OnCompile(HWND hwnd);
     void OnGuiEdit(HWND hwnd);
     void OnEdit(HWND hwnd);
-    void OnUpdateDlgRes(HWND hwnd);
     void OnCopyAsNewName(HWND hwnd);
     void OnCopyAsNewLang(HWND hwnd);
     void OnItemSearch(HWND hwnd);
@@ -2176,6 +2175,7 @@ protected:
     LRESULT OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
 
     void OnAddBitmap(HWND hwnd);
@@ -2665,7 +2665,7 @@ void MMainWnd::OnExport(HWND hwnd)
 }
 
 // the window class libraries
-typedef std::set<HMODULE> wclib_t;
+typedef std::unordered_set<HMODULE> wclib_t;
 wclib_t s_wclib;
 
 // is there a window class that is named pszName?
@@ -3018,32 +3018,6 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             break;
         }
     }
-}
-
-void MMainWnd::OnUpdateDlgRes(HWND hwnd)
-{
-    // get the selected language entry
-    auto entry = g_res.get_lang_entry();
-    if (!entry || entry->m_type != RT_DIALOG)
-    {
-        return;
-    }
-
-    auto& dialog_res = m_rad_window.m_dialog_res;
-
-    // dialog_res --> entry->m_data
-    MByteStreamEx stream;
-    dialog_res.SaveToStream(stream);
-    entry->m_data = stream.data();
-
-    // entry->m_lang + dialog_res --> str --> m_hSrcEdit (text)
-    MString str = GetLanguageStatement(entry->m_lang);
-    str += dialog_res.Dump(entry->m_name);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
-
-    // entry->m_data --> m_hBinEdit (binary)
-    str = DumpBinaryAsText(entry->m_data);
-    SetWindowTextW(m_hBinEdit, str.c_str());
 }
 
 // update the fonts by the font settings
@@ -7073,7 +7047,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
     // get the used languages
-    std::set<WORD> langs;
+    std::unordered_set<WORD> langs;
     EntrySetBase found;
     g_res.search(found, ET_LANG);
     for (auto res : found)
@@ -9179,10 +9153,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_DESTROYRAD:
         OnCancelEdit(hwnd);
         break;
-    case ID_UPDATEDLGRES:
-        OnUpdateDlgRes(hwnd);
-        bUpdateStatus = FALSE;
-        break;
     case ID_DELCTRL:
         MRadCtrl::DeleteSelection();
         m_hSrcEdit.ClearIndeces();
@@ -9453,7 +9423,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     // remove the command lock
     --m_nCommandLock;
 
-    if (m_nCommandLock == 0)
+    if (m_nCommandLock == 0 && (std::rand() & 15) == 0)
         g_res.delete_invalid();     // clean up invalids
 
     // show "ready" status if ready
@@ -11576,7 +11546,8 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_POSTSEARCH, OnPostSearch);
         DO_MESSAGE(MYWM_IDJUMPBANG, OnIDJumpBang);
         DO_MESSAGE(MYWM_SELCHANGE, OnRadSelChange);
-        
+        DO_MESSAGE(MYWM_UPDATEDLGRES, OnUpdateDlgRes);
+
     default:
         if (uMsg == s_uFindMsg)
         {
@@ -11694,6 +11665,34 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
     }
+}
+
+LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    // get the selected language entry
+    auto entry = g_res.get_lang_entry();
+    if (!entry || entry->m_type != RT_DIALOG)
+    {
+        return 0;
+    }
+
+    auto& dialog_res = m_rad_window.m_dialog_res;
+
+    // dialog_res --> entry->m_data
+    MByteStreamEx stream;
+    dialog_res.SaveToStream(stream);
+    entry->m_data = stream.data();
+
+    // entry->m_lang + dialog_res --> str --> m_hSrcEdit (text)
+    MString str = GetLanguageStatement(entry->m_lang);
+    str += dialog_res.Dump(entry->m_name);
+    SetWindowTextW(m_hSrcEdit, str.c_str());
+
+    // entry->m_data --> m_hBinEdit (binary)
+    str = DumpBinaryAsText(entry->m_data);
+    SetWindowTextW(m_hBinEdit, str.c_str());
+
+    return 0;
 }
 
 LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)

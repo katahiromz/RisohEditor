@@ -32,7 +32,7 @@
 #include "MString.hpp"
 #include "resource.h"
 
-#include <set>
+#include <unordered_set>     // for std::unordered_set
 #include <oledlg.h>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ public:
     };
     DialogRes&          m_dialog_res;
     BOOL                m_bUpdating;
-    std::set<INT>       m_indeces;
+    std::unordered_set<INT>       m_indeces;
     DWORD               m_flags;
     DWORD               m_dwStyle;
     DWORD               m_dwExStyle;
@@ -92,7 +92,7 @@ public:
     MComboBoxAutoComplete m_cmb4;
     MComboBoxAutoComplete m_cmb5;
 
-    MCtrlPropDlg(DialogRes& dialog_res, const std::set<INT>& indeces)
+    MCtrlPropDlg(DialogRes& dialog_res, const std::unordered_set<INT>& indeces)
         : MDialogBase(IDD_CTRLPROP), m_dialog_res(dialog_res), 
           m_bUpdating(FALSE), m_indeces(indeces)
     {

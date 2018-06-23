@@ -26,7 +26,7 @@
 
 #include "ResToText.hpp"
 #include "Res.hpp"
-#include <set>
+#include <unordered_set>     // for std::unordered_set
 
 struct ITEM_SEARCH;
 class MItemSearchDlg;
@@ -65,7 +65,7 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    typedef std::set<MItemSearchDlg *> dialogs_type;
+    typedef std::unordered_set<MItemSearchDlg *> dialogs_type;
 
     static dialogs_type& Dialogs()
     {

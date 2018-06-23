@@ -916,7 +916,7 @@ struct DialogRes
 
     bool SaveDlgInitData(MByteStreamEx::data_type& data) const
     {
-        std::set<WORD> ids;
+        std::unordered_set<WORD> ids;
         for (auto& item : m_items)
         {
             ids.insert(item.m_id);

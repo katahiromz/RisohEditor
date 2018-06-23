@@ -27,7 +27,7 @@
 
 #include <cctype>
 #include <cwchar>
-#include <set>          // for std::set
+#include <unordered_set>     // for std::unordered_set
 
 #include "IconRes.hpp"
 #include "MByteStreamEx.hpp"
@@ -448,7 +448,7 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = B
 // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
 // NOTE: It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
 
-typedef std::set<EntryBase *> EntrySetBase;
+typedef std::unordered_set<EntryBase *> EntrySetBase;
 
 struct EntrySet : protected EntrySetBase
 {
@@ -662,6 +662,9 @@ struct EntrySet : protected EntrySetBase
         // search the invalid
         super_type found;
         search_invalid(found);
+
+        if (found.empty())
+            return;
 
         // for all the invalid entries
         for (auto entry : found)
