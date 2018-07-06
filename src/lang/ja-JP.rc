@@ -469,6 +469,12 @@ STRINGTABLE
     IDS_SPANISH, "スペイン語"
     IDS_INVALIDLANG, "認識できない言語です。"
     IDS_INVALIDNAME, "不正なリソース名です。"
+    IDS_PNGRESBINFILTER, "PNG画像 (*.png)|*.png|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "JPEG画像 (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
+    IDS_GIFRESBINFILTER, "GIF画像 (*.gif)|*.gif|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER, "TIFF画像 (*.tif;*.tiff)|*.tif;*.tiff|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
+    IDS_AVIRESBINFILTER, "AVI動画 (*.avi)|*.avi|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
+    IDS_WAVERESBINFILTER, "WAVE音声 (*.wav)|*.wav|バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
 }
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170

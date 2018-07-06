@@ -466,6 +466,12 @@ STRINGTABLE
     IDS_SPANISH, "Spanish"
     IDS_INVALIDLANG, "Unrecognizable language."
     IDS_INVALIDNAME, "Invalid resource name."
+    IDS_PNGRESBINFILTER, "PNG Image (*.png)|*.png|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "JPEG Image (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+    IDS_GIFRESBINFILTER, "GIF Image (*.gif)|*.gif|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER, "TIFF Image (*.tif;*.tiff)|*.tif;*.tiff|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+    IDS_AVIRESBINFILTER, "AVI Movie (*.avi)|*.avi|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
+    IDS_WAVERESBINFILTER, "WAVE Sound (*.wav)|*.wav|Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
 }
 
 

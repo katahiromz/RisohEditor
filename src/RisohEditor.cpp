@@ -2384,9 +2384,26 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
 
     if (e->m_et == ET_LANG)
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
+    {
+        if (e->m_type == L"PNG")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_PNGRESBINFILTER));
+        else if (e->m_type == L"JPEG")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_JPEGRESBINFILTER));
+        else if (e->m_type == L"GIF")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_GIFRESBINFILTER));
+        else if (e->m_type == L"TIFF")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_TIFFRESBINFILTER));
+        else if (e->m_type == L"AVI")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_AVIRESBINFILTER));
+        else if (e->m_type == L"WAVE")
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WAVERESBINFILTER));
+        else
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_PNGRESBINFILTER));
+    }
     else
+    {
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+    }
 
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
