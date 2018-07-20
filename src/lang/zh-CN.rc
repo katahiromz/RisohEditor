@@ -280,8 +280,8 @@ IDR_POPUPMENUS MENU
 // TODO: Update the version numbers
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.0.1 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 5.0.1 by 片山博文MZ"
+    IDS_APPNAME, "RisohEditor 5.0.2 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 5.0.2 by 片山博文MZ"
     IDS_EXTRACTRES, "导出资源"
     IDS_RESBINFILTER, "资源文件(*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_CANNOTSAVE, "无法保存"
@@ -307,7 +307,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "位图打开失败！"
     IDS_REPLACEBMP, "替换位图"
     IDS_ERRORCODE, "错误码 %d"
-    IDS_VERSIONINFO, "RisohEditor 版本 5.0.1\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor 版本 5.0.2\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
     IDS_ADDRES, "增加资源"
     IDS_CANNOTADDRES, "添加资源失败."
     IDS_CANTADDBMP, "添加位图失败."
