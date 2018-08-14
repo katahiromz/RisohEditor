@@ -9452,7 +9452,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     // remove the command lock
     --m_nCommandLock;
 
-    if (m_nCommandLock == 0 && (std::rand() & 15) == 0)
+    if (m_nCommandLock == 0)
         g_res.delete_invalid();     // clean up invalids
 
     // show "ready" status if ready
