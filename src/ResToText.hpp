@@ -68,6 +68,7 @@ public:
     }
 
     MString DumpEntry(const EntryBase& entry);
+    MStringW GetResTypeName(const MIdOrString& type) const;
 
 public:
     HWND m_hwnd;
@@ -870,6 +871,40 @@ ResToText::DumpEntry(const EntryBase& entry)
         }
     }
     return DoUnknown(entry);
+}
+
+inline MStringW
+ResToText::GetResTypeName(const MIdOrString& type) const
+{
+    if (type.m_id)
+    {
+        switch (type.m_id)
+        {
+        case 1: return L"RT_CURSOR";
+        case 2: return L"RT_BITMAP";
+        case 3: return L"RT_ICON";
+        case 4: return L"RT_MENU";
+        case 5: return L"RT_DIALOG";
+        case 6: return L"RT_STRING";
+        case 7: return L"RT_FONTDIR";
+        case 8: return L"RT_FONT";
+        case 9: return L"RT_ACCELERATOR";
+        case 10: return L"RT_RCDATA";
+        case 11: return L"RT_MESSAGETABLE";
+        case 12: return L"RT_GROUP_CURSOR";
+        case 14: return L"RT_GROUP_ICON";
+        case 16: return L"RT_VERSION";
+        case 17: return L"RT_DLGINCLUDE";
+        case 19: return L"RT_PLUGPLAY";
+        case 20: return L"RT_VXD";
+        case 21: return L"RT_ANICURSOR";
+        case 22: return L"RT_ANIICON";
+        case 23: return L"RT_HTML";
+        case 24: return L"RT_MANIFEST";
+        case 240: return L"RT_DLGINIT";
+        }
+    }
+    return type.str();
 }
 
 inline MString ResToText::DoWave(const EntryBase& entry)

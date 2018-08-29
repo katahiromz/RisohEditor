@@ -91,6 +91,7 @@ struct RisohSettings
     BOOL                bWordWrap;          // do word wrap?
     BOOL                bBackup;            // do backup?
     MString             strBackupSuffix;    // backup suffix
+    BOOL                bRedundantComments; // output redundant comments?
 
     RisohSettings()
     {
