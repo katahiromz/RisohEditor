@@ -6898,13 +6898,13 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
     MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
-    if (g_settings.bRedundantComments)
+    if (!g_settings.bSepFilesByLang && g_settings.bRedundantComments)
     {
-        // dump a comment and a LANGUAGE statement
         file.WriteSzA(comment_sep.c_str());
         file.WriteSzA("\r\n");
     }
 
+    // dump a comment and a LANGUAGE statement
     MString strLang = ::GetLanguageStatement(lang, TRUE);
     strLang += L"\r\n";
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
@@ -7211,6 +7211,11 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 return FALSE;
             if (!DoWriteRCLang(lang_file, res2text, lang))
                 return FALSE;
+
+            if (g_settings.bRedundantComments)
+            {
+                lang_file.WriteSzA(comment_sep.c_str());
+            }
         }
     }
     else
