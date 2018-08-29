@@ -7006,7 +7006,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
     if (nCount < s_nBackupMaxCount)     // less than max count
     {
         MString strPath = pszPath;
-        strPath += L"-old";     // add "-old" to the path
+        strPath += g_settings.strBackupSuffix;
 
         // do backup the "old" folder (recursively)
         DoBackupFolder(strPath.c_str(), nCount + 1);
@@ -7033,7 +7033,7 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
     if (nCount < s_nBackupMaxCount)     // less than max count
     {
         MString strPath = pszPath;
-        strPath += L"-old";         // add "-old" to the path
+        strPath += g_settings.strBackupSuffix;
 
         // do backup the "old" file (recursively)
         DoBackupFile(strPath.c_str(), nCount + 1);
@@ -7057,7 +7057,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     res2text.m_bNoLanguage = TRUE;      // no LANGUAGE statements generated
 
     // at first, backup it
-    DoBackupFile(pszFileName);
+    if (g_settings.bBackup)
+        DoBackupFile(pszFileName);
 
     // create a RC file
     MFile file(pszFileName, TRUE);
@@ -7117,7 +7118,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             if (!lang)
                 continue;
 
-            DoBackupFolder(szLangDir);
+            if (g_settings.bBackup)
+                DoBackupFolder(szLangDir);
+
             CreateDirectory(szLangDir, NULL);
             break;
         }
@@ -7137,8 +7140,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
             //MessageBox(NULL, szLangFile, NULL, 0);
 
+            if (g_settings.bBackup)
+                DoBackupFile(szLangFile);
+
             // dump to lang/XX_XX.rc file
-            DoBackupFile(szLangFile);
             MFile lang_file(szLangFile, TRUE);
             lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             if (!lang_file)
@@ -7248,7 +7253,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
     // do backup the resource.h file
-    DoBackupFile(pszResH);
+    if (g_settings.bBackup)
+        DoBackupFile(pszResH);
 
     // create the resource.h file
     MFile file(pszResH, TRUE);
@@ -7636,7 +7642,10 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         {
             MString strResDir = szPath;
             strResDir += TEXT("\\res");
-            DoBackupFolder(strResDir.c_str());
+
+            if (g_settings.bBackup)
+                DoBackupFolder(strResDir.c_str());
+
             CreateDirectory(strResDir.c_str(), NULL);
         }
 
@@ -10419,7 +10428,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     else    // update the resource.h file by modification
     {
         // do backup the resource.h file
-        DoBackupFile(m_szResourceH);
+        if (g_settings.bBackup)
+            DoBackupFile(m_szResourceH);
 
         // open file
         FILE *fp = _wfopen(m_szResourceH, L"r");
@@ -10969,6 +10979,9 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.strAtlAxWin = L"AtlAxWin110";
     g_settings.nSaveFilterIndex = 1;
     g_settings.bWordWrap = FALSE;
+
+    g_settings.bBackup = TRUE;
+    g_settings.strBackupSuffix = L"-old";
 }
 
 // update the prefix data
@@ -11218,6 +11231,13 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nSaveFilterIndex"), (DWORD&)g_settings.nSaveFilterIndex);
     keyRisoh.QueryDword(TEXT("bWordWrap"), (DWORD&)g_settings.bWordWrap);
 
+    keyRisoh.QueryDword(TEXT("bBackup"), (DWORD&)g_settings.bBackup);
+
+    if (keyRisoh.QuerySz(L"strBackupSuffix", szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        g_settings.strBackupSuffix = szText;
+    }
+
     return TRUE;
 }
 
@@ -11352,6 +11372,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
     keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
     keyRisoh.SetDword(TEXT("bWordWrap"), g_settings.bWordWrap);
+    keyRisoh.SetDword(TEXT("bBackup"), g_settings.bBackup);
+
+    keyRisoh.SetSz(TEXT("strBackupSuffix"), TEXT(RE_VERSION));
+    keyRisoh.SetSz(L"strBackupSuffix", g_settings.strBackupSuffix.c_str());
 
     return TRUE;
 }

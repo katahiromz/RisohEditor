@@ -89,6 +89,8 @@ struct RisohSettings
     MString             strAtlAxWin;        // ATL OLE control name
     INT                 nSaveFilterIndex;   // the filter index on save
     BOOL                bWordWrap;          // do word wrap?
+    BOOL                bBackup;            // do backup?
+    MString             strBackupSuffix;    // backup suffix
 
     RisohSettings()
     {
