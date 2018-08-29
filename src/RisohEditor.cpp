@@ -7108,7 +7108,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             return FALSE;
 
         // build the lang directory path
-        size_t diff = pch - szLangDir;
+		*pch = 0;
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
@@ -7132,7 +7132,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             TCHAR szLangFile[MAX_PATH];
             StringCchCopy(szLangFile, _countof(szLangFile), szLangDir);
             StringCchCat(szLangFile, _countof(szLangFile), TEXT("/"));
-            MString lang_name = g_db.GetName(L"LANGUAGES", lang);
+            MString lang_name = g_db.GetLangName(lang);
             StringCchCat(szLangFile, _countof(szLangFile), lang_name.c_str());
             StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
             //MessageBox(NULL, szLangFile, NULL, 0);
@@ -7172,7 +7172,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                     continue;       // ignore neutral language
 
                 // get the language name (such as en_US, ja_JP, etc.) from database
-                MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
+                MString lang_name1 = g_db.GetLangName(lang);
 
                 // make uppercase one
                 MString lang_name2 = lang_name1;
@@ -7202,7 +7202,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                     continue;   // ignore the neutral language
 
                 // get the language name (such as en_US, ja_JP, etc.) from database
-                MString lang_name1 = g_db.GetName(L"LANGUAGES", lang);
+                MString lang_name1 = g_db.GetLangName(lang);
 
                 // write "#include \"lang/....rc\"\r\n"
                 file.WriteSzA("#include \"lang/");
