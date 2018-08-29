@@ -2035,7 +2035,6 @@ public:
     void UpdateOurToolBarButtons(INT iType);
     void UpdateToolBarStatus();
 
-
     // ID list
     void OnIDList(HWND hwnd);
     void OnIdAssoc(HWND hwnd);
@@ -2887,6 +2886,9 @@ void MMainWnd::OnNew(HWND hwnd)
 
     // update the file info
     UpdateFileInfo(FT_NONE, NULL, FALSE);
+
+    // 
+    SelectTV(NULL, FALSE);
 
     // clean up
     g_res.delete_all();
@@ -4964,6 +4966,12 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 // close the preview
 VOID MMainWnd::HidePreview()
 {
+    // destroy the RADical window if any
+    if (IsWindow(m_rad_window))
+    {
+        DestroyWindow(m_rad_window);
+    }
+
     // clear m_hBinEdit
     SetWindowTextW(m_hBinEdit, NULL);
     Edit_SetModify(m_hBinEdit, FALSE);
