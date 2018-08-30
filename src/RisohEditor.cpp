@@ -7211,8 +7211,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             if (g_settings.bRedundantComments)
             {
                 MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
-                file.WriteFormatA(utf8Notice.c_str());
-                file.WriteFormatA("\r\n");
+                lang_file.WriteFormatA(utf8Notice.c_str());
+                lang_file.WriteFormatA("\r\n");
             }
             lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             if (!lang_file)
