@@ -387,19 +387,19 @@ public:
         return NameType();
     }
 
-	NameType GetLangName(ValueType value) const
-	{
-		const TableType& table = GetTable(L"Languages");
-		TableType::const_iterator it, end = table.end();
-		for (it = table.begin(); it != end; ++it)
-		{
-			if (it->name.size() != 5 || it->name[2] != L'_')
-				continue;
-			if (it->value == value)
-				return it->name;
-		}
-		return NameType();
-	}
+    NameType GetLangName(ValueType value) const
+    {
+        const TableType& table = GetTable(L"Languages");
+        TableType::const_iterator it, end = table.end();
+        for (it = table.begin(); it != end; ++it)
+        {
+            if (it->name.size() != 5 || it->name[2] != L'_')
+                continue;
+            if (it->value == value)
+                return it->name;
+        }
+        return mstr_dec_short(value);
+    }
 
     ValueType GetValue(CategoryType category, NameType name) const
     {
