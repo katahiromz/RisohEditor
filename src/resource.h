@@ -411,6 +411,7 @@
 #define IDS_WAVERESBINFILTER    293
 #define IDS_COMMENT_SEP         294
 #define IDS_NEWLINE             295
+#define IDS_NOTICE              296
 
 #define IDC_DUMMYCONTROLID1     1000
 #define IDC_DUMMYCONTROLID2     1001
