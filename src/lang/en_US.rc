@@ -1024,7 +1024,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Re&set All", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 185
+IDD_EXP_OPTIONS DIALOG 0, 0, 205, 205
 CAPTION "Export Options"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
@@ -1037,8 +1037,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Create &backup  Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 165, 60, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 140, 165, 60, 14
+    AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    DEFPUSHBUTTON "OK", IDOK, 74, 185, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 140, 185, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 210
@@ -1119,7 +1120,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Cancel", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 185
+IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 205
 CAPTION "Save Options"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
@@ -1132,8 +1133,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Create &backup  Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 165, 60, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 140, 165, 60, 14
+    AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    DEFPUSHBUTTON "OK", IDOK, 74, 185, 60, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 140, 185, 60, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -92,6 +92,7 @@ struct RisohSettings
     BOOL                bBackup;            // do backup?
     MString             strBackupSuffix;    // backup suffix
     BOOL                bRedundantComments; // output redundant comments?
+    BOOL                bWrapManifest;      // wrap manifest statements by #ifndef MSVC ... #endif?
 
     RisohSettings()
     {

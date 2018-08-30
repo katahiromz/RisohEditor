@@ -11072,6 +11072,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.strBackupSuffix = L"-old";
 
     g_settings.bRedundantComments = TRUE;
+    g_settings.bWrapManifest = TRUE;
 }
 
 // update the prefix data
@@ -11329,6 +11330,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     keyRisoh.QueryDword(TEXT("bRedundantComments"), (DWORD&)g_settings.bRedundantComments);
+    keyRisoh.QueryDword(TEXT("bWrapManifest"), (DWORD&)g_settings.bWrapManifest);
 
     return TRUE;
 }
@@ -11470,6 +11472,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(L"strBackupSuffix", g_settings.strBackupSuffix.c_str());
 
     keyRisoh.SetDword(TEXT("bRedundantComments"), g_settings.bRedundantComments);
+    keyRisoh.SetDword(TEXT("bWrapManifest"), g_settings.bWrapManifest);
 
     return TRUE;
 }

@@ -1027,7 +1027,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "すべてリセット(&S)", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 185
+IDD_EXP_OPTIONS DIALOG 0, 0, 205, 205
 CAPTION "エクスポート オプション"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS UI Gothic"
@@ -1040,8 +1040,9 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 165, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 140, 165, 60, 14
+    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 195, 14
+    DEFPUSHBUTTON "OK", IDOK, 74, 185, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 140, 185, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 210
@@ -1122,7 +1123,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "キャンセル", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 185
+IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 205
 CAPTION "保存オプション"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS UI Gothic"
@@ -1135,8 +1136,9 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 165, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 140, 165, 60, 14
+    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 195, 14
+    DEFPUSHBUTTON "OK", IDOK, 74, 185, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 140, 185, 60, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////

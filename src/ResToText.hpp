@@ -98,6 +98,7 @@ public:
     MString DoAniCursor(const EntryBase& entry);
     MString DoAniIcon(const EntryBase& entry);
     MString DoText(const EntryBase& entry);
+    MString DoManifest(const EntryBase& entry);
     MString DoImage(const EntryBase& entry);
     MString DoMessage(const EntryBase& entry);
     MString DoWave(const EntryBase& entry);
@@ -658,6 +659,41 @@ ResToText::DoText(const EntryBase& entry)
 }
 
 inline MString
+ResToText::DoManifest(const EntryBase& entry)
+{
+    MString str;
+    if (m_bHumanReadable)
+    {
+        MTextType type;
+        type.nNewLine = MNEWLINE_CRLF;
+        if (entry.size())
+        {
+            str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
+        }
+    }
+    else
+    {
+        if (g_settings.bWrapManifest)
+        {
+            str += L"#ifndef MSVC\r\n";
+        }
+        str += GetLanguageStatement(entry.m_lang);
+        str += DumpName(entry.m_type, entry.m_name);
+        str += L" ";
+        str += DumpEscapedName(entry.m_type);
+        str += L" \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n";
+        if (g_settings.bWrapManifest)
+        {
+            str += L"#endif\r\n";
+        }
+        str += L"\r\n";
+    }
+    return str;
+}
+
+inline MString
 ResToText::DoImage(const EntryBase& entry)
 {
     MString str;
@@ -839,7 +875,7 @@ ResToText::DumpEntry(const EntryBase& entry)
         case 23: // RT_HTML
             return DoText(entry);
         case 24: // RT_MANIFEST
-            return DoText(entry);
+            return DoManifest(entry);
         case 240: // RT_DLGINIT
             return DoDlgInit(entry);
         default:
