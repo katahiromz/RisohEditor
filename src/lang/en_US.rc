@@ -1360,17 +1360,3 @@ STRINGTABLE
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// RT_MESSAGETABLE
-
-#ifdef APSTUDIO_INVOKED
-    #error Ap Studio cannot edit this message table.
-#endif
-#ifdef MCDX_INVOKED
-MESSAGETABLEDX
-{
-    MSGID_HELLO, "Hello, world!\r\n"
-    MSGID_SAMPLE, "This is a sample."
-}
-#endif
-
-//////////////////////////////////////////////////////////////////////////////
