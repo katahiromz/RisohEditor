@@ -19,7 +19,7 @@
 ################################################################################
 
 # TODO: Update the version number
-RE_VERSION=5.0.6
+RE_VERSION=5.0.7
 RE_BIN_DIR="build/re-$RE_VERSION-bin"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
 RE_TARGET="build/re-$RE_VERSION-bin.zip"
