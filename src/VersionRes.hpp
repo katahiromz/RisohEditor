@@ -186,7 +186,7 @@ public:
         ret += L" VERSIONINFO\r\n";
 
         StringCchPrintfW(line, _countof(line), 
-            L"FILEVERSION\t%u, %u, %u, %u\r\n", 
+            L"FILEVERSION     %u, %u, %u, %u\r\n", 
             HIWORD(m_fixed.dwFileVersionMS), 
             LOWORD(m_fixed.dwFileVersionMS), 
             HIWORD(m_fixed.dwFileVersionLS), 
@@ -194,17 +194,17 @@ public:
         ret += line;
 
         StringCchPrintfW(line, _countof(line), 
-            L"PRODUCTVERSION\t%u, %u, %u, %u\r\n", 
+            L"PRODUCTVERSION  %u, %u, %u, %u\r\n", 
             HIWORD(m_fixed.dwProductVersionMS), 
             LOWORD(m_fixed.dwProductVersionMS), 
             HIWORD(m_fixed.dwProductVersionLS), 
             LOWORD(m_fixed.dwProductVersionLS));
         ret += line;
 
-        StringCchPrintfW(line, _countof(line), L"FILEOS\t\t0x%04lX\r\n", m_fixed.dwFileOS);
+        StringCchPrintfW(line, _countof(line), L"FILEOS          0x%04lX\r\n", m_fixed.dwFileOS);
         ret += line;
 
-        StringCchPrintfW(line, _countof(line), L"FILETYPE\t0x%X\r\n", m_fixed.dwFileType);
+        StringCchPrintfW(line, _countof(line), L"FILETYPE        0x%X\r\n", m_fixed.dwFileType);
         ret += line;
 
         ret += L"{\r\n";
