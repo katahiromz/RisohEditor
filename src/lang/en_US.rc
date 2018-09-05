@@ -50,7 +50,7 @@ IDR_MAINMENU MENU
             MENUITEM "Add &Menu...", ID_ADDMENU
             MENUITEM "Add &String Table...", ID_ADDSTRINGTABLE
             MENUITEM "Add M&essage Table...", ID_ADDMESSAGETABLE
-            MENUITEM "Add &HTML Table...", ID_ADDHTML
+            MENUITEM "Add &HTML...", ID_ADDHTML
             MENUITEM "Add &Accelerators...", ID_ADDACCEL
             MENUITEM "Add &Version Info...", ID_ADDVERINFO
             MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
@@ -140,7 +140,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Add &Menu...", ID_ADDMENU
             MENUITEM "Add &String Table...", ID_ADDSTRINGTABLE
             MENUITEM "Add M&essage Table...", ID_ADDMESSAGETABLE
-            MENUITEM "Add &HTML Table...", ID_ADDHTML
+            MENUITEM "Add &HTML...", ID_ADDHTML
             MENUITEM "Add &Accelerators...", ID_ADDACCEL
             MENUITEM "Add &Version Info...", ID_ADDVERINFO
             MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
@@ -775,7 +775,7 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     AUTOCHECKBOX "&Word wrapping", chx9, 135, 125, 70, 14
     AUTOCHECKBOX "Ask ""&resource.h""'s update", chx7, 5, 145, 200, 14
-    AUTOCHECKBOX "Compress EXE by &UPX On saving it", chx8, 5, 165, 200, 14
+    AUTOCHECKBOX "Compress EXE by &UPX on saving it", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Fonts...", psh4, 5, 185, 200, 14
     PUSHBUTTON "Predefined &Macros...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Set Pa&ths...", psh2, 107, 205, 98, 14
