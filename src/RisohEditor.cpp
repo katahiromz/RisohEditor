@@ -8225,6 +8225,9 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // clear all
+    OnNew(hwnd);
+
     // save the settings
     SaveSettings(hwnd);
 
