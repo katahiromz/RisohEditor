@@ -1226,7 +1226,7 @@ STRINGTABLE
     IDS_STRINGVALUE, "字符的值"
     IDS_CAPTION, "标题"
     IDS_HELPID, "帮助 ID"
-    IDS_INDENT, "-> "
+    IDS_INDENT, "» "
     IDS_DATAISEMPTY, "数据为空."
     IDS_TEST, "测试一下效果"
     IDS_SEPARATOR, "---"
