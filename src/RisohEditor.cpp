@@ -7814,6 +7814,12 @@ BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
+    // do backup
+    if (g_settings.bBackup)
+    {
+        DoBackupFile(pszExeFile);
+    }
+
     // is the file compressed?
     if (m_bUpxCompressed)
     {
@@ -7907,7 +7913,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         DeleteFileW(TempFile);
     }
 
-    ErrorBoxDx(IDS_CANTSAVETOEXE);
+    ErrorBoxDx(IDS_CANNOTSAVE);
     return FALSE;   // failure
 }
 

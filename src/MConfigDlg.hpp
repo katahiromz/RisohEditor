@@ -50,6 +50,12 @@ public:
         CheckDlgButton(hwnd, chx8, g_settings.bCompressByUPX ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx9, g_settings.bWordWrap ? BST_CHECKED : BST_UNCHECKED);
         SetDlgItemText(hwnd, cmb1, g_settings.strAtlAxWin.c_str());
+
+        CheckDlgButton(hwnd, chx10, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
+        SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-old");
+        SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"-bak");
+        SendDlgItemMessageW(hwnd, cmb2, CB_ADDSTRING, 0, (LPARAM)L"~");
+        SetDlgItemTextW(hwnd, cmb2, g_settings.strBackupSuffix.c_str());
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -92,10 +98,19 @@ public:
         g_settings.bCompressByUPX = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
         g_settings.bWordWrap = (IsDlgButtonChecked(hwnd, chx9) == BST_CHECKED);
 
-        TCHAR szText[64];
-        GetDlgItemText(hwnd, cmb1, szText, _countof(szText));
+        WCHAR szText[64];
+        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
         mstr_trim(szText);
         g_settings.strAtlAxWin = szText;
+
+        g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx10) == BST_CHECKED);
+
+        GetDlgItemTextW(hwnd, cmb2, szText, _countof(szText));
+        mstr_trim(szText);
+        g_settings.strBackupSuffix = szText;
+
+        if (szText[0] == 0)
+            g_settings.bBackup = FALSE;
 
         EndDialog(IDOK);
     }
