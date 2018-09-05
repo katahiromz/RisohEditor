@@ -7117,7 +7117,6 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         return FALSE;
 
     // dump heading
-    if (g_settings.bRedundantComments)
     {
         WCHAR szTitle[MAX_PATH];
         GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
@@ -7126,7 +7125,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteFormatA("// %s\r\n", utf8.c_str());
 
         MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
+        MWideToAnsi utf8Face(CP_UTF8, LoadStringDx(IDS_POSTALFACE));
         file.WriteFormatA(utf8Notice.c_str());
+        file.WriteFormatA(utf8Face.c_str());
         file.WriteFormatA("\r\n");
     }
     if (pszResH && pszResH[0])
@@ -7208,10 +7209,11 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
             // dump to lang/XX_XX.rc file
             MFile lang_file(szLangFile, TRUE);
-            if (g_settings.bRedundantComments)
             {
                 MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
+                MWideToAnsi utf8Face(CP_UTF8, LoadStringDx(IDS_POSTALFACE));
                 lang_file.WriteFormatA(utf8Notice.c_str());
+                lang_file.WriteFormatA(utf8Face.c_str());
                 lang_file.WriteFormatA("\r\n");
             }
             lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
