@@ -1288,7 +1288,7 @@ STRINGTABLE
     IDS_EXPORT, "Export"
     IDS_CANTEXPORT, "Export failed."
     IDS_MUSTBEEMPTYDIR, "If there is any external file, then the export destination must be an empty folder."
-    IDS_FULLWIDTH, "�撰ｼ托ｼ抵ｼ難ｼ費ｼ包ｼ厄ｼ暦ｼ假ｼ呻ｼ｡�｢�｣�､�･�ｦ�ｧ�ｨ�ｩ�ｪ�ｫ�ｬ�ｭ�ｮ�ｯ�ｰ�ｱ�ｲ�ｳ�ｴ�ｵ�ｶ�ｷ�ｸ�ｹ�ｺａ�ｽゑｽ��ｽ��ｽ��ｽ��ｽ��ｽ茨ｽ会ｽ奇ｽ具ｽ鯉ｽ搾ｽ趣ｽ擾ｽ撰ｽ托ｽ抵ｽ難ｽ費ｽ包ｽ厄ｽ暦ｽ假ｽ呻ｽ夲ｼ搾ｼｿ�茨ｼ会ｼ弱��"
+    IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Macro Name"
     IDS_MACROVALUE, "Macro Value"
