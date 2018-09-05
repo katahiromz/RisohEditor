@@ -398,7 +398,7 @@ public:
             if (it->value == value)
                 return it->name;
         }
-        return mstr_dec_short(value);
+        return mstr_dec_short((SHORT)value);
     }
 
     ValueType GetValue(CategoryType category, NameType name) const
