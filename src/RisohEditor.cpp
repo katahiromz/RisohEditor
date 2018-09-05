@@ -7913,7 +7913,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         DeleteFileW(TempFile);
     }
 
-    ErrorBoxDx(IDS_CANNOTSAVE);
     return FALSE;   // failure
 }
 
