@@ -781,7 +781,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Set Pa&ths...", psh2, 107, 205, 98, 14
     RTEXT "Name of &OLE controls:", IDC_STATIC, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Create &backup  Suffix:", chx10, 5, 245, 123, 14
+    AUTOCHECKBOX "Create &backup  Backup Suffix:", chx10, 5, 245, 123, 14
     COMBOBOX cmb2, 134, 245, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
     PUSHBUTTON "Cancel", IDCANCEL, 155, 265, 50, 14
@@ -1036,7 +1036,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Store the external files into the &res folder", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 195, 14
-    AUTOCHECKBOX "Create &backup  Suffix:", chx4, 5, 120, 123, 14
+    AUTOCHECKBOX "Create &backup  Backup Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 195, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
@@ -1132,7 +1132,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Store the external files into the &res folder", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 195, 14
-    AUTOCHECKBOX "Create &backup  Suffix:", chx4, 5, 120, 123, 14
+    AUTOCHECKBOX "Create &backup  Backup Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 195, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
