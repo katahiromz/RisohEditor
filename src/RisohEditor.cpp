@@ -2398,7 +2398,7 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         else if (e->m_type == L"WAVE")
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WAVERESBINFILTER));
         else
-            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_PNGRESBINFILTER));
+            ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
     }
     else
     {
