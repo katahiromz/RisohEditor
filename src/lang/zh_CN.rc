@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&ID关联列表...", ID_IDASSOC
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "更新/保存 resource.h(&P)", ID_UPDATERESHBANG
+        MENUITEM "更新/保存 resource.h(&P)...", ID_UPDATERESHBANG
         MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
         MENUITEM "卸载 resource.h (&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR

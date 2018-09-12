@@ -7339,6 +7339,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     return TRUE;
 }
 
+struct MACRO_DEF
+{
+    MStringA prefix;
+    MStringA name;
+    DWORD value;
+    MStringA definition;
+};
+
 // write the resource.h file
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
@@ -7376,18 +7384,80 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         file.WriteSzA("\r\n");
     }
 
-    // write the macro definitions
+    // sort macro definitions
+    bool has_IDC_STATIC = false;
+    std::vector<MACRO_DEF> entries;
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
         {
-            file.WriteFormatA("#define IDC_STATIC -1\r\n");
+            has_IDC_STATIC = true;
+            continue;
         }
-        else
+
+        MACRO_DEF entry;
+        entry.name = pair.first;
+        entry.definition = pair.second;
+        entry.value = strtoul(pair.second.c_str(), NULL, 0);
+        size_t i = pair.first.find('_');
+        if (i != MStringA::npos)
         {
-            file.WriteFormatA("#define %s %s\r\n",
-                pair.first.c_str(), pair.second.c_str());
+            entry.prefix = pair.first.substr(0, i + 1);
         }
+        entries.push_back(entry);
+    }
+    std::sort(entries.begin(), entries.end(),
+        [](const MACRO_DEF& a, const MACRO_DEF& b) {
+            if (a.prefix.empty() && b.prefix.empty())
+                return a.value < b.value;
+            if (a.prefix.empty())
+                return false;
+            if (b.prefix.empty())
+                return true;
+            if (a.prefix < b.prefix)
+                return true;
+            if (a.prefix > b.prefix)
+                return false;
+            if (a.definition.empty() && b.definition.empty())
+                return false;
+            if (a.definition.empty())
+                return true;
+            if (b.definition.empty())
+                return false;
+            if (a.definition[0] == '"' && b.definition[0] == '"')
+                return a.definition < b.definition;
+            if (a.definition[0] == '"')
+                return false;
+            if (b.definition[0] == '"')
+                return true;
+            if (a.value < b.value)
+                return true;
+            if (a.value > b.value)
+                return false;
+            return false;
+        }
+    );
+
+    // write the macro definitions
+    if (has_IDC_STATIC)
+    {
+        file.WriteFormatA("\r\n");
+        file.WriteFormatA("#define IDC_STATIC -1\r\n");
+    }
+
+    MStringA prefix;
+    bool first = true;
+    file.WriteFormatA("\r\n");
+    for (auto& entry : entries)
+    {
+        if (!first && prefix != entry.prefix)
+            file.WriteFormatA("\r\n");
+
+        file.WriteFormatA("#define %s %s\r\n",
+            entry.name.c_str(), entry.definition.c_str());
+
+        prefix = entry.prefix;
+        first = false;
     }
 
     // do statistics about resource IDs
@@ -7395,6 +7465,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     DoIDStat(anValues);
 
     // dump the statistics
+    file.WriteFormatA("\r\n");
     file.WriteFormatA("#ifdef APSTUDIO_INVOKED\r\n");
     file.WriteFormatA("    #ifndef APSTUDIO_READONLY_SYMBOLS\r\n");
     file.WriteFormatA("        #define _APS_NO_MFC                 %u\r\n", anValues[0]);
@@ -10469,7 +10540,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         return;
     }
 
-    if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
+    //if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
+    if (1)
     {
         // build new "resource.h" file path
         WCHAR szResH[MAX_PATH];
