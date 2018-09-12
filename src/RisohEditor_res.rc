@@ -185,11 +185,7 @@ IDR_MAINFRAME PNG "res/Png_100.png"
 
 RT_ACCELERATOR RISOHTEMPLATE "res/RISOHTEMPLATE_RT_ACCELERATOR.bin"
 
-RT_DIALOG RISOHTEMPLATE "res/RISOHTEMPLATE_RT_DIALOG.bin"
-
 RT_HTML RISOHTEMPLATE "res/RISOHTEMPLATE_RT_HTML.bin"
-
-RT_MENU RISOHTEMPLATE "res/RISOHTEMPLATE_RT_MENU.bin"
 
 RT_MESSAGETABLE RISOHTEMPLATE "res/RISOHTEMPLATE_RT_MESSAGETABLE.bin"
 
@@ -205,14 +201,14 @@ IDR_MAINFRAME WAVE "res/Wave_100.wav"
 //////////////////////////////////////////////////////////////////////////////
 // Languages
 
-#ifdef LANGUAGE_EN_US
-    #include "lang/en_US.rc"
+#ifdef LANGUAGE_JA_JP
+    #include "lang/ja_JP.rc"
 #endif
 #ifdef LANGUAGE_ZH_CN
     #include "lang/zh_CN.rc"
 #endif
-#ifdef LANGUAGE_JA_JP
-    #include "lang/ja_JP.rc"
+#ifdef LANGUAGE_EN_US
+    #include "lang/en_US.rc"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////

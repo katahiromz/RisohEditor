@@ -2,6 +2,6 @@
 {
     POPUP "&File"
     {
-        MENUITEM "E&xit", 100
+        MENUITEM "E&xit\tAlt+F4", 100
     }
 }
