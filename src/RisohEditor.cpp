@@ -7347,6 +7347,15 @@ struct MACRO_DEF
     MStringA definition;
 };
 
+void WriteMacroLine(MFile& file, const MStringA& name, const MStringA& definition)
+{
+    MStringA strSpace(" ");
+    if (name.size() < 35)
+        strSpace.assign(35 - name.size(), ' ');
+    file.WriteFormatA("#define %s %s%s\r\n",
+        name.c_str(), strSpace.c_str(), definition.c_str());
+}
+
 // write the resource.h file
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
@@ -7386,7 +7395,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 
     // sort macro definitions
     bool has_IDC_STATIC = false;
-    std::vector<MACRO_DEF> entries;
+    std::vector<MACRO_DEF> defs;
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
@@ -7395,18 +7404,18 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
             continue;
         }
 
-        MACRO_DEF entry;
-        entry.name = pair.first;
-        entry.definition = pair.second;
-        entry.value = mstr_parse_int(pair.second.c_str(), true, 0);
+        MACRO_DEF def;
+        def.name = pair.first;
+        def.definition = pair.second;
+        def.value = mstr_parse_int(pair.second.c_str(), true, 0);
         size_t i = pair.first.find('_');
         if (i != MStringA::npos)
         {
-            entry.prefix = pair.first.substr(0, i + 1);
+            def.prefix = pair.first.substr(0, i + 1);
         }
-        entries.push_back(entry);
+        defs.push_back(def);
     }
-    std::sort(entries.begin(), entries.end(),
+    std::sort(defs.begin(), defs.end(),
         [](const MACRO_DEF& a, const MACRO_DEF& b) {
             if (a.prefix.empty() && b.prefix.empty())
                 return a.value < b.value;
@@ -7442,21 +7451,20 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     if (has_IDC_STATIC)
     {
         file.WriteFormatA("\r\n");
-        file.WriteFormatA("#define IDC_STATIC -1\r\n");
+        WriteMacroLine(file, "IDC_STATIC", "-1");
     }
 
     MStringA prefix;
     bool first = true;
     file.WriteFormatA("\r\n");
-    for (auto& entry : entries)
+    for (auto& def : defs)
     {
-        if (!first && prefix != entry.prefix)
+        if (!first && prefix != def.prefix)
             file.WriteFormatA("\r\n");
 
-        file.WriteFormatA("#define %s %s\r\n",
-            entry.name.c_str(), entry.definition.c_str());
+        WriteMacroLine(file, def.name, def.definition);
 
-        prefix = entry.prefix;
+        prefix = def.prefix;
         first = false;
     }
 
@@ -10533,12 +10541,12 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     // destroy the ID list window
     DestroyWindow(m_id_list_dlg);
 
-    // query update to the user
-    if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)    // don't update
-    {
-        ShowIDList(hwnd, bListOpen);
-        return;
-    }
+    // // query update to the user
+    // if (MsgBoxDx(IDS_UPDATERESH, MB_ICONINFORMATION | MB_YESNO) == IDNO)    // don't update
+    // {
+    //     ShowIDList(hwnd, bListOpen);
+    //     return;
+    // }
 
     //if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
     if (1)

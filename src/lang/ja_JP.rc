@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH
-        MENUITEM "resource.h を更新/保存する(&P)...", ID_UPDATERESHBANG
+        MENUITEM "resource.h を保存する(&S)...", ID_UPDATERESHBANG
         MENUITEM "resource.h の変更を助言する(&V)...", ID_ADVICERESH
         MENUITEM "resource.h のアンロード(&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR

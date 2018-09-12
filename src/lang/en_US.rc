@@ -23,7 +23,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", ID_IDASSOC
         MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "U&pdate/Save resource.h...", ID_UPDATERESHBANG
+        MENUITEM "Save re&source.h...", ID_UPDATERESHBANG
         MENUITEM "Ad&vice resource.h Modification...", ID_ADVICERESH
         MENUITEM "&Unload resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
