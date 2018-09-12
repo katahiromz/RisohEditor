@@ -42,6 +42,21 @@ Question 4. What is mcdx?
             See mcdx/MESSAGETABLEDX.md for details.
 
 /////////////////////////////////////////////////////
+// HISTORY
+
+ * 2017.08.31 ver.0.6
+    - First release.
+ * 2018.09.12 ver.5.0.8
+    - Improve tool bar icons.
+    - Fix the file types on extraction.
+    - Write dagger to source file to help UTF-8 detection.
+    - Fix the treeview icons.
+    - Split the RT_DIALOG and RT_MENU resource templates in languages.
+ * 2018.XX.YY ver.5.0.9
+    - Improve resource.h output.
+    - Improve treeview file icon.
+
+/////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 // Homepage     http://katahiromz.web.fc2.com
 // BBS          http://katahiromz.bbs.fc2.com
