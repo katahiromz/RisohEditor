@@ -7372,6 +7372,9 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     file.WriteSzA("//{{NO_DEPENDENCIES}}\r\n");
     file.WriteSzA("// Microsoft Visual C++ Compatible\r\n");
 
+    MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
+    file.WriteFormatA(utf8Notice.c_str());
+
     // write the RC file info if necessary
     if (pszRCFile)
     {
