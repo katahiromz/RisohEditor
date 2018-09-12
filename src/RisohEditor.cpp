@@ -7398,7 +7398,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         MACRO_DEF entry;
         entry.name = pair.first;
         entry.definition = pair.second;
-        entry.value = strtoul(pair.second.c_str(), NULL, 0);
+        entry.value = mstr_parse_int(pair.second.c_str(), true, 0);
         size_t i = pair.first.find('_');
         if (i != MStringA::npos)
         {
