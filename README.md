@@ -39,6 +39,20 @@ Make the dialog box extended.
 
 It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
 
+## HISTORY
+
+ * 2017.08.31 ver.0.6
+    - First release.
+ * 2018.09.12 ver.5.0.8
+    - Improve tool bar icons.
+    - Fix the file types on extraction.
+    - Write dagger to source file to help UTF-8 detection.
+    - Fix the treeview icons.
+    - Split the RT_DIALOG and RT_MENU resource templates in languages.
+ * 2018.XX.YY ver.5.0.9
+    - Improve resource.h output.
+    - Improve treeview file icon.
+
 ## Contact Us
 
 katayama.hirofumi.mz@gmail.com
