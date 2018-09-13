@@ -10556,9 +10556,15 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     {
         // build new "resource.h" file path
         WCHAR szResH[MAX_PATH];
-        if (m_szFile[0])
+
+        if (m_szResourceH[0])
+        {
+            StringCchCopyW(szResH, _countof(szResH), m_szResourceH);
+        }
+        else if (m_szFile[0])
         {
             StringCchCopyW(szResH, _countof(szResH), m_szFile);
+
             WCHAR *pch = wcsrchr(szResH, L'\\');
             if (pch == NULL)
                 pch = wcsrchr(szResH, L'/');
@@ -10566,15 +10572,12 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
                 return; // failure
 
             *pch = 0;
-            StringCchCatW(pch, _countof(szResH), L"\\resource.h");
+            StringCchCatW(szResH, _countof(szResH), L"\\resource.h");
         }
         else
         {
             StringCchCopyW(szResH, _countof(szResH), L"resource.h");
         }
-
-        if (GetFileAttributesW(szResH) == INVALID_FILE_ATTRIBUTES)  // not exists
-            szResH[0] = 0;  // clear the path
 
         // initialize OPENFILENAME structure
         OPENFILENAMEW ofn;
