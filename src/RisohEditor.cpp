@@ -8082,11 +8082,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
 
     if (lstrcmpiW(pchDotExt, L".res") == 0)
     {
-        if (DoImportRes(hwnd, pszFile))
-        {
-            return IMPORTED;
-        }
-        return IMPORT_FAILED;
+        return DoImportRes(hwnd, pszFile);
     }
     else if (lstrcmpiW(pchDotExt, L".ico") == 0)
     {
