@@ -37,6 +37,14 @@ static const DWORD s_nMaxCaptions = 10;
 // the maximum number of backup
 static const UINT s_nBackupMaxCount = 5;
 
+enum IMPORT_RESULT
+{
+    IMPORTED,
+    IMPORT_CANCELLED,
+    IMPORT_FAILED,
+    NOT_IMPORTABLE
+};
+
 //////////////////////////////////////////////////////////////////////////////
 // global variables
 
@@ -2074,6 +2082,8 @@ public:
     BOOL DoSaveAs(LPCWSTR pszExeFile);
     BOOL DoSaveAsCompression(LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
+    IMPORT_RESULT DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt);
+    IMPORT_RESULT DoImportRes(HWND hwnd, LPCWSTR pszFile);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -2786,7 +2796,7 @@ void MMainWnd::OnImport(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_IMPORTFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_IMPORTRES);
@@ -2797,43 +2807,19 @@ void MMainWnd::OnImport(HWND hwnd)
     // let the user choose the path
     if (GetOpenFileNameW(&ofn))
     {
-        // import the file
-        EntrySet res;
-        if (res.import_res(file))
-        {
-            // is it overlapped?
-            if (g_res.intersect(res))
-            {
-                // query overwrite
-                INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
-                switch (nID)
-                {
-                case IDYES:
-                    // delete the overlapped entries
-                    for (auto entry : res)
-                    {
-                        if (entry->m_et != ET_LANG)
-                            continue;
-
-                        g_res.search_and_delete(ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
-                    }
-                    break;
-
-                case IDNO:
-                case IDCANCEL:
-                    // clean up
-                    res.delete_all();
-                    return;
-                }
-            }
-
-            // merge
-            g_res.merge(res);
-
-            // clean up
-            res.delete_all();
-        }
+        // find the file title
+        LPCWSTR pch = wcsrchr(file, L'\\');
+        if (pch == NULL)
+            pch = wcsrchr(file, L'/');
+        if (pch == NULL)
+            pch = file;
         else
+            ++pch;
+
+        // find the dot extension
+        pch = wcsrchr(pch, L'.');
+
+        if (IMPORT_FAILED == DoImport(hwnd, file, pch))
         {
             ErrorBoxDx(IDS_CANNOTIMPORT);
         }
@@ -8037,6 +8023,247 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bOK;
 }
 
+IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
+{
+    // do import to the res variable
+    EntrySet res;
+    if (!res.import_res(pszFile))
+    {
+        return IMPORT_FAILED;
+    }
+
+    // is it overlapped?
+    if (g_res.intersect(res))
+    {
+        // query overwrite
+        INT nID = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);
+        switch (nID)
+        {
+        case IDYES:
+            // delete the overlapped entries
+            for (auto entry : res)
+            {
+                if (entry->m_et != ET_LANG)
+                    continue;
+
+                g_res.search_and_delete(ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+            }
+            break;
+
+        case IDNO:
+        case IDCANCEL:
+            // clean up
+            res.delete_all();
+            return IMPORT_CANCELLED;
+        }
+    }
+
+    // load it now
+    m_bLoading = TRUE;
+    {
+        // renewal
+        g_res.merge(res);
+
+        // clean up
+        res.delete_all();
+    }
+    m_bLoading = FALSE;
+
+    // refresh the ID list window
+    DoRefreshIDList(hwnd);
+
+    return IMPORTED;
+}
+
+IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
+{
+    if (!pchDotExt)
+        return NOT_IMPORTABLE;
+
+    if (lstrcmpiW(pchDotExt, L".res") == 0)
+    {
+        if (DoImportRes(hwnd, pszFile))
+        {
+            return IMPORTED;
+        }
+        return IMPORT_FAILED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".ico") == 0)
+    {
+        // show the dialog
+        MAddIconDlg dialog;
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // refresh the ID list window
+            DoRefreshIDList(hwnd);
+
+            // select the entry
+            SelectTV(ET_LANG, dialog, FALSE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".cur") == 0 || lstrcmpiW(pchDotExt, L".ani") == 0)
+    {
+        // show the dialog
+        MAddCursorDlg dialog;
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // refresh the ID list window
+            DoRefreshIDList(hwnd);
+
+            // select the entry
+            SelectTV(ET_LANG, dialog, FALSE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".wav") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_type = L"WAVE";
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".bmp") == 0 || lstrcmpiW(pchDotExt, L".dib") == 0)
+    {
+        // show the dialog
+        MAddBitmapDlg dialog;
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // refresh the ID list window
+            DoRefreshIDList(hwnd);
+
+            // select the entry
+            SelectTV(ET_LANG, dialog, FALSE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".png") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"PNG";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".gif") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"GIF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".jpg") == 0 || lstrcmpiW(pchDotExt, L".jpeg") == 0 ||
+             lstrcmpiW(pchDotExt, L".jpe") == 0 || lstrcmpiW(pchDotExt, L".jfif") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"JPEG";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".tif") == 0 || lstrcmpiW(pchDotExt, L".tiff") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"TIFF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".avi") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"AVI";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".wmf") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"WMF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+    else if (lstrcmpiW(pchDotExt, L".emf") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"EMF";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
+
+    return NOT_IMPORTABLE;
+}
+
 // WM_DROPFILES: file(s) has been dropped
 void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 {
@@ -8068,127 +8295,22 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
     // find the dot extension
     pch = wcsrchr(pch, L'.');
-    if (!pch)
-    {
-        // no extension
-        ErrorBoxDx(IDS_CANNOTOPEN);
-    }
-    else if (lstrcmpiW(pch, L".ico") == 0)
-    {
-        // show the dialog
-        MAddIconDlg dialog;
-        dialog.m_file = file;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // refresh the ID list window
-            DoRefreshIDList(hwnd);
 
-            // select the entry
-            SelectTV(ET_LANG, dialog, FALSE);
-        }
-    }
-    else if (lstrcmpiW(pch, L".cur") == 0 || lstrcmpiW(pch, L".ani") == 0)
+    IMPORT_RESULT result = NOT_IMPORTABLE;
+    if (pch)
     {
-        // show the dialog
-        MAddCursorDlg dialog;
-        dialog.m_file = file;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // refresh the ID list window
-            DoRefreshIDList(hwnd);
+        result = DoImport(hwnd, file, pch);
+    }
 
-            // select the entry
-            SelectTV(ET_LANG, dialog, FALSE);
-        }
-    }
-    else if (lstrcmpiW(pch, L".wav") == 0)
+    if (result == IMPORTED || result == IMPORT_CANCELLED)
     {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_type = L"WAVE";
-        dialog.m_file = file;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
+        // do nothing
     }
-    else if (lstrcmpiW(pch, L".bmp") == 0 || lstrcmpiW(pch, L".dib") == 0)
+    else if (result == IMPORT_FAILED)
     {
-        // show the dialog
-        MAddBitmapDlg dialog;
-        dialog.m_file = file;
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // refresh the ID list window
-            DoRefreshIDList(hwnd);
-
-            // select the entry
-            SelectTV(ET_LANG, dialog, FALSE);
-        }
+        ErrorBoxDx(IDS_CANNOTIMPORT);
     }
-    else if (lstrcmpiW(pch, L".png") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"PNG";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".gif") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"GIF";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".jpg") == 0 || lstrcmpiW(pch, L".jpeg") == 0 ||
-             lstrcmpiW(pch, L".jpe") == 0 || lstrcmpiW(pch, L".jfif") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"JPEG";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".tif") == 0 || lstrcmpiW(pch, L".tiff") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"TIFF";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".avi") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"AVI";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".h") == 0)
+    else if (pch && lstrcmpiW(pch, L".h") == 0)
     {
         // unload the resource.h file
         UnloadResourceH(hwnd);
@@ -8201,30 +8323,6 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
         // update the names
         UpdateNames();
-    }
-    else if (lstrcmpiW(pch, L".wmf") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"WMF";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
-    }
-    else if (lstrcmpiW(pch, L".emf") == 0)
-    {
-        // show the dialog
-        MAddResDlg dialog;
-        dialog.m_file = file;
-        dialog.m_type = L"EMF";
-        if (dialog.DialogBoxDx(hwnd) == IDOK)
-        {
-            // add a resource item
-            DoAddRes(hwnd, dialog);
-        }
     }
     else
     {

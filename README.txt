@@ -55,6 +55,7 @@ Question 4. What is mcdx?
  * 2018.XX.YY ver.5.0.9
     - Improve resource.h output.
     - Improve treeview file icon.
+    - Improve importing.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

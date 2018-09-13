@@ -52,6 +52,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2018.XX.YY ver.5.0.9
     - Improve resource.h output.
     - Improve treeview file icon.
+    - Improve importing.
 
 ## Contact Us
 
