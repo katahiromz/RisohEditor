@@ -52,7 +52,7 @@ Question 4. What is mcdx?
     - Write dagger to source file to help UTF-8 detection.
     - Fix the treeview icons.
     - Split the RT_DIALOG and RT_MENU resource templates in languages.
- * 2018.XX.YY ver.5.0.9
+ * 2018.09.27 ver.5.0.9
     - Improve resource.h output.
     - Improve treeview file icon.
     - Improve importing.
