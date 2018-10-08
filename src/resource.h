@@ -67,6 +67,7 @@
 #define IDD_SAVE_OPTIONS                    157
 #define IDD_ENCODING                        158
 #define IDD_ADDENC                          159
+#define IDD_MODIFYENC                       160
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100

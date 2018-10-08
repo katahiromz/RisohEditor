@@ -28,8 +28,8 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
-class MAddEncodingDlg;
-class MModifyEncodingDlg;
+class MAddEncDlg;
+class MModifyEncDlg;
 class MEncodingDlg;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,6 @@ public:
     {
     }
 
-    virtual ~MAddEncDlg()
-    {
-    }
-
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SubclassChildDx(m_cmb1, cmb1);
@@ -215,6 +211,119 @@ public:
         }
     }
 };
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MModifyEncDlg : public MDialogBase
+{
+public:
+    MIdOrString m_type;
+    MString m_enc;
+    MComboBoxAutoComplete m_cmb1;
+
+    MModifyEncDlg(MIdOrString type, MString enc) :
+        MDialogBase(IDD_MODIFYENC),
+        m_type(type),
+        m_enc(enc)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        SubclassChildDx(m_cmb1, cmb1);
+
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        auto table = g_db.GetTable(L"RESOURCE");
+        for (auto& table_entry : table)
+        {
+            WCHAR sz[MAX_PATH];
+            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+                             table_entry.name.c_str(), table_entry.value);
+            int k = ComboBox_AddString(hCmb1, sz);
+            if (table_entry.value == m_type.m_id)
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
+        }
+        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+        for (auto& table_entry : table)
+        {
+            int k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
+            if (table_entry.name == m_type.m_str)
+            {
+                ComboBox_SetCurSel(hCmb1, k);
+            }
+        }
+        EnableWindow(hCmb1, FALSE);
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_ANSI));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_WIDE));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8N));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_BINARY));
+
+        MString txt = enc2txt(m_enc);
+        int k = ComboBox_FindStringExact(hCmb2, -1, txt.c_str());
+        ComboBox_SetCurSel(hCmb2, k);
+
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        MString text = GetDlgItemText(hwnd, cmb1);
+        m_type = get_type_from_text(text);
+        if (m_type.empty())
+        {
+            ErrorBoxDx(IDS_INVALIDRESTYPE);
+            return;
+        }
+
+        text = GetDlgItemText(hwnd, cmb2);
+        m_enc = txt2enc(text);
+        if (m_enc.empty())
+        {
+            return;
+        }
+
+        EndDialog(IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();  // input completion
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        default:
+            return DefaultProcDx();
+        }
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////
 
 class MEncodingDlg : public MDialogBase
 {
@@ -308,10 +417,6 @@ public:
         return TRUE;
     }
 
-    void OnModify(HWND hwnd)
-    {
-    }
-
     void OnOK(HWND hwnd)
     {
         INT iItem, nCount = ListView_GetItemCount(m_hLst1);
@@ -403,6 +508,37 @@ public:
         ListView_EnsureVisible(m_hLst1, iItem, FALSE);
     }
 
+    void OnModify(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+
+        WCHAR szText1[64], szText2[64];
+
+        ListView_GetItemText(m_hLst1, iItem, 0, szText1, _countof(szText1));
+        mstr_trim(szText1);
+
+        ListView_GetItemText(m_hLst1, iItem, 1, szText2, _countof(szText2));
+        mstr_trim(szText2);
+
+        MModifyEncDlg dialog(get_type_from_text(szText1), txt2enc(szText2));
+        if (IDOK != dialog.DialogBoxDx(hwnd))
+            return;
+
+        MString text2 = enc2txt(dialog.m_enc);
+
+        LV_ITEM item;
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = &text2[0];
+        ListView_SetItem(m_hLst1, &item);
+
+        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+        ListView_SetItemState(m_hLst1, iItem, state, state);
+        ListView_EnsureVisible(m_hLst1, iItem, FALSE);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -416,6 +552,10 @@ public:
         case psh1:
         case ID_ADD:
             OnAdd(hwnd);
+            break;
+        case psh2:
+        case ID_MODIFY:
+            OnModify(hwnd);
             break;
         case psh3:
         case ID_DELETE:
