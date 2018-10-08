@@ -12160,9 +12160,9 @@ void MMainWnd::DoEvents()
 // do the window messages
 void MMainWnd::DoMsg(MSG& msg)
 {
-    // EDIT control Ctrl+A
-    if (MEditCtrl::DoMsgCtrlA(&msg))
-        return;
+    //// EDIT control Ctrl+A
+    //if (MEditCtrl::DoMsgCtrlA(&msg))
+    //    return;
 
     // do the popup windows
     if (IsWindow(m_rad_window.m_rad_dialog))
@@ -13376,7 +13376,7 @@ wWinMain(HINSTANCE   hInstance,
 
     // main process
     int ret;
-    //MEditCtrl::SetCtrlAHookDx(TRUE);
+    MEditCtrl::SetCtrlAHookDx(TRUE);
     {
         MMainWnd app(__argc, __targv, hInstance);
 
@@ -13390,7 +13390,7 @@ wWinMain(HINSTANCE   hInstance,
             ret = 2;
         }
     }
-    //MEditCtrl::SetCtrlAHookDx(FALSE);
+    MEditCtrl::SetCtrlAHookDx(FALSE);
 
     // free GDI+
     Gdiplus::GdiplusShutdown(gp_token);

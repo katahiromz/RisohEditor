@@ -57,7 +57,8 @@ Question 4. What is mcdx?
     - Improve treeview file icon.
     - Improve importing.
  * 2018.XX.YY ver.5.1.0
-    - Improve String Entry Dialogs
+    - Improve String Entry Dialogs.
+    - Fix Ctrl+A behaviour.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
