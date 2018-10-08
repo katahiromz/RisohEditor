@@ -674,7 +674,6 @@ MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
                 strA = strA.substr(1);  // remove L of L"..."
 
             mstr_unquote(strA);     // unquote
-            CharUpperA(&strA[0]);   // upper case
 
             // convert ANSI to wide
             name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
@@ -12039,9 +12038,6 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
 
             // unquote
             mstr_unquote(strA);
-
-            // make it uppercase
-            CharUpperA(&strA[0]);
 
             // resource name
             name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
