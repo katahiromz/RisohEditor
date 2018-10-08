@@ -32,6 +32,7 @@ typedef std::vector<MString>            mru_type;           // MRU list type
 typedef std::map<MString, MString>      assoc_map_type;     // association type
 typedef std::map<MStringA, MStringA>    id_map_type;        // ID mapping type
 typedef std::map<MString, MString>      macro_map_type;     // macros type
+typedef std::map<MString, MString>      encoding_map_type;  // text resource encoding
 typedef std::vector<MString>            include_dirs_type;  // includes type
 typedef std::vector<MString>            captions_type;      // captions type
 
@@ -93,6 +94,7 @@ struct RisohSettings
     MString             strBackupSuffix;    // backup suffix
     BOOL                bRedundantComments; // output redundant comments?
     BOOL                bWrapManifest;      // wrap manifest statements by #ifndef MSVC ... #endif?
+    encoding_map_type   encoding_map;       // text resource encoding
 
     RisohSettings()
     {

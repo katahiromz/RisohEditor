@@ -11307,6 +11307,9 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 
     g_settings.bRedundantComments = TRUE;
     g_settings.bWrapManifest = TRUE;
+
+    g_settings.encoding_map.clear();
+    g_settings.encoding_map[L"RISOHTEMPLATE"] = L"utf8";
 }
 
 // update the prefix data
@@ -11566,6 +11569,33 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bRedundantComments"), (DWORD&)g_settings.bRedundantComments);
     keyRisoh.QueryDword(TEXT("bWrapManifest"), (DWORD&)g_settings.bWrapManifest);
 
+    DWORD encoding_count = 0;
+    if (keyRisoh.QueryDword(TEXT("encoding_count"), (DWORD&)encoding_count) == ERROR_SUCCESS)
+    {
+        g_settings.encoding_map.clear();
+        for (DWORD i = 0; i < encoding_count; ++i)
+        {
+            WCHAR szName[32];
+            StringCchPrintfW(szName, _countof(szName), L"encoding%lu", i);
+            if (keyRisoh.QuerySz(szName, szText, _countof(szText)) == ERROR_SUCCESS)
+            {
+                if (LPWSTR pch = wcschr(szText, L':'))
+                {
+                    *pch = 0;
+                    ++pch;
+                    if (lstrcmpW(pch, L"ansi") == 0 ||
+                        lstrcmpW(pch, L"wide") == 0 ||
+                        lstrcmpW(pch, L"utf8") == 0 ||
+                        lstrcmpW(pch, L"utf8n") == 0 ||
+                        lstrcmpW(pch, L"sjis") == 0)
+                    {
+                        g_settings.encoding_map[szText] = pch;
+                    }
+                }
+            }
+        }
+    }
+
     return TRUE;
 }
 
@@ -11707,6 +11737,24 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
     keyRisoh.SetDword(TEXT("bRedundantComments"), g_settings.bRedundantComments);
     keyRisoh.SetDword(TEXT("bWrapManifest"), g_settings.bWrapManifest);
+
+    DWORD encoding_count = DWORD(g_settings.encoding_map.size());
+    keyRisoh.SetDword(TEXT("encoding_count"), encoding_count);
+    {
+        DWORD i = 0;
+        for (auto pair : g_settings.encoding_map)
+        {
+            WCHAR szName[32];
+            StringCchPrintfW(szName, _countof(szName), L"encoding%lu", i);
+
+            WCHAR szText[64];
+            StringCchPrintfW(szText, _countof(szText), L"%s:%s", pair.first.c_str(), pair.second.c_str());
+
+            keyRisoh.SetSz(szName, szText);
+
+            ++i;
+        }
+    }
 
     return TRUE;
 }
