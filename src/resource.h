@@ -66,6 +66,7 @@
 #define IDD_STRINGLIST                      156
 #define IDD_SAVE_OPTIONS                    157
 #define IDD_ENCODING                        158
+#define IDD_ADDENC                          159
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -291,6 +292,7 @@
 #define IDS_BINARY                          305
 #define IDS_RESTYPE                         306
 #define IDS_ENCODING                        307
+#define IDS_INVALIDRESTYPE                  308
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

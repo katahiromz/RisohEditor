@@ -34,6 +34,188 @@ class MEncodingDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
+inline MString txt2enc(MString txt)
+{
+    if (txt == LoadStringDx(IDS_ANSI))
+        return L"ansi";
+    if (txt == LoadStringDx(IDS_WIDE))
+        return L"wide";
+    if (txt == LoadStringDx(IDS_UTF8))
+        return L"utf8";
+    if (txt == LoadStringDx(IDS_UTF8N))
+        return L"utf8n";
+    if (txt == LoadStringDx(IDS_SJIS))
+        return L"sjis";
+    if (txt == LoadStringDx(IDS_BINARY))
+        return L"bin";
+    return L"";
+}
+
+inline MString enc2txt(MString enc)
+{
+    if (enc == L"ansi")
+        return LoadStringDx(IDS_ANSI);
+    if (enc == L"wide")
+        return LoadStringDx(IDS_WIDE);
+    if (enc == L"utf8")
+        return LoadStringDx(IDS_UTF8);
+    if (enc == L"utf8n")
+        return LoadStringDx(IDS_UTF8N);
+    if (enc == L"sjis")
+        return LoadStringDx(IDS_SJIS);
+    if (enc == L"bin")
+        return LoadStringDx(IDS_BINARY);
+    return L"";
+}
+
+inline MIdOrString get_type_from_text(MString str)
+{
+    mstr_trim(str);
+
+    MIdOrString type;
+    auto k = str.find(L" (");   // )
+    if (k != MStringW::npos)
+    {
+        int num = mstr_parse_int(&str[k + 2]);
+        type = (WORD)num;
+    }
+    else if (str.size() && mchr_is_digit(str[0]))
+    {
+        int num = mstr_parse_int(&str[0]);
+        type = (WORD)num;
+    }
+    else
+    {
+        type.m_str = str;
+    }
+    return type;
+}
+
+// get the resource type label
+inline MStringW get_type_label(MIdOrString& type)
+{
+    if (!type.m_id)
+        return type.m_str;    // string name type
+
+    // it was integer name type
+
+    MStringW label = g_db.GetName(L"RESOURCE", type.m_id);
+    if (label.empty())  // unable to get the label
+        return mstr_dec_word(type.m_id);  // returns the numeric text
+
+    // got the label
+    if (!mchr_is_digit(label[0]))   // first character is not digit
+    {
+        // add a parenthesis pair and numeric text
+        label += L" (";
+        label += mstr_dec_word(type.m_id);
+        label += L")";
+    }
+
+    return label;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MAddEncDlg : public MDialogBase
+{
+public:
+    MIdOrString m_type;
+    MString m_enc;
+    MComboBoxAutoComplete m_cmb1;
+
+    MAddEncDlg() : MDialogBase(IDD_ADDENC)
+    {
+    }
+
+    virtual ~MAddEncDlg()
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        SubclassChildDx(m_cmb1, cmb1);
+
+        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
+        auto table = g_db.GetTable(L"RESOURCE");
+        for (auto& table_entry : table)
+        {
+            WCHAR sz[MAX_PATH];
+            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+                             table_entry.name.c_str(), table_entry.value);
+            ComboBox_AddString(hCmb1, sz);
+        }
+        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+        for (auto& table_entry : table)
+        {
+            ComboBox_AddString(hCmb1, table_entry.name.c_str());
+        }
+
+        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_ANSI));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_WIDE));
+        INT k = ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_UTF8N));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_SJIS));
+        ComboBox_AddString(hCmb2, LoadStringDx(IDS_BINARY));
+
+        ComboBox_SetCurSel(hCmb2, k);
+
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        MString text = GetDlgItemText(hwnd, cmb1);
+        m_type = get_type_from_text(text);
+        if (m_type.empty())
+        {
+            ErrorBoxDx(IDS_INVALIDRESTYPE);
+            return;
+        }
+
+        text = GetDlgItemText(hwnd, cmb2);
+        m_enc = txt2enc(text);
+        if (m_enc.empty())
+        {
+            return;
+        }
+
+        EndDialog(IDOK);
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();  // input completion
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+        HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+        HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        default:
+            return DefaultProcDx();
+        }
+    }
+};
+
 class MEncodingDlg : public MDialogBase
 {
 public:
@@ -41,50 +223,6 @@ public:
     HWND m_hLst1;
     HICON m_hIcon;
     HICON m_hIconSm;
-
-    MString txt2enc(MString txt)
-    {
-        if (txt == LoadStringDx(IDS_ANSI))
-            return L"ansi";
-        if (txt == LoadStringDx(IDS_WIDE))
-            return L"wide";
-        if (txt == LoadStringDx(IDS_UTF8))
-            return L"utf8";
-        if (txt == LoadStringDx(IDS_UTF8N))
-            return L"utf8n";
-        if (txt == LoadStringDx(IDS_SJIS))
-            return L"sjis";
-        if (txt == LoadStringDx(IDS_BINARY))
-            return L"bin";
-        if (txt.size() && mchr_is_digit(txt[0]))
-        {
-            int num = mstr_parse_int(txt.c_str());
-            return mstr_dec(num);
-        }
-        return L"";
-    }
-
-    MString enc2txt(MString enc)
-    {
-        if (enc == L"ansi")
-            return LoadStringDx(IDS_ANSI);
-        if (enc == L"wide")
-            return LoadStringDx(IDS_WIDE);
-        if (enc == L"utf8")
-            return LoadStringDx(IDS_UTF8);
-        if (enc == L"utf8n")
-            return LoadStringDx(IDS_UTF8N);
-        if (enc == L"sjis")
-            return LoadStringDx(IDS_SJIS);
-        if (enc == L"bin")
-            return LoadStringDx(IDS_BINARY);
-        if (enc.size() && mchr_is_digit(enc[0]))
-        {
-            int num = mstr_parse_int(enc.c_str());
-            return mstr_dec(num);
-        }
-        return L"";
-    }
 
     MEncodingDlg() : MDialogBase(IDD_ENCODING)
     {
@@ -96,30 +234,6 @@ public:
     {
         DestroyIcon(m_hIcon);
         DestroyIcon(m_hIconSm);
-    }
-
-    // get the resource type label
-    MStringW get_type_label(MIdOrString& type) const
-    {
-        if (!type.m_id)
-            return type.m_str;    // string name type
-
-        // it was integer name type
-
-        MStringW label = g_db.GetName(L"RESOURCE", type.m_id);
-        if (label.empty())  // unable to get the label
-            return mstr_dec_word(type.m_id);  // returns the numeric text
-
-        // got the label
-        if (!mchr_is_digit(label[0]))   // first character is not digit
-        {
-            // add a parenthesis pair and numeric text
-            label += L" (";
-            label += mstr_dec_word(type.m_id);
-            label += L")";
-        }
-
-        return label;
     }
 
     void InitCtl1()
@@ -135,13 +249,7 @@ public:
                 continue;
 
             MStringW str = pair.first;
-            auto k = str.find(L" (");   // )
-            if (k != MStringW::npos)
-            {
-                int num = mstr_parse_int(&str[k + 1]);
-                str = mstr_dec(num);
-            }
-            MIdOrString type(str.c_str());
+            MIdOrString type = get_type_from_text(str);
             str = get_type_label(type);
 
             LV_ITEM item;
@@ -206,6 +314,30 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        INT iItem, nCount = ListView_GetItemCount(m_hLst1);
+        if (nCount == 0)
+        {
+            return;
+        }
+
+        auto& map = g_settings.encoding_map;
+        map.clear();
+
+        WCHAR szText1[64], szText2[64];
+        for (iItem = 0; iItem < nCount; ++iItem)
+        {
+            ListView_GetItemText(m_hLst1, iItem, 0, szText1, _countof(szText1));
+            mstr_trim(szText1);
+
+            ListView_GetItemText(m_hLst1, iItem, 1, szText2, _countof(szText2));
+            mstr_trim(szText2);
+
+            MIdOrString type = get_type_from_text(szText1);
+            MString enc = txt2enc(szText2);
+
+            map.insert(std::make_pair(type.str(), enc));
+        }
+
         EndDialog(IDOK);
     }
 
@@ -217,6 +349,60 @@ public:
         }
     }
 
+    void OnDelete(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            ListView_DeleteItem(m_hLst1, iItem);
+        }
+    }
+
+    void OnAdd(HWND hwnd)
+    {
+        MAddEncDlg dialog;
+        if (IDOK != dialog.DialogBoxDx(hwnd))
+            return;
+
+        MString text1 = get_type_label(dialog.m_type);
+        MString text2 = enc2txt(dialog.m_enc);
+
+        INT iItem;
+
+        LV_FINDINFO find;
+        WCHAR sz[128];
+        StringCchCopyW(sz, _countof(sz), text1.c_str());
+        ZeroMemory(&find, sizeof(find));
+        find.flags = LVFI_STRING;
+        find.psz = sz;
+        iItem = ListView_FindItem(m_hLst1, -1, &find);
+        if (iItem != -1)
+        {
+            ListView_DeleteItem(m_hLst1, iItem);
+        }
+
+        LV_ITEM item;
+        iItem = ListView_GetItemCount(m_hLst1);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 0;
+        item.pszText = &text1[0];
+        ListView_InsertItem(m_hLst1, &item);
+
+        ZeroMemory(&item, sizeof(item));
+        item.iItem = iItem;
+        item.mask = LVIF_TEXT;
+        item.iSubItem = 1;
+        item.pszText = &text2[0];
+        ListView_SetItem(m_hLst1, &item);
+
+        UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+        ListView_SetItemState(m_hLst1, iItem, state, state);
+        ListView_EnsureVisible(m_hLst1, iItem, FALSE);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -226,6 +412,14 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case psh1:
+        case ID_ADD:
+            OnAdd(hwnd);
+            break;
+        case psh3:
+        case ID_DELETE:
+            OnDelete(hwnd);
             break;
         }
     }
