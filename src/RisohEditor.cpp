@@ -60,6 +60,24 @@ static SETWINDOWTHEME s_pSetWindowTheme = NULL;
 //////////////////////////////////////////////////////////////////////////////
 // useful global functions
 
+BOOL IsFileLockedDx(LPCTSTR pszFileName)
+{
+    if (GetFileAttributesW(pszFileName) == INVALID_FILE_ATTRIBUTES)
+        return FALSE;
+
+    HANDLE hFile;
+    hFile = CreateFileW(pszFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL,
+                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile != INVALID_HANDLE_VALUE)
+    {
+        CloseHandle(hFile);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+
 // "." or ".."
 #define IS_DOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
 
@@ -7093,6 +7111,15 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
+    // check not locking
+    if (IsFileLockedDx(pszFileName))
+    {
+        WCHAR szMsg[MAX_PATH + 256];
+        StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszFileName);
+        ErrorBoxDx(szMsg);
+        return FALSE;
+    }
+
     // at first, backup it
     if (g_settings.bBackup)
         DoBackupFile(pszFileName);
@@ -7159,7 +7186,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             return FALSE;
 
         // build the lang directory path
-		*pch = 0;
+        *pch = 0;
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
@@ -7345,6 +7372,15 @@ void WriteMacroLine(MFile& file, const MStringA& name, const MStringA& definitio
 // write the resource.h file
 BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
 {
+    // check not locking
+    if (IsFileLockedDx(pszResH))
+    {
+        WCHAR szMsg[MAX_PATH + 256];
+        StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszResH);
+        ErrorBoxDx(szMsg);
+        return FALSE;
+    }
+
     // do backup the resource.h file
     if (g_settings.bBackup)
         DoBackupFile(pszResH);
@@ -7884,6 +7920,15 @@ BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
+    // check not locking
+    if (IsFileLockedDx(pszExeFile))
+    {
+        WCHAR szMsg[MAX_PATH + 256];
+        StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszExeFile);
+        ErrorBoxDx(szMsg);
+        return FALSE;
+    }
+
     // do backup
     if (g_settings.bBackup)
     {

@@ -281,6 +281,7 @@
 #define IDS_NOTICE                          296
 #define IDS_DAGGER                          297
 #define IDS_IMPORTFILTER                    298
+#define IDS_CANTWRITEBYLOCK                 299
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

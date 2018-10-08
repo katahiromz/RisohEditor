@@ -59,6 +59,7 @@ Question 4. What is mcdx?
  * 2018.XX.YY ver.5.1.0
     - Improve String Entry Dialogs.
     - Fix Ctrl+A behaviour.
+    - Check file lock on saving a file.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
