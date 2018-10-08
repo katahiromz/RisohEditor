@@ -62,6 +62,7 @@ Question 4. What is mcdx?
     - Check file lock on saving a file.
     - Make resource IDs case sensitive.
     - Support encoding of resource items.
+    - Fix the abnormal termination at "Languages" dialog.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
