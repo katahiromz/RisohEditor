@@ -264,6 +264,13 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Dele&te\tDel", psh3
     }
+    POPUP "Popup #8"
+    {
+        MENUITEM "&Add...", ID_ADD
+        MENUITEM "&Modify...", ID_MODIFY
+        MENUITEM SEPARATOR
+        MENUITEM "&Delete\tDel", ID_DELETE
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

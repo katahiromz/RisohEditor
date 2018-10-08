@@ -264,6 +264,13 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "删除(&T)\tDel", psh3
     }
+    POPUP "Popup #8"
+    {
+        MENUITEM "添加(&A)...", ID_ADD
+        MENUITEM "修改(&M)...", ID_MODIFY
+        MENUITEM SEPARATOR
+        MENUITEM "删除(&T)\tDel", ID_DELETE
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

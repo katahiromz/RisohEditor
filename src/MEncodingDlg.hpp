@@ -221,7 +221,7 @@ public:
     MString m_enc;
     MComboBoxAutoComplete m_cmb1;
 
-    MModifyEncDlg(MIdOrString type, MString enc) :
+    MModifyEncDlg(const MIdOrString& type, MString enc) :
         MDialogBase(IDD_MODIFYENC),
         m_type(type),
         m_enc(enc)
@@ -253,6 +253,11 @@ public:
             {
                 ComboBox_SetCurSel(hCmb1, k);
             }
+        }
+        if (ComboBox_GetCurSel(hCmb1) == CB_ERR)
+        {
+            int k = ComboBox_AddString(hCmb1, m_type.c_str());
+            ComboBox_SetCurSel(hCmb1, k);
         }
         EnableWindow(hCmb1, FALSE);
 
@@ -413,6 +418,8 @@ public:
         ListView_SetItemState(m_hLst1, 0, state, state);
         SetFocus(m_hLst1);
 
+        OnItemChanged(hwnd);
+
         CenterWindowDx();
         return TRUE;
     }
@@ -450,7 +457,7 @@ public:
     {
         if (hwndContext == m_hLst1)
         {
-            PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 4, xPos, yPos);
+            PopupMenuDx(hwnd, m_hLst1, IDR_POPUPMENUS, 8, xPos, yPos);
         }
     }
 
@@ -552,6 +559,7 @@ public:
         case psh1:
         case ID_ADD:
             OnAdd(hwnd);
+            OnItemChanged(hwnd);
             break;
         case psh2:
         case ID_MODIFY:
@@ -560,7 +568,58 @@ public:
         case psh3:
         case ID_DELETE:
             OnDelete(hwnd);
+            OnItemChanged(hwnd);
             break;
+        }
+    }
+
+    LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
+    {
+        if (idFrom == lst1)
+        {
+            if (pnmhdr->code == LVN_KEYDOWN)
+            {
+                LV_KEYDOWN *KeyDown = (LV_KEYDOWN *)pnmhdr;
+                if (KeyDown->wVKey == VK_DELETE)
+                {
+                    OnDelete(hwnd);
+                    return 0;
+                }
+            }
+            if (pnmhdr->code == NM_DBLCLK)
+            {
+                OnModify(hwnd);
+                return 0;
+            }
+            if (pnmhdr->code == LVN_ITEMCHANGED)
+            {
+                //NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr;
+                OnItemChanged(hwnd);
+            }
+        }
+        return 0;
+    }
+
+    void OnItemChanged(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        BOOL bSelected = (iItem != -1);
+        EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
+        EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
+    }
+
+    void OnInitMenuPopup(HWND hwnd, HMENU hMenu, UINT item, BOOL fSystemMenu)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem >= 0)
+        {
+            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_ENABLED);
+            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_ENABLED);
+        }
+        else
+        {
+            EnableMenuItem(hMenu, ID_MODIFY, MF_BYCOMMAND | MF_GRAYED);
+            EnableMenuItem(hMenu, ID_DELETE, MF_BYCOMMAND | MF_GRAYED);
         }
     }
 
@@ -571,6 +630,9 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
+            HANDLE_MSG(hwnd, WM_CONTEXTMENU, OnContextMenu);
+            HANDLE_MSG(hwnd, WM_INITMENUPOPUP, OnInitMenuPopup);
         }
         return DefaultProcDx();
     }
