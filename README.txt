@@ -60,6 +60,7 @@ Question 4. What is mcdx?
     - Improve String Entry Dialogs.
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.
+    - Make resource IDs case sensitive.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

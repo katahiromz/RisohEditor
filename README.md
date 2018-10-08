@@ -57,6 +57,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improve String Entry Dialogs.
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.
+    - Make resource IDs case sensitive.
 
 ## Contact Us
 
