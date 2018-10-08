@@ -46,17 +46,40 @@ public:
     STRING_ENTRY& m_entry;
     StringRes& m_str_res;
     MComboBoxAutoComplete m_cmb1;
+    MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MAddStrDlg(STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_ADDSTR), m_entry(entry), m_str_res(str_res)
     {
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+    }
+
+    virtual ~MAddStrDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitStringComboBox(hCmb1, L"");
         SubclassChildDx(m_cmb1, cmb1);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(chx1, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
 
         CenterWindowDx();
         return TRUE;
@@ -71,6 +94,12 @@ public:
             SetFocus(hCmb1);
             ErrorBoxDx(IDS_NOSUCHID);
             return;
+        }
+        if (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        {
+            MStringW str = m_entry.StringValue;
+            mstr_replace_all(str, L"\r\n", L"\n");
+            StringCchCopy(m_entry.StringValue, _countof(m_entry.StringValue), str.c_str());
         }
         INT value;
         if (g_db.HasResID(m_entry.StringID))
@@ -119,6 +148,11 @@ public:
         SendMessage(GetParent(GetParent(hwnd)), WM_COMMAND, ID_IDLIST, 0);
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -126,6 +160,7 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         }
         return 0;
     }
@@ -138,18 +173,42 @@ class MModifyStrDlg : public MDialogBase
 public:
     STRING_ENTRY& m_entry;
     StringRes& m_str_res;
+    MResizable m_resizable;
+    HICON m_hIcon;
+    HICON m_hIconSm;
 
     MModifyStrDlg(STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_str_res(str_res)
     {
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+    }
+
+    virtual ~MModifyStrDlg()
+    {
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitStringComboBox(hCmb1, L"");
 
         StrDlg_SetEntry(hwnd, m_entry);
+
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_TOP_LEFT, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(psh1, mzcLA_TOP_RIGHT);
+        m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(chx1, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDCANCEL, mzcLA_BOTTOM_RIGHT);
+
         CenterWindowDx();
         return TRUE;
     }
@@ -160,6 +219,12 @@ public:
         {
             ErrorBoxDx(IDS_NOSUCHID);
             return;
+        }
+        if (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        {
+            MStringW str = m_entry.StringValue;
+            mstr_replace_all(str, L"\r\n", L"\n");
+            StringCchCopy(m_entry.StringValue, _countof(m_entry.StringValue), str.c_str());
         }
         EndDialog(IDOK);
     }
@@ -185,6 +250,11 @@ public:
         }
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -192,6 +262,7 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         }
         return DefaultProcDx();
     }

@@ -1784,7 +1784,7 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
 
     // get the text from EDIT control
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
-    mstr_trim(str);     // trim it
+    //mstr_trim(str);     // trim it
 
     // unquote if quoted
     if (str[0] == L'"')
