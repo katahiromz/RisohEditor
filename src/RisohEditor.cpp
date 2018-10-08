@@ -5818,6 +5818,12 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     if (bDataOK)
     {
+        if (data.empty())
+        {
+            ErrorBoxDx(IDS_DATAISEMPTY);
+            return FALSE;
+        }
+
         // add a language entry
         auto entry = g_res.add_lang_entry(type, name, lang, data);
 
@@ -9319,7 +9325,12 @@ void MMainWnd::OnEncoding(HWND hwnd)
         return;
 
     MEncodingDlg dialog;
-    dialog.DialogBoxDx(hwnd);
+    if (IDOK == dialog.DialogBoxDx(hwnd))
+    {
+        // select the entry
+        auto entry = g_res.get_entry();
+        SelectTV(entry, FALSE);
+    }
 }
 
 void MMainWnd::OnExtractBang(HWND hwnd)
