@@ -53,7 +53,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improve resource.h output.
     - Improve treeview file icon.
     - Improve importing.
- * 2018.XX.YY ver.5.1.0
+ * 2018.10.08 ver.5.1.0
     - Improve "String Entry" dialogs (multiline).
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.

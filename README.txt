@@ -56,7 +56,7 @@ Question 4. What is mcdx?
     - Improve resource.h output.
     - Improve treeview file icon.
     - Improve importing.
- * 2018.XX.YY ver.5.1.0
+ * 2018.10.08 ver.5.1.0
     - Improve "String Entry" dialogs (multiline).
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.

@@ -9313,7 +9313,7 @@ void MMainWnd::OnClone(HWND hwnd)
 void MMainWnd::OnJumpToMatome(HWND hwnd)
 {
     static const WCHAR szURL[] =
-        L"http://www.geocities.jp/katayama_hirofumi_mz/risoheditor";
+        L"https://katahiromz.web.fc2.com/re/matome/";
 
     ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
 }
