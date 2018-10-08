@@ -140,6 +140,14 @@ struct RisohSettings
         removed_ids["IDC_STATIC"] = "-1";
     }
 
+    void ResetEncoding()
+    {
+        encoding_map.clear();
+        encoding_map[L"RISOHTEMPLATE"] = L"utf8";
+        encoding_map[L"999"] = L"ansi";
+        encoding_map[mstr_dec((WORD)(UINT_PTR)RT_DLGINCLUDE)] = L"utf8n";
+    }
+
     void ResetAssoc()
     {
         assoc_map[L"Cursor.ID"] = L"IDC_";

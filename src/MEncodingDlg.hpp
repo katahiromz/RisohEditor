@@ -46,8 +46,6 @@ inline MString txt2enc(MString txt)
         return L"utf8n";
     if (txt == LoadStringDx(IDS_SJIS))
         return L"sjis";
-    if (txt == LoadStringDx(IDS_BINARY))
-        return L"bin";
     return L"";
 }
 
@@ -63,8 +61,6 @@ inline MString enc2txt(MString enc)
         return LoadStringDx(IDS_UTF8N);
     if (enc == L"sjis")
         return LoadStringDx(IDS_SJIS);
-    if (enc == L"bin")
-        return LoadStringDx(IDS_BINARY);
     return L"";
 }
 
@@ -350,7 +346,7 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    void InitCtl1()
+    void InitLst1()
     {
         ListView_DeleteAllItems(m_hLst1);
 
@@ -412,7 +408,7 @@ public:
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);
 
-        InitCtl1();
+        InitLst1();
 
         UINT state = LVIS_SELECTED | LVIS_FOCUSED;
         ListView_SetItemState(m_hLst1, 0, state, state);
@@ -422,6 +418,12 @@ public:
 
         CenterWindowDx();
         return TRUE;
+    }
+
+    void OnReset(HWND hwnd)
+    {
+        g_settings.ResetEncoding();
+        InitLst1();
     }
 
     void OnOK(HWND hwnd)
@@ -569,6 +571,9 @@ public:
         case ID_DELETE:
             OnDelete(hwnd);
             OnItemChanged(hwnd);
+            break;
+        case psh5:
+            OnReset(hwnd);
             break;
         }
     }

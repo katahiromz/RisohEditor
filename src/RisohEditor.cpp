@@ -2160,7 +2160,6 @@ protected:
     void PreviewMessageTable(HWND hwnd, const EntryBase& entry);
     void PreviewRCData(HWND hwnd, const EntryBase& entry);
     void PreviewDlgInit(HWND hwnd, const EntryBase& entry);
-    void PreviewRisohTemplate(HWND hwnd, const EntryBase& entry);
     void PreviewUnknown(HWND hwnd, const EntryBase& entry);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
@@ -3518,9 +3517,9 @@ void MMainWnd::OnCompile(HWND hwnd)
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
-		// clear the control selection
-		MRadCtrl::GetTargets().clear();
-		m_hSrcEdit.ClearIndeces();
+        // clear the control selection
+        MRadCtrl::GetTargets().clear();
+        m_hSrcEdit.ClearIndeces();
 
         // clear the modification flag
         Edit_SetModify(m_hSrcEdit, FALSE);
@@ -3791,12 +3790,49 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
 }
 
+MStringW
+GetResTypeEncoding(const MIdOrString& type)
+{
+    MStringW name;
+    if (type.m_id)
+    {
+        name = g_db.GetName(L"RESOURCE", type.m_id);
+        if (name.empty())
+            name = mstr_dec_word(type.m_id);
+    }
+    else
+    {
+        name = type.str();
+    }
+
+    auto it = g_settings.encoding_map.find(name);
+    if (it != g_settings.encoding_map.end())
+        return it->second;
+
+    return L"";
+}
+
+bool IsEntryTextEditable(const EntryBase *entry)
+{
+    if (!entry)
+        return false;
+
+    if (entry->is_editable())
+        return true;
+
+    auto enc = GetResTypeEncoding(entry->m_type);
+    if (enc.size() && enc != L"bin")
+        return true;
+
+    return false;
+}
+
 // do text edit
 void MMainWnd::OnEdit(HWND hwnd)
 {
     // get the selected entry
     auto entry = g_res.get_entry();
-    if (!entry->is_editable())
+    if (!IsEntryTextEditable(entry))
         return;
 
     // make it non-read-only
@@ -4828,15 +4864,6 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
 
-// preview the RISOHTEMPLATE resource
-void MMainWnd::PreviewRisohTemplate(HWND hwnd, const EntryBase& entry)
-{
-    // dump the text to m_hSrcEdit
-    ResToText res2text;
-    MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
-}
-
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
@@ -5094,10 +5121,6 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
         {
             PreviewAVI(hwnd, *entry);
         }
-        else if (entry->m_type == L"RISOHTEMPLATE")
-        {
-            PreviewRisohTemplate(hwnd, *entry);
-        }
         else
         {
             PreviewUnknown(hwnd, *entry);
@@ -5107,7 +5130,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    return entry->is_editable();
+    return IsEntryTextEditable(entry);
 }
 
 // create the toolbar
@@ -5743,26 +5766,58 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         return CompileMessageTable(strOutput, name, lang, strWide);
     }
 
+    // add a UTF-8 BOM to data
+    static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
+
     // strWide --> strUtf8 (in UTF-8)
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
-    if (Res_IsPlainText(type))
+    auto enc = GetResTypeEncoding(type);
+    BOOL bDataOK = FALSE;
+    EntryBase::data_type data;
+    if (enc.size())
     {
-        EntryBase::data_type data;
-        if (strWide.find(L"\"UTF-8\"") != MStringW::npos || type == L"RISOHTEMPLATE")
+        bDataOK = TRUE;
+
+        if (enc == L"utf8" || enc == L"utf8n")
         {
             data.assign(strUtf8.begin(), strUtf8.end());
 
-            // add a UTF-8 BOM to data
-            static const BYTE bom[] = {0xEF, 0xBB, 0xBF, 0};
-            data.insert(data.begin(), &bom[0], &bom[3]);
+            if (enc != L"utf8n")
+            {
+                // add a UTF-8 BOM to data
+                data.insert(data.begin(), &bom[0], &bom[3]);
+            }
         }
-        else
+        else if (enc == L"ansi")
         {
             // strWide --> data (in ANSI)
             MStringA TextAnsi = MWideToAnsi(CP_ACP, strWide).c_str();
             data.assign(TextAnsi.begin(), TextAnsi.end());
         }
+        else if (enc == L"wide")
+        {
+            data.assign((BYTE *)&strWide[0], (BYTE *)&strWide.c_str()[strWide.size()]);
+        }
+        else if (enc == L"sjis")
+        {
+            MStringA TextSjis = MWideToAnsi(932, strWide).c_str();
+            data.assign(TextSjis.begin(), TextSjis.end());
+        }
+        else
+        {
+            bDataOK = FALSE;
+        }
+    }
+    else if (type == RT_HTML || type == RT_MANIFEST)
+    {
+        data.assign(strUtf8.begin(), strUtf8.end());
+        data.insert(data.begin(), &bom[0], &bom[3]);
 
+        bDataOK = TRUE;
+    }
+
+    if (bDataOK)
+    {
         // add a language entry
         auto entry = g_res.add_lang_entry(type, name, lang, data);
 
@@ -7705,14 +7760,6 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         {
             return g_res.extract_icon(filename.c_str(), entry);
         }
-        if (wType == (WORD)(UINT_PTR)RT_HTML)
-        {
-            return g_res.extract_bin(filename.c_str(), entry);
-        }
-        if (wType == (WORD)(UINT_PTR)RT_MANIFEST)
-        {
-            return g_res.extract_bin(filename.c_str(), entry);
-        }
     }
     else
     {
@@ -7761,10 +7808,6 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
             return g_res.extract_bin(filename.c_str(), entry);
         }
         if (entry->m_type == L"IMAGE")
-        {
-            return g_res.extract_bin(filename.c_str(), entry);
-        }
-        if (entry->m_type == L"RISOHTEMPLATE")
         {
             return g_res.extract_bin(filename.c_str(), entry);
         }
@@ -9271,10 +9314,12 @@ void MMainWnd::OnJumpToMatome(HWND hwnd)
 
 void MMainWnd::OnEncoding(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     MEncodingDlg dialog;
-    if (IDOK == dialog.DialogBoxDx(hwnd))
-    {
-    }
+    dialog.DialogBoxDx(hwnd);
 }
 
 void MMainWnd::OnExtractBang(HWND hwnd)
@@ -11320,8 +11365,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bRedundantComments = TRUE;
     g_settings.bWrapManifest = TRUE;
 
-    g_settings.encoding_map.clear();
-    g_settings.encoding_map[L"RISOHTEMPLATE"] = L"utf8";
+    g_settings.ResetEncoding();
 }
 
 // update the prefix data
@@ -11600,8 +11644,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
                         lstrcmpW(pch, L"wide") == 0 ||
                         lstrcmpW(pch, L"utf8") == 0 ||
                         lstrcmpW(pch, L"utf8n") == 0 ||
-                        lstrcmpW(pch, L"sjis") == 0 ||
-                        lstrcmpW(pch, L"bin") == 0)
+                        lstrcmpW(pch, L"sjis") == 0)
                     {
                         g_settings.encoding_map[szText] = pch;
                     }

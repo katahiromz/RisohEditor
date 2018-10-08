@@ -93,34 +93,6 @@ Res_IsEntityType(const MIdOrString& type)
     return TRUE;
 }
 
-// is the resource type a "plain text" type?
-inline BOOL
-Res_IsPlainText(const MIdOrString& type)
-{
-    MStringW name;
-    if (type.m_id)
-    {
-        name = g_db.GetName(L"RESOURCE", type.m_id);
-        if (name.empty())
-            name = mstr_dec_word(type.m_id);
-    }
-    else
-    {
-        name = type.str();
-    }
-
-    auto table = g_db.GetTable(L"PLAIN.TEXT.RESOURCE.TYPE");
-    for (auto& table_entry : table)
-    {
-        if (table_entry.name == name)
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
 // has the resource type no name?
 inline BOOL
 Res_HasNoName(const MIdOrString& type)

@@ -61,6 +61,7 @@ Question 4. What is mcdx?
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.
     - Make resource IDs case sensitive.
+    - Support encoding of resource items.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

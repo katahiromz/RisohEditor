@@ -24,6 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MString.hpp"
+#include "MTextToText.hpp"
 #include "Res.hpp"
 
 #include "DialogRes.hpp"
@@ -105,8 +106,8 @@ public:
     MString DoAVI(const EntryBase& entry);
     MString DoDlgInit(const EntryBase& entry);
     MString DoRCData(const EntryBase& entry);
-    MString DoRisohTemplate(const EntryBase& entry);
     MString DoUnknown(const EntryBase& entry);
+    MString DoEncodedText(const EntryBase& entry, const MStringW& enc);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
     MString DumpEscapedName(const MIdOrString& name);
@@ -901,10 +902,6 @@ ResToText::DumpEntry(const EntryBase& entry)
         {
             return DoAVI(entry);
         }
-        else if (entry.m_type == L"RISOHTEMPLATE")
-        {
-            return DoRisohTemplate(entry);
-        }
     }
     return DoUnknown(entry);
 }
@@ -1015,15 +1012,63 @@ inline MString ResToText::DoRCData(const EntryBase& entry)
     return str;
 }
 
-inline MString ResToText::DoRisohTemplate(const EntryBase& entry)
+inline MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
 {
-    return DoText(entry);
+    MString str;
+    if (m_bHumanReadable)
+    {
+        if (enc == L"ansi")
+        {
+            std::string str((char *)&entry.m_data[0], entry.m_data.size());
+            MAnsiToWide a2w(CP_ACP, str.c_str());
+            return a2w.c_str();
+        }
+        if (enc == L"wide")
+        {
+            std::wstring str((wchar_t *)&entry.m_data[0], entry.m_data.size());
+            return str;
+        }
+        if (enc == L"utf8" || enc == L"utf8n")
+        {
+            std::string str((char *)&entry.m_data[0], entry.m_data.size());
+            if (str.size() >= 3 && memcmp(str.c_str(), "\xEF\xBB\xBF", 3) == 0)
+            {
+                str.erase(0, 3);
+            }
+            MAnsiToWide a2w(CP_UTF8, str.c_str());
+            return a2w.c_str();
+        }
+        if (enc == L"sjis")
+        {
+            std::string str((char *)&entry.m_data[0], entry.m_data.size());
+            MAnsiToWide a2w(932, str.c_str());
+            return a2w.c_str();
+        }
+    }
+    else
+    {
+        str += GetLanguageStatement(entry.m_lang);
+        str += DumpName(entry.m_type, entry.m_name);
+        str += L" ";
+        str += DumpEscapedName(entry.m_type);
+        str += L" \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n\r\n";
+    }
+    return str;
 }
 
 inline MString ResToText::DoUnknown(const EntryBase& entry)
 {
-    MString str;
+    MStringW GetResTypeEncoding(const MIdOrString& type);
 
+    MStringW enc = GetResTypeEncoding(entry.m_type);
+    if (enc.size())
+    {
+        return DoEncodedText(entry, enc);
+    }
+
+    MString str;
     if (entry.m_et != ET_LANG)
         return str;
 
