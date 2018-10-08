@@ -54,6 +54,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improve treeview file icon.
     - Improve importing.
  * 2018.XX.YY ver.5.1.0
+    - Improve String Entry Dialogs
 
 ## Contact Us
 
