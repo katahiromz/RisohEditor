@@ -109,6 +109,7 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM SEPARATOR
+        MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS
         MENUITEM "フォント設定(&F)...", ID_FONTS
         MENUITEM "PATHの設定(&P)...", ID_SETPATHS
@@ -1148,7 +1149,7 @@ FONT 9, "MS UI Gothic"
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170
-CAPTION "テキスト リソース エンコーディング"
+CAPTION "リソース項目のエンコーディング"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS UI Gothic"
 {
@@ -1389,6 +1390,14 @@ STRINGTABLE
     IDS_DAGGER, "// † <-- This dagger helps UTF-8 detection.\r\n"
     IDS_IMPORTFILTER, "インポート可能なファイル|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|バイナリ リソース (*.res)|*.res|画像ファイル|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|カーソル ファイル (*.cur;*.ani)|*.cur;*.ani|アイコン ファイル (*.ico)|*.ico|WAVE音声ファイル (*.wav)|*.wav|すべてのファイル (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "次のファイルがロックされているため、書き込めません。\r\n\r\n%s"
+    IDS_ANSI, "ANSI"
+    IDS_WIDE, "Unicode"
+    IDS_UTF8, "UTF-8 with BOM"
+    IDS_UTF8N, "UTF-8 without BOM"
+    IDS_SJIS, "シフトJIS"
+    IDS_BINARY, "バイナリ データ"
+    IDS_RESTYPE, "リソースの種類"
+    IDS_ENCODING, "エンコーディング"
 }
 
 //////////////////////////////////////////////////////////////////////////////

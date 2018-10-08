@@ -2195,6 +2195,7 @@ protected:
     void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
     void OnExtractBang(HWND hwnd);
     void OnJumpToMatome(HWND hwnd);
+    void OnEncoding(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -9268,6 +9269,14 @@ void MMainWnd::OnJumpToMatome(HWND hwnd)
     ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
 }
 
+void MMainWnd::OnEncoding(HWND hwnd)
+{
+    MEncodingDlg dialog;
+    if (IDOK == dialog.DialogBoxDx(hwnd))
+    {
+    }
+}
+
 void MMainWnd::OnExtractBang(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -9777,6 +9786,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_JUMPTOMATOME:
         OnJumpToMatome(hwnd);
+        break;
+    case ID_ENCODING:
+        OnEncoding(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -11583,11 +11595,13 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
                 {
                     *pch = 0;
                     ++pch;
+                    ::CharLowerW(pch);
                     if (lstrcmpW(pch, L"ansi") == 0 ||
                         lstrcmpW(pch, L"wide") == 0 ||
                         lstrcmpW(pch, L"utf8") == 0 ||
                         lstrcmpW(pch, L"utf8n") == 0 ||
-                        lstrcmpW(pch, L"sjis") == 0)
+                        lstrcmpW(pch, L"sjis") == 0 ||
+                        lstrcmpW(pch, L"bin") == 0)
                     {
                         g_settings.encoding_map[szText] = pch;
                     }

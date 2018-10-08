@@ -283,6 +283,14 @@
 #define IDS_DAGGER                          297
 #define IDS_IMPORTFILTER                    298
 #define IDS_CANTWRITEBYLOCK                 299
+#define IDS_ANSI                            300
+#define IDS_WIDE                            301
+#define IDS_UTF8                            302
+#define IDS_UTF8N                           303
+#define IDS_SJIS                            304
+#define IDS_BINARY                          305
+#define IDS_RESTYPE                         306
+#define IDS_ENCODING                        307
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -427,6 +435,7 @@
 #define ID_ADDBANG                          243
 #define ID_EXTRACTBANG                      245
 #define ID_JUMPTOMATOME                     246
+#define ID_ENCODING                         247
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102

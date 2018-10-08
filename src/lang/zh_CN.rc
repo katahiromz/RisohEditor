@@ -109,6 +109,7 @@ IDR_MAINMENU MENU
         MENUITEM "使用IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "自动换行(&W)", ID_WORD_WRAP
         MENUITEM SEPARATOR
+        MENUITEM "资源项的编码(&E)...", ID_ENCODING
         MENUITEM "预定义的宏(&M)...", ID_PREDEFMACROS
         MENUITEM "字体设置(&F)...", ID_FONTS
         MENUITEM "设置PATH(&P)...", ID_SETPATHS
@@ -1145,7 +1146,7 @@ FONT 9, "宋体"
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170
-CAPTION "文本资源编码"
+CAPTION "资源项的编码"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "宋体"
 {
@@ -1386,6 +1387,14 @@ STRINGTABLE
     IDS_DAGGER, "// † <-- This dagger helps UTF-8 detection.\r\n"
     IDS_IMPORTFILTER, "可导入文件|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|二进制资源文件 (*.res)|*.res|图片文件|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|光标文件(*.cur;*.ani)|*.cur;*.ani|图标文件 (*.ico)|*.ico|WAVE声音 (*.wav)|*.wav|全部文件 (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "无法写入文件, 因为以下文件已被锁定.\r\n\r\n%s"
+    IDS_ANSI, "ANSI"
+    IDS_WIDE, "Unicode"
+    IDS_UTF8, "UTF-8 (with BOM)"
+    IDS_UTF8N, "UTF-8 (without BOM)"
+    IDS_SJIS, "Shift_JIS"
+    IDS_BINARY, "(binary data)"
+    IDS_RESTYPE, "资源类型"
+    IDS_ENCODING, "编码"
 }
 
 //////////////////////////////////////////////////////////////////////////////

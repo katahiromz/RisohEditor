@@ -109,6 +109,7 @@ IDR_MAINMENU MENU
         MENUITEM "Use IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Word Wrapping", ID_WORD_WRAP
         MENUITEM SEPARATOR
+        MENUITEM "&Encoding of resource item...", ID_ENCODING
         MENUITEM "Predefined &Macros...", ID_PREDEFMACROS
         MENUITEM "&Font settings...", ID_FONTS
         MENUITEM "Set &Paths...", ID_SETPATHS
@@ -1145,7 +1146,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170
-CAPTION "Text Resource Encoding"
+CAPTION "Encoding of Resource Item"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
@@ -1386,6 +1387,14 @@ STRINGTABLE
     IDS_DAGGER, "// † <-- This dagger helps UTF-8 detection.\r\n"
     IDS_IMPORTFILTER, "Importable Files|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Binary Resources (*.res)|*.res|Image Files|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Cursor Files (*.cur;*.ani)|*.cur;*.ani|Icon Files (*.ico)|*.ico|WAVE Sound Files (*.wav)|*.wav|All Files (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Unable to write the file because the following file is locked.\r\n\r\n%s"
+    IDS_ANSI, "ANSI"
+    IDS_WIDE, "Unicode"
+    IDS_UTF8, "UTF-8 (with BOM)"
+    IDS_UTF8N, "UTF-8 (without BOM)"
+    IDS_SJIS, "Shift_JIS"
+    IDS_BINARY, "(binary data)"
+    IDS_RESTYPE, "Resource Type"
+    IDS_ENCODING, "Encoding"
 }
 
 //////////////////////////////////////////////////////////////////////////////
