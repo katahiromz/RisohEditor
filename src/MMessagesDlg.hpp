@@ -50,6 +50,7 @@ public:
     MAddMsgDlg(MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_ADDMSG), m_entry(entry), m_msg_res(msg_res)
     {
+        m_cmb1.m_bAcceptSpace = TRUE;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -143,6 +144,7 @@ public:
     MModifyMsgDlg(MESSAGE_ENTRY& entry, MessageRes& msg_res)
         : MDialogBase(IDD_MODIFYMSG), m_entry(entry), m_msg_res(msg_res)
     {
+        m_cmb1.m_bAcceptSpace = TRUE;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)

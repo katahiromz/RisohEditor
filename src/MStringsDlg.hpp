@@ -55,6 +55,7 @@ public:
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+        m_cmb1.m_bAcceptSpace = TRUE;
     }
 
     virtual ~MAddStrDlg()
@@ -176,12 +177,14 @@ public:
     MResizable m_resizable;
     HICON m_hIcon;
     HICON m_hIconSm;
+    MComboBoxAutoComplete m_cmb1;
 
     MModifyStrDlg(STRING_ENTRY& entry, StringRes& str_res)
         : MDialogBase(IDD_MODIFYSTR), m_entry(entry), m_str_res(str_res)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+        m_cmb1.m_bAcceptSpace = TRUE;
     }
 
     virtual ~MModifyStrDlg()
@@ -246,6 +249,12 @@ public:
             break;
         case psh1:
             OnPsh1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
             break;
         }
     }
