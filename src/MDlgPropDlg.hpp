@@ -296,7 +296,6 @@ public:
         BOOL bItalic = (::IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
 
         MString strCaption = GetDlgItemText(cmb1);
-        mstr_trim(strCaption);
         g_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
         {

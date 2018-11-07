@@ -262,7 +262,6 @@ public:
     void OnOK(HWND hwnd)
     {
         MString strCaption = GetDlgItemText(cmb2);
-        mstr_trim(strCaption);
         g_settings.AddCaption(strCaption.c_str());
         if (strCaption[0] == TEXT('"'))
         {

@@ -64,6 +64,7 @@ Question 4. What is mcdx?
     - Support encoding of resource items.
     - Fix the abnormal termination at "Languages" dialog.
  * 2018.XX.YY ver.5.1.1
+    - Don't trim the caption text. Accept space in the caption.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -161,7 +161,6 @@ public:
         DWORD flags = m_flags;
 
         MString strCaption = GetDlgItemText(cmb2);
-        mstr_trim(strCaption);
         if (!strCaption.empty())
             flags |= F_TITLE;
         g_settings.AddCaption(strCaption.c_str());
