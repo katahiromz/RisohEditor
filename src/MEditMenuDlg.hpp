@@ -69,7 +69,6 @@ public:
     void OnOK(HWND hwnd)
     {
         GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
-        mstr_trim(m_entry.szCaption);
         if (m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
@@ -254,7 +253,6 @@ public:
     void OnOK(HWND hwnd)
     {
         GetDlgItemTextW(hwnd, cmb1, m_entry.szCaption, _countof(m_entry.szCaption));
-        mstr_trim(m_entry.szCaption);
         if (m_entry.szCaption[0] == L'"')
         {
             mstr_unquote(m_entry.szCaption);
@@ -634,7 +632,6 @@ public:
             str = str.substr(strIndent.size());
             ++entry.wDepth;
         }
-        mstr_trim(str);
         if (str[0] == L'"')
         {
             mstr_unquote(str);
