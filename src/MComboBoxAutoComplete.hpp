@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MCOMBOBOXAUTOCOMP_HPP_
-#define MZC4_MCOMBOBOXAUTOCOMP_HPP_     0   /* Version 0 */
+#define MZC4_MCOMBOBOXAUTOCOMP_HPP_     1   /* Version 1 */
 
 class MComboBoxAutoComplete;
 
