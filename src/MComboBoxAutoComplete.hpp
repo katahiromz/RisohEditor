@@ -54,7 +54,9 @@ public:
 class MComboBoxAutoComplete : public MComboBox
 {
 public:
-    MComboBoxAutoComplete()
+    BOOL m_bAcceptSpace;
+
+    MComboBoxAutoComplete() : m_bAcceptSpace(FALSE)
     {
     }
 
@@ -81,11 +83,16 @@ public:
 
         dwPos = GetEditSel();
         MString strRight = strInput.substr(HIWORD(dwPos));
-        mstr_trim(strRight);
+
+        if (!m_bAcceptSpace)
+            mstr_trim(strRight);
+
         if (!strRight.empty())
             return;
 
-        mstr_trim(strInput);
+        if (!m_bAcceptSpace)
+            mstr_trim(strInput);
+
         MString strInputUpper = strInput;
         CharUpperW(&strInputUpper[0]);
 

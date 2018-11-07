@@ -97,6 +97,7 @@ public:
           m_bUpdating(FALSE), m_indeces(indeces)
     {
         m_himlControls = NULL;
+        m_cmb2.m_bAcceptSpace = TRUE;
     }
 
     ~MCtrlPropDlg()

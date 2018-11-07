@@ -64,6 +64,7 @@ public:
     MDlgPropDlg(DialogRes& dialog_res) :
         MDialogBase(IDD_DLGPROP), m_dialog_res(dialog_res), m_bUpdating(FALSE)
     {
+        m_cmb1.m_bAcceptSpace = TRUE;
     }
 
     void InitTables(LPCTSTR pszClass)

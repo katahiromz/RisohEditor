@@ -79,6 +79,7 @@ public:
           m_bUpdating(FALSE), m_pt(pt)
     {
         m_himlControls = NULL;
+        m_cmb2.m_bAcceptSpace = TRUE;
     }
 
     ~MAddCtrlDlg()
