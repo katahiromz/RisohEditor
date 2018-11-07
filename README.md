@@ -60,6 +60,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Make resource IDs case sensitive.
     - Support encoding of resource items.
     - Fix the abnormal termination at "Languages" dialog.
+ * 2018.XX.YY ver.5.1.1
 
 ## Contact Us
 
