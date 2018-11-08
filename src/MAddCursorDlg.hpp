@@ -47,6 +47,7 @@ public:
     MAddCursorDlg() : MDialogBase(IDD_ADDCURSOR), m_file(NULL)
     {
         m_hCursor = NULL;
+        m_cmb3.m_bAcceptSpace = TRUE;
     }
 
     ~MAddCursorDlg()

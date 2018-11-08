@@ -1781,9 +1781,6 @@ BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry)
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
 
-    // trim
-    mstr_trim(str);
-
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         // numeric
@@ -1838,9 +1835,6 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
     MString str = MWindowBase::GetDlgItemText(hwnd, cmb1);
     ReplaceFullWithHalf(str);
 
-    // trim
-    mstr_trim(str);
-
     if (('0' <= str[0] && str[0] <= '9') || str[0] == '-' || str[0] == '+')
     {
         // numeric
@@ -1858,7 +1852,6 @@ BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry)
 
     // get the text from EDIT control
     str = MWindowBase::GetDlgItemText(hwnd, edt1);
-    mstr_trim(str);     // trim it
 
     // unquote if quoted
     if (str[0] == L'"')

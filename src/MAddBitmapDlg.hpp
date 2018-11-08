@@ -45,6 +45,7 @@ public:
 
     MAddBitmapDlg() : MDialogBase(IDD_ADDBITMAP), m_file(NULL)
     {
+        m_cmb3.m_bAcceptSpace = TRUE;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)

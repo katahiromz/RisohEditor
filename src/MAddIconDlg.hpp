@@ -47,6 +47,7 @@ public:
     MAddIconDlg()
         : MDialogBase(IDD_ADDICON), m_file(NULL), m_hIcon(NULL)
     {
+        m_cmb3.m_bAcceptSpace = TRUE;
     }
 
     ~MAddIconDlg()

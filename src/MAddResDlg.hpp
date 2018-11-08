@@ -52,6 +52,7 @@ public:
 
     MAddResDlg() : MDialogBase(IDD_ADDRES), m_type(0xFFFF), m_file(NULL)
     {
+        m_cmb3.m_bAcceptSpace = TRUE;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
