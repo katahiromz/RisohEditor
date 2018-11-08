@@ -301,6 +301,10 @@ public:
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
+        if (strClass[0] == TEXT('"'))
+        {
+            mstr_unquote(strClass);
+        }
         if (!IsThereWndClass(strClass.c_str()))
         {
             SetFocus(GetDlgItem(hwnd, cmb4));

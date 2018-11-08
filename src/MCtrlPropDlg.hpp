@@ -228,6 +228,10 @@ public:
 
         MString strClass = GetDlgItemText(cmb4);
         mstr_trim(strClass);
+        if (strClass[0] == TEXT('"'))
+        {
+            mstr_unquote(strClass);
+        }
         if (!strClass.empty())
             flags |= F_CLASS;
         item.m_class = strClass.c_str();
@@ -589,6 +593,10 @@ public:
         {
             MString strClass = GetDlgItemText(cmb4);
             mstr_trim(strClass);
+            if (strClass[0] == TEXT('"'))
+            {
+                mstr_unquote(strClass);
+            }
             if (strClass.empty())
             {
                 SetFocus(GetDlgItem(hwnd, cmb4));

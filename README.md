@@ -64,6 +64,8 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Accept space in the caption text box.
     - Accept space in the language text box.
  * 2018.XX.YY ver.5.1.2
+    - Accept space in the window class name text box.
+    - Accept C string literal in in the window class name text box.
 
 ## Contact Us
 
