@@ -63,6 +63,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2018.11.08 ver.5.1.1
     - Accept space in the caption text box.
     - Accept space in the language text box.
+ * 2018.XX.YY ver.5.1.2
 
 ## Contact Us
 

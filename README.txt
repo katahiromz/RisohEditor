@@ -66,6 +66,7 @@ Question 4. What is mcdx?
  * 2018.11.08 ver.5.1.1
     - Accept space in the caption text box.
     - Accept space in the language text box.
+ * 2018.XX.YY ver.5.1.2
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
