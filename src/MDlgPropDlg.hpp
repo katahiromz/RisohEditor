@@ -310,6 +310,10 @@ public:
 
         MString strClass = GetDlgItemText(cmb2);
         mstr_trim(strClass);
+        if (strClass[0] == TEXT('"'))
+        {
+            mstr_unquote(strClass);
+        }
 
         MString strHelp = GetDlgItemText(cmb3);
         ReplaceFullWithHalf(strHelp);

@@ -98,6 +98,7 @@ public:
     {
         m_himlControls = NULL;
         m_cmb2.m_bAcceptSpace = TRUE;
+        m_cmb4.m_bAcceptSpace = TRUE;
     }
 
     ~MCtrlPropDlg()
