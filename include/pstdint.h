@@ -74,17 +74,15 @@
                     #define UINT64_MAX 0xFFFFFFFFFFFFFFFFL
                     typedef long           int64_t;
                     typedef unsigned long  uint64_t;
-                    typedef long           intptr_t;
-                    typedef unsigned long  uintptr_t;
                 #else
                     #define INT64_MIN (-9223372036854775807LL - 1)
                     #define INT64_MAX 9223372036854775807LL
                     #define UINT64_MAX 0xFFFFFFFFFFFFFFFFLL
                     typedef long long           int64_t;
                     typedef unsigned long long  uint64_t;
-                    typedef long long           intptr_t;
-                    typedef unsigned long long  uintptr_t;
                 #endif
+                typedef long           intptr_t;
+                typedef unsigned long  uintptr_t;
             #endif
         #endif
     #endif
