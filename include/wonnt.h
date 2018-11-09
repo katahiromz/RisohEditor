@@ -57,13 +57,8 @@ typedef void *HANDLE;
     #endif
 #endif
 
-#ifdef _WIN64
-    typedef int64_t LONG_PTR;
-    typedef uint64_t ULONG_PTR, DWORD_PTR;
-#else
-    typedef LONG LONG_PTR;
-    typedef ULONG ULONG_PTR, DWORD_PTR;
-#endif
+typedef long LONG_PTR;
+typedef unsigned long ULONG_PTR, DWORD_PTR;
 
 typedef BYTE BOOLEAN;
 
