@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONDEF_H
-#define WONDEF_H    4  /* Version 4 */
+#define WONDEF_H    5  /* Version 5 */
 
 #if defined(_WIN32) && !defined(WONVER)
     #include <windows.h>
@@ -43,8 +43,10 @@
     #define HIWORD(l) ((WORD) ((((DWORD_PTR) (l)) >> 16) & 0xffff))
     #define LOBYTE(w) ((BYTE) (((DWORD_PTR) (w)) & 0xff))
     #define HIBYTE(w) ((BYTE) ((((DWORD_PTR) (w)) >> 8) & 0xff))
-    #define MAKELANGID MAKEWORD
-    #define MAKELCID MAKELONG
+    #define MAKELANGID(p, s) \
+        ((LANGID)((((WORD)(p)) << 10) | ((WORD)(s))))
+    #define MAKELCID(langid, sortid) \
+        ((LCID)((((WORD)(langid)) << 16) | ((WORD)(sortid))))
     #define PRIMARYLANGID(langid) (((WORD)(langid)) & 0x3FF)
     #define SUBLANGID(langid) ((WORD)((langid) >> 10))
 #endif
