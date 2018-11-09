@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     15  /* Version 15 */
+#define WONNT_H     16  /* Version 16 */
 
 #ifndef _INC_WINDOWS
 #if defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)
@@ -57,13 +57,8 @@ typedef void *HANDLE;
     #endif
 #endif
 
-#ifdef _WIN64
-    typedef int64_t LONG_PTR;
-    typedef uint64_t ULONG_PTR, DWORD_PTR;
-#else
-    typedef LONG LONG_PTR;
-    typedef ULONG ULONG_PTR, DWORD_PTR;
-#endif
+typedef intptr_t INT_PTR, LONG_PTR;
+typedef uintptr_t UINT_PTR, ULONG_PTR, DWORD_PTR;
 
 typedef BYTE BOOLEAN;
 
@@ -78,6 +73,16 @@ typedef INT HFILE;
 #ifndef _HRESULT_DEFINED
     #define _HRESULT_DEFINED
     typedef LONG HRESULT;
+#endif
+
+#ifndef _LCID_DEFINED
+    #define _LCID_DEFINED
+    typedef DWORD LCID;
+#endif
+
+#ifndef _LANGID_DEFINED
+    #define _LANGID_DEFINED
+    typedef WORD LANGID;
 #endif
 
 #define C_ASSERT(x)  typedef char WONNT_STATIC_ASSERT_##__LINE__[(x) ? 1 : -1]
@@ -110,6 +115,9 @@ C_ASSERT(sizeof(HANDLE) == sizeof(void *));
 C_ASSERT(sizeof(WCHAR) == 2);
 
 C_ASSERT(sizeof(HRESULT) == 4);
+
+C_ASSERT(sizeof(LANGID) == 2);
+C_ASSERT(sizeof(LCID) == 4);
 
 /**************************************************************************/
 
