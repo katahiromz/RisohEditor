@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     16   /* Version 16 */
+#define MZC4_PSTDINT_H_     18   /* Version 18 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
@@ -21,6 +21,8 @@
     typedef WORD        uint16_t;
     typedef UINT        uint32_t;
     typedef DWORDLONG   uint64_t;
+    typedef INT_PTR     intptr_t;
+    typedef UINT_PTR    uintptr_t;
 #else
     #ifdef __cplusplus
         #include <cstddef>
@@ -51,6 +53,8 @@
     #ifdef MSDOS
         typedef long                    int32_t;
         typedef unsigned long           uint32_t;
+        typedef int                     intptr_t;
+        typedef unsigned int            uintptr_t;
     #else
         typedef int                     int32_t;
         typedef unsigned int            uint32_t;
@@ -61,6 +65,8 @@
                 #define UINT64_MAX _UI64_MAX
                 typedef __int64             int64_t;
                 typedef unsigned __int64    uint64_t;
+                typedef __int64             intptr_t;
+                typedef unsigned __int64    uintptr_t;
             #else
                 #if defined(__LP64__) && !defined(__APPLE__)
                     #define INT64_MIN (-9223372036854775807L - 1)
@@ -68,12 +74,16 @@
                     #define UINT64_MAX 0xFFFFFFFFFFFFFFFFL
                     typedef long           int64_t;
                     typedef unsigned long  uint64_t;
+                    typedef long           intptr_t;
+                    typedef unsigned long  uintptr_t;
                 #else
                     #define INT64_MIN (-9223372036854775807LL - 1)
                     #define INT64_MAX 9223372036854775807LL
                     #define UINT64_MAX 0xFFFFFFFFFFFFFFFFLL
                     typedef long long           int64_t;
                     typedef unsigned long long  uint64_t;
+                    typedef long long           intptr_t;
+                    typedef unsigned long long  uintptr_t;
                 #endif
             #endif
         #endif
@@ -90,6 +100,8 @@ typedef char MZC4_PSTDINT_TEST_06_[(sizeof(uint32_t) == 4) ? 1 : -1];
     typedef char MZC4_PSTDINT_TEST_07_[(sizeof(int64_t) == 8) ? 1 : -1];
     typedef char MZC4_PSTDINT_TEST_08_[(sizeof(uint64_t) == 8) ? 1 : -1];
 #endif
+typedef char MZC4_PSTDINT_TEST_09_[(sizeof(intptr_t) == sizeof(void *)) ? 1 : -1];
+typedef char MZC4_PSTDINT_TEST_10_[(sizeof(uintptr_t) == sizeof(void *)) ? 1 : -1];
 
 /****************************************************************************/
 
