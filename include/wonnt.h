@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     14  /* Version 14 */
+#define WONNT_H     15  /* Version 15 */
 
 #ifndef _INC_WINDOWS
 #if defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)
@@ -43,8 +43,19 @@ typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG, DWORDLONG;
 typedef void *HANDLE;
 
-/* NOTE: Please think the case of sizeof(wchar_t) != 2. */
-typedef wchar_t WCHAR;
+// WCHAR
+#ifndef __WCHAR_DEFINED
+    #define __WCHAR_DEFINED
+    #ifdef _WIN32
+        typedef wchar_t WCHAR;
+    #else
+        #if __cplusplus >= 201103L
+            typedef char16_t WCHAR;
+        #else
+            typedef uint16_t WCHAR;
+        #endif
+    #endif
+#endif
 
 #ifdef _WIN64
     typedef int64_t LONG_PTR;
@@ -96,7 +107,7 @@ C_ASSERT(sizeof(BOOLEAN) == 1);
 
 C_ASSERT(sizeof(HANDLE) == sizeof(void *));
 
-C_ASSERT(sizeof(WCHAR) == sizeof(wchar_t));
+C_ASSERT(sizeof(WCHAR) == 2);
 
 C_ASSERT(sizeof(HRESULT) == 4);
 
