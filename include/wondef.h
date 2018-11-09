@@ -45,6 +45,8 @@
     #define HIBYTE(w) ((BYTE) ((((DWORD_PTR) (w)) >> 8) & 0xff))
     #define MAKELANGID MAKEWORD
     #define MAKELCID MAKELONG
+    #define PRIMARYLANGID(langid) (((WORD)(langid)) & 0x3ff)
+    #define SUBLANGID(langid) ((WORD)((langid) >> 10))
 #endif
 
 #endif  /* !(defined(_WIN32) && !defined(WONVER)) */
