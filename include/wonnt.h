@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     16  /* Version 16 */
+#define WONNT_H     17  /* Version 17 */
 
 #ifndef _INC_WINDOWS
 #if defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)
@@ -118,6 +118,12 @@ C_ASSERT(sizeof(HRESULT) == 4);
 
 C_ASSERT(sizeof(LANGID) == 2);
 C_ASSERT(sizeof(LCID) == 4);
+
+C_ASSERT(sizeof(INT_PTR) == sizeof(void *));
+C_ASSERT(sizeof(LONG_PTR) == sizeof(void *));
+C_ASSERT(sizeof(UINT_PTR) == sizeof(void *));
+C_ASSERT(sizeof(ULONG_PTR) == sizeof(void *));
+C_ASSERT(sizeof(DWORD_PTR) == sizeof(void *));
 
 /**************************************************************************/
 
