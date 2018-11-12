@@ -181,17 +181,17 @@ IDR_MAINFRAME PNG "res/Png_100.png"
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
+6 RISOHTEMPLATE "res/RISOHTEMPLATE_6.bin"
+
+9 RISOHTEMPLATE "res/RISOHTEMPLATE_9.bin"
+
+11 RISOHTEMPLATE "res/RISOHTEMPLATE_11.bin"
+
+16 RISOHTEMPLATE "res/RISOHTEMPLATE_16.bin"
+
+23 RISOHTEMPLATE "res/RISOHTEMPLATE_23.bin"
+
 24 RISOHTEMPLATE "res/RISOHTEMPLATE_24.bin"
-
-RT_ACCELERATOR RISOHTEMPLATE "res/RISOHTEMPLATE_RT_ACCELERATOR.bin"
-
-RT_HTML RISOHTEMPLATE "res/RISOHTEMPLATE_RT_HTML.bin"
-
-RT_MESSAGETABLE RISOHTEMPLATE "res/RISOHTEMPLATE_RT_MESSAGETABLE.bin"
-
-RT_STRING RISOHTEMPLATE "res/RISOHTEMPLATE_RT_STRING.bin"
-
-RT_VERSION RISOHTEMPLATE "res/RISOHTEMPLATE_RT_VERSION.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // WAVE
@@ -201,15 +201,9 @@ IDR_MAINFRAME WAVE "res/Wave_100.wav"
 //////////////////////////////////////////////////////////////////////////////
 // Languages
 
-#ifdef LANGUAGE_EN_US
-    #include "lang/en_US.rc"
-#endif
-#ifdef LANGUAGE_ZH_CN
-    #include "lang/zh_CN.rc"
-#endif
-#ifdef LANGUAGE_JA_JP
-    #include "lang/ja_JP.rc"
-#endif
+#include "lang/zh_CN.rc"
+#include "lang/ja_JP.rc"
+#include "lang/en_US.rc"
 
 //////////////////////////////////////////////////////////////////////////////
 // TEXTINCLUDE

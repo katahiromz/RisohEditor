@@ -13417,39 +13417,22 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     // get this application module
     HINSTANCE hInst = GetModuleHandle(NULL);
 
-    // type --> strName
-    MStringW strName;
-    if (type.is_int())  // numeric resource type
-    {
-        // convert the value to the name
-        strName = g_db.GetName(L"RESOURCE", type.m_id);
-        if (strName.empty())
-        {
-            // store the numeric text
-            strName = mstr_dec_short(type.m_id);
-        }
-    }
-    else    // string resource type
-    {
-        strName = type.m_str;
-    }
-
-    if (strName.empty())
+    if (type.empty())
         return NULL;    // failure
 
     // try to find the RISOHTEMPLATE resource
     WORD LangID = PRIMARYLANGID(wLang);
     HRSRC hRsrc = NULL;
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), wLang);
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), wLang);
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", strName.c_str(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
         return L"";
 
