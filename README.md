@@ -68,6 +68,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Accept C string literal in in the window class name text box.
     - Improve template system.
     - Enable manifest template.
+    - Fix toolbar UI update.
 
 ## Contact Us
 

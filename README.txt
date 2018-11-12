@@ -71,6 +71,7 @@ Question 4. What is mcdx?
     - Accept C string literal in in the window class name text box.
     - Improve template system.
     - Enable manifest template.
+    - Fix toolbar UI update.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

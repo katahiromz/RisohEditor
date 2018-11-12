@@ -5174,6 +5174,8 @@ void MMainWnd::UpdateToolBarStatus()
 
     // get the selected entry
     auto entry = g_res.get_entry();
+    if (entry && !entry->valid())
+        entry = NULL;
     if (!entry || entry->m_et == ET_TYPE)
     {
         bCanEditLabel = FALSE;
@@ -5226,7 +5228,6 @@ void MMainWnd::UpdateToolBarStatus()
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_GUIEDIT, 0);
     }
-
 
     switch (entry ? entry->m_et : ET_ANY)
     {
@@ -9846,13 +9847,13 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     }
 
-    UpdateToolBarStatus();
-
     // remove the command lock
     --m_nCommandLock;
 
     if (m_nCommandLock == 0)
         g_res.delete_invalid();     // clean up invalids
+
+    UpdateToolBarStatus();
 
     // show "ready" status if ready
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
