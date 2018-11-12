@@ -13418,7 +13418,7 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     HINSTANCE hInst = GetModuleHandle(NULL);
 
     if (type.empty())
-        return NULL;    // failure
+        return L"";    // failure
 
     // try to find the RISOHTEMPLATE resource
     WORD LangID = PRIMARYLANGID(wLang);
