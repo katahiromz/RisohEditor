@@ -234,12 +234,7 @@ public:
             if (HasSample(type, lang))
             {
                 // if the type has sample, then store the template text
-                m_strText = GetRisohTemplate(m_type, lang);
-            }
-            else if (type == L"RISOHTEMPLATE")
-            {
-                // if the type is RISOHTEMPLATE, then store a blank text
-                m_strText = L" ";
+                m_strText = GetRisohTemplate(type, lang);
             }
             else
             {
@@ -331,10 +326,8 @@ public:
     void OnCmb1(HWND hwnd)
     {
         // get the text of combobox cmb1
-        INT iSel = ComboBox_GetCurSel(m_cmb1);
         TCHAR szText[64];
-        if (iSel == CB_ERR || ComboBox_GetLBText(m_cmb1, iSel, szText) == CB_ERR)
-            szText[0] = 0;
+        ComboBox_GetText(m_cmb1, szText, ARRAYSIZE(szText));
 
         // szText --> strIDType (trimmed)
         MString strIDType = szText;
@@ -359,7 +352,7 @@ public:
                 iType = IDTYPE_RESOURCE;
             }
         }
-        else if (iType != IDTYPE_UNKNOWN)
+        else if (iType != IDTYPE_UNKNOWN && nRT_ != 0)
         {
             type = nRT_;
         }

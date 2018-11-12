@@ -3787,6 +3787,7 @@ MStringW
 GetResTypeEncoding(const MIdOrString& type)
 {
     MStringW name;
+
     if (type.m_id)
     {
         name = g_db.GetName(L"RESOURCE", type.m_id);
@@ -5801,7 +5802,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             bDataOK = FALSE;
         }
     }
-    else if (type == RT_HTML || type == RT_MANIFEST)
+    else if (type == RT_HTML || type == RT_MANIFEST ||
+             type == L"RISOHTEMPLATE")
     {
         data.assign(strUtf8.begin(), strUtf8.end());
         data.insert(data.begin(), &bom[0], &bom[3]);
@@ -13418,7 +13420,9 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     HINSTANCE hInst = GetModuleHandle(NULL);
 
     if (type.empty())
+    {
         return L"";    // failure
+    }
 
     // try to find the RISOHTEMPLATE resource
     WORD LangID = PRIMARYLANGID(wLang);
@@ -13434,7 +13438,9 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
     if (hRsrc == NULL)
         hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
+    {
         return L"";
+    }
 
     // get the pointer and byte size
     HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
