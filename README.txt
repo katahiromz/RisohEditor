@@ -69,6 +69,7 @@ Question 4. What is mcdx?
  * 2018.XX.YY ver.5.1.2
     - Accept space in the window class name text box.
     - Accept C string literal in in the window class name text box.
+    - Enable manifest template.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
