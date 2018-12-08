@@ -65,7 +65,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Accept space in the language text box.
  * 2018.12.08 ver.5.1.2
     - Accept space in the window class name text box.
-    - Accept C string literal in in the window class name text box.
+    - Accept C string literal in the window class name text box.
     - Improve template system.
     - Enable manifest template.
     - Fix toolbar UI update.
