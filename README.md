@@ -69,6 +69,8 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improve template system.
     - Enable manifest template.
     - Fix toolbar UI update.
+    - Correctly display ID types of "List of Resource IDs".
+
 
 ## Contact Us
 

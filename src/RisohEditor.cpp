@@ -636,10 +636,8 @@ void Res_ReplaceResTypeString(MString& str, bool bRevert = false)
     }
 }
 
-// get the entity resource ID text for MIDListDlg
-MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
+MIdOrString ResourceTypeFromIDType(INT nIDTYPE_)
 {
-    // convert an IDTYPE_ to a resource type
     MIdOrString type;
     switch (nIDTYPE_)
     {
@@ -654,90 +652,94 @@ MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
     case IDTYPE_HTML:       type = RT_HTML; break;
     case IDTYPE_RESOURCE:   type.clear(); break;
     case IDTYPE_RCDATA:     type = RT_RCDATA; break;
-    default:
-        return L"";
+    default: break;
     }
+    return type;
+}
 
-    // get the resource ID value
-    WORD wName = WORD(g_db.GetResIDValue(name));
-    MIdOrString name_or_id(wName);
-    if (wName == 0)
+MString GetAssoc(const MString& name)
+{
+    if (name == L"IDC_STATIC")
+        return L"Control.ID";
+
+    MString ret;
+    MString prefix = name.substr(0, name.find(L'_') + 1);
+    if (prefix.empty())
+        return L"";
+
+    MIdOrString type;
+
+    std::vector<INT> indexes = GetPrefixIndexes(prefix);
+    for (size_t i = 0; i < indexes.size(); ++i)
     {
-        // string name ID
-        MStringA strA = MTextToAnsi(CP_ACP, name).c_str();
-        auto it = g_settings.id_map.find(strA);
-        if (it != g_settings.id_map.end())
+        auto nIDTYPE_ = IDTYPE_(indexes[i]);
+        if (nIDTYPE_ == IDTYPE_UNKNOWN)
+            continue;
+
+        auto type = ResourceTypeFromIDType(nIDTYPE_);
+
+        MIdOrString name_or_id;
+        WORD wName = (WORD)g_db.GetValue(L"RESOURCE.ID", name);
+        if (wName)
+            name_or_id = wName;
+        else
+            name_or_id.m_str = name;
+
+        EntrySetBase found;
+        g_res.search(found, ET_LANG, type, name_or_id);
+
+        if (found.size())   // not empty
         {
-            MStringA strA = it->second;
+            for (auto e : found)    // enumerate the found entries
+            {
+                MString res_type;
+                if (e->m_type.is_int()) // it's an integral name
+                {
+                    // get resource type name
+                    res_type = g_db.GetName(L"RESOURCE", e->m_type.m_id);
+                    if (res_type.empty())   // no name
+                    {
+                        res_type = mstr_dec(e->m_type.m_id);    // store numeric
+                    }
 
-            if (strA[0] == 'L')
-                strA = strA.substr(1);  // remove L of L"..."
+                    // convert the resource type
+                    Res_ReplaceResTypeString(res_type, false);
+                }
+                else
+                {
+                    res_type = e->m_type.str();
+                }
 
-            mstr_unquote(strA);     // unquote
-
-            // convert ANSI to wide
-            name_or_id.m_str = MAnsiToWide(CP_ACP, strA).c_str();
+                if (res_type.size())
+                {
+                    // add a resource type tag
+                    if (ret.find(L"[" + res_type + L"]") == MString::npos)
+                    {
+                        ret += L"[";
+                        ret += res_type;
+                        ret += L"]";
+                    }
+                }
+            }
         }
     }
 
-    MString ret;
-
-    // enumerate the ET_LANG entries by name_or_id
-    EntrySetBase found;
-    g_res.search(found, ET_LANG, type, name_or_id);
-
-    if (found.size())   // not empty
+    if (ret.empty())
     {
-        for (auto e : found)    // enumerate the found entries
+        for (size_t i = 0; i < indexes.size(); ++i)
         {
-            MString res_type;
-            if (e->m_type.is_int()) // it's an integral name
-            {
-                // get resource type name
-                res_type = g_db.GetName(L"RESOURCE", e->m_type.m_id);
-                if (res_type.empty())   // no name
-                {
-                    res_type = mstr_dec(e->m_type.m_id);    // store numeric
-                }
+            auto nIDTYPE_ = IDTYPE_(indexes[i]);
+            if (nIDTYPE_ == IDTYPE_UNKNOWN)
+                continue;
 
-                // convert the resource type
-                Res_ReplaceResTypeString(res_type, false);
+            if (ret.empty())
+            {
+                ret = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
             }
             else
             {
-                res_type = e->m_type.str();
-            }
-            if (res_type.size())
-            {
-                // add a resource type tag
-                if (ret.find(L"[" + res_type + L"]") == MString::npos)
-                {
-                    ret += L"[";
-                    ret += res_type;
-                    ret += L"]";
-                }
-            }
-        }
-    }
-    else if (bFlag)
-    {
-        for (auto e : found)    // enumerate the found entries
-        {
-            // get resource type name
-            MString res_type = g_db.GetName(L"RESOURCE", type.m_id);
-            if (res_type.empty())   // no name
-            {
-                res_type = mstr_dec(type.m_id); // store numeric
-            }
-            if (res_type.size())    // not empty
-            {
-                // add a resource type tag
-                if (ret.find(L"[" + res_type + L"]") == MString::npos)
-                {
-                    ret += L"[";
-                    ret += res_type;
-                    ret += L"]";
-                }
+                ret += TEXT("/");
+                ret += g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
             }
         }
     }
@@ -747,7 +749,7 @@ MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag)
     mstr_replace_all(ret, L"[", L"");
     mstr_replace_all(ret, L"]", L"");
 
-    return ret;     // result
+    return ret;
 }
 
 // initialize the resource name combobox
@@ -9001,6 +9003,9 @@ void MMainWnd::UpdateNames(void)
     {
         UpdateEntryName(entry);
     }
+
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE);
 }
 
 void MMainWnd::UpdateEntryName(EntryBase *e, LPWSTR pszText)

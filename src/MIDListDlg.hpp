@@ -33,8 +33,9 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_, BOOL bFlag);
+MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);
+MString GetAssoc(const MString& name);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -88,57 +89,6 @@ public:
     ~MIDListDlg()
     {
         DestroyIcon(m_hIconDiamond);
-    }
-
-    MString GetAssoc(const MString& name)
-    {
-        MString ret;
-        MString prefix = name.substr(0, name.find(L'_') + 1);
-        if (prefix.empty())
-            return L"";
-
-        std::vector<INT> indexes = GetPrefixIndexes(prefix);
-        for (INT bFlag = FALSE; bFlag <= TRUE; ++bFlag)
-        {
-            for (size_t i = 0; i < indexes.size(); ++i)
-            {
-                auto nIDTYPE_ = IDTYPE_(indexes[i]);
-                if (nIDTYPE_ == IDTYPE_UNKNOWN)
-                    continue;
-
-                if (g_db.IsEntityIDType(nIDTYPE_))
-                {
-                    MString str2 = Res_GetEntityIDText(name, nIDTYPE_, bFlag);
-                    if (!str2.empty() && ret.find(str2) == MString::npos)
-                    {
-                        if (ret.empty())
-                        {
-                            ret = str2;
-                        }
-                        else
-                        {
-                            ret += TEXT("/");
-                            ret += str2;
-                        }
-                    }
-                }
-                else
-                {
-                    if (ret.empty())
-                    {
-                        ret = g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
-                    }
-                    else
-                    {
-                        ret += TEXT("/");
-                        ret += g_db.GetName(L"RESOURCE.ID.TYPE", nIDTYPE_);
-                    }
-                }
-            }
-            if (!bFlag && !ret.empty())
-                break;
-        }
-        return ret;
     }
 
     static int CALLBACK
