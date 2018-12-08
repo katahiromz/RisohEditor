@@ -7212,12 +7212,28 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
     // get the used languages
     std::unordered_set<WORD> langs;
+    typedef std::pair<WORD, MStringW> lang_pair;
+    std::vector<lang_pair> lang_vec;
+
     EntrySetBase found;
     g_res.search(found, ET_LANG);
+
     for (auto res : found)
     {
-        langs.insert(res->m_lang);
+        WORD lang = res->m_lang;
+        if (langs.insert(lang).second)
+        {
+            MString lang_name = g_db.GetLangName(lang);
+            lang_vec.push_back(std::make_pair(lang, lang_name));
+        }
     }
+
+    // sort by lang_name
+    std::sort(lang_vec.begin(), lang_vec.end(),
+        [](const lang_pair& a, const lang_pair& b) {
+            return (a.second < b.second);
+        }
+    );
 
     // add "res/" to the prefix if necessary
     if (g_settings.bStoreToResFolder)
@@ -7249,9 +7265,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
-        for (auto lang : langs)
+        for (auto lang_pair : lang_vec)
         {
-            if (!lang)
+            if (!lang_pair.first)
                 continue;
 
             if (g_settings.bBackup)
@@ -7262,8 +7278,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
 
         // for each language
-        for (auto lang : langs)
+        for (auto lang_pair : lang_vec)
         {
+            auto lang = lang_pair.first;
             if (!lang)
                 continue;
 
@@ -7271,7 +7288,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             TCHAR szLangFile[MAX_PATH];
             StringCchCopy(szLangFile, _countof(szLangFile), szLangDir);
             StringCchCat(szLangFile, _countof(szLangFile), TEXT("/"));
-            MString lang_name = g_db.GetLangName(lang);
+            MString lang_name = lang_pair.second;
             StringCchCat(szLangFile, _countof(szLangFile), lang_name.c_str());
             StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
             //MessageBox(NULL, szLangFile, NULL, 0);
@@ -7303,8 +7320,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     else
     {
         // don't use the "lang" folder
-        for (auto lang : langs)
+        for (auto lang_pair : lang_vec)
         {
+            auto lang = lang_pair.first;
             // write it for each language
             if (!DoWriteRCLang(file, res2text, lang))
                 return FALSE;
@@ -7323,8 +7341,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
         if (g_settings.bSelectableByMacro)
         {
-            for (auto lang : langs)     // for each language
+            for (auto lang_pair : lang_vec)     // for each language
             {
+                auto lang = lang_pair.first;
                 if (!lang)
                     continue;       // ignore neutral language
 
@@ -7353,8 +7372,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
         else
         {
-            for (auto lang : langs)
+            for (auto lang_pair : lang_vec)
             {
+                auto lang = lang_pair.first;
                 if (!lang)
                     continue;   // ignore the neutral language
 

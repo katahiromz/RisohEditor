@@ -73,6 +73,7 @@ Question 4. What is mcdx?
     - Enable manifest template.
     - Fix toolbar UI update.
     - Correctly display ID types of "List of Resource IDs".
+    - Correctly sort the languages upon output.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

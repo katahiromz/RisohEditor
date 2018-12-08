@@ -70,7 +70,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Enable manifest template.
     - Fix toolbar UI update.
     - Correctly display ID types of "List of Resource IDs".
-
+    - Correctly sort the languages upon output.
 
 ## Contact Us
 
