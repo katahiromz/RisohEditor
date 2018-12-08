@@ -66,7 +66,7 @@ Question 4. What is mcdx?
  * 2018.11.08 ver.5.1.1
     - Accept space in the caption text box.
     - Accept space in the language text box.
- * 2018.XX.YY ver.5.1.2
+ * 2018.12.08 ver.5.1.2
     - Accept space in the window class name text box.
     - Accept C string literal in in the window class name text box.
     - Improve template system.
