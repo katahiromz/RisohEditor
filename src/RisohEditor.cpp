@@ -688,7 +688,7 @@ MString GetAssoc(const MString& name)
         EntrySetBase found;
         g_res.search(found, ET_LANG, type, name_or_id);
 
-        if (found.size())   // not empty
+        if (found.size() && g_db.IsEntityIDType(nIDTYPE_))
         {
             for (auto e : found)    // enumerate the found entries
             {

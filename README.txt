@@ -74,6 +74,8 @@ Question 4. What is mcdx?
     - Fix toolbar UI update.
     - Correctly display ID types of "List of Resource IDs".
     - Correctly sort the languages upon output.
+ * 2019.01.01 ver.5.1.3
+    - Fix "List of Resource IDs".
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
