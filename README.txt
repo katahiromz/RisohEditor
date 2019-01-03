@@ -77,6 +77,7 @@ Question 4. What is mcdx?
  * 2019.01.01 ver.5.1.3
     - Fix "List of Resource IDs".
  * 2019.XX.YY ver.5.1.4
+    - Add English installer.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
