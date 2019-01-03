@@ -76,6 +76,7 @@ Question 4. What is mcdx?
     - Correctly sort the languages upon output.
  * 2019.01.01 ver.5.1.3
     - Fix "List of Resource IDs".
+ * 2019.XX.YY ver.5.1.4
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
