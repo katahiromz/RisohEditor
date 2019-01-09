@@ -67,6 +67,50 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
+;; Unofficial Languages: https://github.com/jrsoftware/issrc/tree/master/Files/Languages/Unofficial
+;Name: "afrikaans"; MessagesFile: "compiler:Languages\Afrikaans.isl"
+;Name: "albanian"; MessagesFile: "compiler:Languages\Albanian.isl"
+;Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
+;Name: "asturian"; MessagesFile: "compiler:Languages\Asturian.isl"
+;Name: "basque"; MessagesFile: "compiler:Languages\Basque.isl"
+;Name: "belarusian"; MessagesFile: "compiler:Languages\Belarusian.isl"
+;Name: "bengali"; MessagesFile: "compiler:Languages\Bengali.islu"
+;Name: "bosnian"; MessagesFile: "compiler:Languages\Bosnian.isl"
+;Name: "bulgarian"; MessagesFile: "compiler:Languages\Bulgarian.isl"
+;Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+;Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
+;Name: "croatian"; MessagesFile: "compiler:Languages\Croatian.isl"
+;Name: "englishbritish"; MessagesFile: "compiler:Languages\EnglishBritish.isl"
+;Name: "esperanto"; MessagesFile: "compiler:Languages\Esperanto.isl"
+;Name: "estonian"; MessagesFile: "compiler:Languages\Estonian.isl"
+;Name: "farsi"; MessagesFile: "compiler:Languages\Farsi.isl"
+;Name: "galician"; MessagesFile: "compiler:Languages\Galician.isl"
+;Name: "georgian"; MessagesFile: "compiler:Languages\Georgian.islu"
+;Name: "hindi"; MessagesFile: "compiler:Languages\Hindi.islu"
+;Name: "indonesian"; MessagesFile: "compiler:Languages\Indonesian.isl"
+;Name: "kazakh"; MessagesFile: "compiler:Languages\Kazakh.islu"
+;Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
+;Name: "kurdish"; MessagesFile: "compiler:Languages\Kurdish.isl"
+;Name: "latvian"; MessagesFile: "compiler:Languages\Latvian.isl"
+;Name: "ligurian"; MessagesFile: "compiler:Languages\Ligurian.isl"
+;Name: "lithuanian"; MessagesFile: "compiler:Languages\Lithuanian.isl"
+;Name: "luxemburgish"; MessagesFile: "compiler:Languages\Luxemburgish.isl"
+;Name: "macedonian"; MessagesFile: "compiler:Languages\Macedonian.isl"
+;Name: "malaysian"; MessagesFile: "compiler:Languages\Malaysian.isl"
+;Name: "mongolian"; MessagesFile: "compiler:Languages\Mongolian.isl"
+;Name: "montenegrian"; MessagesFile: "compiler:Languages\Montenegrian.isl"
+;Name: "norwegiannynorsk"; MessagesFile: "compiler:Languages\NorwegianNynorsk.isl"
+;Name: "occitan"; MessagesFile: "compiler:Languages\Occitan.isl"
+;Name: "romanian"; MessagesFile: "compiler:Languages\Romanian.isl""
+;Name: "slovak"; MessagesFile: "compiler:Languages\Slovak.isl""
+;Name: "swedish"; MessagesFile: "compiler:Languages\Swedish.isl""
+;Name: "tatar"; MessagesFile: "compiler:Languages\Tatar.isl
+;Name: "thai"; MessagesFile: "compiler:Languages\Thai.isl"
+;Name: "uyghur"; MessagesFile: "compiler:Languages\Uyghur.islu"
+;Name: "uzbek"; MessagesFile: "compiler:Languages\Uzbek.isl"
+;Name: "valencian"; MessagesFile: "compiler:Languages\Valencian.isl"
+;Name: "vietnamese"; MessagesFile: "compiler:Languages\Vietnamese.islu"
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
@@ -208,3 +252,131 @@ turkish.LicenseEnglish=License (English)
 ukrainian.ReadmeEnglish=ReadMe (English)
 ukrainian.ReadmeJapanese=ReadMe (Japanese)
 ukrainian.LicenseEnglish=License (English)
+
+;; Unofficial Languages
+;afrikaans.ReadmeEnglish=ReadMe (English)
+;afrikaans.ReadmeJapanese=ReadMe (Japanese)
+;afrikaans.LicenseEnglish=License (English)
+;albanian.ReadmeEnglish=ReadMe (English)
+;albanian.ReadmeJapanese=ReadMe (Japanese)
+;albanian.LicenseEnglish=License (English)
+;arabic.ReadmeEnglish=ReadMe (English)
+;arabic.ReadmeJapanese=ReadMe (Japanese)
+;arabic.LicenseEnglish=License (English)
+;asturian.ReadmeEnglish=ReadMe (English)
+;asturian.ReadmeJapanese=ReadMe (Japanese)
+;asturian.LicenseEnglish=License (English)
+;basque.ReadmeEnglish=ReadMe (English)
+;basque.ReadmeJapanese=ReadMe (Japanese)
+;basque.LicenseEnglish=License (English)
+;belarusian.ReadmeEnglish=ReadMe (English)
+;belarusian.ReadmeJapanese=ReadMe (Japanese)
+;belarusian.LicenseEnglish=License (English)
+;bengali.ReadmeEnglish=ReadMe (English)
+;bengali.ReadmeJapanese=ReadMe (Japanese)
+;bengali.LicenseEnglish=License (English)
+;bosnian.ReadmeEnglish=ReadMe (English)
+;bosnian.ReadmeJapanese=ReadMe (Japanese)
+;bosnian.LicenseEnglish=License (English)
+;bulgarian.ReadmeEnglish=ReadMe (English)
+;bulgarian.ReadmeJapanese=ReadMe (Japanese)
+;bulgarian.LicenseEnglish=License (English)
+;chinesesimplified.ReadmeEnglish=ReadMe (English)
+;chinesesimplified.ReadmeJapanese=ReadMe (Japanese)
+;chinesesimplified.LicenseEnglish=License (English)
+;chinesetraditional.ReadmeEnglish=ReadMe (English)
+;chinesetraditional.ReadmeJapanese=ReadMe (Japanese)
+;chinesetraditional.LicenseEnglish=License (English)
+;croatian.ReadmeEnglish=ReadMe (English)
+;croatian.ReadmeJapanese=ReadMe (Japanese)
+;croatian.LicenseEnglish=License (English)
+;englishbritish.ReadmeEnglish=ReadMe (English)
+;englishbritish.ReadmeJapanese=ReadMe (Japanese)
+;englishbritish.LicenseEnglish=License (English)
+;esperanto.ReadmeEnglish=ReadMe (English)
+;esperanto.ReadmeJapanese=ReadMe (Japanese)
+;esperanto.LicenseEnglish=License (English)
+;estonian.ReadmeEnglish=ReadMe (English)
+;estonian.ReadmeJapanese=ReadMe (Japanese)
+;estonian.LicenseEnglish=License (English)
+;farsi.ReadmeEnglish=ReadMe (English)
+;farsi.ReadmeJapanese=ReadMe (Japanese)
+;farsi.LicenseEnglish=License (English)
+;galician.ReadmeEnglish=ReadMe (English)
+;galician.ReadmeJapanese=ReadMe (Japanese)
+;galician.LicenseEnglish=License (English)
+;georgian.ReadmeEnglish=ReadMe (English)
+;georgian.ReadmeJapanese=ReadMe (Japanese)
+;georgian.LicenseEnglish=License (English)
+;hindi.ReadmeEnglish=ReadMe (English)
+;hindi.ReadmeJapanese=ReadMe (Japanese)
+;hindi.LicenseEnglish=License (English)
+;indonesian.ReadmeEnglish=ReadMe (English)
+;indonesian.ReadmeJapanese=ReadMe (Japanese)
+;indonesian.LicenseEnglish=License (English)
+;kazakh.ReadmeEnglish=ReadMe (English)
+;kazakh.ReadmeJapanese=ReadMe (Japanese)
+;kazakh.LicenseEnglish=License (English)
+;korean.ReadmeEnglish=ReadMe (English)
+;korean.ReadmeJapanese=ReadMe (Japanese)
+;korean.LicenseEnglish=License (English)
+;kurdish.ReadmeEnglish=ReadMe (English)
+;kurdish.ReadmeJapanese=ReadMe (Japanese)
+;kurdish.LicenseEnglish=License (English)
+;latvian.ReadmeEnglish=ReadMe (English)
+;latvian.ReadmeJapanese=ReadMe (Japanese)
+;latvian.LicenseEnglish=License (English)
+;ligurian.ReadmeEnglish=ReadMe (English)
+;ligurian.ReadmeJapanese=ReadMe (Japanese)
+;ligurian.LicenseEnglish=License (English)
+;lithuanian.ReadmeEnglish=ReadMe (English)
+;lithuanian.ReadmeJapanese=ReadMe (Japanese)
+;lithuanian.LicenseEnglish=License (English)
+;luxemburgish.ReadmeEnglish=ReadMe (English)
+;luxemburgish.ReadmeJapanese=ReadMe (Japanese)
+;luxemburgish.LicenseEnglish=License (English)
+;macedonian.ReadmeEnglish=ReadMe (English)
+;macedonian.ReadmeJapanese=ReadMe (Japanese)
+;macedonian.LicenseEnglish=License (English)
+;malaysian.ReadmeEnglish=ReadMe (English)
+;malaysian.ReadmeJapanese=ReadMe (Japanese)
+;malaysian.LicenseEnglish=License (English)
+;mongolian.ReadmeEnglish=ReadMe (English)
+;mongolian.ReadmeJapanese=ReadMe (Japanese)
+;mongolian.LicenseEnglish=License (English)
+;montenegrian.ReadmeEnglish=ReadMe (English)
+;montenegrian.ReadmeJapanese=ReadMe (Japanese)
+;montenegrian.LicenseEnglish=License (English)
+;norwegiannynorsk.ReadmeEnglish=ReadMe (English)
+;norwegiannynorsk.ReadmeJapanese=ReadMe (Japanese)
+;norwegiannynorsk.LicenseEnglish=License (English)
+;occitan.ReadmeEnglish=ReadMe (English)
+;occitan.ReadmeJapanese=ReadMe (Japanese)
+;occitan.LicenseEnglish=License (English)
+;romanian.ReadmeEnglish=ReadMe (English)
+;romanian.ReadmeJapanese=ReadMe (Japanese)
+;romanian.LicenseEnglish=License (English)
+;slovak.ReadmeEnglish=ReadMe (English)
+;slovak.ReadmeJapanese=ReadMe (Japanese)
+;slovak.LicenseEnglish=License (English)
+;swedish.ReadmeEnglish=ReadMe (English)
+;swedish.ReadmeJapanese=ReadMe (Japanese)
+;swedish.LicenseEnglish=License (English)
+;tatar.ReadmeEnglish=ReadMe (English)
+;tatar.ReadmeJapanese=ReadMe (Japanese)
+;tatar.LicenseEnglish=License (English)
+;thai.ReadmeEnglish=ReadMe (English)
+;thai.ReadmeJapanese=ReadMe (Japanese)
+;thai.LicenseEnglish=License (English)
+;uyghur.ReadmeEnglish=ReadMe (English)
+;uyghur.ReadmeJapanese=ReadMe (Japanese)
+;uyghur.LicenseEnglish=License (English)
+;uzbek.ReadmeEnglish=ReadMe (English)
+;uzbek.ReadmeJapanese=ReadMe (Japanese)
+;uzbek.LicenseEnglish=License (English)
+;valencian.ReadmeEnglish=ReadMe (English)
+;valencian.ReadmeJapanese=ReadMe (Japanese)
+;valencian.LicenseEnglish=License (English)
+;vietnamese.ReadmeEnglish=ReadMe (English)
+;vietnamese.ReadmeJapanese=ReadMe (Japanese)
+;vietnamese.LicenseEnglish=License (English)
