@@ -1272,7 +1272,7 @@ STRINGTABLE
     IDS_COMPILE, "Compila (F8)"
     IDS_CANCELEDIT, "Annulla modifica (Ctrl+E)"
     IDS_GUIEDIT, "Modifica via GUI (Ctrl+G)"
-    IDS_CANNOTSTARTUP, Impossibile avviare compilatore risorse."
+    IDS_CANNOTSTARTUP, "Impossibile avviare compilatore risorse."
     IDS_RESMISMATCH, "Mancata corrispondenza risorsa."
     IDS_SAMPLETEXT, "Qeusto è un esempio."
     IDS_ALREADYEXISTS, "Esiste già."
