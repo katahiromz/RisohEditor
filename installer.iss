@@ -87,12 +87,25 @@ Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\afxres.h"; DestDir: "{app}\
 
 [Icons]
 Name: "{group}\RisohEditor"; Filename: "{app}\RisohEditor.exe"
-Name: "{group}\README.txt"; Filename: "{app}\README.txt"
-Name: "{group}\READMEJP.txt"; Filename: "{app}\READMEJP.txt"
-Name: "{group}\LICENSE.txt"; Filename: "{app}\LICENSE.txt"
+Name: "{group}\{cm:ReadmeEnglish"}; Filename: "{app}\README.txt"
+Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
+Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
 Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
+
+[Languages]
+Name: "english"; MessagesFile:  "compiler:Default.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "italian"; MessagesFile:  "compiler:Languages\Italian.isl"
+
+[CustomMessages]
+english.ReadmeEnglish=Readme (English)
+english.ReadmeJapanese=Readme (Japanese)
+enlish.LicenseEnglish=License (English)
+italian.ReadmeEnglish=Leggimi (Inglese)
+italian.ReadmeJapanese=Leggimi (Giapponese)
+italian.LicenseEnglish=Licenza (Inglese)
