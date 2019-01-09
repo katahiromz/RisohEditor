@@ -6,6 +6,8 @@ RisohEditor by katahiromz
 RisohEditor is a free resource editor for Win32 
 development, created by Katayama Hirofumi MZ.
 
+Download binary: https://katahiromz.web.fc2.com/re/en
+
 It works on Windows XP/2003/Vista/7/8.1/10.
 
 See "Standardize.md" for standardization of resource IDs.

@@ -7,6 +7,8 @@
     リソーエディタ (RisohEditor) は、片山博文MZによる
     Win32開発用のフリーのリソースエディタです。
 
+    ダウンロード: https://katahiromz.web.fc2.com/re/ja
+
     Windows XP/2003/Vista/7/8.1/10で動作します。
 
     著作権・使用条件等については、添付の
