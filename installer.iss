@@ -38,7 +38,6 @@ VersionInfoProductVersion=5.1.4
 VersionInfoVersion=5.1.4
 
 [Languages]
-Name: "english"; MessagesFile:  "compiler:Default.isl"
 Name: "armenian"; MessagesFile:  "compiler:Languages\Armenian.islu"
 Name: "brazilianportuguese"; MessagesFile:  "compiler:Languages\BrazilianPortuguese.isl"
 Name: "catalan"; MessagesFile:  "compiler:Languages\Catalan.isl"
@@ -46,6 +45,7 @@ Name: "corsican"; MessagesFile:  "compiler:Languages\Corsican.isl"
 Name: "czech"; MessagesFile:  "compiler:Languages\Czech.isl"
 Name: "danish"; MessagesFile:  "compiler:Languages\Danish.isl"
 Name: "dutch"; MessagesFile:  "compiler:Languages\Dutch.isl"
+Name: "english"; MessagesFile:  "compiler:Default.isl"
 Name: "finnish"; MessagesFile:  "compiler:Languages\Finnish.isl"
 Name: "french"; MessagesFile:  "compiler:Languages\French.isl"
 Name: "german"; MessagesFile:  "compiler:Languages\German.isl"
@@ -124,9 +124,6 @@ Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: d
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
 
 [CustomMessages]
-english.ReadmeEnglish=ReadMe (English)
-english.ReadmeJapanese=ReadMe (Japanese)
-english.LicenseEnglish=License (English)
 armenian.ReadmeEnglish=ReadMe (English)
 armenian.ReadmeJapanese=ReadMe (Japanese)
 armenian.LicenseEnglish=License (English)
@@ -148,6 +145,9 @@ danish.LicenseEnglish=License (English)
 dutch.ReadmeEnglish=ReadMe (English)
 dutch.ReadmeJapanese=ReadMe (Japanese)
 dutch.LicenseEnglish=License (English)
+english.ReadmeEnglish=ReadMe (English)
+english.ReadmeJapanese=ReadMe (Japanese)
+english.LicenseEnglish=License (English)
 finnish.ReadmeEnglish=ReadMe (English)
 finnish.ReadmeJapanese=ReadMe (Japanese)
 finnish.LicenseEnglish=License (English)
@@ -170,7 +170,7 @@ italian.ReadmeEnglish=Leggimi (Inglese)
 italian.ReadmeJapanese=Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
 japanese.ReadmeEnglish=ReadMe (英語)
-japanese.ReadmeJapanese=ReadMe (Japanese)
+japanese.ReadmeJapanese=読んでね (日本語)
 japanese.LicenseEnglish=ライセンス (英語)
 norwegian.ReadmeEnglish=ReadMe (English)
 norwegian.ReadmeJapanese=ReadMe (Japanese)
