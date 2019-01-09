@@ -77,6 +77,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add English installer.
     - Add Italian installer.
     - Add partial Italian translation.
+    - Add some language installer.
 
 ## Contact Us
 

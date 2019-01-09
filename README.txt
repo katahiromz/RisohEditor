@@ -80,6 +80,7 @@ Question 4. What is mcdx?
     - Add English installer.
     - Add Italian installer.
     - Add partial Italian translation.
+    - Add some language installer.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

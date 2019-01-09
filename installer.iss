@@ -39,8 +39,12 @@ VersionInfoVersion=5.1.4
 
 [Languages]
 Name: "english"; MessagesFile:  "compiler:Default.isl"
-Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "french"; MessagesFile:  "compiler:Languages\French.isl"
+Name: "german"; MessagesFile:  "compiler:Languages\German.isl"
 Name: "italian"; MessagesFile:  "compiler:Languages\Italian.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
@@ -102,9 +106,21 @@ Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"
 english.ReadmeEnglish=ReadMe (English)
 english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License (English)
-japanese.ReadmeEnglish=ReadMe (英語)
-japanese.ReadmeJapanese=読んでね (日本語)
-japanese.LicenseEnglish=ライセンス (英語)
+french.ReadmeEnglish=ReadMe (English)
+french.ReadmeJapanese=ReadMe (Japanese)
+french.LicenseEnglish=License (English)
+german.ReadmeEnglish=ReadMe (English)
+german.ReadmeJapanese=ReadMe (Japanese)
+german.LicenseEnglish=License (English)
 italian.ReadmeEnglish=Leggimi (Inglese)
 italian.ReadmeJapanese=Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
+japanese.ReadmeEnglish=ReadMe (英語)
+japanese.ReadmeJapanese=読んでね (日本語)
+japanese.LicenseEnglish=ライセンス (英語)
+russian.ReadmeEnglish=ReadMe (English)
+russian.ReadmeJapanese=ReadMe (Japanese)
+russian.LicenseEnglish=License (English)
+spanish.ReadmeEnglish=ReadMe (English)
+spanish.ReadmeJapanese=ReadMe (Japanese)
+spanish.LicenseEnglish=License (English)
