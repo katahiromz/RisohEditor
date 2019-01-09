@@ -76,6 +76,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.XX.YY ver.5.1.4
     - Add English installer.
     - Add Italian installer.
+    - Add partial Italian translation.
 
 ## Contact Us
 
