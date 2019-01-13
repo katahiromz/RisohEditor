@@ -896,7 +896,7 @@ FONT 12, "宋体"
 {
     ICON IDI_MAIN, IDC_STATIC, 5, 5, 0, 0
     LTEXT "...", stc1, 30, 5, 140, 50
-    CTEXT "http://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY
+    CTEXT "https://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
 }
 
