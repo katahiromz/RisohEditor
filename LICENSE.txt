@@ -5,7 +5,7 @@ Version 3, 29 June 2007. The source code of RisohEditor is
 available at https://github.com/katahiromz/RisohEditor .
 
 RisohEditor --- Win32 resource editor
-Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.
+Copyright (C) 2017-2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.
 All rights reserved.
 ---------------------------------------------------
 RisohEditor contains the "windres" program. The "windres"
