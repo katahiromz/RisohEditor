@@ -75,7 +75,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Correctly sort the languages upon output.
  * 2019.01.01 ver.5.1.3
     - Fix "List of Resource IDs".
- * 2019.XX.YY ver.5.1.4
+ * 2019.01.13 ver.5.1.4
     - Add English installer.
     - Add Italian installer.
     - Add Italian translation.
