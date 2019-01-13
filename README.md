@@ -80,6 +80,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add Italian installer.
     - Add Italian translation.
     - Add some language installer.
+ * 2019.XX.YY ver.5.1.5
 
 ## Contact Us
 
