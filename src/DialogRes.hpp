@@ -1118,7 +1118,7 @@ struct DialogRes
             m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS;
             m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                          WS_EX_LAYERED | WS_EX_TRANSPARENT);
-            m_ex_style |= WS_EX_NOACTIVATE | WS_EX_MDICHILD;
+            m_ex_style |= WS_EX_NOACTIVATE;
 
             m_menu.clear();
             m_class.clear();

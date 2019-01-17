@@ -81,6 +81,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add Italian translation.
     - Add some language installer.
  * 2019.XX.YY ver.5.1.5
+    - Don't use WS_EX_MDICHILD extended style.
 
 ## Contact Us
 

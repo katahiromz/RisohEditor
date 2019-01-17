@@ -84,6 +84,7 @@ Question 4. What is mcdx?
     - Add Italian translation.
     - Add some language installer.
  * 2019.XX.YY ver.5.1.5
+    - Don't use WS_EX_MDICHILD extended style.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
