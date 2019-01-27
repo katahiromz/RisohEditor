@@ -8,7 +8,7 @@ development, created by Katayama Hirofumi MZ.
 
 Download binary: https://katahiromz.web.fc2.com/re/en
 
-It works on Windows XP/2003/Vista/7/8.1/10.
+It works on Windows XP/2003/Vista/7/8.1/10 and ReactOS.
 
 See "Standardize.md" for standardization of resource IDs.
 
@@ -83,8 +83,9 @@ Question 4. What is mcdx?
     - Add Italian installer.
     - Add Italian translation.
     - Add some language installer.
- * 2019.XX.YY ver.5.1.5
+ * 2019.01.27 ver.5.1.5
     - Don't use WS_EX_MDICHILD extended style.
+    - Support ReactOS.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
