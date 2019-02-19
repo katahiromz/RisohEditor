@@ -31,7 +31,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Impostazioni...", ID_CONFIG
         MENUITEM SEPARATOR
-        POPUP "File usati recentemnte"
+        POPUP "File usati recentemente"
         {
             MENUITEM "(None)", 65535, GRAYED
         }
