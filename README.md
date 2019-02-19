@@ -83,6 +83,9 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.01.27 ver.5.1.5
     - Don't use WS_EX_MDICHILD extended style.
     - Support ReactOS.
+ * 2019.XX.YY ver.5.1.6
+    - Improve Italian translation.
+    - GUI Adjustment.
 
 ## Contact Us
 
