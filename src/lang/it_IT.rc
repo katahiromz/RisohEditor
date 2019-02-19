@@ -29,9 +29,9 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Carica libreria classe &Window...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&Configurazione...", ID_CONFIG
+        MENUITEM "&Impostazioni...", ID_CONFIG
         MENUITEM SEPARATOR
-        POPUP "File usati recentemnte"
+        POPUP "File usati recentemente"
         {
             MENUITEM "(None)", 65535, GRAYED
         }
@@ -772,7 +772,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CONFIG DIALOG 0, 0, 210, 285
-CAPTION "Configurazione"
+CAPTION "Impostazioni"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
