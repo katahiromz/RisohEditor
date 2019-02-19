@@ -1045,7 +1045,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, IDC_STATIC, 5, 10, 0, 0
-    LTEXT "L'esportazione di un file .rc generà alcuni file relativi. Puoi scegliere le seguenti opzioni:", IDC_STATIC, 37, 10, 160, 40
+    LTEXT "L'esportazione di un file .rc generà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", IDC_STATIC, 37, 10, 160, 40
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Salva i file esterni nella cartella &res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1141,7 +1141,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, IDC_STATIC, 5, 10, 0, 0
-    LTEXT "Il salvataggio di un file .rc genera un serie di file relativi. Puoi scegliere le seguenti opzioni:", IDC_STATIC, 37, 10, 160, 40
+    LTEXT "Il salvataggio di un file .rc genera un serie di file relativi.\r\nPuoi scegliere le seguenti opzioni:", IDC_STATIC, 37, 10, 160, 40
     AUTOCHECKBOX "Separa file risorse per &lingua", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Salva i file esterni nella cartella &res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1227,7 +1227,7 @@ STRINGTABLE
     IDS_APPNAME, "RisohEditor 5.1.6 di Katayama Hirofumi MZ"
     IDS_TITLEWITHFILE, "%s - RisohEditor 5.1.6 di Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Estrai risorse"
-    IDS_RESBINFILTER, "Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_RESBINFILTER, "File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
     IDS_CANNOTSAVE, "Impossibile salvare."
     IDS_REPLACERES, "Sostituisci risorsa"
     IDS_ALLFILES, "Tutti i file (*.*)|*.*|"
@@ -1236,7 +1236,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Insersici lingua risorsa."
     IDS_FILENOTFOUND, "File non trovato."
     IDS_CANNOTREPLACE, "Impossibile sostituire."
-    IDS_EXERESFILTER, "Eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File RC (*.rc)|*.rc|Risorse binarie (*.res)|*.res|Tutti i file (*.*)|*.*|"
+    IDS_EXERESFILTER, "File eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File RC (*.rc)|*.rc|File risorse binarie (*.res)|*.res|Tutti i file (*.*)|*.*|"
     IDS_SAVEAS, "Salva come"
     IDS_CANNOTADDICON, "Impossibile aggiungere l'icona."
     IDS_ADDICON, "Aggiungi icona"
@@ -1336,7 +1336,7 @@ STRINGTABLE
     IDS_CANTWRITERESH, "Impossibile scrivere 'resource.h'."
     IDS_SAVERESH, "Salvafile 'resource.h'"
     IDS_DLLFILTER, "File DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tutti i file (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "File caricabili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|Eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Risorse binarie (*.res)|*.res|File risorse (*.rc)|*.rc|Tutti i file (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "File caricabili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|File eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File risorse binarie (*.res)|*.res|File risorse (*.rc)|*.rc|Tutti i file (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "Impossibile provare la finestra di dialogo poichè è una finstra figlia."
     IDS_CANTTESTCLASSDLG, "Impossibile provare la finestra di dialogo poichè è una classe."
     IDS_FILEISUPXED, "File\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
@@ -1410,18 +1410,18 @@ STRINGTABLE
     IDS_SPANISH, "Spagnolo"
     IDS_INVALIDLANG, "Lingua non riconosciuta."
     IDS_INVALIDNAME, "Nome risorsa non valido."
-    IDS_PNGRESBINFILTER, "Immagini PNG (*.png)|*.png|Riorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER, "Immagini JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
-    IDS_GIFRESBINFILTER, "Immagini GIF (*.gif)|*.gif|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER, "Immagini TIFF (*.tif;*.tiff)|*.tif;*.tiff|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
-    IDS_AVIRESBINFILTER, "Filmato AVI (*.avi)|*.avi|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
-    IDS_WAVERESBINFILTER, "Audio WAVE (*.wav)|*.wav|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_PNGRESBINFILTER, "File immagine PNG (*.png)|*.png|File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "File immagine JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_GIFRESBINFILTER, "File immagine GIF (*.gif)|*.gif|Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER, "File immagine TIFF (*.tif;*.tiff)|*.tif;*.tiff|File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_AVIRESBINFILTER, "File filmato AVI (*.avi)|*.avi|File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
+    IDS_WAVERESBINFILTER, "File audio WAVE (*.wav)|*.wav|File risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
     IDS_NEWLINE, "\r\n"
-    IDS_NOTICE, "// Questo file è automaticamnte generato da RisohEditor.\r\n"
+    IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
-    IDS_IMPORTFILTER, "File importabili|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Risorse binarie (*.res)|*.res|File immagini|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|Tutti i file (*.*)|*.*|"
-    IDS_CANTWRITEBYLOCK, "Unable to write the file because the following file is locked.\r\n\r\n%s"
+    IDS_IMPORTFILTER, "File importabili|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagini|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|Tutti i file (*.*)|*.*|"
+    IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poichè il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
     IDS_UTF8, "UTF-8 (con BOM)"
