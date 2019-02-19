@@ -73,14 +73,14 @@ public:
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_LEFT;
-        column.cx = 250;
+        column.cx = 180;
         column.pszText = LoadStringDx(IDS_LANGUAGE);
         column.iSubItem = 0;
         ListView_InsertColumn(m_hLst1, 0, &column);
 
         column.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         column.fmt = LVCFMT_RIGHT;
-        column.cx = 135;
+        column.cx = 110;
         column.pszText = LoadStringDx(IDS_INTVALUE);
         column.iSubItem = 1;
         ListView_InsertColumn(m_hLst1, 1, &column);

@@ -42,7 +42,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "Modifica via &GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
-        POPUP "&Add"
+        POPUP "&Aggiungi"
         {
             MENUITEM "Aggiungi &icona...", ID_ADDICON
             MENUITEM "Aggiungi &cursore..", ID_ADDCURSOR
@@ -92,7 +92,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Cerca &elemento...\tCtrl+M", ID_ITEMSEARCH
     }
-    POPUP "&View"
+    POPUP "&Visualizza"
     {
         MENUITEM "Barra &stato", ID_STATUSBAR
         MENUITEM "Barra &strumenti", ID_SHOWHIDETOOLBAR
@@ -771,32 +771,32 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", lst1, "SysListView32", LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 0, 15, 200, 285
 }
 
-IDD_CONFIG DIALOG 0, 0, 210, 285
-CAPTION "Impostazioni"
+IDD_CONFIG DIALOG 0, 0, 235, 285
+CAPTION "Configurazione"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Sempre istru&zione CONTROL", chx1, 5, 5, 200, 14
-    AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 200, 14
-    AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 200, 14
-    AUTOCHECKBOX "Carica automaticamnte '&resource.h' vicino", chx4, 5, 65, 200, 14
-    AUTOCHECKBOX "Visualizza automatiocamente e&lenco ID risorse", chx5, 5, 85, 200, 14
-    AUTOCHECKBOX "Visualizza &punti nella finestra modifica", chx6, 5, 105, 200, 14
+    AUTOCHECKBOX "Sempre istru&zione CONTROL", chx1, 5, 5, 175, 15
+    AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 175, 14
+    AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 175, 15
+    AUTOCHECKBOX "Carica automaticamnte '&resource.h' vicino", chx4, 5, 65, 175, 14
+    AUTOCHECKBOX "Visualizza automatiocamente e&lenco ID risorse", chx5, 5, 85, 175, 15
+    AUTOCHECKBOX "Visualizza &punti nella finestra modifica", chx6, 5, 105, 175, 14
     RTEXT "Altezza combo&box:", IDC_STATIC, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&A capo automatico", chx9, 135, 125, 70, 14
-    AUTOCHECKBOX "Chiedi per aggiornamento '&resource.h'", chx7, 5, 145, 200, 14
-    AUTOCHECKBOX "Comprimi EXE con &UPX al salvtaggio", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Font...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "&Macro predefinite...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Impos&ta pecorsi...", psh2, 107, 205, 98, 14
+    AUTOCHECKBOX "&A capo automatico", chx9, 135, 125, 95, 15
+    AUTOCHECKBOX "Chiedi per aggiornamento '&resource.h'", chx7, 5, 145, 175, 14
+    AUTOCHECKBOX "Comprimi EXE con &UPX al salvtaggio", chx8, 5, 165, 175, 15
+    PUSHBUTTON "&Font...", psh4, 5, 185, 225, 14
+    PUSHBUTTON "&Macro predefinite...", psh1, 5, 204, 110, 15
+    PUSHBUTTON "Impos&ta pecorsi...", psh2, 120, 204, 110, 15
     RTEXT "Nome controlli &OLE:", IDC_STATIC, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Crea &backup  suffiso backup:", chx10, 5, 245, 123, 14
-    COMBOBOX cmb2, 134, 245, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
-    PUSHBUTTON "Annulla", IDCANCEL, 155, 265, 50, 14
+    AUTOCHECKBOX "Crea &backup  suffiso backup:", chx10, 5, 245, 113, 15, BS_RIGHT
+    COMBOBOX cmb2, 128, 244, 50, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 125, 265, 50, 14
+    PUSHBUTTON "Annulla", IDCANCEL, 180, 265, 50, 14
     PUSHBUTTON "Ripri&stina tutto", psh3, 5, 265, 75, 14
 }
 
@@ -1214,17 +1214,17 @@ IDD_MODIFYDLGINIT 240
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/1040_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/1040_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.1.5 di Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 5.1.5 di Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor 5.1.6 di Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 5.1.6 di Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Estrai risorse"
     IDS_RESBINFILTER, "Risorse binarie (*.res)|*.res|File binari (*.bin)|*.bin|Tutti i file (*.*)|*.*|"
     IDS_CANNOTSAVE, "Impossibile salvare."
@@ -1250,7 +1250,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Impossibile sostituire la bitmap."
     IDS_REPLACEBMP, "Sostituisci bitmap"
     IDS_ERRORCODE, "Codice errore %d"
-    IDS_VERSIONINFO, "RisohEditor versione 5.1.5\r\n\r\nAutore: Katayama Hirofumi MZ\r\n\r\nLicenza: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor versione 5.1.6\r\n\r\nAutore: Katayama Hirofumi MZ\r\n\r\nLicenza: GPLv3 (freeware)"
     IDS_ADDRES, "Aggiungi risorsa"
     IDS_CANNOTADDRES, "Impossibile aggiungere la risorsa."
     IDS_CANTADDBMP, "Impossibile aggiungere la bitmap."
