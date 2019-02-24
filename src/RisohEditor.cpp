@@ -3318,7 +3318,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         {
             // search the entries
             EntrySetBase found;
-            g_res.search(found, ET_LANG, entry->m_type, WORD(0), entry->m_lang);
+            g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
 
             // copy them
             for (auto e : found)
