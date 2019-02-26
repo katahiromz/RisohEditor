@@ -91,6 +91,7 @@ Question 4. What is mcdx?
     - GUI adjustment.
     - Fix "Clone In New Language".
  * 2019.XX.YY ver.5.1.7
+    - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

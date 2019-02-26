@@ -88,6 +88,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - GUI adjustment.
     - Fix "Clone In New Language".
  * 2019.XX.YY ver.5.1.7
+    - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
 
 ## Contact Us
 
