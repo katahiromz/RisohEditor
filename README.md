@@ -87,6 +87,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improve Italian translation.
     - GUI adjustment.
     - Fix "Clone In New Language".
+ * 2019.XX.YY ver.5.1.7
 
 ## Contact Us
 

@@ -90,6 +90,7 @@ Question 4. What is mcdx?
     - Improve Italian translation.
     - GUI adjustment.
     - Fix "Clone In New Language".
+ * 2019.XX.YY ver.5.1.7
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
