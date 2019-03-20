@@ -90,8 +90,9 @@ Question 4. What is mcdx?
     - Improve Italian translation.
     - GUI adjustment.
     - Fix "Clone In New Language".
- * 2019.XX.YY ver.5.1.7
+ * 2019.03.20 ver.5.1.7
     - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
+    - Fix the process of compilation error.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

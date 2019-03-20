@@ -5954,6 +5954,12 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                 res.delete_all();
             }
         }
+        else
+        {
+            bOK = FALSE;
+            // error message
+            strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+        }
     }
     else
     {
