@@ -93,6 +93,7 @@ Question 4. What is mcdx?
  * 2019.03.20 ver.5.1.7
     - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
     - Fix the process of compilation error.
+ * 2019.XX.YY ver.5.1.8
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

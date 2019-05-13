@@ -90,6 +90,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.03.20 ver.5.1.7
     - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
     - Fix the process of compilation error.
+ * 2019.XX.YY ver.5.1.8
 
 ## Contact Us
 
