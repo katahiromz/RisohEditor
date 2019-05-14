@@ -165,8 +165,8 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "C&hange Name/Language\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clone As New &Name...", ID_COPYASNEWNAME
-        MENUITEM "Clone As New &Language...", ID_COPYASNEWLANG
+        MENUITEM "Clone In New &Name...", ID_COPYASNEWNAME
+        MENUITEM "Clone In New &Language...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR

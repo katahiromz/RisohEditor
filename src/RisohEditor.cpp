@@ -77,7 +77,6 @@ BOOL IsFileLockedDx(LPCTSTR pszFileName)
     return TRUE;
 }
 
-
 // "." or ".."
 #define IS_DOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
 
@@ -3205,6 +3204,10 @@ BOOL MMainWnd::DoItemSearch(ITEM_SEARCH& search)
 // clone the resource item in new name
 void MMainWnd::OnCopyAsNewName(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     // get the selected name entry
     auto entry = g_res.get_entry();
     if (!entry || entry->m_et != ET_NAME)
@@ -3248,6 +3251,10 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 // clone the resource item in new language
 void MMainWnd::OnCopyAsNewLang(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     // get the selected entry
     auto entry = g_res.get_entry();
     if (!entry)
@@ -3277,6 +3284,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             {
                 g_res.copy_group_icon(e, e->m_name, dialog.m_lang);
             }
+
+            // select the entry
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
@@ -3289,6 +3299,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             {
                 g_res.copy_group_cursor(e, e->m_name, dialog.m_lang);
             }
+
+            // select the entry
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
         else if (entry->m_et == ET_STRING)
         {
@@ -3301,6 +3314,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
+
+            // select the entry
+            SelectTV(ET_STRING, dialog.m_type, WORD(0), dialog.m_lang, FALSE);
         }
         else if (entry->m_et == ET_MESSAGE)
         {
@@ -3313,6 +3329,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
+
+            // select the entry
+            SelectTV(ET_MESSAGE, dialog.m_type, WORD(0), dialog.m_lang, FALSE);
         }
         else
         {
@@ -3325,6 +3344,9 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             {
                 g_res.add_lang_entry(e->m_type, e->m_name, dialog.m_lang, e->m_data);
             }
+
+            // select the entry
+            SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
     }
 }
@@ -5606,6 +5628,12 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
             // clean res up
             res.delete_all();
         }
+        else
+        {
+            bOK = FALSE;
+            // error message
+            strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+        }
     }
     else
     {
@@ -5729,6 +5757,12 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
             // clean res up
             res.delete_all();
+        }
+        else
+        {
+            bOK = FALSE;
+            // error message
+            strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
     }
     else
@@ -9313,6 +9347,10 @@ void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 
 void MMainWnd::OnClone(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     auto entry = g_res.get_entry();
     if (!entry)
         return;
@@ -10083,6 +10121,10 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             return TRUE;
         case VK_F2:
             {
+                // compile if necessary
+                if (!CompileIfNecessary(FALSE))
+                    return TRUE;
+
                 // get the selected type entry
                 auto entry = g_res.get_entry();
                 if (!entry || entry->m_et == ET_TYPE)

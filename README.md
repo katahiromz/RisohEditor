@@ -90,7 +90,10 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.03.20 ver.5.1.7
     - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
     - Fix the process of compilation error.
- * 2019.XX.YY ver.5.1.8
+ * 2019.05.14 ver.5.1.8
+    - Add check of recompilation upon cloning.
+    - Fix the selection after cloning.
+    - Correctly fail upon compilation error of string table and message table.
 
 ## Contact Us
 
