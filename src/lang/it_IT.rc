@@ -166,7 +166,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Modifica nome/lingua\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Clona con nuova &nome...", ID_COPYASNEWNAME
-        MENUITEM "Clona con nuova &lingua...", ID_COPYASNEWLANG
+        MENUITEM "Clona in una nuova &lingua...", ID_COPYASNEWLANG
         MENUITEM SEPARATOR
         MENUITEM "Effettua &test", ID_TEST
         MENUITEM SEPARATOR
