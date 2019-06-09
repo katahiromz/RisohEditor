@@ -7298,9 +7298,9 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
 BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 {
     if (g_settings.bRCFileUTF16)
-        DoWriteRCLangUTF16(file, res2text, lang);
+        return DoWriteRCLangUTF16(file, res2text, lang);
     else
-        DoWriteRCLangUTF8(file, res2text, lang);
+        return DoWriteRCLangUTF8(file, res2text, lang);
 }
 
 // do backup a folder
