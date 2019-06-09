@@ -95,6 +95,7 @@ struct RisohSettings
     BOOL                bRedundantComments; // output redundant comments?
     BOOL                bWrapManifest;      // wrap manifest statements by #ifndef MSVC ... #endif?
     encoding_map_type   encoding_map;       // text resource encoding
+    BOOL                bRCFileUTF16;       // output RC files as UTF-16?
 
     RisohSettings()
     {

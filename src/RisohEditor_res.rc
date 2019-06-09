@@ -215,18 +215,10 @@ IDR_MAINFRAME WAVE "res/Wave_100.wav"
 //////////////////////////////////////////////////////////////////////////////
 // Languages
 
-#ifdef LANGUAGE_EN_US
-    #include "lang/en_US.rc"
-#endif
-#ifdef LANGUAGE_IT_IT
-    #include "lang/it_IT.rc"
-#endif
-#ifdef LANGUAGE_JA_JP
-    #include "lang/ja_JP.rc"
-#endif
-#ifdef LANGUAGE_ZH_CN
-    #include "lang/zh_CN.rc"
-#endif
+#include "lang/en_US.rc"
+#include "lang/it_IT.rc"
+#include "lang/ja_JP.rc"
+#include "lang/zh_CN.rc"
 
 //////////////////////////////////////////////////////////////////////////////
 // TEXTINCLUDE

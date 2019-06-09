@@ -2087,6 +2087,8 @@ public:
     BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
     BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
+    BOOL DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang);
+    BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang);
     BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
     BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
     BOOL DoSaveResAs(LPCWSTR pszExeFile);
@@ -6996,8 +6998,7 @@ LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// write a language-specific RC text
-BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
+BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
 {
     MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
@@ -7149,6 +7150,159 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
+BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
+{
+    MString comment_sep(LoadStringDx(IDS_COMMENT_SEP));
+
+    if (!g_settings.bSepFilesByLang && g_settings.bRedundantComments)
+    {
+        file.WriteSzW(comment_sep.c_str());
+        file.WriteSzW(L"\r\n");
+    }
+
+    // dump a comment and a LANGUAGE statement
+    MString strLang = ::GetLanguageStatement(lang, TRUE);
+    strLang += L"\r\n";
+    file.WriteSzW(strLang.c_str());
+
+    // search the language entries
+    EntrySetBase found;
+    g_res.search(found, ET_LANG, WORD(0), WORD(0), lang);
+
+    std::vector<EntryBase *> vecFound(found.begin(), found.end());
+
+    std::sort(vecFound.begin(), vecFound.end(),
+        [](const EntryBase *a, const EntryBase *b) {
+            if (a->m_type < b->m_type)
+                return true;
+            if (a->m_type > b->m_type)
+                return false;
+            return a->m_name < b->m_name;
+        }
+    );
+
+    MIdOrString type, old_type;
+
+    // for all found entries
+    for (auto entry : vecFound)
+    {
+        old_type = type;
+        type = entry->m_type;
+
+        // ignore the string or message tables
+        if (type == RT_STRING || type == RT_MESSAGETABLE)
+        {
+            continue;
+        }
+
+        // dump the entry
+        MString str = res2text.DumpEntry(*entry);
+        if (!str.empty())
+        {
+            // output redundant comments
+            if (type != old_type && g_settings.bRedundantComments)
+            {
+                file.WriteSzW(comment_sep.c_str());
+                MStringW strType = res2text.GetResTypeName(type);
+                file.WriteSzW(L"// ");
+                file.WriteSzW(strType.c_str());
+                file.WriteSzW(L"\r\n\r\n");
+            }
+
+            mstr_trim(str);     // trim
+
+            // convert the text to UTF-8
+            file.WriteSzW(str.c_str());
+
+            // add newlines
+            file.WriteSzW(L"\r\n\r\n");
+        }
+    }
+
+    // search the string tables
+    found.clear();
+    g_res.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
+    if (found.size())
+    {
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(comment_sep.c_str());
+            file.WriteSzW(L"// RT_STRING\r\n\r\n");
+        }
+
+        // found --> str_res
+        StringRes str_res;
+        for (auto e : found)
+        {
+            if (e->m_lang != lang)
+                continue;       // must be same language
+
+            MByteStreamEx stream(e->m_data);
+            if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+                return FALSE;
+        }
+
+        // dump
+        MString str = str_res.Dump();
+
+        // trim
+        mstr_trim(str);
+
+        // append newlines
+        str += L"\r\n\r\n";
+
+        // write it
+        file.WriteSzW(str.c_str());
+    }
+
+    // search the message tables
+    found.clear();
+    g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+    if (found.size())
+    {
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(comment_sep.c_str());
+            file.WriteSzW(L"// RT_MESSAGETABLE\r\n\r\n");
+        }
+
+        // found --> msg_res
+        MessageRes msg_res;
+        for (auto e : found)
+        {
+            if (e->m_lang != lang)
+                continue;       // must be same language
+
+            MByteStreamEx stream(e->m_data);
+            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+                return FALSE;
+        }
+
+        // dump it
+        MString str;
+        str += L"#ifdef APSTUDIO_INVOKED\r\n";
+        str += L"    #error Ap Studio cannot edit this message table.\r\n";
+        str += L"#endif\r\n";
+        str += L"#ifdef MCDX_INVOKED\r\n";
+        str += msg_res.Dump();
+        str += L"#endif\r\n\r\n";
+
+        // write it
+        file.WriteSzW(str.c_str());
+    }
+
+    return TRUE;
+}
+
+// write a language-specific RC text
+BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
+{
+    if (g_settings.bRCFileUTF16)
+        DoWriteRCLangUTF16(file, res2text, lang);
+    else
+        DoWriteRCLangUTF8(file, res2text, lang);
+}
+
 // do backup a folder
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
@@ -7208,7 +7362,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     res2text.m_bHumanReadable = FALSE;  // it's not human-friendly
     res2text.m_bNoLanguage = TRUE;      // no LANGUAGE statements generated
 
-    MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
+    MWideToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
     // check not locking
     if (IsFileLockedDx(pszFileName))
@@ -7228,27 +7382,47 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     if (!file)
         return FALSE;
 
-    // dump heading
-    {
-        WCHAR szTitle[MAX_PATH];
-        GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
+    BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
 
+    WCHAR szTitle[MAX_PATH];
+    GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
+
+    // dump heading
+    if (bRCFileUTF16)
+    {
+        file.WriteFormatW(L"// %s\r\n", szTitle);
+
+        file.WriteSzW(LoadStringDx(IDS_NOTICE));
+        file.WriteSzW(LoadStringDx(IDS_DAGGER));
+        file.WriteSzW(L"\r\n");
+
+        if (pszResH && pszResH[0])
+            file.WriteSzW(L"#include \"resource.h\"\r\n");
+        file.WriteSzW(L"#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteSzW(L"#include <windows.h>\r\n");
+        file.WriteSzW(L"#include <commctrl.h>\r\n");
+        file.WriteSzW(L"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteSzW(L"#pragma code_page(65001) // UTF-8\r\n\r\n");
+    }
+    else
+    {
         MWideToAnsi utf8(CP_UTF8, szTitle);
         file.WriteFormatA("// %s\r\n", utf8.c_str());
 
         MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
         MWideToAnsi utf8Dagger(CP_UTF8, LoadStringDx(IDS_DAGGER));
-        file.WriteFormatA(utf8Notice.c_str());
-        file.WriteFormatA(utf8Dagger.c_str());
-        file.WriteFormatA("\r\n");
+        file.WriteSzA(utf8Notice.c_str());
+        file.WriteSzA(utf8Dagger.c_str());
+        file.WriteSzA("\r\n");
+
+        if (pszResH && pszResH[0])
+            file.WriteSzA("#include \"resource.h\"\r\n");
+        file.WriteFormatA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteFormatA("#include <windows.h>\r\n");
+        file.WriteFormatA("#include <commctrl.h>\r\n");
+        file.WriteFormatA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
     }
-    if (pszResH && pszResH[0])
-        file.WriteFormatA("#include \"resource.h\"\r\n");
-    file.WriteFormatA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
-    file.WriteFormatA("#include <windows.h>\r\n");
-    file.WriteFormatA("#include <commctrl.h>\r\n");
-    file.WriteFormatA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
-    file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
     // get the used languages
     std::unordered_set<WORD> langs;
@@ -7290,19 +7464,19 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         }
 
         // create "lang" directory path
-        TCHAR szLangDir[MAX_PATH];
-        StringCchCopy(szLangDir, _countof(szLangDir), pszFileName);
+        WCHAR szLangDir[MAX_PATH];
+        StringCchCopyW(szLangDir, _countof(szLangDir), pszFileName);
 
         // find the last '\\' or '/'
-        TCHAR *pch = mstrrchr(szLangDir, TEXT('\\'));
+        WCHAR *pch = wcsrchr(szLangDir, L'\\');
         if (pch == NULL)
-            pch = mstrrchr(szLangDir, TEXT('/'));
+            pch = mstrrchr(szLangDir, L'/');
         if (pch == NULL)
             return FALSE;
 
         // build the lang directory path
         *pch = 0;
-        StringCchCat(szLangDir, _countof(szLangDir), TEXT("/lang"));
+        StringCchCatW(szLangDir, _countof(szLangDir), TEXT("/lang"));
 
         // backup and create "lang" directory
         for (auto lang_pair : lang_vec)
@@ -7325,12 +7499,12 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 continue;
 
             // create lang/XX_XX.rc file
-            TCHAR szLangFile[MAX_PATH];
-            StringCchCopy(szLangFile, _countof(szLangFile), szLangDir);
-            StringCchCat(szLangFile, _countof(szLangFile), TEXT("/"));
-            MString lang_name = lang_pair.second;
-            StringCchCat(szLangFile, _countof(szLangFile), lang_name.c_str());
-            StringCchCat(szLangFile, _countof(szLangFile), TEXT(".rc"));
+            WCHAR szLangFile[MAX_PATH];
+            StringCchCopyW(szLangFile, _countof(szLangFile), szLangDir);
+            StringCchCatW(szLangFile, _countof(szLangFile), TEXT("/"));
+            MStringW lang_name = lang_pair.second;
+            StringCchCatW(szLangFile, _countof(szLangFile), lang_name.c_str());
+            StringCchCatW(szLangFile, _countof(szLangFile), TEXT(".rc"));
             //MessageBox(NULL, szLangFile, NULL, 0);
 
             if (g_settings.bBackup)
@@ -7338,14 +7512,22 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
             // dump to lang/XX_XX.rc file
             MFile lang_file(szLangFile, TRUE);
+            if (bRCFileUTF16)
+            {
+                lang_file.WriteSzW(LoadStringDx(IDS_NOTICE));
+                lang_file.WriteSzW(LoadStringDx(IDS_DAGGER));
+                lang_file.WriteSzW(L"\r\n");
+                lang_file.WriteSzW(L"#pragma code_page(65001) // UTF-8\r\n\r\n");
+            }
+            else
             {
                 MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
                 MWideToAnsi utf8Dagger(CP_UTF8, LoadStringDx(IDS_DAGGER));
-                lang_file.WriteFormatA(utf8Notice.c_str());
-                lang_file.WriteFormatA(utf8Dagger.c_str());
-                lang_file.WriteFormatA("\r\n");
+                lang_file.WriteSzA(utf8Notice.c_str());
+                lang_file.WriteSzA(utf8Dagger.c_str());
+                lang_file.WriteSzA("\r\n");
+                lang_file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             }
-            lang_file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
             if (!lang_file)
                 return FALSE;
             if (!DoWriteRCLang(lang_file, res2text, lang))
@@ -7353,7 +7535,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
             if (g_settings.bRedundantComments)
             {
-                lang_file.WriteSzA(comment_sep.c_str());
+                if (bRCFileUTF16)
+                {
+                    lang_file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+                }
+                else
+                {
+                    lang_file.WriteSzA(comment_sep.c_str());
+                }
             }
         }
     }
@@ -7375,8 +7564,16 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         // write a C++ comment to make a section
         if (g_settings.bRedundantComments)
         {
-            file.WriteSzA(comment_sep.c_str());
-            file.WriteSzA("// Languages\r\n\r\n");
+            if (bRCFileUTF16)
+            {
+                file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+                file.WriteSzW(L"// Languages\r\n\r\n");
+            }
+            else
+            {
+                file.WriteSzA(comment_sep.c_str());
+                file.WriteSzA("// Languages\r\n\r\n");
+            }
         }
 
         if (g_settings.bSelectableByMacro)
@@ -7394,20 +7591,38 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 MString lang_name2 = lang_name1;
                 CharUpperW(&lang_name2[0]);
 
-                // write "#ifdef LANGUAGE_...\r\n"
-                file.WriteSzA("#ifdef LANGUAGE_");
-                MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
-                file.WriteSzA(lang2_w2a.c_str());
-                file.WriteSzA("\r\n");
+                if (bRCFileUTF16)
+                {
+                    // write "#ifdef LANGUAGE_...\r\n"
+                    file.WriteSzW(L"#ifdef LANGUAGE_");
+                    file.WriteSzW(lang_name2.c_str());
+                    file.WriteSzW(L"\r\n");
 
-                // write "#define \"lang/....rc\"\r\n"
-                file.WriteSzA("    #include \"lang/");
-                MWideToAnsi lang1_w2a(CP_ACP, lang_name1.c_str());
-                file.WriteSzA(lang1_w2a.c_str());
-                file.WriteSzA(".rc\"\r\n");
+                    // write "#define \"lang/....rc\"\r\n"
+                    file.WriteSzW(L"    #include \"lang/");
+                    file.WriteSzW(lang_name1.c_str());
+                    file.WriteSzW(L".rc\"\r\n");
 
-                // write "#endif\r\n"
-                file.WriteSzA("#endif\r\n");
+                    // write "#endif\r\n"
+                    file.WriteSzW(L"#endif\r\n");
+                }
+                else
+                {
+                    // write "#ifdef LANGUAGE_...\r\n"
+                    file.WriteSzA("#ifdef LANGUAGE_");
+                    MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
+                    file.WriteSzA(lang2_w2a.c_str());
+                    file.WriteSzA("\r\n");
+
+                    // write "#define \"lang/....rc\"\r\n"
+                    file.WriteSzA("    #include \"lang/");
+                    MWideToAnsi lang1_w2a(CP_ACP, lang_name1.c_str());
+                    file.WriteSzA(lang1_w2a.c_str());
+                    file.WriteSzA(".rc\"\r\n");
+
+                    // write "#endif\r\n"
+                    file.WriteSzA("#endif\r\n");
+                }
             }
         }
         else
@@ -7421,51 +7636,108 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
                 // get the language name (such as en_US, ja_JP, etc.) from database
                 MString lang_name1 = g_db.GetLangName(lang);
 
-                // write "#include \"lang/....rc\"\r\n"
-                file.WriteSzA("#include \"lang/");
-                file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
-                file.WriteSzA(".rc\"\r\n");
+                if (bRCFileUTF16)
+                {
+                    // write "#include \"lang/....rc\"\r\n"
+                    file.WriteSzW(L"#include \"lang/");
+                    file.WriteSzW(lang_name1.c_str());
+                    file.WriteSzW(L".rc\"\r\n");
+                }
+                else
+                {
+                    // write "#include \"lang/....rc\"\r\n"
+                    file.WriteSzA("#include \"lang/");
+                    file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
+                    file.WriteSzA(".rc\"\r\n");
+                }
             }
         }
 
-        file.WriteSzA("\r\n");
+        if (bRCFileUTF16)
+            file.WriteSzW(L"\r\n");
+        else
+            file.WriteSzA("\r\n");
     }
 
     if (g_settings.bRedundantComments)
     {
-        file.WriteSzA(comment_sep.c_str());
-        file.WriteSzA("// TEXTINCLUDE\r\n\r\n");
+        if (bRCFileUTF16)
+        {
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(L"// TEXTINCLUDE\r\n\r\n");
+        }
+        else
+        {
+            file.WriteSzA(comment_sep.c_str());
+            file.WriteSzA("// TEXTINCLUDE\r\n\r\n");
+        }
     }
 
-    file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n\r\n");
-
-    // write three TEXTINCLUDE's
-    file.WriteSzA("1 TEXTINCLUDE\r\n");
-    file.WriteSzA("BEGIN\r\n");
-    file.WriteSzA("    \"resource.h\\0\"\r\n");
-    file.WriteSzA("END\r\n\r\n");
-
-    file.WriteSzA("2 TEXTINCLUDE\r\n");
-    file.WriteSzA("BEGIN\r\n");
-    file.WriteSzA("    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-    file.WriteSzA("    \"#include <windows.h>\\r\\n\"\r\n");
-    file.WriteSzA("    \"#include <commctrl.h>\\r\\n\"\r\n");
-    file.WriteSzA("    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-    file.WriteSzA("    \"\\0\"\r\n");
-    file.WriteSzA("END\r\n\r\n");
-
-    file.WriteSzA("3 TEXTINCLUDE\r\n");
-    file.WriteSzA("BEGIN\r\n");
-    file.WriteSzA("    \"\\r\\n\"\r\n");
-    file.WriteSzA("    \"\\0\"\r\n");
-    file.WriteSzA("END\r\n\r\n");
-
-    file.WriteSzA("#endif    // APSTUDIO_INVOKED\r\n");
-
-    if (g_settings.bRedundantComments)
+    if (bRCFileUTF16)
     {
-        file.WriteSzA("\r\n");
-        file.WriteSzA(comment_sep.c_str());
+        file.WriteSzW(L"#ifdef APSTUDIO_INVOKED\r\n\r\n");
+
+        // write three TEXTINCLUDE's
+        file.WriteSzW(L"1 TEXTINCLUDE\r\n");
+        file.WriteSzW(L"BEGIN\r\n");
+        file.WriteSzW(L"    \"resource.h\\0\"\r\n");
+        file.WriteSzW(L"END\r\n\r\n");
+
+        file.WriteSzW(L"2 TEXTINCLUDE\r\n");
+        file.WriteSzW(L"BEGIN\r\n");
+        file.WriteSzW(L"    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+        file.WriteSzW(L"    \"#include <windows.h>\\r\\n\"\r\n");
+        file.WriteSzW(L"    \"#include <commctrl.h>\\r\\n\"\r\n");
+        file.WriteSzW(L"    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+        file.WriteSzW(L"    \"\\0\"\r\n");
+        file.WriteSzW(L"END\r\n\r\n");
+
+        file.WriteSzW(L"3 TEXTINCLUDE\r\n");
+        file.WriteSzW(L"BEGIN\r\n");
+        file.WriteSzW(L"    \"\\r\\n\"\r\n");
+        file.WriteSzW(L"    \"\\0\"\r\n");
+        file.WriteSzW(L"END\r\n\r\n");
+
+        file.WriteSzW(L"#endif    // APSTUDIO_INVOKED\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(L"\r\n");
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+        }
+    }
+    else
+    {
+        file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n\r\n");
+
+        // write three TEXTINCLUDE's
+        file.WriteSzA("1 TEXTINCLUDE\r\n");
+        file.WriteSzA("BEGIN\r\n");
+        file.WriteSzA("    \"resource.h\\0\"\r\n");
+        file.WriteSzA("END\r\n\r\n");
+
+        file.WriteSzA("2 TEXTINCLUDE\r\n");
+        file.WriteSzA("BEGIN\r\n");
+        file.WriteSzA("    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+        file.WriteSzA("    \"#include <windows.h>\\r\\n\"\r\n");
+        file.WriteSzA("    \"#include <commctrl.h>\\r\\n\"\r\n");
+        file.WriteSzA("    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
+        file.WriteSzA("    \"\\0\"\r\n");
+        file.WriteSzA("END\r\n\r\n");
+
+        file.WriteSzA("3 TEXTINCLUDE\r\n");
+        file.WriteSzA("BEGIN\r\n");
+        file.WriteSzA("    \"\\r\\n\"\r\n");
+        file.WriteSzA("    \"\\0\"\r\n");
+        file.WriteSzA("END\r\n\r\n");
+
+        file.WriteSzA("#endif    // APSTUDIO_INVOKED\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzA("\r\n");
+            file.WriteSzA(comment_sep.c_str());
+        }
     }
 
     return TRUE;
@@ -11444,6 +11716,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 
     g_settings.bRedundantComments = TRUE;
     g_settings.bWrapManifest = TRUE;
+
+    g_settings.bRCFileUTF16 = FALSE;
 
     g_settings.ResetEncoding();
 }
