@@ -1918,9 +1918,11 @@ protected:
     WCHAR       m_szDataFolder[MAX_PATH];       // the data folder location
     WCHAR       m_szConstantsFile[MAX_PATH];    // the Constants.txt file location
     WCHAR       m_szCppExe[MAX_PATH];           // the cpp.exe location
+    WCHAR       m_szMCppExe[MAX_PATH];          // the mcpp.exe location
     WCHAR       m_szWindresExe[MAX_PATH];       // the windres.exe location
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
+    WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
 
     // file info
     FileType    m_file_type;
@@ -1964,9 +1966,11 @@ public:
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
         m_szCppExe[0] = 0;
+        m_szMCppExe[0] = 0;
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
         m_szMcdxExe[0] = 0;
+        m_szIncludeDir[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
 
@@ -6183,6 +6187,15 @@ INT MMainWnd::CheckData(VOID)
         return -3;  // failure
     }
 
+    // mcpp.exe
+    StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
+    StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
+    if (::GetFileAttributesW(m_szMCppExe) == INVALID_FILE_ATTRIBUTES)
+    {
+        ErrorBoxDx(TEXT("ERROR: No mcpp.exe found."));
+        return -3;  // failure
+    }
+
     // windres.exe
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
@@ -6199,6 +6212,15 @@ INT MMainWnd::CheckData(VOID)
     {
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
         return -5;  // failure
+    }
+
+    // include directory
+    StringCchCopyW(m_szIncludeDir, _countof(m_szIncludeDir), m_szDataFolder);
+    StringCchCatW(m_szIncludeDir, _countof(m_szIncludeDir), L"\\lib\\gcc\\i686-w64-mingw32\\7.3.0\\include");
+    if (::GetFileAttributesW(m_szIncludeDir) == INVALID_FILE_ATTRIBUTES)
+    {
+        ErrorBoxDx(TEXT("ERROR: No include directory found."));
+        return -6;  // failure
     }
 
     // get the module path filename of this application module
@@ -6591,7 +6613,8 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     // load the RC file to the res variable
     MStringA strOutput;
     BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe,
-                           m_szMcdxExe, GetMacroDump(), GetIncludesDump());
+                           m_szMCppExe, m_szMcdxExe, GetMacroDump(),
+                           GetIncludesDump(), m_szIncludeDir);
     if (!bOK)
     {
         // failed. show error message

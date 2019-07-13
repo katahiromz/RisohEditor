@@ -2123,10 +2123,34 @@ public:
         return bSuccess;
     }
 
+    BOOL IsUTF16File(LPCWSTR pszRCFile) const
+    {
+        if (FILE *fp = _wfopen(pszRCFile, L"rb"))
+        {
+            BYTE ab[2];
+            if (fread(ab, 1, 2, fp) == 2)
+            {
+                if (memcmp(ab, "\xFF\xFE", 2) == 0)
+                {
+                    fclose(fp);
+                    return TRUE;
+                }
+                if (ab[0] && !ab[1])
+                {
+                    fclose(fp);
+                    return TRUE;
+                }
+            }
+            fclose(fp);
+        }
+        return FALSE;
+    }
+
     // load the resources from a *.rc file
     BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
-        const MString& strWindresExe, const MString& strCppExe, const MString& strMcdxExe, 
-        const MStringW& strMacrosDump, const MStringW& strIncludesDump)
+        const MString& strWindresExe, const MString& strCppExe, const MString& strMCppExe,
+        const MString& strMcdxExe, const MStringW& strMacrosDump,
+        const MStringW& strIncludesDump, const MStringW& strIncludeDir)
     {
         // get the temporary file path
         WCHAR szPath3[MAX_PATH];
@@ -2148,7 +2172,15 @@ public:
         strCmdLine += L" -o \"";
         strCmdLine += szPath3;
         strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
-        strCmdLine += strCppExe;
+        BOOL bUTF16 = IsUTF16File(pszRCFile);
+        if (bUTF16)
+        {
+            strCmdLine += strMCppExe;
+        }
+        else
+        {
+            strCmdLine += strCppExe;
+        }
         strCmdLine += L"\" --preprocessor-arg=\"\" \"";
         strCmdLine += pszRCFile;
         strCmdLine += L'\"';
@@ -2159,10 +2191,11 @@ public:
         // create a windres.exe process
         MProcessMaker pmaker;
         pmaker.SetShowWindow(SW_HIDE);
-        pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+        pmaker.SetCreationFlags(CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT);
 
         MFile hInputWrite, hOutputRead;
         SetEnvironmentVariableW(L"LANG", L"en_US");
+
         if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
             pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
         {
@@ -2185,7 +2218,7 @@ public:
             }
         }
 
-        if (bSuccess)
+        if (bSuccess && !bUTF16)
         {
             // load the message table if any
             EntrySet es;
