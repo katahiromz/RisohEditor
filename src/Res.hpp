@@ -2218,7 +2218,7 @@ public:
             }
         }
 
-        if (bSuccess && !bUTF16)
+        if (bSuccess)
         {
             // load the message table if any
             EntrySet es;

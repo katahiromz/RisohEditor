@@ -817,6 +817,29 @@ int save_bin(const char *output_file)
     return EXITCODE_SUCCESS;
 }
 
+bool IsUTF16File(const char *input_file)
+{
+    if (FILE *fp = fopen(input_file, "rb"))
+    {
+        char ab[2];
+        if (fread(ab, 1, 2, fp) == 2)
+        {
+            if (memcmp(ab, "\xFF\xFE", 2) == 0)
+            {
+                fclose(fp);
+                return true;
+            }
+            if (ab[0] && !ab[1])
+            {
+                fclose(fp);
+                return true;
+            }
+        }
+        fclose(fp);
+    }
+    return false;
+}
+
 int load_rc(const char *input_file)
 {
     // definitions minus undefinitions
@@ -839,7 +862,10 @@ int load_rc(const char *input_file)
 
     // build up command line
     MString command_line;
-    command_line += g_cpp;
+    if (IsUTF16File(input_file))
+        command_line += "mcpp";
+    else
+        command_line += g_cpp;
     command_line += ' ';
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
