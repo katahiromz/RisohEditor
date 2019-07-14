@@ -36,14 +36,24 @@ class MItemSearchDlg;
 struct ITEM_SEARCH
 {
     ResToText   res2text;
-    BOOL        bIgnoreCases = TRUE;
-    BOOL        bDownward = TRUE;
-    BOOL        bInternalText = TRUE;
-    BOOL        bRunning = FALSE;
-    BOOL        bCancelled = FALSE;
+    BOOL        bIgnoreCases;
+    BOOL        bDownward;
+    BOOL        bInternalText;
+    BOOL        bRunning;
+    BOOL        bCancelled;
     MString     strText;
-    EntryBase  *pCurrent = NULL;
-    EntryBase  *pFound = NULL;
+    EntryBase  *pCurrent;
+    EntryBase  *pFound;
+    ITEM_SEARCH()
+    {
+        bIgnoreCases = TRUE;
+        bDownward = TRUE;
+        bInternalText = TRUE;
+        bRunning = FALSE;
+        bCancelled = FALSE;
+        pCurrent = NULL;
+        pFound = NULL;
+    }
 };
 
 class MItemSearchDlg : public MDialogBase

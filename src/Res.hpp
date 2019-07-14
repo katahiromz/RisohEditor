@@ -126,9 +126,9 @@ struct EntryBase
     EntryType       m_et;                   // entry type
     MIdOrString     m_type;                 // resource type
     MIdOrString     m_name;                 // resource name
-    WORD            m_lang = BAD_LANG;      // resource language
-    HTREEITEM       m_hItem = NULL;         // treeview item handle
-    bool            m_valid = true;         // "is it valid?" flag
+    WORD            m_lang;                 // resource language
+    HTREEITEM       m_hItem;                // treeview item handle
+    bool            m_valid;                // "is it valid?" flag
     data_type       m_data;                 // the item data
     MStringW        m_strLabel;             // the label string
 
