@@ -94,7 +94,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add check of recompilation upon cloning.
     - Fix the selection after cloning.
     - Correctly fail upon compilation error of string table and message table.
- * 2019.XX.YY ver.5.1.9
+ * 2019.07.14 ver.5.1.9
     - Supported UTF-16 source input/output.
 
 ## Contact Us
