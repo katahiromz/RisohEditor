@@ -139,6 +139,7 @@ Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignore
 Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\zlib1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\upx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\mcpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\cc1.exe"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\libgmp-10.dll"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0"; Flags: ignoreversion
