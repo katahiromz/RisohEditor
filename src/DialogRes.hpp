@@ -1027,7 +1027,23 @@ struct DialogRes
             else if ((value & DS_SHELLFONT) == DS_SETFONT)
                 value &= ~DS_SETFONT;
 
-            MStringW str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
+            MStringW str;
+            if ((value & WS_CAPTION) == WS_CAPTION)
+            {
+                str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value);
+            }
+            else if ((value & WS_CAPTION) == WS_BORDER)
+            {
+                str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value, WS_DLGFRAME);
+            }
+            else if ((value & WS_CAPTION) == WS_DLGFRAME)
+            {
+                str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value, WS_BORDER);
+            }
+            else
+            {
+                str = g_db.DumpBitField(L"DIALOG", L"PARENT.STYLE", value, WS_CAPTION);
+            }
             if (value)
             {
                 if (!str.empty())

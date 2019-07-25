@@ -99,6 +99,8 @@ Question 4. What is mcdx?
     - Correctly fail upon compilation error of string table and message table.
  * 2019.07.14 ver.5.1.9
     - Supported UTF-16 source input/output.
+ * 2019.XX.YY ver.5.2.0
+    - Correctly treat DIALOG STYLE values.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
