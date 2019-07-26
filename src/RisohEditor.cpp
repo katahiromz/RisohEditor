@@ -6438,6 +6438,11 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             // decompressed
             strToOpen = szTempFile;
         }
+        else
+        {
+            // consider as uncompressed
+            bCompressed = FALSE;
+        }
     }
 
     // load an executable files

@@ -101,6 +101,7 @@ Question 4. What is mcdx?
     - Supported UTF-16 source input/output.
  * 2019.XX.YY ver.5.2.0
     - Correctly treat DIALOG STYLE values.
+    - Fixed a bug that the application unexpectedly deletes the file when it opened a compressed EXE file without expanding.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
