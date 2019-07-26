@@ -7,6 +7,9 @@
     リソーエディタ (RisohEditor) は、片山博文MZによる
     Win32開発用のフリーのリソースエディタです。
 
+    RC/RES/EXE/DLLファイル中のリソースデータを読み書きできます。
+    UTF-16 リソースファイルもサポートしています。
+
     ダウンロード: https://katahiromz.web.fc2.com/re/ja
 
     Windows XP/2003/Vista/7/8.1/10とReactOSで動作します。
