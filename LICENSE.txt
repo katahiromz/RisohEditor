@@ -1,6 +1,6 @@
 RisohEditor is a resource editor for Win32 development,
 created by Katayama Hirofumi MZ (katahiromz). RisohEditor
-was released under the terms of GNU GENERAL PUBLIC LICENSE
+is released under the terms of GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007. The source code of RisohEditor is
 available at https://github.com/katahiromz/RisohEditor .
 
@@ -9,7 +9,7 @@ Copyright (C) 2017-2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.
 All rights reserved.
 ---------------------------------------------------
 RisohEditor contains the "windres" program. The "windres"
-program is a part of GNU Binutils, that was released under
+program is a part of GNU Binutils, that is released under
 the terms of GNU GENERAL PUBLIC LICENSE Version 3, 29 June
 2007. The source code of windres is available
 at http://sourceware.org/binutils/ .
@@ -22,7 +22,7 @@ This program has absolutely no warranty.
 ---------------------------------------------------
 RisohEditor contains the "cpp" and "cc1" programs.
 The "cpp" and "cc1" programs are parts of The GNU Compiler
-Collection. The GNU Compiler Collection was released under
+Collection. The GNU Compiler Collection is released under
 the terms of GNU GENERAL PUBLIC LICENSE Version 3, 29 June
 2007. The source code of The GNU Compiler Collection is
 available at http://gcc.gnu.org .
