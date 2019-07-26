@@ -9678,7 +9678,7 @@ void MMainWnd::OnClone(HWND hwnd)
 void MMainWnd::OnJumpToMatome(HWND hwnd)
 {
     static const WCHAR szURL[] =
-        L"https://katahiromz.web.fc2.com/re/matome/";
+        L"https://katahiromz.web.fc2.com/colony3rd/risoheditor";
 
     ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
 }
