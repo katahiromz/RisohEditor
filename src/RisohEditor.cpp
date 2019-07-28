@@ -352,12 +352,19 @@ DWORD AnalyseStyleDiff(
 // initialize the style list box
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 {
+    WCHAR szText[128];
+
     // clear all the items of listbox
     ListBox_ResetContent(hLst);
 
     for (auto& table_entry : table)
     {
-        ListBox_AddString(hLst, table_entry.name.c_str());
+        if (table_entry.name.find(L'|') == ConstantsDB::StringType::npos)
+        {
+            StringCbPrintfW(szText, sizeof(szText), L"%s (0x%08X)",
+                table_entry.name.c_str(), table_entry.value);
+            ListBox_AddString(hLst, szText);
+        }
     }
 }
 
