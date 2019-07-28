@@ -104,8 +104,9 @@ public:
         case IDTYPE_RESOURCE:
         case IDTYPE_RCDATA:
             return true;
+        default:
+            return false;
         }
-        return false;
     }
 
     IDTYPE_ IDTypeFromResType(const MIdOrString& type) const
