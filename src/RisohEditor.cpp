@@ -366,6 +366,8 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
             ListBox_AddString(hLst, szText);
         }
     }
+
+    ListBox_SetHorizontalExtent(hLst, 300);
 }
 
 //////////////////////////////////////////////////////////////////////////////
