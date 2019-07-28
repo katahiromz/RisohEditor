@@ -94,8 +94,8 @@ IDI_MARK ICON "res/Icon_108.ico"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 2, 0, 0
-PRODUCTVERSION  5, 2, 0, 0
+FILEVERSION     5, 2, 1, 0
+PRODUCTVERSION  5, 2, 1, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -105,10 +105,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.2.0\0"
+            VALUE "FileVersion", "5.2.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.2.0\0"
+            VALUE "ProductVersion", "5.2.1\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -117,10 +117,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.2.0\0"
+            VALUE "FileVersion", "5.2.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.2.0\0"
+            VALUE "ProductVersion", "5.2.1\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -129,10 +129,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.2.0\0"
+            VALUE "FileVersion", "5.2.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Roberto B. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.2.0\0"
+            VALUE "ProductVersion", "5.2.1\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -141,10 +141,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "5.2.0\0"
+            VALUE "FileVersion", "5.2.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.2.0\0"
+            VALUE "ProductVersion", "5.2.1\0"
         }
     }
     BLOCK "VarFileInfo"
