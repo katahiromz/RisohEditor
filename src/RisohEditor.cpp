@@ -1169,32 +1169,9 @@ WORD LangFromText(LPWSTR pszLang)
         if (strLang[0] == 0)
             break;  // it's empty. invalid
 
-        // maybe en_US, or jp_JP etc.
-        if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
-        {
-            lang = (WORD)nValue;    // found
-            break;
-        }
-
-        // maybe en-US, or jp-JP etc.
-        {
-            MStringW str = strLang;
-
-            // replace '-' with '_'
-            auto i = str.find(L'-');
-            if (i != MString::npos)
-                str[i] = L'_';
-
-            // maybe en_US, or jp_JP etc.
-            if (INT nValue = g_db.GetValueI(L"LANGUAGES", str.c_str()))
-            {
-                lang = (WORD)nValue;    // found
-                break;
-            }
-        }
-
         // is it American English?
-        if (lstrcmpiW(pszLang, L"English") == 0 ||
+        if (lstrcmpiW(pszLang, L"en") == 0 ||
+            lstrcmpiW(pszLang, L"English") == 0 ||
             lstrcmpiW(pszLang, L"America") == 0 ||
             lstrcmpiW(pszLang, L"American") == 0 ||
             lstrcmpiW(pszLang, L"United States") == 0 ||
@@ -1286,6 +1263,30 @@ WORD LangFromText(LPWSTR pszLang)
             // Spanish
             lang = MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH);
             break;
+        }
+
+        // maybe en_US, or jp_JP etc.
+        if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
+        {
+            lang = (WORD)nValue;    // found
+            break;
+        }
+
+        // maybe en-US, or jp-JP etc.
+        {
+            MStringW str = strLang;
+
+            // replace '-' with '_'
+            auto i = str.find(L'-');
+            if (i != MString::npos)
+                str[i] = L'_';
+
+            // maybe en_US, or jp_JP etc.
+            if (INT nValue = g_db.GetValueI(L"LANGUAGES", str.c_str()))
+            {
+                lang = (WORD)nValue;    // found
+                break;
+            }
         }
 
         // is it numeric?

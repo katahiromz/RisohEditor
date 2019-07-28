@@ -105,6 +105,7 @@ Question 4. What is mcdx?
  * 2019.XX.YY ver.5.2.1
     - Correctly treat WS_POPUPWINDOW | WS_CAPTION values (WS_POPUPWINDOW | WS_BORDER must be WS_POPUPWINDOW | WS_CAPTION).
     - Improved style list boxes.
+    - "English (United States)" will be selected if you entered "En" for language name.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
