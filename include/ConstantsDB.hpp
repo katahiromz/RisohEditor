@@ -537,6 +537,8 @@ public:
                 mask = ParseBitField(category, mask_str);
             }
 
+            mstr_replace_all(name, L"|", L" | ");
+
             EntryType entry(name, value, mask);
             m_map[category].push_back(entry);
         }

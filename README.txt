@@ -102,6 +102,8 @@ Question 4. What is mcdx?
  * 2019.07.26 ver.5.2.0
     - Correctly treat DIALOG STYLE values (WS_CAPTION is default value of DIALOG STYLE).
     - Fixed a bug that the application unexpectedly deletes the file when it opened a compressed EXE file without expanding.
+ * 2019.XX.YY ver.5.2.1
+    - Correctly treat WS_POPUPWINDOW | WS_CAPTION values (WS_POPUPWINDOW | WS_BORDER must be WS_POPUPWINDOW | WS_CAPTION).
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
