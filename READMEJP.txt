@@ -429,6 +429,7 @@
         WS_POPUPWINDOW | WS_CAPTION を正しく扱う (WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない)。
         スタイルリストボックスを改良。
         言語名に "En" と入力すると「英語 (アメリカ合衆国)」が選択されるように。
+        定数の問い合わせ機能を追加。
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]

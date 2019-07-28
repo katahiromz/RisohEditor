@@ -927,6 +927,27 @@ BOOL CheckCommand(MString strCommand)
     return g_db.HasResID(strCommand);   // is it resource ID name?
 }
 
+void InitConstantComboBox(HWND hCmb)
+{
+    auto table = g_db.GetWholeTable();
+
+    // add the resource IDs
+    for (auto& table_entry : table)
+    {
+        ComboBox_AddString(hCmb, table_entry.name.c_str());
+    }
+
+    for (auto& pair : g_settings.id_map)
+    {
+        MAnsiToWide wide(CP_ACP, pair.first.c_str());
+
+        if (ComboBox_FindStringExact(hCmb, -1, wide.c_str()) != CB_ERR)
+            continue;
+
+        ComboBox_AddString(hCmb, wide.c_str());
+    }
+}
+
 // initialize the resource string ID combobox
 void InitStringComboBox(HWND hCmb, MString strString)
 {
@@ -2205,6 +2226,7 @@ protected:
     void OnExtractBang(HWND hwnd);
     void OnJumpToMatome(HWND hwnd);
     void OnEncoding(HWND hwnd);
+    void OnQueryConstant(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -9708,6 +9730,16 @@ void MMainWnd::OnEncoding(HWND hwnd)
     }
 }
 
+void MMainWnd::OnQueryConstant(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    MConstantDlg dialog;
+    dialog.DialogBoxDx(hwnd);
+}
+
 void MMainWnd::OnExtractBang(HWND hwnd)
 {
     auto entry = g_res.get_entry();
@@ -10220,6 +10252,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_ENCODING:
         OnEncoding(hwnd);
+        break;
+    case ID_QUERYCONSTANT:
+        OnQueryConstant(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

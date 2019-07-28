@@ -219,6 +219,33 @@ public:
         return table1;
     }
 
+    TableType GetWholeTable() const
+    {
+        TableType table;
+        for (auto& pair : m_map)
+        {
+            if (pair.first.find(L'.') != StringType::npos)
+                continue;
+
+            table.insert(table.end(), pair.second.begin(), pair.second.end());
+        }
+        return table;
+    }
+
+    BOOL GetValueOfName(NameType name, ValueType& value) const
+    {
+        TableType table = GetWholeTable();
+        for (const auto& table_entry : table)
+        {
+            if (table_entry.name == name)
+            {
+                value = table_entry.value;
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
     ValueType GetResIDValue(NameType name) const
     {
         ValueType value = GetValue(L"RESOURCE.ID", name);

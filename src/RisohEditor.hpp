@@ -101,6 +101,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MOleCtrl.hpp"
 #include "MDlgInitDlg.hpp"
 #include "MEncodingDlg.hpp"
+#include "MConstantDlg.hpp"
 
 #include "MString.hpp"
 #include "MByteStream.hpp"

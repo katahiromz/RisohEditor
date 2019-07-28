@@ -69,6 +69,7 @@
 #define IDD_ENCODING                        158
 #define IDD_ADDENC                          159
 #define IDD_MODIFYENC                       160
+#define IDD_CONSTANT                        161
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -440,6 +441,7 @@
 #define ID_EXTRACTBANG                      245
 #define ID_JUMPTOMATOME                     246
 #define ID_ENCODING                         247
+#define ID_QUERYCONSTANT                    248
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -450,7 +452,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    106
-        #define _APS_NEXT_COMMAND_VALUE     248
+        #define _APS_NEXT_COMMAND_VALUE     249
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif
