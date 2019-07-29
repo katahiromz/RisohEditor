@@ -7101,8 +7101,8 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
         old_type = type;
         type = entry->m_type;
 
-        // ignore the string or message tables
-        if (type == RT_STRING || type == RT_MESSAGETABLE)
+        // ignore the string or message tables or font dir
+        if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_FONTDIR)
         {
             continue;
         }
@@ -7253,8 +7253,8 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
         old_type = type;
         type = entry->m_type;
 
-        // ignore the string or message tables
-        if (type == RT_STRING || type == RT_MESSAGETABLE)
+        // ignore the string or message tables or font dir 
+        if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_FONTDIR)
         {
             continue;
         }
@@ -8102,7 +8102,7 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
-            return g_res.extract_bin(filename.c_str(), entry);
+            return TRUE;
         }
         if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
@@ -8293,8 +8293,11 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         // extract each data if necessary
         for (auto e : found)
         {
-            if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE)
+            if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE ||
+                e->m_type == RT_FONTDIR)
+            {
                 continue;
+            }
             if (!DoExtract(e, TRUE))
                 return FALSE;
         }

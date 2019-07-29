@@ -108,6 +108,7 @@ public:
     MString DoRCData(const EntryBase& entry);
     MString DoUnknown(const EntryBase& entry);
     MString DoFont(const EntryBase& entry);
+    MString DoFontDir(const EntryBase& entry);
     MString DoEncodedText(const EntryBase& entry, const MStringW& enc);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
@@ -154,15 +155,45 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         }
         else if (wType == (WORD)(UINT_PTR)RT_FONTDIR)
         {
-            ret += L"FontDir_";
-            ret += DumpEscapedName(entry.m_name);
-            ret += L".bin";
+            // No output file
         }
         else if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
-            ret += L"Font_";
-            ret += DumpEscapedName(entry.m_name);
-            ret += L".fon";
+            if (entry.m_data.size() < 4)
+            {
+                // No output file
+            }
+            else
+            {
+                if (memcmp(&entry.m_data[0], "OTTO", 4) == 0)
+                {
+                    // OpenType
+                    ret += L"Font_";
+                    ret += DumpEscapedName(entry.m_name);
+                    ret += L".otf";
+                }
+                else if (memcmp(&entry.m_data[0], "\x00\x01\x00\x00", 4) == 0)
+                {
+                    // TrueType
+                    ret += L"Font_";
+                    ret += DumpEscapedName(entry.m_name);
+                    ret += L".ttf";
+                }
+                else if (memcmp(&entry.m_data[0], "ttcf", 4) == 0)
+                {
+                    // TrueType Collection
+                    ret += L"Font_";
+                    ret += DumpEscapedName(entry.m_name);
+                    ret += L".ttc";
+                }
+                else
+                {
+                    // otherwise
+                    ret += L"Font_";
+                    ret += DumpEscapedName(entry.m_name);
+                    ret += L".fon";
+                }
+            }
         }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
@@ -855,7 +886,7 @@ ResToText::DumpEntry(const EntryBase& entry)
         case 6: // RT_STRING
             return DoString(entry);
         case 7: // RT_FONTDIR
-            break;
+            return DoFontDir(entry);
         case 8: // RT_FONT
             return DoFont(entry);
         case 9: // RT_ACCELERATOR
@@ -1116,12 +1147,16 @@ inline MString ResToText::DoFont(const EntryBase& entry)
     str += GetLanguageStatement(entry.m_lang);
 
     str += DumpName(entry.m_type, entry.m_name);
-    str += L" ";
-    str += entry.m_type.str();
-    str += L" \"";
+    str += L" FONT \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
 
+    return str;
+}
+
+inline MString ResToText::DoFontDir(const EntryBase& entry)
+{
+    MString str;
     return str;
 }
 
