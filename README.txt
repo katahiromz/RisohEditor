@@ -107,6 +107,8 @@ Question 4. What is mcdx?
     - Add "Query Constant" feature.
     - Fix "Collapse All".
     - Correctly treat WS_POPUPWINDOW | WS_CAPTION values (WS_POPUPWINDOW | WS_BORDER must be WS_POPUPWINDOW | WS_CAPTION).
+    - RT_FONT support.
+    - Improved "Add Resource" dialog.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

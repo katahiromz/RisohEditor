@@ -107,6 +107,7 @@ public:
     MString DoDlgInit(const EntryBase& entry);
     MString DoRCData(const EntryBase& entry);
     MString DoUnknown(const EntryBase& entry);
+    MString DoFont(const EntryBase& entry);
     MString DoEncodedText(const EntryBase& entry, const MStringW& enc);
 
     MString DumpName(const MIdOrString& type, const MIdOrString& name);
@@ -162,6 +163,10 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += L"Font_";
             ret += DumpEscapedName(entry.m_name);
             ret += L".bin";
+        }
+        else if (wType == (WORD)(UINT_PTR)RT_FONT)
+        {
+            // No output file
         }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
@@ -228,6 +233,12 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += L"Manifest_";
             ret += DumpEscapedName(entry.m_name);
             ret += L".manifest";
+        }
+        else if (wType == (WORD)(UINT_PTR)RT_FONT)
+        {
+            ret += L"Font_";
+            ret += DumpEscapedName(entry.m_name);
+            ret += L".fon";
         }
         else
         {
@@ -850,7 +861,7 @@ ResToText::DumpEntry(const EntryBase& entry)
         case 7: // RT_FONTDIR
             break;
         case 8: // RT_FONT
-            break;
+            return DoFont(entry);
         case 9: // RT_ACCELERATOR
             return DoAccel(entry);
         case 10: // RT_RCDATA
@@ -1077,6 +1088,33 @@ inline MString ResToText::DoUnknown(const EntryBase& entry)
         str += LoadStringDx(IDS_UNKNOWNFORMAT);
         str += L"\r\n";
     }
+
+    // LANGUAGE ..., ...
+    str += GetLanguageStatement(entry.m_lang);
+
+    str += DumpName(entry.m_type, entry.m_name);
+    str += L" ";
+    str += entry.m_type.str();
+    str += L" \"";
+    str += GetEntryFileName(entry);
+    str += L"\"\r\n\r\n";
+
+    return str;
+}
+
+inline MString ResToText::DoFont(const EntryBase& entry)
+{
+    MStringW GetResTypeEncoding(const MIdOrString& type);
+
+    MStringW enc = GetResTypeEncoding(entry.m_type);
+    if (enc.size())
+    {
+        return DoEncodedText(entry, enc);
+    }
+
+    MString str;
+    if (entry.m_et != ET_LANG)
+        return str;
 
     // LANGUAGE ..., ...
     str += GetLanguageStatement(entry.m_lang);

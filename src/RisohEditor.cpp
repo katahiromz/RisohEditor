@@ -1652,8 +1652,16 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
         }
         else
         {
-            // a string type name
-            type = szType;
+            WORD nRT_ = (WORD)g_db.GetValue(L"RESOURCE", str);
+            if (nRT_ != 0)
+            {
+                type = nRT_;
+            }
+            else
+            {
+                // a string type name
+                type = szType;
+            }
         }
     }
 
