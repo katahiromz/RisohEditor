@@ -9596,9 +9596,6 @@ void MMainWnd::OnExpandAll(HWND hwnd)
 // unexpand all the tree control items
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
-    // get the selected entry
-    auto entry = g_res.get_entry();
-
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
@@ -9606,8 +9603,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 
-    // select the entry
-    SelectTV(entry, FALSE);
+    SelectTV(NULL, FALSE);
 }
 
 void MMainWnd::OnSrcEditSelect(HWND hwnd)
