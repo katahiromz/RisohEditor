@@ -162,7 +162,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         {
             ret += L"Font_";
             ret += DumpEscapedName(entry.m_name);
-            ret += L".bin";
+            ret += L".fon";
         }
         else if (wType == (WORD)(UINT_PTR)RT_FONT)
         {
