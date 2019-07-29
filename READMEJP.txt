@@ -429,7 +429,7 @@
         言語名に "En" と入力すると「英語 (アメリカ合衆国)」が選択されるように。
         定数の問い合わせ機能を追加。
         「すべて折りたたむ」を修正。
-        WS_POPUPWINDOW | WS_CAPTION を正しく扱う (WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない)。
+        WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない。
         RT_FONT サポート。
         「リソースの追加」ダイアログを改良。
 
