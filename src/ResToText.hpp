@@ -164,10 +164,6 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += DumpEscapedName(entry.m_name);
             ret += L".fon";
         }
-        else if (wType == (WORD)(UINT_PTR)RT_FONT)
-        {
-            // No output file
-        }
         else if (wType == (WORD)(UINT_PTR)RT_ACCELERATOR)
         {
             // No output file
