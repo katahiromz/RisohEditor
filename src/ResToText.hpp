@@ -1157,6 +1157,63 @@ inline MString ResToText::DoFont(const EntryBase& entry)
 inline MString ResToText::DoFontDir(const EntryBase& entry)
 {
     MString str;
+
+    if (!m_bHumanReadable)
+    {
+        return str;
+    }
+
+    size_t size = entry.m_data.size();
+    const BYTE *pb = (const BYTE *)&entry.m_data[0];
+
+    if (size <= sizeof(WORD))
+    {
+        return str;
+    }
+
+    WORD wCount = *(const WORD *)pb;
+
+    if (size < sizeof(WORD) + 165 * wCount)
+    {
+        return str;
+    }
+
+    TCHAR szText[64];
+    StringCbPrintf(szText, sizeof(szText), TEXT("Count: %d\r\n---\r\n"), wCount);
+    str += szText;
+
+    pb += 2;
+    for (WORD i = 0; i < wCount; ++i)
+    {
+        StringCbPrintf(szText, sizeof(szText), TEXT("Font #%u: Ordinal %u ("),
+                       i, *(const WORD *)pb);
+        str += szText;
+
+        if (memcmp(&pb[2], "OTTO", 4) == 0)
+        {
+            // OpenType
+            str += TEXT("OpenType");
+        }
+        else if (memcmp(&pb[2], "\x00\x01\x00\x00", 4) == 0)
+        {
+            // TrueType
+            str += TEXT("TrueType");
+        }
+        else if (memcmp(&pb[2], "ttcf", 4) == 0)
+        {
+            // TrueType Collection
+            str += TEXT("TrueType Collection");
+        }
+        else
+        {
+            // otherwise
+            str += TEXT("WinFNT");
+        }
+
+        str += TEXT(")\r\n");
+        pb += 165;
+    }
+
     return str;
 }
 
