@@ -426,10 +426,10 @@
         圧縮されたEXEファイルを開くときに、展開せずに開いたときにファイルが消えてしまうバグを修正。
         まとめサイトのURLを更新。
     2019.XX.YY ver.5.2.1
-        WS_POPUPWINDOW | WS_CAPTION を正しく扱う (WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない)。
         言語名に "En" と入力すると「英語 (アメリカ合衆国)」が選択されるように。
         定数の問い合わせ機能を追加。
         「すべて折りたたむ」を修正。
+        WS_POPUPWINDOW | WS_CAPTION を正しく扱う (WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない)。
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]
