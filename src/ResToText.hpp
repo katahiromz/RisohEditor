@@ -1173,14 +1173,16 @@ inline MString ResToText::DoFontDir(const EntryBase& entry)
 
     WORD wCount = *(const WORD *)pb;
 
-    if (size < sizeof(WORD) + 165 * wCount)
-    {
-        return str;
-    }
-
     TCHAR szText[64];
     StringCbPrintf(szText, sizeof(szText), TEXT("Count: %d\r\n---\r\n"), wCount);
     str += szText;
+
+#define FONTDIRENTRYSIZE 165
+    if (size < sizeof(WORD) + FONTDIRENTRYSIZE * wCount)
+    {
+        // NOTE: I think windres RT_FONTDIR is broken. Just ignore it.
+        return str;
+    }
 
     pb += 2;
     for (WORD i = 0; i < wCount; ++i)
@@ -1211,10 +1213,11 @@ inline MString ResToText::DoFontDir(const EntryBase& entry)
         }
 
         str += TEXT(")\r\n");
-        pb += 165;
+        pb += FONTDIRENTRYSIZE;
     }
 
     return str;
+#undef FONTDIRENTRYSIZE
 }
 
 inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& name)
