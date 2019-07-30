@@ -106,7 +106,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add "Query Constant" feature.
     - Fix "Collapse All".
     - `WS_POPUPWINDOW | WS_BORDER` must be `WS_POPUPWINDOW | WS_CAPTION`.
-    - `RT_FONT` and `RT_FONTDIR` support.
+    - `RT_FONT` support.
     - Improved "Add Resource" dialog.
 
 ## Contact Us
