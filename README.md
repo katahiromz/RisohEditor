@@ -101,7 +101,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.07.26 ver.5.2.0
     - Correctly treat `DIALOG STYLE` values (`WS_CAPTION` is default value of `DIALOG STYLE`).
     - Fixed a bug that the application unexpectedly deletes the file when it opened a compressed EXE file without expanding.
- * 2019.XX.YY ver.5.2.1
+ * 2019.08.04 ver.5.2.1
     - "English (United States)" will be selected if you entered `"En"` for language name.
     - Add "Query Constant" feature.
     - Fix "Collapse All".
