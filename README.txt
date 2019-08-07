@@ -109,6 +109,8 @@ Question 4. What is mcdx?
     - WS_POPUPWINDOW | WS_BORDER must be WS_POPUPWINDOW | WS_CAPTION.
     - RT_FONT support.
     - Improved "Add Resource" dialog.
+ * 2019.XX.YY ver.5.2.2
+    - Update Italian translation.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -108,6 +108,8 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - `WS_POPUPWINDOW | WS_BORDER` must be `WS_POPUPWINDOW | WS_CAPTION`.
     - `RT_FONT` support.
     - Improved "Add Resource" dialog.
+ * 2019.XX.YY ver.5.2.2
+    - Update Italian translation.
 
 ## Contact Us
 
