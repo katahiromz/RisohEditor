@@ -92,7 +92,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Cerca &elemento...\tCtrl+M", ID_ITEMSEARCH
         MENUITEM SEPARATOR
-        MENUITEM "Costante di &query...", ID_QUERYCONSTANT
+        MENUITEM "Costante &query...", ID_QUERYCONSTANT
     }
     POPUP "&Visualizza"
     {
@@ -206,7 +206,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Aggiorna", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "&Proprieta controllo...", ID_CTRLPROP
+        MENUITEM "&Proprietà controllo...", ID_CTRLPROP
         MENUITEM "Pr&oprietà finestra...", ID_DLGPROP
     }
     POPUP "Popup #2"
@@ -222,7 +222,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Copia &nome", ID_COPYRESIDNAME
         MENUITEM "Copia &valore", ID_COPYRESIDVALUE
-        MENUITEM "Copia &definziione\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "Copia &definizione\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
         MENUITEM "&Elimina ID\tCanc", ID_DELETERESID
         MENUITEM SEPARATOR
@@ -372,7 +372,7 @@ CAPTION "Aggiungi risorsa"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Tipo riorsa:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Tipo risorsa:", IDC_STATIC, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Nome risorsa:", IDC_STATIC, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -431,7 +431,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ADDKEY DIALOG 0, 0, 190, 120
-CAPTION "Aggiunghi chiave"
+CAPTION "Aggiungi chiave"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
@@ -473,7 +473,7 @@ CAPTION "Modifica acceleratori"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "E&lenco chiave:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "E&lenco chiavi:", IDC_STATIC, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 210, 120
     PUSHBUTTON "&Aggiungi...", psh1, 220, 20, 60, 14
     PUSHBUTTON "&Modifica...", psh2, 220, 40, 60, 14
@@ -591,7 +591,7 @@ CAPTION "Modifica risorsa menu"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Ri&sorca menu:", IDC_STATIC, 5, 7, 85, 12
+    LTEXT "Ri&sorsa menu:", IDC_STATIC, 5, 7, 85, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Aggiungi...", psh1, 95, 3, 50, 14
     PUSHBUTTON "&Modifica...", psh2, 150, 3, 50, 14
@@ -600,7 +600,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Giù", psh5, 50, 140, 40, 14
     PUSHBUTTON "&Sinistra", psh6, 95, 140, 40, 14
     PUSHBUTTON "&Destra", psh7, 140, 140, 41, 14
-    AUTOCHECKBOX "Es&tese", chx1, 260, 3, 60, 14
+    AUTOCHECKBOX "Es&tesa", chx1, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 260, 140, 60, 14
 }
@@ -690,7 +690,7 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 130, 305, 60, 14
-    PUSHBUTTON "&Data...", psh1, 5, 290, 45, 14
+    PUSHBUTTON "&Dati...", psh1, 5, 290, 45, 14
     PUSHBUTTON "Elenco str&inghe..", psh3, 5, 305, 75, 14
 }
 
@@ -781,22 +781,22 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Sempre istru&zione CONTROL", chx1, 5, 5, 175, 15
     AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 175, 14
     AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 175, 15
-    AUTOCHECKBOX "Carica automaticamnte '&resource.h' vicino", chx4, 5, 65, 175, 14
-    AUTOCHECKBOX "Visualizza automatiocamente e&lenco ID risorse", chx5, 5, 85, 175, 15
+    AUTOCHECKBOX "Carica automaticamente '&resource.h' vicino", chx4, 5, 65, 175, 14
+    AUTOCHECKBOX "Visualizza automaticamente e&lenco ID risorse", chx5, 5, 85, 175, 15
     AUTOCHECKBOX "Visualizza &punti nella finestra modifica", chx6, 5, 105, 175, 14
     RTEXT "Altezza combo&box:", IDC_STATIC, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     AUTOCHECKBOX "&A capo automatico", chx9, 135, 125, 95, 15
     AUTOCHECKBOX "Chiedi per aggiornamento '&resource.h'", chx7, 5, 145, 175, 14
-    AUTOCHECKBOX "Comprimi EXE con &UPX al salvtaggio", chx8, 5, 165, 175, 15
+    AUTOCHECKBOX "Comprimi EXE con &UPX al salvataggio", chx8, 5, 165, 175, 15
     PUSHBUTTON "&Font...", psh4, 5, 185, 225, 14
     PUSHBUTTON "&Macro predefinite...", psh1, 5, 204, 110, 15
     PUSHBUTTON "Impos&ta pecorsi...", psh2, 120, 204, 110, 15
     RTEXT "Nome controlli &OLE:", IDC_STATIC, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Crea &backup", chx10, 5, 245, 67, 15, BS_LEFT | NOT WS_TABSTOP
-    RTEXT "Suffiso backup:", IDC_STATIC, 78, 247, 63, 14
+    RTEXT "Suffisso backup:", IDC_STATIC, 78, 247, 63, 14
     COMBOBOX cmb2, 145, 245, 50, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 125, 265, 50, 14
     PUSHBUTTON "Annulla", IDCANCEL, 180, 265, 50, 14
@@ -848,7 +848,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CLONEINNEWNAME DIALOG 0, 0, 215, 75
-CAPTION "Clona in un nuovo nome"
+CAPTION "Clona con un nuovo nome"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
@@ -883,8 +883,8 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Stringa da cercare:", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14
-    AUTOCHECKBOX "Controlla &maisucolo/minuscolo", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "testo &interno", chx2, 5, 45, 120, 14
+    AUTOCHECKBOX "Controlla &maiuscolo/minuscolo", chx1, 5, 25, 119, 14
+    AUTOCHECKBOX "Testo &interno", chx2, 5, 45, 120, 14
     GROUPBOX "Direzione", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "A&vanti", rad1, 15, 80, 60, 14
     AUTORADIOBUTTON "In&dietro", rad2, 90, 80, 60, 14
@@ -935,7 +935,7 @@ CAPTION "Tabella messaggi"
 STYLE WS_POPUPWINDOW | WS_DLGFRAME | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Elementi messggi:", IDC_STATIC, 5, 7, 80, 12
+    LTEXT "&Elementi messaggi:", IDC_STATIC, 5, 7, 80, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Aggiungi...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Modifica...", psh2, 195, 3, 60, 14
@@ -1012,7 +1012,7 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "Dati &binari:", IDC_STATIC, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    LTEXT "Puoi impostare i dati controllo con valori interi a 16 bit sperati da spazio.", IDC_STATIC, 5, 80, 180, 25
+    LTEXT "Puoi impostare i dati controllo con valori interi a 16 bit separati da spazio.", IDC_STATIC, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 125, 110, 60, 14
 }
@@ -1051,11 +1051,11 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Salva i file esterni nella cartella &res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
-    AUTOCHECKBOX "Crea suffisso &backup file backup:", chx4, 5, 120, 123, 14
+    AUTOCHECKBOX "Crea file &backup con suffisso:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Commenti ridondanti output", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Includi le istruzioni  ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "File RC di uscita come &UTF-16 (Non consigliato)", chx7, 5, 180, 195, 14
+    AUTOCHECKBOX "Visualizza &commenti ridondanti", chx5, 5, 140, 195, 14
+    AUTOCHECKBOX "Includi istruzioni  ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    AUTOCHECKBOX "File RC destinazione in &UTF-16 (non consigliato)", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 140, 205, 60, 14
 }
@@ -1148,11 +1148,11 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separa file risorse per &lingua", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Salva i file esterni nella cartella &res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
-    AUTOCHECKBOX "Crea suffiso &backup per file backup:", chx4, 5, 120, 123, 14
+    AUTOCHECKBOX "Crea file &backup con suffisso:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Commenti ridondanti output", chx5, 5, 140, 195, 14
     AUTOCHECKBOX "Includi le istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "File RC di uscita come &UTF-16 (Non consigliato)", chx7, 5, 180, 195, 14
+    AUTOCHECKBOX "File RC destinazione in &UTF-16 (non consigliato)", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 140, 205, 60, 14
 }
@@ -1198,11 +1198,11 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CONSTANT DIALOG 0, 0, 205, 75
-CAPTION "Costante di query"
+CAPTION "Costante query"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_DLGFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Nome Costante:", IDC_STATIC, 5, 7, 80, 12
+    LTEXT "&Nome costante:", IDC_STATIC, 5, 7, 80, 12
     COMBOBOX cmb1, 94, 7, 105, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Valore costante:", IDC_STATIC, 5, 32, 80, 12
     EDITTEXT edt2, 95, 30, 50, 14, ES_READONLY
@@ -1250,7 +1250,7 @@ STRINGTABLE
     IDS_ALLFILES, "Tutti i file (*.*)|*.*|"
     IDS_ENTERTYPE, "Inserisci tipo risorsa."
     IDS_ENTERNAME, "Inserisci nome risorsa."
-    IDS_ENTERLANG, "Insersici lingua risorsa."
+    IDS_ENTERLANG, "Inserisci lingua risorsa."
     IDS_FILENOTFOUND, "File non trovato."
     IDS_CANNOTREPLACE, "Impossibile sostituire."
     IDS_EXERESFILTER, "File eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File RC (*.rc)|*.rc|File risorse binarie (*.res)|*.res|Tutti i file (*.*)|*.*|"
@@ -1259,8 +1259,8 @@ STRINGTABLE
     IDS_ADDICON, "Aggiungi icona"
     IDS_ICOFILTER, "File icone (*.ico)|*.ico|Tutti i file (*.*)|*.*|"
     IDS_REPLACEICO, "Sostitusci icona"
-    IDS_CANTREPLACEICO, "Impossibile sostuire l'icona."
-    IDS_EXISTSOVERWRITE, "L'elemento esiste già.\r\nVuoi sovrascrivere?"
+    IDS_CANTREPLACEICO, "Impossibile sostituire l'icona."
+    IDS_EXISTSOVERWRITE, "L'elemento esiste già.\r\nVuoi sovrascriverlo?"
     IDS_OPEN, "Apri"
     IDS_CANNOTOPEN, "Impossibile aprire il file."
     IDS_ADDBMP, "Aggiungi bitmap"
@@ -1292,22 +1292,22 @@ STRINGTABLE
     IDS_GUIEDIT, "Modifica via GUI (Ctrl+G)"
     IDS_CANNOTSTARTUP, "Impossibile avviare compilatore risorse."
     IDS_RESMISMATCH, "Mancata corrispondenza risorsa."
-    IDS_SAMPLETEXT, "Qeusto è un esempio."
+    IDS_SAMPLETEXT, "Questo è un esempio."
     IDS_ALREADYEXISTS, "Esiste già."
     IDS_KEY, "Chiave"
     IDS_FLAGS, "Flag"
     IDS_COMMANDID, "ID comando"
     IDS_INVALIDKEY, "Chaive non valida."
-    IDS_COMPILEERROR, "Compèilazione fallita."
+    IDS_COMPILEERROR, "Compilazione fallita."
     IDS_STRINGID, "ID stringa"
-    IDS_STRINGVALUE, "Valore string"
+    IDS_STRINGVALUE, "Valore stringa"
     IDS_CAPTION, "Titolo"
     IDS_HELPID, "ID guida"
     IDS_INDENT, "» "
     IDS_DATAISEMPTY, "Dati vuoti."
     IDS_TEST, "Effettua test"
     IDS_SEPARATOR, "---"
-    IDS_COMPILENOW, "I dati sono stati modificati.\r\nvuoi compilare ora?"
+    IDS_COMPILENOW, "I dati sono stati modificati.\r\nVuoi compilare ora?"
     IDS_RADWINDOW, "Modifica finestra dialogo"
     IDS_ENTERCLASS, "Inserisci un nome classe fienstra valido."
     IDS_TEXTEDIT, "Modifica testo (Ctrl+T)"
@@ -1333,17 +1333,17 @@ STRINGTABLE
     IDS_NAME, "Nome"
     IDS_VALUE, "Valore"
     IDS_NOSUCHID, "Nessun ID trovato."
-    IDS_IMAGEINFO, "Larghezza %u, altezza %u, Bit x pixel %u\r\n"
+    IDS_IMAGEINFO, "Larghezza %u, altezza %u, bit x pixel %u\r\n"
     IDS_ENTERINT, "Inserisci un valote intero valido."
     IDS_ENTERTEXT, "Inserisci un testo valido."
     IDS_ENTERID, "Inserisci un ID valido."
     IDS_ADDNEXTIDS, "Aggiungi i seguenti ID a 'resource.h':\r\n\r\n"
     IDS_DELETENEXTIDS, "Elimina i seguenti ID da 'resource.h':\r\n\r\n"
     IDS_NOCHANGE, "Nessuna modifica ID risorsa."
-    IDS_DLGFAIL, "Creazioen finestra dialogo RAD fallita."
+    IDS_DLGFAIL, "Creazione finestra dialogo RAD fallita."
     IDS_LOADWCLIB, "Carica una libreria classi finestra"
     IDS_AVIMOVIE, "(Filmato AVI)\r\n"
-    IDS_ADDDIALOG, "Aggiungi fienstra dialogo"
+    IDS_ADDDIALOG, "Aggiungi finestra dialogo"
     IDS_ADDMENU, "Aggiungi menu"
     IDS_ADDVERINFO, "Aggiungi InfoVersione"
     IDS_ADDCURSOR, "Aggiungi cursore"
@@ -1351,12 +1351,12 @@ STRINGTABLE
     IDS_INVALIDDATA, "(dati non validi)\r\n"
     IDS_UPDATERESH, "Vuoi aggiornare 'resource.h'?"
     IDS_CANTWRITERESH, "Impossibile scrivere 'resource.h'."
-    IDS_SAVERESH, "Salvafile 'resource.h'"
+    IDS_SAVERESH, "Salva file 'resource.h'"
     IDS_DLLFILTER, "File DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tutti i file (*.*)|*.*|"
     IDS_EXERESRCFILTER, "File caricabili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|File eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File risorse binarie (*.res)|*.res|File risorse (*.rc)|*.rc|Tutti i file (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND, "Impossibile provare la finestra di dialogo poichè è una finstra figlia."
+    IDS_CANTTESTCHILDWND, "Impossibile provare la finestra di dialogo poichè è una finestra figlia."
     IDS_CANTTESTCLASSDLG, "Impossibile provare la finestra di dialogo poichè è una classe."
-    IDS_FILEISUPXED, "File\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
+    IDS_FILEISUPXED, "Il file\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
     IDS_CANTUPXEXTRACT, "Estrazione con UPX fallita."
     IDS_CANTSAVEUPXED, "Impossibile salvare il file poichè è compresso con UPX."
     IDS_MESSAGEID, "ID messaggio"
@@ -1364,14 +1364,14 @@ STRINGTABLE
     IDS_RCFILTER, "File RC (*.rc)|*.rc|"
     IDS_EXPORT, "Esporta"
     IDS_CANTEXPORT, "Esportazione fallita."
-    IDS_MUSTBEEMPTYDIR, "Se c'è un qualsiasi file esterno, la destinazioene esportazione deve essere una cartella vuota."
+    IDS_MUSTBEEMPTYDIR, "Se c'è un qualsiasi file esterno, la destinazione esportazione deve essere una cartella vuota."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
     IDS_MACRONAME, "Name macro"
     IDS_MACROVALUE, "Valore macro"
     IDS_OPTIONAL, "(Opzionale)"
     IDS_ADDINCLUDE, "Aggiungi cartella Include"
-    IDS_EDITINCLUDE, "Modifica acrtella Include"
+    IDS_EDITINCLUDE, "Modifica cartella Include"
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH, "Percorso non valido."
@@ -1387,7 +1387,7 @@ STRINGTABLE
     IDS_STRING, "Stringa"
     IDS_DATAISINVALID, "Il dato non è valido."
     IDS_DLGINIT1, "Puoi specificare l'inizializzazione dei combobox e box elenco impostando i dati inizializzazione nei dati risorsa di RT_DLGINIT con lo stesso nome della risorsa finestra di dialogo."
-    IDS_DLGINIT2, "Quando arriva il messaggio WM_INITDIALOG, l'applicazione può inizializzare la fienstra di dialogo chiamando la funzione 'ExecuteDlgInitDx' del file allegato 'DlgInit/DlgInit.h'.\r\n\r\n"
+    IDS_DLGINIT2, "Quando arriva il messaggio WM_INITDIALOG, l'applicazione può inizializzare la finestra di dialogo chiamando la funzione 'ExecuteDlgInitDx' del file allegato 'DlgInit/DlgInit.h'.\r\n\r\n"
     IDS_DLGINIT3, "Specifica per RT_DLGINIT un elenco di stringhe carattere separate da un ritorno a capo."
     IDS_SAMELANG, "È la stessa lingua."
     IDS_SAMENAME, "È lo stesso nome risorsa."
@@ -1410,13 +1410,13 @@ STRINGTABLE
     IDS_TOOL_PLUS, "Aggiungi elemento..."
     IDS_TOOL_MINUS, "Elimina elemento"
     IDS_TOOL_CHANGE, "Modifica nome/lingua"
-    IDS_TOOL_CLONE, "Clona con un altro nom/lingua"
+    IDS_TOOL_CLONE, "Clona con un altro nome/lingua"
     IDS_TOOL_RECOMPILE, "Ricompila"
-    IDS_TOOL_CANCELEDIT, "Annulal modifica"
+    IDS_TOOL_CANCELEDIT, "Annulla modifica"
     IDS_TOOL_IMPORT, "Importa..."
     IDS_TOOL_EXTRACT, "Estrai..."
     IDS_TOOL_GUIEDIT, "Modifica via GUI"
-    IDS_UNITEDKINGDOM, "Regno unito"
+    IDS_UNITEDKINGDOM, "Regno Unito"
     IDS_GREATBRITAIN, "Gran Bretagna"
     IDS_BRITISH, "Britannico"
     IDS_FRANCE, "Francia"
