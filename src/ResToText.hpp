@@ -1481,7 +1481,14 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
     {
         auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
         if (!e)
+        {
+            e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, BAD_LANG);
+        }
+        if (!e)
+        {
+            assert(0);
             return NULL;
+        }
 
         auto& icon_entry = (EntryBase&)*e;
 
@@ -1510,6 +1517,10 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
     for (WORD i = 0; i < dir.idCount; ++i)
     {
         auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
+        if (!e)
+        {
+            e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, BAD_LANG);
+        }
         if (!e)
         {
             DeleteObject(hbm);
@@ -1574,8 +1585,14 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
     {
         auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
         if (!e)
+        {
+            e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, BAD_LANG);
+        }
+        if (!e)
+        {
+            assert(0);
             return NULL;
-
+        }
         auto cursor_entry = (EntryBase&)*e;
 
         BITMAP bm;
@@ -1607,6 +1624,10 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
         for (WORD i = 0; i < dir.idCount; ++i)
         {
             auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
+            if (!e)
+            {
+                e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, BAD_LANG);
+            }
             if (!e)
             {
                 assert(0);

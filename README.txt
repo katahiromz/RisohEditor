@@ -112,6 +112,7 @@ Question 4. What is mcdx?
  * 2019.XX.YY ver.5.2.2
     - Update Italian translation.
     - Support XML, XSLT, SCHEMA and REGISTRY resource types.
+    - Improved interpretation when language mismatch of RT_ICON/RT_CURSOR and RT_GROUP_ICON/RT_GROUP_CURSOR.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
