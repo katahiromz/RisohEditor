@@ -3689,6 +3689,10 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         {
             m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
         }
+        else if (auto e = g_res.find(ET_LANG, RT_DLGINIT, entry->m_name, BAD_LANG))
+        {
+            m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
+        }
 
         if (::IsWindowVisible(m_rad_window) &&
             ::IsWindowVisible(m_rad_window.m_rad_dialog))
