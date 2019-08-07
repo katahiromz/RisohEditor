@@ -111,6 +111,7 @@ Question 4. What is mcdx?
     - Improved "Add Resource" dialog.
  * 2019.XX.YY ver.5.2.2
     - Update Italian translation.
+    - Support XML, XSLT, SCHEMA and REGISTRY resource types.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

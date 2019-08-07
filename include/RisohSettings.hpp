@@ -145,7 +145,10 @@ struct RisohSettings
     {
         encoding_map.clear();
         encoding_map[L"RISOHTEMPLATE"] = L"utf8";
-        encoding_map[L"999"] = L"ansi";
+        encoding_map[L"REGISTRY"] = L"ansi";
+        encoding_map[L"XML"] = L"utf8";
+        encoding_map[L"XSLT"] = L"utf8";
+        encoding_map[L"SCHEMA"] = L"utf8";
         encoding_map[mstr_dec((WORD)(UINT_PTR)RT_DLGINCLUDE)] = L"utf8n";
     }
 
