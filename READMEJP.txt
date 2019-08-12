@@ -436,6 +436,7 @@
         イタリア語翻訳を更新。
         XML、XSLT、SCHEMA、そしてREGISTRYリソースタイプのサポート。
         RT_ICON/RT_CURSOR と RT_GROUP_ICON/RT_GROUP_CURSOR の言語不一致のときの解釈を改良。
+        RT_DLGINIT とRT_DIALOG の言語不一致のときの解釈を改良。
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]
