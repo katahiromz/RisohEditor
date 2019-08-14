@@ -432,7 +432,7 @@
         WS_POPUPWINDOW | WS_BORDER は、WS_POPUPWINDOW | WS_CAPTION でなければならない。
         RT_FONT のサポート。
         「リソースの追加」ダイアログを改良。
-    2019.XX.YY ver.5.2.2
+    2019.08.14 ver.5.2.2
         イタリア語翻訳を更新。
         XML、XSLT、SCHEMA、そしてREGISTRYリソースタイプのサポート。
         RT_ICON/RT_CURSOR と RT_GROUP_ICON/RT_GROUP_CURSOR の言語不一致のときの解釈を改良。
