@@ -567,7 +567,10 @@ struct DialogItem
             // NOTE: RC won't add WS_TABSTOP. Microsoft document said a lie.
             if (ctrl == L"AUTORADIOBUTTON")
             {
-                ret += L", NOT WS_TABSTOP";
+                if (m_style & WS_TABSTOP)
+                    ret += L", WS_TABSTOP";
+                else
+                    ret += L", NOT WS_TABSTOP";
             }
         }
         if (m_ex_style || m_help_id)
