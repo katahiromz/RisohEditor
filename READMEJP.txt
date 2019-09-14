@@ -437,7 +437,7 @@
         XML、XSLT、SCHEMA、そしてREGISTRYリソースタイプのサポート。
         RT_ICON/RT_CURSOR と RT_GROUP_ICON/RT_GROUP_CURSOR の言語不一致のときの解釈を改良。
         RT_DLGINIT とRT_DIALOG の言語不一致のときの解釈を改良。
-    2019.XX.YY ver.5.2.3
+    2019.09.14 ver.5.2.3
         AUTORADIOBUTTON STYLE を修正。
 
 /////////////////////////////////////////////////////

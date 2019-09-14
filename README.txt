@@ -114,7 +114,7 @@ Question 4. What is mcdx?
     - Support XML, XSLT, SCHEMA and REGISTRY resource types.
     - Improved interpretation when language mismatch of RT_ICON/RT_CURSOR and RT_GROUP_ICON/RT_GROUP_CURSOR.
     - Improved interpretation when language mismatch of RT_DLGINIT and RT_DIALOG.
- * 2019.XX.YY ver.5.2.3
+ * 2019.09.14 ver.5.2.3
     - Fix AUTORADIOBUTTON STYLE.
 
 /////////////////////////////////////////////////////
