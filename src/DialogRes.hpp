@@ -551,7 +551,24 @@ struct DialogItem
                 value &= ~BS_TYPEMASK;
                 value |= BS_PUSHBOX;
             }
-            ret += g_db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, DefStyle);
+            // NOTE: RC won't add WS_TABSTOP. Microsoft document said a lie.
+            std::wstring str = g_db.DumpBitFieldOrZero(cls.c_str(), L"STYLE", value, DefStyle);
+            ret += str;
+            if (ctrl == L"AUTORADIOBUTTON" && str.find(L"WS_TABSTOP") == std::wstring::npos)
+            {
+                if (m_style & WS_TABSTOP)
+                    ret += L" | WS_TABSTOP";
+                else
+                    ret += L" | NOT WS_TABSTOP";
+            }
+        }
+        else
+        {
+            // NOTE: RC won't add WS_TABSTOP. Microsoft document said a lie.
+            if (ctrl == L"AUTORADIOBUTTON")
+            {
+                ret += L", NOT WS_TABSTOP";
+            }
         }
         if (m_ex_style || m_help_id)
         {
@@ -600,7 +617,8 @@ struct DialogItem
     }
     MStringW _do_AUTORADIOBUTTON()
     {
-        return _do_BUTTON(L"AUTORADIOBUTTON", (BS_AUTORADIOBUTTON | WS_TABSTOP | WS_CHILD | WS_VISIBLE));
+        // NOTE: RC won't add WS_TABSTOP. Microsoft document said a lie.
+        return _do_BUTTON(L"AUTORADIOBUTTON", (BS_AUTORADIOBUTTON | /*WS_TABSTOP |*/ WS_CHILD | WS_VISIBLE));
     }
     MStringW _do_CHECKBOX()
     {
