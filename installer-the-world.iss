@@ -12,7 +12,7 @@
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName=RisohEditor
-AppVerName=RisohEditor 5.2.3
+AppVerName=RisohEditor 5.2.4
 AppPublisher=Katayama Hirofumi MZ
 AppPublisherURL=http://katahiromz.web.fc2.com/
 AppSupportURL=http://katahiromz.web.fc2.com/
@@ -23,7 +23,7 @@ DisableDirPage=no
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=.
-OutputBaseFilename=risoheditor-5.2.3-setup
+OutputBaseFilename=risoheditor-5.2.4-setup
 SetupIconFile=src\res\Icon_100.ico
 Compression=lzma
 SolidCompression=yes
@@ -33,9 +33,9 @@ VersionInfoCompany=Katayama Hirofumi MZ
 VersionInfoCopyright=Copyright (C) 2017-2019 Katayama Hirofumi MZ.
 VersionInfoDescription=Win32 Resource Editor
 VersionInfoProductName=RisohEditor
-VersionInfoProductTextVersion=5.2.3
-VersionInfoProductVersion=5.2.3
-VersionInfoVersion=5.2.3
+VersionInfoProductTextVersion=5.2.4
+VersionInfoProductVersion=5.2.4
+VersionInfoVersion=5.2.4
 
 [Languages]
 Name: "armenian"; MessagesFile:  "compiler:Languages\Armenian.islu"

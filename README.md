@@ -115,6 +115,8 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Improved interpretation when language mismatch of `RT_DLGINIT` and `RT_DIALOG`.
  * 2019.09.14 ver.5.2.3
     - Fix `AUTORADIOBUTTON` `STYLE`.
+ * 2019.09.15 ver.5.2.4
+    - XP support.
 
 ## Contact Us
 

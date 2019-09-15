@@ -116,6 +116,8 @@ Question 4. What is mcdx?
     - Improved interpretation when language mismatch of RT_DLGINIT and RT_DIALOG.
  * 2019.09.14 ver.5.2.3
     - Fix AUTORADIOBUTTON STYLE.
+ * 2019.09.15 ver.5.2.4
+    - XP support.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
