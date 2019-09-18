@@ -80,7 +80,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                         if cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
                             echo Zipping...
                             cd build
-                            if zip -9 -r -q "re-$RE_VERSION-bin.zip" "re-$RE_VERSION-bin"; then
+                            if zip -9 -r -q "RisohEditor-$RE_VERSION.zip" "RisohEditor-$RE_VERSION"; then
                                 cd ..
                                 if [ -e "$RE_TARGET" ]; then
                                     echo Success. "$RE_TARGET" was generated.
