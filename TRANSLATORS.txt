@@ -2,14 +2,11 @@
 
 The translators of RisohEditor are listed below.
 
-English (original):
+ * English (original):
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-
-Japanese (original):
+ * Japanese (original):
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-
-Simplified Chinese:
+ * Simplified Chinese:
     - 林鸿湘 <lhxy24@163.com>
-
-Italian:
+ * Italian:
     - bovirus <https://github.com/bovirus>
