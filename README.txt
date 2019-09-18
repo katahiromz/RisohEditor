@@ -121,6 +121,7 @@ Question 4. What is mcdx?
  * 2019.XX.YY ver.5.2.5
     - Fixed a WS_CHILDWINDOW bug in dialog style listbox.
     - Changed the release filename (RisohEditor-X.X.X-bin.zip).
+    - Added TRANSLATORS.txt.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
