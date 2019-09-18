@@ -20,9 +20,9 @@
 
 # TODO: Update the version number
 RE_VERSION=5.2.5
-RE_BIN_DIR="build/RisohEditor-$RE_VERSION-bin"
+RE_BIN_DIR="build/RisohEditor-$RE_VERSION"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
-RE_TARGET="build/RisohEditor-$RE_VERSION-bin.zip"
+RE_TARGET="build/RisohEditor-$RE_VERSION.zip"
 
 ################################################################################
 

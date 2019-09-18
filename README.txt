@@ -120,7 +120,7 @@ Question 4. What is mcdx?
     - XP support.
  * 2019.XX.YY ver.5.2.5
     - Fixed a WS_CHILDWINDOW bug in dialog style listbox.
-    - Changed the release filename (RisohEditor-X.X.X-bin.zip).
+    - Changed the release filename (RisohEditor-X.X.X.exe and RisohEditor-X.X.X.zip).
     - Added TRANSLATORS.txt.
 
 /////////////////////////////////////////////////////
