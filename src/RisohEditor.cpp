@@ -10797,10 +10797,10 @@ void MMainWnd::OnTest(HWND hwnd)
             stream.clear();
 
             // fixup for "MOleCtrl", "AtlAxWin*" and/or "{...}" window classes.
-            // see also: DialogRes::Fixup2
-            dialog_res.Fixup2(false);
+            // see also: DialogRes::FixupForTest
+            dialog_res.FixupForTest(false);
             dialog_res.SaveToStream(stream);
-            dialog_res.Fixup2(true);
+            dialog_res.FixupForTest(true);
 
             // load RT_DLGINIT if any
             std::vector<BYTE> dlginit_data;

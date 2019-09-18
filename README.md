@@ -117,10 +117,11 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Fix `AUTORADIOBUTTON` `STYLE`.
  * 2019.09.15 ver.5.2.4
     - XP support.
- * 2019.XX.YY ver.5.2.5
+ * 2019.09.19 ver.5.2.5
     - Fixed a `WS_CHILDWINDOW` bug in dialog style listbox.
     - Changed the release filename (`RisohEditor-X.X.X.exe` and `RisohEditor-X.X.X.zip`).
     - Added `TRANSLATORS.txt`.
+    - Made owner-drawn controls visible.
 
 ## Contact Us
 

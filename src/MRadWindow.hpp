@@ -1735,14 +1735,14 @@ public:
         }
 
         // get the resource data
-        m_dialog_res.Fixup(false);
+        m_dialog_res.FixupForRad(false);
         std::vector<BYTE> data = m_dialog_res.data();
 #if 0
         MFile file(TEXT("modified.bin"), TRUE);
         DWORD cbWritten;
         file.WriteFile(&data[0], (DWORD)data.size(), &cbWritten);
 #endif
-        m_dialog_res.Fixup(true);
+        m_dialog_res.FixupForRad(true);
 
         // create the MRadDialog window from data
         if (!m_rad_dialog.CreateDialogIndirectDx(hwnd, &data[0]))

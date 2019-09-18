@@ -690,7 +690,7 @@ struct DialogItem
         return _do_CONTROL(false, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
-    void Fixup(bool bRevert = false)
+    void FixupForRad(bool bRevert = false)
     {
         if (bRevert)
         {
@@ -732,10 +732,45 @@ struct DialogItem
                 m_class = L"STATIC";
                 m_style |= WS_BORDER;
             }
+            if (m_class.m_id == 0x0080 ||
+                lstrcmpiW(m_class.str().c_str(), L"BUTTON") == 0)
+            {
+                if ((m_style & BS_TYPEMASK) == BS_OWNERDRAW)
+                {
+                    m_style &= ~BS_TYPEMASK;
+                    m_style |= BS_PUSHBUTTON;
+                }
+            }
+            if (m_class.m_id == 0x0082 ||
+                lstrcmpiW(m_class.str().c_str(), L"STATIC") == 0)
+            {
+                if ((m_style & SS_TYPEMASK) == SS_OWNERDRAW)
+                {
+                    m_style &= ~SS_TYPEMASK;
+                    m_style |= SS_LEFT;
+                }
+            }
+            if (m_class.m_id == 0x0083 ||
+                lstrcmpiW(m_class.str().c_str(), L"LISTBOX") == 0)
+            {
+                if (m_style & (LBS_OWNERDRAWFIXED | LBS_OWNERDRAWVARIABLE))
+                {
+                    m_style &= ~(LBS_OWNERDRAWFIXED | LBS_OWNERDRAWVARIABLE);
+                }
+            }
+            if (m_class.m_id == 0x0085 ||
+                lstrcmpiW(m_class.str().c_str(), L"COMBOBOX") == 0 ||
+                lstrcmpiW(m_class.str().c_str(), WC_COMBOBOXEX) == 0)
+            {
+                if (m_style & (CBS_OWNERDRAWFIXED | CBS_OWNERDRAWVARIABLE))
+                {
+                    m_style &= ~(CBS_OWNERDRAWFIXED | CBS_OWNERDRAWVARIABLE);
+                }
+            }
         }
     }
 
-    void Fixup2(bool bRevert = false)
+    void FixupForTest(bool bRevert = false)
     {
         if (bRevert)
         {
@@ -1135,7 +1170,7 @@ struct DialogRes
         return ret;
     }
 
-    void Fixup(bool bRevert = false)
+    void FixupForRad(bool bRevert = false)
     {
         if (bRevert)
         {
@@ -1163,15 +1198,15 @@ struct DialogRes
 
         for (auto& item : m_items)
         {
-            item.Fixup(bRevert);
+            item.FixupForRad(bRevert);
         }
     }
 
-    void Fixup2(bool bRevert = false)
+    void FixupForTest(bool bRevert = false)
     {
         for (auto& item : m_items)
         {
-            item.Fixup2(bRevert);
+            item.FixupForTest(bRevert);
         }
     }
 
