@@ -118,7 +118,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.09.15 ver.5.2.4
     - XP support.
  * 2019.XX.YY ver.5.2.5
-    - Fixed a WS_CHILDWINDOW bug in dialog style listbox.
+    - Fixed a `WS_CHILDWINDOW` bug in dialog style listbox.
     - Changed the release filename (`RisohEditor-X.X.X-bin.zip`).
     - Added `TRANSLATORS.txt`.
 
