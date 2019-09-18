@@ -75,17 +75,19 @@ public:
         if (pszClass && pszClass[0])
         {
             table = g_db.GetTable(pszClass);
-            if (table.size())
+            for (auto& item : table)
             {
-                m_style_table.insert(m_style_table.end(), 
-                    table.begin(), table.end());
+                if (item.name.find(L'|') != std::wstring::npos)
+                    continue;
+                m_style_table.push_back(item);
             }
         }
         table = g_db.GetTable(TEXT("PARENT.STYLE"));
-        if (table.size())
+        for (auto& item : table)
         {
-            m_style_table.insert(m_style_table.end(), 
-                table.begin(), table.end());
+            if (item.name.find(L'|') != std::wstring::npos)
+                continue;
+            m_style_table.push_back(item);
         }
         m_style_selection.resize(m_style_table.size());
 

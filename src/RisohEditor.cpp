@@ -321,6 +321,9 @@ void GetStyleSelect(std::vector<BYTE>& sel,
     sel.resize(table.size());
     for (size_t i = 0; i < table.size(); ++i)
     {
+        if (table[i].name.find(L'|') != ConstantsDB::StringType::npos)
+            continue;
+
         if ((dwValue & table[i].mask) == table[i].value)
             sel[i] = TRUE;
         else
@@ -336,6 +339,9 @@ DWORD AnalyseStyleDiff(
     assert(old_sel.size() == new_sel.size());
     for (size_t i = 0; i < old_sel.size(); ++i)
     {
+        if (table[i].name.find(L'|') != ConstantsDB::StringType::npos)
+            continue;
+
         if (old_sel[i] && !new_sel[i])
         {
             dwValue &= ~table[i].mask;
@@ -357,10 +363,10 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table)
 
     for (auto& table_entry : table)
     {
-        if (table_entry.name.find(L'|') == ConstantsDB::StringType::npos)
-        {
-            ListBox_AddString(hLst, table_entry.name.c_str());
-        }
+        if (table_entry.name.find(L'|') != ConstantsDB::StringType::npos)
+            continue;
+
+        ListBox_AddString(hLst, table_entry.name.c_str());
     }
 
     ListBox_SetHorizontalExtent(hLst, 300);
