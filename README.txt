@@ -119,7 +119,7 @@ Question 4. What is mcdx?
  * 2019.09.15 ver.5.2.4
     - XP support.
  * 2019.XX.YY ver.5.2.5
-    - Fixed a bug in dialog style listbox.
+    - Fixed a WS_CHILDWINDOW bug in dialog style listbox.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
