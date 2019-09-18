@@ -10,3 +10,7 @@ The translators of RisohEditor are listed below:
     - 林鸿湘 <lhxy24@163.com>
  * Italian:
     - bovirus <https://github.com/bovirus>
+
+If you want to add new translation, please send me your translation of
+file "src/lang/en_US.rc" to katayama.hirofumi.mz@gmail.com .
+You should use UTF-8 encoding.
