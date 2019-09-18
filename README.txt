@@ -118,6 +118,7 @@ Question 4. What is mcdx?
     - Fix AUTORADIOBUTTON STYLE.
  * 2019.09.15 ver.5.2.4
     - XP support.
+ * 2019.XX.YY ver.5.2.5
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
