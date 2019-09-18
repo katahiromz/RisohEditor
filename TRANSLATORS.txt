@@ -1,10 +1,10 @@
 ﻿(UTF-8)
 
-The translators of RisohEditor are listed below.
+The translators of RisohEditor are listed below:
 
- * English (original):
+ * English:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
- * Japanese (original):
+ * Japanese:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
  * Simplified Chinese:
     - 林鸿湘 <lhxy24@163.com>
