@@ -123,6 +123,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Added `TRANSLATORS.txt`.
     - Made owner-drawn controls visible.
  * 2019.XX.YY ver.5.2.6
+    - Improve Languages dialog.
 
 ## Contact Us
 

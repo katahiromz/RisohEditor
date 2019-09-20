@@ -25,6 +25,7 @@
 #include "RisohSettings.hpp"
 
 void InitLangListView(HWND hLst1, LPCTSTR pszText);
+MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -105,6 +106,21 @@ public:
         InitLangListView(m_hLst1, strText.c_str());
     }
 
+    void OnLst1(HWND hwnd)
+    {
+        INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem < 0)
+            return;
+
+        TCHAR szText[32];
+        ListView_GetItemText(m_hLst1, iItem, 1, szText, _countof(szText));
+
+        LANGID langid = _wtoi(szText);
+        MString strStatement = GetLanguageStatement(langid, TRUE);
+
+        SetDlgItemText(hwnd, edt1, strStatement.c_str());
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -162,10 +178,21 @@ public:
     {
         if (pnmhdr->idFrom == lst1)
         {
-            if (pnmhdr->code == NM_DBLCLK)
+            switch (pnmhdr->code)
             {
+            case NM_DBLCLK:
                 OnCopy(hwnd);
                 return 1;
+            case LVN_ITEMCHANGED:
+                if (NM_LISTVIEW *pListView = (NM_LISTVIEW *)pnmhdr)
+                {
+                    if ((pListView->uChanged & LVIF_STATE) &&
+                        (pListView->uNewState & LVIS_SELECTED))
+                    {
+                        OnLst1(hwnd);
+                    }
+                }
+                break;
             }
         }
         return 0;

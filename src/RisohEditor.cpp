@@ -1091,6 +1091,13 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
     // delete all the items of listview
     ListView_DeleteAllItems(hLst1);
 
+    WCHAR szText[128];
+    if (pszText)
+    {
+        StringCbCopyW(szText, sizeof(szText), pszText);
+        CharUpperW(szText);
+    }
+
     WCHAR sz1[64], sz2[64];
     LV_ITEM item;
     INT iItem = 0;
@@ -1104,10 +1111,12 @@ void InitLangListView(HWND hLst1, LPCTSTR pszText)
         {
             // filtering by pszText
             MString str = sz1;
-            if (str.find(pszText) == MString::npos)
+            CharUpperW(&str[0]);
+            if (str.find(szText) == MString::npos)
             {
                 str = sz2;
-                if (str.find(pszText) == MString::npos)
+                CharUpperW(&str[0]);
+                if (str.find(szText) == MString::npos)
                     continue;
             }
         }
