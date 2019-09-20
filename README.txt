@@ -123,6 +123,7 @@ Question 4. What is mcdx?
     - Changed the release filename (RisohEditor-X.X.X.exe and RisohEditor-X.X.X.zip).
     - Added TRANSLATORS.txt.
     - Made owner-drawn controls visible.
+ * 2019.XX.YY ver.5.2.6
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

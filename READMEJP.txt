@@ -446,6 +446,7 @@
         リリースファイル名を変更 (RisohEditor-X.X.X.exe と RisohEditor-X.X.X.zip)。
         翻訳者リスト (TRANSLATORS.txt) を追加。
         オーナードローコントロールを見えるようにした。
+    2019.XX.YY ver.5.2.6
 
 /////////////////////////////////////////////////////
 // 片山博文MZ (katahiromz) [A.N.T.]
