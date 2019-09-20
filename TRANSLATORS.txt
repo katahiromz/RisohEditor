@@ -1,5 +1,7 @@
 ﻿(UTF-8)
 
+# Translators
+
 The translators of RisohEditor are listed below:
 
  * English:
@@ -11,6 +13,28 @@ The translators of RisohEditor are listed below:
  * Italian:
     - Roberto Boriotti <roberto.boriotti@libero.it>
 
-If you want to add new translation, please send me your translation of
-file "src/lang/en_US.rc" to katayama.hirofumi.mz@gmail.com .
-You should use UTF-8 encoding.
+# How to translate?
+
+At first, copy and rename "src/lang/en_US.rc" (for example "ru_RU.rc" for Russian).
+Open "ru_RU.rc" with a text editor that supports "UTF-8 encoding without BOM".
+
+You have to replace the following line:
+
+    LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+with:
+
+    LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+
+And then translate all the string literals in "ru_RU.rc".
+
+Finally, open "src/RisohEditor_res.rc" with the text editor,
+and insert the following line at "Languages" section of that file:
+
+    #include "lang/ru_RU.rc"
+
+Then you can open "src/RisohEditor_res.rc" with RisohEditor.
+You can check the dialog resources by it.
+
+If you did translate everything, then please send me your translation
+(ru_RU.rc) to katayama.hirofumi.mz@gmail.com .
