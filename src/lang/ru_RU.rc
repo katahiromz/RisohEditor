@@ -1425,7 +1425,6 @@ STRINGTABLE
     IDS_GERMAN, "Немецкий"
     IDS_SPAIN, "Испания"
     IDS_SPANISH, "Испанский"
-    IDS_RUSSIAN, "Русский"
     IDS_INVALIDLANG, "Нераспознанный язык."
     IDS_INVALIDNAME, "Неверное имя ресурса."
     IDS_PNGRESBINFILTER, "Изображения PNG (*.png)|*.png|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
