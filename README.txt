@@ -125,6 +125,7 @@ Question 4. What is mcdx?
     - Made owner-drawn controls visible.
  * 2019.XX.YY ver.5.2.6
     - Improve Languages dialog.
+    - Add Russian translation.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
