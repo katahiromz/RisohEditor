@@ -125,6 +125,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
  * 2019.XX.YY ver.5.2.6
     - Improve Languages dialog.
     - Add Russian translation.
+    - Show error message if the installed location has space characters.
 
 ## Contact Us
 

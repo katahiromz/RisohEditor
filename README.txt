@@ -126,6 +126,7 @@ Question 4. What is mcdx?
  * 2019.XX.YY ver.5.2.6
     - Improve Languages dialog.
     - Add Russian translation.
+    - Show error message if the installed location has space characters.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
