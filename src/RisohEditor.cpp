@@ -13931,8 +13931,7 @@ wWinMain(HINSTANCE   hInstance,
         if (wcschr(szPath, L' ') != NULL)
         {
             MessageBoxW(NULL,
-                        L"ERROR: You installed into the location with space characters!\n\n"
-                        L"Please avoid \"C:\\Program Files\".",
+                        LoadStringDx(IDS_PATHSPACEERROR),
                         NULL,
                         MB_ICONERROR);
             return 1;

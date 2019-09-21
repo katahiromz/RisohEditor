@@ -1448,6 +1448,7 @@ STRINGTABLE
     IDS_RESTYPE, "Tipo risorsa"
     IDS_ENCODING, "Codifica"
     IDS_INVALIDRESTYPE, "Tipo risorsa non valida."
+    IDS_PATHSPACEERROR, "ERROR: You installed into the location with space characters!\n\nPlease avoid ""C:\\Program Files""."
 }
 
 //////////////////////////////////////////////////////////////////////////////
