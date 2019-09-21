@@ -13925,6 +13925,20 @@ wWinMain(HINSTANCE   hInstance,
          LPWSTR       lpCmdLine,
          INT         nCmdShow)
 {
+    {
+        WCHAR szPath[MAX_PATH];
+        GetModuleFileNameW(NULL, szPath, ARRAYSIZE(szPath));
+        if (wcschr(szPath, L' ') != NULL)
+        {
+            MessageBoxW(NULL,
+                        L"ERROR: You installed into the location with space characters!\n\n"
+                        L"Please avoid \"C:\\Program Files\".",
+                        NULL,
+                        MB_ICONERROR);
+            return 1;
+        }
+    }
+
     // initialize the libraries
     OleInitialize(NULL);
 
@@ -13943,7 +13957,7 @@ wWinMain(HINSTANCE   hInstance,
                  ICC_NATIVEFNTCTL_CLASS |
                  ICC_STANDARD_CLASSES |
                  ICC_LINK_CLASS;
-    InitCommonControlsEx(&iccx);    
+    InitCommonControlsEx(&iccx);
 
     // load RichEdit
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
