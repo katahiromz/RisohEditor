@@ -1451,7 +1451,7 @@ STRINGTABLE
     IDS_RESTYPE, "リソースの種類"
     IDS_ENCODING, "エンコーディング"
     IDS_INVALIDRESTYPE, "無効なリソースの種類です。"
-    IDS_PATHSPACEERROR, "エラー: スペースがある場所にインストールされました。\n\n""C:\\Program Files""を避けて下さい。"
+    IDS_PATHSPACEERROR, "スペース文字がある場所に間違ってインストールされました。リソース コンパイラはスペースを受け付けません。\n\n""C:\\Program Files""を避けて下さい。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

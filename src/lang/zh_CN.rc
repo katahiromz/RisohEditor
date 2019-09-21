@@ -1447,7 +1447,7 @@ STRINGTABLE
     IDS_RESTYPE, "资源类型"
     IDS_ENCODING, "编码"
     IDS_INVALIDRESTYPE, "资源类型无效."
-    IDS_PATHSPACEERROR, "ERROR: You installed into the location with space characters!\n\nPlease avoid ""C:\\Program Files""."
+    IDS_PATHSPACEERROR, "You wrongly installed into the location with space characters! The resource compiler can't accept space.\n\nPlease avoid ""C:\\Program Files""."
 }
 
 //////////////////////////////////////////////////////////////////////////////
