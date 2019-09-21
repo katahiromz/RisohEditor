@@ -28,8 +28,6 @@ with:
 
 And then translate all the string literals in "ru_RU.rc".
 
-NOTE: Don't translate IDS_NOTICE and IDS_DAGGER resource strings. They must be English.
-
 Finally, open "src/RisohEditor_res.rc" with the text editor,
 and insert the following line at "Languages" section of that file:
 
