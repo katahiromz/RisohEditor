@@ -5625,7 +5625,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
-    strCmdLine += L"\" -DRC_INVOKED ";
+    strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
@@ -5977,7 +5977,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
-    strCmdLine += L"\" -DRC_INVOKED ";
+    strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
     strCmdLine += L" -o \"";
