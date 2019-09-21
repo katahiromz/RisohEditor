@@ -147,6 +147,18 @@ FILETYPE        0x1
             VALUE "ProductVersion", "5.2.6\0"
         }
     }
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "04190376"
+        {
+            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
+            VALUE "FileDescription", "RisohEditor\0"
+            VALUE "FileVersion", "5.2.6\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Dmitry Y. All rights reserved.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "5.2.6\0"
+        }
+    }
     BLOCK "VarFileInfo"
     {
         VALUE "Translation", 0x0409, 0x04E4
@@ -218,6 +230,7 @@ IDR_MAINFRAME WAVE "res/Wave_100.wav"
 #include "lang/en_US.rc"
 #include "lang/it_IT.rc"
 #include "lang/ja_JP.rc"
+#include "lang/ru_RU.rc"
 #include "lang/zh_CN.rc"
 
 //////////////////////////////////////////////////////////////////////////////
