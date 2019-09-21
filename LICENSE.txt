@@ -1,11 +1,14 @@
-RisohEditor is a resource editor for Win32 development,
+﻿RisohEditor is a resource editor for Win32 development,
 created by Katayama Hirofumi MZ (katahiromz). RisohEditor
 is released under the terms of GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007. The source code of RisohEditor is
 available at https://github.com/katahiromz/RisohEditor .
 
-RisohEditor --- Win32 resource editor
-Copyright (C) 2017-2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>.
+RisohEditor --- Another Win32 resource editor
+Copyright (C) 2017-2019 片山博文MZ <katayama.hirofumi.mz@gmail.com>.
+Copyright (C) 2019 林鸿湘 <lhxy24@163.com>.
+Copyright (C) 2019 Roberto Boriotti <roberto.boriotti@libero.it>.
+
 All rights reserved.
 ---------------------------------------------------
 RisohEditor contains the "windres" program. The "windres"
