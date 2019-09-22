@@ -11,7 +11,7 @@ The translators of RisohEditor are listed below:
  * Simplified Chinese:
     - 林鸿湘 <lhxy24@163.com>
  * Russian:
-    - Dmitry Y <erodim@mail.ru>
+    - Dmitry Yerokhin <erodim@mail.ru>
  * Italian:
     - Roberto Boriotti <roberto.boriotti@libero.it>
 
