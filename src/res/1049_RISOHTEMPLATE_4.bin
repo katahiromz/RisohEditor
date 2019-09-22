@@ -1,7 +1,7 @@
 ﻿1 MENU
 {
-    POPUP "&File"
+    POPUP "&Файл"
     {
-        MENUITEM "E&xit\tAlt+F4", 100
+        MENUITEM "В&ыход\tAlt+F4", 100
     }
 }
