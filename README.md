@@ -122,7 +122,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Changed the release filename (`RisohEditor-X.X.X.exe` and `RisohEditor-X.X.X.zip`).
     - Added `TRANSLATORS.txt`.
     - Made owner-drawn controls visible.
- * 2019.XX.YY ver.5.2.6
+ * 2019.09.23 ver.5.2.6
     - Improve Languages dialog.
     - Add Russian translation.
     - Show error message if the installed location has space characters.
