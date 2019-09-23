@@ -62,6 +62,7 @@ public:
         m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
         m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(edt1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);

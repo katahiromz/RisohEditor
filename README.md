@@ -130,6 +130,8 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
     - Add Russian translation.
     - Show error message if the installed location has space characters.
     - Add `--use-temp-file` option in invoking `windres` to fix the `popen` problem.
+ * 2019.XX.YY ver.5.2.7
+    - Improved Languages dialog again.
 
 ## Contact Us
 
