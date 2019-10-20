@@ -43,6 +43,11 @@ Question 4. What is mcdx?
     Answer. It's a special message compiler I made.
             See mcdx/MESSAGETABLEDX.md for details.
 
+Question 5. Why did I get garbled characters when compiling with Visual Studio?
+
+    Answer. The resource compiler of MSVC has a bug in treatment of
+            UTF-8 resource files. Use UTF-16.
+
 /////////////////////////////////////////////////////
 // HISTORY
 
@@ -131,6 +136,8 @@ Question 4. What is mcdx?
  * 2019.10.20 ver.5.2.7
     - Improved Languages dialog again.
     - Fix the positions of the dialog item marks.
+ * 2019.XX.YY ver.5.2.8
+    - Fix Russian translation.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
