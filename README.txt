@@ -46,7 +46,9 @@ Question 4. What is mcdx?
 Question 5. Why did I get garbled characters when compiling with Visual Studio?
 
     Answer. The resource compiler of MSVC has a bug in treatment of
-            UTF-8 resource files. Use UTF-16.
+            UTF-8 resource files.
+
+            Use UTF-16 (but UTF-16 is not supported in MinGW windres).
 
 /////////////////////////////////////////////////////
 // HISTORY
