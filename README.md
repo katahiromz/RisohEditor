@@ -51,7 +51,7 @@ It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
 
 The resource compiler of MSVC has a bug in treatment of UTF-8 resource files.
 
-Use UTF-16 (but UTF-16 is not supported in MinGW windres).
+Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
 ## HISTORY
 
