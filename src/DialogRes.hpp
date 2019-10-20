@@ -1337,6 +1337,38 @@ struct DialogRes
         return xBaseUnit;
     }
 
+    INT GetHeadLines() const
+    {
+        INT ret = 0;
+
+        ++ret;  // "LANGUAGE ..."
+        ++ret;  // ""
+        ++ret;  // "... DIALOG ..."
+        if (!m_title.empty())
+        {
+            ++ret;  // "CAPTION ..."
+        }
+        if (!m_class.empty())
+        {
+            ++ret;  // "CLASS ..."
+        }
+        if (IsExtended() && !m_menu.empty())
+        {
+            ++ret;  // "MENU ..."
+        }
+        ++ret;  // "STYLE ..."
+        if (m_ex_style)
+        {
+            ++ret;  // "EXSTYLE ..."
+        }
+        if (m_style & DS_SETFONT)
+        {
+            ++ret;  // "FONT ..."
+        }
+        ++ret;  // "{"
+        return ret;
+    }
+
 protected:
     bool _headerFromStream(const MByteStreamEx& stream)
     {

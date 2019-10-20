@@ -2255,6 +2255,7 @@ protected:
     LRESULT OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
 
     void OnAddBitmap(HWND hwnd);
@@ -12494,6 +12495,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_IDJUMPBANG, OnIDJumpBang);
         DO_MESSAGE(MYWM_SELCHANGE, OnRadSelChange);
         DO_MESSAGE(MYWM_UPDATEDLGRES, OnUpdateDlgRes);
+        DO_MESSAGE(MYWM_GETDLGHEADLINES, OnGetHeadLines);
 
     default:
         if (uMsg == s_uFindMsg)
@@ -12609,6 +12611,23 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
     }
+}
+
+LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    // get the selected entry
+    auto entry = g_res.get_lang_entry();
+    if (!entry)
+        return -1;
+
+    if (entry->m_type == RT_DIALOG)
+    {
+        DialogRes dialog_res;
+        MByteStreamEx stream(entry->m_data);
+        dialog_res.LoadFromStream(stream);
+        return dialog_res.GetHeadLines();;
+    }
+    return -1;
 }
 
 LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)

@@ -24,6 +24,8 @@
 #include "MString.hpp"
 #include "resource.h"
 
+#define MYWM_GETDLGHEADLINES (WM_USER + 250)
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MSrcEdit : public MEditCtrl
@@ -35,7 +37,7 @@ public:
     INT m_iItemToBeSelected;
     enum
     {
-        MARK_WIDTH = 9, MARK_HEIGHT = 9, HEADLINES = 7
+        MARK_WIDTH = 9, MARK_HEIGHT = 9
     };
 
     MSrcEdit()
@@ -66,14 +68,21 @@ public:
         InvalidateRect(m_hwnd, NULL, TRUE);
     }
 
+    INT GetHeadLines(HWND hwnd)
+    {
+        HWND hwndMain = GetAncestor(hwnd, GA_ROOT);
+        return (INT)SendMessage(hwndMain, MYWM_GETDLGHEADLINES, 0, 0);
+    }
+
     void DrawMarks(HWND hwnd)
     {
         if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
             return;
 
+        INT nHeadLines = GetHeadLines(hwnd);
         for (auto& index : m_indeces)
         {
-            DrawMark(hwnd, index);
+            DrawMark(hwnd, index, nHeadLines);
         }
     }
 
@@ -203,14 +212,14 @@ public:
         return -1;
     }
 
-    void DrawMark(HWND hwnd, INT iItem)
+    void DrawMark(HWND hwnd, INT iItem, INT nHeadLines)
     {
         if (DefaultProcDx(hwnd, EM_GETMODIFY, 0, 0))
             return;
 
         RECT rcTextArea = GetTextArea(hwnd);
 
-        INT nPosY = LogLineToPosY(hwnd, HEADLINES + iItem);
+        INT nPosY = LogLineToPosY(hwnd, nHeadLines + iItem);
 
         if (HDC hDC = GetDC(hwnd))
         {
@@ -271,7 +280,7 @@ public:
         if (fDoubleClick)
         {
             INT iLogLine = PosYToLogLine(hwnd, y);
-            m_iItemToBeSelected = iLogLine - HEADLINES;
+            m_iItemToBeSelected = iLogLine - GetHeadLines(hwnd);
             SendMessage(GetParent(hwnd), WM_COMMAND, ID_SRCEDITSELECT, 0);
         }
 

@@ -128,8 +128,9 @@ Question 4. What is mcdx?
     - Add Russian translation.
     - Show error message if the installed location has space characters.
     - Add --use-temp-file option in invoking windres to fix the popen problem.
- * 2019.XX.YY ver.5.2.7
+ * 2019.10.20 ver.5.2.7
     - Improved Languages dialog again.
+    - Fix the positions of the dialog item marks.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
