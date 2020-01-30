@@ -62,7 +62,7 @@ static SETWINDOWTHEME s_pSetWindowTheme = NULL;
 
 BOOL IsFileLockedDx(LPCTSTR pszFileName)
 {
-    if (GetFileAttributesW(pszFileName) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(pszFileName))
         return FALSE;
 
     HANDLE hFile;
@@ -1736,7 +1736,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
     mstr_trim(str);
     StringCchCopyW(szFile, _countof(szFile), str.c_str());
 
-    if (::GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)    // not exists
+    if (!PathFileExistsW(szFile))    // not exists
     {
         Edit_SetSel(hEdt1, 0, -1);  // select all
         SetFocus(hEdt1);    // set focus
@@ -2908,7 +2908,7 @@ void MMainWnd::OnOpen(HWND hwnd)
     StringCchCopyW(szFile, _countof(szFile), m_szFile);
 
     // if path was not valid, make it empty
-    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szFile))
         szFile[0] = 0;
 
     // initialize OPENFILENAME structure
@@ -2972,7 +2972,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     StringCchCopyW(szFile, _countof(szFile), m_szFile);
 
     // if not found, then make it empty
-    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szFile))
         szFile[0] = 0;
 
     // was it an executable?
@@ -3002,7 +3002,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
     // use the prefered filter by the entry
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (GetFileAttributesW(m_szFile) == INVALID_FILE_ATTRIBUTES || !bWasExecutable)
+    if (!PathFileExistsW(m_szFile) || !bWasExecutable)
     {
         if (ofn.nFilterIndex == RFFI_EXECUTABLE)
             ofn.nFilterIndex = RFFI_RC;
@@ -3942,16 +3942,16 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
     // find the "README.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"README.txt");
-    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopyW(pch, diff, L"..\\README.txt");
-        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopyW(pch, diff, L"..\\..\\README.txt");
-            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\README.txt");
-                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     return;
                 }
@@ -3982,16 +3982,16 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
     // find the "READMEJP.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"READMEJP.txt");
-    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopyW(pch, diff, L"..\\READMEJP.txt");
-        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopyW(pch, diff, L"..\\..\\READMEJP.txt");
-            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\READMEJP.txt");
-                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     return;
                 }
@@ -4022,16 +4022,16 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
     // find the "HYOJUNKA.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"HYOJUNKA.txt");
-    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopyW(pch, diff, L"..\\HYOJUNKA.txt");
-        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopyW(pch, diff, L"..\\..\\HYOJUNKA.txt");
-            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\HYOJUNKA.txt");
-                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     return;
                 }
@@ -4062,16 +4062,16 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     // find the "LICENSE.txt" file
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"LICENSE.txt");
-    if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopyW(pch, diff, L"..\\LICENSE.txt");
-        if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopyW(pch, diff, L"..\\..\\LICENSE.txt");
-            if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\LICENSE.txt");
-                if (GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     return;
                 }
@@ -6183,19 +6183,19 @@ BOOL MMainWnd::CheckDataFolder(VOID)
     // find the data folder
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"\\data");
-    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopyW(pch, diff, L"\\..\\data");
-        if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopyW(pch, diff, L"\\..\\..\\data");
-            if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"\\..\\..\\..\\data");
-                if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     StringCchCopyW(pch, diff, L"\\..\\..\\..\\..\\data");
-                    if (::GetFileAttributesW(szPath) == INVALID_FILE_ATTRIBUTES)
+                    if (!PathFileExistsW(szPath))
                     {
                         return FALSE;   // not found
                     }
@@ -6243,7 +6243,7 @@ INT MMainWnd::CheckData(VOID)
     // cpp.exe
     StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
     StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
-    if (::GetFileAttributesW(m_szCppExe) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(m_szCppExe))
     {
         ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
         return -3;  // failure
@@ -6252,7 +6252,7 @@ INT MMainWnd::CheckData(VOID)
     // mcpp.exe
     StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
     StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
-    if (::GetFileAttributesW(m_szMCppExe) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(m_szMCppExe))
     {
         ErrorBoxDx(TEXT("ERROR: No mcpp.exe found."));
         return -3;  // failure
@@ -6261,7 +6261,7 @@ INT MMainWnd::CheckData(VOID)
     // windres.exe
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
-    if (::GetFileAttributesW(m_szWindresExe) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(m_szWindresExe))
     {
         ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
         return -4;  // failure
@@ -6270,7 +6270,7 @@ INT MMainWnd::CheckData(VOID)
     // upx.exe
     StringCchCopyW(m_szUpxExe, _countof(m_szUpxExe), m_szDataFolder);
     StringCchCatW(m_szUpxExe, _countof(m_szUpxExe), L"\\bin\\upx.exe");
-    if (::GetFileAttributesW(m_szUpxExe) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(m_szUpxExe))
     {
         ErrorBoxDx(TEXT("ERROR: No upx.exe found."));
         return -5;  // failure
@@ -6279,7 +6279,7 @@ INT MMainWnd::CheckData(VOID)
     // include directory
     StringCchCopyW(m_szIncludeDir, _countof(m_szIncludeDir), m_szDataFolder);
     StringCchCatW(m_szIncludeDir, _countof(m_szIncludeDir), L"\\lib\\gcc\\i686-w64-mingw32\\7.3.0\\include");
-    if (::GetFileAttributesW(m_szIncludeDir) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(m_szIncludeDir))
     {
         ErrorBoxDx(TEXT("ERROR: No include directory found."));
         return -6;  // failure
@@ -6299,7 +6299,7 @@ INT MMainWnd::CheckData(VOID)
     // mcdx.exe
     size_t diff = pch - szPath;
     StringCchCopyW(pch, diff, L"\\mcdx.exe");
-    if (::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES)
+    if (PathFileExistsW(szPath))
     {
         StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), szPath);
     }
@@ -6307,7 +6307,7 @@ INT MMainWnd::CheckData(VOID)
     {
         StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), m_szDataFolder);
         StringCchCatW(m_szMcdxExe, _countof(m_szMcdxExe), L"\\bin\\mcdx.exe");
-        if (::GetFileAttributesW(m_szMcdxExe) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(m_szMcdxExe))
         {
             ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
             return -6;  // failure
@@ -6641,25 +6641,25 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
     // find the nearest resource.h file
     size_t diff = pch - szPath;
     StringCchCopy(pch, diff, TEXT("resource.h"));
-    if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szPath))
     {
         StringCchCopy(pch, diff, TEXT("..\\resource.h"));
-        if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+        if (!PathFileExistsW(szPath))
         {
             StringCchCopy(pch, diff, TEXT("..\\..\\resource.h"));
-            if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+            if (!PathFileExistsW(szPath))
             {
                 StringCchCopy(pch, diff, TEXT("..\\..\\..\\resource.h"));
-                if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                if (!PathFileExistsW(szPath))
                 {
                     StringCchCopy(pch, diff, TEXT("..\\src\\resource.h"));
-                    if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                    if (!PathFileExistsW(szPath))
                     {
                         StringCchCopy(pch, diff, TEXT("..\\..\\src\\resource.h"));
-                        if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                        if (!PathFileExistsW(szPath))
                         {
                             StringCchCopy(pch, diff, TEXT("..\\..\\..\\src\\resource.h"));
-                            if (GetFileAttributes(szPath) == INVALID_FILE_ATTRIBUTES)
+                            if (!PathFileExistsW(szPath))
                             {
                                 return FALSE;   // not found
                             }
@@ -8882,7 +8882,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         StringCchCopyW(szFile, _countof(szFile), L"resource.h");
 
     // if it does not exist, clear the file path
-    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szFile))
         szFile[0] = 0;
 
     // initialize OPENFILENAME structure
@@ -9842,7 +9842,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     StringCchCopyW(szFile, _countof(szFile), m_szFile);
 
     // if not found, then make it empty
-    if (GetFileAttributesW(szFile) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(szFile))
         szFile[0] = 0;
 
     // was it an executable?
@@ -11232,7 +11232,6 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
     //     return;
     // }
 
-    //if (m_szResourceH[0] == 0 || GetFileAttributes(m_szResourceH) == INVALID_FILE_ATTRIBUTES)
     if (1)
     {
         // build new "resource.h" file path
@@ -12038,7 +12037,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         StringCchPrintf(szFormat, _countof(szFormat), TEXT("File%lu"), i);
         if (keyRisoh.QuerySz(szFormat, szFile, _countof(szFile)) == ERROR_SUCCESS)
         {
-            if (GetFileAttributes(szFile) != INVALID_FILE_ATTRIBUTES)
+            if (PathFileExistsW(szFile))
             {
                 g_settings.vecRecentlyUsed.push_back(szFile);
             }
@@ -12047,13 +12046,13 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
     if (keyRisoh.QuerySz(TEXT("strWindResExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        if (GetFileAttributesW(szText) != INVALID_FILE_ATTRIBUTES)
+        if (PathFileExistsW(szText))
             g_settings.strWindResExe = szText;
     }
 
     if (keyRisoh.QuerySz(TEXT("strCppExe"), szText, _countof(szText)) == ERROR_SUCCESS)
     {
-        if (GetFileAttributesW(szText) != INVALID_FILE_ATTRIBUTES)
+        if (PathFileExistsW(szText))
             g_settings.strCppExe = szText;
     }
 

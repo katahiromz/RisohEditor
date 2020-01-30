@@ -42,7 +42,7 @@ add_executable(RisohEditor WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32)
+target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32 shlwapi)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # resource object extension

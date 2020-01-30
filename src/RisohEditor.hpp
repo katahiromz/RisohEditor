@@ -28,6 +28,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <shlobj.h>
+#include <shlwapi.h>
 #include <dlgs.h>
 #include <tchar.h>
 #include <commctrl.h>
