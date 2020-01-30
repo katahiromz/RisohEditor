@@ -696,6 +696,19 @@ struct DialogItem
         return _do_CONTROL(false, L"SCROLLBAR", L"SCROLLBAR", SBS_HORZ | WS_CHILD | WS_VISIBLE);
     }
 
+    BOOL IsClassRegd(const WCHAR *name) const
+    {
+        HMODULE hMod = ::GetModuleHandle(NULL);
+
+        WNDCLASSEXW wcx;
+        if (::GetClassInfoExW(NULL, name, &wcx) ||
+            ::GetClassInfoExW(hMod, name, &wcx))
+        {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
     void FixupForRad(bool bRevert = false)
     {
         if (bRevert)
@@ -737,6 +750,12 @@ struct DialogItem
                 m_title = m_class.c_str();
                 m_class = L"STATIC";
                 m_style |= WS_BORDER;
+            }
+            else if (m_class.is_str() && !IsClassRegd(m_class.c_str()))
+            {
+                m_class = L"STATIC";
+                m_style &= ~SS_TYPEMASK;
+                m_style |= SS_GRAYRECT;
             }
             if (m_class.m_id == 0x0080 ||
                 lstrcmpiW(m_class.str().c_str(), L"BUTTON") == 0)
