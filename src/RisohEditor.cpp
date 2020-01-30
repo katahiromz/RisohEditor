@@ -7396,7 +7396,7 @@ BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
 // do backup a folder
 BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathIsDirectoryW(pszPath))
         return TRUE;    // no files to be backup'ed
 
     if (nCount < s_nBackupMaxCount)     // less than max count
@@ -7408,8 +7408,8 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
         DoBackupFolder(strPath.c_str(), nCount + 1);
 
         // rename the current folder as an "old" folder
-        return MoveFileEx(pszPath, strPath.c_str(),
-            MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
+        return MoveFileExW(pszPath, strPath.c_str(),
+                           MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING);
     }
     else
     {
@@ -7423,7 +7423,7 @@ BOOL MMainWnd::DoBackupFolder(LPCWSTR pszPath, UINT nCount)
 // do backup a file
 BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 {
-    if (GetFileAttributes(pszPath) == INVALID_FILE_ATTRIBUTES)
+    if (!PathFileExistsW(pszPath))
         return TRUE;
 
     if (nCount < s_nBackupMaxCount)     // less than max count
@@ -7435,7 +7435,7 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
         DoBackupFile(strPath.c_str(), nCount + 1);
 
         // copy the current file as an "old" file
-        return CopyFile(pszPath, strPath.c_str(), FALSE);
+        return CopyFileW(pszPath, strPath.c_str(), FALSE);
     }
     else
     {
@@ -8389,6 +8389,20 @@ BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
     return DoSaveExeAs(pszExeFile, TRUE);
 }
 
+BOOL IsExeOrDll(LPCWSTR pszFileName)
+{
+    BYTE ab[2] = { 0, 0 };
+    FILE *fp = _wfopen(pszFileName, L"rb");
+    fread(ab, 2, 1, fp);
+    fclose(fp);
+
+    if (ab[0] == 'M' && ab[1] == 'Z')
+        return TRUE;
+    if (ab[0] == 'P' && ab[1] == 'E')
+        return TRUE;
+    return FALSE;
+}
+
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
@@ -8428,14 +8442,14 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
     }
 
     // check whether it is an executable or not
-    DWORD dwBinaryType;
-    BOOL bExecutable = ::GetBinaryTypeW(m_szFile, &dwBinaryType);
+    BOOL bExecutable = IsExeOrDll(m_szFile);
 
     // is it not executable?
     if (!bExecutable)
     {
         // there is no source executable file. try to update pszExeFile
-        if (g_res.update_exe(pszExeFile))   // success
+        if (::CopyFileW(m_szFile, pszExeFile, FALSE) &&
+            g_res.update_exe(pszExeFile))   // success
         {
             // update file info
             UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
