@@ -257,7 +257,10 @@ public:
         MStringW ret;
 
         ret += WIDE("MESSAGETABLEDX\r\n");
-        ret += WIDE("{\r\n");
+        if (g_settings.bUseBeginEnd)
+            ret += WIDE("BEGIN\r\n");
+        else
+            ret += WIDE("{\r\n");
 
         map_type::const_iterator it, end = m_map.end();
         for (it = m_map.begin(); it != end; ++it)
@@ -269,7 +272,10 @@ public:
             ret += WIDE("\"\r\n");
         }
 
-        ret += WIDE("}\r\n");
+        if (g_settings.bUseBeginEnd)
+            ret += WIDE("END\r\n");
+        else
+            ret += WIDE("}\r\n");
         return ret;
     }
     string_type Dump() const

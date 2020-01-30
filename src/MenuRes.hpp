@@ -398,7 +398,10 @@ public:
         }
 
         ret += L" MENU\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         WORD wDepth = 0;
         for (auto& item : m_items)
@@ -407,7 +410,10 @@ public:
             {
                 --wDepth;
                 ret += string_type((wDepth + 1) * 4, L' ');
-                ret += L"}\r\n";
+                if (g_settings.bUseBeginEnd)
+                    ret += L"END\r\n";
+                else
+                    ret += L"}\r\n";
             }
             wDepth = item.wDepth;
             if (item.fItemFlags & MF_POPUP)
@@ -419,7 +425,10 @@ public:
                 ret += DumpFlags(item.fItemFlags);
                 ret += L"\r\n";
                 ret += string_type((item.wDepth + 1) * 4, L' ');
-                ret += L"{\r\n";
+                if (g_settings.bUseBeginEnd)
+                    ret += L"BEGIN\r\n";
+                else
+                    ret += L"{\r\n";
             }
             else
             {
@@ -450,10 +459,16 @@ public:
         {
             --wDepth;
             ret += string_type((wDepth + 1) * 4, L' ');
-            ret += L"}\r\n";
+            if (g_settings.bUseBeginEnd)
+                ret += L"END\r\n";
+            else
+                ret += L"}\r\n";
         }
 
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }
@@ -472,7 +487,10 @@ public:
         }
 
         ret += L" MENUEX\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         WORD wDepth = 0;
         for (auto& item : m_exitems)
@@ -481,7 +499,10 @@ public:
             {
                 --wDepth;
                 ret += string_type((wDepth + 1) * 4, L' ');
-                ret += L"}\r\n";
+                if (g_settings.bUseBeginEnd)
+                    ret += L"END\r\n";
+                else
+                    ret += L"}\r\n";
             }
             wDepth = item.wDepth;
             if (item.bResInfo & 0x01)
@@ -527,7 +548,10 @@ public:
                 }
                 ret += L"\r\n";
                 ret += string_type((item.wDepth + 1) * 4, L' ');
-                ret += L"{\r\n";
+                if (g_settings.bUseBeginEnd)
+                    ret += L"BEGIN\r\n";
+                else
+                    ret += L"{\r\n";
             }
             else
             {
@@ -572,10 +596,16 @@ public:
         {
             --wDepth;
             ret += string_type((wDepth + 1) * 4, L' ');
-            ret += L"}\r\n";
+            if (g_settings.bUseBeginEnd)
+                ret += L"END\r\n";
+            else
+                ret += L"}\r\n";
         }
 
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }

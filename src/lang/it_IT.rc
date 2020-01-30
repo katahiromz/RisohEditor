@@ -110,6 +110,7 @@ IDR_MAINMENU MENU
         MENUITEM "Non usare &ID macro", ID_HIDEIDMACROS
         MENUITEM "Usa IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "A capo a&utomatico", ID_WORD_WRAP
+        MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "Codifica &elementi risorse...", ID_ENCODING
         MENUITEM "&Macro predefinite...", ID_PREDEFMACROS

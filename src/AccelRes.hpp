@@ -111,7 +111,10 @@ public:
         }
         ret += L" ";
         ret += L"ACCELERATORS\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         for (auto& entry : m_entries)
         {
@@ -159,7 +162,10 @@ public:
             ret += L"\r\n";
         }
 
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
         return ret;
     }
 

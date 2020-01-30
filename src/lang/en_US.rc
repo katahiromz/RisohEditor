@@ -110,6 +110,7 @@ IDR_MAINMENU MENU
         MENUITEM "Don't Use &ID Macros", ID_HIDEIDMACROS
         MENUITEM "Use IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Word Wrapping", ID_WORD_WRAP
+        MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Encoding of resource item...", ID_ENCODING
         MENUITEM "Predefined &Macros...", ID_PREDEFMACROS

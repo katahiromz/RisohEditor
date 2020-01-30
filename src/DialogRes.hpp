@@ -494,7 +494,10 @@ struct DialogItem
         {
             size_t count = m_extra.size() / sizeof(WORD);
             const WORD *pw = (const WORD *)&m_extra[0];
-            ret += L"\r\n    {\r\n        ";
+            if (g_settings.bUseBeginEnd)
+                ret += L"\r\n    BEGIN\r\n";
+            else
+                ret += L"\r\n    {\r\n        ";
             ret += mstr_hex_word(pw[0]);
             for (size_t i = 1; i < count; ++i)
             {
@@ -588,7 +591,10 @@ struct DialogItem
         {
             size_t count = m_extra.size() / sizeof(WORD);
             const WORD *pw = (const WORD *)&m_extra[0];
-            ret += L"\r\n    {\r\n        ";
+            if (g_settings.bUseBeginEnd)
+                ret += L"\r\n    BEGIN\r\n";
+            else
+                ret += L"\r\n    {\r\n        ";
             ret += mstr_hex_word(pw[0]);
             for (size_t i = 1; i < count; ++i)
             {
@@ -1156,7 +1162,10 @@ struct DialogRes
             ret += L"\r\n";
         }
 
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         for (WORD i = 0; i < m_cItems; ++i)
         {
@@ -1165,7 +1174,10 @@ struct DialogRes
             ret += L"\r\n";
         }
 
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }

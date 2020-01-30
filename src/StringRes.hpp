@@ -95,7 +95,10 @@ public:
         string_type ret;
 
         ret += L"STRINGTABLE\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         WORD first, last;
         GetIdRange(wName, first, last);
@@ -118,7 +121,10 @@ public:
             ret += mstr_escape(m_map[i]);
             ret += L"\"\r\n";
         }
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }
@@ -128,7 +134,10 @@ public:
         string_type ret;
 
         ret += L"STRINGTABLE\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         for (auto& pair : m_map)
         {
@@ -150,7 +159,10 @@ public:
             ret += L"\"\r\n";
         }
 
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }

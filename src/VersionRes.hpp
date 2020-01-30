@@ -157,7 +157,10 @@ public:
         ret += var.key;
         ret += L"\"\r\n";
         ret += MStringW(depth * 4, L' ');
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         for (auto& item : var.vars)
         {
@@ -172,7 +175,10 @@ public:
         }
 
         ret += MStringW(depth * 4, L' ');
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }
@@ -207,14 +213,20 @@ public:
         StringCchPrintfW(line, _countof(line), L"FILETYPE        0x%X\r\n", m_fixed.dwFileType);
         ret += line;
 
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         const std::vector<Var>& vars = m_vars[0].vars;
         for (auto& item : vars)
         {
             ret += DumpBlock(item, 1);
         }
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }

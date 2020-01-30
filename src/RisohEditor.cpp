@@ -2246,6 +2246,7 @@ protected:
     void OnJumpToMatome(HWND hwnd);
     void OnEncoding(HWND hwnd);
     void OnQueryConstant(HWND hwnd);
+    void OnUseBeginEnd(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -4375,6 +4376,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_UNCHECKED);
+
+    if (g_settings.bUseBeginEnd)
+        CheckMenuItem(hMenu, ID_USEBEGINEND, MF_BYCOMMAND | MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, ID_USEBEGINEND, MF_BYCOMMAND | MF_UNCHECKED);
 
     BOOL bCanEditLabel = TRUE;
 
@@ -9875,7 +9881,22 @@ void MMainWnd::OnWordWrap(HWND hwnd)
     // reset fonts
     ReCreateFonts(hwnd);
 
-    // select the entry
+    // select the entry to refresh
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE);
+}
+
+void MMainWnd::OnUseBeginEnd(HWND hwnd)
+{
+    g_settings.bUseBeginEnd = !g_settings.bUseBeginEnd;
+
+    // create the source EDIT control
+    ReCreateSrcEdit(hwnd);
+
+    // reset fonts
+    ReCreateFonts(hwnd);
+
+    // select the entry to refresh
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
@@ -10278,6 +10299,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_QUERYCONSTANT:
         OnQueryConstant(hwnd);
+        break;
+    case ID_USEBEGINEND:
+        OnUseBeginEnd(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -11694,6 +11718,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nRadTop = CW_USEDEFAULT;
     g_settings.bAskUpdateResH = FALSE;
     g_settings.bCompressByUPX = FALSE;
+    g_settings.bUseBeginEnd = FALSE;
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
@@ -11884,6 +11909,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)g_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)g_settings.bAskUpdateResH);
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
+    keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
 
     TCHAR szText[128];
     TCHAR szValueName[128];
@@ -12159,6 +12185,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nRadTop"), g_settings.nRadTop);
     keyRisoh.SetDword(TEXT("bAskUpdateResH"), g_settings.bAskUpdateResH);
     keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
+    keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
     keyRisoh.SetSz(TEXT("strSrcFont"), g_settings.strSrcFont.c_str());
     keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
     keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());

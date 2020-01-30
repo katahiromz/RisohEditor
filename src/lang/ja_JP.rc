@@ -110,6 +110,7 @@ IDR_MAINMENU MENU
         MENUITEM "&IDマクロを使用しない", ID_HIDEIDMACROS
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
+        MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS

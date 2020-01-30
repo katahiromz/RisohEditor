@@ -127,12 +127,18 @@ public:
         }
 
         ret += L" 240\r\n";
-        ret += L"{\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"BEGIN\r\n";
+        else
+            ret += L"{\r\n";
 
         if (m_entries.size() == 0)
         {
             ret += L"    0\r\n";
-            ret += L"}\r\n";
+            if (g_settings.bUseBeginEnd)
+                ret += L"END\r\n";
+            else
+                ret += L"}\r\n";
             return ret;
         }
 
@@ -186,7 +192,10 @@ public:
         }
 
         ret += L"    0\r\n";
-        ret += L"}\r\n";
+        if (g_settings.bUseBeginEnd)
+            ret += L"END\r\n";
+        else
+            ret += L"}\r\n";
 
         return ret;
     }

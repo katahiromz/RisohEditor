@@ -110,6 +110,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Не использовать ID-макросы", ID_HIDEIDMACROS
         MENUITEM "Испо&льзовать IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "&Заворачивать строки", ID_WORD_WRAP
+        MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Кодировка ресурсного элемента...", ID_ENCODING
         MENUITEM "Предопределённые &макросы...", ID_PREDEFMACROS
