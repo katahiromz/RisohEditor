@@ -8448,8 +8448,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
     if (!bExecutable)
     {
         // there is no source executable file. try to update pszExeFile
-        if (::CopyFileW(m_szFile, pszExeFile, FALSE) &&
-            g_res.update_exe(pszExeFile))   // success
+        if (g_res.update_exe(pszExeFile))   // success
         {
             // update file info
             UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
