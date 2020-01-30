@@ -140,8 +140,12 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
  * 2019.10.20 ver.5.2.7
     - Improved Languages dialog again.
     - Fix the positions of the dialog item marks.
- * 2019.XX.YY ver.5.2.8
+ * 2020.01.30 ver.5.2.8
     - Fix Russian translation.
+    - Able to display undefined controls.
+    - Added "Use BEGIN/END" option.
+    - Fixed a bug that DLL could not be saved as another name.
+ * 2020.XX.YY ver.5.2.9
 
 ## Contact Us
 
