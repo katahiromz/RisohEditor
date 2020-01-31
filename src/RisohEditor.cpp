@@ -8463,14 +8463,31 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
     return TRUE;    // success
 }
 
+struct AutoDeleteFile
+{
+    LPCWSTR m_file;
+    AutoDeleteFile(LPCWSTR file) : m_file(file)
+    {
+    }
+    ~AutoDeleteFile()
+    {
+        DeleteFileW(m_file);
+    }
+};
+
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
+    LPCWSTR src = m_szFile;
+    LPCWSTR dest = pszExeFile;
+    WCHAR szTempFile[MAX_PATH] = L"";
+    AutoDeleteFile auto_delete(szTempFile);
+
     // check not locking
-    if (IsFileLockedDx(pszExeFile))
+    if (IsFileLockedDx(dest))
     {
         WCHAR szMsg[MAX_PATH + 256];
-        StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), pszExeFile);
+        StringCchPrintfW(szMsg, _countof(szMsg), LoadStringDx(IDS_CANTWRITEBYLOCK), dest);
         ErrorBoxDx(szMsg);
         return FALSE;
     }
@@ -8479,66 +8496,57 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
     if (m_bUpxCompressed)
     {
         // build a temporary file path
-        WCHAR szTempFile[MAX_PATH];
         StringCchCopyW(szTempFile, _countof(szTempFile), GetTempFileNameDx(L"UPX"));
 
-        // m_szFile --> szTempFile (decompressed)
-        if (!CopyFileW(m_szFile, szTempFile, FALSE) ||
+        // src --> szTempFile (decompressed)
+        if (!CopyFileW(src, szTempFile, FALSE) ||
             !DoUpxDecompress(m_szUpxExe, szTempFile))
         {
-            DeleteFileW(szTempFile);
             ErrorBoxDx(IDS_CANTUPXEXTRACT);
             return FALSE;   // failure
         }
 
-        // do backup
-        if (g_settings.bBackup)
-        {
-            DoBackupFile(m_szFile);
-        }
-
-        // szTempFile --> m_szFile
-        StringCchCopyW(m_szFile, _countof(m_szFile), szTempFile);
+        src = szTempFile;
     }
 
-    // do backup
+    // do backup the dest
     if (g_settings.bBackup)
     {
-        DoBackupFile(pszExeFile);
+        DoBackupFile(dest);
     }
 
     // check whether it is an executable or not
-    BOOL bSrcExecutable = IsExeOrDll(m_szFile);
-    BOOL bDestExecutable = IsExeOrDll(pszExeFile);
+    BOOL bSrcExecutable = IsExeOrDll(src);
+    BOOL bDestExecutable = IsExeOrDll(dest);
 
     if (bSrcExecutable)
     {
         // copy src to dest, then update resource
-        if (CopyFileW(m_szFile, pszExeFile, FALSE))
+        if (CopyFileW(src, dest, FALSE))
         {
-            return DoSaveInner(pszExeFile, bCompression);
+            return DoSaveInner(dest, bCompression);
         }
     }
     else if (bDestExecutable)
     {
         // src is not exe and dest exe is respected
-        return DoSaveInner(pszExeFile, bCompression);
+        return DoSaveInner(dest, bCompression);
     }
     else
     {
         // if src and dest are non-executable, then dump tiny exe or dll to dest
-        if (IsDotExe(pszExeFile))
+        if (IsDotExe(dest))
         {
-            if (DumpTinyExeOrDll(m_hInst, pszExeFile, IDR_TINYEXE))
+            if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE))
             {
-                return DoSaveInner(pszExeFile, bCompression);
+                return DoSaveInner(dest, bCompression);
             }
         }
         else
         {
-            if (DumpTinyExeOrDll(m_hInst, pszExeFile, IDR_TINYDLL))
+            if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL))
             {
-                return DoSaveInner(pszExeFile, bCompression);
+                return DoSaveInner(dest, bCompression);
             }
         }
     }
@@ -9873,14 +9881,6 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     // if not found, then make it empty
     if (!PathFileExistsW(szFile))
         szFile[0] = 0;
-
-    // was it an executable?
-    BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
-    if (!bWasExecutable)
-    {
-        ErrorBoxDx(IDS_CANTSAVETOEXE);
-        return;
-    }
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn;
