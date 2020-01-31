@@ -88,6 +88,8 @@
 #define IDR_BOUNCEANICUR                    103
 #define IDR_MAINACCEL                       104
 #define IDR_UNKNOWNRESID                    105
+#define IDR_TINYEXE                         106
+#define IDR_TINYDLL                         107
 
 #define IDS_APPNAME                         101
 #define IDS_TITLEWITHFILE                   102
@@ -453,7 +455,7 @@
 #ifdef APSTUDIO_INVOKED
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
-        #define _APS_NEXT_RESOURCE_VALUE    106
+        #define _APS_NEXT_RESOURCE_VALUE    108
         #define _APS_NEXT_COMMAND_VALUE     250
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300

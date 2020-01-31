@@ -62,6 +62,10 @@ IDR_MAINACCEL ACCELERATORS
 
 IDR_MAINFRAME RCDATA "res/RCData_100.bin"
 
+IDR_TINYEXE RCDATA "res/RCData_106.bin"
+
+IDR_TINYDLL RCDATA "res/RCData_107.bin"
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_GROUP_CURSOR
 
