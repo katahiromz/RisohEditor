@@ -2149,6 +2149,7 @@ public:
     BOOL DoSaveAs(LPCWSTR pszExeFile);
     BOOL DoSaveAsCompression(LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
+    BOOL DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
     IMPORT_RESULT DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt);
     IMPORT_RESULT DoImportRes(HWND hwnd, LPCWSTR pszFile);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
@@ -8392,15 +8393,74 @@ BOOL MMainWnd::DoSaveAsCompression(LPCWSTR pszExeFile)
 BOOL IsExeOrDll(LPCWSTR pszFileName)
 {
     BYTE ab[2] = { 0, 0 };
-    FILE *fp = _wfopen(pszFileName, L"rb");
-    fread(ab, 2, 1, fp);
-    fclose(fp);
+    if (FILE *fp = _wfopen(pszFileName, L"rb"))
+    {
+        fread(ab, 2, 1, fp);
+        fclose(fp);
+    }
 
     if (ab[0] == 'M' && ab[1] == 'Z')
         return TRUE;
     if (ab[0] == 'P' && ab[1] == 'E')
         return TRUE;
     return FALSE;
+}
+
+BOOL IsDotExe(LPCWSTR pszFileName)
+{
+    return lstrcmpiW(PathFindExtensionW(pszFileName), L".exe") == 0;
+}
+
+BOOL DumpTinyExeOrDll(HINSTANCE hInst, LPCWSTR pszFileName, INT nID)
+{
+    if (HRSRC hRsrc = FindResourceW(hInst, MAKEINTRESOURCEW(nID), RT_RCDATA))
+    {
+        if (HGLOBAL hGlobal = LoadResource(hInst, hRsrc))
+        {
+            if (LPVOID pvData = LockResource(hGlobal))
+            {
+                DWORD cbData = SizeofResource(hInst, hRsrc);
+                if (FILE *fp = _wfopen(pszFileName, L"wb"))
+                {
+                    int nOK = fwrite(pvData, cbData, 1, fp);
+                    fclose(fp);
+
+                    return !!nOK;
+                }
+            }
+        }
+    }
+    return FALSE;
+}
+
+BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
+{
+    if (!g_res.update_exe(pszExeFile))
+    {
+        return FALSE;
+    }
+
+    // update file info
+    UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
+
+    // do compress by UPX
+    if (g_settings.bCompressByUPX || bCompression)
+    {
+        DoUpxCompress(m_szUpxExe, pszExeFile);
+    }
+
+    // is there any resource ID?
+    if (m_szResourceH[0] || !g_settings.id_map.empty())
+    {
+        // query
+        if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+        {
+            // write the resource.h file
+            return DoWriteResHOfExe(pszExeFile);
+        }
+    }
+
+    return TRUE;    // success
 }
 
 // open the dialog to save the EXE file
@@ -8442,75 +8502,39 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
     }
 
     // check whether it is an executable or not
-    BOOL bExecutable = IsExeOrDll(m_szFile);
+    BOOL bSrcExecutable = IsExeOrDll(m_szFile);
+    BOOL bDestExecutable = IsExeOrDll(pszExeFile);
 
-    // is it not executable?
-    if (!bExecutable)
+    if (bSrcExecutable)
     {
-        // there is no source executable file. try to update pszExeFile
-        if (g_res.update_exe(pszExeFile))   // success
+        // copy src to dest, then update resource
+        if (CopyFileW(m_szFile, pszExeFile, FALSE))
         {
-            // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
-
-            // do compress by UPX
-            if (g_settings.bCompressByUPX || bCompression)
-            {
-                DoUpxCompress(m_szUpxExe, pszExeFile);
-            }
-
-            // is there any resource ID?
-            if (m_szResourceH[0] || !g_settings.id_map.empty())
-            {
-                // query
-                if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
-                {
-                    // write the resource.h file
-                    return DoWriteResHOfExe(pszExeFile);
-                }
-            }
-
-            return TRUE;    // success
+            return DoSaveInner(pszExeFile, bCompression);
         }
     }
-    else    // it was an executable
+    else if (bDestExecutable)
     {
-        // build a temporary file path
-        LPWSTR TempFile = GetTempFileNameDx(L"ERE");
-
-        // m_szFile --> TempFile --> pszExeFile
-        if (::CopyFileW(m_szFile, TempFile, FALSE) &&
-            g_res.update_exe(TempFile) &&
-            ::CopyFileW(TempFile, pszExeFile, FALSE))
+        // src is not exe and dest exe is respected
+        return DoSaveInner(pszExeFile, bCompression);
+    }
+    else
+    {
+        // if src and dest are non-executable, then dump tiny exe or dll to dest
+        if (IsDotExe(pszExeFile))
         {
-            // delete the temporary file
-            DeleteFileW(TempFile);
-
-            // update file info
-            UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
-
-            // do compress by UPX
-            if (g_settings.bCompressByUPX || bCompression)
+            if (DumpTinyExeOrDll(m_hInst, pszExeFile, IDR_TINYEXE))
             {
-                DoUpxCompress(m_szUpxExe, pszExeFile);
+                return DoSaveInner(pszExeFile, bCompression);
             }
-
-            // is there any resource ID?
-            if (m_szResourceH[0] || !g_settings.id_map.empty())
-            {
-                // query
-                if (MsgBoxDx(IDS_WANNAGENRESH, MB_ICONINFORMATION | MB_YESNO) == IDYES)
-                {
-                    // write the resource.h file
-                    return DoWriteResHOfExe(pszExeFile);
-                }
-            }
-
-            return TRUE;    // success
         }
-
-        // delete the temporary file
-        DeleteFileW(TempFile);
+        else
+        {
+            if (DumpTinyExeOrDll(m_hInst, pszExeFile, IDR_TINYDLL))
+            {
+                return DoSaveInner(pszExeFile, bCompression);
+            }
+        }
     }
 
     return FALSE;   // failure
