@@ -8475,12 +8475,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         return FALSE;
     }
 
-    // do backup
-    if (g_settings.bBackup)
-    {
-        DoBackupFile(pszExeFile);
-    }
-
     // is the file compressed?
     if (m_bUpxCompressed)
     {
@@ -8497,8 +8491,20 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
             return FALSE;   // failure
         }
 
+        // do backup
+        if (g_settings.bBackup)
+        {
+            DoBackupFile(m_szFile);
+        }
+
         // szTempFile --> m_szFile
         StringCchCopyW(m_szFile, _countof(m_szFile), szTempFile);
+    }
+
+    // do backup
+    if (g_settings.bBackup)
+    {
+        DoBackupFile(pszExeFile);
     }
 
     // check whether it is an executable or not
