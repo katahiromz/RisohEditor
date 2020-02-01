@@ -4,7 +4,7 @@
 
 ## 構築に必要なもの
 
-- Visual Studio 2012
+- Visual Studio 2012 (with Visual C++)
 - CMake (GUI)
 - Inno Setup
 - MSYS2
