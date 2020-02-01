@@ -61,5 +61,7 @@ Success. build/RisohEditor-x.x.x.zip was generated.
 ```
 `build`フォルダの中にファイル`RisohEditor-x.x.x.zip`が作成されている。
 これをどこかのリリース用のフォルダに貼り付ける。
+
 16. リリース用のフォルダに移動して再度、簡単にテストを行う。失敗したらやり直し。
+
 17. GitHub・Vector・Softpedia・ホームページでリリースする。
