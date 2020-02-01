@@ -33,7 +33,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
-            MENUITEM "(None)", 65535, GRAYED
+            MENUITEM "(None)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "E&xit\tAlt+F4", ID_EXIT

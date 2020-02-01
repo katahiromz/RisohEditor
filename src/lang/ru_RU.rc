@@ -33,7 +33,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "Недавние файлы"
         {
-            MENUITEM "(нет)", 65535, GRAYED
+            MENUITEM "(нет)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "В&ыход\tAlt+F4", ID_EXIT

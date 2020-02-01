@@ -2979,7 +2979,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     // was it an executable?
     BOOL bWasExecutable = (m_file_type == FT_EXECUTABLE);
 
-    // delete the filename extension
+    // get and delete the filename extension
+    WCHAR szExt[32] = L"";
     LPWSTR pch = wcsrchr(szFile, L'.');
     static const LPCWSTR s_DotExts[] =
     {
@@ -2989,6 +2990,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     {
         if (lstrcmpiW(pch, ext) == 0)
         {
+            StringCbCopyW(szExt, sizeof(szExt), ext + 1);
             *pch = 0;
             break;
         }
@@ -3018,7 +3020,14 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     switch (ofn.nFilterIndex)
     {
     case RFFI_EXECUTABLE:
-        ofn.lpstrDefExt = L"exe";       // the default extension
+        if (szExt[0])
+        {
+            ofn.lpstrDefExt = szExt;
+        }
+        else
+        {
+            ofn.lpstrDefExt = L"exe";       // the default extension
+        }
         break;
 
     case RFFI_RC:
@@ -9893,7 +9902,17 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     ofn.nFilterIndex = RFFI2_EXECUTABLE;
 
     // use the preferred extension
-    ofn.lpstrDefExt = L"exe";       // the default extension
+    WCHAR szExt[32];
+    LPWSTR pchDotExt = PathFindExtensionW(m_szFile);
+    if (pchDotExt && *pchDotExt == L'.')
+    {
+        StringCbCopyW(szExt, sizeof(szExt), pchDotExt + 1);
+        ofn.lpstrDefExt = szExt;
+    }
+    else
+    {
+        ofn.lpstrDefExt = L"exe";       // the default extension
+    }
 
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);

@@ -291,12 +291,22 @@ public:
     {
         if (g_settings.bHideID)
         {
-            if (nIDTYPE_ == IDTYPE_CONTROL)
+            switch (nIDTYPE_)
+            {
+            case IDTYPE_CONTROL:
+            case IDTYPE_COMMAND:
+            case IDTYPE_NEWCOMMAND:
                 return mstr_dec_short((SHORT)value);
-            else if (nIDTYPE_ == IDTYPE_MESSAGE)
+            case IDTYPE_MESSAGE:
                 return mstr_hex(value);
-            else
+            default:
                 return mstr_dec_word((WORD)value);
+            }
+        }
+
+        if (nIDTYPE_ == IDTYPE_COMMAND || nIDTYPE_ == IDTYPE_NEWCOMMAND)
+        {
+            return GetCtrlOrCmdName(value);
         }
 
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
@@ -351,11 +361,6 @@ public:
             return mstr_hex(value);
         }
 
-        if (nIDTYPE_ == IDTYPE_COMMAND)
-        {
-            return GetCtrlOrCmdName(value);
-        }
-
         return mstr_dec_word(WORD(value));
     }
 
@@ -378,21 +383,20 @@ public:
 
     StringType GetCtrlOrCmdName(ValueType value) const
     {
-        StringType ret = DumpValue(L"CTRLID", value);
-        if (ret.empty() || ret[0] == L'-' || mchr_is_digit(ret[0]))
-        {
-            StringType str;
-            str = GetNameOfIDTypeValue(IDTYPE_COMMAND, value);
-            if (str.size())
-                return str;
-            str = GetNameOfIDTypeValue(IDTYPE_CONTROL, value);
-            if (str.size())
-                return str;
-            str = GetNameOfIDTypeValue(IDTYPE_NEWCOMMAND, value);
-            if (str.size())
-                return str;
-        }
-        return ret;
+        StringType str;
+        str = GetNameOfIDTypeValue(IDTYPE_COMMAND, value);
+        if (str.size())
+            return str;
+        str = GetNameOfIDTypeValue(IDTYPE_NEWCOMMAND, value);
+        if (str.size())
+            return str;
+        str = GetNameOfIDTypeValue(IDTYPE_CONTROL, value);
+        if (str.size())
+            return str;
+        str = DumpValue(L"CTRLID", value);
+        if (str.empty() || str[0] == L'-' || mchr_is_digit(str[0]))
+            return mstr_dec_short((SHORT)value);
+        return str;
     }
 
     StringType GetNameOfResID(IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2, ValueType value) const

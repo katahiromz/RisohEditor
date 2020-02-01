@@ -33,7 +33,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "最近使用的文件夹"
         {
-            MENUITEM "(无)", 65535, GRAYED
+            MENUITEM "(无)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)\tAlt+F4", ID_EXIT
