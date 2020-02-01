@@ -9896,7 +9896,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
 
     // use the prefered filter by the entry
     ofn.nFilterIndex = RFFI2_EXECUTABLE;
