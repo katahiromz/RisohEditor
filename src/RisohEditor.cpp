@@ -3005,15 +3005,15 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
     // use the prefered filter by the entry
     ofn.nFilterIndex = g_settings.nSaveFilterIndex;
-    if (!PathFileExistsW(m_szFile) || !bWasExecutable)
+    if (bWasExecutable)
+    {
+        if (ofn.nFilterIndex != RFFI_EXECUTABLE)
+            ofn.nFilterIndex = RFFI_EXECUTABLE;
+    }
+    else
     {
         if (ofn.nFilterIndex == RFFI_EXECUTABLE)
             ofn.nFilterIndex = RFFI_RC;
-    }
-    if (bWasExecutable)
-    {
-        if (ofn.nFilterIndex == RFFI_NONE || ofn.nFilterIndex == RFFI_ALL)
-            ofn.nFilterIndex = RFFI_EXECUTABLE;
     }
 
     // use the preferred extension
