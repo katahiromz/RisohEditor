@@ -51,7 +51,7 @@ Inno Setupでファイル`installer.iss`もしくは`installer-the-world.iss`を
 メニューから`Build`→`Compile`を選ぶ。
 14. しばらく待つと、インストーラのファイル`RisohEditor-x.x.x.exe`が作成される。
 これをどこかのリリース用のフォルダに貼り付ける。
-15. MSYS2で次のようにpack.shを実行する。
+15. MSYS2で次のようにシェルスクリプトファイル`pack.sh`を実行する。
 ```bash
 $ ./pack.sh
 ```
