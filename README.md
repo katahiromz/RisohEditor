@@ -145,7 +145,11 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Able to display undefined controls.
     - Added "Use BEGIN/END" option.
     - Fixed a bug that DLL could not be saved as another name.
- * 2020.XX.YY ver.5.2.9
+ * 2020.02.01 ver.5.2.9
+    - XP support of 5.2.8 is forgotten. Now enabled.
+    - Fixed processing of file saving.
+    - Able to save EXE/DLL files without user-owned executable.
+    - Fixed how to backup.
 
 ## Contact Us
 
