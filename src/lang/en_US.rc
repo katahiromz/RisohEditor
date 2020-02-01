@@ -1242,8 +1242,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.2.9 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 5.2.9 by Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor 5.3.0 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 5.3.0 by Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Extract Resource"
     IDS_RESBINFILTER, "Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_CANNOTSAVE, "Unable to save."
@@ -1269,7 +1269,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Unable to replace bitmap."
     IDS_REPLACEBMP, "Replace Bitmap"
     IDS_ERRORCODE, "Error Code %d"
-    IDS_VERSIONINFO, "RisohEditor Version 5.2.9\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Version 5.3.0\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."
