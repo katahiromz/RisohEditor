@@ -11,7 +11,7 @@
 
 ## 構築方法
 
-0. 3個のREADMEファイルに更新履歴を書く。インストールしてテストする。
+0. 3個のREADMEファイルに更新履歴を書く。
 1. Visual Studio 2012 x86 Command Prompt で CMake を次のように実行する。
 
 ```cmd
@@ -30,7 +30,7 @@ cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
 
 2. CMakeによって出力されたファイル`RisohEditor.sln`をVisual Studio 2012で開く。
 3. キーボードのCtrlを押しながらプロジェクトをすべてクリックしてプロジェクトをすべて選択する。
-4. 「ソリューション構成」を「Debug」から「Release」に変更する。
+4. 「Debug」から「Release」に変更する。
 5. 選択されているプロジェクトアイコンを右クリックして「プロパティ」を選ぶ。「プロパティ ページ」が表示される。
 6. 「プロパティ ページ」の「構成プロパティ」をクリックして、「全般」をクリックして、
 「プラットフォーム ツールセット」を「Visual Studio 2012 (v110)」から「Visual Studio 2012 - Windows XP (v110_xp)」に
