@@ -14,8 +14,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "Со&здать\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
-        MENUITEM "&Открыть...\tCtrl+O", IDC_CURSORNS
-        MENUITEM "Сохранить &как...\tCtrl+S", IDC_CURSORWE
+        MENUITEM "&Открыть...\tCtrl+O", ID_OPEN
+        MENUITEM "Сохранить &как...\tCtrl+S", ID_SAVEAS
         MENUITEM "Сохранить со с&жатием...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Импорт...\tCtrl+I", ID_IMPORT
