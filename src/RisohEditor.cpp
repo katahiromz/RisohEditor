@@ -9876,7 +9876,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
     {
         RFFI2_NONE = 0,
         RFFI2_EXECUTABLE = 1,
-        RFFI2_ALL = 3
+        RFFI2_ALL = 2
     };
 
     // compile if necessary
