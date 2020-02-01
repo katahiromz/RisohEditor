@@ -55,7 +55,7 @@ Inno Setupでファイル`installer.iss`もしくは`installer-the-world.iss`を
 ```bash
 $ ./pack.sh
 ```
-しばらく待つと次のようなメッセージが表示されたら成功。
+しばらく待って次のようなメッセージが表示されたら成功。
 ```txt
 Success. build/RisohEditor-x.x.x.zip was generated.
 ```
