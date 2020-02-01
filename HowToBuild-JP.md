@@ -29,8 +29,8 @@ cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
 この場合、CMakeに成功。
 
 2. CMakeによって出力されたファイル`RisohEditor.sln`をVisual Studio 2012で開く。
-3. キーボードのCtrlを押しながらプロジェクトをすべてクリックしてプロジェクトをすべて選択する。
-4. 「Debug」から「Release」に変更する。
+3. 「Debug」から「Release」に変更する。
+4. キーボードのCtrlを押しながらプロジェクトをすべてクリックしてプロジェクトをすべて選択する。
 5. 選択されているプロジェクトアイコンを右クリックして「プロパティ」を選ぶ。「プロパティ ページ」が表示される。
 6. 「プロパティ ページ」の「構成プロパティ」をクリックして、「全般」をクリックして、
 「プラットフォーム ツールセット」を「Visual Studio 2012 (v110)」から「Visual Studio 2012 - Windows XP (v110_xp)」に
