@@ -55,29 +55,29 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
 ## HISTORY
 
- * 2017.08.31 ver.0.6
+- ver.0.6 (2017.08.31)
     - First release.
- * 2018.09.12 ver.5.0.8
+- ver.5.0.8 (2018.09.12)
     - Improve tool bar icons.
     - Fix the file types on extraction.
     - Write dagger to source file to help UTF-8 detection.
     - Fix the treeview icons.
     - Split the RT_DIALOG and RT_MENU resource templates in languages.
- * 2018.09.27 ver.5.0.9
+- ver.5.0.9 (2018.09.27)
     - Improve resource.h output.
     - Improve treeview file icon.
     - Improve importing.
- * 2018.10.08 ver.5.1.0
+- ver.5.1.0 (2018.10.08)
     - Improve "String Entry" dialogs (multiline).
     - Fix Ctrl+A behaviour.
     - Check file lock on saving a file.
     - Make resource IDs case sensitive.
     - Support encoding of resource items.
     - Fix the abnormal termination at "Languages" dialog.
- * 2018.11.08 ver.5.1.1
+- ver.5.1.1 (2018.11.08)
     - Accept space in the caption text box.
     - Accept space in the language text box.
- * 2018.12.08 ver.5.1.2
+- ver.5.1.2 (2018.12.08)
     - Accept space in the window class name text box.
     - Accept C string literal in the window class name text box.
     - Improve template system.
@@ -85,71 +85,73 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Fix toolbar UI update.
     - Correctly display ID types of "List of Resource IDs".
     - Correctly sort the languages upon output.
- * 2019.01.01 ver.5.1.3
+- ver.5.1.3 (2019.01.01)
     - Fix "List of Resource IDs".
- * 2019.01.13 ver.5.1.4
+- ver.5.1.4 (2019.01.13)
     - Add English installer.
     - Add Italian installer.
     - Add Italian translation.
     - Add some language installer.
- * 2019.01.27 ver.5.1.5
+- ver.5.1.5 (2019.01.27)
     - Don't use WS_EX_MDICHILD extended style.
     - Support ReactOS.
- * 2019.02.24 ver.5.1.6
+- ver.5.1.6 (2019.02.24)
     - Improve Italian translation.
     - GUI adjustment.
     - Fix "Clone In New Language".
- * 2019.03.20 ver.5.1.7
+- ver.5.1.7 (2019.03.20)
     - Add PBS_MARQUEE and PBS_SMOOTHREVERSE styles.
     - Fix the process of compilation error.
- * 2019.05.14 ver.5.1.8
+- ver.5.1.8 (2019.05.14)
     - Add check of recompilation upon cloning.
     - Fix the selection after cloning.
     - Correctly fail upon compilation error of string table and message table.
- * 2019.07.14 ver.5.1.9
+- ver.5.1.9 (2019.07.14)
     - Supported UTF-16 source input/output.
- * 2019.07.26 ver.5.2.0
+- ver.5.2.0 (2019.07.26)
     - Correctly treat `DIALOG STYLE` values (`WS_CAPTION` is default value of `DIALOG STYLE`).
     - Fixed a bug that the application unexpectedly deletes the file when it opened a compressed EXE file without expanding.
- * 2019.08.04 ver.5.2.1
+- ver.5.2.1 (2019.08.04)
     - "English (United States)" will be selected if you entered `"En"` for language name.
     - Add "Query Constant" feature.
     - Fix "Collapse All".
     - `WS_POPUPWINDOW | WS_BORDER` must be `WS_POPUPWINDOW | WS_CAPTION`.
     - `RT_FONT` support.
     - Improved "Add Resource" dialog.
- * 2019.08.14 ver.5.2.2
+- ver.5.2.2 (2019.08.14)
     - Update Italian translation.
     - Support XML, XSLT, SCHEMA and REGISTRY resource types.
     - Improved interpretation when language mismatch of `RT_ICON`/`RT_CURSOR` and `RT_GROUP_ICON`/`RT_GROUP_CURSOR`.
     - Improved interpretation when language mismatch of `RT_DLGINIT` and `RT_DIALOG`.
- * 2019.09.14 ver.5.2.3
+- ver.5.2.3 (2019.09.14)
     - Fix `AUTORADIOBUTTON` `STYLE`.
- * 2019.09.15 ver.5.2.4
+- ver.5.2.4 (2019.09.15)
     - XP support.
- * 2019.09.19 ver.5.2.5
+- ver.5.2.5 (2019.09.19)
     - Fixed a `WS_CHILDWINDOW` bug in dialog style listbox.
     - Changed the release filename (`RisohEditor-X.X.X.exe` and `RisohEditor-X.X.X.zip`).
     - Added `TRANSLATORS.txt`.
     - Made owner-drawn controls visible.
- * 2019.09.23 ver.5.2.6
+- ver.5.2.6 (2019.09.23)
     - Improve Languages dialog.
     - Add Russian translation.
     - Show error message if the installed location has space characters.
     - Add `--use-temp-file` option in invoking `windres` to fix the `popen` problem.
- * 2019.10.20 ver.5.2.7
+- ver.5.2.7 (2019.10.20)
     - Improved Languages dialog again.
     - Fix the positions of the dialog item marks.
- * 2020.01.30 ver.5.2.8
+- ver.5.2.8 (2020.01.30)
     - Fix Russian translation.
     - Able to display undefined controls.
     - Added "Use BEGIN/END" option.
     - Fixed a bug that DLL could not be saved as another name.
- * 2020.02.01 ver.5.2.9
+- ver.5.2.9 (2020.02.01)
     - XP support of 5.2.8 is forgotten. Now enabled.
     - Fixed processing of file saving.
     - Able to save EXE/DLL files without user-owned executable.
     - Fixed how to backup.
+- ver.5.3.0 (2020.XX.YY)
+    - Added ES_AUTOHSCROLL to some textboxes.
 
 ## Contact Us
 
