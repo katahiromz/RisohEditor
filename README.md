@@ -150,7 +150,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Fixed processing of file saving.
     - Able to save EXE/DLL files without user-owned executable.
     - Fixed how to backup.
-- v.5.3.0 (2020.XX.YY)
+- v.5.3.0 (2020.02.06)
     - Added `ES_AUTOHSCROLL` to some textboxes.
     - Fixed the logical error upon overwriting file.
 
