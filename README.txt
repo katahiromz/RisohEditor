@@ -148,8 +148,9 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Fixed processing of file saving.
     - Able to save EXE/DLL files without user-owned executable.
     - Fixed how to backup.
-- ver.5.3.0 (2020.XX.YY)
+- v.5.3.0 (2020.XX.YY)
     - Added ES_AUTOHSCROLL to some textboxes.
+    - Fixed the logical error upon overwriting file.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

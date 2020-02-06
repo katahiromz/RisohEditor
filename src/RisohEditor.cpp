@@ -8530,8 +8530,9 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 
     if (bSrcExecutable)
     {
-        // copy src to dest, then update resource
-        if (CopyFileW(src, dest, FALSE))
+        // copy src to dest (if src and dest are not same), then update resource
+        if (lstrcmpiW(src, dest) == 0 ||
+            CopyFileW(src, dest, FALSE))
         {
             return DoSaveInner(dest, bCompression);
         }
