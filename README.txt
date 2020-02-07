@@ -151,6 +151,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.0 (2020.02.06)
     - Added ES_AUTOHSCROLL to some textboxes.
     - Fixed the logical error upon overwriting file.
+- v.5.3.1 (2020.XX.YY)
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
