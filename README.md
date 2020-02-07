@@ -154,6 +154,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Added `ES_AUTOHSCROLL` to some textboxes.
     - Fixed the logical error upon overwriting file.
 - v.5.3.1 (2020.XX.YY)
+    - Fix and improve menu resource reading/displaying.
 
 ## Contact Us
 

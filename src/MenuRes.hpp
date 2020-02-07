@@ -1,7 +1,7 @@
 // MenuRes.hpp  --- Menu Resources
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -162,7 +162,7 @@ public:
 
                 POPUPMENUITEMHEAD head;
                 if (!stream.ReadRaw(head) || !stream.ReadSz(item.text))
-                    return false;
+                    break;
 
                 item.fItemFlags = fItemFlags;
                 item.wMenuID = 0;
@@ -173,7 +173,7 @@ public:
             {
                 NORMALMENUITEMHEAD head;
                 if (!stream.ReadRaw(head) || !stream.ReadSz(item.text))
-                    return false;
+                    break;
 
                 item.fItemFlags = fItemFlags;
                 item.wMenuID = head.wMenuID;
@@ -226,10 +226,7 @@ public:
         while (stream.ReadRaw(item_header))
         {
             if (!stream.ReadSz(exitem.text))
-            {
-                assert(0);
-                return false;
-            }
+                break;
 
             if (item_header.bResInfo & 0x01)
             {
@@ -237,7 +234,7 @@ public:
 
                 stream.ReadDwordAlignment();
                 if (!stream.ReadRaw(exitem.dwHelpId))
-                    return false;
+                    break;
 
                 exitem.dwType = item_header.dwType;
                 exitem.dwState = item_header.dwState;
@@ -394,7 +391,7 @@ public:
         }
         else
         {
-            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id, true);
         }
 
         ret += L" MENU\r\n";
@@ -448,7 +445,7 @@ public:
                     }
                     else
                     {
-                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.wMenuID);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.wMenuID, true);
                     }
                     ret += DumpFlags(item.fItemFlags);
                     ret += L"\r\n";
@@ -483,7 +480,7 @@ public:
         }
         else
         {
-            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id);
+            ret += g_db.GetNameOfResID(IDTYPE_MENU, name.m_id, true);
         }
 
         ret += L" MENUEX\r\n";
@@ -519,7 +516,7 @@ public:
                     }
                     else
                     {
-                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId);
+                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId, true);
                     }
                 }
                 if (item.dwType || item.dwState || item.dwHelpId)
@@ -573,7 +570,7 @@ public:
                         }
                         else
                         {
-                            ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId);
+                            ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId, true);
                         }
                     }
                     if (item.dwType || item.dwState)

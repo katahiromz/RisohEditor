@@ -1,7 +1,7 @@
 // ConstantsDB.hpp --- Constants Database
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -287,7 +287,7 @@ public:
         return false;
     }
 
-    StringType GetNameOfResID(IDTYPE_ nIDTYPE_, ValueType value) const
+    StringType GetNameOfResID(IDTYPE_ nIDTYPE_, ValueType value, bool unsign = false) const
     {
         if (g_settings.bHideID)
         {
@@ -296,7 +296,10 @@ public:
             case IDTYPE_CONTROL:
             case IDTYPE_COMMAND:
             case IDTYPE_NEWCOMMAND:
-                return mstr_dec_short((SHORT)value);
+                if (unsign)
+                    return mstr_dec_word((WORD)value);
+                else
+                    return mstr_dec_short((SHORT)value);
             case IDTYPE_MESSAGE:
                 return mstr_hex(value);
             default:
@@ -306,7 +309,7 @@ public:
 
         if (nIDTYPE_ == IDTYPE_COMMAND || nIDTYPE_ == IDTYPE_NEWCOMMAND)
         {
-            return GetCtrlOrCmdName(value);
+            return GetCtrlOrCmdName(value, unsign);
         }
 
         TableType table = GetTable(L"RESOURCE.ID.PREFIX");
@@ -381,7 +384,7 @@ public:
         return L"";
     }
 
-    StringType GetCtrlOrCmdName(ValueType value) const
+    StringType GetCtrlOrCmdName(ValueType value, bool unsign = false) const
     {
         StringType str;
         str = GetNameOfIDTypeValue(IDTYPE_COMMAND, value);
@@ -395,15 +398,20 @@ public:
             return str;
         str = DumpValue(L"CTRLID", value);
         if (str.empty() || str[0] == L'-' || mchr_is_digit(str[0]))
-            return mstr_dec_short((SHORT)value);
+        {
+            if (unsign)
+                return mstr_dec_word((WORD)value);
+            else
+                return mstr_dec_short((SHORT)value);
+        }
         return str;
     }
 
-    StringType GetNameOfResID(IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2, ValueType value) const
+    StringType GetNameOfResID(IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2, ValueType value, bool unsign = false) const
     {
-        StringType ret = GetNameOfResID(nIDTYPE_1, value);
+        StringType ret = GetNameOfResID(nIDTYPE_1, value, unsign);
         if (mchr_is_digit(ret[0]) || ret[0] == L'-')
-            ret = GetNameOfResID(nIDTYPE_2, value);
+            ret = GetNameOfResID(nIDTYPE_2, value, unsign);
         return ret;
     }
 
