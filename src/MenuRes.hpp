@@ -59,13 +59,13 @@ typedef struct POPUPMENUITEMHEAD
 //     MF_POPUP         0x0010   // Used internally 
 //     MF_MENUBARBREAK  0x0020   // 'MENUBARBREAK' keyword 
 //     MF_MENUBREAK     0x0040   // 'MENUBREAK' keyword 
-//     MF_ENDMENU       0x0080   // Used internally 
+//     MF_END           0x0080   // Used internally 
 
 #ifndef MF_INACTIVE
     #define MF_INACTIVE     MF_DISABLED
 #endif
-#ifndef MF_ENDMENU
-    #define MF_ENDMENU      0x0080
+#ifndef MF_END
+    #define MF_END          0x0080
 #endif
 
 // header of RT_MENU (MENUEX)
@@ -158,7 +158,7 @@ public:
         {
             if (fItemFlags & MF_POPUP)
             {
-                flag_stack.push(!!(fItemFlags & MF_ENDMENU));
+                flag_stack.push(!!(fItemFlags & MF_END));
 
                 POPUPMENUITEMHEAD head;
                 if (!stream.ReadRaw(head) || !stream.ReadSz(item.text))
@@ -180,7 +180,7 @@ public:
                 item.wDepth = wDepth;
                 m_items.push_back(item);
 
-                if (fItemFlags & MF_ENDMENU)
+                if (fItemFlags & MF_END)
                 {
                     --wDepth;
                     while (flag_stack.size() && flag_stack.top())
@@ -641,11 +641,11 @@ public:
             {
                 if (IsLastItem(i))
                 {
-                    m_items[i].fItemFlags |= MF_ENDMENU;
+                    m_items[i].fItemFlags |= MF_END;
                 }
                 else
                 {
-                    m_items[i].fItemFlags &= ~MF_ENDMENU;
+                    m_items[i].fItemFlags &= ~MF_END;
                 }
 
                 if (IsParent(i))
