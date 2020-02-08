@@ -257,11 +257,16 @@ public:
     }
     ValueType GetCtrlIDValue(NameType name) const
     {
+        if (name == L"IDC_STATIC")
+            return -1;
         return GetValue(L"CTRLID", name);
     }
 
     bool HasCtrlID(NameType name) const
     {
+        if (name == L"IDC_STATIC")
+            return true;
+
         TableType table = GetTable(L"CTRLID");
         for (auto& table_entry : table)
         {

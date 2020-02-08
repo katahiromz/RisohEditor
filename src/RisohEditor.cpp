@@ -11757,6 +11757,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bResumeWindowPos = TRUE;
     g_settings.bAutoLoadNearbyResH = TRUE;
     g_settings.bAutoShowIDList = TRUE;
+    g_settings.bHideID = FALSE;
+    g_settings.bUseIDC_STATIC = TRUE;
     g_settings.bShowDotsOnDialog = TRUE;
     g_settings.nComboHeight = 300;
     g_settings.vecRecentlyUsed.clear();
