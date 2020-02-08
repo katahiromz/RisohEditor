@@ -8343,7 +8343,8 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty())
+    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty() ||
+        g_settings.bUseIDC_STATIC)
     {
         // build the resource.h file path
         *pch = 0;
@@ -11762,7 +11763,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bAutoLoadNearbyResH = TRUE;
     g_settings.bAutoShowIDList = TRUE;
     g_settings.bHideID = FALSE;
-    g_settings.bUseIDC_STATIC = TRUE;
+    g_settings.bUseIDC_STATIC = FALSE;
     g_settings.bShowDotsOnDialog = TRUE;
     g_settings.nComboHeight = 300;
     g_settings.vecRecentlyUsed.clear();
