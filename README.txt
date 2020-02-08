@@ -154,6 +154,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.1 (2020.XX.YY)
     - Fix and improve menu resource reading/displaying.
     - Improved IDC_STATIC handling.
+    - Improved "List of Resource IDs" window.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
