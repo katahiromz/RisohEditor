@@ -86,7 +86,6 @@ struct RisohSettings
     BOOL                bSelectableByMacro; // choose languages by macros?
     captions_type       captions;           // the remembered captions
     BOOL                bShowToolBar;       // show the toolbar?
-    BOOL                bHasIDC_STATIC;     // 
     MString             strAtlAxWin;        // ATL OLE control name
     INT                 nSaveFilterIndex;   // the filter index on save
     BOOL                bWordWrap;          // do word wrap?
@@ -100,7 +99,6 @@ struct RisohSettings
 
     RisohSettings()
     {
-        bHasIDC_STATIC = FALSE;
     }
 
     void AddCaption(LPCTSTR pszCaption)

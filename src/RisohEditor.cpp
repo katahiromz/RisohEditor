@@ -4444,7 +4444,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_HIDEIDMACROS, MF_UNCHECKED);
 
-    if (g_settings.bHasIDC_STATIC)
+    if (g_settings.bUseIDC_STATIC)
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_UNCHECKED);
@@ -6610,7 +6610,6 @@ BOOL MMainWnd::UnloadResourceH(HWND hwnd)
 
     // reset the settings of the resource.h file
     g_settings.AddIDC_STATIC();
-    g_settings.bHasIDC_STATIC = FALSE;
     g_settings.id_map.clear();
     g_settings.added_ids.clear();
     g_settings.removed_ids.clear();
@@ -9098,7 +9097,6 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
     // clear the resource IDs in the constants database
     auto& table = g_db.m_map[L"RESOURCE.ID"];
     table.clear();
-    g_settings.bHasIDC_STATIC = FALSE;
 
     // add the resource ID entries to the "RESOURCE.ID" table from the ID mapping
     for (auto& pair : g_settings.id_map)
@@ -9108,8 +9106,6 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
         DWORD value2 = mstr_parse_int(str2.c_str());
         ConstantsDB::EntryType entry(str1, value2);
         table.push_back(entry);
-        if (str1 == L"IDC_STATIC")
-            g_settings.bHasIDC_STATIC = TRUE;
     }
 
     // add IDC_STATIC macro
@@ -9369,15 +9365,12 @@ void MMainWnd::OnAdviceResH(HWND hwnd)
     if (!g_settings.added_ids.empty() &&
         (g_settings.added_ids.size() != 1 ||
          g_settings.added_ids.find("IDC_STATIC") == g_settings.added_ids.end() ||
-         !g_settings.bHasIDC_STATIC))
+         !g_settings.bUseIDC_STATIC))
     {
         str += LoadStringDx(IDS_ADDNEXTIDS);
 
         for (auto& pair : g_settings.added_ids)
         {
-            if (pair.first == "IDC_STATIC" && g_settings.bHasIDC_STATIC)
-                continue;
-
             str += TEXT("#define ");
             str += MAnsiToText(CP_ACP, pair.first).c_str();
             str += TEXT(" ");
@@ -9472,7 +9465,7 @@ void MMainWnd::ReSetPaths(HWND hwnd)
 void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 {
     // toggle the flag
-    g_settings.bHasIDC_STATIC = !g_settings.bHasIDC_STATIC;
+    g_settings.bUseIDC_STATIC = !g_settings.bUseIDC_STATIC;
 
     // select the entry to update the text
     auto entry = g_res.get_entry();
@@ -11945,7 +11938,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         return FALSE;
 
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
-    keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bHasIDC_STATIC);
+    keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bUseIDC_STATIC);
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)g_settings.bShowStatusBar);
     keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)g_settings.bAlwaysControl);

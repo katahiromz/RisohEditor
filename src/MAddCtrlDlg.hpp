@@ -206,7 +206,7 @@ public:
 
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitCtrlIDComboBox(hCmb3);
-        if (g_settings.bHasIDC_STATIC)
+        if (g_settings.bUseIDC_STATIC)
             SetDlgItemText(hwnd, cmb3, TEXT("IDC_STATIC"));
         else
             SetDlgItemText(hwnd, cmb3, TEXT("-1"));

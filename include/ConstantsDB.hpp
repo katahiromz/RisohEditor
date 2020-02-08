@@ -341,7 +341,7 @@ public:
         {
             if (value == -1 || value == 0xFFFF)
             {
-                if (g_settings.bHasIDC_STATIC && !g_settings.bHideID)
+                if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
                     return L"IDC_STATIC";
                 return L"-1";
             }
