@@ -155,6 +155,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Fix and improve menu resource reading/displaying.
     - Improved IDC_STATIC handling.
     - Improved "List of Resource IDs" window.
+    - Reduced package file size.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -157,6 +157,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Fix and improve menu resource reading/displaying.
     - Improved `IDC_STATIC` handling.
     - Improved "List of Resource IDs" window.
+    - Reduced package file size.
 
 ## Contact Us
 
