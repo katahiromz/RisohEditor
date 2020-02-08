@@ -155,6 +155,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Fixed the logical error upon overwriting file.
 - v.5.3.1 (2020.XX.YY)
     - Fix and improve menu resource reading/displaying.
+    - Improved `IDC_STATIC` handling.
 
 ## Contact Us
 

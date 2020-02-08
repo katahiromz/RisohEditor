@@ -5961,20 +5961,18 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
-    r1.WriteFormatA("#include <windows.h>\r\n");
-    r1.WriteFormatA("#include <commctrl.h>\r\n");
+    r1.WriteSzA("#include <windows.h>\r\n");
+    r1.WriteSzA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(m_lang));
-    r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
+    r1.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+    r1.WriteSzA("#ifndef IDC_STATIC\r\n");
+    r1.WriteSzA("    #define IDC_STATIC (-1)\r\n");
+    r1.WriteSzA("#endif\r\n\r\n");
 
     // dump the macros
     for (auto& pair : g_settings.id_map)
     {
-        if (pair.first == "IDC_STATIC")
-        {
-            r1.WriteFormatA("#undef IDC_STATIC\r\n");
-            r1.WriteFormatA("#define IDC_STATIC -1\r\n");
-        }
-        else
+        if (pair.first != "IDC_STATIC")
         {
             r1.WriteFormatA("#undef %s\r\n", pair.first.c_str());
             r1.WriteFormatA("#define %s %s\r\n", pair.first.c_str(), pair.second.c_str());
@@ -7502,6 +7500,10 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteSzW(L"#include <commctrl.h>\r\n");
         file.WriteSzW(L"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
         file.WriteSzW(L"#pragma code_page(65001) // UTF-8\r\n\r\n");
+
+        file.WriteSzW(L"#ifndef IDC_STATIC\r\n");
+        file.WriteSzW(L"    #define IDC_STATIC (-1)\r\n");
+        file.WriteSzW(L"#endif\r\n\r\n");
     }
     else
     {
@@ -7516,11 +7518,15 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 
         if (pszResH && pszResH[0])
             file.WriteSzA("#include \"resource.h\"\r\n");
-        file.WriteFormatA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
-        file.WriteFormatA("#include <windows.h>\r\n");
-        file.WriteFormatA("#include <commctrl.h>\r\n");
-        file.WriteFormatA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
-        file.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+        file.WriteSzA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteSzA("#include <windows.h>\r\n");
+        file.WriteSzA("#include <commctrl.h>\r\n");
+        file.WriteSzA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
+
+        file.WriteSzA("#ifndef IDC_STATIC\r\n");
+        file.WriteSzA("    #define IDC_STATIC (-1)\r\n");
+        file.WriteSzA("#endif\r\n\r\n");
     }
 
     // get the used languages
@@ -7908,16 +7914,14 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         file.WriteSzA("\r\n");
     }
 
+    file.WriteSzA("#define IDC_STATIC (-1)\r\n\r\n");
+
     // sort macro definitions
-    bool has_IDC_STATIC = false;
     std::vector<MACRO_DEF> defs;
     for (auto& pair : g_settings.id_map)
     {
         if (pair.first == "IDC_STATIC")
-        {
-            has_IDC_STATIC = true;
             continue;
-        }
 
         MACRO_DEF def;
         def.name = pair.first;
@@ -7963,17 +7967,17 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     );
 
     // write the macro definitions
-    if (has_IDC_STATIC)
-    {
-        file.WriteFormatA("\r\n");
-        WriteMacroLine(file, "IDC_STATIC", "-1");
-    }
+    file.WriteFormatA("\r\n");
+    WriteMacroLine(file, "IDC_STATIC", "(-1)");
 
     MStringA prefix;
     bool first = true;
     file.WriteFormatA("\r\n");
     for (auto& def : defs)
     {
+        if (def.name == "IDC_STATIC")
+            continue;
+
         if (!first && prefix != def.prefix)
             file.WriteFormatA("\r\n");
 
@@ -8339,7 +8343,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH[0] || !g_settings.id_map.empty())
+    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty())
     {
         // build the resource.h file path
         *pch = 0;

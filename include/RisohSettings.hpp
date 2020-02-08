@@ -101,6 +101,15 @@ struct RisohSettings
     {
     }
 
+    bool IsIDMapEmpty() const
+    {
+        if (id_map.empty())
+            return true;
+        if (id_map.size() == 1 && id_map.begin()->first == "IDC_STATIC")
+            return true;
+        return false;
+    }
+
     void AddCaption(LPCTSTR pszCaption)
     {
         if (!pszCaption || !pszCaption[0])
