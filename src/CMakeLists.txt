@@ -39,6 +39,7 @@ endif()
 # RisohEditor.exe
 add_executable(RisohEditor WIN32 
     PackedDIB.cpp
+    Res.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
