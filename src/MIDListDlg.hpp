@@ -875,11 +875,24 @@ public:
         }
         else
         {
-            EnableMenuItem(hMenu, ID_MODIFYRESID, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_COPYRESIDNAME, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_COPYRESIDVALUE, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_COPYIDDEF, MF_ENABLED);
-            EnableMenuItem(hMenu, ID_DELETERESID, MF_ENABLED);
+            ListView_GetItemText(m_hLst1, iItem, 0, szText, _countof(szText));
+            if (mchr_is_digit(szText[0]) || szText[0] == L'-' ||
+                lstrcmpW(szText, L"IDC_STATIC") == 0)
+            {
+                EnableMenuItem(hMenu, ID_MODIFYRESID, MF_GRAYED);
+                EnableMenuItem(hMenu, ID_COPYRESIDNAME, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_COPYRESIDVALUE, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_COPYIDDEF, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_DELETERESID, MF_GRAYED);
+            }
+            else
+            {
+                EnableMenuItem(hMenu, ID_MODIFYRESID, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_COPYRESIDNAME, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_COPYRESIDVALUE, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_COPYIDDEF, MF_ENABLED);
+                EnableMenuItem(hMenu, ID_DELETERESID, MF_ENABLED);
+            }
         }
     }
 
