@@ -6247,6 +6247,7 @@ INT MMainWnd::CheckData(VOID)
         ErrorBoxDx(TEXT("ERROR: Unable to load Constants.txt file."));
         return -2;  // failure
     }
+    g_db.m_map[L"CTRLID"].emplace_back(L"IDC_STATIC", (WORD)-1);
 
     // cpp.exe
     StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
