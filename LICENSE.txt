@@ -5,9 +5,9 @@ Version 3, 29 June 2007. The source code of RisohEditor is
 available at https://github.com/katahiromz/RisohEditor .
 
 RisohEditor --- Another Win32 resource editor
-Copyright (C) 2017-2019 片山博文MZ <katayama.hirofumi.mz@gmail.com>.
+Copyright (C) 2017-2020 片山博文MZ <katayama.hirofumi.mz@gmail.com>.
 Copyright (C) 2019 林鸿湘 <lhxy24@163.com>.
-Copyright (C) 2019 Dmitry Y <erodim@mail.ru>.
+Copyright (C) 2019-2020 Dmitry Y <erodim@mail.ru>.
 Copyright (C) 2019 Roberto Boriotti <roberto.boriotti@libero.it>.
 
 All rights reserved.
