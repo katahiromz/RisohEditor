@@ -9,6 +9,10 @@
 #undef APSTUDIO_HIDDEN_SYMBOLS
 #pragma code_page(65001) // UTF-8
 
+#ifndef IDC_STATIC
+    #define IDC_STATIC (-1)
+#endif
+
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 //////////////////////////////////////////////////////////////////////////////

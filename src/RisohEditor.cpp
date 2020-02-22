@@ -7502,9 +7502,12 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteSzW(L"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
         file.WriteSzW(L"#pragma code_page(65001) // UTF-8\r\n\r\n");
 
-        file.WriteSzW(L"#ifndef IDC_STATIC\r\n");
-        file.WriteSzW(L"    #define IDC_STATIC (-1)\r\n");
-        file.WriteSzW(L"#endif\r\n\r\n");
+        if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
+        {
+            file.WriteSzW(L"#ifndef IDC_STATIC\r\n");
+            file.WriteSzW(L"    #define IDC_STATIC (-1)\r\n");
+            file.WriteSzW(L"#endif\r\n\r\n");
+        }
     }
     else
     {
@@ -7525,9 +7528,12 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         file.WriteSzA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
         file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
-        file.WriteSzA("#ifndef IDC_STATIC\r\n");
-        file.WriteSzA("    #define IDC_STATIC (-1)\r\n");
-        file.WriteSzA("#endif\r\n\r\n");
+        if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
+        {
+            file.WriteSzA("#ifndef IDC_STATIC\r\n");
+            file.WriteSzA("    #define IDC_STATIC (-1)\r\n");
+            file.WriteSzA("#endif\r\n\r\n");
+        }
     }
 
     // get the used languages
@@ -7915,8 +7921,6 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         file.WriteSzA("\r\n");
     }
 
-    file.WriteSzA("#define IDC_STATIC (-1)\r\n\r\n");
-
     // sort macro definitions
     std::vector<MACRO_DEF> defs;
     for (auto& pair : g_settings.id_map)
@@ -7967,9 +7971,11 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         }
     );
 
-    // write the macro definitions
-    file.WriteFormatA("\r\n");
-    WriteMacroLine(file, "IDC_STATIC", "(-1)");
+    if (g_settings.bUseIDC_STATIC)
+    {
+        // write the macro definitions
+        WriteMacroLine(file, "IDC_STATIC", "(-1)");
+    }
 
     MStringA prefix;
     bool first = true;
@@ -8344,8 +8350,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty() ||
-        g_settings.bUseIDC_STATIC)
+    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty())
     {
         // build the resource.h file path
         *pch = 0;
