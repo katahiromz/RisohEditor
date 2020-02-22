@@ -391,6 +391,13 @@ public:
 
     StringType GetCtrlOrCmdName(ValueType value, bool unsign = false) const
     {
+        if (value == 0xFFFF || value == -1)
+        {
+            if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
+                return L"IDC_STATIC";
+            else
+                return L"-1";
+        }
         StringType str;
         str = GetNameOfIDTypeValue(IDTYPE_COMMAND, value);
         if (str.size())

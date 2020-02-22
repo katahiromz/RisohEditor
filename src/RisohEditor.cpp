@@ -7974,6 +7974,7 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
     if (g_settings.bUseIDC_STATIC)
     {
         // write the macro definitions
+        file.WriteSzA("\r\n");
         WriteMacroLine(file, "IDC_STATIC", "(-1)");
     }
 
