@@ -8350,7 +8350,8 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     }
 
     BOOL bOK = FALSE;
-    if (m_szResourceH[0] || !g_settings.IsIDMapEmpty())
+    if ((m_szResourceH[0] || !g_settings.IsIDMapEmpty()) &&
+        !g_settings.bHideID)
     {
         // build the resource.h file path
         *pch = 0;
