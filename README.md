@@ -153,7 +153,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 - v.5.3.0 (2020.02.06)
     - Added `ES_AUTOHSCROLL` to some textboxes.
     - Fixed the logical error upon overwriting file.
-- v.5.3.1 (2020.XX.YY)
+- v.5.3.1 (2020.02.23)
     - Fix and improve menu resource reading/displaying.
     - Improved `IDC_STATIC` handling.
     - Improved "List of Resource IDs" window.
