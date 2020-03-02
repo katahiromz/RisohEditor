@@ -156,6 +156,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Improved IDC_STATIC handling.
     - Improved "List of Resource IDs" window.
 - v.5.3.2 (2020.XX.YY)
+    - Able to save with Ctrl+S without querying the location.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -2285,6 +2285,7 @@ protected:
 
     void OnNew(HWND hwnd);
     void OnOpen(HWND hwnd);
+    void OnSave(HWND hwnd);
     void OnSaveAs(HWND hwnd);
     void OnImport(HWND hwnd);
     void OnLoadResH(HWND hwnd);
@@ -2952,18 +2953,18 @@ void MMainWnd::OnNew(HWND hwnd)
     g_res.delete_all();
 }
 
+enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
+{
+    RFFI_NONE = 0,
+    RFFI_EXECUTABLE = 1,
+    RFFI_RC = 2,
+    RFFI_RES = 3,
+    RFFI_ALL = 4
+};
+
 // save as a file or files
 void MMainWnd::OnSaveAs(HWND hwnd)
 {
-    enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
-    {
-        RFFI_NONE = 0,
-        RFFI_EXECUTABLE = 1,
-        RFFI_RC = 2,
-        RFFI_RES = 3,
-        RFFI_ALL = 4
-    };
-
     // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
@@ -3104,6 +3105,83 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             assert(0);
             break;
         }
+    }
+}
+
+void MMainWnd::OnSave(HWND hwnd)
+{
+    if (!m_szFile[0])
+    {
+        OnSaveAs(hwnd);
+        return;
+    }
+    else
+    {
+        // compile if necessary
+        if (!CompileIfNecessary(TRUE))
+            return;
+    }
+
+    LPWSTR pchDotExt = PathFindExtensionW(m_szFile);
+    if (lstrcmpiW(pchDotExt, L".res") == 0)
+    {
+        g_settings.nSaveFilterIndex = RFFI_RES;
+    }
+    else if (lstrcmpiW(pchDotExt, L".rc") == 0)
+    {
+        g_settings.nSaveFilterIndex = RFFI_RC;
+    }
+    else
+    {
+        g_settings.nSaveFilterIndex = RFFI_EXECUTABLE;
+    }
+
+    switch (g_settings.nSaveFilterIndex)
+    {
+    case RFFI_EXECUTABLE:
+        // save it
+        if (!DoSaveAs(m_szFile))
+        {
+            ErrorBoxDx(IDS_CANNOTSAVE);
+        }
+        break;
+
+    case RFFI_RC:
+        // export and save it
+        {
+            // show "save options" dialog
+            MSaveOptionsDlg save_options;
+            if (save_options.DialogBoxDx(hwnd) != IDOK)
+                return;
+
+            // export
+            WCHAR szResH[MAX_PATH] = L"";
+            if (DoExport(m_szFile, szResH))   // succeeded
+            {
+                // save the resource.h path
+                StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
+
+                // update the file info
+                UpdateFileInfo(FT_RC, m_szFile, FALSE);
+            }
+            else
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+        break;
+
+    case RFFI_RES:
+        // save the *.res file
+        if (!DoSaveResAs(m_szFile))
+        {
+            ErrorBoxDx(IDS_CANNOTSAVE);
+        }
+        break;
+
+    default:
+        assert(0);
+        break;
     }
 }
 
@@ -10371,6 +10449,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_USEBEGINEND:
         OnUseBeginEnd(hwnd);
+        break;
+    case ID_SAVE:
+        OnSave(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

@@ -15,7 +15,8 @@ IDR_MAINMENU MENU
         MENUITEM "&Nuovo\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
         MENUITEM "&Apri...\tCtrl+O", ID_OPEN
-        MENUITEM "Salva &come...\tCtrl+S", ID_SAVEAS
+        MENUITEM "&Salva...\tCtrl+S", ID_SAVE
+        MENUITEM "Salva &come...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM "Salva con co&mpressione...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "&Importa...\tCtrl+I", ID_IMPORT

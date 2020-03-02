@@ -158,6 +158,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved `IDC_STATIC` handling.
     - Improved "List of Resource IDs" window.
 - v.5.3.2 (2020.XX.YY)
+    - Able to save with Ctrl+S without querying the location.
 
 ## Contact Us
 
