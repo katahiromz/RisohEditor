@@ -1242,8 +1242,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.3.1 (c) Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 5.3.1 (c) Katayama Hirofumi MZ"
+    IDS_APPNAME, "RisohEditor 5.3.2 (c) Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 5.3.2 (c) Katayama Hirofumi MZ"
     IDS_EXTRACTRES, "Извлечь ресурс"
     IDS_RESBINFILTER, "Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_CANNOTSAVE, "Невозможно сохранить."
@@ -1269,7 +1269,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Невозможно заменить растровую картинку."
     IDS_REPLACEBMP, "Заменить растровую картинку"
     IDS_ERRORCODE, "Код ошибки %d"
-    IDS_VERSIONINFO, "RisohEditor версия 5.3.1\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor версия 5.3.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (freeware)"
     IDS_ADDRES, "Добавить ресурс"
     IDS_CANNOTADDRES, "Невозможно добавить ресурс."
     IDS_CANTADDBMP, "Невозможно добавить растровую картинку."

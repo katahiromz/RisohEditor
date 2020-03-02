@@ -113,10 +113,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.3.1\0"
+            VALUE "FileVersion", "5.3.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.3.1\0"
+            VALUE "ProductVersion", "5.3.2\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -125,10 +125,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.3.1\0"
+            VALUE "FileVersion", "5.3.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.3.1\0"
+            VALUE "ProductVersion", "5.3.2\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -137,10 +137,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.3.1\0"
+            VALUE "FileVersion", "5.3.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Roberto Boriotti. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.3.1\0"
+            VALUE "ProductVersion", "5.3.2\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -149,10 +149,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "5.3.1\0"
+            VALUE "FileVersion", "5.3.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.3.1\0"
+            VALUE "ProductVersion", "5.3.2\0"
         }
     }
     BLOCK "StringFileInfo"
@@ -161,10 +161,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.3.1\0"
+            VALUE "FileVersion", "5.3.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Dmitry Yerokhin. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.3.1\0"
+            VALUE "ProductVersion", "5.3.2\0"
         }
     }
     BLOCK "VarFileInfo"
