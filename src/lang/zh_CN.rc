@@ -15,7 +15,7 @@ IDR_MAINMENU MENU
         MENUITEM "新建(&N)\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
         MENUITEM "打开(&O)...\tCtrl+O", ID_OPEN
-        MENUITEM "另存(&S)...\tCtrl+S", ID_SAVE
+        MENUITEM "覆写(&S)...\tCtrl+S", ID_SAVE
         MENUITEM "另存为(&A)...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM "另存压缩(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
