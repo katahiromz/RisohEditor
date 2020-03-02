@@ -9638,7 +9638,7 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
     {
         if (IsWindow(m_id_list_dlg))
             DestroyWindow(m_id_list_dlg);
-        m_id_list_dlg.CreateDialogDx(NULL);
+        m_id_list_dlg.CreateDialogDx(hwnd);
         ShowWindow(m_id_list_dlg, SW_SHOWNOACTIVATE);
         UpdateWindow(m_id_list_dlg);
     }

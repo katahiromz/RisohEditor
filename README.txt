@@ -158,6 +158,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.2 (2020.03.02)
     - Able to save with Ctrl+S without querying the location.
     - Made the "Output RC files as UTF-16" option non-volatile.
+    - Bring "List of Resource IDs" window to top.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
