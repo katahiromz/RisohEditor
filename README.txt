@@ -160,6 +160,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Made the "Output RC files as UTF-16" option non-volatile.
     - Bring "List of Resource IDs" window to top.
 - v.5.3.3 (2020.XX.YY)
+    - Adopted the xz format.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

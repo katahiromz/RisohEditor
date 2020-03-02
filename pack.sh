@@ -23,12 +23,12 @@ RE_VERSION=5.3.3
 RE_NAME="RisohEditor-$RE_VERSION"
 RE_BIN_DIR="build/$RE_NAME"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
-RE_TARGET="build/RisohEditor-$RE_VERSION.zip"
+RE_TARGET="build/RisohEditor-$RE_VERSION.xz"
 
 ################################################################################
 
-if ! which zip > /dev/null 2>&1; then
-    echo ERROR: there is no executable zip.
+if ! which tar > /dev/null 2>&1; then
+    echo ERROR: there is no executable tar.
     exit 10
 fi
 
@@ -81,7 +81,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                         if cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
                             echo Zipping...
                             cd build
-                            if zip -9 -r -q "$RE_NAME.zip" "$RE_NAME"; then
+                            if tar -Jcf9 "$RE_NAME.xz" "$RE_NAME"; then
                                 cd ..
                                 if [ -e "$RE_TARGET" ]; then
                                     echo Success. "$RE_TARGET" was generated.
