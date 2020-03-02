@@ -81,7 +81,7 @@ if cp $RE_FILES "$RE_BIN_DIR"; then
                         if cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
                             echo Zipping...
                             cd build
-                            if tar -Jcf9 "$RE_NAME.xz" "$RE_NAME"; then
+                            if tar -Jcf "$RE_NAME.xz" "$RE_NAME"; then
                                 cd ..
                                 if [ -e "$RE_TARGET" ]; then
                                     echo Success. "$RE_TARGET" was generated.
