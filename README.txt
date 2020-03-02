@@ -155,7 +155,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Fix and improve menu resource reading/displaying.
     - Improved IDC_STATIC handling.
     - Improved "List of Resource IDs" window.
-- v.5.3.2 (2020.XX.YY)
+- v.5.3.2 (2020.03.02)
     - Able to save with Ctrl+S without querying the location.
     - Made the "Output RC files as UTF-16" option non-volatile.
 
