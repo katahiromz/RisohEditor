@@ -1056,7 +1056,7 @@ FONT 9, "宋体"
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "产出冗余注释(&C)", chx5, 5, 140, 195, 14
     AUTOCHECKBOX "用 #ifndef MSVC ... #endif 包装 ma&nifest", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "产出 RC 文件为 UTF-16 (不建议) (&U)", chx7, 5, 180, 195, 14
+    AUTOCHECKBOX "产出 RC 文件为 &UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 140, 205, 60, 14
 }
@@ -1153,7 +1153,7 @@ FONT 9, "宋体"
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "产出冗余注释(&C)", chx5, 5, 140, 195, 14
     AUTOCHECKBOX "用 #ifndef MSVC ... #endif 包装 ma&nifest", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "产出 RC 文件为 UTF-16 (不建议) (&U)", chx7, 5, 180, 195, 14
+    AUTOCHECKBOX "产出 RC 文件为 &UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 140, 205, 60, 14
 }

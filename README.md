@@ -159,6 +159,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved "List of Resource IDs" window.
 - v.5.3.2 (2020.XX.YY)
     - Able to save with Ctrl+S without querying the location.
+    - Made the "Output RC files as UTF-16" option non-volatile.
 
 ## Contact Us
 

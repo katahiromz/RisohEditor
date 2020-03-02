@@ -12241,6 +12241,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 
     keyRisoh.QueryDword(TEXT("nSaveFilterIndex"), (DWORD&)g_settings.nSaveFilterIndex);
     keyRisoh.QueryDword(TEXT("bWordWrap"), (DWORD&)g_settings.bWordWrap);
+    keyRisoh.QueryDword(TEXT("RCFileUTF16"), (DWORD&)g_settings.bRCFileUTF16);
 
     keyRisoh.QueryDword(TEXT("bBackup"), (DWORD&)g_settings.bBackup);
 
@@ -12415,6 +12416,8 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(L"strAtlAxWin", g_settings.strAtlAxWin.c_str());
     keyRisoh.SetDword(TEXT("nSaveFilterIndex"), g_settings.nSaveFilterIndex);
     keyRisoh.SetDword(TEXT("bWordWrap"), g_settings.bWordWrap);
+    keyRisoh.SetDword(TEXT("RCFileUTF16"), g_settings.bRCFileUTF16);
+
     keyRisoh.SetDword(TEXT("bBackup"), g_settings.bBackup);
 
     keyRisoh.SetSz(TEXT("strBackupSuffix"), TEXT(RE_VERSION));
