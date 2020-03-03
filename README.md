@@ -161,8 +161,8 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Able to save with Ctrl+S without querying the location.
     - Made the "Output RC files as UTF-16" option non-volatile.
     - Bring "List of Resource IDs" window to top.
-- v.5.3.3 (2020.XX.YY)
-    - Reduced file size.
+- v.5.3.3 (2020.03.03)
+    - Reduced file size from 9MB to 3MB.
 
 ## Contact Us
 
