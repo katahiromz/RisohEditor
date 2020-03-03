@@ -1967,7 +1967,6 @@ protected:
     // data and sub-programs
     WCHAR       m_szDataFolder[MAX_PATH];       // the data folder location
     WCHAR       m_szConstantsFile[MAX_PATH];    // the Constants.txt file location
-    WCHAR       m_szCppExe[MAX_PATH];           // the cpp.exe location
     WCHAR       m_szMCppExe[MAX_PATH];          // the mcpp.exe location
     WCHAR       m_szWindresExe[MAX_PATH];       // the windres.exe location
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
@@ -2015,7 +2014,6 @@ public:
     {
         m_szDataFolder[0] = 0;
         m_szConstantsFile[0] = 0;
-        m_szCppExe[0] = 0;
         m_szMCppExe[0] = 0;
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
@@ -5723,10 +5721,12 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -o \"";
+    strCmdLine += L" -I \"";
+    strCmdLine += m_szIncludeDir;
+    strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
-    strCmdLine += m_szCppExe;
+    strCmdLine += m_szMCppExe;
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
@@ -5855,12 +5855,16 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -o \"";
+    strCmdLine += L" --include-dir=\"";
+    strCmdLine += m_szIncludeDir;
+    strCmdLine += L"\" --preprocessor=\"";
+    strCmdLine += m_szMCppExe;
+    strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res \"";
     strCmdLine += szPath1;
     strCmdLine += L'\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -6073,10 +6077,12 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -o \"";
+    strCmdLine += L" -I \"";
+    strCmdLine += m_szIncludeDir;
+    strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
-    strCmdLine += m_szCppExe;
+    strCmdLine += m_szMCppExe;
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
@@ -6326,15 +6332,6 @@ INT MMainWnd::CheckData(VOID)
         return -2;  // failure
     }
     g_db.m_map[L"CTRLID"].emplace_back(L"IDC_STATIC", (WORD)-1);
-
-    // cpp.exe
-    StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
-    StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
-    if (!PathFileExistsW(m_szCppExe))
-    {
-        ErrorBoxDx(TEXT("ERROR: No cpp.exe found."));
-        return -3;  // failure
-    }
 
     // mcpp.exe
     StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
@@ -6765,7 +6762,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     // load the RC file to the res variable
     MStringA strOutput;
-    BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe, m_szCppExe,
+    BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe,
                            m_szMCppExe, m_szMcdxExe, GetMacroDump(),
                            GetIncludesDump(), m_szIncludeDir);
     if (!bOK)
@@ -9284,11 +9281,11 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     // build the command line text
     MString strCmdLine;
     strCmdLine += L'\"';
-    strCmdLine += m_szCppExe;       // cpp.exe
+    strCmdLine += m_szMCppExe;       // mcpp.exe
     strCmdLine += L"\" ";
     strCmdLine += GetIncludesDump();
     strCmdLine += GetMacroDump();
-    strCmdLine += L" -E \"";
+    strCmdLine += L" \"";
     strCmdLine += szTempFile1;
     strCmdLine += L'\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
@@ -9354,13 +9351,15 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     // build a command line
     MString strCmdLine;
     strCmdLine += L'"';
-    strCmdLine += m_szCppExe;
-    strCmdLine += L"\" -E -dM -DRC_INVOKED -o \"";
+    strCmdLine += m_szMCppExe;
+    strCmdLine += L"\" -dM -DRC_INVOKED -o \"";
     strCmdLine += szTempFile;
-    strCmdLine += L"\" -x none \"";
+    strCmdLine += L"\" -I \"";
+    strCmdLine += m_szIncludeDir;
+    strCmdLine += L"\" \"";
     strCmdLine += pszFile;
     strCmdLine += L"\"";
-    //MessageBoxW(hwnd, szCmdLine, NULL, 0);
+    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -9541,14 +9540,14 @@ void MMainWnd::ReSetPaths(HWND hwnd)
     // cpp.exe
     if (g_settings.strCppExe.size())
     {
-        // g_settings.strCppExe --> m_szCppExe
-        StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
+        // g_settings.strCppExe --> m_szMCppExe
+        StringCchCopy(m_szMCppExe, _countof(m_szMCppExe), g_settings.strCppExe.c_str());
     }
     else
     {
-        // m_szDataFolder + "\\bin\\cpp.exe" --> m_szCppExe
-        StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
-        StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
+        // m_szDataFolder + "\\bin\\cpp.exe" --> m_szMCppExe
+        StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
+        StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
     }
 }
 
@@ -11963,8 +11962,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.strCppExe.clear();
 
     // cpp.exe
-    StringCchCopyW(m_szCppExe, _countof(m_szCppExe), m_szDataFolder);
-    StringCchCatW(m_szCppExe, _countof(m_szCppExe), L"\\bin\\cpp.exe");
+    StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
+    StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
 
     // windres.exe
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
@@ -12641,7 +12640,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     }
     if (g_settings.strCppExe.size())
     {
-        StringCchCopy(m_szCppExe, _countof(m_szCppExe), g_settings.strCppExe.c_str());
+        StringCchCopy(m_szMCppExe, _countof(m_szMCppExe), g_settings.strCppExe.c_str());
     }
 
     // OK, ready

@@ -749,7 +749,7 @@ public:
 
     // load the resources from a *.rc file
     BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
-        const MString& strWindresExe, const MString& strCppExe, const MString& strMCppExe,
+        const MString& strWindresExe, const MString& strCppExe,
         const MString& strMcdxExe, const MStringW& strMacrosDump,
         const MStringW& strIncludesDump, const MStringW& strIncludeDir);
 };

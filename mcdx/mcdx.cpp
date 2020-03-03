@@ -185,7 +185,7 @@ FILE *tmpfilenam(char *pathname)
 
 ////////////////////////////////////////////////////////////////////////////
 
-const char *g_cpp = "cpp";
+const char *g_cpp = "mcpp";
 const char *g_windres = "windres";
 
 char *g_input_file = NULL;
@@ -862,15 +862,18 @@ int load_rc(const char *input_file)
 
     // build up command line
     MString command_line;
-    if (IsUTF16File(input_file))
-        command_line += "mcpp";
-    else
-        command_line += g_cpp;
+    command_line += g_cpp;
     command_line += ' ';
     for (size_t i = 0; i < g_definitions.size(); ++i)
     {
         command_line += " -D";
         command_line += g_definitions[i];
+    }
+    for (size_t i = 0; i < g_include_directories.size(); ++i)
+    {
+        command_line += " -I\"";
+        command_line += g_include_directories[i];
+        command_line += "\"";
     }
     command_line += " \"";
     command_line += input_file;

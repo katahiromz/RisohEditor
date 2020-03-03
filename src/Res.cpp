@@ -1507,7 +1507,7 @@ BOOL EntrySet::IsUTF16File(LPCWSTR pszRCFile) const
 }
 
 BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
-    const MString& strWindresExe, const MString& strCppExe, const MString& strMCppExe,
+    const MString& strWindresExe, const MString& strCppExe,
     const MString& strMcdxExe, const MStringW& strMacrosDump,
     const MStringW& strIncludesDump, const MStringW& strIncludeDir)
 {
@@ -1524,6 +1524,8 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += strWindresExe;
+    strCmdLine += L"\" -I \"";
+    strCmdLine += strIncludeDir;
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += strMacrosDump;
     strCmdLine += L' ';
@@ -1531,15 +1533,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
-    BOOL bUTF16 = IsUTF16File(pszRCFile);
-    if (bUTF16)
-    {
-        strCmdLine += strMCppExe;
-    }
-    else
-    {
-        strCmdLine += strCppExe;
-    }
+    strCmdLine += strCppExe;
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += pszRCFile;
     strCmdLine += L'\"';
@@ -1581,8 +1575,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     {
         // load the message table if any
         EntrySet es;
-        bSuccess = es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump);
-        if (bSuccess)
+        if (es.load_msg_table(pszRCFile, strOutput, strMcdxExe, strMacrosDump, strIncludesDump))
         {
             merge(es);
         }
