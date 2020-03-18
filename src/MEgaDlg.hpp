@@ -97,6 +97,8 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
 
         m_cmb1.AddString(L"help");
+        m_cmb1.AddString(L"help print");
+        m_cmb1.AddString(L"print(+(1, 2));");
 
         LOGFONTW lf;
         ZeroMemory(&lf, sizeof(lf));
@@ -150,7 +152,9 @@ public:
         case CTLCOLOR_BTN:
             id = GetDlgCtrlID(hwndChild);
             if (GetParent(hwndChild) == m_cmb1)
+            {
                 id = cmb1;
+            }
             switch (id)
             {
             case cmb1:
