@@ -161,6 +161,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Bring "List of Resource IDs" window to top.
 - v.5.3.3 (2020.03.03)
     - Reduced file size from 9MB to 3MB.
+- v.5.3.4 (2020.XX.YY)
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

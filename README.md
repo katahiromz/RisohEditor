@@ -163,6 +163,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Bring "List of Resource IDs" window to top.
 - v.5.3.3 (2020.03.03)
     - Reduced file size from 9MB to 3MB.
+- v.5.3.4 (2020.XX.YY)
 
 ## Contact Us
 
