@@ -63,7 +63,7 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     SendDlgItemMessageA(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
 }
 
-static DWORD WINAPI ThreadFunc(LPVOID)
+static DWORD WINAPI EgaThreadFunc(LPVOID)
 {
     EGA_interactive(true);
     return 0;
@@ -102,7 +102,7 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        HANDLE hThread = CreateThread(NULL, 0, ThreadFunc, NULL, 0, NULL);
+        HANDLE hThread = CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
         CloseHandle(hThread);
 
         CenterWindowDx();
