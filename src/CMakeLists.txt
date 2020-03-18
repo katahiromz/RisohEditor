@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.4)
 
 # use new policy
 cmake_policy(SET CMP0046 NEW)
+cmake_policy(SET CMP0003 NEW)
 
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
