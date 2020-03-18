@@ -84,6 +84,7 @@ public:
     virtual ~MEgaDlg()
     {
         EGA_uninit();
+        DeleteObject(m_hFont);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -92,9 +93,19 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
         m_cmb1.AddString(L"help");
-        CenterWindowDx();
+
+        LOGFONTW lf;
+        ZeroMemory(&lf, sizeof(lf));
+        lf.lfHeight = -12;
+        lf.lfCharSet = DEFAULT_CHARSET;
+        lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+        m_hFont = CreateFontIndirectW(&lf);
+        SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
+
         HANDLE hThread = CreateThread(NULL, 0, ThreadFunc, NULL, 0, NULL);
         CloseHandle(hThread);
+
+        CenterWindowDx();
         return TRUE;
     }
 
@@ -138,6 +149,7 @@ public:
     }
 
 protected:
+    HFONT m_hFont;
     MComboBox m_cmb1;
     MComboBox m_cmb2;
 };
