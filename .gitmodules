@@ -1,0 +1,6 @@
+[submodule "src/EGA"]
+	path = src/EGA
+	url = https://github.com/katahiromz/EGA.git
+[submodule "EGA"]
+	path = EGA
+	url = https://github.com/katahiromz/EGA.git

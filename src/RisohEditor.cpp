@@ -2285,6 +2285,7 @@ protected:
     void OnOpen(HWND hwnd);
     void OnSave(HWND hwnd);
     void OnSaveAs(HWND hwnd);
+    void OnEga(HWND hwnd);
     void OnImport(HWND hwnd);
     void OnLoadResH(HWND hwnd);
     void OnLoadResHBang(HWND hwnd);
@@ -3104,6 +3105,12 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             break;
         }
     }
+}
+
+void MMainWnd::OnEga(HWND hwnd)
+{
+    MEgaDlg dialog;
+    dialog.DialogBoxDx(hwnd);
 }
 
 void MMainWnd::OnSave(HWND hwnd)
@@ -9128,7 +9135,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
         StringScanner scanner(line);
 
         // tokenize it
-        TokenStream stream(scanner);
+        MacroParser::TokenStream stream(scanner);
         stream.read_tokens();
 
         // and parse it
@@ -10438,6 +10445,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_SAVE:
         OnSave(hwnd);
+        break;
+    case ID_EGA:
+        OnEga(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

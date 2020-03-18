@@ -36,6 +36,9 @@ if (LANGUAGE_ZH_CN)
     list(APPEND LANG_DEFS -DLANGUAGE_ZH_CN)
 endif()
 
+# EGA
+subdirs(../EGA)
+
 # RisohEditor.exe
 add_executable(RisohEditor WIN32 
     PackedDIB.cpp
@@ -43,7 +46,7 @@ add_executable(RisohEditor WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditor comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32 shlwapi)
+target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32 shlwapi)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # resource object extension
