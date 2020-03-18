@@ -14111,6 +14111,8 @@ wWinMain(HINSTANCE   hInstance,
          LPWSTR       lpCmdLine,
          INT         nCmdShow)
 {
+    SetEnvironmentVariableW(L"LANG", L"en_US");
+
     {
         WCHAR szPath[MAX_PATH];
         GetModuleFileNameW(NULL, szPath, ARRAYSIZE(szPath));

@@ -1455,7 +1455,6 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
     MFile hInputWrite, hOutputRead;
-    SetEnvironmentVariableW(L"LANG", L"en_US");
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
@@ -1547,7 +1546,6 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT);
 
     MFile hInputWrite, hOutputRead;
-    SetEnvironmentVariableW(L"LANG", L"en_US");
 
     if (pmaker.PrepareForRedirect(&hInputWrite, &hOutputRead) &&
         pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
