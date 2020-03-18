@@ -22,6 +22,7 @@
 
 #include "RisohEditor.hpp"
 #include "MComboBox.hpp"
+#include "MResizable.hpp"
 #include "resource.h"
 #include "../EGA/ega.hpp"
 
@@ -80,6 +81,9 @@ class MEgaDlg : public MDialogBase
 public:
     MEgaDlg() : MDialogBase(IDD_EGA)
     {
+        m_hIcon = LoadIconDx(IDI_SMILY);
+        m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+
         EGA_init();
         EGA_set_input_fn(EGA_dialog_input);
         EGA_set_print_fn(EGA_dialog_print);
@@ -89,12 +93,26 @@ public:
     {
         EGA_uninit();
         DeleteObject(m_hFont);
+
+        DestroyIcon(m_hIcon);
+        DestroyIcon(m_hIconSm);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        m_resizable.OnParentCreate(hwnd);
+
+        m_resizable.SetLayoutAnchor(grp1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
+        m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
+
         s_hwndEga = hwnd;
         SubclassChildDx(m_cmb1, cmb1);
+
+        SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         m_cmb1.AddString(L"help");
         m_cmb1.AddString(L"help print");
@@ -167,6 +185,11 @@ public:
         return (HBRUSH)(COLOR_3DFACE + 1);
     }
 
+    void OnSize(HWND hwnd, UINT state, int cx, int cy)
+    {
+        m_resizable.OnSize();
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -176,6 +199,7 @@ public:
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_CTLCOLOREDIT, OnCtlColor);
         HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, OnCtlColor);
+        HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         default:
             return DefaultProcDx();
         }
@@ -183,7 +207,10 @@ public:
 
 protected:
     HFONT m_hFont;
+    HICON m_hIcon;
+    HICON m_hIconSm;
     MComboBox m_cmb1;
+    MResizable m_resizable;
 };
 
 //////////////////////////////////////////////////////////////////////////////
