@@ -3109,6 +3109,10 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnEga(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
     MEgaDlg dialog;
     dialog.DialogBoxDx(hwnd);
 }
