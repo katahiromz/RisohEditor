@@ -45,6 +45,9 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
     lstrcpynA(buf, szText, buflen);
     SetDlgItemTextA(s_hwndEga, cmb1, NULL);
     s_bEnter = FALSE;
+
+    if (lstrcmpA(szText, "exit") == 0)
+        PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
     return true;
 }
 
