@@ -3670,10 +3670,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     ChangeStatusText(IDS_COMPILING);
 
     // m_hSrcEdit --> strWide
-    INT cchText = ::GetWindowTextLengthW(m_hSrcEdit);
-    MStringW strWide;
-    strWide.resize(cchText);
-    GetWindowTextW(m_hSrcEdit, &strWide[0], cchText + 1);
+    MStringW strWide = MWindowBase::GetWindowTextW(m_hSrcEdit);
 
     // compile the strWide text
     MStringA strOutput;
@@ -6051,16 +6048,6 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r1.WriteSzA("    #define IDC_STATIC (-1)\r\n");
     r1.WriteSzA("#endif\r\n\r\n");
 
-    // dump the macros
-    for (auto& pair : g_settings.id_map)
-    {
-        if (pair.first != "IDC_STATIC")
-        {
-            r1.WriteFormatA("#undef %s\r\n", pair.first.c_str());
-            r1.WriteFormatA("#define %s %s\r\n", pair.first.c_str(), pair.second.c_str());
-        }
-    }
-
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
     r1.CloseHandle();   // close the handle
 
@@ -6074,7 +6061,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
-    strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
+    strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
     strCmdLine += L" -I \"";
