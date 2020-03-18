@@ -26,6 +26,8 @@ configuration:
 before_build:
   - cmake --version
   - cmake -G "%GENERATOR%" -A "%PLATFORM%" .
+  - git submodule init
+  - git submodule update
 
 build:
   project: RisohEditor.sln

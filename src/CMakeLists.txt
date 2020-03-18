@@ -8,7 +8,7 @@ cmake_policy(SET CMP0046 NEW)
 ENABLE_LANGUAGE(RC)
 
 # include directories
-include_directories(../include .)
+include_directories(../include)
 
 #
 # language options
