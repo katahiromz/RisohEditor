@@ -92,7 +92,7 @@ public:
     {
         s_hwndEga = hwnd;
         SubclassChildDx(m_cmb1, cmb1);
-        SubclassChildDx(m_cmb2, cmb2);
+
         m_cmb1.AddString(L"help");
 
         LOGFONTW lf;
@@ -137,6 +137,29 @@ public:
         }
     }
 
+    HBRUSH OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
+    {
+        UINT id;
+        switch (type)
+        {
+        case CTLCOLOR_EDIT:
+        case CTLCOLOR_STATIC:
+        case CTLCOLOR_BTN:
+            id = GetDlgCtrlID(hwndChild);
+            if (GetParent(hwndChild) == m_cmb1)
+                id = cmb1;
+            switch (id)
+            {
+            case cmb1:
+            case edt1:
+                SetTextColor(hdc, RGB(0, 255, 0));
+                SetBkColor(hdc, RGB(0, 0, 0));
+                return GetStockBrush(BLACK_BRUSH);
+            }
+        }
+        return (HBRUSH)(COLOR_3DFACE + 1);
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -144,6 +167,8 @@ public:
         {
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        HANDLE_MSG(hwnd, WM_CTLCOLOREDIT, OnCtlColor);
+        HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, OnCtlColor);
         default:
             return DefaultProcDx();
         }
@@ -152,7 +177,6 @@ public:
 protected:
     HFONT m_hFont;
     MComboBox m_cmb1;
-    MComboBox m_cmb2;
 };
 
 //////////////////////////////////////////////////////////////////////////////
