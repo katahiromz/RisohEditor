@@ -3127,7 +3127,7 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
     OPENFILENAMEW ofn = { sizeof(ofn), hwnd };
     WCHAR szFile[MAX_PATH] = L"";
     ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = L"EGA Program (*.ega)\0*.ega\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EGAFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = ARRAYSIZE(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_LOADEGAPROGRAM);

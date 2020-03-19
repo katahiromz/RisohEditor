@@ -1469,6 +1469,7 @@ STRINGTABLE
     IDS_INVALIDRESTYPE, "Invalid resource type."
     IDS_PATHSPACEERROR, "You wrongly installed into the location with space characters! The resource compiler can't accept space.\n\nPlease avoid ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Load EGA program..."
+    IDS_EGAFILTER, "EGA Program (*.ega)|*.ega|All Files (*.*)|*.*|"
 }
 
 //////////////////////////////////////////////////////////////////////////////
