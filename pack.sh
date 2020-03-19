@@ -65,13 +65,17 @@ fi
 cp $RE_FILES "$RE_BIN_DIR"
 cp -r data "$RE_BIN_DIR"
 cp build/mcdx.exe "$RE_BIN_DIR/data/bin"
+
 mkdir "$RE_BIN_DIR/OLE"
 cp -f src/MOleCtrl.hpp include/MWindowBase.hpp "$RE_BIN_DIR/OLE"
+
 mkdir "$RE_BIN_DIR/MyWndCtrl"
 cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"
 cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"
+
 mkdir "$RE_BIN_DIR/DlgInit"
 cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"
+
 mkdir "$RE_BIN_DIR/EGA"
 cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"
 cp -f EGA/samples/*.ega EGA-samples/*.ega "$RE_BIN_DIR/EGA"
