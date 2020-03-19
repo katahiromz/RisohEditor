@@ -123,6 +123,7 @@ IDR_MAINMENU MENU
     POPUP "自动化(&A)"
     {
         MENUITEM "电脑语言 &EGA...", ID_EGA
+        MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
     }
     POPUP "帮助(&H)"
     {
@@ -1466,6 +1467,7 @@ STRINGTABLE
     IDS_ENCODING, "编码"
     IDS_INVALIDRESTYPE, "资源类型无效."
     IDS_PATHSPACEERROR, "You wrongly installed into the location with space characters! The resource compiler can't accept space.\n\nPlease avoid ""C:\\Program Files""."
+    IDS_LOADEGAPROGRAM, "Load EGA program..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

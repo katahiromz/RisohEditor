@@ -2286,6 +2286,7 @@ protected:
     void OnSave(HWND hwnd);
     void OnSaveAs(HWND hwnd);
     void OnEga(HWND hwnd);
+    void OnEgaProgram(HWND hwnd);
     void OnImport(HWND hwnd);
     void OnLoadResH(HWND hwnd);
     void OnLoadResHBang(HWND hwnd);
@@ -3113,8 +3114,29 @@ void MMainWnd::OnEga(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    MEgaDlg dialog;
+    MEgaDlg dialog(NULL);
     dialog.DialogBoxDx(hwnd);
+}
+
+void MMainWnd::OnEgaProgram(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
+    OPENFILENAMEW ofn = { sizeof(ofn), hwnd };
+    WCHAR szFile[MAX_PATH] = L"";
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = L"EGA Program (*.ega)\0*.ega\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = ARRAYSIZE(szFile);
+    ofn.lpstrTitle = LoadStringDx(IDS_LOADEGAPROGRAM);
+    ofn.lpstrDefExt = L"ega";
+    if (GetOpenFileNameW(&ofn))
+    {
+        MEgaDlg dialog(szFile);
+        dialog.DialogBoxDx(hwnd);
+    }
 }
 
 void MMainWnd::OnSave(HWND hwnd)
@@ -10452,6 +10474,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_EGA:
         OnEga(hwnd);
+        break;
+    case ID_EGA_PROGRAM:
+        OnEgaProgram(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

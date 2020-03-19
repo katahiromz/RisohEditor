@@ -123,6 +123,7 @@ IDR_MAINMENU MENU
     POPUP "&Automazione"
     {
         MENUITEM "Linguaggio di programmazione &EGA...", ID_EGA
+        MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
     }
     POPUP "&?"
     {
@@ -1467,6 +1468,7 @@ STRINGTABLE
     IDS_ENCODING, "Codifica"
     IDS_INVALIDRESTYPE, "Tipo risorsa non valida."
     IDS_PATHSPACEERROR, "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
+    IDS_LOADEGAPROGRAM, "Load EGA program..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

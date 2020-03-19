@@ -123,6 +123,7 @@ IDR_MAINMENU MENU
     POPUP "Автоматизация(&A)"
     {
         MENUITEM "Язык Программирования &EGA...", ID_EGA
+        MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
     }
     POPUP "&Справка"
     {
@@ -1467,6 +1468,7 @@ STRINGTABLE
     IDS_ENCODING, "Кодировка"
     IDS_INVALIDRESTYPE, "Неверный тип ресурса."
     IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папки вида ""C:\\Program Files""."
+    IDS_LOADEGAPROGRAM, "Load EGA program..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

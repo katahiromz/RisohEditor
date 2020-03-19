@@ -300,6 +300,7 @@
 #define IDS_ENCODING                        307
 #define IDS_INVALIDRESTYPE                  308
 #define IDS_PATHSPACEERROR                  309
+#define IDS_LOADEGAPROGRAM                  310
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -449,6 +450,7 @@
 #define ID_USEBEGINEND                      249
 #define ID_SAVE                             250
 #define ID_EGA                              251
+#define ID_EGA_PROGRAM                      252
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -459,7 +461,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     252
+        #define _APS_NEXT_COMMAND_VALUE     253
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

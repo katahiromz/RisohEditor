@@ -123,6 +123,7 @@ IDR_MAINMENU MENU
     POPUP "自動化(&A)"
     {
         MENUITEM "プログラム言語 &EGA...", ID_EGA
+        MENUITEM "EGAプログラムを実行する(&R)...", ID_EGA_PROGRAM
     }
     POPUP "ヘルプ(&H)"
     {
@@ -1470,6 +1471,7 @@ STRINGTABLE
     IDS_ENCODING, "エンコーディング"
     IDS_INVALIDRESTYPE, "無効なリソースの種類です。"
     IDS_PATHSPACEERROR, "スペース文字がある場所に間違ってインストールされました。リソース コンパイラはスペースを受け付けません。\n\n""C:\\Program Files""を避けて下さい。"
+    IDS_LOADEGAPROGRAM, "EGAプログラムを読み込む..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -68,9 +68,19 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     SendDlgItemMessageA(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
 }
 
-static DWORD WINAPI EgaThreadFunc(LPVOID)
+static DWORD WINAPI EgaThreadFunc(LPVOID args)
 {
-    EGA_interactive(true);
+    LPCWSTR filename = (LPCWSTR)args;
+    char szFileName[MAX_PATH];
+    if (filename && filename[0])
+    {
+        WideCharToMultiByte(CP_ACP, 0, filename, -1, szFileName, MAX_PATH, NULL, NULL);
+        EGA_interactive(szFileName, true);
+    }
+    else
+    {
+        EGA_interactive(NULL, true);
+    }
     return 0;
 }
 
@@ -79,10 +89,12 @@ static DWORD WINAPI EgaThreadFunc(LPVOID)
 class MEgaDlg : public MDialogBase
 {
 public:
-    MEgaDlg() : MDialogBase(IDD_EGA)
+    MEgaDlg(LPCWSTR filename = NULL) : MDialogBase(IDD_EGA)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
+        if (filename)
+            m_filename = filename;
 
         EGA_init();
         EGA_set_input_fn(EGA_dialog_input);
@@ -126,7 +138,8 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        HANDLE hThread = CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
+        HANDLE hThread = CreateThread(NULL, 0, EgaThreadFunc,
+                                      (LPWSTR)m_filename.c_str(), 0, NULL);
         CloseHandle(hThread);
 
         CenterWindowDx();
@@ -209,6 +222,7 @@ protected:
     HFONT m_hFont;
     HICON m_hIcon;
     HICON m_hIconSm;
+    std::wstring m_filename;
     MComboBox m_cmb1;
     MResizable m_resizable;
 };
