@@ -461,7 +461,7 @@ struct EntrySet : protected EntrySetBase
     void delete_invalid();
 
     // search and delete
-    void search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
+    bool search_and_delete(EntryType et, const MIdOrString& type = WORD(0), 
                            const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
     {
         // search
@@ -469,10 +469,13 @@ struct EntrySet : protected EntrySetBase
         search(found, et, type, name, lang);
 
         // delete
+        bool ret = false;
         for (auto entry : found)
         {
+            ret = true;
             delete_entry(entry);
         }
+        return ret;
     }
 
     // get last ID of the specified type and language

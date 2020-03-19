@@ -14336,12 +14336,12 @@ EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
     if (arg2)
         lang = (WORD)EGA_get_int(arg2);
 
-    g_res.search_and_delete(ET_ANY, type, name, lang);
+    bool ret = g_res.search_and_delete(ET_ANY, type, name, lang);
     g_res.delete_invalid();
     DoSetFileModified(TRUE);
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
-    return NULL;
+    return make_arg<AstInt>(ret);
 }
 
 void EGA_extension(void)
