@@ -2954,7 +2954,8 @@ BOOL MMainWnd::DoQuerySaveChange(HWND hwnd)
 // clear all the resource data
 void MMainWnd::OnNew(HWND hwnd)
 {
-    DoQuerySaveChange(hwnd);
+    if (!DoQuerySaveChange(hwnd))
+        return;
 
     // close preview
     HidePreview();
