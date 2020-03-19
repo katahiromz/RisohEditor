@@ -1,2 +1,2 @@
-@ Delete Japanese resources all.
+@ Delete Japanese (1041) resources all.
 RES_delete(0, 0, 1041);
