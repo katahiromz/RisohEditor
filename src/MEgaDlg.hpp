@@ -63,9 +63,14 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     if (!IsWindow(s_hwndEga))
         return;
 
-    CHAR szText[512];
-    StringCbVPrintfA(szText, sizeof(szText), fmt, va);
-    std::string str = szText;
+    std::string str;
+    str.resize(512);
+    while (StringCbVPrintfA(&str[0], str.size(), fmt, va) == STRSAFE_E_INSUFFICIENT_BUFFER)
+    {
+        str.resize(str.size() * 2);
+    }
+    str.resize(lstrlenA(str.c_str()));
+
     mstr_replace_all(str, "\n", "\r\n");
 
     MAnsiToWide wide(CP_UTF8, str.c_str());
