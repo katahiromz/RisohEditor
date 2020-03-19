@@ -2453,13 +2453,11 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (!e)
         return;     // not selected
 
-    WCHAR szFile[MAX_PATH] = L"";
-
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
 
     // use the prefered filter by the entry
     if (e->m_et == ET_STRING || e->m_et == ET_MESSAGE)
@@ -2487,8 +2485,6 @@ void MMainWnd::OnExtractBin(HWND hwnd)
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
     }
 
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
                 OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
@@ -2540,10 +2536,7 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
     WCHAR szFile[MAX_PATH] = L"";
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_ICOFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -2597,10 +2590,7 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
     WCHAR szFile[MAX_PATH] = L"";
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_CURFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -2646,10 +2636,7 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
     WCHAR szFile[MAX_PATH] = L"";
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_BMPFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = MAX_PATH;
@@ -2741,10 +2728,7 @@ void MMainWnd::OnExport(HWND hwnd)
     WCHAR file[MAX_PATH] = TEXT("");
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RCFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
@@ -2825,10 +2809,7 @@ void MMainWnd::OnLoadWCLib(HWND hwnd)
     WCHAR file[MAX_PATH] = TEXT("");
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_DLLFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
@@ -2864,10 +2845,7 @@ void MMainWnd::OnImport(HWND hwnd)
     WCHAR file[MAX_PATH] = TEXT("");
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_IMPORTFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
@@ -2914,10 +2892,7 @@ void MMainWnd::OnOpen(HWND hwnd)
         szFile[0] = 0;
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESRCFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -2998,10 +2973,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
     }
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXERESFILTER));
 
     // use the prefered filter by the entry
@@ -3124,7 +3096,7 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    OPENFILENAMEW ofn = { sizeof(ofn), hwnd };
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     WCHAR szFile[MAX_PATH] = L"";
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EGAFILTER));
@@ -9040,10 +9012,7 @@ void MMainWnd::OnLoadResH(HWND hwnd)
         szFile[0] = 0;
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -9996,10 +9965,7 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
         szFile[0] = 0;
 
     // initialize OPENFILENAME structure
-    OPENFILENAMEW ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-    ofn.hwndOwner = hwnd;
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXEFILTER));
 
     // use the prefered filter by the entry
@@ -11421,10 +11387,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
         }
 
         // initialize OPENFILENAME structure
-        OPENFILENAMEW ofn;
-        ZeroMemory(&ofn, sizeof(ofn));
-        ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400W;
-        ofn.hwndOwner = hwnd;
+        OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_HEADFILTER));
         ofn.lpstrFile = szResH;
         ofn.nMaxFile = _countof(szResH);
