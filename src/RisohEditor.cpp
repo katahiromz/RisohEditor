@@ -2174,6 +2174,7 @@ public:
 
     EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
     EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
+    EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -14246,6 +14247,11 @@ EGA::arg_t EGA_FN EGA_RES_delete(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResDelete(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_clone_by_name(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResCloneByName(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -14344,10 +14350,66 @@ EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
     return make_arg<AstInt>(ret);
 }
 
+EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
+
+    MIdOrString type, src_name, dest_name;
+    WORD lang = BAD_LANG;
+
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        src_name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        dest_name = EGA_get_id_or_str(arg2);
+
+    EntrySetBase found;
+    g_res.search(found, ET_LANG, type, src_name, lang);
+
+    if (type == RT_GROUP_ICON)     // group icon
+    {
+        for (auto e : found)
+        {
+            g_res.copy_group_icon(e, dest_name, e->m_lang);
+        }
+    }
+    else if (type == RT_GROUP_CURSOR)  // group cursor
+    {
+        for (auto e : found)
+        {
+            g_res.copy_group_cursor(e, dest_name, e->m_lang);
+        }
+    }
+    else    // otherwise
+    {
+        for (auto e : found)
+        {
+            g_res.add_lang_entry(e->m_type, dest_name, e->m_lang, e->m_data);
+        }
+    }
+
+    g_res.delete_invalid();
+
+    DoSetFileModified(TRUE);
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return make_arg<AstInt>(1);
+}
+
 void EGA_extension(void)
 {
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
+    EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
 }
 
 ////////////////////////////////////////////////////////////////////////////
