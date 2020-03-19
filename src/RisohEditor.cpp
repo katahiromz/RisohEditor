@@ -9035,14 +9035,14 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
         // update the names
         UpdateNames();
+
+        DoSetFileModified(TRUE);
     }
     else
     {
         // otherwise, load the file
         DoLoadFile(hwnd, file);
     }
-
-    DoSetFileModified(TRUE);
 
     // remove the command lock
     --m_nCommandLock;
