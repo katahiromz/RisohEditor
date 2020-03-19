@@ -1,0 +1,2 @@
+@ Delete Japanese resources all.
+RES_delete(0, 0, 1041);
