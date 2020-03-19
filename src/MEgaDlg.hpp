@@ -41,14 +41,20 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
     if (!IsWindow(s_hwndEga))
         return false;
 
-    CHAR szText[512];
-    GetDlgItemTextA(s_hwndEga, cmb1, szText, 612);
-    lstrcpynA(buf, szText, buflen);
+    WCHAR szTextW[260];
+    GetDlgItemTextW(s_hwndEga, cmb1, szTextW, ARRAYSIZE(szTextW));
+    SendDlgItemMessageW(s_hwndEga, cmb1, CB_ADDSTRING, 0, (LPARAM)szTextW);
+
+    char szTextA[260];
+    WideCharToMultiByte(CP_UTF8, 0, szTextW, -1, szTextA, ARRAYSIZE(szTextA), NULL, NULL);
+
+    lstrcpynA(buf, szTextA, buflen);
     SetDlgItemTextA(s_hwndEga, cmb1, NULL);
     s_bEnter = FALSE;
 
-    if (lstrcmpA(szText, "exit") == 0 || lstrcmpA(szText, "exit;") == 0)
+    if (lstrcmpA(szTextA, "exit") == 0 || lstrcmpA(szTextA, "exit;") == 0)
         PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
+
     return true;
 }
 
@@ -84,6 +90,8 @@ static DWORD WINAPI EgaThreadFunc(LPVOID args)
     return 0;
 }
 
+void EGA_extension(void);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class MEgaDlg : public MDialogBase
@@ -99,6 +107,7 @@ public:
         EGA_init();
         EGA_set_input_fn(EGA_dialog_input);
         EGA_set_print_fn(EGA_dialog_print);
+        EGA_extension();
     }
 
     virtual ~MEgaDlg()

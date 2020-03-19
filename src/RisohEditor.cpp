@@ -1,7 +1,7 @@
 // RisohEditor.cpp --- RisohEditor
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
-// Copyright (C) 2017-2018 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+// Copyright (C) 2017-2020 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ void DoSetFileModified(BOOL bModified)
 {
     s_bModified = bModified;
 }
+
+static HWND s_hMainWnd = NULL;
 
 enum IMPORT_RESULT
 {
@@ -2169,6 +2171,9 @@ public:
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
     BOOL DoItemSearch(ITEM_SEARCH& search);
+
+    EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
+    EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -9178,6 +9183,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_splitter2);
     DestroyWindow(m_splitter3);
 
+    s_hMainWnd = NULL;
+
     // post WM_QUIT message to quit the application
     PostQuitMessage(0);
 }
@@ -12593,6 +12600,8 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
+    s_hMainWnd = hwnd;
+
     DoLoadLangInfo();   // load the language information
 
     // check the data
@@ -14219,6 +14228,124 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 
 ////////////////////////////////////////////////////////////////////////////
 
+static MMainWnd *s_pMainWnd = NULL;
+
+EGA::arg_t EGA_FN EGA_RES_search(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResSearch(args);
+}
+
+EGA::arg_t EGA_FN EGA_RES_delete(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResDelete(args);
+}
+
+MIdOrString EGA_get_id_or_str(const arg_t& arg0)
+{
+    MIdOrString ret;
+
+    if (arg0->get_type() == AST_INT)
+    {
+        ret = (WORD)EGA_get_int(arg0);
+    }
+    else
+    {
+        std::string str = EGA_get_str(arg0);
+        MAnsiToWide wide(CP_UTF8, str.c_str());
+        ret = wide.c_str();
+    }
+
+    return ret;
+}
+
+EGA::arg_t EGA_set_id_or_str(const MIdOrString& id)
+{
+    if (id.is_str())
+    {
+        MWideToAnsi ansi(CP_UTF8, id.m_str.c_str());
+        return EGA::make_arg<AstStr>(ansi.c_str());
+    }
+    else
+    {
+        return EGA::make_arg<AstInt>(id.m_id);
+    }
+}
+
+EGA::arg_t MMainWnd::DoEgaResSearch(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
+
+    MIdOrString type, name;
+    WORD lang = BAD_LANG;
+
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        lang = (WORD)EGA_get_int(arg2);
+
+    EntrySetBase found;
+    g_res.search(found, ET_LANG, type, name, lang);
+
+    auto array = make_arg<AstContainer>(AST_ARRAY, 0, "RES_LIST");
+    for (auto& item : found)
+    {
+        auto child = make_arg<AstContainer>(AST_ARRAY, 0, "RES");
+        child->add(EGA_set_id_or_str(item->m_type));
+        child->add(EGA_set_id_or_str(item->m_name));
+        child->add(EGA::make_arg<AstInt>(item->m_lang));
+        array->add(child);
+    }
+    return array;
+}
+
+EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
+
+    MIdOrString type, name;
+    WORD lang = BAD_LANG;
+
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        lang = (WORD)EGA_get_int(arg2);
+
+    g_res.search_and_delete(ET_ANY, type, name, lang);
+    g_res.delete_invalid();
+    DoSetFileModified(TRUE);
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return NULL;
+}
+
+void EGA_extension(void)
+{
+    EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
+    EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 // the manifest information
 #pragma comment(linker, "/manifestdependency:\"type='win32' \
   name='Microsoft.Windows.Common-Controls' \
@@ -14289,6 +14416,7 @@ wWinMain(HINSTANCE   hInstance,
     MEditCtrl::SetCtrlAHookDx(TRUE);
     {
         MMainWnd app(__argc, __targv, hInstance);
+        s_pMainWnd = &app;
 
         if (app.StartDx())
         {
