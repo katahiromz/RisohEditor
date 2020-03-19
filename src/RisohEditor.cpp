@@ -2176,6 +2176,7 @@ public:
     EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
     EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
     EGA::arg_t DoEgaResCloneByLang(const EGA::args_t& args);
+    EGA::arg_t DoEgaResUnloadResH(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -9042,11 +9043,12 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
 
         // update the names
         UpdateNames();
-
-        DoSetFileModified(TRUE);
     }
     else
     {
+        if (!DoQuerySaveChange(hwnd))
+            return;
+
         // otherwise, load the file
         DoLoadFile(hwnd, file);
     }
@@ -9726,6 +9728,7 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
     }
     else
     {
+        ShowWindow(m_id_list_dlg, SW_HIDE);
         DestroyWindow(m_id_list_dlg);
     }
 }
@@ -14258,6 +14261,11 @@ EGA::arg_t EGA_FN EGA_RES_clone_by_lang(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResCloneByLang(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_unload_resh(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResUnloadResH(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -14512,12 +14520,25 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     return make_arg<AstInt>(1);
 }
 
+EGA::arg_t MMainWnd::DoEgaResUnloadResH(const EGA::args_t& args)
+{
+    using namespace EGA;
+
+    UnloadResourceH(m_hwnd);
+
+    DoSetFileModified(TRUE);
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return make_arg<AstInt>(1);
+}
+
 void EGA_extension(void)
 {
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
     EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
     EGA_add_fn("RES_clone_by_lang", 4, 4, EGA_RES_clone_by_lang, "RES_clone_by_lang(type, name, src_lang, dest_lang)");
+    EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
 }
 
 ////////////////////////////////////////////////////////////////////////////
