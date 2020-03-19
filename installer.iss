@@ -142,6 +142,7 @@ Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\input.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\plus.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\break.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_clone_by_lang.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\RES_delete.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
