@@ -14419,7 +14419,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
     DoSetFileModified(TRUE);
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
-    return make_arg<AstInt>(1);
+    return make_arg<AstInt>(!found.empty());
 }
 
 EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
@@ -14520,7 +14520,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     DoSetFileModified(TRUE);
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
-    return make_arg<AstInt>(1);
+    return make_arg<AstInt>(!found2.empty());
 }
 
 EGA::arg_t MMainWnd::DoEgaResUnloadResH(const EGA::args_t& args)
