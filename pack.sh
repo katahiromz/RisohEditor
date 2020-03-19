@@ -74,8 +74,7 @@ mkdir "$RE_BIN_DIR/DlgInit"
 cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"
 mkdir "$RE_BIN_DIR/EGA"
 cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"
-cp -f EGA/samples/*.ega "$RE_BIN_DIR/EGA"
-cp -f EGA-samples/*.ega "$RE_BIN_DIR/EGA"
+cp -f EGA/samples/*.ega EGA-samples/*.ega "$RE_BIN_DIR/EGA"
 
 cd build
 if zip -9 -r -q "$RE_NAME.zip" "$RE_NAME"; then
