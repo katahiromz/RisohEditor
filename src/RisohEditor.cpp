@@ -2175,6 +2175,7 @@ public:
     EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
     EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
     EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
+    EGA::arg_t DoEgaResCloneByLang(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -14252,6 +14253,11 @@ EGA::arg_t EGA_FN EGA_RES_clone_by_name(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResCloneByName(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_clone_by_lang(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResCloneByLang(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -14405,11 +14411,113 @@ EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
     return make_arg<AstInt>(1);
 }
 
+EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2, arg3;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
+    if (args.size() >= 4)
+        arg3 = EGA_eval_arg(args[3], false);
+
+    MIdOrString type, name;
+    WORD src_lang = BAD_LANG, dest_lang = BAD_LANG;
+
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        src_lang = EGA_get_int(arg2);
+    if (arg3)
+        dest_lang = EGA_get_int(arg3);
+
+    EntrySetBase found2;
+    g_res.search(found2, ET_LANG, type, name, src_lang);
+
+    for (auto& entry : found2)
+    {
+        if (entry->m_type == RT_GROUP_ICON)     // group icon
+        {
+            // search the group icons
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, RT_GROUP_ICON, name, src_lang);
+
+            // copy them
+            for (auto e : found)
+            {
+                g_res.copy_group_icon(e, e->m_name, dest_lang);
+            }
+        }
+        else if (entry->m_type == RT_GROUP_CURSOR)
+        {
+            // search the group cursors
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, RT_GROUP_CURSOR, name, src_lang);
+
+            // copy them
+            for (auto e : found)
+            {
+                g_res.copy_group_cursor(e, e->m_name, dest_lang);
+            }
+        }
+        else if (entry->m_et == ET_STRING)
+        {
+            // search the strings
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, RT_STRING, WORD(0), src_lang);
+
+            // copy them
+            for (auto e : found)
+            {
+                g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
+            }
+        }
+        else if (entry->m_et == ET_MESSAGE)
+        {
+            // search the messagetables
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+
+            // copy them
+            for (auto e : found)
+            {
+                g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
+            }
+        }
+        else
+        {
+            // search the entries
+            EntrySetBase found;
+            g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+
+            // copy them
+            for (auto e : found)
+            {
+                g_res.add_lang_entry(e->m_type, e->m_name, dest_lang, e->m_data);
+            }
+        }
+    }
+
+    g_res.delete_invalid();
+
+    DoSetFileModified(TRUE);
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return make_arg<AstInt>(1);
+}
+
 void EGA_extension(void)
 {
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
     EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
+    EGA_add_fn("RES_clone_by_lang", 4, 4, EGA_RES_clone_by_lang, "RES_clone_by_lang(type, name, src_lang, dest_lang)");
 }
 
 ////////////////////////////////////////////////////////////////////////////
