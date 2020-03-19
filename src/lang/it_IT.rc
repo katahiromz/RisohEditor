@@ -1470,6 +1470,7 @@ STRINGTABLE
     IDS_PATHSPACEERROR, "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Load EGA program..."
     IDS_EGAFILTER, "EGA Program (*.ega)|*.ega|All Files (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE, "The file has been modified. Do you want to save changes now?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

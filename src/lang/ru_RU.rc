@@ -1470,6 +1470,7 @@ STRINGTABLE
     IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папки вида ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Load EGA program..."
     IDS_EGAFILTER, "EGA Program (*.ega)|*.ega|All Files (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE, "The file has been modified. Do you want to save changes now?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

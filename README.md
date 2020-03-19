@@ -165,6 +165,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Reduced file size from 9MB to 3MB.
 - v.5.3.4 (2020.XX.YY)
     - Introduced automation by using programming language EGA.
+    - Added confirmation of saving changes of file.
 
 ## Contact Us
 

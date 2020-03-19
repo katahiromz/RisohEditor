@@ -302,6 +302,7 @@
 #define IDS_PATHSPACEERROR                  309
 #define IDS_LOADEGAPROGRAM                  310
 #define IDS_EGAFILTER                       311
+#define IDS_QUERYSAVECHANGE                 312
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

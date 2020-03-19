@@ -37,6 +37,14 @@ static const DWORD s_nMaxCaptions = 10;
 // the maximum number of backup
 static const UINT s_nBackupMaxCount = 5;
 
+// contents modified?
+static BOOL s_bModified = FALSE;
+
+void DoSetFileModified(BOOL bModified)
+{
+    s_bModified = bModified;
+}
+
 enum IMPORT_RESULT
 {
     IMPORTED,
@@ -2222,6 +2230,7 @@ protected:
     void OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos);
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
     LRESULT OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr);
+    void OnClose(HWND hwnd);
     void OnDestroy(HWND hwnd);
 
     void OnCancelEdit(HWND hwnd);
@@ -2281,10 +2290,12 @@ protected:
     void OnReplaceIcon(HWND hwnd);
     void OnUpdateResHBang(HWND hwnd);
 
+    BOOL DoQuerySaveChange(HWND hwnd);
+
     void OnNew(HWND hwnd);
     void OnOpen(HWND hwnd);
-    void OnSave(HWND hwnd);
-    void OnSaveAs(HWND hwnd);
+    BOOL OnSave(HWND hwnd);
+    BOOL OnSaveAs(HWND hwnd);
     void OnEga(HWND hwnd);
     void OnEgaProgram(HWND hwnd);
     void OnImport(HWND hwnd);
@@ -2676,6 +2687,8 @@ void MMainWnd::OnReplaceBin(HWND hwnd)
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
     }
+
+    DoSetFileModified(TRUE);
 }
 
 // version info
@@ -2873,6 +2886,7 @@ void MMainWnd::OnImport(HWND hwnd)
         {
             ErrorBoxDx(IDS_CANNOTIMPORT);
         }
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -2909,9 +2923,28 @@ void MMainWnd::OnOpen(HWND hwnd)
     }
 }
 
+BOOL MMainWnd::DoQuerySaveChange(HWND hwnd)
+{
+    if (!s_bModified)
+        return TRUE;
+
+    INT id = MessageBoxW(hwnd, LoadStringDx(IDS_QUERYSAVECHANGE),
+                         LoadStringDx(IDS_APPNAME),
+                         MB_ICONINFORMATION | MB_YESNOCANCEL);
+    if (id == IDCANCEL)
+        return FALSE;
+
+    if (id == IDYES)
+        return OnSave(hwnd);
+
+    return TRUE;
+}
+
 // clear all the resource data
 void MMainWnd::OnNew(HWND hwnd)
 {
+    DoQuerySaveChange(hwnd);
+
     // close preview
     HidePreview();
 
@@ -2921,11 +2954,13 @@ void MMainWnd::OnNew(HWND hwnd)
     // update the file info
     UpdateFileInfo(FT_NONE, NULL, FALSE);
 
-    // 
+    // unselect
     SelectTV(NULL, FALSE);
 
     // clean up
     g_res.delete_all();
+
+    DoSetFileModified(FALSE);
 }
 
 enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
@@ -2938,11 +2973,11 @@ enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
 };
 
 // save as a file or files
-void MMainWnd::OnSaveAs(HWND hwnd)
+BOOL MMainWnd::OnSaveAs(HWND hwnd)
 {
     // compile if necessary
     if (!CompileIfNecessary(TRUE))
-        return;
+        return FALSE;
 
     // store m_szFile to szFile
     WCHAR szFile[MAX_PATH];
@@ -3034,10 +3069,10 @@ void MMainWnd::OnSaveAs(HWND hwnd)
         {
         case RFFI_EXECUTABLE:
             // save it
-            if (!DoSaveAs(szFile))
-            {
-                ErrorBoxDx(IDS_CANNOTSAVE);
-            }
+            if (DoSaveAs(szFile))
+                return TRUE;
+
+            ErrorBoxDx(IDS_CANNOTSAVE);
             break;
 
         case RFFI_RC:
@@ -3046,7 +3081,7 @@ void MMainWnd::OnSaveAs(HWND hwnd)
                 // show "save options" dialog
                 MSaveOptionsDlg save_options;
                 if (save_options.DialogBoxDx(hwnd) != IDOK)
-                    return;
+                    return FALSE;
 
                 // export
                 WCHAR szResH[MAX_PATH] = L"";
@@ -3057,6 +3092,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
                     // update the file info
                     UpdateFileInfo(FT_RC, szFile, FALSE);
+
+                    return TRUE;
                 }
                 else
                 {
@@ -3067,10 +3104,10 @@ void MMainWnd::OnSaveAs(HWND hwnd)
 
         case RFFI_RES:
             // save the *.res file
-            if (!DoSaveResAs(szFile))
-            {
-                ErrorBoxDx(IDS_CANNOTSAVE);
-            }
+            if (DoSaveResAs(szFile))
+                return TRUE;
+
+            ErrorBoxDx(IDS_CANNOTSAVE);
             break;
 
         default:
@@ -3078,6 +3115,8 @@ void MMainWnd::OnSaveAs(HWND hwnd)
             break;
         }
     }
+
+    return FALSE;
 }
 
 void MMainWnd::OnEga(HWND hwnd)
@@ -3111,18 +3150,15 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
     }
 }
 
-void MMainWnd::OnSave(HWND hwnd)
+BOOL MMainWnd::OnSave(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return FALSE;
+
     if (!m_szFile[0])
     {
-        OnSaveAs(hwnd);
-        return;
-    }
-    else
-    {
-        // compile if necessary
-        if (!CompileIfNecessary(TRUE))
-            return;
+        return OnSaveAs(hwnd);
     }
 
     LPWSTR pchDotExt = PathFindExtensionW(m_szFile);
@@ -3143,10 +3179,11 @@ void MMainWnd::OnSave(HWND hwnd)
     {
     case RFFI_EXECUTABLE:
         // save it
-        if (!DoSaveAs(m_szFile))
+        if (DoSaveAs(m_szFile))
         {
-            ErrorBoxDx(IDS_CANNOTSAVE);
+            return TRUE;
         }
+        ErrorBoxDx(IDS_CANNOTSAVE);
         break;
 
     case RFFI_RC:
@@ -3155,7 +3192,7 @@ void MMainWnd::OnSave(HWND hwnd)
             // show "save options" dialog
             MSaveOptionsDlg save_options;
             if (save_options.DialogBoxDx(hwnd) != IDOK)
-                return;
+                return FALSE;
 
             // export
             WCHAR szResH[MAX_PATH] = L"";
@@ -3166,6 +3203,8 @@ void MMainWnd::OnSave(HWND hwnd)
 
                 // update the file info
                 UpdateFileInfo(FT_RC, m_szFile, FALSE);
+
+                return TRUE;
             }
             else
             {
@@ -3176,16 +3215,19 @@ void MMainWnd::OnSave(HWND hwnd)
 
     case RFFI_RES:
         // save the *.res file
-        if (!DoSaveResAs(m_szFile))
+        if (DoSaveResAs(m_szFile))
         {
-            ErrorBoxDx(IDS_CANNOTSAVE);
+            return TRUE;
         }
+        ErrorBoxDx(IDS_CANNOTSAVE);
         break;
 
     default:
         assert(0);
         break;
     }
+
+    return FALSE;
 }
 
 // update the fonts by the font settings
@@ -3395,6 +3437,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
 
         // select the entry
         SelectTV(ET_NAME, dialog.m_type, dialog.m_name, BAD_LANG, FALSE);
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -3498,6 +3541,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
             // select the entry
             SelectTV(ET_LANG, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
         }
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -3594,6 +3638,7 @@ void MMainWnd::OnDeleteRes(HWND hwnd)
         if (g_res.super()->find(entry) != g_res.end())
             TreeView_DeleteItem(m_hwndTV, entry->m_hItem);
     }
+    DoSetFileModified(TRUE);
 }
 
 // play the sound
@@ -3690,6 +3735,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 
         // select the entry
         SelectTV(entry, FALSE);
+        DoSetFileModified(TRUE);
     }
     else
     {
@@ -3714,6 +3760,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         return;
     }
+
+    DoSetFileModified(TRUE);
 
     if (entry->m_type == RT_ACCELERATOR)
     {
@@ -4009,6 +4057,7 @@ void MMainWnd::OnEdit(HWND hwnd)
 
     // select the entry
     SelectTV(entry, TRUE);
+    DoSetFileModified(TRUE);
 }
 
 // open README
@@ -5808,6 +5857,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
+    DoSetFileModified(TRUE);
     return bOK;
 }
 
@@ -5943,6 +5993,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
+    DoSetFileModified(TRUE);
     return bOK;
 }
 
@@ -5950,6 +6001,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
                             WORD lang, const MStringW& strWide, BOOL bReopen)
 {
+    DoSetFileModified(TRUE);
+
     if (type == RT_STRING)
     {
         return CompileStringTable(strOutput, name, lang, strWide);
@@ -6492,6 +6545,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // select none
         SelectTV(NULL, FALSE);
 
+        DoSetFileModified(FALSE);
         return TRUE;
     }
 
@@ -6534,6 +6588,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // select none
         SelectTV(NULL, FALSE);
 
+        DoSetFileModified(FALSE);
         return TRUE;
     }
 
@@ -6660,6 +6715,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // select none
     SelectTV(NULL, FALSE);
+
+    DoSetFileModified(FALSE);
 
     return TRUE;    // success
 }
@@ -8548,6 +8605,8 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
         }
     }
 
+    DoSetFileModified(FALSE);
+
     return TRUE;    // success
 }
 
@@ -8983,6 +9042,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         DoLoadFile(hwnd, file);
     }
 
+    DoSetFileModified(TRUE);
+
     // remove the command lock
     --m_nCommandLock;
 
@@ -9054,11 +9115,29 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
     }
 }
 
+void MMainWnd::OnClose(HWND hwnd)
+{
+    if (DoQuerySaveChange(hwnd))
+        DestroyWindow(hwnd);
+}
+
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
-    // clear all
-    OnNew(hwnd);
+    // close preview
+    HidePreview();
+
+    // unload the resource.h file
+    OnUnloadResH(hwnd);
+
+    // update the file info
+    UpdateFileInfo(FT_NONE, NULL, FALSE);
+
+    // unselect
+    SelectTV(NULL, FALSE);
+
+    // clean up
+    g_res.delete_all();
 
     // save the settings
     SaveSettings(hwnd);
@@ -10555,6 +10634,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         auto ptv = (NM_TREEVIEW *)pnmhdr;
         auto entry = (EntryBase *)ptv->itemOld.lParam;
         g_res.on_delete_item(entry);
+        DoSetFileModified(TRUE);
     }
     else if (pnmhdr->code == NM_DBLCLK)
     {
@@ -10651,6 +10731,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
         case VK_DELETE:
             PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
+            DoSetFileModified(TRUE);
             return TRUE;
         case VK_F2:
             {
@@ -10799,6 +10880,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
 
                 DoRenameEntry(pszNewText, entry, old_name, new_name);
+                DoSetFileModified(TRUE);
                 return TRUE;   // accept
             }
             else if (entry->m_et == ET_LANG)
@@ -10825,6 +10907,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
+                DoSetFileModified(TRUE);
                 return TRUE;   // accept
             }
             else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
@@ -10851,6 +10934,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
+                DoSetFileModified(TRUE);
                 return TRUE;   // accept
             }
 
@@ -10880,6 +10964,8 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 
     // select the entry to update the text
     SelectTV(entry, FALSE);
+
+    DoSetFileModified(TRUE);
 }
 
 // change the language of the resource entries
@@ -10938,6 +11024,8 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
     // select the entry
     SelectTV(entry, FALSE);
+
+    DoSetFileModified(TRUE);
 }
 
 // do resource test
@@ -11460,6 +11548,8 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
 
     // reopen the ID list window if necessary
     ShowIDList(hwnd, bListOpen);
+
+    DoSetFileModified(TRUE);
 }
 
 // add an icon resource
@@ -11478,6 +11568,8 @@ void MMainWnd::OnAddIcon(HWND hwnd)
 
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11499,6 +11591,8 @@ void MMainWnd::OnReplaceIcon(HWND hwnd)
     {
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11520,6 +11614,8 @@ void MMainWnd::OnReplaceCursor(HWND hwnd)
     {
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11539,6 +11635,8 @@ void MMainWnd::OnAddBitmap(HWND hwnd)
 
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11560,6 +11658,8 @@ void MMainWnd::OnReplaceBitmap(HWND hwnd)
     {
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11579,6 +11679,8 @@ void MMainWnd::OnAddCursor(HWND hwnd)
 
         // select the entry
         SelectTV(ET_LANG, dialog, FALSE);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11595,6 +11697,8 @@ void MMainWnd::OnAddRes(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11612,6 +11716,8 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11629,6 +11735,8 @@ void MMainWnd::OnAddStringTable(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11646,6 +11754,8 @@ void MMainWnd::OnAddMessageTable(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11663,6 +11773,8 @@ void MMainWnd::OnAddHtml(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11680,6 +11792,8 @@ void MMainWnd::OnAddAccel(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11697,6 +11811,8 @@ void MMainWnd::OnAddVerInfo(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11714,6 +11830,8 @@ void MMainWnd::OnAddManifest(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -11765,7 +11883,9 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
         else
             SelectTV(ET_LANG, dialog, FALSE);
-    }
+
+        DoSetFileModified(TRUE);
+   }
 }
 
 // add a dialog template
@@ -11782,6 +11902,8 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     {
         // add a resource item
         DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
     }
 }
 
@@ -12647,6 +12769,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         DO_MSG(WM_CREATE, OnCreate);
         DO_MSG(WM_COMMAND, OnCommand);
+        DO_MSG(WM_CLOSE, OnClose);
         DO_MSG(WM_DESTROY, OnDestroy);
         DO_MSG(WM_DROPFILES, OnDropFiles);
         DO_MSG(WM_MOVE, OnMove);
@@ -12801,6 +12924,8 @@ LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    DoSetFileModified(TRUE);
+
     // get the selected language entry
     auto entry = g_res.get_lang_entry();
     if (!entry || entry->m_type != RT_DIALOG)

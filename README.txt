@@ -163,6 +163,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Reduced file size from 9MB to 3MB.
 - v.5.3.4 (2020.XX.YY)
     - Introduced automation by using programming language EGA.
+    - Added confirmation of saving changes of file.
 
 /////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
