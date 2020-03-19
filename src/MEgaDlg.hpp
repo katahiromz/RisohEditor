@@ -68,10 +68,12 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     std::string str = szText;
     mstr_replace_all(str, "\n", "\r\n");
 
-    INT cch = GetWindowTextLengthA(GetDlgItem(s_hwndEga, edt1));
-    SendDlgItemMessageA(s_hwndEga, edt1, EM_SETSEL, cch, cch);
-    SendDlgItemMessageA(s_hwndEga, edt1, EM_REPLACESEL, FALSE, (LPARAM)str.c_str());
-    SendDlgItemMessageA(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
+    MAnsiToWide wide(CP_UTF8, str.c_str());
+
+    INT cch = GetWindowTextLengthW(GetDlgItem(s_hwndEga, edt1));
+    SendDlgItemMessageW(s_hwndEga, edt1, EM_SETSEL, cch, cch);
+    SendDlgItemMessageW(s_hwndEga, edt1, EM_REPLACESEL, FALSE, (LPARAM)wide.c_str());
+    SendDlgItemMessageW(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
 }
 
 static DWORD WINAPI EgaThreadFunc(LPVOID args)

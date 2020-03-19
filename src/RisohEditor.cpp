@@ -2905,6 +2905,9 @@ void MMainWnd::OnOpen(HWND hwnd)
     if (!CompileIfNecessary(FALSE))
         return;
 
+    if (!DoQuerySaveChange(hwnd))
+        return;
+
     // store the nominal path
     WCHAR szFile[MAX_PATH];
     StringCchCopyW(szFile, _countof(szFile), m_szFile);
