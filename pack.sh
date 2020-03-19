@@ -62,65 +62,34 @@ fi
 
 ################################################################################
 
-echo Copying Stage 1...
-if cp $RE_FILES "$RE_BIN_DIR"; then
-    echo Copying Stage 2...
-    if cp -r data "$RE_BIN_DIR"; then
-        echo Copying Stage 3...
-        if cp build/mcdx.exe "$RE_BIN_DIR/data/bin"; then
-            echo Copying Stage 4...
-            mkdir "$RE_BIN_DIR/OLE"
-            if cp -f src/MOleCtrl.hpp include/MWindowBase.hpp "$RE_BIN_DIR/OLE"; then
-                echo Copying Stage 5...
-                mkdir "$RE_BIN_DIR/MyWndCtrl"
-                if cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"; then
-                    echo Copying Stage 6...
-                    if cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"; then
-                        echo Copying Stage 7...
-                        mkdir "$RE_BIN_DIR/DlgInit"
-                        if cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"; then
-                            echo Zipping...
-                            cd build
-                            if zip -9 -r -q "$RE_NAME.zip" "$RE_NAME"; then
-                                cd ..
-                                if [ -e "$RE_TARGET" ]; then
-                                    echo Success. "$RE_TARGET" was generated.
-                                else
-                                    echo ERROR: Target not found.
-                                    exit 13
-                                fi
-                            else
-                                cd ..
-                                echo ERROR: Zipping failed.
-                                exit 12
-                            fi
-                        else
-                            echo ERROR: Copying Stage 7 failed.
-                            exit 11
-                        fi
-                    else
-                        echo ERROR: Copying Stage 6 failed.
-                        exit 10
-                    fi
-                else
-                    echo ERROR: Copying Stage 5 failed.
-                    exit 9
-                fi
-            else
-                echo ERROR: Copying Stage 4 failed.
-                exit 8
-            fi
-        else
-            echo ERROR: Copying Stage 3 failed.
-            exit 7
-        fi
+cp $RE_FILES "$RE_BIN_DIR"
+cp -r data "$RE_BIN_DIR"
+cp build/mcdx.exe "$RE_BIN_DIR/data/bin"
+mkdir "$RE_BIN_DIR/OLE"
+cp -f src/MOleCtrl.hpp include/MWindowBase.hpp "$RE_BIN_DIR/OLE"
+mkdir "$RE_BIN_DIR/MyWndCtrl"
+cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"
+cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"
+mkdir "$RE_BIN_DIR/DlgInit"
+cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"
+mkdir "$RE_BIN_DIR/EGA"
+cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"
+cp -f EGA/samples/*.ega "$RE_BIN_DIR/EGA"
+cp -f EGA-samples/*.ega "$RE_BIN_DIR/EGA"
+
+cd build
+if zip -9 -r -q "$RE_NAME.zip" "$RE_NAME"; then
+    cd ..
+    if [ -e "$RE_TARGET" ]; then
+        echo Success. "$RE_TARGET" is generated.
     else
-        echo ERROR: Copying Stage 2 failed.
-        exit 6
+        echo ERROR: Target not found.
+        exit 1
     fi
 else
-    echo ERROR: Copying Stage 1 failed.
-    exit 5
+    cd ..
+    echo ERROR: Zipping failed.
+    exit 12
 fi
 
 exit 0
