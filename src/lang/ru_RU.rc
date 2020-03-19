@@ -1468,9 +1468,9 @@ STRINGTABLE
     IDS_ENCODING, "Кодировка"
     IDS_INVALIDRESTYPE, "Неверный тип ресурса."
     IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папки вида ""C:\\Program Files""."
-    IDS_LOADEGAPROGRAM, "Load EGA program..."
-    IDS_EGAFILTER, "EGA Program (*.ega)|*.ega|All Files (*.*)|*.*|"
-    IDS_QUERYSAVECHANGE, "The file has been modified. Do you want to save changes now?"
+    IDS_LOADEGAPROGRAM, "Загрузить программу EGA..."
+    IDS_EGAFILTER, "Программа EGA (*.ega)|*.ega|Все файлы (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE, "Файл был изменен. Хотите сохранить изменения сейчас?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
