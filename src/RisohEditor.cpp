@@ -14361,7 +14361,10 @@ EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
 
     bool ret = g_res.search_and_delete(ET_ANY, type, name, lang);
     g_res.delete_invalid();
-    DoSetFileModified(TRUE);
+
+    if (ret)
+        DoSetFileModified(TRUE);
+
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(ret);
@@ -14416,7 +14419,9 @@ EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
 
     g_res.delete_invalid();
 
-    DoSetFileModified(TRUE);
+    if (!found.empty())
+        DoSetFileModified(TRUE);
+
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(!found.empty());
@@ -14517,7 +14522,9 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
 
     g_res.delete_invalid();
 
-    DoSetFileModified(TRUE);
+    if (!found2.empty())
+        DoSetFileModified(TRUE);
+
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(!found2.empty());
