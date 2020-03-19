@@ -138,6 +138,10 @@ Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignore
 Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\upx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\mcpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA\samples\input.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA\samples\plus.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA\samples\break.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
