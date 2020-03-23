@@ -122,8 +122,8 @@ IDR_MAINMENU MENU
     }
     POPUP "&Automazione"
     {
-        MENUITEM "Linguaggio di programmazione &EGA...", ID_EGA
-        MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
+        MENUITEM "Linguaggio programmazione &EGA...", ID_EGA
+        MENUITEM "Esegui p&rogramma EGA...", ID_EGA_PROGRAM
     }
     POPUP "&?"
     {
@@ -1218,15 +1218,15 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_EGA DIALOG 0, 0, 270, 170
-CAPTION "Linguaggio di Programmazione EGA"
+CAPTION "Linguaggio programmazione EGA"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    GROUPBOX "EGA Consolle", grp1, 5, 5, 260, 160
+    GROUPBOX "Console EGA", grp1, 5, 5, 260, 160
     EDITTEXT edt1, 10, 20, 250, 120, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | NOT WS_TABSTOP
     RTEXT "EGA>", stc1, 10, 147, 20, 10
     COMBOBOX cmb1, 35, 145, 170, 300, CBS_NOINTEGRALHEIGHT | CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "&Enter", IDOK, 210, 145, 50, 14
+    DEFPUSHBUTTON "&Invio", IDOK, 210, 145, 50, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1469,8 +1469,8 @@ STRINGTABLE
     IDS_INVALIDRESTYPE, "Tipo risorsa non valida."
     IDS_PATHSPACEERROR, "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Carica programma EGA..."
-    IDS_EGAFILTER, "EGA Programma (*.ega)|*.ega|Tutti i files (*.*)|*.*|"
-    IDS_QUERYSAVECHANGE, "Il file è stato modificato Vuoi salvare le modifiche ora?"
+    IDS_EGAFILTER, "Programma EGA(*.ega)|*.ega|Tutti i file (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE, "Il file è stato modificato.\r\nVuoi salvare le modifiche ora?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

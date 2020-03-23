@@ -167,6 +167,8 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Changed toolbar save button behavior.
     - Introduced automation by using programming language EGA.
     - Added confirmation of saving changes of file.
+- v.5.3.5 (2020.XX.YY)
+    - Improve Italian translation.
 
 ## Contact Us
 
