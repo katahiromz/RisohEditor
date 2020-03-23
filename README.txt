@@ -168,9 +168,12 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.5 (2020.XX.YY)
     - Improve Italian translation.
 
-/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-// Homepage     http://katahiromz.web.fc2.com
-// BBS          http://katahiromz.bbs.fc2.com
-// E-Mail       katayama.hirofumi.mz@gmail.com
-/////////////////////////////////////////////////////
+// Webpage (English):  https://katahiromz.web.fc2.com/re/en
+// Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
+// Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
+// Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
+// Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
+// Email               katayama.hirofumi.mz@gmail.com
+/////////////////////////////////////////////////////////////////////
