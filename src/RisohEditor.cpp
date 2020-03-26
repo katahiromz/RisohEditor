@@ -3748,7 +3748,6 @@ void MMainWnd::OnCompile(HWND hwnd)
 
         // select the entry
         SelectTV(entry, FALSE);
-        DoSetFileModified(TRUE);
     }
     else
     {
@@ -5910,7 +5909,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    DoSetFileModified(TRUE);
+    if (bOK)
+        DoSetFileModified(TRUE);
     return bOK;
 }
 
@@ -6046,7 +6046,9 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
-    DoSetFileModified(TRUE);
+    if (bOK)
+        DoSetFileModified(TRUE);
+
     return bOK;
 }
 
@@ -6054,8 +6056,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
                             WORD lang, const MStringW& strWide, BOOL bReopen)
 {
-    DoSetFileModified(TRUE);
-
     if (type == RT_STRING)
     {
         return CompileStringTable(strOutput, name, lang, strWide);
@@ -6129,6 +6129,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
         // select the added entry
         SelectTV(entry, FALSE);
+
+        DoSetFileModified(TRUE);
 
         return TRUE;    // success
     }
@@ -6271,6 +6273,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         {
             PostMessageDx(MYWM_REOPENRAD);
         }
+
+        DoSetFileModified(TRUE);
     }
 
     // recalculate the splitter
@@ -11953,8 +11957,6 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             SelectTV(ET_MESSAGE, dialog.m_type, (WORD)0, BAD_LANG, FALSE);
         else
             SelectTV(ET_LANG, dialog, FALSE);
-
-        DoSetFileModified(TRUE);
    }
 }
 
