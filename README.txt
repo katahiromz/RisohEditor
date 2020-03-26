@@ -165,7 +165,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Changed toolbar save button behavior.
     - Introduced automation by using programming language EGA.
     - Added confirmation of saving changes of file.
-- v.5.3.5 (2020.XX.YY)
+- v.5.3.5 (2020.03.26)
     - Improve Italian translation.
     - Fix needless save confirmation.
 
