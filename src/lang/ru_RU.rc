@@ -128,6 +128,7 @@ IDR_MAINMENU MENU
     POPUP "&Справка"
     {
         MENUITEM "О&ткрыть файл README.txt", ID_OPENREADME
+        MENUITEM "О&ткрыть READMEI&T.txt", ID_OPENREADMEIT
         MENUITEM "От&крыть файл READMEJP.txt", ID_OPENREADMEJP
         MENUITEM SEPARATOR
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE

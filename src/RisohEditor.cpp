@@ -2316,6 +2316,7 @@ protected:
     void OnConfig(HWND hwnd);
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
+    void OnOpenReadMeIt(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
     void OnOpenHyojunka(HWND hwnd);
     void OnDebugTreeNode(HWND hwnd);
@@ -4140,6 +4141,46 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
             if (!PathFileExistsW(szPath))
             {
                 StringCchCopyW(pch, diff, L"..\\..\\..\\READMEJP.txt");
+                if (!PathFileExistsW(szPath))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    // open it
+    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+// Open READMEIT (Italian)
+void MMainWnd::OnOpenReadMeIt(HWND hwnd)
+{
+    // get the module path filename of this application module
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+
+    // find the last '\\' or '/'
+    LPWSTR pch = wcsrchr(szPath, L'\\');
+    if (pch == NULL)
+        pch = wcsrchr(szPath, L'/');
+    if (pch == NULL)
+        pch = szPath;
+    else
+        ++pch;
+
+    // find the "READMEIT.txt" file
+    size_t diff = pch - szPath;
+    StringCchCopyW(pch, diff, L"READMEIT.txt");
+    if (!PathFileExistsW(szPath))
+    {
+        StringCchCopyW(pch, diff, L"..\\READMEIT.txt");
+        if (!PathFileExistsW(szPath))
+        {
+            StringCchCopyW(pch, diff, L"..\\..\\READMEIT.txt");
+            if (!PathFileExistsW(szPath))
+            {
+                StringCchCopyW(pch, diff, L"..\\..\\..\\READMEIT.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -10548,6 +10589,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_EGA_PROGRAM:
         OnEgaProgram(hwnd);
+        break;
+    case ID_OPENREADMEIT:
+        OnOpenReadMeIt(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
