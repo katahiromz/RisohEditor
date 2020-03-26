@@ -169,6 +169,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Added confirmation of saving changes of file.
 - v.5.3.5 (2020.XX.YY)
     - Improve Italian translation.
+    - Fix needless save confirmation.
 
 ## Contact Us
 

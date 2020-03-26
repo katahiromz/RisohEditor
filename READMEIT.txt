@@ -163,6 +163,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Modificato nella barra strumenti il comportamento del pulsante 'Salva'.
   Introdotta automazione usando il linguaggio programmazione EGA.
   Aggiunta conferma salvataggio in caso di modifiche del file.
+  Fix needless save confirmation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

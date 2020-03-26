@@ -8510,6 +8510,9 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     // resume the current directory
     SetCurrentDirectory(szCurDir);
 
+    if (bOK)
+        DoSetFileModified(FALSE);
+
     return bOK;
 }
 
@@ -8523,6 +8526,7 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
     if (g_res.extract_res(pszExeFile, g_res))
     {
         UpdateFileInfo(FT_RES, pszExeFile, FALSE);
+        DoSetFileModified(FALSE);
         return TRUE;
     }
     return FALSE;

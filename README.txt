@@ -167,6 +167,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Added confirmation of saving changes of file.
 - v.5.3.5 (2020.XX.YY)
     - Improve Italian translation.
+    - Fix needless save confirmation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
