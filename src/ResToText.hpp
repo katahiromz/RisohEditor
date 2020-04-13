@@ -1185,7 +1185,7 @@ inline MString ResToText::DoFontDir(const EntryBase& entry)
     }
 
     pb += 2;
-    for (WORD i = 0; i < wCount; ++i)
+    for (UINT i = 0; i < wCount; ++i)
     {
         StringCbPrintf(szText, sizeof(szText), TEXT("Font #%u: Ordinal %u ("),
                        i, *(const WORD *)pb);
@@ -1310,7 +1310,7 @@ DumpGroupIconInfo(const std::vector<BYTE>& data)
     const GRPICONDIRENTRY *pEntries;
     pEntries = (const GRPICONDIRENTRY *)&data[sizeof(dir)];
 
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         WORD Width = pEntries[i].bWidth;
         WORD Height = pEntries[i].bHeight;
@@ -1350,7 +1350,7 @@ DumpGroupCursorInfo(const std::vector<BYTE>& data)
     const GRPCURSORDIRENTRY *pEntries;
     pEntries = (const GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         WORD Width = pEntries[i].wWidth;
         WORD Height = pEntries[i].wHeight / 2;
@@ -1477,7 +1477,7 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
     pEntries = (const GRPICONDIRENTRY *)&entry[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
         if (!e)
@@ -1514,7 +1514,7 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
     GetObject(hbm, sizeof(bm), &bm);
 
     INT y = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         auto e = g_res.find(ET_LANG, RT_ICON, pEntries[i].nID, entry.m_lang);
         if (!e)
@@ -1581,7 +1581,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
     pEntries = (const GRPCURSORDIRENTRY *)&entry[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
         if (!e)
@@ -1621,7 +1621,7 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
     HGDIOBJ hbmOld = SelectObject(hDC, hbm);
     {
         INT y = 0;
-        for (WORD i = 0; i < dir.idCount; ++i)
+        for (UINT i = 0; i < dir.idCount; ++i)
         {
             auto e = g_res.find(ET_LANG, RT_CURSOR, pEntries[i].nID, entry.m_lang);
             if (!e)

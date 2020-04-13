@@ -460,7 +460,7 @@ bool EntrySet::extract_group_cursor(const EntryBase& group, const wchar_t *file_
 
     // store the entries to DirEntries
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_CURSOR
         auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
@@ -506,7 +506,7 @@ bool EntrySet::extract_group_cursor(const EntryBase& group, const wchar_t *file_
     }
 
     // write the images to the stream
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find RT_CURSOR
         auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
@@ -607,7 +607,7 @@ bool EntrySet::extract_group_icon(const EntryBase& group, const wchar_t *file_na
     DWORD offset = sizeof(dir) + sizeof(ICONDIRENTRY) * dir.idCount;
 
     std::vector<ICONDIRENTRY> DirEntries(dir.idCount);
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_ICON entry
         auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
@@ -648,7 +648,7 @@ bool EntrySet::extract_group_icon(const EntryBase& group, const wchar_t *file_na
     }
 
     // write the images
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_ICON entry
         auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
@@ -1156,7 +1156,7 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WO
     auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_ICON entry
         auto e = find(ET_LANG, RT_ICON, old_entries[i].nID, entry->m_lang);
@@ -1215,7 +1215,7 @@ BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, 
     auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
     LONG cx = 0, cy = 0;
-    for (WORD i = 0; i < dir.idCount; ++i)
+    for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_CURSOR entry
         auto e = find(ET_LANG, RT_CURSOR, old_entries[i].nID, entry->m_lang);

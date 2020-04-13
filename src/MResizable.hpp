@@ -271,7 +271,7 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
         GetClientRect(m_hwndParent, &ClientRect);
     }
 
-    const INT count = INT(m_layouts.size());
+    const UINT count = UINT(m_layouts.size());
     if (count == 0)
         return;
 
@@ -280,7 +280,7 @@ inline VOID MResizable::ArrangeLayout(const RECT *prc)
         return;
 
     const UINT uFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOREPOSITION;
-    for (INT i = 0; i < count; ++i)
+    for (UINT i = 0; i < count; ++i)
     {
         const layout_type& layout = m_layouts[i];
         HWND hwndCtrl = layout.m_hwndCtrl;
@@ -349,8 +349,8 @@ inline VOID MResizable::SetLayoutAnchor(
 
 inline MResizable::layout_type *MResizable::CtrlLayout(HWND hwndCtrl)
 {
-    const INT count = INT(m_layouts.size());
-    for (INT i = 0; i < count; ++i)
+    const UINT count = UINT(m_layouts.size());
+    for (UINT i = 0; i < count; ++i)
     {
         if (m_layouts[i].m_hwndCtrl == hwndCtrl)
             return &m_layouts[i];
@@ -361,8 +361,8 @@ inline MResizable::layout_type *MResizable::CtrlLayout(HWND hwndCtrl)
 inline MResizable::layout_type *MResizable::CtrlLayout(UINT nCtrlID)
 {
     HWND hwndCtrl = ::GetDlgItem(m_hwndParent, nCtrlID);
-    const INT count = INT(m_layouts.size());
-    for (INT i = 0; i < count; ++i)
+    const UINT count = UINT(m_layouts.size());
+    for (UINT i = 0; i < count; ++i)
     {
         if (m_layouts[i].m_hwndCtrl == hwndCtrl)
             return &m_layouts[i];
@@ -372,8 +372,8 @@ inline MResizable::layout_type *MResizable::CtrlLayout(UINT nCtrlID)
 
 inline const MResizable::layout_type *MResizable::CtrlLayout(HWND hwndCtrl) const
 {
-    const INT count = INT(m_layouts.size());
-    for (INT i = 0; i < count; ++i)
+    const UINT count = UINT(m_layouts.size());
+    for (UINT i = 0; i < count; ++i)
     {
         if (m_layouts[i].m_hwndCtrl == hwndCtrl)
             return &m_layouts[i];
@@ -384,8 +384,8 @@ inline const MResizable::layout_type *MResizable::CtrlLayout(HWND hwndCtrl) cons
 inline const MResizable::layout_type *MResizable::CtrlLayout(UINT nCtrlID) const
 {
     HWND hwndCtrl = ::GetDlgItem(m_hwndParent, nCtrlID);
-    const INT count = INT(m_layouts.size());
-    for (INT i = 0; i < count; ++i)
+    const UINT count = UINT(m_layouts.size());
+    for (UINT i = 0; i < count; ++i)
     {
         if (m_layouts[i].m_hwndCtrl == hwndCtrl)
             return &m_layouts[i];

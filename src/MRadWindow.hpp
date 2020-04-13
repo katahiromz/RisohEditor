@@ -2592,7 +2592,7 @@ public:
 
         INT iSelected = -1;
         INT iUnselected = -1;
-        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
             if (indeces.find(i) != indeces.end())
             {
@@ -2619,7 +2619,7 @@ public:
 
         // move the dialog items
         DialogItems items1, items2;
-        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
             if (indeces.find(i) == indeces.end())
             {
@@ -2674,7 +2674,7 @@ public:
 
         // move the dialog items
         DialogItems items1, items2;
-        for (INT i = 0; i < m_dialog_res.m_cItems; ++i)
+        for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
             if (indeces.find(i) == indeces.end())
             {
@@ -2742,7 +2742,7 @@ public:
             return;
 
         // move the dialog items
-        for (INT i = m_dialog_res.m_cItems - 1; i > 0; --i)
+        for (UINT i = m_dialog_res.m_cItems - 1; i > 0; --i)
         {
             if (indeces.find(i - 1) != indeces.end())
             {

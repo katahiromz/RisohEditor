@@ -49,13 +49,13 @@ public:
 
     bool LoadFromStream(const MByteStreamEx& stream, WORD wName)
     {
-        for (WORD i = 0; i < 16; ++i)
+        for (UINT i = 0; i < 16; ++i)
         {
             m_map.erase((wName - 1) * 16 + i);
         }
 
         WORD wLen;
-        for (WORD i = 0; i < 16; ++i)
+        for (UINT i = 0; i < 16; ++i)
         {
             if (!stream.ReadWord(wLen))
                 break;
@@ -78,7 +78,7 @@ public:
         WORD first, last;
         GetIdRange(wName, first, last);
 
-        for (WORD i = first; i <= last; ++i)
+        for (UINT i = first; i <= last; ++i)
         {
             const string_type& str = m_map[i];
             WORD wLen = WORD(str.size());
@@ -102,7 +102,7 @@ public:
 
         WORD first, last;
         GetIdRange(wName, first, last);
-        for (WORD i = first; i <= last; ++i)
+        for (UINT i = first; i <= last; ++i)
         {
             if (m_map[i].empty())
                 continue;

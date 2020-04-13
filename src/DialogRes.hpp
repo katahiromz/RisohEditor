@@ -902,7 +902,7 @@ struct DialogRes
             // extended dialog
             if (_headerFromStreamEx(stream))
             {
-                for (WORD i = 0; i < m_cItems; ++i)
+                for (UINT i = 0; i < m_cItems; ++i)
                 {
                     DialogItem item;
                     if (!item.LoadFromStreamEx(stream))
@@ -917,7 +917,7 @@ struct DialogRes
             // normal dialog
             if (_headerFromStream(stream))
             {
-                for (WORD i = 0; i < m_cItems; ++i)
+                for (UINT i = 0; i < m_cItems; ++i)
                 {
                     DialogItem item;
                     if (!item.LoadFromStream(stream))
@@ -1186,7 +1186,7 @@ struct DialogRes
         else
             ret += L"{\r\n";
 
-        for (WORD i = 0; i < m_cItems; ++i)
+        for (UINT i = 0; i < m_cItems; ++i)
         {
             ret += L"    ";
             ret += m_items[i].Dump(!!g_settings.bAlwaysControl);

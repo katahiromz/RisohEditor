@@ -406,7 +406,7 @@ public:
 
         ConstantsDB::TableType table = g_db.GetTable(TEXT("CONTROLS.ICONS"));
         size_t count = table.size();
-        INT nCount = INT(count);
+        UINT nCount = UINT(count);
 
         m_vecControls.clear();
         if (m_himlControls)
@@ -420,7 +420,7 @@ public:
         m_hTB.SetImageList(m_himlControls);
 
         buttons.resize(nCount);
-        for (INT i = 0; i < nCount; ++i)
+        for (UINT i = 0; i < nCount; ++i)
         {
             buttons[i].iBitmap = i;
             buttons[i].idCommand = i + 1000;
