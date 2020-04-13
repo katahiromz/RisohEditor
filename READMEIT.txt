@@ -167,7 +167,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Improve Italian translation.
   Fix needless save confirmation.
 - v.5.3.6 (2020.XX.YY)
-  The infinite loop is avoided by changing the loop variable to 32-bits.
+  The infinite loop is avoided by changing the loop variables to 32-bits.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

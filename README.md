@@ -171,7 +171,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improve Italian translation.
     - Fix needless save confirmation.
 - v.5.3.6 (2020.XX.YY)
-    - The infinite loop is avoided by changing the loop variable to 32-bits.
+    - The infinite loop is avoided by changing the loop variables to 32-bits.
 
 ## Contact Us
 
