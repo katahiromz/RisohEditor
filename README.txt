@@ -171,6 +171,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.6 (2020.04.15)
     - The infinite loop is avoided by changing the loop variables to 32-bits.
     - Delphi DFM data support.
+    - Improved context menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

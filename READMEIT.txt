@@ -169,6 +169,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 - v.5.3.6 (15.04.2020)
   The infinite loop is avoided by changing the loop variables to 32-bits.
   Delphi DFM data support.
+  Improved context menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

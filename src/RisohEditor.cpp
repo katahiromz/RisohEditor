@@ -4902,9 +4902,9 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     }
 
     // get screen coordinates from xPos and yPos
-    POINT pt = {(INT)xPos, (INT)yPos};
+    POINT pt = {(SHORT)xPos, (SHORT)yPos};
     HTREEITEM hItem;
-    if (xPos == -1 && yPos == -1)
+    if (pt.x == -1 && pt.y == -1)
     {
         // context menu from keyboard
         hItem = TreeView_GetSelection(hwndContext);
@@ -4919,11 +4919,11 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
         // context menu from mouse
         ScreenToClient(hwndContext, &pt);
 
+        // hit test
         TV_HITTESTINFO HitTest;
         ZeroMemory(&HitTest, sizeof(HitTest));
         HitTest.pt = pt;
         TreeView_HitTest(hwndContext, &HitTest);
-
         hItem = HitTest.hItem;
     }
 

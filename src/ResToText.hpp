@@ -203,7 +203,7 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         {
             if (entry.is_delphi_dfm())
             {
-                ret += L"RCData_";
+                ret += L"Delphi";
                 ret += DumpEscapedName(entry.m_name);
                 ret += L".dfm";
             }

@@ -173,6 +173,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 - v.5.3.6 (2020.04.15)
     - The infinite loop is avoided by changing the loop variables to 32-bits.
     - Delphi DFM data support.
+    - Improved context menu.
 
 ## Contact Us
 
