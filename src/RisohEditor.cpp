@@ -1981,6 +1981,7 @@ protected:
     WCHAR       m_szWindresExe[MAX_PATH];       // the windres.exe location
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
+    WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
 
     // file info
@@ -2028,6 +2029,7 @@ public:
         m_szWindresExe[0] = 0;
         m_szUpxExe[0] = 0;
         m_szMcdxExe[0] = 0;
+        m_szDFMSC[0] = 0;
         m_szIncludeDir[0] = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
@@ -6471,20 +6473,22 @@ INT MMainWnd::CheckData(VOID)
         return -6;  // failure
     }
 
+    // dfmsc.exe
+    StringCchCopyW(m_szDFMSC, _countof(m_szDFMSC), m_szDataFolder);
+    StringCchCatW(m_szDFMSC, _countof(m_szDFMSC), L"\\bin\\dfmsc.exe");
+    if (!PathFileExistsW(m_szDFMSC))
+    {
+        ErrorBoxDx(TEXT("ERROR: No dfmsc.exe found."));
+        return -7;  // failure
+    }
+
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        return -6;
-
     // mcdx.exe
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"\\mcdx.exe");
+    PathRemoveFileSpecW(szPath);
+    PathAppendW(szPath, L"mcdx.exe");
     if (PathFileExistsW(szPath))
     {
         StringCchCopyW(m_szMcdxExe, _countof(m_szMcdxExe), szPath);
@@ -6496,7 +6500,7 @@ INT MMainWnd::CheckData(VOID)
         if (!PathFileExistsW(m_szMcdxExe))
         {
             ErrorBoxDx(TEXT("ERROR: No mcdx.exe found."));
-            return -6;  // failure
+            return -8;  // failure
         }
     }
 
