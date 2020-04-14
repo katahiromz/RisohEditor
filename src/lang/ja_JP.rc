@@ -1474,6 +1474,9 @@ STRINGTABLE
     IDS_LOADEGAPROGRAM, "EGAプログラムを読み込む..."
     IDS_EGAFILTER, "EGA プログラム (*.ega)|*.ega|すべてのファイル (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "ファイルは変更されています。変更内容を保存しますか?"
+    IDS_DFMFILTER, "DFM ファイル (*.dfm)|*.dfm|テキストファイル (*.txt)|*.txt|すべてのファイル (*.*)|*.*|"
+    IDS_CANTEXTRACTDFM, "DFM データを抽出できません。"
+    IDS_EXTRACTDFM, "DFM データを抽出する"
 }
 
 //////////////////////////////////////////////////////////////////////////////

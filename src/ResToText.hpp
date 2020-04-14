@@ -201,9 +201,18 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         }
         else if (wType == (WORD)(UINT_PTR)RT_RCDATA)
         {
-            ret += L"RCData_";
-            ret += DumpEscapedName(entry.m_name);
-            ret += L".bin";
+            if (entry.is_delphi_dfm())
+            {
+                ret += L"RCData_";
+                ret += DumpEscapedName(entry.m_name);
+                ret += L".dfm";
+            }
+            else
+            {
+                ret += L"RCData_";
+                ret += DumpEscapedName(entry.m_name);
+                ret += L".bin";
+            }
         }
         else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
@@ -1035,13 +1044,17 @@ MString ResToText::DoDlgInit(const EntryBase& entry)
     return str;
 }
 
+#define MYWM_DELPHI_DFM_B2T (WM_USER + 300)
+
 inline MString ResToText::DoRCData(const EntryBase& entry)
 {
     MString str;
 
     if (m_bHumanReadable && entry.is_delphi_dfm())
     {
-        // TODO:
+        MString str;
+        SendMessageW(m_hwnd, MYWM_DELPHI_DFM_B2T, (WPARAM)&str, (LPARAM)&entry);
+        return str;
     }
     else
     {

@@ -104,6 +104,122 @@ BOOL EntryBase::is_editable() const
     }
 }
 
+std::string
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size)
+{
+    // get the temporary file path
+    WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
+    StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
+    StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
+    StringCbCatW(szPath5, sizeof(szPath5), L".txt");
+
+    // create the temporary file and wait
+    DWORD cbWritten;
+    MFile r4(szPath4, TRUE);
+    r4.WriteFile(binary, size, &cbWritten);
+    r4.CloseHandle();
+    Sleep(FILE_WAIT_TIME);
+
+    // build the command line text
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += pszDFMSC;
+    strCmdLine += L"\" --b2t ";
+    strCmdLine += L" \"";
+    strCmdLine += szPath4;
+    strCmdLine += L"\"";
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    // create an mcdx.exe process
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+    {
+        pmaker.WaitForSingleObject();
+        pmaker.CloseAll();
+
+        bSuccess = PathFileExistsW(szPath5);
+    }
+
+    if (bSuccess)
+    {
+        MStringA text;
+        MFile input(szPath5);
+        if (input.ReadAll(text))
+            return text;
+    }
+
+#ifdef NDEBUG
+    // delete the temporary file
+    DeleteFileW(szPath4);
+    DeleteFileW(szPath5);
+#endif
+
+    return std::string("");
+}
+
+EntryBase::data_type
+dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
+{
+    // get the temporary file path
+    WCHAR szPath6[MAX_PATH], szPath7[MAX_PATH];
+    StringCbCopyW(szPath6, sizeof(szPath6), GetTempFileNameDx(L"R6"));
+    StringCbCopyW(szPath7, sizeof(szPath7), szPath6);
+    StringCbCatW(szPath7, sizeof(szPath7), L".dfm");
+
+    // create the temporary file and wait
+    DWORD cbWritten;
+    MFile r6(szPath6, TRUE);
+    r6.WriteFile(text.c_str(), text.size(), &cbWritten);
+    r6.CloseHandle();
+    Sleep(FILE_WAIT_TIME);
+
+    // build the command line text
+    MStringW strCmdLine;
+    strCmdLine += L'\"';
+    strCmdLine += pszDFMSC;
+    strCmdLine += L"\" --t2b ";
+    strCmdLine += L" \"";
+    strCmdLine += szPath6;
+    strCmdLine += L"\"";
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    // create an mcdx.exe process
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+    {
+        pmaker.WaitForSingleObject();
+        pmaker.CloseAll();
+
+        bSuccess = PathFileExistsW(szPath7);
+    }
+
+    if (bSuccess)
+    {
+        MStringA text;
+        MFile input(szPath7);
+        if (input.ReadAll(text))
+            return EntryBase::data_type(text.begin(), text.end());
+    }
+
+#ifdef NDEBUG
+    // delete the temporary file
+    DeleteFileW(szPath6);
+    DeleteFileW(szPath7);
+#endif
+
+    return EntryBase::data_type();
+}
+
 bool EntrySet::intersect(const EntrySet& another) const
 {
     if (size() == 0 && another.size() == 0)

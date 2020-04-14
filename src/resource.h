@@ -303,6 +303,9 @@
 #define IDS_LOADEGAPROGRAM                  310
 #define IDS_EGAFILTER                       311
 #define IDS_QUERYSAVECHANGE                 312
+#define IDS_DFMFILTER                       313
+#define IDS_CANTEXTRACTDFM                  314
+#define IDS_EXTRACTDFM                      315
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

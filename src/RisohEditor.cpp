@@ -2186,6 +2186,7 @@ protected:
                       WORD lang, const MStringW& strWide, BOOL bReopen = FALSE);
     BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
+    BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
@@ -2275,6 +2276,7 @@ protected:
     LRESULT OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
 
     void OnAddBitmap(HWND hwnd);
@@ -2291,6 +2293,7 @@ protected:
     void OnAddAccel(HWND hwnd);
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
+    void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
     void OnExtractIcon(HWND hwnd);
@@ -2463,6 +2466,55 @@ void MMainWnd::UpdateMenu()
     }
 }
 
+void MMainWnd::OnExtractDFM(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    // get the selected language entry
+    auto entry = g_res.get_lang_entry();
+    if (!entry)
+        return;
+
+    WCHAR szFile[MAX_PATH] = L"";
+
+    // initialize OPENFILENAME structure
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_DFMFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTDFM);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"dfm";
+
+    // let the user choose the path
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
+        {
+            auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
+            if (FILE *fp = _wfopen(szFile, L"wb"))
+            {
+                fwrite(ansi.c_str(), ansi.size(), 1, fp);
+                fclose(fp);
+            }
+            else
+            {
+                ErrorBoxDx(IDS_CANTEXTRACTDFM);
+            }
+        }
+        else
+        {
+            if (!g_res.extract_bin(ofn.lpstrFile, entry))
+            {
+                ErrorBoxDx(IDS_CANTEXTRACTDFM);
+            }
+        }
+    }
+}
+
 // extract the binary as a file
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
@@ -2474,6 +2526,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     auto e = g_res.get_entry();
     if (!e)
         return;     // not selected
+
+    if (e->is_delphi_dfm())
+        return OnExtractDFM(hwnd);
 
     // initialize OPENFILENAME structure
     WCHAR szFile[MAX_PATH] = L"";
@@ -5146,6 +5201,8 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
     // dump the text to m_hSrcEdit
     ResToText res2text;
+    res2text.m_hwnd = m_hwnd;
+    res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 }
@@ -5916,6 +5973,22 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     return bOK;
 }
 
+BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+{
+    EntryBase *entry = g_res.find(ET_LANG, RT_RCDATA, name, lang);
+    if (!entry || !entry->is_delphi_dfm())
+        return FALSE;
+
+    MWideToAnsi w2a(CP_UTF8, strWide.c_str());
+    EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, w2a.c_str());
+    if (data.empty())
+        return FALSE;
+
+    entry->m_data = data;
+    DoSetFileModified(TRUE);
+    return TRUE;
+}
+
 // compile the message table
 BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
@@ -6065,6 +6138,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     if (type == RT_MESSAGETABLE)
     {
         return CompileMessageTable(strOutput, name, lang, strWide);
+    }
+    if (type == RT_RCDATA)
+    {
+        return CompileRCData(strOutput, name, lang, strWide);
     }
 
     // add a UTF-8 BOM to data
@@ -10086,6 +10163,10 @@ void MMainWnd::OnExtractBang(HWND hwnd)
         {
             OnExtractBitmap(hwnd);
         }
+        else if (entry->m_type == RT_RCDATA && entry->is_delphi_dfm())
+        {
+            OnExtractDFM(hwnd);
+        }
         else
         {
             OnExtractBin(hwnd);
@@ -12866,6 +12947,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_SELCHANGE, OnRadSelChange);
         DO_MESSAGE(MYWM_UPDATEDLGRES, OnUpdateDlgRes);
         DO_MESSAGE(MYWM_GETDLGHEADLINES, OnGetHeadLines);
+        DO_MESSAGE(MYWM_DELPHI_DFM_B2T, OnDelphiDFMB2T);
 
     default:
         if (uMsg == s_uFindMsg)
@@ -12981,6 +13063,17 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
     }
+}
+
+LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    auto& str = *(MString *)wParam;
+    auto& entry = *(const EntryBase *)lParam;
+
+    auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size());
+    MAnsiToWide a2w(CP_ACP, ansi.c_str());
+    str = a2w.c_str();
+    return 0;
 }
 
 LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)

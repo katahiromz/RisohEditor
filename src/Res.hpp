@@ -24,6 +24,7 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include <shlwapi.h>
 
 #include <cctype>
 #include <cwchar>
@@ -312,6 +313,9 @@ struct EntryBase
     {
         return m_type == RT_RCDATA && size() >= 4 && memcmp(ptr(), "TPF0", 4) == 0;
     }
+
+    std::string get_dfm_text(LPCWSTR pszDFMSC) const;
+    void set_dfm_text(LPCWSTR pszDFMSC, std::string& text);
 };
 
 inline EntryBase *
@@ -343,6 +347,12 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = B
 {
     return new EntryBase(ET_LANG, type, name, lang);
 }
+
+std::string
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size);
+
+EntryBase::data_type
+dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet

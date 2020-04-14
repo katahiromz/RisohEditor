@@ -1472,6 +1472,9 @@ STRINGTABLE
     IDS_LOADEGAPROGRAM, "Загрузить программу EGA..."
     IDS_EGAFILTER, "Программа EGA (*.ega)|*.ega|Все файлы (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "Файл был изменен. Хотите сохранить изменения сейчас?"
+    IDS_DFMFILTER, "DFM File (*.dfm)|*.dfm|Text Files (*.txt)|*.txt|All Files (*.*)|*.*|"
+    IDS_CANTEXTRACTDFM, "Unable to extract the DFM data."
+    IDS_EXTRACTDFM, "Extract DFM data"
 }
 
 //////////////////////////////////////////////////////////////////////////////
