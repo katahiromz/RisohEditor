@@ -14731,7 +14731,6 @@ wWinMain(HINSTANCE   hInstance,
                         LoadStringDx(IDS_PATHSPACEERROR),
                         NULL,
                         MB_ICONERROR);
-            return 1;
         }
     }
 
