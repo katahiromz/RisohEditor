@@ -1054,7 +1054,11 @@ inline MString ResToText::DoRCData(const EntryBase& entry)
     {
         MString str;
         SendMessageW(m_hwnd, MYWM_DELPHI_DFM_B2T, (WPARAM)&str, (LPARAM)&entry);
-        return str;
+        if (str.size())
+        {
+            return str;
+        }
+        return LoadStringDx(IDS_INVALIDDATA);
     }
     else
     {

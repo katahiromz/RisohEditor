@@ -139,6 +139,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size)
 
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
         pmaker.WaitForSingleObject();
         pmaker.CloseAll();
 
@@ -197,6 +198,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
 
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
+        SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
         pmaker.WaitForSingleObject();
         pmaker.CloseAll();
 

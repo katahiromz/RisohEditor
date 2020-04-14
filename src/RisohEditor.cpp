@@ -5981,8 +5981,13 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
 
     MWideToAnsi w2a(CP_UTF8, strWide.c_str());
     EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, w2a.c_str());
-    if (data.empty())
+    auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size());
+    if (text.empty())
+    {
+        MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+        SetErrorMessage(w2a.c_str());
         return FALSE;
+    }
 
     entry->m_data = data;
     DoSetFileModified(TRUE);
