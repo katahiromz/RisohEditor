@@ -1039,13 +1039,20 @@ inline MString ResToText::DoRCData(const EntryBase& entry)
 {
     MString str;
 
-    // LANGUAGE ..., ...
-    str += GetLanguageStatement(entry.m_lang);
+    if (m_bHumanReadable && entry.is_delphi_dfm())
+    {
+        // TODO:
+    }
+    else
+    {
+        // LANGUAGE ..., ...
+        str += GetLanguageStatement(entry.m_lang);
 
-    str += DumpName(entry.m_type, entry.m_name);
-    str += L" RCDATA \"";
-    str += GetEntryFileName(entry);
-    str += L"\"\r\n\r\n";
+        str += DumpName(entry.m_type, entry.m_name);
+        str += L" RCDATA \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n\r\n";
+    }
 
     return str;
 }

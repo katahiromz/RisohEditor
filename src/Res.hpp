@@ -307,6 +307,11 @@ struct EntryBase
 
     // is it editable?
     BOOL is_editable() const;
+
+    BOOL is_delphi_dfm() const
+    {
+        return m_type == RT_RCDATA && size() >= 4 && memcmp(ptr(), "TPF0", 4) == 0;
+    }
 };
 
 inline EntryBase *

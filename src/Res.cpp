@@ -92,6 +92,10 @@ BOOL EntryBase::is_editable() const
         {
             return TRUE;
         }
+        if (type == RT_RCDATA && is_delphi_dfm())
+        {
+            return TRUE;
+        }
         return FALSE;
     case ET_STRING: case ET_MESSAGE:
         return TRUE;
