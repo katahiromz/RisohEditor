@@ -9114,6 +9114,21 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         }
         return IMPORT_CANCELLED;
     }
+    else if (lstrcmpiW(pchDotExt, L".dfm") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = RT_RCDATA;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
 
     return NOT_IMPORTABLE;
 }
