@@ -1471,9 +1471,9 @@ STRINGTABLE
     IDS_LOADEGAPROGRAM, "加载EGA程序..."
     IDS_EGAFILTER, "EGA 计划 (*.ega)|*.ega|全部文件 (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "该文件已被修改. 您要立即保存更改吗？"
-    IDS_DFMFILTER, "DFM File (*.dfm)|*.dfm|Text Files (*.txt)|*.txt|All Files (*.*)|*.*|"
-    IDS_CANTEXTRACTDFM, "Unable to extract the DFM data."
-    IDS_EXTRACTDFM, "Extract DFM data"
+    IDS_DFMFILTER, "DFM 文件 (*.dfm)|*.dfm|文字档案 (*.txt)|*.txt|全部文件 (*.*)|*.*|"
+    IDS_CANTEXTRACTDFM, "无法提取DFM数据."
+    IDS_EXTRACTDFM, "提取DFM数据"
 }
 
 //////////////////////////////////////////////////////////////////////////////
