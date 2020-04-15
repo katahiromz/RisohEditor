@@ -2478,6 +2478,12 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*entry);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
@@ -2530,8 +2536,15 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (e->is_delphi_dfm())
         return OnExtractDFM(hwnd);
 
-    // initialize OPENFILENAME structure
     WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*e);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
+
+    // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -2611,6 +2624,12 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*entry);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
@@ -2665,6 +2684,12 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*entry);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
@@ -2711,6 +2736,12 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
         return;
 
     WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*entry);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };

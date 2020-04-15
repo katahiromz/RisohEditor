@@ -172,6 +172,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Improved context menu.
 - v.5.3.7 (YY.XX.2020)
   Updated file change flag when file drop.
+  Improved the filename when extracting.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

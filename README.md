@@ -176,6 +176,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved context menu.
 - v.5.3.7 (2020.XX.YY)
     - Updated file change flag when file drop.
+    - Improved the filename when extracting.
 
 ## Contact Us
 
