@@ -24,8 +24,7 @@ configuration:
   - Release
 
 before_build:
-  - git submodule init
-  - git submodule update
+  - git submodule update --init --recursive
   - cmake --version
   - cmake -G "%GENERATOR%" -A "%PLATFORM%" .
 
