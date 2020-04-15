@@ -174,6 +174,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Updated file change flag when file drop.
   Improved the filename when extracting.
   Strengthened EGA.
+  Improved Russian translation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

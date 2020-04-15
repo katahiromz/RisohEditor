@@ -178,6 +178,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Updated file change flag when file drop.
     - Improved the filename when extracting.
     - Strengthened EGA.
+    - Improved Russian translation.
 
 ## Contact Us
 

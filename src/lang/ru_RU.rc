@@ -120,16 +120,16 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "О&бновить", ID_REFRESHALL
     }
-    POPUP "Автоматизация(&A)"
+    POPUP "&Автоматизация"
     {
-        MENUITEM "Язык Программирования &EGA...", ID_EGA
-        MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
+        MENUITEM "Язык программирования &EGA...", ID_EGA
+        MENUITEM "&Запустить EGA-программу...", ID_EGA_PROGRAM
     }
     POPUP "&Справка"
     {
-        MENUITEM "О&ткрыть файл README.txt", ID_OPENREADME
-        MENUITEM "О&ткрыть READMEI&T.txt", ID_OPENREADMEIT
-        MENUITEM "От&крыть файл READMEJP.txt", ID_OPENREADMEJP
+        MENUITEM "О&ткрыть файл README.txt (английский)", ID_OPENREADME
+        MENUITEM "О&ткрыть файл READMEI&T.txt (итальянский)", ID_OPENREADMEIT
+        MENUITEM "От&крыть файл READMEJP.txt (японский)", ID_OPENREADMEJP
         MENUITEM SEPARATOR
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
@@ -856,7 +856,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CLONEINNEWNAME DIALOG 0, 0, 215, 75
-CAPTION "Клонировать под новым именем"
+CAPTION "Клонировать с новым именем"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1219,11 +1219,11 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_EGA DIALOG 0, 0, 270, 170
-CAPTION "Язык Программирования EGA"
+CAPTION "Язык программирования EGA"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    GROUPBOX "EGA Консоль", grp1, 5, 5, 260, 130
+    GROUPBOX "EGA-консоль", grp1, 5, 5, 260, 130
     EDITTEXT edt1, 10, 20, 250, 120, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | NOT WS_TABSTOP
     RTEXT "EGA>", stc1, 10, 147, 20, 10
     COMBOBOX cmb1, 35, 145, 170, 300, CBS_NOINTEGRALHEIGHT | CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1268,9 +1268,9 @@ STRINGTABLE
     IDS_CANNOTSAVE, "Невозможно сохранить."
     IDS_REPLACERES, "Заменить ресурс"
     IDS_ALLFILES, "Все файлы (*.*)|*.*|"
-    IDS_ENTERTYPE, "Введите тип ресурса."
-    IDS_ENTERNAME, "Введите имя ресурса."
-    IDS_ENTERLANG, "Введите язык ресурса."
+    IDS_ENTERTYPE, "Укажите тип ресурса."
+    IDS_ENTERNAME, "Укажите имя ресурса."
+    IDS_ENTERLANG, "Укажите язык ресурса."
     IDS_FILENOTFOUND, "Файл не найден."
     IDS_CANNOTREPLACE, "Невозможно заменить."
     IDS_EXERESFILTER, "Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC-файлы (*.rc)|*.rc|Двоичные ресурсы (*.res)|*.res|Все файлы (*.*)|*.*|"
@@ -1348,7 +1348,7 @@ STRINGTABLE
     IDS_EMPTYSTR, "Введите строку."
     IDS_ANICURSOR, "(анимированный курсор)\r\n"
     IDS_ANIICON, "(анимированный значок)\r\n"
-    IDS_HEADFILTER, "Заголовки (*.h)|*.h|Все файлы (*.*)|*.*|"
+    IDS_HEADFILTER, "Файлы заголовков (*.h)|*.h|Все файлы (*.*)|*.*|"
     IDS_LOADRESH, "Загрузить файл ""resource.h"""
     IDS_NAME, "Имя"
     IDS_VALUE, "Значение"
@@ -1468,13 +1468,14 @@ STRINGTABLE
     IDS_RESTYPE, "Тип ресурса"
     IDS_ENCODING, "Кодировка"
     IDS_INVALIDRESTYPE, "Неверный тип ресурса."
-    IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папки вида ""C:\\Program Files""."
+    IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папку ""C:\\Program Files"" и подобные."
     IDS_LOADEGAPROGRAM, "Загрузить программу EGA..."
     IDS_EGAFILTER, "Программа EGA (*.ega)|*.ega|Все файлы (*.*)|*.*|"
-    IDS_QUERYSAVECHANGE, "Файл был изменен. Хотите сохранить изменения сейчас?"
+    IDS_QUERYSAVECHANGE, "Файл был изменён. Хотите сохранить изменения?"
     IDS_DFMFILTER, "Файл DFM (*.dfm)|*.dfm|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "Невозможно извлечь данные DFM."
     IDS_EXTRACTDFM, "Извлечь данные DFM"
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
