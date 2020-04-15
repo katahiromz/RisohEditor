@@ -175,6 +175,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.7 (2020.XX.YY)
     - Updated file change flag when file drop.
     - Improved the filename when extracting.
+    - Strengthened EGA.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
