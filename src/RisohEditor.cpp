@@ -2179,6 +2179,7 @@ public:
     EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
     EGA::arg_t DoEgaResCloneByLang(const EGA::args_t& args);
     EGA::arg_t DoEgaResUnloadResH(const EGA::args_t& args);
+    EGA::arg_t DoEgaResSelect(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -14520,6 +14521,11 @@ EGA::arg_t EGA_FN EGA_RES_unload_resh(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResUnloadResH(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_select(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResSelect(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -14781,6 +14787,43 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     return make_arg<AstInt>(!found2.empty());
 }
 
+EGA::arg_t MMainWnd::DoEgaResSelect(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], false);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+    if (args.size() >= 3)
+        arg2 = EGA_eval_arg(args[2], false);
+
+    MIdOrString type, name;
+    WORD lang = BAD_LANG;
+
+    if (arg0)
+        type = EGA_get_id_or_str(arg0);
+    if (arg1)
+        name = EGA_get_id_or_str(arg1);
+    if (arg2)
+        lang = EGA_get_int(arg2);
+
+    EntrySetBase found;
+    g_res.search(found, ET_LANG, type, name, lang);
+
+    if (found.size())
+    {
+        for (auto e : found)
+        {
+            SelectTV(e, FALSE);
+            break;
+        }
+    }
+
+    return make_arg<AstInt>(!found.empty());
+}
+
 EGA::arg_t MMainWnd::DoEgaResUnloadResH(const EGA::args_t& args)
 {
     using namespace EGA;
@@ -14795,10 +14838,11 @@ EGA::arg_t MMainWnd::DoEgaResUnloadResH(const EGA::args_t& args)
 
 void EGA_extension(void)
 {
-    EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
-    EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
-    EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
     EGA_add_fn("RES_clone_by_lang", 4, 4, EGA_RES_clone_by_lang, "RES_clone_by_lang(type, name, src_lang, dest_lang)");
+    EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
+    EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
+    EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
+    EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
 }
 
