@@ -3206,7 +3206,35 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
         return;
 
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+
+    WCHAR szDir[MAX_PATH];
+    GetModuleFileNameW(NULL, szDir, ARRAYSIZE(szDir));
+    PathRemoveFileSpecW(szDir);
+
     WCHAR szFile[MAX_PATH] = L"";
+    StringCbCopyW(szFile, sizeof(szFile), szDir);
+    PathAppendW(szFile, L"EGA");
+    if (!PathIsDirectoryW(szFile))
+    {
+        StringCbCopyW(szFile, sizeof(szFile), szDir);
+        PathAppendW(szFile, L"..\\EGA-samples");
+        if (!PathIsDirectoryW(szFile))
+        {
+            StringCbCopyW(szFile, sizeof(szFile), szDir);
+            PathAppendW(szFile, L"..\\..\\EGA-samples");
+            if (!PathIsDirectoryW(szFile))
+            {
+                StringCbCopyW(szFile, sizeof(szFile), szDir);
+                PathAppendW(szFile, L"..\\..\\..\\EGA-samples");
+                if (!PathIsDirectoryW(szFile))
+                {
+                    return;
+                }
+            }
+        }
+    }
+    PathAppendW(szFile, L"*.ega");
+
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EGAFILTER));
     ofn.lpstrFile = szFile;
