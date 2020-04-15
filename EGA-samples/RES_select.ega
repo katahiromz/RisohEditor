@@ -1,0 +1,12 @@
+﻿@ Search and select the resource item that contains Japanese text "開く".
+
+set(res, RES_search());
+set(text, u16fromu8("開く"));
+foreach(item, res, (
+    set(bin, RES_get_binary(at(item, 0), at(item, 1), at(item, 2))),
+    if(!=(find(bin, text), -(1)), (
+            RES_select(at(item, 0), at(item, 1), at(item, 2)),
+            break()
+        )
+    )
+));

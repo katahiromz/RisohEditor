@@ -14823,7 +14823,8 @@ EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
     {
         for (auto e : found)
         {
-            ret.assign(e->m_data.begin(), e->m_data.end());
+            ret.resize(e->size());
+            memcpy(&ret[0], &e->m_data[0], e->size());
             break;
         }
     }
