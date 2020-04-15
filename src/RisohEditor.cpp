@@ -8960,6 +8960,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -8977,6 +8979,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -8991,6 +8995,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         {
             // add a resource item
             DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
 
             return IMPORTED;
         }
@@ -9009,6 +9015,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // select the entry
             SelectTV(ET_LANG, dialog, FALSE);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -9024,6 +9032,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // add a resource item
             DoAddRes(hwnd, dialog);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -9038,6 +9048,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         {
             // add a resource item
             DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
 
             return IMPORTED;
         }
@@ -9055,6 +9067,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // add a resource item
             DoAddRes(hwnd, dialog);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -9069,6 +9083,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         {
             // add a resource item
             DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
 
             return IMPORTED;
         }
@@ -9085,6 +9101,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // add a resource item
             DoAddRes(hwnd, dialog);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -9099,6 +9117,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         {
             // add a resource item
             DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
 
             return IMPORTED;
         }
@@ -9115,6 +9135,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
             // add a resource item
             DoAddRes(hwnd, dialog);
 
+            DoSetFileModified(TRUE);
+
             return IMPORTED;
         }
         return IMPORT_CANCELLED;
@@ -9129,6 +9151,8 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         {
             // add a resource item
             DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
 
             return IMPORTED;
         }
