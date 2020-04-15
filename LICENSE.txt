@@ -24,7 +24,7 @@ This program is free software; you may redistribute it under the terms of
 the GNU General Public License version 3 or (at your option) any later version.
 This program has absolutely no warranty.
 ---------------------------------------------------
-RisohEditor contains the "mcpp" programs.
+RisohEditor contains the "mcpp" program.
 The source code of mcpp is available at https://github.com/katahiromz/mcpp .
 mcpp is licensed under its special terms as below:
 
@@ -57,6 +57,10 @@ mcpp is licensed under its special terms as below:
  * SUCH DAMAGE.
  */
 
+---------------------------------------------------
+RisohEditor contains the "dfmsc" program.
+The source code of dfmsc is available at https://github.com/katahiromz/dfmsc .
+dfmsc is licensed under the MIT License.
 ---------------------------------------------------
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
