@@ -179,6 +179,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved the filename when extracting.
     - Strengthened EGA.
     - Improved Russian translation.
+- v.5.3.8 (2020.XX.YY)
 
 ## Contact Us
 

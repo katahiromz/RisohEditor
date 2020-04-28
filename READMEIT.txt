@@ -164,17 +164,18 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Introdotta automazione usando il linguaggio programmazione EGA.
   Aggiunta conferma salvataggio in caso di modifiche del file.
 - v.5.3.5 (26.03.2020)
-  Improve Italian translation.
-  Fix needless save confirmation.
+  Migliorata traduzione lingua italiana.
+  Correzione modulo salvataggio configurazione.
 - v.5.3.6 (15.04.2020)
-  The infinite loop is avoided by changing the loop variables to 32-bits.
-  Delphi DFM data support.
-  Improved context menu.
+  Evitato loop infino mediante modifica della variabile loop a 32bit.
+  Supporto dati Delphi DFM.
+  Migliorato menu contestuale.
 - v.5.3.7 (28.04.2020)
-  Updated file change flag when file drop.
-  Improved the filename when extracting.
-  Strengthened EGA.
-  Improved Russian translation.
+  Aggiornata flag modifica file quando si trascina un file.
+  Migliorata gestione nome file durante estrazione.
+  Rafforzato EGA.
+  Migliorata traduzione lingua russa.
+- v.5.3.8 (YY.XX.2020)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

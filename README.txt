@@ -177,6 +177,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Improved the filename when extracting.
     - Strengthened EGA.
     - Improved Russian translation.
+- v.5.3.8 (2020.XX.YY)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
