@@ -181,6 +181,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved Russian translation.
 - v.5.3.8 (2020.XX.YY)
     - Added "Open EGA Manual" item to "Automation" menu.
+    - Strictly controlled the file change flag.
 
 ## Contact Us
 

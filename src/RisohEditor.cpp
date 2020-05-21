@@ -2399,6 +2399,8 @@ LRESULT MMainWnd::OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     // set the text to status bar
     ChangeStatusText(LoadStringPrintfDx(IDS_COORD, x, y, cx, cy));
+
+    DoSetFileModified(TRUE);
     return 0;
 }
 
@@ -3892,8 +3894,6 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;
     }
 
-    DoSetFileModified(TRUE);
-
     if (entry->m_type == RT_ACCELERATOR)
     {
         // entry->m_data --> accel_res
@@ -3909,6 +3909,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                DoSetFileModified(TRUE);
+
                 // update accel_res
                 accel_res.Update();
 
@@ -3941,6 +3943,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                DoSetFileModified(TRUE);
+
                 // update menu_res
                 menu_res.Update();
 
@@ -4011,6 +4015,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
             if (nID == IDOK)
             {
+                DoSetFileModified(TRUE);
+
                 // dlginit_res --> entry->m_data
                 entry->m_data = dlginit_res.data();
             }
@@ -4052,6 +4058,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            DoSetFileModified(TRUE);
+
             // dialog --> str_res
             str_res = dialog.m_str_res;
 
@@ -4107,6 +4115,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (nID == IDOK)
         {
+            DoSetFileModified(TRUE);
+
             // dialog --> msg_res
             msg_res = dialog.m_msg_res;
 
@@ -4188,7 +4198,6 @@ void MMainWnd::OnEdit(HWND hwnd)
 
     // select the entry
     SelectTV(entry, TRUE);
-    DoSetFileModified(TRUE);
 }
 
 // open README

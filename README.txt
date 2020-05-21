@@ -179,6 +179,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Improved Russian translation.
 - v.5.3.8 (2020.XX.YY)
     - Added "Open EGA Manual" item to "Automation" menu.
+    - Strictly controlled the file change flag.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
