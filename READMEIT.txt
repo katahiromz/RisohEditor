@@ -176,6 +176,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Rafforzato EGA.
   Migliorata traduzione lingua russa.
 - v.5.3.8 (YY.XX.2020)
+    Added "Open EGA Manual" item to "Automation" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
