@@ -124,6 +124,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "电脑语言 &EGA...", ID_EGA
         MENUITEM "运行EGA程序(&R)...", ID_EGA_PROGRAM
+        MENUITEM "Open EGA &Manual", ID_OPEN_EGA_MANUAL
     }
     POPUP "帮助(&H)"
     {

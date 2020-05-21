@@ -2324,6 +2324,7 @@ protected:
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
     void OnOpenReadMeIt(HWND hwnd);
+    void OnOpenEgaManual(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
     void OnOpenHyojunka(HWND hwnd);
     void OnDebugTreeNode(HWND hwnd);
@@ -4196,28 +4197,23 @@ void MMainWnd::OnOpenReadMe(HWND hwnd)
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    LPWSTR pch = PathFindFileNameW(szPath);
 
     // find the "README.txt" file
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"README.txt");
+    *pch = 0;
+    PathAppendW(szPath, L"README.txt");
     if (!PathFileExistsW(szPath))
     {
-        StringCchCopyW(pch, diff, L"..\\README.txt");
+        *pch = 0;
+        PathAppendW(szPath, L"..\\README.txt");
         if (!PathFileExistsW(szPath))
         {
-            StringCchCopyW(pch, diff, L"..\\..\\README.txt");
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\README.txt");
             if (!PathFileExistsW(szPath))
             {
-                StringCchCopyW(pch, diff, L"..\\..\\..\\README.txt");
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\README.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -4236,28 +4232,58 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    LPWSTR pch = PathFindFileNameW(szPath);
 
     // find the "READMEJP.txt" file
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"READMEJP.txt");
+    *pch = 0;
+    PathAppendW(szPath, L"READMEJP.txt");
     if (!PathFileExistsW(szPath))
     {
-        StringCchCopyW(pch, diff, L"..\\READMEJP.txt");
+        *pch = 0;
+        PathAppendW(szPath, L"..\\READMEJP.txt");
         if (!PathFileExistsW(szPath))
         {
-            StringCchCopyW(pch, diff, L"..\\..\\READMEJP.txt");
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\READMEJP.txt");
             if (!PathFileExistsW(szPath))
             {
-                StringCchCopyW(pch, diff, L"..\\..\\..\\READMEJP.txt");
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\READMEJP.txt");
+                if (!PathFileExistsW(szPath))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    // open it
+    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+// Open EGA Manual
+void MMainWnd::OnOpenEgaManual(HWND hwnd)
+{
+    // get the module path filename of this application module
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    LPWSTR pch = PathFindFileNameW(szPath);
+
+    // find the "EGA-Manual.pdf" file
+    *pch = 0;
+    PathAppendW(szPath, L"EGA\\EGA-Manual.pdf");
+    if (!PathFileExistsW(szPath))
+    {
+        *pch = 0;
+        PathAppendW(szPath, L"..\\EGA\\EGA-Manual.pdf");
+        if (!PathFileExistsW(szPath))
+        {
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\EGA\\EGA-Manual.pdf");
+            if (!PathFileExistsW(szPath))
+            {
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\EGA\\EGA-Manual.pdf");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -4276,28 +4302,23 @@ void MMainWnd::OnOpenReadMeIt(HWND hwnd)
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    LPWSTR pch = PathFindFileNameW(szPath);
 
     // find the "READMEIT.txt" file
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"READMEIT.txt");
+    *pch = 0;
+    PathAppendW(szPath, L"READMEIT.txt");
     if (!PathFileExistsW(szPath))
     {
-        StringCchCopyW(pch, diff, L"..\\READMEIT.txt");
+        *pch = 0;
+        PathAppendW(szPath, L"..\\READMEIT.txt");
         if (!PathFileExistsW(szPath))
         {
-            StringCchCopyW(pch, diff, L"..\\..\\READMEIT.txt");
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\READMEIT.txt");
             if (!PathFileExistsW(szPath))
             {
-                StringCchCopyW(pch, diff, L"..\\..\\..\\READMEIT.txt");
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\READMEIT.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -4316,28 +4337,23 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    LPWSTR pch = PathFindFileNameW(szPath);
 
     // find the "HYOJUNKA.txt" file
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"HYOJUNKA.txt");
+    *pch = 0;
+    PathAppendW(szPath, L"HYOJUNKA.txt");
     if (!PathFileExistsW(szPath))
     {
-        StringCchCopyW(pch, diff, L"..\\HYOJUNKA.txt");
+        *pch = 0;
+        PathAppendW(szPath, L"..\\HYOJUNKA.txt");
         if (!PathFileExistsW(szPath))
         {
-            StringCchCopyW(pch, diff, L"..\\..\\HYOJUNKA.txt");
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\HYOJUNKA.txt");
             if (!PathFileExistsW(szPath))
             {
-                StringCchCopyW(pch, diff, L"..\\..\\..\\HYOJUNKA.txt");
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\HYOJUNKA.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -4356,28 +4372,23 @@ void MMainWnd::OnOpenLicense(HWND hwnd)
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-
-    // find the last '\\' or '/'
-    LPWSTR pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    LPWSTR pch = PathFindFileNameW(szPath);
 
     // find the "LICENSE.txt" file
-    size_t diff = pch - szPath;
-    StringCchCopyW(pch, diff, L"LICENSE.txt");
+    *pch = 0;
+    PathAppendW(szPath, L"LICENSE.txt");
     if (!PathFileExistsW(szPath))
     {
-        StringCchCopyW(pch, diff, L"..\\LICENSE.txt");
+        *pch = 0;
+        PathAppendW(szPath, L"..\\LICENSE.txt");
         if (!PathFileExistsW(szPath))
         {
-            StringCchCopyW(pch, diff, L"..\\..\\LICENSE.txt");
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\LICENSE.txt");
             if (!PathFileExistsW(szPath))
             {
-                StringCchCopyW(pch, diff, L"..\\..\\..\\LICENSE.txt");
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\LICENSE.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -10786,6 +10797,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_OPENREADMEIT:
         OnOpenReadMeIt(hwnd);
+        break;
+    case ID_OPEN_EGA_MANUAL:
+        OnOpenEgaManual(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

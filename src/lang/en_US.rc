@@ -124,6 +124,7 @@ IDR_MAINMENU MENU
     {
         MENUITEM "Programming Language &EGA...", ID_EGA
         MENUITEM "&Run EGA program...", ID_EGA_PROGRAM
+        MENUITEM "Open EGA &Manual", ID_OPEN_EGA_MANUAL
     }
     POPUP "&Help"
     {

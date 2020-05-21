@@ -457,6 +457,7 @@
 #define ID_EGA                              251
 #define ID_EGA_PROGRAM                      252
 #define ID_OPENREADMEIT                     253
+#define ID_OPEN_EGA_MANUAL                  254
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -467,7 +468,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     254
+        #define _APS_NEXT_COMMAND_VALUE     255
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif
