@@ -180,7 +180,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Controllo rigoroso flag modifica file.
 - v.5.3.9 (YY.XX.2020)
     Added "replacing-dialog-fonts" feature.
-    Move "Configuration" menu item to "Edit" menu.
+    Moved "Configuration" menu item to "Edit" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
