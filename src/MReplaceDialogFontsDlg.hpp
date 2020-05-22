@@ -65,6 +65,7 @@ public:
         SubclassChildDx(m_cmb5, cmb5);
         SubclassChildDx(m_cmb6, cmb6);
 
+        CenterWindowDx();
         return TRUE;
     }
 
