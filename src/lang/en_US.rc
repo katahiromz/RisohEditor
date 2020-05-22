@@ -1293,9 +1293,9 @@ STRINGTABLE
     IDS_CANNOTSAVE, "Unable to save."
     IDS_REPLACERES, "Replace Resource"
     IDS_ALLFILES, "All Files (*.*)|*.*|"
-    IDS_ENTERTYPE, "Please enter the resource type."
-    IDS_ENTERNAME, "Please enter the resource name."
-    IDS_ENTERLANG, "Please enter the resource language."
+    IDS_ENTERTYPE, "Please enter a resource type."
+    IDS_ENTERNAME, "Please enter a resource name."
+    IDS_ENTERLANG, "Please enter a resource language."
     IDS_FILENOTFOUND, "File cannot found."
     IDS_CANNOTREPLACE, "Unable to replace."
     IDS_EXERESFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|All Files (*.*)|*.*|"
@@ -1500,7 +1500,8 @@ STRINGTABLE
     IDS_DFMFILTER, "DFM File (*.dfm)|*.dfm|Text Files (*.txt)|*.txt|All Files (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "Unable to extract the DFM data."
     IDS_EXTRACTDFM, "Extract DFM data"
-    IDS_ENTERNONZERONAME, "Please enter the non-zero resource name."
+    IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
+    IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
 }
 
 //////////////////////////////////////////////////////////////////////////////

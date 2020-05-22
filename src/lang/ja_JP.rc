@@ -1503,6 +1503,7 @@ STRINGTABLE
     IDS_CANTEXTRACTDFM, "DFM データを抽出できません。"
     IDS_EXTRACTDFM, "DFM データを抽出する"
     IDS_ENTERNONZERONAME, "ゼロではないリソース名を指定して下さい。"
+    IDS_ENTERNONZEROTYPE, "ゼロではないリソースの種類を指定して下さい。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

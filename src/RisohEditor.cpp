@@ -1668,6 +1668,15 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
     {
         // numeric type name
         type = WORD(mstr_parse_int(szType));
+        if (type == (WORD)0)
+        {
+            ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
+            SetFocus(hCmb1);    // set focus
+            // show error message
+            MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
+                        NULL, MB_ICONERROR);
+            return FALSE;   // failure
+        }
     }
     else
     {

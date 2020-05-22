@@ -309,6 +309,7 @@
 #define IDS_CANTEXTRACTDFM                  314
 #define IDS_EXTRACTDFM                      315
 #define IDS_ENTERNONZERONAME                316
+#define IDS_ENTERNONZEROTYPE                317
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

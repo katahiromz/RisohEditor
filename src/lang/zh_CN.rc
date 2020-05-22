@@ -1499,7 +1499,8 @@ STRINGTABLE
     IDS_DFMFILTER, "DFM 文件 (*.dfm)|*.dfm|文字档案 (*.txt)|*.txt|全部文件 (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "无法提取DFM数据."
     IDS_EXTRACTDFM, "提取DFM数据"
-    IDS_ENTERNONZERONAME, "Please enter the non-zero resource name."
+    IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
+    IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
 }
 
 //////////////////////////////////////////////////////////////////////////////
