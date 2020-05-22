@@ -404,6 +404,9 @@ EnumFontFamProc(ENUMLOGFONT *lpelf,
 // initialize the font combobox
 void InitFontComboBox(HWND hCmb)
 {
+    ComboBox_AddString(hCmb, L"MS Shell Dlg");
+    ComboBox_AddString(hCmb, L"MS Shell Dlg 2");
+
     HDC hDC = CreateCompatibleDC(NULL);
     EnumFontFamilies(hDC, NULL, (FONTENUMPROC)EnumFontFamProc, (LPARAM)hCmb);
     DeleteDC(hDC);

@@ -79,6 +79,16 @@ public:
         return TRUE;
     }
 
+    void OnReset(HWND hwnd)
+    {
+        SetDlgItemTextW(hwnd, cmb1, L"MS Shell Dlg");
+        SetDlgItemTextW(hwnd, cmb2, L"MS Shell Dlg");
+        SetDlgItemTextW(hwnd, cmb3, L"MS Shell Dlg 2");
+        SetDlgItemTextW(hwnd, cmb4, L"MS Shell Dlg 2");
+        SetDlgItemTextW(hwnd, cmb5, L"");
+        SetDlgItemTextW(hwnd, cmb6, L"");
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -92,6 +102,10 @@ public:
 
         case IDCANCEL:
             EndDialog(hwnd, id);
+            break;
+
+        case psh1:
+            OnReset(hwnd);
             break;
 
         case cmb1:
