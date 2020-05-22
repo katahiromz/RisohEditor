@@ -118,7 +118,7 @@ IDR_MAINMENU MENU
         MENUITEM "字体设置(&F)...", ID_FONTS
         MENUITEM "设置PATH(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "Replacing Dialog &Fonts...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "替换对话框字体(&F)...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "更新到最新信息(&F)", ID_REFRESHALL
     }
@@ -1251,7 +1251,7 @@ FONT 9, "宋体"
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
     PUSHBUTTON "取消", IDCANCEL, 130, 160, 50, 14
-    PUSHBUTTON "&Reset", psh1, 5, 160, 55, 14
+    PUSHBUTTON "重启(&R)", psh1, 5, 160, 55, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
