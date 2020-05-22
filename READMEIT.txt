@@ -182,6 +182,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
     Added "replacing-dialog-fonts" feature.
     Moved some menu items to "Edit" menu.
     Added zero-value-check of resource name and resource type.
+    Added DS_CENTER style to the sample resource dialog.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
