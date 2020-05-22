@@ -1254,7 +1254,7 @@ FONT 9, "MS UI Gothic"
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 130, 160, 50, 14
-    PUSHBUTTON "&Reset", psh1, 5, 160, 55, 14
+    PUSHBUTTON "リセット(&R)", psh1, 5, 160, 55, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
