@@ -308,6 +308,7 @@
 #define IDS_DFMFILTER                       313
 #define IDS_CANTEXTRACTDFM                  314
 #define IDS_EXTRACTDFM                      315
+#define IDS_ENTERNONZERONAME                316
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

@@ -1500,6 +1500,7 @@ STRINGTABLE
     IDS_DFMFILTER, "DFM File (*.dfm)|*.dfm|Text Files (*.txt)|*.txt|All Files (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "Unable to extract the DFM data."
     IDS_EXTRACTDFM, "Extract DFM data"
+    IDS_ENTERNONZERONAME, "Please enter the non-zero resource name."
 }
 
 //////////////////////////////////////////////////////////////////////////////

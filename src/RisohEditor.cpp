@@ -1724,6 +1724,15 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
     {
         // a numeric name
         name = WORD(mstr_parse_int(szName));
+        if (name == (WORD)0)
+        {
+            ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
+            SetFocus(hCmb2);    // set focus
+            // show error message
+            MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNONZERONAME),
+                        NULL, MB_ICONERROR);
+            return FALSE;   // failure
+        }
     }
     else
     {
