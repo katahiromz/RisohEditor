@@ -181,7 +181,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 - v.5.3.9 (YY.XX.2020)
     Added "replacing-dialog-fonts" feature.
     Moved some menu items to "Edit" menu.
-    Added zero-value-check of resource name and resource type.
+    Added value-zero-check of resource name and resource type.
     Added DS_CENTER style to the sample resource dialog.
 
 /////////////////////////////////////////////////////////////////////
