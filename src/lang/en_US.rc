@@ -30,8 +30,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Load &Window Class Library...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&Configuration...", ID_CONFIG
-        MENUITEM SEPARATOR
         POPUP "Recently Used Files"
         {
             MENUITEM "(None)", IDC_STATIC, GRAYED
@@ -81,6 +79,8 @@ IDR_MAINMENU MENU
         MENUITEM "Do &Test", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Delete\tDel", ID_DELETERES
+        MENUITEM SEPARATOR
+        MENUITEM "&Configuration...", ID_CONFIG
     }
     POPUP "&Search"
     {

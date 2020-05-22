@@ -30,8 +30,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Загрузить библиотеку классов окон...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&Конфигурация...", ID_CONFIG
-        MENUITEM SEPARATOR
         POPUP "Недавние файлы"
         {
             MENUITEM "(нет)", IDC_STATIC, GRAYED
@@ -81,6 +79,8 @@ IDR_MAINMENU MENU
         MENUITEM "Про&тестировать", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Удалить\tDel", ID_DELETERES
+        MENUITEM SEPARATOR
+        MENUITEM "&Конфигурация...", ID_CONFIG
     }
     POPUP "&Поиск"
     {

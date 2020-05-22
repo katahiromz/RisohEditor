@@ -30,8 +30,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "加载窗口类DLL(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "设置(&C)...", ID_CONFIG
-        MENUITEM SEPARATOR
         POPUP "最近使用的文件夹"
         {
             MENUITEM "(无)", IDC_STATIC, GRAYED
@@ -81,6 +79,8 @@ IDR_MAINMENU MENU
         MENUITEM "效果测试(&T)", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "删除(&D)\tDel", ID_DELETERES
+        MENUITEM SEPARATOR
+        MENUITEM "设置(&C)...", ID_CONFIG
     }
     POPUP "搜索(&S)"
     {

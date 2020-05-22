@@ -30,8 +30,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Carica libreria classe &Window...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "&Impostazioni...", ID_CONFIG
-        MENUITEM SEPARATOR
         POPUP "File usati recentemente"
         {
             MENUITEM "(None)", IDC_STATIC, GRAYED
@@ -81,6 +79,8 @@ IDR_MAINMENU MENU
         MENUITEM "Effettua &test", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "&Elimina\tCanc", ID_DELETERES
+        MENUITEM SEPARATOR
+        MENUITEM "&Impostazioni...", ID_CONFIG
     }
     POPUP "&Cerca"
     {

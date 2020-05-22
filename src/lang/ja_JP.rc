@@ -30,8 +30,6 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "ウィンドウ クラス ライブラリを読み込む(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        MENUITEM "設定(&C)...", ID_CONFIG
-        MENUITEM SEPARATOR
         POPUP "最近使ったファイル(&R)"
         {
             MENUITEM "(なし)", IDC_STATIC, GRAYED
@@ -81,6 +79,8 @@ IDR_MAINMENU MENU
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
         MENUITEM "削除(&D)\tDel", ID_DELETERES
+        MENUITEM SEPARATOR
+        MENUITEM "設定(&C)...", ID_CONFIG
     }
     POPUP "検索(&S)"
     {
