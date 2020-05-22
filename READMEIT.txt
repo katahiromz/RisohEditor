@@ -178,6 +178,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 - v.5.3.8 (22.05.2020)
   Aggiunto elemento "Apri manuale EGA" nel menu "Automazione"
   Controllo rigoroso flag modifica file.
+- v.5.3.9 (YY.XX.2020)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

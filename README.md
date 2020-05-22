@@ -182,6 +182,8 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 - v.5.3.8 (2020.05.22)
     - Added "Open EGA Manual" item to "Automation" menu.
     - Strictly controlled the file change flag.
+- v.5.3.9 (2020.XX.YY)
+
 
 ## Contact Us
 

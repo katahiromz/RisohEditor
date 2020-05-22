@@ -180,6 +180,8 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.3.8 (2020.05.22)
     - Added "Open EGA Manual" item to "Automation" menu.
     - Strictly controlled the file change flag.
+- v.5.3.9 (2020.XX.YY)
+
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
