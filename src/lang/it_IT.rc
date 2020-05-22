@@ -22,7 +22,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Importa...\tCtrl+I", ID_IMPORT
         MENUITEM "&Esporta...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "Associazione &ID...", ID_IDASSOC
         MENUITEM "Ricarica &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Salva re&source.h...", ID_UPDATERESHBANG
         MENUITEM "A&vviso modifica resource.h...", ID_ADVICERESH
@@ -80,6 +79,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Elimina\tCanc", ID_DELETERES
         MENUITEM SEPARATOR
+        MENUITEM "Associazione &ID...", ID_IDASSOC
         MENUITEM "&Impostazioni...", ID_CONFIG
     }
     POPUP "&Cerca"

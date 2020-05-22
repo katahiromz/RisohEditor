@@ -22,7 +22,6 @@ IDR_MAINMENU MENU
         MENUITEM "インポート(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "エクスポート(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "&IDの関連付け...", ID_IDASSOC
         MENUITEM "&resource.h の再読み込み...\tCtrl+R", ID_LOADRESH
         MENUITEM "resource.h を保存する(&S)...", ID_UPDATERESHBANG
         MENUITEM "resource.h の変更を助言する(&V)...", ID_ADVICERESH
@@ -80,6 +79,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "削除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
+        MENUITEM "&IDの関連付け...", ID_IDASSOC
         MENUITEM "設定(&C)...", ID_CONFIG
     }
     POPUP "検索(&S)"

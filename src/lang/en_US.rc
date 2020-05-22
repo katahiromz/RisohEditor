@@ -22,7 +22,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Import...\tCtrl+I", ID_IMPORT
         MENUITEM "&Export...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "&ID Association...", ID_IDASSOC
         MENUITEM "Reload &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Save re&source.h...", ID_UPDATERESHBANG
         MENUITEM "Ad&vice resource.h Modification...", ID_ADVICERESH
@@ -80,6 +79,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Delete\tDel", ID_DELETERES
         MENUITEM SEPARATOR
+        MENUITEM "&ID Association...", ID_IDASSOC
         MENUITEM "&Configuration...", ID_CONFIG
     }
     POPUP "&Search"

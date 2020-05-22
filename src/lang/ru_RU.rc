@@ -22,7 +22,6 @@ IDR_MAINMENU MENU
         MENUITEM "&Импорт...\tCtrl+I", ID_IMPORT
         MENUITEM "&Экспорт...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "ID-&ассоциация...", ID_IDASSOC
         MENUITEM "&Перезагрузить resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Со&хранить resource.h...", ID_UPDATERESHBANG
         MENUITEM "&Рекомендовать изменить resource.h...", ID_ADVICERESH
@@ -80,6 +79,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Удалить\tDel", ID_DELETERES
         MENUITEM SEPARATOR
+        MENUITEM "ID-&ассоциация...", ID_IDASSOC
         MENUITEM "&Конфигурация...", ID_CONFIG
     }
     POPUP "&Поиск"

@@ -22,7 +22,6 @@ IDR_MAINMENU MENU
         MENUITEM "导入(&I)...\tCtrl+I", ID_IMPORT
         MENUITEM "导出(&E)...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "&ID关联列表...", ID_IDASSOC
         MENUITEM "重新加载 &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "保存 resource.h(&S)...", ID_UPDATERESHBANG
         MENUITEM "修改记录(&V) resource.h ...", ID_ADVICERESH
@@ -80,6 +79,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "删除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
+        MENUITEM "&ID关联列表...", ID_IDASSOC
         MENUITEM "设置(&C)...", ID_CONFIG
     }
     POPUP "搜索(&S)"

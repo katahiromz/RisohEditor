@@ -181,6 +181,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 - v.5.3.9 (YY.XX.2020)
     Added "replacing-dialog-fonts" feature.
     Moved "Configuration" menu item to "Edit" menu.
+    Moved "ID Association" menu item to "Edit" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
