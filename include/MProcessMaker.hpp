@@ -231,7 +231,7 @@ inline DWORD MProcessMaker::WaitForSingleObjectEx(
 
 inline BOOL MProcessMaker::IsRunning() const
 {
-	DWORD dwWait = ::WaitForSingleObject(m_pi.hProcess, 0);
+    DWORD dwWait = ::WaitForSingleObject(m_pi.hProcess, 0);
     return dwWait == WAIT_TIMEOUT;
 }
 

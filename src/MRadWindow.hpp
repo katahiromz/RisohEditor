@@ -1997,23 +1997,23 @@ public:
         HWND hwndSel = MRadCtrl::GetLastSel();
         if (hwndSel == NULL)    // no
         {
-			// report the selection change to the owner window
-			SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
-		
-			// clear the status
+            // report the selection change to the owner window
+            SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+        
+            // clear the status
             SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
 
-			return 0;
+            return 0;
         }
 
         // get the MRadCtrl pointer
         auto pCtrl = MRadCtrl::GetRadCtrl(hwndSel);
         if (pCtrl == NULL)
         {
-			// report the selection change to the owner window
-			SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+            // report the selection change to the owner window
+            SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
-			// clear the status
+            // clear the status
             SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
             return 0;
         }
