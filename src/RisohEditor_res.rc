@@ -99,6 +99,8 @@ IDI_DIAMOND ICON "res/Icon_107.ico"
 
 IDI_MARK ICON "res/Icon_108.ico"
 
+IDI_ARROW ICON "res/Icon_109.ico"
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 

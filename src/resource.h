@@ -71,6 +71,7 @@
 #define IDD_MODIFYENC                       160
 #define IDD_CONSTANT                        161
 #define IDD_EGA                             162
+#define IDD_REPLACEFONTS                    163
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -82,6 +83,7 @@
 #define IDI_PLAY                            106
 #define IDI_DIAMOND                         107
 #define IDI_MARK                            108
+#define IDI_ARROW                           109
 
 #define IDR_MAINFRAME                       100
 #define IDR_MAINMENU                        101
@@ -458,6 +460,7 @@
 #define ID_EGA_PROGRAM                      252
 #define ID_OPENREADMEIT                     253
 #define ID_OPEN_EGA_MANUAL                  254
+#define ID_REPLACE_DIALOG_FONTS             255
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -468,7 +471,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     255
+        #define _APS_NEXT_COMMAND_VALUE     257
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

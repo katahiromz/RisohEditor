@@ -851,6 +851,7 @@ struct DialogRes
     LANGID                      m_lang;
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
+    MIdOrString                 m_old_type_face;
 
     DialogRes()
     {
@@ -1209,6 +1210,7 @@ struct DialogRes
             m_ex_style = m_old_ex_style;
             m_menu = m_old_menu;
             m_class = m_old_class;
+            m_type_face = m_old_type_face;
         }
         else
         {
@@ -1216,6 +1218,7 @@ struct DialogRes
             m_old_ex_style = m_ex_style;
             m_old_menu = m_menu;
             m_old_class = m_class;
+            m_old_type_face = m_type_face;
 
             m_style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
             m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS;
@@ -1225,6 +1228,19 @@ struct DialogRes
 
             m_menu.clear();
             m_class.clear();
+
+            if (m_type_face.str() == g_settings.strFontReplaceFrom1)
+            {
+                m_type_face = g_settings.strFontReplaceTo1.c_str();
+            }
+            if (m_type_face.str() == g_settings.strFontReplaceFrom2)
+            {
+                m_type_face = g_settings.strFontReplaceTo2.c_str();
+            }
+            if (m_type_face.str() == g_settings.strFontReplaceFrom3)
+            {
+                m_type_face = g_settings.strFontReplaceTo3.c_str();
+            }
         }
 
         for (auto& item : m_items)

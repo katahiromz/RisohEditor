@@ -96,6 +96,12 @@ struct RisohSettings
     encoding_map_type   encoding_map;       // text resource encoding
     BOOL                bRCFileUTF16;       // output RC files as UTF-16?
     BOOL                bUseBeginEnd;       // Use BEGIN/END instead of braces?
+    MString             strFontReplaceFrom1;
+    MString             strFontReplaceFrom2;
+    MString             strFontReplaceFrom3;
+    MString             strFontReplaceTo1;
+    MString             strFontReplaceTo2;
+    MString             strFontReplaceTo3;
 
     RisohSettings()
     {

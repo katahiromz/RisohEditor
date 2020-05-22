@@ -2333,6 +2333,7 @@ protected:
     void OnHideIDMacros(HWND hwnd);
     void OnUseIDC_STATIC(HWND hwnd);
     void OnTest(HWND hwnd);
+    void OnReplaceDialogFonts(HWND hwnd);
 
     // find/replace
     void OnFind(HWND hwnd);
@@ -10810,6 +10811,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_OPEN_EGA_MANUAL:
         OnOpenEgaManual(hwnd);
         break;
+    case ID_REPLACE_DIALOG_FONTS:
+        OnReplaceDialogFonts(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -11313,6 +11317,23 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     SelectTV(entry, FALSE);
 
     DoSetFileModified(TRUE);
+}
+
+void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    // if RADical window is displayed
+    if (IsWindowVisible(m_rad_window))
+    {
+        // destroy it
+        DestroyWindow(m_rad_window);
+    }
+
+    MReplaceDialogFontsDlg dialog;
+    dialog.DialogBoxDx(hwnd);
 }
 
 // do resource test
@@ -12387,6 +12408,15 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bRCFileUTF16 = FALSE;
 
     g_settings.ResetEncoding();
+
+    g_settings.strFontReplaceFrom1 = L"MS Shell Dlg";
+    g_settings.strFontReplaceTo1 = L"MS Shell Dlg";
+
+    g_settings.strFontReplaceFrom2 = L"MS Shell Dlg 2";
+    g_settings.strFontReplaceTo2 = L"MS Shell Dlg 2";
+
+    g_settings.strFontReplaceFrom3 = L"";
+    g_settings.strFontReplaceTo3 = L"";
 }
 
 // update the prefix data
@@ -12676,6 +12706,38 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         }
     }
 
+    std::wstring strFrom;
+
+    if (keyRisoh.QuerySz(TEXT("FontReplaceFrom1"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        strFrom = szText;
+        if (keyRisoh.QuerySz(TEXT("FontReplaceTo1"), szText, _countof(szText)) == ERROR_SUCCESS)
+        {
+            g_settings.strFontReplaceFrom1 = strFrom;
+            g_settings.strFontReplaceTo1 = szText;
+        }
+    }
+
+    if (keyRisoh.QuerySz(TEXT("FontReplaceFrom2"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        strFrom = szText;
+        if (keyRisoh.QuerySz(TEXT("FontReplaceTo2"), szText, _countof(szText)) == ERROR_SUCCESS)
+        {
+            g_settings.strFontReplaceFrom2 = strFrom;
+            g_settings.strFontReplaceTo2 = szText;
+        }
+    }
+
+    if (keyRisoh.QuerySz(TEXT("FontReplaceFrom3"), szText, _countof(szText)) == ERROR_SUCCESS)
+    {
+        strFrom = szText;
+        if (keyRisoh.QuerySz(TEXT("FontReplaceTo3"), szText, _countof(szText)) == ERROR_SUCCESS)
+        {
+            g_settings.strFontReplaceFrom3 = strFrom;
+            g_settings.strFontReplaceTo3 = szText;
+        }
+    }
+
     return TRUE;
 }
 
@@ -12838,6 +12900,15 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
             ++i;
         }
     }
+
+    keyRisoh.SetSz(TEXT("FontReplaceFrom1"), g_settings.strFontReplaceFrom1.c_str());
+    keyRisoh.SetSz(TEXT("FontReplaceTo1"), g_settings.strFontReplaceTo1.c_str());
+
+    keyRisoh.SetSz(TEXT("FontReplaceFrom2"), g_settings.strFontReplaceFrom2.c_str());
+    keyRisoh.SetSz(TEXT("FontReplaceTo2"), g_settings.strFontReplaceTo2.c_str());
+
+    keyRisoh.SetSz(TEXT("FontReplaceFrom3"), g_settings.strFontReplaceFrom3.c_str());
+    keyRisoh.SetSz(TEXT("FontReplaceTo3"), g_settings.strFontReplaceTo3.c_str());
 
     return TRUE;
 }
