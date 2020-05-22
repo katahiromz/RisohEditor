@@ -80,6 +80,10 @@ IDR_MAINMENU MENU
         MENUITEM "删除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&ID关联列表...", ID_IDASSOC
+        MENUITEM "预定义的宏(&M)...", ID_PREDEFMACROS
+        MENUITEM "字体设置(&F)...", ID_FONTS
+        MENUITEM "设置PATH(&P)...", ID_SETPATHS
+        MENUITEM SEPARATOR
         MENUITEM "设置(&C)...", ID_CONFIG
     }
     POPUP "搜索(&S)"
@@ -114,10 +118,6 @@ IDR_MAINMENU MENU
         MENUITEM "使用BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "资源项的编码(&E)...", ID_ENCODING
-        MENUITEM "预定义的宏(&M)...", ID_PREDEFMACROS
-        MENUITEM "字体设置(&F)...", ID_FONTS
-        MENUITEM "设置PATH(&P)...", ID_SETPATHS
-        MENUITEM SEPARATOR
         MENUITEM "替换对话框字体(&F)...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "更新到最新信息(&F)", ID_REFRESHALL

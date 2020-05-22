@@ -182,8 +182,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Strictly controlled the file change flag.
 - v.5.3.9 (2020.XX.YY)
     - Added "replacing-dialog-fonts" feature.
-    - Moved "Configuration" menu item to "Edit" menu.
-    - Moved "ID Association" menu item to "Edit" menu.
+    - Moved some menu items to "Edit" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -80,6 +80,10 @@ IDR_MAINMENU MENU
         MENUITEM "削除(&D)\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&IDの関連付け...", ID_IDASSOC
+        MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS
+        MENUITEM "フォント設定(&F)...", ID_FONTS
+        MENUITEM "PATHの設定(&P)...", ID_SETPATHS
+        MENUITEM SEPARATOR
         MENUITEM "設定(&C)...", ID_CONFIG
     }
     POPUP "検索(&S)"
@@ -114,10 +118,6 @@ IDR_MAINMENU MENU
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
-        MENUITEM "定義済みマクロ(&M)...", ID_PREDEFMACROS
-        MENUITEM "フォント設定(&F)...", ID_FONTS
-        MENUITEM "PATHの設定(&P)...", ID_SETPATHS
-        MENUITEM SEPARATOR
         MENUITEM "ダイアログ フォントの置き換え(&F)...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "最新の情報に更新(&F)", ID_REFRESHALL

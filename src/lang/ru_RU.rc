@@ -80,6 +80,10 @@ IDR_MAINMENU MENU
         MENUITEM "&Удалить\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "ID-&ассоциация...", ID_IDASSOC
+        MENUITEM "Предопределённые &макросы...", ID_PREDEFMACROS
+        MENUITEM "Настройки &шрифта...", ID_FONTS
+        MENUITEM "Задать п&ути...", ID_SETPATHS
+        MENUITEM SEPARATOR
         MENUITEM "&Конфигурация...", ID_CONFIG
     }
     POPUP "&Поиск"
@@ -114,10 +118,6 @@ IDR_MAINMENU MENU
         MENUITEM "Использовать BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Кодировка ресурсного элемента...", ID_ENCODING
-        MENUITEM "Предопределённые &макросы...", ID_PREDEFMACROS
-        MENUITEM "Настройки &шрифта...", ID_FONTS
-        MENUITEM "Задать п&ути...", ID_SETPATHS
-        MENUITEM SEPARATOR
         MENUITEM "Заменить Диалоговые &Шрифты...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "О&бновить", ID_REFRESHALL

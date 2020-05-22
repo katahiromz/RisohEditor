@@ -80,6 +80,10 @@ IDR_MAINMENU MENU
         MENUITEM "&Delete\tDel", ID_DELETERES
         MENUITEM SEPARATOR
         MENUITEM "&ID Association...", ID_IDASSOC
+        MENUITEM "Predefined &Macros...", ID_PREDEFMACROS
+        MENUITEM "&Font settings...", ID_FONTS
+        MENUITEM "Set &Paths...", ID_SETPATHS
+        MENUITEM SEPARATOR
         MENUITEM "&Configuration...", ID_CONFIG
     }
     POPUP "&Search"
@@ -114,10 +118,6 @@ IDR_MAINMENU MENU
         MENUITEM "Use BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "&Encoding of resource item...", ID_ENCODING
-        MENUITEM "Predefined &Macros...", ID_PREDEFMACROS
-        MENUITEM "&Font settings...", ID_FONTS
-        MENUITEM "Set &Paths...", ID_SETPATHS
-        MENUITEM SEPARATOR
         MENUITEM "Replacing Dialog &Fonts...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "Re&fresh", ID_REFRESHALL
