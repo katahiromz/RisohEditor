@@ -4699,9 +4699,17 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     g_res.search(found, ET_LANG);
 
     if (found.empty())
+    {
         EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_EXPAND_ALL, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_COLLAPSE_ALL, MF_GRAYED);
+    }
     else
+    {
         EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_EXPAND_ALL, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_COLLAPSE_ALL, MF_ENABLED);
+    }
 
     if (g_settings.bShowToolBar)
         CheckMenuItem(hMenu, ID_SHOWHIDETOOLBAR, MF_BYCOMMAND | MF_CHECKED);
