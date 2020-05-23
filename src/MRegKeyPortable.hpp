@@ -98,8 +98,10 @@ MRegKeyPortable::MRegKeyPortable(LPCWSTR pszAppName, LPCWSTR pszIniFileName)
         TCHAR szPath[MAX_PATH];
         GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath));
         LPTSTR pchDotExt = PathFindExtension(szPath);
-        lstrcpy(pchDotExt, TEXT(".ini"));
+        if (pchDotExt)
+            *pchDotExt = 0;
         m_strIniFileName = szPath;
+        m_strIniFileName += TEXT(".ini");
     }
 }
 
