@@ -196,8 +196,10 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
     if (!bOK || s_szText[0] == 0)
         return ERROR_ACCESS_DENIED;
 
+    StrTrim(s_szText, TEXT(" \t\r\n"));
+
     DWORD cchText = lstrlen(s_szText);
-    DWORD cbValue = (cchText - 1) / (2 * sizeof(TCHAR));
+    DWORD cbValue = (cchText - 1) / 2;
 
     if (lpcbData)
     {
@@ -226,7 +228,7 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
         sz[0] = (char)s_szText[2 * i + 0];
         sz[1] = (char)s_szText[2 * i + 1];
         sz[2] = 0;
-        lpData[i] = strtol(sz, NULL, 16);
+        lpData[i] = (BYTE)strtol(sz, NULL, 16);
     }
 
     return ERROR_SUCCESS;
@@ -293,10 +295,10 @@ inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserve
     DWORD i;
     for (i = 0; i < cbData; ++i)
     {
-        s_szText[2 * i + 0] = s_szHex[((lpData[i] >> 4) & 0x0F)];
+        s_szText[2 * i + 0] = s_szHex[(lpData[i] >> 4) & 0x0F];
         s_szText[2 * i + 1] = s_szHex[lpData[i] & 0x0F];
     }
-    s_szText[2 * i + 0] = s_szHex[dwType];
+    s_szText[2 * i + 0] = s_szHex[dwType & 0xF];
     s_szText[2 * i + 1] = 0;
 
     BOOL bOK = WritePrivateProfileString(m_strAppName.c_str(), pszValueName, s_szText,
