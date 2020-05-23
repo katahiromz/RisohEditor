@@ -1501,6 +1501,7 @@ STRINGTABLE
     IDS_EXTRACTDFM, "提取DFM数据"
     IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
     IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
+    IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ch/"
 }
 
 //////////////////////////////////////////////////////////////////////////////

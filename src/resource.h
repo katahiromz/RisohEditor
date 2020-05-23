@@ -310,6 +310,7 @@
 #define IDS_EXTRACTDFM                      315
 #define IDS_ENTERNONZERONAME                316
 #define IDS_ENTERNONZEROTYPE                317
+#define IDS_HOMEPAGE                        318
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -463,6 +464,7 @@
 #define ID_OPENREADMEIT                     253
 #define ID_OPEN_EGA_MANUAL                  254
 #define ID_REPLACE_DIALOG_FONTS             255
+#define ID_HELP                             256
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -473,7 +475,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     256
+        #define _APS_NEXT_COMMAND_VALUE     257
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

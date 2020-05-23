@@ -1504,6 +1504,7 @@ STRINGTABLE
     IDS_EXTRACTDFM, "DFM データを抽出する"
     IDS_ENTERNONZERONAME, "ゼロではないリソース名を指定して下さい。"
     IDS_ENTERNONZEROTYPE, "ゼロではないリソースの種類を指定して下さい。"
+    IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ja/"
 }
 
 //////////////////////////////////////////////////////////////////////////////

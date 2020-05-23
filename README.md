@@ -187,6 +187,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Moved some menu items to "Edit" menu.
     - Added value-zero-check of resource name and resource type.
     - Added DS_CENTER style to the sample resource dialog.
+    - Enabled F1 key.
 
 ## Contact Us
 

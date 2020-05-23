@@ -2355,6 +2355,7 @@ protected:
     void OnUseIDC_STATIC(HWND hwnd);
     void OnTest(HWND hwnd);
     void OnReplaceDialogFonts(HWND hwnd);
+    void OnHelp(HWND hwnd);
 
     // find/replace
     void OnFind(HWND hwnd);
@@ -10843,6 +10844,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_REPLACE_DIALOG_FONTS:
         OnReplaceDialogFonts(hwnd);
         break;
+    case ID_HELP:
+        OnHelp(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -11346,6 +11350,11 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     SelectTV(entry, FALSE);
 
     DoSetFileModified(TRUE);
+}
+
+void MMainWnd::OnHelp(HWND hwnd)
+{
+    ShellExecuteW(hwnd, NULL, LoadStringDx(IDS_HOMEPAGE), NULL, NULL, SW_SHOWNORMAL);
 }
 
 void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
