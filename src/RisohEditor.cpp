@@ -2375,7 +2375,7 @@ protected:
         return ::GetLanguageStatement(langid, TRUE) + L"\r\n";
     }
 
-    void UpdateNames(void);
+    void UpdateNames(BOOL bModified = TRUE);
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);
 };
@@ -9934,7 +9934,7 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 }
 
 // update the name of the tree control
-void MMainWnd::UpdateNames(void)
+void MMainWnd::UpdateNames(BOOL bModified)
 {
     EntrySetBase found;
     g_res.search(found, ET_NAME);
@@ -9947,7 +9947,8 @@ void MMainWnd::UpdateNames(void)
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 
-    DoSetFileModified(TRUE);
+    if (bModified)
+        DoSetFileModified(TRUE);
 }
 
 void MMainWnd::UpdateEntryName(EntryBase *e, LPWSTR pszText)
@@ -9998,7 +9999,7 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
     // toggle the flag
     g_settings.bHideID = !g_settings.bHideID;
 
-    UpdateNames();
+    UpdateNames(FALSE);
 
     ShowIDList(hwnd, bListOpen);
 
