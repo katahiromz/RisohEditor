@@ -50,6 +50,16 @@ add_executable(RisohEditor WIN32
 target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32 shlwapi)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
+# RisohEditorPortable.exe
+add_executable(RisohEditorPortable WIN32 
+    PackedDIB.cpp
+    Res.cpp
+    RisohEditor.cpp
+    RisohEditor_res.rc
+    res/Manifest_1.manifest)
+target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus vfw32 oledlg msimg32 advapi32 shlwapi)
+target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
+
 # resource object extension
 if (MSVC)
     set(DOTRES ".res")

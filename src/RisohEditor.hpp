@@ -51,7 +51,11 @@
 #include "MWindowBase.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
-#include "MRegKey.hpp"
+#ifdef PORTABLE
+    #include "MRegKeyPortable.hpp"
+#else
+    #include "MRegKey.hpp"
+#endif
 #include "MBitmapDx.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"

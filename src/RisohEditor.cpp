@@ -12568,6 +12568,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 {
     SetDefaultSettings(hwnd);
 
+#ifdef PORTABLE
+    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+#else
     // open the "HKEY_CURRENT_USER\Software" key
     MRegKey key(HKCU, TEXT("Software"));
     if (!key)
@@ -12582,6 +12585,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"));
     if (!keyRisoh)
         return FALSE;
+#endif
 
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
     keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bUseIDC_STATIC);
@@ -12869,6 +12873,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 // save the settings
 BOOL MMainWnd::SaveSettings(HWND hwnd)
 {
+#ifdef PORTABLE
+    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+#else
     // open HKEY_CURRENT_USER\Software
     MRegKey key(HKCU, TEXT("Software"), TRUE);
     if (!key)
@@ -12883,6 +12890,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"), TRUE);
     if (!keyRisoh)
         return FALSE;
+#endif
 
     // update pane extent settings
     if (m_splitter3.GetPaneCount() >= 2)

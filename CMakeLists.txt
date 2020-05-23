@@ -69,7 +69,8 @@ ENABLE_LANGUAGE(RC)
 
 ##############################################################################
 
-add_definitions(-DMZC4_HANDLE_MAP=1 -DUSE_GLOBALS=1 -D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_WCSTOK -D_SCL_SECURE_NO_WARNINGS)
+add_definitions(-DMZC4_HANDLE_MAP=1 -DUSE_GLOBALS=1)
+add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_WCSTOK -D_SCL_SECURE_NO_WARNINGS)
 
 add_subdirectory(src)
 add_subdirectory(tests)
