@@ -185,7 +185,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Moved some menu items to "Edit" menu.
     - Added value-zero-check of resource name and resource type.
     - Added DS_CENTER style to the sample resource dialog.
-    - Enabled F1 and F3 keys.
+    - Enabled F1, F3, F5 and F6 function keys.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
