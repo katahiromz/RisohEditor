@@ -95,7 +95,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Заменить...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "Поиск &элемента...\tCtrl+M", ID_ITEMSEARCH
+        MENUITEM "Поиск &элемента...\tF3", ID_ITEMSEARCH
         MENUITEM SEPARATOR
         MENUITEM "&Константа запроса...", ID_QUERYCONSTANT
     }

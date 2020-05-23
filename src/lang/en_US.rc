@@ -95,7 +95,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Replace...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "&Item Search...\tCtrl+M", ID_ITEMSEARCH
+        MENUITEM "&Item Search...\tF3", ID_ITEMSEARCH
         MENUITEM SEPARATOR
         MENUITEM "&Query constant...", ID_QUERYCONSTANT
     }

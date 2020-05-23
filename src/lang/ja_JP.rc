@@ -95,7 +95,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "置換(&R)...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "項目検索(&I)...\tCtrl+M", ID_ITEMSEARCH
+        MENUITEM "項目検索(&I)...\tF3", ID_ITEMSEARCH
         MENUITEM SEPARATOR
         MENUITEM "定数を問い合わせ(&Q)", ID_QUERYCONSTANT
     }

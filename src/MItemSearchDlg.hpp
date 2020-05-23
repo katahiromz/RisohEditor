@@ -123,6 +123,9 @@ public:
             return;
 
         m_search.strText = GetDlgItemText(edt1);
+        if (m_search.strText.empty())
+            return;
+
         m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
         m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
         m_search.bInternalText = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;

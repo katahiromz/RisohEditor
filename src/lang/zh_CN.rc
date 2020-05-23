@@ -95,7 +95,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "替换(&R)...\tCtrl+H", ID_REPLACE
         MENUITEM SEPARATOR
-        MENUITEM "項目搜索(&I)...\tCtrl+M", ID_ITEMSEARCH
+        MENUITEM "項目搜索(&I)...\tF3", ID_ITEMSEARCH
         MENUITEM SEPARATOR
         MENUITEM "查询常量(&Q)...", ID_QUERYCONSTANT
     }
