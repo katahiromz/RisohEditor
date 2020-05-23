@@ -188,7 +188,7 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
     if (pszValueName == NULL)
         pszValueName = TEXT(".DEFAULT");
 
-    static TCHAR s_szText[512];
+    static TCHAR s_szText[1024];
     char sz[3];
     BOOL bOK;
     bOK = GetPrivateProfileString(m_strAppName.c_str(), pszValueName, TEXT(""),
@@ -283,13 +283,13 @@ inline LONG MRegKeyPortable::QueryExpandSz(
 inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved, 
     DWORD dwType, CONST BYTE *lpData, DWORD cbData)
 {
-    static TCHAR s_szText[512];
+    static TCHAR s_szText[1024];
     static const TCHAR s_szHex[] = TEXT("0123456789ABCDEF");
 
     if (pszValueName == NULL)
         pszValueName = TEXT(".DEFAULT");
 
-    if (cbData * 2 + 1 > ARRAYSIZE(s_szText))
+    if (cbData * 2 + 2 > ARRAYSIZE(s_szText))
         return ERROR_ACCESS_DENIED;
 
     DWORD i;
