@@ -11369,8 +11369,6 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 {
-    HWND hwndFocus = GetFocus();
-
     HWND hwndSrcEdit = NULL;
     if (IsWindowVisible(m_hSrcEdit) && IsWindowEnabled(m_hSrcEdit))
         hwndSrcEdit = m_hSrcEdit;
@@ -11381,12 +11379,18 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 
     HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
     HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
+    HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
+
+    HWND hwndFocus = GetFocus();
 
     if (hwndRad != NULL && GetParent(hwndFocus) == hwndRad)
         hwndFocus = hwndRad;
 
     if (hwndIDList != NULL && GetParent(hwndFocus) == hwndIDList)
         hwndFocus = hwndIDList;
+
+    if (hwndFind != NULL && GetParent(hwndFocus) == hwndFind)
+        hwndFocus = hwndFind;
 
     if (hwndFocus == NULL)
     {
@@ -11396,7 +11400,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 
     HWND ahwnd[] =
     {
-        m_hwndTV, hwndSrcEdit, hwndBinEdit, hwndRad, hwndIDList
+        m_hwndTV, hwndSrcEdit, hwndBinEdit, hwndRad, m_hFindReplaceDlg, hwndIDList
     };
 
     INT i;
