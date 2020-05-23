@@ -2289,6 +2289,7 @@ protected:
     void OnEncoding(HWND hwnd);
     void OnQueryConstant(HWND hwnd);
     void OnUseBeginEnd(HWND hwnd);
+    void OnRefreshAll(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnMoveSizeReport(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -10452,6 +10453,14 @@ void MMainWnd::Collapse(HTREEITEM hItem)
     } while (hItem);
 }
 
+void MMainWnd::OnRefreshAll(HWND hwnd)
+{
+    BOOL bModifiedOld = s_bModified;
+    DoRefreshTV(hwnd);
+    DoRefreshIDList(hwnd);
+    s_bModified = bModifiedOld;
+}
+
 // WM_COMMAND
 void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
@@ -10761,8 +10770,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         m_rad_window.OnRefresh(m_rad_window);
         break;
     case ID_REFRESHALL:
-        DoRefreshTV(hwnd);
-        DoRefreshIDList(hwnd);
+        OnRefreshAll(hwnd);
         break;
     case ID_EXPORT:
         OnExport(hwnd);
