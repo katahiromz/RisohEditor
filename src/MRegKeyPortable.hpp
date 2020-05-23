@@ -185,29 +185,51 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
     LPDWORD lpReserved/* = NULL*/, LPDWORD lpType/* = NULL*/, 
     LPBYTE lpData/* = NULL*/, LPDWORD lpcbData/* = NULL*/)
 {
-    BOOL bOK;
-    DWORD cbData = MAX_PATH * sizeof(TCHAR);
     if (pszValueName == NULL)
-        pszValueName = TEXT("DEFAULT_VALUE");
+        pszValueName = TEXT(".DEFAULT");
+
+    static TCHAR s_szText[512];
+    char sz[3];
+    BOOL bOK;
+    bOK = GetPrivateProfileString(m_strAppName.c_str(), pszValueName, TEXT(""),
+                                  s_szText, ARRAYSIZE(s_szText), m_strIniFileName.c_str());
+    if (!bOK || s_szText[0] == 0)
+        return ERROR_ACCESS_DENIED;
+
+    DWORD cchText = lstrlen(s_szText);
+    DWORD cbValue = (cchText - 1) / (2 * sizeof(TCHAR));
+
+    if (lpcbData)
+    {
+        if (*lpcbData < cbValue)
+        {
+            *lpcbData = cbValue;
+            return ERROR_MORE_DATA;
+        }
+        *lpcbData = cbValue;
+    }
+
     if (lpType)
-        *lpType = REG_NONE;
+    {
+        sz[0] = (char)s_szText[2 * cbValue];
+        sz[1] = 0;
+        *lpType = strtol(sz, NULL, 16);
+    }
+
     if (lpData == NULL)
     {
-        if (lpcbData)
-            *lpcbData = cbData;
         return ERROR_SUCCESS;
     }
-    if (lpcbData == NULL)
-        lpcbData = &cbData;
-    do
+
+    for (DWORD i = 0; i < cbValue; ++i)
     {
-        bOK = GetPrivateProfileStruct(m_strAppName.c_str(), pszValueName, lpData, *lpcbData,
-                                      m_strIniFileName.c_str());
-        if (bOK)
-            break;
-        (*lpcbData)--;
-    } while (GetLastError() == ERROR_BAD_LENGTH);
-    return (bOK ? ERROR_SUCCESS : ERROR_ACCESS_DENIED);
+        sz[0] = (char)s_szText[2 * i + 0];
+        sz[1] = (char)s_szText[2 * i + 1];
+        sz[2] = 0;
+        lpData[i] = strtol(sz, NULL, 16);
+    }
+
+    return ERROR_SUCCESS;
 }
 
 inline LONG MRegKeyPortable::QueryBinary(
@@ -235,13 +257,6 @@ inline LONG MRegKeyPortable::QueryDwordLE(LPCTSTR pszValueName, DWORD& dw)
 
 inline LONG MRegKeyPortable::QueryDwordBE(LPCTSTR pszValueName, DWORD& dw)
 {
-    #ifndef NDEBUG
-        DWORD dwType;
-        LONG result = RegQueryValueEx(pszValueName, NULL, &dwType, 
-                                      NULL, NULL);
-        assert(result == ERROR_SUCCESS);
-        assert(dwType == REG_DWORD_BIG_ENDIAN);
-    #endif
     DWORD cbData = sizeof(DWORD);
     return RegQueryValueEx(pszValueName, NULL, NULL, 
                            reinterpret_cast<LPBYTE>(&dw), &cbData);
@@ -266,8 +281,26 @@ inline LONG MRegKeyPortable::QueryExpandSz(
 inline LONG MRegKeyPortable::RegSetValueEx(LPCTSTR pszValueName, DWORD dwReserved, 
     DWORD dwType, CONST BYTE *lpData, DWORD cbData)
 {
-    BOOL bOK = WritePrivateProfileStruct(m_strAppName.c_str(), pszValueName, (LPVOID)lpData,
-                                         cbData, m_strIniFileName.c_str());
+    static TCHAR s_szText[512];
+    static const TCHAR s_szHex[] = TEXT("0123456789ABCDEF");
+
+    if (pszValueName == NULL)
+        pszValueName = TEXT(".DEFAULT");
+
+    if (cbData * 2 + 1 > ARRAYSIZE(s_szText))
+        return ERROR_ACCESS_DENIED;
+
+    DWORD i;
+    for (i = 0; i < cbData; ++i)
+    {
+        s_szText[2 * i + 0] = s_szHex[((lpData[i] >> 4) & 0x0F)];
+        s_szText[2 * i + 1] = s_szHex[lpData[i] & 0x0F];
+    }
+    s_szText[2 * i + 0] = s_szHex[dwType];
+    s_szText[2 * i + 1] = 0;
+
+    BOOL bOK = WritePrivateProfileString(m_strAppName.c_str(), pszValueName, s_szText,
+                                         m_strIniFileName.c_str());
     return bOK ? ERROR_SUCCESS : ERROR_ACCESS_DENIED;
 }
 
