@@ -220,6 +220,9 @@ inline LONG MRegKeyPortable::RegQueryValueEx(LPCTSTR pszValueName/* = NULL*/,
         *lpcbData = cbValue;
     }
 
+    if (s_szText[2 * cbValue] != TEXT(':'))
+        return ERROR_ACCESS_DENIED;
+
     if (lpType)
     {
         sz[0] = (char)s_szText[2 * cbValue + 1];
