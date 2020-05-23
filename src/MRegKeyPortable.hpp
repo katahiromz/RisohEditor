@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MREGKEYPORTABLE_HPP_
-#define MZC4_MREGKEYPORTABLE_HPP_       7   /* Version 7 */
+#define MZC4_MREGKEYPORTABLE_HPP_       8   /* Version 8 */
 
 #ifndef HKCR
     #define HKCR    HKEY_CLASSES_ROOT
@@ -53,6 +53,9 @@ public:
     LONG QueryDwordBE(LPCTSTR pszValueName, DWORD& dw);
     LONG QuerySz(LPCTSTR pszValueName, LPTSTR pszValue, DWORD cchValue);
     LONG QueryExpandSz(LPCTSTR pszValueName, LPTSTR pszValue, DWORD cchValue);
+    LONG QueryMultiSz(LPCTSTR pszValueName, LPTSTR pszzValues, DWORD cchValues);
+    template <typename T_CONTAINER>
+    LONG QueryMultiSz(LPCTSTR pszValueName, T_CONTAINER& container);
     template <typename T_STRUCT>
     LONG QueryStruct(LPCTSTR pszValueName, T_STRUCT& data);
 
@@ -72,11 +75,17 @@ public:
     LONG SetSz(LPCTSTR pszValueName, LPCTSTR pszValue);
     LONG SetExpandSz(LPCTSTR pszValueName, LPCTSTR pszValue, DWORD cchValue);
     LONG SetExpandSz(LPCTSTR pszValueName, LPCTSTR pszValue);
+    LONG SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues);
+    LONG SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues, DWORD cchValues);
+    template <typename T_CONTAINER>
+    LONG SetMultiSz(LPCTSTR pszValueName, const T_CONTAINER& container);
     template <typename T_STRUCT>
     LONG SetStruct(LPCTSTR pszValueName, const T_STRUCT& data);
 
     LONG RegDeleteValue(LPCTSTR pszValueName);
     LONG RegFlushKey();
+
+    static DWORD MultiSzSizeDx(LPCTSTR pszz);
 
 protected:
     tstring m_strIniFileName;
@@ -369,6 +378,113 @@ inline LONG MRegKeyPortable::SetSz(LPCTSTR pszValueName, LPCTSTR pszValue)
 inline LONG MRegKeyPortable::SetExpandSz(LPCTSTR pszValueName, LPCTSTR pszValue)
 {
     return SetExpandSz(pszValueName, pszValue, lstrlen(pszValue) + 1);
+}
+
+template <typename T_CONTAINER>
+LONG MRegKeyPortable::QueryMultiSz(LPCTSTR pszValueName, T_CONTAINER& container)
+{
+    container.clear();
+
+    LONG result;
+    DWORD cbData;
+    result = RegQueryValueEx(pszValueName, NULL, NULL, NULL, &cbData);
+    if (result != ERROR_SUCCESS)
+        return result;
+
+    const DWORD cch = static_cast<DWORD>(cbData / sizeof(TCHAR) + 1);
+    LPTSTR pszz = new(std::nothrow) TCHAR[cch];
+    if (pszz)
+    {
+        result = QueryMultiSz(pszValueName, pszz, cch);
+        if (result == ERROR_SUCCESS)
+        {
+            for (LPTSTR pch = pszz; *pch; pch += lstrlen(pch) + 1)
+            {
+                #if (__cplusplus >= 201103L)
+                    container.emplace_back(pch);
+                #else
+                    container.push_back(pch);
+                #endif
+            }
+        }
+        delete[] pszz;
+    }
+    else
+        result = ERROR_OUTOFMEMORY;
+
+    return result;
+}
+
+template <typename T_CONTAINER>
+inline LONG MRegKeyPortable::SetMultiSz(
+    LPCTSTR pszValueName, const T_CONTAINER& container)
+{
+    typename T_CONTAINER::value_type         str;
+    typename T_CONTAINER::const_iterator     it, end;
+
+    it = container.begin();
+    end = container.end();
+    if (it != end)
+    {
+        for (; it != end; ++it)
+        {
+            str += *it;
+            str += TEXT('\0');
+        }
+    }
+    else
+    {
+        str += TEXT('\0');
+    }
+
+    const DWORD cchValues = static_cast<DWORD>(str.size() + 1);
+    return SetMultiSz(pszValueName, str.c_str(), cchValues);
+}
+
+inline LONG MRegKeyPortable::QueryMultiSz(
+    LPCTSTR pszValueName, LPTSTR pszzValues, DWORD cchValues)
+{
+    DWORD cbData = sizeof(TCHAR) * cchValues;
+    return RegQueryValueEx(pszValueName, NULL, NULL, 
+                           reinterpret_cast<LPBYTE>(pszzValues), &cbData);
+}
+
+inline LONG
+MRegKeyPortable::SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues)
+{
+    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ, 
+        reinterpret_cast<const BYTE *>(pszzValues), 
+        MRegKeyPortable::MultiSzSizeDx(pszzValues));
+}
+
+inline LONG
+MRegKeyPortable::SetMultiSz(LPCTSTR pszValueName, LPCTSTR pszzValues, DWORD cchValues)
+{
+    DWORD cb = static_cast<DWORD>(sizeof(TCHAR) * cchValues);
+    return RegSetValueEx(pszValueName, 0, REG_MULTI_SZ, 
+        reinterpret_cast<const BYTE *>(pszzValues), cb);
+}
+
+inline /*static*/ DWORD MRegKeyPortable::MultiSzSizeDx(LPCTSTR pszz)
+{
+    DWORD siz = 0;
+    if (*pszz)
+    {
+        do
+        {
+            INT len = lstrlen(pszz);
+            siz += len + 1;
+            pszz += len + 1;
+        }
+        while (*pszz);
+    }
+    else
+    {
+        ++siz;
+    }
+    ++siz;
+    siz *= static_cast<DWORD>(sizeof(TCHAR));
+    return siz;
 }
 
 ////////////////////////////////////////////////////////////////////////////
