@@ -9418,6 +9418,10 @@ void MMainWnd::OnLoadResHBang(HWND hwnd)
 
 void MMainWnd::OnClose(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     if (DoQuerySaveChange(hwnd))
         DestroyWindow(hwnd);
 }
