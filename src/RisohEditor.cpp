@@ -2357,6 +2357,7 @@ protected:
     void OnTest(HWND hwnd);
     void OnReplaceDialogFonts(HWND hwnd);
     void OnHelp(HWND hwnd);
+    void OnNextPane(HWND hwnd, BOOL bNext);
 
     // find/replace
     void OnFind(HWND hwnd);
@@ -10855,6 +10856,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_HELP:
         OnHelp(hwnd);
         break;
+    case ID_NEXTPANE:
+        OnNextPane(hwnd, TRUE);
+        break;
+    case ID_PREVPANE:
+        OnNextPane(hwnd, FALSE);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -11358,6 +11365,74 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     SelectTV(entry, FALSE);
 
     DoSetFileModified(TRUE);
+}
+
+void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
+{
+    HWND hwndFocus = GetFocus();
+
+    HWND hwndSrcEdit = NULL;
+    if (IsWindowVisible(m_hSrcEdit) && IsWindowEnabled(m_hSrcEdit))
+        hwndSrcEdit = m_hSrcEdit;
+
+    HWND hwndBinEdit = NULL;
+    if (IsWindowVisible(m_hBinEdit) && IsWindowEnabled(m_hBinEdit))
+        hwndBinEdit = m_hBinEdit;
+
+    HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
+    HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
+
+    if (hwndRad != NULL && GetParent(hwndFocus) == hwndRad)
+        hwndFocus = hwndRad;
+
+    if (hwndIDList != NULL && GetParent(hwndFocus) == hwndIDList)
+        hwndFocus = hwndIDList;
+
+    if (hwndFocus == NULL)
+    {
+        SetFocus(m_hwndTV);
+        return;
+    }
+
+    HWND ahwnd[] =
+    {
+        m_hwndTV, hwndSrcEdit, hwndBinEdit, hwndRad, hwndIDList
+    };
+
+    INT i;
+    for (i = 0; i < _countof(ahwnd); ++i)
+    {
+        if (ahwnd[i] == hwndFocus)
+            break;
+    }
+
+    if (i == _countof(ahwnd))
+    {
+        SetFocus(m_hwndTV);
+        return;
+    }
+
+    if (bNext)
+    {
+        do
+        {
+            ++i;
+            if (i == _countof(ahwnd))
+                i = 0;
+        } while (ahwnd[i] == NULL);
+    }
+    else
+    {
+        do
+        {
+            if (i == 0)
+                i = _countof(ahwnd) - 1;
+            else
+                --i;
+        } while (ahwnd[i] == NULL);
+    }
+
+    SetFocus(ahwnd[i]);
 }
 
 void MMainWnd::OnHelp(HWND hwnd)
@@ -13488,14 +13563,30 @@ void MMainWnd::DoMsg(MSG& msg)
     //if (MEditCtrl::DoMsgCtrlA(&msg))
     //    return;
 
+    // do access keys
+    if (IsWindow(m_hwnd))
+    {
+        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            return;
+    }
+
     // do the popup windows
+    if (IsWindow(m_rad_window))
+    {
+        if (::TranslateAccelerator(m_rad_window, m_hAccel, &msg))
+            return;
+    }
     if (IsWindow(m_rad_window.m_rad_dialog))
     {
+        if (::TranslateAccelerator(m_rad_window.m_rad_dialog, m_hAccel, &msg))
+            return;
         if (::IsDialogMessage(m_rad_window.m_rad_dialog, &msg))
             return;
     }
     if (IsWindow(m_id_list_dlg))
     {
+        if (::TranslateAccelerator(m_id_list_dlg, m_hAccel, &msg))
+            return;
         if (::IsDialogMessage(m_id_list_dlg, &msg))
             return;
     }
@@ -13504,13 +13595,6 @@ void MMainWnd::DoMsg(MSG& msg)
     if (IsWindow(m_hFindReplaceDlg))
     {
         if (::IsDialogMessage(m_hFindReplaceDlg, &msg))
-            return;
-    }
-
-    // do access keys
-    if (m_hAccel && IsWindow(m_hwnd))
-    {
-        if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
             return;
     }
 

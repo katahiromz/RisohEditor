@@ -61,6 +61,8 @@ IDR_MAINACCEL ACCELERATORS
     "L", ID_COLLAPSE_ALL, CONTROL, VIRTKEY
     VK_F1, ID_HELP, VIRTKEY
     VK_F5, ID_REFRESHALL, VIRTKEY
+    VK_F6, ID_NEXTPANE, VIRTKEY
+    VK_F6, ID_PREVPANE, SHIFT, VIRTKEY
 }
 
 //////////////////////////////////////////////////////////////////////////////
