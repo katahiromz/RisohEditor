@@ -90,12 +90,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Find...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Search &Upward", ID_FINDUPWARD
-        MENUITEM "Search &Downward", ID_FINDDOWNWARD
-        MENUITEM SEPARATOR
-        MENUITEM "&Replace...\tCtrl+H", ID_REPLACE
-        MENUITEM SEPARATOR
-        MENUITEM "&Item Search...\tF3", ID_ITEMSEARCH
+        MENUITEM "Search &Upward\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Search &Downward\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Query constant...", ID_QUERYCONSTANT
     }
@@ -888,14 +884,13 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Item Search"
+CAPTION "Find"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&String To Search:", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Case sensitive", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "&Internal text", chx2, 5, 45, 120, 14
     GROUPBOX "Direction", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "&Upward", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "&Downward", rad2, 90, 80, 60, 14, WS_TABSTOP

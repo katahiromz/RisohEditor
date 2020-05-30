@@ -90,12 +90,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "検索(&F)...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "上検索(&U)", ID_FINDUPWARD
-        MENUITEM "下検索(&D)", ID_FINDDOWNWARD
-        MENUITEM SEPARATOR
-        MENUITEM "置換(&R)...\tCtrl+H", ID_REPLACE
-        MENUITEM SEPARATOR
-        MENUITEM "項目検索(&I)...\tF3", ID_ITEMSEARCH
+        MENUITEM "上検索(&U)\tShift+F3", ID_FINDUPWARD
+        MENUITEM "下検索(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "定数を問い合わせ(&Q)", ID_QUERYCONSTANT
     }
@@ -890,14 +886,13 @@ FONT 9, "MS UI Gothic"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "項目検索"
+CAPTION "検索"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     LTEXT "検索文字列(&S):", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "内部テキストも検索する(&I)", chx2, 5, 45, 120, 14
     GROUPBOX "検索する方向", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "上向き(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "下向き(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP

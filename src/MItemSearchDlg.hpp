@@ -31,6 +31,8 @@
 struct ITEM_SEARCH;
 class MItemSearchDlg;
 
+#define MYWM_ITEMSEARCH (WM_USER + 113)
+
 //////////////////////////////////////////////////////////////////////////////
 
 struct ITEM_SEARCH
@@ -38,7 +40,6 @@ struct ITEM_SEARCH
     ResToText   res2text;
     BOOL        bIgnoreCases;
     BOOL        bDownward;
-    BOOL        bInternalText;
     BOOL        bRunning;
     BOOL        bCancelled;
     MString     strText;
@@ -48,7 +49,6 @@ struct ITEM_SEARCH
     {
         bIgnoreCases = TRUE;
         bDownward = TRUE;
-        bInternalText = TRUE;
         bRunning = FALSE;
         bCancelled = FALSE;
         pCurrent = NULL;
@@ -110,8 +110,6 @@ public:
 
         if (!m_search.bIgnoreCases)
             CheckDlgButton(hwnd, chx1, BST_CHECKED);
-        if (m_search.bInternalText)
-            CheckDlgButton(hwnd, chx2, BST_CHECKED);
 
         CenterWindowDx();
         return TRUE;
@@ -128,10 +126,9 @@ public:
 
         m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
         m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
-        m_search.bInternalText = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
         m_search.bRunning = TRUE;
         EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
-        SendMessage(GetParent(hwnd), WM_COMMAND, ID_ITEMSEARCHBANG, (WPARAM)this);
+        SendMessage(GetParent(hwnd), MYWM_ITEMSEARCH, 0, (LPARAM)this);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

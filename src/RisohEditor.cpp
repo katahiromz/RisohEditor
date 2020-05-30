@@ -27,8 +27,6 @@
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
 
-#define MYWM_POSTSEARCH (WM_USER + 200)
-
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
 // the maximum number of captions to remember
@@ -2194,6 +2192,7 @@ public:
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
     BOOL DoItemSearch(ITEM_SEARCH& search);
+    BOOL DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
 
     EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
     EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
@@ -2274,7 +2273,6 @@ protected:
     void OnCopyAsNewName(HWND hwnd);
     void OnCopyAsNewLang(HWND hwnd);
     void OnItemSearch(HWND hwnd);
-    void OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
     void OnExpandAll(HWND hwnd);
     void OnCollapseAll(HWND hwnd);
     void Expand(HTREEITEM hItem);
@@ -2302,6 +2300,7 @@ protected:
     LRESULT OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
+    LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -3511,27 +3510,23 @@ search_proc(void *arg)
         }
 
         // check internal text
-        if (pSearch->bInternalText)
+        switch (e.m_et)
         {
-            switch (e.m_et)
-            {
-            case ET_LANG:
-            case ET_MESSAGE:
-                break;
-            case ET_STRING:
-                // ignore the name
-                e.m_name.clear();
-                break;
-            default:
-                continue;
-            }
-
-            text = pSearch->res2text.DumpEntry(e);
-            if (CheckTextForSearch(pSearch, entry, text))
-            {
-                //MessageBoxW(NULL, (e.m_strLabel + L"<>" + text).c_str(), NULL, 0);
-                continue;
-            }
+        case ET_LANG:
+        case ET_MESSAGE:
+            break;
+        case ET_STRING:
+            // ignore the name
+            e.m_name.clear();
+            break;
+        default:
+            continue;
+        }
+        text = pSearch->res2text.DumpEntry(e);
+        if (CheckTextForSearch(pSearch, entry, text))
+        {
+            //MessageBoxW(NULL, (e.m_strLabel + L"<>" + text).c_str(), NULL, 0);
+            continue;
         }
     }
 
@@ -3731,13 +3726,18 @@ void MMainWnd::OnItemSearch(HWND hwnd)
 }
 
 // do item search
-void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
+LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    DoItemSearchBang(hwnd, (MItemSearchDlg *)lParam);
+    return 0;
+}
+
+BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
     // is it visible?
-    if (!IsWindowVisible(pDialog->m_hwnd))
+    if (pDialog == NULL || !IsWindowVisible(pDialog->m_hwnd))
     {
-        assert(0);
-        return;
+        pDialog = NULL;
     }
 
     // get the selected entry
@@ -3756,31 +3756,39 @@ void MMainWnd::OnItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     // start searching
     if (DoItemSearch(m_search) && m_search.pFound)
     {
-        pDialog->Done();    // uninitialize
+        m_search.bRunning = FALSE;
+
+        if (pDialog)
+            pDialog->Done();    // uninitialize
 
         // select the found one
         TreeView_SelectItem(m_hwndTV, m_search.pFound->m_hItem);
         TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
-
-        // recalculate the splitter
-        PostMessageDx(MYWM_POSTSEARCH);
     }
     else
     {
-        pDialog->Done();    // uninitialize
+        m_search.bRunning = FALSE;
+
+        if (pDialog)
+            pDialog->Done();    // uninitialize
 
         // is it not cancelled?
         if (!m_search.bCancelled)
         {
             // "no more item" message
-            EnableWindow(*pDialog, FALSE);
+            if (pDialog)
+                EnableWindow(*pDialog, FALSE);
             MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
-            EnableWindow(*pDialog, TRUE);
+            if (pDialog)
+                EnableWindow(*pDialog, TRUE);
         }
 
         // set focus to the dialog
-        SetFocus(*pDialog);
+        if (pDialog)
+            SetFocus(*pDialog);
     }
+
+    return FALSE;
 }
 
 // delete a resource item
@@ -4724,12 +4732,20 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXPAND_ALL, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COLLAPSE_ALL, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
     }
     else
     {
         EnableMenuItem(hMenu, ID_ITEMSEARCH, MF_ENABLED);
         EnableMenuItem(hMenu, ID_EXPAND_ALL, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COLLAPSE_ALL, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
     }
 
     if (g_settings.bShowToolBar)
@@ -4799,22 +4815,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_USEIDC_STATIC, MF_UNCHECKED);
 
-    if (GetWindowTextLength(m_hSrcEdit) == 0 ||
-        !IsWindowVisible(m_hSrcEdit))
-    {
-        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
-    }
-    else
-    {
-        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
-    }
-
     if (!entry || !entry->m_hItem)
     {
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -4868,10 +4868,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
     case ET_NAME:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -4886,17 +4882,9 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
 
     case ET_LANG:
-        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
         if (entry->m_type == RT_GROUP_ICON || entry->m_type == RT_ICON ||
             entry->m_type == RT_ANIICON)
         {
@@ -4976,10 +4964,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FIND, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_ENABLED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_ENABLED);
         break;
 
     default:
@@ -4994,10 +4978,6 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FIND, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDUPWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_FINDDOWNWARD, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_REPLACE, MF_GRAYED);
         break;
     }
 }
@@ -7101,149 +7081,32 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 // find the text
 void MMainWnd::OnFind(HWND hwnd)
 {
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return;     // there is no text in m_hSrcEdit
-
-    if (!IsWindowVisible(m_hSrcEdit))
-        return;     // m_hSrcEdit was not visible
-
-    // close the find/replace dialog if any
-    if (IsWindow(m_hFindReplaceDlg))
-    {
-        SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
-        m_hFindReplaceDlg = NULL;
-    }
-
-    // show the find dialog
-    m_fr.hwndOwner = hwnd;
-    m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
-    m_hFindReplaceDlg = FindText(&m_fr);
+    OnItemSearch(hwnd);
 }
 
 // find next
 BOOL MMainWnd::OnFindNext(HWND hwnd)
 {
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-
-    // if the text to find was empty, then show the dialog
-    if (m_szFindWhat[0] == 0)
+    m_search.bDownward = TRUE;
+    if (m_search.strText.empty())
     {
-        OnFind(hwnd);
-        return FALSE;
+        OnItemSearch(hwnd);
+        return TRUE;
     }
-
-    // get the selection
-    DWORD ibegin, iend;
-    SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
-
-    // m_szFindWhat --> szText
-    TCHAR szText[_countof(m_szFindWhat)];
-    StringCchCopy(szText, _countof(szText), m_szFindWhat);
-    if (szText[0] == 0)
-        return FALSE;
-
-    // get the text of m_hSrcEdit
-    MString str = GetWindowText(m_hSrcEdit);
-    if (str.empty())
-        return FALSE;
-
-    // make the text uppercase if necessary
-    if (!(m_fr.Flags & FR_MATCHCASE))
-    {
-        CharUpperW(szText);
-        CharUpperW(&str[0]);
-    }
-
-    // get the selection text
-    MString substr = str.substr(ibegin, iend - ibegin);
-    if (substr == szText)
-    {
-        // if the selected text was szText, move the starting position
-        ibegin += (DWORD)substr.size();
-    }
-
-    // find the string
-    size_t i = str.find(szText, ibegin);
-    if (i == MString::npos)
-        return FALSE;   // not found
-
-    // found
-    ibegin = (DWORD)i;
-    iend = ibegin + lstrlen(m_szFindWhat);
-
-    // set the text selection
-    SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
-
-    // ensure the text visible
-    SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
-
+    DoItemSearchBang(hwnd, NULL);
     return TRUE;
 }
 
 // find previous
 BOOL MMainWnd::OnFindPrev(HWND hwnd)
 {
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-
-    // if the text to find was empty, then show the dialog
-    if (m_szFindWhat[0] == 0)
+    m_search.bDownward = FALSE;
+    if (m_search.strText.empty())
     {
-        OnFind(hwnd);
-        return FALSE;
+        OnItemSearch(hwnd);
+        return TRUE;
     }
-
-    // get the text selection
-    DWORD ibegin, iend;
-    SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
-
-    // m_szFindWhat --> szText
-    TCHAR szText[_countof(m_szFindWhat)];
-    StringCchCopy(szText, _countof(szText), m_szFindWhat);
-    if (szText[0] == 0)
-        return FALSE;
-
-    // get the text of m_hSrcEdit
-    MString str = GetWindowText(m_hSrcEdit);
-    if (str.empty())
-        return FALSE;
-
-    // make the text uppercase if necessary
-    if (!(m_fr.Flags & FR_MATCHCASE))
-    {
-        CharUpperW(szText);
-        CharUpperW(&str[0]);
-    }
-
-    // get the selection text
-    MString substr = str.substr(ibegin, iend - ibegin);
-    if (substr == szText)
-    {
-        // if the selected text was szText, move the starting position
-        --ibegin;
-    }
-
-    // find the string barkward
-    size_t i = str.rfind(szText, ibegin);
-    if (i == MString::npos)
-        return FALSE;
-
-    // found
-    ibegin = (DWORD)i;
-    iend = ibegin + lstrlen(m_szFindWhat);
-
-    // set the text selection
-    SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
-
-    // ensure the text visible
-    SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
-
+    DoItemSearchBang(hwnd, NULL);
     return TRUE;
 }
 
@@ -10754,9 +10617,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ITEMSEARCH:
         OnItemSearch(hwnd);
         break;
-    case ID_ITEMSEARCHBANG:
-        OnItemSearchBang(hwnd, reinterpret_cast<MItemSearchDlg *>(hwndCtl));
-        break;
     case ID_UPDATERESHBANG:
         OnUpdateResHBang(hwnd);
         break;
@@ -13279,12 +13139,12 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
         DO_MESSAGE(MYWM_REOPENRAD, OnReopenRad);
-        DO_MESSAGE(MYWM_POSTSEARCH, OnPostSearch);
         DO_MESSAGE(MYWM_IDJUMPBANG, OnIDJumpBang);
         DO_MESSAGE(MYWM_SELCHANGE, OnRadSelChange);
         DO_MESSAGE(MYWM_UPDATEDLGRES, OnUpdateDlgRes);
         DO_MESSAGE(MYWM_GETDLGHEADLINES, OnGetHeadLines);
         DO_MESSAGE(MYWM_DELPHI_DFM_B2T, OnDelphiDFMB2T);
+        DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
 
     default:
         if (uMsg == s_uFindMsg)
@@ -13498,29 +13358,6 @@ LRESULT MMainWnd::OnIDJumpBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     // do ID jump
     OnIDJumpBang2(hwnd, name, vecTypes[lParam]);
-
-    return 0;
-}
-
-// do something after find
-LRESULT MMainWnd::OnPostSearch(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    // reset the direction
-    m_fr.Flags = FR_DOWN;
-
-    if (m_search.bInternalText)
-    {
-        // m_search.strText --> m_szFindWhat
-        StringCchCopy(m_szFindWhat, _countof(m_szFindWhat), m_search.strText.c_str());
-
-        if (!m_search.bIgnoreCases)
-        {
-            m_fr.Flags |= FR_MATCHCASE;
-        }
-
-        // do search the text from source
-        OnFindNext(hwnd);
-    }
 
     return 0;
 }

@@ -401,7 +401,6 @@
 #define ID_COPYASNEWNAME                    188
 #define ID_COPYASNEWLANG                    189
 #define ID_ITEMSEARCH                       190
-#define ID_ITEMSEARCHBANG                   191
 #define ID_UPDATERESHBANG                   192
 #define ID_OPENLICENSE                      193
 #define ID_DEBUGTREENODE                    194

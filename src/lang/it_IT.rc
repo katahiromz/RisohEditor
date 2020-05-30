@@ -90,12 +90,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Cerca...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Trova &precedente", ID_FINDUPWARD
-        MENUITEM "Trova &successivo", ID_FINDDOWNWARD
-        MENUITEM SEPARATOR
-        MENUITEM "&Sostitusci...\tCtrl+H", ID_REPLACE
-        MENUITEM SEPARATOR
-        MENUITEM "Cerca &elemento...\tF3", ID_ITEMSEARCH
+        MENUITEM "Trova &precedente\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Trova &successivo\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "Costante &query...", ID_QUERYCONSTANT
     }
@@ -888,14 +884,13 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Ricerca elementi"
+CAPTION "Cerca"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Stringa da cercare:", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "Controlla &maiuscolo/minuscolo", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "Testo &interno", chx2, 5, 45, 120, 14
     GROUPBOX "Direzione", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "A&vanti", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "In&dietro", rad2, 90, 80, 60, 14, WS_TABSTOP

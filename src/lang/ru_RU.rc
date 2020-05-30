@@ -90,12 +90,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "&Найти...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Найти &предыдущее", ID_FINDUPWARD
-        MENUITEM "Найти &следующее", ID_FINDDOWNWARD
-        MENUITEM SEPARATOR
-        MENUITEM "&Заменить...\tCtrl+H", ID_REPLACE
-        MENUITEM SEPARATOR
-        MENUITEM "Поиск &элемента...\tF3", ID_ITEMSEARCH
+        MENUITEM "Найти &предыдущее\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Найти &следующее\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Константа запроса...", ID_QUERYCONSTANT
     }
@@ -888,14 +884,13 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Поиск элемента"
+CAPTION "Поиск"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Искомая &строка:", IDC_STATIC, 5, 4, 35, 16
     EDITTEXT edt1, 45, 4, 120, 15, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Различать регистр букв", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "&Внутренний текст", chx2, 5, 45, 120, 14
     GROUPBOX "Направление", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "Н&азад", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "В&перёд", rad2, 90, 80, 60, 14, WS_TABSTOP

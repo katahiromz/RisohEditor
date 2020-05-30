@@ -189,6 +189,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Added DS_CENTER style to the sample resource dialog.
     - Enabled F1, F3, F5 and F6 function keys.
     - Added Portable version.
+    - Improved search feature.
 
 ## Contact Us
 

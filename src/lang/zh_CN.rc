@@ -90,12 +90,8 @@ IDR_MAINMENU MENU
     {
         MENUITEM "查询(&F)...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "向上搜索(&U)", ID_FINDUPWARD
-        MENUITEM "向下搜索(&D)", ID_FINDDOWNWARD
-        MENUITEM SEPARATOR
-        MENUITEM "替换(&R)...\tCtrl+H", ID_REPLACE
-        MENUITEM SEPARATOR
-        MENUITEM "項目搜索(&I)...\tF3", ID_ITEMSEARCH
+        MENUITEM "向上搜索(&U)\tShift+F3", ID_FINDUPWARD
+        MENUITEM "向下搜索(&D)\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "查询常量(&Q)...", ID_QUERYCONSTANT
     }
@@ -887,14 +883,13 @@ FONT 9, "宋体"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "项目搜索"
+CAPTION "搜索"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体"
 {
     LTEXT "搜索字符串(&S):", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "区分大小写(&C)", chx1, 5, 25, 119, 14
-    AUTOCHECKBOX "内部文本(&I)", chx2, 5, 45, 120, 14
     GROUPBOX "方向", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "向上(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "向下(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP
