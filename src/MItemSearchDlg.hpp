@@ -100,6 +100,8 @@ public:
     {
         Dialogs().insert(this);
 
+        SetDlgItemText(hwnd, edt1, m_search.strText.c_str());
+
         if (m_search.bDownward)
             CheckRadioButton(hwnd, rad1, rad2, rad2);
         else
