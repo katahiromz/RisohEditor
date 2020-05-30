@@ -884,11 +884,11 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Find"
+CAPTION "Search"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&String To Search:", IDC_STATIC, 5, 7, 55, 12
+    LTEXT "&String to search:", IDC_STATIC, 5, 7, 55, 12
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Case sensitive", chx1, 5, 25, 119, 14
     GROUPBOX "Direction", IDC_STATIC, 5, 65, 160, 42
