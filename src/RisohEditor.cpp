@@ -2027,11 +2027,6 @@ protected:
     MIDListDlg      m_id_list_dlg;              // the ID List window
     ITEM_SEARCH     m_search;                   // the search options
 
-    // find/replace
-    FINDREPLACE     m_fr;                       // the find/replace structure
-    TCHAR           m_szFindWhat[80];           // the source text for find/replace
-    TCHAR           m_szReplaceWith[80];        // the destination text for replace
-
 public:
     // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
@@ -2056,18 +2051,6 @@ public:
         m_bUpxCompressed = FALSE;
 
         m_lang = BAD_LANG;
-
-        ZeroMemory(&m_fr, sizeof(m_fr));
-        m_fr.lStructSize = sizeof(m_fr);
-        m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
-
-        m_szFindWhat[0] = 0;
-        m_fr.lpstrFindWhat = m_szFindWhat;
-        m_fr.wFindWhatLen = _countof(m_szFindWhat);
-
-        m_szReplaceWith[0] = 0;
-        m_fr.lpstrReplaceWith = m_szReplaceWith;
-        m_fr.wReplaceWithLen = _countof(m_szReplaceWith);
     }
 
     // settings
@@ -2362,11 +2345,6 @@ protected:
     void OnFind(HWND hwnd);
     BOOL OnFindNext(HWND hwnd);
     BOOL OnFindPrev(HWND hwnd);
-    BOOL OnReplaceNext(HWND hwnd);
-    BOOL OnReplacePrev(HWND hwnd);
-    BOOL OnReplace(HWND hwnd);
-    BOOL OnReplaceAll(HWND hwnd);
-    LRESULT OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
 protected:
     MString GetLanguageStatement(WORD langid)
@@ -7082,6 +7060,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 // find the text
 void MMainWnd::OnFind(HWND hwnd)
 {
+    m_search.bDownward = TRUE;
     OnItemSearch(hwnd);
 }
 
@@ -7109,236 +7088,6 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
     }
     DoItemSearchBang(hwnd, NULL);
     return TRUE;
-}
-
-// replace next
-BOOL MMainWnd::OnReplaceNext(HWND hwnd)
-{
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-    if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;   // m_hSrcEdit was read-only
-
-    // if the text to find was empty, then show the dialog
-    if (m_szFindWhat[0] == 0)
-    {
-        OnReplace(hwnd);
-        return FALSE;
-    }
-
-    // get the text selection
-    DWORD ibegin, iend;
-    SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
-
-    // m_szFindWhat --> szText
-    TCHAR szText[_countof(m_szFindWhat)];
-    StringCchCopy(szText, _countof(szText), m_szFindWhat);
-    if (szText[0] == 0)
-        return FALSE;
-
-    // get the text of m_hSrcEdit
-    MString str = GetWindowText(m_hSrcEdit);
-    if (str.empty())
-        return FALSE;
-
-    // make the text uppercase if necessary
-    if (!(m_fr.Flags & FR_MATCHCASE))
-    {
-        CharUpperW(szText);
-        CharUpperW(&str[0]);
-    }
-
-    // get the selection text
-    MString substr = str.substr(ibegin, iend - ibegin);
-    if (substr == szText)
-    {
-        // if the selected text was szText, replace it and move the starting position
-        SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
-        str.replace(ibegin, iend - ibegin, m_szReplaceWith);
-        ibegin += lstrlen(m_szReplaceWith);
-
-        // make it modified
-        Edit_SetModify(m_hSrcEdit, TRUE);
-    }
-
-    // find the text
-    size_t i = str.find(szText, ibegin);
-    if (i == MString::npos)
-        return FALSE;   // not found
-
-    // found
-    ibegin = (DWORD)i;
-    iend = ibegin + lstrlen(m_szFindWhat);
-
-    // set the text selection
-    SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
-
-    // ensure the text visible
-    SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
-
-    return TRUE;
-}
-
-// replace previous
-BOOL MMainWnd::OnReplacePrev(HWND hwnd)
-{
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-    if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;   // m_hSrcEdit was read-only
-
-    // if the text to find was empty, then show the dialog
-    if (m_szFindWhat[0] == 0)
-    {
-        OnReplace(hwnd);
-        return FALSE;
-    }
-
-    // get the text selection
-    DWORD ibegin, iend;
-    SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&ibegin, (LPARAM)&iend);
-
-    // m_szFindWhat --> szText
-    TCHAR szText[_countof(m_szFindWhat)];
-    StringCchCopy(szText, _countof(szText), m_szFindWhat);
-    if (szText[0] == 0)
-        return FALSE;
-
-    // get the text of m_hSrcEdit
-    MString str = GetWindowText(m_hSrcEdit);
-    if (str.empty())
-        return FALSE;
-
-    // make the text to find uppercase if necessary
-    if (!(m_fr.Flags & FR_MATCHCASE))
-    {
-        CharUpperW(szText);
-        CharUpperW(&str[0]);
-    }
-
-    // get the selection text
-    MString substr = str.substr(ibegin, iend - ibegin);
-    if (substr == szText)
-    {
-        // if the selected text was szText, replace it and move the starting position
-        SendMessage(m_hSrcEdit, EM_REPLACESEL, TRUE, (LPARAM)m_szReplaceWith);
-        str.replace(ibegin, iend - ibegin, m_szReplaceWith);
-        --ibegin;
-
-        // make it modified
-        Edit_SetModify(m_hSrcEdit, TRUE);
-    }
-
-    // find the string barkward
-    size_t i = str.rfind(szText, ibegin);
-    if (i == MString::npos)
-        return FALSE;
-
-    // found
-    ibegin = (DWORD)i;
-    iend = ibegin + lstrlen(m_szFindWhat);
-
-    // set the text selection
-    SendMessage(m_hSrcEdit, EM_SETSEL, (WPARAM)ibegin, (LPARAM)iend);
-
-    // ensure the text visible
-    SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
-
-    return TRUE;
-}
-
-// do replace
-BOOL MMainWnd::OnReplace(HWND hwnd)
-{
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-    if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;   // m_hSrcEdit was read-only
-
-    // close the find/replace dialog if any
-    if (IsWindow(m_hFindReplaceDlg))
-    {
-        SendMessage(m_hFindReplaceDlg, WM_CLOSE, 0, 0);
-        m_hFindReplaceDlg = NULL;
-    }
-
-    // replace the text
-    m_fr.hwndOwner = hwnd;
-    m_fr.Flags = FR_HIDEWHOLEWORD | FR_DOWN;
-    m_hFindReplaceDlg = ReplaceText(&m_fr);
-
-    return TRUE;
-}
-
-// replace all
-BOOL MMainWnd::OnReplaceAll(HWND hwnd)
-{
-    if (GetWindowTextLength(m_hSrcEdit) == 0)
-        return FALSE;   // there is no text in m_hSrcEdit
-    if (!IsWindowVisible(m_hSrcEdit))
-        return FALSE;   // m_hSrcEdit was not visible
-    if (GetWindowStyle(m_hSrcEdit) & ES_READONLY)
-        return FALSE;   // m_hSrcEdit was read-only
-
-    // get the text selection
-    DWORD istart, iend;
-    SendMessage(m_hSrcEdit, EM_GETSEL, (WPARAM)&istart, (LPARAM)&iend);
-
-    // move the caret to the top
-    SendMessage(m_hSrcEdit, EM_SETSEL, 0, 0);
-
-    // repeat replacing until failure
-    while (OnReplaceNext(hwnd))
-        ;
-
-    // restore the text selection
-    SendMessage(m_hSrcEdit, EM_SETSEL, istart, iend);
-
-    // ensure the text visible
-    SendMessage(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
-
-    return TRUE;
-}
-
-// do the find message for FindText/ReplaceText API
-LRESULT MMainWnd::OnFindMsg(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    if (m_fr.Flags & FR_DIALOGTERM)     // to be destroyed
-    {
-        m_hFindReplaceDlg = NULL;
-        SetFocus(m_hSrcEdit);
-        return 0;
-    }
-
-    if (m_fr.Flags & FR_REPLACEALL)     // do replace all
-    {
-        OnReplaceAll(hwnd);
-    }
-    else if (m_fr.Flags & FR_REPLACE)   // do replace once
-    {
-        if (m_fr.Flags & FR_DOWN)
-            OnReplaceNext(hwnd);
-        else
-            OnReplacePrev(hwnd);
-    }
-    else if (m_fr.Flags & FR_FINDNEXT)  // do find
-    {
-        if (m_fr.Flags & FR_DOWN)       // find downward
-        {
-            OnFindNext(hwnd);
-        }
-        else    // find upward
-        {
-            OnFindPrev(hwnd);
-        }
-    }
-    return 0;
 }
 
 BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
@@ -10583,7 +10332,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnFindPrev(hwnd);
         break;
     case ID_REPLACE:
-        OnReplace(hwnd);
         break;
     case ID_ADDMENU:
         OnAddMenu(hwnd);
@@ -13121,7 +12869,6 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 /*virtual*/ LRESULT CALLBACK
 MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    static UINT s_uFindMsg = RegisterWindowMessage(FINDMSGSTRING);
     switch (uMsg)
     {
         DO_MSG(WM_CREATE, OnCreate);
@@ -13148,10 +12895,6 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
 
     default:
-        if (uMsg == s_uFindMsg)
-        {
-            return OnFindMsg(hwnd, wParam, lParam);
-        }
         return DefaultProcDx();
     }
 }
