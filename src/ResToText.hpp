@@ -340,6 +340,12 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += DumpEscapedName(entry.m_name);
             ret += L".emf";
         }
+        else if (entry.m_type == L"ENHMETAPICT")
+        {
+            ret += L"EnhMetaPict_";
+            ret += DumpEscapedName(entry.m_name);
+            ret += L".emf";
+        }
         else if (entry.m_type == L"WMF")
         {
             ret += L"Wmf_";
@@ -822,6 +828,13 @@ ResToText::DoImage(const EntryBase& entry)
         str += GetEntryFileName(entry);
         str += L"\"\r\n\r\n";
     }
+    else if (entry.m_type == L"ENHMETAPICT")
+    {
+        str += DumpName(entry.m_type, entry.m_name);
+        str += L" ENHMETAPICT \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n\r\n";
+    }
     else if (entry.m_type == L"WMF")
     {
         str += DumpName(entry.m_type, entry.m_name);
@@ -936,8 +949,8 @@ ResToText::DumpEntry(const EntryBase& entry)
         if (type == L"PNG" || type == L"GIF" ||
             type == L"JPEG" || type == L"TIFF" ||
             type == L"JPG" || type == L"TIF" ||
-            type == L"EMF" || type == L"ENHMETAFILE" || type == L"WMF" ||
-            type == L"IMAGE")
+            type == L"EMF" || type == L"ENHMETAFILE" ||
+            type == L"ENHMETAPICT" || type == L"WMF" || type == L"IMAGE")
         {
             return DoImage(entry);
         }

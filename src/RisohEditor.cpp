@@ -5537,6 +5537,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
             entry->m_type == L"JPEG" || entry->m_type == L"TIFF" ||
             entry->m_type == L"JPG" || entry->m_type == L"TIF" ||
             entry->m_type == L"EMF" || entry->m_type == L"ENHMETAFILE" ||
+            entry->m_type == L"ENHMETAPICT" ||
             entry->m_type == L"WMF" || entry->m_type == L"IMAGE")
         {
             PreviewImage(hwnd, *entry);
