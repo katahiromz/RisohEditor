@@ -192,6 +192,10 @@ struct EntryBase
             return true;
         if (m_type > entry.m_type)
             return false;
+        if (m_et < entry.m_et)
+            return true;
+        if (m_et > entry.m_et)
+            return false;
         if (m_name < entry.m_name)
             return true;
         if (m_name > entry.m_name)
@@ -199,10 +203,6 @@ struct EntryBase
         if (m_lang < entry.m_lang)
             return true;
         if (m_lang > entry.m_lang)
-            return false;
-        if (m_et < entry.m_et)
-            return true;
-        if (m_et > entry.m_et)
             return false;
         return false;
     }
