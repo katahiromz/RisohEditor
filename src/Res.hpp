@@ -28,6 +28,7 @@
 
 #include <cctype>
 #include <cwchar>
+#include <set>
 #include <unordered_set>     // for std::unordered_set
 
 #include "IconRes.hpp"
@@ -187,10 +188,6 @@ struct EntryBase
     }
     bool operator<(const EntryBase& entry) const
     {
-        if (m_et < entry.m_et)
-            return true;
-        if (m_et > entry.m_et)
-            return false;
         if (m_type < entry.m_type)
             return true;
         if (m_type > entry.m_type)
@@ -202,6 +199,10 @@ struct EntryBase
         if (m_lang < entry.m_lang)
             return true;
         if (m_lang > entry.m_lang)
+            return false;
+        if (m_et < entry.m_et)
+            return true;
+        if (m_et > entry.m_et)
             return false;
         return false;
     }
@@ -360,7 +361,15 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);
 // https://msdn.microsoft.com/ja-jp/library/windows/desktop/bb773793.aspx
 // NOTE: It is not safe to delete items in response to a notification such as TVN_SELCHANGING.
 
-typedef std::unordered_set<EntryBase *> EntrySetBase;
+struct EntryLess
+{
+    bool operator()(const EntryBase *e1, const EntryBase *e2)
+    {
+        return *e1 < *e2;
+    }
+};
+
+typedef std::set<EntryBase *, EntryLess> EntrySetBase;
 
 struct EntrySet : protected EntrySetBase
 {
