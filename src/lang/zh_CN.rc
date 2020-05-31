@@ -891,8 +891,8 @@ FONT 9, "宋体"
     EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
     AUTOCHECKBOX "区分大小写(&C)", chx1, 5, 25, 119, 14
     GROUPBOX "方向", IDC_STATIC, 5, 65, 160, 42
-    AUTORADIOBUTTON "向上(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "向下(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "大写(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "小写(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP
     DEFPUSHBUTTON "搜索(&F)", IDOK, 40, 115, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 105, 115, 60, 14
 }
@@ -1494,8 +1494,8 @@ STRINGTABLE
     IDS_DFMFILTER, "DFM 文件 (*.dfm)|*.dfm|文字档案 (*.txt)|*.txt|全部文件 (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "无法提取DFM数据."
     IDS_EXTRACTDFM, "提取DFM数据"
-    IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
-    IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
+    IDS_ENTERNONZERONAME, "请输入不为空的资源名称."
+    IDS_ENTERNONZEROTYPE, "请输入不为空的资源类型名称."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ch/"
 }
 
