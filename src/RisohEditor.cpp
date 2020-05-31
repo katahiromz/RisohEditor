@@ -3745,7 +3745,7 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
             return FALSE;
     }
 
-    if (1)
+    if (0)
     {
         WCHAR szText[64];
         StringCbPrintfW(szText, sizeof(szText), L"%d, %d, %d", ich, ichEnd, index);
