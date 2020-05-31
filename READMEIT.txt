@@ -179,13 +179,13 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Aggiunto elemento "Apri manuale EGA" nel menu "Automazione"
   Controllo rigoroso flag modifica file.
 - v.5.3.9 (YY.XX.2020)
-    Added "replacing-dialog-fonts" feature.
-    Moved some menu items to "Edit" menu.
-    Added value-zero-check of resource name and resource type.
-    Added DS_CENTER style to the sample resource dialog.
-    Enabled F1, F3, F5 and F6 function keys.
-    Added Portable version.
-    Improved search feature.
+  Aggiunta funzione "sostituisci-font-finestra".
+  Spostati alcuni funzioni nel menu "Modifica".
+  Aggiunto controllo valore-zero del nome risorsa e tipo risorsa.
+  Aggiunto stile DS_CENTER al modello finestra dialogo.
+  Abilitati tasti funzione F1, F3, F5 e F6.
+  Aggiunta versione portatile.
+  Potenziata funzione ricerca.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
