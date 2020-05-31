@@ -14,10 +14,8 @@
 
     Windows XP/2003/Vista/7/8.1/10とReactOSで動作します。
 
-    著作権・使用条件等については、添付の
-    ファイル「LICENSE.txt」をご覧下さい。
-
-    リソースIDの標準化については、「HYOJUNKA.txt」をご覧下さい。
+    著作権・使用条件等については、添付のファイル「LICENSE.txt」を
+    ご覧下さい。
 [注意!]
     「C:\Program Files」や「C:\Program Files (x86)」に
     インストールするのは避けて下さい。リソースコンパイラ

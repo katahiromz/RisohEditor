@@ -4,6 +4,8 @@ RisohEditor by katahiromz
 /////////////////////////////////////////////////////
 
 RisohEditor is a free resource editor for Win32 development.
+It can edit/extract/clone/delete the resource data in
+RC/RES/EXE/DLL files.
 
 Download binary: https://katahiromz.web.fc2.com/re/en
 
