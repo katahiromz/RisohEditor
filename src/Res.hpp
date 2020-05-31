@@ -363,7 +363,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);
 
 struct EntryLess
 {
-    typedef EntryBase *PtrEntryBase;
+    typedef const EntryBase *PtrEntryBase;
     bool operator()(const PtrEntryBase& e1, const PtrEntryBase& e2)
     {
         return *e1 < *e2;
