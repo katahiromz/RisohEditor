@@ -27,7 +27,7 @@ Please avoid installing in `"C:\Program Files"` or `"C:\Program Files (x86)"`. B
 
 ## Standardization
 
-See "Standardize.md" for standardization of resource IDs.
+See "Standardize.md" for our standardization of resource IDs.
 
 ## FAQ
 
