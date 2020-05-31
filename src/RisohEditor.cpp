@@ -3725,15 +3725,13 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
         CharUpperW(&strTarget[0]);
     }
 
-    size_t index;
+    size_t index = MString::npos;
     if (m_search.bDownward)
     {
         if (ich == ichEnd)
             index = strText.find(strTarget);
         else if (ich + 1 < strText.size())
             index = strText.find(strTarget, ich + 1);
-        else
-            return FALSE;
     }
     else
     {
@@ -3741,8 +3739,6 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
             index = strText.rfind(strTarget);
         else if (ich > 0)
             index = strText.rfind(strTarget, ich - 1);
-        else
-            return FALSE;
     }
 
     if (0)
