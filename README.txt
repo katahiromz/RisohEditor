@@ -3,22 +3,18 @@
 RisohEditor by katahiromz
 /////////////////////////////////////////////////////
 
-RisohEditor is a free resource editor for Win32 
-development, created by Katayama Hirofumi MZ.
+RisohEditor is a free resource editor for Win32 development.
 
 Download binary: https://katahiromz.web.fc2.com/re/en
 
 It works on Windows XP/2003/Vista/7/8.1/10 and ReactOS.
 
-See "Standardize.md" for standardization of resource IDs.
-
 See "LICENSE.txt" for details of copyrights and 
 license agreement.
 
-NOTICE: Please avoid installing in "C:\Program Files" or 
-"C:\Program Files (x86)". Because its resource 
-compiler (windres) doesn't accept space character in 
-the file path. 
+NOTICE: Please avoid installing in "C:\Program Files" or
+"C:\Program Files (x86)". Because its resource compiler
+(windres) doesn't accept space character in the file path.
 
 /////////////////////////////////////////////////////
 
@@ -190,11 +186,11 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Improved search feature.
 
 /////////////////////////////////////////////////////////////////////
-// Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-// Webpage (English):  https://katahiromz.web.fc2.com/re/en
-// Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
-// Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
-// Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
-// Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
-// Email               katayama.hirofumi.mz@gmail.com
+Katayama Hirofumi MZ (katahiromz) [A.N.T.]
+Webpage (English):  https://katahiromz.web.fc2.com/re/en
+Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
+Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
+Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
+Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
+Email               katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////////////////////
