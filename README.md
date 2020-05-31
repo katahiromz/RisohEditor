@@ -7,11 +7,11 @@ RisohEditor is a free resource editor for Win32 development, created by Katayama
 
 It can read/write resource data in RC/RES/EXE/DLL files. UTF-16 resource files are also supported.
 
-- Webpage (English): https://katahiromz.web.fc2.com/re/en
-- Webpage (Chinese): https://katahiromz.web.fc2.com/re/ch
-- Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
-- Webpage (Italian): https://katahiromz.web.fc2.com/re/it
-- Webpage (Russian): https://katahiromz.web.fc2.com/re/ru
+- Web page (English): https://katahiromz.web.fc2.com/re/en
+- Web page (Chinese): https://katahiromz.web.fc2.com/re/ch
+- Web page (Japanese): https://katahiromz.web.fc2.com/re/ja
+- Web page (Italian): https://katahiromz.web.fc2.com/re/it
+- Web page (Russian): https://katahiromz.web.fc2.com/re/ru
 
 ## Supported Platforms
 
