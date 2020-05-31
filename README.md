@@ -23,7 +23,7 @@ See [LICENSE.txt](https://github.com/katahiromz/RisohEditor/blob/master/LICENSE.
 
 ## NOTICE
 
-Please avoid installing in `"C:\Program Files"` or `"C:\Program Files (x86)"`. Because its resource compiler (windres) doesn't accept space character in the file path.
+Please avoid installing in `"C:\Program Files"` or `"C:\Program Files (x86)"`. Because its resource compiler (`windres`) doesn't accept space character in the file path.
 
 ## Standardization
 
