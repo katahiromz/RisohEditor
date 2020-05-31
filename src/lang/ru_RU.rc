@@ -890,7 +890,7 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "Искомая &строка:", IDC_STATIC, 5, 4, 35, 16
     EDITTEXT edt1, 45, 4, 120, 15, ES_AUTOHSCROLL
-    AUTOCHECKBOX "&Различать регистр букв", chx1, 5, 25, 119, 14
+    AUTOCHECKBOX "&Учитывать регистр", chx1, 5, 25, 119, 14
     GROUPBOX "Направление", IDC_STATIC, 5, 65, 160, 42
     AUTORADIOBUTTON "Н&азад", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "В&перёд", rad2, 90, 80, 60, 14, WS_TABSTOP
@@ -1495,8 +1495,8 @@ STRINGTABLE
     IDS_DFMFILTER, "Файл DFM (*.dfm)|*.dfm|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "Невозможно извлечь данные DFM."
     IDS_EXTRACTDFM, "Извлечь данные DFM"
-    IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
-    IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
+    IDS_ENTERNONZERONAME, "Введите не пустое имя ресурса."
+    IDS_ENTERNONZEROTYPE, "Введите не пустой тип ресурса."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ru/"
 }
 
