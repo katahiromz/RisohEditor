@@ -2284,6 +2284,7 @@ protected:
     LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
     LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    BOOL DoInnerSearch(HWND hwnd);
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -3710,6 +3711,57 @@ LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+BOOL MMainWnd::DoInnerSearch(HWND hwnd)
+{
+    DWORD ich, ichEnd;
+    SendMessageW(m_hSrcEdit, EM_GETSEL, (WPARAM)&ich, (LPARAM)&ichEnd);
+
+    MString strText = GetWindowText(m_hSrcEdit);
+
+    MString strTarget = m_search.strText;
+    if (m_search.bIgnoreCases)
+    {
+        CharUpperW(&strText[0]);
+        CharUpperW(&strTarget[0]);
+    }
+
+    size_t index;
+    if (m_search.bDownward)
+    {
+        if (ich == ichEnd)
+            index = strText.find(strTarget);
+        else if (ich + 1 < strText.size())
+            index = strText.find(strTarget, ich + 1);
+        else
+            return FALSE;
+    }
+    else
+    {
+        if (ich == ichEnd)
+            index = strText.rfind(strTarget);
+        else if (ich > 0)
+            index = strText.rfind(strTarget, ich - 1);
+        else
+            return FALSE;
+    }
+
+    if (1)
+    {
+        WCHAR szText[64];
+        StringCbPrintfW(szText, sizeof(szText), L"%d, %d, %d", ich, ichEnd, index);
+        ::MessageBoxW(NULL, szText, NULL, 0);
+    }
+
+    if (index != MString::npos)
+    {
+        SendMessageW(m_hSrcEdit, EM_SETSEL, INT(index), INT(index + strTarget.size()));
+        SendMessageW(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
 {
     // is it visible?
@@ -3732,6 +3784,16 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     m_search.pCurrent = entry;
 
     // start searching
+    if (DoInnerSearch(hwnd))
+    {
+        m_search.bRunning = FALSE;
+
+        if (pDialog)
+            pDialog->Done();    // uninitialize
+
+        return TRUE;
+    }
+
     if (DoItemSearch(m_search) && m_search.pFound)
     {
         m_search.bRunning = FALSE;
@@ -3742,29 +3804,30 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         // select the found one
         TreeView_SelectItem(m_hwndTV, m_search.pFound->m_hItem);
         TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
+
+        DoInnerSearch(hwnd);
+        return TRUE;
     }
-    else
+
+    m_search.bRunning = FALSE;
+
+    if (pDialog)
+        pDialog->Done();    // uninitialize
+
+    // is it not cancelled?
+    if (!m_search.bCancelled)
     {
-        m_search.bRunning = FALSE;
-
+        // "no more item" message
         if (pDialog)
-            pDialog->Done();    // uninitialize
-
-        // is it not cancelled?
-        if (!m_search.bCancelled)
-        {
-            // "no more item" message
-            if (pDialog)
-                EnableWindow(*pDialog, FALSE);
-            MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
-            if (pDialog)
-                EnableWindow(*pDialog, TRUE);
-        }
-
-        // set focus to the dialog
+            EnableWindow(*pDialog, FALSE);
+        MsgBoxDx(IDS_NOMOREITEM, MB_ICONINFORMATION);
         if (pDialog)
-            SetFocus(*pDialog);
+            EnableWindow(*pDialog, TRUE);
     }
+
+    // set focus to the dialog
+    if (pDialog)
+        SetFocus(*pDialog);
 
     return FALSE;
 }
