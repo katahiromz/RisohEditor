@@ -1494,8 +1494,8 @@ STRINGTABLE
     IDS_DFMFILTER, "DFM 文件 (*.dfm)|*.dfm|文字档案 (*.txt)|*.txt|全部文件 (*.*)|*.*|"
     IDS_CANTEXTRACTDFM, "无法提取DFM数据."
     IDS_EXTRACTDFM, "提取DFM数据"
-    IDS_ENTERNONZERONAME, "请输入不为空的资源名称."
-    IDS_ENTERNONZEROTYPE, "请输入不为空的资源类型名称."
+    IDS_ENTERNONZERONAME, "请输入不为零的资源名称."
+    IDS_ENTERNONZEROTYPE, "请输入不为零的资源类型名称."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ch/"
 }
 
