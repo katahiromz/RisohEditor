@@ -178,7 +178,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 - v.5.3.8 (22.05.2020)
   Aggiunto elemento "Apri manuale EGA" nel menu "Automazione"
   Controllo rigoroso flag modifica file.
-- v.5.3.9 (YY.XX.2020)
+- v.5.3.9 (01.06.2020)
   Aggiunta funzione "sostituisci-font-finestra".
   Spostati alcuni funzioni nel menu "Modifica".
   Aggiunto controllo valore-zero del nome risorsa e tipo risorsa.

@@ -182,7 +182,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 - v.5.3.8 (2020.05.22)
     - Added "Open EGA Manual" item to "Automation" menu.
     - Strictly controlled the file change flag.
-- v.5.3.9 (2020.XX.YY)
+- v.5.3.9 (2020.06.01)
     - Added "replacing-dialog-fonts" feature.
     - Moved some menu items to "Edit" menu.
     - Added value-zero-check of resource name and resource type.
