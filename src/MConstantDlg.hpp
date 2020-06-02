@@ -69,7 +69,18 @@ public:
                 m_cmb1.OnEditChange();
             }
             {
-                MStringW name = GetDlgItemText(hwnd, cmb1);
+                MStringW name;
+                if (codeNotify == CBN_SELCHANGE)
+                {
+                    INT iItem = (INT)SendMessageW(m_cmb1, CB_GETCURSEL, 0, 0);
+                    WCHAR szText[128];
+                    SendMessageW(m_cmb1, CB_GETLBTEXT, iItem, (LPARAM)szText);
+                    name = szText;
+                }
+                else
+                {
+                    name = GetDlgItemText(hwnd, cmb1);
+                }
                 mstr_trim(name);
 
                 ConstantsDB::ValueType value;

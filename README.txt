@@ -186,6 +186,8 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Enabled F1, F3, F5 and F6 function keys.
     - Added Portable version.
     - Improved search feature.
+- v.5.4.0 (2020.XX.YY)
+    - Fixed "Query Constant" dialog.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

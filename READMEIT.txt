@@ -186,6 +186,8 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Abilitati tasti funzione F1, F3, F5 e F6.
   Aggiunta versione portatile.
   Potenziata funzione ricerca.
+- v.5.4.0 (YY.XX.2020)
+    - Fixed "Query Constant" dialog.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

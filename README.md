@@ -190,6 +190,8 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Enabled F1, F3, F5 and F6 function keys.
     - Added Portable version.
     - Improved search feature.
+- v.5.4.0 (2020.XX.YY)
+    - Fixed "Query Constant" dialog.
 
 ## Contact Us
 
