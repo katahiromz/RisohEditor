@@ -37,7 +37,7 @@ The word "risoh" means "ideal" in Japanese.
 
 ### Question 2. What are edt1, edt2, cmb1?
 
-Those are standard control ID macros defined in <dlgs.h>.
+Those are standard control ID macros defined in `<dlgs.h>`.
 
 ### Question 3. Why can't I add a control data to my dialog item?
 
@@ -45,7 +45,7 @@ Make the dialog box extended.
 
 ### Question 4. What is mcdx?
 
-It's a special message compiler I made. See mcdx/MESSAGETABLEDX.md for details.
+It's a special message compiler I made. See [mcdx/MESSAGETABLEDX.md](https://github.com/katahiromz/RisohEditor/blob/master/mcdx/MESSAGETABLEDX.md) for details.
 
 ### Question 5. Why did I get garbled characters when compiling with Visual Studio?
 
