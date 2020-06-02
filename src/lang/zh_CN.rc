@@ -222,7 +222,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "跳转(&J)!\tEnter", ID_IDJUMP
+        MENUITEM "跳转(&J)!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "增加ID(&A)...", ID_ADDRESID
         MENUITEM "修改ID(&M)...", ID_MODIFYRESID

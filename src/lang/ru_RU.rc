@@ -222,7 +222,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "&Перейти!\tEnter", ID_IDJUMP
+        MENUITEM "&Перейти!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "&Добавить ID...", ID_ADDRESID
         MENUITEM "Из&менить ID...", ID_MODIFYRESID

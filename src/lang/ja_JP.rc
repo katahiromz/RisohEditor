@@ -224,7 +224,7 @@ IDR_POPUPMENUS MENU
     }
     POPUP "ポップアップ #3"
     {
-        MENUITEM "ジャンプ(&J)!\tEnter", ID_IDJUMP
+        MENUITEM "ジャンプ(&J)!", ID_IDJUMP
         MENUITEM SEPARATOR
         MENUITEM "追加(&A)...", ID_ADDRESID
         MENUITEM "変更(&M)...", ID_MODIFYRESID
