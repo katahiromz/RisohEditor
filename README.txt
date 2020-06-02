@@ -189,6 +189,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 - v.5.4.0 (2020.XX.YY)
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
+    - Improved "ID Association" dialog.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
