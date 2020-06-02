@@ -20,10 +20,10 @@
 
 # TODO: Update the version number
 RE_VERSION=5.4.0
-RE_NAME="RisohEditorPortable-$RE_VERSION"
+RE_NAME="RisohEditor-$RE_VERSION-portable"
 RE_BIN_DIR="build/$RE_NAME"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditorPortable.exe mcdx/MESSAGETABLEDX.md"
-RE_TARGET="build/RisohEditorPortable-$RE_VERSION.zip"
+RE_TARGET="build/RisohEditor-$RE_VERSION-portable.zip"
 
 ################################################################################
 
