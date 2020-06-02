@@ -191,6 +191,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.
     - Improved "Predefined Macros" dialog.
+    - Improved "Configuration" dialog.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

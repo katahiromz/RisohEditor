@@ -9560,7 +9560,7 @@ void MMainWnd::OnConfig(HWND hwnd)
         ReCreateFonts(hwnd);
 
         // update the labels of the entries
-        UpdateNames();
+        UpdateNames(FALSE);
 
         // select the entry to update the text
         auto entry = g_res.get_entry();
