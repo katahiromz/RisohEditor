@@ -9643,8 +9643,6 @@ void MMainWnd::UpdateEntryName(EntryBase *e, LPWSTR pszText)
     // update pszText if any
     if (pszText)
         StringCchCopyW(pszText, MAX_PATH, item.pszText);
-
-    DoSetFileModified(TRUE);
 }
 
 void MMainWnd::UpdateEntryLang(EntryBase *e, LPWSTR pszText)
