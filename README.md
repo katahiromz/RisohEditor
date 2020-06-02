@@ -194,6 +194,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.
+    - Improved "Predefined Macros" dialog.
 
 ## Contact Us
 

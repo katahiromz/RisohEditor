@@ -525,7 +525,6 @@ public:
         BOOL bSelected = (iItem != -1);
         EnableWindow(GetDlgItem(hwnd, psh2), bSelected);
         EnableWindow(GetDlgItem(hwnd, psh3), bSelected);
-        EnableWindow(GetDlgItem(hwnd, psh7), bSelected);
     }
 
     virtual INT_PTR CALLBACK

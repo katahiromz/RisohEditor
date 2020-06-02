@@ -190,6 +190,7 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.
+    - Improved "Predefined Macros" dialog.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
