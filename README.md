@@ -192,6 +192,7 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
     - Improved search feature.
 - v.5.4.0 (2020.XX.YY)
     - Fixed "Query Constant" dialog.
+    - Fixed "Encoding of Resource Item" dialog.
 
 ## Contact Us
 

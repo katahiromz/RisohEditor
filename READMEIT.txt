@@ -188,6 +188,7 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
   Potenziata funzione ricerca.
 - v.5.4.0 (YY.XX.2020)
     - Fixed "Query Constant" dialog.
+    - Fixed "Encoding of Resource Item" dialog.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

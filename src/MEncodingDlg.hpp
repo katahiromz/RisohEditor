@@ -520,6 +520,8 @@ public:
     void OnModify(HWND hwnd)
     {
         INT iItem = ListView_GetNextItem(m_hLst1, -1, LVNI_ALL | LVNI_SELECTED);
+        if (iItem == -1)
+            return;
 
         WCHAR szText1[64], szText2[64];
 
