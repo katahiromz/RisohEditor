@@ -48,6 +48,10 @@ Question 5. Why did I get garbled characters when compiling with Visual Studio?
 
             Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
+Question 6. What is the difference between no installer and portable version?
+
+    Answer. The portable version doesn't use registry but an ini file.
+
 /////////////////////////////////////////////////////
 // HISTORY
 

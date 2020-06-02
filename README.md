@@ -53,6 +53,10 @@ The resource compiler of MSVC has a bug in treatment of UTF-8 resource files.
 
 Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
+### Question 6. What is the difference between no installer and portable version?
+
+The portable version doesn't use registry but an ini file.
+
 ## HISTORY
 
 - v.0.6 (2017.08.31)

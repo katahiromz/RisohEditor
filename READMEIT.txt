@@ -49,6 +49,10 @@ Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
 
               Usa UTF-16 (ma UTF-16 non è supportato in windres di GNU).
 
+Domanda 6. Qual è la differenza tra nessuna versione di installazione e portatile?
+
+    Risposta. La versione portatile non utilizza il registro ma un file ini.
+
 /////////////////////////////////////////////////////
 // CRONOLOGIA VERSIONI PROGRAMMA
 
