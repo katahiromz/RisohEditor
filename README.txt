@@ -191,13 +191,13 @@ Question 6. What is the difference between no installer and portable version?
     - Added Portable version.
     - Improved search feature.
 - v.5.4.0 (2020.XX.YY)
+    - Fixed RT_ACCELERATOR output (unsigned 16-bit).
+    - Removed "Store into res folder" option.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
-    - Fixed RT_ACCELERATOR output (unsigned 16-bit).
-    - Removed "Store into res folder" option.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
