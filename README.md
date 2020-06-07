@@ -162,7 +162,7 @@ The portable version doesn't use registry but an ini file.
     - Improved `IDC_STATIC` handling.
     - Improved "List of Resource IDs" window.
 - v.5.3.2 (2020.03.02)
-    - Able to save with Ctrl+S without querying the location.
+    - Able to save with `Ctrl+S` without querying the location.
     - Made the "Output RC files as UTF-16" option non-volatile.
     - Bring "List of Resource IDs" window to top.
 - v.5.3.3 (2020.03.03)
@@ -190,12 +190,12 @@ The portable version doesn't use registry but an ini file.
     - Added "replacing-dialog-fonts" feature.
     - Moved some menu items to "Edit" menu.
     - Added value-zero-check of resource name and resource type.
-    - Added DS_CENTER style to the sample resource dialog.
+    - Added `DS_CENTER` style to the sample resource dialog.
     - Enabled F1, F3, F5 and F6 function keys.
     - Added Portable version.
     - Improved search feature.
 - v.5.4.0 (2020.XX.YY)
-    - Fixed RT_ACCELERATOR output (unsigned 16-bit).
+    - Fixed `RT_ACCELERATOR` output (unsigned 16-bit).
     - Removed "Store into res folder" option.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
