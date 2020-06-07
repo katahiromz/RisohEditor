@@ -200,7 +200,7 @@ The portable version doesn't use registry but an ini file.
     - Improved "ID Association" dialog.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
-    - Fixed RT_ACCELERATOR output.
+    - Fixed RT_ACCELERATOR output (unsigned 16-bit).
 
 ## Contact Us
 
