@@ -36,7 +36,6 @@ public:
     void Reload(HWND hwnd)
     {
         CheckDlgButton(hwnd, chx1, g_settings.bSepFilesByLang ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, chx2, g_settings.bStoreToResFolder ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx3, g_settings.bSelectableByMacro ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx4, g_settings.bBackup ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx5, g_settings.bRedundantComments ? BST_CHECKED : BST_UNCHECKED);
@@ -60,7 +59,6 @@ public:
     void OnOK(HWND hwnd)
     {
         g_settings.bSepFilesByLang = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
-        g_settings.bStoreToResFolder = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
         g_settings.bSelectableByMacro = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
         g_settings.bBackup = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);
         g_settings.bRedundantComments = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);

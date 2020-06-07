@@ -1054,7 +1054,6 @@ FONT 9, "宋体"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "导出RC文件将生成一些相关文件. 您可以选择以下选项:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "将外部文件存储到res文件夹中(&R)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "创建备份(&B)  后缀:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1151,7 +1150,6 @@ FONT 9, "宋体"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "保存RC文件将生成一些相关文件. 您可以选择以下选项", -1, 37, 10, 160, 40
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "将外部文件存储到res文件夹中(&R)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "创建备份(&B)  后缀:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP

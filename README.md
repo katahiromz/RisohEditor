@@ -201,6 +201,7 @@ The portable version doesn't use registry but an ini file.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
+    - Removed "Store into res folder" option.
 
 ## Contact Us
 

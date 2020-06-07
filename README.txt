@@ -197,6 +197,7 @@ Question 6. What is the difference between no installer and portable version?
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
+    - Removed "Store into res folder" option.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -1055,7 +1055,6 @@ FONT 9, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При экспорте RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "&Хранить внешние файлы в папке res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "Создать &копию             Суффикс:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1152,7 +1151,6 @@ FONT 9, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При сохранении RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Со&хранять внешние файлы в папке res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "Создать &копию             Суффикс:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP

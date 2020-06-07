@@ -12439,7 +12439,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     }
 
     keyRisoh.QueryDword(TEXT("bSepFilesByLang"), (DWORD&)g_settings.bSepFilesByLang);
-    keyRisoh.QueryDword(TEXT("bStoreToResFolder"), (DWORD&)g_settings.bStoreToResFolder);
+    g_settings.bStoreToResFolder = TRUE;
     keyRisoh.QueryDword(TEXT("bSelectableByMacro"), (DWORD&)g_settings.bSelectableByMacro);
 
     // load the captions
@@ -12659,7 +12659,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetSz(TEXT("strPrevVersion"), TEXT(RE_VERSION));
 
     keyRisoh.SetDword(TEXT("bSepFilesByLang"), g_settings.bSepFilesByLang);
-    keyRisoh.SetDword(TEXT("bStoreToResFolder"), g_settings.bStoreToResFolder);
+    keyRisoh.SetDword(TEXT("bStoreToResFolder"), TRUE);
     keyRisoh.SetDword(TEXT("bSelectableByMacro"), g_settings.bSelectableByMacro);
 
     // save the captions

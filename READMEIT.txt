@@ -197,6 +197,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
+    - Removed "Store into res folder" option.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

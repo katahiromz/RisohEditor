@@ -1057,7 +1057,6 @@ FONT 9, "MS UI Gothic"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "出力する外部ファイルをresフォルダにまとめる(&R)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1154,7 +1153,6 @@ FONT 9, "MS UI Gothic"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "出力する外部ファイルをresフォルダにまとめる(&R)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
