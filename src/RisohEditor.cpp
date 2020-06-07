@@ -2838,14 +2838,8 @@ void MMainWnd::OnExport(HWND hwnd)
     if (!CompileIfNecessary(TRUE))
         return;
 
-    // show the "export options" dialog
-    MExportOptionsDlg dialog;
-    if (dialog.DialogBoxDx(hwnd) != IDOK)
-        return;
-
-    WCHAR file[MAX_PATH] = TEXT("");
-
     // initialize OPENFILENAME structure
+    WCHAR file[MAX_PATH] = TEXT("");
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RCFILTER));
     ofn.lpstrFile = file;
@@ -2858,6 +2852,11 @@ void MMainWnd::OnExport(HWND hwnd)
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
+        // show the "export options" dialog
+        MExportOptionsDlg dialog;
+        if (dialog.DialogBoxDx(hwnd) != IDOK)
+            return;
+
         // do export!
         if (!DoExport(file))
         {
