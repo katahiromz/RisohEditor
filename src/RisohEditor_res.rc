@@ -9,10 +9,6 @@
 #undef APSTUDIO_HIDDEN_SYMBOLS
 #pragma code_page(65001) // UTF-8
 
-#ifndef IDC_STATIC
-    #define IDC_STATIC (-1)
-#endif
-
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 //////////////////////////////////////////////////////////////////////////////
@@ -103,81 +99,6 @@ IDI_DIAMOND ICON "res/Icon_107.ico"
 IDI_MARK ICON "res/Icon_108.ico"
 
 IDI_ARROW ICON "res/Icon_109.ico"
-
-//////////////////////////////////////////////////////////////////////////////
-// RT_VERSION
-
-1 VERSIONINFO
-FILEVERSION     5, 4, 0, 0
-PRODUCTVERSION  5, 4, 0, 0
-FILEOS          0x40004
-FILETYPE        0x1
-{
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "040904E4"
-        {
-            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
-            VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.4.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ. All rights reserved.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.4.0\0"
-        }
-    }
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "080404B0"
-        {
-            VALUE "CompanyName", "片山博文MZ\0"
-            VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.4.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ and 林鸿湘. 版权所有.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.4.0\0"
-        }
-    }
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "041004E4"
-        {
-            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
-            VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.4.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Roberto Boriotti. All rights reserved.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.4.0\0"
-        }
-    }
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "041103A4"
-        {
-            VALUE "CompanyName", "片山博文MZ\0"
-            VALUE "FileDescription", "リソーエディタ\0"
-            VALUE "FileVersion", "5.4.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ. All rights reserved.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.4.0\0"
-        }
-    }
-    BLOCK "StringFileInfo"
-    {
-        BLOCK "04190376"
-        {
-            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
-            VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.4.0\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Dmitry Yerokhin. All rights reserved.\0"
-            VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.4.0\0"
-        }
-    }
-    BLOCK "VarFileInfo"
-    {
-        VALUE "Translation", 0x0409, 0x04E4
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_ANICURSOR

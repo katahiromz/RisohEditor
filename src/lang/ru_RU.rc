@@ -31,7 +31,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         POPUP "Недавние файлы"
         {
-            MENUITEM "(нет)", IDC_STATIC, GRAYED
+            MENUITEM "(нет)", -1, GRAYED
         }
         MENUITEM SEPARATOR
         MENUITEM "В&ыход\tAlt+F4", ID_EXIT
@@ -290,13 +290,13 @@ CAPTION "Заменить ресурс"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 1
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 32, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 57, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Двоичный файл:", IDC_STATIC, 5, 85, 100, 12
+    LTEXT "&Двоичный файл:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
@@ -311,14 +311,14 @@ CAPTION "Добавить значок"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл значка:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл значка:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 194, 65, 15, 14
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -329,13 +329,13 @@ CAPTION "Заменить значок"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл значка:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл значка:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -346,13 +346,13 @@ CAPTION "Добавить растровую картинку"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл картинки:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл картинки:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -363,12 +363,12 @@ CAPTION "Заменить растровую картинку"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл картинки:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл картинки:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -379,15 +379,15 @@ CAPTION "Добавить ресурс"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 32, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 30, 15, 14
     LTEXT "", stc1, 75, 43, 115, 10
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 57, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Двоичный файл:", IDC_STATIC, 5, 85, 100, 12
+    LTEXT "&Двоичный файл:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
@@ -400,14 +400,14 @@ CAPTION "Добавить курсор"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл курсора:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл курсора:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -418,13 +418,13 @@ CAPTION "Заменить курсор"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Файл курсора:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Файл курсора:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "О&бзор...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 67, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 92, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 115, 60, 14
@@ -442,9 +442,9 @@ CAPTION "Добавить клавишу"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Клавиша:", IDC_STATIC, 5, 12, 60, 14
+    RTEXT "&Клавиша:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "ID &команды:", IDC_STATIC, 5, 37, 60, 14
+    RTEXT "ID &команды:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 95, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 165, 35, 15, 14
     AUTOCHECKBOX "&VIRTKEY", chx1, 5, 60, 60, 14
@@ -461,9 +461,9 @@ CAPTION "Изменить клавишу"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Клавиша:", IDC_STATIC, 5, 12, 60, 14
+    RTEXT "&Клавиша:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "ID &команды:", IDC_STATIC, 5, 37, 60, 14
+    RTEXT "ID &команды:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 95, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 165, 35, 15, 14
     AUTOCHECKBOX "&VIRTKEY", chx1, 5, 60, 60, 14
@@ -480,7 +480,7 @@ CAPTION "Редактировать акселераторы"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Список клавишей:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Список клавишей:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 210, 120
     PUSHBUTTON "&Добавить...", psh1, 220, 20, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 220, 40, 60, 14
@@ -497,10 +497,10 @@ CAPTION "Добавить строковый элемент"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &строки:", IDC_STATIC, 5, 7, 50, 12
+    LTEXT "ID &строки:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "&Значение строки:", IDC_STATIC, 5, 27, 54, 16
+    LTEXT "&Значение строки:", -1, 5, 27, 54, 16
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
     AUTOCHECKBOX "З&аменять ""\\r\\n"" на ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
@@ -512,10 +512,10 @@ CAPTION "Изменить строковый элемент"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &строки:", IDC_STATIC, 5, 7, 50, 12
+    LTEXT "ID &строки:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "&Значение строки:", IDC_STATIC, 5, 27, 54, 16
+    LTEXT "&Значение строки:", -1, 5, 27, 54, 16
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
     AUTOCHECKBOX "З&аменять ""\\r\\n"" на ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
@@ -527,7 +527,7 @@ CAPTION "Таблица строк"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Строковые записи:", IDC_STATIC, 5, 7, 74, 12
+    LTEXT "&Строковые записи:", -1, 5, 7, 74, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Добавить...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 195, 3, 60, 14
@@ -542,9 +542,9 @@ CAPTION "Добавить элемент меню"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Название:", IDC_STATIC, 5, 7, 55, 12
+    LTEXT "&Название:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID &команды:", IDC_STATIC, 5, 32, 55, 12
+    LTEXT "ID &команды:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
@@ -559,7 +559,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "ID &справки:", IDC_STATIC, 5, 162, 45, 12
+    LTEXT "ID &справки:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 145, 180, 60, 14
@@ -570,9 +570,9 @@ CAPTION "Изменить элемент меню"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Название:", IDC_STATIC, 5, 7, 55, 12
+    LTEXT "&Название:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID &команды:", IDC_STATIC, 5, 32, 55, 12
+    LTEXT "ID &команды:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
@@ -587,7 +587,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "ID &справки:", IDC_STATIC, 5, 162, 45, 12
+    LTEXT "ID &справки:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 145, 180, 60, 14
@@ -598,7 +598,7 @@ CAPTION "Редактировать ресурс Menu"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Ресурс Menu:", IDC_STATIC, 5, 7, 85, 12
+    LTEXT "&Ресурс Menu:", -1, 5, 7, 85, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Добавить...", psh1, 95, 3, 50, 14
     PUSHBUTTON "&Изменить...", psh2, 150, 3, 50, 14
@@ -617,41 +617,41 @@ CAPTION "Свойства диалога"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Название:", IDC_STATIC, 5, 10, 55, 12
+    LTEXT "&Название:", -1, 5, 10, 55, 12
     COMBOBOX cmb1, 5, 20, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Расширенный &диалог", chx1, 100, 5, 86, 15
-    LTEXT "С&лева:", IDC_STATIC, 5, 40, 25, 12
+    LTEXT "С&лева:", -1, 5, 40, 25, 12
     EDITTEXT edt1, 5, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "С&верху:", IDC_STATIC, 35, 40, 25, 12
+    LTEXT "С&верху:", -1, 35, 40, 25, 12
     EDITTEXT edt2, 35, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Ш&ирина:", IDC_STATIC, 65, 40, 27, 12
+    LTEXT "Ш&ирина:", -1, 65, 40, 27, 12
     EDITTEXT edt3, 65, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "В&ысота:", IDC_STATIC, 95, 40, 27, 12
+    LTEXT "В&ысота:", -1, 95, 40, 27, 12
     EDITTEXT edt4, 95, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Класс:", IDC_STATIC, 5, 70, 85, 12
+    LTEXT "&Класс:", -1, 5, 70, 85, 12
     COMBOBOX cmb2, 5, 80, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID с&правки:", IDC_STATIC, 125, 70, 40, 12
+    LTEXT "ID с&правки:", -1, 125, 70, 40, 12
     COMBOBOX cmb3, 125, 80, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Шрифт:", IDC_STATIC, 5, 100, 80, 12
+    LTEXT "&Шрифт:", -1, 5, 100, 80, 12
     COMBOBOX cmb4, 6, 110, 100, 200, CBS_HASSTRINGS | CBS_SORT | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Размер:", IDC_STATIC, 110, 100, 35, 12
+    LTEXT "&Размер:", -1, 110, 100, 35, 12
     EDITTEXT edt5, 110, 110, 25, 14, ES_NUMBER
     AUTOCHECKBOX "&Ж", chx2, 140, 110, 20, 14
     AUTOCHECKBOX "&К", chx3, 165, 110, 20, 14
-    LTEXT "Симво&лы:", IDC_STATIC, 5, 130, 80, 12
+    LTEXT "Симво&лы:", -1, 5, 130, 80, 12
     COMBOBOX cmb5, 5, 140, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Меню:", IDC_STATIC, 110, 130, 55, 12
+    LTEXT "&Меню:", -1, 110, 130, 55, 12
     COMBOBOX cmb6, 110, 140, 80, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "С&тиль:", IDC_STATIC, 5, 160, 35, 12
-    RTEXT "0x", IDC_STATIC, 35, 161, 10, 12
+    LTEXT "С&тиль:", -1, 5, 160, 35, 12
+    RTEXT "0x", -1, 35, 161, 10, 12
     EDITTEXT edt6, 50, 157, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 175, 90, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    LTEXT "Р&асш.ст.:", IDC_STATIC, 100, 160, 35, 12
-    RTEXT "0x", IDC_STATIC, 130, 161, 10, 12
+    LTEXT "Р&асш.ст.:", -1, 100, 160, 35, 12
+    RTEXT "0x", -1, 130, 161, 10, 12
     EDITTEXT edt7, 145, 157, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst2, 100, 175, 90, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 65, 290, 60, 14
@@ -663,36 +663,36 @@ CAPTION "Свойства элемента управления"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Пр&едопредел. элемент:", IDC_STATIC, 5, 3, 50, 16
+    LTEXT "Пр&едопредел. элемент:", -1, 5, 3, 50, 16
     COMBOBOX cmb1, 60, 5, 130, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "&Название:", IDC_STATIC, 5, 55, 55, 12
+    LTEXT "&Название:", -1, 5, 55, 55, 12
     COMBOBOX cmb2, 5, 65, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 165, 65, 25, 14
-    LTEXT "С&лева:", IDC_STATIC, 5, 85, 25, 12
+    LTEXT "С&лева:", -1, 5, 85, 25, 12
     EDITTEXT edt1, 5, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "С&верху:", IDC_STATIC, 35, 85, 25, 12
+    LTEXT "С&верху:", -1, 35, 85, 25, 12
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Ш&ирина:", IDC_STATIC, 65, 85, 27, 13
+    LTEXT "Ш&ирина:", -1, 65, 85, 27, 13
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "В&ысота:", IDC_STATIC, 95, 85, 27, 13
+    LTEXT "В&ысота:", -1, 95, 85, 27, 13
     EDITTEXT edt4, 95, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&ID:", IDC_STATIC, 125, 85, 25, 12
+    LTEXT "&ID:", -1, 125, 85, 25, 12
     COMBOBOX cmb3, 125, 95, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Класс окна:", IDC_STATIC, 5, 115, 100, 12
+    LTEXT "&Класс окна:", -1, 5, 115, 100, 12
     COMBOBOX cmb4, 5, 125, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID с&правки:", IDC_STATIC, 125, 115, 70, 12
+    LTEXT "ID с&правки:", -1, 125, 115, 70, 12
     COMBOBOX cmb5, 125, 125, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "С&тиль:", IDC_STATIC, 5, 147, 35, 12
-    RTEXT "0x", IDC_STATIC, 35, 147, 10, 12
+    LTEXT "С&тиль:", -1, 5, 147, 35, 12
+    RTEXT "0x", -1, 35, 147, 10, 12
     EDITTEXT edt6, 50, 145, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    LTEXT "Р&асш.ст.:", IDC_STATIC, 100, 147, 35, 12
-    RTEXT "0x", IDC_STATIC, 130, 147, 10, 12
+    LTEXT "Р&асш.ст.:", -1, 100, 147, 35, 12
+    RTEXT "0x", -1, 130, 147, 10, 12
     EDITTEXT edt7, 145, 145, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
@@ -706,36 +706,36 @@ CAPTION "Добавить элемент управления"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Пр&едопредел. элемент:", IDC_STATIC, 5, 3, 50, 16
+    LTEXT "Пр&едопредел. элемент:", -1, 5, 3, 50, 16
     COMBOBOX cmb1, 60, 5, 130, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "&Название:", IDC_STATIC, 5, 55, 55, 12
+    LTEXT "&Название:", -1, 5, 55, 55, 12
     COMBOBOX cmb2, 5, 65, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 165, 65, 25, 14
-    LTEXT "С&лева:", IDC_STATIC, 5, 85, 25, 12
+    LTEXT "С&лева:", -1, 5, 85, 25, 12
     EDITTEXT edt1, 5, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "С&верху:", IDC_STATIC, 35, 85, 25, 12
+    LTEXT "С&верху:", -1, 35, 85, 25, 12
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Ш&ирина:", IDC_STATIC, 65, 85, 27, 13
+    LTEXT "Ш&ирина:", -1, 65, 85, 27, 13
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "В&ысота:", IDC_STATIC, 95, 85, 27, 13
+    LTEXT "В&ысота:", -1, 95, 85, 27, 13
     EDITTEXT edt4, 95, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&ID:", IDC_STATIC, 125, 85, 25, 12
+    LTEXT "&ID:", -1, 125, 85, 25, 12
     COMBOBOX cmb3, 125, 95, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Класс окна:", IDC_STATIC, 5, 115, 100, 12
+    LTEXT "&Класс окна:", -1, 5, 115, 100, 12
     COMBOBOX cmb4, 5, 125, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID с&правки:", IDC_STATIC, 125, 115, 70, 12
+    LTEXT "ID с&правки:", -1, 125, 115, 70, 12
     COMBOBOX cmb5, 125, 125, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "С&тиль:", IDC_STATIC, 5, 147, 35, 12
-    RTEXT "0x", IDC_STATIC, 35, 147, 10, 12
+    LTEXT "С&тиль:", -1, 5, 147, 35, 12
+    RTEXT "0x", -1, 35, 147, 10, 12
     EDITTEXT edt6, 50, 145, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    LTEXT "Р&асш.ст.:", IDC_STATIC, 100, 147, 35, 12
-    RTEXT "0x", IDC_STATIC, 130, 147, 10, 12
+    LTEXT "Р&асш.ст.:", -1, 100, 147, 35, 12
+    RTEXT "0x", -1, 130, 147, 10, 12
     EDITTEXT edt7, 145, 145, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
@@ -749,7 +749,7 @@ CAPTION "Ассоциация ID"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Ассоциация ID:", IDC_STATIC, 5, 5, 116, 12
+    LTEXT "&Ассоциация ID:", -1, 5, 5, 116, 12
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
     PUSHBUTTON "&Сбросить все", psh2, 5, 175, 85, 14
     PUSHBUTTON "&Изменить", psh1, 135, 175, 60, 14
@@ -762,9 +762,9 @@ CAPTION "Изменить ассоциацию ID"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Тип ID:", IDC_STATIC, 5, 7, 65, 12
+    RTEXT "&Тип ID:", -1, 5, 7, 65, 12
     EDITTEXT edt1, 80, 5, 80, 14, WS_DISABLED
-    RTEXT "&Префикс ID:", IDC_STATIC, 5, 32, 65, 12
+    RTEXT "&Префикс ID:", -1, 5, 32, 65, 12
     EDITTEXT edt2, 80, 28, 80, 14, ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 35, 50, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 100, 50, 60, 14
@@ -791,7 +791,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "&Автозагрузка соседнего ""&resource.h""", chx4, 5, 65, 200, 14
     AUTOCHECKBOX "Автопоказ &списка идентификаторов ресурсов", chx5, 5, 85, 200, 14
     AUTOCHECKBOX "То&чки в окне диалога", chx6, 5, 105, 200, 14
-    RTEXT "В&ысота комбобокса:", IDC_STATIC, 10, 127, 75, 12
+    RTEXT "В&ысота комбобокса:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     AUTOCHECKBOX "&Заворот строк", chx9, 135, 125, 70, 14
@@ -800,10 +800,10 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Шрифты...", psh4, 5, 185, 200, 14
     PUSHBUTTON "&Макросы...", psh1, 5, 205, 93, 14
     PUSHBUTTON "П&ути...", psh2, 107, 205, 98, 14
-    RTEXT "Имя OLE-&элементов:", IDC_STATIC, 5, 227, 80, 12
+    RTEXT "Имя OLE-&элементов:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Резервную копию", chx10, 5, 245, 75, 15
-    RTEXT "Су&ффикс копии:", IDC_STATIC, 92, 248, 60, 15
+    RTEXT "Су&ффикс копии:", -1, 92, 248, 60, 15
     COMBOBOX cmb2, 158, 246, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
     PUSHBUTTON "Отмена", IDCANCEL, 155, 265, 50, 14
@@ -815,11 +815,11 @@ CAPTION "Добавить ID ресурса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Тип ID:", IDC_STATIC, 10, 7, 50, 14
+    RTEXT "&Тип ID:", -1, 10, 7, 50, 14
     COMBOBOX cmb1, 65, 5, 95, 300, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Имя ID:", IDC_STATIC, 10, 27, 50, 14
+    RTEXT "&Имя ID:", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14, ES_AUTOHSCROLL
-    RTEXT "&Целое значение:", IDC_STATIC, 10, 44, 50, 16
+    RTEXT "&Целое значение:", -1, 10, 44, 50, 16
     EDITTEXT edt2, 65, 45, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     PUSHBUTTON "&Авто", psh1, 115, 45, 45, 14
@@ -832,11 +832,11 @@ CAPTION "Изменить ID ресурса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Имя ID:", IDC_STATIC, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
+    RTEXT "&Имя ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
-    RTEXT "&Тип ID:", IDC_STATIC, 10, 32, 50, 14
+    RTEXT "&Тип ID:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
-    RTEXT "&Целое значение:", IDC_STATIC, 10, 49, 50, 16
+    RTEXT "&Целое значение:", -1, 10, 49, 50, 16
     EDITTEXT edt3, 65, 50, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
@@ -848,7 +848,7 @@ CAPTION "Предложение модификации файла ""resource.h""
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Измените файл ""resource.h"" следующим образом:", IDC_STATIC, 10, 10, 195, 20
+    LTEXT "Измените файл ""resource.h"" следующим образом:", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_READONLY | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
     PUSHBUTTON "О&чистить изменение", psh1, 10, 165, 90, 14
@@ -859,9 +859,9 @@ CAPTION "Клонировать с новым именем"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 32, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 30, 15, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 55, 60, 14
@@ -873,11 +873,11 @@ CAPTION "Клонировать с новым языком"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Имя ресурса:", IDC_STATIC, 5, 32, 70, 12
+    LTEXT "&Имя ресурса:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Язык ресурса:", IDC_STATIC, 5, 57, 70, 12
+    LTEXT "&Язык ресурса:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 85, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 115, 85, 60, 14
@@ -888,10 +888,10 @@ CAPTION "Поиск"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Искомая &строка:", IDC_STATIC, 5, 4, 35, 16
+    LTEXT "Искомая &строка:", -1, 5, 4, 35, 16
     EDITTEXT edt1, 45, 4, 120, 15, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Учитывать регистр", chx1, 5, 25, 119, 14
-    GROUPBOX "Направление", IDC_STATIC, 5, 65, 160, 42
+    GROUPBOX "Направление", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "Н&азад", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "В&перёд", rad2, 90, 80, 60, 14, WS_TABSTOP
     DEFPUSHBUTTON "&Найти", IDOK, 40, 115, 60, 14
@@ -903,7 +903,7 @@ CAPTION "О программе RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 12, "MS Shell Dlg"
 {
-    ICON IDI_MAIN, IDC_STATIC, 5, 5, 0, 0
+    ICON IDI_MAIN, -1, 5, 5, 0, 0
     LTEXT "...", stc1, 30, 5, 140, 50
     CTEXT "https://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY | NOT WS_GROUP
     DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
@@ -914,10 +914,10 @@ CAPTION "Добавить запись сообщения"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &сообщения:", IDC_STATIC, 5, 7, 50, 12
+    LTEXT "ID &сообщения:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 200, 5, 15, 14
-    LTEXT "&Значение сообщения:", IDC_STATIC, 5, 27, 80, 12
+    LTEXT "&Значение сообщения:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 190, 85, 60, 14
@@ -928,9 +928,9 @@ CAPTION "Изменить запись сообщения"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &сообщения:", IDC_STATIC, 5, 7, 50, 12
+    LTEXT "ID &сообщения:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Значение сообщения:", IDC_STATIC, 5, 27, 80, 12
+    LTEXT "&Значение сообщения:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 190, 85, 60, 14
@@ -941,7 +941,7 @@ CAPTION "Таблица сообщений"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Элементы сообщений:", IDC_STATIC, 5, 7, 80, 12
+    LTEXT "&Элементы сообщений:", -1, 5, 7, 80, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Добавить...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 195, 3, 60, 14
@@ -956,13 +956,13 @@ CAPTION "Настройки шрифтов"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Источник:", IDC_STATIC, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Источник:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh1, 170, 5, 19, 14
-    RTEXT "&Двоичный:", IDC_STATIC, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Двоичный:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
-    GROUPBOX "Просмотр", IDC_STATIC, 5, 45, 185, 39
+    GROUPBOX "Просмотр", -1, 5, 45, 185, 39
     CTEXT "Источник", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
     CTEXT "Двоичный", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
@@ -974,7 +974,7 @@ CAPTION "Предопределённые макросы"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Предопределённые &макросы:", IDC_STATIC, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "Предопределённые &макросы:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
     PUSHBUTTON "&Добавить...", psh1, 200, 15, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 200, 35, 60, 14
@@ -990,9 +990,9 @@ CAPTION "Добавить предопределённый макрос"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Ключ:", IDC_STATIC, 5, 12, 60, 14
+    RTEXT "&Ключ:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Значение:", IDC_STATIC, 5, 37, 60, 14
+    RTEXT "&Значение:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 125, 60, 60, 14
@@ -1003,9 +1003,9 @@ CAPTION "Изменить предопределённый макрос"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Ключ:", IDC_STATIC, 5, 12, 60, 14
+    RTEXT "&Ключ:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Значение:", IDC_STATIC, 5, 37, 60, 14
+    RTEXT "&Значение:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 125, 60, 60, 14
@@ -1016,9 +1016,9 @@ CAPTION "Изменить управляющие данные"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Двоичные данные:", IDC_STATIC, 5, 2, 87, 12
+    LTEXT "&Двоичные данные:", -1, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    LTEXT "Управляющие данные можно задавать 16-разрядными целыми значениями, разделяя их пробелами.", IDC_STATIC, 5, 80, 180, 25
+    LTEXT "Управляющие данные можно задавать 16-разрядными целыми значениями, разделяя их пробелами.", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 125, 110, 60, 14
 }
@@ -1028,7 +1028,7 @@ CAPTION "Задать пути"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Включаемые папки:", IDC_STATIC, 5, 5, 102, 12
+    LTEXT "&Включаемые папки:", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     PUSHBUTTON "&Добавить...", psh1, 230, 20, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 230, 40, 60, 14
@@ -1052,8 +1052,8 @@ CAPTION "Параметры экспорта"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    ICON IDI_MAIN, IDC_STATIC, 5, 10, 0, 0
-    LTEXT "При экспорте RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", IDC_STATIC, 37, 10, 160, 40
+    ICON IDI_MAIN, -1, 5, 10, 0, 0
+    LTEXT "При экспорте RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "&Хранить внешние файлы в папке res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1091,7 +1091,7 @@ CAPTION "Изменить DLGINIT"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Записи сообщений:", IDC_STATIC, 5, 7, 100, 12
+    LTEXT "&Записи сообщений:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 250, 120
     PUSHBUTTON "&Добавить...", psh1, 260, 20, 60, 14
     PUSHBUTTON "&Изменить...", psh2, 260, 40, 60, 14
@@ -1108,11 +1108,11 @@ CAPTION "Добавить данные DLGINIT"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &элемента управления:", IDC_STATIC, 5, 4, 56, 16
+    LTEXT "ID &элемента управления:", -1, 5, 4, 56, 16
     COMBOBOX cmb1, 65, 5, 115, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Сообщение:", IDC_STATIC, 5, 32, 55, 12
+    LTEXT "&Сообщение:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "С&трока:", IDC_STATIC, 5, 52, 55, 12
+    LTEXT "С&трока:", -1, 5, 52, 55, 12
     EDITTEXT edt1, 5, 65, 175, 50, ES_WANTRETURN | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 55, 120, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 120, 120, 60, 14
@@ -1123,11 +1123,11 @@ CAPTION "Изменить данные DLGINIT"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &элемента управления:", IDC_STATIC, 5, 4, 56, 16
+    LTEXT "ID &элемента управления:", -1, 5, 4, 56, 16
     COMBOBOX cmb1, 65, 5, 115, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Сообщение:", IDC_STATIC, 5, 32, 55, 12
+    LTEXT "&Сообщение:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "С&трока:", IDC_STATIC, 5, 52, 55, 12
+    LTEXT "С&трока:", -1, 5, 52, 55, 12
     EDITTEXT edt1, 5, 65, 175, 50, ES_WANTRETURN | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 55, 120, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 120, 120, 60, 14
@@ -1149,8 +1149,8 @@ CAPTION "Параметры сохранения"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    ICON IDI_MAIN, IDC_STATIC, 5, 10, 0, 0
-    LTEXT "При сохранении RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", IDC_STATIC, 37, 10, 160, 40
+    ICON IDI_MAIN, -1, 5, 10, 0, 0
+    LTEXT "При сохранении RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Со&хранять внешние файлы в папке res", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1182,9 +1182,9 @@ CAPTION "Добавить кодировку ресурса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Кодировка:", IDC_STATIC, 5, 30, 70, 12
+    LTEXT "&Кодировка:", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 86, 60, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 150, 60, 60, 14
@@ -1195,9 +1195,9 @@ CAPTION "Изменить кодировку ресурса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Тип ресурса:", IDC_STATIC, 5, 7, 70, 12
+    LTEXT "&Тип ресурса:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Кодировка:", IDC_STATIC, 5, 30, 70, 12
+    LTEXT "&Кодировка:", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 86, 60, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 150, 60, 60, 14
@@ -1208,9 +1208,9 @@ CAPTION "Константа запроса"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Имя константы:", IDC_STATIC, 5, 7, 80, 12
+    LTEXT "&Имя константы:", -1, 5, 7, 80, 12
     COMBOBOX cmb1, 94, 7, 105, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Значение константы:", IDC_STATIC, 5, 32, 80, 12
+    LTEXT "&Значение константы:", -1, 5, 32, 80, 12
     EDITTEXT edt2, 95, 30, 50, 14, ES_READONLY
     EDITTEXT edt3, 150, 30, 50, 14, ES_READONLY
     DEFPUSHBUTTON "OK", IDOK, 70, 55, 60, 14
@@ -1233,21 +1233,48 @@ CAPTION "Заменить Диалоговые Шрифты"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Шрифт #&1:", IDC_STATIC, 5, 7, 44, 12
+    LTEXT "Шрифт #&1:", -1, 5, 7, 44, 12
     COMBOBOX cmb1, 55, 5, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    ICON IDI_ARROW, IDC_STATIC, 30, 25, 0, 0
+    ICON IDI_ARROW, -1, 30, 25, 0, 0
     COMBOBOX cmb2, 55, 30, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Шрифт #&2:", IDC_STATIC, 5, 57, 44, 12
+    LTEXT "Шрифт #&2:", -1, 5, 57, 44, 12
     COMBOBOX cmb3, 55, 55, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    ICON IDI_ARROW, IDC_STATIC, 30, 75, 0, 0
+    ICON IDI_ARROW, -1, 30, 75, 0, 0
     COMBOBOX cmb4, 55, 80, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Шрифт #&3:", IDC_STATIC, 5, 105, 44, 12
+    LTEXT "Шрифт #&3:", -1, 5, 105, 44, 12
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    ICON IDI_ARROW, IDC_STATIC, 30, 125, 0, 0
+    ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
     PUSHBUTTON "Отмена", IDCANCEL, 130, 160, 50, 14
     PUSHBUTTON "&Сброс", psh1, 5, 160, 55, 14
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// RT_VERSION
+
+1 VERSIONINFO
+FILEVERSION     5, 4, 0, 0
+PRODUCTVERSION  5, 4, 0, 0
+FILEOS          0x40004
+FILETYPE        0x1
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "04190376"
+        {
+            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
+            VALUE "FileDescription", "RisohEditor\0"
+            VALUE "FileVersion", "5.4.0\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2019 Katayama Hirofumi MZ and Dmitry Yerokhin. All rights reserved.\0"
+            VALUE "ProductName", "RisohEditor\0"
+            VALUE "ProductVersion", "5.4.0\0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0419, 0x0376
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
