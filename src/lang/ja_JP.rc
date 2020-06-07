@@ -890,9 +890,9 @@ CAPTION "検索"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
-    LTEXT "検索文字列(&S):", -1, 5, 7, 55, 12
-    EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
-    AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 5, 25, 119, 14
+    LTEXT "検索文字列(&S):", -1, 4, 10, 75, 14
+    EDITTEXT edt1, 5, 25, 135, 15, ES_AUTOHSCROLL
+    AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 5, 45, 120, 15
     GROUPBOX "検索する方向", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "上向き(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "下向き(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP

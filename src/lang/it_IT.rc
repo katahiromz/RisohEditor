@@ -888,12 +888,12 @@ CAPTION "Cerca"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Stringa da cercare:", -1, 5, 7, 55, 12
-    EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
-    AUTOCHECKBOX "Controlla maius&colo/minuscolo", chx1, 5, 25, 119, 14
+    LTEXT "&Stringa da cercare:", -1, 4, 10, 75, 14
+    EDITTEXT edt1, 5, 25, 135, 15, ES_AUTOHSCROLL
+    AUTOCHECKBOX "Controlla maius&colo/minuscolo", chx1, 3, 45, 120, 18
     GROUPBOX "Direzione", -1, 5, 65, 160, 42
-    AUTORADIOBUTTON "&Avanti", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "&Indietro", rad2, 90, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "&Indietro", rad1, 15, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "&Avanti", rad2, 90, 80, 60, 14, WS_TABSTOP
     DEFPUSHBUTTON "&Trova", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 105, 115, 60, 14
 }

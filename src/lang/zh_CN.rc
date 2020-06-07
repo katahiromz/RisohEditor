@@ -887,9 +887,9 @@ CAPTION "搜索"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体"
 {
-    LTEXT "搜索字符串(&S):", -1, 5, 7, 55, 12
-    EDITTEXT edt1, 65, 5, 100, 14, ES_AUTOHSCROLL
-    AUTOCHECKBOX "区分大小写(&C)", chx1, 5, 25, 119, 14
+    LTEXT "搜索字符串(&S):", -1, 4, 10, 75, 14
+    EDITTEXT edt1, 5, 25, 135, 15, ES_AUTOHSCROLL
+    AUTOCHECKBOX "区分大小写(&C)", chx1, 5, 45, 120, 15
     GROUPBOX "方向", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "向上(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "向下(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP
