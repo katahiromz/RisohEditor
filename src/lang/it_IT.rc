@@ -1055,6 +1055,7 @@ FONT 9, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "L'esportazione di un file .rc generà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 195, 14
+    AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "Crea file &backup con suffisso:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1151,6 +1152,7 @@ FONT 9, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Il salvataggio di un file .rc genera un serie di file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Separa file risorse per &lingua", chx1, 5, 60, 195, 14
+    AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "Crea file &backup con suffisso:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
