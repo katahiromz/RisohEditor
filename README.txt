@@ -196,6 +196,7 @@ Question 6. What is the difference between no installer and portable version?
     - Improved "ID Association" dialog.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
+    - Fixed RT_ACCELERATOR output.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

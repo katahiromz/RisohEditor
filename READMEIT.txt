@@ -196,6 +196,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Improved "ID Association" dialog.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
+    - Fixed RT_ACCELERATOR output.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
