@@ -4760,6 +4760,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_WORD_WRAP, MF_BYCOMMAND | MF_UNCHECKED);
 
+    if (m_szResourceH[0])
+        EnableMenuItem(hMenu, ID_UNLOADRESH, MF_BYCOMMAND | MF_ENABLED);
+    else
+        EnableMenuItem(hMenu, ID_UNLOADRESH, MF_BYCOMMAND | MF_GRAYED);
+
     // search the language entries
     EntrySetBase found;
     g_res.search(found, ET_LANG);
