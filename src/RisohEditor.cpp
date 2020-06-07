@@ -2558,11 +2558,15 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ofn.nMaxFile = _countof(szFile);
 
     // use the prefered filter by the entry
-    if (e->m_et == ET_STRING || e->m_et == ET_MESSAGE)
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
-
-    if (e->m_et == ET_LANG)
+    switch (e->m_et)
     {
+    case ET_STRING:
+    case ET_MESSAGE:
+    case ET_TYPE:
+    case ET_NAME:
+        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        break;
+    case ET_LANG:
         if (e->m_type == L"PNG")
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_PNGRESBINFILTER));
         else if (e->m_type == L"JPEG")
@@ -2577,10 +2581,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WAVERESBINFILTER));
         else
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
-    }
-    else
-    {
-        ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        break;
+    default:
+        return;
     }
 
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
