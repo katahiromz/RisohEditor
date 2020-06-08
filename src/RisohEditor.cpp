@@ -12118,23 +12118,11 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
         return TRUE;
     }
 
-    WCHAR szPath[MAX_PATH], *pch;
-
-    // pszFile --> szPath --> m_szFile (full path)
-    GetFullPathNameW(pszFile, _countof(szPath), szPath, &pch);
-    StringCchCopyW(m_szFile, _countof(m_szFile), szPath);
-
-    // find the last '\\' or '/'
-    pch = wcsrchr(szPath, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(szPath, L'/');
-    if (pch == NULL)
-        pch = szPath;
-    else
-        ++pch;
+    // pszFile --> m_szFile (full path)
+    GetFullPathNameW(pszFile, _countof(m_szFile), m_szFile, NULL);
 
     // set the file title to the title bar
-    SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, pch));
+    SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, m_szFile));
 
     // add to the recently used files
     g_settings.AddFile(m_szFile);

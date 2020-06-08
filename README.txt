@@ -195,6 +195,7 @@ Question 6. What is the difference between no installer and portable version?
     - Removed "Store into res folder" option.
     - Strengthened extraction feature.
     - Fixed replacing-dialog-font feature.
+    - Used the full path for title bar.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.

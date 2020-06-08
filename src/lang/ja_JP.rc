@@ -1313,7 +1313,7 @@ IDD_MODIFYDLGINIT 240
 STRINGTABLE
 {
     IDS_APPNAME, "リソーエディタ 5.4.0 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "%s - リソーエディタ 5.4.0 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "%s - リソーエディタ 5.4.0"
     IDS_EXTRACTRES, "リソースの抽出"
     IDS_RESBINFILTER, "バイナリ リソース (*.res)|*.res|バイナリ ファイル (*.bin)|*.bin|すべてのファイル (*.*)|*.*|"
     IDS_CANNOTSAVE, "保存できませんでした。"

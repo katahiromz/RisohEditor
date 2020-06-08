@@ -195,6 +195,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Removed "Store into res folder" option.
     - Strengthened extraction feature.
     - Fixed replacing-dialog-font feature.
+    - Used the full path for title bar.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.

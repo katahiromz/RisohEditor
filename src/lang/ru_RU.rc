@@ -1311,7 +1311,7 @@ IDD_MODIFYDLGINIT 240
 STRINGTABLE
 {
     IDS_APPNAME, "RisohEditor 5.4.0 (c) Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "%s - RisohEditor 5.4.0 (c) Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "%s - RisohEditor 5.4.0"
     IDS_EXTRACTRES, "Извлечь ресурс"
     IDS_RESBINFILTER, "Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_CANNOTSAVE, "Невозможно сохранить."
