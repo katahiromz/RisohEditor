@@ -2977,6 +2977,7 @@ public:
     BOOL GetBaseUnits(INT& xDialogBaseUnit, INT& yDialogBaseUnit)
     {
         // use m_dialog_res.GetBaseUnits
+        m_dialog_res.ReplaceFont();
         m_xDialogBaseUnit = m_dialog_res.GetBaseUnits(m_yDialogBaseUnit);
         if (m_xDialogBaseUnit == 0)
         {
