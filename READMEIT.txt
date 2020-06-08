@@ -194,6 +194,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
     - Removed "Store into res folder" option.
     - Strengthened extraction feature.
+    - Fixed replacing-dialog-font feature.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.

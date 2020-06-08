@@ -387,6 +387,7 @@ public:
         m_dialog_res.m_italic = FALSE;
         m_dialog_res.m_charset = DEFAULT_CHARSET;
         m_dialog_res.m_type_face = strFont.c_str();
+        m_dialog_res.ReplaceFont();
 
         m_dialog_res.m_weight = (bBold ? FW_BOLD : FW_DONTCARE);
         m_dialog_res.m_italic = (bItalic ? TRUE : FALSE);

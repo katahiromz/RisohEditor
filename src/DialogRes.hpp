@@ -851,6 +851,7 @@ struct DialogRes
     LANGID                      m_lang;
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
+    MIdOrString                 m_replaced_type_face;
     MIdOrString                 m_old_type_face;
 
     DialogRes()
@@ -1202,6 +1203,19 @@ struct DialogRes
         return ret;
     }
 
+    void ReplaceFont()
+    {
+        m_replaced_type_face = m_type_face;
+        auto& face = m_replaced_type_face;
+
+        if (face.str() == g_settings.strFontReplaceFrom1)
+            face = g_settings.strFontReplaceTo1.c_str();
+        else if (face.str() == g_settings.strFontReplaceFrom2)
+            face = g_settings.strFontReplaceTo2.c_str();
+        else if (face.str() == g_settings.strFontReplaceFrom3)
+            face = g_settings.strFontReplaceTo3.c_str();
+    }
+
     void FixupForRad(bool bRevert = false)
     {
         if (bRevert)
@@ -1218,7 +1232,6 @@ struct DialogRes
             m_old_ex_style = m_ex_style;
             m_old_menu = m_menu;
             m_old_class = m_class;
-            m_old_type_face = m_type_face;
 
             m_style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
             m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS;
@@ -1229,18 +1242,9 @@ struct DialogRes
             m_menu.clear();
             m_class.clear();
 
-            if (m_type_face.str() == g_settings.strFontReplaceFrom1)
-            {
-                m_type_face = g_settings.strFontReplaceTo1.c_str();
-            }
-            if (m_type_face.str() == g_settings.strFontReplaceFrom2)
-            {
-                m_type_face = g_settings.strFontReplaceTo2.c_str();
-            }
-            if (m_type_face.str() == g_settings.strFontReplaceFrom3)
-            {
-                m_type_face = g_settings.strFontReplaceTo3.c_str();
-            }
+            m_old_type_face = m_type_face;
+            ReplaceFont();
+            m_type_face = m_replaced_type_face;
         }
 
         for (auto& item : m_items)
@@ -1316,10 +1320,10 @@ struct DialogRes
                 lf.lfWeight = m_weight;
                 lf.lfItalic = m_italic;
                 lf.lfCharSet = DEFAULT_CHARSET;
-                if (m_type_face.empty())
+                if (m_replaced_type_face.empty())
                     lf.lfFaceName[0] = 0;
                 else
-                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.c_str());
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.c_str());
 
                 hFont = CreateFontIndirectW(&lf);
             }
@@ -1348,10 +1352,10 @@ struct DialogRes
                 lf.lfItalic = m_italic;
                 lf.lfCharSet = DEFAULT_CHARSET;
 
-                if (!ret && lstrcmpiW(m_type_face.c_str(), L"MS Shell Dlg") == 0)
+                if (!ret && lstrcmpiW(m_replaced_type_face.c_str(), L"MS Shell Dlg") == 0)
                     StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), L"MS Shell Dlg 2");
                 else
-                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_type_face.c_str());
+                    StringCchCopyW(lf.lfFaceName, _countof(lf.lfFaceName), m_replaced_type_face.c_str());
 
                 hFont = CreateFontIndirectW(&lf);
             }
@@ -1456,6 +1460,7 @@ protected:
             {
                 return false;
             }
+            ReplaceFont();
         }
 
         return true;
@@ -1507,6 +1512,7 @@ protected:
             {
                 return false;
             }
+            ReplaceFont();
         }
 
         return true;
