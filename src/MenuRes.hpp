@@ -773,6 +773,9 @@ inline MStringW GetMenuFlags(WORD fItemFlags)
     if ((fItemFlags & MF_MENUBREAK) == MF_MENUBREAK)
         str += L"MB ";
 
+    if ((fItemFlags & MF_HELP) == MF_HELP)
+        str += L"HP ";
+
     return str;
 }
 
@@ -798,6 +801,9 @@ inline void SetMenuFlags(WORD& fItemFlags, const MStringW& str)
 
     if (str2.find(L" MB ") != MStringW::npos)
         fItemFlags |= MF_MENUBREAK;
+
+    if (str2.find(L" HP ") != MStringW::npos)
+        fItemFlags |= MF_HELP;
 }
 
 inline MStringW GetMenuTypeAndState(DWORD dwType, DWORD dwState)
