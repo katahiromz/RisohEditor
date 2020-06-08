@@ -4949,8 +4949,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_EXTRACTRC, MF_GRAYED);
         return;
     }
+
+    EnableMenuItem(hMenu, ID_EXTRACTRC, MF_ENABLED);
 
     BOOL bEditable = entry && entry->is_editable();
     if (bEditable)
