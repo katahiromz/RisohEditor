@@ -289,6 +289,8 @@ public:
             ret += L", MENUBARBREAK";
         if (fItemFlags & MF_MENUBREAK)
             ret += L", MENUBREAK";
+        if (fItemFlags & MF_HELP)
+            ret += L", HELP";
         return ret;
     }
 
