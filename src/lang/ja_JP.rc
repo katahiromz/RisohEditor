@@ -67,6 +67,7 @@ IDR_MAINMENU MENU
             MENUITEM "アイコンを抽出(&I)...", ID_EXTRACTICON
             MENUITEM "カーソルを抽出(&C)...", ID_EXTRACTCURSOR
             MENUITEM "ビットマップを抽出(&B)...", ID_EXTRACTBITMAP
+            MENUITEM "RC ファイルとして抽出(&A)...", ID_EXTRACTRC
             MENUITEM "バイナリ リソース項目を抽出(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
@@ -171,6 +172,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "アイコンを抽出(&I)...", ID_EXTRACTICON
             MENUITEM "カーソルを抽出(&C)...", ID_EXTRACTCURSOR
             MENUITEM "ビットマップを抽出(&B)...", ID_EXTRACTBITMAP
+            MENUITEM "RC ファイルとして抽出(&A)...", ID_EXTRACTRC
             MENUITEM "バイナリ リソース項目を抽出(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR

@@ -706,7 +706,7 @@ MString GetAssoc(const MString& name)
         else
             name_or_id.m_str = name;
 
-        EntrySetBase found;
+        EntrySet found;
         g_res.search(found, ET_LANG, type, name_or_id);
 
         if (found.size() && g_db.IsEntityIDType(nIDTYPE_))
@@ -2148,13 +2148,15 @@ public:
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
     BOOL DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
+    BOOL DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found);
     void DoIDStat(UINT anValues[5]);
     BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH);
-    BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang);
-    BOOL DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang);
-    BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang);
+    BOOL DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found);
+    BOOL DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
+    BOOL DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
+    BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
     BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
     BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
     BOOL DoSaveResAs(LPCWSTR pszExeFile);
@@ -2300,6 +2302,7 @@ protected:
     void OnAddAccel(HWND hwnd);
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
+    void OnExtractRC(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
@@ -2610,6 +2613,77 @@ void MMainWnd::OnExtractBin(HWND hwnd)
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
+        }
+    }
+}
+
+void MMainWnd::OnExtractRC(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
+    // get the selected entry
+    auto e = g_res.get_entry();
+    if (!e)
+        return;     // not selected
+
+    // initialize OPENFILENAME structure
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RCFILTER));
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"rc";   // the default extension
+
+    // use the prefered filter by the entry
+    EntrySet found;
+    MIdOrString type = e->m_type;
+    switch (e->m_et)
+    {
+    case ET_STRING:
+        g_res.search(found, ET_LANG, RT_STRING, WORD(0), e->m_lang);
+        break;
+    case ET_MESSAGE:
+        g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), e->m_lang);
+        break;
+    case ET_TYPE:
+        if (type == RT_ICON)
+            type = RT_GROUP_ICON;
+        else if (type == RT_CURSOR)
+            type = RT_GROUP_CURSOR;
+        g_res.search(found, ET_LANG, type, WORD(0), BAD_LANG);
+        break;
+    case ET_NAME:
+        g_res.search(found, ET_LANG, type, e->m_name, BAD_LANG);
+        break;
+    case ET_LANG:
+        g_res.search(found, ET_LANG, type, e->m_name, e->m_lang);
+        break;
+    default:
+        return;
+    }
+
+    if (found.empty())
+    {
+        ErrorBoxDx(IDS_DATAISEMPTY);
+        return;
+    }
+
+    // let the user choose the path
+    if (GetSaveFileNameW(&ofn))
+    {
+        // show the "export options" dialog
+        MExportOptionsDlg dialog;
+        if (dialog.DialogBoxDx(hwnd) != IDOK)
+            return;
+
+        if (!DoExport(szFile, NULL, found))
+        {
+            ErrorBoxDx(IDS_CANTEXPORT);
         }
     }
 }
@@ -3545,7 +3619,7 @@ void MMainWnd::OnCopyAsNewName(HWND hwnd)
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         // search the ET_LANG entries
-        EntrySetBase found;
+        EntrySet found;
         g_res.search(found, ET_LANG, entry->m_type, entry->m_name);
 
         if (entry->m_type == RT_GROUP_ICON)     // group icon
@@ -3604,7 +3678,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         if (entry->m_type == RT_GROUP_ICON)     // group icon
         {
             // search the group icons
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
 
             // copy them
@@ -3619,7 +3693,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             // search the group cursors
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
 
             // copy them
@@ -3634,7 +3708,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         else if (entry->m_et == ET_STRING)
         {
             // search the strings
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
 
             // copy them
@@ -3649,7 +3723,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         else if (entry->m_et == ET_MESSAGE)
         {
             // search the messagetables
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
 
             // copy them
@@ -3664,7 +3738,7 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         else
         {
             // search the entries
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
 
             // copy them
@@ -4107,7 +4181,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         // g_res --> found
         WORD lang = entry->m_lang;
-        EntrySetBase found;
+        EntrySet found;
         g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
 
         // found --> str_res
@@ -4164,7 +4238,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     {
         // g_res --> found
         WORD lang = entry->m_lang;
-        EntrySetBase found;
+        EntrySet found;
         g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), lang);
 
         // found --> msg_res
@@ -4768,7 +4842,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_UNLOADRESH, MF_BYCOMMAND | MF_GRAYED);
 
     // search the language entries
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG);
 
     if (found.empty())
@@ -5421,7 +5495,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 {
     // search the strings
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, RT_STRING, (WORD)0, entry.m_lang);
 
     // found --> str_res
@@ -5443,7 +5517,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
 void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 {
     // search the message tables
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
 
     // found --> msg_res
@@ -7156,7 +7230,7 @@ BOOL MMainWnd::OnFindPrev(HWND hwnd)
     return TRUE;
 }
 
-BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
+BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
 {
     MTextToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
@@ -7172,8 +7246,8 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
     file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
 
     // search the language entries
-    EntrySetBase found;
-    g_res.search(found, ET_LANG, WORD(0), WORD(0), lang);
+    EntrySet found;
+    targets.search(found, ET_LANG, WORD(0), WORD(0), lang);
 
     std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
@@ -7229,7 +7303,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
 
     // search the string tables
     found.clear();
-    g_res.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -7268,7 +7342,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
 
     // search the message tables
     found.clear();
-    g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -7308,7 +7382,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang)
     return TRUE;
 }
 
-BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
+BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
 {
     MString comment_sep(LoadStringDx(IDS_COMMENT_SEP));
 
@@ -7324,8 +7398,8 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
     file.WriteSzW(strLang.c_str());
 
     // search the language entries
-    EntrySetBase found;
-    g_res.search(found, ET_LANG, WORD(0), WORD(0), lang);
+    EntrySet found;
+    targets.search(found, ET_LANG, WORD(0), WORD(0), lang);
 
     std::vector<EntryBase *> vecFound(found.begin(), found.end());
 
@@ -7379,7 +7453,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
 
     // search the string tables
     found.clear();
-    g_res.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_STRING, (WORD)0, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -7415,7 +7489,7 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
 
     // search the message tables
     found.clear();
-    g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+    targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
     if (found.size())
     {
         if (g_settings.bRedundantComments)
@@ -7453,12 +7527,12 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang)
 }
 
 // write a language-specific RC text
-BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang)
+BOOL MMainWnd::DoWriteRCLang(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets)
 {
     if (g_settings.bRCFileUTF16)
-        return DoWriteRCLangUTF16(file, res2text, lang);
+        return DoWriteRCLangUTF16(file, res2text, lang, targets);
     else
-        return DoWriteRCLangUTF8(file, res2text, lang);
+        return DoWriteRCLangUTF8(file, res2text, lang, targets);
 }
 
 // do backup a folder
@@ -7515,6 +7589,15 @@ BOOL MMainWnd::DoBackupFile(LPCWSTR pszPath, UINT nCount)
 
 // write a RC file
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
+{
+    EntrySet found;
+    g_res.search(found, ET_LANG);
+
+    return DoWriteRC(pszFileName, pszResH, found);
+}
+
+// write a RC file
+BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found)
 {
     ResToText res2text;
     res2text.m_bHumanReadable = FALSE;  // it's not human-friendly
@@ -7601,9 +7684,6 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     typedef std::pair<WORD, MStringW> lang_pair;
     std::vector<lang_pair> lang_vec;
 
-    EntrySetBase found;
-    g_res.search(found, ET_LANG);
-
     for (auto res : found)
     {
         WORD lang = res->m_lang;
@@ -7631,7 +7711,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         // dump neutral
         if (langs.count(0) > 0)
         {
-            if (!DoWriteRCLang(file, res2text, 0))
+            if (!DoWriteRCLang(file, res2text, 0, found))
                 return FALSE;
         }
 
@@ -7702,7 +7782,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
             }
             if (!lang_file)
                 return FALSE;
-            if (!DoWriteRCLang(lang_file, res2text, lang))
+            if (!DoWriteRCLang(lang_file, res2text, lang, found))
                 return FALSE;
 
             if (g_settings.bRedundantComments)
@@ -7725,7 +7805,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
         {
             auto lang = lang_pair.first;
             // write it for each language
-            if (!DoWriteRCLang(file, res2text, lang))
+            if (!DoWriteRCLang(file, res2text, lang, found))
                 return FALSE;
         }
     }
@@ -8326,7 +8406,17 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 // do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 {
-    if (g_res.empty())
+    // search the language entries
+    EntrySet found;
+    g_res.search(found, ET_LANG);
+
+    return DoExport(pszRCFile, pszResHFile, found);
+}
+
+// do export the resource data to an RC file and related files
+BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
+{
+    if (found.empty())
     {
         // unable to export the empty data
         ErrorBoxDx(IDS_DATAISEMPTY);
@@ -8345,10 +8435,6 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         return FALSE;   // failure
 
     *pch = 0;
-
-    // search the language entries
-    EntrySetBase found;
-    g_res.search(found, ET_LANG);
 
     // check whether there is an external file to be extracted
     BOOL bHasExternFile = FALSE;
@@ -8393,10 +8479,6 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
             CreateDirectory(strResDir.c_str(), NULL);
         }
 
-        // search the language entries
-        EntrySetBase found;
-        g_res.search(found, ET_LANG);
-
         // extract each data if necessary
         for (auto e : found)
         {
@@ -8419,7 +8501,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
         StringCchCatW(szPath, _countof(szPath), L"\\resource.h");
 
         // write the resource.h file and the RC file
-        bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath);
+        bOK = DoWriteResH(szPath, pszRCFile) && DoWriteRC(pszRCFile, szPath, found);
 
         // szPath --> pszResHFile
         if (bOK && pszResHFile)
@@ -8428,7 +8510,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
     else
     {
         // write the RC file
-        bOK = DoWriteRC(pszRCFile, NULL);
+        bOK = DoWriteRC(pszRCFile, NULL, found);
     }
 
     // resume the current directory
@@ -9619,7 +9701,7 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 // update the name of the tree control
 void MMainWnd::UpdateNames(BOOL bModified)
 {
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_NAME);
 
     for (auto entry : found)
@@ -10540,6 +10622,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_PREVPANE:
         OnNextPane(hwnd, FALSE);
         break;
+    case ID_EXTRACTRC:
+        OnExtractRC(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -10965,7 +11050,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
     // search the old named language entries
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, entry->m_type, old_name);
 
     // rename them
@@ -10988,7 +11073,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
 // change the language of the resource entries
 void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang)
 {
-    EntrySetBase found;
+    EntrySet found;
 
     switch (entry->m_et)
     {
@@ -14471,7 +14556,7 @@ EGA::arg_t MMainWnd::DoEgaResSearch(const EGA::args_t& args)
     if (arg2)
         lang = (WORD)EGA_get_int(arg2);
 
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, type, name, lang);
 
     auto array = make_arg<AstContainer>(AST_ARRAY, 0, "RES_LIST");
@@ -14541,7 +14626,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
     if (arg2)
         dest_name = EGA_get_id_or_str(arg2);
 
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, type, src_name, lang);
 
     if (type == RT_GROUP_ICON)     // group icon
@@ -14602,7 +14687,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     if (arg3)
         dest_lang = EGA_get_int(arg3);
 
-    EntrySetBase found2;
+    EntrySet found2;
     g_res.search(found2, ET_LANG, type, name, src_lang);
 
     for (auto& entry : found2)
@@ -14610,7 +14695,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
         if (entry->m_type == RT_GROUP_ICON)     // group icon
         {
             // search the group icons
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_GROUP_ICON, name, src_lang);
 
             // copy them
@@ -14622,7 +14707,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
         else if (entry->m_type == RT_GROUP_CURSOR)
         {
             // search the group cursors
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_GROUP_CURSOR, name, src_lang);
 
             // copy them
@@ -14634,7 +14719,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
         else if (entry->m_et == ET_STRING)
         {
             // search the strings
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_STRING, WORD(0), src_lang);
 
             // copy them
@@ -14646,7 +14731,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
         else if (entry->m_et == ET_MESSAGE)
         {
             // search the messagetables
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
 
             // copy them
@@ -14658,7 +14743,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
         else
         {
             // search the entries
-            EntrySetBase found;
+            EntrySet found;
             g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
 
             // copy them
@@ -14701,7 +14786,7 @@ EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
     if (arg2)
         lang = EGA_get_int(arg2);
 
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, type, name, lang);
 
     std::string ret;
@@ -14740,7 +14825,7 @@ EGA::arg_t MMainWnd::DoEgaResSelect(const EGA::args_t& args)
     if (arg2)
         lang = EGA_get_int(arg2);
 
-    EntrySetBase found;
+    EntrySet found;
     g_res.search(found, ET_LANG, type, name, lang);
 
     if (found.size())

@@ -526,7 +526,7 @@ ResToText::DoDialog(const EntryBase& entry)
 inline MString
 ResToText::DoString(const EntryBase& entry)
 {
-    EntrySet::super_type found;
+    EntrySet found;
     g_res.search(found, ET_LANG, RT_STRING, entry.m_name, entry.m_lang);
 
     StringRes str_res;
@@ -548,7 +548,7 @@ ResToText::DoString(const EntryBase& entry)
 inline MString
 ResToText::DoMessage(const EntryBase& entry)
 {
-    EntrySet::super_type found;
+    EntrySet found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
     MessageRes msg_res;

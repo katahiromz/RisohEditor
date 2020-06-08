@@ -366,7 +366,7 @@ public:
             }
         }
 
-        EntrySetBase found;
+        EntrySet found;
         g_res.search(found, ET_LANG);
 
         for (auto entry : found)

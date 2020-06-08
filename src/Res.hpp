@@ -374,6 +374,7 @@ typedef std::set<EntryBase *, EntryLess> EntrySetBase;
 struct EntrySet : protected EntrySetBase
 {
     typedef EntrySetBase super_type;
+    typedef EntrySet self_type;
     using super_type::empty;
     using super_type::size;
     using super_type::clear;
@@ -407,7 +408,7 @@ struct EntrySet : protected EntrySetBase
     }
 
     // search by pattern matching
-    bool search(super_type& found, EntryType et, const MIdOrString& type = WORD(0), 
+    bool search(self_type& found, EntryType et, const MIdOrString& type = WORD(0), 
                 const MIdOrString& name = WORD(0), WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
         for (auto entry : *this)
@@ -425,7 +426,7 @@ struct EntrySet : protected EntrySetBase
                     const MIdOrString& name = WORD(0),
                     WORD lang = BAD_LANG, bool invalid_ok = false) const
     {
-        super_type found;
+        self_type found;
         if (search(found, et, type, name, lang, invalid_ok))
         {
             return *found.begin();
@@ -489,7 +490,7 @@ struct EntrySet : protected EntrySetBase
                            const MIdOrString& name = WORD(0), WORD lang = BAD_LANG)
     {
         // search
-        super_type found;
+        self_type found;
         search(found, et, type, name, lang);
 
         // delete

@@ -923,7 +923,7 @@ HTREEITEM EntrySet::get_insert_position(EntryBase *entry)
         return NULL;    // no treeview handle
 
     // get the entries to determine the position
-    super_type found;
+    self_type found;
     switch (entry->m_et)
     {
     case ET_TYPE:

@@ -67,6 +67,7 @@ IDR_MAINMENU MENU
             MENUITEM "Extract &Icon...", ID_EXTRACTICON
             MENUITEM "Extract &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Extract &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extract &As RC File...", ID_EXTRACTRC
             MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
@@ -169,6 +170,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Extract &Icon...", ID_EXTRACTICON
             MENUITEM "Extract &Cursor...", ID_EXTRACTCURSOR
             MENUITEM "Extract &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extract &As RC File...", ID_EXTRACTRC
             MENUITEM "Extract Binary &Resource Item...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR

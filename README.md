@@ -197,6 +197,7 @@ The portable version doesn't use registry but an ini file.
 - v.5.4.0 (2020.XX.YY)
     - Fixed `RT_ACCELERATOR` output (unsigned 16-bit).
     - Removed "Store into res folder" option.
+    - Strengthened extraction feature.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.
