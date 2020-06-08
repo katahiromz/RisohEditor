@@ -67,7 +67,7 @@ IDR_MAINMENU MENU
             MENUITEM "&Значок...", ID_EXTRACTICON
             MENUITEM "&Курсор...", ID_EXTRACTCURSOR
             MENUITEM "К&артинку...", ID_EXTRACTBITMAP
-            MENUITEM "Extract &as RC file...", ID_EXTRACTRC
+            MENUITEM "Извлечь &как RC файл...", ID_EXTRACTRC
             MENUITEM "Двоичный ресурсный элемент...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
@@ -170,7 +170,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "&Значок...", ID_EXTRACTICON
             MENUITEM "&Курсор...", ID_EXTRACTCURSOR
             MENUITEM "К&артинку...", ID_EXTRACTBITMAP
-            MENUITEM "Extract &as RC file...", ID_EXTRACTRC
+            MENUITEM "Извлечь &как RC файл...", ID_EXTRACTRC
             MENUITEM "&Двоичный ресурсный элемент...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
