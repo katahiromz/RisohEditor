@@ -844,15 +844,40 @@ struct DialogRes
     short                       m_weight;
     BYTE                        m_italic;
     BYTE                        m_charset;
-    MIdOrString                 m_type_face;
     DialogItems                 m_items;
-    DWORD                       m_old_style, m_old_ex_style;
     MIdOrString                 m_name;
     LANGID                      m_lang;
+protected:
+    DWORD                       m_old_style, m_old_ex_style;
     MIdOrString                 m_old_menu;
     MIdOrString                 m_old_class;
+    MIdOrString                 m_type_face;
     MIdOrString                 m_replaced_type_face;
     MIdOrString                 m_old_type_face;
+
+    void ReplaceFont()
+    {
+        m_replaced_type_face = m_type_face;
+        auto& face = m_replaced_type_face;
+
+        if (face.str() == g_settings.strFontReplaceFrom1)
+            face = g_settings.strFontReplaceTo1.c_str();
+        else if (face.str() == g_settings.strFontReplaceFrom2)
+            face = g_settings.strFontReplaceTo2.c_str();
+        else if (face.str() == g_settings.strFontReplaceFrom3)
+            face = g_settings.strFontReplaceTo3.c_str();
+    }
+
+public:
+    void type_face(const MIdOrString& type_face)
+    {
+        m_type_face = type_face;
+        ReplaceFont();
+    }
+    const MIdOrString& type_face() const
+    {
+        return m_type_face;
+    }
 
     DialogRes()
     {
@@ -1203,19 +1228,6 @@ struct DialogRes
         return ret;
     }
 
-    void ReplaceFont()
-    {
-        m_replaced_type_face = m_type_face;
-        auto& face = m_replaced_type_face;
-
-        if (face.str() == g_settings.strFontReplaceFrom1)
-            face = g_settings.strFontReplaceTo1.c_str();
-        else if (face.str() == g_settings.strFontReplaceFrom2)
-            face = g_settings.strFontReplaceTo2.c_str();
-        else if (face.str() == g_settings.strFontReplaceFrom3)
-            face = g_settings.strFontReplaceTo3.c_str();
-    }
-
     void FixupForRad(bool bRevert = false)
     {
         if (bRevert)
@@ -1243,7 +1255,6 @@ struct DialogRes
             m_class.clear();
 
             m_old_type_face = m_type_face;
-            ReplaceFont();
             m_type_face = m_replaced_type_face;
         }
 

@@ -207,7 +207,7 @@ public:
         SubclassChildDx(m_cmb3, cmb3);
         SendDlgItemMessage(hwnd, cmb3, CB_LIMITTEXT, 64, 0);
 
-        SetDlgItemTextW(hwnd, cmb4, m_dialog_res.m_type_face.c_str_or_empty());
+        SetDlgItemTextW(hwnd, cmb4, m_dialog_res.type_face().c_str_or_empty());
         SendDlgItemMessage(hwnd, cmb4, CB_LIMITTEXT, LF_FULLFACESIZE - 1, 0);
 
         SetDlgItemInt(hwnd, edt5, m_dialog_res.m_point_size, TRUE);
@@ -386,8 +386,7 @@ public:
         m_dialog_res.m_weight = FW_NORMAL;
         m_dialog_res.m_italic = FALSE;
         m_dialog_res.m_charset = DEFAULT_CHARSET;
-        m_dialog_res.m_type_face = strFont.c_str();
-        m_dialog_res.ReplaceFont();
+        m_dialog_res.type_face(strFont.c_str());
 
         m_dialog_res.m_weight = (bBold ? FW_BOLD : FW_DONTCARE);
         m_dialog_res.m_italic = (bItalic ? TRUE : FALSE);
