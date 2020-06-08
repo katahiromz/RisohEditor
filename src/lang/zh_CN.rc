@@ -67,7 +67,7 @@ IDR_MAINMENU MENU
             MENUITEM "导出图标(&I)...", ID_EXTRACTICON
             MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
             MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
-            MENUITEM "Extract &As RC File...", ID_EXTRACTRC
+            MENUITEM "Extract &as RC file...", ID_EXTRACTRC
             MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
@@ -170,7 +170,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "导出图标(&I)...", ID_EXTRACTICON
             MENUITEM "导出光标(&C)...", ID_EXTRACTCURSOR
             MENUITEM "导出位图文件(&B)...", ID_EXTRACTBITMAP
-            MENUITEM "Extract &As RC File...", ID_EXTRACTRC
+            MENUITEM "Extract &as RC file...", ID_EXTRACTRC
             MENUITEM "导出二进制资源文件(&R)...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
