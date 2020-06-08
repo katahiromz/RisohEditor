@@ -13,7 +13,7 @@ The translators of RisohEditor are listed below:
  * Russian:
     - Dmitry Yerokhin <erodim@mail.ru>
  * Italian:
-    - Roberto Boriotti <roberto.boriotti@libero.it>
+    - bovirus <bovirus@gmail.com>
 
 # How to translate?
 
