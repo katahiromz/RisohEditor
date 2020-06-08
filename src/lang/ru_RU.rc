@@ -891,7 +891,7 @@ STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Искомая &строка:", -1, 4, 10, 75, 14
-    EDITTEXT edt1, 5, 25, 135, 15, ES_AUTOHSCROLL
+    EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Учитывать регистр", chx1, 5, 45, 120, 16
     GROUPBOX "Направление", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "Н&азад", rad1, 15, 80, 60, 14, WS_TABSTOP

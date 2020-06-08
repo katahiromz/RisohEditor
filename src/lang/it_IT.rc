@@ -891,8 +891,8 @@ STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Stringa da cercare:", -1, 4, 10, 75, 14
-    EDITTEXT edt1, 5, 25, 135, 15, ES_AUTOHSCROLL
-    AUTOCHECKBOX "Controlla maius&colo/minuscolo", chx1, 3, 45, 120, 18
+    EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
+    AUTOCHECKBOX "Controlla maius&colo/minuscolo", chx1, 5, 45, 120, 18
     GROUPBOX "Direzione", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Indietro", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "&Avanti", rad2, 90, 80, 60, 14, WS_TABSTOP
