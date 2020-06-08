@@ -622,16 +622,16 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Titolo:", -1, 5, 10, 55, 12
     COMBOBOX cmb1, 5, 20, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Finestra &estesa", chx1, 100, 5, 65, 14
-    LTEXT "&Sinistra:", -1, 5, 40, 25, 12
+    LTEXT "&Sinistra:", -1, 8, 84, 25, 8
     EDITTEXT edt1, 5, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Alto:", -1, 35, 40, 25, 12
+    LTEXT "&Alto:", -1, 42, 84, 16, 8
     EDITTEXT edt2, 35, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Larghezza:", -1, 65, 40, 25, 12
+    LTEXT "&Larghezza:", -1, 62, 84, 33, 7
     EDITTEXT edt3, 65, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Alte&zza:", -1, 95, 40, 25, 12
+    LTEXT "Alte&zza:", -1, 98, 84, 25, 7
     EDITTEXT edt4, 95, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     LTEXT "&Nome classe Windows:", -1, 5, 70, 85, 12
@@ -671,16 +671,16 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Titolo:", -1, 5, 55, 55, 12
     COMBOBOX cmb2, 5, 65, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 165, 65, 25, 14
-    LTEXT "&Sinistra:", -1, 5, 85, 25, 12
+    LTEXT "&Sinistra:", -1, 5, 85, 25, 7
     EDITTEXT edt1, 5, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Alto:", -1, 35, 85, 25, 12
+    LTEXT "&Alto:", -1, 38, 84, 16, 8
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Larghezza:", -1, 65, 85, 25, 12
+    LTEXT "&Larghezza:", -1, 61, 84, 33, 7
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Alte&zza:", -1, 95, 85, 25, 12
+    LTEXT "Alte&zza:", -1, 95, 85, 25, 7
     EDITTEXT edt4, 95, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     LTEXT "&ID:", -1, 125, 85, 25, 12
@@ -1005,7 +1005,7 @@ CAPTION "Modifica macro predefinita"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Chaive:", -1, 5, 12, 60, 14
+    RTEXT "&Chiave:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     RTEXT "&Valore:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -1235,15 +1235,15 @@ CAPTION "Sostituisci font di dialogo"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Carattere #&1:", -1, 5, 7, 44, 12
+    LTEXT "Font #&1:", -1, 5, 7, 44, 12
     COMBOBOX cmb1, 55, 5, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 25, 0, 0
     COMBOBOX cmb2, 55, 30, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Carattere #&2:", -1, 5, 57, 44, 12
+    LTEXT "Font #&2:", -1, 5, 57, 44, 12
     COMBOBOX cmb3, 55, 55, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 75, 0, 0
     COMBOBOX cmb4, 55, 80, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Carattere #&3:", -1, 5, 105, 44, 12
+    LTEXT "Font #&3:", -1, 5, 105, 44, 12
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1327,7 +1327,7 @@ STRINGTABLE
     IDS_CANNOTADDICON, "Impossibile aggiungere l'icona."
     IDS_ADDICON, "Aggiungi icona"
     IDS_ICOFILTER, "File icone (*.ico)|*.ico|Tutti i file (*.*)|*.*|"
-    IDS_REPLACEICO, "Sostitusci icona"
+    IDS_REPLACEICO, "Sostituisci icona"
     IDS_CANTREPLACEICO, "Impossibile sostituire l'icona."
     IDS_EXISTSOVERWRITE, "L'elemento esiste già.\r\nVuoi sovrascriverlo?"
     IDS_OPEN, "Apri"
@@ -1352,7 +1352,7 @@ STRINGTABLE
     IDS_CANTEXTRACTICO, "Impossibile estrarre l'icona."
     IDS_EXTRACTCUR, "Estrai cursore"
     IDS_CANTEXTRACTCUR, "Impossibile estrarre il cursore."
-    IDS_RESFILTER, "Riorse binarie (*.res)|*.res|Tutti i file (*.*)|*.*|"
+    IDS_RESFILTER, "Risorse binarie (*.res)|*.res|Tutti i file (*.*)|*.*|"
     IDS_NEUTRAL, "Neutrale"
     IDS_IMPORTRES, "Importa"
     IDS_CANNOTIMPORT, "Impossibile importare la risorsa."
@@ -1366,7 +1366,7 @@ STRINGTABLE
     IDS_KEY, "Chiave"
     IDS_FLAGS, "Flag"
     IDS_COMMANDID, "ID comando"
-    IDS_INVALIDKEY, "Chaive non valida."
+    IDS_INVALIDKEY, "Chiave non valida."
     IDS_COMPILEERROR, "Compilazione fallita."
     IDS_STRINGID, "ID stringa"
     IDS_STRINGVALUE, "Valore stringa"
@@ -1378,7 +1378,7 @@ STRINGTABLE
     IDS_SEPARATOR, "---"
     IDS_COMPILENOW, "I dati sono stati modificati.\r\nVuoi compilare ora?"
     IDS_RADWINDOW, "Modifica finestra dialogo"
-    IDS_ENTERCLASS, "Inserisci un nome classe fienstra valido."
+    IDS_ENTERCLASS, "Inserisci un nome classe finestra valido."
     IDS_TEXTEDIT, "Modifica testo (Ctrl+T)"
     IDS_CURSORINFO, "Immagine #%u: larghezza %u, altezza %u, n. bit %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
     IDS_IMAGECOUNT, "N. immagini: %u\r\n"
@@ -1388,7 +1388,7 @@ STRINGTABLE
     IDS_EDITINGBYGUI, "Modifica via GUI..."
     IDS_COORD, "%d, %d, %d, %d"
     IDS_STARTING, "Avvio..."
-    IDS_COMPILING, "Compiliazione..."
+    IDS_COMPILING, "Compilazione..."
     IDS_CANNOTLOAD, "Impossibile caricare."
     IDS_NONE, "(Nessuno)"
     IDS_WAVESOUND, "(Audio WAVE)\r\n"
@@ -1403,7 +1403,7 @@ STRINGTABLE
     IDS_VALUE, "Valore"
     IDS_NOSUCHID, "Nessun ID trovato."
     IDS_IMAGEINFO, "Larghezza %u, altezza %u, bit x pixel %u\r\n"
-    IDS_ENTERINT, "Inserisci un valote intero valido."
+    IDS_ENTERINT, "Inserisci un valore intero valido."
     IDS_ENTERTEXT, "Inserisci un testo valido."
     IDS_ENTERID, "Inserisci un ID valido."
     IDS_ADDNEXTIDS, "Aggiungi i seguenti ID a 'resource.h':\r\n\r\n"
@@ -1423,20 +1423,20 @@ STRINGTABLE
     IDS_SAVERESH, "Salva file 'resource.h'"
     IDS_DLLFILTER, "File DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Tutti i file (*.*)|*.*|"
     IDS_EXERESRCFILTER, "File caricabili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|File eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|File risorse binarie (*.res)|*.res|File risorse (*.rc)|*.rc|Tutti i file (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND, "Impossibile provare la finestra di dialogo poichè è una finestra figlia."
-    IDS_CANTTESTCLASSDLG, "Impossibile provare la finestra di dialogo poichè è una classe."
+    IDS_CANTTESTCHILDWND, "Impossibile provare la finestra di dialogo poiché è una finestra figlia."
+    IDS_CANTTESTCLASSDLG, "Impossibile provare la finestra di dialogo poiché è una classe."
     IDS_FILEISUPXED, "Il file\r\n\r\n'%s'\r\n\r\nè compresso con UPX.\r\nVuoi estrarlo usando un file temporaneo?\r\n\r\nSe lo estrai, la lettura potrebbe fallire."
     IDS_CANTUPXEXTRACT, "Estrazione con UPX fallita."
-    IDS_CANTSAVEUPXED, "Impossibile salvare il file poichè è compresso con UPX."
+    IDS_CANTSAVEUPXED, "Impossibile salvare il file poiché è compresso con UPX."
     IDS_MESSAGEID, "ID messaggio"
-    IDS_MESSAGEVALUE, "Valore emssaggio"
+    IDS_MESSAGEVALUE, "Valore messaggio"
     IDS_RCFILTER, "File RC (*.rc)|*.rc|"
     IDS_EXPORT, "Esporta"
     IDS_CANTEXPORT, "Esportazione fallita."
     IDS_MUSTBEEMPTYDIR, "Se c'è un qualsiasi file esterno, la destinazione esportazione deve essere una cartella vuota."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
-    IDS_MACRONAME, "Name macro"
+    IDS_MACRONAME, "Nome macro"
     IDS_MACROVALUE, "Valore macro"
     IDS_OPTIONAL, "(Opzionale)"
     IDS_ADDINCLUDE, "Aggiungi cartella Include"
@@ -1464,12 +1464,12 @@ STRINGTABLE
     IDS_CANTSTARTSEARCH, "Impossibile avviare la ricerca."
     IDS_AMERICA, "America"
     IDS_ENGLISH, "Inglese"
-    IDS_CHINA, "China"
+    IDS_CHINA, "Cina"
     IDS_CHINESE, "Cinese"
     IDS_RUSSIA, "Russia"
     IDS_RUSSIAN, "Russo"
     IDS_WANNAGENRESH, "Vuoi generare il file 'resource.h'?"
-    IDS_EXEFILTER, "Esegibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Tutti i file (*.*)|*.*|"
+    IDS_EXEFILTER, "Eseguibili (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Tutti i file (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "Salva con compressione"
     IDS_TOOL_NEW, "Nuovo"
     IDS_TOOL_OPEN, "Apri..."
@@ -1507,7 +1507,7 @@ STRINGTABLE
     IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
     IDS_IMPORTFILTER, "File importabili|*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagini|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|Tutti i file (*.*)|*.*|"
-    IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poichè il file seguente è bloccato.\r\n\r\n%s"
+    IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poiché il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
     IDS_UTF8, "UTF-8 (con BOM)"
