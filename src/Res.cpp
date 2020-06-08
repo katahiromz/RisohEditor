@@ -320,7 +320,7 @@ void EntrySet::delete_entry(EntryBase *entry)
             break;  // no parent
 
         if (get_child(parent))
-            break;  // no child
+            break;  // has child
 
         delete_entry(parent);   // delete the parent
     } while (0);
