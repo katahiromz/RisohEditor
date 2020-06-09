@@ -426,7 +426,11 @@ void EntrySet::do_bitmap(MTitleToBitmap& title_to_bitmap, DialogItem& item, WORD
     // find the entry
     auto entry = find(ET_LANG, type, item.m_title, lang);
     if (!entry)
-        return;
+    {
+        entry = find(ET_LANG, type, item.m_title, BAD_LANG);
+        if (!entry)
+            return;
+    }
 
     // create the bitmap object
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&(*entry)[0], (*entry).size());
@@ -451,7 +455,11 @@ void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     // find the entry
     auto entry = find(ET_LANG, type, item.m_title, lang);
     if (!entry)
-        return;
+    {
+        entry = find(ET_LANG, type, item.m_title, BAD_LANG);
+        if (!entry)
+            return;
+    }
 
     // too small?
     if (entry->size() < sizeof(ICONDIR) + sizeof(GRPICONDIRENTRY))
