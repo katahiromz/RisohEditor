@@ -1527,9 +1527,9 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "Inserisci un nome risorsa non-zero."
     IDS_ENTERNONZEROTYPE, "Inserisci un nome risorsa non-zero."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/it/"
-    IDS_FILESAVED, "File saving OK."
-    IDS_RECOMPILEOK, "Recompilation OK."
-    IDS_RECOMPILEFAILED, "Recompilation failed (syntax error)."
+    IDS_FILESAVED, "Salvataggio file completato."
+    IDS_RECOMPILEOK, "Ricompilazione completata."
+    IDS_RECOMPILEFAILED, "Ricompilazione fallita (errore sintassi)."
 }
 
 //////////////////////////////////////////////////////////////////////////////
