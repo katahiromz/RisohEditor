@@ -1530,6 +1530,8 @@ STRINGTABLE
     IDS_ENTERNONZEROTYPE, "ゼロではないリソースの種類を指定して下さい。"
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ja/"
     IDS_FILESAVED, "ファイルを保存しました。"
+    IDS_RECOMPILEOK, "再コンパイルしました。"
+    IDS_RECOMPILEFAILED, "再コンパイルに失敗しました (文法エラー)。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

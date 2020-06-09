@@ -1527,7 +1527,9 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "Введите не пустое имя ресурса."
     IDS_ENTERNONZEROTYPE, "Введите не пустой тип ресурса."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ru/"
-    IDS_FILESAVED, "File saved."
+    IDS_FILESAVED, "File saving OK."
+    IDS_RECOMPILEOK, "Recompilation OK."
+    IDS_RECOMPILEFAILED, "Recompilation failed (syntax error)."
 }
 
 //////////////////////////////////////////////////////////////////////////////

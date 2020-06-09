@@ -310,6 +310,8 @@
 #define IDS_ENTERNONZEROTYPE                317
 #define IDS_HOMEPAGE                        318
 #define IDS_FILESAVED                       319
+#define IDS_RECOMPILEOK                     320
+#define IDS_RECOMPILEFAILED                 321
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

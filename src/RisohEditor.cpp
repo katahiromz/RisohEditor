@@ -2002,7 +2002,7 @@ protected:
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
-    INT         m_nStatusMessageID;
+    INT         m_nStatusStringID;
 
     // file info
     FileType    m_file_type;
@@ -2046,7 +2046,7 @@ public:
         m_szMcdxExe[0] = 0;
         m_szDFMSC[0] = 0;
         m_szIncludeDir[0] = 0;
-        m_nStatusMessageID = 0;
+        m_nStatusStringID = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
 
@@ -3396,7 +3396,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
         // save it
         if (DoSaveAs(m_szFile))
         {
-            m_nStatusMessageID = IDS_FILESAVED;
+            m_nStatusStringID = IDS_FILESAVED;
             return TRUE;
         }
         ErrorBoxDx(IDS_CANNOTSAVE);
@@ -3420,7 +3420,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
                 // update the file info
                 UpdateFileInfo(FT_RC, m_szFile, FALSE);
 
-                m_nStatusMessageID = IDS_FILESAVED;
+                m_nStatusStringID = IDS_FILESAVED;
                 return TRUE;
             }
             else
@@ -3434,7 +3434,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
         // save the *.res file
         if (DoSaveResAs(m_szFile))
         {
-            m_nStatusMessageID = IDS_FILESAVED;
+            m_nStatusStringID = IDS_FILESAVED;
             return TRUE;
         }
         ErrorBoxDx(IDS_CANNOTSAVE);
@@ -4011,6 +4011,8 @@ void MMainWnd::OnCompile(HWND hwnd)
     MStringA strOutput;
     if (CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide, bReopen))
     {
+        m_nStatusStringID = IDS_RECOMPILEOK;
+
         // clear the control selection
         MRadCtrl::GetTargets().clear();
         m_hSrcEdit.ClearIndeces();
@@ -4024,6 +4026,7 @@ void MMainWnd::OnCompile(HWND hwnd)
     else
     {
         // failed
+        m_nStatusStringID = IDS_RECOMPILEFAILED;
         SetErrorMessage(strOutput);
     }
 }
@@ -4224,11 +4227,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringA strOutput;
             if (CompileParts(strOutput, RT_STRING, WORD(0), lang, strWide))
             {
+                m_nStatusStringID = IDS_RECOMPILEOK;
+
                 // select the entry to update the source
                 SelectTV(ET_STRING, RT_STRING, WORD(0), lang, FALSE);
             }
             else
             {
+                m_nStatusStringID = IDS_RECOMPILEFAILED;
                 SetErrorMessage(strOutput);
             }
         }
@@ -4281,11 +4287,14 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             MStringA strOutput;
             if (CompileParts(strOutput, RT_MESSAGETABLE, WORD(1), lang, strWide))
             {
+                m_nStatusStringID = IDS_RECOMPILEOK;
+
                 // select the entry
                 SelectTV(ET_MESSAGE, RT_MESSAGETABLE, (WORD)0, lang, FALSE);
             }
             else
             {
+                m_nStatusStringID = IDS_RECOMPILEFAILED;
                 SetErrorMessage(strOutput);
             }
         }
@@ -6603,9 +6612,14 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     MStringA strOutput;
     if (!CompileParts(strOutput, entry->m_type, entry->m_name, entry->m_lang, strWide))
     {
+        // compilation failed
+        m_nStatusStringID = IDS_RECOMPILEFAILED;
         SetErrorMessage(strOutput);
         return FALSE;   // failure
     }
+
+    // compilation OK
+    m_nStatusStringID = IDS_RECOMPILEOK;
 
     // compiled. clear the modification flag
     Edit_SetModify(m_hSrcEdit, FALSE);
@@ -8527,7 +8541,7 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& f
     if (bOK)
     {
         DoSetFileModified(FALSE);
-        m_nStatusMessageID = IDS_FILESAVED;
+        m_nStatusStringID = IDS_FILESAVED;
     }
 
     return bOK;
@@ -10652,12 +10666,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     // show "ready" status if ready
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
     {
-        if (m_nStatusMessageID == 0)
+        if (m_nStatusStringID == 0)
             ChangeStatusText(IDS_READY);
         else
-            ChangeStatusText(m_nStatusMessageID);
+            ChangeStatusText(m_nStatusStringID);
 
-        m_nStatusMessageID = 0;
+        m_nStatusStringID = 0;
     }
 
 #if 0 && !defined(NDEBUG) && (WINVER >= 0x0500)
@@ -12074,10 +12088,13 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         {
             // success. clear the modification flag
             Edit_SetModify(m_hSrcEdit, FALSE);
+            m_nStatusStringID = IDS_RECOMPILEOK;
+
         }
         else
         {
             // failure
+            m_nStatusStringID = IDS_RECOMPILEFAILED;
             UpdateOurToolBarButtons(2);
 
             // set the error message

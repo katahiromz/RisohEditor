@@ -206,7 +206,7 @@ The portable version doesn't use registry but an ini file.
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
     - Fixed "Search" dialog.
-    - Report "File saved." upon file is saved.
+    - Improved status message.
 
 ## Contact Us
 
