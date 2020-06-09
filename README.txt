@@ -202,6 +202,7 @@ Question 6. What is the difference between no installer and portable version?
     - Improved "Predefined Macros" dialog.
     - Improved "Configuration" dialog.
     - Fixed "Search" dialog.
+    - Report "File saved." upon file is saved.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

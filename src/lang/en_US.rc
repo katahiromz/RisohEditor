@@ -1527,6 +1527,7 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "Please enter a non-zero resource name."
     IDS_ENTERNONZEROTYPE, "Please enter a non-zero resource type."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/en/"
+    IDS_FILESAVED, "File saved."
 }
 
 //////////////////////////////////////////////////////////////////////////////

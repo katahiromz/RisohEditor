@@ -1526,6 +1526,7 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "请输入不为零的资源名称."
     IDS_ENTERNONZEROTYPE, "请输入不为零的资源类型名称."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ch/"
+    IDS_FILESAVED, "File saved."
 }
 
 //////////////////////////////////////////////////////////////////////////////

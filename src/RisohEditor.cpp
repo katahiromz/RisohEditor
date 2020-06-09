@@ -2002,6 +2002,7 @@ protected:
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
+    INT         m_nStatusMessageID;
 
     // file info
     FileType    m_file_type;
@@ -2045,6 +2046,7 @@ public:
         m_szMcdxExe[0] = 0;
         m_szDFMSC[0] = 0;
         m_szIncludeDir[0] = 0;
+        m_nStatusMessageID = 0;
         m_szFile[0] = 0;
         m_szResourceH[0] = 0;
 
@@ -3394,6 +3396,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
         // save it
         if (DoSaveAs(m_szFile))
         {
+            m_nStatusMessageID = IDS_FILESAVED;
             return TRUE;
         }
         ErrorBoxDx(IDS_CANNOTSAVE);
@@ -3417,6 +3420,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
                 // update the file info
                 UpdateFileInfo(FT_RC, m_szFile, FALSE);
 
+                m_nStatusMessageID = IDS_FILESAVED;
                 return TRUE;
             }
             else
@@ -3430,6 +3434,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
         // save the *.res file
         if (DoSaveResAs(m_szFile))
         {
+            m_nStatusMessageID = IDS_FILESAVED;
             return TRUE;
         }
         ErrorBoxDx(IDS_CANNOTSAVE);
@@ -8520,7 +8525,10 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& f
     SetCurrentDirectory(szCurDir);
 
     if (bOK)
+    {
         DoSetFileModified(FALSE);
+        m_nStatusMessageID = IDS_FILESAVED;
+    }
 
     return bOK;
 }
@@ -10643,9 +10651,16 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
     // show "ready" status if ready
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
-        ChangeStatusText(IDS_READY);
+    {
+        if (m_nStatusMessageID == 0)
+            ChangeStatusText(IDS_READY);
+        else
+            ChangeStatusText(m_nStatusMessageID);
 
-#if !defined(NDEBUG) && (WINVER >= 0x0500)
+        m_nStatusMessageID = 0;
+    }
+
+#if 0 && !defined(NDEBUG) && (WINVER >= 0x0500)
     // show object counts (for debugging purpose)
     HANDLE hProcess = GetCurrentProcess();
     TCHAR szText[64];
