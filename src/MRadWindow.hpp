@@ -1908,7 +1908,7 @@ public:
     {
         // post ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        SendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
+        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
         // notify selection change to the owner
         MRadCtrl::GetTargetIndeces().clear();
