@@ -203,6 +203,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Improved "Configuration" dialog.
     - Fixed "Search" dialog.
     - Improved status message.
+    - Improved modified flag handling.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -2105,14 +2105,23 @@ public:
     INT CheckData(VOID);
 
     void UpdateMenu();
-    void SelectTV(EntryBase *entry, BOOL bDoubleClick);
+
+    enum STV
+    {
+        STV_RESETTEXTANDMODIFIED,
+        STV_RESETTEXT,
+        STV_DONTRESET
+    };
+
+    void SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv = STV_RESETTEXTANDMODIFIED);
     void SelectTV(EntryType et, const MIdOrString& type,
-                  const MIdOrString& name, WORD lang, BOOL bDoubleClick);
+                  const MIdOrString& name, WORD lang,
+                  BOOL bDoubleClick, STV stv = STV_RESETTEXTANDMODIFIED);
 
     template <typename T_DIALOG>
-    void SelectTV(EntryType et, const T_DIALOG& dialog, BOOL bDoubleClick)
+    void SelectTV(EntryType et, const T_DIALOG& dialog, BOOL bDoubleClick, STV stv = STV_RESETTEXTANDMODIFIED)
     {
-        SelectTV(et, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE);
+        SelectTV(et, dialog.m_type, dialog.m_name, dialog.m_lang, FALSE, stv);
     }
 
     BOOL CompileIfNecessary(BOOL bReopen = FALSE);
@@ -2140,8 +2149,8 @@ public:
     void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
 
     // preview
-    VOID HidePreview();
-    BOOL Preview(HWND hwnd, const EntryBase *entry);
+    VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
+    BOOL Preview(HWND hwnd, const EntryBase *entry, STV stv = STV_RESETTEXTANDMODIFIED);
 
     // actions
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
@@ -5562,7 +5571,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
 }
 
 // close the preview
-VOID MMainWnd::HidePreview()
+VOID MMainWnd::HidePreview(STV stv)
 {
     // destroy the RADical window if any
     if (IsWindow(m_rad_window))
@@ -5575,8 +5584,14 @@ VOID MMainWnd::HidePreview()
     Edit_SetModify(m_hBinEdit, FALSE);
 
     // clear m_hSrcEdit
-    SetWindowTextW(m_hSrcEdit, NULL);
-    Edit_SetModify(m_hSrcEdit, FALSE);
+    if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
+    {
+        SetWindowTextW(m_hSrcEdit, NULL);
+    }
+    if (stv != STV_DONTRESET)
+    {
+        Edit_SetModify(m_hSrcEdit, FALSE);
+    }
 
     // close and hide m_hBmpView
     m_hBmpView.DestroyView();
@@ -5587,10 +5602,13 @@ VOID MMainWnd::HidePreview()
 }
 
 // do preview the resource item
-BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry)
+BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 {
     // close the preview
-    HidePreview();
+    HidePreview(stv);
+
+    if (stv == STV_DONTRESET)
+        return IsEntryTextEditable(entry);
 
     // show the binary
     MStringW str = DumpBinaryAsText(entry->m_data);
@@ -5885,24 +5903,27 @@ void MMainWnd::UpdateOurToolBarButtons(INT iType)
 // select an item in the tree control
 void
 MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
-                   const MIdOrString& name, WORD lang, BOOL bDoubleClick)
+                   const MIdOrString& name, WORD lang,
+                   BOOL bDoubleClick, STV stv)
 {
     // close the preview
-    HidePreview();
+    HidePreview(stv);
 
     // find the entry
     if (auto entry = g_res.find(et, type, name, lang))
     {
         // select it
-        SelectTV(entry, bDoubleClick);
+        SelectTV(entry, bDoubleClick, stv);
     }
 }
 
 // select an item in the tree control
-void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
+void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 {
+    BOOL bModified = Edit_GetModify(m_hSrcEdit);
+
     // close the preview
-    HidePreview();
+    HidePreview(stv);
 
     if (!entry)     // not selected
     {
@@ -5910,15 +5931,18 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         return;
     }
 
-    // expand the parent and ensure visible
-    auto parent = g_res.get_parent(entry);
-    while (parent && parent->m_hItem)
+    if (stv != STV_DONTRESET)
     {
-        TreeView_Expand(m_hwndTV, parent->m_hItem, TVE_EXPAND);
-        parent = g_res.get_parent(parent);
+        // expand the parent and ensure visible
+        auto parent = g_res.get_parent(entry);
+        while (parent && parent->m_hItem)
+        {
+            TreeView_Expand(m_hwndTV, parent->m_hItem, TVE_EXPAND);
+            parent = g_res.get_parent(parent);
+        }
+        TreeView_SelectItem(m_hwndTV, entry->m_hItem);
+        TreeView_EnsureVisible(m_hwndTV, entry->m_hItem);
     }
-    TreeView_SelectItem(m_hwndTV, entry->m_hItem);
-    TreeView_EnsureVisible(m_hwndTV, entry->m_hItem);
 
     m_type = entry->m_type;
     m_name = entry->m_name;
@@ -5929,7 +5953,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
     {
     case ET_LANG:
         // do preview
-        bEditable = Preview(m_hwnd, entry);
+        bEditable = Preview(m_hwnd, entry, stv);
         // show the binary EDIT control
         ShowBinEdit(TRUE);
         break;
@@ -5939,8 +5963,11 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         m_hBmpView.DestroyView();
         m_hBmpView.DeleteTempFile();
 
-        // show the string table
-        PreviewStringTable(m_hwnd, *entry);
+        if (stv != STV_DONTRESET)
+        {
+            // show the string table
+            PreviewStringTable(m_hwnd, *entry);
+        }
 
         // hide the binary EDIT control
         SetWindowTextW(m_hBinEdit, NULL);
@@ -5955,8 +5982,11 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
         m_hBmpView.DestroyView();
         m_hBmpView.DeleteTempFile();
 
-        // show the message table
-        PreviewMessageTable(m_hwnd, *entry);
+        if (stv != STV_DONTRESET)
+        {
+            // show the message table
+            PreviewMessageTable(m_hwnd, *entry);
+        }
 
         // hide the binary EDIT control
         SetWindowTextW(m_hBinEdit, NULL);
@@ -5981,6 +6011,12 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick)
 
         // select none
         bSelectNone = TRUE;
+    }
+
+    if (stv == STV_DONTRESET || stv == STV_RESETTEXT)
+    {
+        // restore the modified flag
+        Edit_SetModify(m_hSrcEdit, bModified);
     }
 
     if (bEditable)  // editable
@@ -9723,7 +9759,7 @@ void MMainWnd::OnUseIDC_STATIC(HWND hwnd)
 
     // select the entry to update the text
     auto entry = g_res.get_entry();
-    SelectTV(entry, FALSE);
+    SelectTV(entry, FALSE, STV_RESETTEXT);
 }
 
 // update the name of the tree control
@@ -10189,8 +10225,14 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 // toggle the word wrapping of the source EDIT control
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
+    // save the modified flag
+    BOOL bModified = Edit_GetModify(m_hSrcEdit);
+
     // switch the flag
     g_settings.bWordWrap = !g_settings.bWordWrap;
+
+    // get text
+    MString strText = GetWindowTextW(m_hSrcEdit);
 
     // create the source EDIT control
     ReCreateSrcEdit(hwnd);
@@ -10198,9 +10240,15 @@ void MMainWnd::OnWordWrap(HWND hwnd)
     // reset fonts
     ReCreateFonts(hwnd);
 
+    // restore text
+    SetWindowTextW(m_hSrcEdit, strText.c_str());
+
+    // restore the modified flag
+    Edit_SetModify(m_hSrcEdit, bModified);
+
     // select the entry to refresh
     auto entry = g_res.get_entry();
-    SelectTV(entry, FALSE);
+    SelectTV(entry, FALSE, STV_DONTRESET);
 }
 
 void MMainWnd::OnUseBeginEnd(HWND hwnd)
@@ -10215,7 +10263,7 @@ void MMainWnd::OnUseBeginEnd(HWND hwnd)
 
     // select the entry to refresh
     auto entry = g_res.get_entry();
-    SelectTV(entry, FALSE);
+    SelectTV(entry, FALSE, STV_RESETTEXT);
 }
 
 // expand the treeview items

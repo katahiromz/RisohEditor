@@ -207,6 +207,7 @@ The portable version doesn't use registry but an ini file.
     - Improved "Configuration" dialog.
     - Fixed "Search" dialog.
     - Improved status message.
+    - Improved modified flag handling.
 
 ## Contact Us
 

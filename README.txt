@@ -203,6 +203,7 @@ Question 6. What is the difference between no installer and portable version?
     - Improved "Configuration" dialog.
     - Fixed "Search" dialog.
     - Improved status message.
+    - Improved modified flag handling.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
