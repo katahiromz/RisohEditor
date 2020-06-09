@@ -4118,6 +4118,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry->m_type == RT_DIALOG)
     {
+        // editing...
+        ChangeStatusText(IDS_EDITINGBYGUI);
+
         // entry->m_data --> m_rad_window.m_dialog_res
         MByteStreamEx stream(entry->m_data);
         m_rad_window.m_dialog_res.LoadFromStream(stream);
