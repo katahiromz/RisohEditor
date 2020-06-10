@@ -2029,6 +2029,8 @@ protected:
     ITEM_SEARCH     m_search;                   // the search options
 
 public:
+    MDropdownArrow  m_arrow;                    // the language drop-down arrow
+
     // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
         m_argc(argc), m_targv(targv), m_bLoading(FALSE),
@@ -2251,6 +2253,8 @@ protected:
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
     void OnSysColorChange(HWND hwnd);
+    void OnSetFocus(HWND hwnd, HWND hwndOldFocus);
+    void OnKillFocus(HWND hwnd, HWND hwndNewFocus);
     void OnPlay(HWND hwnd);
     void OnDropFiles(HWND hwnd, HDROP hdrop);
     void OnMove(HWND hwnd, int x, int y);
@@ -2297,6 +2301,7 @@ protected:
     LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
     LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam);
     BOOL DoInnerSearch(HWND hwnd);
 
     void OnAddBitmap(HWND hwnd);
@@ -2314,6 +2319,7 @@ protected:
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
     void OnExtractRC(HWND hwnd);
+    void OnShowLangArrow(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
@@ -2370,6 +2376,7 @@ protected:
     void UpdateNames(BOOL bModified = TRUE);
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);
+    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2383,6 +2390,18 @@ void MMainWnd::OnSysColorChange(HWND hwnd)
     m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
     m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
     m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
+}
+
+// WM_SETFOCUS
+void MMainWnd::OnSetFocus(HWND hwnd, HWND hwndOldFocus)
+{
+    m_arrow.ShowDropDownList(m_arrow, FALSE);
+}
+
+// WM_KILLFOCUS
+void MMainWnd::OnKillFocus(HWND hwnd, HWND hwndNewFocus)
+{
+    m_arrow.ShowDropDownList(m_arrow, FALSE);
 }
 
 // check whether it needs compilation
@@ -2697,6 +2716,11 @@ void MMainWnd::OnExtractRC(HWND hwnd)
             ErrorBoxDx(IDS_CANTEXPORT);
         }
     }
+}
+
+void MMainWnd::OnShowLangArrow(HWND hwnd)
+{
+    ShowLangArrow(hwnd, TRUE);
 }
 
 // extract an icon as an *.ico file
@@ -3799,6 +3823,40 @@ LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     DoItemSearchBang(hwnd, (MItemSearchDlg *)lParam);
     return 0;
+}
+
+LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    INT index = (INT)wParam;
+
+    if (index >= (INT)g_langs.size())
+        return FALSE; // reject
+
+    WORD wNewLang = g_langs[index].LangID;
+
+    auto entry = g_res.get_lang_entry();
+    if (!entry)
+        return FALSE;   // reject
+
+    WORD wOldLang = entry->m_lang;
+    if (wNewLang == BAD_LANG || wOldLang == wNewLang)
+        return FALSE;   // reject
+
+    // check if it already exists
+    if (auto e = g_res.find(ET_LANG, entry->m_type, entry->m_name, wNewLang))
+    {
+        ErrorBoxDx(IDS_ALREADYEXISTS);
+        return FALSE;   // reject
+    }
+
+    PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+
+    WCHAR szText[MAX_PATH];
+    MString strLang = TextFromLang(wNewLang);
+    StringCbCopy(szText, sizeof(szText), strLang.c_str());
+    DoRelangEntry(szText, entry, wOldLang, wNewLang);
+    DoSetFileModified(TRUE);
+    return TRUE; // accepted
 }
 
 BOOL MMainWnd::DoInnerSearch(HWND hwnd)
@@ -6882,6 +6940,16 @@ void MMainWnd::DoLoadLangInfo(VOID)
 
     // sort
     std::sort(g_langs.begin(), g_langs.end());
+}
+
+BOOL InitLangListBox(HWND hwnd)
+{
+    for (auto& lang : g_langs)
+    {
+        INT index = (INT)SendMessageW(hwnd, LB_ADDSTRING, 0, (LPARAM)lang.str.c_str());
+        SendMessageW(hwnd, LB_SETITEMDATA, index, (LPARAM)lang.LangID);
+    }
+    return TRUE;
 }
 
 // load a file
@@ -10701,6 +10769,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_EXTRACTRC:
         OnExtractRC(hwnd);
         break;
+    case ID_SHOWLANGARROW:
+        OnShowLangArrow(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -10788,6 +10859,54 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
     return ret;
 }
 
+BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
+{
+    auto entry = g_res.get_entry();
+    if (!entry)
+        return FALSE;
+
+    if (hItem == NULL)
+    {
+        hItem = TreeView_GetSelection(m_hwndTV);
+    }
+
+    RECT rc;
+    TreeView_GetItemRect(m_hwndTV, hItem, &rc, TRUE);
+
+    RECT rcClient;
+    GetClientRect(m_hwndTV, &rcClient);
+    SIZE siz = m_arrow.GetArrowSize(&rc);
+    if (rcClient.right <= rc.right + siz.cx)
+    {
+        rc.left -= siz.cx;
+        rc.right -= siz.cx;
+    }
+
+    if (IsWindow(m_arrow))
+        DestroyWindow(m_arrow);
+
+    m_arrow.ShowDropDownList(m_arrow, FALSE);
+
+    switch (entry->m_et)
+    {
+    case ET_LANG:
+    case ET_MESSAGE:
+    case ET_STRING:
+        if (bShow)
+        {
+            m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
+                0, -1, rc.right, rc.top);
+            m_arrow.m_hwndMain = m_hwnd;
+            m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
+        }
+        break;
+    default:
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 // WM_NOTIFY
 LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 {
@@ -10872,6 +10991,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         if (!m_bLoading && entry)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
+
+            ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
 
             // select the entry to update the text
             SelectTV(entry, FALSE);
@@ -10975,6 +11096,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPWSTR pszOldText = pInfo->item.pszText;
             //MessageBoxW(NULL, pszOldText, NULL, 0);
 
+            if (IsWindow(m_arrow.m_dialog))
+            {
+                return TRUE;    // prevent
+            }
+
             auto entry = (EntryBase *)lParam;
 
             if (entry->m_et == ET_TYPE)
@@ -11003,6 +11129,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
             }
 
+            m_arrow.ShowDropDownList(m_arrow, FALSE);
+            ShowLangArrow(hwnd, FALSE);
             return FALSE;       // accept
         }
         else if (pnmhdr->code == TVN_ENDLABELEDIT)
@@ -11013,7 +11141,10 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszNewText = pInfo->item.pszText;
             if (pszNewText == NULL)
+            {
+                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
                 return FALSE;   // reject
+            }
 
             auto entry = (EntryBase *)lParam;
 
@@ -11070,6 +11201,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_LANG)
             {
+                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
                     return FALSE;   // reject
@@ -11093,10 +11226,13 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
                 DoSetFileModified(TRUE);
+
                 return TRUE;   // accept
             }
             else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
             {
+                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
                     return FALSE;   // reject
@@ -12912,6 +13048,35 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
     return FALSE;
 }
 
+static WNDPROC s_fnTreeViewOldWndProc = NULL;
+
+LRESULT CALLBACK
+TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (uMsg == WM_HSCROLL)
+    {
+        HTREEITEM hItem = TreeView_GetSelection(hwnd);
+        RECT rc;
+        TreeView_GetItemRect(hwnd, hItem, &rc, FALSE);
+        CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+        InvalidateRect(hwnd, &rc, TRUE);
+        return 0;
+    }
+    if (uMsg == WM_SYSKEYDOWN)
+    {
+        if (wParam == VK_DOWN)
+        {
+            MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+            if (IsWindow(this_->m_arrow))
+            {
+                this_->m_arrow.ShowDropDownList(this_->m_arrow, TRUE);
+                return 0;
+            }
+        }
+    }
+    return CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+}
+
 // WM_CREATE: the main window is to be created
 BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
@@ -12997,6 +13162,9 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         (HMENU)1, m_hInst, NULL);
     if (m_hwndTV == NULL)
         return FALSE;
+
+    SetWindowLongPtr(m_hwndTV, GWLP_USERDATA, (LONG_PTR)this);
+    s_fnTreeViewOldWndProc = SubclassWindow(m_hwndTV, TreeViewWndProc);
 
     // store the treeview handl to g_res (important!)
     g_res.m_hwndTV = m_hwndTV;
@@ -13106,6 +13274,8 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MSG(WM_INITMENU, OnInitMenu);
         DO_MSG(WM_ACTIVATE, OnActivate);
         DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
+        DO_MSG(WM_SETFOCUS, OnSetFocus);
+        DO_MSG(WM_KILLFOCUS, OnKillFocus);
         DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
         DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
@@ -13116,6 +13286,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_GETDLGHEADLINES, OnGetHeadLines);
         DO_MESSAGE(MYWM_DELPHI_DFM_B2T, OnDelphiDFMB2T);
         DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
+        DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
 
     default:
         return DefaultProcDx();
@@ -13388,6 +13559,17 @@ void MMainWnd::DoMsg(MSG& msg)
     if (IsWindow(m_hwnd))
     {
         if (::TranslateAccelerator(m_hwnd, m_hAccel, &msg))
+            return;
+    }
+
+    if (IsWindow(m_arrow.m_dialog))
+    {
+        if (msg.message == WM_KEYDOWN)
+        {
+            if (m_arrow.DoComplement(m_arrow, msg.wParam))
+                return;
+        }
+        if (::IsDialogMessage(m_arrow.m_dialog, &msg))
             return;
     }
 

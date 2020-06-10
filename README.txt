@@ -196,6 +196,7 @@ Question 6. What is the difference between no installer and portable version?
     - Strengthened extraction feature.
     - Fixed replacing-dialog-font feature.
     - Used the full path for title bar.
+    - Added drop-down language arrow.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.

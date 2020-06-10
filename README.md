@@ -200,6 +200,7 @@ The portable version doesn't use registry but an ini file.
     - Strengthened extraction feature.
     - Fixed replacing-dialog-font feature.
     - Used the full path for title bar.
+    - Added drop-down language arrow.
     - Fixed "Query Constant" dialog.
     - Fixed "Encoding of Resource Item" dialog.
     - Improved "ID Association" dialog.

@@ -1252,6 +1252,14 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Ripristina", psh1, 5, 160, 55, 14
 }
 
+IDD_DROPDOWNPOPUP DIALOG 0, 0, 120, 150
+CAPTION " "
+STYLE WS_POPUP | WS_DLGFRAME | NOT WS_BORDER
+FONT 9, "MS Shell Dlg"
+{
+    LISTBOX lst1, 0, 0, 120, 150, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, WS_EX_CLIENTEDGE
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
