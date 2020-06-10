@@ -2186,6 +2186,7 @@ public:
     void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
     void DoRefreshTV(HWND hwnd);
     void DoRefreshIDList(HWND hwnd);
+    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
 
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
@@ -2376,7 +2377,6 @@ protected:
     void UpdateNames(BOOL bModified = TRUE);
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);
-    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -10876,11 +10876,7 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
     RECT rcClient;
     GetClientRect(m_hwndTV, &rcClient);
     SIZE siz = m_arrow.GetArrowSize(&rc);
-    if (rcClient.right <= rc.right + siz.cx)
-    {
-        rc.left -= siz.cx;
-        rc.right -= siz.cx;
-    }
+    LONG x = rcClient.right - siz.cx;
 
     if (IsWindow(m_arrow))
         DestroyWindow(m_arrow);
@@ -10895,7 +10891,7 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
         if (bShow)
         {
             m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
-                0, -1, rc.right, rc.top);
+                0, -1, x, rc.top);
             m_arrow.m_hwndMain = m_hwnd;
             m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
         }
@@ -13061,6 +13057,16 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
         InvalidateRect(hwnd, &rc, TRUE);
         return 0;
+    }
+    if (uMsg == WM_SIZE)
+    {
+        MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        if (IsWindow(this_->m_arrow))
+        {
+            CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+            this_->ShowLangArrow(*this_, TRUE);
+            return 0;
+        }
     }
     if (uMsg == WM_SYSKEYDOWN)
     {
