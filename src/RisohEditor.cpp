@@ -10878,10 +10878,10 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
     SIZE siz = m_arrow.GetArrowSize(&rc);
     LONG x = rcClient.right - siz.cx;
 
+    m_arrow.ShowDropDownList(m_arrow, FALSE);
+
     if (IsWindow(m_arrow))
         DestroyWindow(m_arrow);
-
-    m_arrow.ShowDropDownList(m_arrow, FALSE);
 
     switch (entry->m_et)
     {
