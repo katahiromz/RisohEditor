@@ -193,6 +193,7 @@ Question 6. What is the difference between no installer and portable version?
 - v.5.4.0 (2020.XX.YY)
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
     - Removed "Store into res folder" option.
+    - Fixed crash upon GUI edit.
     - Strengthened extraction feature.
     - Fixed replacing-dialog-font feature.
     - Used the full path for title bar.
