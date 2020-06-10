@@ -126,6 +126,10 @@ public:
         {
         case VK_DOWN:
         case VK_UP:
+        case VK_PRIOR:
+        case VK_NEXT:
+        case VK_HOME:
+        case VK_END:
             return -1;
         case VK_RETURN:
             PostMessage(m_arrow, MYWM_COMPLEMENT, VK_RETURN, 0);
@@ -193,6 +197,9 @@ public:
         {
         case VK_RETURN:
             PostMessageW(m_hwndMain, MYWM_COMPLEMENT, nIndex, 0);
+            ShowDropDownList(hwnd, FALSE);
+            return TRUE;
+        case VK_ESCAPE:
             ShowDropDownList(hwnd, FALSE);
             return TRUE;
         }
