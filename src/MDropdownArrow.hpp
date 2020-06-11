@@ -267,7 +267,9 @@ public:
         }
 
         m_bDown = bShow;
-        InvalidateRect(hwnd, NULL, TRUE);
+    
+        if (hwnd)
+            InvalidateRect(hwnd, NULL, TRUE);
     }
 
     SIZE GetArrowSize(LPCRECT prc) const
