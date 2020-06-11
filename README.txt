@@ -190,7 +190,7 @@ Question 6. What is the difference between no installer and portable version?
     - Enabled F1, F3, F5 and F6 function keys.
     - Added Portable version.
     - Improved search feature.
-- v.5.4.0 (2020.XX.YY)
+- v.5.4.0 (2020.06.13)
     - Fixed RT_ACCELERATOR output (unsigned 16-bit).
     - Removed "Store into res folder" option.
     - Fixed crash upon GUI edit.

@@ -190,7 +190,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Abilitati tasti funzione F1, F3, F5 e F6.
   Aggiunta versione portatile.
   Potenziata funzione ricerca.
-- v.5.4.0 (YY.XX.2020)
+- v.5.4.0 (13.06.2020)
   Corretto output RT_ACCELERATOR` (16bit non firmato).
   Rimossa opzione "salva nella cartella res" option.
   Corretto problema crash uso GUI Edit.
