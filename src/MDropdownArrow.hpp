@@ -268,7 +268,7 @@ public:
         }
 
         m_bDown = bShow;
-    
+
         if (hwnd)
             InvalidateRect(hwnd, NULL, TRUE);
     }
