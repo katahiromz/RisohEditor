@@ -787,7 +787,7 @@ CAPTION "Конфигурация"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Показать полный путь в &строке заголовка", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "Показать полный путь к &файлу в строке заголовка", chx1, 5, 5, 200, 14
     AUTOCHECKBOX "Не использовать ID-&макросы", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "&Продолжать предыдущую позицию окна", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "&Автозагрузка соседнего ""&resource.h""", chx4, 5, 65, 200, 14
