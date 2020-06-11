@@ -787,7 +787,7 @@ CAPTION "配置"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体"
 {
-    AUTOCHECKBOX "Show &full path on title bar", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "在标题栏显示完整路径(&F)", chx1, 5, 5, 200, 14
     AUTOCHECKBOX "不使用ID宏定义(&M)", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "恢复以前的窗口位置(&P)", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "自动加载最近的""&resource.h""", chx4, 5, 65, 200, 14
