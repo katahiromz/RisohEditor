@@ -1534,9 +1534,9 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "请输入不为零的资源名称."
     IDS_ENTERNONZEROTYPE, "请输入不为零的资源类型名称."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ch/"
-    IDS_FILESAVED, "File saving OK."
-    IDS_RECOMPILEOK, "Recompilation OK."
-    IDS_RECOMPILEFAILED, "Recompilation failed (syntax error)."
+    IDS_FILESAVED, "文件保存确定."
+    IDS_RECOMPILEOK, "重新编译."
+    IDS_RECOMPILEFAILED, "重新编译失败 (语法错误)."
 }
 
 //////////////////////////////////////////////////////////////////////////////
