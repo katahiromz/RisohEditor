@@ -3147,9 +3147,7 @@ BOOL MMainWnd::DoQuerySaveChange(HWND hwnd)
     if (!s_bModified)
         return TRUE;
 
-    INT id = MessageBoxW(hwnd, LoadStringDx(IDS_QUERYSAVECHANGE),
-                         LoadStringDx(IDS_APPNAME),
-                         MB_ICONINFORMATION | MB_YESNOCANCEL);
+    INT id = MsgBoxDx(IDS_QUERYSAVECHANGE, MB_ICONINFORMATION | MB_YESNOCANCEL);
     if (id == IDCANCEL)
         return FALSE;
 
