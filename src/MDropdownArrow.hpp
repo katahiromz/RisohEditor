@@ -239,6 +239,7 @@ public:
 
         if (bShow)
         {
+            assert(IsWindow(hwnd));
             m_dialog.CreateDialogDx(hwnd);
             m_dialog.m_arrow = hwnd;
 
