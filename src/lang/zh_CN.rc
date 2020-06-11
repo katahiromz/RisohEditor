@@ -1520,7 +1520,7 @@ STRINGTABLE
     IDS_UTF8, "UTF-8 (with BOM)"
     IDS_UTF8N, "UTF-8 (without BOM)"
     IDS_SJIS, "Shift_JIS"
-    IDS_BINARY, "(binary data)"
+    IDS_BINARY, "(二进制数据)"
     IDS_RESTYPE, "资源类型"
     IDS_ENCODING, "编码"
     IDS_INVALIDRESTYPE, "资源类型无效。"
