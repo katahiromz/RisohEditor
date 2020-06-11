@@ -787,7 +787,7 @@ CAPTION "Конфигурация"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Показать полный путь в &строке заголовка", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "Показывать &полный путь в заголовке", chx1, 5, 5, 200, 14
     AUTOCHECKBOX "Не использовать ID-&макросы", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "&Продолжать предыдущую позицию окна", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "&Автозагрузка соседнего ""&resource.h""", chx4, 5, 65, 200, 14
@@ -1535,9 +1535,9 @@ STRINGTABLE
     IDS_ENTERNONZERONAME, "Введите не пустое имя ресурса."
     IDS_ENTERNONZEROTYPE, "Введите не пустой тип ресурса."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ru/"
-    IDS_FILESAVED, "Файл сохранен."
-    IDS_RECOMPILEOK, "Перекомпиляция сделана."
-    IDS_RECOMPILEFAILED, "Перекомпиляция не удалась (синтаксическая ошибка)."
+    IDS_FILESAVED, "Файл успешно сохранён."
+    IDS_RECOMPILEOK, "Перекомпиляция успешно выполнена."
+    IDS_RECOMPILEFAILED, "Перекомпиляция не выполнена (ошибка синтаксиса)."
 }
 
 //////////////////////////////////////////////////////////////////////////////
