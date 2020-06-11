@@ -191,21 +191,21 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Aggiunta versione portatile.
   Potenziata funzione ricerca.
 - v.5.4.0 (YY.XX.2020)
-    - Fixed RT_ACCELERATOR output (unsigned 16-bit).
-    - Removed "Store into res folder" option.
-    - Fixed crash upon GUI edit.
-    - Strengthened extraction feature.
-    - Fixed replacing-dialog-font feature.
-    - Used the full path for title bar.
-    - Added drop-down language arrow.
-    - Fixed "Query Constant" dialog.
-    - Fixed "Encoding of Resource Item" dialog.
-    - Improved "ID Association" dialog.
-    - Improved "Predefined Macros" dialog.
-    - Improved "Configuration" dialog.
-    - Fixed "Search" dialog.
-    - Improved status message.
-    - Improved modified flag handling.
+  Corretto output RT_ACCELERATOR` (16bit non firmato).
+  Rimossa opzione "salva nella cartella res" option.
+  Corretto problema crash uso GUI Edit.
+  Potenziata funzione estrazione risorse.
+  Corretto problema sostituzione-font-finestra.
+  Nella barra del titolo viene ora visualizzato il percorso completo del file in modifica.
+  Aggiunto menu scelta lingua risorsa.
+  Corretto problema "Ricerca costante".
+  Corretto problema finestra "Codifica elemento risorsa".
+  Migliorata finestra "Associazione ID".
+  Migliorata finestra "Macro predefinite".
+  Migliorata finestra "Configurazione".
+  Corretto problema testo finestra "Trova".
+  Migliorati messaggi di stato (narra inferiore sinistra).
+  Migliorata gestione flag.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
