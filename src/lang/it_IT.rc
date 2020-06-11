@@ -787,7 +787,7 @@ CAPTION "Impostazioni"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Sempre istru&zione CONTROL", chx1, 5, 5, 175, 15
+    AUTOCHECKBOX "Show &full path on title bar", chx1, 5, 5, 175, 15
     AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 175, 14
     AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 175, 15
     AUTOCHECKBOX "Carica automaticamente '&resource.h' vicino", chx4, 5, 65, 175, 14

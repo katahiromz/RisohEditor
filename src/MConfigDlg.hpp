@@ -39,7 +39,7 @@ public:
 
     void Reload(HWND hwnd)
     {
-        CheckDlgButton(hwnd, chx1, g_settings.bAlwaysControl ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx1, g_settings.bShowFullPath ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx2, g_settings.bHideID ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx3, g_settings.bResumeWindowPos ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx4, g_settings.bAutoLoadNearbyResH ? BST_CHECKED : BST_UNCHECKED);
@@ -88,7 +88,7 @@ public:
         }
         g_settings.nComboHeight = nHeight;
 
-        g_settings.bAlwaysControl = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
+        g_settings.bShowFullPath = (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED);
         g_settings.bHideID = (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED);
         g_settings.bResumeWindowPos = (IsDlgButtonChecked(hwnd, chx3) == BST_CHECKED);
         g_settings.bAutoLoadNearbyResH = (IsDlgButtonChecked(hwnd, chx4) == BST_CHECKED);

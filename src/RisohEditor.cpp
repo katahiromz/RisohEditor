@@ -2011,6 +2011,7 @@ protected:
     BOOL        m_bUpxCompressed;               // is the real file compressed?
 
     BOOL UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed);
+    void UpdateTitleBar();
 
     // selection
     MIdOrString     m_type;
@@ -9784,6 +9785,9 @@ void MMainWnd::OnConfig(HWND hwnd)
         // select the entry to update the text
         auto entry = g_res.get_entry();
         SelectTV(entry, FALSE);
+
+        // update title bar
+        UpdateTitleBar();
     }
 }
 
@@ -12317,6 +12321,24 @@ void MMainWnd::OnAddDialog(HWND hwnd)
     }
 }
 
+void MMainWnd::UpdateTitleBar()
+{
+    if (m_szFile[0] == 0)
+    {
+        SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
+    }
+    else if (g_settings.bShowFullPath)
+    {
+        // set the full file path to the title bar
+        SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, m_szFile));
+    }
+    else
+    {
+        // set the file title to the title bar
+        SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, PathFindFileNameW(m_szFile)));
+    }
+}
+
 // set the file-related info
 BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 {
@@ -12325,17 +12347,16 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 
     if (pszFile == NULL || pszFile[0] == 0)
     {
-        // clear the file infp
+        // clear the file info
         m_szFile[0] = 0;
-        SetWindowTextW(m_hwnd, LoadStringDx(IDS_APPNAME));
+        UpdateTitleBar();
         return TRUE;
     }
 
     // pszFile --> m_szFile (full path)
     GetFullPathNameW(pszFile, _countof(m_szFile), m_szFile, NULL);
 
-    // set the file title to the title bar
-    SetWindowTextW(m_hwnd, LoadStringPrintfDx(IDS_TITLEWITHFILE, m_szFile));
+    UpdateTitleBar();
 
     // add to the recently used files
     g_settings.AddFile(m_szFile);
@@ -12378,6 +12399,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bAskUpdateResH = FALSE;
     g_settings.bCompressByUPX = FALSE;
     g_settings.bUseBeginEnd = FALSE;
+    g_settings.bShowFullPath = TRUE;
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
@@ -12582,6 +12604,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)g_settings.bAskUpdateResH);
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
     keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
+    keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
 
     TCHAR szText[128];
     TCHAR szValueName[128];
@@ -12895,6 +12918,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bAskUpdateResH"), g_settings.bAskUpdateResH);
     keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
     keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
+    keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
     keyRisoh.SetSz(TEXT("strSrcFont"), g_settings.strSrcFont.c_str());
     keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
     keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());

@@ -789,7 +789,7 @@ CAPTION "設定"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
-    AUTOCHECKBOX "常にCONTROL文を使う(&A)", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "タイトルバーにフルパスを表示する(&F)", chx1, 5, 5, 200, 14
     AUTOCHECKBOX "IDマクロを使わない(&M)", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "次回、ウィンドウ位置を復元する(&P)", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "近くの""&resource.h""を自動的に読み込む", chx4, 5, 65, 200, 14

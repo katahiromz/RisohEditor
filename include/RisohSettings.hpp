@@ -96,6 +96,7 @@ struct RisohSettings
     encoding_map_type   encoding_map;       // text resource encoding
     BOOL                bRCFileUTF16;       // output RC files as UTF-16?
     BOOL                bUseBeginEnd;       // Use BEGIN/END instead of braces?
+    BOOL                bShowFullPath;      // Show full path on title bar
     MString             strFontReplaceFrom1;
     MString             strFontReplaceFrom2;
     MString             strFontReplaceFrom3;
