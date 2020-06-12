@@ -2150,7 +2150,8 @@ public:
     void ShowBmpView(BOOL bShow = TRUE);
     void ShowStatusBar(BOOL bShow = TRUE);
     void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
-    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
+    BOOL ShowLangArrow(BOOL bShow, HTREEITEM hItem = NULL);
+    void UpdateLangArrow();
 
     // preview
     VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
@@ -2321,7 +2322,7 @@ protected:
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
     void OnExtractRC(HWND hwnd);
-    void OnShowLangArrow(HWND hwnd);
+    void OnUpdateLangArrow(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
@@ -2719,9 +2720,9 @@ void MMainWnd::OnExtractRC(HWND hwnd)
     }
 }
 
-void MMainWnd::OnShowLangArrow(HWND hwnd)
+void MMainWnd::OnUpdateLangArrow(HWND hwnd)
 {
-    ShowLangArrow(hwnd, TRUE);
+    UpdateLangArrow();
 }
 
 // extract an icon as an *.ico file
@@ -3848,7 +3849,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;   // reject
     }
 
-    PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 
     WCHAR szText[MAX_PATH];
     MString strLang = TextFromLang(wNewLang);
@@ -10036,6 +10037,8 @@ void MMainWnd::OnPredefMacros(HWND hwnd)
 // expand all the tree control items
 void MMainWnd::OnExpandAll(HWND hwnd)
 {
+    ShowLangArrow(FALSE);
+
     // get the selected entry
     auto entry = g_res.get_entry();
 
@@ -10048,11 +10051,16 @@ void MMainWnd::OnExpandAll(HWND hwnd)
 
     // select the entry
     SelectTV(entry, FALSE);
+
+    // update language arrow
+    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 }
 
 // unexpand all the tree control items
 void MMainWnd::OnCollapseAll(HWND hwnd)
 {
+    ShowLangArrow(FALSE);
+
     HTREEITEM hItem = TreeView_GetRoot(m_hwndTV);
     do
     {
@@ -10060,7 +10068,11 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
         hItem = TreeView_GetNextSibling(m_hwndTV, hItem);
     } while (hItem);
 
+    // select the entry
     SelectTV(NULL, FALSE);
+
+    // update language arrow
+    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 }
 
 void MMainWnd::OnSrcEditSelect(HWND hwnd)
@@ -10350,6 +10362,36 @@ void MMainWnd::Expand(HTREEITEM hItem)
     } while (hItem);
 }
 
+void MMainWnd::UpdateLangArrow()
+{
+    EntryBase *entry = g_res.get_entry();
+    if (!entry)
+    {
+        HTREEITEM hItem = TreeView_GetSelection(m_hwndTV);
+        ShowLangArrow(FALSE, hItem);
+        return;
+    }
+
+    HTREEITEM hItem = entry->m_hItem;
+
+    switch (entry->m_et)
+    {
+    case ET_LANG:
+        if (entry->m_type != RT_STRING && entry->m_type != RT_MESSAGETABLE)
+            ShowLangArrow(TRUE, hItem);
+        else
+            ShowLangArrow(FALSE, hItem);
+        break;
+    case ET_STRING:
+    case ET_MESSAGE:
+        ShowLangArrow(TRUE, hItem);
+        break;
+    default:
+        ShowLangArrow(FALSE, hItem);
+        break;
+    }
+}
+
 // unexpand the treeview items
 void MMainWnd::Collapse(HTREEITEM hItem)
 {
@@ -10370,6 +10412,8 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
     DoRefreshTV(hwnd);
     DoRefreshIDList(hwnd);
     s_bModified = bModifiedOld;
+
+    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 }
 
 // WM_COMMAND
@@ -10771,8 +10815,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_EXTRACTRC:
         OnExtractRC(hwnd);
         break;
-    case ID_SHOWLANGARROW:
-        OnShowLangArrow(hwnd);
+    case ID_UPDATELANGARROW:
+        OnUpdateLangArrow(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -10861,7 +10905,7 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
     return ret;
 }
 
-BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
+BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
 {
     auto entry = g_res.get_entry();
     if (!entry)
@@ -10879,6 +10923,7 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
     GetClientRect(m_hwndTV, &rcClient);
     SIZE siz = m_arrow.GetArrowSize(&rc);
     LONG x = rcClient.right - siz.cx;
+    LONG y = rc.top;
 
     m_arrow.ShowDropDownList(m_arrow, FALSE);
 
@@ -10888,7 +10933,7 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
     if (bShow)
     {
         m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
-            0, -1, x, rc.top);
+            0, -1, x, y);
         m_arrow.m_hwndMain = m_hwnd;
         m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
     }
@@ -10981,25 +11026,10 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
 
-            switch (entry->m_et)
-            {
-            case ET_LANG:
-                if (entry->m_type != RT_STRING && entry->m_type != RT_MESSAGETABLE)
-                    ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
-                else
-                    ShowLangArrow(hwnd, FALSE, pTV->itemNew.hItem);
-                break;
-            case ET_STRING:
-            case ET_MESSAGE:
-                ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
-                break;
-            default:
-                ShowLangArrow(hwnd, FALSE, pTV->itemNew.hItem);
-                break;
-            }
-
             // select the entry to update the text
             SelectTV(entry, FALSE);
+
+            PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
         }
     }
     else if (pnmhdr->code == NM_RETURN)
@@ -11134,7 +11164,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
 
             m_arrow.ShowDropDownList(m_arrow, FALSE);
-            ShowLangArrow(hwnd, FALSE);
+            ShowLangArrow(FALSE);
             return FALSE;       // accept
         }
         else if (pnmhdr->code == TVN_ENDLABELEDIT)
@@ -11146,7 +11176,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPWSTR pszNewText = pInfo->item.pszText;
             if (pszNewText == NULL)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
                 return FALSE;   // reject
             }
 
@@ -11205,7 +11235,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_LANG)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -11235,7 +11265,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_SHOWLANGARROW, 0);
+                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -12280,7 +12310,6 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             // success. clear the modification flag
             Edit_SetModify(m_hSrcEdit, FALSE);
             m_nStatusStringID = IDS_RECOMPILEOK;
-
         }
         else
         {
@@ -12350,6 +12379,9 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 {
     m_file_type = ft;
     m_bUpxCompressed = bCompressed;
+
+    // update language arrow
+    PostMessage(m_hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
 
     if (pszFile == NULL || pszFile[0] == 0)
     {
@@ -13086,13 +13118,13 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         InvalidateRect(hwnd, &rc, TRUE);
         return 0;
     }
-    if (uMsg == WM_SIZE)
+    if (uMsg == WM_SIZE || uMsg == WM_VSCROLL)
     {
         MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
         if (IsWindow(this_->m_arrow))
         {
             CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
-            this_->ShowLangArrow(*this_, TRUE);
+            PostMessage(*this_, WM_COMMAND, ID_UPDATELANGARROW, 0);
             return 0;
         }
     }

@@ -469,7 +469,7 @@
 #define ID_NEXTPANE                         257
 #define ID_PREVPANE                         258
 #define ID_EXTRACTRC                        259
-#define ID_SHOWLANGARROW                    260
+#define ID_UPDATELANGARROW                  260
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
