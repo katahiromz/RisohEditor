@@ -11032,6 +11032,15 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
         }
     }
+    else if (pnmhdr->code == TVN_ITEMEXPANDING)
+    {
+        m_arrow.ShowDropDownList(m_arrow, FALSE);
+        ShowLangArrow(FALSE);
+    }
+    else if (pnmhdr->code == TVN_ITEMEXPANDED)
+    {
+        PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    }
     else if (pnmhdr->code == NM_RETURN)
     {
         MWaitCursor wait;
