@@ -11082,6 +11082,11 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             PostMessageW(hwnd, WM_COMMAND, ID_DELETERES, 0);
             DoSetFileModified(TRUE);
             return TRUE;
+        case VK_LEFT:
+        case VK_RIGHT:
+            ShowLangArrow(FALSE);
+            PostMessageW(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            break;
         case VK_F2:
             {
                 // compile if necessary
