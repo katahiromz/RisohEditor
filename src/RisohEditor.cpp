@@ -2150,6 +2150,7 @@ public:
     void ShowBmpView(BOOL bShow = TRUE);
     void ShowStatusBar(BOOL bShow = TRUE);
     void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
+    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
 
     // preview
     VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
@@ -2187,7 +2188,6 @@ public:
     void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
     void DoRefreshTV(HWND hwnd);
     void DoRefreshIDList(HWND hwnd);
-    BOOL ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem = NULL);
 
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
@@ -10885,21 +10885,12 @@ BOOL MMainWnd::ShowLangArrow(HWND hwnd, BOOL bShow, HTREEITEM hItem)
     if (IsWindow(m_arrow))
         DestroyWindow(m_arrow);
 
-    switch (entry->m_et)
+    if (bShow)
     {
-    case ET_LANG:
-    case ET_MESSAGE:
-    case ET_STRING:
-        if (bShow)
-        {
-            m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
-                0, -1, x, rc.top);
-            m_arrow.m_hwndMain = m_hwnd;
-            m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
-        }
-        break;
-    default:
-        return FALSE;
+        m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
+            0, -1, x, rc.top);
+        m_arrow.m_hwndMain = m_hwnd;
+        m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
     }
 
     return TRUE;
