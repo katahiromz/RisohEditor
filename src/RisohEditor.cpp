@@ -10990,7 +10990,22 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         {
             NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
 
-            ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
+            switch (entry->m_et)
+            {
+            case ET_LANG:
+                if (entry->m_type != RT_STRING && entry->m_type != RT_MESSAGETABLE)
+                    ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
+                else
+                    ShowLangArrow(hwnd, FALSE, pTV->itemNew.hItem);
+                break;
+            case ET_STRING:
+            case ET_MESSAGE:
+                ShowLangArrow(hwnd, TRUE, pTV->itemNew.hItem);
+                break;
+            default:
+                ShowLangArrow(hwnd, FALSE, pTV->itemNew.hItem);
+                break;
+            }
 
             // select the entry to update the text
             SelectTV(entry, FALSE);
