@@ -3833,8 +3833,8 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     WORD wNewLang = g_langs[index].LangID;
 
-    auto entry = g_res.get_lang_entry();
-    if (!entry)
+    auto entry = g_res.get_entry();
+    if (!entry || entry->m_et == ET_TYPE || entry->m_et == ET_NAME)
         return FALSE;   // reject
 
     WORD wOldLang = entry->m_lang;
