@@ -13120,19 +13120,40 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == WM_HSCROLL)
     {
-        HTREEITEM hItem = TreeView_GetSelection(hwnd);
-        RECT rc;
-        TreeView_GetItemRect(hwnd, hItem, &rc, FALSE);
-        CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
-        InvalidateRect(hwnd, &rc, TRUE);
-        return 0;
+        MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        if (IsWindow(this_->m_arrow))
+        {
+            // hide language arrow
+            this_->ShowLangArrow(FALSE);
+
+            // get selected item rect
+            RECT rc;
+            HTREEITEM hItem = TreeView_GetSelection(hwnd);
+            TreeView_GetItemRect(hwnd, hItem, &rc, FALSE);
+
+            // default processing
+            CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+
+            // redraw the rect
+            InvalidateRect(hwnd, &rc, TRUE);
+
+            // restore language arrow
+            PostMessage(*this_, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            return 0;
+        }
     }
     if (uMsg == WM_SIZE || uMsg == WM_VSCROLL)
     {
         MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
         if (IsWindow(this_->m_arrow))
         {
+            // hide language arrow
+            this_->ShowLangArrow(FALSE);
+
+            // default processing
             CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+
+            // restore language arrow
             PostMessage(*this_, WM_COMMAND, ID_UPDATELANGARROW, 0);
             return 0;
         }
