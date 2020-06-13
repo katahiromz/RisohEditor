@@ -3,7 +3,7 @@
 
 #pragma code_page(65001) // UTF-8
 
-LANGUAGE LANG_GERMAN, SUBLANG_DEFAULT
+LANGUAGE LANG_FRENCH, SUBLANG_DEFAULT
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_MENU
@@ -1309,9 +1309,9 @@ IDD_MODIFYDLGINIT 240
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1031_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/1036_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1031_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/1036_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
