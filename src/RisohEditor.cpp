@@ -26,6 +26,7 @@
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hBinEdit height
 #define CX_STATUS_PART  80      // status bar part width
+#define MYWM_UPDATELANGARROW (WM_USER + 114)
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
@@ -2306,6 +2307,7 @@ protected:
     LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam);
     BOOL DoInnerSearch(HWND hwnd);
+    LRESULT OnUpdateLangArrow(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -2322,7 +2324,6 @@ protected:
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
     void OnExtractRC(HWND hwnd);
-    void OnUpdateLangArrow(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
@@ -2720,9 +2721,10 @@ void MMainWnd::OnExtractRC(HWND hwnd)
     }
 }
 
-void MMainWnd::OnUpdateLangArrow(HWND hwnd)
+LRESULT MMainWnd::OnUpdateLangArrow(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UpdateLangArrow();
+    return 0;
 }
 
 // extract an icon as an *.ico file
@@ -3290,8 +3292,10 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
         case RFFI_EXECUTABLE:
             // save it
             if (DoSaveAs(szFile))
+            {
+                m_nStatusStringID = IDS_FILESAVED;
                 return TRUE;
-
+            }
             ErrorBoxDx(IDS_CANNOTSAVE);
             break;
 
@@ -3313,6 +3317,7 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
                     // update the file info
                     UpdateFileInfo(FT_RC, szFile, FALSE);
 
+                    m_nStatusStringID = IDS_FILESAVED;
                     return TRUE;
                 }
                 else
@@ -3325,8 +3330,10 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
         case RFFI_RES:
             // save the *.res file
             if (DoSaveResAs(szFile))
+            {
+                m_nStatusStringID = IDS_FILESAVED;
                 return TRUE;
-
+            }
             ErrorBoxDx(IDS_CANNOTSAVE);
             break;
 
@@ -3849,7 +3856,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;   // reject
     }
 
-    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 
     WCHAR szText[MAX_PATH];
     MString strLang = TextFromLang(wNewLang);
@@ -10053,7 +10060,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
     SelectTV(entry, FALSE);
 
     // update language arrow
-    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 }
 
 // unexpand all the tree control items
@@ -10072,7 +10079,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     SelectTV(NULL, FALSE);
 
     // update language arrow
-    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 }
 
 void MMainWnd::OnSrcEditSelect(HWND hwnd)
@@ -10413,7 +10420,7 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
     DoRefreshIDList(hwnd);
     s_bModified = bModifiedOld;
 
-    PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 }
 
 // WM_COMMAND
@@ -10815,9 +10822,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_EXTRACTRC:
         OnExtractRC(hwnd);
         break;
-    case ID_UPDATELANGARROW:
-        OnUpdateLangArrow(hwnd);
-        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -10834,12 +10838,15 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     // show "ready" status if ready
     if (m_nCommandLock == 0 && bUpdateStatus && !::IsWindow(m_rad_window))
     {
-        if (m_nStatusStringID == 0)
-            ChangeStatusText(IDS_READY);
-        else
+        if (m_nStatusStringID != 0)
+        {
             ChangeStatusText(m_nStatusStringID);
-
-        m_nStatusStringID = 0;
+            m_nStatusStringID = 0;
+        }
+        else
+        {
+            ChangeStatusText(IDS_READY);
+        }
     }
 
 #if 0 && !defined(NDEBUG) && (WINVER >= 0x0500)
@@ -11029,7 +11036,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             // select the entry to update the text
             SelectTV(entry, FALSE);
 
-            PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
         }
     }
     else if (pnmhdr->code == TVN_ITEMEXPANDING)
@@ -11039,7 +11046,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_ITEMEXPANDED)
     {
-        PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+        PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
     }
     else if (pnmhdr->code == NM_RETURN)
     {
@@ -11085,7 +11092,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         case VK_LEFT:
         case VK_RIGHT:
             ShowLangArrow(FALSE);
-            PostMessageW(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
             break;
         case VK_F2:
             {
@@ -11190,7 +11197,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPWSTR pszNewText = pInfo->item.pszText;
             if (pszNewText == NULL)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
                 return FALSE;   // reject
             }
 
@@ -11249,7 +11256,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_LANG)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -11279,7 +11286,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
             {
-                PostMessage(hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -12395,7 +12402,7 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
     m_bUpxCompressed = bCompressed;
 
     // update language arrow
-    PostMessage(m_hwnd, WM_COMMAND, ID_UPDATELANGARROW, 0);
+    PostMessage(m_hwnd, MYWM_UPDATELANGARROW, 0, 0);
 
     if (pszFile == NULL || pszFile[0] == 0)
     {
@@ -13146,7 +13153,7 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hwnd, &rc, TRUE);
 
             // restore language arrow
-            PostMessage(*this_, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
             return 0;
         }
     }
@@ -13162,7 +13169,7 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
 
             // restore language arrow
-            PostMessage(*this_, WM_COMMAND, ID_UPDATELANGARROW, 0);
+            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
             return 0;
         }
     }
@@ -13391,6 +13398,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_DELPHI_DFM_B2T, OnDelphiDFMB2T);
         DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
         DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
+        DO_MESSAGE(MYWM_UPDATELANGARROW, OnUpdateLangArrow);
 
     default:
         return DefaultProcDx();

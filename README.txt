@@ -208,6 +208,7 @@ Question 6. What is the difference between no installer and portable version?
     - Improved modified flag handling.
 - v.5.4.1 (2020.XX.YY)
     - Fixed title bar text.
+    - Fixed status bar message.
     - Added German translation.
 
 /////////////////////////////////////////////////////////////////////
