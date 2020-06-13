@@ -212,6 +212,7 @@ The portable version doesn't use registry but an ini file.
     - Improved modified flag handling.
 - v.5.4.1 (2020.XX.YY)
     - Fixed title bar text.
+    - Added German translation.
 
 ## Contact Us
 
