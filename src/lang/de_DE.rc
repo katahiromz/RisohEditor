@@ -127,9 +127,9 @@ IDR_MAINMENU MENU
     }
     POPUP "&Hilfe"
     {
-        MENUITEM "Öffnen &README.txt (English)", ID_OPENREADME
-        MENUITEM "Öffnen READMEI&T.txt (Italian)", ID_OPENREADME
-        MENUITEM "Öffnen README&JP.txt (Japanese)", ID_OPENREADMEJP
+        MENUITEM "Öffnen &README.txt (Englisch)", ID_OPENREADME
+        MENUITEM "Öffnen READMEI&T.txt (Italienisch)", ID_OPENREADME
+        MENUITEM "Öffnen README&JP.txt (japanisch)", ID_OPENREADMEJP
         MENUITEM SEPARATOR
         MENUITEM "Öffnen &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
