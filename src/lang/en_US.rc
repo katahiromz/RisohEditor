@@ -194,12 +194,12 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         POPUP "&Index"
         {
-            MENUITEM "To &Top", ID_CTRLINDEXTOP
+            MENUITEM "Go &Top", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
             MENUITEM "&Decrement Index", ID_CTRLINDEXMINUS
             MENUITEM "&Increment Index", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "To &Bottom", ID_CTRLINDEXBOTTOM
+            MENUITEM "Go &Bottom", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "Show/Hide Indeces\tCtrl+D", ID_SHOWHIDEINDEX
         }
@@ -1328,7 +1328,7 @@ STRINGTABLE
     IDS_ENTERTYPE, "Please enter a resource type."
     IDS_ENTERNAME, "Please enter a resource name."
     IDS_ENTERLANG, "Please enter a resource language."
-    IDS_FILENOTFOUND, "File cannot found."
+    IDS_FILENOTFOUND, "File could not be found."
     IDS_CANNOTREPLACE, "Unable to replace."
     IDS_EXERESFILTER, "Executables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|All Files (*.*)|*.*|"
     IDS_SAVEAS, "Save As"
@@ -1349,7 +1349,7 @@ STRINGTABLE
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."
-    IDS_EXTRACTBMP, "Extract Bitmaps"
+    IDS_EXTRACTBMP, "Extract Bitmap"
     IDS_CANTEXTRACTBMP, "Unable to extract the bitmap."
     IDS_CANTREPLACECUR, "Unable to replace the cursor."
     IDS_CANNOTADDCUR, "Unable to add the cursor."
@@ -1422,7 +1422,7 @@ STRINGTABLE
     IDS_AVIMOVIE, "(AVI Movie)\r\n"
     IDS_ADDDIALOG, "Add Dialog"
     IDS_ADDMENU, "Add Menu"
-    IDS_ADDVERINFO, "Add VerInfo"
+    IDS_ADDVERINFO, "Add Version Info"
     IDS_ADDCURSOR, "Add Cursor"
     IDS_NOMOREITEM, "No more items."
     IDS_INVALIDDATA, "(invalid data)\r\n"
