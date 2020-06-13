@@ -19,11 +19,11 @@
 ################################################################################
 
 # TODO: Update the version number
-RE_VERSION=5.4.0
-RE_NAME="RisohEditor-$RE_VERSION-no-installer"
+RE_VERSION=5.4.1
+RE_NAME="RisohEditor-$RE_VERSION-no-inst"
 RE_BIN_DIR="build/$RE_NAME"
 RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
-RE_TARGET="build/RisohEditor-$RE_VERSION-no-installer.zip"
+RE_TARGET="build/RisohEditor-$RE_VERSION-no-inst.zip"
 
 ################################################################################
 
