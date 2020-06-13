@@ -210,6 +210,8 @@ The portable version doesn't use registry but an ini file.
     - Fixed "Search" dialog.
     - Improved status message.
     - Improved modified flag handling.
+- v.5.4.1 (2020.XX.YY)
+    - Fixed title bar text.
 
 ## Contact Us
 

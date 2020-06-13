@@ -12405,8 +12405,11 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
         return TRUE;
     }
 
-    // pszFile --> m_szFile (full path)
-    GetFullPathNameW(pszFile, _countof(m_szFile), m_szFile, NULL);
+    if (m_szFile != pszFile)
+    {
+        // pszFile --> m_szFile (full path)
+        GetFullPathNameW(pszFile, _countof(m_szFile), m_szFile, NULL);
+    }
 
     UpdateTitleBar();
 
