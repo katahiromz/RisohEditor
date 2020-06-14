@@ -212,6 +212,8 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Fixed status bar message.
     - Added German translation.
     - Added French translation.
+- v.5.4.2 (2020.XX.YY)
+    - Improve German and French translations.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

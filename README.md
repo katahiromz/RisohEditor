@@ -216,6 +216,8 @@ The portable version doesn't use registry but an ini file.
     - Fixed status bar message.
     - Added German translation.
     - Added French translation.
+- v.5.4.2 (2020.XX.YY)
+    - Improve German and French translations.
 
 ## Contact Us
 
