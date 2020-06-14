@@ -207,11 +207,11 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Migliorati messaggi di stato (narra inferiore sinistra).
   Migliorata gestione flag.
 - v.5.4.1 (14.06.2020)
-    - Fixed the bug that the second overwrite save fails.
-    - Fixed title bar text.
-    - Fixed status bar message.
-    - Added German translation.
-    - Added French translation.
+  Corretto problema fallimento seconda scrittura nel salvataggio file.
+  Coretto problema testo barra titolo.
+  Corretto problema messaggio barra di stato.
+  Aggiunta traduzione tedesca.
+  Aggiunta traduzione francese.
 - v.5.4.2 (2020.XX.YY)
     - Improved German and French translations.
     - Fixed language drop-down arrow.
