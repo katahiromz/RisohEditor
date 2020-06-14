@@ -260,7 +260,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&En haut", psh4
         MENUITEM "&Vers le bas", psh5
-        MENUITEM "&La gauche", psh6
+        MENUITEM "&Gauche", psh6
         MENUITEM "&Droit", psh7
         MENUITEM SEPARATOR
         MENUITEM "Delete\tDel", psh3
@@ -488,65 +488,65 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Modifier...", psh2, 220, 40, 60, 14
     PUSHBUTTON "&Supprimer", psh3, 220, 60, 60, 14
     PUSHBUTTON "&En haut", psh4, 220, 100, 60, 14
-    PUSHBUTTON "D&own", psh5, 220, 120, 60, 14
+    PUSHBUTTON "&Vers le bas", psh5, 220, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 155, 145, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 220, 145, 60, 14
-    PUSHBUTTON "Delete A&ll", psh6, 5, 145, 79, 14
+    PUSHBUTTON "Supprimer tout", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDSTR DIALOG 0, 0, 255, 115
-CAPTION "Add String Entry"
+CAPTION "Ajouter une entrée de chaîne"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "String &ID:", -1, 5, 7, 50, 12
+    LTEXT "ID de chaîne:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "String &Value:", -1, 5, 27, 54, 12
+    LTEXT "Valeur de chaîne:", -1, 5, 27, 54, 12
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Replace ""\\r\\n"" with ""\\n""", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Remplacez ""\\r\\n"" par ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 190, 95, 60, 14
 }
 
 IDD_MODIFYSTR DIALOG 0, 0, 255, 115
-CAPTION "Modify String Entry"
+CAPTION "Modifier l'entrée de chaîne"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "String &ID:", -1, 5, 7, 50, 12
+    LTEXT "ID de chaîne:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "String &Value:", -1, 5, 27, 54, 12
+    LTEXT "Valeur de chaîne:", -1, 5, 27, 54, 12
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Replace ""\\r\\n"" with ""\\n""", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Remplacez ""\\r\\n"" par ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 190, 95, 60, 14
 }
 
 IDD_STRINGS DIALOG 0, 0, 325, 160
-CAPTION "String Table"
+CAPTION "Table à cordes"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "String &Entries:", -1, 5, 7, 74, 12
+    LTEXT "Entrées de chaîne:", -1, 5, 7, 74, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Ajouter...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Modifier...", psh2, 195, 3, 60, 14
     PUSHBUTTON "&Supprimer", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Delete A&ll", psh4, 5, 140, 75, 14
+    PUSHBUTTON "Supprimer &tout", psh4, 5, 140, 75, 14
 }
 
 IDD_ADDMITEM DIALOG 0, 0, 210, 200
-CAPTION "Add Menu Item"
+CAPTION "Ajouter un élément de menu"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "C&aption:", -1, 5, 7, 55, 12
+    LTEXT "Légende:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Co&mmand ID:", -1, 5, 32, 55, 12
+    LTEXT "ID de commande:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
@@ -561,20 +561,20 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "He&lp ID:", -1, 5, 162, 45, 12
+    LTEXT "ID d'aide:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 145, 180, 60, 14
 }
 
 IDD_MODIFYMITEM DIALOG 0, 0, 210, 200
-CAPTION "Modify Menu Item"
+CAPTION "Modifier l'élément de menu"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "C&aption:", -1, 5, 7, 55, 12
+    LTEXT "Légende:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Co&mmand ID:", -1, 5, 32, 55, 12
+    LTEXT "ID de commande:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
@@ -589,66 +589,66 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "He&lp ID:", -1, 5, 162, 45, 12
+    LTEXT "ID d'aide:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 145, 180, 60, 14
 }
 
 IDD_EDITMENU DIALOG 0, 0, 325, 160
-CAPTION "Edit Menu Resource"
+CAPTION "Modifier la ressource du menu"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Menu Re&souce:", -1, 5, 7, 85, 12
+    LTEXT "Ressource de menu:", -1, 5, 7, 85, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Ajouter...", psh1, 95, 3, 50, 14
     PUSHBUTTON "&Modifier...", psh2, 150, 3, 50, 14
-    PUSHBUTTON "Dele&te", psh3, 205, 3, 50, 14
+    PUSHBUTTON "&Supprimer", psh3, 205, 3, 50, 14
     PUSHBUTTON "&En haut", psh4, 5, 140, 40, 14
-    PUSHBUTTON "&Down", psh5, 50, 140, 40, 14
-    PUSHBUTTON "&Left", psh6, 95, 140, 40, 14
-    PUSHBUTTON "&Right", psh7, 140, 140, 41, 14
-    AUTOCHECKBOX "E&xtended", chx1, 260, 3, 60, 14
+    PUSHBUTTON "&Vers le bas", psh5, 50, 140, 40, 14
+    PUSHBUTTON "&Gauche", psh6, 95, 140, 40, 14
+    PUSHBUTTON "&Droit", psh7, 140, 140, 41, 14
+    AUTOCHECKBOX "Élargi", chx1, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 260, 140, 60, 14
 }
 
 IDD_DLGPROP DIALOG 0, 0, 195, 310
-CAPTION "Properties for Dialog"
+CAPTION "Propriétés de la boîte de dialogue"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "C&aption:", -1, 5, 10, 55, 12
+    LTEXT "Légende:", -1, 5, 10, 55, 12
     COMBOBOX cmb1, 5, 20, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "E&xtended Dialog", chx1, 100, 5, 65, 14
-    LTEXT "&Left:", -1, 5, 40, 25, 12
+    AUTOCHECKBOX "Boîte de dialogue étendue", chx1, 100, 5, 65, 14
+    LTEXT "&Gauche:", -1, 5, 40, 25, 12
     EDITTEXT edt1, 5, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "T&op:", -1, 35, 40, 25, 12
+    LTEXT "Haut:", -1, 35, 40, 25, 12
     EDITTEXT edt2, 35, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Width:", -1, 65, 40, 25, 12
+    LTEXT "&Largeur:", -1, 65, 40, 25, 12
     EDITTEXT edt3, 65, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Height:", -1, 95, 40, 25, 12
+    LTEXT "&Hauteur:", -1, 95, 40, 25, 12
     EDITTEXT edt4, 95, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "Cla&ss Name:", -1, 5, 70, 85, 12
+    LTEXT "Nom du cours:", -1, 5, 70, 85, 12
     COMBOBOX cmb2, 5, 80, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Hel&p ID:", -1, 125, 70, 40, 12
+    LTEXT "ID d'aide:", -1, 125, 70, 40, 12
     COMBOBOX cmb3, 125, 80, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Font Name:", -1, 5, 100, 80, 12
+    LTEXT "&Nom de police:", -1, 5, 100, 80, 12
     COMBOBOX cmb4, 6, 110, 100, 200, CBS_HASSTRINGS | CBS_SORT | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Si&ze:", -1, 110, 100, 35, 12
+    LTEXT "Taille:", -1, 110, 100, 35, 12
     EDITTEXT edt5, 110, 110, 25, 14, ES_NUMBER
     AUTOCHECKBOX "&B", chx2, 140, 110, 20, 14
     AUTOCHECKBOX "&I", chx3, 165, 110, 20, 14
     LTEXT "Cha&rSet:", -1, 5, 130, 80, 12
     COMBOBOX cmb5, 5, 140, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Menu Name:", -1, 110, 130, 55, 12
+    LTEXT "&Nom du menu:", -1, 110, 130, 55, 12
     COMBOBOX cmb6, 110, 140, 80, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "S&tyle:", -1, 5, 160, 35, 12
+    LTEXT "Style:", -1, 5, 160, 35, 12
     RTEXT "0x", -1, 35, 161, 10, 12
     EDITTEXT edt6, 50, 157, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 175, 90, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
@@ -661,33 +661,33 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CTRLPROP DIALOG 0, 0, 195, 325
-CAPTION "Properties for Control"
+CAPTION "Propriétés de contrôle"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Predef. &Ctrl:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 130, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "C&aption:", -1, 5, 55, 55, 12
+    LTEXT "Légende:", -1, 5, 55, 55, 12
     COMBOBOX cmb2, 5, 65, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 165, 65, 25, 14
-    LTEXT "&Left:", -1, 5, 85, 25, 12
+    LTEXT "&Gauche:", -1, 5, 85, 25, 12
     EDITTEXT edt1, 5, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "T&op:", -1, 35, 85, 25, 12
+    LTEXT "&Haut:", -1, 35, 85, 25, 12
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Width:", -1, 65, 85, 25, 12
+    LTEXT "&Largeur:", -1, 65, 85, 25, 12
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Height:", -1, 95, 85, 25, 12
+    LTEXT "&Hauteur:", -1, 95, 85, 25, 12
     EDITTEXT edt4, 95, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     LTEXT "&ID:", -1, 125, 85, 25, 12
     COMBOBOX cmb3, 125, 95, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Window Cla&ss Name:", -1, 5, 115, 100, 12
+    LTEXT "Nom de classe de fenêtre:", -1, 5, 115, 100, 12
     COMBOBOX cmb4, 5, 125, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Hel&p ID:", -1, 125, 115, 70, 12
+    LTEXT "ID d'aide:", -1, 125, 115, 70, 12
     COMBOBOX cmb5, 125, 125, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "S&tyle:", -1, 5, 147, 35, 12
     RTEXT "0x", -1, 35, 147, 10, 12
@@ -699,38 +699,38 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 130, 305, 60, 14
-    PUSHBUTTON "&Data...", psh1, 5, 290, 45, 14
-    PUSHBUTTON "The string l&ist...", psh3, 5, 305, 75, 14
+    PUSHBUTTON "&Les données...", psh1, 5, 290, 45, 14
+    PUSHBUTTON "La liste des chaînes...", psh3, 5, 305, 75, 14
 }
 
 IDD_ADDCTRL DIALOG 0, 0, 195, 325
-CAPTION "Add Control"
+CAPTION "Ajouter un contrôle"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "Predef. &Ctrl:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 130, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "C&aption:", -1, 5, 55, 55, 12
+    LTEXT "Légende:", -1, 5, 55, 55, 12
     COMBOBOX cmb2, 5, 65, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 165, 65, 25, 14
-    LTEXT "&Left:", -1, 5, 85, 25, 12
+    LTEXT "&Gauche:", -1, 5, 85, 25, 12
     EDITTEXT edt1, 5, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "T&op:", -1, 35, 85, 25, 12
+    LTEXT "Haut:", -1, 35, 85, 25, 12
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Width:", -1, 65, 85, 25, 12
+    LTEXT "&Largeur:", -1, 65, 85, 25, 12
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Height:", -1, 95, 85, 25, 12
+    LTEXT "&Hauteur:", -1, 95, 85, 25, 12
     EDITTEXT edt4, 95, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     LTEXT "&ID:", -1, 125, 85, 25, 12
     COMBOBOX cmb3, 125, 95, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Window Cla&ss Name:", -1, 5, 115, 100, 12
+    LTEXT "Nom de classe de fenêtre:", -1, 5, 115, 100, 12
     COMBOBOX cmb4, 5, 125, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Hel&p ID:", -1, 125, 115, 70, 12
+    LTEXT "ID d'aide:", -1, 125, 115, 70, 12
     COMBOBOX cmb5, 125, 125, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "S&tyle:", -1, 5, 147, 35, 12
     RTEXT "0x", -1, 35, 147, 10, 12
@@ -742,38 +742,38 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 130, 305, 60, 14
-    PUSHBUTTON "&Data...", psh1, 5, 290, 45, 14
-    PUSHBUTTON "The string l&ist...", psh3, 5, 305, 75, 14
+    PUSHBUTTON "&Les données...", psh1, 5, 290, 45, 14
+    PUSHBUTTON "La liste des chaînes...", psh3, 5, 305, 75, 14
 }
 
 IDD_IDASSOC DIALOG 0, 0, 200, 220
-CAPTION "ID Association"
+CAPTION "Association ID"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID &Assocation:", -1, 5, 5, 116, 12
+    LTEXT "Association ID:", -1, 5, 5, 116, 12
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
-    PUSHBUTTON "&Reset All", psh2, 5, 175, 85, 14
-    PUSHBUTTON "&Modify", psh1, 135, 175, 60, 14
+    PUSHBUTTON "&Effacer tout", psh2, 5, 175, 85, 14
+    PUSHBUTTON "&Modifier", psh1, 135, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 200, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOG 0, 0, 165, 68
-CAPTION "Modify ID Association"
+CAPTION "Modifier l'association d'ID"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Type of ID:", -1, 5, 7, 65, 12
+    RTEXT "&Type d'identifiant:", -1, 5, 7, 65, 12
     EDITTEXT edt1, 80, 5, 80, 14, WS_DISABLED
-    RTEXT "&Prefix of ID:", -1, 5, 32, 65, 12
+    RTEXT "&Préfixe de l'ID:", -1, 5, 32, 65, 12
     EDITTEXT edt2, 80, 28, 80, 14, ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 35, 50, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 100, 50, 60, 14
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "List of Resource IDs"
+CAPTION "Liste des ID de ressource"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "MS Shell Dlg"
@@ -787,41 +787,41 @@ CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Show &full file path on title bar", chx1, 5, 5, 200, 14
-    AUTOCHECKBOX "Don't use ID &macros", chx2, 5, 25, 200, 14
-    AUTOCHECKBOX "Resume previous window &position", chx3, 5, 45, 200, 14
-    AUTOCHECKBOX "Automatically load nearby ""&resource.h""", chx4, 5, 65, 200, 14
-    AUTOCHECKBOX "Automatically show the &list of resource IDs", chx5, 5, 85, 200, 14
-    AUTOCHECKBOX "Show &dots on dialog edit", chx6, 5, 105, 200, 14
-    RTEXT "Height of Combo&Box:", -1, 10, 127, 75, 12
+    AUTOCHECKBOX "Afficher le chemin d'accès complet au fichier dans la barre de titre", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "N'utilisez pas de macros d'identification", chx2, 5, 25, 200, 14
+    AUTOCHECKBOX "Reprendre la position précédente de la fenêtre", chx3, 5, 45, 200, 14
+    AUTOCHECKBOX "Charger automatiquement ""resource.h"" à proximité", chx4, 5, 65, 200, 14
+    AUTOCHECKBOX "Afficher automatiquement la liste des ID de ressource", chx5, 5, 85, 200, 14
+    AUTOCHECKBOX "Afficher les points sur la boîte de dialogue Modifier", chx6, 5, 105, 200, 14
+    RTEXT "Hauteur de ComboBox:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Word wrapping", chx9, 135, 125, 70, 14
-    AUTOCHECKBOX "Ask ""&resource.h""'s update", chx7, 5, 145, 200, 14
-    AUTOCHECKBOX "Compress EXE by &UPX on saving it", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Fonts...", psh4, 5, 185, 200, 14
-    PUSHBUTTON "Predefined &Macros...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Set Pa&ths...", psh2, 107, 205, 98, 14
-    RTEXT "Name of &OLE controls:", -1, 5, 227, 80, 12
+    AUTOCHECKBOX "&Habillage de mots", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "Demandez la mise à jour de ""&resource.h""", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "Compressez EXE par UPX en l'enregistrant", chx8, 5, 165, 200, 14
+    PUSHBUTTON "&Les polices...", psh4, 5, 185, 200, 14
+    PUSHBUTTON "&Macros prédéfinies...", psh1, 5, 205, 93, 14
+    PUSHBUTTON "Définir les chemins...", psh2, 107, 205, 98, 14
+    RTEXT "Nom des contrôles OLE:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Create &backup", chx10, 5, 245, 75, 15
-    RTEXT "Backup Suffix:", -1, 90, 245, 60, 15
+    AUTOCHECKBOX "Créer une sauvegarde", chx10, 5, 245, 75, 15
+    RTEXT "Suffixe de sauvegarde:", -1, 90, 245, 60, 15
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
     PUSHBUTTON "Annuler", IDCANCEL, 155, 265, 50, 14
-    PUSHBUTTON "Re&set All", psh3, 5, 265, 75, 14
+    PUSHBUTTON "Effacer tout", psh3, 5, 265, 75, 14
 }
 
 IDD_ADDRESID DIALOG 0, 0, 165, 90
-CAPTION "Add Resource ID"
+CAPTION "Ajouter un ID de ressource"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Type of ID:", -1, 10, 7, 50, 14
+    RTEXT "&Type d'identifiant:", -1, 10, 7, 50, 14
     COMBOBOX cmb1, 65, 5, 95, 300, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Name of ID:", -1, 10, 27, 50, 14
+    RTEXT "&Nom de l'ID:", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14, ES_AUTOHSCROLL
-    RTEXT "&Integer value:", -1, 10, 47, 50, 14
+    RTEXT "&Valeur entière:", -1, 10, 47, 50, 14
     EDITTEXT edt2, 65, 45, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     PUSHBUTTON "&Auto", psh1, 115, 45, 45, 14
@@ -830,15 +830,15 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_MODIFYRESID DIALOG 0, 0, 165, 90
-CAPTION "Modify Resource ID"
+CAPTION "Modifier l'ID de ressource"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Name of ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
+    RTEXT "&Nom de l'ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
-    RTEXT "&Type of ID:", -1, 10, 32, 50, 14
+    RTEXT "&Type d'identifiant:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
-    RTEXT "&Integer value:", -1, 10, 52, 50, 14
+    RTEXT "&Valeur entière:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
@@ -846,18 +846,18 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ADVICERESH DIALOG 0, 0, 209, 184
-CAPTION "Advice of modification of file ""resource.h"""
+CAPTION "Avis de modification du fichier ""resource.h"""
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Please modify the file ""resource.h"" As Follows:", -1, 10, 10, 195, 20
+    LTEXT "Veuillez modifier le fichier ""resource.h"" comme suit:", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_READONLY | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
-    PUSHBUTTON "&Clear modification", psh1, 10, 165, 90, 14
+    PUSHBUTTON "&Modification claire", psh1, 10, 165, 90, 14
 }
 
 IDD_CLONEINNEWNAME DIALOG 0, 0, 215, 75
-CAPTION "Clone In New Name"
+CAPTION "Cloner sous un nouveau nom"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -871,7 +871,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CLONEINNEWLANG DIALOG 0, 0, 215, 105
-CAPTION "Clone In New Language"
+CAPTION "Cloner dans une nouvelle langue"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -886,22 +886,22 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Search"
+CAPTION "Chercher"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&String to search:", -1, 4, 10, 75, 14
+    LTEXT "&Chaîne à rechercher:", -1, 4, 10, 75, 14
     EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
-    AUTOCHECKBOX "&Case sensitive", chx1, 5, 45, 120, 18
+    AUTOCHECKBOX "&Sensible aux majuscules et minuscules", chx1, 5, 45, 120, 18
     GROUPBOX "Direction", -1, 5, 65, 160, 42
-    AUTORADIOBUTTON "&Upward", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "&Downward", rad2, 90, 80, 60, 14, WS_TABSTOP
-    DEFPUSHBUTTON "&Find", IDOK, 40, 115, 60, 14
+    AUTORADIOBUTTON "&Ascendant", rad1, 15, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "&Vers le bas", rad2, 90, 80, 60, 14, WS_TABSTOP
+    DEFPUSHBUTTON "&Trouver", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 105, 115, 60, 14
 }
 
 IDD_VERSIONINFO DIALOG 0, 0, 174, 100
-CAPTION "About RisohEditor"
+CAPTION "À propos de RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 12, "MS Shell Dlg"
 {
@@ -912,175 +912,175 @@ FONT 12, "MS Shell Dlg"
 }
 
 IDD_ADDMSG DIALOG 0, 0, 255, 105
-CAPTION "Add Message Entry"
+CAPTION "Ajouter une entrée de message"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Message &ID:", -1, 5, 7, 50, 12
+    LTEXT "ID du message:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 200, 5, 15, 14
-    LTEXT "Message &Value:", -1, 5, 27, 80, 12
+    LTEXT "Valeur du message:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 190, 85, 60, 14
 }
 
 IDD_MODIFYMSG DIALOG 0, 0, 255, 105
-CAPTION "Modify Message Entry"
+CAPTION "Modifier l'entrée de message"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Message &ID:", -1, 5, 7, 50, 12
+    LTEXT "ID du message:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Message &Value:", -1, 5, 27, 80, 12
+    LTEXT "Valeur du message:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 190, 85, 60, 14
 }
 
 IDD_MESSAGES DIALOG 0, 0, 325, 160
-CAPTION "Message Table"
+CAPTION "Tableau des messages"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Message &Entries:", -1, 5, 7, 80, 12
+    LTEXT "Entrées de message:", -1, 5, 7, 80, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
     PUSHBUTTON "&Ajouter...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Modifier...", psh2, 195, 3, 60, 14
     PUSHBUTTON "&Supprimer", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Delete A&ll", psh4, 5, 140, 75, 14
+    PUSHBUTTON "Supprimer tout", psh4, 5, 140, 75, 14
 }
 
 IDD_FONTS DIALOG 0, 0, 195, 110
-CAPTION "Font Settings"
+CAPTION "Paramètres de police"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Source:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&La source:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh1, 170, 5, 19, 14
-    RTEXT "&Binary:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Binaire:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
     GROUPBOX "Preview", -1, 5, 45, 185, 39
-    CTEXT "Source", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
-    CTEXT "Binary", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
+    CTEXT "La source", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
+    CTEXT "Binaire", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 130, 90, 60, 14
 }
 
 IDD_MACROS DIALOG 0, 0, 265, 165
-CAPTION "Predefined Macros"
+CAPTION "Macros prédéfinies"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Predefined &Macros:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "Macros prédéfinies:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
     PUSHBUTTON "&Ajouter...", psh1, 200, 15, 60, 14
-    PUSHBUTTON "&Edit...", psh2, 200, 35, 60, 14
+    PUSHBUTTON "&Éditer...", psh2, 200, 35, 60, 14
     PUSHBUTTON "&Supprimer", psh3, 200, 55, 60, 14
-    PUSHBUTTON "Delete A&ll", psh7, 200, 105, 60, 14
+    PUSHBUTTON "Supprimer tout", psh7, 200, 105, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 200, 145, 60, 14
-    PUSHBUTTON "&Reset All", psh6, 5, 145, 60, 14
+    PUSHBUTTON "&Effacer tout", psh6, 5, 145, 60, 14
 }
 
 IDD_ADDMACRO DIALOG 0, 0, 190, 80
-CAPTION "Add Predefined Macro"
+CAPTION "Ajouter une macro prédéfinie"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Key:", -1, 5, 12, 60, 14
+    RTEXT "&Clé:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Value:", -1, 5, 37, 60, 14
+    RTEXT "&Valeur:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 125, 60, 60, 14
 }
 
 IDD_EDITMACRO DIALOG 0, 0, 190, 80
-CAPTION "Edit Predefined Macro"
+CAPTION "Modifier une macro prédéfinie"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Key:", -1, 5, 12, 60, 14
+    RTEXT "&Clé:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Value:", -1, 5, 37, 60, 14
+    RTEXT "&Valeur:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 60, 60, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 125, 60, 60, 14
 }
 
 IDD_CTRLDATA DIALOG 0, 0, 190, 130
-CAPTION "Edit Control Data"
+CAPTION "Modifier les données de contrôle"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Binary Data:", -1, 5, 2, 87, 12
+    LTEXT "&Données binaires:", -1, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    LTEXT "You can set the control data by space-separated 16-bit integers.", -1, 5, 80, 180, 25
+    LTEXT "Vous pouvez définir les données de contrôle par des entiers 16 bits séparés par des espaces.", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 125, 110, 60, 14
 }
 
 IDD_PATHS DIALOG 0, 0, 295, 220
-CAPTION "Set Paths"
+CAPTION "Définir les chemins"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Include Directories:", -1, 5, 5, 102, 12
+    LTEXT "&Inclure les répertoires:", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     PUSHBUTTON "&Ajouter...", psh1, 230, 20, 60, 14
-    PUSHBUTTON "&Edit...", psh2, 230, 40, 60, 14
+    PUSHBUTTON "&Éditer...", psh2, 230, 40, 60, 14
     PUSHBUTTON "&Supprimer", psh3, 230, 60, 60, 14
     PUSHBUTTON "&En haut", psh4, 230, 80, 60, 14
-    PUSHBUTTON "D&own", psh5, 230, 100, 60, 14
-    PUSHBUTTON "Delete A&ll", psh6, 5, 130, 95, 14
+    PUSHBUTTON "Vers le bas", psh5, 230, 100, 60, 14
+    PUSHBUTTON "Supprimer tout", psh6, 5, 130, 95, 14
     RTEXT "&windres.exe:", stc1, 5, 157, 55, 12
     COMBOBOX cmb1, 70, 155, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Feuilleter...", psh7, 230, 155, 60, 14
     RTEXT "&cpp.exe:", stc2, 5, 177, 55, 12
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "B&rowse...", psh8, 230, 175, 60, 14
+    PUSHBUTTON "Feuilleter...", psh8, 230, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 230, 200, 60, 14
-    PUSHBUTTON "Re&set All", psh9, 5, 200, 95, 14
+    PUSHBUTTON "Effacer tout", psh9, 5, 200, 95, 14
 }
 
 IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
-CAPTION "Export Options"
+CAPTION "Options d'exportation"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Exporting a RC file will generate some related files. You can choose the following options:", -1, 37, 10, 160, 40
-    AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Use B&EGIN/END keywords", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 195, 14
-    AUTOCHECKBOX "Create &backup  Backup Suffix:", chx4, 5, 120, 123, 14
+    LTEXT "L'exportation d'un fichier RC générera certains fichiers associés. Vous pouvez choisir les options suivantes:", -1, 37, 10, 160, 40
+    AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
+    AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Output RC files as &UTF-16", chx7, 5, 180, 195, 14
+    AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
-CAPTION "Languages"
+CAPTION "Langages"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 5, 240, 179
-    RTEXT "&Search:", stc1, 5, 192, 45, 12
+    RTEXT "&Chercher:", stc1, 5, 192, 45, 12
     COMBOBOX cmb1, 55, 190, 85, 300, CBS_SORT | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     EDITTEXT edt1, 4, 209, 240, 20, ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
 }
 
 IDD_CHILD DIALOG 0, 0, 215, 135
-CAPTION "Child Dialog"
+CAPTION "Boîte de dialogue enfant"
 STYLE WS_CHILD | WS_OVERLAPPEDWINDOW
 FONT 9, "MS Shell Dlg"
 {
@@ -1089,11 +1089,11 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_DLGINITEDIT DIALOG 0, 0, 325, 165
-CAPTION "Edit DLGINIT"
+CAPTION "Modifier DLGINIT"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Message &Entries:", -1, 5, 7, 100, 12
+    LTEXT "Entrées de message:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 250, 120
     PUSHBUTTON "&Ajouter...", psh1, 260, 20, 60, 14
     PUSHBUTTON "&Modifier...", psh2, 260, 40, 60, 14
