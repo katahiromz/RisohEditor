@@ -1159,6 +1159,8 @@ bool EntrySet::on_delete_group_icon(EntryBase *entry)
 
     // read the dir entries from the stream
     DWORD size = sizeof(GRPICONDIRENTRY) * dir.idCount;
+    if (size == 0)
+        return false;  // invalid
     std::vector<GRPICONDIRENTRY> DirEntries(dir.idCount);
     if (!bs.ReadData(&DirEntries[0], size))
         return false;   // unable to read
@@ -1189,6 +1191,8 @@ bool EntrySet::on_delete_group_cursor(EntryBase *entry)
 
     // read the dir entries from the stream
     DWORD size = sizeof(GRPCURSORDIRENTRY) * dir.idCount;
+    if (size == 0)
+        return false;   // invalid
     std::vector<GRPCURSORDIRENTRY> DirEntries(dir.idCount);
     if (!bs.ReadData(&DirEntries[0], size))
         return false;   // unable to read
