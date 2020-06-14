@@ -296,8 +296,8 @@ FONT 9, "MS Shell Dlg", 0, 0, 1
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Nom de la ressource:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Langue de la ressource:", -1, 5, 57, 70, 12
-    COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 57, 80, 12
+    COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Binaire et fichier:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
@@ -319,9 +319,9 @@ FONT 9, "MS Shell Dlg"
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&...", psh2, 194, 65, 15, 14
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&...", psh2, 195, 65, 15, 14
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -337,8 +337,8 @@ FONT 9, "MS Shell Dlg"
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -354,8 +354,8 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -370,8 +370,8 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Feuilleter...", psh1, 150, 35, 60, 14
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -387,8 +387,8 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb2, 75, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 30, 15, 14
     LTEXT "", stc1, 75, 43, 115, 10
-    LTEXT "&Langue de la ressource:", -1, 5, 57, 70, 12
-    COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 57, 80, 12
+    COMBOBOX cmb3, 85, 54, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Binaire et fichier:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
     PUSHBUTTON "&Feuilleter...", psh1, 150, 115, 60, 14
@@ -409,8 +409,8 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -426,8 +426,8 @@ FONT 9, "MS Shell Dlg"
     ICON 0, ico1, 5, 35, 0, 0
     LTEXT "&Nom de la ressource:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Langue de la ressource:", -1, 5, 92, 70, 12
-    COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT "&Langue de la ressource:", -1, 5, 92, 80, 12
+    COMBOBOX cmb3, 85, 89, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 115, 60, 14
 }
@@ -502,7 +502,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "ID de chaîne:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "Valeur de chaîne:", -1, 5, 27, 54, 12
+    LTEXT "Valeur de chaîne:", -1, 5, 27, 54, 20
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
     AUTOCHECKBOX "&Remplacez ""\\r\\n"" par ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
@@ -546,14 +546,14 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "Légende:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID de commande:", -1, 5, 32, 55, 12
+    LTEXT "ID de commande:", -1, 5, 28, 55, 18
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 60, 14
-    AUTOCHECKBOX "&CHECKED", chx5, 70, 80, 60, 14
-    AUTOCHECKBOX "SE&PARATOR", chx6, 135, 80, 60, 14
+    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
     AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
@@ -574,14 +574,14 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "Légende:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID de commande:", -1, 5, 32, 55, 12
+    LTEXT "ID de commande:", -1, 5, 28, 55, 18
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 60, 14
-    AUTOCHECKBOX "&CHECKED", chx5, 70, 80, 60, 14
-    AUTOCHECKBOX "SE&PARATOR", chx6, 135, 80, 60, 14
+    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
     AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
     AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
     AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
@@ -699,7 +699,7 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 130, 305, 60, 14
-    PUSHBUTTON "&Les données...", psh1, 5, 290, 45, 14
+    PUSHBUTTON "&Les données...", psh1, 5, 290, 65, 15
     PUSHBUTTON "La liste des chaînes...", psh3, 5, 305, 75, 14
 }
 
@@ -742,7 +742,7 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 100, 160, 90, 125, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 130, 290, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 130, 305, 60, 14
-    PUSHBUTTON "&Les données...", psh1, 5, 290, 45, 14
+    PUSHBUTTON "&Les données...", psh1, 5, 290, 65, 15
     PUSHBUTTON "La liste des chaînes...", psh3, 5, 305, 75, 14
 }
 
@@ -817,7 +817,7 @@ CAPTION "Ajouter un ID de ressource"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Type d'identifiant:", -1, 10, 7, 50, 14
+    RTEXT "&Type d'identifiant:", -1, 10, 2, 50, 18
     COMBOBOX cmb1, 65, 5, 95, 300, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT "&Nom de l'ID:", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14, ES_AUTOHSCROLL
@@ -836,7 +836,7 @@ FONT 9, "MS Shell Dlg"
 {
     RTEXT "&Nom de l'ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
-    RTEXT "&Type d'identifiant:", -1, 10, 32, 50, 14
+    RTEXT "&Type d'identifiant:", -1, 10, 27, 50, 18
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
     RTEXT "&Valeur entière:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_AUTOHSCROLL
@@ -879,7 +879,7 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&Nom de la ressource:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Langue de la ressource:", -1, 5, 57, 70, 12
+    LTEXT "&Langue de la ressource:", -1, 5, 52, 70, 18
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 85, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 115, 85, 60, 14
@@ -1058,11 +1058,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "L'exportation d'un fichier RC générera certains fichiers associés. Vous pouvez choisir les options suivantes:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE
     AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
@@ -1155,11 +1155,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "L'enregistrement d'un fichier RC générera des fichiers associés. Vous pouvez choisir les options suivantes:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE
     AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
