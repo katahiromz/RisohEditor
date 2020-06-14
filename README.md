@@ -211,6 +211,7 @@ The portable version doesn't use registry but an ini file.
     - Improved status message.
     - Improved modified flag handling.
 - v.5.4.1 (2020.XX.YY)
+    - Fixed the bug that the second overwrite save fails.
     - Fixed title bar text.
     - Fixed status bar message.
     - Added German translation.
