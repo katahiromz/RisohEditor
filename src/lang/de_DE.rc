@@ -802,9 +802,9 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&Schriftarten...", psh4, 5, 185, 200, 14
     PUSHBUTTON "Vordefinierte Makros...", psh1, 5, 205, 93, 14
     PUSHBUTTON "Pfade festlegen...", psh2, 107, 205, 98, 14
-    RTEXT "Name der OLE-Steuerelemente:", -1, 5, 227, 80, 12
+    RTEXT "Name der OLE-Steuerelemente:", -1, 5, 222, 80, 18
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Ein Backup erstellen", chx10, 5, 245, 75, 15
+    AUTOCHECKBOX "Ein Backup erstellen", chx10, 5, 245, 80, 15
     RTEXT "Backup-Suffix:", -1, 90, 245, 60, 15
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
@@ -1058,11 +1058,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Ein Backup erstellen  Backup-Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Redundante Kommentare ausgeben", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "RC-Dateien als UTF-16 ausgeben", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Stornieren", IDCANCEL, 140, 205, 60, 14
@@ -1155,11 +1155,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Ein Backup erstellen  Backup-Suffix:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Redundante Kommentare ausgeben", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "RC-Dateien als UTF-16 ausgeben", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Stornieren", IDCANCEL, 140, 205, 60, 14

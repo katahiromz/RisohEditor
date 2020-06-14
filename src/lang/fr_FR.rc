@@ -787,7 +787,7 @@ CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Afficher le chemin d'accès complet au fichier dans la barre de titre", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "Afficher le chemin d'accès complet au fichier dans la barre de titre", chx1, 5, 2, 200, 18, BS_MULTILINE
     AUTOCHECKBOX "N'utilisez pas de macros d'identification", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "Reprendre la position précédente de la fenêtre", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "Charger automatiquement ""resource.h"" à proximité", chx4, 5, 65, 200, 14
@@ -796,7 +796,7 @@ FONT 9, "MS Shell Dlg"
     RTEXT "Hauteur de ComboBox:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Habillage de mots", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "&Habillage de mots", chx9, 130, 124, 75, 15
     AUTOCHECKBOX "Demandez la mise à jour de ""&resource.h""", chx7, 5, 145, 200, 14
     AUTOCHECKBOX "Compressez EXE par UPX en l'enregistrant", chx8, 5, 165, 200, 14
     PUSHBUTTON "&Les polices...", psh4, 5, 185, 200, 14
@@ -804,8 +804,8 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Définir les chemins...", psh2, 107, 205, 98, 14
     RTEXT "Nom des contrôles OLE:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Créer une sauvegarde", chx10, 5, 245, 75, 15
-    RTEXT "Suffixe de sauvegarde:", -1, 90, 245, 60, 15
+    AUTOCHECKBOX "Créer une sauvegarde", chx10, 5, 245, 80, 15
+    RTEXT "Suffixe de sauvegarde:", -1, 90, 242, 60, 18
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
     PUSHBUTTON "Annuler", IDCANCEL, 155, 265, 50, 14
@@ -1058,11 +1058,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "L'exportation d'un fichier RC générera certains fichiers associés. Vous pouvez choisir les options suivantes:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
@@ -1155,11 +1155,11 @@ FONT 9, "MS Shell Dlg"
     LTEXT "L'enregistrement d'un fichier RC générera des fichiers associés. Vous pouvez choisir les options suivantes:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
