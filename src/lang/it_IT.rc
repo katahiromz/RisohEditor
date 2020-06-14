@@ -25,7 +25,7 @@ IDR_MAINMENU MENU
         MENUITEM "Ricarica &resource.h...\tCtrl+R", ID_LOADRESH
         MENUITEM "Salva re&source.h...", ID_UPDATERESHBANG
         MENUITEM "A&vviso modifica resource.h...", ID_ADVICERESH
-        MENUITEM "&Scarica resource.h", ID_UNLOADRESH
+        MENUITEM "Annulla modifiche re&source.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
         MENUITEM "Carica libreria classe &Window...", ID_LOADWCLIB
         MENUITEM SEPARATOR
@@ -52,7 +52,7 @@ IDR_MAINMENU MENU
             MENUITEM "Aggiungi &HTML...", ID_ADDHTML
             MENUITEM "Aggiungi &acceleratori...", ID_ADDACCEL
             MENUITEM "Aggiungi info &versione...", ID_ADDVERINFO
-            MENUITEM "Aggiungi mani&fest...", ID_ADDMANIFEST
+            MENUITEM "Aggiungi info mani&fest...", ID_ADDMANIFEST
             MENUITEM "Aggiungi &risorsa...", ID_ADDRES
         }
         POPUP "&Sostituisci"
@@ -115,7 +115,7 @@ IDR_MAINMENU MENU
         MENUITEM "Usa BE&GIN/END", ID_USEBEGINEND
         MENUITEM SEPARATOR
         MENUITEM "Codifica &elementi risorse...", ID_ENCODING
-        MENUITEM "Sostituisci font &di dialogo...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Sostituisci font finestra &di dialogo...", ID_REPLACE_DIALOG_FONTS
         MENUITEM SEPARATOR
         MENUITEM "A&ggiorna", ID_REFRESHALL
     }
