@@ -890,7 +890,7 @@ CAPTION "Search"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&String to search:", -1, 4, 10, 75, 14
+    LTEXT "&String to search:", -1, 4, 10, 100, 14
     EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
     AUTOCHECKBOX "&Case sensitive", chx1, 5, 45, 120, 18
     GROUPBOX "Direction", -1, 5, 65, 160, 42
