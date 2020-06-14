@@ -210,7 +210,7 @@ The portable version doesn't use registry but an ini file.
     - Fixed "Search" dialog.
     - Improved status message.
     - Improved modified flag handling.
-- v.5.4.1 (2020.XX.YY)
+- v.5.4.1 (2020.06.14)
     - Fixed the bug that the second overwrite save fails.
     - Fixed title bar text.
     - Fixed status bar message.
