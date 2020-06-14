@@ -210,6 +210,7 @@ Question 6. What is the difference between no installer and portable version?
     - Fixed title bar text.
     - Fixed status bar message.
     - Added German translation.
+    - Added French translation.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

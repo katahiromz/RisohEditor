@@ -214,6 +214,7 @@ The portable version doesn't use registry but an ini file.
     - Fixed title bar text.
     - Fixed status bar message.
     - Added German translation.
+    - Added French translation.
 
 ## Contact Us
 

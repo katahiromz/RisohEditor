@@ -210,6 +210,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Fixed title bar text.
     - Fixed status bar message.
     - Added German translation.
+    - Added French translation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
