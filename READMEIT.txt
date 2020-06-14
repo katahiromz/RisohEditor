@@ -213,7 +213,8 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Added German translation.
     - Added French translation.
 - v.5.4.2 (2020.XX.YY)
-    - Improve German and French translations.
+    - Improved German and French translations.
+    - Fixed language drop-down arrow.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

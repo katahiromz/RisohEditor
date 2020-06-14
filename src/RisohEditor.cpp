@@ -2153,6 +2153,7 @@ public:
     void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
     BOOL ShowLangArrow(BOOL bShow, HTREEITEM hItem = NULL);
     void UpdateLangArrow();
+    void PostUpdateLangArrow(HWND hwnd);
 
     // preview
     VOID HidePreview(STV stv = STV_RESETTEXTANDMODIFIED);
@@ -2719,6 +2720,11 @@ void MMainWnd::OnExtractRC(HWND hwnd)
             ErrorBoxDx(IDS_CANTEXPORT);
         }
     }
+}
+
+void MMainWnd::PostUpdateLangArrow(HWND hwnd)
+{
+    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 }
 
 LRESULT MMainWnd::OnUpdateLangArrow(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -3856,7 +3862,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;   // reject
     }
 
-    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+    PostUpdateLangArrow(hwnd);
 
     WCHAR szText[MAX_PATH];
     MString strLang = TextFromLang(wNewLang);
@@ -7016,6 +7022,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // load it now
         m_bLoading = TRUE;
         {
+            ShowLangArrow(FALSE);
+
             // renewal
             g_res.delete_all();
             g_res.merge(res);
@@ -7059,6 +7067,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         // load it now
         m_bLoading = TRUE;
         {
+            ShowLangArrow(FALSE);
+
             // renewal
             g_res.delete_all();
             g_res.merge(res);
@@ -7182,6 +7192,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     // load all the resource items from the executable
     m_bLoading = TRUE;
     {
+        ShowLangArrow(FALSE);
         g_res.delete_all();
         g_res.from_res(hMod);
     }
@@ -7209,6 +7220,9 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     SelectTV(NULL, FALSE);
 
     DoSetFileModified(FALSE);
+
+    // update language arrow
+    PostUpdateLangArrow(m_hwnd);
 
     return TRUE;    // success
 }
@@ -8938,6 +8952,8 @@ IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
     // load it now
     m_bLoading = TRUE;
     {
+        ShowLangArrow(FALSE);
+
         // renewal
         g_res.merge(res);
 
@@ -8948,6 +8964,9 @@ IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
 
     // refresh the ID list window
     DoRefreshIDList(hwnd);
+
+    // update language arrow
+    PostUpdateLangArrow(hwnd);
 
     return IMPORTED;
 }
@@ -9244,6 +9263,9 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
         // otherwise, load the file
         DoLoadFile(hwnd, file);
     }
+
+    // update language arrow
+    PostUpdateLangArrow(hwnd);
 
     // remove the command lock
     --m_nCommandLock;
@@ -10060,7 +10082,7 @@ void MMainWnd::OnExpandAll(HWND hwnd)
     SelectTV(entry, FALSE);
 
     // update language arrow
-    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+    PostUpdateLangArrow(hwnd);
 }
 
 // unexpand all the tree control items
@@ -10079,7 +10101,7 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     SelectTV(NULL, FALSE);
 
     // update language arrow
-    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+    PostUpdateLangArrow(hwnd);
 }
 
 void MMainWnd::OnSrcEditSelect(HWND hwnd)
@@ -10420,7 +10442,7 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
     DoRefreshIDList(hwnd);
     s_bModified = bModifiedOld;
 
-    PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+    PostUpdateLangArrow(hwnd);
 }
 
 // WM_COMMAND
@@ -11036,7 +11058,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             // select the entry to update the text
             SelectTV(entry, FALSE);
 
-            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+            PostUpdateLangArrow(hwnd);
         }
     }
     else if (pnmhdr->code == TVN_ITEMEXPANDING)
@@ -11046,7 +11068,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     }
     else if (pnmhdr->code == TVN_ITEMEXPANDED)
     {
-        PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+        PostUpdateLangArrow(hwnd);
     }
     else if (pnmhdr->code == NM_RETURN)
     {
@@ -11092,7 +11114,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         case VK_LEFT:
         case VK_RIGHT:
             ShowLangArrow(FALSE);
-            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+            PostUpdateLangArrow(hwnd);
             break;
         case VK_F2:
             {
@@ -11197,7 +11219,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             LPWSTR pszNewText = pInfo->item.pszText;
             if (pszNewText == NULL)
             {
-                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+                PostUpdateLangArrow(hwnd);
                 return FALSE;   // reject
             }
 
@@ -11256,7 +11278,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_LANG)
             {
-                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+                PostUpdateLangArrow(hwnd);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -11286,7 +11308,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             }
             else if (entry->m_et == ET_STRING || entry->m_et == ET_MESSAGE)
             {
-                PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+                PostUpdateLangArrow(hwnd);
 
                 old_lang = LangFromText(szOldText);
                 if (old_lang == BAD_LANG)
@@ -12401,9 +12423,6 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
     m_file_type = ft;
     m_bUpxCompressed = bCompressed;
 
-    // update language arrow
-    PostMessage(m_hwnd, MYWM_UPDATELANGARROW, 0, 0);
-
     if (pszFile == NULL || pszFile[0] == 0)
     {
         // clear the file info
@@ -13153,7 +13172,7 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hwnd, &rc, TRUE);
 
             // restore language arrow
-            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+            this_->PostUpdateLangArrow(*this_);
             return 0;
         }
     }
@@ -13169,7 +13188,7 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
 
             // restore language arrow
-            PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
+            this_->PostUpdateLangArrow(*this_);
             return 0;
         }
     }

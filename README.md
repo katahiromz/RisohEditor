@@ -217,7 +217,8 @@ The portable version doesn't use registry but an ini file.
     - Added German translation.
     - Added French translation.
 - v.5.4.2 (2020.XX.YY)
-    - Improve German and French translations.
+    - Improved German and French translations.
+    - Fixed language drop-down arrow.
 
 ## Contact Us
 
