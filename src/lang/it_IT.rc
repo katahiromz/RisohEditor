@@ -87,14 +87,14 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Impostazioni...", ID_CONFIG
     }
-    POPUP "&Cerca"
+    POPUP "&Trova"
     {
-        MENUITEM "&Cerca...\tCtrl+F", ID_FIND
+        MENUITEM "&Trova...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
         MENUITEM "Trova &precedente\tShift+F3", ID_FINDUPWARD
         MENUITEM "Trova &successivo\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "Costante &query...", ID_QUERYCONSTANT
+        MENUITEM "Trova &costante...", ID_QUERYCONSTANT
     }
     POPUP "&Visualizza"
     {
