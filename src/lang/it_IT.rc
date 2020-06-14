@@ -45,7 +45,7 @@ IDR_MAINMENU MENU
             MENUITEM "Aggiungi &icona...", ID_ADDICON
             MENUITEM "Aggiungi &cursore..", ID_ADDCURSOR
             MENUITEM "Aggiungi &bitmap...", ID_ADDBITMAP
-            MENUITEM "Aggiungi &finestra...", ID_ADDDIALOG
+            MENUITEM "Aggiungi &finestra di dialogo...", ID_ADDDIALOG
             MENUITEM "Aggiungi &menu...", ID_ADDMENU
             MENUITEM "Aggiungi tabella &stringhe...", ID_ADDSTRINGTABLE
             MENUITEM "Aggiungi tabella m&essaggi...", ID_ADDMESSAGETABLE
@@ -55,12 +55,12 @@ IDR_MAINMENU MENU
             MENUITEM "Aggiungi mani&fest...", ID_ADDMANIFEST
             MENUITEM "Aggiungi &risorsa...", ID_ADDRES
         }
-        POPUP "&Sostitusci"
+        POPUP "&Sostituisci"
         {
-            MENUITEM "Sostitusci &icona...", ID_REPLACEICON
-            MENUITEM "Sostitusci &cursore...", ID_REPLACECURSOR
-            MENUITEM "Sostitusci &bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Sostitusci &risorsa binaria...", ID_REPLACEBIN
+            MENUITEM "Sostituisci &icona...", ID_REPLACEICON
+            MENUITEM "Sostituisci &cursore...", ID_REPLACECURSOR
+            MENUITEM "Sostituisci &bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Sostituisci &risorsa binaria...", ID_REPLACEBIN
         }
         POPUP "&Estrai"
         {
@@ -145,25 +145,25 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         POPUP "&Aggiungi"
         {
-            MENUITEM "Aggiungi &icon...", ID_ADDICON
-            MENUITEM "Aggiungi &cursor...", ID_ADDCURSOR
+            MENUITEM "Aggiungi &icona...", ID_ADDICON
+            MENUITEM "Aggiungi &cursore...", ID_ADDCURSOR
             MENUITEM "Aggiungi &bitmap...", ID_ADDBITMAP
-            MENUITEM "Aggiungi &fienstra...", ID_ADDDIALOG
+            MENUITEM "Aggiungi &finestra di dialogo...", ID_ADDDIALOG
             MENUITEM "Aggiungi &menu...", ID_ADDMENU
             MENUITEM "Aggiungi tabella &stringhe...", ID_ADDSTRINGTABLE
             MENUITEM "Aggiungi tabella m&essaggi...", ID_ADDMESSAGETABLE
-            MENUITEM "Aggiungi &HTML...", ID_ADDHTML
+            MENUITEM "Aggiungi codice &HTML...", ID_ADDHTML
             MENUITEM "Aggiungi &acceleratori...", ID_ADDACCEL
             MENUITEM "Aggiungi info &versione...", ID_ADDVERINFO
-            MENUITEM "Aggiungi mani&fest...", ID_ADDMANIFEST
+            MENUITEM "Aggiungi info mani&fest...", ID_ADDMANIFEST
             MENUITEM "Aggiungi &risorsa...", ID_ADDRES
         }
-        POPUP "&Sostitusci"
+        POPUP "&Sostituisci"
         {
-            MENUITEM "Sostitusci &icona...", ID_REPLACEICON
-            MENUITEM "Sostitusci &cursore...", ID_REPLACECURSOR
-            MENUITEM "Sostitusci &bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Sostitusci &risorsa binaria...", ID_REPLACEBIN
+            MENUITEM "Sostituisci &icona...", ID_REPLACEICON
+            MENUITEM "Sostituisci &cursore...", ID_REPLACECURSOR
+            MENUITEM "Sostituisci &bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Sostituisci &risorsa binaria...", ID_REPLACEBIN
         }
         POPUP "&Estrai"
         {
@@ -801,7 +801,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Comprimi EXE con &UPX al salvataggio", chx8, 5, 165, 175, 15
     PUSHBUTTON "&Font...", psh4, 5, 185, 225, 14
     PUSHBUTTON "&Macro predefinite...", psh1, 5, 204, 110, 15
-    PUSHBUTTON "Impos&ta pecorsi...", psh2, 120, 204, 110, 15
+    PUSHBUTTON "Impos&ta percorsi...", psh2, 120, 204, 110, 15
     RTEXT "Nome controlli &OLE:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Crea &backup", chx10, 5, 245, 67, 15, BS_LEFT | NOT WS_TABSTOP
