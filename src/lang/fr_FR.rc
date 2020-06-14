@@ -1271,7 +1271,7 @@ FILETYPE        0x1
 {
     BLOCK "StringFileInfo"
     {
-        BLOCK "040904E4"
+        BLOCK "040C04E4"
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
@@ -1283,7 +1283,7 @@ FILETYPE        0x1
     }
     BLOCK "VarFileInfo"
     {
-        VALUE "Translation", 0x0409, 0x04E4
+        VALUE "Translation", 0x040C, 0x04E4
     }
 }
 
