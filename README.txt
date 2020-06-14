@@ -215,6 +215,7 @@ Question 6. What is the difference between no installer and portable version?
 - v.5.4.2 (2020.XX.YY)
     - Improved German and French translations.
     - Fixed language drop-down arrow.
+    - Fixed Unicode encoding processing.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

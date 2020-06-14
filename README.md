@@ -219,6 +219,7 @@ The portable version doesn't use registry but an ini file.
 - v.5.4.2 (2020.XX.YY)
     - Improved German and French translations.
     - Fixed language drop-down arrow.
+    - Fixed Unicode encoding processing.
 
 ## Contact Us
 

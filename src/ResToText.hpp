@@ -1100,7 +1100,8 @@ inline MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& 
         }
         if (enc == L"wide")
         {
-            std::wstring str((wchar_t *)&entry.m_data[0], entry.m_data.size());
+            std::wstring str((wchar_t *)&entry.m_data[0],
+                             entry.m_data.size() / sizeof(wchar_t));
             return str;
         }
         if (enc == L"utf8" || enc == L"utf8n")

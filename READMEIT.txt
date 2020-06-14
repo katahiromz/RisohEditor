@@ -212,9 +212,10 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Corretto problema messaggio barra di stato.
   Aggiunta traduzione tedesca.
   Aggiunta traduzione francese.
-- v.5.4.2 (2020.XX.YY)
+- v.5.4.2 (YY.XX.2020)
     - Improved German and French translations.
     - Fixed language drop-down arrow.
+    - Fixed Unicode encoding processing.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
