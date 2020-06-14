@@ -1206,7 +1206,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CONSTANT DIALOG 0, 0, 205, 75
-CAPTION "Costante query"
+CAPTION "Trova costante"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
