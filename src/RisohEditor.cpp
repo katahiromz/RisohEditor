@@ -12481,6 +12481,10 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bCompressByUPX = FALSE;
     g_settings.bUseBeginEnd = FALSE;
     g_settings.bShowFullPath = TRUE;
+    g_settings.nEgaX = CW_USEDEFAULT;
+    g_settings.nEgaY = CW_USEDEFAULT;
+    g_settings.nEgaWidth = CW_USEDEFAULT;
+    g_settings.nEgaHeight = CW_USEDEFAULT;
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
@@ -12686,6 +12690,10 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
     keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
     keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
+    keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
+    keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
+    keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
+    keyRisoh.QueryDword(TEXT("nEgaHeight"), (DWORD&)g_settings.nEgaHeight);
 
     TCHAR szText[128];
     TCHAR szValueName[128];
@@ -13000,6 +13008,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
     keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
     keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
+    keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
+    keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
+    keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
+    keyRisoh.SetDword(TEXT("nEgaHeight"), g_settings.nEgaHeight);
     keyRisoh.SetSz(TEXT("strSrcFont"), g_settings.strSrcFont.c_str());
     keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
     keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());

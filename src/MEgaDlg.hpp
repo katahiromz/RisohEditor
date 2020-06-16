@@ -24,6 +24,7 @@
 #include "MComboBox.hpp"
 #include "MResizable.hpp"
 #include "resource.h"
+#include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
 
 using namespace EGA;
@@ -158,7 +159,31 @@ public:
                                       (LPWSTR)m_filename.c_str(), 0, NULL);
         CloseHandle(hThread);
 
-        CenterWindowDx();
+        if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
+        {
+            SetWindowPos(hwnd, NULL,
+                g_settings.nEgaX, g_settings.nEgaY,
+                g_settings.nEgaWidth, g_settings.nEgaHeight,
+                SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+        }
+        else if (g_settings.nEgaX != CW_USEDEFAULT)
+        {
+            SetWindowPos(hwnd, NULL,
+                g_settings.nEgaX, g_settings.nEgaY,
+                g_settings.nEgaWidth, g_settings.nEgaHeight,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+        }
+        else if (g_settings.nEgaWidth != CW_USEDEFAULT)
+        {
+            SetWindowPos(hwnd, NULL,
+                g_settings.nEgaX, g_settings.nEgaY,
+                g_settings.nEgaWidth, g_settings.nEgaHeight,
+                SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+        }
+        else
+        {
+            CenterWindowDx();
+        }
         return TRUE;
     }
 
@@ -214,9 +239,28 @@ public:
         return (HBRUSH)(COLOR_3DFACE + 1);
     }
 
+    void OnMove(HWND hwnd, int x, int y)
+    {
+        if (IsWindowVisible(hwnd) && !IsMinimized(hwnd) && !IsMaximized(hwnd))
+        {
+            RECT rc;
+            GetWindowRect(hwnd, &rc);
+            g_settings.nEgaX = rc.left;
+            g_settings.nEgaY = rc.top;
+        }
+    }
+
     void OnSize(HWND hwnd, UINT state, int cx, int cy)
     {
         m_resizable.OnSize();
+
+        if (IsWindowVisible(hwnd) && !IsMinimized(hwnd) && !IsMaximized(hwnd))
+        {
+            RECT rc;
+            GetWindowRect(hwnd, &rc);
+            g_settings.nEgaWidth = rc.right - rc.left;
+            g_settings.nEgaHeight = rc.bottom - rc.top;
+        }
     }
 
     virtual INT_PTR CALLBACK
@@ -228,6 +272,7 @@ public:
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
         HANDLE_MSG(hwnd, WM_CTLCOLOREDIT, OnCtlColor);
         HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, OnCtlColor);
+        HANDLE_MSG(hwnd, WM_MOVE, OnMove);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
         default:
             return DefaultProcDx();
