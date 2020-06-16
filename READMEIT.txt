@@ -16,7 +16,7 @@ per dettagli sul copyrights e sull'accordo di licenza vedi il
 file "LICENSE.txt".
 
 NOTA: Ti consigliamo di non installare RisohEditor in "C:\Program Files" o 
-"C:\Program Files (x86)". Questo poichè il compilatore di 
+"C:\Program Files (x86)". Questo poiché il compilatore di 
 risorse (windres) non accetta il carattere spazio nel percorso 
 del file. 
 
@@ -30,7 +30,7 @@ Domanda 2. Che cosa sono edt1, edt2, cmb1?
 
     Risposta. Sono gli ID delle macro di controllo definite in <dlgs.h>.
 
-Domanda 3. Non trovo i miei ID risorsa nell' [Elenco ID risorse] 
+Domanda 3. Non trovo i miei ID risorsa nell'[Elenco ID risorse] 
             Window.
 
     Risposta. Per prima cosa, configura le impostazioni [Associazione ID] 
@@ -42,10 +42,10 @@ Domanda 4. Che cos'è mcdx?
     Risposta. È uno speciale compilatore messaggio che ho realizzato.
               Per i dettagli vedi mcdx/MESSAGETABLEDX.md.
 
-Domanda 5. Perchè ottengo caratteri confusi quando compilo con Visual Studio?
+Domanda 5. Perché ottengo caratteri confusi quando compilo con Visual Studio?
 
     Risposta. Il compilatore di risorse di MSVC ha un problema nel trattamento 
-              dei file risosre codificati in UTF-8.
+              dei file risorse codificati in UTF-8.
 
               Usa UTF-16 (ma UTF-16 non è supportato in windres di GNU).
 
@@ -69,7 +69,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Migliorata icona del file vista struttura.
   Migliorata l'importazione.
 - v. 5.1.0 (08.10.2018)
-  Migliorate finestre di dialogo "Inserimento stringa" (multilinea).
+  Migliorate finestre di dialogo "Inserimento stringa" (multi-linea).
   Corretto comportamento Ctrl + A.
   Controllo blocco dei file durante il salvataggio di un file.
   Correzione ID risorsa sensibili al maiuscolo/minuscolo.
@@ -114,7 +114,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Risolto un bug per cui l'applicazione cancellava inaspettatamente il file quando apriva un file EXE compresso senza espanderlo.
 - v. 5.2.1 (04.08.2019)
   Viene selezionato "Inglese (Stati Uniti)" se si immette "En" per il nome della lingua.
-  Aggiunta funzione "Costante query".
+  Aggiunta funzione "Ricerca costante".
   Corretta funzione "Comprimi tutto".
   WS_POPUPWINDOW | WS_BORDER deve essere WS_POPUPWINDOW | WS_CAPTION.
   Supporto RT_FONT.
@@ -137,7 +137,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Migliorata finestra di dialogo selezione lingua.
   Aggiunta la traduzione in russo.
   Visualizzazione messaggio di errore se il percorso di installazione contiene degli spazi.
-  Aggiunta opzione --use-temp-file nel richiamo di windres per risolvere il problema popen.
+  Aggiunta opzione --use-temp-file nel richiamo di windres per risolvere il problema open.
 - v. 5.2.7 (20.10.2019)
   Nuovo miglioramento finestra di dialogo selezione lingue.
   Corrette posizioni dei segni degli elementi della finestra di dialogo.
@@ -171,7 +171,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Migliorata traduzione lingua italiana.
   Correzione modulo salvataggio configurazione.
 - v.5.3.6 (15.04.2020)
-  Evitato loop infino mediante modifica della variabile loop a 32bit.
+  Corretto problema loop infinito mediante modifica della variabile loop a 32bit.
   Supporto dati Delphi DFM.
   Migliorato menu contestuale.
 - v.5.3.7 (28.04.2020)
@@ -192,7 +192,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Potenziata funzione ricerca.
 - v.5.4.0 (13.06.2020)
   Corretto output RT_ACCELERATOR` (16bit non firmato).
-  Rimossa opzione "salva nella cartella res" option.
+  Rimossa opzione "salva nella cartella res".
   Corretto problema crash uso GUI Edit.
   Potenziata funzione estrazione risorse.
   Corretto problema sostituzione-font-finestra.
@@ -213,17 +213,17 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Aggiunta traduzione tedesca.
   Aggiunta traduzione francese.
 - v.5.4.2 (YY.XX.2020)
-    - Improved German and French translations.
-    - Fixed language drop-down arrow.
-    - Fixed Unicode encoding processing.
-    - Improved exporting and extracting.
+    - Migliorate traduzioni tedesca e francese.
+    - Corretto problema freccia finestra drop-down lingua.
+    - Corretti problema elaborazione codifica Unicode.
+    - Migliorate funzionalità importazione ed estrazione.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-// Webpage (English):  https://katahiromz.web.fc2.com/re/en
-// Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
-// Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
-// Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
-// Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
-// Email               katayama.hirofumi.mz@gmail.com
+// Sito web (Inglese):    https://katahiromz.web.fc2.com/re/en
+// Sito web (Cinese):     https://katahiromz.web.fc2.com/re/ch
+// Sito web (Giapponese): https://katahiromz.web.fc2.com/re/ja
+// Sito web (Italiano):   https://katahiromz.web.fc2.com/re/it
+// Sito web (Russo):      https://katahiromz.web.fc2.com/re/ru
+// Email:                 katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////////////////////
