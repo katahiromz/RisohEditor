@@ -313,6 +313,7 @@
 #define IDS_FILESAVED                       319
 #define IDS_RECOMPILEOK                     320
 #define IDS_RECOMPILEFAILED                 321
+#define IDS_TOOL_EXPORT                     322
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -469,6 +470,7 @@
 #define ID_NEXTPANE                         257
 #define ID_PREVPANE                         258
 #define ID_EXTRACTRC                        259
+#define ID_EXPORTRES                        260
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -479,7 +481,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     260
+        #define _APS_NEXT_COMMAND_VALUE     261
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

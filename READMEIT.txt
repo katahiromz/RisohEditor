@@ -216,6 +216,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
     - Improved German and French translations.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.
+    - Improved exporting and extracting.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

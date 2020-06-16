@@ -1535,7 +1535,7 @@ TBBUTTON g_buttons0[] =
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
-    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
+    { 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
 // buttons info #1
@@ -1556,7 +1556,7 @@ TBBUTTON g_buttons1[] =
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
-    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
+    { 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
 // buttons info #2
@@ -1578,7 +1578,7 @@ TBBUTTON g_buttons2[] =
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
-    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
+    { 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
 // buttons info #3
@@ -1597,7 +1597,7 @@ TBBUTTON g_buttons3[] =
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
-    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
+    { 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
 // buttons info #4
@@ -1618,7 +1618,7 @@ TBBUTTON g_buttons4[] =
     { 8, ID_CLONE, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_CLONE },
     { -1, 0, TBSTATE_ENABLED, BTNS_SEP, {0}, 0, 0 },
     { 13, ID_IMPORT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_IMPORT },
-    { 14, ID_EXTRACTBANG, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXTRACT },
+    { 14, ID_EXPORTRES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, IDS_TOOL_EXPORT },
 };
 
 // store the toolbar strings
@@ -2324,6 +2324,7 @@ protected:
     void OnAddAccel(HWND hwnd);
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
+    void OnExportRes(HWND hwnd);
     void OnExtractRC(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
@@ -2566,6 +2567,54 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
     }
 }
 
+void MMainWnd::OnExportRes(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
+    // get the selected entry
+    auto e = g_res.get_entry();
+    if (!e)
+        return;     // not selected
+
+    if (e->is_delphi_dfm())
+        return OnExtractDFM(hwnd);
+
+    // initialize OPENFILENAME structure
+    WCHAR szFile[MAX_PATH] = L"";
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"res";   // the default extension
+
+    // let the user choose the path
+    if (GetSaveFileNameW(&ofn))
+    {
+        // extract it to a file
+        if (lstrcmpiW(&ofn.lpstrFile[ofn.nFileExtension], L"res") == 0)
+        {
+            // it was a *.res file
+            if (!g_res.extract_res(ofn.lpstrFile, e))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+        else
+        {
+            // it was not a *.res file
+            if (!g_res.extract_bin(ofn.lpstrFile, e))
+            {
+                ErrorBoxDx(IDS_CANNOTSAVE);
+            }
+        }
+    }
+}
+
 // extract the binary as a file
 void MMainWnd::OnExtractBin(HWND hwnd)
 {
@@ -2581,15 +2630,8 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     if (e->is_delphi_dfm())
         return OnExtractDFM(hwnd);
 
-    WCHAR szFile[MAX_PATH] = L"";
-    ResToText res2text;
-    MString strFile = res2text.GetEntryFileName(*e);
-    if (strFile.size())
-    {
-        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
-    }
-
     // initialize OPENFILENAME structure
+    WCHAR szFile[MAX_PATH] = L"";
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
@@ -2602,22 +2644,44 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     case ET_TYPE:
     case ET_NAME:
         ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESFILTER));
+        ofn.lpstrDefExt = L"res";
         break;
     case ET_LANG:
         if (e->m_type == L"PNG")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_PNGRESBINFILTER));
+            ofn.lpstrDefExt = L"png";
+        }
         else if (e->m_type == L"JPEG")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_JPEGRESBINFILTER));
+            ofn.lpstrDefExt = L"jpg";
+        }
         else if (e->m_type == L"GIF")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_GIFRESBINFILTER));
+            ofn.lpstrDefExt = L"gif";
+        }
         else if (e->m_type == L"TIFF")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_TIFFRESBINFILTER));
+            ofn.lpstrDefExt = L"tif";
+        }
         else if (e->m_type == L"AVI")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_AVIRESBINFILTER));
+            ofn.lpstrDefExt = L"avi";
+        }
         else if (e->m_type == L"WAVE")
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_WAVERESBINFILTER));
+            ofn.lpstrDefExt = L"wav";
+        }
         else
+        {
             ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RESBINFILTER));
+            ofn.lpstrDefExt = L"res";
+        }
         break;
     default:
         return;
@@ -2626,7 +2690,6 @@ void MMainWnd::OnExtractBin(HWND hwnd)
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTRES);
     ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
                 OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"res";   // the default extension
 
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
@@ -5823,13 +5886,13 @@ void MMainWnd::UpdateToolBarStatus()
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, 0);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, 0);
-        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXTRACTBANG, 0);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPORTRES, 0);
     }
     else
     {
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPAND_ALL, TBSTATE_ENABLED);
         SendMessageW(m_hToolBar, TB_SETSTATE, ID_COLLAPSE_ALL, TBSTATE_ENABLED);
-        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXTRACTBANG, TBSTATE_ENABLED);
+        SendMessageW(m_hToolBar, TB_SETSTATE, ID_EXPORTRES, TBSTATE_ENABLED);
     }
 
     BOOL bCanEditLabel = TRUE;
@@ -10843,6 +10906,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_EXTRACTRC:
         OnExtractRC(hwnd);
+        break;
+    case ID_EXPORTRES:
+        OnExportRes(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;

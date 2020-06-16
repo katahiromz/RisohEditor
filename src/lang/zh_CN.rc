@@ -1537,6 +1537,7 @@ STRINGTABLE
     IDS_FILESAVED, "文件保存确定。"
     IDS_RECOMPILEOK, "重新编译。"
     IDS_RECOMPILEFAILED, "重新编译失败 (语法错误)。"
+    IDS_TOOL_EXPORT, "导出..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

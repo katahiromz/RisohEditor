@@ -222,6 +222,7 @@ Question 7. Are the 64-bit files supported?
     - Improved German and French translations.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.
+    - Improved exporting and extracting.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

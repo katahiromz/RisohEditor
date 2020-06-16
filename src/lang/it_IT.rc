@@ -1538,6 +1538,7 @@ STRINGTABLE
     IDS_FILESAVED, "Salvataggio file completato."
     IDS_RECOMPILEOK, "Ricompilazione completata."
     IDS_RECOMPILEFAILED, "Ricompilazione fallita (errore sintassi)."
+    IDS_TOOL_EXPORT, "Esporta..."
 }
 
 //////////////////////////////////////////////////////////////////////////////

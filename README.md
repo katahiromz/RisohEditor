@@ -225,6 +225,7 @@ You have to copy the 64-bit file into another place before loading.
     - Improved German and French translations.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.
+    - Improved exporting and extracting.
 
 ## Contact Us
 
