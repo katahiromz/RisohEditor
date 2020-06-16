@@ -787,7 +787,7 @@ CAPTION "Configuration"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Afficher le chemin d'accès complet au fichier dans la barre de titre", chx1, 5, 2, 200, 18, BS_MULTILINE
+    AUTOCHECKBOX "Afficher le chemin d'accès complet au fichier dans la barre de titre", chx1, 5, 2, 200, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "N'utilisez pas de macros d'identification", chx2, 5, 25, 200, 14
     AUTOCHECKBOX "Reprendre la position précédente de la fenêtre", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "Charger automatiquement ""resource.h"" à proximité", chx4, 5, 65, 200, 14
@@ -1218,16 +1218,16 @@ FONT 9, "MS Shell Dlg"
     DEFPUSHBUTTON "OK", IDOK, 70, 55, 60, 14
 }
 
-IDD_EGA DIALOG 0, 0, 270, 170
+IDD_EGA DIALOG 0, 0, 400, 225
 CAPTION "Le langage de programmation EGA"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
     GROUPBOX "Console EGA", grp1, 5, 5, 260, 160
-    EDITTEXT edt1, 10, 20, 250, 120, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | NOT WS_TABSTOP
-    RTEXT "EGA>", stc1, 10, 147, 20, 10
-    COMBOBOX cmb1, 35, 145, 170, 300, CBS_NOINTEGRALHEIGHT | CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "&Entrer", IDOK, 210, 145, 50, 14
+    EDITTEXT edt1, 10, 20, 384, 175, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | NOT WS_TABSTOP
+    RTEXT "EGA>", stc1, 8, 208, 20, 10
+    COMBOBOX cmb1, 34, 206, 298, 300, CBS_NOINTEGRALHEIGHT | CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "&Entrer", IDOK, 344, 206, 50, 14
 }
 
 IDD_REPLACEFONTS DIALOG 0, 0, 185, 180
