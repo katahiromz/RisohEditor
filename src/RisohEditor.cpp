@@ -2149,7 +2149,7 @@ public:
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
 
     enum SHOW_MODE {
-        SHOW_MOVIE, SHOW_CODEONLY, SHOW_CODEANDBMP, SHOW_HIDDEN
+        SHOW_MOVIE, SHOW_CODEONLY, SHOW_CODEANDBMP
     };
     SHOW_MODE m_nShowMode;
     void SetShowMode(SHOW_MODE mode);
@@ -4088,9 +4088,11 @@ void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
 {
     if (iSelected != m_tab.GetCurSel())
     {
+        // update tab control selection
         m_tab.SetCurSel(iSelected);
     }
 
+    // update g_settings.bShowBinEdit
     switch (iSelected)
     {
     case 0:
@@ -4100,7 +4102,11 @@ void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
         g_settings.bShowBinEdit = TRUE;
         break;
     }
+
+    // update show
     SetShowMode(m_nShowMode);
+
+    // relayout
     PostMessage(hwnd, WM_SIZE, 0, 0);
 }
 
@@ -4869,12 +4875,6 @@ void MMainWnd::SetShowMode(SHOW_MODE mode)
             m_split2.SetPane(0, m_hSrcEdit);
             m_split2.SetPane(1, m_hBmpView);
             m_split2.SetPaneExtent(1, g_settings.nBmpViewWidth);
-            break;
-        case SHOW_HIDDEN:
-            ShowWindow(m_hSrcEdit, SW_HIDE);
-            ShowWindow(m_hBmpView, SW_HIDE);
-            ShowWindow(m_hBinEdit, SW_HIDE);
-            m_split2.SetPaneCount(0);
             break;
         }
     }
@@ -5721,7 +5721,6 @@ VOID MMainWnd::HidePreview(STV stv)
 
     // close and hide m_hBmpView
     m_hBmpView.DestroyView();
-    SetShowMode(SHOW_HIDDEN);
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
@@ -6174,6 +6173,9 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
         // update the toolbar
         UpdateOurToolBarButtons(3);
     }
+
+    // update show
+    SetShowMode(m_nShowMode);
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
@@ -11043,6 +11045,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             if (m_split1.GetPaneCount() >= 2)
             {
                 g_settings.nTreeViewWidth = m_split1.GetPaneExtent(0);
+
+                // relayout
                 PostMessage(hwnd, WM_SIZE, 0, 0);
             }
         }
