@@ -4086,6 +4086,11 @@ void MMainWnd::OnPlay(HWND hwnd)
 
 void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
 {
+    if (iSelected != m_tab.GetCurSel())
+    {
+        m_tab.SetCurSel(iSelected);
+    }
+
     switch (iSelected)
     {
     case 0:
@@ -11109,6 +11114,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             // select the entry to update the text
             SelectTV(entry, FALSE);
+            OnSelChange(hwnd, 0);
 
             PostUpdateLangArrow(hwnd);
         }
