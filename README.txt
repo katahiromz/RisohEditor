@@ -46,8 +46,8 @@ Question 5. What is the difference between no installer and portable version?
 
 Question 6. Are the 64-bit files supported?
 
-    Answer. Yes in 64-bit Windows. However WoW64 emulation layer prevents loading from
-            "C:\Program Files" or "C:\Windows\system32".
+    Answer. Yes on 64-bit Windows. However WoW64 emulation layer prevents it
+            loading from "C:\Program Files" or "C:\Windows\system32".
             You have to copy the 64-bit file into another place before loading.
 
 /////////////////////////////////////////////////////

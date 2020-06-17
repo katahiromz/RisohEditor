@@ -55,7 +55,8 @@ The portable version doesn't use registry but an ini file.
 
 ### Question 6. Are the 64-bit files supported?
 
-Yes in 64-bit Windows. However WoW64 emulation layer prevents loading from `"C:\Program Files"` or `"C:\Windows\system32"`.
+Yes on 64-bit Windows. However WoW64 emulation layer prevents it
+loading from `"C:\Program Files"` or `"C:\Windows\system32"`.
 You have to copy the 64-bit file into another place before loading.
 
 ## HISTORY
