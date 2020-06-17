@@ -1540,7 +1540,7 @@ STRINGTABLE
     IDS_RECOMPILEFAILED, "Перекомпиляция не выполнена (ошибка синтаксиса)."
     IDS_TOOL_EXPORT, "Экспорт..."
     IDS_CODEEDITOR, "Редактор кода"
-    IDS_HEXVIEWER, "Hex Viewer"
+    IDS_HEXVIEWER, "16-ричный просмотр"
 }
 
 //////////////////////////////////////////////////////////////////////////////
