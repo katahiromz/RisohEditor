@@ -219,6 +219,7 @@ Question 7. Are the 64-bit files supported?
     - Added German translation.
     - Added French translation.
 - v.5.4.2 (2020.XX.YY)
+    - Added tab control to choose "Code Editor" or "Hex Viewer".
     - Improved German and French translations.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.

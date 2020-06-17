@@ -314,6 +314,8 @@
 #define IDS_RECOMPILEOK                     320
 #define IDS_RECOMPILEFAILED                 321
 #define IDS_TOOL_EXPORT                     322
+#define IDS_CODEEDITOR                      323
+#define IDS_HEXVIEWER                       324
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

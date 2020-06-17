@@ -222,6 +222,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added German translation.
     - Added French translation.
 - v.5.4.2 (2020.XX.YY)
+    - Added tab control to choose "Code Editor" or "Hex Viewer".
     - Improved German and French translations.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.

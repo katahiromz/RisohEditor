@@ -1541,6 +1541,8 @@ STRINGTABLE
     IDS_RECOMPILEOK, "再コンパイルしました。"
     IDS_RECOMPILEFAILED, "再コンパイルに失敗しました (文法エラー)。"
     IDS_TOOL_EXPORT, "エクスポート..."
+    IDS_CODEEDITOR, "コード エディタ"
+    IDS_HEXVIEWER, "ヘックス ビュア"
 }
 
 //////////////////////////////////////////////////////////////////////////////

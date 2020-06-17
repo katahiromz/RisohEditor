@@ -2024,11 +2024,11 @@ protected:
     MEditCtrl       m_hBinEdit;                 // the EDIT control for binary
     MSrcEdit        m_hSrcEdit;                 // the EDIT control for source
     MBmpView        m_hBmpView;                 // the bitmap view
-    MSplitterWnd    m_splitter1;                // 1st splitter window
-    MSplitterWnd    m_splitter2;                // 2nd splitter window
-    MSplitterWnd    m_splitter3;                // 3rd splitter window
+    MSplitterWnd    m_split1;                   // 1st splitter window
+    MSplitterWnd    m_split2;                   // 2nd splitter window
     MIDListDlg      m_id_list_dlg;              // the ID List window
     ITEM_SEARCH     m_search;                   // the search options
+    MTabCtrl        m_tab;                      // the tab control
 
 public:
     MDropdownArrow  m_arrow;                    // the language drop-down arrow
@@ -2147,10 +2147,13 @@ public:
 
     // show/hide
     void ShowIDList(HWND hwnd, BOOL bShow = TRUE);
-    void ShowMovie(BOOL bShow = TRUE);
-    void ShowBmpView(BOOL bShow = TRUE);
+
+    enum SHOW_MODE {
+        SHOW_MOVIE, SHOW_CODEONLY, SHOW_CODEANDBMP, SHOW_HIDDEN
+    };
+    SHOW_MODE m_nShowMode;
+    void SetShowMode(SHOW_MODE mode);
     void ShowStatusBar(BOOL bShow = TRUE);
-    void ShowBinEdit(BOOL bShow = TRUE, BOOL bShowError = FALSE);
     BOOL ShowLangArrow(BOOL bShow, HTREEITEM hItem = NULL);
     void UpdateLangArrow();
     void PostUpdateLangArrow(HWND hwnd);
@@ -2271,6 +2274,7 @@ protected:
     void OnClose(HWND hwnd);
     void OnDestroy(HWND hwnd);
 
+    void OnSelChange(HWND hwnd, INT iSelected);
     void OnCancelEdit(HWND hwnd);
     void OnCompile(HWND hwnd);
     void OnGuiEdit(HWND hwnd);
@@ -2391,9 +2395,8 @@ protected:
 void MMainWnd::OnSysColorChange(HWND hwnd)
 {
     // notify the main window children
-    m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
-    m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
-    m_splitter3.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_split1.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_split2.SendMessageDx(WM_SYSCOLORCHANGE);
     m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
 }
 
@@ -4081,6 +4084,21 @@ void MMainWnd::OnPlay(HWND hwnd)
     }
 }
 
+void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
+{
+    switch (iSelected)
+    {
+    case 0:
+        g_settings.bShowBinEdit = FALSE;
+        break;
+    case 1:
+        g_settings.bShowBinEdit = TRUE;
+        break;
+    }
+    SetShowMode(m_nShowMode);
+    PostMessage(hwnd, WM_SIZE, 0, 0);
+}
+
 // cancel edit
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
@@ -4096,33 +4114,15 @@ void MMainWnd::OnCancelEdit(HWND hwnd)
 // set error message
 void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
 {
-    if (bBox)
+    // show the message box
+    if (strOutput.empty())
     {
-        // show the message box
-        if (strOutput.empty())
-        {
-            MWideToAnsi ansi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
-            MessageBoxA(m_hwnd, ansi.c_str(), NULL, MB_ICONERROR);
-        }
-        else
-        {
-            MessageBoxA(m_hwnd, strOutput.c_str(), NULL, MB_ICONERROR);
-        }
+        MsgBoxDx(LoadStringDx(IDS_COMPILEERROR), MB_ICONERROR);
     }
     else
     {
-        // show the message in m_hBinEdit
-        if (strOutput.empty())
-        {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-        }
-        else
-        {
-            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-        }
-
-        // show m_hBinEdit
-        ShowBinEdit(TRUE, TRUE);
+        MAnsiToWide wide(CP_ACP, strOutput.c_str());
+        MsgBoxDx(wide.c_str(), MB_ICONERROR);
     }
 }
 
@@ -4827,55 +4827,53 @@ void MMainWnd::OnDebugTreeNode(HWND hwnd)
     MsgBoxDx(sz, MB_ICONINFORMATION);
 }
 
-// show the movie or not
-void MMainWnd::ShowMovie(BOOL bShow/* = TRUE*/)
+void MMainWnd::SetShowMode(SHOW_MODE mode)
 {
-    if (bShow)
+    m_nShowMode = mode;
+    if (g_settings.bShowBinEdit)
     {
-        // show the movie
-        ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
         ShowWindow(m_hSrcEdit, SW_HIDE);
-        m_splitter3.SetPaneCount(1);
-        m_splitter3.SetPane(0, m_hBmpView);
-    }
-    else
-    {
-        // hide the movie
-        ShowBmpView(FALSE);
-    }
-}
-
-// show the image file or not
-void MMainWnd::ShowBmpView(BOOL bShow/* = TRUE*/)
-{
-    ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
-    if (bShow)
-    {
-        // show m_hBmpView
-        ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
-        m_splitter3.SetPaneCount(2);
-        m_splitter3.SetPane(0, m_hSrcEdit);
-        m_splitter3.SetPane(1, m_hBmpView);
-
-        // resume the width
-        m_splitter3.SetPaneExtent(1, g_settings.nBmpViewWidth);
-    }
-    else
-    {
-        if (m_splitter3.GetPaneCount() >= 2)
-        {
-            // remember the m_hBmpView width
-            g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
-        }
-
-        // hide m_hBmpView
         ShowWindow(m_hBmpView, SW_HIDE);
-        m_splitter3.SetPaneCount(1);
-        m_splitter3.SetPane(0, m_hSrcEdit);
+        ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
+        m_split2.SetPaneCount(1);
+        m_split2.SetPane(0, m_hBinEdit);
     }
-
-    // update m_hBmpView's scroll info
-    SendMessageW(m_hBmpView, WM_COMMAND, 999, 0);
+    else
+    {
+        switch (mode)
+        {
+        case SHOW_MOVIE:
+            ShowWindow(m_hSrcEdit, SW_HIDE);
+            ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
+            m_split2.SetPaneCount(1);
+            m_split2.SetPane(0, m_hBmpView);
+            break;
+        case SHOW_CODEONLY:
+            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hBmpView, SW_HIDE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
+            m_split2.SetPaneCount(1);
+            m_split2.SetPane(0, m_hSrcEdit);
+            break;
+        case SHOW_CODEANDBMP:
+            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
+            m_split2.SetPaneCount(2);
+            m_split2.SetPane(0, m_hSrcEdit);
+            m_split2.SetPane(1, m_hBmpView);
+            m_split2.SetPaneExtent(1, g_settings.nBmpViewWidth);
+            break;
+        case SHOW_HIDDEN:
+            ShowWindow(m_hSrcEdit, SW_HIDE);
+            ShowWindow(m_hBmpView, SW_HIDE);
+            ShowWindow(m_hBinEdit, SW_HIDE);
+            m_split2.SetPaneCount(0);
+            break;
+        }
+    }
+    PostMessage(m_hwnd, WM_SIZE, 0, 0);
 }
 
 // show the status bar or not
@@ -4885,35 +4883,6 @@ void MMainWnd::ShowStatusBar(BOOL bShow/* = TRUE*/)
         ShowWindow(m_hStatusBar, SW_SHOWNOACTIVATE);
     else
         ShowWindow(m_hStatusBar, SW_HIDE);
-}
-
-// show the binary/error EDIT control or not
-void MMainWnd::ShowBinEdit(BOOL bShow/* = TRUE*/, BOOL bShowError/* = FALSE*/)
-{
-    if (bShow && (g_settings.bShowBinEdit || bShowError))
-    {
-        // show the binary EDIT control
-        ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
-        m_splitter2.SetPaneCount(2);
-        m_splitter2.SetPane(0, m_splitter3);
-        m_splitter2.SetPane(1, m_hBinEdit);
-
-        // resume the height
-        m_splitter2.SetPaneExtent(1, g_settings.nBinEditHeight);
-    }
-    else
-    {
-        if (m_splitter2.GetPaneCount() >= 2)
-        {
-            // remember the binary EDIT control's height
-            g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
-        }
-
-        // hide the binary EDIT control
-        ShowWindow(m_hBinEdit, SW_HIDE);
-        m_splitter2.SetPaneCount(1);
-        m_splitter2.SetPane(0, m_splitter3);
-    }
 }
 
 // WM_MOVE: the main window has moved
@@ -4984,8 +4953,15 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
         sizClient.cy -= rc.bottom - rc.top;
     }
 
-    // notify the size change to m_splitter1
-    MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
+    // notify the size change to m_split1
+    MoveWindow(m_split1, x, y, sizClient.cx, sizClient.cy, TRUE);
+
+    // resize m_split2
+    GetClientRect(m_tab, &rc);
+    m_tab.AdjustRect(FALSE, &rc);
+    MapWindowRect(m_tab, GetParent(m_split2), &rc);
+    SIZE siz = SizeFromRectDx(&rc);
+    MoveWindow(m_split2, rc.left, rc.top, siz.cx, siz.cy, TRUE);
 }
 
 // WM_INITMENU: update the menus
@@ -5359,8 +5335,8 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
     // destroy the icon
     DestroyIcon(hIcon);
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the cursor resource
@@ -5378,8 +5354,8 @@ void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
     // destroy the cursor
     DestroyCursor(hCursor);
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the group icon resource
@@ -5393,8 +5369,8 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the group cursor resource
@@ -5409,8 +5385,8 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the bitmap resource
@@ -5425,8 +5401,8 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hSrcEdit, str.c_str());
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the image resource
@@ -5440,8 +5416,8 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
     // set the entry image to m_hBmpView
     m_hBmpView.SetImage(&entry[0], entry.size());
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the WAVE resource
@@ -5455,8 +5431,8 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
     // make it playable
     m_hBmpView.SetPlay();
 
-    // show m_hBmpView
-    ShowBmpView(TRUE);
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the AVI resource
@@ -5470,8 +5446,8 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
     // set the AVI
     m_hBmpView.SetMedia(&entry[0], entry.size());
 
-    // show m_hBmpView
-    ShowMovie(TRUE);
+    // show movie
+    SetShowMode(SHOW_MOVIE);
 }
 
 // preview the RT_ACCELERATOR resource
@@ -5651,7 +5627,12 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
     {
         m_hBmpView.DestroyView();
     }
-    ShowBmpView(TRUE);
+
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
+
+    // show
+    SetShowMode(SHOW_CODEANDBMP);
 }
 
 // preview the string table resource
@@ -5729,7 +5710,7 @@ VOID MMainWnd::HidePreview(STV stv)
 
     // close and hide m_hBmpView
     m_hBmpView.DestroyView();
-    ShowBmpView(FALSE);
+    SetShowMode(SHOW_HIDDEN);
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
@@ -5747,6 +5728,9 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
     // show the binary
     MStringW str = DumpBinaryAsText(entry->m_data);
     SetWindowTextW(m_hBinEdit, str.c_str());
+
+    // code only
+    SetShowMode(SHOW_CODEONLY);
 
     // do preview the resource item
     if (entry->m_type.m_id != 0)
@@ -6088,8 +6072,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
     case ET_LANG:
         // do preview
         bEditable = Preview(m_hwnd, entry, stv);
-        // show the binary EDIT control
-        ShowBinEdit(TRUE);
         break;
 
     case ET_STRING:
@@ -6105,7 +6087,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
         // hide the binary EDIT control
         SetWindowTextW(m_hBinEdit, NULL);
-        ShowBinEdit(FALSE);
 
         // it's editable
         bEditable = TRUE;
@@ -6124,7 +6105,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
         // hide the binary EDIT control
         SetWindowTextW(m_hBinEdit, NULL);
-        ShowBinEdit(FALSE);
 
         // it's editable
         bEditable = TRUE;
@@ -6138,7 +6118,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
         // hide the binary EDIT control
         SetWindowTextW(m_hBinEdit, NULL);
-        ShowBinEdit(FALSE);
 
         // it's non editable
         bEditable = FALSE;
@@ -7388,16 +7367,12 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
         // failed. show error message
         if (strOutput.empty())
         {
-            SetWindowTextW(m_hBinEdit, LoadStringDx(IDS_COMPILEERROR));
-            ShowBinEdit(FALSE);
+            MsgBoxDx(LoadStringDx(IDS_COMPILEERROR), MB_ICONERROR);
         }
         else
         {
             MAnsiToWide a2w(CP_ACP, strOutput.c_str());
             ErrorBoxDx(a2w.c_str());
-
-            SetWindowTextA(m_hBinEdit, (char *)&strOutput[0]);
-            ShowBinEdit(TRUE, TRUE);
         }
     }
 
@@ -9464,9 +9439,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
 
-    DestroyWindow(m_splitter1);
-    DestroyWindow(m_splitter2);
-    DestroyWindow(m_splitter3);
+    DestroyWindow(m_split1);
+    DestroyWindow(m_split2);
 
     s_hMainWnd = NULL;
 
@@ -10671,9 +10645,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_BINARYPANE:
         // toggle the flag
         g_settings.bShowBinEdit = !g_settings.bShowBinEdit;
-
-        // show/hide the binary EDIT control
-        ShowBinEdit(g_settings.bShowBinEdit);
+        // show/hide the binary
+        m_tab.SetCurSel(!!g_settings.bShowBinEdit);
+        OnSelChange(hwnd, !!g_settings.bShowBinEdit);
         break;
     case ID_ALWAYSCONTROL:
         {
@@ -11042,23 +11016,29 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     // get the selected entry
     auto entry = g_res.get_entry();
 
-    if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
+    if (pnmhdr->code == TCN_SELCHANGE)
+    {
+        if (pnmhdr->hwndFrom == m_tab)
+        {
+            INT iSelected = m_tab.GetCurSel();
+            OnSelChange(hwnd, iSelected);
+        }
+    }
+    else if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
         MWaitCursor wait;
-        if (pnmhdr->hwndFrom == m_splitter1)
+        if (pnmhdr->hwndFrom == m_split1)
         {
-            if (m_splitter1.GetPaneCount() >= 1)
-                g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
+            if (m_split1.GetPaneCount() >= 2)
+            {
+                g_settings.nTreeViewWidth = m_split1.GetPaneExtent(0);
+                PostMessage(hwnd, WM_SIZE, 0, 0);
+            }
         }
-        else if (pnmhdr->hwndFrom == m_splitter2)
+        else if (pnmhdr->hwndFrom == m_split2)
         {
-            if (m_splitter2.GetPaneCount() >= 2)
-                g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
-        }
-        else if (pnmhdr->hwndFrom == m_splitter3)
-        {
-            if (m_splitter3.GetPaneCount() >= 2)
-                g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
+            if (m_split2.GetPaneCount() >= 2)
+                g_settings.nBmpViewWidth = m_split2.GetPaneExtent(1);
         }
     }
     else if (pnmhdr->code == TVN_DELETEITEM)
@@ -12517,12 +12497,11 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 // set the default settings
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
-    g_settings.bShowBinEdit = TRUE;
+    g_settings.bShowBinEdit = FALSE;
     g_settings.bAlwaysControl = FALSE;
     g_settings.bShowStatusBar = TRUE;
     g_settings.nTreeViewWidth = TV_WIDTH;
     g_settings.nBmpViewWidth = BV_WIDTH;
-    g_settings.nBinEditHeight = BE_HEIGHT;
     g_settings.bGuiByDblClick = TRUE;
     g_settings.bResumeWindowPos = TRUE;
     g_settings.bAutoLoadNearbyResH = TRUE;
@@ -12730,11 +12709,10 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
     keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bUseIDC_STATIC);
     keyRisoh.QueryDword(TEXT("ShowStatusBar"), (DWORD&)g_settings.bShowStatusBar);
-    keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
+    //keyRisoh.QueryDword(TEXT("ShowBinEdit"), (DWORD&)g_settings.bShowBinEdit);
     keyRisoh.QueryDword(TEXT("AlwaysControl"), (DWORD&)g_settings.bAlwaysControl);
     keyRisoh.QueryDword(TEXT("TreeViewWidth"), (DWORD&)g_settings.nTreeViewWidth);
     keyRisoh.QueryDword(TEXT("BmpViewWidth"), (DWORD&)g_settings.nBmpViewWidth);
-    keyRisoh.QueryDword(TEXT("BinEditHeight"), (DWORD&)g_settings.nBinEditHeight);
     keyRisoh.QueryDword(TEXT("bGuiByDblClick"), (DWORD&)g_settings.bGuiByDblClick);
     keyRisoh.QueryDword(TEXT("bResumeWindowPos"), (DWORD&)g_settings.bResumeWindowPos);
     keyRisoh.QueryDword(TEXT("bAutoLoadNearbyResH"), (DWORD&)g_settings.bAutoLoadNearbyResH);
@@ -13038,21 +13016,18 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 #endif
 
     // update pane extent settings
-    if (m_splitter3.GetPaneCount() >= 2)
-        g_settings.nBmpViewWidth = m_splitter3.GetPaneExtent(1);
-    if (m_splitter2.GetPaneCount() >= 2)
-        g_settings.nBinEditHeight = m_splitter2.GetPaneExtent(1);
-    if (m_splitter1.GetPaneCount() >= 1)
-        g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
+    if (m_split2.GetPaneCount() >= 2)
+        g_settings.nBmpViewWidth = m_split2.GetPaneExtent(1);
+    if (m_split1.GetPaneCount() >= 2)
+        g_settings.nTreeViewWidth = m_split1.GetPaneExtent(0);
 
     keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
     keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
     keyRisoh.SetDword(TEXT("ShowStatusBar"), g_settings.bShowStatusBar);
-    keyRisoh.SetDword(TEXT("ShowBinEdit"), g_settings.bShowBinEdit);
+    //keyRisoh.SetDword(TEXT("ShowBinEdit"), g_settings.bShowBinEdit);
     keyRisoh.SetDword(TEXT("AlwaysControl"), g_settings.bAlwaysControl);
     keyRisoh.SetDword(TEXT("TreeViewWidth"), g_settings.nTreeViewWidth);
     keyRisoh.SetDword(TEXT("BmpViewWidth"), g_settings.nBmpViewWidth);
-    keyRisoh.SetDword(TEXT("BinEditHeight"), g_settings.nBinEditHeight);
     keyRisoh.SetDword(TEXT("bGuiByDblClick"), g_settings.bGuiByDblClick);
     keyRisoh.SetDword(TEXT("bResumeWindowPos"), g_settings.bResumeWindowPos);
     keyRisoh.SetDword(TEXT("bAutoLoadNearbyResH"), g_settings.bAutoLoadNearbyResH);
@@ -13214,7 +13189,7 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
     DWORD exstyle = WS_EX_CLIENTEDGE;
 
     HWND hSrcEdit = ::CreateWindowEx(exstyle, L"EDIT", NULL, style,
-        0, 0, 1, 1, m_splitter3, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
+        0, 0, 1, 1, m_split2, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
     if (hSrcEdit)
     {
         m_hSrcEdit.SubclassDx(hSrcEdit);
@@ -13293,6 +13268,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
     s_hMainWnd = hwnd;
+    m_nShowMode = SHOW_CODEONLY;
 
     DoLoadLangInfo();   // load the language information
 
@@ -13352,13 +13328,21 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     // create the splitter windows
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
-    if (!m_splitter1.CreateDx(hwnd, 2, style))
+    if (!m_split1.CreateDx(hwnd, 2, style))
         return FALSE;
-    style = WS_CHILD | WS_VISIBLE | SWS_VERT | SWS_BOTTOMALIGN;
-    if (!m_splitter2.CreateDx(m_splitter1, 2, style))
+
+    style = WS_CHILD | WS_VISIBLE | WS_BORDER | TCS_BOTTOM | TCS_TABS | TCS_TOOLTIPS |
+            TCS_FOCUSNEVER | TCS_HOTTRACK | TCS_MULTILINE;
+    if (!m_tab.CreateWindowDx(m_split1, NULL, style))
         return FALSE;
+    SetWindowFont(m_tab, GetStockFont(DEFAULT_GUI_FONT), TRUE);
+
+    m_tab.InsertItem(0, LoadStringDx(IDS_CODEEDITOR));
+    m_tab.InsertItem(1, LoadStringDx(IDS_HEXVIEWER));
+    m_tab.SetCurSel(0);
+
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
-    if (!m_splitter3.CreateDx(m_splitter2, 1, style))
+    if (!m_split2.CreateDx(m_split1, 1, style))
         return FALSE;
 
     // create a treeview (tree control) window
@@ -13366,7 +13350,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
         TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
     m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE,
-        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
+        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_split1,
         (HMENU)1, m_hInst, NULL);
     if (m_hwndTV == NULL)
         return FALSE;
@@ -13391,14 +13375,14 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     exstyle = WS_EX_CLIENTEDGE;
-    m_hBinEdit.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
+    m_hBinEdit.CreateAsChildDx(m_split2, NULL, style, exstyle, 3);
 
     // create source EDIT control
-    if (!ReCreateSrcEdit(hwnd))
+    if (!ReCreateSrcEdit(m_split2))
         return FALSE;
 
     // create MBmpView
-    if (!m_hBmpView.CreateDx(m_splitter3, 4))
+    if (!m_hBmpView.CreateDx(m_split2, 4))
         return FALSE;
 
     // create status bar
@@ -13421,14 +13405,10 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         ShowWindow(m_hStatusBar, SW_HIDE);
 
     // set the pane contents of splitters
-    m_splitter1.SetPane(0, m_hwndTV);
-    m_splitter1.SetPane(1, m_splitter2);
-    m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
-    m_splitter2.SetPane(0, m_splitter3);
-    m_splitter2.SetPane(1, m_hBinEdit);
-    m_splitter2.SetPaneExtent(1, BE_HEIGHT);
-    m_splitter3.SetPane(0, m_hSrcEdit);
-    //m_splitter3.SetPane(1, m_hBmpView);
+    m_split1.SetPane(0, m_hwndTV);
+    m_split1.SetPane(1, m_tab);
+    m_split1.SetPaneExtent(0, g_settings.nTreeViewWidth);
+    m_split2.SetPane(0, m_hSrcEdit);
 
     // create the fonts
     ReCreateFonts(hwnd);

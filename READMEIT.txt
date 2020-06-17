@@ -213,6 +213,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
   Aggiunta traduzione tedesca.
   Aggiunta traduzione francese.
 - v.5.4.2 (YY.XX.2020)
+    - Added tab control to choose "Code Editor" or "Hex Viewer".
     - Migliorate traduzioni tedesca e francese.
     - Corretto problema freccia finestra drop-down lingua.
     - Corretti problema elaborazione codifica Unicode.

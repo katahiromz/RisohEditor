@@ -45,7 +45,6 @@ struct RisohSettings
     BOOL        bShowStatusBar;         // show the status bar?
     INT         nTreeViewWidth;         // the treeview width
     INT         nBmpViewWidth;          // the MBmpview width
-    INT         nBinEditHeight;         // the binary EDIT control height
     BOOL        bGuiByDblClick;         // start GUI edit by double click?
     BOOL        bResumeWindowPos;       // resume the window position?
     BOOL        bAutoLoadNearbyResH;    // auto loading resource.h?
