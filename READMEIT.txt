@@ -55,7 +55,7 @@ Domanda 6. Qual è la differenza tra nessuna versione di installazione e portati
 
 Domanda 7. I file a 64 bit sono supportati?
 
-    Risposta. Sì in Windows a 64 bit. Tuttavia, lo strato di emulazione WoW64 impedisce
+    Risposta. Sì in Windows a 64 bit. Tuttavia, il livello di emulazione WoW64 impedisce
               il caricamento da "C:\Program Files" o "C:\Windows\system32".
               Devi copiare il file a 64 bit in un altro posto prima di caricarlo.
 
