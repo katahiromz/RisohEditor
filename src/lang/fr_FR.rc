@@ -1539,8 +1539,8 @@ STRINGTABLE
     IDS_RECOMPILEOK, "Recompilation effectuée."
     IDS_RECOMPILEFAILED, "La recompilation a échoué (erreur de syntaxe)."
     IDS_TOOL_EXPORT, "Exportation..."
-    IDS_CODEEDITOR, "Code Editor"
-    IDS_HEXVIEWER, "Hex Viewer"
+    IDS_CODEEDITOR, "Éditeur de code"
+    IDS_HEXVIEWER, "Visionneuse hexadécimale"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1539,7 +1539,7 @@ STRINGTABLE
     IDS_RECOMPILEOK, "Neukompilierung abgeschlossen."
     IDS_RECOMPILEFAILED, "Neukompilierung fehlgeschlagen (Syntaxfehler)."
     IDS_TOOL_EXPORT, "Export..."
-    IDS_CODEEDITOR, "Code Editor"
+    IDS_CODEEDITOR, "Code-Editor"
     IDS_HEXVIEWER, "Hex Viewer"
 }
 //////////////////////////////////////////////////////////////////////////////
