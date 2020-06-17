@@ -5655,6 +5655,9 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
     MString str = GetLanguageStatement(entry.m_lang);
     str += str_res.Dump();
     SetWindowTextW(m_hSrcEdit, str.c_str());
+
+    // show code only
+    SetShowMode(SHOW_CODEONLY);
 }
 
 // preview the message table resource
@@ -5683,6 +5686,9 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     str += msg_res.Dump();
     str += L"#endif\r\n\r\n";
     SetWindowTextW(m_hSrcEdit, str.c_str());
+
+    // show code only
+    SetShowMode(SHOW_CODEONLY);
 }
 
 // close the preview
