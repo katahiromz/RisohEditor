@@ -5054,7 +5054,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
     else
         CheckMenuItem(hMenu, ID_STATUSBAR, MF_UNCHECKED);
 
-    if (IsWindowVisible(m_hBinEdit))
+    if (g_settings.bShowBinEdit)
         CheckMenuItem(hMenu, ID_BINARYPANE, MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_BINARYPANE, MF_UNCHECKED);
