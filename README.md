@@ -224,6 +224,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.
     - Improved exporting and extracting.
+    - Improved EGA dialog.
 
 ## Contact Us
 

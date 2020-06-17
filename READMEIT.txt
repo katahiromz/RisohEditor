@@ -217,6 +217,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Corretto problema freccia finestra drop-down lingua.
     - Corretti problema elaborazione codifica Unicode.
     - Migliorate funzionalità importazione ed estrazione.
+    - Improved EGA dialog.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

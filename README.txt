@@ -216,6 +216,7 @@ Question 6. Are the 64-bit files supported?
     - Fixed language drop-down arrow.
     - Fixed Unicode encoding processing.
     - Improved exporting and extracting.
+    - Improved EGA dialog.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
