@@ -1539,7 +1539,7 @@ STRINGTABLE
     IDS_RECOMPILEOK, "Перекомпиляция успешно выполнена."
     IDS_RECOMPILEFAILED, "Перекомпиляция не выполнена (ошибка синтаксиса)."
     IDS_TOOL_EXPORT, "Экспорт..."
-    IDS_CODEEDITOR, "Code Editor"
+    IDS_CODEEDITOR, "Редактор кода"
     IDS_HEXVIEWER, "Hex Viewer"
 }
 
