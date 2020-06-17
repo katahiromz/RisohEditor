@@ -212,7 +212,7 @@ Domanda 6. I file a 64 bit sono supportati?
   Aggiunta traduzione tedesca.
   Aggiunta traduzione francese.
 - v.5.4.2 (YY.XX.2020)
-   Aggiunte schede controllo "Editor codice" e "Vsiualizzatore HEX".
+   Aggiunte schede controllo "Editor codice" e "Visualizzatore HEX".
    Migliorate traduzioni tedesca e francese.
    Corretto problema freccia finestra drop-down lingua.
    Corretto problema elaborazione codifica Unicode.
