@@ -1542,7 +1542,7 @@ STRINGTABLE
     IDS_RECOMPILEFAILED, "再コンパイルに失敗しました (文法エラー)。"
     IDS_TOOL_EXPORT, "エクスポート..."
     IDS_CODEEDITOR, "コード エディタ"
-    IDS_HEXVIEWER, "ヘックス ビュア"
+    IDS_HEXVIEWER, "16進ビュア"
 }
 
 //////////////////////////////////////////////////////////////////////////////
