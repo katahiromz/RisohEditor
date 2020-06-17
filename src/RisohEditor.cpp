@@ -10989,9 +10989,14 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 
 BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
 {
+    if (IsWindow(m_arrow))
+        DestroyWindow(m_arrow);
+
     auto entry = g_res.get_entry();
     if (!entry)
+    {
         return FALSE;
+    }
 
     if (hItem == NULL)
     {
@@ -11008,9 +11013,6 @@ BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
     LONG y = rc.top;
 
     m_arrow.ShowDropDownList(m_arrow, FALSE);
-
-    if (IsWindow(m_arrow))
-        DestroyWindow(m_arrow);
 
     if (bShow)
     {
