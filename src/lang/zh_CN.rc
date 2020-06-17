@@ -1538,8 +1538,8 @@ STRINGTABLE
     IDS_RECOMPILEOK, "重新编译。"
     IDS_RECOMPILEFAILED, "重新编译失败 (语法错误)。"
     IDS_TOOL_EXPORT, "导出..."
-    IDS_CODEEDITOR, "Code Editor"
-    IDS_HEXVIEWER, "Hex Viewer"
+    IDS_CODEEDITOR, "代码编辑器"
+    IDS_HEXVIEWER, "十六进制查看器"
 }
 
 //////////////////////////////////////////////////////////////////////////////
