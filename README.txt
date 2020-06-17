@@ -28,31 +28,23 @@ Question 2. What are edt1, edt2, cmb1?
 
     Answer. Those are standard control ID macros defined in <dlgs.h>.
 
-Question 3. I can't find my resource IDs in [List of Resource IDs] 
-            Window.
-
-    Answer. At first, please configure [ID Association] settings from
-            [File] Menu --> [ID Association]. You have to load 
-            the "resource.h" file to get the resource ID names 
-            correctly.
-
-Question 4. What is mcdx?
+Question 3. What is mcdx?
 
     Answer. It's a special message compiler I made.
             See mcdx/MESSAGETABLEDX.md for details.
 
-Question 5. Why did I get garbled characters when compiling with Visual Studio?
+Question 4. Why did I get garbled characters when compiling with Visual Studio?
 
     Answer. The resource compiler of MSVC has a bug in treatment of
             UTF-8 resource files.
 
             Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
-Question 6. What is the difference between no installer and portable version?
+Question 5. What is the difference between no installer and portable version?
 
     Answer. The portable version doesn't use registry but an ini file.
 
-Question 7. Are the 64-bit files supported?
+Question 6. Are the 64-bit files supported?
 
     Answer. Yes in 64-bit Windows. However WoW64 emulation layer prevents loading from
             "C:\Program Files" or "C:\Windows\system32".

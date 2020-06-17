@@ -30,30 +30,23 @@ Domanda 2. Che cosa sono edt1, edt2, cmb1?
 
     Risposta. Sono gli ID delle macro di controllo definite in <dlgs.h>.
 
-Domanda 3. Non trovo i miei ID risorsa nell'[Elenco ID risorse] 
-            Window.
-
-    Risposta. Per prima cosa, configura le impostazioni [Associazione ID] 
-            nel menu [File] -> [Associazione ID]. Va poi caricato il necessario 
-            file "resource.h" per ottenere i nomi corretti degli ID risorse.
-
-Domanda 4. Che cos'è mcdx?
+Domanda 3. Che cos'è mcdx?
 
     Risposta. È uno speciale compilatore messaggio che ho realizzato.
               Per i dettagli vedi mcdx/MESSAGETABLEDX.md.
 
-Domanda 5. Perché ottengo caratteri confusi quando compilo con Visual Studio?
+Domanda 4. Perché ottengo caratteri confusi quando compilo con Visual Studio?
 
     Risposta. Il compilatore di risorse di MSVC ha un problema nel trattamento 
               dei file risorse codificati in UTF-8.
 
               Usa UTF-16 (ma UTF-16 non è supportato in windres di GNU).
 
-Domanda 6. Qual è la differenza tra nessuna versione di installazione e portatile?
+Domanda 5. Qual è la differenza tra nessuna versione di installazione e portatile?
 
     Risposta. La versione portatile non utilizza il registro ma un file ini.
 
-Domanda 7. I file a 64 bit sono supportati?
+Domanda 6. I file a 64 bit sono supportati?
 
     Risposta. Sì in Windows a 64 bit. Tuttavia, il livello di emulazione WoW64 impedisce
               il caricamento da "C:\Program Files" o "C:\Windows\system32".
