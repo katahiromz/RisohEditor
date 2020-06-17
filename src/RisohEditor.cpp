@@ -11492,14 +11492,8 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 {
-    HWND hwndSrcEdit = NULL;
-    if (IsWindowVisible(m_hSrcEdit) && IsWindowEnabled(m_hSrcEdit))
-        hwndSrcEdit = m_hSrcEdit;
-
-    HWND hwndBinEdit = NULL;
-    if (IsWindowVisible(m_hBinEdit) && IsWindowEnabled(m_hBinEdit))
-        hwndBinEdit = m_hBinEdit;
-
+    HWND hwndSrcEdit = m_hSrcEdit;
+    HWND hwndBinEdit = m_hBinEdit;
     HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
     HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
     HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
@@ -11559,7 +11553,20 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
         } while (ahwnd[i] == NULL);
     }
 
-    SetFocus(ahwnd[i]);
+    if (hwndSrcEdit == ahwnd[i])
+    {
+        OnSelChange(hwnd, 0);
+        SetFocus(m_hSrcEdit);
+    }
+    else if (hwndBinEdit == ahwnd[i])
+    {
+        OnSelChange(hwnd, 1);
+        SetFocus(m_hBinEdit);
+    }
+    else
+    {
+        SetFocus(ahwnd[i]);
+    }
 }
 
 void MMainWnd::OnHelp(HWND hwnd)
