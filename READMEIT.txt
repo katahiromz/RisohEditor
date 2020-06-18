@@ -211,7 +211,7 @@ Domanda 6. I file a 64 bit sono supportati?
   Corretto problema messaggio barra di stato.
   Aggiunta traduzione tedesca.
   Aggiunta traduzione francese.
-- v.5.4.2 (YY.XX.2020)
+- v.5.4.2 (18.06.2020)
    Aggiunte schede controllo "Editor codice" e "Visualizzatore HEX".
    Migliorate traduzioni tedesca e francese.
    Corretto problema freccia finestra drop-down lingua.

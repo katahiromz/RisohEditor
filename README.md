@@ -218,7 +218,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed status bar message.
     - Added German translation.
     - Added French translation.
-- v.5.4.2 (2020.XX.YY)
+- v.5.4.2 (2020.06.18)
     - Added tab control to choose "Code Editor" or "Hex Viewer".
     - Improved German and French translations.
     - Fixed language drop-down arrow.
