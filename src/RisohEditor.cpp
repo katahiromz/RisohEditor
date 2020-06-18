@@ -2263,7 +2263,6 @@ protected:
     void OnSysColorChange(HWND hwnd);
     void OnSetFocus(HWND hwnd, HWND hwndOldFocus);
     void OnKillFocus(HWND hwnd, HWND hwndNewFocus);
-    void OnTimer(HWND hwnd, UINT id);
     void OnPlay(HWND hwnd);
     void OnDropFiles(HWND hwnd, HDROP hdrop);
     void OnMove(HWND hwnd, int x, int y);
@@ -2411,15 +2410,6 @@ void MMainWnd::OnSetFocus(HWND hwnd, HWND hwndOldFocus)
 void MMainWnd::OnKillFocus(HWND hwnd, HWND hwndNewFocus)
 {
     m_arrow.ShowDropDownList(m_arrow, FALSE);
-}
-
-void MMainWnd::OnTimer(HWND hwnd, UINT id)
-{
-    if (id == 999)
-    {
-        KillTimer(hwnd, id);
-        ChangeStatusText(IDS_READY);
-    }
 }
 
 // check whether it needs compilation
@@ -10927,7 +10917,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         {
             ChangeStatusText(m_nStatusStringID);
             m_nStatusStringID = 0;
-            SetTimer(hwnd, 999, 5 * 1000, NULL);
         }
         else
         {
@@ -13500,7 +13489,6 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
         DO_MSG(WM_SETFOCUS, OnSetFocus);
         DO_MSG(WM_KILLFOCUS, OnKillFocus);
-        DO_MSG(WM_TIMER, OnTimer);
         DO_MESSAGE(MYWM_CLEARSTATUS, OnClearStatus);
         DO_MESSAGE(MYWM_MOVESIZEREPORT, OnMoveSizeReport);
         DO_MESSAGE(MYWM_COMPILECHECK, OnCompileCheck);
