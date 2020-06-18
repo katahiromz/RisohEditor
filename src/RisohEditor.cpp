@@ -24,7 +24,7 @@
 
 #define TV_WIDTH        250     // default m_hwndTV width
 #define BV_WIDTH        160     // default m_hBmpView width
-#define BE_HEIGHT       90      // default m_hBinEdit height
+#define BE_HEIGHT       90      // default m_hHexViewer height
 #define CX_STATUS_PART  80      // status bar part width
 #define MYWM_UPDATELANGARROW (WM_USER + 114)
 
@@ -2021,11 +2021,11 @@ protected:
 
     // classes
     MRadWindow      m_rad_window;               // the RADical window
-    MEditCtrl       m_hBinEdit;                 // the EDIT control for binary
-    MSrcEdit        m_hSrcEdit;                 // the EDIT control for source
+    MEditCtrl       m_hHexViewer;               // the EDIT control for binary
+    MSrcEdit        m_hCodeEditor;              // the EDIT control for source
     MBmpView        m_hBmpView;                 // the bitmap view
-    MSplitterWnd    m_split1;                   // 1st splitter window
-    MSplitterWnd    m_split2;                   // 2nd splitter window
+    MSplitterWnd    m_splitter1;                // 1st splitter window
+    MSplitterWnd    m_splitter2;                // 2nd splitter window
     MIDListDlg      m_id_list_dlg;              // the ID List window
     ITEM_SEARCH     m_search;                   // the search options
     MTabCtrl        m_tab;                      // the tab control
@@ -2395,8 +2395,8 @@ protected:
 void MMainWnd::OnSysColorChange(HWND hwnd)
 {
     // notify the main window children
-    m_split1.SendMessageDx(WM_SYSCOLORCHANGE);
-    m_split2.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_splitter1.SendMessageDx(WM_SYSCOLORCHANGE);
+    m_splitter2.SendMessageDx(WM_SYSCOLORCHANGE);
     m_rad_window.SendMessageDx(WM_SYSCOLORCHANGE);
 }
 
@@ -3007,15 +3007,15 @@ void MMainWnd::OnFonts(HWND hwnd)
     MFontsDlg dialog;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        // update m_hBinFont and set it to m_hBinEdit
+        // update m_hBinFont and set it to m_hHexViewer
         DeleteObject(m_hBinFont);
         m_hBinFont = dialog.DetachBinFont();
-        SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
+        SetWindowFont(m_hHexViewer, m_hBinFont, TRUE);
 
-        // update m_hSrcFont and set it to m_hSrcEdit
+        // update m_hSrcFont and set it to m_hCodeEditor
         DeleteObject(m_hSrcFont);
         m_hSrcFont = dialog.DetachSrcFont();
-        SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
+        SetWindowFont(m_hCodeEditor, m_hSrcFont, TRUE);
     }
 }
 
@@ -3603,8 +3603,8 @@ void MMainWnd::ReCreateFonts(HWND hwnd)
     assert(m_hSrcFont);
 
     // set the fonts to the controls
-    SetWindowFont(m_hBinEdit, m_hBinFont, TRUE);
-    SetWindowFont(m_hSrcEdit, m_hSrcFont, TRUE);
+    SetWindowFont(m_hHexViewer, m_hBinFont, TRUE);
+    SetWindowFont(m_hCodeEditor, m_hSrcFont, TRUE);
 }
 
 // check the text for item search
@@ -3945,9 +3945,9 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 BOOL MMainWnd::DoInnerSearch(HWND hwnd)
 {
     DWORD ich, ichEnd;
-    SendMessageW(m_hSrcEdit, EM_GETSEL, (WPARAM)&ich, (LPARAM)&ichEnd);
+    SendMessageW(m_hCodeEditor, EM_GETSEL, (WPARAM)&ich, (LPARAM)&ichEnd);
 
-    MString strText = GetWindowText(m_hSrcEdit);
+    MString strText = GetWindowText(m_hCodeEditor);
 
     MString strTarget = m_search.strText;
     if (m_search.bIgnoreCases)
@@ -3981,8 +3981,8 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
 
     if (index != MString::npos)
     {
-        SendMessageW(m_hSrcEdit, EM_SETSEL, INT(index), INT(index + strTarget.size()));
-        SendMessageW(m_hSrcEdit, EM_SCROLLCARET, 0, 0);
+        SendMessageW(m_hCodeEditor, EM_SETSEL, INT(index), INT(index + strTarget.size()));
+        SendMessageW(m_hCodeEditor, EM_SCROLLCARET, 0, 0);
         return TRUE;
     }
 
@@ -4118,10 +4118,10 @@ void MMainWnd::OnSelChange(HWND hwnd, INT iSelected)
 void MMainWnd::OnCancelEdit(HWND hwnd)
 {
     // clear modification flag
-    Edit_SetModify(m_hSrcEdit, FALSE);
-    Edit_SetReadOnly(m_hSrcEdit, FALSE);
+    Edit_SetModify(m_hCodeEditor, FALSE);
+    Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
-    // reselect to update the m_hSrcEdit
+    // reselect to update the m_hCodeEditor
     auto entry = g_res.get_entry();
     SelectTV(entry, FALSE);
 }
@@ -4153,7 +4153,7 @@ void MMainWnd::OnCompile(HWND hwnd)
         return;
 
     // is it not modified?
-    if (!Edit_GetModify(m_hSrcEdit))
+    if (!Edit_GetModify(m_hCodeEditor))
     {
         // select the entry
         SelectTV(entry, FALSE);
@@ -4162,8 +4162,8 @@ void MMainWnd::OnCompile(HWND hwnd)
 
     ChangeStatusText(IDS_COMPILING);
 
-    // m_hSrcEdit --> strWide
-    MStringW strWide = MWindowBase::GetWindowTextW(m_hSrcEdit);
+    // m_hCodeEditor --> strWide
+    MStringW strWide = MWindowBase::GetWindowTextW(m_hCodeEditor);
 
     // compile the strWide text
     MStringA strOutput;
@@ -4173,10 +4173,10 @@ void MMainWnd::OnCompile(HWND hwnd)
 
         // clear the control selection
         MRadCtrl::GetTargets().clear();
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
 
         // clear the modification flag
-        Edit_SetModify(m_hSrcEdit, FALSE);
+        Edit_SetModify(m_hCodeEditor, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
@@ -4232,7 +4232,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
@@ -4266,7 +4266,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
@@ -4313,7 +4313,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
     }
     else if (entry->m_type == RT_DLGINIT)
     {
@@ -4338,7 +4338,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
         SelectTV(entry, FALSE);
@@ -4401,7 +4401,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -4461,7 +4461,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         }
 
         // make it non-read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -4515,7 +4515,7 @@ void MMainWnd::OnEdit(HWND hwnd)
         return;
 
     // make it non-read-only
-    Edit_SetReadOnly(m_hSrcEdit, FALSE);
+    Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
     // select the entry
     SelectTV(entry, TRUE);
@@ -4847,38 +4847,38 @@ void MMainWnd::SetShowMode(SHOW_MODE mode)
     m_nShowMode = mode;
     if (g_settings.bShowBinEdit)
     {
-        ShowWindow(m_hSrcEdit, SW_HIDE);
+        ShowWindow(m_hCodeEditor, SW_HIDE);
         ShowWindow(m_hBmpView, SW_HIDE);
-        ShowWindow(m_hBinEdit, SW_SHOWNOACTIVATE);
-        m_split2.SetPaneCount(1);
-        m_split2.SetPane(0, m_hBinEdit);
+        ShowWindow(m_hHexViewer, SW_SHOWNOACTIVATE);
+        m_splitter2.SetPaneCount(1);
+        m_splitter2.SetPane(0, m_hHexViewer);
     }
     else
     {
         switch (mode)
         {
         case SHOW_MOVIE:
-            ShowWindow(m_hSrcEdit, SW_HIDE);
+            ShowWindow(m_hCodeEditor, SW_HIDE);
             ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
-            ShowWindow(m_hBinEdit, SW_HIDE);
-            m_split2.SetPaneCount(1);
-            m_split2.SetPane(0, m_hBmpView);
+            ShowWindow(m_hHexViewer, SW_HIDE);
+            m_splitter2.SetPaneCount(1);
+            m_splitter2.SetPane(0, m_hBmpView);
             break;
         case SHOW_CODEONLY:
-            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hCodeEditor, SW_SHOWNOACTIVATE);
             ShowWindow(m_hBmpView, SW_HIDE);
-            ShowWindow(m_hBinEdit, SW_HIDE);
-            m_split2.SetPaneCount(1);
-            m_split2.SetPane(0, m_hSrcEdit);
+            ShowWindow(m_hHexViewer, SW_HIDE);
+            m_splitter2.SetPaneCount(1);
+            m_splitter2.SetPane(0, m_hCodeEditor);
             break;
         case SHOW_CODEANDBMP:
-            ShowWindow(m_hSrcEdit, SW_SHOWNOACTIVATE);
+            ShowWindow(m_hCodeEditor, SW_SHOWNOACTIVATE);
             ShowWindow(m_hBmpView, SW_SHOWNOACTIVATE);
-            ShowWindow(m_hBinEdit, SW_HIDE);
-            m_split2.SetPaneCount(2);
-            m_split2.SetPane(0, m_hSrcEdit);
-            m_split2.SetPane(1, m_hBmpView);
-            m_split2.SetPaneExtent(1, g_settings.nBmpViewWidth);
+            ShowWindow(m_hHexViewer, SW_HIDE);
+            m_splitter2.SetPaneCount(2);
+            m_splitter2.SetPane(0, m_hCodeEditor);
+            m_splitter2.SetPane(1, m_hBmpView);
+            m_splitter2.SetPaneExtent(1, g_settings.nBmpViewWidth);
             break;
         }
     }
@@ -4962,15 +4962,15 @@ void MMainWnd::OnSize(HWND hwnd, UINT state, int cx, int cy)
         sizClient.cy -= rc.bottom - rc.top;
     }
 
-    // notify the size change to m_split1
-    MoveWindow(m_split1, x, y, sizClient.cx, sizClient.cy, TRUE);
+    // notify the size change to m_splitter1
+    MoveWindow(m_splitter1, x, y, sizClient.cx, sizClient.cy, TRUE);
 
-    // resize m_split2
+    // resize m_splitter2
     GetClientRect(m_tab, &rc);
     m_tab.AdjustRect(FALSE, &rc);
-    MapWindowRect(m_tab, GetParent(m_split2), &rc);
+    MapWindowRect(m_tab, GetParent(m_splitter2), &rc);
     SIZE siz = SizeFromRectDx(&rc);
-    MoveWindow(m_split2, rc.left, rc.top, siz.cx, siz.cy, TRUE);
+    MoveWindow(m_splitter2, rc.left, rc.top, siz.cx, siz.cy, TRUE);
 }
 
 // WM_INITMENU: update the menus
@@ -5330,7 +5330,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
     MStringW str;
     HICON hIcon = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, TRUE);
 
-    // dump info to m_hSrcEdit
+    // dump info to m_hCodeEditor
     if (hIcon)
     {
         str = DumpIconInfo(bm, TRUE);
@@ -5339,7 +5339,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
     {
         str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     }
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // destroy the icon
     DestroyIcon(hIcon);
@@ -5356,9 +5356,9 @@ void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
     HCURSOR hCursor = PackedDIB_CreateIcon(&entry[0], entry.size(), bm, FALSE);
     m_hBmpView.SetBitmap(CreateBitmapFromIconDx(hCursor, bm.bmWidth, bm.bmHeight, TRUE));
 
-    // dump info to m_hSrcEdit
+    // dump info to m_hCodeEditor
     MStringW str = DumpIconInfo(bm, FALSE);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // destroy the cursor
     DestroyCursor(hCursor);
@@ -5373,10 +5373,10 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
     // create a bitmap object from the entry and set it to m_hBmpView
     m_hBmpView.SetBitmap(CreateBitmapFromIconsDx(hwnd, entry));
 
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5389,10 +5389,10 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
     m_hBmpView.SetBitmap(CreateBitmapFromCursorsDx(hwnd, entry));
     assert(m_hBmpView);
 
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5405,10 +5405,10 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
     HBITMAP hbm = PackedDIB_CreateBitmapFromMemory(&entry[0], entry.size());
     m_hBmpView.SetBitmap(hbm);
 
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5417,10 +5417,10 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
 // preview the image resource
 void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MStringW str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // set the entry image to m_hBmpView
     m_hBmpView.SetImage(&entry[0], entry.size());
@@ -5432,10 +5432,10 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
 // preview the WAVE resource
 void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // make it playable
     m_hBmpView.SetPlay();
@@ -5447,10 +5447,10 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
 // preview the AVI resource
 void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // set the AVI
     m_hBmpView.SetMedia(&entry[0], entry.size());
@@ -5467,10 +5467,10 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
     MByteStreamEx stream(entry.m_data);
     if (accel.LoadFromStream(stream))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MString str = GetLanguageStatement(entry.m_lang);
         str += accel.Dump(entry.m_name);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
@@ -5483,9 +5483,9 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
     WORD nNameID = entry.m_name.m_id;
     if (mes.LoadFromStream(stream, nNameID))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MStringW str = mes.Dump(nNameID);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
@@ -5498,9 +5498,9 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
     WORD nNameID = entry.m_name.m_id;
     if (str_res.LoadFromStream(stream, nNameID))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MStringW str = str_res.Dump(nNameID);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
@@ -5514,8 +5514,8 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
     if (entry.size())
         str = mstr_from_bin(&entry.m_data[0], entry.m_data.size(), &type);
 
-    // dump the text to m_hSrcEdit
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    // dump the text to m_hCodeEditor
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 }
 
 // preview the menu resource
@@ -5526,10 +5526,10 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
     MByteStreamEx stream(entry.m_data);
     if (menu_res.LoadFromStream(stream))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MString str = GetLanguageStatement(entry.m_lang);
         str += menu_res.Dump(entry.m_name);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
@@ -5540,40 +5540,40 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
     VersionRes ver_res;
     if (ver_res.LoadFromData(entry.m_data))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MString str = GetLanguageStatement(entry.m_lang);
         str += ver_res.Dump(entry.m_name);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
 // preview the unknown resource
 void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 }
 
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     res2text.m_hwnd = m_hwnd;
     res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 }
 
 // preview the DLGINIT resource
 void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
 {
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 }
 
 // preview the dialog template resource
@@ -5584,10 +5584,10 @@ void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
     MByteStreamEx stream(entry.m_data);
     if (dialog_res.LoadFromStream(stream))
     {
-        // dump the text to m_hSrcEdit
+        // dump the text to m_hCodeEditor
         MString str = GetLanguageStatement(entry.m_lang);
         str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
 }
 
@@ -5630,7 +5630,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
 
         ResToText res2text;
         MString str = res2text.DumpEntry(entry);
-        SetWindowTextW(m_hSrcEdit, str.c_str());
+        SetWindowTextW(m_hCodeEditor, str.c_str());
     }
     else
     {
@@ -5660,10 +5660,10 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
             return;
     }
 
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     MString str = GetLanguageStatement(entry.m_lang);
     str += str_res.Dump();
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // show code only
     SetShowMode(SHOW_CODEONLY);
@@ -5685,7 +5685,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
             return;
     }
 
-    // dump the text to m_hSrcEdit
+    // dump the text to m_hCodeEditor
     MString str;
     str += GetLanguageStatement(entry.m_lang);
     str += L"#ifdef APSTUDIO_INVOKED\r\n";
@@ -5694,7 +5694,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     str += L"#ifdef MCDX_INVOKED\r\n";
     str += msg_res.Dump();
     str += L"#endif\r\n\r\n";
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
     // show code only
     SetShowMode(SHOW_CODEONLY);
@@ -5709,18 +5709,18 @@ VOID MMainWnd::HidePreview(STV stv)
         DestroyWindow(m_rad_window);
     }
 
-    // clear m_hBinEdit
-    SetWindowTextW(m_hBinEdit, NULL);
-    Edit_SetModify(m_hBinEdit, FALSE);
+    // clear m_hHexViewer
+    SetWindowTextW(m_hHexViewer, NULL);
+    Edit_SetModify(m_hHexViewer, FALSE);
 
-    // clear m_hSrcEdit
+    // clear m_hCodeEditor
     if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
     {
-        SetWindowTextW(m_hSrcEdit, NULL);
+        SetWindowTextW(m_hCodeEditor, NULL);
     }
     if (stv != STV_DONTRESET)
     {
-        Edit_SetModify(m_hSrcEdit, FALSE);
+        Edit_SetModify(m_hCodeEditor, FALSE);
     }
 
     // close and hide m_hBmpView
@@ -5741,7 +5741,7 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
 
     // show the binary
     MStringW str = DumpBinaryAsText(entry->m_data);
-    SetWindowTextW(m_hBinEdit, str.c_str());
+    SetWindowTextW(m_hHexViewer, str.c_str());
 
     // code only
     SetShowMode(SHOW_CODEONLY);
@@ -6052,7 +6052,7 @@ MMainWnd::SelectTV(EntryType et, const MIdOrString& type,
 // select an item in the tree control
 void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 {
-    BOOL bModified = Edit_GetModify(m_hSrcEdit);
+    BOOL bModified = Edit_GetModify(m_hCodeEditor);
 
     // close the preview
     HidePreview(stv);
@@ -6100,7 +6100,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
         }
 
         // hide the binary EDIT control
-        SetWindowTextW(m_hBinEdit, NULL);
+        SetWindowTextW(m_hHexViewer, NULL);
 
         // it's editable
         bEditable = TRUE;
@@ -6118,7 +6118,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
         }
 
         // hide the binary EDIT control
-        SetWindowTextW(m_hBinEdit, NULL);
+        SetWindowTextW(m_hHexViewer, NULL);
 
         // it's editable
         bEditable = TRUE;
@@ -6131,7 +6131,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
         m_hBmpView.DeleteTempFile();
 
         // hide the binary EDIT control
-        SetWindowTextW(m_hBinEdit, NULL);
+        SetWindowTextW(m_hHexViewer, NULL);
 
         // it's non editable
         bEditable = FALSE;
@@ -6143,16 +6143,16 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
     if (stv == STV_DONTRESET || stv == STV_RESETTEXT)
     {
         // restore the modified flag
-        Edit_SetModify(m_hSrcEdit, bModified);
+        Edit_SetModify(m_hCodeEditor, bModified);
     }
 
     if (bEditable)  // editable
     {
         // make it not read-only
-        Edit_SetReadOnly(m_hSrcEdit, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // update the toolbar
-        if (Edit_GetModify(m_hSrcEdit))
+        if (Edit_GetModify(m_hCodeEditor))
         {
             UpdateOurToolBarButtons(2);
         }
@@ -6172,7 +6172,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
     else
     {
         // make it read-only
-        Edit_SetReadOnly(m_hSrcEdit, TRUE);
+        Edit_SetReadOnly(m_hCodeEditor, TRUE);
 
         // update the toolbar
         UpdateOurToolBarButtons(3);
@@ -6775,7 +6775,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 // reopen if necessary
 BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 {
-    MStringW strWide = GetWindowTextW(m_hSrcEdit);
+    MStringW strWide = GetWindowTextW(m_hCodeEditor);
 
     // get the selected entry
     auto entry = g_res.get_entry();
@@ -6796,7 +6796,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     m_nStatusStringID = IDS_RECOMPILEOK;
 
     // compiled. clear the modification flag
-    Edit_SetModify(m_hSrcEdit, FALSE);
+    Edit_SetModify(m_hCodeEditor, FALSE);
 
     // destroy the RADical window if any
     if (IsWindow(m_rad_window))
@@ -6826,7 +6826,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 // compile the source if necessary
 BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 {
-    if (Edit_GetModify(m_hSrcEdit))
+    if (Edit_GetModify(m_hCodeEditor))
     {
         // the modification flag is set. query to compile
         INT id = MsgBoxDx(IDS_COMPILENOW, MB_ICONINFORMATION | MB_YESNOCANCEL);
@@ -6838,7 +6838,7 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 
         case IDNO:
             // clear the modification flag
-            Edit_SetModify(m_hSrcEdit, FALSE);
+            Edit_SetModify(m_hCodeEditor, FALSE);
 
             // destroy the RADical window if any
             if (IsWindow(m_rad_window))
@@ -9450,8 +9450,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
 
     // destroy the window's
     DestroyWindow(m_rad_window);
-    DestroyWindow(m_hBinEdit);
-    DestroyWindow(m_hSrcEdit);
+    DestroyWindow(m_hHexViewer);
+    DestroyWindow(m_hCodeEditor);
     m_hBmpView.DestroyView();
     DestroyWindow(m_hBmpView);
     DestroyWindow(m_id_list_dlg);
@@ -9461,8 +9461,8 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_hStatusBar);
     DestroyWindow(m_hFindReplaceDlg);
 
-    DestroyWindow(m_split1);
-    DestroyWindow(m_split2);
+    DestroyWindow(m_splitter1);
+    DestroyWindow(m_splitter2);
 
     s_hMainWnd = NULL;
 
@@ -10165,13 +10165,13 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
 
 void MMainWnd::OnSrcEditSelect(HWND hwnd)
 {
-    INT iItem = m_hSrcEdit.m_iItemToBeSelected;
+    INT iItem = m_hCodeEditor.m_iItemToBeSelected;
     if (iItem != -1)
     {
         MRadCtrl::DeselectSelection();
         MRadCtrl::SelectByIndex(iItem);
 
-        m_hSrcEdit.m_iItemToBeSelected = -1;
+        m_hCodeEditor.m_iItemToBeSelected = -1;
     }
 }
 
@@ -10396,13 +10396,13 @@ void MMainWnd::OnSaveAsWithCompression(HWND hwnd)
 void MMainWnd::OnWordWrap(HWND hwnd)
 {
     // save the modified flag
-    BOOL bModified = Edit_GetModify(m_hSrcEdit);
+    BOOL bModified = Edit_GetModify(m_hCodeEditor);
 
     // switch the flag
     g_settings.bWordWrap = !g_settings.bWordWrap;
 
     // get text
-    MString strText = GetWindowTextW(m_hSrcEdit);
+    MString strText = GetWindowTextW(m_hCodeEditor);
 
     // create the source EDIT control
     ReCreateSrcEdit(hwnd);
@@ -10411,10 +10411,10 @@ void MMainWnd::OnWordWrap(HWND hwnd)
     ReCreateFonts(hwnd);
 
     // restore text
-    SetWindowTextW(m_hSrcEdit, strText.c_str());
+    SetWindowTextW(m_hCodeEditor, strText.c_str());
 
     // restore the modified flag
-    Edit_SetModify(m_hSrcEdit, bModified);
+    Edit_SetModify(m_hCodeEditor, bModified);
 
     // select the entry to refresh
     auto entry = g_res.get_entry();
@@ -10509,7 +10509,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
     MWaitCursor wait;
 
-    if (codeNotify == EN_CHANGE && m_hSrcEdit == hwndCtl)
+    if (codeNotify == EN_CHANGE && m_hCodeEditor == hwndCtl)
     {
         // the source EDIT control was modified.
         // change the toolbar
@@ -10608,7 +10608,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_DELCTRL:
         MRadCtrl::DeleteSelection();
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         break;
     case ID_ADDCTRL:
         m_rad_window.OnAddCtrl(m_rad_window);
@@ -10621,19 +10621,19 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_CTRLINDEXTOP:
         m_rad_window.IndexTop(m_rad_window);
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         break;
     case ID_CTRLINDEXBOTTOM:
         m_rad_window.IndexBottom(m_rad_window);
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         break;
     case ID_CTRLINDEXMINUS:
         m_rad_window.IndexMinus(m_rad_window);
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         break;
     case ID_CTRLINDEXPLUS:
         m_rad_window.IndexPlus(m_rad_window);
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         break;
     case ID_SHOWHIDEINDEX:
         m_rad_window.OnShowHideIndex(m_rad_window);
@@ -11051,20 +11051,20 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == MSplitterWnd::NOTIFY_CHANGED)
     {
         MWaitCursor wait;
-        if (pnmhdr->hwndFrom == m_split1)
+        if (pnmhdr->hwndFrom == m_splitter1)
         {
-            if (m_split1.GetPaneCount() >= 2)
+            if (m_splitter1.GetPaneCount() >= 2)
             {
-                g_settings.nTreeViewWidth = m_split1.GetPaneExtent(0);
+                g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
                 // relayout
                 PostMessage(hwnd, WM_SIZE, 0, 0);
             }
         }
-        else if (pnmhdr->hwndFrom == m_split2)
+        else if (pnmhdr->hwndFrom == m_splitter2)
         {
-            if (m_split2.GetPaneCount() >= 2)
-                g_settings.nBmpViewWidth = m_split2.GetPaneExtent(1);
+            if (m_splitter2.GetPaneCount() >= 2)
+                g_settings.nBmpViewWidth = m_splitter2.GetPaneExtent(1);
         }
     }
     else if (pnmhdr->code == TVN_DELETEITEM)
@@ -11501,8 +11501,8 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
 
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 {
-    HWND hwndSrcEdit = m_hSrcEdit;
-    HWND hwndBinEdit = m_hBinEdit;
+    HWND hwndCodeEditor = m_hCodeEditor;
+    HWND hwndHexViewer = m_hHexViewer;
     HWND hwndRad = IsWindow(m_rad_window) ? (HWND)m_rad_window : NULL;
     HWND hwndIDList = IsWindow(m_id_list_dlg) ? (HWND)m_id_list_dlg : NULL;
     HWND hwndFind = IsWindow(m_hFindReplaceDlg) ? (HWND)m_hFindReplaceDlg : NULL;
@@ -11526,7 +11526,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
 
     HWND ahwnd[] =
     {
-        m_hwndTV, hwndSrcEdit, hwndBinEdit, hwndRad, m_hFindReplaceDlg, hwndIDList
+        m_hwndTV, m_hCodeEditor, m_hHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
     };
 
     INT i;
@@ -11562,15 +11562,15 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
         } while (ahwnd[i] == NULL);
     }
 
-    if (hwndSrcEdit == ahwnd[i])
+    if (hwndCodeEditor == ahwnd[i])
     {
         OnSelChange(hwnd, 0);
-        SetFocus(m_hSrcEdit);
+        SetFocus(m_hCodeEditor);
     }
-    else if (hwndBinEdit == ahwnd[i])
+    else if (hwndHexViewer == ahwnd[i])
     {
         OnSelChange(hwnd, 1);
-        SetFocus(m_hBinEdit);
+        SetFocus(m_hHexViewer);
     }
     else
     {
@@ -12419,19 +12419,19 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         SelectTV(ET_LANG, dialog, FALSE);
 
         // clear the modification flag
-        Edit_SetModify(m_hSrcEdit, FALSE);
+        Edit_SetModify(m_hCodeEditor, FALSE);
     }
     else        // use dialog.m_strTemplate
     {
-        // dialog.m_strTemplate --> m_hSrcEdit
-        SetWindowTextW(m_hSrcEdit, dialog.m_strTemplate.c_str());
+        // dialog.m_strTemplate --> m_hCodeEditor
+        SetWindowTextW(m_hCodeEditor, dialog.m_strTemplate.c_str());
 
         // compile dialog.m_strTemplate
         MStringA strOutput;
         if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
         {
             // success. clear the modification flag
-            Edit_SetModify(m_hSrcEdit, FALSE);
+            Edit_SetModify(m_hCodeEditor, FALSE);
             m_nStatusStringID = IDS_RECOMPILEOK;
         }
         else
@@ -12444,10 +12444,10 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
             SetErrorMessage(strOutput, TRUE);
 
             // set the modification flag
-            Edit_SetModify(m_hSrcEdit, TRUE);
+            Edit_SetModify(m_hCodeEditor, TRUE);
 
             // make it non-read-only
-            Edit_SetReadOnly(m_hSrcEdit, FALSE);
+            Edit_SetReadOnly(m_hCodeEditor, FALSE);
         }
 
         // select the added entry
@@ -13050,10 +13050,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 #endif
 
     // update pane extent settings
-    if (m_split2.GetPaneCount() >= 2)
-        g_settings.nBmpViewWidth = m_split2.GetPaneExtent(1);
-    if (m_split1.GetPaneCount() >= 2)
-        g_settings.nTreeViewWidth = m_split1.GetPaneExtent(0);
+    if (m_splitter2.GetPaneCount() >= 2)
+        g_settings.nBmpViewWidth = m_splitter2.GetPaneExtent(1);
+    if (m_splitter1.GetPaneCount() >= 2)
+        g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
     keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
     keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
@@ -13207,10 +13207,10 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
 BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
 {
-    BOOL bModify = Edit_GetModify(m_hSrcEdit);
+    BOOL bModify = Edit_GetModify(m_hCodeEditor);
 
-    if (IsWindow(m_hSrcEdit))
-        DestroyWindow(m_hSrcEdit);
+    if (IsWindow(m_hCodeEditor))
+        DestroyWindow(m_hCodeEditor);
 
     DWORD style = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_TABSTOP |
                   ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
@@ -13223,12 +13223,12 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
     DWORD exstyle = WS_EX_CLIENTEDGE;
 
     HWND hSrcEdit = ::CreateWindowEx(exstyle, L"EDIT", NULL, style,
-        0, 0, 1, 1, m_split2, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
+        0, 0, 1, 1, m_splitter2, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
     if (hSrcEdit)
     {
-        m_hSrcEdit.SubclassDx(hSrcEdit);
+        m_hCodeEditor.SubclassDx(hSrcEdit);
 
-        Edit_SetModify(m_hSrcEdit, bModify);
+        Edit_SetModify(m_hCodeEditor, bModify);
         return TRUE;
     }
     return FALSE;
@@ -13362,12 +13362,12 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     // create the splitter windows
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_LEFTALIGN;
-    if (!m_split1.CreateDx(hwnd, 2, style))
+    if (!m_splitter1.CreateDx(hwnd, 2, style))
         return FALSE;
 
     style = WS_CHILD | WS_VISIBLE | WS_BORDER | TCS_BOTTOM | TCS_TABS | TCS_TOOLTIPS |
             TCS_FOCUSNEVER | TCS_HOTTRACK | TCS_MULTILINE;
-    if (!m_tab.CreateWindowDx(m_split1, NULL, style))
+    if (!m_tab.CreateWindowDx(m_splitter1, NULL, style))
         return FALSE;
     SetWindowFont(m_tab, GetStockFont(DEFAULT_GUI_FONT), TRUE);
 
@@ -13376,7 +13376,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     m_tab.SetCurSel(0);
 
     style = WS_CHILD | WS_VISIBLE | SWS_HORZ | SWS_RIGHTALIGN;
-    if (!m_split2.CreateDx(m_split1, 1, style))
+    if (!m_splitter2.CreateDx(m_splitter1, 1, style))
         return FALSE;
 
     // create a treeview (tree control) window
@@ -13384,7 +13384,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_LINESATROOT |
         TVS_SHOWSELALWAYS | TVS_EDITLABELS | TVS_FULLROWSELECT | TVS_INFOTIP;
     m_hwndTV = CreateWindowExW(WS_EX_CLIENTEDGE,
-        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_split1,
+        WC_TREEVIEWW, NULL, style, 0, 0, 0, 0, m_splitter1,
         (HMENU)1, m_hInst, NULL);
     if (m_hwndTV == NULL)
         return FALSE;
@@ -13409,14 +13409,14 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         ES_AUTOVSCROLL | ES_LEFT | ES_MULTILINE |
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     exstyle = WS_EX_CLIENTEDGE;
-    m_hBinEdit.CreateAsChildDx(m_split2, NULL, style, exstyle, 3);
+    m_hHexViewer.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
 
     // create source EDIT control
-    if (!ReCreateSrcEdit(m_split2))
+    if (!ReCreateSrcEdit(m_splitter2))
         return FALSE;
 
     // create MBmpView
-    if (!m_hBmpView.CreateDx(m_split2, 4))
+    if (!m_hBmpView.CreateDx(m_splitter2, 4))
         return FALSE;
 
     // create status bar
@@ -13439,10 +13439,10 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         ShowWindow(m_hStatusBar, SW_HIDE);
 
     // set the pane contents of splitters
-    m_split1.SetPane(0, m_hwndTV);
-    m_split1.SetPane(1, m_tab);
-    m_split1.SetPaneExtent(0, g_settings.nTreeViewWidth);
-    m_split2.SetPane(0, m_hSrcEdit);
+    m_splitter1.SetPane(0, m_hwndTV);
+    m_splitter1.SetPane(1, m_tab);
+    m_splitter1.SetPaneExtent(0, g_settings.nTreeViewWidth);
+    m_splitter2.SetPane(0, m_hCodeEditor);
 
     // create the fonts
     ReCreateFonts(hwnd);
@@ -13669,14 +13669,14 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
     dialog_res.SaveToStream(stream);
     entry->m_data = stream.data();
 
-    // entry->m_lang + dialog_res --> str --> m_hSrcEdit (text)
+    // entry->m_lang + dialog_res --> str --> m_hCodeEditor (text)
     MString str = GetLanguageStatement(entry->m_lang);
     str += dialog_res.Dump(entry->m_name);
-    SetWindowTextW(m_hSrcEdit, str.c_str());
+    SetWindowTextW(m_hCodeEditor, str.c_str());
 
-    // entry->m_data --> m_hBinEdit (binary)
+    // entry->m_data --> m_hHexViewer (binary)
     str = DumpBinaryAsText(entry->m_data);
-    SetWindowTextW(m_hBinEdit, str.c_str());
+    SetWindowTextW(m_hHexViewer, str.c_str());
 
     return 0;
 }
@@ -13685,12 +13685,12 @@ LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     if (!IsWindow(m_rad_window))
     {
-        m_hSrcEdit.ClearIndeces();
+        m_hCodeEditor.ClearIndeces();
         return 0;
     }
 
     auto indeces = MRadCtrl::GetTargetIndeces();
-    m_hSrcEdit.SetIndeces(indeces);
+    m_hCodeEditor.SetIndeces(indeces);
     return 0;
 }
 
