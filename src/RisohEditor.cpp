@@ -6138,6 +6138,9 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
         // select none
         bSelectNone = TRUE;
+
+        // update show mode
+        SetShowMode(SHOW_CODEONLY);
     }
 
     if (stv == STV_DONTRESET || stv == STV_RESETTEXT)
