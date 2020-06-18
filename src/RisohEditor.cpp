@@ -7383,7 +7383,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
     MStringA strOutput;
     BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe,
                            m_szMCppExe, m_szMcdxExe, GetMacroDump(),
-                           GetIncludesDump(), m_szIncludeDir);
+                           GetIncludesDump());
     if (!bOK)
     {
         // failed. show error message

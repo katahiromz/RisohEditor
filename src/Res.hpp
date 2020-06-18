@@ -779,7 +779,7 @@ public:
     BOOL load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
         const MString& strWindresExe, const MString& strCppExe,
         const MString& strMcdxExe, const MStringW& strMacrosDump,
-        const MStringW& strIncludesDump, const MStringW& strIncludeDir);
+        const MStringW& strIncludesDump);
 };
 
 // g_res

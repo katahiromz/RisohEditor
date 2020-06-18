@@ -1642,7 +1642,7 @@ BOOL EntrySet::IsUTF16File(LPCWSTR pszRCFile) const
 BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     const MString& strWindresExe, const MString& strCppExe,
     const MString& strMcdxExe, const MStringW& strMacrosDump,
-    const MStringW& strIncludesDump, const MStringW& strIncludeDir)
+    const MStringW& strIncludesDump)
 {
     // get the temporary file path
     WCHAR szPath3[MAX_PATH];
@@ -1657,8 +1657,6 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += strWindresExe;
-    strCmdLine += L"\" -I \"";
-    strCmdLine += strIncludeDir;
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += strMacrosDump;
     strCmdLine += L' ';
