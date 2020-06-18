@@ -3254,7 +3254,11 @@ void MMainWnd::OnNew(HWND hwnd)
     // clean up
     g_res.delete_all();
 
+    // update modified flag
     DoSetFileModified(FALSE);
+
+    // update language arrow
+    PostUpdateLangArrow(hwnd);
 }
 
 enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
