@@ -6204,6 +6204,11 @@ MStringW MMainWnd::GetMacroDump() const
 MStringW MMainWnd::GetIncludesDump() const
 {
     MStringW ret;
+    if (m_szIncludeDir[0])
+    {
+        ret += L" -I";
+        ret += m_szIncludeDir;
+    }
     for (auto& path : g_settings.includes)
     {
         // " -Ipath"
