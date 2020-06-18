@@ -87,14 +87,14 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&Impostazioni...", ID_CONFIG
     }
-    POPUP "&Trova"
+    POPUP "&Cerca"
     {
-        MENUITEM "&Trova...\tCtrl+F", ID_FIND
+        MENUITEM "&Cerca...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Trova &precedente\tShift+F3", ID_FINDUPWARD
-        MENUITEM "Trova &successivo\tF3", ID_FINDDOWNWARD
+        MENUITEM "Cerca &precedente\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Cerca &successivo\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
-        MENUITEM "Trova &costante...", ID_QUERYCONSTANT
+        MENUITEM "Cerca &costante...", ID_QUERYCONSTANT
     }
     POPUP "&Visualizza"
     {
@@ -893,10 +893,10 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Stringa da cercare:", -1, 4, 10, 100, 14
     EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
     AUTOCHECKBOX "Controlla maius&colo/minuscolo", chx1, 5, 45, 120, 18
-    GROUPBOX "Direzione", -1, 5, 65, 160, 42
+    GROUPBOX "Direzione ricerca", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Indietro", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "&Avanti", rad2, 90, 80, 60, 14, WS_TABSTOP
-    DEFPUSHBUTTON "&Trova", IDOK, 40, 115, 60, 14
+    DEFPUSHBUTTON "&Cerca", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 105, 115, 60, 14
 }
 
@@ -1206,7 +1206,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CONSTANT DIALOG 0, 0, 205, 75
-CAPTION "Trova costante"
+CAPTION "Cerca costante"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
