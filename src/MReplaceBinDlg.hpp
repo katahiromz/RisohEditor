@@ -162,7 +162,12 @@ public:
         std::wstring file;
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
         if (!Edt1_CheckFile(hEdt1, file))
+        {
+            Edit_SetSel(hEdt1, 0, -1);  // select all
+            SetFocus(hEdt1);    // set focus
+            ErrorBoxDx(IDS_FILENOTFOUND);
             return;
+        }
 
         MByteStreamEx bs;
         if (!bs.LoadFromFile(file.c_str()))

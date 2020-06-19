@@ -197,7 +197,12 @@ public:
 
         // if there is no sample for the type, check if the file path exists
         if (!Edt1_CheckFile(hEdt1, file) && !HasSample(type, lang))
+        {
+            Edit_SetSel(hEdt1, 0, -1);  // select all
+            SetFocus(hEdt1);    // set focus
+            ErrorBoxDx(IDS_FILENOTFOUND);
             return;     // failure
+        }
 
         // find the language entry by type, name, lang
         if (auto entry = g_res.find(ET_LANG, type, name, lang))

@@ -1767,14 +1767,7 @@ BOOL Edt1_CheckFile(HWND hEdt1, MStringW& file)
     StringCchCopyW(szFile, _countof(szFile), str.c_str());
 
     if (!PathFileExistsW(szFile))    // not exists
-    {
-        Edit_SetSel(hEdt1, 0, -1);  // select all
-        SetFocus(hEdt1);    // set focus
-        // show error message
-        MessageBoxW(GetParent(hEdt1), LoadStringDx(IDS_FILENOTFOUND),
-                    NULL, MB_ICONERROR);
         return FALSE;   // failure
-    }
 
     // store
     file = szFile;
