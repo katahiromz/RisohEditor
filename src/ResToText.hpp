@@ -1096,12 +1096,17 @@ inline MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& 
         {
             std::string str((char *)&entry.m_data[0], entry.m_data.size());
             MAnsiToWide a2w(CP_ACP, str.c_str());
-            return a2w.c_str();
+            MStringW wide = a2w.c_str();
+            mstr_replace_all(wide, L"\r\n", L"\n");
+            mstr_replace_all(wide, L"\n", L"\r\n");
+            return wide.c_str();
         }
         if (enc == L"wide")
         {
             std::wstring str((wchar_t *)&entry.m_data[0],
                              entry.m_data.size() / sizeof(wchar_t));
+            mstr_replace_all(str, L"\r\n", L"\n");
+            mstr_replace_all(str, L"\n", L"\r\n");
             return str;
         }
         if (enc == L"utf8" || enc == L"utf8n")
@@ -1112,13 +1117,19 @@ inline MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& 
                 str.erase(0, 3);
             }
             MAnsiToWide a2w(CP_UTF8, str.c_str());
-            return a2w.c_str();
+            MStringW wide = a2w.c_str();
+            mstr_replace_all(wide, L"\r\n", L"\n");
+            mstr_replace_all(wide, L"\n", L"\r\n");
+            return wide.c_str();
         }
         if (enc == L"sjis")
         {
             std::string str((char *)&entry.m_data[0], entry.m_data.size());
             MAnsiToWide a2w(932, str.c_str());
-            return a2w.c_str();
+            MStringW wide = a2w.c_str();
+            mstr_replace_all(wide, L"\r\n", L"\n");
+            mstr_replace_all(wide, L"\n", L"\r\n");
+            return wide.c_str();
         }
     }
     else

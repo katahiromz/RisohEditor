@@ -229,6 +229,7 @@ You have to copy the 64-bit file into another place before loading.
     - Improved extraction filename.
     - Sorted the treeview items upon change of resource name/language.
     - Improved icon/cursor extraction.
+    - Improved newline codes of encoded text.
 
 ## Contact Us
 

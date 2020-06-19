@@ -222,6 +222,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Improved extraction filename.
     - Sorted the treeview items upon change of resource name/language.
     - Improved icon/cursor extraction.
+    - Improved newline codes of encoded text.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
