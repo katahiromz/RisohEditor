@@ -218,8 +218,9 @@ Question 6. Are the 64-bit files supported?
     - Improved exporting and extracting.
     - Improved EGA dialog.
 - v.5.4.3 (2020.XX.YY)
-    - Improved extract filename.
+    - Improved extraction filename.
     - Sorted the treeview items upon change of resource name/language.
+    - Improved icon/cursor extraction.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
