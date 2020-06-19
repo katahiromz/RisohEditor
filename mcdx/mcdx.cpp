@@ -395,7 +395,6 @@ int do_directive(char*& ptr)
     {
         // #pragma
         ptr += 6;
-        char *ptr1 = ptr;
         ptr = mstr_skip_space(ptr);
         char *ptr2 = ptr;
         if (memcmp(ptr, "pack", 4) == 0)
@@ -1136,7 +1135,6 @@ int main(int argc, char **argv)
     // parse command line
     while (1)
     {
-        int this_option_optind = optind ? optind : 1;
         int option_index = 0;
         int c = getopt_long(argc, argv, "hVi:o:J:O:I:D:U:c:l:",
                             long_options, &option_index);

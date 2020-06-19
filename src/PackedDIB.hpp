@@ -22,9 +22,7 @@
 
 #include <windows.h>
 #include <vector>
-
 #include <gdiplus.h>
-#pragma comment (lib, "gdiplus.lib")
 
 //////////////////////////////////////////////////////////////////////////////
 
