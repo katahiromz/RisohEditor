@@ -9091,6 +9091,23 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         }
         return IMPORT_CANCELLED;
     }
+    else if (lstrcmpiW(pchDotExt, L".manifest") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_type = RT_MANIFEST;
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
     else if (lstrcmpiW(pchDotExt, L".wav") == 0)
     {
         // show the dialog
