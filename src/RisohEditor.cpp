@@ -9291,6 +9291,13 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     MWaitCursor wait;
     ChangeStatusText(IDS_EXECUTINGCMD);     // executing command
 
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+    {
+        ChangeStatusText(IDS_READY);
+        return;
+    }
+
     // add the command lock
     ++m_nCommandLock;
 
