@@ -27,6 +27,8 @@
 #include "resource.h"
 #include "DlgInit.h"
 
+void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
@@ -63,32 +65,13 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-
-        auto table = g_db.GetTable(L"RESOURCE");
-        for (auto& table_entry : table)
-        {
-            WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-                             table_entry.name.c_str(), table_entry.value);
-            k = ComboBox_AddString(hCmb1, sz);
-            if (m_type == WORD(table_entry.value))
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
-        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (auto& table_entry : table)
-        {
-            k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
-            if (m_type == table_entry.name.c_str())
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
+        InitResTypeComboBox(hCmb1, m_type);
 
         // enable input complete
         SubclassChildDx(m_cmb1, cmb1);
         SubclassChildDx(m_cmb2, cmb2);
+
+        InitComboBoxPlaceholder(m_cmb2, IDS_INTEGERORIDENTIFIER);
 
         // set 1 to the name if it's a RT_VERSION
         if (m_type == RT_VERSION)
@@ -331,8 +314,16 @@ public:
     void OnCmb1(HWND hwnd)
     {
         // get the text of combobox cmb1
-        TCHAR szText[64];
-        ComboBox_GetText(m_cmb1, szText, ARRAYSIZE(szText));
+        TCHAR szText[256];
+        INT iItem = ComboBox_GetCurSel(m_cmb1);
+        if (iItem == CB_ERR)
+        {
+            ComboBox_GetText(m_cmb1, szText, ARRAYSIZE(szText));
+        }
+        else
+        {
+            ComboBox_GetLBText(m_cmb1, iItem, szText);
+        }
 
         // szText --> strIDType (trimmed)
         MString strIDType = szText;
@@ -381,11 +372,13 @@ public:
         {
             // the name is optional if RT_STRING, RT_MESSAGETABLE or RT_VERSION
             SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_OPTIONAL));
+            InitComboBoxPlaceholder(m_cmb2, IDS_NOTEXT);
         }
         else
         {
             // otherwise the name is non-optional
             SetDlgItemText(hwnd, stc1, NULL);
+            InitComboBoxPlaceholder(m_cmb2, IDS_INTEGERORIDENTIFIER);
         }
 
         // iType (IDTYPE_*) --> prefix

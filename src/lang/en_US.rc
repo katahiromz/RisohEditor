@@ -1541,6 +1541,8 @@ STRINGTABLE
     IDS_TOOL_EXPORT, "Export..."
     IDS_CODEEDITOR, "Code Editor"
     IDS_HEXVIEWER, "Hex Viewer"
+    IDS_INTEGERORIDENTIFIER, "Enter integer or identifier"
+    IDS_NOTEXT, " "
 }
 
 //////////////////////////////////////////////////////////////////////////////

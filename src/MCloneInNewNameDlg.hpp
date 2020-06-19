@@ -28,6 +28,7 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "resource.h"
 
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
@@ -65,29 +66,7 @@ public:
         // for Types
         INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-
-        auto table = g_db.GetTable(L"RESOURCE");
-        for (auto& table_entry : table)
-        {
-            WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-                             table_entry.name.c_str(), table_entry.value);
-            k = ComboBox_AddString(hCmb1, sz);
-            if (m_type == WORD(table_entry.value))
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
-
-        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (auto& table_entry : table)
-        {
-            k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
-            if (m_type == table_entry.name.c_str())
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
+        InitResTypeComboBox(hCmb1, m_type);
 
         // for Names
         IDTYPE_ nIDTYPE_ = g_db.IDTypeFromResType(m_type);

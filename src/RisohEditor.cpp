@@ -482,7 +482,7 @@ BYTE GetCharSetFromComboBox(HWND hCmb)
     if (i == CB_ERR)    // not selected
         return DEFAULT_CHARSET;     // return the default value
 
-    if (i < _countof(s_charset_entries))
+    if (i < INT(_countof(s_charset_entries)))
         return s_charset_entries[i].CharSet;    // return the charset value
 
     return DEFAULT_CHARSET;     // return the default value
@@ -774,9 +774,58 @@ MString GetAssoc(const MString& name)
     return ret;
 }
 
+void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID)
+{
+    HWND hEdit = (HWND)SendMessage(hCmb, CBEM_GETEDITCONTROL, 0, 0);
+    if (!hEdit)
+    {
+        hEdit = FindWindowEx(hCmb, NULL, TEXT("EDIT"), NULL);
+        if (!hEdit)
+        {
+            hCmb = FindWindowEx(hCmb, NULL, TEXT("COMBOBOX"), NULL);
+            hEdit = FindWindowEx(hCmb, NULL, TEXT("EDIT"), NULL);
+        }
+    }
+
+    if (hEdit)
+    {
+        SendMessage(hEdit, EM_SETCUEBANNER, 0, (LPARAM)LoadStringDx(nStringID));
+    }
+}
+
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type)
+{
+    InitComboBoxPlaceholder(hCmb1, IDS_INTEGERORIDENTIFIER);
+
+    auto table = g_db.GetTable(L"RESOURCE");
+    for (auto& table_entry : table)
+    {
+        WCHAR sz[MAX_PATH];
+        StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
+                         table_entry.name.c_str(), table_entry.value);
+        INT k = ComboBox_AddString(hCmb1, sz);
+        if (type == WORD(table_entry.value))
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+    }
+
+    table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
+    for (auto& table_entry : table)
+    {
+        INT k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
+        if (type == table_entry.name.c_str())
+        {
+            ComboBox_SetCurSel(hCmb1, k);
+        }
+    }
+}
+
 // initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 {
+    InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
+
     // set the text of the ID
     SetWindowTextW(hCmb, id.c_str());
 
@@ -835,6 +884,8 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 // initialize the resource name combobox
 void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
 {
+    InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
+
     // set the ID text to combobox
     SetWindowTextW(hCmb, id.c_str());
 
@@ -1062,6 +1113,8 @@ std::vector<LANG_ENTRY> g_langs;
 // initialize the language combobox
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
+    InitComboBoxPlaceholder(hCmb3, IDS_INTEGERORIDENTIFIER);
+
     // for all the elements of g_langs
     for (auto& entry : g_langs)
     {
@@ -11579,7 +11632,7 @@ void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
         m_hwndTV, m_hCodeEditor, m_hHexViewer, hwndRad, m_hFindReplaceDlg, hwndIDList
     };
 
-    INT i;
+    UINT i;
     for (i = 0; i < _countof(ahwnd); ++i)
     {
         if (ahwnd[i] == hwndFocus)
@@ -11960,7 +12013,8 @@ void MMainWnd::AddApStudioBlock(std::vector<MStringA>& lines)
 void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
 {
     bool inside = false, found = false;
-    size_t nest = 0, k = -1;
+    size_t nest = 0;
+    std::ptrdiff_t k = -1;
     for (size_t i = 0; i < lines.size(); ++i)
     {
         MStringA& line = lines[i];
@@ -15451,7 +15505,8 @@ wWinMain(HINSTANCE   hInstance,
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
     HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
-    s_pSetWindowTheme = (SETWINDOWTHEME)GetProcAddress(hinstUXTheme, "SetWindowTheme");
+    s_pSetWindowTheme =
+        reinterpret_cast<SETWINDOWTHEME>(GetProcAddress(hinstUXTheme, "SetWindowTheme"));
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;

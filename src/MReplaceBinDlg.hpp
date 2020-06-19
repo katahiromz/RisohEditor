@@ -28,6 +28,7 @@
 #include "Res.hpp"
 #include "resource.h"
 
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
@@ -68,32 +69,10 @@ public:
         DragAcceptFiles(hwnd, TRUE);
 
         // for Types
-        INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         EnableWindow(hCmb1, FALSE);
 
-        auto table = g_db.GetTable(L"RESOURCE");
-        for (auto& table_entry : table)
-        {
-            WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-                             table_entry.name.c_str(), table_entry.value);
-            k = ComboBox_AddString(hCmb1, sz);
-            if (m_entry->m_type == WORD(table_entry.value))
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
-
-        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (auto& table_entry : table)
-        {
-            k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
-            if (m_type == table_entry.name.c_str())
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
+        InitResTypeComboBox(hCmb1, m_type);
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);

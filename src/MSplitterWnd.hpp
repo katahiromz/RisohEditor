@@ -239,10 +239,7 @@ public:
         EndDeferWindowPos(hDWP);
 
         UINT nID = GetDlgCtrlID(m_hwnd);
-        NMHDR notify = { 0 };
-        notify.hwndFrom = m_hwnd;
-        notify.idFrom = nID;
-        notify.code = NOTIFY_CHANGED;
+        NMHDR notify = { m_hwnd, nID, NOTIFY_CHANGED };
         FORWARD_WM_NOTIFY(GetParent(m_hwnd), nID, &notify, SendMessage);
     }
 

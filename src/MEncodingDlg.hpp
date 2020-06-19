@@ -113,6 +113,8 @@ inline MStringW get_type_label(MIdOrString& type)
 
 //////////////////////////////////////////////////////////////////////////////
 
+void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
+
 class MAddEncDlg : public MDialogBase
 {
 public:
@@ -129,19 +131,7 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        auto table = g_db.GetTable(L"RESOURCE");
-        for (auto& table_entry : table)
-        {
-            WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-                             table_entry.name.c_str(), table_entry.value);
-            ComboBox_AddString(hCmb1, sz);
-        }
-        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (auto& table_entry : table)
-        {
-            ComboBox_AddString(hCmb1, table_entry.name.c_str());
-        }
+        InitResTypeComboBox(hCmb1, MIdOrString());
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         ComboBox_AddString(hCmb2, LoadStringDx(IDS_ANSI));
@@ -229,32 +219,7 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
 
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
-        auto table = g_db.GetTable(L"RESOURCE");
-        for (auto& table_entry : table)
-        {
-            WCHAR sz[MAX_PATH];
-            StringCchPrintfW(sz, _countof(sz), L"%s (%lu)",
-                             table_entry.name.c_str(), table_entry.value);
-            int k = ComboBox_AddString(hCmb1, sz);
-            if (table_entry.value == m_type.m_id)
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
-        table = g_db.GetTable(L"RESOURCE.STRING.TYPE");
-        for (auto& table_entry : table)
-        {
-            int k = ComboBox_AddString(hCmb1, table_entry.name.c_str());
-            if (table_entry.name == m_type.m_str)
-            {
-                ComboBox_SetCurSel(hCmb1, k);
-            }
-        }
-        if (ComboBox_GetCurSel(hCmb1) == CB_ERR)
-        {
-            int k = ComboBox_AddString(hCmb1, m_type.c_str());
-            ComboBox_SetCurSel(hCmb1, k);
-        }
+        InitResTypeComboBox(hCmb1, m_type);
         EnableWindow(hCmb1, FALSE);
 
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);

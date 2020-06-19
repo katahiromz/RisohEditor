@@ -139,7 +139,7 @@ public:
         }
         else if (delta < 0)
         {
-            if (m_pos + delta >= 0)
+            if (int32_t(m_pos) + delta >= 0)
             {
                 m_pos += delta;
                 return true;

@@ -41,12 +41,12 @@ endif()
 if (WIN32)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # using Clang
-        set(CMAKE_C_FLAGS "-static")
-        set(CMAKE_CXX_FLAGS "-static")
+        set(CMAKE_C_FLAGS "-static -W -Wno-missing-field-initializers")
+        set(CMAKE_CXX_FLAGS "-static -W -Wno-missing-field-initializers")
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         # using GCC
-        set(CMAKE_C_FLAGS "-static")
-        set(CMAKE_CXX_FLAGS "-static")
+        set(CMAKE_C_FLAGS "-static -W -Wno-missing-field-initializers")
+        set(CMAKE_CXX_FLAGS "-static -W -Wno-missing-field-initializers")
     elseif (MSVC)
         # replace "/MD" with "/MT" (building without runtime DLLs)
         set(CompilerFlags

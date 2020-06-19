@@ -543,6 +543,7 @@ public:
             {
                 OnEdt7(hwnd);
             }
+            break;
         case chx1:
             if (::IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
             {

@@ -344,7 +344,7 @@ public:
 
         if (nIDTYPE_ == IDTYPE_CONTROL)
         {
-            if (value == -1 || value == 0xFFFF)
+            if (value == (ValueType)-1 || value == 0xFFFF)
             {
                 if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
                     return L"IDC_STATIC";
@@ -391,7 +391,7 @@ public:
 
     StringType GetCtrlOrCmdName(ValueType value, bool unsign = false) const
     {
-        if (value == 0xFFFF || value == -1)
+        if (value == 0xFFFF || value == (ValueType)-1)
         {
             if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
                 return L"IDC_STATIC";
