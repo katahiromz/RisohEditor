@@ -1212,7 +1212,7 @@ inline MString ResToText::DoFontDir(const EntryBase& entry)
     WORD wCount = *(const WORD *)pb;
 
     TCHAR szText[64];
-    StringCbPrintf(szText, sizeof(szText), TEXT("Count: %d\r\n---\r\n"), wCount);
+    StringCbPrintf(szText, sizeof(szText), TEXT("Count: %u\r\n---\r\n"), wCount);
     str += szText;
 
 #define FONTDIRENTRYSIZE 165
@@ -1274,7 +1274,7 @@ inline MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& n
 
 inline MString ResToText::DumpEscapedName(const MIdOrString& name)
 {
-    MString ret = name.str();
+    MString ret = name.str(true);
     mstr_escape(ret);
     return ret;
 }

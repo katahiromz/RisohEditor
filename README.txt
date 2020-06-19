@@ -217,6 +217,8 @@ Question 6. Are the 64-bit files supported?
     - Fixed Unicode encoding processing.
     - Improved exporting and extracting.
     - Improved EGA dialog.
+- v.5.4.3 (2020.XX.YY)
+    - Improved extract filename.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

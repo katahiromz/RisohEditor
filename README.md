@@ -225,6 +225,8 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed Unicode encoding processing.
     - Improved exporting and extracting.
     - Improved EGA dialog.
+- v.5.4.3 (2020.XX.YY)
+    - Improved extract filename.
 
 ## Contact Us
 

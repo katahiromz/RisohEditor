@@ -232,7 +232,7 @@ struct MIdOrString
         return m_id != w;
     }
 
-    MString str() const
+    MString str(bool unsign = false) const
     {
         if (m_id == 0)
         {
@@ -241,7 +241,10 @@ struct MIdOrString
                 return m_str;
             }
         }
-        return mstr_dec_short(m_id);
+        if (unsign)
+            return mstr_dec_word(m_id);
+        else
+            return mstr_dec_short(m_id);
     }
 
     MString str_or_empty() const
