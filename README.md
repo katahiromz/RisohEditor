@@ -230,6 +230,7 @@ You have to copy the 64-bit file into another place before loading.
     - Sorted the treeview items upon change of resource name/language.
     - Improved icon/cursor extraction.
     - Improved newline codes of encoded text.
+    - Fixed "Add Resource" dialog.
 
 ## Contact Us
 

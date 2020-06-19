@@ -196,7 +196,7 @@ public:
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
 
         // if there is no sample for the type, check if the file path exists
-        if (!HasSample(type, lang) && !Edt1_CheckFile(hEdt1, file))
+        if (!Edt1_CheckFile(hEdt1, file) && !HasSample(type, lang))
             return;     // failure
 
         // find the language entry by type, name, lang
