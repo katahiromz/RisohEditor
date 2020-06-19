@@ -1543,7 +1543,7 @@ STRINGTABLE
     IDS_TOOL_EXPORT, "エクスポート..."
     IDS_CODEEDITOR, "コード エディタ"
     IDS_HEXVIEWER, "16進ビュア"
-    IDS_INTEGERORIDENTIFIER, "Enter integer or identifier"
+    IDS_INTEGERORIDENTIFIER, "整数か識別子を入力して下さい"
     IDS_NOTEXT, " "
 }
 
