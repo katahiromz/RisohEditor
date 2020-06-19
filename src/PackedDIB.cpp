@@ -68,6 +68,9 @@ PackedDIB_GetBitsOffset(const void *pPackedDIB, DWORD dwSize)
         return 0;   // failure
     }
 
+    if (memcmp(pPackedDIB, "\x89\x50\x4E\x47", 4) == 0)
+        return 0;   // PNG
+
     DWORD HeaderSize = *(DWORD *)pPackedDIB;
     DWORD ColorCount = 0;
     if (HeaderSize == sizeof(bc))
@@ -135,10 +138,7 @@ PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm)
 {
     DWORD Offset = PackedDIB_GetBitsOffset(pPackedDIB, dwSize);
     if (Offset == 0)
-    {
-        assert(0);
         return FALSE;   // failure
-    }
 
     const BYTE *pb = (const BYTE *)pPackedDIB;
     DWORD HeaderSize = *(const DWORD *)pPackedDIB;
@@ -216,7 +216,6 @@ PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOOL bIco
 
     if (!PackedDIB_GetInfo(pb, dwSize, bm))
     {
-        assert(0);
         return NULL;
     }
     bm.bmHeight /= 2;
