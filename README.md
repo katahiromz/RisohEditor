@@ -231,6 +231,7 @@ You have to copy the 64-bit file into another place before loading.
     - Improved icon/cursor extraction.
     - Improved newline codes of encoded text.
     - Fixed "Add Resource" dialog.
+    - Made HTML importable.
 
 ## Contact Us
 

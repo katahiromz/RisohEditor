@@ -9074,6 +9074,23 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         }
         return IMPORT_CANCELLED;
     }
+    else if (lstrcmpiW(pchDotExt, L".html") == 0 || lstrcmpiW(pchDotExt, L".htm") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_type = RT_HTML;
+        dialog.m_file = pszFile;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
     else if (lstrcmpiW(pchDotExt, L".wav") == 0)
     {
         // show the dialog
@@ -9271,17 +9288,8 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     // make the window foreground
     SetForegroundWindow(hwnd);
 
-    // find the file title
-    pch = wcsrchr(file, L'\\');
-    if (pch == NULL)
-        pch = wcsrchr(file, L'/');
-    if (pch == NULL)
-        pch = file;
-    else
-        ++pch;
-
     // find the dot extension
-    pch = wcsrchr(pch, L'.');
+    pch = PathFindExtensionW(file);
 
     IMPORT_RESULT result = NOT_IMPORTABLE;
     if (pch)

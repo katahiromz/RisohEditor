@@ -1514,7 +1514,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Этот файл был автоматически создан RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Этот крестик помогает определять UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Файлы импорта |*.res;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|Все файлы (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Файлы импорта |*.res;*.html;*.htm;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML Files (*.html;*.htm)|*.html;*.htm|Все файлы (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Невозможно записать файл, так как заблокирован следующий файл:\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Юникод"
