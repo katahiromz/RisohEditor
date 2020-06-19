@@ -220,6 +220,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Migliorata finestra di dialogo EGA.
 - v.5.4.3 (YY.XX.2020)
     - Improved extract filename.
+    - Sorted the treeview items upon change of resource name/language.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

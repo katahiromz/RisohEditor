@@ -11418,6 +11418,18 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     return 0;
 }
 
+static int CALLBACK
+TreeViewCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+    auto entry1 = (const EntryBase *)lParam1;
+    auto entry2 = (const EntryBase *)lParam2;
+    if (*entry1 < *entry2)
+        return -1;
+    if (*entry1 == *entry2)
+        return 0;
+    return 1;
+}
+
 // change the name of the resource entries
 void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString& old_name, const MIdOrString& new_name)
 {
@@ -11440,6 +11452,11 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
     SelectTV(entry, FALSE);
 
     DoSetFileModified(TRUE);
+
+    // sort
+    HTREEITEM hParent = TreeView_GetParent(m_hwndTV, entry->m_hItem);
+    TV_SORTCB cb = { hParent, TreeViewCompare };
+    TreeView_SortChildrenCB(m_hwndTV, &cb, 0);
 }
 
 // change the language of the resource entries
@@ -11500,6 +11517,11 @@ void MMainWnd::DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WO
     SelectTV(entry, FALSE);
 
     DoSetFileModified(TRUE);
+
+    // sort
+    HTREEITEM hParent = TreeView_GetParent(m_hwndTV, entry->m_hItem);
+    TV_SORTCB cb = { hParent, TreeViewCompare };
+    TreeView_SortChildrenCB(m_hwndTV, &cb, 0);
 }
 
 void MMainWnd::OnNextPane(HWND hwnd, BOOL bNext)
