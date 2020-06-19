@@ -224,8 +224,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Improved icon/cursor extraction.
     - Improved newline codes of encoded text.
     - Fixed "Add Resource" dialog.
-    - Made HTML importable.
-    - Made Manifest importable.
+    - Made HTML/Manifest importable.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
