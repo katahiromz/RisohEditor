@@ -488,7 +488,11 @@ void EntrySet::do_icon(MTitleToIcon& title_to_icon, DialogItem& item, WORD lang)
     type = RT_ICON;
     entry = find(ET_LANG, type, pGroupIcon[n].nID, lang);
     if (!entry)
-        return;
+    {
+        entry = find(ET_LANG, type, pGroupIcon[n].nID, BAD_LANG);
+        if (!entry)
+            return;
+    }
 
     // create an icon object
     HICON hIcon = CreateIconFromResource((PBYTE)&(*entry)[0], (*entry).size(), TRUE, 0x00030000);
@@ -595,7 +599,11 @@ bool EntrySet::extract_group_cursor(const EntryBase& group, const wchar_t *file_
         // find the RT_CURSOR
         auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
         if (!entry)
-            continue;   // not found
+        {
+            entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, BAD_LANG);
+            if (!entry)
+                continue;   // not found
+        }
 
         // get the LOCALHEADER header
         LOCALHEADER local;
@@ -641,7 +649,11 @@ bool EntrySet::extract_group_cursor(const EntryBase& group, const wchar_t *file_
         // find RT_CURSOR
         auto entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, group.m_lang);
         if (!entry)
-            continue;
+        {
+            entry = find(ET_LANG, RT_CURSOR, GroupEntries[i].nID, BAD_LANG);
+            if (!entry)
+                continue;
+        }
 
         DWORD cbLocal = sizeof(LOCALHEADER);
 
@@ -742,7 +754,11 @@ bool EntrySet::extract_group_icon(const EntryBase& group, const wchar_t *file_na
         // find the RT_ICON entry
         auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
         if (!entry)
-            continue;
+        {
+            entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, BAD_LANG);
+            if (!entry)
+                continue;
+        }
 
         // GroupEntries[i] --> DirEntries[i]
         DirEntries[i].bWidth = GroupEntries[i].bWidth;
@@ -783,7 +799,11 @@ bool EntrySet::extract_group_icon(const EntryBase& group, const wchar_t *file_na
         // find the RT_ICON entry
         auto entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, group.m_lang);
         if (!entry)
-            continue;
+        {
+            entry = find(ET_LANG, RT_ICON, GroupEntries[i].nID, BAD_LANG);
+            if (!entry)
+                continue;
+        }
 
         // write it
         DWORD dwSize = (*entry).size();
@@ -1295,7 +1315,11 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WO
         // find the RT_ICON entry
         auto e = find(ET_LANG, RT_ICON, old_entries[i].nID, entry->m_lang);
         if (!e)
-            return FALSE;
+        {
+            e = find(ET_LANG, RT_ICON, old_entries[i].nID, BAD_LANG);
+            if (!e)
+                return FALSE;
+        }
 
         // get the next ID
         UINT nLastID = get_last_id(RT_ICON, new_lang);
@@ -1354,7 +1378,11 @@ BOOL EntrySet::copy_group_cursor(EntryBase *entry, const MIdOrString& new_name, 
         // find the RT_CURSOR entry
         auto e = find(ET_LANG, RT_CURSOR, old_entries[i].nID, entry->m_lang);
         if (!e)
-            return FALSE;
+        {
+            e = find(ET_LANG, RT_CURSOR, old_entries[i].nID, BAD_LANG);
+            if (!e)
+                return FALSE;
+        }
 
         // get the next ID
         UINT nLastID = get_last_id(RT_CURSOR, new_lang);
