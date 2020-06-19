@@ -1541,7 +1541,7 @@ STRINGTABLE
     IDS_TOOL_EXPORT, "Экспорт..."
     IDS_CODEEDITOR, "Редактор кода"
     IDS_HEXVIEWER, "16-ричный просмотр"
-    IDS_INTEGERORIDENTIFIER, "Enter integer or identifier"
+    IDS_INTEGERORIDENTIFIER, "(целое число или идентификатор)"
     IDS_NOTEXT, " "
 }
 

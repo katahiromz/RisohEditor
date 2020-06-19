@@ -1541,7 +1541,7 @@ STRINGTABLE
     IDS_TOOL_EXPORT, "Exportation..."
     IDS_CODEEDITOR, "Éditeur de code"
     IDS_HEXVIEWER, "Visionneuse hexadécimale"
-    IDS_INTEGERORIDENTIFIER, "Enter integer or identifier"
+    IDS_INTEGERORIDENTIFIER, "(entier ou identifiant)"
     IDS_NOTEXT, " "
 }
 
