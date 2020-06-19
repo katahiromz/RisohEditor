@@ -132,17 +132,12 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MFile.hpp"
 #include "MProcessMaker.hpp"
 
-#pragma comment(lib, "comctl32.lib")
-#pragma comment(lib, "ole32.lib")
-#pragma comment(lib, "shell32.lib")
-#pragma comment(lib, "uuid.lib")
-
 #include "ResToText.hpp"
 
 ////////////////////////////////////////////////////////////////////////////
 
 // TODO: Update the version number
-#define RE_VERSION  "5.2.8"
+#define RE_VERSION  "5.4.3"
 
 ////////////////////////////////////////////////////////////////////////////
 

@@ -87,7 +87,7 @@ BOOL IsFileLockedDx(LPCTSTR pszFileName)
 }
 
 // "." or ".."
-#define IS_DOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || (psz)[1] == '.' && (psz)[2] == '\0'))
+#define IS_DOTS(psz) ((psz)[0] == '.' && ((psz)[1] == '\0' || ((psz)[1] == '.' && (psz)[2] == '\0')))
 
 // delete a directory (a folder)
 BOOL DeleteDirectoryDx(LPCTSTR pszDir)
@@ -3713,7 +3713,6 @@ static unsigned __stdcall
 search_proc(void *arg)
 {
     auto pSearch = (ITEM_SEARCH *)arg;
-    ResToText& res2text = pSearch->res2text;
     MString text;
 
     for (auto entry : g_res)
@@ -3972,7 +3971,7 @@ LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
         return FALSE;   // reject
 
     // check if it already exists
-    if (auto e = g_res.find(ET_LANG, entry->m_type, entry->m_name, wNewLang))
+    if (g_res.find(ET_LANG, entry->m_type, entry->m_name, wNewLang))
     {
         ErrorBoxDx(IDS_ALREADYEXISTS);
         return FALSE;   // reject
@@ -6126,7 +6125,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
     m_name = entry->m_name;
     m_lang = entry->m_lang;
 
-    BOOL bEditable, bSelectNone = FALSE;
+    BOOL bEditable;
     switch (entry->m_et)
     {
     case ET_LANG:
@@ -6181,9 +6180,6 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 
         // it's non editable
         bEditable = FALSE;
-
-        // select none
-        bSelectNone = TRUE;
 
         // update show mode
         SetShowMode(SHOW_CODEONLY);
@@ -8469,7 +8465,7 @@ void MMainWnd::DoIDStat(UINT anValues[5])
 
             if (i == 3)
             {
-                if (auto e = g_res.find(ET_LANG, RT_CURSOR, WORD(table_entry.value)))
+                if (g_res.find(ET_LANG, RT_CURSOR, WORD(table_entry.value)))
                     continue;   // it was Cursor.ID, not Control.ID
             }
 
@@ -11184,6 +11180,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     OnGuiEdit(hwnd);
                 }
                 return 1;
+            default:
+                break;
             }
         }
     }
@@ -11206,8 +11204,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         MWaitCursor wait;
         if (!m_bLoading && entry)
         {
-            NM_TREEVIEWW *pTV = (NM_TREEVIEWW *)pnmhdr;
-
             // select the entry to update the text
             SelectTV(entry, FALSE);
             OnSelChange(hwnd, 0);
@@ -11252,6 +11248,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     OnGuiEdit(hwnd);
                 }
                 return 1;
+            default:
+                break;
             }
         }
     }
@@ -11323,7 +11321,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             MWaitCursor wait;
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
-            HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszOldText = pInfo->item.pszText;
             //MessageBoxW(NULL, pszOldText, NULL, 0);
 
@@ -11369,7 +11366,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             MWaitCursor wait;
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
-            HTREEITEM hItem = pInfo->item.hItem;
             LPWSTR pszNewText = pInfo->item.pszText;
             if (pszNewText == NULL)
             {
@@ -11420,7 +11416,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 // check if it already exists
-                if (auto e = g_res.find(ET_LANG, entry->m_type, new_name))
+                if (g_res.find(ET_LANG, entry->m_type, new_name))
                 {
                     ErrorBoxDx(IDS_ALREADYEXISTS);
                     return FALSE;   // reject
@@ -11449,7 +11445,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 // check if it already exists
-                if (auto e = g_res.find(ET_LANG, entry->m_type, entry->m_name, new_lang))
+                if (g_res.find(ET_LANG, entry->m_type, entry->m_name, new_lang))
                 {
                     ErrorBoxDx(IDS_ALREADYEXISTS);
                     return FALSE;   // reject
@@ -11479,7 +11475,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
 
                 // check if it already exists
-                if (auto e = g_res.find(ET_LANG, entry->m_type, WORD(0), new_lang))
+                if (g_res.find(ET_LANG, entry->m_type, WORD(0), new_lang))
                 {
                     ErrorBoxDx(IDS_ALREADYEXISTS);
                     return FALSE;   // reject
@@ -12012,7 +12008,7 @@ void MMainWnd::AddApStudioBlock(std::vector<MStringA>& lines)
 // delete the '#ifdef APSTUDIO_INVOKED ... #endif' block
 void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
 {
-    bool inside = false, found = false;
+    bool inside = false;
     size_t nest = 0;
     std::ptrdiff_t k = -1;
     for (size_t i = 0; i < lines.size(); ++i)
@@ -12038,7 +12034,6 @@ void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
             if (name == "APSTUDIO_INVOKED")
             {
                 inside = true;
-                found = false;
                 k = i;
                 ++nest;
             }
@@ -12060,11 +12055,6 @@ void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
                 ++pch;
             }
             MStringA name(pch0, pch);
-
-            if (name == "_APS_NEXT_RESOURCE_VALUE")
-            {
-                found = true;
-            }
         }
         else if (memcmp(pch, "endif", 5) == 0)
         {
@@ -15448,13 +15438,15 @@ void EGA_extension(void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-// the manifest information
-#pragma comment(linker, "/manifestdependency:\"type='win32' \
-  name='Microsoft.Windows.Common-Controls' \
-  version='6.0.0.0' \
-  processorArchitecture='*' \
-  publicKeyToken='6595b64144ccf1df' \
-  language='*'\"")
+#ifdef _MSC_VER
+    // the manifest information
+    #pragma comment(linker, "/manifestdependency:\"type='win32' \
+      name='Microsoft.Windows.Common-Controls' \
+      version='6.0.0.0' \
+      processorArchitecture='*' \
+      publicKeyToken='6595b64144ccf1df' \
+      language='*'\"")
+#endif
 
 // We will dynamically create the MOleCtrl instances
 IMPLEMENT_DYNAMIC(MOleCtrl)

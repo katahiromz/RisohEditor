@@ -58,10 +58,7 @@ public:
     {
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
 
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         SubclassChildDx(m_cmb1, cmb1);
-
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
 
         CenterWindowDx();
@@ -156,11 +153,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         CheckDlgButton(hwnd, chx1, BST_CHECKED);
-
-        HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         SubclassChildDx(m_cmb1, cmb1);
-
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
 
         SetWindowText(m_cmb1, m_entry.szKey);

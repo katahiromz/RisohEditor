@@ -63,7 +63,6 @@ public:
         DragAcceptFiles(hwnd, TRUE);
 
         // for Types
-        INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitResTypeComboBox(hCmb1, m_type);
 
@@ -188,7 +187,7 @@ public:
         }
 
         // find the language entry by type, name, lang
-        if (auto entry = g_res.find(ET_LANG, type, name, lang))
+        if (g_res.find(ET_LANG, type, name, lang))
         {
             // query overwriting
             INT id = MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL);

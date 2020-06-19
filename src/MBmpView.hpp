@@ -25,11 +25,9 @@
 #include "Res.hpp"
 #include "resource.h"
 #include "MBitmapDx.hpp"
-
 #ifndef _INC_VFW
     #include <vfw.h>
 #endif
-#pragma comment (lib, "vfw32.lib")
 
 class MBmpView;
 

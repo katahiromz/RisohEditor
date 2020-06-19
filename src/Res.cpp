@@ -1309,7 +1309,6 @@ BOOL EntrySet::copy_group_icon(EntryBase *entry, const MIdOrString& new_name, WO
     auto old_entries = (GRPCURSORDIRENTRY *)&(*entry)[sizeof(dir)];
     auto new_entries = (GRPCURSORDIRENTRY *)&data[sizeof(dir)];
 
-    LONG cx = 0, cy = 0;
     for (UINT i = 0; i < dir.idCount; ++i)
     {
         // find the RT_ICON entry

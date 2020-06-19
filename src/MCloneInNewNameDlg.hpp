@@ -64,7 +64,6 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         // for Types
-        INT k;
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         InitResTypeComboBox(hCmb1, m_type);
 

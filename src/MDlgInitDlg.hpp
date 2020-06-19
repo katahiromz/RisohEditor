@@ -54,7 +54,6 @@ public:
         InitCtrlIDComboBox(hCmb1);
         SubclassChildDx(m_cmb1, cmb1);
 
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
 
         ExecuteDlgInitDx(hwnd, GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ADDDLGINIT));
@@ -188,7 +187,6 @@ public:
         SetDlgItemTextW(hwnd, cmb1, m_entry.sz0);
         SubclassChildDx(m_cmb1, cmb1);
 
-        HWND hCmb2 = GetDlgItem(hwnd, cmb2);
         SubclassChildDx(m_cmb2, cmb2);
         SetDlgItemTextW(hwnd, cmb2, m_entry.sz1);
 

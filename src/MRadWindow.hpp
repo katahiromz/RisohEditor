@@ -2417,7 +2417,6 @@ public:
                     items[i].m_pt.y += s_nShift;
                 }
 
-                INT nIndex = INT(m_dialog_res.m_items.size());
                 for (size_t i = 0; i < items.size(); ++i)
                 {
                     m_dialog_res.m_cItems++;
@@ -2590,7 +2589,6 @@ public:
         if (indeces.empty())
             return FALSE;   // no
 
-        INT iSelected = -1;
         INT iUnselected = -1;
         for (UINT i = 0; i < m_dialog_res.m_cItems; ++i)
         {
@@ -2598,8 +2596,6 @@ public:
             {
                 if (iUnselected != -1)
                     return TRUE;    // yes
-
-                iSelected = i;
             }
             else
             {
@@ -2645,7 +2641,6 @@ public:
             return FALSE;
 
         // find two items to swap
-        INT iSelected = -1;
         INT iUnselected = -1;
         for (INT i = m_dialog_res.m_cItems - 1; i >= 0; --i)
         {
@@ -2653,8 +2648,6 @@ public:
             {
                 if (iUnselected != -1)
                     return TRUE;
-
-                iSelected = i;
             }
             else
             {

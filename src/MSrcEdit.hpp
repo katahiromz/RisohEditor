@@ -112,12 +112,10 @@ public:
 
         // get the text area
         RECT rcTextArea = GetTextArea(hwnd);
-        SIZE sizClient = SizeFromRectDx(&rcTextArea);
 
         // get the scroll pos (it's a physical line index)
         INT iFirstPhysLine = GetScrollPos(hwnd, SB_VERT);
 
-        INT iPhysLine = 0;
         INT cy = 0, cyLine = 0;
         if (HDC hDC = GetDC(hwnd))
         {
@@ -168,7 +166,6 @@ public:
 
         // get the text area
         RECT rcTextArea = GetTextArea(hwnd);
-        SIZE sizClient = SizeFromRectDx(&rcTextArea);
 
         // get the scroll pos (it's a physical line index)
         INT iFirstPhysLine = GetScrollPos(hwnd, SB_VERT);

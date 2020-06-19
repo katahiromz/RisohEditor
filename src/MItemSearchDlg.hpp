@@ -59,11 +59,11 @@ struct ITEM_SEARCH
 class MItemSearchDlg : public MDialogBase
 {
 public:
+    ITEM_SEARCH& m_search;
     HICON m_hIcon;
     HICON m_hIconSm;
-    ITEM_SEARCH& m_search;
 
-    MItemSearchDlg(ITEM_SEARCH& search) 
+    MItemSearchDlg(ITEM_SEARCH& search)
         : MDialogBase(IDD_ITEMSEARCH), m_search(search),
           m_hIcon(LoadIconDx(IDI_FIND)), m_hIconSm(LoadSmallIconDx(IDI_FIND))
     {

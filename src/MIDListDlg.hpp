@@ -449,8 +449,6 @@ public:
 
     void OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT * lpDrawItem)
     {
-        INT iItem = lpDrawItem->itemID;
-
         const INT CX_ICON_SMALL = 16;
         const INT CY_ICON_SMALL = 16;
 
