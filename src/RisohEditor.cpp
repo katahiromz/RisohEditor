@@ -13372,7 +13372,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     // always use old style
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
-    keyRisoh.SetSz(TEXT("strPrevVersion"), TEXT(RE_VERSION));
+    keyRisoh.SetSz(TEXT("strPrevVersion"), GetRisohEditorVersion().c_str());
 
     keyRisoh.SetDword(TEXT("bSepFilesByLang"), g_settings.bSepFilesByLang);
     keyRisoh.SetDword(TEXT("bStoreToResFolder"), TRUE);
