@@ -20,6 +20,7 @@ add_executable(RisohEditor WIN32
     DialogRes.cpp
     DlgInitRes.cpp
     IconRes.cpp
+    MenuRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
@@ -38,6 +39,7 @@ add_executable(RisohEditorPortable WIN32
     DialogRes.cpp
     DlgInitRes.cpp
     IconRes.cpp
+    MenuRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
