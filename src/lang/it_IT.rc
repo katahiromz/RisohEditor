@@ -132,7 +132,7 @@ IDR_MAINMENU MENU
         MENUITEM "Apri file Leggimi (&Giapponese)", ID_OPENREADMEJP
         MENUITEM "Apri file &licenza (Inglese)", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "Check RisohEditor &Update", ID_CHECKUPDATE
+        MENUITEM "&Controlla l'aggiornamento di RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&Info sul programma...", ID_ABOUT
     }
@@ -1515,7 +1515,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
-    IDS_IMPORTFILTER, "File importabile|*.res;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|HTML Files (*.html;*.htm)|*.html;*.htm|Manifest Files (*.manifest)|*.manifest|Tutti i file (*.*)|*.*|"
+    IDS_IMPORTFILTER, "File importabile|*.res;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|Tutti i file (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poiché il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
@@ -1544,9 +1544,9 @@ STRINGTABLE
     IDS_HEXVIEWER, "Visualizzatore HEX"
     IDS_INTEGERORIDENTIFIER, "(numero intero o identificatore)"
     IDS_NOTEXT, " "
-    IDS_NOUPDATE, "You are using the latest RisohEditor."
-    IDS_THEREISUPDATE, "RisohEditor %s is available. Download now?"
-    IDS_CANTCHECKUPDATE, "Failed to check RisohEditor update."
+    IDS_NOUPDATE, "Stai utilizzando l'ultimo RisohEditor."
+    IDS_THEREISUPDATE, "RisohEditor %s è disponibile. Scarica ora?"
+    IDS_CANTCHECKUPDATE, "Impossibile controllare l'aggiornamento di RisohEditor."
 }
 
 //////////////////////////////////////////////////////////////////////////////
