@@ -21,15 +21,13 @@
 
 #include <windows.h>
 #include <commctrl.h>
-#include <shlwapi.h>
-
 #include <cctype>
 #include <cwchar>
 #include <set>
 #include <unordered_set>     // for std::unordered_set
+#include <shlwapi.h>
 
 #include "IconRes.hpp"
-#include "MByteStreamEx.hpp"
 #include "MString.hpp"
 #include "MProcessMaker.hpp"
 #include "PackedDIB.hpp"

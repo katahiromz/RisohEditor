@@ -20,6 +20,7 @@
 #pragma once
 
 #include "MWindowBase.hpp"
+#include "MIdOrString.hpp"
 #include <vector>
 #include <map>
 

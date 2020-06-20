@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    70     /* Version 70 */
+#define MZC4_MWINDOWBASE_HPP_    71     /* Version 71 */
 
 class MWindowBase;
 class MDialogBase;
@@ -49,6 +49,9 @@ class MDialogBase;
 #endif
 #ifndef _INC_COMMDLG
     #include <commdlg.h>    // common dialogs
+#endif
+#ifndef _INC_SHLWAPI
+    #include <shlwapi.h>    // Shell Light-Weight API
 #endif
 #ifndef _INC_TCHAR
     #include <tchar.h>      // generic text mappings
