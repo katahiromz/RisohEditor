@@ -19,6 +19,7 @@ add_executable(RisohEditor WIN32
     AccelRes.cpp
     DialogRes.cpp
     DlgInitRes.cpp
+    IconRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
@@ -36,6 +37,7 @@ add_executable(RisohEditorPortable WIN32
     AccelRes.cpp
     DialogRes.cpp
     DlgInitRes.cpp
+    IconRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
