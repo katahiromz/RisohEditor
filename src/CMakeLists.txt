@@ -17,6 +17,7 @@ subdirs(../EGA)
 # RisohEditor.exe
 add_executable(RisohEditor WIN32
     AccelRes.cpp
+    DialogRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
@@ -32,6 +33,7 @@ target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
     AccelRes.cpp
+    DialogRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
