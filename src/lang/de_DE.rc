@@ -265,7 +265,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Löschen\tDel", psh3
     }
-    POPUP "Popup #7"
+    POPUP "Pop-up #7"
     {
         MENUITEM "&Hinzufügen...", psh1
         MENUITEM "&Ändern...", psh2
@@ -275,7 +275,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "&Löschen\tDel", psh3
     }
-    POPUP "Popup #8"
+    POPUP "Pop-up #8"
     {
         MENUITEM "&Hinzufügen...", ID_ADD
         MENUITEM "&Ändern...", ID_MODIFY
