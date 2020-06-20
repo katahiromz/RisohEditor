@@ -132,17 +132,9 @@ public:
     {
     }
 
-    virtual ~MDropdownArrow()
-    {
-    }
-
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("MZC4 Dropdown Arrow");
-    }
-
-    virtual VOID ModifyWndClassDx(WNDCLASSEX& wcx)
-    {
     }
 
     BOOL DoComplement(HWND hwnd, WPARAM wParam)
