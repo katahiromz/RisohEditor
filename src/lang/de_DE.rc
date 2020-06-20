@@ -130,7 +130,6 @@ IDR_MAINMENU MENU
         MENUITEM "Öffnen &README.txt (Englisch)", ID_OPENREADME
         MENUITEM "Öffnen READMEI&T.txt (Italienisch)", ID_OPENREADME
         MENUITEM "Öffnen README&JP.txt (japanisch)", ID_OPENREADMEJP
-        MENUITEM SEPARATOR
         MENUITEM "Öffnen &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Check RisohEditor &Update", ID_CHECKUPDATE
