@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MFile.hpp"
-#include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MRubberBand.hpp"
 #include "MIndexLabels.hpp"
@@ -29,7 +30,6 @@
 #include "PackedDIB.hpp"
 #include "Res.hpp"
 #include "IconRes.hpp"
-#include "resource.h"
 #include <map>
 #include <unordered_set>     // for std::unordered_set
 #include <climits>

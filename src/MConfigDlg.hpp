@@ -19,13 +19,13 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
-#include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

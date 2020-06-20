@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
-#include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "MWindowBase.hpp"
 #include "resource.h"
+#include "MWindowBase.hpp"
 
 #define MYWM_SETITEMRECT (WM_USER + 100)
 #define MYWM_COMPLEMENT (WM_USER + 112)

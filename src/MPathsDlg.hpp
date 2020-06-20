@@ -19,10 +19,10 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "MResizable.hpp"
-#include "resource.h"
 
 class MPathsDlg;
 

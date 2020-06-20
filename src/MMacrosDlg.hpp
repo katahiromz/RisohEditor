@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "resource.h"
 
 struct MACRO_ENTRY;
 class MAddMacroDlg;

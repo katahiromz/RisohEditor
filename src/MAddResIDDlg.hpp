@@ -19,10 +19,10 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "resource.h"
 #include "RisohSettings.hpp"
 
 std::vector<INT> GetPrefixIndexes(const MString& prefix);

@@ -19,11 +19,10 @@
 
 #pragma once
 
-#include "RisohEditor.hpp"
-#include "MString.hpp"
-#include "MHyperLinkCtrl.hpp"
-#include <commdlg.h>
 #include "resource.h"
+#include "MHyperLinkCtrl.hpp"
+#include "MString.hpp"
+#include <commdlg.h>
 
 class MFontsDlg;
 

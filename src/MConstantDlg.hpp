@@ -19,12 +19,12 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MString.hpp"
 #include "RisohSettings.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "ConstantsDB.hpp"
-#include "resource.h"
 class MConstantDlg;
 
 void InitConstantComboBox(HWND hCmb);

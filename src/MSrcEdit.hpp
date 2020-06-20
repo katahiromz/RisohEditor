@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MEditCtrl.hpp"
 #include "MString.hpp"
-#include "resource.h"
 
 #define MYWM_GETDLGHEADLINES (WM_USER + 250)
 

@@ -19,17 +19,16 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MToolBarCtrl.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"
 #include "MStringListDlg.hpp"
-#include "resource.h"
 
 #include "DialogRes.hpp"
 #include "MString.hpp"
-#include "resource.h"
 
 #include <unordered_set>     // for std::unordered_set
 #include <oledlg.h>

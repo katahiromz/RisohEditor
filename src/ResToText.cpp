@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "resource.h"
 #include "ResToText.hpp"
 #include "MTextToText.hpp"
 #include "ConstantsDB.hpp"
@@ -29,7 +30,6 @@
 #include "AccelRes.hpp"
 #include "DlgInitRes.hpp"
 #include "MessageRes.hpp"
-#include "resource.h"
 
 MString
 ResToText::GetEntryFileName(const EntryBase& entry)

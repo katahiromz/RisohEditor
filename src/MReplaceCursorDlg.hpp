@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "resource.h"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);

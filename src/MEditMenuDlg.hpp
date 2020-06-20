@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "resource.h"
 
 #include "MenuRes.hpp"
 

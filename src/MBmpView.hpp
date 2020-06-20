@@ -17,13 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MBMPVIEW_HPP_
-#define MZC4_MBMPVIEW_HPP_
+#pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-#include "resource.h"
 #include "MBitmapDx.hpp"
 #ifndef _INC_VFW
     #include <vfw.h>
@@ -492,7 +491,3 @@ public:
         return 0;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MBMPVIEW_HPP_

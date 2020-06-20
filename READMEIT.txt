@@ -226,6 +226,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Fixed "Add Resource" dialog.
     - Made HTML/Manifest importable.
     - Added update check feature in "Help" menu.
+    - Fixed title of message box.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

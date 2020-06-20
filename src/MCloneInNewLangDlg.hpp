@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "resource.h"
 
 void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
 void InitLangComboBox(HWND hCmb3, LANGID langid);

@@ -19,10 +19,9 @@
 
 #pragma once
 
-#include "RisohEditor.hpp"
+#include "resource.h"
 #include "DialogRes.hpp"
 #include "MString.hpp"
-#include "resource.h"
 #include "MToolBarCtrl.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"

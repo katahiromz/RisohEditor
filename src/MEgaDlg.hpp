@@ -19,10 +19,9 @@
 
 #pragma once
 
-#include "RisohEditor.hpp"
+#include "resource.h"
 #include "MComboBox.hpp"
 #include "MResizable.hpp"
-#include "resource.h"
 #include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
 

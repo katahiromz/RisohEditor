@@ -19,10 +19,10 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MTextToText.hpp"
 #include "MIdOrString.hpp"
-#include "resource.h"
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"
 #include "MResizable.hpp"

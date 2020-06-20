@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
-#include "resource.h"
 #include "DlgInit.h"
 
 void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
