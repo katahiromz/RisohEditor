@@ -135,6 +135,8 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "&LICENSE.txtを開く", ID_OPENLICENSE
         MENUITEM SEPARATOR
+        MENUITEM "リソーエディタの更新を確認(&U)", ID_CHECKUPDATE
+        MENUITEM SEPARATOR
         MENUITEM "バージョン情報(&A)...", ID_ABOUT
     }
 }
@@ -1545,6 +1547,9 @@ STRINGTABLE
     IDS_HEXVIEWER, "16進ビュア"
     IDS_INTEGERORIDENTIFIER, "(整数か識別子を入力)"
     IDS_NOTEXT, " "
+    IDS_NOUPDATE, "最新のリソーエディタを使用中です。"
+    IDS_THEREISUPDATE, "リソーエディタ %s が利用可能です。ダウンロードしますか?"
+    IDS_CANTCHECKUPDATE, "リソーエディタの更新の確認に失敗しました。"
 }
 
 //////////////////////////////////////////////////////////////////////////////

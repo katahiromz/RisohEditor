@@ -225,6 +225,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Improved newline codes of encoded text.
     - Fixed "Add Resource" dialog.
     - Made HTML/Manifest importable.
+    - Added version check feature in "Help" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

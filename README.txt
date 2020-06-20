@@ -224,6 +224,7 @@ Question 6. Are the 64-bit files supported?
     - Improved newline codes of encoded text.
     - Fixed "Add Resource" dialog.
     - Made HTML/Manifest importable.
+    - Added version check feature in "Help" menu.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

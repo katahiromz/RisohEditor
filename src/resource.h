@@ -318,6 +318,9 @@
 #define IDS_HEXVIEWER                       324
 #define IDS_INTEGERORIDENTIFIER             325
 #define IDS_NOTEXT                          326
+#define IDS_NOUPDATE                        327
+#define IDS_THEREISUPDATE                   328
+#define IDS_CANTCHECKUPDATE                 329
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
@@ -475,6 +478,7 @@
 #define ID_PREVPANE                         258
 #define ID_EXTRACTRC                        259
 #define ID_EXPORTRES                        260
+#define ID_CHECKUPDATE                      261
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -485,7 +489,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     261
+        #define _APS_NEXT_COMMAND_VALUE     262
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

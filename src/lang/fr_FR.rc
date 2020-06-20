@@ -133,6 +133,8 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Ouvrez LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
+        MENUITEM "Check RisohEditor &Update", ID_CHECKUPDATE
+        MENUITEM SEPARATOR
         MENUITEM "&À propos de...", ID_ABOUT
     }
 }
@@ -1543,6 +1545,9 @@ STRINGTABLE
     IDS_HEXVIEWER, "Visionneuse hexadécimale"
     IDS_INTEGERORIDENTIFIER, "(entier ou identifiant)"
     IDS_NOTEXT, " "
+    IDS_NOUPDATE, "You are using the latest RisohEditor."
+    IDS_THEREISUPDATE, "RisohEditor %s is available. Download now?"
+    IDS_CANTCHECKUPDATE, "Failed to check RisohEditor update."
 }
 
 //////////////////////////////////////////////////////////////////////////////

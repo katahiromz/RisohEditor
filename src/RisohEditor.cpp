@@ -2375,6 +2375,8 @@ protected:
     void OnDeleteRes(HWND hwnd);
     void OnExtractBin(HWND hwnd);
     void OnExportRes(HWND hwnd);
+    void OnCheckUpdate(HWND hwnd);
+
     void OnExtractRC(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
@@ -2432,6 +2434,9 @@ protected:
     void UpdateNames(BOOL bModified = TRUE);
     void UpdateEntryName(EntryBase *e, LPWSTR pszText = NULL);
     void UpdateEntryLang(EntryBase *e, LPWSTR pszText = NULL);
+
+    std::wstring GetRisohEditorVersion() const;
+    std::wstring ParseVersionFile(LPCWSTR pszFile, std::wstring& url) const;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2613,6 +2618,132 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
                 ErrorBoxDx(IDS_CANTEXTRACTDFM);
             }
         }
+    }
+}
+
+std::wstring MMainWnd::ParseVersionFile(LPCWSTR pszFile, std::wstring& url) const
+{
+    std::wstring ret;
+    char buf[256];
+    if (FILE *fp = _wfopen(pszFile, L"rb"))
+    {
+        while (fgets(buf, 256, fp))
+        {
+            std::string str = buf;
+            mstr_trim(str, " \t\r\n");
+            if (str.find("VERSION:") == 0)
+            {
+                str = str.substr(8);
+                mstr_trim(str, " \t\r\n");
+                MAnsiToWide a2w(CP_ACP, str.c_str());
+                ret = a2w.c_str();
+            }
+            else if (str.find("URL:") == 0)
+            {
+                str = str.substr(4);
+                mstr_trim(str, " \t\r\n");
+                MAnsiToWide a2w(CP_ACP, str.c_str());
+                url = a2w.c_str();
+            }
+        }
+
+        fclose(fp);
+    }
+    return ret;
+}
+
+std::wstring MMainWnd::GetRisohEditorVersion() const
+{
+    WCHAR szFile[MAX_PATH];
+    GetModuleFileNameW(NULL, szFile, _countof(szFile));
+
+    DWORD dwHandle;
+    DWORD dwSize = GetFileVersionInfoSizeW(szFile, &dwHandle);
+    if (!dwSize)
+    {
+        assert(0);
+        return L"";
+    }
+
+    std::vector<BYTE> data;
+    data.resize(dwSize);
+    if (!GetFileVersionInfoW(szFile, dwHandle, dwSize, &data[0]))
+    {
+        assert(0);
+        return L"";
+    }
+
+    LPVOID pValue;
+    UINT uLen;
+
+    if (!VerQueryValueW(&data[0], L"\\VarFileInfo\\Translation",
+                        &pValue, &uLen))
+    {
+        assert(0);
+        return L"";
+    }
+
+    WCHAR szValue[16];
+    DWORD dwValue = *(LPDWORD)pValue;
+    StringCbPrintfW(szValue, sizeof(szValue), L"%04X%04X", LOWORD(dwValue), HIWORD(dwValue));
+
+    std::wstring key = L"\\StringFileInfo\\";
+    key += szValue;
+    key += L"\\ProductVersion";
+    if (!VerQueryValueW(&data[0], key.c_str(), &pValue, &uLen))
+    {
+        assert(0);
+        return L"";
+    }
+
+    std::wstring ret = (LPWSTR)pValue;
+    return ret;
+}
+
+void MMainWnd::OnCheckUpdate(HWND hwnd)
+{
+    std::wstring local_version = GetRisohEditorVersion();
+    if (local_version.empty())
+    {
+        ErrorBoxDx(IDS_CANTCHECKUPDATE);
+        return;
+    }
+
+    WCHAR szPath[MAX_PATH], szFile[MAX_PATH];
+    GetTempPathW(_countof(szPath), szPath);
+    GetTempFileNameW(szPath, L"Upd", 0, szFile);
+
+    HRESULT hr = URLDownloadToFileW(NULL,
+        L"https://katahiromz.web.fc2.com/re/version.html",
+        szFile, 0, NULL);
+    if (FAILED(hr))
+    {
+        ErrorBoxDx(IDS_CANTCHECKUPDATE);
+        return;
+    }
+
+    std::wstring url;
+    std::wstring remote_version = ParseVersionFile(szFile, url);
+    DeleteFileW(szFile);
+    if (url.empty())
+    {
+        ErrorBoxDx(IDS_CANTCHECKUPDATE);
+        return;
+    }
+
+    WCHAR szText[256];
+    if (local_version < remote_version)
+    {
+        StringCbPrintfW(szText, sizeof(szText), LoadStringDx(IDS_THEREISUPDATE),
+                        remote_version.c_str());
+        if (MsgBoxDx(szText, MB_ICONINFORMATION | MB_YESNOCANCEL) == IDYES)
+        {
+            ShellExecuteW(hwnd, NULL, url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
+    }
+    else
+    {
+        MsgBoxDx(IDS_NOUPDATE, MB_ICONINFORMATION);
     }
 }
 
@@ -10983,6 +11114,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_EXPORTRES:
         OnExportRes(hwnd);
         break;
+    case ID_CHECKUPDATE:
+        OnCheckUpdate(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -13263,7 +13397,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
 
     keyRisoh.SetDword(TEXT("bBackup"), g_settings.bBackup);
 
-    keyRisoh.SetSz(TEXT("strBackupSuffix"), TEXT(RE_VERSION));
+    keyRisoh.SetSz(TEXT("strBackupSuffix"), GetRisohEditorVersion().c_str());
     keyRisoh.SetSz(L"strBackupSuffix", g_settings.strBackupSuffix.c_str());
 
     keyRisoh.SetDword(TEXT("bRedundantComments"), g_settings.bRedundantComments);
