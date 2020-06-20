@@ -26,7 +26,7 @@ if (NOT WIN32)
 endif()
 
 # include directories
-include_directories(../include)
+include_directories(../src)
 
 # executable
 add_executable(mcdx mcdx.cpp getoptwin.c)

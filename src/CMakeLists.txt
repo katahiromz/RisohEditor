@@ -8,9 +8,6 @@ cmake_policy(SET CMP0003 NEW)
 # enable Win32 resource
 ENABLE_LANGUAGE(RC)
 
-# include directories
-include_directories(../include)
-
 # EGA
 subdirs(../EGA)
 
