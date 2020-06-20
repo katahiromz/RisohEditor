@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RISOHSETTINGS_HPP
-#define RISOHSETTINGS_HPP
+#pragma once
 
 #include "MWindowBase.hpp"
 #include <vector>
@@ -270,7 +269,3 @@ struct RisohSettings
     }
     #define g_settings RisohSettings_GetMaster()
 #endif
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef RISOHSETTINGS_HPP

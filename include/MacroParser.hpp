@@ -17,10 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MACROPARSER_HPP_
-#define MACROPARSER_HPP_
-
-/////////////////////////////////////////////////////////////////////////
+#pragma once
 
 #include <string>
 #include <vector>
@@ -1287,7 +1284,3 @@ namespace MacroParser
         return ast->m_id == ASTID_STRING;
     }
 } // namespace MacroParser
-
-/////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MACROPARSER_HPP_

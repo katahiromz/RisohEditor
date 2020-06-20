@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RES_HEADER_HPP_
-#define RES_HEADER_HPP_
+#pragma once
 
 #include "MIdOrString.hpp"
 #include "MByteStreamEx.hpp"
@@ -117,7 +116,3 @@ public:
         return DWORD(sizeof(DWORD) * 6 + size);
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef RES_HEADER_HPP_

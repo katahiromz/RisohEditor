@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESSAGE_RES_HPP_
-#define MESSAGE_RES_HPP_
+#pragma once
 
 #include "MByteStream.hpp"
 #include "MString.hpp"
@@ -338,7 +337,3 @@ protected:
         return true;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MESSAGE_RES_HPP_
