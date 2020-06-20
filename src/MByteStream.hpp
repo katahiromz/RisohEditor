@@ -99,13 +99,13 @@ public:
 
     void *ptr(size_t index = 0, size_t data_size = 1)
     {
-        if (index + data_size - 1 <= m_data.size())
+        if (index + data_size <= m_data.size())
             return &m_data[index];
         return NULL;
     }
     const void *ptr(size_t index = 0, size_t data_size = 1) const
     {
-        if (index + data_size - 1 <= m_data.size())
+        if (index + data_size <= m_data.size())
             return &m_data[index];
         return NULL;
     }
