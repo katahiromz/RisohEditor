@@ -2725,7 +2725,7 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
     std::wstring url;
     std::wstring remote_version = ParseVersionFile(szFile, url);
     DeleteFileW(szFile);
-    if (url.empty())
+    if (remote_version.empty() || url.empty())
     {
         ErrorBoxDx(IDS_CANTCHECKUPDATE);
         return;
