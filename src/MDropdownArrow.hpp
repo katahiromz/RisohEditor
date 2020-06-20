@@ -14,36 +14,6 @@ class MDropdownListDlg : public MDialogBase
 public:
     HWND m_lst1;
     HWND m_arrow;
-    WNDPROC m_fnListOldWndProc;
-
-    static LRESULT CALLBACK
-    ListWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        LRESULT result;
-        MDropdownListDlg *parent = (MDropdownListDlg *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        WNDPROC fn = (WNDPROC)parent->m_fnListOldWndProc;
-        switch (uMsg)
-        {
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONDBLCLK:
-            result = SendMessage(hwnd, LB_ITEMFROMPOINT, 0, lParam);
-            if (0 && HIWORD(result) == 0)
-            {
-                if (uMsg == WM_LBUTTONDOWN)
-                {
-                    ListBox_SetCurSel(hwnd, LOWORD(result));
-                    PostMessage(parent->m_arrow, MYWM_COMPLEMENT, VK_RETURN, 0);
-                }
-                else if (uMsg == WM_LBUTTONDBLCLK)
-                {
-                    ListBox_SetCurSel(hwnd, LOWORD(result));
-                    PostMessage(parent->m_arrow, MYWM_COMPLEMENT, VK_RETURN, 0);
-                }
-            }
-            break;
-        }
-        return CallWindowProc(fn, hwnd, uMsg, wParam, lParam);
-    }
 
     MDropdownListDlg() : MDialogBase(IDD_DROPDOWNPOPUP)
     {
@@ -52,11 +22,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         ShowWindow(hwnd, SW_HIDE);
-
         m_lst1 = GetDlgItem(hwnd, lst1);
-        m_fnListOldWndProc = SubclassWindow(m_lst1, ListWindowProc);
-        SetWindowLongPtr(m_lst1, GWLP_USERDATA, (LONG_PTR)this);
-
         InitList(hwnd);
         return TRUE;
     }
@@ -177,17 +143,6 @@ public:
 
     virtual VOID ModifyWndClassDx(WNDCLASSEX& wcx)
     {
-    }
-
-    BOOL GetIndex(INT& nIndex) const
-    {
-        INT index = (INT)SendMessage(m_dialog.m_lst1, LB_GETCURSEL, 0, 0);
-        if (index >= 0)
-        {
-            nIndex = index;
-            return TRUE;
-        }
-        return FALSE;
     }
 
     BOOL DoComplement(HWND hwnd, WPARAM wParam)
