@@ -6565,7 +6565,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
     if (text.empty())
     {
         MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
-        SetErrorMessage(w2a.c_str());
+        strOutput = w2a.c_str();
         return FALSE;
     }
 
