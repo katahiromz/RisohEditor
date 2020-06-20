@@ -1114,7 +1114,7 @@ namespace MacroParser
     //                        | '(' <constant_expression> ')'
     inline BaseAst* Parser::visit_primary_expression()
     {
-        BaseAst *ast;
+        BaseAst *ast = NULL;
         switch (type())
         {
         case TOK_IDENT:

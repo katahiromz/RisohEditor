@@ -195,7 +195,7 @@ public:
 
         MString strID = GetDlgItemText(cmb3);
         mstr_trim(strID);
-        UINT id;
+        UINT id = 0;
         if ((TEXT('0') <= strID[0] && strID[0] <= TEXT('9')) ||
             strID[0] == TEXT('-') || strID[0] == TEXT('+'))
         {
