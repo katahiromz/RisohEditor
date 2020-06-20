@@ -8978,7 +8978,7 @@ BOOL DumpTinyExeOrDll(HINSTANCE hInst, LPCWSTR pszFileName, INT nID)
                 DWORD cbData = SizeofResource(hInst, hRsrc);
                 if (FILE *fp = _wfopen(pszFileName, L"wb"))
                 {
-                    int nOK = fwrite(pvData, cbData, 1, fp);
+                    size_t nOK = fwrite(pvData, cbData, 1, fp);
                     fclose(fp);
 
                     return !!nOK;
@@ -8989,16 +8989,27 @@ BOOL DumpTinyExeOrDll(HINSTANCE hInst, LPCWSTR pszFileName, INT nID)
     return FALSE;
 }
 
-BOOL UpdateCheckSumOfFile(LPCWSTR pszExeFile, const std::string& data, DWORD dwCheckSum = 0)
+BOOL DoResetCheckSum(LPCWSTR pszExeFile)
 {
-    MByteStreamEx stream(data.c_str(), data.size());
+    MByteStreamEx stream;
+    if (!stream.LoadFromFile(pszExeFile))
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    if (stream.size() <= sizeof(IMAGE_DOS_SIGNATURE))
+    {
+        assert(0);
+        return FALSE;
+    }
 
     auto dos = stream.pointer<IMAGE_DOS_HEADER>();
-    IMAGE_NT_HEADERS *nt = NULL;
+    IMAGE_NT_HEADERS *nt;
     if (dos && dos->e_magic == IMAGE_DOS_SIGNATURE && dos->e_lfanew != 0)
-    {
         nt = stream.pointer<IMAGE_NT_HEADERS>(dos->e_lfanew);
-    }
+    else
+        nt = stream.pointer<IMAGE_NT_HEADERS>();
 
     if (!nt || nt->Signature != IMAGE_NT_SIGNATURE)
     {
@@ -9018,15 +9029,15 @@ BOOL UpdateCheckSumOfFile(LPCWSTR pszExeFile, const std::string& data, DWORD dwC
     case sizeof(IMAGE_OPTIONAL_HEADER32):
         optional32 = &nt32->OptionalHeader;
         if (optional32->Magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC)
-            return false;
-        optional32->CheckSum = dwCheckSum;
+            return FALSE;
+        optional32->CheckSum = 0;
         break;
 
     case sizeof(IMAGE_OPTIONAL_HEADER64):
         optional64 = &nt64->OptionalHeader;
         if (optional64->Magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC)
-            return false;
-        optional64->CheckSum = dwCheckSum;
+            return FALSE;
+        optional64->CheckSum = 0;
         break;
 
     default:
@@ -9035,26 +9046,6 @@ BOOL UpdateCheckSumOfFile(LPCWSTR pszExeFile, const std::string& data, DWORD dwC
     }
 
     return stream.SaveToFile(pszExeFile);
-}
-
-BOOL DoResetCheckSum(LPCWSTR pszExeFile)
-{
-    std::string data;
-    char buffer[512];
-
-    if (FILE *fp = _wfopen(pszExeFile, L"rb"))
-    {
-        while (size_t count = fread(buffer, 1, sizeof(buffer), fp))
-        {
-            data.append(&buffer[0], &buffer[count]);
-        }
-        fclose(fp);
-    }
-
-    if (data.empty() || data.size() <= sizeof(IMAGE_DOS_HEADER))
-        return FALSE;
-
-    return UpdateCheckSumOfFile(pszExeFile, data, 0);
 }
 
 BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
