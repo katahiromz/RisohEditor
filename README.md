@@ -232,7 +232,7 @@ You have to copy the 64-bit file into another place before loading.
     - Improved newline codes of encoded text.
     - Fixed "Add Resource" dialog.
     - Made HTML/Manifest importable.
-    - Added version check feature in "Help" menu.
+    - Added update check feature in "Help" menu.
 
 ## Contact Us
 
