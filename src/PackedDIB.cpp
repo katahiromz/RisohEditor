@@ -21,6 +21,7 @@
 #include "MIdOrString.hpp"
 #include "MByteStreamEx.hpp"
 #include <strsafe.h>
+#include <gdiplus.h>
 
 #define WIDTHBYTES(i) (((i) + 31) / 32 * 4)
 

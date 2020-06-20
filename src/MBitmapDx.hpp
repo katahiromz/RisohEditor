@@ -9,6 +9,7 @@
     #include <windows.h>
 #endif
 #include <vector>
+#include <gdiplus.h>
 
 #include "PackedDIB.hpp"
 

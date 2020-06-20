@@ -15,7 +15,8 @@ include_directories(../include)
 subdirs(../EGA)
 
 # RisohEditor.exe
-add_executable(RisohEditor WIN32 
+add_executable(RisohEditor WIN32
+    AccelRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
@@ -29,7 +30,8 @@ target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # RisohEditorPortable.exe
-add_executable(RisohEditorPortable WIN32 
+add_executable(RisohEditorPortable WIN32
+    AccelRes.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp
