@@ -44,6 +44,7 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
+#include "resource.h"
 #include "MWindowBase.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
@@ -57,7 +58,6 @@
 #include "ConstantsDB.hpp"
 #include "MacroParser.hpp"
 #include "MWaitCursor.hpp"
-#include "resource.h"
 #include "RisohSettings.hpp"
 
 // RisohEditor.cpp
