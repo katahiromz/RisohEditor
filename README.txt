@@ -226,6 +226,7 @@ Question 6. Are the 64-bit files supported?
     - Made HTML/Manifest importable.
     - Added update check feature in "Help" menu.
     - Fixed title of message box.
+    - Relaxed the character limit and supported large data.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

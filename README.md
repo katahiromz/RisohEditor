@@ -234,6 +234,7 @@ You have to copy the 64-bit file into another place before loading.
     - Made HTML/Manifest importable.
     - Added update check feature in "Help" menu.
     - Fixed title of message box.
+    - Relaxed the character limit and supported large data.
 
 ## Contact Us
 

@@ -13456,6 +13456,8 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
     {
         m_hCodeEditor.SubclassDx(hSrcEdit);
 
+        m_hCodeEditor.SendMessageDx(EM_SETLIMITTEXT, 0x100000);
+
         Edit_SetModify(m_hCodeEditor, bModify);
         return TRUE;
     }
