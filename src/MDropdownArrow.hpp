@@ -29,12 +29,12 @@ public:
 
     void InitList(HWND hwnd)
     {
-        InitLangListBox(GetDlgItem(hwnd, lst1));
+        InitLangListBox(m_lst1);
 
-        INT nCount = (INT)SendDlgItemMessageW(hwnd, lst1, LB_GETCOUNT, 0, 0);
+        INT nCount = (INT)SendMessageW(m_lst1, LB_GETCOUNT, 0, 0);
 
         RECT rc;
-        SendDlgItemMessageW(hwnd, lst1, LB_GETITEMRECT, 0, (LPARAM)&rc);
+        SendMessageW(m_lst1, LB_GETITEMRECT, 0, (LPARAM)&rc);
         LONG cy = rc.bottom - rc.top;
 
         if (nCount > 10)
@@ -46,9 +46,8 @@ public:
         DWORD exstyle = GetWindowExStyle(hwnd);
         AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
-        HWND hList = GetDlgItem(hwnd, lst1);
-        style = GetWindowStyle(hList);
-        exstyle = GetWindowExStyle(hList);
+        style = GetWindowStyle(m_lst1);
+        exstyle = GetWindowExStyle(m_lst1);
         AdjustWindowRectEx(&rc, style, FALSE, exstyle);
 
         MoveWindow(hwnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
