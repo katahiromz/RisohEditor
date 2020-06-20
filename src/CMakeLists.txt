@@ -11,32 +11,6 @@ ENABLE_LANGUAGE(RC)
 # include directories
 include_directories(../include)
 
-#
-# language options
-#
-option(LANGUAGE_EN_US "Use English" ON)
-option(LANGUAGE_IT_IT "Use Italian" ON)
-option(LANGUAGE_JA_JP "Use Japanese" ON)
-option(LANGUAGE_ZH_CN "Use Chinese" ON)
-
-set(LANG_DEFS "")
-if (LANGUAGE_EN_US)
-    add_definitions(-DLANGUAGE_EN_US)
-    list(APPEND LANG_DEFS -DLANGUAGE_EN_US)
-endif()
-if (LANGUAGE_IT_IT)
-    add_definitions(-DLANGUAGE_IT_IT)
-    list(APPEND LANG_DEFS -DLANGUAGE_IT_IT)
-endif()
-if (LANGUAGE_JA_JP)
-    add_definitions(-DLANGUAGE_JA_JP)
-    list(APPEND LANG_DEFS -DLANGUAGE_JA_JP)
-endif()
-if (LANGUAGE_ZH_CN)
-    add_definitions(-DLANGUAGE_ZH_CN)
-    list(APPEND LANG_DEFS -DLANGUAGE_ZH_CN)
-endif()
-
 # EGA
 subdirs(../EGA)
 
@@ -48,7 +22,7 @@ add_executable(RisohEditor WIN32
     RisohEditor_res.rc
     res/Manifest_1.manifest)
 target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32
-	                              oledlg msimg32 advapi32 shlwapi version urlmon)
+                                  oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # RisohEditorPortable.exe
@@ -59,7 +33,7 @@ add_executable(RisohEditorPortable WIN32
     RisohEditor_res.rc
     res/Manifest_1.manifest)
 target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus vfw32
-	                                      oledlg msimg32 advapi32 shlwapi version urlmon)
+                                          oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 
 # resource object extension
