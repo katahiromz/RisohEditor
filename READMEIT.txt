@@ -219,14 +219,14 @@ Domanda 6. I file a 64 bit sono supportati?
    Migliorate funzionalità importazione ed estrazione.
    Migliorata finestra di dialogo EGA.
 - v.5.4.3 (YY.XX.2020)
-    - Improved extraction filename.
-    - Sorted the treeview items upon change of resource name/language.
-    - Improved icon/cursor extraction.
-    - Improved newline codes of encoded text.
-    - Fixed "Add Resource" dialog.
-    - Made HTML/Manifest importable.
-    - Added update check feature in "Help" menu.
-    - Fixed title of message box.
+   Migliorata estrazione nome file.
+   Ordinati elementi vista struttura in caso di modifica del nome/lingua risorsa.
+   Migliorata estrazione icone/cursori.
+   Migliorata gestione codici nuova riga nel testo codificato.
+   Corretta finestra di dialogo "Aggiungi risorsa".
+   Aggiunta opzione importazione HTML/Manifest.
+   Aggiunta funzione controllo aggiornamenti nel menu "?" (Aiuto).
+   Corretto titolo riquadro messaggio.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
