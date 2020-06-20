@@ -8989,12 +8989,82 @@ BOOL DumpTinyExeOrDll(HINSTANCE hInst, LPCWSTR pszFileName, INT nID)
     return FALSE;
 }
 
+BOOL UpdateCheckSumOfFile(LPCWSTR pszExeFile, const std::string& data, DWORD dwCheckSum = 0)
+{
+    MByteStreamEx stream(data.c_str(), data.size());
+
+    auto dos = stream.pointer<IMAGE_DOS_HEADER>();
+    IMAGE_NT_HEADERS *nt = NULL;
+    if (dos && dos->e_magic == IMAGE_DOS_SIGNATURE && dos->e_lfanew != 0)
+    {
+        nt = stream.pointer<IMAGE_NT_HEADERS>(dos->e_lfanew);
+    }
+
+    if (!nt || nt->Signature != IMAGE_NT_SIGNATURE)
+    {
+        assert(0);
+        return FALSE;
+    }
+
+    IMAGE_NT_HEADERS32 *nt32 = reinterpret_cast<IMAGE_NT_HEADERS32 *>(nt);
+    IMAGE_NT_HEADERS64 *nt64 = reinterpret_cast<IMAGE_NT_HEADERS64 *>(nt);
+
+    IMAGE_FILE_HEADER *file = &nt->FileHeader;
+    IMAGE_OPTIONAL_HEADER32 *optional32 = NULL;
+    IMAGE_OPTIONAL_HEADER64 *optional64 = NULL;
+
+    switch (file->SizeOfOptionalHeader)
+    {
+    case sizeof(IMAGE_OPTIONAL_HEADER32):
+        optional32 = &nt32->OptionalHeader;
+        if (optional32->Magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC)
+            return false;
+        optional32->CheckSum = dwCheckSum;
+        break;
+
+    case sizeof(IMAGE_OPTIONAL_HEADER64):
+        optional64 = &nt64->OptionalHeader;
+        if (optional64->Magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC)
+            return false;
+        optional64->CheckSum = dwCheckSum;
+        break;
+
+    default:
+        assert(0);
+        return FALSE;
+    }
+
+    return stream.SaveToFile(pszExeFile);
+}
+
+BOOL DoResetCheckSum(LPCWSTR pszExeFile)
+{
+    std::string data;
+    char buffer[512];
+
+    if (FILE *fp = _wfopen(pszExeFile, L"rb"))
+    {
+        while (size_t count = fread(buffer, 1, sizeof(buffer), fp))
+        {
+            data.append(&buffer[0], &buffer[count]);
+        }
+        fclose(fp);
+    }
+
+    if (data.empty() || data.size() <= sizeof(IMAGE_DOS_HEADER))
+        return FALSE;
+
+    return UpdateCheckSumOfFile(pszExeFile, data, 0);
+}
+
 BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 {
     if (!g_res.update_exe(pszExeFile))
     {
         return FALSE;
     }
+
+    DoResetCheckSum(pszExeFile);
 
     // update file info
     UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);

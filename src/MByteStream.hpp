@@ -97,13 +97,28 @@ public:
         return m_data;
     }
 
-    void *ptr(size_t index = 0)
+    void *ptr(size_t index = 0, size_t data_size = 1)
     {
-        return &m_data[index];
+        if (index + data_size - 1 <= m_data.size())
+            return &m_data[index];
+        return NULL;
     }
-    const void *ptr(size_t index = 0) const
+    const void *ptr(size_t index = 0, size_t data_size = 1) const
     {
-        return &m_data[index];
+        if (index + data_size - 1 <= m_data.size())
+            return &m_data[index];
+        return NULL;
+    }
+
+    template <typename T_DATA>
+    T_DATA *pointer(size_t index = 0)
+    {
+        return reinterpret_cast<T_DATA *>(ptr(index, sizeof(T_DATA)));
+    }
+    template <typename T_DATA>
+    const T_DATA *pointer(size_t index = 0) const
+    {
+        return reinterpret_cast<const T_DATA *>(ptr(index, sizeof(T_DATA)));
     }
 
     size_t size() const

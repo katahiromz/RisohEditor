@@ -228,6 +228,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Aggiunta funzione controllo aggiornamenti nel menu "?" (Aiuto).
    Corretto titolo riquadro messaggio.
     - Relaxed the character limit and supported large data.
+    - Reset checksum to zero when saving file.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
