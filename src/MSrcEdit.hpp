@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MSRCEDIT_HPP_
-#define MZC4_MSRCEDIT_HPP_
+#pragma once
 
 #include "MEditCtrl.hpp"
 #include "MString.hpp"
@@ -355,7 +354,3 @@ public:
 protected:
     HICON m_hIconMark;
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MSRCEDIT_HPP_

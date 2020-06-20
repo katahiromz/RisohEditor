@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MTESTPARENTWND_HPP_
-#define MZC4_MTESTPARENTWND_HPP_
+#pragma once
 
 #include "MTestDialog.hpp"
 #include "MByteStreamEx.hpp"
@@ -105,7 +104,3 @@ public:
         return 0;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MTESTPARENTWND_HPP_

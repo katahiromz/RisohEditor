@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MREPLACEBITMAPDLG_HPP_
-#define MZC4_MREPLACEBITMAPDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
@@ -161,7 +160,3 @@ public:
         return 0;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MREPLACEBITMAPDLG_HPP_

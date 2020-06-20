@@ -17,15 +17,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MTESTDIALOG_HPP_
-#define MZC4_MTESTDIALOG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "MenuRes.hpp"
 #include "DialogRes.hpp"
 #include "DlgInit.h"
 #include "Res.hpp"
-
 #include <map>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -244,7 +242,3 @@ public:
         return DefaultProcDx();
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MTESTDIALOG_HPP_

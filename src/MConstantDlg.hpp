@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MCONSTANTDLG_HPP_
-#define MZC4_MCONSTANTDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "MString.hpp"
@@ -128,7 +127,3 @@ public:
         return 0;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MCONSTANTDLG_HPP_

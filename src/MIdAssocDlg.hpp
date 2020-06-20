@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MIDASSOCDLG_HPP_
-#define MZC4_MIDASSOCDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "MModifyAssocDlg.hpp"
@@ -217,7 +216,3 @@ public:
         }
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MIDASSOCDLG_HPP_

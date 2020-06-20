@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MTESTMENUDLG_HPP_
-#define MZC4_MTESTMENUDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 
@@ -61,7 +60,3 @@ public:
         return DefaultProcDx();
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MTESTMENUDLG_HPP_

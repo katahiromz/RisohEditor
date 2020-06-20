@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MLANGSDLG_HPP_
-#define MZC4_MLANGSDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "MResizable.hpp"
@@ -227,7 +226,3 @@ public:
         }
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MLANGSDLG_HPP_

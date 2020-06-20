@@ -17,10 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MREPLACEBINDLG_HPP_
-#define MZC4_MREPLACEBINDLG_HPP_
-
-//////////////////////////////////////////////////////////////////////////////
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
@@ -187,7 +184,3 @@ public:
         SetDlgItemTextW(hwnd, edt1, file);
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MREPLACEBINDLG_HPP_

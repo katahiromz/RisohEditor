@@ -17,10 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef VERSION_RES_HPP_
-#define VERSION_RES_HPP_
+#pragma once
 
-#include <windows.h>
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <cassert>
 #include <vector>
 #include <map>
@@ -235,7 +236,3 @@ protected:
     std::vector<Var>        m_vars;
     VS_FIXEDFILEINFO        m_fixed;
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef VERSION_RES_HPP_

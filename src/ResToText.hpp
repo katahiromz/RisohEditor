@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RES_TO_TEXT_HPP_
-#define RES_TO_TEXT_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
@@ -1706,7 +1705,3 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 
     return hbm;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef RES_TO_TEXT_HPP_

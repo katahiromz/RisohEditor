@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MINDEXLABELS_HPP_
-#define MZC4_MINDEXLABELS_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include <map>
@@ -134,7 +133,3 @@ public:
         return 0;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MINDEXLABELS_HPP_

@@ -17,10 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef ICON_RES_HPP_
-#define ICON_RES_HPP_
+#pragma once
 
-#include <windows.h>
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <cassert>
 #include "MByteStreamEx.hpp"
 
@@ -530,9 +531,3 @@ protected:
     EntryListType               m_entries;
     DataListType                m_images;
 }; // class CursorFile
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef ICON_RES_HPP_
-
-//////////////////////////////////////////////////////////////////////////////

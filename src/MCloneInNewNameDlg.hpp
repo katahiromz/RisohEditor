@@ -17,10 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MCLONEINNEWNAMEDLG_HPP_
-#define MZC4_MCLONEINNEWNAMEDLG_HPP_
-
-//////////////////////////////////////////////////////////////////////////////
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
@@ -145,7 +142,3 @@ public:
         SendMessage(GetParent(hwnd), WM_COMMAND, ID_IDLIST, 0);
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MCLONEINNEWNAMEDLG_HPP_

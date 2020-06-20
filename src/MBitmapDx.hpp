@@ -2,8 +2,7 @@
 // This file is part of MZC4.  See file "ReadMe.txt" and "License.txt".
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MBITMAPDX_HPP_
-#define MZC4_MBITMAPDX_HPP_     5   /* Version 5 */
+#pragma once
 
 #include <initguid.h>
 #ifndef _INC_WINDOWS
@@ -383,7 +382,3 @@ inline UINT MBitmapDx::GetHeight()
     }
     return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MBITMAPDX_HPP_

@@ -17,10 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef DIALOG_RES_HPP_
-#define DIALOG_RES_HPP_
-
-#include <windows.h>
+#pragma once
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <vector>
 #include "MByteStreamEx.hpp"
 #include "ConstantsDB.hpp"
@@ -1683,9 +1683,3 @@ public:
         return bOK;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef DIALOG_RES_HPP_
-
-//////////////////////////////////////////////////////////////////////////////

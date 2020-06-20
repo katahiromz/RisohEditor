@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MFONTSDLG_HPP_
-#define MZC4_MFONTSDLG_HPP_
+#pragma once
 
 #include "RisohEditor.hpp"
 #include "MString.hpp"
@@ -271,7 +270,3 @@ public:
 protected:
     MHyperLinkCtrl m_hyperlink;
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MFONTSDLG_HPP_

@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef STRING_RES_HPP_
-#define STRING_RES_HPP_
+#pragma once
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
@@ -32,8 +31,6 @@ struct STRING_ENTRY
     WCHAR StringID[128];
     WCHAR StringValue[512];
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 class StringRes
 {
@@ -182,7 +179,3 @@ public:
         last = first + 16 - 1;
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef STRING_RES_HPP_

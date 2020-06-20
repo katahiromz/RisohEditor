@@ -17,10 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MENU_RES_HPP_
-#define MENU_RES_HPP_
+#pragma once
 
-#include <windows.h>
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <vector>
 #include <stack>
 #include <cassert>
@@ -890,7 +891,3 @@ inline void SetMenuTypeAndState(DWORD& dwType, DWORD& dwState, const MStringW& s
     if (str2.find(L" RJ ") != MStringW::npos)
         dwType |= MFT_RIGHTJUSTIFY;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MENU_RES_HPP_

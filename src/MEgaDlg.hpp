@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MEGADLG_HPP_
-#define MZC4_MEGADLG_HPP_
+#pragma once
 
 #include "RisohEditor.hpp"
 #include "MComboBox.hpp"
@@ -287,7 +286,3 @@ protected:
     MComboBox m_cmb1;
     MResizable m_resizable;
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MEGADLG_HPP_

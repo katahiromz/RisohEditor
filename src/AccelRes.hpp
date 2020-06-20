@@ -17,10 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef ACCEL_RES_HPP_
-#define ACCEL_RES_HPP_
+#pragma once
 
-#include <windows.h>
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <cassert>
 #include <vector>
 
@@ -221,7 +222,3 @@ inline void SetKeyFlags(WORD& fFlags, const MStringW& str)
     if (str.find(L"A") != MStringW::npos)
         fFlags |= FALT;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef ACCEL_RES_HPP_

@@ -17,9 +17,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RES_HPP_
-#define RES_HPP_
-
 #pragma once
 
 #include <windows.h>
@@ -794,7 +791,3 @@ public:
     }
     #define g_res   Res_GetMaster()
 #endif
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef RES_HPP_

@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MZC4_MADDBITMAPDLG_HPP_
-#define MZC4_MADDBITMAPDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "ConstantsDB.hpp"
@@ -207,7 +206,3 @@ public:
         return DefaultProcDx();
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MZC4_MADDBITMAPDLG_HPP_

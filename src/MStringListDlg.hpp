@@ -17,8 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef MSTRINGLISTDLG_HPP_
-#define MSTRINGLISTDLG_HPP_
+#pragma once
 
 #include "MWindowBase.hpp"
 #include "MString.hpp"
@@ -101,7 +100,3 @@ public:
         }
     }
 };
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef MSTRINGLISTDLG_HPP_

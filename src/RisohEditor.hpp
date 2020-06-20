@@ -17,12 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef RISOHEDITOR_HPP_
-#define RISOHEDITOR_HPP_
-
 #pragma once
-
-////////////////////////////////////////////////////////////////////////////
 
 #include <initguid.h>
 #include <windows.h>
@@ -134,7 +129,3 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MProcessMaker.hpp"
 
 #include "ResToText.hpp"
-
-////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef RISOHEDITOR_HPP_

@@ -17,10 +17,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef PACKED_DIB_HPP_
-#define PACKED_DIB_HPP_
+#pragma once
 
-#include <windows.h>
+#ifndef _INC_WINDOWS
+    #include <windows.h>
+#endif
 #include <vector>
 #include <gdiplus.h>
 
@@ -34,7 +35,3 @@ HICON PackedDIB_CreateIcon(const void *pPackedDIB, DWORD dwSize, BITMAP& bm, BOO
 BOOL PackedDIB_CreateFromHandle(std::vector<BYTE>& vecData, HBITMAP hbm);
 BOOL PackedDIB_Extract(LPCWSTR FileName, const void *ptr, size_t siz, BOOL WritePNG);
 HBITMAP PackedDIB_CreateBitmapFromMemory(const void *ptr, size_t siz);
-
-//////////////////////////////////////////////////////////////////////////////
-
-#endif  // ndef PACKED_DIB_HPP_
