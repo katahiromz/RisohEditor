@@ -132,7 +132,7 @@ IDR_MAINMENU MENU
         MENUITEM "Apri file Leggimi (&Giapponese)", ID_OPENREADMEJP
         MENUITEM "Apri file &licenza (Inglese)", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "&Controlla l'aggiornamento di RisohEditor...", ID_CHECKUPDATE
+        MENUITEM "&Controlla aggiornamenti RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&Info sul programma...", ID_ABOUT
     }
@@ -1544,9 +1544,9 @@ STRINGTABLE
     IDS_HEXVIEWER, "Visualizzatore HEX"
     IDS_INTEGERORIDENTIFIER, "(numero intero o identificatore)"
     IDS_NOTEXT, " "
-    IDS_NOUPDATE, "Stai utilizzando l'ultimo RisohEditor."
-    IDS_THEREISUPDATE, "RisohEditor %s è disponibile. Scarica ora?"
-    IDS_CANTCHECKUPDATE, "Impossibile controllare l'aggiornamento di RisohEditor."
+    IDS_NOUPDATE, "La versione installata di RisohEditor è aggiornata."
+    IDS_THEREISUPDATE, "È disponibile RisohEditor %s.\r\nVuoi scaricarlo ora?"
+    IDS_CANTCHECKUPDATE, "Impossibile controllare aggiornamenti RisohEditor."
 }
 
 //////////////////////////////////////////////////////////////////////////////
