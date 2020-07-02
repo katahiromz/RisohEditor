@@ -1544,9 +1544,9 @@ STRINGTABLE
     IDS_HEXVIEWER, "16-ричный просмотр"
     IDS_INTEGERORIDENTIFIER, "(целое число или идентификатор)"
     IDS_NOTEXT, " "
-    IDS_NOUPDATE, "Вы используете последнюю версию RisohEditor."
-    IDS_THEREISUPDATE, "RisohEditor %s доступен. Скачать сейчас?"
-    IDS_CANTCHECKUPDATE, "Не удалось проверить обновление RisohEditor."
+    IDS_NOUPDATE, "У вас самая новая версия RisohEditor."
+    IDS_THEREISUPDATE, "Доступен RisohEditor версии %s. Хотите загрузить?"
+    IDS_CANTCHECKUPDATE, "Не удалось проверить наличие новой версии RisohEditor."
 }
 
 //////////////////////////////////////////////////////////////////////////////
