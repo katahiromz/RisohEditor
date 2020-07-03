@@ -13701,6 +13701,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN;
     exstyle = WS_EX_CLIENTEDGE;
     m_hHexViewer.CreateAsChildDx(m_splitter2, NULL, style, exstyle, 3);
+    m_hHexViewer.SendMessageDx(EM_SETLIMITTEXT, 0x100000);
 
     // create source EDIT control
     if (!ReCreateSrcEdit(m_splitter2))
