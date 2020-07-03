@@ -219,16 +219,16 @@ Domanda 6. I file a 64 bit sono supportati?
    Migliorate funzionalità importazione ed estrazione.
    Migliorata finestra di dialogo EGA.
 - v.5.4.3 (YY.XX.2020)
-   Migliorata estrazione nome file.
-   Ordinati elementi vista struttura in caso di modifica del nome/lingua risorsa.
-   Migliorata estrazione icone/cursori.
-   Migliorata gestione codici nuova riga nel testo codificato.
-   Corretta finestra di dialogo "Aggiungi risorsa".
-   Aggiunta opzione importazione HTML/Manifest.
-   Aggiunta funzione controllo aggiornamenti nel menu "?" (Aiuto).
-   Corretto titolo riquadro messaggio.
-    - Relaxed the character limit and supported large data.
-    - Reset checksum to zero when saving file.
+   Miglioramento nome file di estrazione.
+   Ordinati gli elementi vista struttura cambio di nome / lingua della risorsa.
+   Miglioramento estrazione icona / cursore.
+   Migliorati codici nuova riga del testo codificato.
+   Corretto problema finestra  "Aggiungi risorsa".
+   Reso HTML/Manifest importabile.
+   Aggiunta funzione di controllo degli aggiornamenti nel menu "?".
+   Corretto titolo finestra messaggio.
+   Modificato il limite di caratteri e supportati dati di grandi dimensioni.
+   Ripristinato checksum a zero durante il salvataggio del file.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
