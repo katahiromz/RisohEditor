@@ -225,7 +225,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed Unicode encoding processing.
     - Improved exporting and extracting.
     - Improved EGA dialog.
-- v.5.4.3 (2020.XX.YY)
+- v.5.4.3 (2020.07.03)
     - Improved extraction filename.
     - Sorted the treeview items upon change of resource name/language.
     - Improved icon/cursor extraction.

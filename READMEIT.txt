@@ -218,7 +218,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Corretto problema elaborazione codifica Unicode.
    Migliorate funzionalità importazione ed estrazione.
    Migliorata finestra di dialogo EGA.
-- v.5.4.3 (YY.XX.2020)
+- v.5.4.3 (03.07.2020)
    Miglioramento nome file di estrazione.
    Ordinati gli elementi vista struttura cambio di nome / lingua della risorsa.
    Miglioramento estrazione icona / cursore.
