@@ -71,6 +71,7 @@
 #define IDD_EGA                             162
 #define IDD_REPLACEFONTS                    163
 #define IDD_DROPDOWNPOPUP                   164
+#define IDD_DFMSETTINGS                     165
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100
@@ -83,6 +84,7 @@
 #define IDI_DIAMOND                         107
 #define IDI_MARK                            108
 #define IDI_ARROW                           109
+#define IDI_DFMICON                         110
 
 #define IDR_MAINFRAME                       100
 #define IDR_MAINMENU                        101

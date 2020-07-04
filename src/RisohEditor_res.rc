@@ -100,6 +100,8 @@ IDI_MARK ICON "res/Icon_108.ico"
 
 IDI_ARROW ICON "res/Icon_109.ico"
 
+IDI_DFMICON ICON "res/Icon_110.ico"
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_ANICURSOR
 

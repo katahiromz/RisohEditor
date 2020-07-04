@@ -1262,6 +1262,21 @@ FONT 9, "MS UI Gothic"
     LISTBOX lst1, 0, 0, 120, 150, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, WS_EX_CLIENTEDGE
 }
 
+IDD_DFMSETTINGS DIALOG 0, 0, 210, 134
+CAPTION "Delphi DFM の設定"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "以下は Delphi DFM に関連した設定です:", -1, 35, 5, 170, 30
+    ICON IDI_DFMICON, -1, 5, 5, 0, 0
+    RTEXT "コードページ(&C):", -1, 6, 45, 70, 12
+    COMBOBOX cmb1, 85, 45, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "生文字列のコメントを挿入する(&I)", chx1, 5, 65, 200, 15
+    LTEXT "※ すみません、私たちは非 Unicode の Delphi アプリをサポートしません。", -1, 5, 85, 200, 25
+    DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 145, 115, 60, 14
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
