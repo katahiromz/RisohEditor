@@ -236,6 +236,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed title of message box.
     - Relaxed the character limit and supported large data.
     - Reset checksum to zero when saving file.
+- v.5.4.4 (2020.XX.YY)
 
 ## Contact Us
 

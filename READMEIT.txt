@@ -229,6 +229,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Corretto titolo finestra messaggio.
    Modificato il limite di caratteri e supportati dati di grandi dimensioni.
    Ripristinato checksum a zero durante il salvataggio del file.
+- v.5.4.4 (2020.XX.YY)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
