@@ -231,7 +231,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Ripristinato checksum a zero durante il salvataggio del file.
 - v.5.4.4 (2020.XX.YY)
     - Flushed file contents before using it.
-    - Fixed Delphi DFM data encoding problems.
+    - Supported international Delphi DFM data.
     - Correctly reset checksum to zero when saving file.
 
 /////////////////////////////////////////////////////////////////////
