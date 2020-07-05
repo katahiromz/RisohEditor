@@ -6595,6 +6595,11 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         {
             ansi.erase(i, k - i);
         }
+        else
+        {
+            ansi.erase(0, i);
+            break;
+        }
     }
 
     EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, ansi.c_str());
