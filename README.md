@@ -237,6 +237,8 @@ You have to copy the 64-bit file into another place before loading.
     - Relaxed the character limit and supported large data.
     - Reset checksum to zero when saving file.
 - v.5.4.4 (2020.XX.YY)
+    - Flushed file contents before using it.
+    - Fixed Delphi DFM data encoding problems.
 
 ## Contact Us
 
