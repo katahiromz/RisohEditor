@@ -232,6 +232,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.4 (2020.XX.YY)
     - Flushed file contents before using it.
     - Fixed Delphi DFM data encoding problems.
+    - Correctly reset checksum to zero when saving file.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

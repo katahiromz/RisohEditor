@@ -9163,6 +9163,8 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         DoBackupFile(dest);
     }
 
+    DoResetCheckSum(pszExeFile);
+
     // check whether it is an executable or not
     BOOL bSrcExecutable = IsExeOrDll(src);
     BOOL bDestExecutable = IsExeOrDll(dest);
