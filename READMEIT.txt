@@ -232,6 +232,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.4 (2020.XX.YY)
     - Flushed file contents before using it.
     - Supported international Delphi DFM data.
+    - Inserted 'Delphi DFM Settings' menu item into 'Edit' menu.
     - Correctly reset checksum to zero when saving file.
 
 /////////////////////////////////////////////////////////////////////
