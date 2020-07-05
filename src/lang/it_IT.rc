@@ -1574,9 +1574,9 @@ STRINGTABLE
     IDS_CODEPAGE1257, "1257 (Baltico)"
     IDS_CODEPAGE874, "874 (Tailandese)"
     IDS_CODEPAGE932, "932 (Giapponese)"
-    IDS_CODEPAGE936, "936 (Cinese Semplificato)"
+    IDS_CODEPAGE936, "936 (Cinese semplificato)"
     IDS_CODEPAGE949, "949 (Coreano)"
-    IDS_CODEPAGE950, "950 (Cinese Tradizionale)"
+    IDS_CODEPAGE950, "950 (Cinese tradizionale)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
 }
 
