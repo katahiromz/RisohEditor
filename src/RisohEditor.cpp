@@ -5748,6 +5748,7 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
             {
                 g_settings.nDfmCodePage = dialog.m_nCodePage;
                 g_settings.bDfmRawTextComments = dialog.m_bComments;
+                g_settings.bDfmNoUnicode = dialog.m_bNoUnicode;
             }
         }
     }
@@ -6602,7 +6603,9 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         }
     }
 
-    EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, ansi.c_str());
+    EntryBase::data_type data =
+        dfm_binary_from_text(m_szDFMSC, ansi.c_str(),
+                             g_settings.nDfmCodePage, g_settings.bDfmNoUnicode);
     auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(),
                                      g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
     if (text.empty())
@@ -10308,6 +10311,7 @@ void MMainWnd::OnDfmSettings(HWND hwnd)
     {
         g_settings.nDfmCodePage = dialog.m_nCodePage;
         g_settings.bDfmRawTextComments = dialog.m_bComments;
+        g_settings.bDfmNoUnicode = dialog.m_bNoUnicode;
 
         // select the entry to update the text
         auto entry = g_res.get_entry();
@@ -12907,6 +12911,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bShowFullPath = TRUE;
     g_settings.nDfmCodePage = 0;
     g_settings.bDfmRawTextComments = TRUE;
+    g_settings.bDfmNoUnicode = FALSE;
     g_settings.nEgaX = CW_USEDEFAULT;
     g_settings.nEgaY = CW_USEDEFAULT;
     g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -13117,6 +13122,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
     keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
     keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
+    keyRisoh.QueryDword(TEXT("bDfmNoUnicode"), (DWORD&)g_settings.bDfmNoUnicode);
     keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
     keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
     keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
@@ -13434,6 +13440,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
     keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);
     keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
+    keyRisoh.SetDword(TEXT("bDfmNoUnicode"), g_settings.bDfmNoUnicode);
     keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
     keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
     keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);

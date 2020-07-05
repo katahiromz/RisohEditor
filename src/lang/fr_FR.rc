@@ -1262,17 +1262,18 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst1, 0, 0, 120, 150, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, WS_EX_CLIENTEDGE
 }
 
-IDD_DFMSETTINGS DIALOG 0, 0, 210, 134
+IDD_DFMSETTINGS DIALOG 0, 0, 210, 135
 CAPTION "Paramètres Delphi DFM"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Les paramètres suivants sont liés à Delphi DFM:", -1, 35, 5, 170, 30
+    LTEXT "Les paramètres suivants sont liés à Delphi DFM:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
-    RTEXT "&Page de code:", -1, 6, 45, 70, 12
-    COMBOBOX cmb1, 85, 45, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Insérer des commentaires de chaîne brute", chx1, 5, 65, 200, 15
-    LTEXT "* Désolé, nous ne prenons pas en charge les applications Delphi non Unicode.", -1, 5, 85, 200, 25
+    RTEXT "&Page de code:", -1, 6, 32, 70, 12
+    COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "&Insérer des commentaires de chaîne brute", chx1, 5, 50, 200, 14
+    AUTOCHECKBOX "Don't use &Unicode nor UTF-8", chx2, 5, 70, 200, 14
+    LTEXT "* Désolé, nous ne prenons pas en charge les applications Delphi non Unicode.", -1, 5, 90, 200, 20
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "Annuler", IDCANCEL, 145, 115, 60, 14
 }

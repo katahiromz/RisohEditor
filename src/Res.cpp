@@ -174,7 +174,8 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 }
 
 EntryBase::data_type
-dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
+dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
+                     INT codepage, BOOL no_unicode)
 {
     // get the temporary file path
     WCHAR szPath6[MAX_PATH], szPath7[MAX_PATH];
@@ -194,7 +195,16 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += pszDFMSC;
-    strCmdLine += L"\" --t2b ";
+    strCmdLine += L"\" --t2b";
+    if (no_unicode)
+    {
+        strCmdLine += L" --no-unicode";
+    }
+    if (codepage != 0)
+    {
+        strCmdLine += L" --codepage ";
+        strCmdLine += mstr_dec_word(codepage);
+    }
     strCmdLine += L" \"";
     strCmdLine += szPath6;
     strCmdLine += L"\"";

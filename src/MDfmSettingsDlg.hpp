@@ -30,11 +30,13 @@ class MDfmSettingsDlg : public MDialogBase
 public:
     INT m_nCodePage;
     BOOL m_bComments;
+    BOOL m_bNoUnicode;
 
     MDfmSettingsDlg() : MDialogBase(IDD_DFMSETTINGS)
     {
         m_nCodePage = g_settings.nDfmCodePage;
         m_bComments = g_settings.bDfmRawTextComments;
+        m_bNoUnicode = g_settings.bDfmNoUnicode;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -65,6 +67,11 @@ public:
         else
             CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
 
+        if (m_bNoUnicode)
+            CheckDlgButton(hwnd, chx2, BST_CHECKED);
+        else
+            CheckDlgButton(hwnd, chx2, BST_UNCHECKED);
+
         CenterWindowDx();
 
         return TRUE;
@@ -90,6 +97,11 @@ public:
             m_bComments = TRUE;
         else
             m_bComments = FALSE;
+
+        if (IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED)
+            m_bNoUnicode = TRUE;
+        else
+            m_bNoUnicode = FALSE;
 
         EndDialog(IDOK);
     }

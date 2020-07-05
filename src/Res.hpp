@@ -346,7 +346,8 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
                      INT codepage, BOOL bComments);
 
 EntryBase::data_type
-dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);
+dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
+                     INT codepage, BOOL no_unicode);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet
