@@ -105,7 +105,8 @@ BOOL EntryBase::is_editable() const
 }
 
 std::string
-dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size, INT codepage)
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
+                     INT codepage, BOOL bComments)
 {
     // get the temporary file path
     WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
@@ -124,7 +125,11 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size, INT code
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += pszDFMSC;
-    strCmdLine += L"\" --b2t --comments";
+    strCmdLine += L"\" --b2t";
+    if (bComments)
+    {
+        strCmdLine += L" --comments";
+    }
     if (codepage != 0)
     {
         strCmdLine += L" --codepage ";

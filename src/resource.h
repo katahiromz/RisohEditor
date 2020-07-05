@@ -481,6 +481,7 @@
 #define ID_EXTRACTRC                        259
 #define ID_EXPORTRES                        260
 #define ID_CHECKUPDATE                      261
+#define ID_DFMSETTINGS                      262
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -491,7 +492,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     262
+        #define _APS_NEXT_COMMAND_VALUE     263
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

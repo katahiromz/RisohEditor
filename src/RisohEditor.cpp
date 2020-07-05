@@ -2377,6 +2377,7 @@ protected:
     void OnExtractBin(HWND hwnd);
     void OnExportRes(HWND hwnd);
     void OnCheckUpdate(HWND hwnd);
+    void OnDfmSettings(HWND hwnd);
 
     void OnExtractRC(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
@@ -2602,7 +2603,7 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
         if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
         {
             auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size(),
-                                             g_settings.nDfmCodePage);
+                                             g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
             if (FILE *fp = _wfopen(szFile, L"wb"))
             {
                 fwrite(ansi.c_str(), ansi.size(), 1, fp);
@@ -5746,6 +5747,7 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
             if (dialog.DialogBoxDx(hwnd) == IDOK)
             {
                 g_settings.nDfmCodePage = dialog.m_nCodePage;
+                g_settings.bDfmRawTextComments = dialog.m_bComments;
             }
         }
     }
@@ -6596,7 +6598,8 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
     }
 
     EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, ansi.c_str());
-    auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(), g_settings.nDfmCodePage);
+    auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(),
+                                     g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
     if (text.empty())
     {
         MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
@@ -10287,6 +10290,24 @@ void MMainWnd::OnHideIDMacros(HWND hwnd)
     SelectTV(entry, FALSE);
 }
 
+void MMainWnd::OnDfmSettings(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
+    MDfmSettingsDlg dialog;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        g_settings.nDfmCodePage = dialog.m_nCodePage;
+        g_settings.bDfmRawTextComments = dialog.m_bComments;
+
+        // select the entry to update the text
+        auto entry = g_res.get_entry();
+        SelectTV(entry, FALSE);
+    }
+}
+
 // show/hide the ID list window
 void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
 {
@@ -11201,6 +11222,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_CHECKUPDATE:
         OnCheckUpdate(hwnd);
+        break;
+    case ID_DFMSETTINGS:
+        OnDfmSettings(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
@@ -12875,6 +12899,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bUseBeginEnd = FALSE;
     g_settings.bShowFullPath = TRUE;
     g_settings.nDfmCodePage = 0;
+    g_settings.bDfmRawTextComments = TRUE;
     g_settings.nEgaX = CW_USEDEFAULT;
     g_settings.nEgaY = CW_USEDEFAULT;
     g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -13084,6 +13109,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
     keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
     keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
+    keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
     keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
     keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
     keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
@@ -13400,6 +13426,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
     keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
     keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);
+    keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
     keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
     keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
     keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
@@ -13949,7 +13976,7 @@ LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
     auto& entry = *(const EntryBase *)lParam;
 
     auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size(),
-                                     g_settings.nDfmCodePage);
+                                     g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
     MAnsiToWide a2w(CP_UTF8, ansi.c_str());
     str = a2w.c_str();
     return 0;

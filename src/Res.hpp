@@ -342,7 +342,8 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = B
 }
 
 std::string
-dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size, INT codepage);
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
+                     INT codepage, BOOL bComments);
 
 EntryBase::data_type
 dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);

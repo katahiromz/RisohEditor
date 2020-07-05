@@ -97,6 +97,7 @@ struct RisohSettings
     BOOL                bUseBeginEnd;       // Use BEGIN/END instead of braces?
     BOOL                bShowFullPath;      // Show full path on title bar
     INT                 nDfmCodePage;       // Delphi DFM Data codepage
+    BOOL                bDfmRawTextComments; // Delphi DFM raw text comments
     INT                 nEgaX;
     INT                 nEgaY;
     INT                 nEgaWidth;

@@ -85,6 +85,7 @@ IDR_MAINMENU MENU
         MENUITEM "フォント設定(&F)...", ID_FONTS
         MENUITEM "PATHの設定(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
+        MENUITEM "Delphi DFM の設定(&S)...", ID_DFMSETTINGS
         MENUITEM "設定(&C)...", ID_CONFIG
     }
     POPUP "検索(&S)"

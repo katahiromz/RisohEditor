@@ -85,6 +85,7 @@ IDR_MAINMENU MENU
         MENUITEM "Настройки &шрифта...", ID_FONTS
         MENUITEM "Задать п&ути...", ID_SETPATHS
         MENUITEM SEPARATOR
+        MENUITEM "Delphi DFM &settings...", ID_DFMSETTINGS
         MENUITEM "&Конфигурация...", ID_CONFIG
     }
     POPUP "&Поиск"

@@ -29,10 +29,12 @@ class MDfmSettingsDlg : public MDialogBase
 {
 public:
     INT m_nCodePage;
+    BOOL m_bComments;
 
     MDfmSettingsDlg() : MDialogBase(IDD_DFMSETTINGS)
     {
         m_nCodePage = g_settings.nDfmCodePage;
+        m_bComments = g_settings.bDfmRawTextComments;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -52,10 +54,16 @@ public:
         ComboBox_AddString(hCmb1, TEXT("936 (Simplified Chinese)"));
         ComboBox_AddString(hCmb1, TEXT("949 (Korean)"));
         ComboBox_AddString(hCmb1, TEXT("950 (Traditional Chinese)"));
+        ComboBox_AddString(hCmb1, TEXT("65001 (UTF-8)"));
 
         TCHAR szText[32];
         StringCbPrintf(szText, sizeof(szText), TEXT("%u"), m_nCodePage);
         ComboBox_SetText(hCmb1, szText);
+
+        if (m_bComments)
+            CheckDlgButton(hwnd, chx1, BST_CHECKED);
+        else
+            CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
 
         CenterWindowDx();
 
@@ -76,7 +84,12 @@ public:
         {
             ComboBox_GetLBText(hCmb1, iItem, szText);
         }
-        m_nCodePage = _ttoi(szText);
+        m_nCodePage = _tcstoul(szText, NULL, 0);
+
+        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+            m_bComments = TRUE;
+        else
+            m_bComments = FALSE;
 
         EndDialog(IDOK);
     }

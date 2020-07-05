@@ -85,6 +85,7 @@ IDR_MAINMENU MENU
         MENUITEM "Impostazioni &font...", ID_FONTS
         MENUITEM "Impostazioni &percorsi...", ID_SETPATHS
         MENUITEM SEPARATOR
+        MENUITEM "Delphi DFM &settings...", ID_DFMSETTINGS
         MENUITEM "&Impostazioni...", ID_CONFIG
     }
     POPUP "&Cerca"
