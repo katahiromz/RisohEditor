@@ -323,6 +323,20 @@
 #define IDS_NOUPDATE                        327
 #define IDS_THEREISUPDATE                   328
 #define IDS_CANTCHECKUPDATE                 329
+#define IDS_CODEPAGE1252                    330
+#define IDS_CODEPAGE1250                    331
+#define IDS_CODEPAGE1251                    332
+#define IDS_CODEPAGE1253                    333
+#define IDS_CODEPAGE1254                    334
+#define IDS_CODEPAGE1255                    335
+#define IDS_CODEPAGE1256                    336
+#define IDS_CODEPAGE1257                    337
+#define IDS_CODEPAGE874                     338
+#define IDS_CODEPAGE932                     339
+#define IDS_CODEPAGE936                     340
+#define IDS_CODEPAGE949                     341
+#define IDS_CODEPAGE950                     342
+#define IDS_CODEPAGE65001                   343
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

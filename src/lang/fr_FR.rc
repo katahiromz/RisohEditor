@@ -1564,6 +1564,20 @@ STRINGTABLE
     IDS_NOUPDATE, "Vous utilisez le dernier RisohEditor."
     IDS_THEREISUPDATE, "RisohEditor% s est disponible. Télécharger maintenant?"
     IDS_CANTCHECKUPDATE, "Impossible de vérifier la mise à jour de RisohEditor."
+    IDS_CODEPAGE1252, "1252 (Latin 1)"
+    IDS_CODEPAGE1250, "1250 (Latin 2)"
+    IDS_CODEPAGE1251, "1251 (Cyrillique)"
+    IDS_CODEPAGE1253, "1253 (Grec)"
+    IDS_CODEPAGE1254, "1254 (Turc)"
+    IDS_CODEPAGE1255, "1255 (Hébreu)"
+    IDS_CODEPAGE1256, "1256 (Arabe)"
+    IDS_CODEPAGE1257, "1257 (Baltique)"
+    IDS_CODEPAGE874, "874 (Thaïlandais)"
+    IDS_CODEPAGE932, "932 (Japonais)"
+    IDS_CODEPAGE936, "936 (Chinois Simplifié)"
+    IDS_CODEPAGE949, "949 (Coréen)"
+    IDS_CODEPAGE950, "950 (Chinois Traditionnel)"
+    IDS_CODEPAGE65001, "65001 (UTF-8)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -43,20 +43,20 @@ public:
     {
         HWND hCmb1 = GetDlgItem(hwnd, cmb1);
         ComboBox_AddString(hCmb1, TEXT("0"));
-        ComboBox_AddString(hCmb1, TEXT("1252 (Latin 1)"));
-        ComboBox_AddString(hCmb1, TEXT("1250 (Latin 2)"));
-        ComboBox_AddString(hCmb1, TEXT("1251 (Cyrillic)"));
-        ComboBox_AddString(hCmb1, TEXT("1253 (Greek)"));
-        ComboBox_AddString(hCmb1, TEXT("1254 (Turkish)"));
-        ComboBox_AddString(hCmb1, TEXT("1255 (Hebrew)"));
-        ComboBox_AddString(hCmb1, TEXT("1256 (Arabic)"));
-        ComboBox_AddString(hCmb1, TEXT("1257 (Baltic)"));
-        ComboBox_AddString(hCmb1, TEXT("874 (Thai)"));
-        ComboBox_AddString(hCmb1, TEXT("932 (Japanese)"));
-        ComboBox_AddString(hCmb1, TEXT("936 (Simplified Chinese)"));
-        ComboBox_AddString(hCmb1, TEXT("949 (Korean)"));
-        ComboBox_AddString(hCmb1, TEXT("950 (Traditional Chinese)"));
-        ComboBox_AddString(hCmb1, TEXT("65001 (UTF-8)"));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1252));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1250));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1251));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1253));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1254));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1255));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1256));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE1257));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE874));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE932));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE936));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE949));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE950));
+        ComboBox_AddString(hCmb1, LoadStringDx(IDS_CODEPAGE65001));
 
         TCHAR szText[32];
         StringCbPrintf(szText, sizeof(szText), TEXT("%u"), m_nCodePage);

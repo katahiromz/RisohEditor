@@ -1563,6 +1563,20 @@ STRINGTABLE
     IDS_NOUPDATE, "您正在使用最新的RisohEditor。"
     IDS_THEREISUPDATE, "RisohEditor %s 可用。 现在下载？"
     IDS_CANTCHECKUPDATE, "无法检查RisohEditor更新。"
+    IDS_CODEPAGE1252, "1252 (拉丁1)"
+    IDS_CODEPAGE1250, "1250 (拉丁2)"
+    IDS_CODEPAGE1251, "1251 (西里尔)"
+    IDS_CODEPAGE1253, "1253 (希腊语)"
+    IDS_CODEPAGE1254, "1254 (土耳其)"
+    IDS_CODEPAGE1255, "1255 (希伯来语)"
+    IDS_CODEPAGE1256, "1256 (阿拉伯)"
+    IDS_CODEPAGE1257, "1257 (波罗的海)"
+    IDS_CODEPAGE874, "874 (泰语)"
+    IDS_CODEPAGE932, "932 (日本语)"
+    IDS_CODEPAGE936, "936 (简体中文)"
+    IDS_CODEPAGE949, "949 (韩语)"
+    IDS_CODEPAGE950, "950 (繁体中文)"
+    IDS_CODEPAGE65001, "65001 (UTF-8)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

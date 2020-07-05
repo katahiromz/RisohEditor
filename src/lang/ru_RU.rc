@@ -1564,6 +1564,20 @@ STRINGTABLE
     IDS_NOUPDATE, "У вас самая новая версия RisohEditor."
     IDS_THEREISUPDATE, "Доступен RisohEditor версии %s. Хотите загрузить?"
     IDS_CANTCHECKUPDATE, "Не удалось проверить наличие новой версии RisohEditor."
+    IDS_CODEPAGE1252, "1252 (Латиница 1)"
+    IDS_CODEPAGE1250, "1250 (Латиница 2)"
+    IDS_CODEPAGE1251, "1251 (Кириллица)"
+    IDS_CODEPAGE1253, "1253 (Греческий)"
+    IDS_CODEPAGE1254, "1254 (Турецкий)"
+    IDS_CODEPAGE1255, "1255 (Иврит)"
+    IDS_CODEPAGE1256, "1256 (Арабский)"
+    IDS_CODEPAGE1257, "1257 (Балтийский)"
+    IDS_CODEPAGE874, "874 (Тайский)"
+    IDS_CODEPAGE932, "932 (Японский)"
+    IDS_CODEPAGE936, "936 (Упрощенный Китайский)"
+    IDS_CODEPAGE949, "949 (Корейский)"
+    IDS_CODEPAGE950, "950 (Традиционный Китайский)"
+    IDS_CODEPAGE65001, "65001 (UTF-8)"
 }
 
 //////////////////////////////////////////////////////////////////////////////
