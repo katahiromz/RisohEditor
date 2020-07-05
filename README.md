@@ -239,7 +239,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.4.4 (2020.XX.YY)
     - Flushed file contents before using it.
     - Supported international Delphi DFM data.
-    - Inserted 'Delphi DFM Settings' menu item into 'Edit' menu.
+    - Inserted "Delphi DFM Settings" menu item into "Edit" menu.
     - Correctly reset checksum to zero when saving file.
 
 ## Contact Us
