@@ -222,6 +222,7 @@ BOOL DumpBinaryFileDx(const WCHAR *filename, LPCVOID pv, DWORD size)
 
     int n = (int)fwrite(pv, size, 1, fp);   // write
 
+    fflush(fp);
     fclose(fp);     // close the files
 
     return n == 1;  // success or not
@@ -2600,10 +2601,12 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
     {
         if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
         {
-            auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
+            auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size(),
+                                             g_settings.nDfmCodePage);
             if (FILE *fp = _wfopen(szFile, L"wb"))
             {
                 fwrite(ansi.c_str(), ansi.size(), 1, fp);
+                fflush(fp);
                 fclose(fp);
             }
             else
@@ -5735,6 +5738,17 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
+    if (entry.is_delphi_dfm())
+    {
+        if (g_settings.nDfmCodePage == 0)
+        {
+            MDfmSettingsDlg dialog;
+            if (dialog.DialogBoxDx(hwnd) == IDOK)
+            {
+                g_settings.nDfmCodePage = dialog.m_nCodePage;
+            }
+        }
+    }
     // dump the text to m_hCodeEditor
     ResToText res2text;
     res2text.m_hwnd = m_hwnd;
@@ -5784,7 +5798,6 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
         {
             file.FlushFileBuffers();    // flush
             file.CloseHandle();         // close the handle
-            Sleep(FILE_WAIT_TIME);      // wait for the file operation
 
             if (bIcon)
             {
@@ -6454,6 +6467,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.FlushFileBuffers();
     r2.CloseHandle();   // close the handle
 
     // build the command line text
@@ -6476,9 +6490,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
     BOOL bOK = FALSE;
 
-    // wait for the file operation
-    Sleep(FILE_WAIT_TIME);
-
     // create a windres.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -6495,9 +6506,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
             bOK = FALSE;
-
-            // wait for the file operation
-            Sleep(FILE_WAIT_TIME);
 
             // import res
             EntrySet res;
@@ -6560,8 +6568,35 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         return FALSE;
 
     MWideToAnsi w2a(CP_UTF8, strWide.c_str());
-    EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, w2a.c_str());
-    auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size());
+    MStringA ansi(w2a.c_str());
+
+    // remove "//-" ... "-//"
+    for (;;)
+    {
+        auto i = ansi.find("//-");
+        if (i == MStringA::npos)
+            break;
+        auto j = ansi.find("-//", i);
+        auto k = ansi.find("\n", i);
+        if (j != MStringA::npos && k != MStringA::npos)
+        {
+            if (j < k)
+                ansi.erase(i, j - i + 3);
+            else
+                ansi.erase(i, k - i);
+        }
+        else if (j != MStringA::npos)
+        {
+            ansi.erase(i, j - i + 3);
+        }
+        else if (k != MStringA::npos)
+        {
+            ansi.erase(i, k - i);
+        }
+    }
+
+    EntryBase::data_type data = dfm_binary_from_text(m_szDFMSC, ansi.c_str());
+    auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(), g_settings.nDfmCodePage);
     if (text.empty())
     {
         MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
@@ -6633,9 +6668,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
     BOOL bOK = FALSE;
 
-    // wait for the file operation
-    Sleep(FILE_WAIT_TIME);
-
     // create the mcdx.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -6652,9 +6684,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         if (pmaker.GetExitCode() == 0 && bOK)
         {
             bOK = FALSE;
-
-            // wait for the file operation
-            Sleep(FILE_WAIT_TIME);
 
             // import res
             EntrySet res;
@@ -6826,12 +6855,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r1.WriteSzA("#endif\r\n\r\n");
 
     r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    r1.FlushFileBuffers();
     r1.CloseHandle();   // close the handle
 
     // write the UTF-8 file to Source file #2
     DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
     DWORD cbWritten;
     r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r2.FlushFileBuffers();
     r2.CloseHandle();   // close the handle
 
     // build the command line text
@@ -6854,9 +6885,6 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     BOOL bOK = FALSE;
 
-    // wait for the file operation
-    Sleep(FILE_WAIT_TIME);
-
     // create a windres.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
@@ -6874,9 +6902,6 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
             bOK = FALSE;
-
-            // wait for the file operation
-            Sleep(FILE_WAIT_TIME);
 
             // import res
             EntrySet res;
@@ -8979,6 +9004,7 @@ BOOL DumpTinyExeOrDll(HINSTANCE hInst, LPCWSTR pszFileName, INT nID)
                 if (FILE *fp = _wfopen(pszFileName, L"wb"))
                 {
                     size_t nOK = fwrite(pvData, cbData, 1, fp);
+                    fflush(fp);
                     fclose(fp);
 
                     return !!nOK;
@@ -9901,6 +9927,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         StringCchPrintfA(buf, _countof(buf), "%s\n", macros[i].c_str());
         file1.WriteSzA(buf, &cbWritten);
     }
+    file1.FlushFileBuffers();
     file1.CloseHandle();    // close the handle
 
     // build the command line text
@@ -9916,9 +9943,6 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
-
-    // wait for the file operation
-    Sleep(FILE_WAIT_TIME);
 
     // create a cpp.exe process
     MProcessMaker pmaker;
@@ -12400,6 +12424,7 @@ void MMainWnd::OnUpdateResHBang(HWND hwnd)
             fprintf(fp, "%s\n", lines[i].c_str());
         }
 
+        fflush(fp);
         fclose(fp);     // close the files
     }
 
@@ -12849,6 +12874,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bCompressByUPX = FALSE;
     g_settings.bUseBeginEnd = FALSE;
     g_settings.bShowFullPath = TRUE;
+    g_settings.nDfmCodePage = 0;
     g_settings.nEgaX = CW_USEDEFAULT;
     g_settings.nEgaY = CW_USEDEFAULT;
     g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -13057,6 +13083,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
     keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
     keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
+    keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
     keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
     keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
     keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
@@ -13372,6 +13399,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
     keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
     keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
+    keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);
     keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
     keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
     keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
@@ -13920,8 +13948,9 @@ LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
     auto& str = *(MString *)wParam;
     auto& entry = *(const EntryBase *)lParam;
 
-    auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size());
-    MAnsiToWide a2w(CP_ACP, ansi.c_str());
+    auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size(),
+                                     g_settings.nDfmCodePage);
+    MAnsiToWide a2w(CP_UTF8, ansi.c_str());
     str = a2w.c_str();
     return 0;
 }

@@ -105,7 +105,7 @@ BOOL EntryBase::is_editable() const
 }
 
 std::string
-dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size)
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size, INT codepage)
 {
     // get the temporary file path
     WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
@@ -117,14 +117,19 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size)
     DWORD cbWritten;
     MFile r4(szPath4, TRUE);
     r4.WriteFile(binary, size, &cbWritten);
+    r4.FlushFileBuffers();
     r4.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
     // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += pszDFMSC;
-    strCmdLine += L"\" --b2t ";
+    strCmdLine += L"\" --b2t --comments";
+    if (codepage != 0)
+    {
+        strCmdLine += L" --codepage ";
+        strCmdLine += mstr_dec_word(codepage);
+    }
     strCmdLine += L" \"";
     strCmdLine += szPath4;
     strCmdLine += L"\"";
@@ -176,8 +181,8 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
     DWORD cbWritten;
     MFile r6(szPath6, TRUE);
     r6.WriteFile(text.c_str(), text.size(), &cbWritten);
+    r6.FlushFileBuffers();
     r6.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
     // build the command line text
     MStringW strCmdLine;
@@ -1499,6 +1504,7 @@ BOOL EntrySet::extract_cursor(LPCWSTR pszFileName, const EntryBase *entry) const
             file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
         {
             // written to the file
+            file.FlushFileBuffers();
             file.CloseHandle();
             return TRUE;    // success
         }
@@ -1527,6 +1533,7 @@ BOOL EntrySet::extract_icon(LPCWSTR pszFileName, const EntryBase *entry) const
             file.WriteFile(&(*entry)[0], entry->size(), &cbWritten))
         {
             // written to the file
+            file.FlushFileBuffers();
             file.CloseHandle();
             return TRUE;    // success
         }
@@ -1590,7 +1597,6 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
     // create the temporary file and wait
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
     // build the command line text
     MStringW strCmdLine;
@@ -1623,9 +1629,6 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
 
         if (pmaker.GetExitCode() == 0)
         {
-            // wait
-            Sleep(FILE_WAIT_TIME);
-
             // import from the temporary file
             if (import_res(szPath3))
             {
@@ -1677,7 +1680,6 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     // create the temporary file and wait
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
-    Sleep(FILE_WAIT_TIME);
 
     // build the command line text
     MStringW strCmdLine;
@@ -1713,9 +1715,6 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 
         if (pmaker.GetExitCode() == 0)
         {
-            // wait
-            Sleep(FILE_WAIT_TIME);
-
             // import the resource from the temporary file
             bSuccess = import_res(szPath3);
         }

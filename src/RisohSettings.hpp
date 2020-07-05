@@ -96,6 +96,7 @@ struct RisohSettings
     BOOL                bRCFileUTF16;       // output RC files as UTF-16?
     BOOL                bUseBeginEnd;       // Use BEGIN/END instead of braces?
     BOOL                bShowFullPath;      // Show full path on title bar
+    INT                 nDfmCodePage;       // Delphi DFM Data codepage
     INT                 nEgaX;
     INT                 nEgaY;
     INT                 nEgaWidth;

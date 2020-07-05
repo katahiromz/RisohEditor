@@ -107,6 +107,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MReplaceDialogFontsDlg.hpp"
 #include "MDropdownArrow.hpp"
 #include "MTabCtrl.hpp"
+#include "MDfmSettingsDlg.hpp"
 
 #include "MString.hpp"
 #include "MByteStream.hpp"

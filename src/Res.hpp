@@ -53,9 +53,6 @@ BOOL PackedDIB_GetInfo(const void *pPackedDIB, DWORD dwSize, BITMAP& bm);
     #define RT_MANIFEST     MAKEINTRESOURCE(24)
 #endif
 
-#ifndef FILE_WAIT_TIME
-    #define FILE_WAIT_TIME      (800)           // 0.8 seconds
-#endif
 #ifndef PROCESS_TIMEOUT
     #define PROCESS_TIMEOUT     (20 * 1000)     // 20 seconds
 #endif
@@ -345,7 +342,7 @@ Res_NewLangEntry(const MIdOrString& type, const MIdOrString& name, WORD lang = B
 }
 
 std::string
-dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size);
+dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size, INT codepage);
 
 EntryBase::data_type
 dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text);
