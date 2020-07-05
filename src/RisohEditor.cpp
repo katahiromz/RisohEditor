@@ -9092,8 +9092,6 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
         return FALSE;
     }
 
-    DoResetCheckSum(pszExeFile);
-
     // update file info
     UpdateFileInfo(FT_EXECUTABLE, pszExeFile, m_bUpxCompressed);
 
@@ -9171,8 +9169,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         DoBackupFile(dest);
     }
 
-    DoResetCheckSum(pszExeFile);
-
     // check whether it is an executable or not
     BOOL bSrcExecutable = IsExeOrDll(src);
     BOOL bDestExecutable = IsExeOrDll(dest);
@@ -9183,12 +9179,14 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         if (lstrcmpiW(src, dest) == 0 ||
             CopyFileW(src, dest, FALSE))
         {
+            DoResetCheckSum(dest);
             return DoSaveInner(dest, bCompression);
         }
     }
     else if (bDestExecutable)
     {
         // src is not exe and dest exe is respected
+        DoResetCheckSum(dest);
         return DoSaveInner(dest, bCompression);
     }
     else
@@ -9198,6 +9196,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         {
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE))
             {
+                DoResetCheckSum(dest);
                 return DoSaveInner(dest, bCompression);
             }
         }
@@ -9205,6 +9204,7 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         {
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL))
             {
+                DoResetCheckSum(dest);
                 return DoSaveInner(dest, bCompression);
             }
         }
