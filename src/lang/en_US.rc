@@ -1267,7 +1267,7 @@ CAPTION "Delphi DFM Settings"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "The followings are Delphi DFM-related settings:", -1, 35, 5, 171, 20
+    LTEXT "The following settings are relevant to Delphi DFM:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
     RTEXT "&Codepage:", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP

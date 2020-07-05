@@ -1267,9 +1267,9 @@ CAPTION "Paramètres Delphi DFM"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Les paramètres suivants sont liés à Delphi DFM:", -1, 35, 5, 171, 20
+    LTEXT "Les paramètres suivants sont pertinents pour Delphi DFM :", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
-    RTEXT "&Page de code:", -1, 6, 32, 70, 12
+    RTEXT "&Page de code :", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Insérer des commentaires de chaîne brute", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "N'utilisez pas &Unicode et UTF-8", chx2, 5, 70, 200, 14
