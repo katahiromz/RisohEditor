@@ -1271,7 +1271,7 @@ FONT 9, "宋体"
     RTEXT "代码页(&C)：", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "插入原始字符串注释(&I)", chx1, 5, 50, 200, 14
-    AUTOCHECKBOX "Don't use &Unicode nor UTF-8", chx2, 5, 70, 200, 14
+    AUTOCHECKBOX "不要使用 Unicode 和 UTF-8 (&U)", chx2, 5, 70, 200, 14
     LTEXT "* 抱歉，我们不支持非Unicode Delphi应用程序。", -1, 5, 90, 200, 20
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 145, 115, 60, 14

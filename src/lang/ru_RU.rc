@@ -1272,7 +1272,7 @@ FONT 9, "MS Shell Dlg"
     RTEXT "&Codepage:", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Вставить необработанные комментарии", chx1, 5, 50, 200, 14
-    AUTOCHECKBOX "Don't use &Unicode nor UTF-8", chx2, 5, 70, 200, 14
+    AUTOCHECKBOX "&Не используйте Unicode и UTF-8", chx2, 5, 70, 200, 14
     LTEXT "* Извините, мы не поддерживаем не-Unicode-приложения Delphi.", -1, 5, 90, 200, 20
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 145, 115, 60, 14
