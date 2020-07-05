@@ -1274,7 +1274,6 @@ FONT 9, "MS UI Gothic"
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "生文字列のコメントを挿入する(&I)", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "Unicode も UTF-8 も使わない(&U)", chx2, 5, 70, 200, 14
-    LTEXT "※ すみません、私たちは非 Unicode の Delphi アプリをサポートしません。", -1, 5, 90, 200, 20
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "キャンセル", IDCANCEL, 145, 115, 60, 14
 }

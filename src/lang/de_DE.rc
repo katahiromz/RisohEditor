@@ -1273,7 +1273,6 @@ FONT 9, "MS Shell Dlg"
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Fügen Sie Kommentare zu rohen Zeichenfolgen ein", chx1, 5, 50, 200, 14
     AUTOCHECKBOX "Verwenden Sie nicht &Unicode und UTF-8", chx2, 5, 70, 200, 14
-    LTEXT "* Leider unterstützen wir keine Nicht-Unicode-Delphi-Anwendungen.", -1, 5, 90, 200, 20
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "Stornieren", IDCANCEL, 145, 115, 60, 14
 }
