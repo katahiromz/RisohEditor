@@ -180,6 +180,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text)
     // create the temporary file and wait
     DWORD cbWritten;
     MFile r6(szPath6, TRUE);
+    r6.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
     r6.WriteFile(text.c_str(), text.size(), &cbWritten);
     r6.FlushFileBuffers();
     r6.CloseHandle();
