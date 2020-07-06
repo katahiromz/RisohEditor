@@ -242,6 +242,7 @@ You have to copy the 64-bit file into another place before loading.
     - Inserted "Delphi DFM Settings" menu item into "Edit" menu.
     - Correctly reset checksum to zero when saving file.
     - Fixed a bug in which a control is shifted by 1 pixel.
+    - Added some waits upon file saving, for virus checker.
 
 ## Contact Us
 
