@@ -236,6 +236,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Azzerata correttamente la checksum a zero durante il salvataggio del file.
     - Fixed a bug in which a control is shifted by 1 pixel.
     - Added some waits upon file saving, for virus checker.
+    - Added "A Guide to RisohEditor" link to "Help" menu.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
