@@ -2339,7 +2339,7 @@ protected:
     void OnClone(HWND hwnd);
     void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
     void OnExtractBang(HWND hwnd);
-    void OnJumpToMatome(HWND hwnd);
+    void OnGuide(HWND hwnd);
     void OnEncoding(HWND hwnd);
     void OnQueryConstant(HWND hwnd);
     void OnUseBeginEnd(HWND hwnd);
@@ -10581,12 +10581,17 @@ void MMainWnd::OnClone(HWND hwnd)
     }
 }
 
-void MMainWnd::OnJumpToMatome(HWND hwnd)
+void MMainWnd::OnGuide(HWND hwnd)
 {
-    static const WCHAR szURL[] =
-        L"https://katahiromz.web.fc2.com/colony3rd/risoheditor";
+    static const WCHAR szJapaneseURL[] =
+        L"https://katahiromz.web.fc2.com/colony3rd/risoheditor/";
+    static const WCHAR szEnglishURL[] =
+        L"https://katahiromz.web.fc2.com/colony3rd/risoheditor/en/";
 
-    ShellExecuteW(hwnd, NULL, szURL, NULL, NULL, SW_SHOWNORMAL);
+    if (PRIMARYLANGID(GetUserDefaultLangID()) == LANG_JAPANESE)
+        ShellExecuteW(hwnd, NULL, szJapaneseURL, NULL, NULL, SW_SHOWNORMAL);
+    else
+        ShellExecuteW(hwnd, NULL, szEnglishURL, NULL, NULL, SW_SHOWNORMAL);
 }
 
 void MMainWnd::OnEncoding(HWND hwnd)
@@ -11186,8 +11191,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_EXTRACTBANG:
         OnExtractBang(hwnd);
         break;
-    case ID_JUMPTOMATOME:
-        OnJumpToMatome(hwnd);
+    case ID_GUIDE:
+        OnGuide(hwnd);
         break;
     case ID_ENCODING:
         OnEncoding(hwnd);

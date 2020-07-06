@@ -133,6 +133,7 @@ IDR_MAINMENU MENU
         MENUITEM "Ouvrez READMEJP.txt (Japonais)", ID_OPENREADMEJP
         MENUITEM "Ouvrez LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
+        MENUITEM "Un &guide pour RisohEditor", ID_GUIDE
         MENUITEM "Vérifier la mise à jour de RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&À propos de...", ID_ABOUT

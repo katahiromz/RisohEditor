@@ -133,7 +133,7 @@ IDR_MAINMENU MENU
         MENUITEM "&HYOJUNKA.txtを開く", ID_OPENHYOJUNKA
         MENUITEM "&LICENSE.txtを開く", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "まとめサイトへジャンプ(&J)", ID_JUMPTOMATOME
+        MENUITEM "まとめサイトへジャンプ(&J)", ID_GUIDE
         MENUITEM "リソーエディタの更新を確認(&U)...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "バージョン情報(&A)...", ID_ABOUT

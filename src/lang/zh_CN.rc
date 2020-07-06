@@ -133,6 +133,7 @@ IDR_MAINMENU MENU
         MENUITEM "打开日文 README&JP.txt", ID_OPENREADMEJP
         MENUITEM "打开 &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
+        MENUITEM "RisohEditor指南(&G)", ID_GUIDE
         MENUITEM "检查 RisohEditor 更新(&U)...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "关于(&A)...", ID_ABOUT

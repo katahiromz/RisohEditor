@@ -479,7 +479,7 @@
 #define ID_CLONE                            242
 #define ID_ADDBANG                          243
 #define ID_EXTRACTBANG                      245
-#define ID_JUMPTOMATOME                     246
+#define ID_GUIDE                            246
 #define ID_ENCODING                         247
 #define ID_QUERYCONSTANT                    248
 #define ID_USEBEGINEND                      249
