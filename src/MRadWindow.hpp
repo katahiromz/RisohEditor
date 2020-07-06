@@ -326,7 +326,7 @@ public:
                 // get the window rectangle relative to the parent
                 RECT rc;
                 GetWindowRect(*pCtrl, &rc);
-                MapWindowPoints(NULL, ::GetParent(*pCtrl), (LPPOINT)&rc, 2);
+                MapWindowRect(NULL, ::GetParent(*pCtrl), &rc);
 
                 // move the offset by dx and dy
                 OffsetRect(&rc, dx, dy);
@@ -1624,26 +1624,26 @@ public:
     void ClientToDialog(POINT *ppt)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        ppt->x = (ppt->x * 4) / m_xDialogBaseUnit;
-        ppt->y = (ppt->y * 8) / m_yDialogBaseUnit;
+        ppt->x = MulDiv(ppt->x, 4, m_xDialogBaseUnit);
+        ppt->y = MulDiv(ppt->y, 8, m_yDialogBaseUnit);
     }
 
     // convert the coordinates
     void ClientToDialog(SIZE *psiz)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        psiz->cx = (psiz->cx * 4) / m_xDialogBaseUnit;
-        psiz->cy = (psiz->cy * 8) / m_yDialogBaseUnit;
+        psiz->cx = MulDiv(psiz->cx, 4, m_xDialogBaseUnit);
+        psiz->cy = MulDiv(psiz->cy, 8, m_yDialogBaseUnit);
     }
 
     // convert the coordinates
     void ClientToDialog(RECT *prc)
     {
         GetBaseUnits(m_xDialogBaseUnit, m_yDialogBaseUnit);
-        prc->left = (prc->left * 4) / m_xDialogBaseUnit;
-        prc->right = (prc->right * 4) / m_xDialogBaseUnit;
-        prc->top = (prc->top * 8) / m_yDialogBaseUnit;
-        prc->bottom = (prc->bottom * 8) / m_yDialogBaseUnit;
+        prc->left = MulDiv(prc->left, 4, m_xDialogBaseUnit);
+        prc->right = MulDiv(prc->right, 4, m_xDialogBaseUnit);
+        prc->top = MulDiv(prc->top, 8, m_yDialogBaseUnit);
+        prc->bottom = MulDiv(prc->bottom, 8, m_yDialogBaseUnit);
     }
 
     // convert the coordinates

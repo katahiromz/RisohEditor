@@ -234,6 +234,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Aggiunto supporto Dati internazionali DFM Delphi.
    Inserita la voce di menu "Impostazioni DFM Delphi" nel menu "Modifica".
    Azzerata correttamente la checksum a zero durante il salvataggio del file.
+    - Fixed a bug in which a control is shifted by 1 pixel.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
