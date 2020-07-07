@@ -2255,7 +2255,7 @@ public:
     EGA::arg_t DoEgaResSelect(const EGA::args_t& args);
     EGA::arg_t DoEgaResGetBinary(const EGA::args_t& args);
     EGA::arg_t DoEgaResSetBinary(const EGA::args_t& args);
-    EGA::arg_t DoEgaResConstant(const EGA::args_t& args);
+    EGA::arg_t DoEgaResConst(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -15371,9 +15371,9 @@ EGA::arg_t EGA_FN EGA_RES_set_binary(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResSetBinary(args);
 }
 
-EGA::arg_t EGA_FN EGA_RES_constant(const EGA::args_t& args)
+EGA::arg_t EGA_FN EGA_RES_const(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResConstant(args);
+    return s_pMainWnd->DoEgaResConst(args);
 }
 
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
@@ -15641,7 +15641,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     return make_arg<AstInt>(!found2.empty());
 }
 
-EGA::arg_t MMainWnd::DoEgaResConstant(const EGA::args_t& args)
+EGA::arg_t MMainWnd::DoEgaResConst(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0 = EGA_eval_arg(args[0], true);
@@ -15789,7 +15789,7 @@ void EGA_extension(void)
     EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
     EGA_add_fn("RES_get_binary", 0, 3, EGA_RES_get_binary, "RES_get_binary([type[, name[, lang]]])");
     EGA_add_fn("RES_set_binary", 4, 4, EGA_RES_set_binary, "RES_set_binary(type, name, lang, bin)");
-    EGA_add_fn("RES_constant", 1, 1, EGA_RES_constant, "RES_constant(name)");
+    EGA_add_fn("RES_const", 1, 1, EGA_RES_const, "RES_const(name)");
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
