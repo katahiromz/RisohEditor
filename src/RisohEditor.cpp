@@ -15468,7 +15468,11 @@ EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
     g_res.delete_invalid();
 
     if (ret)
+    {
         DoSetFileModified(TRUE);
+
+        SelectTV(NULL, FALSE);
+    }
 
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
