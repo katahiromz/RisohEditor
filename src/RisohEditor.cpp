@@ -2254,6 +2254,7 @@ public:
     EGA::arg_t DoEgaResUnloadResH(const EGA::args_t& args);
     EGA::arg_t DoEgaResSelect(const EGA::args_t& args);
     EGA::arg_t DoEgaResGetBinary(const EGA::args_t& args);
+    EGA::arg_t DoEgaResSetBinary(const EGA::args_t& args);
 
 protected:
     // parsing resource IDs
@@ -15368,6 +15369,11 @@ EGA::arg_t EGA_FN EGA_RES_get_binary(const EGA::args_t& args)
     return s_pMainWnd->DoEgaResGetBinary(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_set_binary(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResSetBinary(args);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -15629,6 +15635,34 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     return make_arg<AstInt>(!found2.empty());
 }
 
+EGA::arg_t MMainWnd::DoEgaResSetBinary(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1, arg2, arg3;
+
+    arg0 = EGA_eval_arg(args[0], true);
+    arg1 = EGA_eval_arg(args[1], true);
+    arg2 = EGA_eval_arg(args[2], true);
+    arg3 = EGA_eval_arg(args[3], true);
+
+    MIdOrString type, name;
+    std::string contents;
+    WORD lang;
+
+    type = EGA_get_id_or_str(arg0);
+    name = EGA_get_id_or_str(arg1);
+    lang = EGA_get_int(arg2);
+    contents = EGA_get_str(arg3);
+    if (type.empty() || name.empty() || lang == BAD_LANG || contents.empty())
+        return make_arg<AstInt>(0);
+
+    EntryBase::data_type data(contents.begin(), contents.end());
+    if (g_res.add_lang_entry(type, name, lang, data))
+        return make_arg<AstInt>(1);
+
+    return make_arg<AstInt>(0);
+}
+
 EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
 {
     using namespace EGA;
@@ -15723,6 +15757,7 @@ void EGA_extension(void)
     EGA_add_fn("RES_clone_by_name", 3, 3, EGA_RES_clone_by_name, "RES_clone_by_name(type, src_name, dest_name)");
     EGA_add_fn("RES_delete", 0, 3, EGA_RES_delete, "RES_delete([type[, name[, lang]]])");
     EGA_add_fn("RES_get_binary", 0, 3, EGA_RES_get_binary, "RES_get_binary([type[, name[, lang]]])");
+    EGA_add_fn("RES_set_binary", 4, 4, EGA_RES_set_binary, "RES_set_binary(type, name, lang, binary)");
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
