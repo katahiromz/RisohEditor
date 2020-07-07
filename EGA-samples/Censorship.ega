@@ -1,0 +1,30 @@
+﻿@ Censorship.ega
+
+set(ForbiddenWords, { "開く", "編集", "酒" });
+
+set(res, RES_search());
+foreach(item, res,
+    (
+        set(bin, RES_get_binary(at(item, 0), at(item, 1), at(item, 2))),
+        foreach(text, ForbiddenWords,
+            (
+                if(or(!=(find(bin, text), -(1)),
+                      !=(find(bin, u16fromu8(text)), -(1))),
+                    (
+                        println(
+                            cat(
+                                "Forbidden Word '",
+                                text,
+                                "' found in { ",
+                                str(at(item, 0)), ", ",
+                                str(at(item, 1)), ", ",
+                                str(at(item, 2)),
+                                " }."
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
