@@ -1532,7 +1532,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
-    IDS_IMPORTFILTER, "File importabile|*.res;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|Tutti i file (*.*)|*.*|"
+    IDS_IMPORTFILTER, "File importabile|*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|Tutti i file (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poiché il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
