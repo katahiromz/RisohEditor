@@ -1,0 +1,12 @@
+@ Add an Japanese (1041) RT_HTML (23) resource.
+RES_set_binary(23, 1, 1041, 
+    binary(
+        "<html><head>", 10, 
+        "<title>This is a test</title>", 10, 
+        "</head>", 10, 
+        "<body>", 10, 
+        "This is a test.", 10, 
+        "</body></html>", 10
+    )
+);
+RES_select(23, 1, 1041);
