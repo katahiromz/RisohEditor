@@ -20,7 +20,7 @@
 #pragma once
 
 #include "resource.h"
-#include "MComboBox.hpp"
+#include "MComboBoxAutoComplete.hpp"
 #include "MResizable.hpp"
 #include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
@@ -42,7 +42,6 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
 
     WCHAR szTextW[260];
     GetDlgItemTextW(s_hwndEga, cmb1, szTextW, ARRAYSIZE(szTextW));
-    SendDlgItemMessageW(s_hwndEga, cmb1, CB_ADDSTRING, 0, (LPARAM)szTextW);
 
     char szTextA[260];
     WideCharToMultiByte(CP_UTF8, 0, szTextW, -1, szTextA, ARRAYSIZE(szTextA), NULL, NULL);
@@ -53,6 +52,11 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
 
     if (lstrcmpA(szTextA, "exit") == 0 || lstrcmpA(szTextA, "exit;") == 0)
         PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
+
+    mstr_trim(szTextW);
+    INT iItem = (INT)SendDlgItemMessageW(s_hwndEga, cmb1, CB_FINDSTRINGEXACT, -1, (LPARAM)szTextW);
+    if (iItem == CB_ERR)
+        SendDlgItemMessageW(s_hwndEga, cmb1, CB_ADDSTRING, 0, (LPARAM)szTextW);
 
     return true;
 }
@@ -209,6 +213,12 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
         }
     }
 
@@ -282,6 +292,6 @@ protected:
     HICON m_hIcon;
     HICON m_hIconSm;
     std::wstring m_filename;
-    MComboBox m_cmb1;
+    MComboBoxAutoComplete m_cmb1;
     MResizable m_resizable;
 };
