@@ -5740,19 +5740,6 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
-    if (entry.is_delphi_dfm())
-    {
-        if (g_settings.nDfmCodePage == 0)
-        {
-            MDfmSettingsDlg dialog;
-            if (dialog.DialogBoxDx(hwnd) == IDOK)
-            {
-                g_settings.nDfmCodePage = dialog.m_nCodePage;
-                g_settings.bDfmRawTextComments = dialog.m_bComments;
-                g_settings.bDfmNoUnicode = dialog.m_bNoUnicode;
-            }
-        }
-    }
     // dump the text to m_hCodeEditor
     ResToText res2text;
     res2text.m_hwnd = m_hwnd;
