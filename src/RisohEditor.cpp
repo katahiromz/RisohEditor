@@ -10204,6 +10204,9 @@ void MMainWnd::OnConfig(HWND hwnd)
         // update title bar
         UpdateTitleBar();
     }
+
+    // update menu
+    UpdateMenu();
 }
 
 // reset the path settings
@@ -13072,6 +13075,9 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
 
     g_settings.strFontReplaceFrom3 = L"";
     g_settings.strFontReplaceTo3 = L"";
+
+    // update the menu
+    UpdateMenu();
 }
 
 // update the prefix data
@@ -13403,6 +13409,9 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
             g_settings.strFontReplaceTo3 = szText;
         }
     }
+
+    // update the menu
+    UpdateMenu();
 
     return TRUE;
 }
