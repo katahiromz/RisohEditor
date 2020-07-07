@@ -1,0 +1,5 @@
+@ Clone all Neutral (0) resources to English (1033) resources.
+RES_clone_by_lang(0, 0, 0, 1033);
+
+@ Erase all Neutral (0) resources.
+RES_delete(0, 0, 0);
