@@ -5907,6 +5907,9 @@ VOID MMainWnd::HidePreview(STV stv)
     // close and hide m_hBmpView
     m_hBmpView.DestroyView();
 
+    // Code Viewer only
+    SetShowMode(SHOW_CODEONLY);
+
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 }
