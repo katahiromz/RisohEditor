@@ -133,7 +133,7 @@ IDR_MAINMENU MENU
         MENUITEM "От&крыть файл READMEJP.txt (японский)", ID_OPENREADMEJP
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "&Руководство по RisohEditor", ID_GUIDE
+        MENUITEM "&Руководство пользователя RisohEditor", ID_GUIDE
         MENUITEM "&Проверьте обновление RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&О программе...", ID_ABOUT
@@ -1264,16 +1264,16 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_DFMSETTINGS DIALOG 0, 0, 210, 135
-CAPTION "Настройки Delphi DFM"
+CAPTION "Установки Delphi DFM"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Следующие настройки относятся к Delphi DFM:", -1, 35, 5, 171, 20
+    LTEXT "Следующие установки относятся к Delphi DFM:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
-    RTEXT "&Codepage:", -1, 6, 32, 70, 12
+    RTEXT "&Кодовая страница:", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Вставить необработанные комментарии", chx1, 5, 50, 200, 14
-    AUTOCHECKBOX "&Не используйте Unicode и UTF-8", chx2, 5, 70, 200, 14
+    AUTOCHECKBOX "&Вставлять необработанные строковые комментарии", chx1, 5, 50, 200, 14
+    AUTOCHECKBOX "Не использовать &Юникод и UTF-8", chx2, 5, 70, 200, 14
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "Отмена", IDCANCEL, 145, 115, 60, 14
 }
@@ -1564,19 +1564,19 @@ STRINGTABLE
     IDS_NOUPDATE, "У вас самая новая версия RisohEditor."
     IDS_THEREISUPDATE, "Доступен RisohEditor версии %s. Хотите загрузить?"
     IDS_CANTCHECKUPDATE, "Не удалось проверить наличие новой версии RisohEditor."
-    IDS_CODEPAGE1252, "1252 (Латиница 1)"
-    IDS_CODEPAGE1250, "1250 (Латиница 2)"
+    IDS_CODEPAGE1252, "1252 (Латинская 1)"
+    IDS_CODEPAGE1250, "1250 (Латинская 2)"
     IDS_CODEPAGE1251, "1251 (Кириллица)"
-    IDS_CODEPAGE1253, "1253 (Греческий)"
-    IDS_CODEPAGE1254, "1254 (Турецкий)"
+    IDS_CODEPAGE1253, "1253 (Греческая)"
+    IDS_CODEPAGE1254, "1254 (Турецкая)"
     IDS_CODEPAGE1255, "1255 (Иврит)"
-    IDS_CODEPAGE1256, "1256 (Арабский)"
-    IDS_CODEPAGE1257, "1257 (Балтийский)"
-    IDS_CODEPAGE874, "874 (Тайский)"
-    IDS_CODEPAGE932, "932 (Японский)"
-    IDS_CODEPAGE936, "936 (Упрощенный Китайский)"
-    IDS_CODEPAGE949, "949 (Корейский)"
-    IDS_CODEPAGE950, "950 (Традиционный Китайский)"
+    IDS_CODEPAGE1256, "1256 (Арабская)"
+    IDS_CODEPAGE1257, "1257 (Балтийская)"
+    IDS_CODEPAGE874, "874 (Тайская)"
+    IDS_CODEPAGE932, "932 (Японская)"
+    IDS_CODEPAGE936, "936 (Китайская упрощённая)"
+    IDS_CODEPAGE949, "949 (Корейская)"
+    IDS_CODEPAGE950, "950 (Китайская традиционная)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
 }
 
