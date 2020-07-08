@@ -15690,11 +15690,16 @@ EGA::arg_t MMainWnd::DoEgaResSetBinary(const EGA::args_t& args)
     if (type.empty() || name.empty() || lang == BAD_LANG || contents.empty())
         return make_arg<AstInt>(0);
 
+    DoSetFileModified(TRUE);
+
+    int ret = 0;
     EntryBase::data_type data(contents.begin(), contents.end());
     if (g_res.add_lang_entry(type, name, lang, data))
-        return make_arg<AstInt>(1);
+        ret = 1;
 
-    return make_arg<AstInt>(0);
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return make_arg<AstInt>(ret);
 }
 
 EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
