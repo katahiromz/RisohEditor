@@ -230,13 +230,13 @@ Domanda 6. I file a 64 bit sono supportati?
    Modificato il limite di caratteri e supportati dati di grandi dimensioni.
    Ripristinato checksum a zero durante il salvataggio del file.
 - v.5.4.4 (2020.XX.YY)
-   Svuotamento del contenuto del file prima di usarlo.
+   Aggiunto svuotamento del contenuto del file prima di usarlo.
    Aggiunto supporto Dati internazionali DFM Delphi.
-   Inserita la voce di menu "Impostazioni DFM Delphi" nel menu "Modifica".
-   Azzerata correttamente la checksum a zero durante il salvataggio del file.
-    - Fixed a bug in which a control is shifted by 1 pixel.
-    - Added some waits upon file saving, for virus checker.
-    - Added "A Guide to RisohEditor" link to "Help" menu.
+   Inserita voce di menu "Impostazioni DFM Delphi" nel menu "Modifica".
+   Corretta impostazione checksum a zero durante il salvataggio del file.
+   Corretto problema per cui un controllo è shiftato di 1 pixel.
+   Aggiunte alcuni cicli di attesa nel salvataggio del file, utili per il controllo antivirus.
+   Aggiunto un collegamento "Guida a RisohEditor" nel menu "?" (Aiuto).
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
