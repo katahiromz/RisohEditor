@@ -229,7 +229,7 @@ Domanda 6. I file a 64 bit sono supportati?
    Corretto titolo finestra messaggio.
    Modificato il limite di caratteri e supportati dati di grandi dimensioni.
    Ripristinato checksum a zero durante il salvataggio del file.
-- v.5.4.4 (2020.XX.YY)
+- v.5.4.4 (09.07.2020)
    Aggiunto svuotamento del contenuto del file prima di usarlo.
    Aggiunto supporto Dati internazionali DFM Delphi.
    Inserita voce di menu "Impostazioni DFM Delphi" nel menu "Modifica".

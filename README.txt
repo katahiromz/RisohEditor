@@ -228,7 +228,7 @@ Question 6. Are the 64-bit files supported?
     - Fixed title of message box.
     - Relaxed the character limit and supported large data.
     - Reset checksum to zero when saving file.
-- v.5.4.4 (2020.XX.YY)
+- v.5.4.4 (2020.07.09)
     - Flushed file contents before using it.
     - Supported international Delphi DFM data.
     - Inserted "Delphi DFM Settings" menu item into "Edit" menu.
