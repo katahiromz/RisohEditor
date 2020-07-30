@@ -1,0 +1,7 @@
+﻿1 MENU
+{
+    POPUP "Be&rkas"
+    {
+        MENUITEM "K&eluar\tAlt+F4", 100
+    }
+}
