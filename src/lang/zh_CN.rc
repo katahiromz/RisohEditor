@@ -1293,7 +1293,7 @@ FILETYPE        0x1
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.4.4\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2019 片山博文MZ and 林鸿湘. 版权所有.\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2020 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.4.4\0"
         }
