@@ -214,15 +214,8 @@ public:
         MapWindowRect(NULL, m_hwndTV, &rc);
         GetClientRect(m_hwndTV, &rcTV);
 
-        INT cx = rcTV.right - GetSystemMetrics(SM_CXVSCROLL) - rc.left;
+        INT cx = rcTV.right - rc.left;
         INT cy = rc.bottom - rc.top;
-        if (cx == rc.right - rc.left)
-            return;
-
-        BOOL bHooked = m_bHooked;
-        m_bHooked = FALSE;
-        MoveWindow(m_hwnd, rc.left, rc.top, cx, cy, TRUE);
-        m_bHooked = bHooked;
 
         if (HWND hwndDropdown = FindWindowW(L"Auto-Suggest Dropdown", NULL))
         {

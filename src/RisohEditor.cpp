@@ -15939,7 +15939,8 @@ wWinMain(HINSTANCE   hInstance,
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
     HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
-    s_pSetWindowTheme = (SETWINDOWTHEME)GetProcAddress(hinstUXTheme, "SetWindowTheme");
+    FARPROC fn = GetProcAddress(hinstUXTheme, "SetWindowTheme");
+    s_pSetWindowTheme = *reinterpret_cast<SETWINDOWTHEME *>(&fn);
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;
