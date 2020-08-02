@@ -18,6 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RisohEditor.hpp"
+#include "MLangAutoComplete.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 // constants
@@ -1111,6 +1112,18 @@ struct LANG_ENTRY
 };
 std::vector<LANG_ENTRY> g_langs;
 
+MLangAutoComplete::MLangAutoComplete()
+{
+    m_nCurrentElement = 0;
+    m_nRefCount = 0;
+    m_fBound = FALSE;
+
+    for (auto& lang : g_langs)
+    {
+        push_back(lang.str);
+    }
+}
+
 // initialize the language combobox
 void InitLangComboBox(HWND hCmb3, LANGID langid)
 {
@@ -2077,6 +2090,10 @@ protected:
     ITEM_SEARCH     m_search;                   // the search options
     MTabCtrl        m_tab;                      // the tab control
 
+    // auto completion
+    MLangAutoCompleteEdit   m_auto_comp_edit;
+    MLangAutoComplete *     m_pAutoComplete;
+
 public:
     MDropdownArrow  m_arrow;                    // the language drop-down arrow
 
@@ -2104,6 +2121,7 @@ public:
         m_bUpxCompressed = FALSE;
 
         m_lang = BAD_LANG;
+        m_pAutoComplete = NULL;
     }
 
     // settings
@@ -2241,6 +2259,8 @@ public:
     void DoRelangEntry(LPWSTR pszText, EntryBase *entry, WORD old_lang, WORD new_lang);
     void DoRefreshTV(HWND hwnd);
     void DoRefreshIDList(HWND hwnd);
+    void DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit);
+    void DoLangEditAutoCompleteRelease(HWND hwnd);
 
     void ReCreateFonts(HWND hwnd);
     void ReSetPaths(HWND hwnd);
@@ -11256,6 +11276,15 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_DFMSETTINGS:
         OnDfmSettings(hwnd);
         break;
+    case ID_AUTOCOMPLETE:
+        {
+            HWND hwndEdit = TreeView_GetEditControl(m_hwndTV);
+            DoLangEditAutoComplete(hwnd, hwndEdit);
+        }
+        break;
+    case ID_AUTOCOMPLETEDONE:
+        DoLangEditAutoCompleteRelease(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -11382,6 +11411,31 @@ BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
     }
 
     return TRUE;
+}
+
+void MMainWnd::DoLangEditAutoCompleteRelease(HWND hwnd)
+{
+    if (m_pAutoComplete)
+    {
+        m_pAutoComplete->unbind();
+        m_pAutoComplete->Release();
+        m_pAutoComplete = NULL;
+    }
+
+    m_auto_comp_edit.unhook();
+}
+
+void MMainWnd::DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit)
+{
+    DoLangEditAutoCompleteRelease(hwnd);
+
+    m_pAutoComplete = new MLangAutoComplete();
+    if (!m_pAutoComplete)
+        return;
+
+    m_pAutoComplete->bind(hwndEdit);
+    m_auto_comp_edit.hook(hwndEdit, m_hwndTV);
+    m_auto_comp_edit.m_bAdjustSize = TRUE;
 }
 
 // WM_NOTIFY
@@ -11632,6 +11686,16 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
 
             m_arrow.ShowDropDownList(m_arrow, FALSE);
             ShowLangArrow(FALSE);
+
+            switch (entry->m_et)
+            {
+            case ET_LANG:
+            case ET_MESSAGE:
+            case ET_STRING:
+                PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETE, 0);
+                break;
+            }
+
             return FALSE;       // accept
         }
         else if (pnmhdr->code == TVN_ENDLABELEDIT)
@@ -11640,13 +11704,24 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             LPWSTR pszNewText = pInfo->item.pszText;
+
+            auto entry = (EntryBase *)lParam;
+
+            switch (entry->m_et)
+            {
+            case ET_LANG:
+            case ET_MESSAGE:
+            case ET_STRING:
+                PostMessage(hwnd, WM_COMMAND, ID_AUTOCOMPLETEDONE, 0);
+                break;
+            }
+
             if (pszNewText == NULL)
             {
                 PostUpdateLangArrow(hwnd);
                 return FALSE;   // reject
             }
 
-            auto entry = (EntryBase *)lParam;
 
             if (!entry || entry->m_et == ET_TYPE)
             {
@@ -15864,8 +15939,7 @@ wWinMain(HINSTANCE   hInstance,
     HINSTANCE hinstRichEdit = LoadLibrary(TEXT("RICHED32.DLL"));
 
     HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
-    s_pSetWindowTheme =
-        reinterpret_cast<SETWINDOWTHEME>(GetProcAddress(hinstUXTheme, "SetWindowTheme"));
+    s_pSetWindowTheme = (SETWINDOWTHEME)GetProcAddress(hinstUXTheme, "SetWindowTheme");
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;

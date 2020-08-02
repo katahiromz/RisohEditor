@@ -24,6 +24,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
+#include "MLangAutoComplete.hpp"
 
 void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
@@ -42,15 +43,22 @@ public:
     WORD m_lang;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
+    MLangAutoComplete *m_pAutoComplete;
 
     MAddIconDlg()
-        : MDialogBase(IDD_ADDICON), m_file(NULL), m_hIcon(NULL)
+        : MDialogBase(IDD_ADDICON)
+        , m_file(NULL)
+        , m_hIcon(NULL)
+        , m_pAutoComplete(new MLangAutoComplete())
     {
         m_cmb3.m_bAcceptSpace = TRUE;
     }
 
     ~MAddIconDlg()
     {
+        m_pAutoComplete->unbind();
+        m_pAutoComplete->Release();
+        m_pAutoComplete = NULL;
         DestroyIcon(m_hIcon);
     }
 
@@ -76,6 +84,12 @@ public:
         SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();
+
+        // auto complete
+        COMBOBOXINFO info = { sizeof(info) };
+        GetComboBoxInfo(m_cmb3, &info);
+        HWND hwndEdit = info.hwndItem;
+        m_pAutoComplete->bind(hwndEdit);
 
         if (m_file)
         {

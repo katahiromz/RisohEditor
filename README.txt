@@ -238,6 +238,7 @@ Question 6. Are the 64-bit files supported?
     - Added "A Guide to RisohEditor" link to "Help" menu.
 - v.5.4.5 (2020.XX.YY)
     - Added Indonesian translation.
+    - Added auto complete for language combo boxes.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

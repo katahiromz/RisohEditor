@@ -25,6 +25,7 @@
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "DlgInit.h"
+#include "MLangAutoComplete.hpp"
 
 void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
 void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
@@ -50,10 +51,22 @@ public:
     MComboBoxAutoComplete m_cmb1;
     MComboBoxAutoComplete m_cmb2;
     MComboBoxAutoComplete m_cmb3;
+    MLangAutoComplete *m_pAutoComplete;
 
-    MAddResDlg() : MDialogBase(IDD_ADDRES), m_type(0xFFFF), m_file(NULL)
+    MAddResDlg()
+        : MDialogBase(IDD_ADDRES)
+        , m_type(0xFFFF)
+        , m_file(NULL)
+        , m_pAutoComplete(new MLangAutoComplete())
     {
         m_cmb3.m_bAcceptSpace = TRUE;
+    }
+
+    ~MAddResDlg()
+    {
+        m_pAutoComplete->unbind();
+        m_pAutoComplete->Release();
+        m_pAutoComplete = NULL;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -103,6 +116,12 @@ public:
 
         // select the type
         OnCmb1(hwnd);
+
+        // auto complete
+        COMBOBOXINFO info = { sizeof(info) };
+        GetComboBoxInfo(m_cmb3, &info);
+        HWND hwndEdit = info.hwndItem;
+        m_pAutoComplete->bind(hwndEdit);
 
         return FALSE;
     }
