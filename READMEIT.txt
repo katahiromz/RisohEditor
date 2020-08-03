@@ -238,15 +238,15 @@ Domanda 6. I file a 64 bit sono supportati?
    Aggiunte alcuni cicli di attesa nel salvataggio del file, utili per il controllo antivirus.
    Aggiunto un collegamento "Guida a RisohEditor" nel menu "?" (Aiuto).
 - v.5.4.5 (2020.XX.YY)
-    - Added Indonesian translation.
-    - Added auto complete for language combo boxes.
+    - Aggiunta traduzione indonesiana.
+    - Aggiunto completamento automatico per riquadri combo lingua.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-// Sito web (Inglese):    https://katahiromz.web.fc2.com/re/en
-// Sito web (Cinese):     https://katahiromz.web.fc2.com/re/ch
-// Sito web (Giapponese): https://katahiromz.web.fc2.com/re/ja
-// Sito web (Italiano):   https://katahiromz.web.fc2.com/re/it
-// Sito web (Russo):      https://katahiromz.web.fc2.com/re/ru
+// Sito web (inglese):    https://katahiromz.web.fc2.com/re/en
+// Sito web (cinese):     https://katahiromz.web.fc2.com/re/ch
+// Sito web (giapponese): https://katahiromz.web.fc2.com/re/ja
+// Sito web (italiano):   https://katahiromz.web.fc2.com/re/it
+// Sito web (russo):      https://katahiromz.web.fc2.com/re/ru
 // Email:                 katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////////////////////
