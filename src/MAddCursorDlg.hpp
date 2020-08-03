@@ -50,6 +50,7 @@ public:
         , m_file(NULL)
         , m_pAutoComplete(new MLangAutoComplete())
     {
+        m_pAutoComplete->AddRef();
         m_hCursor = NULL;
         m_cmb3.m_bAcceptSpace = TRUE;
     }

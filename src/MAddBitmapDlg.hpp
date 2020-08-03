@@ -50,6 +50,7 @@ public:
         , m_pAutoComplete(new MLangAutoComplete())
     {
         m_cmb3.m_bAcceptSpace = TRUE;
+        m_pAutoComplete->AddRef();
     }
 
     ~MAddBitmapDlg()

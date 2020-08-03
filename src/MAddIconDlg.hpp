@@ -51,6 +51,7 @@ public:
         , m_hIcon(NULL)
         , m_pAutoComplete(new MLangAutoComplete())
     {
+        m_pAutoComplete->AddRef();
         m_cmb3.m_bAcceptSpace = TRUE;
     }
 
