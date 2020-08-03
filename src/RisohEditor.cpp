@@ -2740,9 +2740,9 @@ void MMainWnd::OnCheckUpdate(HWND hwnd)
     GetTempPathW(_countof(szPath), szPath);
     GetTempFileNameW(szPath, L"Upd", 0, szFile);
 
-    HRESULT hr = URLDownloadToFileW(NULL,
-        L"https://katahiromz.web.fc2.com/re/version.html",
-        szFile, 0, NULL);
+    std::wstring page = L"https://katahiromz.web.fc2.com/re/version.html";
+    DeleteUrlCacheEntryW(page.c_str());
+    HRESULT hr = URLDownloadToFileW(NULL, page.c_str(), szFile, 0, NULL);
     if (FAILED(hr))
     {
         ErrorBoxDx(IDS_CANTCHECKUPDATE);

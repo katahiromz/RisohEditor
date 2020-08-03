@@ -26,7 +26,7 @@ add_executable(RisohEditor WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32
+target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32 wininet
                                   oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
@@ -45,7 +45,7 @@ add_executable(RisohEditorPortable WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus vfw32
+target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus vfw32 wininet
                                           oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 

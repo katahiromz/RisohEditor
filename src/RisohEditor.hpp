@@ -33,6 +33,7 @@
 #include <process.h>
 #include <uxtheme.h>
 #include <urlmon.h>
+#include <wininet.h>
 
 #include <algorithm>    // for std::sort
 #include <string>       // for std::string, std::wstring
