@@ -236,7 +236,7 @@ Question 6. Are the 64-bit files supported?
     - Fixed a bug in which a control is shifted by 1 pixel.
     - Added some waits upon file saving, for virus checker.
     - Added "A Guide to RisohEditor" link to "Help" menu.
-- v.5.4.5 (2020.XX.YY)
+- v.5.4.5 (2020.08.03)
     - Added Indonesian translation.
     - Added auto complete for language combo boxes.
 

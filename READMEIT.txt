@@ -237,7 +237,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Corretto problema per cui un controllo è shiftato di 1 pixel.
     - Aggiunte alcuni cicli di attesa nel salvataggio del file, utili per il controllo antivirus.
     - Aggiunto un collegamento "Guida a RisohEditor" nel menu "?" (Aiuto).
-- v.5.4.5 (2020.XX.YY)
+- v.5.4.5 (03.08.2020)
     - Aggiunta traduzione indonesiana.
     - Aggiunto completamento automatico per riquadri combo lingua.
 
