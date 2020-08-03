@@ -1117,6 +1117,7 @@ MLangAutoComplete::MLangAutoComplete()
     m_nCurrentElement = 0;
     m_nRefCount = 0;
     m_fBound = FALSE;
+    m_pAC = NULL;
 
     for (auto& lang : g_langs)
     {
@@ -11433,6 +11434,7 @@ void MMainWnd::DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit)
     if (!m_pAutoComplete)
         return;
 
+    m_pAutoComplete->AddRef();
     m_pAutoComplete->bind(hwndEdit);
     m_auto_comp_edit.hook(hwndEdit, m_hwndTV);
     m_auto_comp_edit.m_bAdjustSize = TRUE;

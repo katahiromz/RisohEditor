@@ -38,21 +38,21 @@ public:
     {
         assert(::IsWindow(hwndEdit));
 
-        if (m_fBound && m_pAutoComplete)
+        if (m_fBound && m_pAC)
             return false;
 
-        ::CoCreateInstance(CLSID_AutoComplete, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pAutoComplete));
-        if (m_pAutoComplete)
+        ::CoCreateInstance(CLSID_AutoComplete, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pAC));
+        if (m_pAC)
         {
             IAutoComplete2 *pAC2 = NULL;
-            m_pAutoComplete->QueryInterface(IID_PPV_ARGS(&pAC2));
+            m_pAC->QueryInterface(IID_PPV_ARGS(&pAC2));
             if (pAC2)
             {
                 pAC2->SetOptions(ACO_AUTOSUGGEST | ACO_UPDOWNKEYDROPSLIST);
                 pAC2->Release();
             }
 
-            m_pAutoComplete->Init(hwndEdit, this, NULL, NULL);
+            m_pAC->Init(hwndEdit, this, NULL, NULL);
             m_fBound = TRUE;
             return true;
         }
@@ -65,10 +65,10 @@ public:
         if (!m_fBound)
             return;
 
-        if (m_pAutoComplete)
+        if (m_pAC)
         {
-            m_pAutoComplete->Release();
-            m_pAutoComplete = NULL;
+            m_pAC->Release();
+            m_pAC = NULL;
             m_fBound = FALSE;
         }
     }
@@ -161,7 +161,7 @@ public:
     }
 
 protected:
-    IAutoComplete *m_pAutoComplete;
+    IAutoComplete *m_pAC;
     std::vector<std::wstring> m_list;
     ULONG m_nCurrentElement;
     ULONG m_nRefCount;
