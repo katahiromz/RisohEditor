@@ -241,7 +241,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunta traduzione indonesiana.
     - Aggiunto completamento automatico per riquadri combo lingua.
 - v.5.4.6 (2020.XX.YY)
-    - Deleted cache in version check.
+    - Eliminata cache nel controllo versione.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
