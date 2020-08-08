@@ -242,6 +242,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunto completamento automatico per riquadri combo lingua.
 - v.5.4.6 (2020.XX.YY)
     - Eliminata cache nel controllo versione.
+    - Fixed test dialog position.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

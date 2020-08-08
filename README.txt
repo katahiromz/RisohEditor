@@ -241,6 +241,7 @@ Question 6. Are the 64-bit files supported?
     - Added auto complete for language combo boxes.
 - v.5.4.6 (2020.XX.YY)
     - Deleted cache in version check.
+    - Fixed test dialog position.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

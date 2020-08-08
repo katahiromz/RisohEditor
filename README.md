@@ -249,6 +249,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added auto complete for language combo boxes.
 - v.5.4.6 (2020.XX.YY)
     - Deleted cache in version check.
+    - Fixed test dialog position.
 
 ## Contact Us
 

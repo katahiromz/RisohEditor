@@ -71,6 +71,7 @@ public:
         POINT pt = { 0, 0 };
         SIZE siz = SizeFromRectDx(&rc);
         SetWindowPosDx(&pt, &siz);
+        m_test_dialog.SetWindowPosDx(&pt);
 
         ShowWindow(m_test_dialog, SW_SHOWNORMAL);
         UpdateWindow(m_test_dialog);
