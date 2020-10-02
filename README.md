@@ -250,6 +250,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.4.6 (2020.XX.YY)
     - Deleted cache in version check.
     - Fixed test dialog position.
+    - Fixed a bug that `RT_DLGINIT` disappears without permission.
 
 ## Contact Us
 

@@ -242,6 +242,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.4.6 (2020.XX.YY)
     - Deleted cache in version check.
     - Fixed test dialog position.
+    - Fixed a bug that RT_DLGINIT disappears without permission.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
