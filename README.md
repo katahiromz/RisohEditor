@@ -247,7 +247,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.4.5 (2020.08.03)
     - Added Indonesian translation.
     - Added auto complete for language combo boxes.
-- v.5.4.6 (2020.XX.YY)
+- v.5.4.6 (2020.10.03)
     - Deleted cache in version check.
     - Fixed test dialog position.
     - Fixed a bug that `RT_DLGINIT` disappears without permission.
