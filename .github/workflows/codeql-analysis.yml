@@ -67,7 +67,7 @@ jobs:
         git submodule update --init --recursive
         cmake --version
         cmake -G "Visual Studio 16 2019" .
-        msbuild RisohEditor.sln
+        cmake --build .
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
