@@ -242,8 +242,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunto completamento automatico per riquadri combo lingua.
 - v.5.4.6 (03.10.2020)
     - Eliminata cache nel controllo versione.
-    - Corretta posizione finestra anpeprima Test.
-    - Fixed a bug that RT_DLGINIT disappears without permission.
+    - Corretta posizione finestra anteprima Test.
+    - Corretto bug per cui RT_DLGINIT senza permsso scompariva.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
