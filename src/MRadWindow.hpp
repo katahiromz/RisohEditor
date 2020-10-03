@@ -2127,7 +2127,7 @@ public:
         for (size_t i = m_dialog_res.size(); i > 0;)
         {
             --i;
-            if (indeces.find(i) != indeces.end())
+            if (indeces.find(INT(i)) != indeces.end())
             {
                 m_dialog_res.m_items.erase(m_dialog_res.m_items.begin() + i);
                 --m_dialog_res.m_cItems;

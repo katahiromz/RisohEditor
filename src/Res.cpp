@@ -117,7 +117,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
     // create the temporary file and wait
     DWORD cbWritten;
     MFile r4(szPath4, TRUE);
-    r4.WriteFile(binary, size, &cbWritten);
+    r4.WriteFile(binary, DWORD(size), &cbWritten);
     r4.FlushFileBuffers();
     r4.CloseHandle();
 
@@ -187,7 +187,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
     DWORD cbWritten;
     MFile r6(szPath6, TRUE);
     r6.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
-    r6.WriteFile(text.c_str(), text.size(), &cbWritten);
+    r6.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
     r6.FlushFileBuffers();
     r6.CloseHandle();
 

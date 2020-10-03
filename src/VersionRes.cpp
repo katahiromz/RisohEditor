@@ -89,7 +89,7 @@ VersionRes::DumpValue(WORD wType, const Var& value, int depth) const
     {
         if (wType == 0)
         {
-            LPWORD pw = LPWORD(&value.value[0]);
+            const WORD *pw = reinterpret_cast<const WORD *>(&value.value[0]);
             WCHAR buf[MAX_PATH];
             for (size_t i = 0; i < value.value.size(); i += 2)
             {

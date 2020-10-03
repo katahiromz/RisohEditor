@@ -4280,7 +4280,8 @@ void MMainWnd::OnPlay(HWND hwnd)
     if (entry && entry->m_type == L"WAVE")
     {
         // play the sound
-        PlaySound((LPCTSTR)&(*entry)[0], NULL, SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
+        PlaySound(reinterpret_cast<LPCTSTR>(&(*entry)[0]), NULL,
+                  SND_ASYNC | SND_NODEFAULT | SND_MEMORY);
     }
 }
 

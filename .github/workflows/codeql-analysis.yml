@@ -64,10 +64,7 @@ jobs:
     #    uses a compiled language
     - name: build
       run: |
-        git submodule update --init --recursive
-        cmake --version
-        cmake -G "Visual Studio 16 2019" .
-        cmake --build .
+        build.cmd
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

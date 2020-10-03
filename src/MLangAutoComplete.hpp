@@ -119,8 +119,8 @@ public:
             if (m_nCurrentElement == m_list.size())
                 break;
 
-            ULONG cb = (m_list[m_nCurrentElement].size() + 1) * sizeof(WCHAR);
-            rgelt[i] = (LPWSTR)::CoTaskMemAlloc(cb);
+            size_t cb = (m_list[m_nCurrentElement].size() + 1) * sizeof(WCHAR);
+            rgelt[i] = reinterpret_cast<LPWSTR>(::CoTaskMemAlloc(cb));
             memcpy(rgelt[i], m_list[m_nCurrentElement].c_str(), cb);
 
             if (pceltFetched)
