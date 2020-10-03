@@ -240,7 +240,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.5 (03.08.2020)
     - Aggiunta traduzione indonesiana.
     - Aggiunto completamento automatico per riquadri combo lingua.
-- v.5.4.6 (10.03.2020)
+- v.5.4.6 (03.10.2020)
     - Eliminata cache nel controllo versione.
     - Corretta posizione finestra anpeprima Test.
     - Fixed a bug that RT_DLGINIT disappears without permission.
