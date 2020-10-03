@@ -99,7 +99,7 @@ VersionRes::DumpValue(WORD wType, const Var& value, int depth) const
         }
         else
         {
-            WCHAR *pch = (WCHAR *)(&value.value[0]);
+            WCHAR *pch = reinterpret_cast<WCHAR *>(&value.value[0]);
             MStringW str(pch, value.value.size() / 2);
             ret += L", ";
             ret += mstr_quote(str);
