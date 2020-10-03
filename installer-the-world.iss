@@ -38,7 +38,7 @@ VersionInfoProductVersion=5.4.6
 VersionInfoVersion=5.4.6
 
 [Languages]
-Name: "armenian"; MessagesFile:  "compiler:Languages\Armenian.islu"
+Name: "armenian"; MessagesFile:  "compiler:Languages\Armenian.isl"
 Name: "brazilianportuguese"; MessagesFile:  "compiler:Languages\BrazilianPortuguese.isl"
 Name: "catalan"; MessagesFile:  "compiler:Languages\Catalan.isl"
 Name: "corsican"; MessagesFile:  "compiler:Languages\Corsican.isl"
@@ -85,7 +85,7 @@ Name: "esperanto"; MessagesFile: "compiler:Languages\Esperanto.isl"
 Name: "estonian"; MessagesFile: "compiler:Languages\Estonian.isl"
 Name: "farsi"; MessagesFile: "compiler:Languages\Farsi.isl"
 Name: "galician"; MessagesFile: "compiler:Languages\Galician.isl"
-Name: "georgian"; MessagesFile: "compiler:Languages\Georgian.islu"
+Name: "georgian"; MessagesFile: "compiler:Languages\Georgian.isl"
 Name: "hindi"; MessagesFile: "compiler:Languages\Hindi.islu"
 Name: "indonesian"; MessagesFile: "compiler:Languages\Indonesian.isl"
 Name: "kazakh"; MessagesFile: "compiler:Languages\Kazakh.islu"
@@ -98,7 +98,7 @@ Name: "luxemburgish"; MessagesFile: "compiler:Languages\Luxemburgish.isl"
 Name: "macedonian"; MessagesFile: "compiler:Languages\Macedonian.isl"
 Name: "malaysian"; MessagesFile: "compiler:Languages\Malaysian.isl"
 Name: "mongolian"; MessagesFile: "compiler:Languages\Mongolian.isl"
-Name: "montenegrian"; MessagesFile: "compiler:Languages\Montenegrian.isl"
+Name: "montenegrin"; MessagesFile: "compiler:Languages\Montenegrin.isl"
 Name: "norwegiannynorsk"; MessagesFile: "compiler:Languages\NorwegianNynorsk.isl"
 Name: "occitan"; MessagesFile: "compiler:Languages\Occitan.isl"
 Name: "romanian"; MessagesFile: "compiler:Languages\Romanian.isl"
@@ -109,7 +109,7 @@ Name: "thai"; MessagesFile: "compiler:Languages\Thai.isl"
 Name: "uyghur"; MessagesFile: "compiler:Languages\Uyghur.islu"
 Name: "uzbek"; MessagesFile: "compiler:Languages\Uzbek.isl"
 Name: "valencian"; MessagesFile: "compiler:Languages\Valencian.isl"
-Name: "vietnamese"; MessagesFile: "compiler:Languages\Vietnamese.islu"
+Name: "vietnamese"; MessagesFile: "compiler:Languages\Vietnamese.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
@@ -350,9 +350,9 @@ malaysian.LicenseEnglish=License (English)
 mongolian.ReadmeEnglish=ReadMe (English)
 mongolian.ReadmeJapanese=ReadMe (Japanese)
 mongolian.LicenseEnglish=License (English)
-montenegrian.ReadmeEnglish=ReadMe (English)
-montenegrian.ReadmeJapanese=ReadMe (Japanese)
-montenegrian.LicenseEnglish=License (English)
+montenegrin.ReadmeEnglish=ReadMe (English)
+montenegrin.ReadmeJapanese=ReadMe (Japanese)
+montenegrin.LicenseEnglish=License (English)
 norwegiannynorsk.ReadmeEnglish=ReadMe (English)
 norwegiannynorsk.ReadmeJapanese=ReadMe (Japanese)
 norwegiannynorsk.LicenseEnglish=License (English)
