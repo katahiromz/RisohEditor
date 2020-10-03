@@ -1004,7 +1004,8 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
     {
         if (enc == L"ansi")
         {
-            std::string str((char *)&entry.m_data[0], entry.m_data.size());
+            std::string str(reinterpret_cast<const char *>(&entry.m_data[0]),
+                            entry.m_data.size());
             MAnsiToWide a2w(CP_ACP, str.c_str());
             MStringW wide = a2w.c_str();
             mstr_replace_all(wide, L"\r\n", L"\n");
@@ -1013,7 +1014,7 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
         }
         if (enc == L"wide")
         {
-            std::wstring str(reinterpret_cast<wchar_t *>(&entry.m_data[0]),
+            std::wstring str(reinterpret_cast<const wchar_t *>(&entry.m_data[0]),
                              entry.m_data.size() / sizeof(wchar_t));
             mstr_replace_all(str, L"\r\n", L"\n");
             mstr_replace_all(str, L"\n", L"\r\n");
@@ -1021,7 +1022,8 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
         }
         if (enc == L"utf8" || enc == L"utf8n")
         {
-            std::string str((char *)&entry.m_data[0], entry.m_data.size());
+            std::string str(reinterpret_cast<const char *>(&entry.m_data[0]),
+                            entry.m_data.size());
             if (str.size() >= 3 && memcmp(str.c_str(), "\xEF\xBB\xBF", 3) == 0)
             {
                 str.erase(0, 3);
