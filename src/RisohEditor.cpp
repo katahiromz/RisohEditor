@@ -4175,13 +4175,6 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
             index = strText.rfind(strTarget, ich - 1);
     }
 
-    if (0)
-    {
-        WCHAR szText[64];
-        StringCbPrintfW(szText, sizeof(szText), L"%d, %d, %d", ich, ichEnd, index);
-        ::MessageBoxW(NULL, szText, NULL, 0);
-    }
-
     if (index != MString::npos)
     {
         SendMessageW(m_hCodeEditor, EM_SETSEL, INT(index), INT(index + strTarget.size()));
