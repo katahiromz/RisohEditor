@@ -1013,7 +1013,7 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
         }
         if (enc == L"wide")
         {
-            std::wstring str((wchar_t *)&entry.m_data[0],
+            std::wstring str(reinterpret_cast<wchar_t *>(&entry.m_data[0]),
                              entry.m_data.size() / sizeof(wchar_t));
             mstr_replace_all(str, L"\r\n", L"\n");
             mstr_replace_all(str, L"\n", L"\r\n");

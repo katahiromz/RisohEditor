@@ -134,7 +134,7 @@ public:
                 if (!stream.ReadRaw(entry_head))
                     return false;
 
-                MStringW wstr = (const WCHAR *)&stream[stream.pos()];
+                MStringW wstr = reinterpret_cast<const WCHAR *>(&stream[stream.pos()]);
                 if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
                 {
                     size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(WCHAR);
