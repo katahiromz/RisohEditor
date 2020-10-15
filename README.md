@@ -251,6 +251,8 @@ You have to copy the 64-bit file into another place before loading.
     - Deleted cache in version check.
     - Fixed test dialog position.
     - Fixed a bug that `RT_DLGINIT` disappears without permission.
+- v.5.4.7 (2020.XX.YY)
+    - Downgrade Inno Setup to 5.6.1.
 
 ## Contact Us
 
