@@ -245,7 +245,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Corretta posizione finestra anteprima Test.
     - Corretto bug per cui RT_DLGINIT senza permsso scompariva.
 - v.5.4.7 (YY.XX.2020)
-    - Downgrade Inno Setup to 5.6.1.
+    - Downgraded Inno Setup to 5.6.1 for XP support.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
