@@ -326,6 +326,17 @@ public:
 
     INT GetBaseUnits(INT& y) const;
     INT GetHeadLines() const;
+    BOOL HasActiveX() const
+    {
+        for (auto& item : m_items)
+        {
+            if (StrCmpNIW(item.m_class.c_str(), L"AtlAxWin", 8) == 0)
+                return TRUE;
+            if (item.m_class.c_str()[0] == L'{')
+                return TRUE;
+        }
+        return FALSE;
+    }
 
 protected:
     bool _headerFromStream(const MByteStreamEx& stream);

@@ -12105,6 +12105,7 @@ void MMainWnd::OnTest(HWND hwnd)
                 // it's a non-child dialog. show the test dialog (with menu if any)
                 MTestDialog dialog(dialog_res, menu, entry->m_lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
+                stream = stream;
             }
         }
     }
@@ -13115,7 +13116,11 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.captions.clear();
 
     g_settings.bShowToolBar = TRUE;
-    g_settings.strAtlAxWin = L"AtlAxWin110";
+#ifdef ATL_SUPPORT
+    g_settings.strAtlAxWin = TEXT(ATLAXWIN_CLASS);
+#else
+    g_settings.strAtlAxWin = TEXT("AtlAxWin");
+#endif
     g_settings.nSaveFilterIndex = 1;
     g_settings.bWordWrap = FALSE;
 
@@ -13322,7 +13327,6 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         g_settings.nRadLeft = CW_USEDEFAULT;
 
     DWORD i, dwCount;
-
     TCHAR szFormat[32], szFile[MAX_PATH];
 
     // load the recently used files
@@ -13846,7 +13850,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         return FALSE;
 
     SetWindowLongPtr(m_hwndTV, GWLP_USERDATA, (LONG_PTR)this);
-    s_fnTreeViewOldWndProc = SubclassWindow(m_hwndTV, TreeViewWndProc);
+    s_fnTreeViewOldWndProc = (WNDPROC)SetWindowLongPtrW(m_hwndTV, GWLP_WNDPROC, (LONG_PTR)TreeViewWndProc);
 
     // store the treeview handl to g_res (important!)
     g_res.m_hwndTV = m_hwndTV;
@@ -15947,18 +15951,27 @@ wWinMain(HINSTANCE   hInstance,
     int ret;
     MEditCtrl::SetCtrlAHookDx(TRUE);
     {
-        MMainWnd app(__argc, __targv, hInstance);
-        s_pMainWnd = &app;
+#ifdef ATL_SUPPORT
+        ::AtlAxWinInit();
+        CComModule _Module;
+#endif
+        {
+            MMainWnd app(__argc, __targv, hInstance);
+            s_pMainWnd = &app;
 
-        if (app.StartDx())
-        {
-            // main loop
-            ret = INT(app.RunDx());
+            if (app.StartDx())
+            {
+                // main loop
+                ret = INT(app.RunDx());
+            }
+            else
+            {
+                ret = 2;
+            }
         }
-        else
-        {
-            ret = 2;
-        }
+#ifdef ATL_SUPPORT
+        ::AtlAxWinTerm();
+#endif
     }
     MEditCtrl::SetCtrlAHookDx(FALSE);
 

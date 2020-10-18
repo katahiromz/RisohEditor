@@ -5,9 +5,6 @@ cmake_minimum_required(VERSION 2.4)
 cmake_policy(SET CMP0046 NEW)
 cmake_policy(SET CMP0003 NEW)
 
-# enable Win32 resource
-ENABLE_LANGUAGE(RC)
-
 # EGA
 subdirs(../EGA)
 
@@ -49,13 +46,22 @@ target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus 
                                           oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 
-# resource object extension
+option(ATL_SUPPORT "Add ATL support" ON)
+
 if (MSVC)
-    set(DOTRES ".res")
+    set(DOTRES ".res") # resource object extension
     add_definitions(-DMSVC=1)
+    # ATL Support
+    if (ATL_SUPPORT)
+        add_definitions(-DATL_SUPPORT)
+    endif()
+    # No auto manifest
+    set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /MANIFEST:NO")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
-    set(DOTRES ".o")
-    list(APPEND CMAKE_CXX_LINK_FLAGS -municode)
+    set(DOTRES ".o") # resource object extension
+    list(APPEND CMAKE_CXX_LINK_FLAGS -municode) # Unicode support
 endif()
 
 # use Unicode

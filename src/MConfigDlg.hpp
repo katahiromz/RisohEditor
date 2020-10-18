@@ -57,16 +57,27 @@ public:
         SetDlgItemTextW(hwnd, cmb2, g_settings.strBackupSuffix.c_str());
     }
 
+    void Cmb1_AddString(HWND hwnd, LPCWSTR text)
+    {
+        if ((INT)SendDlgItemMessage(hwnd, cmb1, CB_FINDSTRINGEXACT, -1, (LPARAM)text) == CB_ERR)
+        {
+            SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)text);
+        }
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM(9999, -9999));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin71")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin80")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin90")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin100")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("AtlAxWin110")));
-        SendDlgItemMessage(hwnd, cmb1, CB_ADDSTRING, 0, LPARAM(TEXT("MOleCtrl")));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin"));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin71"));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin80"));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin90"));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin100"));
+        Cmb1_AddString(hwnd, TEXT("AtlAxWin110"));
+#ifdef ATL_SUPPORT
+        Cmb1_AddString(hwnd, TEXT(ATLAXWIN_CLASS));
+#endif
+        Cmb1_AddString(hwnd, TEXT("MOleCtrl"));
 
         Reload(hwnd);
         CenterWindowDx();

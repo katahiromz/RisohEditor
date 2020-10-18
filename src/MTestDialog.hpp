@@ -28,6 +28,29 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+template <class StringType, class Helper, typename Helper::ReturnType(WINAPI* pFunc)(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM)>
+typename Helper::ReturnType AtlAxDialogCreateIndirectT(
+    HINSTANCE hInstance,
+    const VOID *pTemplate,
+    HWND hWndParent,
+    DLGPROC lpDialogProc,
+    LPARAM dwInitParam)
+{
+    AtlAxWinInit();
+    typename Helper::ReturnType nRet = Helper::GetInvalidValue();
+
+    DLGTEMPLATE* pDlg = (DLGTEMPLATE*)pTemplate;
+    if (pDlg != NULL)
+    {
+        LPDLGTEMPLATE lpDialogTemplate;
+        lpDialogTemplate = _DialogSplitHelper::SplitDialogTemplate(pDlg, NULL);
+        nRet = (*pFunc)(hInstance, lpDialogTemplate, hWndParent, lpDialogProc, dwInitParam);
+        if ((lpDialogTemplate != pDlg) && (lpDialogTemplate != NULL))
+            GlobalFree(GlobalHandle(lpDialogTemplate));
+    }
+    return nRet;
+}
+
 class MTestDialog : public MDialogBase
 {
 public:
@@ -240,5 +263,50 @@ public:
             break;
         }
         return DefaultProcDx();
+    }
+
+    INT_PTR DialogBoxIndirectDx(HWND hwndOwner, const VOID* ptr)
+    {
+        if (hwndOwner)
+        {
+            m_hwndOwner = hwndOwner;
+        }
+        m_bModal = TRUE;
+#ifdef ATL_SUPPORT
+        INT_PTR nID = AtlAxDialogCreateIndirectT<LPCWSTR, _AtlDialogBoxIndirectParamHelper, ::DialogBoxIndirectParamW>(
+            ::GetModuleHandle(NULL), ptr, m_hwndOwner, MDialogBase::DialogProc, reinterpret_cast<LPARAM>(this));
+        return nID;
+#else
+        INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL),
+            (const DLGTEMPLATE*)ptr,
+            m_hwndOwner,
+            MDialogBase::DialogProc,
+            reinterpret_cast<LPARAM>(this));
+        return nID;
+#endif
+    }
+
+    inline BOOL CreateDialogIndirectDx(HWND hwndOwner, const VOID *ptr)
+    {
+        if (hwndOwner)
+        {
+            m_hwndOwner = hwndOwner;
+        }
+        m_bModal = FALSE;
+#ifdef ATL_SUPPORT
+        HWND hwnd;
+        hwnd = AtlAxDialogCreateIndirectT<LPCWSTR, _AtlCreateDialogIndirectParamHelper, ::CreateDialogIndirectParamW>(
+            ::GetModuleHandle(NULL), ptr, m_hwndOwner, MDialogBase::DialogProc, reinterpret_cast<LPARAM>(this));
+#else
+        HWND hwnd = ::CreateDialogIndirectParam(::GetModuleHandle(NULL), 
+            reinterpret_cast<const DLGTEMPLATE *>(ptr), 
+            m_hwndOwner, MDialogBase::DialogProc, 
+            reinterpret_cast<LPARAM>(this));
+#endif
+        if (hwnd == NULL)
+        {
+            Detach();
+        }
+        return hwnd != NULL;
     }
 };

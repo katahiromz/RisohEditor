@@ -10,8 +10,8 @@ cmake_minimum_required(VERSION 2.4)
 cmake_policy(SET CMP0054 NEW)
 cmake_policy(SET CMP0003 NEW)
 
-# project name and language
-project(RisohEditor CXX)
+# project name and languages
+project(RisohEditor CXX RC)
 
 # check build type
 if (NOT CMAKE_BUILD_TYPE)
@@ -63,9 +63,6 @@ if (WIN32)
         endforeach()
     endif()
 endif()
-
-# enable Win32 resource
-ENABLE_LANGUAGE(RC)
 
 ##############################################################################
 

@@ -20,6 +20,7 @@
 #include "DialogRes.hpp"
 #include "ConstantsDB.hpp"
 #include "RisohSettings.hpp"
+#include <shlwapi.h>
 #include <unordered_set>
 
 bool PredefClassToID(MStringW name, WORD& w)
@@ -267,6 +268,7 @@ bool DialogItem::SaveToStreamEx(MByteStreamEx& stream) const
         if (!stream.WriteData(&m_extra[0], ExtraSize))
             return false;
     }
+
     return true;
 }
 
@@ -560,7 +562,7 @@ void DialogItem::FixupForRad(bool bRevert)
             m_siz.cy = 20;
         }
         if (m_class.str() == L"MOleCtrl" ||
-            m_class.str().find(L"AtlAxWin") == 0)
+            StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
         {
             m_class = L"STATIC";
             m_style |= WS_BORDER;
@@ -628,8 +630,9 @@ void DialogItem::FixupForTest(bool bRevert)
         m_old_style = m_style;
         m_old_class = m_class;
         m_old_title = m_title;
+#ifndef ATL_SUPPORT
         if (m_class.str() == L"MOleCtrl" ||
-            m_class.str().find(L"AtlAxWin") == 0)
+            StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
         {
             m_class = L"STATIC";
             m_style |= WS_BORDER;
@@ -640,6 +643,7 @@ void DialogItem::FixupForTest(bool bRevert)
             m_class = L"STATIC";
             m_style |= WS_BORDER;
         }
+#endif
     }
 }
 
@@ -728,6 +732,7 @@ bool DialogRes::SaveToStream(MByteStreamEx& stream) const
                 if (!m_items[i].SaveToStreamEx(stream))
                     return false;
             }
+            stream.WriteByte(0);
             return true;
         }
     }
@@ -741,6 +746,7 @@ bool DialogRes::SaveToStream(MByteStreamEx& stream) const
                 if (!m_items[i].SaveToStream(stream))
                     return false;
             }
+            stream.WriteByte(0);
             return true;
         }
     }

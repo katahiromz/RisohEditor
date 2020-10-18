@@ -34,6 +34,11 @@
 #include <uxtheme.h>
 #include <urlmon.h>
 #include <wininet.h>
+#ifdef ATL_SUPPORT
+    #include <cguid.h>
+    #include <atlbase.h>
+    #include <atlhost.h>
+#endif
 
 #include <algorithm>    // for std::sort
 #include <string>       // for std::string, std::wstring

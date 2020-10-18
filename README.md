@@ -253,6 +253,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed a bug that `RT_DLGINIT` disappears without permission.
 - v.5.4.7 (2020.XX.YY)
     - Downgraded Inno Setup to 5.6.1 for XP support.
+    - Initial support of window class "AtlAxWin140".
 
 ## Contact Us
 

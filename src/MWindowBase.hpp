@@ -331,7 +331,7 @@ public:
         Attach(hwnd);
         if (!m_pwndSub)
         {
-            m_fnOldProc = SubclassWindow(hwnd, MWindowBase::WindowProc);
+            m_fnOldProc = (WNDPROC)SetWindowLongPtrW(hwnd, GWLP_WNDPROC, (LONG_PTR)MWindowBase::WindowProc);
         }
         PostSubclassDx(hwnd);
         return m_pwndSub || m_fnOldProc;
@@ -339,7 +339,7 @@ public:
 
     VOID UnsubclassDx()
     {
-        SubclassWindow(m_hwnd, m_fnOldProc);
+        SetWindowLongPtrW(m_hwnd, GWLP_WNDPROC, (LONG_PTR)m_fnOldProc);
         SetUserData(m_hwnd, m_pwndSub);
         m_fnOldProc = NULL;
     }
