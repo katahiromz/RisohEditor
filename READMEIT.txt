@@ -244,7 +244,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Eliminata cache nel controllo versione.
     - Corretta posizione finestra anteprima Test.
     - Corretto bug per cui RT_DLGINIT senza permsso scompariva.
-- v.5.4.7 (YY.XX.2020)
+- v.5.4.7 (18.10.2020)
     - Downgraded Inno Setup to 5.6.1 for XP support.
     - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
 
