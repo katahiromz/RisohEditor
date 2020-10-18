@@ -46,7 +46,7 @@ target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus 
                                           oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 
-option(ATL_SUPPORT "Add ATL support" ON)
+option(ATL_SUPPORT "Add ATL support" OFF)
 
 if (MSVC)
     set(DOTRES ".res") # resource object extension

@@ -4,13 +4,12 @@
 
 ## 構築に必要なもの
 
-- Visual Studio 2012 (with Visual C++)
+- Visual Studio 2019 (with Visual C++)
 - CMake
 - Inno Setup
 - MSYS2
 
 このソリューションは、C++11以降が必須である。
-C++11とXPサポートを両立するためには、Visual Studio 2012が必要になる。
 MSYS2でもビルドできるが、その場合、XPでは実行できなくなってしまう。
 
 Inno Setupはインストーラ作成のときに使う。
@@ -18,7 +17,7 @@ Inno Setupはインストーラ作成のときに使う。
 ## 構築の前に
 
 ダウンロードしたリソースファイルの `src/RisohEditor_res.rc` はUTF-8でエンコードされている。
-Visual Studio 2012 でUTF-8でエンコードされたリソースファイルをコンパイルすると、
+Visual Studio 2019 でUTF-8でエンコードされたリソースファイルをコンパイルすると、
 特定の文字列でごみ文字が発生する不具合が確認されている。
 よって、構築の前にUTF-16で上書きしないといけない。
 
@@ -33,12 +32,11 @@ Visual Studio 2012 でUTF-8でエンコードされたリソースファイル�
 ## 構築方法
 
 0. 3個のREADMEファイルに更新履歴を書く。
-1. Visual Studio 2012 x86 Command Prompt で CMake を次のように実行する。
+1. Visual Studio 2019 x86 Command Prompt で CMake を次のように実行する。
 
 ```cmd
 cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
-"C:\Program Files\CMake\bin\cmake.exe" -G
-"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 11 2012" -DCMAKE_BUILD_TYPE=Release .
+"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 16 2019" -A "Win32" -T v141_xp -DCMAKE_BUILD_TYPE=Release -DATL_SUPPORT=ON .
 ```
 
 しばらく待つと実行が完了して次のようなメッセージが表示される。
@@ -49,13 +47,12 @@ cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
 
 この場合、CMakeに成功。
 
-2. CMakeによって出力されたファイル`RisohEditor.sln`をVisual Studio 2012で開く。
+2. CMakeによって出力されたファイル`RisohEditor.sln`をVisual Studio 2019で開く。
 3. 「Debug」から「Release」に変更する。
 4. キーボードのCtrlを押しながらプロジェクトをすべてクリックしてプロジェクトをすべて選択する。
 5. 選択されているプロジェクトアイコンを右クリックして「プロパティ」を選ぶ。「プロパティ ページ」が表示される。
 6. 「プロパティ ページ」の「構成プロパティ」をクリックして、「全般」をクリックして、
-「プラットフォーム ツールセット」を「Visual Studio 2012 (v110)」から「Visual Studio 2012 - Windows XP (v110_xp)」に
-変更する。
+「プラットフォーム ツールセット」を「Visual Studio 2017 - Windows XP (v141_xp)」に変更する。
 7. 「プロパティ ページ」の「OK」をクリックする。
 8. プロジェクト「ALL_BUILD」のみを選択して、「ALL_BUILD」を右クリックして「リビルド」を選択する。
 ソリューションがビルドされる。
