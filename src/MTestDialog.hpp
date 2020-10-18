@@ -28,6 +28,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+#ifdef ATL_SUPPORT
 template <class StringType, class Helper, typename Helper::ReturnType(WINAPI* pFunc)(HINSTANCE, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM)>
 typename Helper::ReturnType AtlAxDialogCreateIndirectT(
     HINSTANCE hInstance,
@@ -50,6 +51,7 @@ typename Helper::ReturnType AtlAxDialogCreateIndirectT(
     }
     return nRet;
 }
+#endif
 
 class MTestDialog : public MDialogBase
 {
