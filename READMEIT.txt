@@ -247,6 +247,8 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.7 (18.10.2020)
     - Downgraded Inno Setup to 5.6.1 for XP support.
     - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
+- v.5.4.8 (YY.XX.2020)
+    - Added Finnish translation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -254,6 +254,8 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.4.7 (2020.10.18)
     - Downgraded Inno Setup to 5.6.1 for XP support.
     - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
+- v.5.4.8 (2020.XX.YY)
+    - Added Finnish translation.
 
 ## Contact Us
 

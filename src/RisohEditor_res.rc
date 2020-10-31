@@ -164,6 +164,7 @@ IDR_MAINFRAME WAVE "res/Wave_100.wav"
 
 #include "lang/de_DE.rc"
 #include "lang/en_US.rc"
+#include "lang/fi_FI.rc"
 #include "lang/fr_FR.rc"
 #include "lang/id_ID.rc"
 #include "lang/it_IT.rc"
