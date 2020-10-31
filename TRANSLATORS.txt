@@ -6,16 +6,18 @@ The translators of RisohEditor are listed below:
 
  * English:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
- * Japanese:
-    - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
- * Simplified Chinese:
-    - 林鸿湘 <lhxy24@163.com>
- * Russian:
-    - Dmitry Yerokhin <erodim@mail.ru>
- * Italian:
-    - bovirus <bovirus@gmail.com>
+ * Finnish:
+    - Veikko Muurikainen <veikko.muurikainen@kolumbus.fi>
  * Indonesian:
     - Mas Ahmad Muhammad <m.charly81@gmail.com>
+ * Italian:
+    - bovirus <bovirus@gmail.com>
+ * Japanese:
+    - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+ * Russian:
+    - Dmitry Yerokhin <erodim@mail.ru>
+ * Simplified Chinese:
+    - 林鸿湘 <lhxy24@163.com>
 
 # How to translate?
 
