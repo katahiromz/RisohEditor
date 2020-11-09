@@ -65,52 +65,10 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
-;; Unofficial Languages: https://github.com/jrsoftware/issrc/tree/master/Files/Languages/Unofficial
-;Name: "afrikaans"; MessagesFile: "compiler:Languages\Afrikaans.isl"
-;Name: "albanian"; MessagesFile: "compiler:Languages\Albanian.isl"
-;Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
-;Name: "asturian"; MessagesFile: "compiler:Languages\Asturian.isl"
-;Name: "basque"; MessagesFile: "compiler:Languages\Basque.isl"
-;Name: "belarusian"; MessagesFile: "compiler:Languages\Belarusian.isl"
-;Name: "bengali"; MessagesFile: "compiler:Languages\Bengali.islu"
-;Name: "bosnian"; MessagesFile: "compiler:Languages\Bosnian.isl"
-;Name: "bulgarian"; MessagesFile: "compiler:Languages\Bulgarian.isl"
-;Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
-;Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
-;Name: "croatian"; MessagesFile: "compiler:Languages\Croatian.isl"
-;Name: "englishbritish"; MessagesFile: "compiler:Languages\EnglishBritish.isl"
-;Name: "esperanto"; MessagesFile: "compiler:Languages\Esperanto.isl"
-;Name: "estonian"; MessagesFile: "compiler:Languages\Estonian.isl"
-;Name: "farsi"; MessagesFile: "compiler:Languages\Farsi.isl"
-;Name: "galician"; MessagesFile: "compiler:Languages\Galician.isl"
-;Name: "georgian"; MessagesFile: "compiler:Languages\Georgian.isl"
-;Name: "hindi"; MessagesFile: "compiler:Languages\Hindi.isl"
-;Name: "indonesian"; MessagesFile: "compiler:Languages\Indonesian.isl"
-;Name: "kazakh"; MessagesFile: "compiler:Languages\Kazakh.islu"
-;Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
-;Name: "kurdish"; MessagesFile: "compiler:Languages\Kurdish.isl"
-;Name: "latvian"; MessagesFile: "compiler:Languages\Latvian.isl"
-;Name: "ligurian"; MessagesFile: "compiler:Languages\Ligurian.isl"
-;Name: "lithuanian"; MessagesFile: "compiler:Languages\Lithuanian.isl"
-;Name: "luxemburgish"; MessagesFile: "compiler:Languages\Luxemburgish.isl"
-;Name: "macedonian"; MessagesFile: "compiler:Languages\Macedonian.isl"
-;Name: "malaysian"; MessagesFile: "compiler:Languages\Malaysian.isl"
-;Name: "mongolian"; MessagesFile: "compiler:Languages\Mongolian.isl"
-;Name: "montenegrin"; MessagesFile: "compiler:Languages\Montenegrin.isl"
-;Name: "norwegiannynorsk"; MessagesFile: "compiler:Languages\NorwegianNynorsk.isl"
-;Name: "occitan"; MessagesFile: "compiler:Languages\Occitan.isl"
-;Name: "romanian"; MessagesFile: "compiler:Languages\Romanian.isl"
-;Name: "slovak"; MessagesFile: "compiler:Languages\Slovak.isl"
-;Name: "swedish"; MessagesFile: "compiler:Languages\Swedish.isl"
-;Name: "tatar"; MessagesFile: "compiler:Languages\Tatar.isl"
-;Name: "thai"; MessagesFile: "compiler:Languages\Thai.isl"
-;Name: "uyghur"; MessagesFile: "compiler:Languages\Uyghur.isl"
-;Name: "uzbek"; MessagesFile: "compiler:Languages\Uzbek.isl"
-;Name: "valencian"; MessagesFile: "compiler:Languages\Valencian.isl"
-;Name: "vietnamese"; MessagesFile: "compiler:Languages\Vietnamese.isl"
-
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "rc_association"; Description: "{cm:AssociateRcFiles}"
+Name: "res_association"; Description: "{cm:AssociateResFiles}"
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -171,210 +129,147 @@ Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: d
 [Run]
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
 
+[Registry]
+Root: HKCU; Subkey: "Software\Katayama Hirofumi MZ\RisohEditor"; Flags: uninsdeletekey
+; .rc
+Root: HKCR; Subkey: ".rc"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.ResourceFile"; Flags: uninsdeletevalue; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Resource File"; Flags: uninsdeletekey; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "rc_association"
+; .res
+Root: HKCR; Subkey: ".res"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.BinaryResourceFile"; Flags: uninsdeletevalue; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Binary Resource File"; Flags: uninsdeletekey; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "res_association"
+
 [CustomMessages]
 brazilianportuguese.ReadmeEnglish=ReadMe (English)
 brazilianportuguese.ReadmeJapanese=ReadMe (Japanese)
 brazilianportuguese.LicenseEnglish=License (English)
+brazilianportuguese.AssociateRcFiles=Associate *.rc files
+brazilianportuguese.AssociateResFiles=Associate *.res files
 catalan.ReadmeEnglish=ReadMe (English)
 catalan.ReadmeJapanese=ReadMe (Japanese)
 catalan.LicenseEnglish=License (English)
+catalan.AssociateRcFiles=Associate *.rc files
+catalan.AssociateResFiles=Associate *.res files
 corsican.ReadmeEnglish=ReadMe (English)
 corsican.ReadmeJapanese=ReadMe (Japanese)
 corsican.LicenseEnglish=License (English)
+corsican.AssociateRcFiles=Associate *.rc files
+corsican.AssociateResFiles=Associate *.res files
 czech.ReadmeEnglish=ReadMe (English)
 czech.ReadmeJapanese=ReadMe (Japanese)
 czech.LicenseEnglish=License (English)
+czech.AssociateRcFiles=Associate *.rc files
+czech.AssociateResFiles=Associate *.res files
 danish.ReadmeEnglish=ReadMe (English)
 danish.ReadmeJapanese=ReadMe (Japanese)
 danish.LicenseEnglish=License (English)
+danish.AssociateRcFiles=Associate *.rc files
+danish.AssociateResFiles=Associate *.res files
 dutch.ReadmeEnglish=ReadMe (English)
 dutch.ReadmeJapanese=ReadMe (Japanese)
 dutch.LicenseEnglish=License (English)
+dutch.AssociateRcFiles=Associate *.rc files
+dutch.AssociateResFiles=Associate *.res files
 english.ReadmeEnglish=ReadMe (English)
 english.ReadmeJapanese=ReadMe (Japanese)
 english.LicenseEnglish=License (English)
+english.AssociateRcFiles=Associate *.rc files
+english.AssociateResFiles=Associate *.res files
 finnish.ReadmeEnglish=ReadMe (English)
 finnish.ReadmeJapanese=ReadMe (Japanese)
 finnish.LicenseEnglish=License (English)
+finnish.AssociateRcFiles=Associate *.rc files
+finnish.AssociateResFiles=Associate *.res files
 french.ReadmeEnglish=ReadMe (English)
 french.ReadmeJapanese=ReadMe (Japanese)
 french.LicenseEnglish=License (English)
+french.AssociateRcFiles=Associate *.rc files
+french.AssociateResFiles=Associate *.res files
 german.ReadmeEnglish=ReadMe (English)
 german.ReadmeJapanese=ReadMe (Japanese)
 german.LicenseEnglish=License (English)
+german.AssociateRcFiles=Associate *.rc files
+german.AssociateResFiles=Associate *.res files
 greek.ReadmeEnglish=ReadMe (English)
 greek.ReadmeJapanese=ReadMe (Japanese)
 greek.LicenseEnglish=License (English)
+greek.AssociateRcFiles=Associate *.rc files
+greek.AssociateResFiles=Associate *.res files
 hebrew.ReadmeEnglish=ReadMe (English)
 hebrew.ReadmeJapanese=ReadMe (Japanese)
 hebrew.LicenseEnglish=License (English)
+hebrew.AssociateRcFiles=Associate *.rc files
+hebrew.AssociateResFiles=Associate *.res files
 hungarian.ReadmeEnglish=ReadMe (English)
 hungarian.ReadmeJapanese=ReadMe (Japanese)
 hungarian.LicenseEnglish=License (English)
+hungarian.AssociateRcFiles=Associate *.rc files
+hungarian.AssociateResFiles=Associate *.res files
 italian.ReadmeEnglish=Leggimi (Inglese)
 italian.ReadmeJapanese=Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
+italian.AssociateRcFiles=Associate *.rc files
+italian.AssociateResFiles=Associate *.res files
 japanese.ReadmeEnglish=ReadMe (英語)
 japanese.ReadmeJapanese=読んでね (日本語)
 japanese.LicenseEnglish=ライセンス (英語)
+japanese.AssociateRcFiles=*.rcファイルを関連付ける
+japanese.AssociateResFiles=*.resファイルを関連付ける
 norwegian.ReadmeEnglish=ReadMe (English)
 norwegian.ReadmeJapanese=ReadMe (Japanese)
 norwegian.LicenseEnglish=License (English)
+norwegian.AssociateRcFiles=Associate *.rc files
+norwegian.AssociateResFiles=Associate *.res files
 polish.ReadmeEnglish=ReadMe (English)
 polish.ReadmeJapanese=ReadMe (Japanese)
 polish.LicenseEnglish=License (English)
+polish.AssociateRcFiles=Associate *.rc files
+polish.AssociateResFiles=Associate *.res files
 portuguese.ReadmeEnglish=ReadMe (English)
 portuguese.ReadmeJapanese=ReadMe (Japanese)
 portuguese.LicenseEnglish=License (English)
+portuguese.AssociateRcFiles=Associate *.rc files
+portuguese.AssociateResFiles=Associate *.res files
 russian.ReadmeEnglish=ReadMe (English)
 russian.ReadmeJapanese=ReadMe (Japanese)
 russian.LicenseEnglish=License (English)
+russian.AssociateRcFiles=Associate *.rc files
+russian.AssociateResFiles=Associate *.res files
 scottishgaelic.ReadmeEnglish=ReadMe (English)
 scottishgaelic.ReadmeJapanese=ReadMe (Japanese)
 scottishgaelic.LicenseEnglish=License (English)
+scottishgaelic.AssociateRcFiles=Associate *.rc files
+scottishgaelic.AssociateResFiles=Associate *.res files
 serbiancyrillic.ReadmeEnglish=ReadMe (English)
 serbiancyrillic.ReadmeJapanese=ReadMe (Japanese)
 serbiancyrillic.LicenseEnglish=License (English)
+serbiancyrillic.AssociateRcFiles=Associate *.rc files
+serbiancyrillic.AssociateResFiles=Associate *.res files
 serbianlatin.ReadmeEnglish=ReadMe (English)
 serbianlatin.ReadmeJapanese=ReadMe (Japanese)
 serbianlatin.LicenseEnglish=License (English)
+serbianlatin.AssociateRcFiles=Associate *.rc files
+serbianlatin.AssociateResFiles=Associate *.res files
 slovenian.ReadmeEnglish=ReadMe (English)
 slovenian.ReadmeJapanese=ReadMe (Japanese)
 slovenian.LicenseEnglish=License (English)
+slovenian.AssociateRcFiles=Associate *.rc files
+slovenian.AssociateResFiles=Associate *.res files
 spanish.ReadmeEnglish=ReadMe (English)
 spanish.ReadmeJapanese=ReadMe (Japanese)
 spanish.LicenseEnglish=License (English)
+spanish.AssociateRcFiles=Associate *.rc files
+spanish.AssociateResFiles=Associate *.res files
 turkish.ReadmeEnglish=ReadMe (English)
 turkish.ReadmeJapanese=ReadMe (Japanese)
 turkish.LicenseEnglish=License (English)
+turkish.AssociateRcFiles=Associate *.rc files
+turkish.AssociateResFiles=Associate *.res files
 ukrainian.ReadmeEnglish=ReadMe (English)
 ukrainian.ReadmeJapanese=ReadMe (Japanese)
 ukrainian.LicenseEnglish=License (English)
-
-;; Unofficial Languages
-;afrikaans.ReadmeEnglish=ReadMe (English)
-;afrikaans.ReadmeJapanese=ReadMe (Japanese)
-;afrikaans.LicenseEnglish=License (English)
-;albanian.ReadmeEnglish=ReadMe (English)
-;albanian.ReadmeJapanese=ReadMe (Japanese)
-;albanian.LicenseEnglish=License (English)
-;arabic.ReadmeEnglish=ReadMe (English)
-;arabic.ReadmeJapanese=ReadMe (Japanese)
-;arabic.LicenseEnglish=License (English)
-;asturian.ReadmeEnglish=ReadMe (English)
-;asturian.ReadmeJapanese=ReadMe (Japanese)
-;asturian.LicenseEnglish=License (English)
-;basque.ReadmeEnglish=ReadMe (English)
-;basque.ReadmeJapanese=ReadMe (Japanese)
-;basque.LicenseEnglish=License (English)
-;belarusian.ReadmeEnglish=ReadMe (English)
-;belarusian.ReadmeJapanese=ReadMe (Japanese)
-;belarusian.LicenseEnglish=License (English)
-;bengali.ReadmeEnglish=ReadMe (English)
-;bengali.ReadmeJapanese=ReadMe (Japanese)
-;bengali.LicenseEnglish=License (English)
-;bosnian.ReadmeEnglish=ReadMe (English)
-;bosnian.ReadmeJapanese=ReadMe (Japanese)
-;bosnian.LicenseEnglish=License (English)
-;bulgarian.ReadmeEnglish=ReadMe (English)
-;bulgarian.ReadmeJapanese=ReadMe (Japanese)
-;bulgarian.LicenseEnglish=License (English)
-;chinesesimplified.ReadmeEnglish=ReadMe (English)
-;chinesesimplified.ReadmeJapanese=ReadMe (Japanese)
-;chinesesimplified.LicenseEnglish=License (English)
-;chinesetraditional.ReadmeEnglish=ReadMe (English)
-;chinesetraditional.ReadmeJapanese=ReadMe (Japanese)
-;chinesetraditional.LicenseEnglish=License (English)
-;croatian.ReadmeEnglish=ReadMe (English)
-;croatian.ReadmeJapanese=ReadMe (Japanese)
-;croatian.LicenseEnglish=License (English)
-;englishbritish.ReadmeEnglish=ReadMe (English)
-;englishbritish.ReadmeJapanese=ReadMe (Japanese)
-;englishbritish.LicenseEnglish=License (English)
-;esperanto.ReadmeEnglish=ReadMe (English)
-;esperanto.ReadmeJapanese=ReadMe (Japanese)
-;esperanto.LicenseEnglish=License (English)
-;estonian.ReadmeEnglish=ReadMe (English)
-;estonian.ReadmeJapanese=ReadMe (Japanese)
-;estonian.LicenseEnglish=License (English)
-;farsi.ReadmeEnglish=ReadMe (English)
-;farsi.ReadmeJapanese=ReadMe (Japanese)
-;farsi.LicenseEnglish=License (English)
-;galician.ReadmeEnglish=ReadMe (English)
-;galician.ReadmeJapanese=ReadMe (Japanese)
-;galician.LicenseEnglish=License (English)
-;georgian.ReadmeEnglish=ReadMe (English)
-;georgian.ReadmeJapanese=ReadMe (Japanese)
-;georgian.LicenseEnglish=License (English)
-;hindi.ReadmeEnglish=ReadMe (English)
-;hindi.ReadmeJapanese=ReadMe (Japanese)
-;hindi.LicenseEnglish=License (English)
-;indonesian.ReadmeEnglish=ReadMe (English)
-;indonesian.ReadmeJapanese=ReadMe (Japanese)
-;indonesian.LicenseEnglish=License (English)
-;kazakh.ReadmeEnglish=ReadMe (English)
-;kazakh.ReadmeJapanese=ReadMe (Japanese)
-;kazakh.LicenseEnglish=License (English)
-;korean.ReadmeEnglish=ReadMe (English)
-;korean.ReadmeJapanese=ReadMe (Japanese)
-;korean.LicenseEnglish=License (English)
-;kurdish.ReadmeEnglish=ReadMe (English)
-;kurdish.ReadmeJapanese=ReadMe (Japanese)
-;kurdish.LicenseEnglish=License (English)
-;latvian.ReadmeEnglish=ReadMe (English)
-;latvian.ReadmeJapanese=ReadMe (Japanese)
-;latvian.LicenseEnglish=License (English)
-;ligurian.ReadmeEnglish=ReadMe (English)
-;ligurian.ReadmeJapanese=ReadMe (Japanese)
-;ligurian.LicenseEnglish=License (English)
-;lithuanian.ReadmeEnglish=ReadMe (English)
-;lithuanian.ReadmeJapanese=ReadMe (Japanese)
-;lithuanian.LicenseEnglish=License (English)
-;luxemburgish.ReadmeEnglish=ReadMe (English)
-;luxemburgish.ReadmeJapanese=ReadMe (Japanese)
-;luxemburgish.LicenseEnglish=License (English)
-;macedonian.ReadmeEnglish=ReadMe (English)
-;macedonian.ReadmeJapanese=ReadMe (Japanese)
-;macedonian.LicenseEnglish=License (English)
-;malaysian.ReadmeEnglish=ReadMe (English)
-;malaysian.ReadmeJapanese=ReadMe (Japanese)
-;malaysian.LicenseEnglish=License (English)
-;mongolian.ReadmeEnglish=ReadMe (English)
-;mongolian.ReadmeJapanese=ReadMe (Japanese)
-;mongolian.LicenseEnglish=License (English)
-;montenegrin.ReadmeEnglish=ReadMe (English)
-;montenegrin.ReadmeJapanese=ReadMe (Japanese)
-;montenegrin.LicenseEnglish=License (English)
-;norwegiannynorsk.ReadmeEnglish=ReadMe (English)
-;norwegiannynorsk.ReadmeJapanese=ReadMe (Japanese)
-;norwegiannynorsk.LicenseEnglish=License (English)
-;occitan.ReadmeEnglish=ReadMe (English)
-;occitan.ReadmeJapanese=ReadMe (Japanese)
-;occitan.LicenseEnglish=License (English)
-;romanian.ReadmeEnglish=ReadMe (English)
-;romanian.ReadmeJapanese=ReadMe (Japanese)
-;romanian.LicenseEnglish=License (English)
-;slovak.ReadmeEnglish=ReadMe (English)
-;slovak.ReadmeJapanese=ReadMe (Japanese)
-;slovak.LicenseEnglish=License (English)
-;swedish.ReadmeEnglish=ReadMe (English)
-;swedish.ReadmeJapanese=ReadMe (Japanese)
-;swedish.LicenseEnglish=License (English)
-;tatar.ReadmeEnglish=ReadMe (English)
-;tatar.ReadmeJapanese=ReadMe (Japanese)
-;tatar.LicenseEnglish=License (English)
-;thai.ReadmeEnglish=ReadMe (English)
-;thai.ReadmeJapanese=ReadMe (Japanese)
-;thai.LicenseEnglish=License (English)
-;uyghur.ReadmeEnglish=ReadMe (English)
-;uyghur.ReadmeJapanese=ReadMe (Japanese)
-;uyghur.LicenseEnglish=License (English)
-;uzbek.ReadmeEnglish=ReadMe (English)
-;uzbek.ReadmeJapanese=ReadMe (Japanese)
-;uzbek.LicenseEnglish=License (English)
-;valencian.ReadmeEnglish=ReadMe (English)
-;valencian.ReadmeJapanese=ReadMe (Japanese)
-;valencian.LicenseEnglish=License (English)
-;vietnamese.ReadmeEnglish=ReadMe (English)
-;vietnamese.ReadmeJapanese=ReadMe (Japanese)
-;vietnamese.LicenseEnglish=License (English)
+ukrainian.AssociateRcFiles=Associate *.rc files
+ukrainian.AssociateResFiles=Associate *.res files

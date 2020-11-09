@@ -256,6 +256,7 @@ You have to copy the 64-bit file into another place before loading.
     - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
 - v.5.4.8 (2020.XX.YY)
     - Added Finnish translation.
+    - Added *.rc and *.res file association.
 
 ## Contact Us
 

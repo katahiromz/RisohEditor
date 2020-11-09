@@ -249,6 +249,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
 - v.5.4.8 (YY.XX.2020)
     - Added Finnish translation.
+    - Added *.rc and *.res file association.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
