@@ -1,5 +1,5 @@
-[![Build Status on Travis CI](https://travis-ci.org/katahiromz/RisohEditor.svg?branch=master)](https://travis-ci.org/katahiromz/RisohEditor)
-[![Build status on AppVeyor](https://ci.appveyor.com/api/projects/status/4sdaed4vyakby61h?svg=true)](https://ci.appveyor.com/project/katahiromz/risoheditor)
+![CMake](https://github.com/katahiromz/RisohEditor/workflows/CMake/badge.svg)
+![CodeQL](https://github.com/katahiromz/RisohEditor/workflows/CodeQL/badge.svg)
 
 # ![](re-icon.png "") RisohEditor by katahiromz
 
