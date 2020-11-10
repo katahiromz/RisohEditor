@@ -12074,7 +12074,7 @@ void MMainWnd::OnTest(HWND hwnd)
             dialog_res.m_menu.clear();
             stream.clear();
 
-            // fixup for "MOleCtrl", "AtlAxWin*" and/or "{...}" window classes.
+            // fixup for "AtlAxWin*" and/or "{...}" window classes.
             // see also: DialogRes::FixupForTest
             dialog_res.FixupForTest(false);
             dialog_res.SaveToStream(stream);
@@ -15890,9 +15890,6 @@ void EGA_extension(void)
       language='*'\"")
 #endif
 
-// We will dynamically create the MOleCtrl instances
-IMPLEMENT_DYNAMIC(MOleCtrl)
-
 // the main function of the windows application
 extern "C"
 INT WINAPI
@@ -15917,9 +15914,6 @@ wWinMain(HINSTANCE   hInstance,
 
     // initialize the libraries
     OleInitialize(NULL);
-
-    // register MOleCtrl window class
-    MOleCtrl::RegisterDx();
 
     // register MOleSite window class
     MOleSite::RegisterDx();

@@ -77,7 +77,6 @@ public:
 #ifdef ATL_SUPPORT
         Cmb1_AddString(hwnd, TEXT(ATLAXWIN_CLASS));
 #endif
-        Cmb1_AddString(hwnd, TEXT("MOleCtrl"));
 
         Reload(hwnd);
         CenterWindowDx();

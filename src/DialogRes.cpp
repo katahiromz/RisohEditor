@@ -561,8 +561,7 @@ void DialogItem::FixupForRad(bool bRevert)
             m_siz.cx = 20;
             m_siz.cy = 20;
         }
-        if (m_class.str() == L"MOleCtrl" ||
-            StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
+        if (StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
         {
             m_class = L"STATIC";
             m_style |= WS_BORDER;
@@ -637,8 +636,7 @@ void DialogItem::FixupForTest(bool bRevert)
         m_old_class = m_class;
         m_old_title = m_title;
 #ifndef ATL_SUPPORT
-        if (m_class.str() == L"MOleCtrl" ||
-            StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
+        if (StrCmpNIW(m_class.c_str(), TEXT("AtlAxWin"), 8) == 0)
         {
             m_class = L"STATIC";
             m_style |= WS_BORDER;

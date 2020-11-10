@@ -818,8 +818,6 @@ NFS_BUTTON, 0x8
 NFS_ALL, 0x10
 NFS_USEFONTASSOC, 0x20
 
-[MOleCtrl]
-
 [AtlAxWin]
 
 [CTRLID]
@@ -1278,7 +1276,6 @@ msctls_statusbar32, 2
 msctls_trackbar32, 2
 msctls_updown32, 2
 tooltips_class32, 2
-MOleCtrl, 2
 AtlAxWin, 2
 AtlAxWin71, 2
 AtlAxWin80, 2
@@ -1443,9 +1440,6 @@ STYLE, 0x50020000
 [SysIPAddress32.DEFAULT.STYLE]
 STYLE, 0x50010000
 
-[MOleCtrl.DEFAULT.STYLE]
-STYLE, 0x50010000
-
 [AtlAxWin.DEFAULT.STYLE]
 STYLE, 0x50010000
 [AtlAxWin71.DEFAULT.STYLE]
@@ -1600,10 +1594,6 @@ HEIGHT, 12
 [SysIPAddress32.SIZE]
 WIDTH, 60
 HEIGHT, 14
-
-[MOleCtrl.SIZE]
-WIDTH, 60
-HEIGHT, 60
 
 [AtlAxWin.SIZE]
 WIDTH, 60

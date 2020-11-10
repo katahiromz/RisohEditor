@@ -258,6 +258,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added Finnish translation.
     - Added *.rc and *.res file association.
     - Initial support of OLE controls.
+    - Deleted MOleCtrl and added MOleHost.
 
 ## Contact Us
 

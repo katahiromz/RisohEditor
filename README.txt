@@ -250,6 +250,7 @@ Question 6. Are the 64-bit files supported?
     - Added Finnish translation.
     - Added *.rc and *.res file association.
     - Initial support of OLE controls.
+    - Deleted MOleCtrl and added MOleHost.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

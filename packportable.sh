@@ -67,7 +67,7 @@ cp -r data "$RE_BIN_DIR"
 cp build/mcdx.exe "$RE_BIN_DIR/data/bin"
 
 mkdir "$RE_BIN_DIR/OLE"
-cp -f src/MOleCtrl.hpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"
+cp -f src/MOleHost.hpp src/MOleHost.cpp src/MWindowBase.hpp "$RE_BIN_DIR/OLE"
 
 mkdir "$RE_BIN_DIR/MyWndCtrl"
 cp -f "MyWndCtrl/MyWndCtrl.cpp" "MyWndCtrl/MWindowBase.hpp" "MyWndCtrl/CMakeLists.txt" "$RE_BIN_DIR/MyWndCtrl"
