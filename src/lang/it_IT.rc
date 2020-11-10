@@ -239,7 +239,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "&Elimina ID\tCanc", ID_DELETERESID
         MENUITEM SEPARATOR
         MENUITEM "Numeri &decimali", ID_BASE10
-        MENUITEM "NBumeri &esadecimali", ID_BASE16
+        MENUITEM "Numeri &esadecimali", ID_BASE16
         MENUITEM SEPARATOR
         MENUITEM "&Ricarica", ID_LOADRESH
     }
@@ -436,7 +436,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_MENUTEST DIALOG 0, 0, 215, 135
-CAPTION "Test menu"
+CAPTION "Menu test"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1561,7 +1561,7 @@ STRINGTABLE
     IDS_HEXVIEWER, "Visualizzatore HEX"
     IDS_INTEGERORIDENTIFIER, "(intero or identificatore)"
     IDS_NOTEXT, " "
-    IDS_NOUPDATE, "La versione di RisohEditor è aggiornata."
+    IDS_NOUPDATE, "La versione di RisohEditor installata è aggiornata."
     IDS_THEREISUPDATE, "È disponibile RisohEditor v. %s. \r\nVuoi scaricarlo ora?"
     IDS_CANTCHECKUPDATE, "Verifica aggiornamenti RisohEditor fallita."
     IDS_CODEPAGE1252, "1252 (Latino 1)"
