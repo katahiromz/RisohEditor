@@ -257,6 +257,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.4.8 (2020.XX.YY)
     - Added Finnish translation.
     - Added *.rc and *.res file association.
+    - Initial support of OLE controls.
 
 ## Contact Us
 

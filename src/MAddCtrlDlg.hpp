@@ -543,18 +543,8 @@ public:
             LPOLESTR pszCLSID = NULL;
             if (S_OK == StringFromCLSID(insert_object.clsid, &pszCLSID))
             {
-                if (GetDlgItemText(hwnd, cmb4).find(TEXT("AtlAxWin")) == 0)
-                {
-                    WCHAR szText[64];
-                    StringCchCopyW(szText, _countof(szText), L"CLSID:");
-                    StringCchCatW(szText, _countof(szText), pszCLSID);
-                    SetDlgItemTextW(hwnd, cmb2, szText);
-                }
-                else
-                {
-                    SetDlgItemTextW(hwnd, cmb2, pszCLSID);
-                }
-                SetDlgItemTextW(hwnd, cmb4, g_settings.strAtlAxWin.c_str());
+                SetDlgItemTextW(hwnd, cmb2, NULL);
+                SetDlgItemTextW(hwnd, cmb4, pszCLSID);
                 CoTaskMemFree(pszCLSID);
             }
         }

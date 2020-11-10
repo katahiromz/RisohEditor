@@ -167,7 +167,7 @@ public:
              hCtrl; hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT))
         {
             DWORD style = GetWindowStyle(hCtrl);
-            SIZE siz;
+            SIZE siz = { 0, 0 };
             GetWindowPosDx(hCtrl, NULL, &siz);
 
             WCHAR szClass[32];

@@ -33,6 +33,7 @@
 #include <map>
 #include <unordered_set>     // for std::unordered_set
 #include <climits>
+#include "MOleHost.hpp"
 
 class MRadCtrl;
 class MRadDialog;
@@ -114,7 +115,7 @@ public:
     // call me after subclassing
     void PostSubclass()
     {
-        SIZE siz;
+        SIZE siz = { 0, 0 };
         TCHAR szClass[16];
         GetWindowPosDx(m_hwnd, NULL, &siz);
         GetClassName(m_hwnd, szClass, _countof(szClass));
@@ -1526,10 +1527,12 @@ public:
     MTitleToBitmap  m_title_to_bitmap;      // a title-to-bitmap mapping
     MTitleToIcon    m_title_to_icon;        // a title-to-icon mapping
     DialogItemClipboard m_clipboard;        // a clipboard manager
+    MOleHost *m_pOleHost;
 
     // constructor
     MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-          m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
+        m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res),
+        m_pOleHost(NULL)
     {
     }
 
@@ -1733,6 +1736,15 @@ public:
             DestroyWindow(m_rad_dialog);
         }
 
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
+
+        m_pOleHost = new MOleHost();
+        DoSetActiveOleHost(m_pOleHost);
+
         // get the resource data
         m_dialog_res.FixupForRad(false);
         std::vector<BYTE> data = m_dialog_res.data();
@@ -1802,7 +1814,7 @@ public:
             if (auto pCtrl = MRadCtrl::GetRadCtrl(hCtrl))
             {
                 // get the size
-                SIZE siz;
+                SIZE siz = { 0, 0 };
                 GetWindowPosDx(hCtrl, NULL, &siz);
 
                 if (pCtrl->m_nImageType == 1)
@@ -1905,6 +1917,12 @@ public:
     // MRadWindow WM_DESTROY
     void OnDestroy(HWND hwnd)
     {
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
+
         // post ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);

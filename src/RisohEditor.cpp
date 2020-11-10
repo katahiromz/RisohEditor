@@ -15921,6 +15921,9 @@ wWinMain(HINSTANCE   hInstance,
     // register MOleCtrl window class
     MOleCtrl::RegisterDx();
 
+    // register MOleSite window class
+    MOleSite::RegisterDx();
+
     // initialize common controls
     INITCOMMONCONTROLSEX iccx;
     iccx.dwSize = sizeof(iccx);

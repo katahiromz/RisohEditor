@@ -250,6 +250,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.8 (YY.XX.2020)
     - Added Finnish translation.
     - Added *.rc and *.res file association.
+    - Initial support of OLE controls.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
