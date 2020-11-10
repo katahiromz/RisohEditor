@@ -643,13 +643,19 @@ void DialogItem::FixupForTest(bool bRevert)
             m_class = L"STATIC";
             m_style |= WS_BORDER;
         }
-        else if (m_class.c_str()[0] == L'{')
+#endif
+        if (m_class.c_str()[0] == L'{')
         {
+#if 1
+            m_title = m_class.c_str();
+            m_class = L"MOleSite";
+            m_style |= WS_BORDER;
+#else
             m_title = m_class.c_str();
             m_class = L"STATIC";
             m_style |= WS_BORDER;
-        }
 #endif
+        }
     }
 }
 

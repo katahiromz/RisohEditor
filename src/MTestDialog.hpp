@@ -25,6 +25,7 @@
 #include "DlgInit.h"
 #include "Res.hpp"
 #include <map>
+#include "MOleHost.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -65,10 +66,12 @@ public:
     MTitleToIcon    m_title_to_icon;
     INT             m_xDialogBaseUnit;
     INT             m_yDialogBaseUnit;
+    MOleHost *m_pOleHost;
 
     MTestDialog(DialogRes& dialog_res, MIdOrString menu, WORD lang, const std::vector<BYTE>& dlginit_data)
         : m_dialog_res(dialog_res), m_menu(menu), 
-          m_lang(lang), m_hMenu(NULL), m_dlginit_data(dlginit_data)
+          m_lang(lang), m_hMenu(NULL), m_dlginit_data(dlginit_data),
+          m_pOleHost(NULL)
     {
         m_xDialogBaseUnit = LOWORD(GetDialogBaseUnits());
         m_yDialogBaseUnit = HIWORD(GetDialogBaseUnits());
@@ -136,6 +139,9 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        if (m_pOleHost)
+            m_pOleHost->DoEnableMenu(TRUE);
+
         if (m_hMenu)
         {
             SetMenu(hwnd, NULL);
@@ -236,6 +242,12 @@ public:
             EndDialog(IDOK);
         else
             DestroyWindow(*this);
+
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
     }
 
     virtual INT_PTR CALLBACK
@@ -273,19 +285,32 @@ public:
         {
             m_hwndOwner = hwndOwner;
         }
+
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
+        m_pOleHost = new MOleHost();
+        DoSetActiveOleHost(m_pOleHost);
+
         m_bModal = TRUE;
 #ifdef ATL_SUPPORT
         INT_PTR nID = AtlAxDialogCreateIndirectT<LPCWSTR, _AtlDialogBoxIndirectParamHelper, ::DialogBoxIndirectParamW>(
             ::GetModuleHandle(NULL), ptr, m_hwndOwner, MDialogBase::DialogProc, reinterpret_cast<LPARAM>(this));
-        return nID;
 #else
         INT_PTR nID = ::DialogBoxIndirectParam(::GetModuleHandle(NULL),
             (const DLGTEMPLATE*)ptr,
             m_hwndOwner,
             MDialogBase::DialogProc,
             reinterpret_cast<LPARAM>(this));
-        return nID;
 #endif
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
+        return nID;
     }
 
     inline BOOL CreateDialogIndirectDx(HWND hwndOwner, const VOID *ptr)
@@ -294,6 +319,15 @@ public:
         {
             m_hwndOwner = hwndOwner;
         }
+
+        if (m_pOleHost)
+        {
+            delete m_pOleHost;
+            m_pOleHost = NULL;
+        }
+        m_pOleHost = new MOleHost();
+        DoSetActiveOleHost(m_pOleHost);
+
         m_bModal = FALSE;
 #ifdef ATL_SUPPORT
         HWND hwnd;

@@ -206,7 +206,7 @@ STDMETHODIMP MOleSite::SaveObject()
 {
     DoSave();
     DoUpdateRect();
-    InvalidateRect(m_hwnd, NULL, TRUE);
+    InvalidateRect(GetParent(m_hwnd), NULL, TRUE);
     return S_OK;
 }
 
@@ -242,7 +242,7 @@ STDMETHODIMP_(void) MOleSite::OnDataChange(FORMATETC *pFormatetc, STGMEDIUM *pSt
 
 STDMETHODIMP_(void) MOleSite::OnViewChange(DWORD dwAspect, LONG lindex)
 {
-    InvalidateRect(m_hwnd, NULL, TRUE);
+    InvalidateRect(GetParent(m_hwnd), NULL, TRUE);
 }
 
 STDMETHODIMP_(void) MOleSite::OnRename(IMoniker *pmk)
