@@ -12,7 +12,7 @@ Funziona con Windows XP/2003/Vista/7/8.1/10 e ReactOS.
 
 Per la standardizzazione degli ID risorse vedi file "Standardize.md".
 
-per dettagli sul copyrights e sull'accordo di licenza vedi il 
+per dettagli sul copyright e sull'accordo di licenza vedi il 
 file "LICENSE.txt".
 
 NOTA: Ti consigliamo di non installare RisohEditor in "C:\Program Files" o 
@@ -24,7 +24,7 @@ del file.
 
 Domanda 1. Che cos'è "Risoh"?
 
-    Ripsosta. La parola "Risoh" significa "ideale" in Giapponese.
+    Risposta. La parola "Risoh" significa "ideale" in Giapponese.
 
 Domanda 2. Che cosa sono edt1, edt2, cmb1?
 
@@ -243,16 +243,16 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.6 (03.10.2020)
     - Eliminata cache nel controllo versione.
     - Corretta posizione finestra anteprima Test.
-    - Corretto bug per cui RT_DLGINIT senza permsso scompariva.
+    - Corretto bug per cui RT_DLGINIT senza permesso scompariva.
 - v.5.4.7 (18.10.2020)
-    - Downgraded Inno Setup to 5.6.1 for XP support.
-    - Initial support of ActiveX window class "AtlAxWin140" on test dialog.
+    - Downgrade installer (Inno Setup 5.6.1) per includere supporto XP.
+    - Supporto iniziale classe finestra ActiveX "AtlAxWin140" nella finestra Test.
 - v.5.4.8 (YY.XX.2020)
-    - Added Finnish translation.
-    - Added *.rc and *.res file association.
-    - Initial support of OLE controls.
-    - Deleted MOleCtrl and added MOleHost.
-    - Supported REGINST data.
+    - Aggiunta traduzione Finlandese.
+    - Aggiunta associazione file *.rc e *.res.
+    - Supporto iniziale controlli OLE.
+    - Eliminato MOleCtrl e aggiunto MOleHost.
+    - Supporto dati REGINST.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
