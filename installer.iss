@@ -131,7 +131,7 @@ Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: d
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCU; Subkey: "Software\Katayama Hirofumi MZ\RisohEditor"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Katayama Hirofumi MZ\RisohEditor"; Flags: deletekey uninsdeletekey
 ; .rc
 Root: HKCR; Subkey: ".rc"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.ResourceFile"; Flags: uninsdeletevalue; Tasks: "rc_association"
 Root: HKCR; Subkey: "RisohEditor.ResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Resource File"; Flags: uninsdeletekey; Tasks: "rc_association"
