@@ -259,6 +259,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added *.rc and *.res file association.
     - Initial support of OLE controls.
     - Deleted MOleCtrl and added MOleHost.
+    - Supported REGINST data.
 
 ## Contact Us
 

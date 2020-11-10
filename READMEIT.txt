@@ -252,6 +252,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Added *.rc and *.res file association.
     - Initial support of OLE controls.
     - Deleted MOleCtrl and added MOleHost.
+    - Supported REGINST data.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
