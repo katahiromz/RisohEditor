@@ -68,6 +68,7 @@ protected:
     void DoDestroy();
     void DoSave();
     void DoHIMETRICtoDP(LPSIZEL lpSizel);
+    void DoDPtoHIMETRIC(LPSIZEL lpSizel);
 
     BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
     void OnMove(HWND hwnd, int x, int y);

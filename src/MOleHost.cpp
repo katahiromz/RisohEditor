@@ -159,7 +159,9 @@ void MOleSite::OnSize(HWND hwnd, UINT state, int cx, int cy)
         pipo->Release();
     }
 
-    DoUpdateRect();
+    SIZEL sizel = { rc.right - rc.left, rc.bottom - rc.top };
+    DoDPtoHIMETRIC(&sizel);
+    m_pOleObject->SetExtent(DVASPECT_CONTENT, &sizel);
 }
 
 void MOleSite::OnPaint(HWND hwnd)
@@ -324,6 +326,16 @@ void MOleSite::DoUpdateRect()
     DoHIMETRICtoDP(&sizel);
     m_rc.right = m_rc.left + sizel.cx;
     m_rc.bottom = m_rc.top + sizel.cy;
+}
+
+void MOleSite::DoDPtoHIMETRIC(LPSIZEL lpSizel)
+{
+    const INT HIMETRIC_INCH = 2540;
+
+    HDC hdc = GetDC(NULL);
+    lpSizel->cx = lpSizel->cx * HIMETRIC_INCH / GetDeviceCaps(hdc, LOGPIXELSX);
+    lpSizel->cy = lpSizel->cy * HIMETRIC_INCH / GetDeviceCaps(hdc, LOGPIXELSY);
+    ReleaseDC(NULL, hdc);
 }
 
 void MOleSite::DoHIMETRICtoDP(LPSIZEL lpSizel)
