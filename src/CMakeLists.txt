@@ -52,7 +52,6 @@ option(ATL_SUPPORT "Add ATL support" OFF)
 
 if (MSVC)
     set(DOTRES ".res") # resource object extension
-    add_definitions(-DMSVC=1)
     # ATL Support
     if (ATL_SUPPORT)
         add_definitions(-DATL_SUPPORT)
