@@ -247,7 +247,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.7 (18.10.2020)
     - Downgrade installer (Inno Setup 5.6.1) per includere supporto XP.
     - Supporto iniziale classe finestra ActiveX "AtlAxWin140" nella finestra Test.
-- v.5.4.8 (YY.XX.2020)
+- v.5.4.8 (12.11.2020)
     - Aggiunta traduzione Finlandese.
     - Aggiunta associazione file *.rc e *.res.
     - Supporto iniziale controlli OLE.
