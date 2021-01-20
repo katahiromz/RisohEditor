@@ -254,7 +254,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Eliminato MOleCtrl e aggiunto MOleHost.
     - Supporto dati REGINST.
 - v.5.4.9 (YY.XX.2021)
-    - Refreshed the ID List upon renaming treeview item.
+    - Refresh the ID List upon renaming treeview item.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
