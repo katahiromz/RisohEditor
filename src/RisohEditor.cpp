@@ -11718,7 +11718,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 return FALSE;   // reject
             }
 
-
             if (!entry || entry->m_et == ET_TYPE)
             {
                 return FALSE;   // reject
@@ -11865,6 +11864,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
     // update the entry name
     entry->m_name = new_name;
     UpdateEntryName(entry, pszText);
+    DoRefreshIDList(m_hwndMain);
 
     // select the entry to update the text
     SelectTV(entry, FALSE);

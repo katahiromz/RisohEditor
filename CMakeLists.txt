@@ -4,7 +4,7 @@
 ##############################################################################
 
 # CMake minimum version
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.9)
 
 # use new policy
 cmake_policy(SET CMP0054 NEW)
