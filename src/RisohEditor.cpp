@@ -11864,7 +11864,7 @@ void MMainWnd::DoRenameEntry(LPWSTR pszText, EntryBase *entry, const MIdOrString
     // update the entry name
     entry->m_name = new_name;
     UpdateEntryName(entry, pszText);
-    DoRefreshIDList(m_hwndMain);
+    DoRefreshIDList(m_hwnd);
 
     // select the entry to update the text
     SelectTV(entry, FALSE);
