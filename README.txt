@@ -252,7 +252,7 @@ Question 6. Are the 64-bit files supported?
     - Initial support of OLE controls.
     - Deleted MOleCtrl and added MOleHost.
     - Supported REGINST data.
-- v.5.4.9 (2021.XX.YY)
+- v.5.4.9 (2021.01.21)
     - Refresh ID List upon renaming treeview item.
 
 /////////////////////////////////////////////////////////////////////
