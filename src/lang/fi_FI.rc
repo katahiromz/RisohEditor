@@ -1327,9 +1327,9 @@ IDD_MODIFYDLGINIT 240
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/1035_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/1035_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
@@ -1359,8 +1359,7 @@ STRINGTABLE
     IDS_OPEN, "Avaa"
     IDS_CANNOTOPEN, "Tiedostoa ei voi avata."
     IDS_ADDBMP, "Lisää bittikartta"
-	
-	IDS_BMPFILTER, "Bittikarttatiedostot (*.bmp)|*.bmp|PNG kuvat (*.png)|*.png|Kaikki tiedostot (*.*)|*.*|"
+    IDS_BMPFILTER, "Bittikarttatiedostot (*.bmp)|*.bmp|PNG kuvat (*.png)|*.png|Kaikki tiedostot (*.*)|*.*|"
     IDS_CANTREPLACEBMP, "Bittikarttaa ei voi korvata."
     IDS_REPLACEBMP, "Korvaa bittikartta"
     IDS_ERRORCODE, "Virhekoodi %d"
