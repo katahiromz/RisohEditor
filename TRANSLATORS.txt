@@ -18,7 +18,9 @@ The translators of RisohEditor are listed below:
     - Dmitry Yerokhin <erodim@mail.ru>
  * Simplified Chinese:
     - 林鸿湘 (Linhong Xiang) <lhxy24@163.com>
-
+ * Korean:
+    - ꧁VenusGirl꧂ (비너스걸) <venusgirl@outlook.com>
+    
 # How to translate?
 
 At first, copy and rename "src/lang/en_US.rc" (for example "ru_RU.rc" for Russian).
