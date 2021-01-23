@@ -16,7 +16,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "열기(&O)...\tCtrl+O", ID_OPEN
         MENUITEM "저장(&S)...\tCtrl+S", ID_SAVE
-        MENUITEM "디른 이름으로 저장(&A)...\tShift+Ctrl+S", ID_SAVEAS
+        MENUITEM "다른 이름으로 저장(&A)...\tShift+Ctrl+S", ID_SAVEAS
         MENUITEM "압축으로 저장(&M)...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
         MENUITEM "가져오기(&I)...\tCtrl+I", ID_IMPORT
@@ -1291,7 +1291,7 @@ FILETYPE        0x1
     {
         BLOCK "041203B5"
         {
-            VALUE "CompanyName", "Katayama Hirofumi MZ\0"
+            VALUE "CompanyName", "카타야마 히로후미 MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.4.9\0"
             VALUE "LegalCopyright", "저작권 (C) 2017-2020 카타야마 히로후미 MZ. 모든 권리 보유.\0"
@@ -1363,10 +1363,10 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "비트맵을 바꿀 수 없습니다."
     IDS_REPLACEBMP, "비트맵 바꾸기"
     IDS_ERRORCODE, "오류 코드 %d"
-    IDS_VERSIONINFO, "RisohEditor Version 5.4.9\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor 버전 5.4.9\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
     IDS_ADDRES, "리소스 추가"
     IDS_CANNOTADDRES, "리소스를 추가할 수 없습니다."
-    IDS_CANTADDBMP, "비트 맵을 추가할 수 없습니다."
+    IDS_CANTADDBMP, "비트맵을 추가할 수 없습니다."
     IDS_EXTRACTBMP, "비트맵 추출"
     IDS_CANTEXTRACTBMP, "비트맵을 추출할 수 없습니다."
     IDS_CANTREPLACECUR, "커서를 바꿀 수 없습니다."
