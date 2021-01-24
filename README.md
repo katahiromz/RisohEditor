@@ -262,6 +262,8 @@ You have to copy the 64-bit file into another place before loading.
     - Supported REGINST data.
 - v.5.4.9 (2021.01.21)
     - Refresh ID List upon renaming treeview item.
+- v.5.5.0 (2021.XX.YY)
+    - Add Korean translation.
 
 ## Contact Us
 

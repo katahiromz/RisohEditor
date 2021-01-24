@@ -254,6 +254,8 @@ Question 6. Are the 64-bit files supported?
     - Supported REGINST data.
 - v.5.4.9 (2021.01.21)
     - Refresh ID List upon renaming treeview item.
+- v.5.5.0 (2021.XX.YY)
+    - Add Korean translation.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

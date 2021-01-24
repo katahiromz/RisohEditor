@@ -254,6 +254,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Supported REGINST data.
 - v.5.4.9 (2021.01.21)
     - Refresh ID List upon renaming treeview item.
+- v.5.5.0 (2021.XX.YY)
+    - Add Korean translation.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
