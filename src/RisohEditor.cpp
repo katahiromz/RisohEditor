@@ -2430,8 +2430,9 @@ protected:
     void OnAbout(HWND hwnd);
     void OnConfig(HWND hwnd);
     void OnOpenReadMe(HWND hwnd);
-    void OnOpenReadMeJp(HWND hwnd);
     void OnOpenReadMeIt(HWND hwnd);
+    void OnOpenReadMeJp(HWND hwnd);
+    void OnOpenReadMeKo(HWND hwnd);
     void OnOpenEgaManual(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
     void OnOpenHyojunka(HWND hwnd);
@@ -4881,6 +4882,41 @@ void MMainWnd::OnOpenHyojunka(HWND hwnd)
             {
                 *pch = 0;
                 PathAppendW(szPath, L"..\\..\\..\\HYOJUNKA.txt");
+                if (!PathFileExistsW(szPath))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    // open it
+    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+// Open READMEKO (Korean)
+void MMainWnd::OnOpenReadMeKo(HWND hwnd)
+{
+    // get the module path filename of this application module
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    LPWSTR pch = PathFindFileNameW(szPath);
+
+    // find the "READMEIT.txt" file
+    *pch = 0;
+    PathAppendW(szPath, L"READMEKO.txt");
+    if (!PathFileExistsW(szPath))
+    {
+        *pch = 0;
+        PathAppendW(szPath, L"..\\READMEKO.txt");
+        if (!PathFileExistsW(szPath))
+        {
+            *pch = 0;
+            PathAppendW(szPath, L"..\\..\\READMEKO.txt");
+            if (!PathFileExistsW(szPath))
+            {
+                *pch = 0;
+                PathAppendW(szPath, L"..\\..\\..\\READMEKO.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -11279,6 +11315,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_AUTOCOMPLETEDONE:
         DoLangEditAutoCompleteRelease(hwnd);
+        break;
+    case ID_OPENREADMEKO:
+        OnOpenReadMeKo(hwnd);
         break;
     default:
         bUpdateStatus = FALSE;
