@@ -260,6 +260,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Webpage (English):  https://katahiromz.web.fc2.com/re/en
+Webpage (Korean):   https://katahiromz.web.fc2.com/re/ko
 Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
 Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
 Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
