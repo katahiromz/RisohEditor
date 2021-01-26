@@ -22,7 +22,7 @@
 RE_VERSION=5.5.0
 RE_NAME="RisohEditor-$RE_VERSION-portable"
 RE_BIN_DIR="build/$RE_NAME"
-RE_FILES="README.txt READMEJP.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditorPortable.exe mcdx/MESSAGETABLEDX.md"
+RE_FILES="README.txt READMEJP.txt READMEIT.txt READMEKO.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditorPortable.exe mcdx/MESSAGETABLEDX.md"
 RE_TARGET="build/RisohEditor-$RE_VERSION-portable.zip"
 
 ################################################################################
