@@ -9,8 +9,9 @@ It can read/write resource data in RC/RES/EXE/DLL files. UTF-16 resource files a
 
 - Web page (English): https://katahiromz.web.fc2.com/re/en
 - Web page (Chinese): https://katahiromz.web.fc2.com/re/ch
-- Web page (Japanese): https://katahiromz.web.fc2.com/re/ja
 - Web page (Italian): https://katahiromz.web.fc2.com/re/it
+- Web page (Japanese): https://katahiromz.web.fc2.com/re/ja
+- Web page (Korean): https://katahiromz.web.fc2.com/re/ko
 - Web page (Russian): https://katahiromz.web.fc2.com/re/ru
 
 ## Supported Platforms
