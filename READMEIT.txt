@@ -257,6 +257,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiornamento ID List dopo aver rinominato l'elemento treeview.
 - v.5.5.0 (26.01.2021)
     - Add Korean translation.
+- v.5.5.1 (YY.XX.2021)
+    - Upgraded windres to 2.36.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

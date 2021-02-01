@@ -264,6 +264,8 @@ You have to copy the 64-bit file into another place before loading.
     - Refresh ID List upon renaming treeview item.
 - v.5.5.0 (2021.01.26)
     - Add Korean translation.
+- v.5.5.1 (2021.XX.YY)
+    - Upgraded windres to 2.36.
 
 ## Contact Us
 
