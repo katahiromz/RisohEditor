@@ -6527,7 +6527,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
-    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+    strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += szPath1;
@@ -6711,7 +6711,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     strCmdLine += GetIncludesDump();
     strCmdLine += L" --include-dir=\"";
     strCmdLine += m_szIncludeDir;
-    strCmdLine += L"\" --preprocessor=\"";
+    strCmdLine += L"\" \"--preprocessor=";
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
@@ -6930,7 +6930,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
-    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
+    strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += szPath1;
