@@ -266,7 +266,6 @@ You have to copy the 64-bit file into another place before loading.
     - Add Korean translation.
 - v.5.5.1 (2021.XX.YY)
     - Upgraded windres to 2.36.
-    - You can install RisohEditor into C:\Program Files.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
 
 ## Contact Us
