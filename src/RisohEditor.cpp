@@ -2292,6 +2292,7 @@ protected:
     void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
     MStringW GetMacroDump() const;
     MStringW GetIncludesDump() const;
+    MStringW GetIncludesDumpForWindres() const;
     void ReadResHLines(FILE *fp, std::vector<MStringA>& lines);
     void UpdateResHLines(std::vector<MStringA>& lines);
 
@@ -6464,6 +6465,31 @@ MStringW MMainWnd::GetIncludesDump() const
     return ret;
 }
 
+// dump all the #include's
+MStringW MMainWnd::GetIncludesDumpForWindres() const
+{
+    MStringW ret;
+    for (auto& path : g_settings.includes)
+    {
+        // " -Ipath"
+        auto& str = path;
+        if (str.empty())
+            continue;
+
+        ret += L" -I \"";
+        ret += str;
+        ret += L"\"";
+    }
+    if (m_szIncludeDir[0])
+    {
+        ret += L" -I \"";
+        ret += m_szIncludeDir;
+        ret += L"\"";
+    }
+    ret += L" ";
+    return ret;
+}
+
 // compile the string table
 BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
@@ -6522,19 +6548,19 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += m_szWindresExe;
-    strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
+    strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
-    strCmdLine += GetIncludesDump();
-    strCmdLine += L" \"-I";
+    strCmdLine += GetIncludesDumpForWindres();
+    strCmdLine += L" -I \"";
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
-    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+    strCmdLine += L"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+    MessageBoxW(m_hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -6584,6 +6610,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         }
         else
         {
+            MessageBoxA(m_hwnd, strOutput.c_str(), NULL, 0);
             bOK = FALSE;
             // error message
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
@@ -6927,14 +6954,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += m_szWindresExe;
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
-    strCmdLine += GetIncludesDump();
-    strCmdLine += L" \"-I";
+    strCmdLine += GetIncludesDumpForWindres();
+    strCmdLine += L" -I \"";
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
-    strCmdLine += L"\" --preprocessor-arg=\"\" \"";
+    strCmdLine += L"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
     //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
@@ -7214,7 +7241,7 @@ INT MMainWnd::CheckData(VOID)
 
     // include directory
     StringCchCopyW(m_szIncludeDir, _countof(m_szIncludeDir), m_szDataFolder);
-    StringCchCatW(m_szIncludeDir, _countof(m_szIncludeDir), L"\\lib\\gcc\\i686-w64-mingw32\\7.3.0\\include");
+    StringCchCatW(m_szIncludeDir, _countof(m_szIncludeDir), L"\\lib\\gcc\\i686-w64-mingw32\\10.2.0\\include");
     if (!PathFileExistsW(m_szIncludeDir))
     {
         ErrorBoxDx(TEXT("ERROR: No include directory found."));

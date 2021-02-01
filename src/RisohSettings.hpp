@@ -205,8 +205,8 @@ struct RisohSettings
 #define DEF_VALUE(x, val)         macros.insert(std::make_pair(TEXT(#x), TEXT(#val)))
         // TODO: update these values
         DEF_VALUE(_WIN32, 1);
-        DEF_VALUE(__GNUC__, 7);
-        DEF_VALUE(__GNUC_MINOR__, 3);
+        DEF_VALUE(__GNUC__, 10);
+        DEF_VALUE(__GNUC_MINOR__, 2);
         DEF_VALUE(__GNUC_PATCHLEVEL__, 0);
         //#ifdef _WIN64
         //    DEF_VALUE(_WIN64, 1);
