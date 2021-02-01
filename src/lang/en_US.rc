@@ -1282,8 +1282,8 @@ FONT 9, "MS Shell Dlg"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 5, 0, 0
-PRODUCTVERSION  5, 5, 0, 0
+FILEVERSION     5, 5, 1, 0
+PRODUCTVERSION  5, 5, 1, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -1293,10 +1293,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.5.0\0"
+            VALUE "FileVersion", "5.5.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.5.0\0"
+            VALUE "ProductVersion", "5.5.1\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1336,8 +1336,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.5.0 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.5.0 - File: %s"
+    IDS_APPNAME, "RisohEditor 5.5.1 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.5.1 - File: %s"
     IDS_EXTRACTRES, "Extract Resource"
     IDS_RESBINFILTER, "Binary Resources (*.res)|*.res|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*|"
     IDS_CANNOTSAVE, "Unable to save."
@@ -1363,7 +1363,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Unable to replace bitmap."
     IDS_REPLACEBMP, "Replace Bitmap"
     IDS_ERRORCODE, "Error Code %d"
-    IDS_VERSIONINFO, "RisohEditor Version 5.5.0\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Version 5.5.1\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
     IDS_ADDRES, "Add Resource"
     IDS_CANNOTADDRES, "Unable to add the resource."
     IDS_CANTADDBMP, "Unable to add the bitmap."
