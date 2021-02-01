@@ -110,15 +110,15 @@ Source: "EGA-samples\RES_select.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\NeutralToEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\Censorship.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\RES_set_binary.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\7.3.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\7.3.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
