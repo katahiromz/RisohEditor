@@ -15941,7 +15941,6 @@ wWinMain(HINSTANCE   hInstance,
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
 
-#if 0
     {
         WCHAR szPath[MAX_PATH];
         GetModuleFileNameW(NULL, szPath, ARRAYSIZE(szPath));
@@ -15953,7 +15952,6 @@ wWinMain(HINSTANCE   hInstance,
                         MB_ICONERROR);
         }
     }
-#endif
 
     // initialize the libraries
     OleInitialize(NULL);
