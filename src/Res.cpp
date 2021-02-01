@@ -1712,7 +1712,7 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     strCmdLine += L"\" --preprocessor-arg=\"\" \"";
     strCmdLine += pszRCFile;
     strCmdLine += L'\"';
-    MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
     BOOL bSuccess = FALSE;
 
