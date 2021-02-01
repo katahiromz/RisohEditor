@@ -258,6 +258,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Add Korean translation.
 - v.5.5.1 (2021.XX.YY)
     - Upgraded windres to 2.36.
+    - You can install RisohEditor into C:\Program Files.
+    - The menu items of BITMAP or OWNERDRAW can be compiled.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

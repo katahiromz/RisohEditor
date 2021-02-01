@@ -259,6 +259,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Add Korean translation.
 - v.5.5.1 (YY.XX.2021)
     - Upgraded windres to 2.36.
+    - You can install RisohEditor into C:\Program Files.
+    - The menu items of BITMAP or OWNERDRAW can be compiled.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
