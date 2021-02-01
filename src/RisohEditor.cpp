@@ -6551,9 +6551,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDumpForWindres();
-    strCmdLine += L" -I \"";
-    strCmdLine += m_szIncludeDir;
-    strCmdLine += L"\" -o \"";
+    strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
@@ -6737,9 +6735,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     strCmdLine += L"\" ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" --include-dir=\"";
-    strCmdLine += m_szIncludeDir;
-    strCmdLine += L"\" \"--preprocessor=";
+    strCmdLine += L" \"--preprocessor=";
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
@@ -6954,9 +6950,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDumpForWindres();
-    strCmdLine += L" -I \"";
-    strCmdLine += m_szIncludeDir;
-    strCmdLine += L"\" -o \"";
+    strCmdLine += L" -o \"";
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
     strCmdLine += m_szMCppExe;
