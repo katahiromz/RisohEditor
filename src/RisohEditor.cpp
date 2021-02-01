@@ -6560,7 +6560,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += L"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
-    MessageBoxW(m_hwnd, strCmdLine.c_str(), NULL, 0);
+    //MessageBoxW(m_hwnd, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -6610,7 +6610,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         }
         else
         {
-            MessageBoxA(m_hwnd, strOutput.c_str(), NULL, 0);
             bOK = FALSE;
             // error message
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
