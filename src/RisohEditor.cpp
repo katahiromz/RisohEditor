@@ -6450,13 +6450,15 @@ MStringW MMainWnd::GetIncludesDump() const
         if (str.empty())
             continue;
 
-        ret += L" -I";
+        ret += L" \"-I";
         ret += str;
+        ret += L"\"";
     }
     if (m_szIncludeDir[0])
     {
-        ret += L" -I";
+        ret += L" \"-I";
         ret += m_szIncludeDir;
+        ret += L"\"";
     }
     ret += L" ";
     return ret;
@@ -6523,7 +6525,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     strCmdLine += L"\" --use-temp-file -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -I \"";
+    strCmdLine += L" \"-I";
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
@@ -6926,7 +6928,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += L"\" -DRC_INVOKED ";
     strCmdLine += GetMacroDump();
     strCmdLine += GetIncludesDump();
-    strCmdLine += L" -I \"";
+    strCmdLine += L" \"-I";
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" -o \"";
     strCmdLine += szPath3;
@@ -10078,7 +10080,7 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" -dM -DRC_INVOKED -o \"";
     strCmdLine += szTempFile;
-    strCmdLine += L"\" -I \"";
+    strCmdLine += L"\" \"-I";
     strCmdLine += m_szIncludeDir;
     strCmdLine += L"\" \"";
     strCmdLine += pszFile;
