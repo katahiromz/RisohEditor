@@ -1559,7 +1559,7 @@ STRINGTABLE
     IDS_TOOL_EXPORT, "Esporta..."
     IDS_CODEEDITOR, "Editor codice"
     IDS_HEXVIEWER, "Visualizzatore HEX"
-    IDS_INTEGERORIDENTIFIER, "(intero or identificatore)"
+    IDS_INTEGERORIDENTIFIER, "(intero o identificatore)"
     IDS_NOTEXT, " "
     IDS_NOUPDATE, "La versione di RisohEditor installata è aggiornata."
     IDS_THEREISUPDATE, "È disponibile RisohEditor v. %s. \r\nVuoi scaricarlo ora?"
