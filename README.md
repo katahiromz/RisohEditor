@@ -265,7 +265,7 @@ You have to copy the 64-bit file into another place before loading.
     - Refresh ID List upon renaming treeview item.
 - v.5.5.0 (2021.01.26)
     - Add Korean translation.
-- v.5.5.1 (2021.XX.YY)
+- v.5.5.1 (2021.02.02)
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
 

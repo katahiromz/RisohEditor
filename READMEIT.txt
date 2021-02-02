@@ -256,10 +256,10 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.4.9 (21.01.2021)
     - Aggiornamento ID List dopo aver rinominato l'elemento treeview.
 - v.5.5.0 (26.01.2021)
-    - Add Korean translation.
-- v.5.5.1 (YY.XX.2021)
-    - Upgraded windres to 2.36.
-    - The menu items of BITMAP or OWNERDRAW can be compiled.
+    - Aggiungi la traduzione in coreano.
+- v.5.5.1 (02.02.2021)
+    - Windres aggiornato a 2.36.
+    - Le voci di menu di BITMAP o OWNERDRAW possono essere compilate.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
