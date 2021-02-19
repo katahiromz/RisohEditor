@@ -260,6 +260,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.1 (02.02.2021)
     - Windres aggiornato alla versione 2.36.
     - Le voci menu BITMAP e OWNERDRAW ora possono essere compilate.
+- v.5.5.2 (YY.XX.2021)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -268,6 +268,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.1 (2021.02.02)
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
+- v.5.5.2 (2021.XX.YY)
 
 ## Contact Us
 

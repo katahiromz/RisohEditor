@@ -259,6 +259,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.5.1 (2021.02.02)
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
+- v.5.5.2 (2021.XX.YY)
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
