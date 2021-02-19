@@ -63,9 +63,9 @@ RisohEditor contains the "dfmsc" program.
 The source code of dfmsc is available at https://github.com/katahiromz/dfmsc .
 dfmsc is licensed under the MIT License.
 ---------------------------------------------------
-RisohEditor contains the "TLS2IDL" programs.
-The source code of TLS2IDL is available at https://github.com/katahiromz/tls2idl .
-TLS2IDL is licensed under the LGPLv3 License.
+RisohEditor contains the "TLB2IDL" programs.
+The source code of TLB2IDL is available at https://github.com/katahiromz/tlb2idl .
+TLB2IDL is licensed under the LGPLv3 License.
 ---------------------------------------------------
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
