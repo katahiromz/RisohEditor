@@ -260,6 +260,7 @@ Question 6. Are the 64-bit files supported?
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
 - v.5.5.2 (2021.XX.YY)
+    - Fixed Ctrl+A on textboxes of Win2k3.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -14297,9 +14297,9 @@ void MMainWnd::DoEvents()
 // do the window messages
 void MMainWnd::DoMsg(MSG& msg)
 {
-    //// EDIT control Ctrl+A
-    //if (MEditCtrl::DoMsgCtrlA(&msg))
-    //    return;
+    // EDIT control Ctrl+A
+    if (MEditCtrl::DoMsgCtrlA(&msg))
+        return;
 
     // do access keys
     if (IsWindow(m_hwnd))

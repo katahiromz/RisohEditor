@@ -37,3 +37,5 @@ Win32
 risoheditor-*.exe
 *-bak
 *.bak
+*.ninja
+.ninja_*

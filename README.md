@@ -269,6 +269,7 @@ You have to copy the 64-bit file into another place before loading.
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
 - v.5.5.2 (2021.XX.YY)
+    - Fixed Ctrl+A on textboxes of Win2k3.
 
 ## Contact Us
 
