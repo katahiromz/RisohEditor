@@ -1578,6 +1578,9 @@ STRINGTABLE
     IDS_CODEPAGE949, "949 (Coreano)"
     IDS_CODEPAGE950, "950 (Cinese tradizionale)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
+    IDS_TLBFILTER, "Type Libraries (*.tlb)|*.tlb|All Files (*.*)|*.*|"
+    IDS_EXTRACTTLB, "Extract TYPELIB data"
+    IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
 }
 
 //////////////////////////////////////////////////////////////////////////////

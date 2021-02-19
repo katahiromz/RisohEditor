@@ -24,6 +24,7 @@
 #include "Res.hpp"
 
 #define MYWM_DELPHI_DFM_B2T (WM_USER + 300)
+#define MYWM_TLB_B2T (WM_USER + 301)
 
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 MStringW DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
@@ -93,6 +94,7 @@ public:
     MString DoMessage(const EntryBase& entry);
     MString DoWave(const EntryBase& entry);
     MString DoAVI(const EntryBase& entry);
+    MString DoTypeLib(const EntryBase& entry);
     MString DoDlgInit(const EntryBase& entry);
     MString DoRCData(const EntryBase& entry);
     MString DoUnknown(const EntryBase& entry);

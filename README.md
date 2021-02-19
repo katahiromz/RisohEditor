@@ -271,6 +271,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.2 (2021.XX.YY)
     - Fixed Ctrl+A on textboxes of Win2k3.
     - Added tlb2idl programs to process TYPELIB resource type.
+    - Supported TYPELIB preview.
 
 ## Contact Us
 

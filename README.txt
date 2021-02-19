@@ -262,6 +262,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.5.2 (2021.XX.YY)
     - Fixed Ctrl+A on textboxes of Win2k3.
     - Added tlb2idl programs to process TYPELIB resource type.
+    - Supported TYPELIB preview.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -270,6 +270,12 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += DumpEscapedName(entry.m_name);
             ret += L".wav";
         }
+        else if (entry.m_type == L"TYPELIB")
+        {
+            ret += L"TYPELIB_";
+            ret += DumpEscapedName(entry.m_name);
+            ret += L".tlb";
+        }
         else if (entry.m_type == L"IMAGE")
         {
             if (entry.m_et == ET_LANG)
@@ -874,6 +880,10 @@ ResToText::DumpEntry(const EntryBase& entry)
         {
             return DoAVI(entry);
         }
+        else if (entry.m_type == L"TYPELIB")
+        {
+            return DoTypeLib(entry);
+        }
     }
     return DoUnknown(entry);
 }
@@ -964,6 +974,34 @@ MString ResToText::DoDlgInit(const EntryBase& entry)
     {
         str += GetLanguageStatement(entry.m_lang);
         str += dlginit.Dump(entry.m_name);
+    }
+
+    return str;
+}
+
+MString ResToText::DoTypeLib(const EntryBase& entry)
+{
+    MString str;
+
+    if (m_bHumanReadable)
+    {
+        MString str;
+        SendMessageW(m_hwnd, MYWM_TLB_B2T, (WPARAM)&str, (LPARAM)&entry);
+        if (str.size())
+        {
+            return str;
+        }
+        return LoadStringDx(IDS_INVALIDDATA);
+    }
+    else
+    {
+        // LANGUAGE ..., ...
+        str += GetLanguageStatement(entry.m_lang);
+
+        str += DumpName(entry.m_type, entry.m_name);
+        str += L" TYPELIB \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n\r\n";
     }
 
     return str;

@@ -55,6 +55,31 @@ enum IMPORT_RESULT
     NOT_IMPORTABLE
 };
 
+WORD GetMachineOfBinary(LPCWSTR pszExeFile)
+{
+    WORD wMachine = IMAGE_FILE_MACHINE_UNKNOWN;
+    if (FILE *fp = _wfopen(pszExeFile, L"rb"))
+    {
+        SIZE_T ib = 0;
+        IMAGE_DOS_HEADER dos = { 0 };
+        fread(&dos, sizeof(dos), 1, fp);
+        if (dos.e_magic == IMAGE_DOS_SIGNATURE)
+        {
+            ib = dos.e_lfanew;
+        }
+        fseek(fp, ib, SEEK_SET);
+        IMAGE_NT_HEADERS nt = { 0 };
+        fread(&nt, sizeof(nt), 1, fp);
+        if (nt.Signature == IMAGE_NT_SIGNATURE)
+        {
+            auto& file = nt.FileHeader;
+            wMachine = file.Machine;
+        }
+        fclose(fp);
+    }
+    return wMachine;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // global variables
 
@@ -2063,6 +2088,8 @@ protected:
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
+    WCHAR       m_szTLB2IDL32[MAX_PATH];        // the TLB2IDL (32-bit) program location
+    WCHAR       m_szTLB2IDL64[MAX_PATH];        // the TLB2IDL (64-bit) program location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
     INT         m_nStatusStringID;
 
@@ -2114,6 +2141,8 @@ public:
         m_szUpxExe[0] = 0;
         m_szMcdxExe[0] = 0;
         m_szDFMSC[0] = 0;
+        m_szTLB2IDL32[0] = 0;
+        m_szTLB2IDL64[0] = 0;
         m_szIncludeDir[0] = 0;
         m_nStatusStringID = 0;
         m_szFile[0] = 0;
@@ -2285,6 +2314,7 @@ protected:
     BOOL CompileStringTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileMessageTable(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
+    BOOL CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide);
     BOOL CheckResourceH(HWND hwnd, LPCTSTR pszPath);
     BOOL ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len);
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
@@ -2326,6 +2356,7 @@ protected:
     void PreviewStringTable(HWND hwnd, const EntryBase& entry);
     void PreviewMessageTable(HWND hwnd, const EntryBase& entry);
     void PreviewRCData(HWND hwnd, const EntryBase& entry);
+    void PreviewTypeLib(HWND hwnd, const EntryBase& entry);
     void PreviewDlgInit(HWND hwnd, const EntryBase& entry);
     void PreviewUnknown(HWND hwnd, const EntryBase& entry);
 
@@ -2379,6 +2410,7 @@ protected:
     LRESULT OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
     LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -2405,6 +2437,7 @@ protected:
 
     void OnExtractRC(HWND hwnd);
     void OnExtractDFM(HWND hwnd);
+    void OnExtractTLB(HWND hwnd);
     void OnExtractBitmap(HWND hwnd);
     void OnExtractCursor(HWND hwnd);
     void OnExtractIcon(HWND hwnd);
@@ -2645,6 +2678,62 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
             if (!g_res.extract_bin(ofn.lpstrFile, entry))
             {
                 ErrorBoxDx(IDS_CANTEXTRACTDFM);
+            }
+        }
+    }
+}
+
+void MMainWnd::OnExtractTLB(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    // get the selected language entry
+    auto entry = g_res.get_lang_entry();
+    if (!entry)
+        return;
+
+    WCHAR szFile[MAX_PATH] = L"";
+    ResToText res2text;
+    MString strFile = res2text.GetEntryFileName(*entry);
+    if (strFile.size())
+    {
+        StringCbCopyW(szFile, sizeof(szFile), strFile.c_str());
+    }
+
+    // initialize OPENFILENAME structure
+    OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_TLBFILTER));
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = _countof(szFile);
+    ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTTLB);
+    ofn.Flags = OFN_ENABLESIZING | OFN_EXPLORER | OFN_HIDEREADONLY |
+                OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"tlb";
+
+    // let the user choose the path
+    if (GetSaveFileNameW(&ofn))
+    {
+        if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
+        {
+            auto ansi = tlb_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
+            if (FILE *fp = _wfopen(szFile, L"wb"))
+            {
+                fwrite(ansi.c_str(), ansi.size(), 1, fp);
+                fflush(fp);
+                fclose(fp);
+            }
+            else
+            {
+                ErrorBoxDx(IDS_CANTEXTRACTTLB);
+            }
+        }
+        else
+        {
+            if (!g_res.extract_bin(ofn.lpstrFile, entry))
+            {
+                ErrorBoxDx(IDS_CANTEXTRACTTLB);
             }
         }
     }
@@ -5790,6 +5879,16 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
     SetWindowTextW(m_hCodeEditor, str.c_str());
 }
 
+void MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
+{
+    // dump the text to m_hCodeEditor
+    ResToText res2text;
+    res2text.m_hwnd = m_hwnd;
+    res2text.m_bHumanReadable = TRUE;
+    MString str = res2text.DumpEntry(entry);
+    SetWindowTextW(m_hCodeEditor, str.c_str());
+}
+
 // preview the RT_RCDATA resource
 void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
 {
@@ -6073,6 +6172,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
         else if (entry->m_type == L"AVI")
         {
             PreviewAVI(hwnd, *entry);
+        }
+        else if (entry->m_type == L"TYPELIB")
+        {
+            PreviewTypeLib(hwnd, *entry);
         }
         else
         {
@@ -6633,6 +6736,13 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     return bOK;
 }
 
+BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
+{
+    MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+    strOutput = w2a.c_str();
+    return FALSE;
+}
+
 BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
     EntryBase *entry = g_res.find(ET_LANG, RT_RCDATA, name, lang);
@@ -6834,6 +6944,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     if (type == RT_RCDATA)
     {
         return CompileRCData(strOutput, name, lang, strWide);
+    }
+    if (type == L"TYPELIB")
+    {
+        return CompileTYPELIB(strOutput, name, lang, strWide);
     }
 
     // add a UTF-8 BOM to data
@@ -7247,6 +7361,24 @@ INT MMainWnd::CheckData(VOID)
     if (!PathFileExistsW(m_szDFMSC))
     {
         ErrorBoxDx(TEXT("ERROR: No dfmsc.exe found."));
+        return -7;  // failure
+    }
+
+    // TLB2IDL32.exe
+    StringCchCopyW(m_szTLB2IDL32, _countof(m_szTLB2IDL32), m_szDataFolder);
+    StringCchCatW(m_szTLB2IDL32, _countof(m_szTLB2IDL32), L"\\bin\\tlb2idl32.exe");
+    if (!PathFileExistsW(m_szTLB2IDL32))
+    {
+        ErrorBoxDx(TEXT("ERROR: No TLB2IDL32.exe found."));
+        return -7;  // failure
+    }
+
+    // TLB2IDL64.exe
+    StringCchCopyW(m_szTLB2IDL64, _countof(m_szTLB2IDL64), m_szDataFolder);
+    StringCchCatW(m_szTLB2IDL64, _countof(m_szTLB2IDL64), L"\\bin\\tlb2idl64.exe");
+    if (!PathFileExistsW(m_szTLB2IDL64))
+    {
+        ErrorBoxDx(TEXT("ERROR: No TLB2IDL64.exe found."));
         return -7;  // failure
     }
 
@@ -14029,6 +14161,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_UPDATEDLGRES, OnUpdateDlgRes);
         DO_MESSAGE(MYWM_GETDLGHEADLINES, OnGetHeadLines);
         DO_MESSAGE(MYWM_DELPHI_DFM_B2T, OnDelphiDFMB2T);
+        DO_MESSAGE(MYWM_TLB_B2T, OnTLB2IDL);
         DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
         DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
         DO_MESSAGE(MYWM_UPDATELANGARROW, OnUpdateLangArrow);
@@ -14143,6 +14276,21 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
         BringWindowToTop(m_hwnd);
         SetFocus(m_hwnd);
     }
+}
+
+LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    auto& str = *(MString *)wParam;
+    auto& entry = *(const EntryBase *)lParam;
+
+    std::string ansi;
+    if (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64)
+        ansi = tlb_text_from_binary(m_szTLB2IDL64, entry.ptr(), entry.size());
+    else
+        ansi = tlb_text_from_binary(m_szTLB2IDL32, entry.ptr(), entry.size());
+    MAnsiToWide a2w(CP_UTF8, ansi.c_str());
+    str = a2w.c_str();
+    return 0;
 }
 
 LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)

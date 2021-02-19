@@ -262,6 +262,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.2 (2021.XX.YY)
     - Fixed Ctrl+A on textboxes of Win2k3.
     - Added tlb2idl programs to process TYPELIB resource type.
+    - Supported TYPELIB preview.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

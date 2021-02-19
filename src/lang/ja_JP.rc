@@ -1578,6 +1578,9 @@ STRINGTABLE
     IDS_CODEPAGE949, "949 (韓国語)"
     IDS_CODEPAGE950, "950 (繁体字中国語)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
+    IDS_TLBFILTER, "タイプライブラリ (*.tlb)|*.tlb|すべてのファイル (*.*)|*.*|"
+    IDS_EXTRACTTLB, "TYPELIB データの抽出"
+    IDS_CANTEXTRACTTLB, "TYPELIB データを抽出できませんでした。"
 }
 
 //////////////////////////////////////////////////////////////////////////////
