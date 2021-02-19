@@ -337,9 +337,9 @@
 #define IDS_CODEPAGE949                     341
 #define IDS_CODEPAGE950                     342
 #define IDS_CODEPAGE65001                   343
-#define IDS_TLBFILTER                       344
-#define IDS_EXTRACTTLB                      345
-#define IDS_CANTEXTRACTTLB                  346
+#define IDS_EXTRACTTLB                      344
+#define IDS_CANTEXTRACTTLB                  345
+#define IDS_TLBRESBINFILTER                 346
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

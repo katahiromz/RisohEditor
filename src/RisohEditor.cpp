@@ -2704,7 +2704,7 @@ void MMainWnd::OnExtractTLB(HWND hwnd)
 
     // initialize OPENFILENAME structure
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_TLBFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_TLBRESBINFILTER));
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = _countof(szFile);
     ofn.lpstrTitle = LoadStringDx(IDS_EXTRACTTLB);
@@ -9777,6 +9777,23 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
         }
         return IMPORT_CANCELLED;
     }
+    else if (lstrcmpiW(pchDotExt, L".tlb") == 0)
+    {
+        // show the dialog
+        MAddResDlg dialog;
+        dialog.m_file = pszFile;
+        dialog.m_type = L"TYPELIB";
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            // add a resource item
+            DoAddRes(hwnd, dialog);
+
+            DoSetFileModified(TRUE);
+
+            return IMPORTED;
+        }
+        return IMPORT_CANCELLED;
+    }
 
     return NOT_IMPORTABLE;
 }
@@ -10871,6 +10888,10 @@ void MMainWnd::OnExtractBang(HWND hwnd)
         else if (entry->m_type == RT_RCDATA && entry->is_delphi_dfm())
         {
             OnExtractDFM(hwnd);
+        }
+        else if (entry->m_type == L"TYPELIB")
+        {
+            OnExtractTLB(hwnd);
         }
         else
         {
