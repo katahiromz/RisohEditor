@@ -261,6 +261,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - BITMAP 또는 OWNERDRAW의 메뉴 항목을 컴파일할 수 있습니다.
 - v.5.5.2 (2021.XX.YY)
     - Fixed Ctrl+A on textboxes of Win2k3.
+    - Added tlb2idl programs to process TYPELIB resource type.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

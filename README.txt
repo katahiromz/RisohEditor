@@ -261,6 +261,7 @@ Question 6. Are the 64-bit files supported?
     - The menu items of BITMAP or OWNERDRAW can be compiled.
 - v.5.5.2 (2021.XX.YY)
     - Fixed Ctrl+A on textboxes of Win2k3.
+    - Added tlb2idl programs to process TYPELIB resource type.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

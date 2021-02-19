@@ -262,6 +262,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Le voci menu BITMAP e OWNERDRAW ora possono essere compilate.
 - v.5.5.2 (YY.XX.2021)
     - Fixed Ctrl+A on textboxes of Win2k3.
+    - Added tlb2idl programs to process TYPELIB resource type.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
