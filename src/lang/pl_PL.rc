@@ -795,7 +795,7 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Przywróć poprzednią pozyc&ję okna", chx3, 5, 45, 200, 14
     AUTOCHECKBOX "Automatyczne załaduj najbliższy ""&resource.h""", chx4, 5, 65, 200, 14
     AUTOCHECKBOX "Automatycznie wyświetl &listę identyfikatorów zasobów", chx5, 5, 85, 200, 14
-    AUTOCHECKBOX "Pokaż kro&pki w oknie edycji ", chx6, 5, 105, 200, 14
+    AUTOCHECKBOX "Pokaż kro&pki w oknie edycji", chx6, 5, 105, 200, 14
     RTEXT "Wysokość Combo&Box:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20

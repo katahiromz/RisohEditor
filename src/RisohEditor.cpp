@@ -13342,7 +13342,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.strBackupSuffix = L"-old";
 
     g_settings.bRedundantComments = TRUE;
-    g_settings.bWrapManifest = TRUE;
+    g_settings.bWrapManifest = FALSE;
 
     g_settings.bRCFileUTF16 = FALSE;
 

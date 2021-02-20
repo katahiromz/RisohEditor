@@ -264,6 +264,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Added tlb2idl programs to process TYPELIB resource type.
     - Supported TYPELIB preview.
     - Added Polish translation.
+    - Disabled "Wrap the manifest statements" feature as default.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -264,6 +264,7 @@ Question 6. Are the 64-bit files supported?
     - Added tlb2idl programs to process TYPELIB resource type.
     - Supported TYPELIB preview.
     - Added Polish translation.
+    - Disabled "Wrap the manifest statements" feature as default.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

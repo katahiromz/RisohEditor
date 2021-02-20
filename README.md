@@ -273,6 +273,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added tlb2idl programs to process TYPELIB resource type.
     - Supported TYPELIB preview.
     - Added Polish translation.
+    - Disabled "Wrap the manifest statements" feature as default.
 
 ## Contact Us
 
