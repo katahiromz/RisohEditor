@@ -14,12 +14,14 @@ The translators of RisohEditor are listed below:
     - bovirus <bovirus@gmail.com>
  * Japanese:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+ * Korean:
+    - ꧁VenusGirl꧂ (비너스걸) <venusgirl@outlook.com>
+ * Polish:
+    - Piotr Hetnarowicz <piotrhwz@gmail.com>
  * Russian:
     - Dmitry Yerokhin <erodim@mail.ru>
  * Simplified Chinese:
     - 林鸿湘 (Linhong Xiang) <lhxy24@163.com>
- * Korean:
-    - ꧁VenusGirl꧂ (비너스걸) <venusgirl@outlook.com>
     
 # How to translate?
 
