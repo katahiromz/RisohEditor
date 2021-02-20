@@ -1532,7 +1532,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Questo file è automaticamente generato da RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Questo dagger aiuta il rilevamento UTF-8.\r\n"
-    IDS_IMPORTFILTER, "File importabile|*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Tutti i file (*.*)|*.*|"
+    IDS_IMPORTFILTER, "File importabile|*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|File risorse binarie (*.res)|*.res|File immagine|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|File cursore (*.cur;*.ani)|*.cur;*.ani|File icone (*.ico)|*.ico|File audio WAVE (*.wav)|*.wav|File HTML (*.html;*.htm)|*.html;*.htm|File manifest (*.manifest)|*.manifest|File Delphi DFM (*.dfm)|*.dfm|File TYPELIB (*.tlb)|*.tlb|Tutti i file (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Impossibile scrivere il file poiché il file seguente è bloccato.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
@@ -1578,9 +1578,9 @@ STRINGTABLE
     IDS_CODEPAGE949, "949 (Coreano)"
     IDS_CODEPAGE950, "950 (Cinese tradizionale)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
-    IDS_EXTRACTTLB, "Extract TYPELIB data"
-    IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
-    IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Binary Resources (*.res)|*.res|Text Files (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
+    IDS_EXTRACTTLB, "Estrai dati TYPELIB data"
+    IDS_CANTEXTRACTTLB, "Impossibile estrrare dati TYPELIB."
+    IDS_TLBRESBINFILTER, "Dati TYPELIB (*.tlb)|*.tlb|Risorse binarie (*.res)|*.res|File testo (*.txt)|*.txt|File MIDL (*.idl)|*.idl|Tutti i file (*.*)|*.*|"
 }
 
 //////////////////////////////////////////////////////////////////////////////
