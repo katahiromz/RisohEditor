@@ -1327,9 +1327,9 @@ IDD_MODIFYDLGINIT 240
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/1045_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/1045_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
