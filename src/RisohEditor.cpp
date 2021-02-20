@@ -2713,28 +2713,29 @@ void MMainWnd::OnExtractTLB(HWND hwnd)
     ofn.lpstrDefExt = L"tlb";
 
     // let the user choose the path
-    if (GetSaveFileNameW(&ofn))
+    if (!GetSaveFileNameW(&ofn))
+        return;
+
+    auto dotext = PathFindExtensionW(szFile);
+    if (lstrcmpiW(dotext, L".txt") == 0 || lstrcmpiW(dotext, L".idl") == 0)
     {
-        if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
+        auto ansi = tlb_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
+        if (FILE *fp = _wfopen(szFile, L"wb"))
         {
-            auto ansi = tlb_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
-            if (FILE *fp = _wfopen(szFile, L"wb"))
-            {
-                fwrite(ansi.c_str(), ansi.size(), 1, fp);
-                fflush(fp);
-                fclose(fp);
-            }
-            else
-            {
-                ErrorBoxDx(IDS_CANTEXTRACTTLB);
-            }
+            fwrite(ansi.c_str(), ansi.size(), 1, fp);
+            fflush(fp);
+            fclose(fp);
         }
         else
         {
-            if (!g_res.extract_bin(ofn.lpstrFile, entry))
-            {
-                ErrorBoxDx(IDS_CANTEXTRACTTLB);
-            }
+            ErrorBoxDx(IDS_CANTEXTRACTTLB);
+        }
+    }
+    else
+    {
+        if (!g_res.extract_bin(ofn.lpstrFile, entry))
+        {
+            ErrorBoxDx(IDS_CANTEXTRACTTLB);
         }
     }
 }
