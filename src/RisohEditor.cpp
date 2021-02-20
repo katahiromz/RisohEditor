@@ -2719,7 +2719,11 @@ void MMainWnd::OnExtractTLB(HWND hwnd)
     auto dotext = PathFindExtensionW(szFile);
     if (lstrcmpiW(dotext, L".txt") == 0 || lstrcmpiW(dotext, L".idl") == 0)
     {
-        auto ansi = tlb_text_from_binary(m_szDFMSC, entry->ptr(), entry->size());
+        std::string ansi;
+        if (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64)
+            ansi = tlb_text_from_binary(m_szTLB2IDL64, entry->ptr(), entry->size());
+        else
+            ansi = tlb_text_from_binary(m_szTLB2IDL32, entry->ptr(), entry->size());
         if (FILE *fp = _wfopen(szFile, L"wb"))
         {
             fwrite(ansi.c_str(), ansi.size(), 1, fp);
@@ -2928,6 +2932,9 @@ void MMainWnd::OnExtractBin(HWND hwnd)
 
     if (e->is_delphi_dfm())
         return OnExtractDFM(hwnd);
+
+    if (e->m_type == L"TYPELIB")
+        return OnExtractTLB(hwnd);
 
     // initialize OPENFILENAME structure
     WCHAR szFile[MAX_PATH] = L"";
