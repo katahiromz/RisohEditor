@@ -1532,7 +1532,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Этот файл был автоматически создан RisohEditor.\r\n"
     IDS_DAGGER, "// † <-- Этот крестик помогает определять UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Файлы импорта |*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manifest|Delphi DFM файлы (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Файлы импорта |*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manifest|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Невозможно записать файл, так как заблокирован следующий файл:\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Юникод"
@@ -1578,9 +1578,9 @@ STRINGTABLE
     IDS_CODEPAGE949, "949 (Корейская)"
     IDS_CODEPAGE950, "950 (Китайская традиционная)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
-    IDS_EXTRACTTLB, "Extract TYPELIB data"
-    IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
-    IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Binary Resources (*.res)|*.res|Text Files (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
+    IDS_EXTRACTTLB, "Извлечь данные TYPELIB"
+    IDS_CANTEXTRACTTLB, "Невозможно извлечь данные TYPELIB."
+    IDS_TLBRESBINFILTER, "Данные TYPELIB (*.tlb)|*.tlb|Двоичные ресурсы (*.res)|*.res|Текстовые файлы (*.txt)|*.txt|Файлы MIDL (*.idl)|*.idl|Все файлы (*.*)|*.*|"
 }
 
 //////////////////////////////////////////////////////////////////////////////
