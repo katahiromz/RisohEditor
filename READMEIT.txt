@@ -261,11 +261,11 @@ Domanda 6. I file a 64 bit sono supportati?
     - Windres aggiornato alla versione 2.36.
     - Le voci menu BITMAP e OWNERDRAW ora possono essere compilate.
 - v.5.5.2 (YY.XX.2021)
-    - Fixed Ctrl+A on textboxes of Win2k3.
-    - Added tlb2idl programs to process TYPELIB resource type.
-    - Supported TYPELIB preview.
-    - Added Polish translation.
-    - Disabled "Wrap the manifest statements" feature as default.
+    - Corretto  problema Ctrl+A nei riquadri testo in Windows 2000.
+    - Aggiunti programmi TIB2IDL al processo tipo risorsa TYPELIB.
+    - Aggiunto supporto visualizzazione anteprima TYPELIB.
+    - Aggiunta traduzione polacca.
+    - Disabilitata funzione come predefinita "A capo automatico istruzioni manifest".
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
