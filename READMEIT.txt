@@ -261,7 +261,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Windres aggiornato alla versione 2.36.
     - Le voci menu BITMAP e OWNERDRAW ora possono essere compilate.
 - v.5.5.2 (YY.XX.2021)
-    - Corretto  problema Ctrl+A nei riquadri testo in Windows 2000.
+    - Corretto problema Ctrl+A nei riquadri testo in Windows 2003.
     - Aggiunti programmi TIB2IDL al processo tipo risorsa TYPELIB.
     - Aggiunto supporto visualizzazione anteprima TYPELIB.
     - Aggiunta traduzione polacca.
