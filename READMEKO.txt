@@ -260,11 +260,11 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - windres를 2.36으로 업그레이드했습니다.
     - BITMAP 또는 OWNERDRAW의 메뉴 항목을 컴파일할 수 있습니다.
 - v.5.5.2 (2021.XX.YY)
-    - Fixed Ctrl+A on textboxes of Win2k3.
-    - Added tlb2idl programs to process TYPELIB resource type.
-    - Supported TYPELIB preview.
-    - Added Polish translation.
-    - Disabled "Wrap the manifest statements" feature as default.
+    - Win2k3의 텍스트 상자에서 Ctrl+A를 수정했습니다.
+    - TYPELIB 리소스 유형을 처리하기 위해 tlb2idl 프로그램을 추가했습니다.
+    - TYPELIB 미리보기가 지원됩니다.
+    - 폴란드어 번역이 추가되었습니다.
+    - 기본적으로 "menifest 문 줄바꿈" 기능을 사용할 수 없습니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
