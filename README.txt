@@ -259,7 +259,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.5.1 (2021.02.02)
     - Upgraded windres to 2.36.
     - The menu items of BITMAP or OWNERDRAW can be compiled.
-- v.5.5.2 (2021.XX.YY)
+- v.5.5.2 (2021.02.27)
     - Fixed Ctrl+A on textboxes of Win2k3.
     - Added tlb2idl programs to process TYPELIB resource type.
     - Supported TYPELIB preview.
