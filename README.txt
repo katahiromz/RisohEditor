@@ -265,6 +265,7 @@ Question 6. Are the 64-bit files supported?
     - Supported TYPELIB preview.
     - Added Polish translation.
     - Disabled "Wrap the manifest statements" feature as default.
+- v.5.5.3 (2021.XX.YY)
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

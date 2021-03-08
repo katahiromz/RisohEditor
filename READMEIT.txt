@@ -266,6 +266,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunto supporto visualizzazione anteprima TYPELIB.
     - Aggiunta traduzione polacca.
     - Disabilitata funzione come predefinita "A capo automatico istruzioni manifest".
+- v.5.5.3 (YY.XX.2021)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

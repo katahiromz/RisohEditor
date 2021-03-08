@@ -274,6 +274,7 @@ You have to copy the 64-bit file into another place before loading.
     - Supported TYPELIB preview.
     - Added Polish translation.
     - Disabled "Wrap the manifest statements" feature as default.
+- v.5.5.3 (2021.XX.YY)
 
 ## Contact Us
 
