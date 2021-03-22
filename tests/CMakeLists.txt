@@ -1,1 +1,1 @@
-subdirs(ResTest ResTest2)
+subdirs(cmdline ResTest ResTest2)
