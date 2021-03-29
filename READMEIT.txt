@@ -262,8 +262,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunta traduzione polacca.
     - Disabilitata funzione come predefinita "A capo automatico istruzioni manifest".
 - v.5.5.3 (YY.XX.2021)
-    - Upgraded windres.exe to 2.36.1.
-    - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
+    - Aggiornato windres.exe alla versione 2.36.1.
+    - Usato nome percorso corto al sub processo spawn di mcpp.exe e windres.exe.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
