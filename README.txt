@@ -14,10 +14,6 @@ It works on Windows XP/2003/Vista/7/8.1/10 and ReactOS.
 See "LICENSE.txt" for details of copyrights and 
 license agreement.
 
-NOTICE: Please avoid installing in "C:\Program Files" or
-"C:\Program Files (x86)". Because its resource compiler
-(windres) doesn't accept space character in the file path.
-
 /////////////////////////////////////////////////////
 
 Question 1. What is "Risoh"?
@@ -266,6 +262,8 @@ Question 6. Are the 64-bit files supported?
     - Added Polish translation.
     - Disabled "Wrap the manifest statements" feature as default.
 - v.5.5.3 (2021.XX.YY)
+    - Upgraded windres.exe to 2.36.1.
+    - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

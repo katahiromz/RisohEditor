@@ -7074,12 +7074,12 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += GetIncludesDumpForWindres();
     strCmdLine += L" -o \"";
     strCmdLine += szPath3;
-    strCmdLine += L"\" -J rc -O res -F pe-i386 \"--preprocessor=";
+    strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
     strCmdLine += m_szMCppExe;
     strCmdLine += L"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
-    //MessageBoxW(hwnd, strCmdLine.c_str(), NULL, 0);
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
 
     BOOL bOK = FALSE;
 
@@ -7311,6 +7311,8 @@ BOOL MMainWnd::CheckDataFolder(VOID)
 // check the data and the helper programs
 INT MMainWnd::CheckData(VOID)
 {
+    WCHAR szPath[MAX_PATH];
+
     if (!CheckDataFolder())
     {
         ErrorBoxDx(TEXT("ERROR: data folder was not found!"));
@@ -7330,20 +7332,26 @@ INT MMainWnd::CheckData(VOID)
     // mcpp.exe
     StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
     StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
+    // NOTE: _popen has bug: https://github.com/katahiromz/win_popen_bug
+    //       To avoid this problem, we use short path.
+    GetShortPathNameW(m_szMCppExe, m_szMCppExe, _countof(m_szMCppExe));
     if (!PathFileExistsW(m_szMCppExe))
     {
         ErrorBoxDx(TEXT("ERROR: No mcpp.exe found."));
         return -3;  // failure
     }
+    //MessageBoxW(NULL, m_szMCppExe, NULL, 0);
 
     // windres.exe
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
+    GetShortPathNameW(m_szWindresExe, m_szWindresExe, _countof(m_szWindresExe));
     if (!PathFileExistsW(m_szWindresExe))
     {
         ErrorBoxDx(TEXT("ERROR: No windres.exe found."));
         return -4;  // failure
     }
+    //MessageBoxW(NULL, m_szWindresExe, NULL, 0);
 
     // upx.exe
     StringCchCopyW(m_szUpxExe, _countof(m_szUpxExe), m_szDataFolder);
@@ -7391,7 +7399,6 @@ INT MMainWnd::CheckData(VOID)
     }
 
     // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
 
     // mcdx.exe
@@ -13324,10 +13331,12 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     // cpp.exe
     StringCchCopyW(m_szMCppExe, _countof(m_szMCppExe), m_szDataFolder);
     StringCchCatW(m_szMCppExe, _countof(m_szMCppExe), L"\\bin\\mcpp.exe");
+    GetShortPathNameW(m_szMCppExe, m_szMCppExe, _countof(m_szMCppExe));
 
     // windres.exe
     StringCchCopyW(m_szWindresExe, _countof(m_szWindresExe), m_szDataFolder);
     StringCchCatW(m_szWindresExe, _countof(m_szWindresExe), L"\\bin\\windres.exe");
+    GetShortPathNameW(m_szWindresExe, m_szWindresExe, _countof(m_szWindresExe));
 
     g_settings.strPrevVersion.clear();
 
@@ -14149,10 +14158,12 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (g_settings.strWindResExe.size())
     {
         StringCchCopy(m_szWindresExe, _countof(m_szWindresExe), g_settings.strWindResExe.c_str());
+        GetShortPathNameW(m_szWindresExe, m_szWindresExe, _countof(m_szWindresExe));
     }
     if (g_settings.strCppExe.size())
     {
         StringCchCopy(m_szMCppExe, _countof(m_szMCppExe), g_settings.strCppExe.c_str());
+        GetShortPathNameW(m_szMCppExe, m_szMCppExe, _countof(m_szMCppExe));
     }
 
     // OK, ready
@@ -16138,6 +16149,7 @@ wWinMain(HINSTANCE   hInstance,
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
 
+    if (FALSE)
     {
         WCHAR szPath[MAX_PATH];
         GetModuleFileNameW(NULL, szPath, ARRAYSIZE(szPath));

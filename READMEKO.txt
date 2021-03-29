@@ -14,10 +14,6 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 저작권 및 라이센스 계약에 대한 자세한 내용은 
 "LICENSE.txt"를 참조하십시오.
 
-주의 사항: "C:\Program Files" 또는 "C:\Program Files (x86)"
-에 설치하지 마십시오. 리소스 컴파일러 (windres)는 파일 경로
-에 공백 문자를 허용하지 않기 때문입니다.
-
 /////////////////////////////////////////////////////
 
 질문 1. "Risoh"가 무엇입니까?
@@ -266,6 +262,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 폴란드어 번역이 추가되었습니다.
     - 기본적으로 "menifest 문 줄바꿈" 기능을 사용할 수 없습니다.
 - v.5.5.3 (2021.XX.YY)
+    - Upgraded windres.exe to 2.36.1.
+    - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

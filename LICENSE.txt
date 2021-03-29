@@ -19,7 +19,7 @@ the terms of GNU GENERAL PUBLIC LICENSE Version 3, 29 June
 2007. The source code of windres is available
 at http://sourceware.org/binutils/ .
 
-GNU windres (GNU Binutils) 2.36
+GNU windres (GNU Binutils) 2.36.1
 Copyright (C) 2021 Free Software Foundation, Inc.
 This program is free software; you may redistribute it under the terms of
 the GNU General Public License version 3 or (at your option) any later version.

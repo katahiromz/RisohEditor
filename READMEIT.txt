@@ -15,11 +15,6 @@ Per la standardizzazione degli ID risorse vedi file "Standardize.md".
 per dettagli sul copyright e sull'accordo di licenza vedi il 
 file "LICENSE.txt".
 
-NOTA: Ti consigliamo di non installare RisohEditor in "C:\Program Files" o 
-"C:\Program Files (x86)". Questo poiché il compilatore di 
-risorse (windres) non accetta il carattere spazio nel percorso 
-del file. 
-
 /////////////////////////////////////////////////////
 
 Domanda 1. Che cos'è "Risoh"?
@@ -267,6 +262,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunta traduzione polacca.
     - Disabilitata funzione come predefinita "A capo automatico istruzioni manifest".
 - v.5.5.3 (YY.XX.2021)
+    - Upgraded windres.exe to 2.36.1.
+    - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
