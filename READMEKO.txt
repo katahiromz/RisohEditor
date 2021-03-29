@@ -262,8 +262,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 폴란드어 번역이 추가되었습니다.
     - 기본적으로 "menifest 문 줄바꿈" 기능을 사용할 수 없습니다.
 - v.5.5.3 (2021.XX.YY)
-    - Upgraded windres.exe to 2.36.1.
-    - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
+    - windres.exe가 2.36.1로 업그레이드되었습니다.
+    - 짧은 경로명을 사용하여 mcpp.exe 및 windres.exe의 하위 프로세스를 생성합니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
