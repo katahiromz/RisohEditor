@@ -261,7 +261,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunto supporto visualizzazione anteprima TYPELIB.
     - Aggiunta traduzione polacca.
     - Disabilitata funzione come predefinita "A capo automatico istruzioni manifest".
-- v.5.5.3 (YY.XX.2021)
+- v.5.5.3 (30.03.2021)
     - Aggiornato windres.exe alla versione 2.36.1.
     - Usato nome percorso corto al sub processo spawn di mcpp.exe e windres.exe.
 
