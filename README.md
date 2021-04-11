@@ -273,6 +273,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.3 (2021.03.30)
     - Upgraded windres.exe to 2.36.1.
     - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
+- v.5.5.4 (2021.XX.YY)
 
 ## Contact Us
 
