@@ -265,6 +265,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - windres.exe가 2.36.1로 업그레이드되었습니다.
     - 짧은 경로명을 사용하여 mcpp.exe 및 windres.exe의 하위 프로세스를 생성합니다.
 - v.5.5.4 (2021.XX.YY)
+    - Fix importing Vista icons.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

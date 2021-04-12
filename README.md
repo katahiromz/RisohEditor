@@ -274,6 +274,7 @@ You have to copy the 64-bit file into another place before loading.
     - Upgraded windres.exe to 2.36.1.
     - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
 - v.5.5.4 (2021.XX.YY)
+    - Fix importing Vista icons.
 
 ## Contact Us
 

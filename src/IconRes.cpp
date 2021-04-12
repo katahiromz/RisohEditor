@@ -84,6 +84,8 @@ bool IconFile::SaveToStream(MByteStreamEx& stream)
     return true;
 }
 
+#include <intrin.h> // for _byteswap_ulong
+
 IconFile::DataType
 IconFile::GetIconGroup(int nBaseID) const
 {
@@ -94,6 +96,30 @@ IconFile::GetIconGroup(int nBaseID) const
     int offset = sizeof(ICONDIR);
     for (int i = 0; i < GetImageCount(); i++)
     {
+        if (GetImageSize(i) > 25 &&
+            memcmp(GetImagePtr(i), "\x89PNG", 4) == 0)
+        {
+            ResourceEntryType grpEntry;
+            grpEntry.bWidth = (BYTE)_byteswap_ulong(*(uint32_t*)&GetImagePtr(i)[16]);
+            grpEntry.bHeight = (BYTE)_byteswap_ulong(*(uint32_t*)&GetImagePtr(i)[20]);
+            grpEntry.bColorCount = 0;
+            grpEntry.bReserved = 0;
+            grpEntry.wPlanes = 1;
+            uint8_t bit_depth = *(uint8_t*)&GetImagePtr(i)[24];
+            uint8_t color_type = *(uint8_t*)&GetImagePtr(i)[25];
+            if (color_type & 4)
+                grpEntry.wBitCount = 32;
+            else if (color_type & 2)
+                grpEntry.wBitCount = 24;
+            else
+                grpEntry.wBitCount = bit_depth;
+            grpEntry.dwBytesInRes = m_entries[i].dwBytesInRes;
+            grpEntry.nID = WORD(nBaseID + i);
+            memcpy(&group[offset], &grpEntry, sizeof(grpEntry));
+            offset += sizeof(grpEntry);
+            continue;
+        }
+
         BITMAPCOREHEADER    bmch;
         BITMAPINFOHEADER    bmih;
 
