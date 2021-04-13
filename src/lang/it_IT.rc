@@ -171,7 +171,7 @@ IDR_POPUPMENUS MENU
         POPUP "&Estrai"
         {
             MENUITEM "Estrai &icona...", ID_EXTRACTICON
-            MENUITEM "Estrai &cursor...", ID_EXTRACTCURSOR
+            MENUITEM "Estrai &cursore...", ID_EXTRACTCURSOR
             MENUITEM "Estrai &bitmap...", ID_EXTRACTBITMAP
             MENUITEM "Estr&ai come file .RC...", ID_EXTRACTRC
             MENUITEM "Estrai &risorsa binaria...", ID_EXTRACTBIN
@@ -303,7 +303,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 1
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "&File binario:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Sofglia...", psh1, 150, 115, 60, 14
+    PUSHBUTTON "&Sfoglia...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 115, 150, 60, 14
     {
@@ -419,7 +419,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_REPLACECUR DIALOG 0, 0, 215, 135
-CAPTION "Sostitusci cursore"
+CAPTION "Sostituisci cursore"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -507,7 +507,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
     LTEXT "&Valore stringa:", -1, 5, 27, 54, 12
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Sostitusci '\\r\\n' con '\\n'", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Sostituisci '\\r\\n' con '\\n'", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 190, 95, 60, 14
 }
@@ -522,7 +522,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
     LTEXT "&Valore stringa:", -1, 5, 27, 54, 12
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Sosttuisci '\\r\\n' con '\\n'", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Sostituisci '\\r\\n' con '\\n'", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 190, 95, 60, 14
 }
@@ -723,7 +723,7 @@ FONT 9, "MS Shell Dlg"
     LTEXT "&Alto:", -1, 35, 85, 25, 12
     EDITTEXT edt2, 35, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    LTEXT "&Largehzza:", -1, 65, 85, 25, 12
+    LTEXT "&Larghezza:", -1, 65, 85, 25, 12
     EDITTEXT edt3, 65, 95, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     LTEXT "Alte&zza:", -1, 95, 85, 25, 12
@@ -1058,14 +1058,14 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "L'esportazione di un file .rc generà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 37, 10, 160, 40
+    LTEXT "L'esportazione di un file .rc genererà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 37, 10, 160, 40
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 195, 14
     AUTOCHECKBOX "Crea file &backup con suffisso:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Visualizza &commenti ridondanti", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Includi istruzioni  ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
+    AUTOCHECKBOX "Includi istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
     AUTOCHECKBOX "File RC destinazione in &UTF-16", chx7, 5, 180, 195, 14
     DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 140, 205, 60, 14
@@ -1543,7 +1543,7 @@ STRINGTABLE
     IDS_RESTYPE, "Tipo risorsa"
     IDS_ENCODING, "Codifica"
     IDS_INVALIDRESTYPE, "Tipo risorsa non valida."
-    IDS_PATHSPACEERROR, "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
+    IDS_PATHSPACEERROR, "Hai erroneamente installato RisohEditor in un percorso con uno spazio nel nome.\r\nIl compilatore risorse RisohEditor non accetta spazi nel nome percorso.\r\n\r\nMeglio evitare percorsi tipo ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Carica programma EGA..."
     IDS_EGAFILTER, "file programma EGA(*.ega)|*.ega|Tutti i file (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "Il file è stato modificato.\r\nVuoi salvare le modifiche ora?"
@@ -1579,7 +1579,7 @@ STRINGTABLE
     IDS_CODEPAGE950, "950 (Cinese tradizionale)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
     IDS_EXTRACTTLB, "Estrai dati TYPELIB data"
-    IDS_CANTEXTRACTTLB, "Impossibile estrrare dati TYPELIB."
+    IDS_CANTEXTRACTTLB, "Impossibile estrarre dati TYPELIB."
     IDS_TLBRESBINFILTER, "Dati TYPELIB (*.tlb)|*.tlb|Risorse binarie (*.res)|*.res|File testo (*.txt)|*.txt|File MIDL (*.idl)|*.idl|Tutti i file (*.*)|*.*|"
 }
 
