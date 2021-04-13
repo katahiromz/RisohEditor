@@ -264,7 +264,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.3 (30.03.2021)
     - Aggiornato windres.exe alla versione 2.36.1.
     - Usato nome percorso corto al sub processo spawn di mcpp.exe e windres.exe.
-- v.5.5.4 (YY.XX.2021)
+- v.5.5.4 (13.04.2021)
     - Correzione icone Windows Vista.
 
 /////////////////////////////////////////////////////////////////////
