@@ -267,9 +267,9 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.4 (2021.04.13)
     - Vista 가져오기 아이콘을 수정합니다.
 - v.5.5.5 (2021.XX.YY)
-    - Deleted tlb2idl programs.
-    - Added OleBow program to process TYPELIB resource type.
-    - Compiling TYPELIB if MIDL compiler is available.
+    - tlb2idl 프로그램을 삭제했습니다.
+    - TYPEELIB 리소스 유형을 처리할 OleBow 프로그램을 추가했습니다.
+    - MIDL 컴파일러를 사용할 수 있는 경우 TYPEELIB를 컴파일합니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
