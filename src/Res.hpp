@@ -353,7 +353,7 @@ std::string
 tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size);
 
 EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text);
+tlb_binary_from_text(LPCWSTR pszMidlWrap, MStringA& strOutput, const std::string& text, bool is_64bit);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet

@@ -33,5 +33,5 @@ echo ERROR: vcvarsall.bat not found.
 exit 1000
 :vc_ok
 call "%VCBAT%" %1
-midl %2 /tlb %3
+midl /nologo /no_warn %2 /tlb %3
 exit

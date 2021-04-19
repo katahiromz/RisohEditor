@@ -6757,11 +6757,29 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
     // convert strWide to ANSI
     MStringA ansi = MWideToAnsi(CP_ACP, strWide).c_str();
 
-    auto binary = tlb_binary_from_text(m_szMidlWrap, ansi);
+    bool is_64bit = (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64);
+
+    auto binary = tlb_binary_from_text(m_szMidlWrap, strOutput, ansi, is_64bit);
     if (binary.empty())
     {
         // error message
-        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+        if (strOutput.empty())
+            strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+
+        std::vector<MStringA> lines;
+        mstr_split(lines, strOutput, "\n");
+        std::vector<MStringA> new_lines;
+        for (auto& line : lines)
+        {
+            if (line.find("*") == 0 || line.find("[") == 0)
+                continue;
+            if (line.find("Processing ") == 0)
+                continue;
+            if (line.find(" error ") == line.npos)
+                continue;
+            new_lines.push_back(line);
+        }
+        strOutput = mstr_join(new_lines, "\n");
         return FALSE;
     }
 

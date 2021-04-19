@@ -309,7 +309,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 }
 
 EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
+tlb_binary_from_text(LPCWSTR pszMidlWrap, MStringA& strOutput, const std::string& text, bool is_64bit)
 {
     EntryBase::data_type ret;
 
@@ -333,7 +333,10 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
     MStringW strCmdLine;
     strCmdLine += L"cmd /C call \"";
     strCmdLine += pszMidlWrap;
-    strCmdLine += L"\" x86 \"";
+    if (is_64bit)
+        strCmdLine += L"\" amd64 \"";
+    else
+        strCmdLine += L"\" x86 \"";
     strCmdLine += szPath4;
     strCmdLine += L"\" \"";
     strCmdLine += szPath5;
@@ -346,11 +349,17 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     //pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+
+    MFile error;
+    pmaker.PrepareForRedirect(NULL, &error, &error);
+
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
         pmaker.WaitForSingleObject();
         pmaker.CloseAll();
+
+        error.ReadAll(strOutput);
 
         bSuccess = PathFileExistsW(szPath5);
     }
