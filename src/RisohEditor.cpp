@@ -2088,8 +2088,7 @@ protected:
     WCHAR       m_szUpxExe[MAX_PATH];           // the upx.exe location
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
-    WCHAR       m_szTLB2IDL32[MAX_PATH];        // the TLB2IDL (32-bit) program location
-    WCHAR       m_szTLB2IDL64[MAX_PATH];        // the TLB2IDL (64-bit) program location
+    WCHAR       m_szOleBow[MAX_PATH];           // the OleBow program location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
     INT         m_nStatusStringID;
 
@@ -2141,8 +2140,7 @@ public:
         m_szUpxExe[0] = 0;
         m_szMcdxExe[0] = 0;
         m_szDFMSC[0] = 0;
-        m_szTLB2IDL32[0] = 0;
-        m_szTLB2IDL64[0] = 0;
+        m_szOleBow[0] = 0;
         m_szIncludeDir[0] = 0;
         m_nStatusStringID = 0;
         m_szFile[0] = 0;
@@ -2720,10 +2718,7 @@ void MMainWnd::OnExtractTLB(HWND hwnd)
     if (lstrcmpiW(dotext, L".txt") == 0 || lstrcmpiW(dotext, L".idl") == 0)
     {
         std::string ansi;
-        if (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64)
-            ansi = tlb_text_from_binary(m_szTLB2IDL64, entry->ptr(), entry->size());
-        else
-            ansi = tlb_text_from_binary(m_szTLB2IDL32, entry->ptr(), entry->size());
+        ansi = tlb_text_from_binary(m_szOleBow, entry->ptr(), entry->size());
         if (FILE *fp = _wfopen(szFile, L"wb"))
         {
             fwrite(ansi.c_str(), ansi.size(), 1, fp);
@@ -7380,21 +7375,12 @@ INT MMainWnd::CheckData(VOID)
         return -7;  // failure
     }
 
-    // TLB2IDL32.exe
-    StringCchCopyW(m_szTLB2IDL32, _countof(m_szTLB2IDL32), m_szDataFolder);
-    StringCchCatW(m_szTLB2IDL32, _countof(m_szTLB2IDL32), L"\\bin\\tlb2idl32.exe");
-    if (!PathFileExistsW(m_szTLB2IDL32))
+    // OleBow.exe
+    StringCchCopyW(m_szOleBow, _countof(m_szOleBow), m_szDataFolder);
+    StringCchCatW(m_szOleBow, _countof(m_szOleBow), L"\\bin\\olebow.exe");
+    if (!PathFileExistsW(m_szOleBow))
     {
-        ErrorBoxDx(TEXT("ERROR: No TLB2IDL32.exe found."));
-        return -7;  // failure
-    }
-
-    // TLB2IDL64.exe
-    StringCchCopyW(m_szTLB2IDL64, _countof(m_szTLB2IDL64), m_szDataFolder);
-    StringCchCatW(m_szTLB2IDL64, _countof(m_szTLB2IDL64), L"\\bin\\tlb2idl64.exe");
-    if (!PathFileExistsW(m_szTLB2IDL64))
-    {
-        ErrorBoxDx(TEXT("ERROR: No TLB2IDL64.exe found."));
+        ErrorBoxDx(TEXT("ERROR: No OleBow.exe found."));
         return -7;  // failure
     }
 
@@ -14324,10 +14310,7 @@ LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
     auto& entry = *(const EntryBase *)lParam;
 
     std::string ansi;
-    if (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64)
-        ansi = tlb_text_from_binary(m_szTLB2IDL64, entry.ptr(), entry.size());
-    else
-        ansi = tlb_text_from_binary(m_szTLB2IDL32, entry.ptr(), entry.size());
+    ansi = tlb_text_from_binary(m_szOleBow, entry.ptr(), entry.size());
     MAnsiToWide a2w(CP_UTF8, ansi.c_str());
     str = a2w.c_str();
     return 0;

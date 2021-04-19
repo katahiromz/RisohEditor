@@ -266,6 +266,9 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 짧은 경로명을 사용하여 mcpp.exe 및 windres.exe의 하위 프로세스를 생성합니다.
 - v.5.5.4 (2021.04.13)
     - Vista 가져오기 아이콘을 수정합니다.
+- v.5.5.5 (2021.XX.YY)
+    - Deleted tlb2idl programs.
+    - Added OleBow program to process TYPELIB resource type.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

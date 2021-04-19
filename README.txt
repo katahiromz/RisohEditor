@@ -266,6 +266,9 @@ Question 6. Are the 64-bit files supported?
     - Used short pathname to spawn subprocesses of mcpp.exe and windres.exe.
 - v.5.5.4 (2021.04.13)
     - Fix importing Vista icons.
+- v.5.5.5 (2021.XX.YY)
+    - Deleted tlb2idl programs.
+    - Added OleBow program to process TYPELIB resource type.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

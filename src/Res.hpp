@@ -350,7 +350,7 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
                      INT codepage, BOOL no_unicode);
 
 std::string
-tlb_text_from_binary(LPCWSTR pszTLB2IDL, const void *binary, size_t size);
+tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size);
 
 EntryBase::data_type
 tlb_binary_from_text(LPCWSTR pszTLB2IDL, const std::string& text);

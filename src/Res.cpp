@@ -244,13 +244,13 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
 }
 
 std::string
-tlb_text_from_binary(LPCWSTR pszTLB2IDL, const void *binary, size_t size)
+tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 {
     // get the temporary file path
     WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
     StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
     StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
-    StringCbCatW(szPath5, sizeof(szPath5), L".txt");
+    StringCbCatW(szPath5, sizeof(szPath5), L".idl");
 
     // create the temporary file and wait
     DWORD cbWritten;
@@ -262,8 +262,8 @@ tlb_text_from_binary(LPCWSTR pszTLB2IDL, const void *binary, size_t size)
     // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
-    strCmdLine += pszTLB2IDL;
-    strCmdLine += L"\" \"";
+    strCmdLine += pszOleBow;
+    strCmdLine += L"\" --codepage 65001 \"";
     strCmdLine += szPath4;
     strCmdLine += L"\" \"";
     strCmdLine += szPath5;
