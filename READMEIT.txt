@@ -267,9 +267,9 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.4 (13.04.2021)
     - Correzione icone Windows Vista.
 - v.5.5.5 (YY.XX.2021)
-    - Deleted tlb2idl programs.
-    - Added OleBow program to process TYPELIB resource type.
-    - Compiling TYPELIB if MIDL compiler is available.
+    - Eliminato programma tlb2idl.
+    - Aggiunto programma OleBow per elaborare tipi di risorse TYPELIB.
+    - Compilazione TYPELIB se disponibile il compilatore MIDL.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
