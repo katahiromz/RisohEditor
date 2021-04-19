@@ -1283,8 +1283,8 @@ FONT 9, "Gulim"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 5, 4, 0
-PRODUCTVERSION  5, 5, 4, 0
+FILEVERSION     5, 5, 5, 0
+PRODUCTVERSION  5, 5, 5, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -1294,10 +1294,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "카타야마 히로후미 MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.5.4\0"
+            VALUE "FileVersion", "5.5.5\0"
             VALUE "LegalCopyright", "저작권 (C) 2017-2020 카타야마 히로후미 MZ. 모든 권리 보유.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.5.4\0"
+            VALUE "ProductVersion", "5.5.5\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1337,8 +1337,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.5.4 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.5.4 - 파일: %s"
+    IDS_APPNAME, "RisohEditor 5.5.5 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.5.5 - 파일: %s"
     IDS_EXTRACTRES, "리소스 추출"
     IDS_RESBINFILTER, "바이너리 리소스 (*.res)|*.res|바이너리 파일 (*.bin)|*.bin|모든 파일 (*.*)|*.*|"
     IDS_CANNOTSAVE, "저장할 수 없습니다."
@@ -1364,7 +1364,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "비트맵을 바꿀 수 없습니다."
     IDS_REPLACEBMP, "비트맵 바꾸기"
     IDS_ERRORCODE, "오류 코드 %d"
-    IDS_VERSIONINFO, "RisohEditor 버전 5.5.4\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
+    IDS_VERSIONINFO, "RisohEditor 버전 5.5.5\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
     IDS_ADDRES, "리소스 추가"
     IDS_CANNOTADDRES, "리소스를 추가할 수 없습니다."
     IDS_CANTADDBMP, "비트맵을 추가할 수 없습니다."
