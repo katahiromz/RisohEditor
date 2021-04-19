@@ -6771,11 +6771,11 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
         std::vector<MStringA> new_lines;
         for (auto& line : lines)
         {
+            if (line.find("error") == line.npos)
+                continue;
             if (line.find("*") == 0 || line.find("[") == 0)
                 continue;
             if (line.find("Processing ") == 0)
-                continue;
-            if (line.find(" error ") == line.npos)
                 continue;
             new_lines.push_back(line);
         }

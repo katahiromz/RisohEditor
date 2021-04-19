@@ -29,7 +29,7 @@ set VCBAT=%VS100COMNTOOLS%..\..\VC\vcvarsall.bat
 if EXIST "%VCBAT%" goto vc_ok
 set VCBAT=%VS90COMNTOOLS%..\..\VC\vcvarsall.bat
 if EXIST "%VCBAT%" goto vc_ok
-echo ERROR: vcvarsall.bat not found.
+echo error: Visual Studio vcvarsall.bat not found. 1>&2
 exit 1000
 :vc_ok
 call "%VCBAT%" %1
