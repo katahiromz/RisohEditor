@@ -300,7 +300,7 @@ struct EntryBase
     }
 
     // is it editable?
-    BOOL is_editable() const;
+    BOOL is_editable(LPCWSTR pszVCBat) const;
 
     BOOL is_delphi_dfm() const
     {
@@ -353,7 +353,7 @@ std::string
 tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size);
 
 EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszMidlWrap, MStringA& strOutput, const std::string& text, bool is_64bit);
+tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput, const std::string& text, bool is_64bit);
 
 ///////////////////////////////////////////////////////////////////////////////
 // EntrySet

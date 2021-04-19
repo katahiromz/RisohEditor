@@ -2102,6 +2102,7 @@ protected:
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
     WCHAR       m_szOleBow[MAX_PATH];           // the OleBow program location
     WCHAR       m_szMidlWrap[MAX_PATH];         // the midlwrap.bat location
+    WCHAR       m_szVCBat[MAX_PATH];            // the vcvarsall.bat location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
     INT         m_nStatusStringID;
 
@@ -2155,6 +2156,7 @@ public:
         m_szDFMSC[0] = 0;
         m_szOleBow[0] = 0;
         m_szMidlWrap[0] = 0;
+        m_szVCBat[0] = 0;
         m_szIncludeDir[0] = 0;
         m_nStatusStringID = 0;
         m_szFile[0] = 0;
@@ -2242,6 +2244,7 @@ public:
     BOOL CreateOurToolBar(HWND hwndParent, HIMAGELIST himlTools);
     void UpdateOurToolBarButtons(INT iType);
     void UpdateToolBarStatus();
+    bool IsEntryTextEditable(const EntryBase *entry);
 
     // ID list
     void OnIDList(HWND hwnd);
@@ -4500,7 +4503,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
 {
     // get the selected entry
     auto entry = g_res.get_entry();
-    if (!entry->is_editable())
+    if (!entry->is_editable(m_szVCBat))
         return;     // not editable
 
     if (!entry->can_gui_edit())
@@ -4797,12 +4800,12 @@ GetResTypeEncoding(const MIdOrString& type)
     return L"";
 }
 
-bool IsEntryTextEditable(const EntryBase *entry)
+bool MMainWnd::IsEntryTextEditable(const EntryBase *entry)
 {
     if (!entry)
         return false;
 
-    if (entry->is_editable())
+    if (entry->is_editable(m_szVCBat))
         return true;
 
     auto enc = GetResTypeEncoding(entry->m_type);
@@ -5441,7 +5444,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
 
     EnableMenuItem(hMenu, ID_EXTRACTRC, MF_ENABLED);
 
-    BOOL bEditable = entry && entry->is_editable();
+    BOOL bEditable = entry && entry->is_editable(m_szVCBat);
     if (bEditable)
     {
         EnableMenuItem(hMenu, ID_EDIT, MF_ENABLED);
@@ -6292,7 +6295,7 @@ void MMainWnd::UpdateToolBarStatus()
         return;
     }
 
-    BOOL bEditable = entry && entry->is_editable();
+    BOOL bEditable = entry && entry->is_editable(m_szVCBat);
     if (bEditable)
     {
         if (entry->can_gui_edit())
@@ -6759,7 +6762,7 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
 
     bool is_64bit = (GetMachineOfBinary(m_szFile) == IMAGE_FILE_MACHINE_AMD64);
 
-    auto binary = tlb_binary_from_text(m_szMidlWrap, strOutput, ansi, is_64bit);
+    auto binary = tlb_binary_from_text(m_szMidlWrap, m_szVCBat, strOutput, ansi, is_64bit);
     if (binary.empty())
     {
         // error message
@@ -7341,6 +7344,18 @@ BOOL MMainWnd::CheckDataFolder(VOID)
     return TRUE;
 }
 
+BOOL DoCheckFile(std::wstring& file, LPCWSTR psz)
+{
+    WCHAR szPath[MAX_PATH];
+    ExpandEnvironmentStringsW(psz, szPath, _countof(szPath));
+    if (PathFileExistsW(szPath))
+    {
+        file = szPath;
+        return TRUE;
+    }
+    return FALSE;
+}
+
 // check the data and the helper programs
 INT MMainWnd::CheckData(VOID)
 {
@@ -7429,6 +7444,26 @@ INT MMainWnd::CheckData(VOID)
     {
         ErrorBoxDx(TEXT("ERROR: No midlwrap.bat found."));
         return -8;  // failure
+    }
+
+    // vcvarsall.bat
+    std::wstring file;
+    m_szVCBat[0] = 0;
+    if (DoCheckFile(file, LR"(C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(C:\Program Files\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(%VS140COMNTOOLS%..\..\VC\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(%VS120COMNTOOLS%..\..\VC\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(%VS110COMNTOOLS%..\..\VC\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(%VS100COMNTOOLS%..\..\VC\vcvarsall.bat)") ||
+        DoCheckFile(file, LR"(%VS90COMNTOOLS%..\..\VC\vcvarsall.bat)"))
+    {
+        StringCchCopyW(m_szVCBat, _countof(m_szVCBat), file.c_str());
     }
 
     // get the module path filename of this application module

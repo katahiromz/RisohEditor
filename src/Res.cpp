@@ -89,7 +89,7 @@ MStringW EntryBase::get_name_label() const
     return label;
 }
 
-BOOL EntryBase::is_editable() const
+BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
 {
     if (!this)
         return FALSE;
@@ -108,7 +108,7 @@ BOOL EntryBase::is_editable() const
         {
             return TRUE;
         }
-        if (type == L"TYPELIB")
+        if (type == L"TYPELIB" && PathFileExistsW(pszVCBat))
             return TRUE;
         return FALSE;
     case ET_STRING: case ET_MESSAGE:
@@ -309,7 +309,8 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 }
 
 EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszMidlWrap, MStringA& strOutput, const std::string& text, bool is_64bit)
+tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput,
+                     const std::string& text, bool is_64bit)
 {
     EntryBase::data_type ret;
 
@@ -333,6 +334,8 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, MStringA& strOutput, const std::string
     MStringW strCmdLine;
     strCmdLine += L"cmd /C call \"";
     strCmdLine += pszMidlWrap;
+    strCmdLine += L"\" \"";
+    strCmdLine += pszVCBat;
     if (is_64bit)
         strCmdLine += L"\" amd64 \"";
     else
