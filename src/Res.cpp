@@ -19,6 +19,18 @@
 
 #include "Res.hpp"
 
+struct AutoDeleteFileW
+{
+    std::wstring m_file;
+    AutoDeleteFileW(const std::wstring& file) : m_file(file)
+    {
+    }
+    ~AutoDeleteFileW()
+    {
+        ::DeleteFileW(m_file.c_str());
+    }
+};
+
 BOOL
 Res_IsEntityType(const MIdOrString& type)
 {
@@ -123,6 +135,9 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
     r4.FlushFileBuffers();
     r4.CloseHandle();
 
+    AutoDeleteFileW ad4(szPath4);
+    AutoDeleteFileW ad5(szPath5);
+
     // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
@@ -166,12 +181,6 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
             return text;
     }
 
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath4);
-    DeleteFileW(szPath5);
-#endif
-
     return std::string("");
 }
 
@@ -192,6 +201,9 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
     r6.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
     r6.FlushFileBuffers();
     r6.CloseHandle();
+
+    AutoDeleteFileW adf6(szPath6);
+    AutoDeleteFileW adf7(szPath7);
 
     // build the command line text
     MStringW strCmdLine;
@@ -236,12 +248,6 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
             return EntryBase::data_type(text.begin(), text.end());
     }
 
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath6);
-    DeleteFileW(szPath7);
-#endif
-
     return EntryBase::data_type();
 }
 
@@ -260,6 +266,9 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
     r4.WriteFile(binary, DWORD(size), &cbWritten);
     r4.FlushFileBuffers();
     r4.CloseHandle();
+
+    AutoDeleteFileW ad4(szPath4);
+    AutoDeleteFileW ad5(szPath5);
 
     // build the command line text
     MStringW strCmdLine;
@@ -296,12 +305,6 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
             return text;
     }
 
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath4);
-    DeleteFileW(szPath5);
-#endif
-
     return std::string("");
 }
 
@@ -322,6 +325,9 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
     r4.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
     r4.FlushFileBuffers();
     r4.CloseHandle();
+
+    AutoDeleteFileW ad4(szPath4);
+    AutoDeleteFileW ad5(szPath5);
 
     // build the command line text
     MStringW strCmdLine;
@@ -358,12 +364,6 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
             ret.assign(text.begin(), text.end());
         }
     }
-
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath4);
-    DeleteFileW(szPath5);
-#endif
 
     return ret;
 }
@@ -1739,6 +1739,8 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
 
+    AutoDeleteFileW ad3(szPath3);
+
     // build the command line text
     MStringW strCmdLine;
     strCmdLine += L'\"';
@@ -1778,11 +1780,6 @@ EntrySet::load_msg_table(LPCWSTR pszRCFile, MStringA& strOutput, const MString& 
         }
     }
 
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath3);
-#endif
-
     return bSuccess;
 }
 
@@ -1821,6 +1818,8 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
     // create the temporary file and wait
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();
+
+    AutoDeleteFileW ad3(szPath3);
 
     // build the command line text
     MStringW strCmdLine;
@@ -1876,11 +1875,6 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
             merge(es);
         }
     }
-
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szPath3);
-#endif
 
     return bSuccess;
 }
