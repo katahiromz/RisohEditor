@@ -338,6 +338,18 @@ MStringW DumpBinaryAsText(const std::vector<BYTE>& data)
     return ret;     // the result
 }
 
+struct AutoDeleteFileW
+{
+    std::wstring m_file;
+    AutoDeleteFileW(const std::wstring& file) : m_file(file)
+    {
+    }
+    ~AutoDeleteFileW()
+    {
+        ::DeleteFileW(m_file.c_str());
+    }
+};
+
 //////////////////////////////////////////////////////////////////////////////
 // window styles
 
@@ -2089,6 +2101,7 @@ protected:
     WCHAR       m_szMcdxExe[MAX_PATH];          // the mcdx.exe location
     WCHAR       m_szDFMSC[MAX_PATH];            // the dfmsc.exe location
     WCHAR       m_szOleBow[MAX_PATH];           // the OleBow program location
+    WCHAR       m_szMidlWrap[MAX_PATH];         // the midlwrap.bat location
     WCHAR       m_szIncludeDir[MAX_PATH];       // the include directory
     INT         m_nStatusStringID;
 
@@ -2141,6 +2154,7 @@ public:
         m_szMcdxExe[0] = 0;
         m_szDFMSC[0] = 0;
         m_szOleBow[0] = 0;
+        m_szMidlWrap[0] = 0;
         m_szIncludeDir[0] = 0;
         m_nStatusStringID = 0;
         m_szFile[0] = 0;
@@ -2409,6 +2423,7 @@ protected:
     LRESULT OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnIDL2TLB(HWND hwnd, WPARAM wParam, LPARAM lParam);
     void OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType);
     LRESULT OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam);
     LRESULT OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -6617,6 +6632,10 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     MFile r3(szPath3, TRUE);    // create
     r3.CloseHandle();   // close the handle
 
+    AutoDeleteFileW adf1(szPath1);
+    AutoDeleteFileW adf2(szPath2);
+    AutoDeleteFileW adf3(szPath3);
+
     // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -6725,12 +6744,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
-#ifdef NDEBUG
-    DeleteFileW(szPath1);
-    DeleteFileW(szPath2);
-    DeleteFileW(szPath3);
-#endif
-
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
@@ -6741,9 +6754,20 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
 BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
 {
-    MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
-    strOutput = w2a.c_str();
-    return FALSE;
+    // convert strWide to ANSI
+    MStringA ansi = MWideToAnsi(CP_ACP, strWide).c_str();
+
+    auto binary = tlb_binary_from_text(m_szMidlWrap, ansi);
+    if (binary.empty())
+    {
+        // error message
+        strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
+        return FALSE;
+    }
+
+    g_res.add_lang_entry(L"TYPELIB", name, lang, binary);
+    DoSetFileModified(TRUE);
+    return TRUE;
 }
 
 BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD lang, const MStringW& strWide)
@@ -6823,6 +6847,10 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
 
     MFile r3(szPath3, TRUE);    // create the file
     r3.CloseHandle();   // close the handle
+
+    AutoDeleteFileW adf1(szPath1);
+    AutoDeleteFileW adf2(szPath2);
+    AutoDeleteFileW adf3(szPath3);
 
     // dump the head to Source file #1
     if (m_szResourceH[0])
@@ -6916,12 +6944,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         MStringA msg;
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
-
-#ifdef NDEBUG
-    DeleteFileW(szPath1);
-    DeleteFileW(szPath2);
-    DeleteFileW(szPath3);
-#endif
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
@@ -7038,6 +7060,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     MFile r3(szPath3, TRUE);
     r3.CloseHandle();   // close the handle
 
+    AutoDeleteFileW adf1(szPath1);
+    AutoDeleteFileW adf2(szPath2);
+    AutoDeleteFileW adf3(szPath3);
+
     // dump the head to Source file #1
     if (m_szResourceH[0])
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
@@ -7142,12 +7168,6 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         // error message
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
-
-#ifdef NDEBUG
-    DeleteFileW(szPath1);
-    DeleteFileW(szPath2);
-    DeleteFileW(szPath3);
-#endif
 
     if (bOK)
     {
@@ -7382,6 +7402,15 @@ INT MMainWnd::CheckData(VOID)
     {
         ErrorBoxDx(TEXT("ERROR: No OleBow.exe found."));
         return -7;  // failure
+    }
+
+    // midlwrap.bat
+    StringCchCopyW(m_szMidlWrap, _countof(m_szMidlWrap), m_szDataFolder);
+    StringCchCatW(m_szMidlWrap, _countof(m_szMidlWrap), L"\\bin\\midlwrap.bat");
+    if (!PathFileExistsW(m_szMidlWrap))
+    {
+        ErrorBoxDx(TEXT("ERROR: No midlwrap.bat found."));
+        return -8;  // failure
     }
 
     // get the module path filename of this application module
@@ -9324,25 +9353,13 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
     return TRUE;    // success
 }
 
-struct AutoDeleteFile
-{
-    LPCWSTR m_file;
-    AutoDeleteFile(LPCWSTR file) : m_file(file)
-    {
-    }
-    ~AutoDeleteFile()
-    {
-        DeleteFileW(m_file);
-    }
-};
-
 // open the dialog to save the EXE file
 BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
 {
     LPCWSTR src = m_szFile;
     LPCWSTR dest = pszExeFile;
     WCHAR szTempFile[MAX_PATH] = L"";
-    AutoDeleteFile auto_delete(szTempFile);
+    AutoDeleteFileW ad(szTempFile);
 
     // check not locking
     if (IsFileLockedDx(dest))
@@ -10153,6 +10170,8 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     WCHAR szTempFile1[MAX_PATH];
     StringCchCopyW(szTempFile1, _countof(szTempFile1), GetTempFileNameDx(L"R1"));
 
+    AutoDeleteFileW adf1(szTempFile1);
+
     // create the temporary file
     MFile file1(szTempFile1, TRUE);
 
@@ -10222,11 +10241,6 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
         }
     }
 
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szTempFile1);
-#endif
-
     return bOK;
 }
 
@@ -10243,6 +10257,8 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
     // create a temporary file
     MFile file(szTempFile, TRUE);
     file.CloseHandle();     // close the handle
+
+    AutoDeleteFileW adf1(szTempFile);
 
     // build a command line
     MString strCmdLine;
@@ -10288,11 +10304,6 @@ BOOL MMainWnd::DoLoadResH(HWND hwnd, LPCTSTR pszFile)
             }
         }
     }
-
-#ifdef NDEBUG
-    // delete the temporary file
-    DeleteFileW(szTempFile);
-#endif
 
     return bOK;
 }

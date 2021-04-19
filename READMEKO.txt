@@ -269,6 +269,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.5 (2021.XX.YY)
     - Deleted tlb2idl programs.
     - Added OleBow program to process TYPELIB resource type.
+    - Compiling TYPELIB if MIDL compiler is available.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

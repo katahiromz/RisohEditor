@@ -278,6 +278,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.5 (2021.XX.YY)
     - Deleted tlb2idl programs.
     - Added OleBow program to process TYPELIB resource type.
+    - Compiling TYPELIB if MIDL compiler is available.
 
 ## Contact Us
 

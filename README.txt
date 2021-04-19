@@ -269,6 +269,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.5.5 (2021.XX.YY)
     - Deleted tlb2idl programs.
     - Added OleBow program to process TYPELIB resource type.
+    - Compiling TYPELIB if MIDL compiler is available.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

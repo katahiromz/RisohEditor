@@ -96,6 +96,8 @@ BOOL EntryBase::is_editable() const
         {
             return TRUE;
         }
+        if (type == L"TYPELIB")
+            return TRUE;
         return FALSE;
     case ET_STRING: case ET_MESSAGE:
         return TRUE;
@@ -272,7 +274,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 
     BOOL bSuccess = FALSE;
 
-    // create an mcdx.exe process
+    // create an OleBow.exe process
     MProcessMaker pmaker;
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
@@ -304,9 +306,66 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
 }
 
 EntryBase::data_type
-tlb_binary_from_text(LPCWSTR pszTLB2IDL, const std::string& text)
+tlb_binary_from_text(LPCWSTR pszMidlWrap, const std::string& text)
 {
-    return EntryBase::data_type();
+    EntryBase::data_type ret;
+
+    // get the temporary file path
+    WCHAR szPath4[MAX_PATH], szPath5[MAX_PATH];
+    StringCbCopyW(szPath4, sizeof(szPath4), GetTempFileNameDx(L"R4"));
+    StringCbCopyW(szPath5, sizeof(szPath5), szPath4);
+    StringCbCatW(szPath5, sizeof(szPath5), L".tlb");
+
+    // create the temporary file and wait
+    DWORD cbWritten;
+    MFile r4(szPath4, TRUE);
+    r4.WriteFile(text.c_str(), DWORD(text.size()), &cbWritten);
+    r4.FlushFileBuffers();
+    r4.CloseHandle();
+
+    // build the command line text
+    MStringW strCmdLine;
+    strCmdLine += L"cmd /C call \"";
+    strCmdLine += pszMidlWrap;
+    strCmdLine += L"\" x86 \"";
+    strCmdLine += szPath4;
+    strCmdLine += L"\" \"";
+    strCmdLine += szPath5;
+    strCmdLine += L"\"";
+    //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
+
+    BOOL bSuccess = FALSE;
+
+    // create an midlwrap.bat process
+    MProcessMaker pmaker;
+    pmaker.SetShowWindow(SW_HIDE);
+    //pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
+    if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
+    {
+        SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
+        pmaker.WaitForSingleObject();
+        pmaker.CloseAll();
+
+        bSuccess = PathFileExistsW(szPath5);
+    }
+
+    if (bSuccess)
+    {
+        MStringA text;
+        MFile input(szPath5);
+        if (input.ReadAll(text))
+        {
+            ret.assign(text.begin(), text.end());
+        }
+    }
+
+#ifdef NDEBUG
+    // delete the temporary file
+    DeleteFileW(szPath4);
+    DeleteFileW(szPath5);
+#endif
+
+    return ret;
 }
 
 bool EntrySet::intersect(const EntrySet& another) const
