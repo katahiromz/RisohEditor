@@ -274,7 +274,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
     MStringW strCmdLine;
     strCmdLine += L'\"';
     strCmdLine += pszOleBow;
-    strCmdLine += L"\" --codepage 65001 \"";
+    strCmdLine += L"\" --codepage 65001 --sort \"";
     strCmdLine += szPath4;
     strCmdLine += L"\" \"";
     strCmdLine += szPath5;
