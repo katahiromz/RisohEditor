@@ -291,7 +291,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
-        pmaker.WaitForSingleObject();
+        pmaker.WaitForSingleObject(16 * 1000);
         pmaker.CloseAll();
 
         bSuccess = PathFileExistsW(szPath5);
@@ -359,7 +359,7 @@ tlb_binary_from_text(LPCWSTR pszMidlWrap, LPCWSTR pszVCBat, MStringA& strOutput,
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
-        pmaker.WaitForSingleObject();
+        pmaker.WaitForSingleObject(16 * 1000);
         pmaker.CloseAll();
 
         error.ReadAll(strOutput);
