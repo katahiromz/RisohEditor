@@ -6781,6 +6781,11 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
             if (line.find("Processing ") == 0)
                 continue;
             new_lines.push_back(line);
+            if (new_lines.size() >= 10)
+            {
+                new_lines.push_back("...");
+                break;
+            }
         }
         strOutput = mstr_join(new_lines, "\n");
         return FALSE;
