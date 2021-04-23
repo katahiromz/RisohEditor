@@ -99,6 +99,7 @@ Source: "data\bin\upx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\mcpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\dfmsc.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\olebow.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\midlwrap.bat"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "EGA\EGA-Manual.pdf"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\input.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
