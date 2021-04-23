@@ -266,7 +266,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Usato nome percorso corto al sub processo spawn di mcpp.exe e windres.exe.
 - v.5.5.4 (13.04.2021)
     - Correzione icone Windows Vista.
-- v.5.5.5 (YY.XX.2021)
+- v.5.5.5 (23.04.2021)
     - Eliminato programma tlb2idl.
     - Aggiunto programma OleBow per elaborare tipi di risorse TYPELIB.
     - Compilazione TYPELIB se disponibile il compilatore MIDL.
