@@ -270,6 +270,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Eliminato programma tlb2idl.
     - Aggiunto programma OleBow per elaborare tipi di risorse TYPELIB.
     - Compilazione TYPELIB se disponibile il compilatore MIDL.
+- v.5.5.6 (YY.XX.2021)
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
