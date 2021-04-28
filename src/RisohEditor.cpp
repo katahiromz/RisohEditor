@@ -9579,8 +9579,7 @@ IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
     {
         ShowLangArrow(FALSE);
 
-        // renewal
-        g_res.delete_all();
+        // merge
         g_res.merge(res);
 
         // clean up
@@ -9590,6 +9589,9 @@ IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
 
     // select none
     SelectTV(NULL, FALSE);
+
+    // update language arrow
+    PostUpdateLangArrow(hwnd);
 
     DoSetFileModified(TRUE);
     return IMPORTED;
