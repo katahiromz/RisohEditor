@@ -1532,7 +1532,7 @@ STRINGTABLE
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// RisohEditor on luonut tämän tiedoston automaattisesti.\r\n"
     IDS_DAGGER, "// † <-- Tämä daggeri auttaa UTF-8-tunnistuksessa.\r\n"
-    IDS_IMPORTFILTER, "Tuotavat tiedostot|*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Binaariset resurssit (*.res)|*.res|Kuvatiedostot|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Kursoritiedostot (*.cur;*.ani)|*.cur;*.ani|Kuvaketiedostot (*.ico)|*.ico|WAVE äänitiedostot (*.wav)|*.wav|HTML tiedostot (*.html;*.htm)|*.html;*.htm|Manifest tiedostot (*.manifest)|*.manifest|Delphi DFM tiedostot (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Kaikki tiedostot (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Tuotavat tiedostot|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC tiedostot (*.rc)|*.rc|Binaariset resurssit (*.res)|*.res|Kuvatiedostot|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Kursoritiedostot (*.cur;*.ani)|*.cur;*.ani|Kuvaketiedostot (*.ico)|*.ico|WAVE äänitiedostot (*.wav)|*.wav|HTML tiedostot (*.html;*.htm)|*.html;*.htm|Manifest tiedostot (*.manifest)|*.manifest|Delphi DFM tiedostot (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Kaikki tiedostot (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Tiedostoa ei voi kirjoittaa, koska seuraava tiedosto on lukittu.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"

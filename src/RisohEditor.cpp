@@ -2297,6 +2297,7 @@ public:
     BOOL DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
     IMPORT_RESULT DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt);
     IMPORT_RESULT DoImportRes(HWND hwnd, LPCWSTR pszFile);
+    IMPORT_RESULT DoImportRC(HWND hwnd, LPCWSTR pszFile);
     BOOL DoUpxTest(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile);
     BOOL DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile);
@@ -9542,6 +9543,58 @@ BOOL MMainWnd::DoUpxCompress(LPCWSTR pszUpx, LPCWSTR pszExeFile)
     return bOK;
 }
 
+IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
+{
+    MWaitCursor wait;
+
+    // load the RC file to the res variable
+    EntrySet res;
+    if (!DoLoadRC(hwnd, pszFile, res))
+    {
+        ErrorBoxDx(IDS_CANNOTIMPORT);
+        return IMPORT_FAILED;
+    }
+
+    bool found = false;
+    for (auto entry : res)
+    {
+        if (entry->m_et != ET_LANG)
+            continue;   // we will merge the ET_LANG entries only
+
+        if (g_res.find(ET_LANG, entry->m_type, entry->m_name, entry->m_lang))
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        if (MsgBoxDx(IDS_EXISTSOVERWRITE, MB_ICONINFORMATION | MB_YESNOCANCEL) != IDYES)
+            return IMPORT_CANCELLED;
+    }
+
+    // load it now
+    m_bLoading = TRUE;
+    {
+        ShowLangArrow(FALSE);
+
+        // renewal
+        g_res.delete_all();
+        g_res.merge(res);
+
+        // clean up
+        res.delete_all();
+    }
+    m_bLoading = FALSE;
+
+    // select none
+    SelectTV(NULL, FALSE);
+
+    DoSetFileModified(TRUE);
+    return IMPORTED;
+}
+
 IMPORT_RESULT MMainWnd::DoImportRes(HWND hwnd, LPCWSTR pszFile)
 {
     // do import to the res variable
@@ -9604,7 +9657,11 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
     if (!pchDotExt)
         return NOT_IMPORTABLE;
 
-    if (lstrcmpiW(pchDotExt, L".res") == 0)
+    if (lstrcmpiW(pchDotExt, L".rc") == 0)
+    {
+        return DoImportRC(hwnd, pszFile);
+    }
+    else if (lstrcmpiW(pchDotExt, L".res") == 0)
     {
         return DoImportRes(hwnd, pszFile);
     }
@@ -9905,7 +9962,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     pch = PathFindExtensionW(file);
 
     IMPORT_RESULT result = NOT_IMPORTABLE;
-    if (pch)
+    if (pch && lstrcmpiW(pch, L".rc") != 0)
     {
         result = DoImport(hwnd, file, pch);
     }
