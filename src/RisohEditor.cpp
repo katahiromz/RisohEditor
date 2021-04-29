@@ -14067,9 +14067,11 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK
 MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    LRESULT ret;
     switch (uMsg)
     {
-    case WM_HSCROLL:
+    case WM_SIZE: case WM_HSCROLL: case WM_VSCROLL:
+    case WM_MOUSEWHEEL: case WM_KEYDOWN: case WM_CHAR:
         if (IsWindow(m_arrow))
         {
             // hide language arrow
@@ -14081,38 +14083,22 @@ MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             TreeView_GetItemRect(hwnd, hItem, &rc, FALSE);
 
             // default processing
-            CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
+            ret = CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
 
             // redraw the rect
             InvalidateRect(hwnd, &rc, TRUE);
 
             // restore language arrow
             PostUpdateLangArrow(m_hwnd);
-            return 0;
-        }
-        break;
-    case WM_SIZE: case WM_VSCROLL: case WM_MOUSEWHEEL:
-        if (IsWindow(m_arrow))
-        {
-            // hide language arrow
-            ShowLangArrow(FALSE);
 
-            // default processing
-            CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
-
-            // restore language arrow
-            PostUpdateLangArrow(m_hwnd);
-            return 0;
+            return ret;
         }
         break;
     case WM_SYSKEYDOWN:
-        if (wParam == VK_DOWN)
+        if (wParam == VK_DOWN && IsWindow(m_arrow))
         {
-            if (IsWindow(m_arrow))
-            {
-                m_arrow.ShowDropDownList(m_arrow, TRUE);
-                return 0;
-            }
+            m_arrow.ShowDropDownList(m_arrow, TRUE);
+            return 0;
         }
         break;
     }
