@@ -272,6 +272,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Compilazione TYPELIB se disponibile il compilatore MIDL.
 - v.5.5.6 (29.04.2021)
     - Made *.rc files importable.
+    - Fixed TreeView languages arrow display.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

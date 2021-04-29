@@ -2323,6 +2323,8 @@ public:
     EGA::arg_t DoEgaResSetBinary(const EGA::args_t& args);
     EGA::arg_t DoEgaResConst(const EGA::args_t& args);
 
+    LRESULT CALLBACK TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 protected:
     // parsing resource IDs
     BOOL CompileParts(MStringA& strOutput, const MIdOrString& type, const MIdOrString& name,
@@ -11715,12 +11717,10 @@ std::vector<INT> GetPrefixIndexes(const MString& prefix)
 
 BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
 {
-    if (IsWindow(m_arrow))
-        DestroyWindow(m_arrow);
-
     auto entry = g_res.get_entry();
     if (!entry)
     {
+        ShowWindowAsync(m_arrow, SW_HIDE);
         return FALSE;
     }
 
@@ -11742,10 +11742,26 @@ BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
 
     if (bShow)
     {
-        m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD | WS_VISIBLE,
-            0, -1, x, y);
+        if (IsWindow(m_arrow))
+        {
+            UINT uFlags = SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER;
+            SetWindowPos(m_arrow, NULL, x, y, 0, 0, uFlags);
+        }
+        else
+        {
+            m_arrow.CreateAsChildDx(m_hwndTV, NULL, WS_CHILD, 0, -1, x, y);
+        }
         m_arrow.m_hwndMain = m_hwnd;
         m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
+        ShowWindowAsync(m_arrow, SW_SHOWNOACTIVATE);
+    }
+    else
+    {
+        if (IsWindow(m_arrow))
+        {
+            ShowWindow(m_arrow, SW_HIDE);
+            InvalidateRect(m_hwndTV, &rc, TRUE);
+        }
     }
 
     return TRUE;
@@ -14044,13 +14060,20 @@ static WNDPROC s_fnTreeViewOldWndProc = NULL;
 LRESULT CALLBACK
 TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (uMsg == WM_HSCROLL)
+    MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    return this_->TreeViewWndProcDx(hwnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK
+MMainWnd::TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
     {
-        MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        if (IsWindow(this_->m_arrow))
+    case WM_HSCROLL:
+        if (IsWindow(m_arrow))
         {
             // hide language arrow
-            this_->ShowLangArrow(FALSE);
+            ShowLangArrow(FALSE);
 
             // get selected item rect
             RECT rc;
@@ -14064,37 +14087,34 @@ TreeViewWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hwnd, &rc, TRUE);
 
             // restore language arrow
-            this_->PostUpdateLangArrow(*this_);
+            PostUpdateLangArrow(m_hwnd);
             return 0;
         }
-    }
-    if (uMsg == WM_SIZE || uMsg == WM_VSCROLL)
-    {
-        MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        if (IsWindow(this_->m_arrow))
+        break;
+    case WM_SIZE: case WM_VSCROLL: case WM_MOUSEWHEEL:
+        if (IsWindow(m_arrow))
         {
             // hide language arrow
-            this_->ShowLangArrow(FALSE);
+            ShowLangArrow(FALSE);
 
             // default processing
             CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
 
             // restore language arrow
-            this_->PostUpdateLangArrow(*this_);
+            PostUpdateLangArrow(m_hwnd);
             return 0;
         }
-    }
-    if (uMsg == WM_SYSKEYDOWN)
-    {
+        break;
+    case WM_SYSKEYDOWN:
         if (wParam == VK_DOWN)
         {
-            MMainWnd *this_ = (MMainWnd *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-            if (IsWindow(this_->m_arrow))
+            if (IsWindow(m_arrow))
             {
-                this_->m_arrow.ShowDropDownList(this_->m_arrow, TRUE);
+                m_arrow.ShowDropDownList(m_arrow, TRUE);
                 return 0;
             }
         }
+        break;
     }
     return CallWindowProc(s_fnTreeViewOldWndProc, hwnd, uMsg, wParam, lParam);
 }

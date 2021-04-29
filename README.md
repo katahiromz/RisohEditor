@@ -281,6 +281,7 @@ You have to copy the 64-bit file into another place before loading.
     - Compiling TYPELIB if MIDL compiler is available.
 - v.5.5.6 (2021.04.29)
     - Made *.rc files importable.
+    - Fixed TreeView languages arrow display.
 
 ## Contact Us
 

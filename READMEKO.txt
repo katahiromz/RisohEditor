@@ -272,6 +272,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - MIDL 컴파일러를 사용할 수 있는 경우 TYPEELIB를 컴파일합니다.
 - v.5.5.6 (2021.04.29)
     - Made *.rc files importable.
+    - Fixed TreeView languages arrow display.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
