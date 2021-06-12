@@ -1282,8 +1282,8 @@ FONT 9, "MS Shell Dlg"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 5, 6, 0
-PRODUCTVERSION  5, 5, 6, 0
+FILEVERSION     5, 5, 7, 0
+PRODUCTVERSION  5, 5, 7, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -1293,10 +1293,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.5.6\0"
+            VALUE "FileVersion", "5.5.7\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ and Dmitry Yerokhin. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.5.6\0"
+            VALUE "ProductVersion", "5.5.7\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1336,8 +1336,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.5.6 (c) Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.5.6 - Файл: %s"
+    IDS_APPNAME, "RisohEditor 5.5.7 (c) Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.5.7 - Файл: %s"
     IDS_EXTRACTRES, "Извлечь ресурс"
     IDS_RESBINFILTER, "Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_CANNOTSAVE, "Невозможно сохранить."
@@ -1363,7 +1363,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Невозможно заменить растровую картинку."
     IDS_REPLACEBMP, "Заменить растровую картинку"
     IDS_ERRORCODE, "Код ошибки %d"
-    IDS_VERSIONINFO, "RisohEditor версия 5.5.6\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor версия 5.5.7\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (freeware)"
     IDS_ADDRES, "Добавить ресурс"
     IDS_CANNOTADDRES, "Невозможно добавить ресурс."
     IDS_CANTADDBMP, "Невозможно добавить растровую картинку."
