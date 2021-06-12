@@ -273,6 +273,8 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.6 (29.04.2021)
     - Made *.rc files importable.
     - Fixed TreeView languages arrow display.
+- v.5.5.7 (YY.XX.2021)
+    - Add line numbers.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

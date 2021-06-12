@@ -273,6 +273,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.6 (2021.04.29)
     - Made *.rc files importable.
     - Fixed TreeView languages arrow display.
+- v.5.5.7 (2021.XX.YY)
+    - Add line numbers.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
