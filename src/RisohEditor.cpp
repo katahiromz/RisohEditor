@@ -14045,7 +14045,8 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
     {
         m_hCodeEditor = hSrcEdit;
         SendMessage(m_hCodeEditor, EM_SETLIMITTEXT, 0x100000, 0);
-
+        SendMessage(m_hCodeEditor, LNEM_SETNUMOFDIGITS, 3, 0);
+        SendMessage(m_hCodeEditor, EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
         Edit_SetModify(m_hCodeEditor, bModify);
         return TRUE;
     }
