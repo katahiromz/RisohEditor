@@ -271,10 +271,10 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - TYPEELIB 리소스 유형을 처리할 OleBow 프로그램을 추가했습니다.
     - MIDL 컴파일러를 사용할 수 있는 경우 TYPEELIB를 컴파일합니다.
 - v.5.5.6 (2021.04.29)
-    - Made *.rc files importable.
-    - Fixed TreeView languages arrow display.
+    - *.rc 파일을 가져올 수 있게 했습니다.
+    - 고정 트리뷰 언어 화살표가 표시됩니다.
 - v.5.5.7 (2021.XX.YY)
-    - Add line numbers.
+    - 줄 번호를 추가합니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
