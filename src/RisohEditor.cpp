@@ -14516,7 +14516,7 @@ LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     auto indeces = MRadCtrl::GetTargetIndeces();
     for (auto index : indeces)
     {
-        ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, cHeads + index, RGB(255, 192, 192));
+        ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, cHeads + index, RGB(255, 255, 120));
     }
     return 0;
 }
