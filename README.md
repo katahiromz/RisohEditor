@@ -282,8 +282,8 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.6 (2021.04.29)
     - Made *.rc files importable.
     - Fixed TreeView languages arrow display.
-- v.5.5.7 (2021.XX.YY)
-    - Add line numbers.
+- v.5.5.7 (2021.06.12)
+    - Added line numbers.
 
 ## Contact Us
 

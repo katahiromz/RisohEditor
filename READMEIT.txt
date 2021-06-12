@@ -273,7 +273,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.6 (29.04.2021)
     - Abilitata importazione file *.rc.
     - Risolto problema visualizzazione freccia lingue di TreeView.
-- v.5.5.7 (YY.XX.2021)
+- v.5.5.7 (12.06.2021)
     - Aggiunta numeri di linea.
 
 /////////////////////////////////////////////////////////////////////
