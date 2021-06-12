@@ -271,10 +271,10 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunto programma OleBow per elaborare tipi di risorse TYPELIB.
     - Compilazione TYPELIB se disponibile il compilatore MIDL.
 - v.5.5.6 (29.04.2021)
-    - Made *.rc files importable.
-    - Fixed TreeView languages arrow display.
+    - Abilitata importazione file *.rc.
+    - Risolto problema visualizzazione freccia lingue di TreeView.
 - v.5.5.7 (YY.XX.2021)
-    - Add line numbers.
+    - Aggiunta numeri di linea.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
