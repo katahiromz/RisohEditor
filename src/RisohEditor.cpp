@@ -4488,7 +4488,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 
         // clear the control selection
         MRadCtrl::GetTargets().clear();
-        SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
         // clear the modification flag
         Edit_SetModify(m_hCodeEditor, FALSE);
@@ -5690,7 +5690,6 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
         str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     }
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // destroy the icon
     DestroyIcon(hIcon);
@@ -5710,7 +5709,6 @@ void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
     // dump info to m_hCodeEditor
     MStringW str = DumpIconInfo(bm, FALSE);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // destroy the cursor
     DestroyCursor(hCursor);
@@ -5729,7 +5727,6 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5746,7 +5743,6 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5763,7 +5759,6 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5776,7 +5771,6 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MStringW str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // set the entry image to m_hBmpView
     m_hBmpView.SetImage(&entry[0], entry.size());
@@ -5792,7 +5786,6 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // make it playable
     m_hBmpView.SetPlay();
@@ -5808,7 +5801,6 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // set the AVI
     m_hBmpView.SetMedia(&entry[0], entry.size());
@@ -5829,7 +5821,6 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += accel.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5845,7 +5836,6 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
         // dump the text to m_hCodeEditor
         MStringW str = mes.Dump(nNameID);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5861,7 +5851,6 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
         // dump the text to m_hCodeEditor
         MStringW str = str_res.Dump(nNameID);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5877,7 +5866,6 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 
     // dump the text to m_hCodeEditor
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the menu resource
@@ -5892,7 +5880,6 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += menu_res.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5907,7 +5894,6 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += ver_res.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5918,7 +5904,6 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 void MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
@@ -5929,7 +5914,6 @@ void MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
     res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the RT_RCDATA resource
@@ -5941,7 +5925,6 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
     res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the DLGINIT resource
@@ -5951,7 +5934,6 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the dialog template resource
@@ -5966,7 +5948,6 @@ void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -6009,7 +5990,6 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
         ResToText res2text;
         MString str = res2text.DumpEntry(entry);
         SetWindowTextW(m_hCodeEditor, str.c_str());
-        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
     else
     {
@@ -6043,7 +6023,6 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
     MString str = GetLanguageStatement(entry.m_lang);
     str += str_res.Dump();
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show code only
     SetShowMode(SHOW_CODEONLY);
@@ -11338,13 +11317,16 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         m_rad_window.IndexTop(m_rad_window);
         ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
+        break;
     case ID_CTRLINDEXBOTTOM:
         m_rad_window.IndexBottom(m_rad_window);
         ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
+        break;
     case ID_CTRLINDEXMINUS:
         m_rad_window.IndexMinus(m_rad_window);
         ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+        break;
         break;
     case ID_CTRLINDEXPLUS:
         m_rad_window.IndexPlus(m_rad_window);
@@ -14516,7 +14498,6 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
     MString str = GetLanguageStatement(entry->m_lang);
     str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hCodeEditor, str.c_str());
-    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // entry->m_data --> m_hHexViewer (binary)
     str = DumpBinaryAsText(entry->m_data);
