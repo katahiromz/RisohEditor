@@ -18,6 +18,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RisohEditor.hpp"
+#define LINENUMEDIT_IMPL
+#include "LineNumEdit.hpp"
 #include "MLangAutoComplete.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,9 @@
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hHexViewer height
 #define CX_STATUS_PART  80      // status bar part width
+
 #define MYWM_UPDATELANGARROW (WM_USER + 114)
+#define MYWM_GETDLGHEADLINES (WM_USER + 250)
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
@@ -2123,7 +2127,7 @@ protected:
     // classes
     MRadWindow      m_rad_window;               // the RADical window
     MEditCtrl       m_hHexViewer;               // the EDIT control for binary
-    MSrcEdit        m_hCodeEditor;              // the EDIT control for source
+    HWND            m_hCodeEditor;              // the EDIT control for source
     MBmpView        m_hBmpView;                 // the bitmap view
     MSplitterWnd    m_splitter1;                // 1st splitter window
     MSplitterWnd    m_splitter2;                // 2nd splitter window
@@ -2407,7 +2411,6 @@ protected:
     void Expand(HTREEITEM hItem);
     void Collapse(HTREEITEM hItem);
     void OnWordWrap(HWND hwnd);
-    void OnSrcEditSelect(HWND hwnd);
     void OnSaveAsWithCompression(HWND hwnd);
     void OnClone(HWND hwnd);
     void OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar);
@@ -4265,7 +4268,7 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
     DWORD ich, ichEnd;
     SendMessageW(m_hCodeEditor, EM_GETSEL, (WPARAM)&ich, (LPARAM)&ichEnd);
 
-    MString strText = GetWindowText(m_hCodeEditor);
+    MString strText = MWindowBase::GetWindowText(m_hCodeEditor);
 
     MString strTarget = m_search.strText;
     if (m_search.bIgnoreCases)
@@ -4485,7 +4488,7 @@ void MMainWnd::OnCompile(HWND hwnd)
 
         // clear the control selection
         MRadCtrl::GetTargets().clear();
-        m_hCodeEditor.ClearIndeces();
+        SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
         // clear the modification flag
         Edit_SetModify(m_hCodeEditor, FALSE);
@@ -5687,6 +5690,7 @@ void MMainWnd::PreviewIcon(HWND hwnd, const EntryBase& entry)
         str = DumpBitmapInfo(m_hBmpView.m_hBitmap);
     }
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // destroy the icon
     DestroyIcon(hIcon);
@@ -5706,6 +5710,7 @@ void MMainWnd::PreviewCursor(HWND hwnd, const EntryBase& entry)
     // dump info to m_hCodeEditor
     MStringW str = DumpIconInfo(bm, FALSE);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // destroy the cursor
     DestroyCursor(hCursor);
@@ -5724,6 +5729,7 @@ void MMainWnd::PreviewGroupIcon(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5740,6 +5746,7 @@ void MMainWnd::PreviewGroupCursor(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5756,6 +5763,7 @@ void MMainWnd::PreviewBitmap(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show
     SetShowMode(SHOW_CODEANDBMP);
@@ -5768,6 +5776,7 @@ void MMainWnd::PreviewImage(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MStringW str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // set the entry image to m_hBmpView
     m_hBmpView.SetImage(&entry[0], entry.size());
@@ -5783,6 +5792,7 @@ void MMainWnd::PreviewWAVE(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // make it playable
     m_hBmpView.SetPlay();
@@ -5798,6 +5808,7 @@ void MMainWnd::PreviewAVI(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // set the AVI
     m_hBmpView.SetMedia(&entry[0], entry.size());
@@ -5818,6 +5829,7 @@ void MMainWnd::PreviewAccel(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += accel.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5833,6 +5845,7 @@ void MMainWnd::PreviewMessage(HWND hwnd, const EntryBase& entry)
         // dump the text to m_hCodeEditor
         MStringW str = mes.Dump(nNameID);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5848,6 +5861,7 @@ void MMainWnd::PreviewString(HWND hwnd, const EntryBase& entry)
         // dump the text to m_hCodeEditor
         MStringW str = str_res.Dump(nNameID);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5863,6 +5877,7 @@ void MMainWnd::PreviewHtml(HWND hwnd, const EntryBase& entry)
 
     // dump the text to m_hCodeEditor
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the menu resource
@@ -5877,6 +5892,7 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += menu_res.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5891,6 +5907,7 @@ void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += ver_res.Dump(entry.m_name);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5901,6 +5918,7 @@ void MMainWnd::PreviewUnknown(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 void MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
@@ -5911,6 +5929,7 @@ void MMainWnd::PreviewTypeLib(HWND hwnd, const EntryBase& entry)
     res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the RT_RCDATA resource
@@ -5922,6 +5941,7 @@ void MMainWnd::PreviewRCData(HWND hwnd, const EntryBase& entry)
     res2text.m_bHumanReadable = TRUE;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the DLGINIT resource
@@ -5931,6 +5951,7 @@ void MMainWnd::PreviewDlgInit(HWND hwnd, const EntryBase& entry)
     ResToText res2text;
     MString str = res2text.DumpEntry(entry);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 }
 
 // preview the dialog template resource
@@ -5945,6 +5966,7 @@ void MMainWnd::PreviewDialog(HWND hwnd, const EntryBase& entry)
         MString str = GetLanguageStatement(entry.m_lang);
         str += dialog_res.Dump(entry.m_name, !!g_settings.bAlwaysControl);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
 }
 
@@ -5987,6 +6009,7 @@ void MMainWnd::PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon)
         ResToText res2text;
         MString str = res2text.DumpEntry(entry);
         SetWindowTextW(m_hCodeEditor, str.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
     else
     {
@@ -6020,6 +6043,7 @@ void MMainWnd::PreviewStringTable(HWND hwnd, const EntryBase& entry)
     MString str = GetLanguageStatement(entry.m_lang);
     str += str_res.Dump();
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show code only
     SetShowMode(SHOW_CODEONLY);
@@ -6051,6 +6075,7 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     str += msg_res.Dump();
     str += L"#endif\r\n\r\n";
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // show code only
     SetShowMode(SHOW_CODEONLY);
@@ -6073,6 +6098,7 @@ VOID MMainWnd::HidePreview(STV stv)
     if (stv == STV_RESETTEXT || stv == STV_RESETTEXTANDMODIFIED)
     {
         SetWindowTextW(m_hCodeEditor, NULL);
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     }
     if (stv != STV_DONTRESET)
     {
@@ -7218,7 +7244,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 // reopen if necessary
 BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
 {
-    MStringW strWide = GetWindowTextW(m_hCodeEditor);
+    MStringW strWide = MWindowBase::GetWindowTextW(m_hCodeEditor);
 
     // get the selected entry
     auto entry = g_res.get_entry();
@@ -10855,18 +10881,6 @@ void MMainWnd::OnCollapseAll(HWND hwnd)
     PostUpdateLangArrow(hwnd);
 }
 
-void MMainWnd::OnSrcEditSelect(HWND hwnd)
-{
-    INT iItem = m_hCodeEditor.m_iItemToBeSelected;
-    if (iItem != -1)
-    {
-        MRadCtrl::DeselectSelection();
-        MRadCtrl::SelectByIndex(iItem);
-
-        m_hCodeEditor.m_iItemToBeSelected = -1;
-    }
-}
-
 void MMainWnd::OnAddBang(HWND hwnd, NMTOOLBAR *pToolBar)
 {
     // TODO: If you edited "Edit" menu, then you may have to update the below codes
@@ -11309,7 +11323,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_DELCTRL:
         MRadCtrl::DeleteSelection();
-        m_hCodeEditor.ClearIndeces();
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
     case ID_ADDCTRL:
         m_rad_window.OnAddCtrl(m_rad_window);
@@ -11322,19 +11336,19 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_CTRLINDEXTOP:
         m_rad_window.IndexTop(m_rad_window);
-        m_hCodeEditor.ClearIndeces();
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
     case ID_CTRLINDEXBOTTOM:
         m_rad_window.IndexBottom(m_rad_window);
-        m_hCodeEditor.ClearIndeces();
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
     case ID_CTRLINDEXMINUS:
         m_rad_window.IndexMinus(m_rad_window);
-        m_hCodeEditor.ClearIndeces();
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
     case ID_CTRLINDEXPLUS:
         m_rad_window.IndexPlus(m_rad_window);
-        m_hCodeEditor.ClearIndeces();
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
         break;
     case ID_SHOWHIDEINDEX:
         m_rad_window.OnShowHideIndex(m_rad_window);
@@ -11547,9 +11561,6 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_WORD_WRAP:
         OnWordWrap(hwnd);
-        break;
-    case ID_SRCEDITSELECT:
-        OnSrcEditSelect(hwnd);
         break;
     case ID_SAVEASCOMPRESS:
         OnSaveAsWithCompression(hwnd);
@@ -13224,6 +13235,7 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
     {
         // dialog.m_strTemplate --> m_hCodeEditor
         SetWindowTextW(m_hCodeEditor, dialog.m_strTemplate.c_str());
+        ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
         // compile dialog.m_strTemplate
         MStringA strOutput;
@@ -14039,15 +14051,18 @@ BOOL MMainWnd::ReCreateSrcEdit(HWND hwnd)
         style |= WS_HSCROLL | ES_AUTOHSCROLL;
     }
 
-    DWORD exstyle = WS_EX_CLIENTEDGE;
+    WNDCLASSEXW wcx;
+    BOOL bLineNumEdit = ::GetClassInfoExW(NULL, L"LineNumEdit", &wcx);
 
-    HWND hSrcEdit = ::CreateWindowEx(exstyle, L"EDIT", NULL, style,
-        0, 0, 1, 1, m_splitter2, (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
+    DWORD exstyle = WS_EX_CLIENTEDGE;
+    HWND hSrcEdit = ::CreateWindowEx(exstyle,
+        (bLineNumEdit ? L"LineNumEdit" : L"EDIT"), NULL,
+        style, 0, 0, 1, 1, m_splitter2,
+        (HMENU)(INT_PTR)2, GetModuleHandle(NULL), NULL);
     if (hSrcEdit)
     {
-        m_hCodeEditor.SubclassDx(hSrcEdit);
-
-        m_hCodeEditor.SendMessageDx(EM_SETLIMITTEXT, 0x100000);
+        m_hCodeEditor = hSrcEdit;
+        SendMessage(m_hCodeEditor, EM_SETLIMITTEXT, 0x100000, 0);
 
         Edit_SetModify(m_hCodeEditor, bModify);
         return TRUE;
@@ -14474,7 +14489,7 @@ LRESULT MMainWnd::OnGetHeadLines(HWND hwnd, WPARAM wParam, LPARAM lParam)
         DialogRes dialog_res;
         MByteStreamEx stream(entry->m_data);
         dialog_res.LoadFromStream(stream);
-        return dialog_res.GetHeadLines();;
+        return dialog_res.GetHeadLines();
     }
     return -1;
 }
@@ -14501,6 +14516,7 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
     MString str = GetLanguageStatement(entry->m_lang);
     str += dialog_res.Dump(entry->m_name);
     SetWindowTextW(m_hCodeEditor, str.c_str());
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
     // entry->m_data --> m_hHexViewer (binary)
     str = DumpBinaryAsText(entry->m_data);
@@ -14511,14 +14527,16 @@ LRESULT MMainWnd::OnUpdateDlgRes(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT MMainWnd::OnRadSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
     if (!IsWindow(m_rad_window))
-    {
-        m_hCodeEditor.ClearIndeces();
         return 0;
-    }
 
+    INT cHeads = INT(SendMessageW(hwnd, MYWM_GETDLGHEADLINES, 0, 0)) + 1;
     auto indeces = MRadCtrl::GetTargetIndeces();
-    m_hCodeEditor.SetIndeces(indeces);
+    for (auto index : indeces)
+    {
+        ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, cHeads + index, RGB(255, 192, 192));
+    }
     return 0;
 }
 
@@ -16305,6 +16323,9 @@ wWinMain(HINSTANCE   hInstance,
     HINSTANCE hinstUXTheme = LoadLibrary(TEXT("UXTHEME.DLL"));
     FARPROC fn = GetProcAddress(hinstUXTheme, "SetWindowTheme");
     s_pSetWindowTheme = *reinterpret_cast<SETWINDOWTHEME *>(&fn);
+
+    // load LineNumEdit
+    LineNumEdit::SuperclassWindow();
 
     // load GDI+
     Gdiplus::GdiplusStartupInput gp_startup_input;

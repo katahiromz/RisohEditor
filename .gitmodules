@@ -4,3 +4,6 @@
 [submodule "EGA"]
 	path = EGA
 	url = https://github.com/katahiromz/EGA.git
+[submodule "LineNumEdit"]
+	path = LineNumEdit
+	url = https://github.com/katahiromz/LineNumEdit
