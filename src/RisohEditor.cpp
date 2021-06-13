@@ -6888,7 +6888,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
     DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
@@ -6961,6 +6960,15 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
         else
         {
             bOK = FALSE;
+            size_t ich = strOutput.find("RisohEditor.rc (");
+            if (ich != strOutput.npos)
+            {
+                ich += 16; // "RisohEditor.rc ("
+                INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
+                iLine += 4; // workaround
+                ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+            }
             // error message
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
@@ -7091,7 +7099,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteSzA("#include <windows.h>\r\n");
     r1.WriteSzA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(m_lang));
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
     r1.WriteSzA("#ifndef IDC_STATIC\r\n");
     r1.WriteSzA("    #define IDC_STATIC (-1)\r\n");
