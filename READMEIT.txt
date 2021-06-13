@@ -275,6 +275,8 @@ Domanda 6. I file a 64 bit sono supportati?
     - Risolto problema visualizzazione freccia lingue di TreeView.
 - v.5.5.7 (12.06.2021)
     - Aggiunta numeri di linea.
+- v.5.5.8 (2021.XX.YY)
+    - Marks line upon happening error.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -284,6 +284,8 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed TreeView languages arrow display.
 - v.5.5.7 (2021.06.12)
     - Added line numbers.
+- v.5.5.8 (2021.XX.YY)
+    - Marks line upon happening error.
 
 ## Contact Us
 
