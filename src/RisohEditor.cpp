@@ -71,7 +71,11 @@ WORD GetMachineOfBinary(LPCWSTR pszExeFile)
         {
             ib = dos.e_lfanew;
         }
+#ifdef _WIN64
+        _fseeki64(fp, ib, SEEK_SET);
+#else
         fseek(fp, ib, SEEK_SET);
+#endif
         IMAGE_NT_HEADERS nt = { 0 };
         fread(&nt, sizeof(nt), 1, fp);
         if (nt.Signature == IMAGE_NT_SIGNATURE)
