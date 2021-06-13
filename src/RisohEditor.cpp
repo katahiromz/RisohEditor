@@ -6889,6 +6889,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 
     DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
     r1.WriteFormatA("#pragma RisohEditor\r\n");
@@ -6965,7 +6966,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
             {
                 ich += 16; // "RisohEditor.rc ("
                 INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
-                iLine += 4; // workaround
+                iLine += 4; // FIXME: workaround
                 ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
                 ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
             }
