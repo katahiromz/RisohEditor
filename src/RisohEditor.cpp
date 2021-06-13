@@ -6632,15 +6632,11 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
-    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
-
-    // Source file #2 (#included)
-    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
-    MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -6648,7 +6644,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     r3.CloseHandle();   // close the handle
 
     AutoDeleteFileW adf1(szPath1);
-    AutoDeleteFileW adf2(szPath2);
     AutoDeleteFileW adf3(szPath3);
 
     // dump the head to Source file #1
@@ -6656,7 +6651,6 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
-    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
 
     // dump the macros
@@ -6674,15 +6668,11 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         }
     }
 
-    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.CloseHandle();   // close the handle
-
     // write the UTF-8 file to Source file #2
-    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
-    DWORD cbWritten;
-    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();
-    r2.CloseHandle();   // close the handle
+    DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
+    r1.WriteFormatA("#pragma RisohEditor\r\n");
+    r1.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r1.CloseHandle();   // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -6750,6 +6740,14 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
         {
             bOK = FALSE;
             // error message
+            size_t ich = strOutput.find("RisohEditor.rc:");
+            if (ich != strOutput.npos)
+            {
+                ich += 15; // "RisohEditor.rc:"
+                INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
+                ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+            }
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
     }
@@ -6870,15 +6868,11 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
-    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
-
-    // Source file #2 (#included)
-    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
-    MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -6887,7 +6881,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     r3.CloseHandle();   // close the handle
 
     AutoDeleteFileW adf1(szPath1);
-    AutoDeleteFileW adf2(szPath2);
     AutoDeleteFileW adf3(szPath3);
 
     // dump the head to Source file #1
@@ -6897,15 +6890,11 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
-    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
-    r1.CloseHandle();       // close the handle
 
-    // write the UTF-8 file to Source file #2
-    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
-    DWORD cbWritten;
-    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();  // flush
-    r2.CloseHandle();       // close the handle
+    DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
+    r1.WriteFormatA("#pragma RisohEditor\r\n");
+    r1.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
+    r1.CloseHandle();       // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -7191,10 +7180,10 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
             size_t ich = strOutput.find("RisohEditor.rc:");
             if (ich != strOutput.npos)
             {
-                ich += 15;
+                ich += 15; // "RisohEditor.rc:"
                 INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
-                SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-                SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+                ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
             }
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
