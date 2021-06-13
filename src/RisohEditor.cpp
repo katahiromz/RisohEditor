@@ -29,6 +29,7 @@
 #define BV_WIDTH        160     // default m_hBmpView width
 #define BE_HEIGHT       90      // default m_hHexViewer height
 #define CX_STATUS_PART  80      // status bar part width
+#define ERROR_LINE_COLOR RGB(255, 191, 191)
 
 #define MYWM_UPDATELANGARROW (WM_USER + 114)
 #define MYWM_GETDLGHEADLINES (WM_USER + 250)
@@ -6746,7 +6747,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
                 ich += 15; // "RisohEditor.rc:"
                 INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
                 ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
             }
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
@@ -6968,7 +6969,7 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
                 INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
                 iLine += 4; // FIXME: workaround
                 ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
             }
             // error message
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
@@ -7192,7 +7193,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                 ich += 15; // "RisohEditor.rc:"
                 INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
                 ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
-                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+                ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
             }
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
