@@ -7083,15 +7083,11 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         return TRUE;    // success
     }
 
-    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
-
-    // Source file #2 (#included)
-    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
-    MFile r2(szPath2, TRUE);
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -7099,7 +7095,6 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r3.CloseHandle();   // close the handle
 
     AutoDeleteFileW adf1(szPath1);
-    AutoDeleteFileW adf2(szPath2);
     AutoDeleteFileW adf3(szPath3);
 
     // dump the head to Source file #1
@@ -7113,16 +7108,11 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     r1.WriteSzA("    #define IDC_STATIC (-1)\r\n");
     r1.WriteSzA("#endif\r\n\r\n");
 
-    r1.WriteFormatA("#include \"%S\"\r\n", szPath2);
+    DWORD cbWritten, cbWrite = DWORD(strUtf8.size() * sizeof(char));
+    r1.WriteSzA("#pragma RisohEditor\r\n");
+    r1.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
     r1.FlushFileBuffers();
     r1.CloseHandle();   // close the handle
-
-    // write the UTF-8 file to Source file #2
-    DWORD cbWrite = DWORD(strUtf8.size() * sizeof(char));
-    DWORD cbWritten;
-    r2.WriteFile(strUtf8.c_str(), cbWrite, &cbWritten);
-    r2.FlushFileBuffers();
-    r2.CloseHandle();   // close the handle
 
     // build the command line text
     MStringW strCmdLine;
@@ -7135,7 +7125,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
     strCmdLine += m_szMCppExe;
-    strCmdLine += L"\" \"";
+    strCmdLine += L"\" --use-temp-file \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
     //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
@@ -7198,6 +7188,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         {
             bOK = FALSE;
             // error message
+            size_t ich = strOutput.find("RisohEditor.rc:");
+            if (ich != strOutput.npos)
+            {
+                ich += 15;
+                INT iLine = INT(strtoul(&strOutput[ich], NULL, 10));
+                SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+                SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, RGB(255, 191, 191));
+            }
             strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         }
     }
