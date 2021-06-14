@@ -277,6 +277,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Aggiunta numeri di linea.
 - v.5.5.8 (2021.XX.YY)
     - Marks line upon happening error.
+    - Fixed Ctrl+A.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

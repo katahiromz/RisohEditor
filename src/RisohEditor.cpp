@@ -14600,11 +14600,35 @@ void MMainWnd::DoEvents()
     }
 }
 
+static BOOL DoMsgCtrlA(MSG *pMsg)
+{
+    WCHAR szClass[16] = L"";
+    GetClassNameW(pMsg->hwnd, szClass, _countof(szClass));
+
+    if (lstrcmpiW(szClass, L"EDIT") == 0 || lstrcmpiW(szClass, L"LineNumEdit") == 0)
+    {
+        if (pMsg->message == WM_KEYDOWN)
+        {
+            if (pMsg->wParam == 'A' &&
+                GetAsyncKeyState(VK_CONTROL) < 0 &&
+                GetAsyncKeyState(VK_SHIFT) >= 0 &&
+                GetAsyncKeyState(VK_MENU) >= 0)
+            {
+                PeekMessage(pMsg, pMsg->hwnd, WM_KEYDOWN, WM_KEYDOWN, PM_REMOVE);
+                PostMessage(pMsg->hwnd, EM_SETSEL, 0, -1);
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
 // do the window messages
 void MMainWnd::DoMsg(MSG& msg)
 {
-    // EDIT control Ctrl+A
-    if (MEditCtrl::DoMsgCtrlA(&msg))
+    // Ctrl+A on EDIT control and LineNumEdit
+    if (DoMsgCtrlA(&msg))
         return;
 
     // do access keys

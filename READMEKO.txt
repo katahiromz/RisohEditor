@@ -277,6 +277,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 줄 번호를 추가합니다.
 - v.5.5.8 (2021.XX.YY)
     - Marks line upon happening error.
+    - Fixed Ctrl+A.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
