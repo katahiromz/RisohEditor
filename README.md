@@ -287,6 +287,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.5.8 (2021.XX.YY)
     - Marks line upon happening error.
     - Fixed Ctrl+A.
+    - Updated mcpp.exe and dfmsc.exe.
 
 ## Contact Us
 

@@ -278,6 +278,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.8 (2021.XX.YY)
     - Marks line upon happening error.
     - Fixed Ctrl+A.
+    - Updated mcpp.exe and dfmsc.exe.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -278,6 +278,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.8 (2021.XX.YY)
     - Marks line upon happening error.
     - Fixed Ctrl+A.
+    - Updated mcpp.exe and dfmsc.exe.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
