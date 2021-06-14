@@ -6846,15 +6846,21 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         }
     }
 
+    INT iLine = 0;
     EntryBase::data_type data =
         dfm_binary_from_text(m_szDFMSC, ansi.c_str(),
-                             g_settings.nDfmCodePage, g_settings.bDfmNoUnicode);
+                             g_settings.nDfmCodePage, g_settings.bDfmNoUnicode, iLine);
     auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(),
                                      g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
     if (text.empty())
     {
         MWideToAnsi w2a(CP_ACP, LoadStringDx(IDS_COMPILEERROR));
         strOutput = w2a.c_str();
+        if (iLine != 0)
+        {
+            ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
+            ::SendMessageW(m_hCodeEditor, LNEM_SETLINEMARK, iLine, ERROR_LINE_COLOR);
+        }
         return FALSE;
     }
 

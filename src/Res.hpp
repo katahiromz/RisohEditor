@@ -347,7 +347,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 
 EntryBase::data_type
 dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
-                     INT codepage, BOOL no_unicode);
+                     INT codepage, BOOL no_unicode, INT& iLine);
 
 std::string
 tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size);

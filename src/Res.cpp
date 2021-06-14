@@ -186,7 +186,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
 
 EntryBase::data_type
 dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
-                     INT codepage, BOOL no_unicode)
+                     INT codepage, BOOL no_unicode, INT& iLine)
 {
     // get the temporary file path
     WCHAR szPath6[MAX_PATH], szPath7[MAX_PATH];
@@ -231,13 +231,31 @@ dfm_binary_from_text(LPCWSTR pszDFMSC, const std::string& text,
     pmaker.SetShowWindow(SW_HIDE);
     pmaker.SetCreationFlags(CREATE_NEW_CONSOLE);
 
+    MFile error;
+    pmaker.PrepareForRedirect(NULL, &error, &error);
+
     if (pmaker.CreateProcessDx(NULL, strCmdLine.c_str()))
     {
         SetPriorityClass(pmaker.GetProcessHandle(), HIGH_PRIORITY_CLASS);
         pmaker.WaitForSingleObject();
+        DWORD dwExitCode = pmaker.GetExitCode();
         pmaker.CloseAll();
 
-        bSuccess = PathFileExistsW(szPath7);
+        if (dwExitCode == 0 && PathFileExistsW(szPath7))
+        {
+            bSuccess = TRUE;
+        }
+        else
+        {
+            std::string strOutput;
+            error.ReadAll(strOutput);
+            size_t ich = strOutput.find("expected on line ");
+            if (ich != strOutput.npos)
+            {
+                ich += 17; // "expected on line "
+                iLine = INT(strtoul(&strOutput[ich], NULL, 10));
+            }
+        }
     }
 
     if (bSuccess)
