@@ -6653,6 +6653,7 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
+    r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
 
     // dump the macros
     for (auto& pair : g_settings.id_map)
@@ -7130,7 +7131,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     strCmdLine += szPath3;
     strCmdLine += L"\" -J rc -O res -F pe-i386 --preprocessor=\"";
     strCmdLine += m_szMCppExe;
-    strCmdLine += L"\" --use-temp-file \"";
+    strCmdLine += L"\" \"";
     strCmdLine += szPath1;
     strCmdLine += '\"';
     //MessageBoxW(NULL, strCmdLine.c_str(), NULL, 0);
