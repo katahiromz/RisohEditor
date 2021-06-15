@@ -275,7 +275,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 고정 트리뷰 언어 화살표가 표시됩니다.
 - v.5.5.7 (2021.06.12)
     - 줄 번호를 추가합니다.
-- v.5.5.8 (2021.XX.YY)
+- v.5.5.8 (2021.06.15)
     - Marks line upon happening error.
     - Fixed Ctrl+A.
     - Updated mcpp.exe and dfmsc.exe.
