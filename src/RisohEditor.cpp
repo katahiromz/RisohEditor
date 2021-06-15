@@ -10316,7 +10316,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     file1.WriteSzA("#include \"", &cbWritten);
     file1.WriteSzA(MTextToAnsi(CP_ACP, szFile).c_str(), &cbWritten);
     file1.WriteSzA("\"\n", &cbWritten);
-    file1.WriteSzA("#pragma RisohEditor\n", &cbWritten);    // the special pragma
+    file1.WriteSzA("#pragma macros\n", &cbWritten);    // the special pragma
 
     // write the macro names (in order to retrieve the value after)
     char buf[MAX_PATH + 64];
@@ -10361,7 +10361,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
             bOK = FALSE;
 
             // find the special pragma
-            size_t pragma_found = strOutput.find("#pragma RisohEditor");
+            size_t pragma_found = strOutput.find("#pragma macros");
             if (pragma_found != MStringA::npos)
             {
                 // get text after the special pragma

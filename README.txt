@@ -279,6 +279,8 @@ Question 6. Are the 64-bit files supported?
     - Marks line upon happening error.
     - Fixed Ctrl+A.
     - Updated mcpp.exe and dfmsc.exe.
+- v.5.5.9 (2021.XX.YY)
+    - Fixed loading resource.h macros.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -288,6 +288,8 @@ You have to copy the 64-bit file into another place before loading.
     - Marks line upon happening error.
     - Fixed Ctrl+A.
     - Updated mcpp.exe and dfmsc.exe.
+- v.5.5.9 (2021.XX.YY)
+    - Fixed loading resource.h macros.
 
 ## Contact Us
 
