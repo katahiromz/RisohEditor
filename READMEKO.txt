@@ -279,7 +279,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Marks line upon happening error.
     - Fixed Ctrl+A.
     - Updated mcpp.exe and dfmsc.exe.
-- v.5.5.9 (2021.XX.YY)
+- v.5.5.9 (2021.06.16)
     - Fixed loading resource.h macros.
 
 /////////////////////////////////////////////////////////////////////

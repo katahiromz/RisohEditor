@@ -279,7 +279,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Marks line upon happening error.
     - Fixed Ctrl+A.
     - Updated mcpp.exe and dfmsc.exe.
-- v.5.5.9 (2021.XX.YY)
+- v.5.5.9 (16.06.2021)
     - Fixed loading resource.h macros.
 
 /////////////////////////////////////////////////////////////////////
