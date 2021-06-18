@@ -1581,6 +1581,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Wypakuj dane TYPELIB"
     IDS_CANTEXTRACTTLB, "Nie można wypakować danych TYPELIB."
     IDS_TLBRESBINFILTER, "Dane TYPELIB (*.tlb)|*.tlb|Zasoby binarne (*.res)|*.res|Pliki tekstowe (*.txt)|*.txt|Pliki MIDL (*.idl)|*.idl|Wszystkie pliki (*.*)|*.*|"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--load-options ""OPTIONS""  Set load options.\n--save-options ""OPTIONS""  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

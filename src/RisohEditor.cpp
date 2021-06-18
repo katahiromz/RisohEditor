@@ -24,6 +24,8 @@
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
+MStringW g_load_options;
+MStringW g_save_options;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -2169,6 +2171,9 @@ protected:
 
 public:
     MDropdownArrow  m_arrow;                    // the language drop-down arrow
+    MStringW m_commands;
+
+    BOOL ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv);
 
     // constructor
     MMainWnd(int argc, TCHAR **targv, HINSTANCE hInst) :
@@ -2322,11 +2327,12 @@ public:
     BOOL DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, const EntrySet& targets);
     BOOL DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile = NULL);
     BOOL DoWriteResHOfExe(LPCWSTR pszExeFile);
-    BOOL DoSaveResAs(LPCWSTR pszExeFile);
+    BOOL DoSaveResAs(LPCWSTR pszResFile);
     BOOL DoSaveAs(LPCWSTR pszExeFile);
     BOOL DoSaveAsCompression(LPCWSTR pszExeFile);
     BOOL DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
     BOOL DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression = FALSE);
+    BOOL DoSaveFile(HWND hwnd, LPCWSTR pszFile);
     IMPORT_RESULT DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt);
     IMPORT_RESULT DoImportRes(HWND hwnd, LPCWSTR pszFile);
     IMPORT_RESULT DoImportRC(HWND hwnd, LPCWSTR pszFile);
@@ -9272,18 +9278,30 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& f
 }
 
 // save the resource data as a *.res file
-BOOL MMainWnd::DoSaveResAs(LPCWSTR pszExeFile)
+BOOL MMainWnd::DoSaveResAs(LPCWSTR pszResFile)
 {
     // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return FALSE;
 
-    if (g_res.extract_res(pszExeFile, g_res))
+    if (g_res.extract_res(pszResFile, g_res))
     {
-        UpdateFileInfo(FT_RES, pszExeFile, FALSE);
+        UpdateFileInfo(FT_RES, pszResFile, FALSE);
         DoSetFileModified(FALSE);
         return TRUE;
     }
+    return FALSE;
+}
+
+BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
+{
+    LPWSTR pchDotExt = PathFindExtensionW(pszFile);
+    if (lstrcmpiW(pchDotExt, L".exe") == 0)
+        return DoSaveExeAs(pszFile);
+    if (lstrcmpiW(pchDotExt, L".rc") == 0)
+        return DoExport(pszFile, NULL);
+    if (lstrcmpiW(pchDotExt, L".res") == 0)
+        return DoSaveResAs(pszFile);
     return FALSE;
 }
 
@@ -10730,7 +10748,7 @@ void MMainWnd::ShowIDList(HWND hwnd, BOOL bShow/* = TRUE*/)
         if (IsWindow(m_id_list_dlg))
             DestroyWindow(m_id_list_dlg);
         m_id_list_dlg.CreateDialogDx(hwnd);
-        ShowWindow(m_id_list_dlg, SW_SHOWNOACTIVATE);
+        ShowWindow(m_id_list_dlg, (g_bNoGuiMode ? SW_HIDE : SW_SHOWNOACTIVATE));
         UpdateWindow(m_id_list_dlg);
     }
     else
@@ -11437,6 +11455,70 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnPlay(hwnd);
         break;
     case ID_READY:
+        if (g_bNoGuiMode)
+        {
+            std::vector<MStringW> commands;
+            mstr_split(commands, m_commands, L"\n");
+            for (auto& command : commands)
+            {
+                if (command.empty())
+                    continue;
+
+                if (command.find(L"load:") == 0)
+                {
+                    command = command.substr(5);
+
+                    BOOL bOld = g_settings.bAutoLoadNearbyResH;
+                    g_settings.bAutoLoadNearbyResH = g_load_options.find(L"(no-load-res-h)") != g_load_options.npos;
+                    {
+                        DoLoadFile(hwnd, command.c_str(), 0, TRUE);
+                    }
+                    g_settings.bAutoLoadNearbyResH = bOld;
+                    continue;
+                }
+
+                if (command.find(L"save:") == 0)
+                {
+                    command = command.substr(5);
+                    BOOL bUseIDC_STATIC = g_settings.bUseIDC_STATIC;
+                    BOOL bAskUpdateResH = g_settings.bAskUpdateResH;
+                    BOOL bCompressByUPX = g_settings.bCompressByUPX;
+                    BOOL bSepFilesByLang = g_settings.bSepFilesByLang;
+                    BOOL bStoreToResFolder = g_settings.bStoreToResFolder;
+                    BOOL bSelectableByMacro = g_settings.bSelectableByMacro;
+                    BOOL bRedundantComments = g_settings.bRedundantComments;
+                    BOOL bWrapManifest = g_settings.bWrapManifest;
+                    BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
+                    BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
+                    g_settings.bUseIDC_STATIC = g_save_options.find(L"(idc-static)") != g_save_options.npos;
+                    g_settings.bAskUpdateResH = FALSE;
+                    g_settings.bCompressByUPX = g_save_options.find(L"(compress)") != g_save_options.npos;
+                    g_settings.bSepFilesByLang = g_save_options.find(L"(sep-lang)") != g_save_options.npos;
+                    g_settings.bStoreToResFolder = g_save_options.find(L"(no-res-folder)") == g_save_options.npos;
+                    g_settings.bSelectableByMacro = g_save_options.find(L"(lang-macro)") != g_save_options.npos;
+                    g_settings.bRedundantComments = g_save_options.find(L"(less-comments)") == g_save_options.npos;
+                    g_settings.bWrapManifest = g_save_options.find(L"(wrap-manifest)") != g_save_options.npos;
+                    g_settings.bUseBeginEnd = g_save_options.find(L"(begin-end)") != g_save_options.npos;
+                    g_settings.bRCFileUTF16 = g_save_options.find(L"(utf-16)") != g_save_options.npos;
+                    {
+                        DoSaveFile(hwnd, command.c_str());
+                    }
+                    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+                    g_settings.bAskUpdateResH = bAskUpdateResH;
+                    g_settings.bCompressByUPX = bCompressByUPX;
+                    g_settings.bSepFilesByLang = bSepFilesByLang;
+                    g_settings.bStoreToResFolder = bStoreToResFolder;
+                    g_settings.bSelectableByMacro = bSelectableByMacro;
+                    g_settings.bRedundantComments = bRedundantComments;
+                    g_settings.bWrapManifest = bWrapManifest;
+                    g_settings.bUseBeginEnd = bUseBeginEnd;
+                    g_settings.bRCFileUTF16 = bRCFileUTF16;
+                    continue;
+                }
+            }
+
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+        }
         break;
     case ID_IDASSOC:
         OnIdAssoc(hwnd);
@@ -12480,7 +12562,7 @@ void MMainWnd::OnTest(HWND hwnd)
                     WS_DLGFRAME | WS_POPUPWINDOW, WS_EX_APPWINDOW);
 
                 // show it
-                ShowWindow(*window, SW_SHOWNORMAL);
+                ShowWindow(*window, g_bNoGuiMode ? SW_HIDE : SW_SHOWNORMAL);
                 UpdateWindow(*window);
             }
             else
@@ -14290,8 +14372,10 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     if (m_argc >= 2)
     {
-        // load the file now
-        DoLoadFile(hwnd, m_targv[1]);
+        if (!ParseCommandLine(hwnd, m_argc, m_targv))
+        {
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+        }
     }
 
     // enable file dropping
@@ -14605,14 +14689,17 @@ BOOL MMainWnd::StartDx()
     }
     assert(IsWindow(m_hwnd));
 
-    // maximize or not
-    if (g_settings.bResumeWindowPos && g_settings.bMaximized)
+    if (!g_bNoGuiMode)
     {
-        ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
-    }
-    else
-    {
-        ShowWindow(m_hwnd, SW_SHOWNORMAL);
+        // maximize or not
+        if (g_settings.bResumeWindowPos && g_settings.bMaximized)
+        {
+            ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
+        }
+        else
+        {
+            ShowWindow(m_hwnd, SW_SHOWNORMAL);
+        }
     }
 
     UpdateWindow(m_hwnd);
@@ -16310,6 +16397,86 @@ void EGA_extension(void)
       publicKeyToken='6595b64144ccf1df' \
       language='*'\"")
 #endif
+
+BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
+{
+    LPWSTR file = NULL;
+    BOOL bNoGUI = FALSE;
+    m_commands.clear();
+    for (INT iarg = 1; iarg < argc; ++iarg)
+    {
+        LPWSTR arg = targv[iarg];
+        if (lstrcmpiW(arg, L"-help") == 0 ||
+            lstrcmpiW(arg, L"--help") == 0 || 
+            lstrcmpiW(arg, L"/?") == 0)
+        {
+            MessageBoxW(NULL, LoadStringDx(IDS_USAGE), LoadStringDx(IDS_APPNAME), MB_ICONINFORMATION);
+            return FALSE;
+        }
+        if (lstrcmpiW(arg, L"-version") == 0 ||
+            lstrcmpiW(arg, L"--version") == 0)
+        {
+            MessageBoxW(NULL, LoadStringDx(IDS_APPNAME), LoadStringDx(IDS_APPNAME), MB_ICONINFORMATION);
+            return FALSE;
+        }
+
+        if (lstrcmpiW(arg, L"-load") == 0 ||
+            lstrcmpiW(arg, L"--load") == 0)
+        {
+            bNoGUI = TRUE;
+            arg = targv[++iarg];
+            m_commands += L"load:";
+            m_commands += arg;
+            m_commands += L"\n";
+            continue;
+        }
+        if (lstrcmpiW(arg, L"-load-options") == 0 ||
+            lstrcmpiW(arg, L"--load-options") == 0)
+        {
+            arg = targv[++iarg];
+            g_load_options = arg;
+            continue;
+        }
+
+        if (lstrcmpiW(arg, L"-save") == 0 ||
+            lstrcmpiW(arg, L"--save") == 0)
+        {
+            bNoGUI = TRUE;
+            arg = targv[++iarg];
+            m_commands += L"save:";
+            m_commands += arg;
+            m_commands += L"\n";
+        }
+        if (lstrcmpiW(arg, L"-save-options") == 0 ||
+            lstrcmpiW(arg, L"--save-options") == 0)
+        {
+            arg = targv[++iarg];
+            g_save_options = arg;
+            continue;
+        }
+
+        if (PathFileExistsW(arg))
+        {
+            if (!file)
+                file = arg;
+            continue;
+        }
+    }
+
+    if (file && !bNoGUI)
+    {
+        // load the file now
+        DoLoadFile(hwnd, file);
+        return TRUE;
+    }
+    else if (bNoGUI)
+    {
+        g_bNoGuiMode = bNoGUI;
+        return TRUE;
+    }
+
+    return FALSE;
+}
 
 // the main function of the windows application
 extern "C"

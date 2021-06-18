@@ -340,6 +340,7 @@
 #define IDS_EXTRACTTLB                      344
 #define IDS_CANTEXTRACTTLB                  345
 #define IDS_TLBRESBINFILTER                 346
+#define IDS_USAGE                           347
 
 #define ID_NEW                              100
 #define ID_OPEN                             101
