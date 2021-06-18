@@ -22,6 +22,29 @@
 #include "LineNumEdit.hpp"
 #include "MLangAutoComplete.hpp"
 
+BOOL g_bNoGuiMode = FALSE; // No-GUI mode
+LPWSTR g_pszLogFile = NULL;
+
+INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
+{
+    if (g_bNoGuiMode)
+    {
+        if (g_pszLogFile)
+        {
+            if (FILE *fp = _wfopen(g_pszLogFile, L"a"))
+            {
+                fprintf(fp, "%ls\n", title);
+                fclose(fp);
+            }
+        }
+        return IDYES;
+    }
+    else
+    {
+        return ::MessageBoxW(hwnd, text, title, uType);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
@@ -1537,8 +1560,8 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     // error
     ComboBox_SetEditSel(hCmb3, 0, -1);
     SetFocus(hCmb3);
-    MessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
-                NULL, MB_ICONERROR);
+    LogMessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                   NULL, MB_ICONERROR);
     return FALSE;   // failure
 }
 
@@ -1773,8 +1796,8 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
         ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
         SetFocus(hCmb1);    // set focus
         // show error message
-        MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
-                    NULL, MB_ICONERROR);
+        LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERTYPE),
+                       NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
     else if (mchr_is_digit(szType[0]) || szType[0] == L'-' || szType[0] == L'+')
@@ -1786,8 +1809,8 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type)
             ComboBox_SetEditSel(hCmb1, 0, -1);  // select all
             SetFocus(hCmb1);    // set focus
             // show error message
-            MessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
-                        NULL, MB_ICONERROR);
+            LogMessageBoxW(GetParent(hCmb1), LoadStringDx(IDS_ENTERNONZEROTYPE),
+                           NULL, MB_ICONERROR);
             return FALSE;   // failure
         }
     }
@@ -1838,8 +1861,8 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
         ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
         SetFocus(hCmb2);    // set focus
         // show error message
-        MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
-                    NULL, MB_ICONERROR);
+        LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNAME),
+                       NULL, MB_ICONERROR);
         return FALSE;   // failure
     }
     else if (mchr_is_digit(szName[0]) || szName[0] == L'-' || szName[0] == L'+')
@@ -1851,8 +1874,8 @@ BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name)
             ComboBox_SetEditSel(hCmb2, 0, -1);  // select all
             SetFocus(hCmb2);    // set focus
             // show error message
-            MessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNONZERONAME),
-                        NULL, MB_ICONERROR);
+            LogMessageBoxW(GetParent(hCmb2), LoadStringDx(IDS_ENTERNONZERONAME),
+                           NULL, MB_ICONERROR);
             return FALSE;   // failure
         }
     }
@@ -16297,6 +16320,7 @@ wWinMain(HINSTANCE   hInstance,
          INT         nCmdShow)
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
+    setlocale(LC_CTYPE, "");
 
     // initialize the libraries
     OleInitialize(NULL);

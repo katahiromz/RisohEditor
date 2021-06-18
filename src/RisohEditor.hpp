@@ -46,9 +46,12 @@
 #include <vector>       // for std::vector
 #include <map>          // for std::map
 #include <cstdio>
+#include <clocale>
 #include <strsafe.h>
 
 ////////////////////////////////////////////////////////////////////////////
+
+INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
 #include "resource.h"
 #include "MWindowBase.hpp"

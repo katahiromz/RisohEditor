@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    71     /* Version 71 */
+#define MZC4_MWINDOWBASE_HPP_    171     /* Version 171 */
 
 class MWindowBase;
 class MDialogBase;
@@ -1276,10 +1276,27 @@ MWindowBase::MsgBoxDx(LPCTSTR pszString, LPCTSTR pszTitle,
         Title = GetStringDx(pszTitle);
     }
 
-    MWindowBase::HookCenterMsgBoxDx(TRUE);
-    INT nID = ::MessageBox(m_hwnd, GetStringDx(pszString), 
-                           Title.c_str(), uType);
-    MWindowBase::HookCenterMsgBoxDx(FALSE);
+    extern BOOL g_bNoGuiMode;
+    extern LPWSTR g_pszLogFile;
+    UINT nID;
+    if (g_bNoGuiMode)
+    {
+        if (g_pszLogFile)
+        {
+            if (FILE *fp = _wfopen(g_pszLogFile, L"a"))
+            {
+                fprintf(fp, "%ls\n", GetStringDx(pszString));
+                fclose(fp);
+            }
+        }
+        nID = IDYES;
+    }
+    else
+    {
+        MWindowBase::HookCenterMsgBoxDx(TRUE);
+        nID = ::MessageBox(m_hwnd, GetStringDx(pszString), Title.c_str(), uType);
+        MWindowBase::HookCenterMsgBoxDx(FALSE);
+    }
 
     return nID;
 }
