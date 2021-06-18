@@ -9302,6 +9302,13 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
         return DoExport(pszFile, NULL);
     if (lstrcmpiW(pchDotExt, L".res") == 0)
         return DoSaveResAs(pszFile);
+    if (*pchDotExt == 0)
+    {
+        WCHAR szPath[MAX_PATH];
+        StringCbCopyW(szPath, sizeof(szPath), pszFile);
+        PathAddExtensionW(szPath, L".rc");
+        return DoExport(szPath, NULL);
+    }
     return FALSE;
 }
 
