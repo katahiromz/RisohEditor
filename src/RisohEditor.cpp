@@ -16455,6 +16455,14 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
             continue;
         }
 
+        if (lstrcmpiW(arg, L"-log-file") == 0 ||
+            lstrcmpiW(arg, L"--log-file") == 0)
+        {
+            arg = targv[++iarg];
+            g_pszLogFile = arg;
+            continue;
+        }
+
         if (PathFileExistsW(arg))
         {
             if (!file)
