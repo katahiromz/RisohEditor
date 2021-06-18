@@ -281,6 +281,8 @@ Question 6. Are the 64-bit files supported?
     - Updated mcpp.exe and dfmsc.exe.
 - v.5.5.9 (2021.06.16)
     - Fixed loading resource.h macros.
+- v.5.6.0 (2021.XX.YY)
+    - Don't compress dfmsc.exe (for security).
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

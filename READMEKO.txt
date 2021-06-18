@@ -281,6 +281,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Updated mcpp.exe and dfmsc.exe.
 - v.5.5.9 (2021.06.16)
     - Fixed loading resource.h macros.
+- v.5.6.0 (2021.XX.YY)
+    - Don't compress dfmsc.exe (for security).
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
