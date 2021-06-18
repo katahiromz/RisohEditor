@@ -1582,7 +1582,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "TYPELIB 데이터 추출"
     IDS_CANTEXTRACTTLB, "TYPELIB 데이터를 추출할 수 없습니다."
     IDS_TLBRESBINFILTER, "TYPELIB 데이터 (*.tlb)|*.tlb|바이너리 리소스(*.res)|*.res|텍스트 (*.txt)|*.txt|MIDL 파일 (*.idl)|*.idl|모든 파일 (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

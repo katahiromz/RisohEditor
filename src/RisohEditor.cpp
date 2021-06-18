@@ -11468,12 +11468,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                 {
                     command = command.substr(5);
 
-                    BOOL bOld = g_settings.bAutoLoadNearbyResH;
+                    BOOL bAutoLoadNearbyResH = g_settings.bAutoLoadNearbyResH;
                     g_settings.bAutoLoadNearbyResH = g_load_options.find(L"(no-load-res-h)") != g_load_options.npos;
                     {
                         DoLoadFile(hwnd, command.c_str(), 0, TRUE);
                     }
-                    g_settings.bAutoLoadNearbyResH = bOld;
+                    g_settings.bAutoLoadNearbyResH = bAutoLoadNearbyResH;
                     continue;
                 }
 
@@ -11490,6 +11490,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                     BOOL bWrapManifest = g_settings.bWrapManifest;
                     BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
                     BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
+                    BOOL bBackup = g_settings.bBackup;
                     g_settings.bUseIDC_STATIC = g_save_options.find(L"(idc-static)") != g_save_options.npos;
                     g_settings.bAskUpdateResH = FALSE;
                     g_settings.bCompressByUPX = g_save_options.find(L"(compress)") != g_save_options.npos;
@@ -11500,6 +11501,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                     g_settings.bWrapManifest = g_save_options.find(L"(wrap-manifest)") != g_save_options.npos;
                     g_settings.bUseBeginEnd = g_save_options.find(L"(begin-end)") != g_save_options.npos;
                     g_settings.bRCFileUTF16 = g_save_options.find(L"(utf-16)") != g_save_options.npos;
+                    g_settings.bBackup = g_save_options.find(L"(backup)") != g_save_options.npos;
                     {
                         DoSaveFile(hwnd, command.c_str());
                     }
@@ -11513,6 +11515,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                     g_settings.bWrapManifest = bWrapManifest;
                     g_settings.bUseBeginEnd = bUseBeginEnd;
                     g_settings.bRCFileUTF16 = bRCFileUTF16;
+                    g_settings.bBackup = bBackup;
                     continue;
                 }
             }
