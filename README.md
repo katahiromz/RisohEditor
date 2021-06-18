@@ -292,6 +292,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed loading resource.h macros.
 - v.5.6.0 (2021.XX.YY)
     - Don't compress dfmsc.exe (for security).
+    - Supported command line.
 
 ## Contact Us
 

@@ -283,6 +283,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Fixed loading resource.h macros.
 - v.5.6.0 (2021.XX.YY)
     - Don't compress dfmsc.exe (for security).
+    - Supported command line.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
