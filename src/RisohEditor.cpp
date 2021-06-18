@@ -16298,19 +16298,6 @@ wWinMain(HINSTANCE   hInstance,
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
 
-    if (FALSE)
-    {
-        WCHAR szPath[MAX_PATH];
-        GetModuleFileNameW(NULL, szPath, ARRAYSIZE(szPath));
-        if (wcschr(szPath, L' ') != NULL)
-        {
-            MessageBoxW(NULL,
-                        LoadStringDx(IDS_PATHSPACEERROR),
-                        NULL,
-                        MB_ICONERROR);
-        }
-    }
-
     // initialize the libraries
     OleInitialize(NULL);
 
