@@ -290,9 +290,10 @@ You have to copy the 64-bit file into another place before loading.
     - Updated mcpp.exe and dfmsc.exe.
 - v.5.5.9 (2021.06.16)
     - Fixed loading resource.h macros.
-- v.5.6.0 (2021.XX.YY)
+- v.5.6.0 (2021.06.19)
     - Don't compress dfmsc.exe (for security).
     - Supported command line.
+    - Added RES_load and RES_save functions to EGA language.
 
 ## Contact Us
 

@@ -24,8 +24,6 @@
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
-MStringW g_load_options;
-MStringW g_save_options;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
@@ -2172,6 +2170,8 @@ protected:
 public:
     MDropdownArrow  m_arrow;                    // the language drop-down arrow
     MStringW m_commands;
+    MStringW m_load_options;
+    MStringW m_save_options;
 
     BOOL ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv);
 
@@ -2351,6 +2351,11 @@ public:
     BOOL DoItemSearch(ITEM_SEARCH& search);
     BOOL DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
 
+    bool DoResLoad(const MStringW& filename, const MStringW& options = L"");
+    bool DoResSave(const MStringW& filename, const MStringW& options = L"");
+
+    EGA::arg_t DoEgaResLoad(const EGA::args_t& args);
+    EGA::arg_t DoEgaResSave(const EGA::args_t& args);
     EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
     EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
     EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
@@ -11474,55 +11479,14 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                 if (command.find(L"load:") == 0)
                 {
                     command = command.substr(5);
-
-                    BOOL bAutoLoadNearbyResH = g_settings.bAutoLoadNearbyResH;
-                    g_settings.bAutoLoadNearbyResH = g_load_options.find(L"(no-load-res-h)") != g_load_options.npos;
-                    {
-                        DoLoadFile(hwnd, command.c_str(), 0, TRUE);
-                    }
-                    g_settings.bAutoLoadNearbyResH = bAutoLoadNearbyResH;
+                    DoResLoad(command, m_load_options);
                     continue;
                 }
 
                 if (command.find(L"save:") == 0)
                 {
                     command = command.substr(5);
-                    BOOL bUseIDC_STATIC = g_settings.bUseIDC_STATIC;
-                    BOOL bAskUpdateResH = g_settings.bAskUpdateResH;
-                    BOOL bCompressByUPX = g_settings.bCompressByUPX;
-                    BOOL bSepFilesByLang = g_settings.bSepFilesByLang;
-                    BOOL bStoreToResFolder = g_settings.bStoreToResFolder;
-                    BOOL bSelectableByMacro = g_settings.bSelectableByMacro;
-                    BOOL bRedundantComments = g_settings.bRedundantComments;
-                    BOOL bWrapManifest = g_settings.bWrapManifest;
-                    BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
-                    BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
-                    BOOL bBackup = g_settings.bBackup;
-                    g_settings.bUseIDC_STATIC = g_save_options.find(L"(idc-static)") != g_save_options.npos;
-                    g_settings.bAskUpdateResH = FALSE;
-                    g_settings.bCompressByUPX = g_save_options.find(L"(compress)") != g_save_options.npos;
-                    g_settings.bSepFilesByLang = g_save_options.find(L"(sep-lang)") != g_save_options.npos;
-                    g_settings.bStoreToResFolder = g_save_options.find(L"(no-res-folder)") == g_save_options.npos;
-                    g_settings.bSelectableByMacro = g_save_options.find(L"(lang-macro)") != g_save_options.npos;
-                    g_settings.bRedundantComments = g_save_options.find(L"(less-comments)") == g_save_options.npos;
-                    g_settings.bWrapManifest = g_save_options.find(L"(wrap-manifest)") != g_save_options.npos;
-                    g_settings.bUseBeginEnd = g_save_options.find(L"(begin-end)") != g_save_options.npos;
-                    g_settings.bRCFileUTF16 = g_save_options.find(L"(utf-16)") != g_save_options.npos;
-                    g_settings.bBackup = g_save_options.find(L"(backup)") != g_save_options.npos;
-                    {
-                        DoSaveFile(hwnd, command.c_str());
-                    }
-                    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
-                    g_settings.bAskUpdateResH = bAskUpdateResH;
-                    g_settings.bCompressByUPX = bCompressByUPX;
-                    g_settings.bSepFilesByLang = bSepFilesByLang;
-                    g_settings.bStoreToResFolder = bStoreToResFolder;
-                    g_settings.bSelectableByMacro = bSelectableByMacro;
-                    g_settings.bRedundantComments = bRedundantComments;
-                    g_settings.bWrapManifest = bWrapManifest;
-                    g_settings.bUseBeginEnd = bUseBeginEnd;
-                    g_settings.bRCFileUTF16 = bRCFileUTF16;
-                    g_settings.bBackup = bBackup;
+                    DoResSave(command, m_save_options);
                     continue;
                 }
             }
@@ -15927,6 +15891,76 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
 
 static MMainWnd *s_pMainWnd = NULL;
 
+bool MMainWnd::DoResLoad(const MStringW& filename, const MStringW& options)
+{
+    bool bOK;
+    BOOL bNoGuiMode = g_bNoGuiMode;
+    g_bNoGuiMode = TRUE;
+    BOOL bAutoLoadNearbyResH = g_settings.bAutoLoadNearbyResH;
+    g_settings.bAutoLoadNearbyResH = options.find(L"(no-load-res-h)") != options.npos;
+    {
+        bOK = !!DoLoadFile(m_hwnd, filename.c_str(), 0, TRUE);
+    }
+    g_settings.bAutoLoadNearbyResH = bAutoLoadNearbyResH;
+    g_bNoGuiMode = bNoGuiMode;
+    return bOK;
+}
+
+bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
+{
+    bool bOK;
+    BOOL bNoGuiMode = g_bNoGuiMode;
+    g_bNoGuiMode = TRUE;
+    BOOL bUseIDC_STATIC = g_settings.bUseIDC_STATIC;
+    BOOL bAskUpdateResH = g_settings.bAskUpdateResH;
+    BOOL bCompressByUPX = g_settings.bCompressByUPX;
+    BOOL bSepFilesByLang = g_settings.bSepFilesByLang;
+    BOOL bStoreToResFolder = g_settings.bStoreToResFolder;
+    BOOL bSelectableByMacro = g_settings.bSelectableByMacro;
+    BOOL bRedundantComments = g_settings.bRedundantComments;
+    BOOL bWrapManifest = g_settings.bWrapManifest;
+    BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
+    BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
+    BOOL bBackup = g_settings.bBackup;
+    g_settings.bUseIDC_STATIC = options.find(L"(idc-static)") != options.npos;
+    g_settings.bAskUpdateResH = FALSE;
+    g_settings.bCompressByUPX = options.find(L"(compress)") != options.npos;
+    g_settings.bSepFilesByLang = options.find(L"(sep-lang)") != options.npos;
+    g_settings.bStoreToResFolder = options.find(L"(no-res-folder)") == options.npos;
+    g_settings.bSelectableByMacro = options.find(L"(lang-macro)") != options.npos;
+    g_settings.bRedundantComments = options.find(L"(less-comments)") == options.npos;
+    g_settings.bWrapManifest = options.find(L"(wrap-manifest)") != options.npos;
+    g_settings.bUseBeginEnd = options.find(L"(begin-end)") != options.npos;
+    g_settings.bRCFileUTF16 = options.find(L"(utf-16)") != options.npos;
+    g_settings.bBackup = options.find(L"(backup)") != options.npos;
+    {
+        bOK = !!DoSaveFile(m_hwnd, filename.c_str());
+    }
+    g_settings.bUseIDC_STATIC = bUseIDC_STATIC;
+    g_settings.bAskUpdateResH = bAskUpdateResH;
+    g_settings.bCompressByUPX = bCompressByUPX;
+    g_settings.bSepFilesByLang = bSepFilesByLang;
+    g_settings.bStoreToResFolder = bStoreToResFolder;
+    g_settings.bSelectableByMacro = bSelectableByMacro;
+    g_settings.bRedundantComments = bRedundantComments;
+    g_settings.bWrapManifest = bWrapManifest;
+    g_settings.bUseBeginEnd = bUseBeginEnd;
+    g_settings.bRCFileUTF16 = bRCFileUTF16;
+    g_settings.bBackup = bBackup;
+    g_bNoGuiMode = bNoGuiMode;
+    return bOK;
+}
+
+EGA::arg_t EGA_FN EGA_RES_load(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResLoad(args);
+}
+
+EGA::arg_t EGA_FN EGA_RES_save(const EGA::args_t& args)
+{
+    return s_pMainWnd->DoEgaResSave(args);
+}
+
 EGA::arg_t EGA_FN EGA_RES_search(const EGA::args_t& args)
 {
     return s_pMainWnd->DoEgaResSearch(args);
@@ -16001,6 +16035,56 @@ EGA::arg_t EGA_set_id_or_str(const MIdOrString& id)
     {
         return EGA::make_arg<AstInt>(id.m_id);
     }
+}
+
+EGA::arg_t MMainWnd::DoEgaResLoad(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], true);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+
+    bool ret;
+    MAnsiToWide str0(CP_UTF8, EGA_get_str(arg0));
+    if (args.size() >= 2)
+    {
+        MAnsiToWide str1(CP_UTF8, EGA_get_str(arg1));
+        ret = DoResLoad(str0.c_str(), str1.c_str());
+    }
+    else
+    {
+        ret = DoResLoad(str0.c_str(), L"");
+    }
+
+    return make_arg<AstInt>(ret);
+}
+
+EGA::arg_t MMainWnd::DoEgaResSave(const EGA::args_t& args)
+{
+    using namespace EGA;
+    arg_t arg0, arg1;
+
+    if (args.size() >= 1)
+        arg0 = EGA_eval_arg(args[0], true);
+    if (args.size() >= 2)
+        arg1 = EGA_eval_arg(args[1], false);
+
+    bool ret;
+    MAnsiToWide str0(CP_UTF8, EGA_get_str(arg0));
+    if (args.size() >= 2)
+    {
+        MAnsiToWide str1(CP_UTF8, EGA_get_str(arg1));
+        ret = DoResSave(str0.c_str(), str1.c_str());
+    }
+    else
+    {
+        ret = DoResSave(str0.c_str(), L"");
+    }
+
+    return make_arg<AstInt>(ret);
 }
 
 EGA::arg_t MMainWnd::DoEgaResSearch(const EGA::args_t& args)
@@ -16391,6 +16475,8 @@ void EGA_extension(void)
     EGA_add_fn("RES_get_binary", 0, 3, EGA_RES_get_binary, "RES_get_binary([type[, name[, lang]]])");
     EGA_add_fn("RES_set_binary", 4, 4, EGA_RES_set_binary, "RES_set_binary(type, name, lang, bin)");
     EGA_add_fn("RES_const", 1, 1, EGA_RES_const, "RES_const(name)");
+    EGA_add_fn("RES_load", 1, 2, EGA_RES_load, "RES_load(filename[, options])");
+    EGA_add_fn("RES_save", 1, 2, EGA_RES_save, "RES_save(filename[, options])");
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
@@ -16444,7 +16530,7 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
             lstrcmpiW(arg, L"--load-options") == 0)
         {
             arg = targv[++iarg];
-            g_load_options = arg;
+            m_load_options = arg;
             continue;
         }
 
@@ -16461,7 +16547,7 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
             lstrcmpiW(arg, L"--save-options") == 0)
         {
             arg = targv[++iarg];
-            g_save_options = arg;
+            m_save_options = arg;
             continue;
         }
 

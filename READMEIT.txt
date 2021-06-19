@@ -281,9 +281,10 @@ Domanda 6. I file a 64 bit sono supportati?
     - Updated mcpp.exe and dfmsc.exe.
 - v.5.5.9 (16.06.2021)
     - Fixed loading resource.h macros.
-- v.5.6.0 (2021.XX.YY)
+- v.5.6.0 (19.06.2021)
     - Don't compress dfmsc.exe (for security).
     - Supported command line.
+    - Added RES_load and RES_save functions to EGA language.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
