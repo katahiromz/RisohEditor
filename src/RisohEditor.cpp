@@ -74,6 +74,7 @@ void DoSetFileModified(BOOL bModified)
 }
 
 static HWND s_hMainWnd = NULL;
+static INT s_ret = 0;
 
 enum IMPORT_RESULT
 {
@@ -11479,14 +11480,16 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                 if (command.find(L"load:") == 0)
                 {
                     command = command.substr(5);
-                    DoResLoad(command, m_load_options);
+                    if (!DoResLoad(command, m_load_options))
+                        s_ret = 3;
                     continue;
                 }
 
                 if (command.find(L"save:") == 0)
                 {
                     command = command.substr(5);
-                    DoResSave(command, m_save_options);
+                    if (!DoResSave(command, m_save_options))
+                        s_ret = 4;
                     continue;
                 }
             }
@@ -14806,6 +14809,7 @@ INT_PTR MMainWnd::RunDx()
         // do messaging
         DoMsg(msg);
     }
+
     return INT(msg.wParam);
 }
 
@@ -16629,7 +16633,7 @@ wWinMain(HINSTANCE   hInstance,
     Gdiplus::GdiplusStartup(&gp_token, &gp_startup_input, NULL);
 
     // main process
-    int ret;
+    s_ret = 0;
     MEditCtrl::SetCtrlAHookDx(TRUE);
     {
 #ifdef ATL_SUPPORT
@@ -16643,11 +16647,11 @@ wWinMain(HINSTANCE   hInstance,
             if (app.StartDx())
             {
                 // main loop
-                ret = INT(app.RunDx());
+                app.RunDx();
             }
             else
             {
-                ret = 2;
+                s_ret = 2;
             }
         }
 #ifdef ATL_SUPPORT
@@ -16681,7 +16685,7 @@ wWinMain(HINSTANCE   hInstance,
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    return ret;
+    return s_ret;
 }
 
 //////////////////////////////////////////////////////////////////////////////
