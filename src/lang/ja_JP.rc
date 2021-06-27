@@ -114,7 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
+        MENUITEM "Microsoft のメッセージテーブルを使用する(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "ダイアログ フォントの置き換え(&F)...", ID_REPLACE_DIALOG_FONTS
@@ -1060,7 +1060,7 @@ FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
@@ -1158,7 +1158,7 @@ FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
