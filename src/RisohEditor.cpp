@@ -6544,8 +6544,8 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
         // hide the binary EDIT control
         SetWindowTextW(m_hHexViewer, NULL);
 
-        // it's editable
-        bEditable = TRUE;
+        // editable?
+        bEditable = !g_settings.bUseMSMSGTABLE;
         break;
 
     default:
