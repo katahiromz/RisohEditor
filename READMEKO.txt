@@ -276,18 +276,18 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.5.7 (2021.06.12)
     - 줄 번호를 추가합니다.
 - v.5.5.8 (2021.06.15)
-    - Marks line upon happening error.
-    - Fixed Ctrl+A.
-    - Updated mcpp.exe and dfmsc.exe.
+    - 오류 발생시 라인을 표시합니다.
+    - Ctrl+A가 수정되었습니다.
+    - cpp.exe 및 dfmsc.exe가 업데이트되었습니다.
 - v.5.5.9 (2021.06.16)
-    - Fixed loading resource.h macros.
+    - resource.h 매크로가 수정되었습니다.
 - v.5.6.0 (2021.06.19)
-    - Don't compress dfmsc.exe (for security).
-    - Supported command line.
-    - Added RES_load and RES_save functions to EGA language.
+    - dfmsc.exe (보안을 위해)를 압축하지 않습니다.
+    - 명령줄이 지원됩니다.
+    - EGA 언어에 RES_load 및 RES_save 기능이 추가되었습니다.
 - v.5.6.1 (2021.XX.YY)
-    - Fixed the return value of process.
-    - Improved message table handling.
+    - 프로세스의 반환 값이 수정되었습니다.
+    - 메시지 테이블 처리가 개선되었습니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
