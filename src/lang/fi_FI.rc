@@ -114,7 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "Käytä IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Sanan rivitys", ID_WORD_WRAP
         MENUITEM "Käytä BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
+        MENUITEM "Käytä Microsoft Message &Tablea", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "R&esurssikohteen koodaus...", ID_ENCODING
         MENUITEM "Dialogi&fonttien korvaus...", ID_REPLACE_DIALOG_FONTS
@@ -1060,7 +1060,7 @@ FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
@@ -1158,7 +1158,7 @@ FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
