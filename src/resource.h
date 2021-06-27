@@ -502,6 +502,7 @@
 #define ID_AUTOCOMPLETE                     263
 #define ID_AUTOCOMPLETEDONE                 264
 #define ID_OPENREADMEKO                     265
+#define ID_USEMSMSGTBL                      266
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -512,7 +513,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     266
+        #define _APS_NEXT_COMMAND_VALUE     267
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif

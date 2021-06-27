@@ -140,9 +140,15 @@ struct EntryBase
     // can it be editted by GUI?
     bool can_gui_edit() const
     {
-        return m_type == RT_DIALOG || m_type == RT_MENU ||
-               m_type == RT_STRING || m_type == RT_MESSAGETABLE ||
-               m_type == RT_ACCELERATOR || m_type == WORD(240);
+        if (m_type == RT_DIALOG || m_type == RT_MENU ||
+            m_type == RT_STRING ||
+            m_type == RT_ACCELERATOR || m_type == WORD(240))
+        {
+            return true;
+        }
+        if (m_type == RT_MESSAGETABLE)
+            return !g_settings.bUseMSMSGTABLE;
+        return false;
     }
 
     // is it testable?

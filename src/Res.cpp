@@ -111,8 +111,10 @@ BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
         if (type == L"TYPELIB" && PathFileExistsW(pszVCBat))
             return TRUE;
         return FALSE;
-    case ET_STRING: case ET_MESSAGE:
+    case ET_STRING:
         return TRUE;
+    case ET_MESSAGE:
+        return !g_settings.bUseMSMSGTABLE;
     default:
         return FALSE;
     }

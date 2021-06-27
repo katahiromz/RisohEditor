@@ -114,6 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_ST&ATICを使用する", ID_USEIDC_STATIC
         MENUITEM "行を折り返す(&W)", ID_WORD_WRAP
         MENUITEM "BE&GIN/END を使う", ID_USEBEGINEND
+        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
         MENUITEM "ダイアログ フォントの置き換え(&F)...", ID_REPLACE_DIALOG_FONTS
@@ -1058,7 +1059,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 37, 10, 160, 40
+    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
@@ -1155,7 +1157,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 37, 10, 160, 40
+    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
@@ -1581,7 +1584,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "TYPELIB データの抽出"
     IDS_CANTEXTRACTTLB, "TYPELIB データを抽出できませんでした。"
     IDS_TLBRESBINFILTER, "TYPELIB データ (*.tlb)|*.tlb|バイナリー リソース (*.res)|*.res|テキストファイル (*.txt)|*.txt|MIDL ファイル (*.idl)|*.idl|すべてのファイル (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

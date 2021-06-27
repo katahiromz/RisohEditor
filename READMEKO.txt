@@ -285,6 +285,9 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Don't compress dfmsc.exe (for security).
     - Supported command line.
     - Added RES_load and RES_save functions to EGA language.
+- v.5.6.1 (2021.XX.YY)
+    - Fixed the return value of process.
+    - Improved message table handling.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

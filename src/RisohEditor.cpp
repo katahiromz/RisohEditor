@@ -2459,6 +2459,7 @@ protected:
     void OnEncoding(HWND hwnd);
     void OnQueryConstant(HWND hwnd);
     void OnUseBeginEnd(HWND hwnd);
+    void OnUseMSMSGTBL(HWND hwnd);
     void OnRefreshAll(HWND hwnd);
 
     LRESULT OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam);
@@ -4763,6 +4764,9 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
     }
     else if (entry->m_type == RT_MESSAGETABLE && entry->m_et == ET_MESSAGE)
     {
+        if (g_settings.bUseMSMSGTABLE)
+            return;
+
         // g_res --> found
         WORD lang = entry->m_lang;
         EntrySet found;
@@ -4815,8 +4819,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             }
         }
 
-        // make it non-read-only
-        Edit_SetReadOnly(m_hCodeEditor, FALSE);
+        Edit_SetReadOnly(m_hCodeEditor, g_settings.bUseMSMSGTABLE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -5410,6 +5413,11 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         CheckMenuItem(hMenu, ID_USEBEGINEND, MF_BYCOMMAND | MF_CHECKED);
     else
         CheckMenuItem(hMenu, ID_USEBEGINEND, MF_BYCOMMAND | MF_UNCHECKED);
+
+    if (g_settings.bUseMSMSGTABLE)
+        CheckMenuItem(hMenu, ID_USEMSMSGTBL, MF_BYCOMMAND | MF_CHECKED);
+    else
+        CheckMenuItem(hMenu, ID_USEMSMSGTBL, MF_BYCOMMAND | MF_UNCHECKED);
 
     BOOL bCanEditLabel = TRUE;
 
@@ -6075,24 +6083,32 @@ void MMainWnd::PreviewMessageTable(HWND hwnd, const EntryBase& entry)
     EntrySet found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, entry.m_lang);
 
-    // found --> msg_res
-    MessageRes msg_res;
-    for (auto e : found)
-    {
-        MByteStreamEx stream(e->m_data);
-        if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
-            return;
-    }
-
     // dump the text to m_hCodeEditor
     MString str;
     str += GetLanguageStatement(entry.m_lang);
-    str += L"#ifdef APSTUDIO_INVOKED\r\n";
-    str += L"    #error Ap Studio cannot edit this message table.\r\n";
-    str += L"#endif\r\n";
-    str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump();
-    str += L"#endif\r\n\r\n";
+    if (g_settings.bUseMSMSGTABLE)
+    {
+        ResToText res2text;
+        str = res2text.DumpEntry(entry);
+    }
+    else
+    {
+        // found --> msg_res
+        MessageRes msg_res;
+        for (auto e : found)
+        {
+            MByteStreamEx stream(e->m_data);
+            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+                return;
+        }
+
+        str += L"#ifdef APSTUDIO_INVOKED\r\n";
+        str += L"    #error Ap Studio cannot edit this message table.\r\n";
+        str += L"#endif\r\n";
+        str += L"#ifdef MCDX_INVOKED\r\n";
+        str += msg_res.Dump();
+        str += L"#endif\r\n\r\n";
+    }
     SetWindowTextW(m_hCodeEditor, str.c_str());
     ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
@@ -7041,7 +7057,7 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     {
         return CompileStringTable(strOutput, name, lang, strWide);
     }
-    if (type == RT_MESSAGETABLE)
+    if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
     {
         return CompileMessageTable(strOutput, name, lang, strWide);
     }
@@ -8028,10 +8044,10 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
         type = entry->m_type;
 
         // ignore the string or message tables or font dir
-        if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_FONTDIR)
-        {
+        if (type == RT_STRING || type == RT_FONTDIR)
             continue;
-        }
+        if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
+            continue;
 
         // dump the entry
         MString str = res2text.DumpEntry(*entry);
@@ -8100,41 +8116,44 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
 
     // search the message tables
     found.clear();
-    targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
-    if (found.size())
+    if (!g_settings.bUseMSMSGTABLE)
     {
-        if (g_settings.bRedundantComments)
+        targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+        if (found.size())
         {
-            file.WriteSzA(comment_sep.c_str());
-            file.WriteSzA("// RT_MESSAGETABLE\r\n\r\n");
+            if (g_settings.bRedundantComments)
+            {
+                file.WriteSzA(comment_sep.c_str());
+                file.WriteSzA("// RT_MESSAGETABLE\r\n\r\n");
+            }
+
+            // found --> msg_res
+            MessageRes msg_res;
+            for (auto e : found)
+            {
+                if (e->m_lang != lang)
+                    continue;       // must be same language
+
+                MByteStreamEx stream(e->m_data);
+                if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+                    return FALSE;
+            }
+
+            // dump it
+            MString str;
+            str += L"#ifdef APSTUDIO_INVOKED\r\n";
+            str += L"    #error Ap Studio cannot edit this message table.\r\n";
+            str += L"#endif\r\n";
+            str += L"#ifdef MCDX_INVOKED\r\n";
+            str += msg_res.Dump();
+            str += L"#endif\r\n\r\n";
+
+            // convert it to UTF-8
+            MTextToAnsi t2a(CP_UTF8, str.c_str());
+
+            // write it
+            file.WriteSzA(t2a.c_str());
         }
-
-        // found --> msg_res
-        MessageRes msg_res;
-        for (auto e : found)
-        {
-            if (e->m_lang != lang)
-                continue;       // must be same language
-
-            MByteStreamEx stream(e->m_data);
-            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
-                return FALSE;
-        }
-
-        // dump it
-        MString str;
-        str += L"#ifdef APSTUDIO_INVOKED\r\n";
-        str += L"    #error Ap Studio cannot edit this message table.\r\n";
-        str += L"#endif\r\n";
-        str += L"#ifdef MCDX_INVOKED\r\n";
-        str += msg_res.Dump();
-        str += L"#endif\r\n\r\n";
-
-        // convert it to UTF-8
-        MTextToAnsi t2a(CP_UTF8, str.c_str());
-
-        // write it
-        file.WriteSzA(t2a.c_str());
     }
 
     return TRUE;
@@ -8180,10 +8199,10 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
         type = entry->m_type;
 
         // ignore the string or message tables or font dir 
-        if (type == RT_STRING || type == RT_MESSAGETABLE || type == RT_FONTDIR)
-        {
+        if (type == RT_STRING || type == RT_FONTDIR)
             continue;
-        }
+        if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
+            continue;
 
         // dump the entry
         MString str = res2text.DumpEntry(*entry);
@@ -8247,38 +8266,41 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
 
     // search the message tables
     found.clear();
-    targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
-    if (found.size())
+    if (!g_settings.bUseMSMSGTABLE)
     {
-        if (g_settings.bRedundantComments)
+        targets.search(found, ET_LANG, RT_MESSAGETABLE, (WORD)0, lang);
+        if (found.size())
         {
-            file.WriteSzW(comment_sep.c_str());
-            file.WriteSzW(L"// RT_MESSAGETABLE\r\n\r\n");
+            if (g_settings.bRedundantComments)
+            {
+                file.WriteSzW(comment_sep.c_str());
+                file.WriteSzW(L"// RT_MESSAGETABLE\r\n\r\n");
+            }
+
+            // found --> msg_res
+            MessageRes msg_res;
+            for (auto e : found)
+            {
+                if (e->m_lang != lang)
+                    continue;       // must be same language
+
+                MByteStreamEx stream(e->m_data);
+                if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
+                    return FALSE;
+            }
+
+            // dump it
+            MString str;
+            str += L"#ifdef APSTUDIO_INVOKED\r\n";
+            str += L"    #error Ap Studio cannot edit this message table.\r\n";
+            str += L"#endif\r\n";
+            str += L"#ifdef MCDX_INVOKED\r\n";
+            str += msg_res.Dump();
+            str += L"#endif\r\n\r\n";
+
+            // write it
+            file.WriteSzW(str.c_str());
         }
-
-        // found --> msg_res
-        MessageRes msg_res;
-        for (auto e : found)
-        {
-            if (e->m_lang != lang)
-                continue;       // must be same language
-
-            MByteStreamEx stream(e->m_data);
-            if (!msg_res.LoadFromStream(stream, e->m_name.m_id))
-                return FALSE;
-        }
-
-        // dump it
-        MString str;
-        str += L"#ifdef APSTUDIO_INVOKED\r\n";
-        str += L"    #error Ap Studio cannot edit this message table.\r\n";
-        str += L"#endif\r\n";
-        str += L"#ifdef MCDX_INVOKED\r\n";
-        str += msg_res.Dump();
-        str += L"#endif\r\n\r\n";
-
-        // write it
-        file.WriteSzW(str.c_str());
     }
 
     return TRUE;
@@ -9064,8 +9086,15 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
         }
         if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
-            // No output file
-            return TRUE;
+            if (g_settings.bUseMSMSGTABLE)
+            {
+                return g_res.extract_bin(filename.c_str(), entry);
+            }
+            else
+            {
+                // No output file
+                return TRUE;
+            }
         }
         if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
@@ -9240,11 +9269,10 @@ BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& f
         // extract each data if necessary
         for (auto e : found)
         {
-            if (e->m_type == RT_STRING || e->m_type == RT_MESSAGETABLE ||
-                e->m_type == RT_FONTDIR)
-            {
+            if (e->m_type == RT_STRING || e->m_type == RT_FONTDIR)
                 continue;
-            }
+            if (e->m_type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
+                continue;
             if (!DoExtract(e, TRUE))
                 return FALSE;
         }
@@ -11177,6 +11205,21 @@ void MMainWnd::OnWordWrap(HWND hwnd)
     SelectTV(entry, FALSE, STV_DONTRESET);
 }
 
+void MMainWnd::OnUseMSMSGTBL(HWND hwnd)
+{
+    g_settings.bUseMSMSGTABLE = !g_settings.bUseMSMSGTABLE;
+
+    // create the source EDIT control
+    ReCreateSrcEdit(hwnd);
+
+    // reset fonts
+    ReCreateFonts(hwnd);
+
+    // select the entry to refresh
+    auto entry = g_res.get_entry();
+    SelectTV(entry, FALSE, STV_RESETTEXT);
+}
+
 void MMainWnd::OnUseBeginEnd(HWND hwnd)
 {
     g_settings.bUseBeginEnd = !g_settings.bUseBeginEnd;
@@ -11656,6 +11699,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_USEBEGINEND:
         OnUseBeginEnd(hwnd);
+        break;
+    case ID_USEMSMSGTBL:
+        OnUseMSMSGTBL(hwnd);
         break;
     case ID_SAVE:
         OnSave(hwnd);
@@ -13446,6 +13492,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nDfmCodePage = 0;
     g_settings.bDfmRawTextComments = TRUE;
     g_settings.bDfmNoUnicode = FALSE;
+    g_settings.bUseMSMSGTABLE = FALSE;
     g_settings.nEgaX = CW_USEDEFAULT;
     g_settings.nEgaY = CW_USEDEFAULT;
     g_settings.nEgaWidth = CW_USEDEFAULT;
@@ -13666,6 +13713,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
     keyRisoh.QueryDword(TEXT("bDfmRawTextComments"), (DWORD&)g_settings.bDfmRawTextComments);
     keyRisoh.QueryDword(TEXT("bDfmNoUnicode"), (DWORD&)g_settings.bDfmNoUnicode);
+    keyRisoh.QueryDword(TEXT("bUseMSMSGTABLE"), (DWORD&)g_settings.bUseMSMSGTABLE);
     keyRisoh.QueryDword(TEXT("nEgaX"), (DWORD&)g_settings.nEgaX);
     keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
     keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
@@ -13986,6 +14034,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);
     keyRisoh.SetDword(TEXT("bDfmRawTextComments"), g_settings.bDfmRawTextComments);
     keyRisoh.SetDword(TEXT("bDfmNoUnicode"), g_settings.bDfmNoUnicode);
+    keyRisoh.SetDword(TEXT("bUseMSMSGTABLE"), g_settings.bUseMSMSGTABLE);
     keyRisoh.SetDword(TEXT("nEgaX"), g_settings.nEgaX);
     keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
     keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
@@ -15926,6 +15975,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
     BOOL bUseBeginEnd = g_settings.bUseBeginEnd;
     BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
     BOOL bBackup = g_settings.bBackup;
+    BOOL bUseMSMSGTABLE = g_settings.bUseMSMSGTABLE;
     g_settings.bUseIDC_STATIC = options.find(L"(idc-static)") != options.npos;
     g_settings.bAskUpdateResH = FALSE;
     g_settings.bCompressByUPX = options.find(L"(compress)") != options.npos;
@@ -15937,6 +15987,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
     g_settings.bUseBeginEnd = options.find(L"(begin-end)") != options.npos;
     g_settings.bRCFileUTF16 = options.find(L"(utf-16)") != options.npos;
     g_settings.bBackup = options.find(L"(backup)") != options.npos;
+    g_settings.bUseMSMSGTABLE = options.find(L"(ms-msgtbl)") != options.npos;
     {
         bOK = !!DoSaveFile(m_hwnd, filename.c_str());
     }
@@ -15951,6 +16002,8 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
     g_settings.bUseBeginEnd = bUseBeginEnd;
     g_settings.bRCFileUTF16 = bRCFileUTF16;
     g_settings.bBackup = bBackup;
+    g_settings.bUseMSMSGTABLE = bUseMSMSGTABLE;
+
     g_bNoGuiMode = bNoGuiMode;
     return bOK;
 }

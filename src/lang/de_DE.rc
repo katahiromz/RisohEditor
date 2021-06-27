@@ -114,6 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "Verwenden Sie IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "Zeilenumbruch", ID_WORD_WRAP
         MENUITEM "Verwenden Sie BEGIN / END", ID_USEBEGINEND
+        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Codierung des Ressourcenelements...", ID_ENCODING
         MENUITEM "Dialogschriftarten ersetzen...", ID_REPLACE_DIALOG_FONTS
@@ -1058,7 +1059,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 37, 10, 160, 40
+    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
@@ -1155,7 +1157,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 37, 10, 160, 40
+    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
@@ -1581,7 +1584,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Extract TYPELIB data"
     IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
     IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Binary Resources (*.res)|*.res|Text Files (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

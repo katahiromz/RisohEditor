@@ -114,6 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "Gunakan IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "Kemas Ka&ta", ID_WORD_WRAP
         MENUITEM "Gunakan BE&GIN/END", ID_USEBEGINEND
+        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Enkoding Item Sumber Daya...", ID_ENCODING
         MENUITEM "Ganti &Fon Dialog...", ID_REPLACE_DIALOG_FONTS
@@ -1058,7 +1059,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 37, 10, 160, 40
+    LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1155,7 +1157,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 37, 10, 160, 40
+    LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1310,17 +1313,17 @@ FILETYPE        0x1
 
 IDD_ADDDLGINIT 240
 {
-    cmb2, 0x0143, 0x000D, 0, 0x4243, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000",
-    cmb2, 0x0143, 0x000D, 0, 0x424C, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000",
-    cmb2, 0x0143, 0x0010, 0, 0x4243, 0x4D45, 0x495F, 0x534E, 0x5245, 0x4954, 0x4554, 0x004D,
+    cmb2, 0x0143, 0x000D, 0, 0x4243, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000", 
+    cmb2, 0x0143, 0x000D, 0, 0x424C, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000", 
+    cmb2, 0x0143, 0x0010, 0, 0x4243, 0x4D45, 0x495F, 0x534E, 0x5245, 0x4954, 0x4554, 0x004D, 
     0
 }
 
 IDD_MODIFYDLGINIT 240
 {
-    cmb2, 0x0143, 0x000D, 0, 0x4243, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000",
-    cmb2, 0x0143, 0x000D, 0, 0x424C, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000",
-    cmb2, 0x0143, 0x0010, 0, 0x4243, 0x4D45, 0x495F, 0x534E, 0x5245, 0x4954, 0x4554, 0x004D,
+    cmb2, 0x0143, 0x000D, 0, 0x4243, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000", 
+    cmb2, 0x0143, 0x000D, 0, 0x424C, 0x415F, 0x4444, 0x5453, 0x4952, 0x474E, "\000", 
+    cmb2, 0x0143, 0x0010, 0, 0x4243, 0x4D45, 0x495F, 0x534E, 0x5245, 0x4954, 0x4554, 0x004D, 
     0
 }
 
@@ -1581,7 +1584,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Ekstrak data TYPELIB"
     IDS_CANTEXTRACTTLB, "Tidak bisa mengekstrak data TYPELIB."
     IDS_TLBRESBINFILTER, "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|Berkas Teks (*.txt)|*.txt|Berkas MIDL (*.idl)|*.idl|All Files (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
 }
 
 //////////////////////////////////////////////////////////////////////////////

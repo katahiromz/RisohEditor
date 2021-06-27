@@ -41,6 +41,7 @@ public:
         CheckDlgButton(hwnd, chx5, g_settings.bRedundantComments ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx6, g_settings.bWrapManifest ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(hwnd, chx7, g_settings.bRCFileUTF16 ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, chx8, g_settings.bUseMSMSGTABLE ? BST_CHECKED : BST_UNCHECKED);
 
         SendDlgItemMessageW(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)L"-old");
         SendDlgItemMessageW(hwnd, cmb1, CB_ADDSTRING, 0, (LPARAM)L"-bak");
@@ -65,6 +66,7 @@ public:
         g_settings.bRedundantComments = (IsDlgButtonChecked(hwnd, chx5) == BST_CHECKED);
         g_settings.bWrapManifest = (IsDlgButtonChecked(hwnd, chx6) == BST_CHECKED);
         g_settings.bRCFileUTF16 = (IsDlgButtonChecked(hwnd, chx7) == BST_CHECKED);
+        g_settings.bUseMSMSGTABLE = (IsDlgButtonChecked(hwnd, chx8) == BST_CHECKED);
 
         WCHAR szText[32];
         GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));

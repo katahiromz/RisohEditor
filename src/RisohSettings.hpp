@@ -99,6 +99,7 @@ struct RisohSettings
     INT                 nDfmCodePage;       // Delphi DFM Data codepage
     BOOL                bDfmRawTextComments; // Delphi DFM raw text comments
     BOOL                bDfmNoUnicode;      // Don't use Unicode nor UTF-8 in Delphi DFM
+    BOOL                bUseMSMSGTABLE;     // Use Microsoft's MESSAGETABLE
     INT                 nEgaX;
     INT                 nEgaY;
     INT                 nEgaWidth;

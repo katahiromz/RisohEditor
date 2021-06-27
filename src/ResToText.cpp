@@ -128,7 +128,19 @@ ResToText::GetEntryFileName(const EntryBase& entry)
         }
         else if (wType == (WORD)(UINT_PTR)RT_MESSAGETABLE)
         {
-            // No output file
+            if (g_settings.bUseMSMSGTABLE)
+            {
+                ret += L"MessageTable_";
+                if (entry.m_name.is_zero())
+                    ret += DumpEscapedName(1);
+                else
+                    ret += DumpEscapedName(entry.m_name);
+                ret += L".bin";
+            }
+            else
+            {
+                // No output file
+            }
         }
         else if (wType == (WORD)(UINT_PTR)RT_GROUP_CURSOR)
         {
@@ -469,21 +481,35 @@ ResToText::DoMessage(const EntryBase& entry)
     EntrySet found;
     g_res.search(found, ET_LANG, RT_MESSAGETABLE, entry.m_name, entry.m_lang);
 
+    MIdOrString name = entry.m_name;
     MessageRes msg_res;
     for (auto e : found)
     {
-        MByteStreamEx stream(entry.m_data);
-        if (!msg_res.LoadFromStream(stream, entry.m_name.m_id))
+        MByteStreamEx stream(e->m_data);
+        if (!msg_res.LoadFromStream(stream, 0))
             return LoadStringDx(IDS_INVALIDDATA);
+        name = e->m_name;
+        break;
     }
 
     MString str;
     if (entry.m_name.empty())
         str += GetLanguageStatement(entry.m_lang);
 
-    str += L"#ifdef MCDX_INVOKED\r\n";
-    str += msg_res.Dump();
-    str += L"#endif\r\n\r\n";
+    if (g_settings.bUseMSMSGTABLE)
+    {
+        str += DumpName(entry.m_type, name);
+        str += L" MESSAGETABLE \"";
+        str += GetEntryFileName(entry);
+        str += L"\"\r\n\r\n";
+    }
+    else
+    {
+        str += L"#ifdef MCDX_INVOKED\r\n";
+        str += msg_res.Dump();
+        str += L"#endif\r\n\r\n";
+    }
+
     return str;
 }
 

@@ -114,6 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "Käytä IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "&Sanan rivitys", ID_WORD_WRAP
         MENUITEM "Käytä BE&GIN/END", ID_USEBEGINEND
+        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "R&esurssikohteen koodaus...", ID_ENCODING
         MENUITEM "Dialogi&fonttien korvaus...", ID_REPLACE_DIALOG_FONTS
@@ -1058,7 +1059,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 37, 10, 160, 40
+    LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
@@ -1155,7 +1157,8 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 37, 10, 160, 40
+    LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
@@ -1581,7 +1584,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Extract TYPELIB data"
     IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
     IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Binary Resources (*.res)|*.res|Text Files (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
 }
 
 //////////////////////////////////////////////////////////////////////////////
