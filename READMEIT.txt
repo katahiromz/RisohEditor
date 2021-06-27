@@ -276,18 +276,18 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.5.7 (12.06.2021)
     - Aggiunta numeri di linea.
 - v.5.5.8 (15.06.2021)
-    - Marks line upon happening error.
-    - Fixed Ctrl+A.
-    - Updated mcpp.exe and dfmsc.exe.
+    - Evidenzia le linee in caso di errore.
+    - Corretto Ctrl+A.
+    - Aggiornati mcpp.exe e dfmsc.exe.
 - v.5.5.9 (16.06.2021)
-    - Fixed loading resource.h macros.
+    - Corretto caricamento macro resource.h.
 - v.5.6.0 (19.06.2021)
-    - Don't compress dfmsc.exe (for security).
-    - Supported command line.
-    - Added RES_load and RES_save functions to EGA language.
-- v.5.6.1 (2021.XX.YY)
-    - Fixed the return value of process.
-    - Improved message table handling.
+    - on comprime dfmsc.exe (per questioni di sicurezza).
+    - Supporto linea di comando.
+    - Aggiunte funzioni RES_load e RES_save a linguaggio EGA.
+- v.5.6.1 (YY.XX.2021)
+    - Corretto il valore di ritorno del processo.
+    - Migliorata gestione della tabella messaggi.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
