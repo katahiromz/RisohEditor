@@ -114,7 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "使用IDC_ST&ATIC", ID_USEIDC_STATIC
         MENUITEM "自动换行(&W)", ID_WORD_WRAP
         MENUITEM "使用BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
+        MENUITEM "使用微软消息表(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "资源项的编码(&E)...", ID_ENCODING
         MENUITEM "替换对话框字体(&F)...", ID_REPLACE_DIALOG_FONTS
@@ -1059,7 +1059,7 @@ FONT 9, "宋体"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "导出RC文件将生成一些相关文件。您可以选择以下选项:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "使用微软消息表(&T)", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 195, 14
@@ -1157,7 +1157,7 @@ FONT 9, "宋体"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "保存RC文件将生成一些相关文件。您可以选择以下选项。", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "使用微软消息表(&T)", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 195, 14
