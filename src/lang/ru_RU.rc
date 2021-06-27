@@ -114,7 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "Испо&льзовать IDC_STATIC", ID_USEIDC_STATIC
         MENUITEM "&Заворачивать строки", ID_WORD_WRAP
         MENUITEM "Использовать BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
+        MENUITEM "Использовать &таблицу сообщений Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Кодировка ресурсного элемента...", ID_ENCODING
         MENUITEM "Заменить Диалоговые &Шрифты...", ID_REPLACE_DIALOG_FONTS
@@ -1060,7 +1060,7 @@ FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При экспорте RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
@@ -1158,7 +1158,7 @@ FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При сохранении RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
+    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 195, 14
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
     AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 195, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
