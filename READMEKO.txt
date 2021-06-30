@@ -288,6 +288,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.6.1 (2021.XX.YY)
     - 프로세스의 반환 값이 수정되었습니다.
     - 메시지 테이블 처리가 개선되었습니다.
+    - Don't make uppercase on renaming on TreeView.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

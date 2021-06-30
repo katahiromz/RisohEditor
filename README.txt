@@ -288,6 +288,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.6.1 (2021.XX.YY)
     - Fixed the return value of process.
     - Improved message table handling.
+    - Don't make uppercase on renaming on TreeView.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

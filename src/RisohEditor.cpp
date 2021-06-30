@@ -12238,11 +12238,6 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                     return FALSE;   // reject
                 }
 
-                if (old_name.is_str())
-                    CharUpperW(&old_name.m_str[0]);
-                if (new_name.is_str())
-                    CharUpperW(&new_name.m_str[0]);
-
                 if (old_name == new_name)
                     return FALSE;   // reject
 
