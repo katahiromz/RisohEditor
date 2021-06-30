@@ -285,10 +285,10 @@ Domanda 6. I file a 64 bit sono supportati?
     - on comprime dfmsc.exe (per questioni di sicurezza).
     - Supporto linea di comando.
     - Aggiunte funzioni RES_load e RES_save a linguaggio EGA.
-- v.5.6.1 (YY.XX.2021)
+- v.5.6.1 (01.07.2021)
     - Corretto il valore di ritorno del processo.
     - Migliorata gestione della tabella messaggi.
-    - Don't make uppercase on renaming on TreeView.
+    - Don't change the case of name when renaming it in TreeView.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

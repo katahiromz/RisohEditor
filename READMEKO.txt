@@ -285,10 +285,10 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - dfmsc.exe (보안을 위해)를 압축하지 않습니다.
     - 명령줄이 지원됩니다.
     - EGA 언어에 RES_load 및 RES_save 기능이 추가되었습니다.
-- v.5.6.1 (2021.XX.YY)
+- v.5.6.1 (2021.07.01)
     - 프로세스의 반환 값이 수정되었습니다.
     - 메시지 테이블 처리가 개선되었습니다.
-    - Don't make uppercase on renaming on TreeView.
+    - Don't change the case of name when renaming it in TreeView.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
