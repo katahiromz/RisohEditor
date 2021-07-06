@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Créer une sauvegarde", chx4, 5, 120, 123, 14
-    RTEXT "Suffixe de sauvegarde:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Créer une sauvegarde", chx4, 5, 120, 110, 14
+    RTEXT "Suffixe de sauvegarde:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Créer une sauvegarde", chx4, 5, 120, 123, 14
-    RTEXT "Suffixe de sauvegarde :", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Créer une sauvegarde", chx4, 5, 120, 110, 14
+    RTEXT "Suffixe de sauvegarde :", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP

@@ -1064,8 +1064,8 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "バックアップを作成する(&B)", chx4, 5, 120, 123, 14
-    RTEXT "サフィックス:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "バックアップを作成する(&B)", chx4, 5, 120, 110, 14
+    RTEXT "サフィックス:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 240, 14
@@ -1163,8 +1163,8 @@ FONT 9, "MS UI Gothic"
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "バックアップを作成する(&B)", chx4, 5, 120, 123, 14
-    RTEXT "サフィックス:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "バックアップを作成する(&B)", chx4, 5, 120, 110, 14
+    RTEXT "サフィックス:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 240, 14

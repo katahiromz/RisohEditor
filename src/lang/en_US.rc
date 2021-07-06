@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Use B&EGIN/END keywords", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Create &backup", chx4, 5, 120, 123, 14
-    RTEXT "Backup-Suffix:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Create &backup", chx4, 5, 120, 110, 14
+    RTEXT "Backup-Suffix:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Use B&EGIN/END keywords", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Make language selectable by LANGUAGE_* macro", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Create &backup", chx4, 5, 120, 123, 14
-    RTEXT "Backup Suffix:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Create &backup", chx4, 5, 120, 110, 14
+    RTEXT "Backup Suffix:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14

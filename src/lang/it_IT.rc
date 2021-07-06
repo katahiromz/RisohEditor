@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Crea file &backup", chx4, 5, 120, 123, 14
-    RTEXT "con suffisso:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Crea file &backup", chx4, 5, 120, 110, 14
+    RTEXT "con suffisso:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Visualizza &commenti ridondanti", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Includi istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Separa file risorse per &lingua", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Rendi la lingua selezionabile via macro LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Crea file &backup", chx4, 5, 120, 123, 14
-    RTEXT "con suffisso:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Crea file &backup", chx4, 5, 120, 110, 14
+    RTEXT "con suffisso:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Commenti ridondanti output", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Includi le istruzioni ma&nifest tra #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14

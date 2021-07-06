@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Oddziel pliki zasobów według &języka", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Użyj słów kluczowych B&EGIN/END POCZĄTEK/KONIEC", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Wybierz język za pomocą makra LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Utwórz &kopię", chx4, 5, 120, 135, 14
-    RTEXT "sufiksu kopii zapasowej:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Utwórz &kopię", chx4, 5, 120, 110, 14
+    RTEXT "sufiksu kopii zapasowej:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Oddziel pliki zasobów według &języka", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Użyj słów kluczowych B&EGIN/END POCZĄTEK/KONIEC", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Wybierz język za pomocą makra LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Utwórz &kopię:", chx4, 5, 120, 135, 14
-    RTEXT "sufiksu kopii zapasowej:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Utwórz &kopię:", chx4, 5, 120, 110, 14
+    RTEXT "sufiksu kopii zapasowej:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Output redundant &comments", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Wrap the ma&nifest statements by #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14

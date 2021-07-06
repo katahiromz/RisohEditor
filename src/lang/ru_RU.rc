@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Создать &копию", chx4, 5, 120, 123, 14
-    RTEXT "Суффикс:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Создать &копию", chx4, 5, 120, 110, 14
+    RTEXT "Суффикс:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Создать &копию", chx4, 5, 120, 123, 14
-    RTEXT "Суффикс:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Создать &копию", chx4, 5, 120, 110, 14
+    RTEXT "Суффикс:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14

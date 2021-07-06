@@ -1064,8 +1064,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Ein Backup erstellen", chx4, 5, 120, 123, 14
-    RTEXT "Backup-Suffix:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Ein Backup erstellen", chx4, 5, 120, 110, 14
+    RTEXT "Backup-Suffix:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Redundante Kommentare ausgeben", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
@@ -1163,8 +1163,8 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Machen Sie die Sprache mit dem Makro LANGUAGE_* wählbar", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Ein Backup erstellen", chx4, 5, 120, 123, 14
-    RTEXT "Backup-Suffix:", -1, 135, 122, 60, 12
+    AUTOCHECKBOX "Ein Backup erstellen", chx4, 5, 120, 110, 14
+    RTEXT "Backup-Suffix:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Redundante Kommentare ausgeben", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Schließen Sie die Manifest-Anweisungen mit #ifndef MSVC ... #endif ein", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
