@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 165, 29
+    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 165, 29
+    LTEXT "Beim Exportieren einer RC-Datei werden einige verwandte Dateien generiert. Sie können folgende Optionen auswählen:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Trennen Sie die Ressourcendateien nach Sprache", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Verwenden Sie die Schlüsselwörter BEGIN / END", chx2, 5, 80, 240, 14

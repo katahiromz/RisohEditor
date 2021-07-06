@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
+    LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
+    LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14

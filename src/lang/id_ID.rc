@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
+    LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
+    LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14

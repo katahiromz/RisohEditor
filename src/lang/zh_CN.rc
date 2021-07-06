@@ -1058,7 +1058,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "导出RC文件将生成一些相关文件。您可以选择以下选项:", -1, 35, 5, 165, 29
+    LTEXT "导出RC文件将生成一些相关文件。您可以选择以下选项:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "使用微软消息表(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 240, 14
@@ -1156,7 +1156,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "宋体"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "保存RC文件将生成一些相关文件。您可以选择以下选项。", -1, 35, 5, 165, 29
+    LTEXT "保存RC文件将生成一些相关文件。您可以选择以下选项。", -1, 35, 5, 210, 29
     AUTOCHECKBOX "使用微软消息表(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 240, 14

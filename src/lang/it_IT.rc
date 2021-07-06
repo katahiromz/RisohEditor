@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "L'esportazione di un file .rc genererà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 35, 5, 165, 29
+    LTEXT "L'esportazione di un file .rc genererà alcuni file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Usa &tabella messaggi Microsoft", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "File risorse separati per &lingua", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Il salvataggio di un file .rc genera un serie di file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 35, 5, 165, 29
+    LTEXT "Il salvataggio di un file .rc genera un serie di file relativi.\r\nPuoi scegliere le seguenti opzioni:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Usa &tabella messaggi Microsoft", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Separa file risorse per &lingua", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Usa parole chiave B&EGIN/END", chx2, 5, 80, 240, 14

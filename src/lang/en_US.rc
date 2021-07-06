@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Exporting a RC file will generate some related files. You can choose the following options:", -1, 35, 5, 165, 29
+    LTEXT "Exporting a RC file will generate some related files. You can choose the following options:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Use B&EGIN/END keywords", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Saving a RC file will generate some related files. You can choose the following options:", -1, 35, 5, 165, 29
+    LTEXT "Saving a RC file will generate some related files. You can choose the following options:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Separate resource files by &language", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Use B&EGIN/END keywords", chx2, 5, 80, 240, 14

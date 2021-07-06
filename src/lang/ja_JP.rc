@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
+    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
+    LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14

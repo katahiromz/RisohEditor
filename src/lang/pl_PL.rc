@@ -1059,7 +1059,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Eksportowanie pliku RC wygeneruje kilka powiązanych plików. Możesz wybrać następujące opcje:", -1, 35, 5, 165, 29
+    LTEXT "Eksportowanie pliku RC wygeneruje kilka powiązanych plików. Możesz wybrać następujące opcje:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Oddziel pliki zasobów według &języka", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Użyj słów kluczowych B&EGIN/END POCZĄTEK/KONIEC", chx2, 5, 80, 240, 14
@@ -1157,7 +1157,7 @@ STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Zapisanie pliku RC wygeneruje kilka powiązanych plików. Możesz wybrać następujące opcje:", -1, 35, 5, 165, 29
+    LTEXT "Zapisanie pliku RC wygeneruje kilka powiązanych plików. Możesz wybrać następujące opcje:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "Oddziel pliki zasobów według &języka", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Użyj słów kluczowych B&EGIN/END POCZĄTEK/KONIEC", chx2, 5, 80, 240, 14
