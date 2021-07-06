@@ -1296,10 +1296,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.6.1\0"
+            VALUE "FileVersion", "5.6.2\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.6.1\0"
+            VALUE "ProductVersion", "5.6.2\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1339,8 +1339,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.6.1 par Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.6.1 - Fichier: %s"
+    IDS_APPNAME, "RisohEditor 5.6.2 par Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.6.2 - Fichier: %s"
     IDS_EXTRACTRES, "Extraire la ressource"
     IDS_RESBINFILTER, "Ressources binaires (*.res)|*.res|Fichiers binaires (*.bin)|*.bin|Tous les fichiers (*.*)|*.*|"
     IDS_CANNOTSAVE, "Impossible de sauvegarder."
@@ -1366,7 +1366,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Impossible de remplacer le bitmap."
     IDS_REPLACEBMP, "Remplacer le bitmap"
     IDS_ERRORCODE, "Code d'erreur %d"
-    IDS_VERSIONINFO, "RisohEditor Version 5.6.1\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicence: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Version 5.6.2\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicence: GPLv3 (freeware)"
     IDS_ADDRES, "Ajouter une ressource"
     IDS_CANNOTADDRES, "Impossible d'ajouter la ressource."
     IDS_CANTADDBMP, "Impossible d'ajouter le bitmap."
