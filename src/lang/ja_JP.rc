@@ -1053,24 +1053,24 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "すべてリセット(&S)", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "エクスポート オプション"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "RC ファイルを &UTF-16 で出力する", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "RC ファイルを &UTF-16 で出力する", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1151,24 +1151,24 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "キャンセル", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "保存オプション"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RCファイルを保存すると、関連するファイルも生成されます。以下のオプションを選択できます:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Microsoft の MESSAGE&TABLE を使用する", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "言語別にファイルを分ける(&L)", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "BEGIN/END キーワードを使う(&E)", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "マクロで言語を選べるようにする(&M)", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "バックアップを作成する(&B)　　サフィックス:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "RC ファイルを &UTF-16 で出力する", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "キャンセル", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "冗長なコメントを出力する(&C)", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "マニフェスト文を#ifndef MSVC ... #endif で囲む(&N)", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "RC ファイルを &UTF-16 で出力する", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "キャンセル", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170

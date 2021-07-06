@@ -1053,24 +1053,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Set &Ulang Semua", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Pilihan Ekspor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Mengekspor berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "&Buat dadangan  Suffix Cadangan:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Ko&mentar keluaran yang tidak penting", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Ko&mentar keluaran yang tidak penting", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Batal", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1151,24 +1151,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Batal", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Pilihan Simpan"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "Menyimpan berkas RC akan membuat beberapa berkas terkait. Anda bisa memilih opsi berikut:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Buat &cadangan  Suffix Cadangan:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Komentar keluaran &yang tidak diperlukan", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Batal", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Komentar keluaran &yang tidak diperlukan", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Batal", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170

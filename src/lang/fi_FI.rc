@@ -1053,24 +1053,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Palauta k&aikki", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Vientiasetukset"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC-tiedoston vieminen luo joitakin toisiinsa liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Luo &varmuuskopion jälkiliite:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Peruuta", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Peruuta", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1151,24 +1151,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Peruuta", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Tallenna asetukset"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC tiedoston tallentaminen luo joitakin liittyviä tiedostoja. Voit valita seuraavista vaihtoehdoista:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Käytä Microsoft MESSAGE&TABLEa", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Luo &varmuuskopion jälkiliite:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Peruuta", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Peruuta", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170

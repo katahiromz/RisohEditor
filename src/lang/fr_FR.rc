@@ -1053,24 +1053,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Effacer tout", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Options d'exportation"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "L'exportation d'un fichier RC générera certains fichiers associés. Vous pouvez choisir les options suivantes :", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde :", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
+    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Annuler", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1151,24 +1151,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Annuler", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Options d'enregistrement"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "L'enregistrement d'un fichier RC générera des fichiers associés. Vous pouvez choisir les options suivantes :", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Fichiers de ressources séparés par langue", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Utilisez les mots clés BEGIN / END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Rendre la langue sélectionnable par la macro LANGUAGE_*", chx3, 5, 97, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
     AUTOCHECKBOX "Créer une sauvegarde  Suffixe de sauvegarde :", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 195, 18, BS_MULTILINE | NOT WS_TABSTOP
-    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Annuler", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "Sortie de commentaires redondants", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Enveloppez les instructions manifestes par #ifndef MSVC ... #endif", chx6, 5, 157, 240, 18, BS_MULTILINE | NOT WS_TABSTOP
+    AUTOCHECKBOX "Sortie des fichiers RC en UTF-16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Annuler", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170

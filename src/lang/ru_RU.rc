@@ -1053,24 +1053,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Сбросит&ь все", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Параметры экспорта"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При экспорте RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Создать &копию             Суффикс:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Сохранять RC-файлы в UTF-&16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Отмена", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Сохранять RC-файлы в UTF-&16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Отмена", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1151,24 +1151,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Отмена", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "Параметры сохранения"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "При сохранении RC-файла создаются относящиеся к нему другие файлы. Выберите следующие опции:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Использовать &таблицу сообщений Microsoft", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Разделять файлы ресурсов по &языку", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Используйте ключевые &слова BEGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Язык выбирается макросом LANGUAGE_*", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Создать &копию             Суффикс:", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "Сохранять RC-файлы в UTF-&16", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "OK", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "Отмена", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "&Дополнительные комментарии", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "&Оборачивать manifest в #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Сохранять RC-файлы в UTF-&16", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "Отмена", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170

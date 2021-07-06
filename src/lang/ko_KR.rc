@@ -1054,24 +1054,24 @@ FONT 9, "Gulim"
     PUSHBUTTON "모두 초기화(&S)", psh9, 5, 200, 95, 14
 }
 
-IDD_EXP_OPTIONS DIALOG 0, 0, 205, 225
+IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "내보내기 옵션"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC 파일을 내보내면 일부 관련 파일이 생성됩니다. 다음 옵션을 선택할 수 있습니다:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "백업 접두사 백업 생성(&B):", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "확인", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "확인", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "취소", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_LANGS DIALOG 0, 0, 250, 235
@@ -1152,24 +1152,24 @@ FONT 9, "Gulim"
     PUSHBUTTON "취소", IDCANCEL, 140, 200, 60, 14
 }
 
-IDD_SAVE_OPTIONS DIALOG 0, 0, 205, 225
+IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
 CAPTION "저장 옵션"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC 파일을 저장하면 일부 관련 파일이 생성됩니다. 다음 옵션을 선택할 수 있습니다:", -1, 35, 5, 165, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 195, 14
-    AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 195, 14
-    AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 195, 14
-    AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 195, 14
+    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
     AUTOCHECKBOX "Backup Suffix를 백업 생성(&B):", chx4, 5, 120, 123, 14
     COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 195, 14
-    AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 195, 14
-    AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 195, 14
-    DEFPUSHBUTTON "확인", IDOK, 74, 205, 60, 14
-    PUSHBUTTON "취소", IDCANCEL, 140, 205, 60, 14
+    AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 240, 14
+    DEFPUSHBUTTON "확인", IDOK, 120, 205, 60, 14
+    PUSHBUTTON "취소", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170
