@@ -1064,8 +1064,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "&Pisahkan berkas sumber daya dengan bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "&Buat dadangan  Suffix Cadangan:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "&Buat dadangan", chx4, 5, 120, 123, 14
+    RTEXT "Suffix Cadangan:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Ko&mentar keluaran yang tidak penting", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 240, 14
@@ -1162,8 +1163,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Pisah berkas sumber daya dengan &bahasa", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Gunakan kata kunci B&EGIN/END", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Buat bahasa bisa dipilih dengan makro LANGUAGE_*", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Buat &cadangan  Suffix Cadangan:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Buat &cadangan", chx4, 5, 120, 123, 14
+    RTEXT "Suffix Cadangan:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Komentar keluaran &yang tidak diperlukan", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "kemas pernyataan ma&nifest dengan #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "Berkas keluaran RC sebagai &UTF-16", chx7, 5, 180, 240, 14

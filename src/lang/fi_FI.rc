@@ -1064,8 +1064,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Erota resurssitiedostot kie&len mukaan", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Tee kielestä valittava LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Luo &varmuuskopion jälkiliite:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Luo &varmuuskopion", chx4, 5, 120, 123, 14
+    RTEXT "jälkiliite:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 240, 14
@@ -1162,8 +1163,9 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "Erota resurssitiedostot kie&littäin", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "Käytä B&EGIN/END-avainsanoja", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "Tee kieli valittavaksi LANGUAGE_* makrolla", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Luo &varmuuskopion jälkiliite:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "Luo &varmuuskopion", chx4, 5, 120, 123, 14
+    RTEXT "jälkiliite:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "Tulosta turhat &kommentit", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "Rivitä ma&nifestlausekkeet #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "Tulosta RC-tiedostot &UTF-16 muodossa", chx7, 5, 180, 240, 14

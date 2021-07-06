@@ -1063,8 +1063,9 @@ FONT 9, "宋体"
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "创建备份(&B)  后缀:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "创建备份(&B)", chx4, 5, 120, 123, 14
+    RTEXT "后缀:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "产出冗余注释(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "用 #ifndef MSVC ... #endif 包装 ma&nifest", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "产出 RC 文件为 &UTF-16", chx7, 5, 180, 240, 14
@@ -1161,8 +1162,9 @@ FONT 9, "宋体"
     AUTOCHECKBOX "按语言分开资源文件(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "使用 BEGIN/END 关键字(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "通过 LANGUAGE_ * 宏使语言可选(&M)", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "创建备份(&B)  后缀:", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "创建备份(&B)", chx4, 5, 120, 123, 14
+    RTEXT "后缀:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "产出冗余注释(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "用 #ifndef MSVC ... #endif 包装 ma&nifest", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "产出 RC 文件为 &UTF-16", chx7, 5, 180, 240, 14

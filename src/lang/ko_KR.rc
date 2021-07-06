@@ -1065,8 +1065,9 @@ FONT 9, "Gulim"
     AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "백업 접두사 백업 생성(&B):", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "를 백업 생성(&B)", chx4, 5, 120, 123, 14
+    RTEXT "Backup Suffix:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 240, 14
@@ -1163,8 +1164,9 @@ FONT 9, "Gulim"
     AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Backup Suffix를 백업 생성(&B):", chx4, 5, 120, 123, 14
-    COMBOBOX cmb1, 135, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX "를 백업 생성(&B)", chx4, 5, 120, 123, 14
+    RTEXT "Backup Suffix:", -1, 135, 122, 60, 12
+    COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 240, 14
