@@ -298,6 +298,8 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed the return value of process.
     - Improved message table handling.
     - Don't change the case of name when renaming it in TreeView.
+- v.5.6.2 (2021.XX.YY)
+    - Enlarged width of "Save Options" and "Export Options" dialogs.
 
 ## Contact Us
 

@@ -289,6 +289,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - 프로세스의 반환 값이 수정되었습니다.
     - 메시지 테이블 처리가 개선되었습니다.
     - Don't change the case of name when renaming it in TreeView.
+- v.5.6.2 (2021.XX.YY)
+    - Enlarged width of "Save Options" and "Export Options" dialogs.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
