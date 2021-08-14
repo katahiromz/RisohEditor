@@ -114,7 +114,7 @@ IDR_MAINMENU MENU
         MENUITEM "IDC_STATIC 사용(&A)", ID_USEIDC_STATIC
         MENUITEM "단어 줄바꿈(&W)", ID_WORD_WRAP
         MENUITEM "BEGIN/END 사용(&G)", ID_USEBEGINEND
-        MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
+        MENUITEM "Microsoft 메시지 테이블 사용(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "리소스 항목의 인코딩(&E)...", ID_ENCODING
         MENUITEM "대화 상자 글꼴 바꾸기(&F)...", ID_REPLACE_DIALOG_FONTS
@@ -130,9 +130,9 @@ IDR_MAINMENU MENU
     POPUP "도움말(&H)"
     {
         MENUITEM "README.txt 열기 (영어)(&R)", ID_OPENREADME
+        MENUITEM "README.txt 열기.txt (한국어)(&K)", ID_OPENREADMEKO
         MENUITEM "README.txt 열기.txt (이탈리아어)(&T)", ID_OPENREADMEIT
         MENUITEM "README.txt 열기.txt (일본어)(&J)", ID_OPENREADMEJP
-        MENUITEM "README.txt 열기.txt (한국어)(&K)", ID_OPENREADMEKO
         MENUITEM "LICENSE.txt 열기(&L)", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "RisohEditor 안내서(&G)", ID_GUIDE
@@ -554,18 +554,18 @@ FONT 9, "Gulim"
     LTEXT "명령 ID(&M):", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
-    AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
-    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
-    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
-    AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
-    AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
-    AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
-    AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
-    AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
-    AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
+    AUTOCHECKBOX "회색빛(&G)", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "비트맵(&B)", chx3, 135, 60, 60, 14
+    AUTOCHECKBOX "소유자표시(&O)", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "체크(&C)", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "구분기호(&P)", chx6, 140, 80, 60, 14
+    AUTOCHECKBOX "메뉴줄분리(&B)", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "메뉴분리(&R)", chx8, 85, 100, 70, 14
+    AUTOCHECKBOX "기본값(&D)", chx9, 5, 120, 60, 14
+    AUTOCHECKBOX "강조(&H)", chx10, 70, 120, 60, 14
+    AUTOCHECKBOX "라디오체크(&K)", chx11, 135, 120, 60, 14
+    AUTOCHECKBOX "오른쪽순서(&T)", chx12, 5, 139, 60, 14
+    AUTOCHECKBOX "오른쪽정렬(&J)", chx13, 70, 140, 70, 14
     LTEXT "도움말 ID(&L):", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "확인", IDOK, 80, 180, 60, 14
@@ -582,18 +582,18 @@ FONT 9, "Gulim"
     LTEXT "명령 ID(&M):", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
-    AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
-    AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
-    AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
-    AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
-    AUTOCHECKBOX "MENU&BARBREAK", chx7, 5, 100, 75, 14
-    AUTOCHECKBOX "MENUB&REAK", chx8, 85, 100, 70, 14
-    AUTOCHECKBOX "&DEFAULT", chx9, 5, 120, 60, 14
-    AUTOCHECKBOX "&HILITE", chx10, 70, 120, 60, 14
-    AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
-    AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
-    AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
+    AUTOCHECKBOX "회색빛(&G)", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "비트맵(&B)", chx3, 135, 60, 60, 14
+    AUTOCHECKBOX "소유자표시(&O)", chx4, 5, 80, 65, 14
+    AUTOCHECKBOX "체크(&C)", chx5, 75, 80, 60, 14
+    AUTOCHECKBOX "구분기호(&P)", chx6, 140, 80, 60, 14
+    AUTOCHECKBOX "메뉴줄분리(&B)", chx7, 5, 100, 75, 14
+    AUTOCHECKBOX "메뉴분리(&R)", chx8, 85, 100, 70, 14
+    AUTOCHECKBOX "기본값(&D)", chx9, 5, 120, 60, 14
+    AUTOCHECKBOX "강조(&H)", chx10, 70, 120, 60, 14
+    AUTOCHECKBOX "라디오체크(&K)", chx11, 135, 120, 60, 14
+    AUTOCHECKBOX "오른쪽순서(&T)", chx12, 5, 139, 60, 14
+    AUTOCHECKBOX "오른쪽정렬(&J)", chx13, 70, 140, 70, 14
     LTEXT "도움말 ID(&l):", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "확인", IDOK, 80, 180, 60, 14
@@ -1061,12 +1061,12 @@ FONT 9, "Gulim"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC 파일을 내보내면 일부 관련 파일이 생성됩니다. 다음 옵션을 선택할 수 있습니다:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Microsoft MESSAGETABLE 사용(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "를 백업 생성(&B)", chx4, 5, 120, 110, 14
-    RTEXT "Backup Suffix:", -1, 120, 122, 75, 12
+    AUTOCHECKBOX "백업 생성(&B)", chx4, 5, 120, 110, 14
+    RTEXT "백업 접미사:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
@@ -1160,12 +1160,12 @@ FONT 9, "Gulim"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
     LTEXT "RC 파일을 저장하면 일부 관련 파일이 생성됩니다. 다음 옵션을 선택할 수 있습니다:", -1, 35, 5, 210, 29
-    AUTOCHECKBOX "Use Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
+    AUTOCHECKBOX "Microsoft MESSAGETABLE 사용(&T)", chx8, 5, 40, 240, 14
     AUTOCHECKBOX "언어별로 리소스 파일 분리(&L)", chx1, 5, 60, 240, 14
     AUTOCHECKBOX "BEGIN/END 키워드 사용(&E)", chx2, 5, 80, 240, 14
     AUTOCHECKBOX "LANGUAGE_* 매크로로 언어 선택 가능", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "를 백업 생성(&B)", chx4, 5, 120, 110, 14
-    RTEXT "Backup Suffix:", -1, 120, 122, 75, 12
+    AUTOCHECKBOX "백업 생성(&B)", chx4, 5, 120, 110, 14
+    RTEXT "백업 접미사:", -1, 120, 122, 75, 12
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
@@ -1369,7 +1369,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "비트맵을 바꿀 수 없습니다."
     IDS_REPLACEBMP, "비트맵 바꾸기"
     IDS_ERRORCODE, "오류 코드 %d"
-    IDS_VERSIONINFO, "RisohEditor 버전 5.6.2\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
+    IDS_VERSIONINFO, "RisohEditor 버전 5.6.2\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)\r\n\r\n 한국어: 비너스걸 (VenusGirl)"
     IDS_ADDRES, "리소스 추가"
     IDS_CANNOTADDRES, "리소스를 추가할 수 없습니다."
     IDS_CANTADDBMP, "비트맵을 추가할 수 없습니다."
@@ -1558,7 +1558,7 @@ STRINGTABLE
     IDS_EXTRACTDFM, "DFM 데이터 추출"
     IDS_ENTERNONZERONAME, "파일이 저장되었습니다. 0이 아닌 리소스 이름을 입력하세요."
     IDS_ENTERNONZEROTYPE, "파일이 저장되었습니다. 0이 아닌 리소스 유형을 입력하세요."
-    IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/en/"
+    IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/ko/"
     IDS_FILESAVED, "파일이 저장되었습니다."
     IDS_RECOMPILEOK, "재컴파일이 완료되었습니다."
     IDS_RECOMPILEFAILED, "재컴파일에 실패했습니다 (구문 오류)."
@@ -1587,7 +1587,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "TYPELIB 데이터 추출"
     IDS_CANTEXTRACTTLB, "TYPELIB 데이터를 추출할 수 없습니다."
     IDS_TLBRESBINFILTER, "TYPELIB 데이터 (*.tlb)|*.tlb|바이너리 리소스(*.res)|*.res|텍스트 (*.txt)|*.txt|MIDL 파일 (*.idl)|*.idl|모든 파일 (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_USAGE, "사용법: RisohEditor [options | ""파일""]\n\nOptions:\n--help  이 메시지를 표시합니다.\n--version  버전 정보를 표시합니다.\n--load ""your-file.rc""  파일을 로드합니다 (GUI 없이)\n--save ""your-file.res""  파일을 저장합니다 (GUI 없이)\n--log-file ""log-file.txt""  로그 파일을 지정합니다.\n--load-options OPTIONS  로드 옵션을 설정합니다.\n--save-options OPTIONS  저장 옵션을 설정합니다.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
 }
 
 //////////////////////////////////////////////////////////////////////////////
