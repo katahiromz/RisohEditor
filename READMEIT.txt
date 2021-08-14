@@ -289,8 +289,9 @@ Domanda 6. I file a 64 bit sono supportati?
     - Corretto il valore di ritorno del processo.
     - Migliorata gestione della tabella messaggi.
     - Don't change the case of name when renaming it in TreeView.
-- v.5.6.2 (2021.XX.YY)
+- v.5.6.2 (15.08.2021)
     - Enlarged width of "Save Options" and "Export Options" dialogs.
+    - Added workaround to add message tables on Microsoft compatible mode.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

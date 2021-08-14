@@ -13350,6 +13350,13 @@ void MMainWnd::DoAddRes(HWND hwnd, MAddResDlg& dialog)
         SetWindowTextW(m_hCodeEditor, dialog.m_strTemplate.c_str());
         ::SendMessageW(m_hCodeEditor, LNEM_CLEARLINEMARKS, 0, 0);
 
+        // workaround to edit the Microsoft message table
+        if (dialog.m_type == RT_MESSAGETABLE &&
+            g_settings.bUseMSMSGTABLE)
+        {
+            g_settings.bUseMSMSGTABLE = FALSE;
+        }
+
         // compile dialog.m_strTemplate
         MStringA strOutput;
         if (CompileParts(strOutput, dialog.m_type, dialog.m_name, dialog.m_lang, dialog.m_strTemplate, FALSE))
