@@ -291,7 +291,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - TreeView에서 이름을 변경할 때 대소문자를 변경하지 마십시오.
 - v.5.6.2 (2021.08.15)
     - 저장 옵션 및 "내보내기 옵션" 대화 상자의 너비가 확대되었습니다.
-    - Added workaround to add message tables on Microsoft compatible mode.
+    - Microsoft 호환 모드에서 메시지 테이블을 추가하는 해결 방법이 추가되었습니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
