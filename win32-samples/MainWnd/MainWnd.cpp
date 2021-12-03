@@ -114,10 +114,12 @@ BOOL InitInstance(HINSTANCE hInstance, INT nCmdShow)
     wcx.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wcx.lpfnWndProc = WindowProc;
     wcx.hInstance = hInstance;
+    //wcx.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     wcx.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAINICON));
     wcx.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcx.hbrBackground = GetSysColorBrush(COLOR_3DFACE + 1);
     wcx.lpszClassName = s_szClassName;
+    //wcx.hIconSm = NULL;
     wcx.hIconSm = reinterpret_cast<HICON>(
         LoadImage(hInstance, MAKEINTRESOURCE(IDI_MAINICON), IMAGE_ICON,
             GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0));
