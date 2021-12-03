@@ -9,6 +9,9 @@ static const TCHAR s_szClassName[] = TEXT("RisohEditor MainWnd");
 static TCHAR s_szText[64] = TEXT("");
 HWND g_hButton = NULL;
 
+#define CX_BUTTON 100
+#define CY_BUTTON 24
+
 BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
     g_hMainWnd = hwnd;
@@ -18,13 +21,14 @@ BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     RECT rc;
     GetClientRect(hwnd, &rc);
 
-    INT cx = 100, cy = 24;
-    INT x = (rc.left + rc.right - cx) / 2, y = (rc.top + rc.bottom - cy) / 2;
+    INT x = (rc.left + rc.right - CX_BUTTON) / 2;
+    INT y = (rc.top + rc.bottom - CY_BUTTON) / 2;
 
     DWORD style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
     HMENU id = reinterpret_cast<HMENU>(static_cast<INT_PTR>(psh1));
     g_hButton = CreateWindow(TEXT("BUTTON"), TEXT("psh1"), style,
-                             x, y, cx, cy, hwnd, id, g_hInst, NULL);
+                             x, y, CX_BUTTON, CY_BUTTON,
+                             hwnd, id, g_hInst, NULL);
     if (!g_hButton)
         return FALSE;
 
@@ -81,10 +85,9 @@ void OnSize(HWND hwnd, UINT state, int cx, int cy)
     GetClientRect(hwnd, &rc);
 
 #if 1
-    INT cxButton = 100, cyButton = 24;
-    INT xButton = (rc.left + rc.right - cxButton) / 2;
-    INT yButton = (rc.top + rc.bottom - cyButton) / 2;
-    MoveWindow(g_hButton, xButton, yButton, cxButton, cyButton, TRUE);
+    INT x = (rc.left + rc.right - CX_BUTTON) / 2;
+    INT y = (rc.top + rc.bottom - CY_BUTTON) / 2;
+    MoveWindow(g_hButton, x, y, CX_BUTTON, CY_BUTTON, TRUE);
 #endif
 }
 
