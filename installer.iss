@@ -120,6 +120,19 @@ Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winresrc.h"; DestDir: "{ap
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
 Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\.gitignore"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\CMakeLists.txt"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\DialogBox.cpp"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\DialogBox_res.rc"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\resource.h"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\lang\en_US.rc"; DestDir: "{app}\win32-samples\DialogBox\lang"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\.gitignore"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\CMakeLists.txt"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\MainWnd.cpp"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\MainWnd_res.rc"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\resource.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\lang\en_US.rc"; DestDir: "{app}\win32-samples\MainWnd\lang"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\res\Icon_100.ico"; DestDir: "{app}\win32-samples\MainWnd\res"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

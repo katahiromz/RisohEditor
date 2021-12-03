@@ -292,6 +292,8 @@ Question 6. Are the 64-bit files supported?
 - v.5.6.2 (2021.08.15)
     - Enlarged width of "Save Options" and "Export Options" dialogs.
     - Added workaround to add message tables on Microsoft compatible mode.
+- v.5.6.3 (20XX.YY.ZZ)
+    - Added win32-samples.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
