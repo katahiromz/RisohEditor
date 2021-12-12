@@ -13680,18 +13680,8 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 #ifdef PORTABLE
     MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
 #else
-    // open the "HKEY_CURRENT_USER\Software" key
-    MRegKey key(HKCU, TEXT("Software"));
-    if (!key)
-        return FALSE;
-
-    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ" key
-    MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"));
-    if (!keySoftware)
-        return FALSE;
-
     // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor" key
-    MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"));
+    MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
     if (!keyRisoh)
         return FALSE;
 #endif
@@ -16665,9 +16655,9 @@ LANGID GetUILang(void)
 #ifdef PORTABLE
     MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
 #else
-    // open the "HKEY_CURRENT_USER\Software" key
+    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor" key
     MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
-    if (keyRisoh)
+    if (!keyRisoh)
         return LANGID(langid);
 #endif
     keyRisoh.QueryDword(TEXT("UILanguage"), (DWORD&)langid);
