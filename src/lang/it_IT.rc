@@ -87,6 +87,8 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Impostazioni DFM &Delphi...", ID_DFMSETTINGS
         MENUITEM "&Impostazioni...", ID_CONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
     }
     POPUP "&Cerca"
     {

@@ -294,6 +294,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Microsoft 호환 모드에서 메시지 테이블을 추가하는 해결 방법이 추가되었습니다.
 - v.5.6.3 (20XX.YY.ZZ)
     - Added win32-samples.
+    - Added "Choose UI Lanuage".
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

@@ -294,6 +294,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Added workaround to add message tables on Microsoft compatible mode.
 - v.5.6.3 (ZZ.YY.20XX)
     - Added win32-samples.
+    - Added "Choose UI Lanuage".
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

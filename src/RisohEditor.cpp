@@ -21,6 +21,7 @@
 #define LINENUMEDIT_IMPL
 #include "LineNumEdit.hpp"
 #include "MLangAutoComplete.hpp"
+#include "MChooseLangDlg.hpp"
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
@@ -67,6 +68,9 @@ static const UINT s_nBackupMaxCount = 5;
 
 // contents modified?
 static BOOL s_bModified = FALSE;
+
+// UI Language
+static DWORD s_ui_lang = GetThreadUILanguage();
 
 void DoSetFileModified(BOOL bModified)
 {
@@ -11038,7 +11042,7 @@ void MMainWnd::OnGuide(HWND hwnd)
     static const WCHAR szEnglishURL[] =
         L"https://katahiromz.web.fc2.com/colony3rd/risoheditor/en/";
 
-    if (PRIMARYLANGID(GetUserDefaultLangID()) == LANG_JAPANESE)
+    if (PRIMARYLANGID(GetThreadUILanguage()) == LANG_JAPANESE)
         ShellExecuteW(hwnd, NULL, szJapaneseURL, NULL, NULL, SW_SHOWNORMAL);
     else
         ShellExecuteW(hwnd, NULL, szEnglishURL, NULL, NULL, SW_SHOWNORMAL);
@@ -11753,6 +11757,13 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_OPENREADMEKO:
         OnOpenReadMeKo(hwnd);
+        break;
+    case ID_CHOOSEUILANG:
+        {
+            MChooseLangDlg dialog;
+            if (dialog.DialogBoxDx(hwnd) == IDOK)
+                s_ui_lang = dialog.m_langid;
+        }
         break;
     default:
         bUpdateStatus = FALSE;
@@ -13462,6 +13473,7 @@ BOOL MMainWnd::UpdateFileInfo(FileType ft, LPCWSTR pszFile, BOOL bCompressed)
 // set the default settings
 void MMainWnd::SetDefaultSettings(HWND hwnd)
 {
+    s_ui_lang = ::GetThreadUILanguage();
     g_settings.bShowBinEdit = FALSE;
     g_settings.bAlwaysControl = FALSE;
     g_settings.bShowStatusBar = TRUE;
@@ -13683,6 +13695,10 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     if (!keyRisoh)
         return FALSE;
 #endif
+
+    keyRisoh.QueryDword(TEXT("UILanguage"), (DWORD&)s_ui_lang);
+    if (s_ui_lang == 0)
+        s_ui_lang = GetThreadUILanguage();
 
     keyRisoh.QueryDword(TEXT("HIDE.ID"), (DWORD&)g_settings.bHideID);
     keyRisoh.QueryDword(TEXT("bUseIDC_STATIC"), (DWORD&)g_settings.bUseIDC_STATIC);
@@ -14005,6 +14021,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     if (m_splitter1.GetPaneCount() >= 2)
         g_settings.nTreeViewWidth = m_splitter1.GetPaneExtent(0);
 
+    keyRisoh.SetDword(TEXT("UILanguage"), s_ui_lang);
     keyRisoh.SetDword(TEXT("HIDE.ID"), g_settings.bHideID);
     keyRisoh.SetDword(TEXT("bUseIDC_STATIC"), g_settings.bUseIDC_STATIC);
     keyRisoh.SetDword(TEXT("ShowStatusBar"), g_settings.bShowStatusBar);
@@ -16641,6 +16658,24 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
     return FALSE;
 }
 
+LANGID GetUILang(void)
+{
+    DWORD langid = ::GetThreadUILanguage();
+
+#ifdef PORTABLE
+    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+#else
+    // open the "HKEY_CURRENT_USER\Software" key
+    MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
+    if (keyRisoh)
+        return LANGID(langid);
+#endif
+    keyRisoh.QueryDword(TEXT("UILanguage"), (DWORD&)langid);
+    if (langid == 0)
+        langid = ::GetThreadUILanguage();
+    return LANGID(langid);
+}
+
 // the main function of the windows application
 extern "C"
 INT WINAPI
@@ -16651,6 +16686,10 @@ wWinMain(HINSTANCE   hInstance,
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
     setlocale(LC_CTYPE, "");
+
+    // set the UI language
+    s_ui_lang = GetUILang();
+    SetThreadUILanguage(LANGID(s_ui_lang));
 
     // initialize the libraries
     OleInitialize(NULL);

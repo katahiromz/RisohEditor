@@ -81,7 +81,7 @@ public:
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, GetUserDefaultLangID());
+        InitLangComboBox(hCmb3, GetThreadUILanguage());
         SubclassChildDx(m_cmb3, cmb3);
 
         // auto complete
