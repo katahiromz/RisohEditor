@@ -1199,14 +1199,38 @@ MLangAutoComplete::MLangAutoComplete()
     }
 }
 
+static BOOL CALLBACK
+EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage,
+                LPARAM lParam)
+{
+    LPDWORD pvalue = (LPDWORD)lParam;
+    if (wIDLanguage == *pvalue)
+    {
+        *pvalue = 0;
+        return FALSE;
+    }
+    return TRUE;
+}
+
+BOOL IsValidUILang(LANGID langid)
+{
+    DWORD value = langid;
+    LPARAM lParam = (LPARAM)&value;
+    EnumResourceLanguagesW(NULL, RT_MENU, MAKEINTRESOURCEW(IDR_MAINMENU), EnumResLangProc, lParam);
+    return value != langid;
+}
+
 // initialize the language combobox
-void InitLangComboBox(HWND hCmb3, LANGID langid)
+void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
 {
     InitComboBoxPlaceholder(hCmb3, IDS_INTEGERORIDENTIFIER);
 
     // for all the elements of g_langs
     for (auto& entry : g_langs)
     {
+        if (bUILanguage && !IsValidUILang(entry.LangID))
+            continue;
+
         // build the text
         WCHAR sz[MAX_PATH];
         StringCchPrintfW(sz, _countof(sz), L"%s (%u)", entry.str.c_str(), entry.LangID);
@@ -1226,6 +1250,9 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
     auto table = g_db.GetTable(L"LANGUAGES");
     for (auto& table_entry : table)
     {
+        if (bUILanguage && !IsValidUILang(table_entry.value))
+            continue;
+
         // build the text
         WCHAR sz[MAX_PATH];
         StringCchPrintfW(sz, _countof(sz), L"%s (%lu)", table_entry.name.c_str(), table_entry.value);
@@ -1237,6 +1264,12 @@ void InitLangComboBox(HWND hCmb3, LANGID langid)
         // add the text as a new item to combobox
         ComboBox_AddString(hCmb3, sz);
     }
+}
+
+// initialize the language combobox
+void InitLangComboBox(HWND hCmb3, LANGID langid)
+{
+    InitLangComboBox(hCmb3, langid, FALSE);
 }
 
 // initialize the language listview

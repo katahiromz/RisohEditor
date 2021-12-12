@@ -28,7 +28,7 @@
 
 class MChooseLangDlg;
 
-void InitLangComboBox(HWND hCmb3, LANGID langid);
+void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +58,7 @@ public:
     {
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, GetThreadUILanguage());
+        InitLangComboBox(hCmb3, GetThreadUILanguage(), TRUE);
         SubclassChildDx(m_cmb3, cmb3);
 
         // auto complete
