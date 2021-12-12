@@ -85,10 +85,10 @@ IDR_MAINMENU MENU
         MENUITEM "&Fonttiasetukset...", ID_FONTS
         MENUITEM "Aseta &polut...", ID_SETPATHS
         MENUITEM SEPARATOR
+        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
+        MENUITEM SEPARATOR
         MENUITEM "Delphi DFM &asetukset...", ID_DFMSETTINGS
         MENUITEM "&Konfiguraatio...", ID_CONFIG
-        MENUITEM SEPARATOR
-        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
     }
     POPUP "&Haku"
     {

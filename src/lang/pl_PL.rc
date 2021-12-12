@@ -85,10 +85,10 @@ IDR_MAINMENU MENU
         MENUITEM "Ustawienia &Czcionki...", ID_FONTS
         MENUITEM "Ustawienia &Katalogów...", ID_SETPATHS
         MENUITEM SEPARATOR
+        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
+        MENUITEM SEPARATOR
         MENUITEM "Ustawienia Delphi D&FM...", ID_DFMSETTINGS
         MENUITEM "Konfi&guracja...", ID_CONFIG
-        MENUITEM SEPARATOR
-        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
     }
     POPUP "&Szukaj"
     {
