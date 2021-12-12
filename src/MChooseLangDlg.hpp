@@ -29,6 +29,7 @@
 class MChooseLangDlg;
 
 void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +76,7 @@ public:
     {
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         WORD lang;
-        if (!CheckLangComboBox(hCmb3, lang))
+        if (!CheckLangComboBox(hCmb3, lang, TRUE))
             return;
 
         m_langid = lang;

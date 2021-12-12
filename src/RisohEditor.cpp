@@ -1584,7 +1584,7 @@ WORD LangFromText(LPWSTR pszLang)
 }
 
 // verify the language combobox
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage)
 {
     // get the text from combobox
     WCHAR szLang[MAX_PATH];
@@ -1592,7 +1592,7 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 
     // get the language ID from texts
     lang = LangFromText(szLang);
-    if (lang != BAD_LANG)
+    if ((!bUILanguage || IsValidUILang(lang)) && lang != BAD_LANG)
         return TRUE;    // success
 
     // error
@@ -1601,6 +1601,12 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
     LogMessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
                    NULL, MB_ICONERROR);
     return FALSE;   // failure
+}
+
+// verify the language combobox
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
+{
+    return CheckLangComboBox(hCmb3, lang, FALSE);
 }
 
 // callback function for MMainWnd::DoLoadLangInfo
