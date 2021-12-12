@@ -301,7 +301,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.6.2 (2021.08.15)
     - Enlarged width of "Save Options" and "Export Options" dialogs.
     - Added workaround to add message tables on Microsoft compatible mode.
-- v.5.6.3 (20XX.YY.ZZ)
+- v.5.6.3 (2021.12.12)
     - Added win32-samples.
     - Added "UI Lanuage Select".
 

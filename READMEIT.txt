@@ -292,7 +292,7 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.6.2 (15.08.2021)
     - Enlarged width of "Save Options" and "Export Options" dialogs.
     - Added workaround to add message tables on Microsoft compatible mode.
-- v.5.6.3 (ZZ.YY.20XX)
+- v.5.6.3 (12.12.2021)
     - Added win32-samples.
     - Added "UI Lanuage Select".
 
