@@ -1186,19 +1186,6 @@ struct LANG_ENTRY
 };
 std::vector<LANG_ENTRY> g_langs;
 
-MLangAutoComplete::MLangAutoComplete()
-{
-    m_nCurrentElement = 0;
-    m_nRefCount = 0;
-    m_fBound = FALSE;
-    m_pAC = NULL;
-
-    for (auto& lang : g_langs)
-    {
-        push_back(lang.str);
-    }
-}
-
 static BOOL CALLBACK
 EnumResLangProc(HMODULE hModule, LPCTSTR lpszType, LPCTSTR lpszName, WORD wIDLanguage,
                 LPARAM lParam)
@@ -1218,6 +1205,22 @@ BOOL IsValidUILang(LANGID langid)
     LPARAM lParam = (LPARAM)&value;
     EnumResourceLanguagesW(NULL, RT_MENU, MAKEINTRESOURCEW(IDR_MAINMENU), EnumResLangProc, lParam);
     return value != langid;
+}
+
+MLangAutoComplete::MLangAutoComplete(BOOL bUILanguage)
+{
+    m_nCurrentElement = 0;
+    m_nRefCount = 0;
+    m_fBound = FALSE;
+    m_pAC = NULL;
+
+    for (auto& lang : g_langs)
+    {
+        if (bUILanguage && !IsValidUILang(lang.LangID))
+            continue;
+
+        push_back(lang.str);
+    }
 }
 
 // initialize the language combobox

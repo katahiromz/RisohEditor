@@ -6,7 +6,7 @@
 class MLangAutoComplete : public IEnumString
 {
 public:
-    MLangAutoComplete();
+    MLangAutoComplete(BOOL bUILanguage = FALSE);
 
     virtual ~MLangAutoComplete()
     {

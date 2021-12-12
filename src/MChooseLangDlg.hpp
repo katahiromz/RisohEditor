@@ -42,7 +42,7 @@ public:
 
     MChooseLangDlg()
         : MDialogBase(IDD_UILANG)
-        , m_pAutoComplete(new MLangAutoComplete())
+        , m_pAutoComplete(new MLangAutoComplete(TRUE))
     {
         m_cmb3.m_bAcceptSpace = TRUE;
         m_pAutoComplete->AddRef();
