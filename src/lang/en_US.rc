@@ -85,7 +85,7 @@ IDR_MAINMENU MENU
         MENUITEM "&Font settings...", ID_FONTS
         MENUITEM "Set &Paths...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "Choose UI Language...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM &settings...", ID_DFMSETTINGS
         MENUITEM "&Configuration...", ID_CONFIG
