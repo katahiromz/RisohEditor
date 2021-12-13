@@ -296,6 +296,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Added win32-samples.
     - Added "UI Lanuage Select".
 - v.5.6.4 (20XX.YY.ZZ)
+    - Asking for compiling before opening GUI edit.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

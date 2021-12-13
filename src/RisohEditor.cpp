@@ -4913,6 +4913,10 @@ bool MMainWnd::IsEntryTextEditable(const EntryBase *entry)
 // do text edit
 void MMainWnd::OnEdit(HWND hwnd)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
     // get the selected entry
     auto entry = g_res.get_entry();
     if (!IsEntryTextEditable(entry))

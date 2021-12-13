@@ -305,6 +305,7 @@ You have to copy the 64-bit file into another place before loading.
     - Added win32-samples.
     - Added "UI Lanuage Select".
 - v.5.6.4 (20XX.YY.ZZ)
+    - Asking for compiling before opening GUI edit.
 
 ## Contact Us
 
