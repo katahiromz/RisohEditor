@@ -295,6 +295,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.6.3 (2021.12.12)
     - Added win32-samples.
     - Added "UI Lanuage Select".
+- v.5.6.4 (20XX.YY.ZZ)
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
