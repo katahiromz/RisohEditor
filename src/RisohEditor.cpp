@@ -1253,7 +1253,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
     auto table = g_db.GetTable(L"LANGUAGES");
     for (auto& table_entry : table)
     {
-        if (bUILanguage && !IsValidUILang(table_entry.value))
+        if (bUILanguage && !IsValidUILang(LANGID(table_entry.value)))
             continue;
 
         // build the text
@@ -2636,11 +2636,7 @@ void MMainWnd::OnKillFocus(HWND hwnd, HWND hwndNewFocus)
 LRESULT MMainWnd::OnCompileCheck(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     // compile if necessary
-    if (!CompileIfNecessary(TRUE))
-    {
-        return FALSE;
-    }
-    return FALSE;
+    return CompileIfNecessary(TRUE);
 }
 
 // reopen the RADical window
@@ -4603,7 +4599,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;     // unable to edit by GUI?
 
     // compile if necessary
-    if (!CompileIfNecessary(FALSE))
+    if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
     {
         return;
     }
@@ -4914,7 +4910,7 @@ bool MMainWnd::IsEntryTextEditable(const EntryBase *entry)
 void MMainWnd::OnEdit(HWND hwnd)
 {
     // compile if necessary
-    if (!CompileIfNecessary(FALSE))
+    if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
         return;
 
     // get the selected entry
@@ -5706,7 +5702,7 @@ void MMainWnd::OnContextMenu(HWND hwnd, HWND hwndContext, UINT xPos, UINT yPos)
     if (IsWindowVisible(m_rad_window))
     {
         // destroy it
-        DestroyWindow(m_rad_window);
+        m_rad_window.DestroyWindow();
     }
 
     // get screen coordinates from xPos and yPos
@@ -6172,7 +6168,7 @@ VOID MMainWnd::HidePreview(STV stv)
     // destroy the RADical window if any
     if (IsWindow(m_rad_window))
     {
-        DestroyWindow(m_rad_window);
+        m_rad_window.DestroyWindow();
     }
 
     // clear m_hHexViewer
@@ -7358,7 +7354,7 @@ BOOL MMainWnd::ReCompileOnSelChange(BOOL bReopen/* = FALSE*/)
     // destroy the RADical window if any
     if (IsWindow(m_rad_window))
     {
-        DestroyWindow(m_rad_window);
+        m_rad_window.DestroyWindow();
     }
 
     // reopen if necessary
@@ -7399,7 +7395,7 @@ BOOL MMainWnd::CompileIfNecessary(BOOL bReopen/* = FALSE*/)
 
             // destroy the RADical window if any
             if (IsWindow(m_rad_window))
-                DestroyWindow(m_rad_window);
+                m_rad_window.DestroyWindow();
             break;
 
         case IDCANCEL:
@@ -10272,7 +10268,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     g_res.delete_invalid();
 
     // destroy the window's
-    DestroyWindow(m_rad_window);
+    m_rad_window.DestroyWindow();
     DestroyWindow(m_hHexViewer);
     DestroyWindow(m_hCodeEditor);
     m_hBmpView.DestroyView();
@@ -12064,7 +12060,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
         }
         if (IsWindow(m_rad_window))
         {
-            DestroyWindow(m_rad_window);
+            m_rad_window.DestroyWindow();
         }
     }
     else if (pnmhdr->code == TVN_SELCHANGED)
@@ -12576,7 +12572,7 @@ void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
     if (IsWindowVisible(m_rad_window))
     {
         // destroy it
-        DestroyWindow(m_rad_window);
+        m_rad_window.DestroyWindow();
     }
 
     MReplaceDialogFontsDlg dialog;

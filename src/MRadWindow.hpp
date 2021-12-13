@@ -1596,6 +1596,11 @@ public:
         clear_maps();
     }
 
+    VOID DestroyWindow()
+    {
+        ::DestroyWindow(m_hwnd);
+    }
+
     // create an MRadWindow window
     BOOL CreateDx(HWND hwndParent)
     {
@@ -1733,7 +1738,7 @@ public:
         // destroy MRadDialog window if any
         if (m_rad_dialog)
         {
-            DestroyWindow(m_rad_dialog);
+            ::DestroyWindow(m_rad_dialog);
         }
 
         if (m_pOleHost)
@@ -1923,9 +1928,9 @@ public:
             m_pOleHost = NULL;
         }
 
-        // post ID_DESTROYRAD to the owner
+        // send ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        PostMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
+        SendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
         // notify selection change to the owner
         MRadCtrl::GetTargetIndeces().clear();
