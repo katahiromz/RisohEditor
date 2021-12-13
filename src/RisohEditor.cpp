@@ -4599,7 +4599,6 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         return;     // unable to edit by GUI?
 
     // compile if necessary
-    BOOL bReopen = ::IsWindowVisible(m_rad_window);
     if (!CompileIfNecessary(FALSE))
     {
         return;
@@ -4696,14 +4695,13 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             m_rad_window.m_dialog_res.LoadDlgInitData(e->m_data);
         }
 
-        if (bReopen)
+        // recreate the RADical dialog
+        if (::IsWindow(m_rad_window))
         {
-            // recreate the RADical dialog
             m_rad_window.ReCreateRadDialog(m_rad_window);
         }
         else
         {
-            // create the RADical dialog
             if (!m_rad_window.CreateDx(m_hwnd))
             {
                 ErrorBoxDx(IDS_DLGFAIL);
