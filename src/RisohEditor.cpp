@@ -10855,7 +10855,7 @@ void MMainWnd::OnIDList(HWND hwnd)
 void MMainWnd::OnIdAssoc(HWND hwnd)
 {
     // compile if necessary
-    if (!CompileIfNecessary(FALSE))
+    if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
         return;
 
     // show the dialog
@@ -12583,7 +12583,7 @@ void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
 void MMainWnd::OnTest(HWND hwnd)
 {
     // compile if necessary
-    if (!CompileIfNecessary(FALSE))
+    if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
         return;
 
     // get the selected entry
