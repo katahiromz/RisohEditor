@@ -295,7 +295,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.6.3 (2021.12.12)
     - Added win32-samples.
     - Added "UI Lanuage Select".
-- v.5.6.4 (20XX.YY.ZZ)
+- v.5.6.4 (2021.12.16)
     - Asking for compiling before opening GUI edit.
 
 /////////////////////////////////////////////////////////////////////
