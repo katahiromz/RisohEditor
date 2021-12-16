@@ -305,7 +305,7 @@ MStringW DialogItem::Dump(bool bAlwaysControl) const
                 return _do_DEFPUSHBUTTON();
             if ((m_style & BS_TYPEMASK) == BS_GROUPBOX)
                 return _do_GROUPBOX();
-            if ((m_style & BS_TYPEMASK) == BS_PUSHBUTTON)
+            if ((m_style & BS_TYPEMASK) == BS_PUSHBUTTON || (m_style & BS_TYPEMASK) == BS_OWNERDRAW)
                 return _do_PUSHBUTTON();
             if ((m_style & BS_TYPEMASK) == BS_PUSHBOX ||
                 (m_style & BS_TYPEMASK) == 0xC)

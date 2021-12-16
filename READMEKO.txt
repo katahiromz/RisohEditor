@@ -297,6 +297,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Added "UI Lanuage Select".
 - v.5.6.4 (2021.12.16)
     - Asking for compiling before opening GUI edit.
+- v.5.6.5 (20XX.YY.ZZ)
+    - A BS_OWNERDRAW button is a PUSHBUTTON.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
