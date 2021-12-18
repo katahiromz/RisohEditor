@@ -1604,7 +1604,7 @@ STRINGTABLE
     IDS_EXTRACTTLB, "Estrai dati TYPELIB data"
     IDS_CANTEXTRACTTLB, "Impossibile estrarre dati TYPELIB."
     IDS_TLBRESBINFILTER, "Dati TYPELIB (*.tlb)|*.tlb|Risorse binarie (*.res)|*.res|File testo (*.txt)|*.txt|File MIDL (*.idl)|*.idl|Tutti i file (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_USAGE, "Uso: RisohEditor [opzioni | ""file""]\n\nOpzioni:\n--help  visualizza questo messaggio.\n--version  visualizza informazioni sulla versione.\n--load ""your-file.rc""  Carica il file (senza GUI)\n--save ""your-file.res""  Salva il file (senza GUI)\n--log-file ""log-file.txt""  specifica il file registro.\n--load-options OPZIONI  imposta le opzioni di caricamento.\n--save-options OPZIONI  imposta le opzioni di salvataggio.\n\nOpzioni caricamento: (no-load-res-h)\nOpzioni salvataggio: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Non c'è selezione."
 }
 
