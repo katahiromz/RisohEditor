@@ -299,6 +299,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Asking for compiling before opening GUI edit.
 - v.5.6.5 (18.12.2021)
     - A BS_OWNERDRAW button is a PUSHBUTTON.
+    - Added "Copy to multiple languages" feature.
     - Fixed the bug of the RAD window (Critical).
 
 /////////////////////////////////////////////////////////////////////

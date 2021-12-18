@@ -299,6 +299,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - Asking for compiling before opening GUI edit.
 - v.5.6.5 (2021.12.18)
     - A BS_OWNERDRAW button is a PUSHBUTTON.
+    - Added "Copy to multiple languages" feature.
     - Fixed the bug of the RAD window (Critical).
 
 /////////////////////////////////////////////////////////////////////
