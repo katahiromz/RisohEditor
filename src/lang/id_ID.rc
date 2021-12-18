@@ -75,7 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Duplikat dengan &Nama Baru...", ID_COPYASNEWNAME
         MENUITEM "Duplikat dengan &Bahasa Baru...", ID_COPYASNEWLANG
-        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
+        MENUITEM "Salin ke beberapa bahasa...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Lakukan &Tes", ID_TEST
         MENUITEM SEPARATOR
@@ -185,7 +185,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Duplikat dengan &Nama Baru...", ID_COPYASNEWNAME
         MENUITEM "Duplikat dengan &Bahasa Baru...", ID_COPYASNEWLANG
-        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
+        MENUITEM "Salin ke beberapa bahasa...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Lakukan &Tes", ID_TEST
         MENUITEM SEPARATOR
@@ -1288,17 +1288,17 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_COPYTOMULTILANG DIALOG 0, 0, 200, 195
-CAPTION "Copy to multple languages"
+CAPTION "Salin ke beberapa bahasa"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Please select the languages that you want to copy the resource to:", -1, 5, 5, 190, 22
-    LTEXT "&Languages:", -1, 5, 35, 82, 12
+    LTEXT "Silakan pilih bahasa yang Anda inginkan untuk menyalin sumber daya:", -1, 5, 5, 190, 22
+    LTEXT "&Bahasa:", -1, 5, 35, 82, 12
     LISTBOX lst1, 5, 50, 190, 100, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Add", psh1, 135, 155, 60, 14
+    PUSHBUTTON "&Menambahkan", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 14
-    PUSHBUTTON "Cancel", IDCANCEL, 70, 175, 60, 14
+    PUSHBUTTON "Batal", IDCANCEL, 70, 175, 60, 14
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1605,7 +1605,7 @@ STRINGTABLE
     IDS_CANTEXTRACTTLB, "Tidak bisa mengekstrak data TYPELIB."
     IDS_TLBRESBINFILTER, "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|Berkas Teks (*.txt)|*.txt|Berkas MIDL (*.idl)|*.idl|All Files (*.*)|*.*|"
     IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
-    IDS_NOSELECTION, "There is no selection."
+    IDS_NOSELECTION, "Tidak ada pilihan."
 }
 
 //////////////////////////////////////////////////////////////////////////////
