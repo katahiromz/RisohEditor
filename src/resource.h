@@ -73,6 +73,7 @@
 #define IDD_DROPDOWNPOPUP                   164
 #define IDD_DFMSETTINGS                     165
 #define IDD_UILANG                          166
+#define IDD_COPYTOMULTILANG                 167
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100

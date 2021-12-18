@@ -2491,6 +2491,7 @@ protected:
     void OnEdit(HWND hwnd);
     void OnCopyAsNewName(HWND hwnd);
     void OnCopyAsNewLang(HWND hwnd);
+    void OnCopyToMultiLang(HWND hwnd);
     void OnItemSearch(HWND hwnd);
     void OnExpandAll(HWND hwnd);
     void OnCollapseAll(HWND hwnd);
@@ -4277,6 +4278,101 @@ void MMainWnd::OnCopyAsNewLang(HWND hwnd)
         }
         DoSetFileModified(TRUE);
     }
+}
+
+void MMainWnd::OnCopyToMultiLang(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    // get the selected entry
+    auto entry = g_res.get_entry();
+    if (!entry)
+        return;
+
+    switch (entry->m_et)
+    {
+    case ET_LANG: case ET_STRING: case ET_MESSAGE:
+        break;      // ok
+
+    default:
+        return;     // unable to copy the language
+    }
+
+    // show the dialog
+    MCopyToMultiLangDlg dialog(entry);
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        for (auto& lang : dialog.m_selection)
+        {
+            if (entry->m_type == RT_GROUP_ICON)     // group icon
+            {
+                // search the group icons
+                EntrySet found;
+                g_res.search(found, ET_LANG, RT_GROUP_ICON, entry->m_name, entry->m_lang);
+
+                // copy them
+                for (auto e : found)
+                {
+                    g_res.copy_group_icon(e, e->m_name, lang);
+                }
+            }
+            else if (entry->m_type == RT_GROUP_CURSOR)
+            {
+                // search the group cursors
+                EntrySet found;
+                g_res.search(found, ET_LANG, RT_GROUP_CURSOR, entry->m_name, entry->m_lang);
+
+                // copy them
+                for (auto e : found)
+                {
+                    g_res.copy_group_cursor(e, e->m_name, lang);
+                }
+            }
+            else if (entry->m_et == ET_STRING)
+            {
+                // search the strings
+                EntrySet found;
+                g_res.search(found, ET_LANG, RT_STRING, WORD(0), entry->m_lang);
+
+                // copy them
+                for (auto e : found)
+                {
+                    g_res.add_lang_entry(e->m_type, e->m_name, lang, e->m_data);
+                }
+            }
+            else if (entry->m_et == ET_MESSAGE)
+            {
+                // search the messagetables
+                EntrySet found;
+                g_res.search(found, ET_LANG, RT_MESSAGETABLE, WORD(0), entry->m_lang);
+
+                // copy them
+                for (auto e : found)
+                {
+                    g_res.add_lang_entry(e->m_type, e->m_name, lang, e->m_data);
+                }
+            }
+            else
+            {
+                // search the entries
+                EntrySet found;
+                g_res.search(found, ET_LANG, entry->m_type, entry->m_name, entry->m_lang);
+
+                // copy them
+                for (auto e : found)
+                {
+                    g_res.add_lang_entry(e->m_type, e->m_name, lang, e->m_data);
+                }
+            }
+        }
+
+        DoSetFileModified(TRUE);
+    }
+
+    // select the entry
+    SelectTV(ET_LANG, entry->m_type, entry->m_name, entry->m_lang, FALSE);
 }
 
 // show the item search dialog
@@ -11672,9 +11768,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnCopyAsNewLang(hwnd);
         break;
     case ID_COPYTOMULTILANG:
-        {
-
-        }
+        OnCopyToMultiLang(hwnd);
         break;
     case ID_ITEMSEARCH:
         OnItemSearch(hwnd);
