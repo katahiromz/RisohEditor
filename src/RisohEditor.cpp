@@ -4302,10 +4302,12 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 
     // show the dialog
     MCopyToMultiLangDlg dialog(entry);
+    WORD wLang = BAD_LANG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         for (auto& lang : dialog.m_selection)
         {
+            wLang = lang;
             if (entry->m_type == RT_GROUP_ICON)     // group icon
             {
                 // search the group icons
@@ -4369,10 +4371,10 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
         }
 
         DoSetFileModified(TRUE);
-    }
 
-    // select the entry
-    SelectTV(ET_LANG, entry->m_type, entry->m_name, entry->m_lang, FALSE);
+        // select the entry
+        SelectTV(ET_LANG, entry->m_type, entry->m_name, wLang, FALSE);
+    }
 }
 
 // show the item search dialog

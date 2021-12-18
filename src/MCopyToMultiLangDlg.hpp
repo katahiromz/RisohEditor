@@ -112,7 +112,7 @@ public:
         INT nCount = ListBox_GetSelCount(hLst1);
         if (nCount == 0)
         {
-            EndDialog(hwnd, IDOK);
+            MsgBoxDx(IDS_NOSELECTION, MB_ICONERROR);
             return;
         }
         indexes.resize(nCount);
