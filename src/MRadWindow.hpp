@@ -236,6 +236,11 @@ public:
         return bFound;  // found or not
     }
 
+    static LRESULT DoSendMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        return ::SendMessage(hwnd, uMsg, wParam, lParam);
+    }
+
     // delete the selection
     static void DeleteSelection()
     {
@@ -244,7 +249,7 @@ public:
 
         // send MYWM_DELETESEL message to the parent of the target
         auto it = GetTargets().begin();
-        SendMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
+        DoSendMessage(GetParent(*it), MYWM_DELETESEL, 0, 0);
     }
 
     // deselect this control
@@ -509,7 +514,7 @@ public:
         OnNCLButtonUp(hwnd, x, y, codeHitTest);
 
         // send WM_NCRBUTTONDOWN to the parent
-        SendMessage(GetParent(hwnd), WM_NCRBUTTONDOWN, (WPARAM)hwnd, MAKELPARAM(x, y));
+        DoSendMessage(GetParent(hwnd), WM_NCRBUTTONDOWN, (WPARAM)hwnd, MAKELPARAM(x, y));
     }
 
     // MRadCtrl WM_NCRBUTTONUP
@@ -570,7 +575,7 @@ public:
             InvalidateRect(hwnd, &rc, TRUE);
 
             // send MYWM_CTRLMOVE to the parent
-            SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
+            DoSendMessage(GetParent(hwnd), MYWM_CTRLMOVE, (WPARAM)hwnd, 0);
         }
     }
 
@@ -591,7 +596,7 @@ public:
                 ResizeSelection(hwnd, cx, cy);
 
             // send MYWM_CTRLSIZE to the parent
-            SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
+            DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, (WPARAM)hwnd, 0);
 
             // redraw
             InvalidateRect(hwnd, NULL, TRUE);
@@ -604,7 +609,7 @@ public:
         if (fDown)
         {
             // send WM_KEYDOWN to the parent
-            FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, SendMessage);
+            FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, DoSendMessage);
         }
     }
 
@@ -1042,6 +1047,11 @@ public:
         return 0;
     }
 
+    LRESULT DoSendMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        return ::SendMessage(hwnd, uMsg, wParam, lParam);
+    }
+
     // MRadDialog WM_RBUTTONDOWN
     void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
     {
@@ -1059,7 +1069,7 @@ public:
         MRadCtrl::DeselectSelection();
 
         // notify MYWM_SELCHANGE to the parent
-        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog MYWM_REDRAW
@@ -1073,7 +1083,7 @@ public:
     LRESULT OnSelChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         // notify MYWM_SELCHANGE to the parent
-        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
+        DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, wParam, lParam);
         return 0;
     }
 
@@ -1148,7 +1158,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_MOUSEMOVE
@@ -1215,7 +1225,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
     }
 
     // MRadDialog WM_ERASEBKGND
@@ -1272,14 +1282,14 @@ public:
             return;     // ignore
 
         // send MYWM_DLGSIZE to the parent
-        SendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
+        DoSendMessage(GetParent(hwnd), MYWM_DLGSIZE, 0, 0);
     }
 
     // MRadDialog MYWM_DELETESEL
     LRESULT OnDeleteSel(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         // send MYWM_DELETESEL to the parent
-        SendMessage(GetParent(hwnd), MYWM_DELETESEL, wParam, lParam);
+        DoSendMessage(GetParent(hwnd), MYWM_DELETESEL, wParam, lParam);
         return 0;
     }
 
@@ -1287,7 +1297,7 @@ public:
     LRESULT OnCtrlMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         // send MYWM_CTRLMOVE to the parent
-        SendMessage(GetParent(hwnd), MYWM_CTRLMOVE, wParam, lParam);
+        DoSendMessage(GetParent(hwnd), MYWM_CTRLMOVE, wParam, lParam);
         return 0;
     }
 
@@ -1295,7 +1305,7 @@ public:
     LRESULT OnCtrlSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
         // send MYWM_CTRLSIZE to the parent
-        SendMessage(GetParent(hwnd), MYWM_CTRLSIZE, wParam, lParam);
+        DoSendMessage(GetParent(hwnd), MYWM_CTRLSIZE, wParam, lParam);
         return 0;
     }
 
@@ -1324,7 +1334,7 @@ public:
         ScreenToClient(hwnd, &m_ptClicked);
 
         // send WM_CONTEXTMENU to the parent
-        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, SendMessage);
+        FORWARD_WM_CONTEXTMENU(GetParent(hwnd), hwnd, x, y, DoSendMessage);
     }
 
     // MRadDialog WM_NCRBUTTONUP
@@ -1345,7 +1355,7 @@ public:
         if (fDown)
         {
             // send it to the parent
-            FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, SendMessage);
+            FORWARD_WM_KEYDOWN(GetParent(hwnd), vk, cRepeat, flags, DoSendMessage);
         }
     }
 
@@ -1726,6 +1736,11 @@ public:
         wcx.hbrBackground = GetStockBrush(DKGRAY_BRUSH);
     }
 
+    LRESULT DoSendMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        return ::SendMessage(hwnd, uMsg, wParam, lParam);
+    }
+
     // recreate the MRadDialog window
     BOOL ReCreateRadDialog(HWND hwnd, INT nSelectStartIndex = -1)
     {
@@ -1800,7 +1815,7 @@ public:
         }
 
         // notify MYWM_SELCHANGE to the parent
-        SendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(GetParent(hwnd), MYWM_SELCHANGE, 0, 0);
 
         return TRUE;
     }
@@ -1828,7 +1843,7 @@ public:
                     MIdOrString title = m_dialog_res[pCtrl->m_nIndex].m_title;
                     if (HICON hIcon = m_title_to_icon[title])
                     {
-                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+                        DoSendMessage(hCtrl, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
                         DWORD style = GetWindowStyle(hCtrl);
                         if (style & SS_REALSIZEIMAGE)
                         {
@@ -1859,7 +1874,7 @@ public:
                     MIdOrString title = m_dialog_res[pCtrl->m_nIndex].m_title;
                     if (HBITMAP hbm = m_title_to_bitmap[title])
                     {
-                        SendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
+                        DoSendMessage(hCtrl, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbm);
                         DWORD style = GetWindowStyle(hCtrl);
                         if (style & SS_REALSIZECONTROL)
                         {
@@ -1894,8 +1909,8 @@ public:
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
 
         // set the icons
-        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
-        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+        DoSendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+        DoSendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
         // resume the window position if necessary
         if (g_settings.bResumeWindowPos)
@@ -1930,11 +1945,11 @@ public:
 
         // send ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        SendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
+        DoSendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
 
         // notify selection change to the owner
         MRadCtrl::GetTargetIndeces().clear();
-        SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
         // destroy the icons
         if (m_hIcon)
@@ -1996,13 +2011,10 @@ public:
         {
             // check whether compilation requires or not
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-            if (!SendMessage(hwndOwner, MYWM_COMPILECHECK, (WPARAM)hwnd, 0))
+            if (!DoSendMessage(hwndOwner, MYWM_COMPILECHECK, (WPARAM)hwnd, 0))
             {
                 return;
             }
-
-            // reopen MRadWindow if necessary
-            SendMessage(hwndOwner, MYWM_REOPENRAD, 0, 0);
         }
 
         // default processing
@@ -2020,10 +2032,10 @@ public:
         if (hwndSel == NULL)    // no
         {
             // report the selection change to the owner window
-            SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+            DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
         
             // clear the status
-            SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            DoSendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
 
             return 0;
         }
@@ -2033,10 +2045,10 @@ public:
         if (pCtrl == NULL)
         {
             // report the selection change to the owner window
-            SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+            DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
 
             // clear the status
-            SendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
+            DoSendMessage(hwndOwner, MYWM_CLEARSTATUS, 0, 0);
             return 0;
         }
 
@@ -2045,13 +2057,13 @@ public:
         {
             // report the position and size of the index
             DialogItem& item = m_dialog_res[pCtrl->m_nIndex];
-            SendMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
+            DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT, 
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
 
         // report the selection change to the owner window
-        SendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
+        DoSendMessage(hwndOwner, MYWM_SELCHANGE, 0, 0);
         return 0;
     }
 
@@ -2197,7 +2209,7 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
@@ -2246,7 +2258,7 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(item.m_pt.x, item.m_pt.y),
             MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
 
@@ -2261,7 +2273,7 @@ public:
     {
         // notify the update of dialog resource to the owner window
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        SendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
+        DoSendMessage(hwndOwner, MYWM_UPDATEDLGRES, 0, 0);
 
         // redraw the labels
         m_rad_dialog.ShowHideLabels(m_rad_dialog.m_index_visible);
@@ -2282,7 +2294,7 @@ public:
 
         // notify the position/size change to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-        SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+        DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
             MAKEWPARAM(rc.left, rc.top),
             MAKELPARAM(rc.right - rc.left, rc.bottom - rc.top));
 
@@ -2452,7 +2464,7 @@ public:
 
         // notify WM_COMMAND to the owner window
         HWND hwndOwner = ::GetWindow(m_hwnd, GW_OWNER);
-        FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, SendMessage);
+        FORWARD_WM_COMMAND(hwndOwner, id, hwndCtl, codeNotify, DoSendMessage);
     }
 
     // called from MMainWnd WM_COMMAND ID_TOPALIGN
@@ -3106,7 +3118,7 @@ public:
 
             // report moving/resizing to the owner window
             HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
-            SendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
+            DoSendMessage(hwndOwner, MYWM_MOVESIZEREPORT,
                 MAKEWPARAM(item.m_pt.x, item.m_pt.y),
                 MAKELPARAM(item.m_siz.cx, item.m_siz.cy));
         }
