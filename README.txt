@@ -297,8 +297,9 @@ Question 6. Are the 64-bit files supported?
     - Added "UI Lanuage Select".
 - v.5.6.4 (2021.12.16)
     - Asking for compiling before opening GUI edit.
-- v.5.6.5 (20XX.YY.ZZ)
+- v.5.6.5 (2021.12.18)
     - A BS_OWNERDRAW button is a PUSHBUTTON.
+    - Fixed the bug of the RAD window (Critical).
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

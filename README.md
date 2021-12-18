@@ -306,8 +306,9 @@ You have to copy the 64-bit file into another place before loading.
     - Added "UI Lanuage Select".
 - v.5.6.4 (2021.12.16)
     - Asking for compiling before opening GUI edit.
-- v.5.6.5 (20XX.YY.ZZ)
+- v.5.6.5 (2021.12.18)
     - A BS_OWNERDRAW button is a PUSHBUTTON.
+    - Fixed the bug of the RAD window (Critical).
 
 ## Contact Us
 
