@@ -5535,7 +5535,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_EDIT, MF_GRAYED);
         EnableMenuItem(hMenu, ID_GUIEDIT, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
-        EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
         EnableMenuItem(hMenu, ID_EXTRACTRC, MF_GRAYED);
         return;
     }
@@ -5576,6 +5576,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
         break;
     case ET_NAME:
         EnableMenuItem(hMenu, ID_REPLACEICON, MF_GRAYED);
@@ -5590,6 +5591,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
         break;
 
     case ET_LANG:
@@ -5654,9 +5656,15 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_DELETERES, MF_ENABLED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         if (entry->m_type == RT_STRING || entry->m_type == RT_MESSAGETABLE)
+        {
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+            EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
+        }
         else
+        {
             EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
+            EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_ENABLED);
+        }
         break;
 
     case ET_STRING: case ET_MESSAGE:
@@ -5672,6 +5680,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_TEST, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_ENABLED);
+        EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
         break;
 
     default:
@@ -5686,6 +5695,7 @@ void MMainWnd::OnInitMenu(HWND hwnd, HMENU hMenu)
         EnableMenuItem(hMenu, ID_DELETERES, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWNAME, MF_GRAYED);
         EnableMenuItem(hMenu, ID_COPYASNEWLANG, MF_GRAYED);
+        EnableMenuItem(hMenu, ID_COPYTOMULTILANG, MF_GRAYED);
         break;
     }
 }
@@ -11660,6 +11670,11 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_COPYASNEWLANG:
         OnCopyAsNewLang(hwnd);
+        break;
+    case ID_COPYTOMULTILANG:
+        {
+
+        }
         break;
     case ID_ITEMSEARCH:
         OnItemSearch(hwnd);
