@@ -75,6 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Duplikat dengan &Nama Baru...", ID_COPYASNEWNAME
         MENUITEM "Duplikat dengan &Bahasa Baru...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Lakukan &Tes", ID_TEST
         MENUITEM SEPARATOR
@@ -184,6 +185,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Duplikat dengan &Nama Baru...", ID_COPYASNEWNAME
         MENUITEM "Duplikat dengan &Bahasa Baru...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Lakukan &Tes", ID_TEST
         MENUITEM SEPARATOR

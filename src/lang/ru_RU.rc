@@ -75,6 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Клонировать с новым &именем...", ID_COPYASNEWNAME
         MENUITEM "Клонировать с новым &языком...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Про&тестировать", ID_TEST
         MENUITEM SEPARATOR
@@ -184,6 +185,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Клонировать с новым &именем...", ID_COPYASNEWNAME
         MENUITEM "Клонировать с новым &языком...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "Про&тестировать", ID_TEST
         MENUITEM SEPARATOR

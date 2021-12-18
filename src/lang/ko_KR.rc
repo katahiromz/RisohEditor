@@ -75,6 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "새 이름으로 복제(&N)...", ID_COPYASNEWNAME
         MENUITEM "새 언어로 복제(&L)...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "테스트(&T)", ID_TEST
         MENUITEM SEPARATOR
@@ -185,6 +186,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "새 이름으로 복제(&N)", ID_COPYASNEWNAME
         MENUITEM "새 언어로 복제(&L)...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "테스트(&T)", ID_TEST
         MENUITEM SEPARATOR

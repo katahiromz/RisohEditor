@@ -75,6 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", ID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR
@@ -184,6 +185,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "別の名前で複製(&N)...", ID_COPYASNEWNAME
         MENUITEM "別の言語で複製(&L)...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "テストする(&T)", ID_TEST
         MENUITEM SEPARATOR

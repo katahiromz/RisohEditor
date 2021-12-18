@@ -75,6 +75,7 @@ IDR_MAINMENU MENU
         MENUITEM SEPARATOR
         MENUITEM "Klooni uudessa &nimessä...", ID_COPYASNEWNAME
         MENUITEM "Klooni uudessa kie&lessä...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Testaa", ID_TEST
         MENUITEM SEPARATOR
@@ -184,6 +185,7 @@ IDR_POPUPMENUS MENU
         MENUITEM SEPARATOR
         MENUITEM "Klooni uudessa &nimessä...", ID_COPYASNEWNAME
         MENUITEM "Klooni uudessa kie&lessä...", ID_COPYASNEWLANG
+        MENUITEM "Copy to multiple languages...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
         MENUITEM "&Testaa", ID_TEST
         MENUITEM SEPARATOR
