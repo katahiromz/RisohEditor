@@ -310,6 +310,8 @@ You have to copy the 64-bit file into another place before loading.
     - A BS_OWNERDRAW button is a PUSHBUTTON.
     - Added "Copy to multiple languages" feature.
     - Fixed the bug of the RAD window (Critical).
+- v.5.6.6 (20XX.YY.ZZ)
+    - Double-clicking the RAD window opens the control/dialog properties.
 
 ## Contact Us
 

@@ -2526,6 +2526,7 @@ protected:
     LRESULT OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam);
     BOOL DoInnerSearch(HWND hwnd);
     LRESULT OnUpdateLangArrow(HWND hwnd, WPARAM wParam, LPARAM lParam);
+    LRESULT OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam);
 
     void OnAddBitmap(HWND hwnd);
     void OnAddCursor(HWND hwnd);
@@ -3199,9 +3200,20 @@ void MMainWnd::PostUpdateLangArrow(HWND hwnd)
     PostMessage(hwnd, MYWM_UPDATELANGARROW, 0, 0);
 }
 
+// MYWM_UPDATELANGARROW
 LRESULT MMainWnd::OnUpdateLangArrow(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UpdateLangArrow();
+    return 0;
+}
+
+// MYWM_RADDBLCLICK
+LRESULT MMainWnd::OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if (lParam)
+        m_rad_window.OnCtrlProp(m_rad_window);
+    else
+        m_rad_window.OnDlgProp(m_rad_window);
     return 0;
 }
 
@@ -4403,13 +4415,14 @@ void MMainWnd::OnItemSearch(HWND hwnd)
     UpdateWindow(*pDialog);
 }
 
-// do item search
+// MYWM_ITEMSEARCH: do item search
 LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     DoItemSearchBang(hwnd, (MItemSearchDlg *)lParam);
     return 0;
 }
 
+// MYWM_COMPLEMENT
 LRESULT MMainWnd::OnComplement(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     INT index = (INT)wParam;
@@ -14624,6 +14637,7 @@ MMainWnd::WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         DO_MESSAGE(MYWM_ITEMSEARCH, OnItemSearchBang);
         DO_MESSAGE(MYWM_COMPLEMENT, OnComplement);
         DO_MESSAGE(MYWM_UPDATELANGARROW, OnUpdateLangArrow);
+        DO_MESSAGE(MYWM_RADDBLCLICK, OnRadDblClick);
 
     default:
         return DefaultProcDx();
@@ -14737,6 +14751,7 @@ void MMainWnd::OnIDJumpBang2(HWND hwnd, const MString& name, MString& strType)
     }
 }
 
+// MYWM_TLB_B2T
 LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     auto& str = *(MString *)wParam;
@@ -14749,6 +14764,7 @@ LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// MYWM_DELPHI_DFM_B2T
 LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     auto& str = *(MString *)wParam;

@@ -301,6 +301,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - A BS_OWNERDRAW button is a PUSHBUTTON.
     - Added "Copy to multiple languages" feature.
     - Fixed the bug of the RAD window (Critical).
+- v.5.6.6 (20XX.YY.ZZ)
+    - Double-clicking the RAD window opens the control/dialog properties.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

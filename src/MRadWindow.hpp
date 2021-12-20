@@ -57,6 +57,7 @@ class MRadWindow;
 #define MYWM_GETUNITS           (WM_USER + 109)     // get the dialog base units
 #define MYWM_UPDATEDLGRES       (WM_USER + 110)     // update the dialog res
 #define MYWM_REDRAW             (WM_USER + 111)     // redraw MRadDialog
+#define MYWM_RADDBLCLICK       (WM_USER + 115)     // Double-clicked on control
 
 #define GRID_SIZE   5   // grid size
 
@@ -623,7 +624,11 @@ public:
         GetCursorPos(&m_pt);
 
         if (fDoubleClick)
-            return;     // ignore double clicks
+        {
+            // send MYWM_RADDBLCLICK to the parent
+            DoSendMessage(GetParent(hwnd), MYWM_RADDBLCLICK, 0, (LPARAM)hwnd);
+            return;
+        }
 
         // ignore if not on the caption
         if (codeHitTest != HTCAPTION)
@@ -1137,8 +1142,17 @@ public:
         // if not [Shift] nor [Ctrl] pressed
         if (::GetKeyState(VK_SHIFT) >= 0 && ::GetKeyState(VK_CONTROL) >= 0)
         {
-            // deselect the controls
-            MRadCtrl::DeselectSelection();
+            if (fDoubleClick)
+            {
+                // send MYWM_RADDBLCLICK to the parent
+                DoSendMessage(GetParent(hwnd), MYWM_RADDBLCLICK, 0, (LPARAM)NULL);
+                return;
+            }
+            else
+            {
+                // deselect the controls
+                MRadCtrl::DeselectSelection();
+            }
         }
 
         // if not range selection
@@ -1267,11 +1281,20 @@ public:
             HANDLE_MESSAGE(hwnd, MYWM_CTRLMOVE, OnCtrlMove);
             HANDLE_MESSAGE(hwnd, MYWM_CTRLSIZE, OnCtrlSize);
             HANDLE_MESSAGE(hwnd, MYWM_DELETESEL, OnDeleteSel);
+            HANDLE_MESSAGE(hwnd, MYWM_RADDBLCLICK, OnRadDblClick);
             case WM_CAPTURECHANGED:
                 OnCaptureChanged(hwnd);
                 break;
         }
         return CallWindowProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    // MRadDialog MYWM_RADDBLCLICK
+    LRESULT OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        // send MYWM_RADDBLCLICK to the parent
+        DoSendMessage(GetParent(hwnd), MYWM_RADDBLCLICK, wParam, lParam);
+        return 0;
     }
 
     // MRadDialog WM_SIZE
@@ -1983,6 +2006,7 @@ public:
             DO_MESSAGE(MYWM_DELETESEL, OnDeleteSel);
             DO_MESSAGE(MYWM_SELCHANGE, OnSelChange);
             DO_MESSAGE(MYWM_GETUNITS, OnGetUnits);
+            DO_MESSAGE(MYWM_RADDBLCLICK, OnRadDblClick);
             DO_MSG(WM_INITMENUPOPUP, OnInitMenuPopup);
             DO_MSG(WM_ACTIVATE, OnActivate);
             DO_MSG(WM_SYSCOLORCHANGE, OnSysColorChange);
@@ -1994,6 +2018,14 @@ public:
     void OnSysColorChange(HWND hwnd)
     {
         m_rad_dialog.SendMessageDx(WM_SYSCOLORCHANGE);
+    }
+
+    // MRadWindow MYWM_RADDBLCLICK
+    LRESULT OnRadDblClick(HWND hwnd, WPARAM wParam, LPARAM lParam)
+    {
+        HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
+        DoSendMessage(hwndOwner, MYWM_RADDBLCLICK, wParam, lParam);
+        return 0;
     }
 
     // MRadWindow MYWM_GETUNITS
