@@ -301,7 +301,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - A BS_OWNERDRAW button is a PUSHBUTTON.
     - Added "Copy to multiple languages" feature.
     - Fixed the bug of the RAD window (Critical).
-- v.5.6.6 (ZZ.YY.20XX)
+- v.5.6.6 (2021.12.25)
     - Double-clicking the RAD window opens the control/dialog properties.
     - Improved ANI cursor support.
 
