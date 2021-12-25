@@ -312,6 +312,7 @@ You have to copy the 64-bit file into another place before loading.
     - Fixed the bug of the RAD window (Critical).
 - v.5.6.6 (20XX.YY.ZZ)
     - Double-clicking the RAD window opens the control/dialog properties.
+    - Improved ANI cursor support.
 
 ## Contact Us
 

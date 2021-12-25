@@ -143,6 +143,16 @@ public:
             }
         }
 
+        if (!bAni)
+        {
+            MByteStream bs;
+            if (bs.LoadFromFile(file.c_str()) && bs.size() >= 4)
+            {
+                if (memcmp(bs.ptr(), "RIFF", 4) == 0)
+                    bAni = TRUE;
+            }
+        }
+
         if (bAni)
         {
             type = RT_ANICURSOR;

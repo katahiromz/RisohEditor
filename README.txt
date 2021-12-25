@@ -303,6 +303,7 @@ Question 6. Are the 64-bit files supported?
     - Fixed the bug of the RAD window (Critical).
 - v.5.6.6 (20XX.YY.ZZ)
     - Double-clicking the RAD window opens the control/dialog properties.
+    - Improved ANI cursor support.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
