@@ -86,7 +86,7 @@ IDR_MAINMENU MENU
         MENUITEM "Configurações de &Fonte...", ID_FONTS
         MENUITEM "Definir Camin&hos...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "Selecionar Idioma da Inte&rface (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Configurações de DFM do &Delphi...", ID_DFMSETTINGS
         MENUITEM "&Configuração...", ID_CONFIG
