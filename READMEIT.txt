@@ -304,6 +304,8 @@ Domanda 6. I file a 64 bit sono supportati?
 - v.5.6.6 (2021.12.25)
     - Double-clicking the RAD window opens the control/dialog properties.
     - Improved ANI cursor support.
+- v.5.6.7 (202X.YY.ZZ)
+    - Added Portuguese translation.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
