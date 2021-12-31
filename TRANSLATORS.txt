@@ -18,6 +18,8 @@ The translators of RisohEditor are listed below:
     - ꧁VenusGirl꧂ (비너스걸) <venusgirl@outlook.com>
  * Polish:
     - Piotr Hetnarowicz <piotrhwz@gmail.com>
+ * Portuguese:
+    - JNylson
  * Russian:
     - Dmitry Yerokhin <erodim@mail.ru>
  * Simplified Chinese:
