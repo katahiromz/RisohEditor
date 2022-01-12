@@ -53,6 +53,13 @@
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
+static inline LANGID RE_GetThreadUILanguage()
+{
+    return LANGIDFROMLCID(GetThreadLocale());
+}
+#undef GetThreadUILanguage
+#define GetThreadUILanguage() RE_GetThreadUILanguage()
+
 #include "resource.h"
 #include "MWindowBase.hpp"
 #include "MEditCtrl.hpp"

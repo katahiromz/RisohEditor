@@ -16829,7 +16829,7 @@ LANGID GetUILang(void)
 #endif
     keyRisoh.QueryDword(TEXT("UILanguage"), (DWORD&)langid);
     if (langid == 0)
-        langid = ::GetThreadUILanguage();
+        langid = GetThreadUILanguage();
     return LANGID(langid);
 }
 

@@ -304,8 +304,9 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 - v.5.6.6 (2021.12.25)
     - Double-clicking the RAD window opens the control/dialog properties.
     - Improved ANI cursor support.
-- v.5.6.7 (202X.YY.ZZ)
+- v.5.6.7 (2022.YY.ZZ)
     - Added Portuguese translation.
+    - WinXP support again (don't use GetThreadUILanguage() in XP).
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
