@@ -53,12 +53,51 @@
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
+inline BOOL IsWindowsVistaOrLater(VOID)
+{
+    OSVERSIONINFOW osver = { sizeof(osver) };
+    return (GetVersionExW(&osver) && osver.dwMajorVersion >= 6);
+}
+
 static inline LANGID RE_GetThreadUILanguage()
 {
+    typedef LANGID (WINAPI *FN_GetThreadUILanguage)(VOID);
+    static FN_GetThreadUILanguage s_fn = NULL;
+
+    if (IsWindowsVistaOrLater())
+    {
+        if (!s_fn)
+            s_fn = (FN_GetThreadUILanguage)GetProcAddress(GetModuleHandleA("kernel32"), "GetThreadUILanguage");
+        if (s_fn)
+            return (*s_fn)();
+    }
+
     return LANGIDFROMLCID(GetThreadLocale());
 }
 #undef GetThreadUILanguage
-#define GetThreadUILanguage() RE_GetThreadUILanguage()
+#define GetThreadUILanguage RE_GetThreadUILanguage
+
+static inline LANGID RE_SetThreadUILanguage(LANGID LangID)
+{
+    typedef LANGID (WINAPI *FN_SetThreadUILanguage)(LANGID);
+    static FN_SetThreadUILanguage s_fn = NULL;
+
+    if (IsWindowsVistaOrLater())
+    {
+        if (!s_fn)
+            s_fn = (FN_SetThreadUILanguage)GetProcAddress(GetModuleHandleA("kernel32"), "SetThreadUILanguage");
+        if (s_fn)
+        {
+            return (*s_fn)(LangID);
+        }
+    }
+
+    if (SetThreadLocale(MAKELCID(LangID, SORT_DEFAULT)))
+        return MAKELCID(LangID, SORT_DEFAULT);
+    return 0;
+}
+#undef SetThreadUILanguage
+#define SetThreadUILanguage RE_SetThreadUILanguage
 
 #include "resource.h"
 #include "MWindowBase.hpp"
