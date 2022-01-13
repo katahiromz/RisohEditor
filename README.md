@@ -313,7 +313,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.6.6 (2021.12.25)
     - Double-clicking the RAD window opens the control/dialog properties.
     - Improved ANI cursor support.
-- v.5.6.7 (2022.YY.ZZ)
+- v.5.6.7 (2022.01.13)
     - Added Portuguese translation.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
 
