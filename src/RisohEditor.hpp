@@ -87,13 +87,11 @@ static inline LANGID RE_SetThreadUILanguage(LANGID LangID)
         if (!s_fn)
             s_fn = (FN_SetThreadUILanguage)GetProcAddress(GetModuleHandleA("kernel32"), "SetThreadUILanguage");
         if (s_fn)
-        {
             return (*s_fn)(LangID);
-        }
     }
 
     if (SetThreadLocale(MAKELCID(LangID, SORT_DEFAULT)))
-        return MAKELCID(LangID, SORT_DEFAULT);
+        return LangID;
     return 0;
 }
 #undef SetThreadUILanguage
