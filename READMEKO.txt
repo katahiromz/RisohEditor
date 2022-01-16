@@ -309,6 +309,7 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
 - v.5.6.8 (2022.XX.YY)
     - Changed the initial focus of IDD_CTRLPROP.
+    - Fixed some version info.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

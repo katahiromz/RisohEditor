@@ -318,6 +318,7 @@ You have to copy the 64-bit file into another place before loading.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
 - v.5.6.8 (2022.XX.YY)
     - Changed the initial focus of IDD_CTRLPROP.
+    - Fixed some version info.
 
 ## Contact Us
 
