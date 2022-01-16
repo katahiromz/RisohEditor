@@ -577,7 +577,8 @@ public:
         }
 
         CenterWindowDx();
-        return TRUE;
+        SetFocus(hCmb2);
+        return FALSE;
     }
 
     void OnOK(HWND hwnd)

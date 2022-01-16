@@ -308,6 +308,7 @@ Domanda 6. I file a 64 bit sono supportati?
     - Added Portuguese translation.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
 - v.5.6.8 (2022.XX.YY)
+    - Changed the initial focus of IDD_CTRLPROP.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
