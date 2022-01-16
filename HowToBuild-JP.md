@@ -37,7 +37,7 @@ Visual Studio 2019 でUTF-8でエンコードされたリソースファイル�
 
 ```cmd
 cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
-"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 16 2019" -A "Win32" -T v141_xp -DCMAKE_BUILD_TYPE=Release -DATL_SUPPORT=ON .
+"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 16 2019" -A "Win32" -T v141_xp -DCMAKE_BUILD_TYPE=MinSizeRel -DATL_SUPPORT=ON .
 ```
 
 しばらく待つと実行が完了して次のようなメッセージが表示される。
@@ -49,7 +49,7 @@ cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
 この場合、CMakeに成功。
 
 2. CMakeによって出力されたファイル`RisohEditor.sln`をVisual Studio 2019で開く。
-3. 「Debug」から「Release」に変更する。
+3. 「Debug」から「MinSizeRel」に変更する。
 4. キーボードのCtrlを押しながらプロジェクトをすべてクリックしてプロジェクトをすべて選択する。
 5. 選択されているプロジェクトアイコンを右クリックして「プロパティ」を選ぶ。「プロパティ ページ」が表示される。
 6. 「プロパティ ページ」の「構成プロパティ」をクリックして、「全般」をクリックして、
@@ -63,8 +63,8 @@ cd C:\Users\katahiromz\Documents\DEV\ProjectRisohEditor\RisohEditor
 デバッグが開始されるので簡単にテストを行う。
 11. テストが完了したら、Visual Studio を閉じる。
 12. ビルドによって`build`というフォルダが作成された。
-さらに`build`フォルダの中に`Release`というフォルダが作成されている。
-`Release`の中身を`build`フォルダに貼り付ける。
+さらに`build`フォルダの中に`MinSizeRel`というフォルダが作成されている。
+`MinSizeRel`の中身を`build`フォルダに貼り付ける。
 13. Inno Setupで次のようにインストーラを作成する。
 Inno Setupでファイル`installer.iss`もしくは`installer-the-world.iss`を開き、
 メニューから`Build`→`Compile`を選ぶ。
