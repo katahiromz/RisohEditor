@@ -1305,8 +1305,8 @@ FONT 9, "MS Shell Dlg"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 6, 7, 0
-PRODUCTVERSION  5, 6, 7, 0
+FILEVERSION     5, 6, 8, 0
+PRODUCTVERSION  5, 6, 8, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -1316,10 +1316,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.6.7\0"
+            VALUE "FileVersion", "5.6.8\0"
             VALUE "LegalCopyright", "Hak cipta (C) 2017-2020 Katayama Hirofumi MZ and Mas Ahmad Muhammad. Hak cipta dilindungi.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.6.7\0"
+            VALUE "ProductVersion", "5.6.8\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1359,8 +1359,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.6.7 oleh Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.6.7 - Berkas: %s"
+    IDS_APPNAME, "RisohEditor 5.6.8 oleh Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.6.8 - Berkas: %s"
     IDS_EXTRACTRES, "Ekstrak Sumber Daya"
     IDS_RESBINFILTER, "Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_CANNOTSAVE, "Tidak bisa disimpan."
@@ -1386,7 +1386,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Tidak bisa mengganti bitmap."
     IDS_REPLACEBMP, "Ganti Bitmap"
     IDS_ERRORCODE, "Kode kesalahan %d"
-    IDS_VERSIONINFO, "RisohEditor Versi 5.6.7\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Versi 5.6.8\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (freeware)"
     IDS_ADDRES, "Tambah Sumber Daya"
     IDS_CANNOTADDRES, "Tidak bisa menambahkan sumber daya."
     IDS_CANTADDBMP, "Tidak bisa menambahkan bitmap."

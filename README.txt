@@ -307,6 +307,7 @@ Question 6. Are the 64-bit files supported?
 - v.5.6.7 (2022.01.13)
     - Added Portuguese translation.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
+- v.5.6.8 (2022.XX.YY)
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
