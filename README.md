@@ -316,7 +316,7 @@ You have to copy the 64-bit file into another place before loading.
 - v.5.6.7 (2022.01.13)
     - Added Portuguese translation.
     - WinXP support again (don't use GetThreadUILanguage() in XP).
-- v.5.6.8 (2022.XX.YY)
+- v.5.6.8 (2022.01.17)
     - Changed the initial focus of IDD_CTRLPROP.
     - Fixed some version info.
 
