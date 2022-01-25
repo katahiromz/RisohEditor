@@ -133,8 +133,8 @@ IDR_MAINMENU MENU
     POPUP "&Bantuan"
     {
         MENUITEM "Buka &README.txt (English)", ID_OPENREADME
-        MENUITEM "Buka R&EADMEIT.txt (Italian)", ID_OPENREADME
-        MENUITEM "Buka README&JP.txt (Japanese)", ID_OPENREADMEJP
+        MENUITEM "Buka R&EADME-ITA.txt (Italian)", ID_OPENREADME
+        MENUITEM "Buka README-&JPN.txt (Japanese)", ID_OPENREADMEJP
         MENUITEM "Buka &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Petu&njuk RisohEditor", ID_GUIDE

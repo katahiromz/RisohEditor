@@ -5079,19 +5079,19 @@ void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 
     // find the "READMEJP.txt" file
     *pch = 0;
-    PathAppendW(szPath, L"READMEJP.txt");
+    PathAppendW(szPath, L"README-JPN.txt");
     if (!PathFileExistsW(szPath))
     {
         *pch = 0;
-        PathAppendW(szPath, L"..\\READMEJP.txt");
+        PathAppendW(szPath, L"..\\README-JPN.txt");
         if (!PathFileExistsW(szPath))
         {
             *pch = 0;
-            PathAppendW(szPath, L"..\\..\\READMEJP.txt");
+            PathAppendW(szPath, L"..\\..\\README-JPN.txt");
             if (!PathFileExistsW(szPath))
             {
                 *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\READMEJP.txt");
+                PathAppendW(szPath, L"..\\..\\..\\README-JPN.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -5149,19 +5149,19 @@ void MMainWnd::OnOpenReadMeIt(HWND hwnd)
 
     // find the "READMEIT.txt" file
     *pch = 0;
-    PathAppendW(szPath, L"READMEIT.txt");
+    PathAppendW(szPath, L"README-ITA.txt");
     if (!PathFileExistsW(szPath))
     {
         *pch = 0;
-        PathAppendW(szPath, L"..\\READMEIT.txt");
+        PathAppendW(szPath, L"..\\README-ITA.txt");
         if (!PathFileExistsW(szPath))
         {
             *pch = 0;
-            PathAppendW(szPath, L"..\\..\\READMEIT.txt");
+            PathAppendW(szPath, L"..\\..\\README-ITA.txt");
             if (!PathFileExistsW(szPath))
             {
                 *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\READMEIT.txt");
+                PathAppendW(szPath, L"..\\..\\..\\README-ITA.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;
@@ -5219,19 +5219,19 @@ void MMainWnd::OnOpenReadMeKo(HWND hwnd)
 
     // find the "READMEIT.txt" file
     *pch = 0;
-    PathAppendW(szPath, L"READMEKO.txt");
+    PathAppendW(szPath, L"README-KOR.txt");
     if (!PathFileExistsW(szPath))
     {
         *pch = 0;
-        PathAppendW(szPath, L"..\\READMEKO.txt");
+        PathAppendW(szPath, L"..\\README-KOR.txt");
         if (!PathFileExistsW(szPath))
         {
             *pch = 0;
-            PathAppendW(szPath, L"..\\..\\READMEKO.txt");
+            PathAppendW(szPath, L"..\\..\\README-KOR.txt");
             if (!PathFileExistsW(szPath))
             {
                 *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\READMEKO.txt");
+                PathAppendW(szPath, L"..\\..\\..\\README-KOR.txt");
                 if (!PathFileExistsW(szPath))
                 {
                     return;

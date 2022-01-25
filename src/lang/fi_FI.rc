@@ -133,8 +133,8 @@ IDR_MAINMENU MENU
     POPUP "O&hje"
     {
         MENUITEM "Avaa &README.txt (English)", ID_OPENREADME
-        MENUITEM "Avaa READMEI&T.txt (Italian)", ID_OPENREADME
-        MENUITEM "Avaa README&JP.txt (Japanese)", ID_OPENREADMEJP
+        MENUITEM "Avaa README-I&TA.txt (Italian)", ID_OPENREADME
+        MENUITEM "Avaa README-&JPN.txt (Japanese)", ID_OPENREADMEJP
         MENUITEM "Avaa &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Opas &RisohEditorille", ID_GUIDE
