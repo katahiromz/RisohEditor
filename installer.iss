@@ -76,6 +76,10 @@ Source: "READMEJP.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "READMEIT.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "READMEKO.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ENG.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion

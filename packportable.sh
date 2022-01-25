@@ -80,6 +80,7 @@ mkdir "$RE_BIN_DIR/EGA"
 cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"
 cp -f EGA/samples/*.ega EGA-samples/*.ega "$RE_BIN_DIR/EGA"
 
+cp -r HISTORY-*.txt "$RE_BIN_DIR"
 cp -r win32-samples "$RE_BIN_DIR"
 
 cd build
