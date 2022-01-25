@@ -263,3 +263,4 @@
     - Fixed some version info.
 - v.5.6.9 (2022.XX.YY)
     - Splited the history text.
+    - Disabled mouse cursor clipping on resizing controls.

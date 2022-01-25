@@ -63,12 +63,14 @@ public:
         m_hwndTarget = hwndTarget;
 
         // create as a child
-        DWORD style = (bVisible ? WS_VISIBLE : 0) | WS_CHILD | WS_THICKFRAME;
+        DWORD style = WS_THICKFRAME | WS_CHILD;
         DWORD exstyle = WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_TOPMOST;
-        BOOL bOK = CreateAsChildDx(hwndParent, NULL, style, exstyle, -1, 
-                                   x, y, cx, cy);
+        BOOL bOK = CreateWindowDx(hwndParent, NULL, style, exstyle, x, y, cx, cy);
         if (bOK)
         {
+            if (bVisible)
+                ShowWindow(m_hwnd, SW_SHOWNOACTIVATE);
+
             // fit to the target
             FitToTarget();
 
@@ -92,6 +94,28 @@ public:
         delete this;
     }
 
+    void OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo)
+    {
+        lpMinMaxInfo->ptMinTrackSize.x = m_nGripSize;
+        lpMinMaxInfo->ptMinTrackSize.y = m_nGripSize;
+    }
+
+    BOOL m_bLockMoveSize = FALSE;
+
+    void OnSysCommand(HWND hwnd, UINT cmd, int x, int y)
+    {
+        if (cmd == SC_CLOSE)
+            return;
+        ++m_bLockMoveSize;
+        // Disable mouse cursor clipping.
+        ModifyStyleDx(WS_CHILD, 0);
+        FORWARD_WM_SYSCOMMAND(hwnd, cmd, x, y, DefaultProcDx);
+        ModifyStyleDx(0, WS_CHILD);
+        ClipCursor(NULL);
+        --m_bLockMoveSize;
+        PostMessage(hwnd, WM_SIZE, 0, 0);
+    }
+
     // the window procedure of MRubberBand
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -106,6 +130,15 @@ public:
             HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
             HANDLE_MSG(hwnd, WM_NCHITTEST, OnNCHitTest);
             HANDLE_MSG(hwnd, WM_SETCURSOR, OnSetCursor);
+            HANDLE_MSG(hwnd, WM_GETMINMAXINFO, OnGetMinMaxInfo);
+            HANDLE_MSG(hwnd, WM_SYSCOMMAND, OnSysCommand);
+        case WM_ENTERSIZEMOVE:
+            // Disable mouse cursor clipping.
+            ClipCursor(NULL);
+            return 0;
+        case WM_EXITSIZEMOVE:
+            PostMessage(hwnd, WM_SIZE, 0, 0);
+            return 0;
         default:
             return DefaultProcDx(hwnd, uMsg, wParam, lParam);
         }
@@ -124,6 +157,9 @@ public:
         if (m_hwndTarget == NULL)
             return;     // no target
 
+        if (m_bLockMoveSize)
+            ModifyStyleDx(0, WS_CHILD); // add WS_CHILD
+
         // get the ideal rectangle in the parent coordinates
         RECT rc;
         GetIdealClientRect(&rc);
@@ -134,8 +170,11 @@ public:
             rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 
             SWP_NOACTIVATE | SWP_NOZORDER);
 
+        if (m_bLockMoveSize)
+            ModifyStyleDx(WS_CHILD, 0); // remove WS_CHILD for mouse cursor clipping
+
         // redraw
-        InvalidateRect(m_hwnd, NULL, TRUE);
+        InvalidateRect(m_hwnd, NULL, FALSE);
     }
 
     // adjust the rubber band's posision and size for the target
