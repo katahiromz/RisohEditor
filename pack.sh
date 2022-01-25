@@ -22,7 +22,7 @@
 RE_VERSION=5.6.9
 RE_NAME="RisohEditor-$RE_VERSION-no-inst"
 RE_BIN_DIR="build/$RE_NAME"
-RE_FILES="README.txt README-JPN.txt README-ITA.txt README-KON.txt LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
+RE_FILES="LICENSE.txt Standardize.md HYOJUNKA.txt TRANSLATORS.txt src/resource.h build/RisohEditor.exe mcdx/MESSAGETABLEDX.md"
 RE_TARGET="build/RisohEditor-$RE_VERSION-no-inst.zip"
 
 ################################################################################
@@ -80,7 +80,8 @@ mkdir "$RE_BIN_DIR/EGA"
 cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"
 cp -f EGA/samples/*.ega EGA-samples/*.ega "$RE_BIN_DIR/EGA"
 
-cp -r HISTORY-*.txt "$RE_BIN_DIR"
+cp -r README*.txt "$RE_BIN_DIR"
+cp -r HISTORY*.txt "$RE_BIN_DIR"
 cp -r win32-samples "$RE_BIN_DIR"
 
 cd build

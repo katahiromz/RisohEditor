@@ -72,8 +72,8 @@ Name: "res_association"; Description: "{cm:AssociateResFiles}"
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
