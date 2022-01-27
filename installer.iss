@@ -12,6 +12,7 @@
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName=RisohEditor
+AppVersion=5.6.9
 AppVerName=RisohEditor 5.6.9
 AppPublisher=Katayama Hirofumi MZ
 AppPublisherURL=http://katahiromz.web.fc2.com/
