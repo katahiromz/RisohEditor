@@ -2574,6 +2574,7 @@ protected:
     void OnFonts(HWND hwnd);
     void OnAbout(HWND hwnd);
     void OnConfig(HWND hwnd);
+    void OnOpenDocument(HWND hwnd, LPCWSTR filename);
     void OnOpenReadMe(HWND hwnd);
     void OnOpenReadMeIt(HWND hwnd);
     void OnOpenReadMeJp(HWND hwnd);
@@ -5034,249 +5035,76 @@ void MMainWnd::OnEdit(HWND hwnd)
     SelectTV(entry, TRUE);
 }
 
-// open README
-void MMainWnd::OnOpenReadMe(HWND hwnd)
+void MMainWnd::OnOpenDocument(HWND hwnd, LPCWSTR filename)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
+        return;
+
     // get the module path filename of this application module
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
 
-    // find the "README.txt" file
+    LPWSTR pch = PathFindFileNameW(szPath);
     *pch = 0;
-    PathAppendW(szPath, L"README.txt");
-    if (!PathFileExistsW(szPath))
+
+    for (INT m = 0; m <= 3; ++m)
     {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\README.txt");
-        if (!PathFileExistsW(szPath))
+        MString strPath = szPath;
+        for (INT n = 0; n < m; ++n)
+            strPath += L"..\\";
+
+        strPath += filename;
+
+        if (PathFileExistsW(strPath.c_str()))
         {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\README.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\README.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
+            // open it
+            ShellExecuteW(hwnd, NULL, strPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+            return;
         }
     }
+}
 
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+// open README
+void MMainWnd::OnOpenReadMe(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"README.txt");
 }
 
 // Open READMEJP (Japanese)
 void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 {
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
-
-    // find the "READMEJP.txt" file
-    *pch = 0;
-    PathAppendW(szPath, L"README-JPN.txt");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\README-JPN.txt");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\README-JPN.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\README-JPN.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
-}
-
-// Open EGA Manual
-void MMainWnd::OnOpenEgaManual(HWND hwnd)
-{
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
-
-    // find the "EGA-Manual.pdf" file
-    *pch = 0;
-    PathAppendW(szPath, L"EGA\\EGA-Manual.pdf");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\EGA\\EGA-Manual.pdf");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\EGA\\EGA-Manual.pdf");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\EGA\\EGA-Manual.pdf");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+    OnOpenDocument(hwnd, L"README-JPN.txt");
 }
 
 // Open READMEIT (Italian)
 void MMainWnd::OnOpenReadMeIt(HWND hwnd)
 {
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
-
-    // find the "READMEIT.txt" file
-    *pch = 0;
-    PathAppendW(szPath, L"README-ITA.txt");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\README-ITA.txt");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\README-ITA.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\README-ITA.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
-}
-
-// Open HYOJUNKA.txt (Japanese)
-void MMainWnd::OnOpenHyojunka(HWND hwnd)
-{
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
-
-    // find the "HYOJUNKA.txt" file
-    *pch = 0;
-    PathAppendW(szPath, L"HYOJUNKA.txt");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\HYOJUNKA.txt");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\HYOJUNKA.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\HYOJUNKA.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+    OnOpenDocument(hwnd, L"README-ITA.txt");
 }
 
 // Open READMEKO (Korean)
 void MMainWnd::OnOpenReadMeKo(HWND hwnd)
 {
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
+    OnOpenDocument(hwnd, L"README-KOR.txt");
+}
 
-    // find the "READMEIT.txt" file
-    *pch = 0;
-    PathAppendW(szPath, L"README-KOR.txt");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\README-KOR.txt");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\README-KOR.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\README-KOR.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
+// Open HYOJUNKA.txt (Japanese)
+void MMainWnd::OnOpenHyojunka(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"HYOJUNKA.txt");
+}
 
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+// Open EGA Manual
+void MMainWnd::OnOpenEgaManual(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"EGA\\EGA-Manual.pdf");
 }
 
 // open the license text file
 void MMainWnd::OnOpenLicense(HWND hwnd)
 {
-    // get the module path filename of this application module
-    WCHAR szPath[MAX_PATH];
-    GetModuleFileNameW(NULL, szPath, _countof(szPath));
-    LPWSTR pch = PathFindFileNameW(szPath);
-
-    // find the "LICENSE.txt" file
-    *pch = 0;
-    PathAppendW(szPath, L"LICENSE.txt");
-    if (!PathFileExistsW(szPath))
-    {
-        *pch = 0;
-        PathAppendW(szPath, L"..\\LICENSE.txt");
-        if (!PathFileExistsW(szPath))
-        {
-            *pch = 0;
-            PathAppendW(szPath, L"..\\..\\LICENSE.txt");
-            if (!PathFileExistsW(szPath))
-            {
-                *pch = 0;
-                PathAppendW(szPath, L"..\\..\\..\\LICENSE.txt");
-                if (!PathFileExistsW(szPath))
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    // open it
-    ShellExecuteW(hwnd, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+    OnOpenDocument(hwnd, L"LICENSE.txt");
 }
 
 // do UPX test to check whether the file is compressed or not
