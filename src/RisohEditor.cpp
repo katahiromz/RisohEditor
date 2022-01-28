@@ -2581,6 +2581,10 @@ protected:
     void OnOpenReadMeKo(HWND hwnd);
     void OnOpenEgaManual(HWND hwnd);
     void OnOpenLicense(HWND hwnd);
+    void OnOpenHistory(HWND hwnd);
+    void OnOpenHistoryIta(HWND hwnd);
+    void OnOpenHistoryJpn(HWND hwnd);
+    void OnOpenHistoryKor(HWND hwnd);
     void OnOpenHyojunka(HWND hwnd);
     void OnDebugTreeNode(HWND hwnd);
     void OnAdviceResH(HWND hwnd);
@@ -5065,25 +5069,25 @@ void MMainWnd::OnOpenDocument(HWND hwnd, LPCWSTR filename)
     }
 }
 
-// open README
+// open README (English)
 void MMainWnd::OnOpenReadMe(HWND hwnd)
 {
     OnOpenDocument(hwnd, L"README.txt");
 }
 
-// Open READMEJP (Japanese)
+// Open README (Japanese)
 void MMainWnd::OnOpenReadMeJp(HWND hwnd)
 {
     OnOpenDocument(hwnd, L"README-JPN.txt");
 }
 
-// Open READMEIT (Italian)
+// Open README (Italian)
 void MMainWnd::OnOpenReadMeIt(HWND hwnd)
 {
     OnOpenDocument(hwnd, L"README-ITA.txt");
 }
 
-// Open READMEKO (Korean)
+// Open README (Korean)
 void MMainWnd::OnOpenReadMeKo(HWND hwnd)
 {
     OnOpenDocument(hwnd, L"README-KOR.txt");
@@ -5105,6 +5109,26 @@ void MMainWnd::OnOpenEgaManual(HWND hwnd)
 void MMainWnd::OnOpenLicense(HWND hwnd)
 {
     OnOpenDocument(hwnd, L"LICENSE.txt");
+}
+
+void MMainWnd::OnOpenHistory(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"HISTORY.txt");
+}
+
+void MMainWnd::OnOpenHistoryIta(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"HISTORY-ITA.txt");
+}
+
+void MMainWnd::OnOpenHistoryJpn(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"HISTORY-JPN.txt");
+}
+
+void MMainWnd::OnOpenHistoryKor(HWND hwnd)
+{
+    OnOpenDocument(hwnd, L"HISTORY-KOR.txt");
 }
 
 // do UPX test to check whether the file is compressed or not
@@ -11621,6 +11645,18 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_OPENLICENSE:
         OnOpenLicense(hwnd);
+        break;
+    case ID_OPENHISTORY:
+        OnOpenHistory(hwnd);
+        break;
+    case ID_OPENHISTORYITA:
+        OnOpenHistoryIta(hwnd);
+        break;
+    case ID_OPENHISTORYJPN:
+        OnOpenHistoryJpn(hwnd);
+        break;
+    case ID_OPENHISTORYKOR:
+        OnOpenHistoryKor(hwnd);
         break;
     case ID_OPENHYOJUNKA:
         OnOpenHyojunka(hwnd);

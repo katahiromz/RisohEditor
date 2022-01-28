@@ -135,6 +135,8 @@ IDR_MAINMENU MENU
         MENUITEM "Apri file Leggimi (&Inglese)", ID_OPENREADME
         MENUITEM "Apri file Leggimi (I&taliano)", ID_OPENREADMEIT
         MENUITEM "Apri file Leggimi (&Giapponese)", ID_OPENREADMEJP
+        MENUITEM "Apri file cronologia (Inglese)", ID_OPENHISTORY
+        MENUITEM "Apri file storico (Italiano)", ID_OPENHISTORYITA
         MENUITEM "Apri file &licenza (Inglese)", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guida a RisohEditor", ID_GUIDE

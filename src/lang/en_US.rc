@@ -135,6 +135,7 @@ IDR_MAINMENU MENU
         MENUITEM "Open &README.txt (English)", ID_OPENREADME
         MENUITEM "Open README-I&TA.txt (Italian)", ID_OPENREADME
         MENUITEM "Open README-&JPN.txt (Japanese)", ID_OPENREADMEJP
+        MENUITEM "Open HISTORY.txt", ID_OPENHISTORY
         MENUITEM "Open &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "A &Guide to RisohEditor", ID_GUIDE
