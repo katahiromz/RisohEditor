@@ -547,7 +547,7 @@ void DialogItem::FixupForRad(bool bRevert)
         m_old_ex_style = m_ex_style;
 
         m_style &= ~WS_DISABLED;
-        m_style |= WS_CHILD | WS_VISIBLE;
+        m_style |= WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS;
 
         m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_LAYERED | WS_EX_TRANSPARENT |
                         WS_EX_TOPMOST);
@@ -1014,7 +1014,7 @@ void DialogRes::FixupForRad(bool bRevert)
         m_old_class = m_class;
 
         m_style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
-        m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS;
+        m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
         m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                      WS_EX_LAYERED | WS_EX_TRANSPARENT);
         m_ex_style |= WS_EX_NOACTIVATE;
