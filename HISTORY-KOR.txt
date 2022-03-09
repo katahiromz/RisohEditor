@@ -264,7 +264,6 @@
     - Fixed some version info.
 - v.5.6.9 (2022.XX.YY)
     - Splited the history text.
-    - Disabled mouse cursor clipping on resizing controls.
     - Renamed READMEs.
     - Added WS_CLIPCHILDREN for RAD window to reduce flickering.
     - Reverted RAD window behaviour.
