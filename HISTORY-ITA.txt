@@ -239,29 +239,29 @@
 - v.5.6.1 (01.07.2021)
     - Corretto il valore di ritorno del processo.
     - Migliorata gestione della tabella messaggi.
-    - Don't change the case of name when renaming it in TreeView.
+    - Non modifica il caso del nome quando lo si rinomina in VistaStruttura.
 - v.5.6.2 (15.08.2021)
-    - Enlarged width of "Save Options" and "Export Options" dialogs.
-    - Added workaround to add message tables on Microsoft compatible mode.
+    - Aumentata larghezza delle finestre di dialogo "Opzioni salvataggio" ed "Opzioni esportazione".
+    - Aggiunta una soluzione alternativa per aggiungere tabelle di messaggi in modalità compatibile con Microsoft.
 - v.5.6.3 (12.12.2021)
-    - Added win32-samples.
-    - Added "UI Lanuage Select".
+    - Aggiunti campioni di win32.
+    - Aggiunto "Selezione lingua interfaccia utente".
 - v.5.6.4 (16.12.2021)
-    - Asking for compiling before opening GUI edit.
+    - Richiesta di compilazione prima di aprire la modifica della GUI.
 - v.5.6.5 (18.12.2021)
-    - A BS_OWNERDRAW button is a PUSHBUTTON.
-    - Added "Copy to multiple languages" feature.
-    - Fixed the bug of the RAD window (Critical).
-- v.5.6.6 (2021.12.25)
-    - Double-clicking the RAD window opens the control/dialog properties.
-    - Improved ANI cursor support.
-- v.5.6.7 (2022.01.13)
-    - Added Portuguese translation.
-    - WinXP support again (don't use GetThreadUILanguage() in XP).
-- v.5.6.8 (2022.01.17)
-    - Changed the initial focus of IDD_CTRLPROP.
-    - Fixed some version info.
-- v.5.6.9 (2022.03.09)
-    - Splited the history text.
-    - Renamed READMEs.
-    - Added WS_CLIPCHILDREN for RAD window to reduce flickering.
+    - Un pulsante BS_OWNERDRAW è un PULSANTE.
+    - Aggiunta la funzione "Copia in più lingue".
+    - Risolto il bug della finestra RAD (critica).
+- v.5.6.6 (25.12.2021)
+    - Facendo doppio clic sulla finestra RAD si aprono le proprietà del controllo/dialogo.
+    - Migliorato il supporto del cursore ANI.
+- v.5.6.7 (13.01.2022)
+    - Aggiunta la traduzione in portoghese.
+    - Nuovo supporto per WinXP (non usare GetThreadUILanguage() in XP).
+- v.5.6.8 (17.01.2022)
+    - Modificato lo stato attivo iniziale di IDD_CTRLPROP.
+    - Risolte alcune informazioni sulla versione.
+- v.5.6.9 (09.03.2022)
+    - Diviso il testo della cronologia.
+    - File Leggimi rinominati.
+    - Aggiunto WS_CLIPCHILDREN per la finestra RAD per ridurre lo sfarfallio.
