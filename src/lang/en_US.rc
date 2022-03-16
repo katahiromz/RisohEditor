@@ -133,7 +133,7 @@ IDR_MAINMENU MENU
     POPUP "&Help"
     {
         MENUITEM "Open &README.txt (English)", ID_OPENREADME
-        MENUITEM "Open README-I&TA.txt (Italian)", ID_OPENREADME
+        MENUITEM "Open README-I&TA.txt (Italian)", ID_OPENREADMEIT
         MENUITEM "Open README-&JPN.txt (Japanese)", ID_OPENREADMEJP
         MENUITEM "Open HISTORY.txt", ID_OPENHISTORY
         MENUITEM "Open &LICENSE.txt", ID_OPENLICENSE
