@@ -266,3 +266,5 @@
     - Splited the history text.
     - Renamed READMEs.
     - Added WS_CLIPCHILDREN for RAD window to reduce flickering.
+- v.5.7.0 (2022.XX.YY)
+    - Fixed recompilation in management of resource IDs.

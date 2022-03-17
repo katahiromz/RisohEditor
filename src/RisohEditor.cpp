@@ -6701,11 +6701,14 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
-    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
+
+    // Header file
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -6715,9 +6718,14 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
     AutoDeleteFileW adf1(szPath1);
     AutoDeleteFileW adf3(szPath3);
 
-    // dump the head to Source file #1
-    if (m_szResourceH[0])
+    if (!g_settings.IsIDMapEmpty() && DoWriteResH(szPath2))
+    {
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, szPath2).c_str());
+    }
+    else if (m_szResourceH[0])
+    {
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    }
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
@@ -6829,6 +6837,8 @@ BOOL MMainWnd::CompileStringTable(MStringA& strOutput, const MIdOrString& name, 
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
+
+    AutoDeleteFileW adf2(szPath2);
 
     if (bOK)
         DoSetFileModified(TRUE);
@@ -6944,11 +6954,14 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // convert strWide to UTF-8
     MStringA strUtf8 = MWideToAnsi(CP_UTF8, strWide).c_str();
 
-    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
+
+    // Header file
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -6959,9 +6972,14 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     AutoDeleteFileW adf1(szPath1);
     AutoDeleteFileW adf3(szPath3);
 
-    // dump the head to Source file #1
-    if (m_szResourceH[0])
+    if (!g_settings.IsIDMapEmpty() && DoWriteResH(szPath2))
+    {
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, szPath2).c_str());
+    }
+    else if (m_szResourceH[0])
+    {
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    }
     r1.WriteFormatA("#include <windows.h>\r\n");
     r1.WriteFormatA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("#pragma code_page(65001) // UTF-8\r\n");
@@ -7060,6 +7078,8 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
 
+    AutoDeleteFileW adf2(szPath2);
+
     if (bOK)
         DoSetFileModified(TRUE);
 
@@ -7157,11 +7177,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
         return TRUE;    // success
     }
 
-    WCHAR szPath1[MAX_PATH], szPath3[MAX_PATH];
+    WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH], szPath3[MAX_PATH];
 
     // Source file #1
     StringCchCopyW(szPath1, MAX_PATH, GetTempFileNameDx(L"R1"));
     MFile r1(szPath1, TRUE);
+
+    // Header file
+    StringCchCopyW(szPath2, MAX_PATH, GetTempFileNameDx(L"R2"));
 
     // Output resource object file (imported)
     StringCchCopyW(szPath3, MAX_PATH, GetTempFileNameDx(L"R3"));
@@ -7172,8 +7195,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
     AutoDeleteFileW adf3(szPath3);
 
     // dump the head to Source file #1
-    if (m_szResourceH[0])
+    if (!g_settings.IsIDMapEmpty() && DoWriteResH(szPath2))
+    {
+        r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, szPath2).c_str());
+    }
+    else if (m_szResourceH[0])
+    {
         r1.WriteFormatA("#include \"%s\"\r\n", MWideToAnsi(CP_ACP, m_szResourceH).c_str());
+    }
     r1.WriteSzA("#include <windows.h>\r\n");
     r1.WriteSzA("#include <commctrl.h>\r\n");
     r1.WriteFormatA("LANGUAGE 0x%04X, 0x%04X\r\n", PRIMARYLANGID(lang), SUBLANGID(lang));
@@ -7291,6 +7320,8 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
 
     // recalculate the splitter
     PostMessageDx(WM_SIZE);
+
+    AutoDeleteFileW adf2(szPath2);
 
     return bOK;
 }
