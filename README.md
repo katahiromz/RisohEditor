@@ -1,5 +1,4 @@
 ![CMake](https://github.com/katahiromz/RisohEditor/workflows/CMake/badge.svg)
-![CodeQL](https://github.com/katahiromz/RisohEditor/workflows/CodeQL/badge.svg)
 
 # ![](re-icon.png "") RisohEditor by katahiromz
 
