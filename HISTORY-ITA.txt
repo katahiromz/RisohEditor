@@ -265,5 +265,5 @@
     - Diviso il testo della cronologia.
     - File Leggimi rinominati.
     - Aggiunto WS_CLIPCHILDREN per la finestra RAD per ridurre lo sfarfallio.
-- v.5.7.0 (2022.XX.YY)
+- v.5.7.0 (18.03.2022)
     - Fixed recompilation in management of resource IDs.
