@@ -86,7 +86,7 @@ IDR_MAINMENU MENU
         MENUITEM "글꼴 설정(&F)...", ID_FONTS
         MENUITEM "경로 설정(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "UI 언어 설정 (UI 언어 선택)(&U)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM 설정(&S)...", ID_DFMSETTINGS
         MENUITEM "구성(&C)...", ID_CONFIG
@@ -1291,15 +1291,15 @@ FONT 9, "Gulim"
 }
 
 IDD_COPYTOMULTILANG DIALOG 0, 0, 200, 195
-CAPTION "여러 언어로 복사"
+CAPTION "다국어로 복사"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
-    LTEXT "리소스를 복사할 언어를 선택하십시오.", -1, 5, 5, 190, 22
-    LTEXT "&언어:", -1, 5, 35, 82, 12
+    LTEXT "리소스를 복사할 언어를 선택하십시오:", -1, 5, 5, 190, 22
+    LTEXT "언어(&L):", -1, 5, 35, 82, 12
     LISTBOX lst1, 5, 50, 190, 100, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "추가하다(&A)", psh1, 135, 155, 60, 14
+    PUSHBUTTON "추가(&A)", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "확인", IDOK, 5, 175, 60, 14
     PUSHBUTTON "취소", IDCANCEL, 70, 175, 60, 14
 }
