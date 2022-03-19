@@ -245,26 +245,26 @@
     - 저장 옵션 및 "내보내기 옵션" 대화 상자의 너비가 확대되었습니다.
     - Microsoft 호환 모드에서 메시지 테이블을 추가하는 해결 방법이 추가되었습니다.
 - v.5.6.3 (2021.12.12)
-    - Added win32-samples.
-    - Added "UI Lanuage Select".
+    - win32-samples가 추가되었습니다.
+    - "UI 언어 선택"이 추가되었습니다.
 - v.5.6.4 (2021.12.16)
-    - Asking for compiling before opening GUI edit.
+    - GUI 편집을 열기 전에 컴파일을 요청합니다.
 - v.5.6.5 (2021.12.18)
-    - A BS_OWNERDRAW button is a PUSHBUTTON.
-    - Added "Copy to multiple languages" feature.
-    - Fixed the bug of the RAD window (Critical).
+    - BS_OWNERDRAW 버튼은 PUSHBUTTON입니다.
+    - "다국어로 복사" 기능이 추가되었습니다.
+    - RAD 창의 버그를 수정했습니다 (긴급).
 - v.5.6.6 (2021.12.25)
-    - Double-clicking the RAD window opens the control/dialog properties.
-    - Improved ANI cursor support.
+    - RAD 창을 두 번 클릭하면 컨트롤/대화상자 속성이 열립니다.
+    - ANI 커서 지원이 향상되었습니다.
 - v.5.6.7 (2022.01.13)
-    - Added Portuguese translation.
-    - WinXP support again (don't use GetThreadUILanguage() in XP).
+    - 포르투갈어 번역이 추가되었습니다.
+    - WinXP를 다시 지원합니다 (XP에서 GetThreadUILanguage()를 사용하지 않음).
 - v.5.6.8 (2022.01.17)
-    - Changed the initial focus of IDD_CTRLPROP.
-    - Fixed some version info.
+    - IDD_CTRLPROP의 초기 포커스가 변경되었습니다.
+    - 일부 버전 정보를 수정했습니다.
 - v.5.6.9 (2022.03.09)
-    - Splited the history text.
-    - Renamed READMEs.
-    - Added WS_CLIPCHILDREN for RAD window to reduce flickering.
+    - 이력 텍스트를 분할했습니다.
+    - README의 이름이 변경되었습니다.
+    - 깜박임을 줄이기 위해 RAD 창용 WS_CLIPCHILEND가 추가되었습니다.
 - v.5.7.0 (2022.03.18)
-    - Fixed recompilation in management of resource IDs.
+    - 리소스 ID 관리에서 수정된 재컴파일입니다.
