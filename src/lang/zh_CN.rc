@@ -1305,8 +1305,8 @@ FONT 9, "宋体"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 7, 0, 0
-PRODUCTVERSION  5, 7, 0, 0
+FILEVERSION     5, 7, 1, 0
+PRODUCTVERSION  5, 7, 1, 0
 FILEOS          0x40004
 FILETYPE        0x1
 {
@@ -1316,10 +1316,10 @@ FILETYPE        0x1
         {
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.7.0\0"
+            VALUE "FileVersion", "5.7.1\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2020 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.7.0\0"
+            VALUE "ProductVersion", "5.7.1\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1359,8 +1359,8 @@ IDD_MODIFYDLGINIT 240
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.7.0 by 片山博文MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.7.0 - 文件: %s"
+    IDS_APPNAME, "RisohEditor 5.7.1 by 片山博文MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.7.1 - 文件: %s"
     IDS_EXTRACTRES, "导出资源"
     IDS_RESBINFILTER, "二进制资源文件 (*.res)|*.res|二进制文件 (*.bin)|*.bin|全部文件 (*.*)|*.*|"
     IDS_CANNOTSAVE, "无法保存。"
@@ -1386,7 +1386,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "位图打开失败！"
     IDS_REPLACEBMP, "替换位图"
     IDS_ERRORCODE, "错误码 %d"
-    IDS_VERSIONINFO, "RisohEditor 版本 5.7.0\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor 版本 5.7.1\r\n\r\n片山博文MZ\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
     IDS_ADDRES, "增加资源"
     IDS_CANNOTADDRES, "添加资源失败。"
     IDS_CANTADDBMP, "添加位图失败。"
