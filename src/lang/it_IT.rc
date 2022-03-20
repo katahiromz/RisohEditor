@@ -909,7 +909,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Annulla", IDCANCEL, 105, 115, 60, 14
 }
 
-IDD_VERSIONINFO DIALOG 0, 0, 174, 100
+IDD_VERSIONINFO DIALOG 0, 0, 174, 150
 CAPTION "Info su RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 12, "MS Shell Dlg"
@@ -917,7 +917,8 @@ FONT 12, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 5, 0, 0
     LTEXT "...", stc1, 30, 5, 140, 50
     CTEXT "https://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY | NOT WS_GROUP
-    DEFPUSHBUTTON "OK", IDOK, 55, 80, 60, 14
+    CONTROL "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n", -1, "EDIT", ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 5, 75, 165, 50
+    DEFPUSHBUTTON "OK", IDOK, 55, 130, 60, 14
 }
 
 IDD_ADDMSG DIALOG 0, 0, 255, 105
