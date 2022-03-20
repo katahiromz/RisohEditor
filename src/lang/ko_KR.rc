@@ -86,7 +86,7 @@ IDR_MAINMENU MENU
         MENUITEM "글꼴 설정(&F)...", ID_FONTS
         MENUITEM "경로 설정(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "UI 언어 선택 (UI 언어 설정)&U...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM 설정(&S)...", ID_DFMSETTINGS
         MENUITEM "구성(&C)...", ID_CONFIG
@@ -109,8 +109,8 @@ IDR_MAINMENU MENU
         MENUITEM "모두 확장(&X)\tCtrl+K", ID_EXPAND_ALL
         MENUITEM "모두 축소(&O)\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
-        MENUITEM "리소스 ID의 목록(&R)", ID_IDLIST
-        MENUITEM "언어의 목록(&L)...", ID_SHOWLANGS
+        MENUITEM "리소스 ID 목록(&R)", ID_IDLIST
+        MENUITEM "언어 목록(&L)...", ID_SHOWLANGS
         MENUITEM SEPARATOR
         MENUITEM "항상 CONTROL 문(&C)", ID_ALWAYSCONTROL
         MENUITEM "ID 매크로 사용 안 함(&I)", ID_HIDEIDMACROS
@@ -132,12 +132,12 @@ IDR_MAINMENU MENU
     }
     POPUP "도움말(&H)"
     {
+        MENUITEM "README.txt 열기 (한국어)(&K)", ID_OPENREADMEKO
         MENUITEM "README.txt 열기 (영어)(&R)", ID_OPENREADME
-        MENUITEM "README.txt 열기.txt (한국어)(&K)", ID_OPENREADMEKO
-        MENUITEM "README.txt 열기.txt (이탈리아어)(&T)", ID_OPENREADMEIT
-        MENUITEM "README.txt 열기.txt (일본어)(&J)", ID_OPENREADMEJP
-        MENUITEM "HISTORY.txt", ID_OPENHISTORY
+        MENUITEM "README.txt 열기 (이탈리아어)(&T)", ID_OPENREADMEIT
+        MENUITEM "README.txt 열기 (일본어)(&J)", ID_OPENREADMEJP
         MENUITEM "HISTORY-KOR.txt", ID_OPENHISTORYKOR
+        MENUITEM "HISTORY.txt", ID_OPENHISTORY
         MENUITEM "LICENSE.txt 열기(&L)", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "RisohEditor 안내서(&G)", ID_GUIDE
@@ -784,7 +784,7 @@ FONT 9, "Gulim"
 }
 
 IDD_IDLIST DIALOG 0, 0, 200, 300
-CAPTION "리소스 ID의 목록"
+CAPTION "리소스 ID 목록"
 STYLE WS_OVERLAPPEDWINDOW
 EXSTYLE WS_EX_TOOLWINDOW
 FONT 9, "Gulim"
@@ -919,8 +919,8 @@ FONT 12, "Gulim"
     ICON IDI_MAIN, -1, 5, 5, 0, 0
     LTEXT "...", stc1, 30, 5, 140, 50
     CTEXT "https://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY | NOT WS_GROUP
-    CONTROL "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n", -1, "EDIT", ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 5, 75, 165, 50
-    DEFPUSHBUTTON "OK", IDOK, 55, 130, 60, 14
+    CONTROL "[번역]\r\n한국어: VenusGirl-비너스걸❤\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林?湘\r\n", -1, "EDIT", ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 5, 75, 165, 50
+    DEFPUSHBUTTON "확인", IDOK, 55, 130, 60, 14
 }
 
 IDD_ADDMSG DIALOG 0, 0, 255, 105
@@ -1390,7 +1390,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "비트맵을 바꿀 수 없습니다."
     IDS_REPLACEBMP, "비트맵 바꾸기"
     IDS_ERRORCODE, "오류 코드 %d"
-    IDS_VERSIONINFO, "RisohEditor 버전 5.7.1\r\n\r\n카타야마 히로후미 MZ\r\n\r\n라이센스: GPLv3 (프리웨어)\r\n\r\n 한국어: 비너스걸 (VenusGirl)"
+    IDS_VERSIONINFO, "RisohEditor 버전 5.7.1\r\n\r\nKatayama Hirofumi MZ\r\n\r\n라이센스: GPLv3 (프리웨어)"
     IDS_ADDRES, "리소스 추가"
     IDS_CANNOTADDRES, "리소스를 추가할 수 없습니다."
     IDS_CANTADDBMP, "비트맵을 추가할 수 없습니다."
