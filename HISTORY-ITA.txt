@@ -269,4 +269,5 @@
     - Corretta ricompilazione nella gestione degli ID delle risorse.
 - v.5.7.1 (2022.XX.YY)
     - Improved version info dialog.
-    - Back to a flickering method due to wrong control display.
+    - Backed to a flickering method due to wrong control display.
+    - Remembered main window focus.

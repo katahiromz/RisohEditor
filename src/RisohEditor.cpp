@@ -2681,10 +2681,19 @@ LRESULT MMainWnd::OnClearStatus(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // WM_ACTIVATE: if activated, then set focus to m_hwndTV
 void MMainWnd::OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
 {
+    static HWND s_hwndOldFocus = NULL;
+
     if (state == WA_ACTIVE || state == WA_CLICKACTIVE)
     {
-        // set focus to the treeview
-        SetFocus(m_hwndTV);
+        if (s_hwndOldFocus)
+            SetFocus(s_hwndOldFocus);
+        else
+            SetFocus(m_hwndTV);
+    }
+
+    if (state == WA_INACTIVE)
+    {
+        s_hwndOldFocus = GetFocus();
     }
 
     // default processing
