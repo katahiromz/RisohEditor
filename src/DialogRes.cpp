@@ -1016,17 +1016,8 @@ void DialogRes::FixupForRad(bool bRevert)
         m_style &= ~(WS_POPUP | DS_SYSMODAL | WS_DISABLED);
         m_style |= WS_VISIBLE | WS_CHILD | DS_NOIDLEMSG;
 
-        bool bIsGroupBoxFound = false;
-        for (auto& item : m_items)
-        {
-            if (item.IsGroupBox())
-            {
-                bIsGroupBoxFound = true;
-                break;
-            }
-        }
-        if (!bIsGroupBoxFound)
-            m_style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+        // We don't know the non-flickering methods... Sorry...
+        //m_style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
         m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_TOPMOST |
                      WS_EX_LAYERED | WS_EX_TRANSPARENT);

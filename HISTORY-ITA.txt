@@ -269,4 +269,4 @@
     - Corretta ricompilazione nella gestione degli ID delle risorse.
 - v.5.7.1 (2022.XX.YY)
     - Improved version info dialog.
-    - When group boxes are present, the display of group boxes was improved using a flickering method.
+    - Back to a flickering method due to wrong control display.
