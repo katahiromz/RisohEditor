@@ -270,5 +270,5 @@
     - 리소스 ID 관리에서 수정된 재컴파일입니다.
 - v.5.7.1 (2022.03.28)
     - 버전 정보 대화상자가 개선되었습니다.
-    - Backed to a flickering method due to wrong control display.
-    - Remembered main window focus.
+    - 잘못된 컨트롤 디스플레이로 인해 깜박임 방법을 사용합니다.
+    - 메인 창 초점을 기억했습니다.
