@@ -270,3 +270,4 @@
     - 리소스 ID 관리에서 수정된 재컴파일입니다.
 - v.5.7.1 (2022.XX.YY)
     - 버전 정보 대화상자가 개선되었습니다.
+    - When group boxes are present, the display of group boxes was improved using a flickering method.
