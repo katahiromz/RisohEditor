@@ -547,7 +547,7 @@ void DialogItem::FixupForRad(bool bRevert)
         m_old_ex_style = m_ex_style;
 
         m_style &= ~WS_DISABLED;
-        m_style |= WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS;
+        m_style |= WS_CHILD | WS_VISIBLE;
 
         m_ex_style &= ~(WS_EX_ACCEPTFILES | WS_EX_LAYERED | WS_EX_TRANSPARENT |
                         WS_EX_TOPMOST);
