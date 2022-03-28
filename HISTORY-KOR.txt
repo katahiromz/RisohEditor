@@ -268,7 +268,7 @@
     - 깜박임을 줄이기 위해 RAD 창용 WS_CLIPCHILEND가 추가되었습니다.
 - v.5.7.0 (2022.03.18)
     - 리소스 ID 관리에서 수정된 재컴파일입니다.
-- v.5.7.1 (2022.XX.YY)
+- v.5.7.1 (2022.03.28)
     - 버전 정보 대화상자가 개선되었습니다.
     - Backed to a flickering method due to wrong control display.
     - Remembered main window focus.

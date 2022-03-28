@@ -267,7 +267,7 @@
     - Aggiunto WS_CLIPCHILDREN per la finestra RAD per ridurre lo sfarfallio.
 - v.5.7.0 (18.03.2022)
     - Corretta ricompilazione nella gestione degli ID delle risorse.
-- v.5.7.1 (2022.XX.YY)
+- v.5.7.1 (2022.03.28)
     - Improved version info dialog.
     - Backed to a flickering method due to wrong control display.
     - Remembered main window focus.
