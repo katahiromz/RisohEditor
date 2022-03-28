@@ -109,11 +109,22 @@ struct DialogItem
             return true;
         return (m_class.m_id == 0x0083);
     }
+    bool IsButton() const
+    {
+        if (lstrcmpiW(m_class.m_str.c_str(), L"BUTTON") == 0)
+            return true;
+        return (m_class.m_id == 0x0080);
+    }
+    bool IsGroupBox() const
+    {
+        if (!IsButton())
+            return false;
+        return (m_style & BS_TYPEMASK) == BS_GROUPBOX;
+    }
     bool IsExtComboBox() const
     {
         return (lstrcmpiW(m_class.m_str.c_str(), L"ComboBoxEx32") == 0);
     }
-
     bool IsStaticIcon() const
     {
         if (m_title.is_int() &&
