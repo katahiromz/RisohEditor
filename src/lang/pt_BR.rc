@@ -916,7 +916,7 @@ FONT 12, "MS Shell Dlg"
     ICON IDI_MAIN, -1, 5, 5, 0, 0
     LTEXT "...", stc1, 30, 5, 140, 50
     CTEXT "https://katahiromz.web.fc2.com", stc2, 5, 60, 165, 12, SS_CENTERIMAGE | SS_NOTIFY | NOT WS_GROUP
-    CONTROL "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n", -1, "EDIT", ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 5, 75, 165, 50
+    CONTROL "...", edt1, "EDIT", ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_BORDER | WS_VSCROLL | WS_HSCROLL, 5, 75, 165, 50
     DEFPUSHBUTTON "OK", IDOK, 55, 130, 60, 14
 }
 
@@ -1607,6 +1607,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER, "Dados TYPELIB (*.tlb)|*.tlb|Recursos Binários (*.res)|*.res|Arquivos de Texto (*.txt)|*.txt|Arquivos MIDL (*.idl)|*.idl|Todos os Arquivos (*.*)|*.*|"
     IDS_USAGE, "Use: RisohEditor [opções | ""arquivo""]\n\nOpções:\n--help  Mostra esta mensagem.\n--version  Mostra informações da versão.\n--load ""seu-arquivo.rc""  Carrega o arquivo (sem GUI)\n--save ""seu-arquivo.res""  Salvar o arquivo (sem GUI)\n--log-file ""arquivo-log.txt""  Especifica o arquivo de log.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Não há seleção."
+    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

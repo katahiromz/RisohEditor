@@ -43,6 +43,7 @@ public:
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
         SetDlgItemText(hwnd, stc1, LoadStringDx(IDS_VERSIONINFO));
+        SetDlgItemText(hwnd, edt1, LoadStringDx(IDS_TRANSLATORS));
         SubclassChildDx(m_hyperlink, stc2);
         CenterWindowDx();
         return TRUE;
