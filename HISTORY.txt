@@ -271,3 +271,4 @@
     - Improved version info dialog.
     - Backed to a flickering method due to wrong control display.
     - Remembered main window focus.
+- v.5.7.2 (2022.XX.YY)
