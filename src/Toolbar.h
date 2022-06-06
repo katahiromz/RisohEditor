@@ -37,12 +37,13 @@ typedef struct tagTOOLBARDATAWINDRES
 } TOOLBARDATAWINDRES, *PTOOLBARDATAWINDRES;
 
 typedef INT (CALLBACK *FN_INT2INT)(INT id);
+typedef BOOL (CALLBACK *FN_INT2STR)(INT id, LPTSTR pszText, INT cchTextMax);
 
 // See: https://github.com/katahiromz/RisohEditor/blob/master/tests/ToolbarTest/ToolbarTest.cpp
 inline BOOL
 LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
                     FN_INT2INT fnCommandIdToImageIndex,
-                    FN_INT2INT fnCommandIdToStringId = NULL)
+                    FN_INT2STR fnCommandIdToText = NULL)
 {
     assert(IsWindow(hwndTB));
     assert(lpName != NULL);
@@ -112,14 +113,11 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
             {
                 button.iBitmap = fnCommandIdToImageIndex(idCommand);
                 button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
-                if (fnCommandIdToStringId)
-                {
-                    INT idString = fnCommandIdToStringId(idCommand);
-                    TCHAR szText[MAX_PATH];
-                    szText[0] = 0;
-                    LoadString(hInst, idString, szText, _countof(szText));
+
+                TCHAR szText[MAX_PATH];
+                szText[0] = 0;
+                if (fnCommandIdToText && fnCommandIdToText(idCommand, szText, _countof(szText)))
                     button.iString = (INT)SendMessage(hwndTB, TB_ADDSTRING, 0, (LPARAM)szText);
-                }
             }
             else
             {
@@ -170,14 +168,10 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
             {
                 button.iBitmap = fnCommandIdToImageIndex(idCommand);
                 button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
-                if (fnCommandIdToStringId)
-                {
-                    INT idString = fnCommandIdToStringId(idCommand);
-                    TCHAR szText[MAX_PATH];
-                    szText[0] = 0;
-                    LoadString(hInst, idString, szText, _countof(szText));
+                TCHAR szText[MAX_PATH];
+                szText[0] = 0;
+                if (fnCommandIdToText && fnCommandIdToText(idCommand, szText, _countof(szText)))
                     button.iString = (INT)SendMessage(hwndTB, TB_ADDSTRING, 0, (LPARAM)szText);
-                }
             }
             else
             {

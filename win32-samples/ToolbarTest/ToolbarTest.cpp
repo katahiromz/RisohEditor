@@ -18,15 +18,17 @@ static INT CALLBACK CommandIdToImageIndex(INT id)
     return -1;
 }
 
-static INT CALLBACK CommandIdToStringId(INT id)
+static BOOL CALLBACK CommandIdToText(INT id, LPTSTR pszText, INT cchTextMax)
 {
     switch (id)
     {
-    case 100: return 100;
-    case 101: return 101;
-    case 102: return 102;
+    case 100:
+    case 101:
+    case 102:
+        LoadString(NULL, id, pszText, cchTextMax);
+        return TRUE;
     }
-    return -1;
+    return FALSE;
 }
 
 BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -37,7 +39,8 @@ BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     g_hwndTB = CreateWindowEx(exstyle, TOOLBARCLASSNAME, NULL,
                               style, 0, 0, 0, 0, hwnd, (HMENU)(INT_PTR)id, g_hInstance, NULL);
 
-    LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR), CommandIdToImageIndex, CommandIdToStringId);
+    LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR), CommandIdToImageIndex,
+                        CommandIdToText);
     //LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR), CommandIdToImageIndex, NULL);
 
     return TRUE;
@@ -59,6 +62,26 @@ void OnSize(HWND hwnd, UINT state, int cx, int cy)
     SendMessage(g_hwndTB, TB_AUTOSIZE, 0, 0);
 }
 
+LRESULT OnNotify(HWND hwnd, int idFrom, LPNMHDR pnmhdr)
+{
+    assert(pnmhdr != NULL);
+
+    switch (pnmhdr->code)
+    {
+    case TTN_NEEDTEXT:
+        {
+            TOOLTIPTEXT *pTTT = (TOOLTIPTEXT *)pnmhdr;
+            static TCHAR s_szText[MAX_PATH];
+            s_szText[0] = 0;
+            if (CommandIdToText(idFrom, s_szText, _countof(s_szText)))
+            {
+                pTTT->lpszText = s_szText;
+            }
+        }
+    }
+    return 0;
+}
+
 INT_PTR CALLBACK
 DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -66,6 +89,7 @@ DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
         HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        HANDLE_MSG(hwnd, WM_NOTIFY, OnNotify);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
     }
     return 0;
