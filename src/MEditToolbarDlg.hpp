@@ -211,8 +211,23 @@ public:
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
+        SendMessageW(m_hLst1, LB_SETITEMHEIGHT, 0, GetItemHeight(hwnd));
+
         CenterWindowDx();
         return TRUE;
+    }
+
+    INT GetItemHeight(HWND hwnd)
+    {
+        HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
+
+        TEXTMETRIC tm;
+        HDC hDC = CreateCompatibleDC(NULL);
+        SelectObject(hDC, hFont);
+        GetTextMetrics(hDC, &tm);
+        DeleteDC(hDC);
+
+        return tm.tmHeight * 2;
     }
 
     void OnAdd(HWND hwnd)
@@ -381,19 +396,6 @@ public:
         }
     }
 
-    void OnMeasureItem(HWND hwnd, MEASUREITEMSTRUCT * lpMeasureItem)
-    {
-        HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
-
-        TEXTMETRIC tm;
-        HDC hDC = CreateCompatibleDC(NULL);
-        SelectObject(hDC, hFont);
-        GetTextMetrics(hDC, &tm);
-        DeleteDC(hDC);
-
-        lpMeasureItem->itemHeight = tm.tmHeight + 24;
-    }
-
     void OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT * lpDrawItem)
     {
         HDC hDC = lpDrawItem->hDC;
@@ -437,7 +439,6 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-            HANDLE_MSG(hwnd, WM_MEASUREITEM, OnMeasureItem);
             HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
         }
         return DefaultProcDx();
