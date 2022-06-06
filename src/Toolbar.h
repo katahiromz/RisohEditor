@@ -40,10 +40,12 @@ typedef INT (CALLBACK *FN_INT2INT)(INT id);
 
 inline BOOL
 LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
-                    FN_INT2INT fnCommandIdToImageIndex, FN_INT2INT fnCommandIdToStringId)
+                    FN_INT2INT fnCommandIdToImageIndex,
+                    FN_INT2INT fnCommandIdToStringId = NULL)
 {
     assert(IsWindow(hwndTB));
     assert(lpName != NULL);
+    assert(fnCommandIdToImageIndex != NULL);
 
     if (hInst == NULL)
         hInst = GetModuleHandle(NULL);
@@ -107,10 +109,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
             button.iString = -1;
             if (idCommand)
             {
-                if (fnCommandIdToImageIndex)
-                {
-                    button.iBitmap = fnCommandIdToImageIndex(idCommand);
-                }
+                button.iBitmap = fnCommandIdToImageIndex(idCommand);
                 button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
                 if (fnCommandIdToStringId)
                 {
@@ -168,10 +167,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
             button.iString = -1;
             if (idCommand)
             {
-                if (fnCommandIdToImageIndex)
-                {
-                    button.iBitmap = fnCommandIdToImageIndex(idCommand);
-                }
+                button.iBitmap = fnCommandIdToImageIndex(idCommand);
                 button.fsStyle = BTNS_BUTTON | BTNS_AUTOSIZE;
                 if (fnCommandIdToStringId)
                 {
@@ -198,7 +194,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
 
     DWORD extended = 0;
     extended |= TBSTYLE_EX_DRAWDDARROWS; // BTNS_DROPDOWN and BTNS_WHOLEDROPDOWN will work
-    extended |= TBSTYLE_EX_MIXEDBUTTONS; // BTNS_SHOWTEXT works
+    //extended |= TBSTYLE_EX_MIXEDBUTTONS; // BTNS_SHOWTEXT works
     SendMessage(hwndTB, TB_SETEXTENDEDSTYLE, 0, extended);
 
     return TRUE;
