@@ -37,6 +37,88 @@ void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 
+class MAddTBBtnDlg : public MDialogBase
+{
+public:
+    std::wstring m_str;
+    MComboBoxAutoComplete m_cmb1;
+
+    MAddTBBtnDlg() : MDialogBase(IDD_ADDTBBTN)
+    {
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb1));
+        SubclassChildDx(m_cmb1, cmb1);
+
+        CenterWindowDx();
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        WCHAR szText[MAX_PATH];
+        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
+        ReplaceFullWithHalf(szText);
+        mstr_trim(szText);
+
+        if (szText[0] && !CheckCommand(szText))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
+
+        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+            szText[0] = 0;
+
+        m_str = szText;
+        EndDialog(IDOK);
+    }
+
+    void OnChx1(HWND hwnd)
+    {
+        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        {
+            SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
+            SetDlgItemTextW(hwnd, cmb1, NULL);
+        }
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case chx1:
+            OnChx1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
+};
+
 class MEditToolbarDlg : public MDialogBase
 {
 public:
@@ -86,7 +168,14 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        SendMessageW(m_hLst1, LB_INSERTSTRING, -1, (LPARAM)L"TEST");
+        MAddTBBtnDlg dialog;
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
+        {
+            auto& str = dialog.m_str;
+            if (str.empty() || str[0] == L'-')
+                str = L"---";
+            SendMessageW(m_hLst1, LB_INSERTSTRING, -1, (LPARAM)str.c_str());
+        }
     }
 
     void OnModify(HWND hwnd)
