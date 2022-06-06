@@ -75,6 +75,8 @@ cp -f build/MyWndCtrl.dll "$RE_BIN_DIR/MyWndCtrl"
 
 mkdir "$RE_BIN_DIR/DlgInit"
 cp -f "src/DlgInit.h" "$RE_BIN_DIR/DlgInit"
+mkdir "$RE_BIN_DIR/Toolbar"
+cp -f "src/Toolbar.h" "$RE_BIN_DIR/Toolbar"
 
 mkdir "$RE_BIN_DIR/EGA"
 cp -f "EGA/EGA-Manual.pdf" "$RE_BIN_DIR/EGA"

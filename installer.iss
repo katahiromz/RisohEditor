@@ -93,6 +93,7 @@ Source: "src\MOleHost.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MOleHost.cpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\DlgInit.h"; DestDir: "{app}\DlgInit"; Flags: ignoreversion
+Source: "src\Toolbar.h"; DestDir: "{app}\Toolbar"; Flags: ignoreversion
 Source: "MyWndCtrl\MWindowBase.hpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\MyWndCtrl.cpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\CMakeLists.txt"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
