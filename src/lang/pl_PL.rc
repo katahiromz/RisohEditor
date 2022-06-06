@@ -1309,9 +1309,9 @@ CAPTION "Zasób paska narzędzi"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "Icon &width:", -1, 5, 5, 60, 15, SS_CENTERIMAGE
+    RTEXT "&Szerokość ikony:", -1, 5, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt1, 70, 5, 30, 15
-    RTEXT "Icon &height:", -1, 110, 5, 60, 15, SS_CENTERIMAGE
+    RTEXT "&Wysokość ikony:", -1, 110, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt2, 180, 5, 30, 15
     LTEXT "&Przyciski paska narzędzi:", -1, 5, 25, 95, 15, SS_CENTERIMAGE | NOT WS_GROUP
     LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
