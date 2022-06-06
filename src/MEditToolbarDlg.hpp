@@ -193,6 +193,9 @@ public:
         SetDlgItemInt(hwnd, edt1, m_toolbar_res.width(), FALSE);
         SetDlgItemInt(hwnd, edt2, m_toolbar_res.height(), FALSE);
 
+        SendDlgItemMessage(hwnd, scr1, UDM_SETRANGE, 0, MAKELPARAM((WORD)SHRT_MAX, 3));
+        SendDlgItemMessage(hwnd, scr2, UDM_SETRANGE, 0, MAKELPARAM((WORD)SHRT_MAX, 3));
+
         m_hLst1 = GetDlgItem(hwnd, lst1);
         for (size_t i = 0; i < m_toolbar_res.size(); ++i)
         {
