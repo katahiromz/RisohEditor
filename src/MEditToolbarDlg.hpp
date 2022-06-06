@@ -381,6 +381,55 @@ public:
         }
     }
 
+    void OnMeasureItem(HWND hwnd, MEASUREITEMSTRUCT * lpMeasureItem)
+    {
+        HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
+
+        TEXTMETRIC tm;
+        HDC hDC = CreateCompatibleDC(NULL);
+        SelectObject(hDC, hFont);
+        GetTextMetrics(hDC, &tm);
+        DeleteDC(hDC);
+
+        lpMeasureItem->itemHeight = tm.tmHeight + 24;
+    }
+
+    void OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT * lpDrawItem)
+    {
+        HDC hDC = lpDrawItem->hDC;
+        RECT rcItem = lpDrawItem->rcItem;
+        INT iItem = lpDrawItem->itemID;
+
+        WCHAR sz1[MAX_PATH];
+        sz1[0] = 0;
+        SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+
+        if (lpDrawItem->itemState & ODS_SELECTED)
+        {
+            FillRect(hDC, &rcItem, GetSysColorBrush(COLOR_HIGHLIGHT));
+            SetTextColor(hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
+        }
+        else
+        {
+            FillRect(hDC, &rcItem, GetSysColorBrush(COLOR_WINDOW));
+            SetTextColor(hDC, GetSysColor(COLOR_WINDOWTEXT));
+        }
+
+        SelectObject(hDC, GetStockObject(DEFAULT_GUI_FONT));
+        SetBkMode(hDC, TRANSPARENT);
+
+        InflateRect(&rcItem, -4, -4);
+        UINT uFormat = DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX;
+        DrawText(hDC, sz1, -1, &rcItem, uFormat);
+        InflateRect(&rcItem, 4, 4);
+
+        if (lpDrawItem->itemState & ODS_FOCUS)
+        {
+            InflateRect(&rcItem, -1, -1);
+            DrawFocusRect(hDC, &rcItem);
+        }
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -388,6 +437,8 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_MEASUREITEM, OnMeasureItem);
+            HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
         }
         return DefaultProcDx();
     }
