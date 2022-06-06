@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "添加加速器(&A)...", ID_ADDACCEL
             MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
             MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "添加资源项目(&R)...", ID_ADDRES
         }
         POPUP "替换(&R)"
@@ -163,6 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "添加加速器(&A)...", ID_ADDACCEL
             MENUITEM "添加版本信息(&V)...", ID_ADDVERINFO
             MENUITEM "添加清单(&F)...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "添加资源项目(&R)...", ID_ADDRES
         }
         POPUP "替换(&R)"

@@ -272,3 +272,4 @@
     - Correzione metodo di sfarfallio a causa di visualizzazione di controllo sbagliato.
     - Memorizzazione focus finestra principale.
 - v.5.7.2 (YY.XX.2022)
+    - Supported TOOLBAR resources.

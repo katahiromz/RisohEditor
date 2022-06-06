@@ -22,6 +22,7 @@
 #include "LineNumEdit.hpp"
 #include "MLangAutoComplete.hpp"
 #include "MChooseLangDlg.hpp"
+#include "ToolbarRes.hpp"
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
@@ -2458,6 +2459,7 @@ protected:
     void PreviewString(HWND hwnd, const EntryBase& entry);
     void PreviewHtml(HWND hwnd, const EntryBase& entry);
     void PreviewMenu(HWND hwnd, const EntryBase& entry);
+    void PreviewToolbar(HWND hwnd, const EntryBase& entry);
     void PreviewVersion(HWND hwnd, const EntryBase& entry);
     void PreviewDialog(HWND hwnd, const EntryBase& entry);
     void PreviewAniIcon(HWND hwnd, const EntryBase& entry, BOOL bIcon);
@@ -2533,6 +2535,7 @@ protected:
     void OnAddDialog(HWND hwnd);
     void OnAddIcon(HWND hwnd);
     void OnAddMenu(HWND hwnd);
+    void OnAddToolbar(HWND hwnd);
     void OnAddRes(HWND hwnd);
     void OnAddVerInfo(HWND hwnd);
     void OnAddManifest(HWND hwnd);
@@ -5957,6 +5960,21 @@ void MMainWnd::PreviewMenu(HWND hwnd, const EntryBase& entry)
     }
 }
 
+// preview the TOOLBAR resource
+void MMainWnd::PreviewToolbar(HWND hwnd, const EntryBase& entry)
+{
+    // entry.m_data --> stream --> toolbar_res
+    ToolbarRes toolbar_res;
+    MByteStreamEx stream(entry.m_data);
+    if (toolbar_res.LoadFromStream(stream))
+    {
+        // dump the text to m_hCodeEditor
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += toolbar_res.Dump(entry.m_name);
+        SetWindowTextW(m_hCodeEditor, str.c_str());
+    }
+}
+
 // preview the version resource
 void MMainWnd::PreviewVersion(HWND hwnd, const EntryBase& entry)
 {
@@ -6227,6 +6245,10 @@ BOOL MMainWnd::Preview(HWND hwnd, const EntryBase *entry, STV stv)
         else if (wType == (WORD)(UINT_PTR)RT_MENU)
         {
             PreviewMenu(hwnd, *entry);
+        }
+        else if (wType == (WORD)(UINT_PTR)RT_TOOLBAR)
+        {
+            PreviewToolbar(hwnd, *entry);
         }
         else if (wType == (WORD)(UINT_PTR)RT_DIALOG)
         {
@@ -7283,6 +7305,14 @@ BOOL MMainWnd::CompileParts(MStringA& strOutput, const MIdOrString& type, const 
                     // adjust names and languages
                     entry->m_name = name;
                     entry->m_lang = lang;
+
+                    if (entry->m_type == RT_TOOLBAR)
+                    {
+                        ToolbarRes toolbar_res;
+                        MByteStreamEx stream(entry->m_data);
+                        toolbar_res.LoadFromStream(stream);
+                        entry->m_data = toolbar_res.data();
+                    }
                 }
 
                 if (bOK)
@@ -9110,6 +9140,11 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
             return TRUE;
         }
         if (wType == (WORD)(UINT_PTR)RT_MENU)
+        {
+            // No output file
+            return TRUE;
+        }
+        if (wType == (WORD)(UINT_PTR)RT_TOOLBAR)
         {
             // No output file
             return TRUE;
@@ -11647,6 +11682,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_ADDMENU:
         OnAddMenu(hwnd);
         break;
+    case ID_ADDTOOLBAR:
+        OnAddToolbar(hwnd);
+        break;
     case ID_ADDVERINFO:
         OnAddVerInfo(hwnd);
         break;
@@ -13286,6 +13324,25 @@ void MMainWnd::OnAddMenu(HWND hwnd)
     // show the dialog
     MAddResDlg dialog;
     dialog.m_type = RT_MENU;
+    if (dialog.DialogBoxDx(hwnd) == IDOK)
+    {
+        // add a resource item
+        DoAddRes(hwnd, dialog);
+
+        DoSetFileModified(TRUE);
+    }
+}
+
+// add a TOOLBAR
+void MMainWnd::OnAddToolbar(HWND hwnd)
+{
+    // compile if necessary
+    if (!CompileIfNecessary(FALSE))
+        return;
+
+    // show the dialog
+    MAddResDlg dialog;
+    dialog.m_type = RT_TOOLBAR;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
         // add a resource item

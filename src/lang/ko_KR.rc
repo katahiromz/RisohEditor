@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "액세스 키 추가(&A)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "리소스 항목 추가(&R)...", ID_ADDRES
         }
         POPUP "바꾸기(&R)"
@@ -166,6 +167,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "액세스 키 추가(&A)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "리소스 항목 추가(&R)...", ID_ADDRES
         }
         POPUP "바꾸기(&R)"

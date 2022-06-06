@@ -80,6 +80,7 @@ public:
     MString DoBitmap(const EntryBase& entry);
     MString DoIcon(const EntryBase& entry);
     MString DoMenu(const EntryBase& entry);
+    MString DoToolbar(const EntryBase& entry);
     MString DoDialog(const EntryBase& entry);
     MString DoString(const EntryBase& entry);
     MString DoAccel(const EntryBase& entry);

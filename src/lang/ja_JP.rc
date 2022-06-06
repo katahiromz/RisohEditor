@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "アクセスキーを追加(&A)...", ID_ADDACCEL
             MENUITEM "バージョン情報を追加(&V)...", ID_ADDVERINFO
             MENUITEM "マニフェストを追加(&F)...", ID_ADDMANIFEST
+            MENUITEM "ツールバーを追加(&T)...", ID_ADDTOOLBAR
             MENUITEM "リソース項目を追加(&R)...", ID_ADDRES
         }
         POPUP "置き換え(&R)"
@@ -165,6 +166,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "アクセスキーを追加(&A)...", ID_ADDACCEL
             MENUITEM "バージョン情報を追加(&V)...", ID_ADDVERINFO
             MENUITEM "マニフェストを追加(&F)...", ID_ADDMANIFEST
+            MENUITEM "ツールバーを追加(&T)...", ID_ADDTOOLBAR
             MENUITEM "リソース項目を追加(&R)...", ID_ADDRES
         }
         POPUP "置き換え(&R)"

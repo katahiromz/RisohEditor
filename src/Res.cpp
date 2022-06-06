@@ -18,6 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Res.hpp"
+#include "Toolbar.h"
 
 struct AutoDeleteFileW
 {
@@ -100,7 +101,8 @@ BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
     case ET_LANG:
         if (type == RT_ACCELERATOR || type == RT_DIALOG || type == RT_HTML ||
             type == RT_MANIFEST || type == RT_MENU || type == RT_VERSION ||
-            type == RT_DLGINIT || type == TEXT("RISOHTEMPLATE"))
+            type == RT_DLGINIT || type == RT_TOOLBAR ||
+            type == TEXT("RISOHTEMPLATE"))
         {
             return TRUE;
         }

@@ -32,7 +32,6 @@ class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
 
-MString Res_GetEntityIDText(const MString& name, INT nIDTYPE_);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);
 MString GetAssoc(const MString& name);
 

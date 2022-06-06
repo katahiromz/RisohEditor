@@ -20,6 +20,7 @@ add_executable(RisohEditor WIN32
     Res.cpp
     ResToText.cpp
     StringRes.cpp
+    ToolbarRes.cpp
     VersionRes.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
@@ -40,6 +41,7 @@ add_executable(RisohEditorPortable WIN32
     Res.cpp
     ResToText.cpp
     StringRes.cpp
+    ToolbarRes.cpp
     VersionRes.cpp
     RisohEditor.cpp
     RisohEditor_res.rc

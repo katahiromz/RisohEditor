@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Ajouter des accélérateurs...", ID_ADDACCEL
             MENUITEM "Ajouter des informations sur la version...", ID_ADDVERINFO
             MENUITEM "Ajouter un manifeste...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "Ajouter un élément de ressource...", ID_ADDRES
         }
         POPUP "&Remplacer"
@@ -163,6 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Ajouter des accélérateurs...", ID_ADDACCEL
             MENUITEM "Ajouter des informations sur la version...", ID_ADDVERINFO
             MENUITEM "Ajouter un manifeste...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "Ajouter un élément de ressource...", ID_ADDRES
         }
         POPUP "&Remplacer"

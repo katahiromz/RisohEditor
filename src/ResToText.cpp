@@ -30,6 +30,7 @@
 #include "AccelRes.hpp"
 #include "DlgInitRes.hpp"
 #include "MessageRes.hpp"
+#include "ToolbarRes.hpp"
 
 MString
 ResToText::GetEntryFileName(const EntryBase& entry)
@@ -54,6 +55,10 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             // No output file
         }
         else if (wType == (WORD)(UINT_PTR)RT_MENU)
+        {
+            // No output file
+        }
+        else if (wType == (WORD)(UINT_PTR)RT_TOOLBAR)
         {
             // No output file
         }
@@ -432,6 +437,21 @@ ResToText::DoMenu(const EntryBase& entry)
     {
         MString str = GetLanguageStatement(entry.m_lang);
         str += menu_res.Dump(entry.m_name);
+        str += L"\r\n";
+        return str;
+    }
+    return LoadStringDx(IDS_INVALIDDATA);
+}
+
+MString
+ResToText::DoToolbar(const EntryBase& entry)
+{
+    MByteStreamEx stream(entry.m_data);
+    ToolbarRes toolbar_res;
+    if (toolbar_res.LoadFromStream(stream))
+    {
+        MString str = GetLanguageStatement(entry.m_lang);
+        str += toolbar_res.Dump(entry.m_name);
         str += L"\r\n";
         return str;
     }
@@ -883,6 +903,8 @@ ResToText::DumpEntry(const EntryBase& entry)
             return DoManifest(entry);
         case 240: // RT_DLGINIT
             return DoDlgInit(entry);
+        case 241: // RT_TOOLBAR
+            return DoToolbar(entry);
         default:
             return DoUnknown(entry);
         }
@@ -943,6 +965,7 @@ ResToText::GetResTypeName(const MIdOrString& type) const
         case 23: return L"RT_HTML";
         case 24: return L"RT_MANIFEST";
         case 240: return L"RT_DLGINIT";
+        case 241: return L"RT_TOOLBAR";
         }
     }
     return type.str();

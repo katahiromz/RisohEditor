@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "&Beschleuniger hinzufügen...", ID_ADDACCEL
             MENUITEM "&Versionsinfo hinzufügen...", ID_ADDVERINFO
             MENUITEM "&Manifest hinzufügen...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "&Ressourcenelement hinzufügen...", ID_ADDRES
         }
         POPUP "&Ersetzen"
@@ -163,6 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "&Beschleuniger hinzufügen...", ID_ADDACCEL
             MENUITEM "&Versionsinfo hinzufügen...", ID_ADDVERINFO
             MENUITEM "&Manifest hinzufügen...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "&Ressourcenelement hinzufügen...", ID_ADDRES
         }
         POPUP "&Ersetzen"

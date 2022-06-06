@@ -165,6 +165,8 @@ IDR_MAINFRAME PNG "res/Png_100.png"
 
 24 RISOHTEMPLATE "res/RISOHTEMPLATE_24.bin"
 
+241 RISOHTEMPLATE "res/RISOHTEMPLATE_241.bin"
+
 RISOHTEMPLATE RISOHTEMPLATE "res/RISOHTEMPLATE_RISOHTEMPLATE.bin"
 
 //////////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Акс&елераторы...", ID_ADDACCEL
             MENUITEM "&Информацию о версии...", ID_ADDVERINFO
             MENUITEM "Ма&нифест...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "Ресурсный &элемент...", ID_ADDRES
         }
         POPUP "&Заменить"
@@ -163,6 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Акс&елераторы...", ID_ADDACCEL
             MENUITEM "&Информацию о версии...", ID_ADDVERINFO
             MENUITEM "Ма&нифест...", ID_ADDMANIFEST
+            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
             MENUITEM "Ресурсный &элемент...", ID_ADDRES
         }
         POPUP "&Заменить"
