@@ -1338,7 +1338,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_MODIFYTBBTN DIALOG 0, 0, 177, 92
-CAPTION "Modifica puslante barra strumenti"
+CAPTION "Modifica pulsante barra strumenti"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
