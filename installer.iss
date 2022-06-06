@@ -139,6 +139,12 @@ Source: "win32-samples\MainWnd\MainWnd_res.rc"; DestDir: "{app}\win32-samples\Ma
 Source: "win32-samples\MainWnd\resource.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\lang\en_US.rc"; DestDir: "{app}\win32-samples\MainWnd\lang"; Flags: ignoreversion
 Source: "win32-samples\MainWnd\res\Icon_100.ico"; DestDir: "{app}\win32-samples\MainWnd\res"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\CMakeLists.txt"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\ToolbarTest.cpp"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\ToolbarTest_res.rc"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\lang\en_US.rc"; DestDir: "{app}\win32-samples\ToolbarTest\lang"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\res\Bitmap_100.bmp"; DestDir: "{app}\win32-samples\ToolbarTest\res"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
