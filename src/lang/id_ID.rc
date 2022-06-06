@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Tambah &Akselerator...", ID_ADDACCEL
             MENUITEM "Tambah Informasi &Versi...", ID_ADDVERINFO
             MENUITEM "Tambah Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Tambahkan Bilah Ala&t...", ID_ADDTOOLBAR
             MENUITEM "Tambah Item Sumbe&r Daya...", ID_ADDRES
         }
         POPUP "&Ganti"
@@ -164,7 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Tambah &Akselerator...", ID_ADDACCEL
             MENUITEM "Tambah Informasi &Versi...", ID_ADDVERINFO
             MENUITEM "Tambah Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Tambahkan Bilah Ala&t...", ID_ADDTOOLBAR
             MENUITEM "Tambah Item Sumbe&r Daya...", ID_ADDRES
         }
         POPUP "&Ganti"

@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Add &Accelerators...", ID_ADDACCEL
             MENUITEM "Add &Version Info...", ID_ADDVERINFO
             MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Add &Toolbar", ID_ADDTOOLBAR
             MENUITEM "Add &Resource Item...", ID_ADDRES
         }
         POPUP "&Replace"
@@ -165,7 +165,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Add &Accelerators...", ID_ADDACCEL
             MENUITEM "Add &Version Info...", ID_ADDVERINFO
             MENUITEM "Add Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Add &Toolbar", ID_ADDTOOLBAR
             MENUITEM "Add &Resource Item...", ID_ADDRES
         }
         POPUP "&Replace"

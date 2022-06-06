@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Dodaj &Skróty klawiaturowe...", ID_ADDACCEL
             MENUITEM "Dodaj &Informacje o wersji...", ID_ADDVERINFO
             MENUITEM "Dodaj Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Dodaj &pasek narzędzi...", ID_ADDTOOLBAR
             MENUITEM "Dodaj Element &zasobów...", ID_ADDRES
         }
         POPUP "&Zamień"
@@ -164,7 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Dodaj &Skróty klawiaturowe...", ID_ADDACCEL
             MENUITEM "Dodaj &Informacje o wersji...", ID_ADDVERINFO
             MENUITEM "Dodaj Mani&fest...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Dodaj &pasek narzędzi...", ID_ADDTOOLBAR
             MENUITEM "Dodaj Element &zasobów...", ID_ADDRES
         }
         POPUP "&Zamień"

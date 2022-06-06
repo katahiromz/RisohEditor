@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "Lisää &pikatoimintoja...", ID_ADDACCEL
             MENUITEM "Lisää &versiotiedot...", ID_ADDVERINFO
             MENUITEM "Lisää mani&festi...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Lisää &työkalupalkki...", ID_ADDTOOLBAR
             MENUITEM "Lisää &Resurssikohde...", ID_ADDRES
         }
         POPUP "&Korvaus"
@@ -164,7 +164,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "Lisää &pikatoimintoja...", ID_ADDACCEL
             MENUITEM "Lisää &versiotiedot...", ID_ADDVERINFO
             MENUITEM "Lisää mani&festi...", ID_ADDMANIFEST
-            MENUITEM "Add TOOLBAR", ID_ADDTOOLBAR
+            MENUITEM "Lisää &työkalupalkki...", ID_ADDTOOLBAR
             MENUITEM "Lisää &resurssikohde...", ID_ADDRES
         }
         POPUP "&Korvaus"
