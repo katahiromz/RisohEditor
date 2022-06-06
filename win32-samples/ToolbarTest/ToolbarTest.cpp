@@ -33,15 +33,18 @@ static BOOL CALLBACK CommandIdToText(INT id, LPTSTR pszText, INT cchTextMax)
 
 BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 {
-    DWORD style = WS_CHILD | WS_VISIBLE | CCS_TOP | TBS_HORZ | TBS_TOOLTIPS | TBSTYLE_LIST;
+    DWORD style = WS_CHILD | WS_VISIBLE | CCS_TOP | TBS_HORZ | TBS_TOOLTIPS |
+                  TBSTYLE_LIST | TBSTYLE_FLAT;
     DWORD exstyle = 0;
     UINT id = IDW_TOOLBAR;
     g_hwndTB = CreateWindowEx(exstyle, TOOLBARCLASSNAME, NULL,
-                              style, 0, 0, 0, 0, hwnd, (HMENU)(INT_PTR)id, g_hInstance, NULL);
+                              style, 0, 0, 0, 0, hwnd, (HMENU)(INT_PTR)id,
+                              g_hInstance, NULL);
 
     LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR), CommandIdToImageIndex,
                         CommandIdToText);
-    //LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR), CommandIdToImageIndex, NULL);
+    //LoadToolbarResource(g_hwndTB, g_hInstance, MAKEINTRESOURCE(IDB_TOOLBAR),
+    //                    CommandIdToImageIndex, NULL);
 
     PostMessage(hwnd, WM_SIZE, 0, 0);
 

@@ -27,7 +27,10 @@
 
 #include "MByteStreamEx.hpp"
 #include "MString.hpp"
-#include "Toolbar.h"
+
+#ifndef RT_TOOLBAR
+    #define RT_TOOLBAR  MAKEINTRESOURCE(241)
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 

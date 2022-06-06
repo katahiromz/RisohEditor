@@ -35,7 +35,7 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 #include "ResHeader.hpp"
-#include "Toolbar.h"
+#include "ToolbarRes.hpp"
 
 struct BaseEntry;
 struct EntrySet;

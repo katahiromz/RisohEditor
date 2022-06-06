@@ -52,10 +52,10 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
     if (hInst == NULL)
         hInst = GetModuleHandle(NULL);
 
+    // Set BUTTON struct size
     SendMessage(hwndTB, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
-    DWORD style = (DWORD)GetWindowLongPtr(hwndTB, GWL_STYLE);
-    SetWindowLongPtr(hwndTB, GWL_STYLE, style | TBSTYLE_FLAT);
 
+    // Load RT_TOOLBAR resource
     HRSRC hRsrc = FindResource(hInst, lpName, RT_TOOLBAR);
     DWORD cbReal = SizeofResource(hInst, hRsrc);
     if (cbReal < sizeof(TOOLBARDATA) - sizeof(WORD))
@@ -63,7 +63,6 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         assert(0);
         return FALSE;
     }
-
     HGLOBAL hResData = LoadResource(hInst, hRsrc);
     LPVOID pvData = LockResource(hResData);
     if (pvData == NULL)
@@ -72,12 +71,17 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         return FALSE;
     }
 
+    // Validate the data
     PTOOLBARDATA pData1 = (PTOOLBARDATA)pvData;
-    HIMAGELIST himl;
     if (pData1->wVersion == 1)
     {
-        WORD wWidth = pData1->wWidth;
-        WORD wHeight = pData1->wHeight;
+        WORD wWidth = pData1->wWidth, wHeight = pData1->wHeight;
+        if (wWidth < 3 || wHeight < 3)
+        {
+            assert(0);
+            return FALSE;
+        }
+
         DWORD wItemCount = pData1->wItemCount;
         size_t cbExpect = sizeof(TOOLBARDATA) + (wItemCount - 1) * sizeof(WORD);
         if (cbReal < cbExpect)
@@ -89,8 +93,8 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(wWidth, wHeight));
 
         // load image and set image list
-        himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
-                                   IMAGE_BITMAP, LR_CREATEDIBSECTION);
+        HIMAGELIST himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
+                                              IMAGE_BITMAP, LR_CREATEDIBSECTION);
         if (himl == NULL)
         {
             assert(0);
@@ -128,12 +132,17 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         }
         SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
     }
-#ifndef _MSC_VER // Not MSVC
+#ifndef _MSC_VER // Not Visual C++
     else if (pData1->wVersion >= 3)
     {
         PTOOLBARDATAWINDRES pData2 = (PTOOLBARDATAWINDRES)pvData;
-        DWORD wWidth = pData2->wWidth;
-        DWORD wHeight = pData2->wHeight;
+        DWORD wWidth = pData2->wWidth, wHeight = pData2->wHeight;
+        if (wWidth < 3 || wHeight < 3)
+        {
+            assert(0);
+            return FALSE;
+        }
+
         DWORD wItemCount = pData2->wItemCount;
         size_t cbExpect = sizeof(TOOLBARDATA) + (wItemCount - 1) * sizeof(WORD);
         if (cbReal < cbExpect)
@@ -145,8 +154,8 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELPARAM(wWidth, wHeight));
 
         // load image and set image list
-        himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
-                                   IMAGE_BITMAP, LR_CREATEDIBSECTION);
+        HIMAGELIST himl = ImageList_LoadImage(hInst, lpName, wWidth, 0, RGB(255, 0, 255),
+                                              IMAGE_BITMAP, LR_CREATEDIBSECTION);
         if (himl == NULL)
         {
             assert(0);
@@ -189,10 +198,10 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         return FALSE;
     }
 
-    DWORD extended = 0;
+    // Modify extended style
+    DWORD extended = (DWORD)SendMessage(hwndTB, TB_GETEXTENDEDSTYLE, 0, 0);
     extended |= TBSTYLE_EX_DRAWDDARROWS; // BTNS_DROPDOWN and BTNS_WHOLEDROPDOWN will work
     //extended |= TBSTYLE_EX_MIXEDBUTTONS; // BTNS_SHOWTEXT works
     SendMessage(hwndTB, TB_SETEXTENDEDSTYLE, 0, extended);
-
     return TRUE;
 }
