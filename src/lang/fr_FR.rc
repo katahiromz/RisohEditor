@@ -1295,8 +1295,8 @@ CAPTION "Copier dans plusieurs langues"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Veuillez sélectionner les langues dans lesquelles vous souhaitez copier la ressource :", -1, 5, 5, 190, 22
-    LTEXT "&Languages:", -1, 5, 35, 82, 12
+    LTEXT "Veuillez sélectionner les langues dans lesquelles vous souhaitez copier la ressource :", -1, 5, 5, 190, 22
+    LTEXT "&Languages :", -1, 5, 35, 82, 12
     LISTBOX lst1, 5, 50, 190, 100, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Ajouter", psh1, 135, 155, 60, 14
@@ -1309,9 +1309,9 @@ CAPTION "Ressource de la barre d'outils"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Largeur de l'icône:", -1, 5, 5, 60, 15, SS_CENTERIMAGE
+    RTEXT "&Largeur de l'icône :", -1, 5, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt1, 70, 5, 30, 15
-    RTEXT "&Hauteur de l'icône:", -1, 110, 5, 60, 15, SS_CENTERIMAGE
+    RTEXT "&Hauteur de l'icône :", -1, 110, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt2, 180, 5, 30, 15
     LTEXT "&Boutons de la barre d'outils :", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
     LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
