@@ -76,6 +76,7 @@
 #define IDD_COPYTOMULTILANG                 167
 #define IDD_TOOLBARRES                      168
 #define IDD_ADDTBBTN                        169
+#define IDD_MODIFYTBBTN                     170
 #define IDD_STRINGID                        "StringID"
 
 #define IDI_MAIN                            100

@@ -27,6 +27,8 @@
 
 #include "ToolbarRes.hpp"
 
+class MAddTBBtnDlg;
+class MModifyTBBtnDlg;
 class MEditToolbarDlg;
 
 void InitCtrlIDComboBox(HWND hCmb);
@@ -62,6 +64,106 @@ public:
         GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
         ReplaceFullWithHalf(szText);
         mstr_trim(szText);
+
+        if (szText[0] == L'-')
+            szText[0] = 0;
+
+        if (szText[0] && !CheckCommand(szText))
+        {
+            ErrorBoxDx(IDS_NOSUCHID);
+            return;
+        }
+
+        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+            szText[0] = 0;
+
+        m_str = szText;
+        EndDialog(IDOK);
+    }
+
+    void OnChx1(HWND hwnd)
+    {
+        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
+        {
+            SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
+            SetDlgItemTextW(hwnd, cmb1, NULL);
+        }
+    }
+
+    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
+    {
+        switch (id)
+        {
+        case IDOK:
+            OnOK(hwnd);
+            break;
+        case IDCANCEL:
+            EndDialog(IDCANCEL);
+            break;
+        case chx1:
+            OnChx1(hwnd);
+            break;
+        case cmb1:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb1.OnEditChange();
+            }
+            break;
+        }
+    }
+
+    virtual INT_PTR CALLBACK
+    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        switch (uMsg)
+        {
+            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
+            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+        }
+        return DefaultProcDx();
+    }
+};
+
+class MModifyTBBtnDlg : public MDialogBase
+{
+public:
+    std::wstring m_str;
+    MComboBoxAutoComplete m_cmb1;
+
+    MModifyTBBtnDlg(const std::wstring& str) : MDialogBase(IDD_MODIFYTBBTN)
+    {
+        m_str = str;
+    }
+
+    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
+    {
+        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb1));
+        SubclassChildDx(m_cmb1, cmb1);
+
+        SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
+        if (m_str.empty() || m_str[0] == L'-')
+        {
+            CheckDlgButton(hwnd, chx1, BST_CHECKED);
+            SetDlgItemTextW(hwnd, cmb1, L"");
+        }
+        else
+        {
+            SetDlgItemTextW(hwnd, cmb1, m_str.c_str());
+        }
+
+        CenterWindowDx();
+        return TRUE;
+    }
+
+    void OnOK(HWND hwnd)
+    {
+        WCHAR szText[MAX_PATH];
+        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
+        ReplaceFullWithHalf(szText);
+        mstr_trim(szText);
+
+        if (szText[0] == L'-')
+            szText[0] = 0;
 
         if (szText[0] && !CheckCommand(szText))
         {
@@ -181,10 +283,21 @@ public:
     void OnModify(HWND hwnd)
     {
         INT iItem = (INT)SendMessageW(m_hLst1, LB_GETCURSEL, 0, 0);
-        if (iItem >= 0)
+        if (iItem < 0)
+            return;
+
+        WCHAR sz1[MAX_PATH];
+        sz1[0] = 0;
+        SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+
+        MModifyTBBtnDlg dialog(sz1);
+        if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
+            auto& str = dialog.m_str;
+            if (str.empty() || str[0] == L'-')
+                str = L"---";
             SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem, (LPARAM)L"TEST2");
+            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem, (LPARAM)str.c_str());
             SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
         }
     }
@@ -235,6 +348,26 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        INT nCount = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
+
+        m_toolbar_res.clear();
+        for (INT iItem = 0; iItem < nCount; ++iItem)
+        {
+            WCHAR sz1[MAX_PATH];
+            sz1[0] = 0;
+            SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+
+            if (!sz1[0] || sz1[0] == L'-')
+            {
+                m_toolbar_res.push_back(0);
+            }
+            else
+            {
+                INT id = (INT)g_db.GetResIDValue(sz1);
+                m_toolbar_res.push_back(id);
+            }
+        }
+
         EndDialog(IDOK);
     }
 
