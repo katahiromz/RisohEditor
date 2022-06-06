@@ -38,6 +38,7 @@ typedef struct tagTOOLBARDATAWINDRES
 
 typedef INT (CALLBACK *FN_INT2INT)(INT id);
 
+// See: https://github.com/katahiromz/RisohEditor/blob/master/tests/ToolbarTest/ToolbarTest.cpp
 inline BOOL
 LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
                     FN_INT2INT fnCommandIdToImageIndex,
