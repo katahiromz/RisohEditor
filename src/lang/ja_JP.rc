@@ -1311,7 +1311,7 @@ CAPTION "ツールバー リソース"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS UI Gothic"
 {
-    RTEXT "アイコン幅(&W):", -1, 5, 5, 60, 15, SS_CENTERIMAGE
+    RTEXT "アイコンの幅(&W):", -1, 5, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt1, 70, 5, 30, 15
     RTEXT "アイコンの高さ(&H):", -1, 110, 5, 60, 15, SS_CENTERIMAGE
     EDITTEXT edt2, 180, 5, 30, 15
