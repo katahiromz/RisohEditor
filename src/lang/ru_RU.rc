@@ -1304,6 +1304,22 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Отмена", IDCANCEL, 70, 175, 60, 14
 }
 
+IDD_TOOLBARRES DIALOG 0, 0, 232, 179
+CAPTION "Toolbar resource"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "&Toolbar resource:", -1, 5, 5, 95, 15, SS_CENTERIMAGE
+    LISTBOX lst1, 5, 20, 140, 130, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Add...", psh1, 150, 20, 75, 15
+    PUSHBUTTON "&Modify...", psh2, 150, 40, 75, 15
+    PUSHBUTTON "&Delete", psh3, 150, 60, 75, 15
+    PUSHBUTTON "&Up", psh4, 150, 115, 75, 15
+    PUSHBUTTON "D&own", psh5, 150, 135, 75, 15
+    DEFPUSHBUTTON "OK", IDOK, 5, 155, 60, 15
+    PUSHBUTTON "Cancel", IDCANCEL, 70, 155, 60, 15
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_VERSION
 
