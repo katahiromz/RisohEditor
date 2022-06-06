@@ -128,6 +128,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         }
         SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
     }
+#ifndef _MSC_VER // Not MSVC
     else if (pData1->wVersion >= 3)
     {
         PTOOLBARDATAWINDRES pData2 = (PTOOLBARDATAWINDRES)pvData;
@@ -182,6 +183,7 @@ LoadToolbarResource(HWND hwndTB, HINSTANCE hInst, LPCTSTR lpName,
         }
         SendMessage(hwndTB, TB_ADDBUTTONS, WPARAM(buttons.size()), (LPARAM)buttons.data());
     }
+#endif // ndef _MSC_VER
     else
     {
         return FALSE;
