@@ -18,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Res.hpp"
-#include "Toolbar.h"
+#include "ToolbarRes.hpp"
 
 struct AutoDeleteFileW
 {
@@ -452,6 +452,15 @@ EntrySet::add_lang_entry(const MIdOrString& type, const MIdOrString& name,
 
     // store the data
     entry->m_data = data;
+
+    // fixup RT_TOOLBAR
+    if (entry->m_type == RT_TOOLBAR)
+    {
+        ToolbarRes toolbar_res;
+        MByteStreamEx stream(entry->m_data);
+        toolbar_res.LoadFromStream(stream);
+        entry->m_data = toolbar_res.data();
+    }
 
     // finish
     return on_insert_entry(entry);
