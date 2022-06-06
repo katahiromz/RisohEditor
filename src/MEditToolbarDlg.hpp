@@ -210,11 +210,12 @@ public:
                 SendMessageW(m_hLst1, LB_ADDSTRING, 0, (LPARAM)L"---");
             }
         }
+        SendMessageW(m_hLst1, LB_SETCURSEL, 0, 0);
+
+        SendMessageW(m_hLst1, LB_SETITEMHEIGHT, 0, GetItemHeight(hwnd));
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
-
-        SendMessageW(m_hLst1, LB_SETITEMHEIGHT, 0, GetItemHeight(hwnd));
 
         CenterWindowDx();
         return TRUE;
@@ -241,7 +242,8 @@ public:
             auto& str = dialog.m_str;
             if (str.empty() || str[0] == L'-')
                 str = L"---";
-            SendMessageW(m_hLst1, LB_INSERTSTRING, -1, (LPARAM)str.c_str());
+            INT iItem = (INT)SendMessageW(m_hLst1, LB_INSERTSTRING, -1, (LPARAM)str.c_str());
+            SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
         }
     }
 
@@ -273,6 +275,7 @@ public:
         if (iItem >= 0)
         {
             SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
+            SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
         }
     }
 
