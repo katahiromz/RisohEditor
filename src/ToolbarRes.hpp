@@ -45,13 +45,21 @@ public:
     bool SaveToStream(MByteStreamEx& stream) const;
     MStringW Dump(const MIdOrString& id_or_str) const;
 
-    DWORD width() const
+    INT width() const
     {
         return m_width;
     }
-    DWORD height() const
+    void width(INT cx)
+    {
+        m_width = cx;
+    }
+    INT height() const
     {
         return m_height;
+    }
+    void height(INT cy)
+    {
+        m_height = cy;
     }
 
     bool empty() const

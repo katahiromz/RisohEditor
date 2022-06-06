@@ -245,8 +245,10 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        m_hLst1 = GetDlgItem(hwnd, lst1);
+        SetDlgItemInt(hwnd, edt1, m_toolbar_res.width(), FALSE);
+        SetDlgItemInt(hwnd, edt2, m_toolbar_res.height(), FALSE);
 
+        m_hLst1 = GetDlgItem(hwnd, lst1);
         for (size_t i = 0; i < m_toolbar_res.size(); ++i)
         {
             DWORD id = m_toolbar_res[i];
@@ -351,6 +353,28 @@ public:
         INT nCount = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
 
         m_toolbar_res.clear();
+
+        BOOL bTranslated;
+
+        INT cx = GetDlgItemInt(hwnd, edt1, &bTranslated, FALSE);
+        if (!bTranslated)
+        {
+            SetFocus(GetDlgItem(hwnd, edt1));
+            SendDlgItemMessageW(hwnd, edt1, EM_SETSEL, 0, -1);
+            ErrorBoxDx(IDS_ENTERINT);
+            return;
+        }
+        INT cy = GetDlgItemInt(hwnd, edt2, &bTranslated, FALSE);
+        if (!bTranslated)
+        {
+            SetFocus(GetDlgItem(hwnd, edt2));
+            SendDlgItemMessageW(hwnd, edt2, EM_SETSEL, 0, -1);
+            ErrorBoxDx(IDS_ENTERINT);
+            return;
+        }
+        m_toolbar_res.width(cx);
+        m_toolbar_res.height(cy);
+
         for (INT iItem = 0; iItem < nCount; ++iItem)
         {
             WCHAR sz1[MAX_PATH];
