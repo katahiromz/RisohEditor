@@ -35,6 +35,7 @@
 #include "ConstantsDB.hpp"
 #include "DialogRes.hpp"
 #include "ResHeader.hpp"
+#include "Toolbar.h"
 
 struct BaseEntry;
 struct EntrySet;
@@ -146,6 +147,8 @@ struct EntryBase
         {
             return true;
         }
+        if (m_type == RT_TOOLBAR)
+            return true;
         if (m_type == RT_MESSAGETABLE)
             return !g_settings.bUseMSMSGTABLE;
         return false;

@@ -134,6 +134,7 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MStringsDlg.hpp"
 #include "MMessagesDlg.hpp"
 #include "MEditMenuDlg.hpp"
+#include "MEditToolbarDlg.hpp"
 #include "MEditAccelDlg.hpp"
 #include "MIdAssocDlg.hpp"
 #include "MBmpView.hpp"

@@ -4800,6 +4800,37 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         // ready
         ChangeStatusText(IDS_READY);
     }
+    else if (entry->m_type == RT_TOOLBAR)
+    {
+        // entry->m_data --> toolbar_res
+        ToolbarRes toolbar_res;
+        MByteStreamEx stream(entry->m_data);
+        if (toolbar_res.LoadFromStream(stream))
+        {
+            // editing...
+            ChangeStatusText(IDS_EDITINGBYGUI);
+
+            // show the dialog
+            MEditToolbarDlg dialog(toolbar_res);
+            INT nID = (INT)dialog.DialogBoxDx(hwnd);
+            if (nID == IDOK)
+            {
+                DoSetFileModified(TRUE);
+
+                // toolbar_res --> entry->m_data
+                entry->m_data = toolbar_res.data();
+            }
+        }
+
+        // make it non-read-only
+        Edit_SetReadOnly(m_hCodeEditor, FALSE);
+
+        // select the entry
+        SelectTV(entry, FALSE);
+
+        // ready
+        ChangeStatusText(IDS_READY);
+    }
     else if (entry->m_type == RT_DIALOG)
     {
         // editing...
