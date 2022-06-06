@@ -1304,20 +1304,24 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Annuler", IDCANCEL, 70, 175, 60, 14
 }
 
-IDD_TOOLBARRES DIALOG 0, 0, 232, 179
+IDD_TOOLBARRES DIALOG 0, 0, 230, 195
 CAPTION "Ressource de la barre d'outils"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Boutons de la barre d'outils:", -1, 5, 5, 95, 15, SS_CENTERIMAGE | NOT WS_GROUP
-    LISTBOX lst1, 5, 20, 140, 130, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Ajouter...", psh1, 150, 20, 75, 15
-    PUSHBUTTON "&Modifier...", psh2, 150, 40, 75, 15
-    PUSHBUTTON "&Effacer", psh3, 150, 60, 75, 15
-    PUSHBUTTON "&En haut", psh4, 150, 115, 75, 15
-    PUSHBUTTON "&Vers le bas", psh5, 150, 135, 75, 15
-    DEFPUSHBUTTON "OK", IDOK, 5, 155, 60, 15
-    PUSHBUTTON "Annuler", IDCANCEL, 70, 155, 60, 15
+    RTEXT "Icon &width:", -1, 5, 5, 60, 15, SS_CENTERIMAGE
+    EDITTEXT edt1, 70, 5, 30, 15
+    RTEXT "Icon &height:", -1, 110, 5, 60, 15, SS_CENTERIMAGE
+    EDITTEXT edt2, 180, 5, 30, 15
+    LTEXT "&Boutons de la barre d'outils :", -1, 5, 25, 95, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Ajouter...", psh1, 150, 40, 75, 15
+    PUSHBUTTON "&Modifier...", psh2, 150, 60, 75, 15
+    PUSHBUTTON "&Effacer", psh3, 150, 80, 75, 15
+    PUSHBUTTON "&En haut", psh4, 150, 135, 75, 15
+    PUSHBUTTON "&Vers le bas", psh5, 150, 155, 75, 15
+    DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 15
+    PUSHBUTTON "Annuler", IDCANCEL, 70, 175, 60, 15
 }
 
 IDD_ADDTBBTN DIALOG 0, 0, 177, 92
