@@ -27,7 +27,6 @@
 
 #include "ToolbarRes.hpp"
 
-class MAddTBBtnDlg;
 class MModifyTBBtnDlg;
 class MEditToolbarDlg;
 
@@ -39,98 +38,13 @@ void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 
-class MAddTBBtnDlg : public MDialogBase
-{
-public:
-    std::wstring m_str;
-    MComboBoxAutoComplete m_cmb1;
-
-    MAddTBBtnDlg() : MDialogBase(IDD_ADDTBBTN)
-    {
-    }
-
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
-    {
-        InitCtrlIDComboBox(GetDlgItem(hwnd, cmb1));
-        SubclassChildDx(m_cmb1, cmb1);
-
-        CenterWindowDx();
-        return TRUE;
-    }
-
-    void OnOK(HWND hwnd)
-    {
-        WCHAR szText[MAX_PATH];
-        GetDlgItemTextW(hwnd, cmb1, szText, _countof(szText));
-        ReplaceFullWithHalf(szText);
-        mstr_trim(szText);
-
-        if (szText[0] == L'-')
-            szText[0] = 0;
-
-        if (szText[0] && !CheckCommand(szText))
-        {
-            ErrorBoxDx(IDS_NOSUCHID);
-            return;
-        }
-
-        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-            szText[0] = 0;
-
-        m_str = szText;
-        EndDialog(IDOK);
-    }
-
-    void OnChx1(HWND hwnd)
-    {
-        if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
-        {
-            SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
-            SetDlgItemTextW(hwnd, cmb1, NULL);
-        }
-    }
-
-    void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
-    {
-        switch (id)
-        {
-        case IDOK:
-            OnOK(hwnd);
-            break;
-        case IDCANCEL:
-            EndDialog(IDCANCEL);
-            break;
-        case chx1:
-            OnChx1(hwnd);
-            break;
-        case cmb1:
-            if (codeNotify == CBN_EDITCHANGE)
-            {
-                m_cmb1.OnEditChange();
-            }
-            break;
-        }
-    }
-
-    virtual INT_PTR CALLBACK
-    DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        switch (uMsg)
-        {
-            HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
-            HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
-        }
-        return DefaultProcDx();
-    }
-};
-
 class MModifyTBBtnDlg : public MDialogBase
 {
 public:
     std::wstring m_str;
     MComboBoxAutoComplete m_cmb1;
 
-    MModifyTBBtnDlg(const std::wstring& str) : MDialogBase(IDD_MODIFYTBBTN)
+    MModifyTBBtnDlg(INT id, const std::wstring& str = L"") : MDialogBase(id)
     {
         m_str = str;
     }
@@ -141,7 +55,7 @@ public:
         SubclassChildDx(m_cmb1, cmb1);
 
         SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
-        if (m_str.empty() || m_str[0] == L'-')
+        if (m_str[0] == L'-')
         {
             CheckDlgButton(hwnd, chx1, BST_CHECKED);
             SetDlgItemTextW(hwnd, cmb1, L"");
@@ -178,12 +92,42 @@ public:
         EndDialog(IDOK);
     }
 
+    BOOL m_bUpdating = FALSE;
+
     void OnChx1(HWND hwnd)
     {
+        if (m_bUpdating)
+            return;
+
         if (IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED)
         {
+            m_bUpdating = TRUE;
             SendDlgItemMessageW(hwnd, cmb1, CB_SETCURSEL, -1, 0);
             SetDlgItemTextW(hwnd, cmb1, NULL);
+            m_bUpdating = FALSE;
+        }
+    }
+
+    void OnCmb1(HWND hwnd)
+    {
+        if (m_bUpdating)
+            return;
+
+        INT iItem = ComboBox_GetCurSel(m_cmb1);
+        if (iItem != CB_ERR)
+            return;
+
+        WCHAR sz1[MAX_PATH];
+        sz1[0] = 0;
+        ::GetDlgItemTextW(hwnd, cmb1, sz1, _countof(sz1));
+        ReplaceFullWithHalf(sz1);
+        mstr_trim(sz1);
+
+        if (sz1[0] && sz1[0] != L'-')
+        {
+            m_bUpdating = TRUE;
+            CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
+            m_bUpdating = FALSE;
         }
     }
 
@@ -205,6 +149,7 @@ public:
             {
                 m_cmb1.OnEditChange();
             }
+            OnCmb1(hwnd);
             break;
         }
     }
@@ -272,7 +217,7 @@ public:
 
     void OnAdd(HWND hwnd)
     {
-        MAddTBBtnDlg dialog;
+        MModifyTBBtnDlg dialog(IDD_ADDTBBTN, L"");
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             auto& str = dialog.m_str;
@@ -292,7 +237,7 @@ public:
         sz1[0] = 0;
         SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
 
-        MModifyTBBtnDlg dialog(sz1);
+        MModifyTBBtnDlg dialog(IDD_MODIFYTBBTN, sz1);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
         {
             auto& str = dialog.m_str;
@@ -395,6 +340,11 @@ public:
         EndDialog(IDOK);
     }
 
+    void OnLst1DoubleClick(HWND hwnd)
+    {
+        OnModify(hwnd);
+    }
+
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     {
         switch (id)
@@ -419,6 +369,14 @@ public:
             break;
         case IDCANCEL:
             EndDialog(IDCANCEL);
+            break;
+        case lst1:
+            switch (codeNotify)
+            {
+            case LBN_DBLCLK:
+                OnLst1DoubleClick(hwnd);
+                break;
+            }
             break;
         }
     }
