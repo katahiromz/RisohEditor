@@ -120,7 +120,7 @@ MStringW ToolbarRes::Dump(const MIdOrString& id_or_str) const
     }
     else
     {
-        ret += g_db.GetNameOfResID(IDTYPE_RESOURCE, id_or_str.m_id);
+        ret += g_db.GetNameOfResID(IDTYPE_BITMAP, id_or_str.m_id);
     }
 
     ret += L" TOOLBAR ";

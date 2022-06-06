@@ -72,6 +72,10 @@ MStringW EntryBase::get_name_label() const
     if (m_type == RT_DLGINIT)
         nIDTYPE_ = IDTYPE_DIALOG;
 
+    // RT_TOOLBAR uses bitmap name
+    if (m_type == RT_TOOLBAR)
+        nIDTYPE_ = IDTYPE_BITMAP;
+
     // get the label from an IDTYPE_ value
     MStringW label = g_db.GetNameOfResID(nIDTYPE_, id);
     if (label.empty() || m_type == RT_STRING || m_type == RT_MESSAGETABLE)

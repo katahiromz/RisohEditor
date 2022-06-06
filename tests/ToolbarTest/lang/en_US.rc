@@ -13,7 +13,7 @@ IDB_TOOLBAR BITMAP "res/1033_Bitmap_100.bmp"
 //////////////////////////////////////////////////////////////////////////////
 // RT_DIALOG
 
-1 DIALOG 0, 0, 215, 70
+IDD_MAIN DIALOG 0, 0, 215, 70
 CAPTION "ToolbarTest"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Arial"
@@ -25,7 +25,7 @@ FONT 9, "Arial"
 //////////////////////////////////////////////////////////////////////////////
 // RT_TOOLBAR
 
-100 TOOLBAR 24, 24
+IDB_TOOLBAR TOOLBAR 24, 24
 {
     BUTTON 100
     BUTTON 101

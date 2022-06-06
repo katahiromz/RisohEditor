@@ -5,6 +5,8 @@
 
 #define IDB_TOOLBAR                         100
 
+#define IDD_MAIN                            100
+
 #define IDW_TOOLBAR                         1
 
 #ifdef APSTUDIO_INVOKED

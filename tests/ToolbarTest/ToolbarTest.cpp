@@ -80,6 +80,6 @@ WinMain(HINSTANCE   hInstance,
     g_hInstance = hInstance;
     InitCommonControls();
 
-    DialogBox(hInstance, MAKEINTRESOURCE(1), NULL, DialogProc);
+    DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, DialogProc);
     return 0;
 }
