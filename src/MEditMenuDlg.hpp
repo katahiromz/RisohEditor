@@ -199,7 +199,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str());
+        SetDlgItemTextW(hwnd, cmb1, mstr_quote(m_entry.szCaption).c_str()); //
 
         InitCtrlIDComboBox(GetDlgItem(hwnd, cmb2));
         SetDlgItemText(hwnd, cmb2, m_entry.szCommandID);
@@ -675,7 +675,7 @@ public:
 
         MENU_ENTRY m_entry;
         GetEntry(hwnd, m_entry, iItem);
-        
+
         MModifyMItemDlg dialog(m_entry);
         INT nID = (INT)dialog.DialogBoxDx(hwnd);
         if (IDOK == nID)
@@ -690,6 +690,10 @@ public:
         if (iItem >= 0)
         {
             ListView_DeleteItem(m_hLst1, iItem);
+            if (ListView_GetItemCount(m_hLst1) == iItem)
+                --iItem;
+            UINT state = LVIS_SELECTED | LVIS_FOCUSED;
+            ListView_SetItemState(m_hLst1, iItem, state, state);
         }
     }
 
