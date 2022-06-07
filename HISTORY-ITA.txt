@@ -271,5 +271,5 @@
     - Finestra informazioni versione migliorata.
     - Correzione metodo di sfarfallio a causa di visualizzazione di controllo sbagliato.
     - Memorizzazione focus finestra principale.
-- v.5.7.2 (YY.XX.2022)
+- v.5.7.2 (07.06.2022)
     - Supportate risorse BARRA STRUMENTI.
