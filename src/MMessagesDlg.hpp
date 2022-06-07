@@ -32,7 +32,7 @@ class MAddMsgDlg;
 class MModifyMsgDlg;
 class MMessagesDlg;
 
-void InitMessageComboBox(HWND hCmb, MString strString);
+void InitMessageComboBox(HWND hCmb, const MString& strString);
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 
@@ -414,7 +414,7 @@ public:
             ListView_SetItemText(m_hLst1, iItem, 1, &str[0]);
 
             ULONG dwValue = g_db.GetResIDValue(me.MessageID);
-            m_msg_res.m_map[dwValue] = str;
+            m_msg_res.m_map[dwValue] = std::move(str);
         }
     }
 

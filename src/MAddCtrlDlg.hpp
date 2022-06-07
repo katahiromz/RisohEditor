@@ -416,7 +416,6 @@ public:
         mstr_trim(text);
         DWORD dwStyle = mstr_parse_int(text.c_str(), false, 16);
 
-        std::vector<BYTE> old_style_selection = m_style_selection;
         GetStyleSelect(m_style_selection, m_style_table, dwStyle);
 
         HWND hLst1 = GetDlgItem(hwnd, lst1);
@@ -433,7 +432,6 @@ public:
         mstr_trim(text);
         DWORD dwExStyle = mstr_parse_int(text.c_str(), false, 16);
 
-        std::vector<BYTE> old_exstyle_selection = m_exstyle_selection;
         GetStyleSelect(m_exstyle_selection, m_exstyle_table, dwExStyle);
 
         HWND hLst2 = GetDlgItem(hwnd, lst2);

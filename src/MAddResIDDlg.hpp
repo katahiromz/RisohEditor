@@ -100,7 +100,7 @@ public:
             ErrorBoxDx(IDS_ENTERINT);
             return;
         }
-        m_str2 = str2;
+        m_str2 = std::move(str2);
 
         MStringA str1a = MTextToAnsi(CP_ACP, str1).c_str();
         if (g_settings.id_map.find(str1a) != g_settings.id_map.end())
@@ -161,7 +161,6 @@ public:
                     ConstantsDB::TableType table;
                     table = g_db.GetTable(L"RESOURCE.ID.PREFIX");
 
-                    MString name = GetDlgItemText(hwnd, cmb1);
                     m_bChanging = TRUE;
                     SetDlgItemText(hwnd, edt1, table[k].name.c_str());
                     m_bChanging = FALSE;

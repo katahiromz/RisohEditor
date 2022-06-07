@@ -661,7 +661,6 @@ public:
                 MString str1 = szText;
                 MStringA astr1 = MTextToAnsi(CP_ACP, szText).c_str();
                 ListView_GetItemText(m_hLst1, iItem, 2, szText, _countof(szText));
-                MStringA astr2 = MTextToAnsi(CP_ACP, szText).c_str();
 
                 ConstantsDB::TableType& table = g_db.m_map[L"RESOURCE.ID"];
                 auto end = table.end();
@@ -677,6 +676,7 @@ public:
                 g_settings.id_map.erase(astr1);
                 if (!g_settings.added_ids.erase(astr1))
                 {
+                    MStringA astr2 = MTextToAnsi(CP_ACP, szText).c_str();
                     g_settings.removed_ids.insert(std::make_pair(astr1, astr2));
                 }
 

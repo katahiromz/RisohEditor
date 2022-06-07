@@ -412,7 +412,7 @@ bool MenuRes::SaveToStreamEx(MByteStreamEx& stream) const
 }
 
 MenuRes::string_type
-MenuRes::Dump(MIdOrString name) const
+MenuRes::Dump(const MIdOrString& name) const
 {
     if (IsExtended())
         return DumpEx(name);
@@ -505,7 +505,7 @@ MenuRes::Dump(MIdOrString name) const
 }
 
 MenuRes::string_type
-MenuRes::DumpEx(MIdOrString name) const
+MenuRes::DumpEx(const MIdOrString& name) const
 {
     string_type ret;
 

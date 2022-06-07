@@ -466,7 +466,7 @@ public:
 
                 MString strValue = m_map[m_strTemp];
                 m_map.erase(m_strTemp);
-                m_map[pInfo->item.pszText] = strValue;
+                m_map[pInfo->item.pszText] = std::move(strValue);
 
                 LV_ITEM item;
                 ZeroMemory(&item, sizeof(item));

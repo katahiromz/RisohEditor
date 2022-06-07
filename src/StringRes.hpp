@@ -39,9 +39,7 @@ public:
     WORD        m_wName;
     map_type    m_map;
 
-    StringRes()
-    {
-    }
+    StringRes() = default;
 
     bool LoadFromStream(const MByteStreamEx& stream, WORD wName);
     bool SaveToStream(MByteStreamEx& stream, WORD wName);

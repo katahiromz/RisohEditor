@@ -54,7 +54,7 @@ typedef std::vector<Var> Vars;
 class VersionRes
 {
 public:
-    VersionRes() { }
+    VersionRes() = default;
 
     bool VarsFromStream(Vars& vars, const MByteStreamEx& stream);
     bool LoadFromData(const std::vector<BYTE>& data);

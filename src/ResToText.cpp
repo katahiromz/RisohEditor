@@ -35,7 +35,7 @@
 MString
 ResToText::GetEntryFileName(const EntryBase& entry)
 {
-    MString ret, lang;
+    MString ret;
 
     if (entry.m_type.is_int())
     {
@@ -1097,7 +1097,7 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
             MStringW wide = a2w.c_str();
             mstr_replace_all(wide, L"\r\n", L"\n");
             mstr_replace_all(wide, L"\n", L"\r\n");
-            return wide.c_str();
+            return wide;
         }
         if (enc == L"wide")
         {
@@ -1119,7 +1119,7 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
             MStringW wide = a2w.c_str();
             mstr_replace_all(wide, L"\r\n", L"\n");
             mstr_replace_all(wide, L"\n", L"\r\n");
-            return wide.c_str();
+            return wide;
         }
         if (enc == L"sjis")
         {
@@ -1128,7 +1128,7 @@ MString ResToText::DoEncodedText(const EntryBase& entry, const MStringW& enc)
             MStringW wide = a2w.c_str();
             mstr_replace_all(wide, L"\r\n", L"\n");
             mstr_replace_all(wide, L"\n", L"\r\n");
-            return wide.c_str();
+            return wide;
         }
     }
     else

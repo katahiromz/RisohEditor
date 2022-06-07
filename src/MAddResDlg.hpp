@@ -372,7 +372,7 @@ public:
         }
         else
         {
-            type.m_str = strIDType;
+            type.m_str = std::move(strIDType);
         }
 
         if (HasSample(type, m_lang))

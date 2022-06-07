@@ -33,7 +33,7 @@ class MAddStrDlg;
 class MModifyStrDlg;
 class MStringsDlg;
 
-void InitStringComboBox(HWND hCmb, MString strString);
+void InitStringComboBox(HWND hCmb, const MString& strString);
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 

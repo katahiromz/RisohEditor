@@ -44,9 +44,8 @@ public:
     std::wstring m_str;
     MComboBoxAutoComplete m_cmb1;
 
-    MModifyTBBtnDlg(INT id, const std::wstring& str = L"") : MDialogBase(id)
+    MModifyTBBtnDlg(INT id, const std::wstring& str = L"") : MDialogBase(id), m_str(str)
     {
-        m_str = str;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)

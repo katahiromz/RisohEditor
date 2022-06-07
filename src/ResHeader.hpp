@@ -97,7 +97,7 @@ public:
         return true;
     }
 
-    DWORD GetHeaderSize(MIdOrString type, MIdOrString name) const
+    DWORD GetHeaderSize(const MIdOrString& type, MIdOrString name) const
     {
         size_t size = 0;
         if (type.is_str())

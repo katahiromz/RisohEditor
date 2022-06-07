@@ -67,7 +67,7 @@ public:
             ErrorBoxDx(IDS_ENTERTEXT);
             return;
         }
-        m_str1 = str1;
+        m_str1 = std::move(str1);
 
         MString str2 = GetDlgItemText(hwnd, edt1);
         mstr_trim(str2);
@@ -91,7 +91,7 @@ public:
             ErrorBoxDx(IDS_ENTERTEXT);
             return;
         }
-        m_str2 = str3;
+        m_str2 = std::move(str3);
 
         EndDialog(IDOK);
     }
