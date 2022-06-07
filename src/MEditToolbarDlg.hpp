@@ -275,7 +275,11 @@ public:
         if (iItem >= 0)
         {
             SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
+            INT nCount = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
+            if (nCount == iItem)
+                SendMessageW(m_hLst1, LB_SETCURSEL, iItem - 1, 0);
+            else
+                SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
         }
     }
 
@@ -438,6 +442,15 @@ public:
         }
     }
 
+    int OnVkeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)
+    {
+        if (vk == VK_DELETE)
+        {
+            OnDelete(hwnd);
+        }
+        return SetDlgMsgResult(hwnd, WM_VKEYTOITEM, -1);
+    }
+
     virtual INT_PTR CALLBACK
     DialogProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -446,6 +459,7 @@ public:
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
             HANDLE_MSG(hwnd, WM_DRAWITEM, OnDrawItem);
+            HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVkeyToItem);
         }
         return DefaultProcDx();
     }
