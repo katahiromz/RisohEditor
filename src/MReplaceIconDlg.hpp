@@ -29,7 +29,7 @@ void InitLangComboBox(HWND hCmb3, LANGID langid);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 

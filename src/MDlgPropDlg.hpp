@@ -39,7 +39,7 @@ DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table,
 void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
 BYTE GetCharSetFromComboBox(HWND hCmb);
-void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
 void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
 void ReplaceFullWithHalf(MStringW& strText);
 

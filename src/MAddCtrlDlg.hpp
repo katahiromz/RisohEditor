@@ -45,7 +45,7 @@ void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
 void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
 void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
 void InitCtrlIDComboBox(HWND hCmb);
-void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_);
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
 
 //////////////////////////////////////////////////////////////////////////////
 
