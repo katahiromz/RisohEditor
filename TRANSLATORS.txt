@@ -6,6 +6,8 @@ The translators of RisohEditor are listed below:
 
  * English:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
+* Korean:
+    ✧₊⁎˓VᴇɴᴜsGɪʀʟ 비너스걸❤˒⁎⁺˳✧༚ <venusgirl@outlook.com>
  * Finnish:
     - Veikko Muurikainen <veikko.muurikainen@kolumbus.fi>
  * Indonesian:
@@ -14,8 +16,6 @@ The translators of RisohEditor are listed below:
     - bovirus <bovirus@gmail.com>
  * Japanese:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
- * Korean:
-    - ꧁VenusGirl꧂ (비너스걸) <venusgirl@outlook.com>
  * Polish:
     - Piotr Hetnarowicz <piotrhwz@gmail.com>
  * Portuguese:
