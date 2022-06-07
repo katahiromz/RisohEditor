@@ -44,9 +44,7 @@ struct DlgInitEntry
     WORD        wMsg;
     MStringA    strText;
 
-    DlgInitEntry()
-    {
-    }
+    DlgInitEntry() = default;
     
     DlgInitEntry(WORD ctrl, WORD msg, const MStringA& str)
         : wCtrl(ctrl), wMsg(msg), strText(str)
@@ -66,7 +64,7 @@ protected:
     entries_type    m_entries;
 
 public:
-    DlgInitRes() { }
+    DlgInitRes() = default;
 
     bool LoadFromStream(const MByteStreamEx& stream);
     bool SaveToStream(MByteStreamEx& stream) const;

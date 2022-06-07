@@ -899,7 +899,7 @@ void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type)
 }
 
 // initialize the resource name combobox
-void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_)
 {
     InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
@@ -959,7 +959,7 @@ void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_)
 }
 
 // initialize the resource name combobox
-void InitResNameComboBox(HWND hCmb, MIdOrString id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
+void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_1, IDTYPE_ nIDTYPE_2)
 {
     InitComboBoxPlaceholder(hCmb, IDS_INTEGERORIDENTIFIER);
 
@@ -1091,7 +1091,7 @@ void InitConstantComboBox(HWND hCmb)
 }
 
 // initialize the resource string ID combobox
-void InitStringComboBox(HWND hCmb, MString strString)
+void InitStringComboBox(HWND hCmb, const MString& strString)
 {
     // set the text to combobox
     SetWindowText(hCmb, strString.c_str());
@@ -1141,7 +1141,7 @@ void InitStringComboBox(HWND hCmb, MString strString)
 }
 
 // initialize the resource message ID combobox
-void InitMessageComboBox(HWND hCmb, MString strString)
+void InitMessageComboBox(HWND hCmb, const MString& strString)
 {
     // set the text to combobox
     SetWindowText(hCmb, strString.c_str());
@@ -1489,7 +1489,7 @@ WORD LangFromText(LPWSTR pszLang)
         }
 
         // maybe en_US, or jp_JP etc.
-        if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang.c_str()))
+        if (INT nValue = g_db.GetValueI(L"LANGUAGES", strLang))
         {
             lang = (WORD)nValue;    // found
             break;
@@ -1505,7 +1505,7 @@ WORD LangFromText(LPWSTR pszLang)
                 str[i] = L'_';
 
             // maybe en_US, or jp_JP etc.
-            if (INT nValue = g_db.GetValueI(L"LANGUAGES", str.c_str()))
+            if (INT nValue = g_db.GetValueI(L"LANGUAGES", str))
             {
                 lang = (WORD)nValue;    // found
                 break;
@@ -2784,10 +2784,10 @@ void MMainWnd::OnExtractDFM(HWND hwnd)
     {
         if (lstrcmpiW(PathFindExtensionW(szFile), L".txt") == 0)
         {
-            auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size(),
-                                             g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
             if (FILE *fp = _wfopen(szFile, L"wb"))
             {
+                auto ansi = dfm_text_from_binary(m_szDFMSC, entry->ptr(), entry->size(),
+                                                 g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
                 fwrite(ansi.c_str(), ansi.size(), 1, fp);
                 fflush(fp);
                 fclose(fp);
@@ -6928,7 +6928,7 @@ BOOL MMainWnd::CompileTYPELIB(MStringA& strOutput, const MIdOrString& name, WORD
         {
             if (line.find("error") == line.npos)
                 continue;
-            if (line.find("*") == 0 || line.find("[") == 0)
+            if (line.find('*') == 0 || line.find('[') == 0)
                 continue;
             if (line.find("Processing ") == 0)
                 continue;
@@ -6964,7 +6964,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         if (i == MStringA::npos)
             break;
         auto j = ansi.find("-//", i);
-        auto k = ansi.find("\n", i);
+        auto k = ansi.find('\n', i);
         if (j != MStringA::npos && k != MStringA::npos)
         {
             if (j < k)
@@ -6989,7 +6989,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
 
     INT iLine = 0;
     EntryBase::data_type data =
-        dfm_binary_from_text(m_szDFMSC, ansi.c_str(),
+        dfm_binary_from_text(m_szDFMSC, ansi,
                              g_settings.nDfmCodePage, g_settings.bDfmNoUnicode, iLine);
     auto text = dfm_text_from_binary(m_szDFMSC, data.data(), data.size(),
                                      g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
@@ -7005,7 +7005,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
         return FALSE;
     }
 
-    entry->m_data = data;
+    entry->m_data = std::move(data);
     DoSetFileModified(TRUE);
     return TRUE;
 }
@@ -7133,7 +7133,6 @@ BOOL MMainWnd::CompileMessageTable(MStringA& strOutput, const MIdOrString& name,
     else
     {
         // error message
-        MStringA msg;
         strOutput = MWideToAnsi(CP_ACP, LoadStringDx(IDS_CANNOTSTARTUP));
     }
 
@@ -10407,7 +10406,7 @@ BOOL MMainWnd::ParseMacros(HWND hwnd, LPCTSTR pszFile,
                 if (eval_string(parser.ast(), value))   // evaluate
                 {
                     // add an ID mapping's pair
-                    g_settings.id_map[macro] = value;
+                    g_settings.id_map[macro] = std::move(value);
                 }
             }
             else
@@ -10465,6 +10464,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
     std::vector<MStringA> lines, macros;
     mstr_split(lines, str, "\n");
 
+    const size_t lenDefine = strlen("#define");
     for (auto& line : lines)
     {
         // trim
@@ -10482,7 +10482,7 @@ BOOL MMainWnd::ParseResH(HWND hwnd, LPCTSTR pszFile, const char *psz, DWORD len)
             continue;
 
         // parse the line
-        line = line.substr(strlen("#define"));
+        line = line.substr(lenDefine);
         mstr_trim(line);
         size_t found1 = line.find_first_of(" \t");
         size_t found2 = line.find('(');
@@ -12736,7 +12736,7 @@ void MMainWnd::OnTest(HWND hwnd)
                 // it's a non-child dialog. show the test dialog (with menu if any)
                 MTestDialog dialog(dialog_res, menu, entry->m_lang, dlginit_data);
                 dialog.DialogBoxIndirectDx(hwnd, stream.ptr());
-                stream = stream;
+                stream = std::move(stream);
             }
         }
     }
@@ -12800,12 +12800,12 @@ void MMainWnd::DeleteIncludeGuard(std::vector<MStringA>& lines)
             {
                 ++pch;
             }
-            MStringA name(pch0, pch);
 
             if (name0.empty())
             {
+                MStringA name(pch0, pch);
                 k0 = i;
-                name0 = name;
+                name0 = std::move(name);
             }
             else
             {
@@ -12939,7 +12939,6 @@ void MMainWnd::DeleteSpecificMacroLines(std::vector<MStringA>& lines)
 // add additional macro lines
 void MMainWnd::AddAdditionalMacroLines(std::vector<MStringA>& lines)
 {
-    MStringA str;
     for (auto& pair : g_settings.added_ids)
     {
         MStringA line = "#define ";
@@ -13030,7 +13029,6 @@ void MMainWnd::DeleteApStudioBlock(std::vector<MStringA>& lines)
             {
                 ++pch;
             }
-            MStringA name(pch0, pch);
         }
         else if (memcmp(pch, "endif", 5) == 0)
         {
@@ -13802,8 +13800,8 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.strFontReplaceFrom2 = L"MS Shell Dlg 2";
     g_settings.strFontReplaceTo2 = L"MS Shell Dlg 2";
 
-    g_settings.strFontReplaceFrom3 = L"";
-    g_settings.strFontReplaceTo3 = L"";
+    g_settings.strFontReplaceFrom3.clear();
+    g_settings.strFontReplaceTo3.clear();
 
     // update the menu
     UpdateMenu();
@@ -14042,7 +14040,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("dwNumCaptions"), (DWORD&)dwNumCaptions);
     if (dwNumCaptions > s_nMaxCaptions)
         dwNumCaptions = s_nMaxCaptions;
-    captions_type captions;
+
     for (DWORD i = 0; i < dwNumCaptions; ++i)
     {
         StringCchPrintf(szValueName, _countof(szValueName), TEXT("Caption%lu"), i);
@@ -14128,7 +14126,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
         strFrom = szText;
         if (keyRisoh.QuerySz(TEXT("FontReplaceTo3"), szText, _countof(szText)) == ERROR_SUCCESS)
         {
-            g_settings.strFontReplaceFrom3 = strFrom;
+            g_settings.strFontReplaceFrom3 = std::move(strFrom);
             g_settings.strFontReplaceTo3 = szText;
         }
     }

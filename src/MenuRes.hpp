@@ -140,8 +140,8 @@ public:
     bool LoadFromStreamEx(const MByteStreamEx& stream);
     bool SaveToStream(MByteStreamEx& stream) const;
     bool SaveToStreamEx(MByteStreamEx& stream) const;
-    string_type Dump(MIdOrString name) const;
-    string_type DumpEx(MIdOrString name) const;
+    string_type Dump(const MIdOrString& name) const;
+    string_type DumpEx(const MIdOrString& name) const;
     std::vector<BYTE> data() const;
 
     void Update();

@@ -2692,7 +2692,7 @@ public:
                 items2.push_back(m_dialog_res[i]);
             }
         }
-        m_dialog_res.m_items = items1;
+        m_dialog_res.m_items = std::move(items1);
         m_dialog_res.m_items.insert(m_dialog_res.m_items.begin(), items2.begin(), items2.end());
 
         // refresh
@@ -2746,7 +2746,7 @@ public:
         }
 
         // swap
-        m_dialog_res.m_items = items1;
+        m_dialog_res.m_items = std::move(items1);
         m_dialog_res.m_items.insert(m_dialog_res.m_items.end(), items2.begin(), items2.end());
 
         // refresh

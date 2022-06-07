@@ -167,8 +167,8 @@ public:
         }
 
         g_settings.includes = m_list;
-        g_settings.strWindResExe = strWindResExe;
-        g_settings.strCppExe = strCppExe;
+        g_settings.strWindResExe = std::move(strWindResExe);
+        g_settings.strCppExe = std::move(strCppExe);
 
         EndDialog(IDOK);
     }

@@ -90,9 +90,7 @@ public:
         return m_map;
     }
 
-    MessageRes()
-    {
-    }
+    MessageRes() = default;
 
     bool empty() const
     {
@@ -134,7 +132,6 @@ public:
                 if (!stream.ReadRaw(entry_head))
                     return false;
 
-                MStringW wstr = reinterpret_cast<const WCHAR *>(&stream[stream.pos()]);
                 if (entry_head.Flags & MESSAGE_RESOURCE_UNICODE)
                 {
                     size_t len = (entry_head.Length - sizeof(entry_head)) / sizeof(WCHAR);
@@ -145,7 +142,7 @@ public:
                         return false;
                     }
                     str.resize(mstrlen(str.c_str()));
-                    m_map[dwID] = str;
+                    m_map[dwID] = std::move(str);
                 }
                 else
                 {

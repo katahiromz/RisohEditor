@@ -52,7 +52,7 @@ class AccelRes
 public:
     typedef AccelTableEntry             entry_type;
     typedef std::vector<entry_type>     entries_type;
-    AccelRes() { }
+    AccelRes() = default;
 
     bool LoadFromStream(const MByteStreamEx& stream);
     MStringW Dump(const MIdOrString &id_or_str) const;
@@ -100,14 +100,14 @@ inline MStringW GetKeyFlags(WORD fFlags)
 inline void SetKeyFlags(WORD& fFlags, const MStringW& str)
 {
     fFlags = 0;
-    if (str.find(L"V") != MStringW::npos)
+    if (str.find(L'V') != MStringW::npos)
         fFlags |= FVIRTKEY;
-    if (str.find(L"N") != MStringW::npos)
+    if (str.find(L'N') != MStringW::npos)
         fFlags |= FNOINVERT;
-    if (str.find(L"C") != MStringW::npos)
+    if (str.find(L'C') != MStringW::npos)
         fFlags |= FCONTROL;
-    if (str.find(L"S") != MStringW::npos)
+    if (str.find(L'S') != MStringW::npos)
         fFlags |= FSHIFT;
-    if (str.find(L"A") != MStringW::npos)
+    if (str.find(L'A') != MStringW::npos)
         fFlags |= FALT;
 }

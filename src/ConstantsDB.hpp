@@ -179,9 +179,7 @@ public:
         return IDTYPE_RESOURCE;
     }
 
-    ConstantsDB()
-    {
-    }
+    ConstantsDB() = default;
 
     TableType GetTable(CategoryType category) const
     {
@@ -229,7 +227,7 @@ public:
         return table;
     }
 
-    BOOL GetValueOfName(NameType name, ValueType& value) const
+    BOOL GetValueOfName(const NameType& name, ValueType& value) const
     {
         TableType table = GetWholeTable();
         for (const auto& table_entry : table)
@@ -243,7 +241,7 @@ public:
         return FALSE;
     }
 
-    ValueType GetResIDValue(NameType name) const
+    ValueType GetResIDValue(const NameType& name) const
     {
         ValueType value = GetValue(L"RESOURCE.ID", name);
         if (!value)
@@ -252,14 +250,14 @@ public:
         }
         return value;
     }
-    ValueType GetCtrlIDValue(NameType name) const
+    ValueType GetCtrlIDValue(const NameType& name) const
     {
         if (name == L"IDC_STATIC")
             return -1;
         return GetValue(L"CTRLID", name);
     }
 
-    bool HasCtrlID(NameType name) const
+    bool HasCtrlID(const NameType& name) const
     {
         if (name == L"IDC_STATIC")
             return true;
@@ -272,7 +270,7 @@ public:
         }
         return false;
     }
-    bool HasResID(NameType name) const
+    bool HasResID(const NameType& name) const
     {
         TableType table = GetTable(L"RESOURCE.ID");
         for (auto& table_entry : table)
@@ -424,7 +422,7 @@ public:
         return ret;
     }
 
-    NameType GetName(CategoryType category, ValueType value) const
+    NameType GetName(const CategoryType& category, ValueType value) const
     {
         const TableType& table = GetTable(category);
         TableType::const_iterator it, end = table.end();
@@ -450,7 +448,7 @@ public:
         return mstr_dec_short((SHORT)value);
     }
 
-    ValueType GetValue(CategoryType category, NameType name) const
+    ValueType GetValue(const CategoryType& category, const NameType& name) const
     {
         const TableType& table = GetTable(category);
         TableType::const_iterator it, end = table.end();
@@ -462,7 +460,7 @@ public:
         return (ValueType)mstr_parse_int(name.c_str());
     }
 
-    ValueType GetValueI(CategoryType category, NameType name) const
+    ValueType GetValueI(const CategoryType& category, const NameType& name) const
     {
         const TableType& table = GetTable(category);
         TableType::const_iterator it, end = table.end();
@@ -474,7 +472,7 @@ public:
         return (ValueType)mstr_parse_int(name.c_str());
     }
 
-    ValuesType GetValues(CategoryType category, NameType name) const
+    ValuesType GetValues(const CategoryType& category, const NameType& name) const
     {
         ValuesType ret;
         const TableType& table = GetTable(category);
@@ -596,7 +594,7 @@ public:
         return true;
     }
 
-    StringType DumpBitField(CategoryType cat1, ValueType& value,
+    StringType DumpBitField(const CategoryType& cat1, ValueType& value,
                             ValueType default_value = 0) const
     {
         StringType ret, str1, str3;
@@ -609,7 +607,7 @@ public:
 
         if (!str1.empty())
         {
-            ret = str1;
+            ret = std::move(str1);
         }
         else
         {
@@ -637,7 +635,7 @@ public:
         return ret;
     }
 
-    StringType DumpBitFieldOrZero(CategoryType cat1, ValueType& value,
+    StringType DumpBitFieldOrZero(const CategoryType& cat1, ValueType& value,
                                   ValueType default_value = 0) const
     {
         StringType ret = DumpBitField(cat1, value, default_value);
@@ -646,7 +644,7 @@ public:
         return ret;
     }
 
-    StringType DumpBitField(CategoryType cat1, CategoryType cat2,
+    StringType DumpBitField(const CategoryType& cat1, const CategoryType& cat2,
                             ValueType& value, ValueType default_value = 0) const
     {
         StringType ret, str1, str2, str3, str4;
@@ -664,12 +662,12 @@ public:
             if (!str2.empty() && str2 != L"0")
                 ret = str1 + L" | " + str2;
             else
-                ret = str1;
+                ret = std::move(str1);
         }
         else
         {
             if (!str2.empty() && str2 != L"0")
-                ret = str2;
+                ret = std::move(str2);
             else
                 ret = L"0";
         }
@@ -700,7 +698,7 @@ public:
         return ret;
     }
 
-    StringType DumpBitFieldOrZero(CategoryType cat1, CategoryType cat2,
+    StringType DumpBitFieldOrZero(const CategoryType& cat1, const CategoryType& cat2,
                                   ValueType& value, ValueType default_value = 0) const
     {
         StringType ret = DumpBitField(cat1, cat2, value, default_value);
@@ -711,8 +709,6 @@ public:
 
     StringType DumpValue(CategoryType category, ValueType value) const
     {
-        StringType ret;
-
         ::CharUpperW(&category[0]);
 
         MapType::const_iterator found = m_map.find(category);

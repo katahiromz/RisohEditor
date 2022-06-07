@@ -40,7 +40,7 @@ protected:
         HWND m_hwndCtrl;
         MSize m_sizLA_1, m_sizMargin1, m_sizLA_2, m_sizMargin2;
 
-        MCtrlLayout() { }
+        MCtrlLayout() = default;
 
         MCtrlLayout(HWND hwndCtrl, SIZE sizLA_1, SIZE sizMargin1, 
             SIZE sizLA_2, SIZE sizMargin2) : m_hwndCtrl(hwndCtrl), 

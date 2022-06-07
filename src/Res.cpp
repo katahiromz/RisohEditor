@@ -189,7 +189,7 @@ dfm_text_from_binary(LPCWSTR pszDFMSC, const void *binary, size_t size,
             return text;
     }
 
-    return std::string("");
+    return std::string();
 }
 
 EntryBase::data_type
@@ -331,7 +331,7 @@ tlb_text_from_binary(LPCWSTR pszOleBow, const void *binary, size_t size)
             return text;
     }
 
-    return std::string("");
+    return std::string();
 }
 
 EntryBase::data_type

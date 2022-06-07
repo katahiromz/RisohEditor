@@ -33,7 +33,7 @@ class MEncodingDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-inline MString txt2enc(MString txt)
+inline MString txt2enc(const MString& txt)
 {
     if (txt == LoadStringDx(IDS_ANSI))
         return L"ansi";
@@ -48,7 +48,7 @@ inline MString txt2enc(MString txt)
     return L"";
 }
 
-inline MString enc2txt(MString enc)
+inline MString enc2txt(const MString& enc)
 {
     if (enc == L"ansi")
         return LoadStringDx(IDS_ANSI);
@@ -81,7 +81,7 @@ inline MIdOrString get_type_from_text(MString str)
     }
     else
     {
-        type.m_str = str;
+        type.m_str = std::move(str);
     }
     return type;
 }

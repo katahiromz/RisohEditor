@@ -42,7 +42,7 @@ protected:
     std::vector<DWORD> m_items;
 
 public:
-    ToolbarRes() { }
+    ToolbarRes() = default;
 
     bool LoadFromStream(const MByteStreamEx& stream);
     bool SaveToStream(MByteStreamEx& stream) const;
