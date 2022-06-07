@@ -27,12 +27,12 @@
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MessageRes.hpp"
+#include "Common.hpp"
 
 class MAddMsgDlg;
 class MModifyMsgDlg;
 class MMessagesDlg;
 
-void InitMessageComboBox(HWND hCmb, const MString& strString);
 BOOL MsgDlg_GetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 void MsgDlg_SetEntry(HWND hwnd, MESSAGE_ENTRY& entry);
 

@@ -26,14 +26,13 @@
 #include "Res.hpp"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
 #include "StringRes.hpp"
+#include "Common.hpp"
 
 class MAddStrDlg;
 class MModifyStrDlg;
 class MStringsDlg;
 
-void InitStringComboBox(HWND hCmb, const MString& strString);
 BOOL StrDlg_GetEntry(HWND hwnd, STRING_ENTRY& entry);
 void StrDlg_SetEntry(HWND hwnd, STRING_ENTRY& entry);
 

@@ -22,8 +22,7 @@
 #include "MWindowBase.hpp"
 #include "RisohSettings.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
-void InitFontComboBox(HWND hCmb);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

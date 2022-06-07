@@ -25,9 +25,9 @@
 #include "RisohSettings.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "ConstantsDB.hpp"
-class MConstantDlg;
+#include "Common.hpp"
 
-void InitConstantComboBox(HWND hCmb);
+class MConstantDlg;
 
 //////////////////////////////////////////////////////////////////////////////
 

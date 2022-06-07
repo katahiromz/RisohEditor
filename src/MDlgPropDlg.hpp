@@ -25,23 +25,9 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "DialogRes.hpp"
+#include "Common.hpp"
 
 class MDlgPropDlg;
-
-//////////////////////////////////////////////////////////////////////////////
-
-void InitFontComboBox(HWND hCmb);
-void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
-void GetStyleSelect(std::vector<BYTE>& sel, 
-                    const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, 
-    std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
-void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitCharSetComboBox(HWND hCmb, BYTE CharSet);
-BYTE GetCharSetFromComboBox(HWND hCmb);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
-void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
-void ReplaceFullWithHalf(MStringW& strText);
 
 //////////////////////////////////////////////////////////////////////////////
 

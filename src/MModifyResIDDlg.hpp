@@ -24,8 +24,7 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
-
-void ReplaceFullWithHalf(MStringW& strText);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

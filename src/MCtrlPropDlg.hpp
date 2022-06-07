@@ -26,27 +26,12 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "MCtrlDataDlg.hpp"
 #include "MStringListDlg.hpp"
-
 #include "DialogRes.hpp"
 #include "MString.hpp"
+#include "Common.hpp"
 
 #include <unordered_set>     // for std::unordered_set
 #include <oledlg.h>
-
-//////////////////////////////////////////////////////////////////////////////
-
-void GetStyleSelect(HWND hLst, std::vector<BYTE>& sel);
-void GetStyleSelect(std::vector<BYTE>& sel, 
-                    const ConstantsDB::TableType& table, DWORD dwValue);
-DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, 
-    std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
-void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
-void InitClassComboBox(HWND hCmb, LPCTSTR pszClass);
-void InitCaptionComboBox(HWND hCmb, LPCTSTR pszCaption);
-void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
-void InitCtrlIDComboBox(HWND hCmb);
-void ReplaceFullWithHalf(MStringW& strText);
-BOOL IsThereWndClass(const WCHAR *pszName);
 
 //////////////////////////////////////////////////////////////////////////////
 

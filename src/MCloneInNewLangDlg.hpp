@@ -24,14 +24,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
-void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

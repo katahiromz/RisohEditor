@@ -26,14 +26,12 @@
 #include "MAddResIDDlg.hpp"
 #include "MModifyResIDDlg.hpp"
 #include "MResizable.hpp"
+#include "Common.hpp"
 
 class MSubclassedListView;
 class MIDListDlg;
 
 #define MYWM_IDJUMPBANG (WM_USER + 238)
-
-std::vector<INT> GetPrefixIndexes(const MString& prefix);
-MString GetAssoc(const MString& name);
 
 //////////////////////////////////////////////////////////////////////////////
 

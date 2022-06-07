@@ -26,16 +26,7 @@
 #include "MComboBoxAutoComplete.hpp"
 #include "DlgInit.h"
 #include "MLangAutoComplete.hpp"
-
-void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
-void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
-void ReplaceFullWithHalf(LPWSTR pszText);
-MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -25,18 +25,8 @@
 #include "ConstantsDB.hpp"
 #include "MResizable.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
 #include "AccelRes.hpp"
-
-//////////////////////////////////////////////////////////////////////////////
-
-void Cmb1_InitVirtualKeys(HWND hCmb1);
-BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
-BOOL CheckCommand(MString& strCommand);
-void ReplaceFullWithHalf(LPWSTR pszText);
-void InitCtrlIDComboBox(HWND hCmb);
-
-std::wstring GetKeyID(UINT wId);
+#include "Common.hpp"
 
 class MAddKeyDlg;
 class MModifyKeyDlg;

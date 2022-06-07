@@ -24,9 +24,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "RisohSettings.hpp"
-
-std::vector<INT> GetPrefixIndexes(const MString& prefix);
-void ReplaceFullWithHalf(MStringW& strText);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

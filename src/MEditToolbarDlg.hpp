@@ -24,17 +24,11 @@
 #include "RisohSettings.hpp"
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
 #include "ToolbarRes.hpp"
+#include "Common.hpp"
 
 class MModifyTBBtnDlg;
 class MEditToolbarDlg;
-
-void InitCtrlIDComboBox(HWND hCmb);
-BOOL CheckCommand(MString strCommand);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, INT nIDTYPE_1, INT nIDTYPE_2);
-void ReplaceFullWithHalf(LPWSTR pszText);
 
 //////////////////////////////////////////////////////////////////////////////
 

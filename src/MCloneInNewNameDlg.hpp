@@ -24,11 +24,7 @@
 #include "ConstantsDB.hpp"
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
-
-void InitResTypeComboBox(HWND hCmb1, const MIdOrString& type);
-BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
-void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

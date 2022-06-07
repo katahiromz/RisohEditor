@@ -25,11 +25,7 @@
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MLangAutoComplete.hpp"
-
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
-BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

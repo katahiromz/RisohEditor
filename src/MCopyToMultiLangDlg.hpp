@@ -25,10 +25,7 @@
 #include "Res.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MLangAutoComplete.hpp"
-
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-WORD LangFromText(LPWSTR pszLang);
-MStringW TextFromLang(WORD lang);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

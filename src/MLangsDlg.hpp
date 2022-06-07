@@ -22,9 +22,7 @@
 #include "MWindowBase.hpp"
 #include "MResizable.hpp"
 #include "RisohSettings.hpp"
-
-void InitLangListView(HWND hLst1, LPCTSTR pszText);
-MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
+#include "Common.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -25,11 +25,9 @@
 #include "ConstantsDB.hpp"
 #include "MComboBoxAutoComplete.hpp"
 #include "MLangAutoComplete.hpp"
+#include "Common.hpp"
 
 class MChooseLangDlg;
-
-void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage);
 
 //////////////////////////////////////////////////////////////////////////////
 

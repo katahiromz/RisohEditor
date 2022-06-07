@@ -21,12 +21,11 @@
 
 #include "resource.h"
 #include "MWindowBase.hpp"
+#include "Common.hpp"
 
 #define MYWM_SETITEMRECT (WM_USER + 100)
 #define MYWM_COMPLEMENT (WM_USER + 112)
 #define MYWM_CLOSELIST (WM_USER + 103)
-
-BOOL InitLangListBox(HWND hwnd);
 
 class MDropdownListDlg : public MDialogBase
 {
