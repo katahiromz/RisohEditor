@@ -123,10 +123,13 @@ public:
         ReplaceFullWithHalf(sz1);
         mstr_trim(sz1);
 
-        if (sz1[0] && sz1[0] != L'-')
+        if (sz1[0])
         {
             m_bUpdating = TRUE;
-            CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
+            if (sz1[0] == L'-')
+                CheckDlgButton(hwnd, chx1, BST_CHECKED);
+            else
+                CheckDlgButton(hwnd, chx1, BST_UNCHECKED);
             m_bUpdating = FALSE;
         }
     }
