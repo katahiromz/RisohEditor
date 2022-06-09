@@ -13,9 +13,9 @@
 #define MyAppName        "RisohEditor"
 #define MyAppVersion     "7.5.2"
 #define MyAppCompanyName "Katayama Hirofumi MZ"
-#define MyAppCopyright   "(C) 2017-2021 Katayama Hirofumi MZ."
+#define MyAppCopyright   "(C) 2017-2022 Katayama Hirofumi MZ."
 #define MyAppURL         "http://katahiromz.web.fc2.com/"
-#define MyAppdescription "Resource Editor (32bit)"
+#define MyAppDescription "Resource Editor (32bit)"
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName={#MyAppName}
