@@ -274,3 +274,4 @@
 - v.5.7.2 (07.06.2022)
     - Supportate risorse BARRA STRUMENTI.
 - v.5.7.3 (YY.XX.2022)
+    - Minor performance improvements.

@@ -275,3 +275,4 @@
 - v.5.7.2 (2022.06.07)
     - 지원되는 도구 모음 리소스입니다.
 - v.5.7.3 (2022.XX.YY)
+    - Minor performance improvements.
