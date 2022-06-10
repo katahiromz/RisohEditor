@@ -276,3 +276,4 @@
     - 지원되는 도구 모음 리소스입니다.
 - v.5.7.3 (2022.XX.YY)
     - Minor performance improvements.
+    - Improved "Copy to multiple languages".

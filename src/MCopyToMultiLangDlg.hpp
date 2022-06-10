@@ -74,21 +74,6 @@ public:
         InitLangComboBox(hCmb3, BAD_LANG);
         SubclassChildDx(m_cmb3, cmb3);
 
-        EntrySet found;
-        g_res.search(found, ET_LANG, m_type, m_name);
-
-        HWND hLst1 = GetDlgItem(hwnd, lst1);
-        for (auto e : found)
-        {
-            if (m_lang != e->m_lang)
-            {
-                auto strLang = TextFromLang(e->m_lang);
-                INT index = ListBox_AddString(hLst1, strLang.c_str());
-                if (index != LB_ERR)
-                    ListBox_SelItemRange(hLst1, TRUE, index, index);
-            }
-        }
-
         // auto complete
         COMBOBOXINFO info = { sizeof(info) };
         GetComboBoxInfo(m_cmb3, &info);

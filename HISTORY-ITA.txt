@@ -275,3 +275,4 @@
     - Supportate risorse BARRA STRUMENTI.
 - v.5.7.3 (YY.XX.2022)
     - Minor performance improvements.
+    - Improved "Copy to multiple languages".
