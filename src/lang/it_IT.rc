@@ -1296,9 +1296,9 @@ CAPTION "Copia in più lingue"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Si prega di selezionare le lingue in cui si desidera copiare la risorsa:", -1, 5, 5, 190, 22
+    LTEXT "Aggiungi le lingue in cui desideri copiare la risorsa:", -1, 5, 5, 190, 22
     LTEXT "&Le lingue:", -1, 5, 35, 82, 12
-    LISTBOX lst1, 5, 50, 190, 100, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_TABSTOP
+    LISTBOX lst1, 5, 50, 190, 100, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP | LBS_WANTKEYBOARDINPUT
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&Aggiungere", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 14

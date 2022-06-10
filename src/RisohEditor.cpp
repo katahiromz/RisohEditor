@@ -4334,7 +4334,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
     WORD wLang = BAD_LANG;
     if (dialog.DialogBoxDx(hwnd) == IDOK)
     {
-        for (auto& lang : dialog.m_selection)
+        for (auto& lang : dialog.m_langs)
         {
             wLang = lang;
             if (entry->m_type == RT_GROUP_ICON)     // group icon

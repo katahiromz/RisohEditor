@@ -37,7 +37,7 @@ public:
     MIdOrString m_name;
     WORD m_lang;
     MComboBoxAutoComplete m_cmb3;
-    std::vector<LANGID> m_selection;
+    std::vector<LANGID> m_langs;
     MLangAutoComplete *m_pAutoComplete;
 
     MCopyToMultiLangDlg(EntryBase* entry)
@@ -63,8 +63,18 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_VKEYTOITEM, OnVKeyToItem);
         }
         return DefaultProcDx(hwnd, uMsg, wParam, lParam);
+    }
+
+    int OnVKeyToItem(HWND hwnd, UINT vk, HWND hwndListbox, int iCaret)
+    {
+        if (vk == VK_DELETE)
+        {
+            OnDelete(hwnd);
+        }
+        return SetDlgMsgResult(hwnd, WM_VKEYTOITEM, -1);
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -88,29 +98,25 @@ public:
     {
         HWND hLst1 = GetDlgItem(hwnd, lst1);
 
-        m_selection.clear();
+        m_langs.clear();
 
-        std::vector<INT> indexes;
-        INT nCount = ListBox_GetSelCount(hLst1);
+        INT nCount = ListBox_GetCount(hLst1);
         if (nCount == 0)
         {
             MsgBoxDx(IDS_NOSELECTION, MB_ICONERROR);
             return;
         }
-        indexes.resize(nCount);
-
-        ListBox_GetSelItems(hLst1, nCount, &indexes[0]);
 
         WCHAR szText[MAX_PATH];
-        for (auto& index : indexes)
+        for (INT iItem = 0; iItem < nCount; ++iItem)
         {
-            ListBox_GetText(hLst1, index, szText);
+            ListBox_GetText(hLst1, iItem, szText);
             WORD wLang = LangFromText(szText);
-            m_selection.push_back(wLang);
+            m_langs.push_back(wLang);
         }
 
         BOOL bOverwrite = FALSE;
-        for (auto lang : m_selection)
+        for (auto lang : m_langs)
         {
             if (!bOverwrite && g_res.find(ET_LANG, m_type, m_name, lang))
             {
@@ -161,6 +167,23 @@ public:
         {
             MsgBoxDx(IDS_INVALIDLANG, MB_ICONERROR);
         }
+    }
+
+    void OnDelete(HWND hwnd)
+    {
+        HWND hLst1 = GetDlgItem(hwnd, lst1);
+
+        INT iItem = ListBox_GetCurSel(hLst1);
+        if (iItem == LB_ERR)
+            return;
+
+        ListBox_DeleteString(hLst1, iItem);
+
+        INT nCount = ListBox_GetCount(hLst1);
+        if (iItem == nCount)
+            --iItem;
+
+        ListBox_SetCurSel(hLst1, iItem);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
