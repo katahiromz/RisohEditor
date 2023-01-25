@@ -1435,7 +1435,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Tidak bisa mengganti bitmap."
     IDS_REPLACEBMP, "Ganti Bitmap"
     IDS_ERRORCODE, "Kode kesalahan %d"
-    IDS_VERSIONINFO, "RisohEditor Versi 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Versi 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLisensi: GPLv3 (free software)"
     IDS_ADDRES, "Tambah Sumber Daya"
     IDS_CANNOTADDRES, "Tidak bisa menambahkan sumber daya."
     IDS_CANTADDBMP, "Tidak bisa menambahkan bitmap."

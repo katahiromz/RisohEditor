@@ -1435,7 +1435,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Невозможно заменить растровую картинку."
     IDS_REPLACEBMP, "Заменить растровую картинку"
     IDS_ERRORCODE, "Код ошибки %d"
-    IDS_VERSIONINFO, "RisohEditor версия 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor версия 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nЛицензия: GPLv3 (free software)"
     IDS_ADDRES, "Добавить ресурс"
     IDS_CANNOTADDRES, "Невозможно добавить ресурс."
     IDS_CANTADDBMP, "Невозможно добавить растровую картинку."

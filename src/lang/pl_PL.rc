@@ -1435,7 +1435,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Nie można zamienić bitmapy."
     IDS_REPLACEBMP, "Zamień Bitmapę"
     IDS_ERRORCODE, "Kod błędu %d"
-    IDS_VERSIONINFO, "RisohEditor Wersja 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencja: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Wersja 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencja: GPLv3 (free software)"
     IDS_ADDRES, "Dodaj zasób"
     IDS_CANNOTADDRES, "Nie można dodać zasobu."
     IDS_CANTADDBMP, "Nie można dodać bitmapy."

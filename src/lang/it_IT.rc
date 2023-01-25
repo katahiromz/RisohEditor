@@ -1436,7 +1436,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Impossibile sostituire la bitmap."
     IDS_REPLACEBMP, "Sostituisci bitmap"
     IDS_ERRORCODE, "Codice errore %d"
-    IDS_VERSIONINFO, "RisohEditor versione 5.7.3\r\n\r\nAutore: Katayama Hirofumi MZ\r\n\r\nLicenza: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor versione 5.7.3\r\n\r\nAutore: Katayama Hirofumi MZ\r\n\r\nLicenza: GPLv3 (free software)"
     IDS_ADDRES, "Aggiungi risorsa"
     IDS_CANNOTADDRES, "Impossibile aggiungere la risorsa."
     IDS_CANTADDBMP, "Impossibile aggiungere la bitmap."

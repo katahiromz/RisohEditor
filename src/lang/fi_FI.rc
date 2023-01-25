@@ -1435,7 +1435,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Bittikarttaa ei voi korvata."
     IDS_REPLACEBMP, "Korvaa bittikartta"
     IDS_ERRORCODE, "Virhekoodi %d"
-    IDS_VERSIONINFO, "RisohEditor Version 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (freeware)"
+    IDS_VERSIONINFO, "RisohEditor Version 5.7.3\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicense: GPLv3 (free software)"
     IDS_ADDRES, "Lisää resurssi"
     IDS_CANNOTADDRES, "Resurssia ei voi lisätä."
     IDS_CANTADDBMP, "Bittikarttaa ei voi lisätä."
