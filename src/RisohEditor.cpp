@@ -14601,6 +14601,9 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     WCHAR szPath[MAX_PATH];
     GetModuleFileNameW(NULL, szPath, _countof(szPath));
     PathRemoveFileSpecW(szPath);
+    PathAppendW(szPath, L"plugins");
+    if (!PathIsDirectoryW(szPath))
+        PathRemoveFileSpecW(szPath);
     PF_LoadAll(g_plugins, szPath);
     PF_ActAll(g_plugins, PLUGIN_ACTION_ACTIVATE, (WPARAM)hwnd, 0);
 
