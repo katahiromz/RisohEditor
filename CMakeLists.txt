@@ -11,31 +11,12 @@ cmake_policy(SET CMP0054 NEW)
 cmake_policy(SET CMP0003 NEW)
 
 # project name and languages
-project(RisohEditor CXX RC)
-
-# check build type
-if (NOT CMAKE_BUILD_TYPE)
-    message(STATUS "No build type selected, default to Debug")
-    set(CMAKE_BUILD_TYPE "Debug")
-endif()
-
-# make uppercase string of build type
-string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
-
-# check build type again
-if (NOT uppercase_CMAKE_BUILD_TYPE MATCHES "^(DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL)$")
-    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-endif()
+project(RisohEditor C CXX RC)
 
 # set output directory (build/)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
-
-# Win32 or not?
-if (NOT WIN32)
-    message(FATAL_ERROR "You must use a Win32 compiler")
-endif()
 
 # statically link
 if (WIN32)
@@ -74,6 +55,7 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_WCSTOK -D_SCL_SE
 include_directories(LineNumEdit)
 add_subdirectory(LineNumEdit)
 
+add_subdirectory(plugins)
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(mcdx)

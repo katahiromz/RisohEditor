@@ -1,0 +1,4 @@
+EXPORTS
+    Plugin_Load
+    Plugin_Unload
+    Plugin_Act
