@@ -7,6 +7,19 @@
 
 static HINSTANCE s_hinstDLL;
 
+struct PLUGIN_IMPL
+{
+    HWND m_hMainWnd;
+
+    PLUGIN_IMPL() : m_hMainWnd(NULL)
+    {
+    }
+
+private:
+    PLUGIN_IMPL(const PLUGIN_IMPL&);
+    PLUGIN_IMPL& operator=(const PLUGIN_IMPL&);
+};
+
 // API Name: Plugin_Load
 // Purpose: The framework want to load the plugin component.
 // TODO: Load the plugin component.
@@ -41,6 +54,9 @@ Plugin_Load(PLUGIN *pi, LPARAM lParam)
     StringCbCopy(pi->plugin_copyright, sizeof(pi->plugin_copyright), TEXT("Copyright (C) 2023 Katayama Hirofumi MZ"));
     pi->plugin_instance = s_hinstDLL;
     pi->plugin_window = NULL;
+    pi->dwStdFlags = PLUGIN_STDFLAG_STANDARD | PLUGIN_STDFLAG_RESOURCE;
+    pi->plugin_impl = new PLUGIN_IMPL;
+
     return TRUE;
 }
 
@@ -50,6 +66,7 @@ Plugin_Load(PLUGIN *pi, LPARAM lParam)
 BOOL APIENTRY
 Plugin_Unload(PLUGIN *pi, LPARAM lParam)
 {
+    delete pi->plugin_impl;
     return TRUE;
 }
 
@@ -59,10 +76,24 @@ Plugin_Unload(PLUGIN *pi, LPARAM lParam)
 LRESULT APIENTRY
 Plugin_Act(PLUGIN *pi, UINT uAction, WPARAM wParam, LPARAM lParam)
 {
+    HWND hMainWnd;
     switch (uAction)
     {
-    case 1:
-    case 2:
+    case PLUGIN_ACTION_GETINFO:
+        break;
+    case PLUGIN_ACTION_SETINFO:
+        break;
+    case PLUGIN_ACTION_ACTIVATE:
+        hMainWnd = (HWND)wParam;
+        pi->plugin_impl->m_hMainWnd = hMainWnd;
+        MessageBoxA(hMainWnd, "activate", NULL, 0);
+        break;
+    case PLUGIN_ACTION_DEACTIVATE:
+        hMainWnd = (HWND)wParam;
+        assert(pi->plugin_impl->m_hMainWnd == hMainWnd);
+        MessageBoxA(hMainWnd, "de-activate", NULL, 0);
+        break;
+    case PLUGIN_ACTION_DRAWCANVAS:
         break;
     }
     return 0;

@@ -22,10 +22,20 @@ private:
     PLUGIN_FRAMEWORK_IMPL& operator=(const PLUGIN_FRAMEWORK_IMPL&);
 };
 
+static PLUGIN_DRIVER s_driver = NULL;
+
 static LRESULT APIENTRY driver(struct PLUGIN *pi, UINT uFunc, WPARAM wParam, LPARAM lParam)
 {
-    // TODO:
-    return 0;
+    if (!s_driver)
+        return 0;
+
+    return s_driver(pi, uFunc, wParam, lParam);
+}
+
+BOOL PF_SetDriver(PLUGIN_DRIVER driver)
+{
+    s_driver = driver;
+    return TRUE;
 }
 
 static void PF_Init(PLUGIN *pi)
@@ -108,6 +118,9 @@ static BOOL PF_Validate(PLUGIN *pi)
         return FALSE;
     }
 
+    if (!(pi->dwStdFlags & PLUGIN_STDFLAG_RESOURCE))
+        return FALSE; // Currently not supported
+
     return TRUE;
 }
 
@@ -181,51 +194,43 @@ BOOL PF_LoadOne(PLUGIN *pi, const TCHAR *pathname)
     }
 
     HINSTANCE hInstDLL = LoadLibrary(pi->plugin_pathname);
-    if (hInstDLL)
+    if (!hInstDLL)
     {
-        pi->framework_impl = new PLUGIN_FRAMEWORK_IMPL;
-
-        // TODO: Load API functions
-        pi->framework_impl->load =
-            (PLUGIN_LOAD)GetProcAddress(hInstDLL, "Plugin_Load");
-        pi->framework_impl->unload =
-            (PLUGIN_UNLOAD)GetProcAddress(hInstDLL, "Plugin_Unload");
-        pi->framework_impl->act =
-            (PLUGIN_ACT)GetProcAddress(hInstDLL, "Plugin_Act");
-
-        assert(pi->framework_impl->load != NULL);
-        assert(pi->framework_impl->unload != NULL);
-        assert(pi->framework_impl->act != NULL);
-
-        if (pi->framework_impl->load &&
-            pi->framework_impl->unload &&
-            pi->framework_impl->act)
-        {
-            pi->plugin_instance = hInstDLL;
-
-            if (pi->framework_impl->load(pi, 0))
-            {
-                if (PF_Validate(pi))
-                {
-                    return TRUE;
-                }
-                else
-                {
-                    assert(0);
-                }
-            }
-            else
-            {
-                assert(0);
-            }
-
-            pi->framework_impl->unload(pi, 0);
-            delete pi->framework_impl;
-        }
-
-        FreeLibrary(hInstDLL);
+        assert(0);
+        return FALSE;
     }
+
+    pi->framework_impl = new PLUGIN_FRAMEWORK_IMPL;
+    pi->plugin_impl = NULL;
+
+    // Load API functions
+    pi->framework_impl->load =
+        (PLUGIN_LOAD)GetProcAddress(hInstDLL, "Plugin_Load");
+    pi->framework_impl->unload =
+        (PLUGIN_UNLOAD)GetProcAddress(hInstDLL, "Plugin_Unload");
+    pi->framework_impl->act =
+        (PLUGIN_ACT)GetProcAddress(hInstDLL, "Plugin_Act");
+
+    if (!pi->framework_impl->load ||
+        !pi->framework_impl->unload ||
+        !pi->framework_impl->act)
+    {
+        assert(0);
+        FreeLibrary(hInstDLL);
+        return FALSE;
+    }
+
+    pi->plugin_instance = hInstDLL;
+
+    if (pi->framework_impl->load(pi, 0) && PF_Validate(pi))
+        return TRUE;
+
     assert(0);
+
+    pi->framework_impl->unload(pi, 0);
+    delete pi->framework_impl;
+
+    FreeLibrary(hInstDLL);
     return FALSE;
 }
 

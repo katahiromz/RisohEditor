@@ -23,6 +23,9 @@
 #include "MLangAutoComplete.hpp"
 #include "MChooseLangDlg.hpp"
 #include "ToolbarRes.hpp"
+#include "../plugins/PluginFramework.h"
+
+std::vector<PLUGIN> g_plugins;
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
@@ -10306,6 +10309,9 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // De-activate plugins
+    PF_ActAll(g_plugins, PLUGIN_ACTION_DEACTIVATE, (WPARAM)hwnd, 0);
+
     // close preview
     HidePreview();
 
@@ -14587,6 +14593,13 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
         StringCchCopy(m_szMCppExe, _countof(m_szMCppExe), g_settings.strCppExe.c_str());
         GetShortPathNameW(m_szMCppExe, m_szMCppExe, _countof(m_szMCppExe));
     }
+
+    // Load all plugins and activate all
+    WCHAR szPath[MAX_PATH];
+    GetModuleFileNameW(NULL, szPath, _countof(szPath));
+    PathRemoveFileSpecW(szPath);
+    PF_LoadAll(g_plugins, szPath);
+    PF_ActAll(g_plugins, PLUGIN_ACTION_ACTIVATE, (WPARAM)hwnd, 0);
 
     // OK, ready
     PostMessageDx(WM_COMMAND, ID_READY);

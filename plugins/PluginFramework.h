@@ -13,3 +13,4 @@ LRESULT PF_ActOne(PLUGIN *pi, UINT uAction, WPARAM wParam, LPARAM lParam);
 LRESULT PF_ActAll(std::vector<PLUGIN>& pis, UINT uAction, WPARAM wParam, LPARAM lParam);
 BOOL PF_UnloadOne(PLUGIN *pi);
 BOOL PF_UnloadAll(std::vector<PLUGIN>& pis);
+BOOL PF_SetDriver(PLUGIN_DRIVER driver);
