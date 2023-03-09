@@ -55,6 +55,7 @@ typedef struct PLUGIN
     TCHAR plugin_copyright[128];
     HINSTANCE plugin_instance;
     DWORD dwStdFlags;
+    DWORD dwPriority;
     struct PLUGIN_IMPL *plugin_impl;
 
     // Use freely:
@@ -89,13 +90,13 @@ LRESULT APIENTRY Plugin_Act(PLUGIN *pi, UINT uAction, WPARAM wParam, LPARAM lPar
 // Actions
 
 // Action PLUGIN_ACTION_GETINFO.
-//    wParam = DWORD dwType;
+//    wParam = DWORD dwInfoType;
 //    lParam = PVOID pInfo OPTIONAL.
 //    return: TRUE if successful.
 #define PLUGIN_ACTION_GETINFO       0x1000
 
 // Action PLUGIN_ACTION_SETINFO.
-//    wParam = DWORD dwType.
+//    wParam = DWORD dwInfoType.
 //    lParam = LPCVOID pInfo OPTIONAL.
 //    return: TRUE if successful.
 #define PLUGIN_ACTION_SETINFO       0x1001
@@ -122,16 +123,44 @@ LRESULT APIENTRY Plugin_Act(PLUGIN *pi, UINT uAction, WPARAM wParam, LPARAM lPar
 // Driver Functions
 
 // Driver PLUGIN_DRIVER_GETINFO.
-//    wParam = DWORD dwType;
-//    lParam = PLUGIN_INFO pInfo OPTIONAL.
+//    wParam = DWORD dwInfoType;
+//    lParam = LPVOID pInfo OPTIONAL.
 //    return: TRUE if successful.
 #define PLUGIN_DRIVER_GETINFO       0x1000
 
 // Driver PLUGIN_DRIVER_SETINFO.
-//    wParam = DWORD dwType.
+//    wParam = DWORD dwInfoType.
 //    lParam = LPCVOID pInfo OPTIONAL.
 //    return: TRUE if successful.
 #define PLUGIN_DRIVER_SETINFO       0x1001
+
+//////////////////////////////////////////////////////////////////////////////
+// Info
+
+
+typedef struct PII_RES_ID
+{
+    SIZE_T cch; // zero if non-string
+    LPWSTR psz; // NULL if non-string
+    DWORD id;
+} PII_RES_ID;
+
+typedef struct PII_RES_BINARY
+{
+    SIZE_T size;
+    LPVOID ptr;
+} PII_RES_BINARY;
+
+typedef struct PII_RES_TEXT
+{
+    SIZE_T cch;
+    LPWSTR ptr;
+} PII_RES_TEXT;
+
+// dwInfoType
+#define PLUGIN_INFO_RES_ID          0x1000 // for PII_RES_ID
+#define PLUGIN_INFO_RES_BINARY      0x1001 // for PII_RES_BINARY
+#define PLUGIN_INFO_RES_TEXT        0x1002 // for PII_RES_TEXT
 
 #ifdef __cplusplus
 } // extern "C"

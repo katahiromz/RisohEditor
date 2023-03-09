@@ -7,6 +7,7 @@
 #include <cassert>
 #include <shlwapi.h>
 #include <strsafe.h>
+#include <algorithm>
 
 struct PLUGIN_FRAMEWORK_IMPL
 {
@@ -272,6 +273,10 @@ INT PF_LoadAll(std::vector<PLUGIN>& pis, const TCHAR *dir)
 
         FindClose(hFind);
     }
+
+    std::sort(pis.begin(), pis.end(), [&](const PLUGIN& x, const PLUGIN& y) {
+        return x.dwPriority > y.dwPriority;
+    });
 
     return INT(pis.size());
 }

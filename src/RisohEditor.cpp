@@ -10312,6 +10312,9 @@ void MMainWnd::OnDestroy(HWND hwnd)
     // De-activate plugins
     PF_ActAll(g_plugins, PLUGIN_ACTION_DEACTIVATE, (WPARAM)hwnd, 0);
 
+    // Unload plugins
+    PF_UnloadAll(g_plugins);
+
     // close preview
     HidePreview();
 

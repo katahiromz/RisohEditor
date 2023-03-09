@@ -55,6 +55,7 @@ Plugin_Load(PLUGIN *pi, LPARAM lParam)
     pi->plugin_instance = s_hinstDLL;
     pi->plugin_window = NULL;
     pi->dwStdFlags = PLUGIN_STDFLAG_STANDARD | PLUGIN_STDFLAG_RESOURCE;
+    pi->dwPriority = 0;
     pi->plugin_impl = new PLUGIN_IMPL;
 
     return TRUE;
