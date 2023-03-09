@@ -4,7 +4,7 @@
 ##############################################################################
 
 # CMake minimum version
-cmake_minimum_required(VERSION 2.9)
+cmake_minimum_required(VERSION 3.0)
 
 # use new policy
 cmake_policy(SET CMP0054 NEW)
@@ -18,33 +18,29 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
-# statically link
-if (WIN32)
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        # using Clang
-        set(CMAKE_C_FLAGS "-static -W -Wno-missing-field-initializers")
-        set(CMAKE_CXX_FLAGS "-static -W -Wno-missing-field-initializers")
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        # using GCC
-        set(CMAKE_C_FLAGS "-static -W -Wno-missing-field-initializers")
-        set(CMAKE_CXX_FLAGS "-static -W -Wno-missing-field-initializers")
-    elseif (MSVC)
-        # replace "/MD" with "/MT" (building without runtime DLLs)
-        set(CompilerFlags
-            CMAKE_C_FLAGS
-            CMAKE_C_FLAGS_DEBUG
-            CMAKE_C_FLAGS_RELEASE
-            CMAKE_C_FLAGS_MINSIZEREL
-            CMAKE_C_FLAGS_RELWITHDEBINFO
-            CMAKE_CXX_FLAGS
-            CMAKE_CXX_FLAGS_DEBUG
-            CMAKE_CXX_FLAGS_RELEASE
-            CMAKE_CXX_FLAGS_MINSIZEREL
-            CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-        foreach(CompilerFlags ${CompilerFlags})
-            string(REPLACE "/MD" "/MT" ${CompilerFlags} "${${CompilerFlags}}")
-        endforeach()
-    endif()
+# statically linked
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # using Clang
+    set(CMAKE_C_FLAGS "-static")
+    set(CMAKE_CXX_FLAGS "-static")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    set(CMAKE_C_FLAGS "-static")
+    set(CMAKE_CXX_FLAGS "-static")
+elseif (MSVC)
+    # replace "/MD" with "/MT" (building without runtime DLLs)
+    set(CompilerFlags
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_RELWITHDEBINFO
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    foreach(CompilerFlags ${CompilerFlags})
+        string(REPLACE "/MD" "/MT" ${CompilerFlags} "${${CompilerFlags}}")
+    endforeach()
 endif()
 
 ##############################################################################
