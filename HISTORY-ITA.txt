@@ -276,3 +276,4 @@
 - v.5.7.3 (YY.XX.2022)
     - Miglioramenti minori delle prestazioni.
     - Miglioramento "Copia in più lingue".
+    - Added the plugin framework.
