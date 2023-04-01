@@ -181,6 +181,9 @@ VersionRes::Dump(const MIdOrString& name) const
     StringCchPrintfW(line, _countof(line), L"FILETYPE        0x%X\r\n", m_fixed.dwFileType);
     ret += line;
 
+    StringCchPrintfW(line, _countof(line), L"FILESUBTYPE     0x%X\r\n", m_fixed.dwFileSubtype);
+    ret += line;
+
     if (g_settings.bUseBeginEnd)
         ret += L"BEGIN\r\n";
     else
