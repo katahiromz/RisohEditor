@@ -1603,7 +1603,7 @@ STRINGTABLE
     IDS_WAVERESBINFILTER, "Suara WAVE (*.wav)|*.wav|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
     IDS_NEWLINE, "\r\n"
-    IDS_NOTICE, "// Berkas ini secara otomatis dibuat oleh RisohEditor.\r\n"
+    IDS_NOTICE, "// Berkas ini secara otomatis dibuat oleh RisohEditor 5.7.4.\r\n"
     IDS_DAGGER, "// † <-- Salib ini membantu mendeteksi UTF-8.\r\n"
     IDS_IMPORTFILTER, "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc)|*.rc|Sumber Daya Binary (*.res)|*.res|Berkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Manifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Tidak bisa menulis berkas karena berkas tersebut terkunci.\r\n\r\n%s"
