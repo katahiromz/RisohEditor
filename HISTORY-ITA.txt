@@ -279,3 +279,4 @@
     - Fixed FILESUBTYPE of VERSIONINFO.
     - Made "~" the backup suffix rather than "-old".
     - Renamed "Replacing Dialog Fonts..." as "Dialog font substitutes..."
+- v.5.7.4 (2023-XX-YY)
