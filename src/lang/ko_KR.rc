@@ -87,7 +87,7 @@ IDR_MAINMENU MENU
         MENUITEM "글꼴 설정(&F)...", ID_FONTS
         MENUITEM "경로 설정(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "UI 언어 선택(UI Language Select)(&U)...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM 설정(&S)...", ID_DFMSETTINGS
         MENUITEM "구성(&C)...", ID_CONFIG
