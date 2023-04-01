@@ -27,7 +27,7 @@ IDR_MAINMENU MENU
         MENUITEM "resource.h 수정 알림(&V)...", ID_ADVICERESH
         MENUITEM "resource.h 불러오기 해제(&U)", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Window 클래스 라이브러리 로드(&W)...", ID_LOADWCLIB
+        MENUITEM "Window 클래스 라이브러리 불러오기(&W)...", ID_LOADWCLIB
         MENUITEM SEPARATOR
         POPUP "최근에 사용한 파일"
         {
@@ -53,7 +53,7 @@ IDR_MAINMENU MENU
             MENUITEM "액세스 키 추가(&A)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
-            MENUITEM "도구 모음 추가(&T)...", ID_ADDTOOLBAR
+            MENUITEM "도구모음 추가(&T)...", ID_ADDTOOLBAR
             MENUITEM "리소스 항목 추가(&R)...", ID_ADDRES
         }
         POPUP "바꾸기(&R)"
@@ -104,7 +104,7 @@ IDR_MAINMENU MENU
     POPUP "보기(&V)"
     {
         MENUITEM "상태 표시줄(&S)", ID_STATUSBAR
-        MENUITEM "도구 모음(&T)", ID_SHOWHIDETOOLBAR
+        MENUITEM "도구모음(&T)", ID_SHOWHIDETOOLBAR
         MENUITEM "바이너리(&B)", ID_BINARYPANE
         MENUITEM SEPARATOR
         MENUITEM "모두 확장(&X)\tCtrl+K", ID_EXPAND_ALL
@@ -167,7 +167,7 @@ IDR_POPUPMENUS MENU
             MENUITEM "액세스 키 추가(&A)...", ID_ADDACCEL
             MENUITEM "버전 정보 추가(&V)...", ID_ADDVERINFO
             MENUITEM "메니페스트 추가(&F)...", ID_ADDMANIFEST
-            MENUITEM "도구 모음 추가(&T)...", ID_ADDTOOLBAR
+            MENUITEM "도구모음 추가(&T)...", ID_ADDTOOLBAR
             MENUITEM "리소스 항목 추가(&R)...", ID_ADDRES
         }
         POPUP "바꾸기(&R)"
@@ -229,7 +229,7 @@ IDR_POPUPMENUS MENU
         MENUITEM "새로 고침(&R)", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
         MENUITEM "제어 속성(&P)...", ID_CTRLPROP
-        MENUITEM "대화 상자 속성(&O)...", ID_DLGPROP
+        MENUITEM "대화상자 속성(&O)...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -562,7 +562,7 @@ FONT 9, "Gulim"
     LTEXT "명령 ID(&M):", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "회색빛(&G)", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "회색(&G)", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "비트맵(&B)", chx3, 135, 60, 60, 14
     AUTOCHECKBOX "소유자표시(&O)", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "체크(&C)", chx5, 75, 80, 60, 14
@@ -590,7 +590,7 @@ FONT 9, "Gulim"
     LTEXT "명령 ID(&M):", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
-    AUTOCHECKBOX "회색빛(&G)", chx1, 5, 60, 60, 14
+    AUTOCHECKBOX "회색(&G)", chx1, 5, 60, 60, 14
     AUTOCHECKBOX "비트맵(&B)", chx3, 135, 60, 60, 14
     AUTOCHECKBOX "소유자표시(&O)", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "체크(&C)", chx5, 75, 80, 60, 14
@@ -628,13 +628,13 @@ FONT 9, "Gulim"
 }
 
 IDD_DLGPROP DIALOG 0, 0, 195, 310
-CAPTION "대화 상자 속성"
+CAPTION "대화상자 속성"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
     LTEXT "표제(&A):", -1, 5, 10, 55, 12
     COMBOBOX cmb1, 5, 20, 160, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "확장된 대화 상자(&X)", chx1, 100, 5, 65, 14
+    AUTOCHECKBOX "확장된 대화상자(&X)", chx1, 100, 5, 65, 14
     LTEXT "왼쪽(&L):", -1, 5, 40, 25, 12
     EDITTEXT edt1, 5, 50, 28, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
@@ -1044,7 +1044,7 @@ CAPTION "경로 설정"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "Gulim"
 {
-    LTEXT "디렉토리 포함(&I):", -1, 5, 5, 102, 12
+    LTEXT "디렉터리 포함(&I):", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     PUSHBUTTON "추가(&A)...", psh1, 230, 20, 60, 14
     PUSHBUTTON "편집(&E)...", psh2, 230, 40, 60, 14
@@ -1249,7 +1249,7 @@ FONT 9, "Gulim"
 }
 
 IDD_FONTSUBST DIALOG 0, 0, 185, 180
-CAPTION "Dialog Font Substitutes"
+CAPTION "대화상자 글꼴 대체"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
@@ -1283,7 +1283,7 @@ CAPTION "Delphi DFM 설정"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
-    LTEXT "다음 설정은 Delphi DFM과 관련이 있습니다", -1, 35, 5, 171, 20
+    LTEXT "다음 설정은 Delphi DFM과 관련이 있습니다:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
     RTEXT "코드페이지(&C):", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -1308,7 +1308,7 @@ FONT 9, "Gulim"
 }
 
 IDD_TOOLBARRES DIALOG 0, 0, 230, 195
-CAPTION "도구 모음 리소스"
+CAPTION "도구모음 리소스"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
@@ -1318,23 +1318,23 @@ FONT 9, "Gulim"
     RTEXT "아이콘 높이(&H):", -1, 110, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 180, 5, 30, 15, ES_NUMBER | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 190, 5, 30, 15
-    LTEXT "도구 모음 버튼(&T):", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "도구모음 버튼(&T):", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
     LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_OWNERDRAWFIXED | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "추가하다(&A)...", psh1, 150, 40, 75, 15
-    PUSHBUTTON "수정하다(&M)...", psh2, 150, 60, 75, 15
+    PUSHBUTTON "추가(&A)...", psh1, 150, 40, 75, 15
+    PUSHBUTTON "수정(&M)...", psh2, 150, 60, 75, 15
     PUSHBUTTON "삭제(&D)", psh3, 150, 80, 75, 15
     PUSHBUTTON "위로(&U)", psh4, 150, 135, 75, 15
-    PUSHBUTTON "아래에(&O)", psh5, 150, 155, 75, 15
+    PUSHBUTTON "아래로(&O)", psh5, 150, 155, 75, 15
     DEFPUSHBUTTON "확인", IDOK, 5, 175, 60, 15
     PUSHBUTTON "취소", IDCANCEL, 70, 175, 60, 15
 }
 
 IDD_ADDTBBTN DIALOG 0, 0, 177, 92
-CAPTION "툴바 추가 버튼"
+CAPTION "도구모음 버튼 추가"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
-    LTEXT "도구 모음 버튼의 명령 &ID:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "도구모음 버튼의 명령 ID:(&I)", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "분리 기호(&S)", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "확인", IDOK, 45, 70, 60, 15
@@ -1342,11 +1342,11 @@ FONT 9, "Gulim"
 }
 
 IDD_MODIFYTBBTN DIALOG 0, 0, 177, 92
-CAPTION "도구 모음 수정 버튼"
+CAPTION "도구모음 버튼 수정"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "Gulim"
 {
-    LTEXT "도구 모음 버튼의 명령 &ID:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "도구모음 버튼의 명령 &ID:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "분리 기호(&S)", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "확인", IDOK, 45, 70, 60, 15
@@ -1511,10 +1511,10 @@ STRINGTABLE
     IDS_ADDNEXTIDS, """resource.h""에 다음 ID를 추가하십시오:\r\n\r\n"
     IDS_DELETENEXTIDS, """resource.h""에서 다음 ID를 삭제하십시오:\r\n\r\n"
     IDS_NOCHANGE, "리소스 ID는 변경되지 않습니다."
-    IDS_DLGFAIL, "죄송합니다. RAD 대화 상자를 만들지 못했습니다."
+    IDS_DLGFAIL, "죄송합니다. RAD 대화상자를 만들지 못했습니다."
     IDS_LOADWCLIB, "창 클래스 라이브러리 불러오기"
     IDS_AVIMOVIE, "(AVI 영화)\r\n"
-    IDS_ADDDIALOG, "대화 상자 추가"
+    IDS_ADDDIALOG, "대화상자 추가"
     IDS_ADDMENU, "메뉴 추가"
     IDS_ADDVERINFO, "버전 정보 추가"
     IDS_ADDCURSOR, "커서 추가"
@@ -1525,8 +1525,8 @@ STRINGTABLE
     IDS_SAVERESH, """resource.h"" 파일 저장"
     IDS_DLLFILTER, "DLL 파일 (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|모든 파일 (*.*)|*.*|"
     IDS_EXERESRCFILTER, "불러오기 가능한 파일 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|실행 파일 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|바이너리 리소스 (*.res)|*.res|리소스 파일 (*.rc)|*.rc|모든 파일 (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND, "하위 창이므로 대화 상자를 테스트할 수 없습니다."
-    IDS_CANTTESTCLASSDLG, "대화 상자가 분류 되었기 때문에 테스트할 수 없습니다."
+    IDS_CANTTESTCHILDWND, "하위 창이므로 대화상자를 테스트할 수 없습니다."
+    IDS_CANTTESTCLASSDLG, "대화상자가 분류 되었기 때문에 테스트할 수 없습니다."
     IDS_FILEISUPXED, "'%s'\r\n\r\n파일\r\n\r\n이 UPX로 압축되었습니다. 임시 파일을 사용하여 추출하시겠습니까?\r\n\r\n확장하지 않으면 읽기가 실패할 수 있습니다."
     IDS_CANTUPXEXTRACT, "UPX로 추출할 수 없습니다."
     IDS_CANTSAVEUPXED, "파일이 UPX로 압축 되었기 때문에 저장할 수 없습니다."
@@ -1541,8 +1541,8 @@ STRINGTABLE
     IDS_MACRONAME, "매크로 이름"
     IDS_MACROVALUE, "매크로 값"
     IDS_OPTIONAL, "(옵션)"
-    IDS_ADDINCLUDE, "포함 디렉토리 추가"
-    IDS_EDITINCLUDE, "포함 디렉토리 편집"
+    IDS_ADDINCLUDE, "포함 디렉터리 추가"
+    IDS_EDITINCLUDE, "포함 디렉터리 편집"
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
     IDS_INVALIDPATH, "잘못된 경로입니다."
@@ -1558,7 +1558,7 @@ STRINGTABLE
     IDS_STRING, "문자열"
     IDS_DATAISINVALID, "데이터가 유효하지 않습니다."
     IDS_DLGINIT1, "대화 리소스와 동일한 이름의 RT_DLGINIT 리소스 데이터에 초기화 데이터를 설정하여 콤보 상자 및 목록 상자의 초기화를 지정할 수 있습니다. "
-    IDS_DLGINIT2, "WM_INITDIALOG 메시지가 도착하면 응용 프로그램은 첨부 파일 ""DlgInit/DlgInit.h""의 ExecuteDlgInitDx 함수를 호출하여 대화 상자를 초기화할 수 있습니다.\r\n\r\n"
+    IDS_DLGINIT2, "WM_INITDIALOG 메시지가 도착하면 응용 프로그램은 첨부 파일 ""DlgInit/DlgInit.h""의 ExecuteDlgInitDx 함수를 호출하여 대화상자를 초기화할 수 있습니다.\r\n\r\n"
     IDS_DLGINIT3, "RT_DLGINIT의 경우 줄바꿈으로 구분된 문자열 목록을 지정하십시오."
     IDS_SAMELANG, "같은 언어입니다."
     IDS_SAMENAME, "리소스 이름이 같습니다."
@@ -1659,7 +1659,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER, "TYPELIB 데이터 (*.tlb)|*.tlb|바이너리 리소스(*.res)|*.res|텍스트 (*.txt)|*.txt|MIDL 파일 (*.idl)|*.idl|모든 파일 (*.*)|*.*|"
     IDS_USAGE, "사용법: RisohEditor [options | ""파일""]\n\nOptions:\n--help  이 메시지를 표시합니다.\n--version  버전 정보를 표시합니다.\n--load ""your-file.rc""  파일을 로드합니다 (GUI 없이)\n--save ""your-file.res""  파일을 저장합니다 (GUI 없이)\n--log-file ""log-file.txt""  로그 파일을 지정합니다.\n--load-options OPTIONS  로드 옵션을 설정합니다.\n--save-options OPTIONS  저장 옵션을 설정합니다.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "선택 항목이 없습니다."
-    IDS_TRANSLATORS, "[번역]\r\n한국어: VenusGirl-비너스걸❤\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林?湘\r\n"
+    IDS_TRANSLATORS, "[번역]\r\n한국어: VenusGirl-비너스걸❤\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: bovirus\r\nJapanese: Katayama Hirofumi MZ\\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
