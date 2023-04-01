@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Gunakan Pesan &Tabel Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Enkoding Item Sumber Daya...", ID_ENCODING
-        MENUITEM "Ganti &Fon Dialog...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Muat &Ulang", ID_REFRESHALL
     }

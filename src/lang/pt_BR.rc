@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Usar &Tabela de Mensagem da Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Codificação do Item de Recurso...", ID_ENCODING
-        MENUITEM "Diálogo de Substituição de Fontes...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "&Atualizar", ID_REFRESHALL
     }

@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Microsoft のメッセージテーブルを使用する(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "リソース項目のエンコーディング(&E)...", ID_ENCODING
-        MENUITEM "ダイアログ フォントの置き換え(&F)...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "ダイアログ フォント代替(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "最新の情報に更新(&F)", ID_REFRESHALL
     }

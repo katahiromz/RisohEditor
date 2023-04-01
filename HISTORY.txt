@@ -278,3 +278,4 @@
     - Improved "Copy to multiple languages".
     - Fixed FILESUBTYPE of VERSIONINFO.
     - Made "~" the backup suffix rather than "-old".
+    - Renamed "Replacing Dialog Fonts..." as "Dialog font substitutes..."

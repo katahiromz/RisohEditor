@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "使用微软消息表(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "资源项的编码(&E)...", ID_ENCODING
-        MENUITEM "替换对话框字体(&F)...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "更新到最新信息(&F)", ID_REFRESHALL
     }

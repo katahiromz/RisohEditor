@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Käytä Microsoft Message &Tablea", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "R&esurssikohteen koodaus...", ID_ENCODING
-        MENUITEM "Dialogi&fonttien korvaus...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "&Päivitä", ID_REFRESHALL
     }

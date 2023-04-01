@@ -2595,7 +2595,7 @@ protected:
     void OnHideIDMacros(HWND hwnd);
     void OnUseIDC_STATIC(HWND hwnd);
     void OnTest(HWND hwnd);
-    void OnReplaceDialogFonts(HWND hwnd);
+    void OnDialogFontSubst(HWND hwnd);
     void OnHelp(HWND hwnd);
     void OnNextPane(HWND hwnd, BOOL bNext);
 
@@ -11859,8 +11859,8 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_OPEN_EGA_MANUAL:
         OnOpenEgaManual(hwnd);
         break;
-    case ID_REPLACE_DIALOG_FONTS:
-        OnReplaceDialogFonts(hwnd);
+    case ID_DIALOG_FONT_SUBSTITUTES:
+        OnDialogFontSubst(hwnd);
         break;
     case ID_HELP:
         OnHelp(hwnd);
@@ -12657,7 +12657,7 @@ void MMainWnd::OnHelp(HWND hwnd)
     ShellExecuteW(hwnd, NULL, LoadStringDx(IDS_HOMEPAGE), NULL, NULL, SW_SHOWNORMAL);
 }
 
-void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
+void MMainWnd::OnDialogFontSubst(HWND hwnd)
 {
     // compile if necessary
     if (!CompileIfNecessary(FALSE))
@@ -12670,7 +12670,7 @@ void MMainWnd::OnReplaceDialogFonts(HWND hwnd)
         m_rad_window.DestroyWindow();
     }
 
-    MReplaceDialogFontsDlg dialog;
+    MDialogFontSubstDlg dialog;
     dialog.DialogBoxDx(hwnd);
 }
 

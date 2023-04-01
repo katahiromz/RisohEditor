@@ -498,7 +498,7 @@
 #define ID_EGA_PROGRAM                      252
 #define ID_OPENREADMEIT                     253
 #define ID_OPEN_EGA_MANUAL                  254
-#define ID_REPLACE_DIALOG_FONTS             255
+#define ID_DIALOG_FONT_SUBSTITUTES          255
 #define ID_HELP                             256
 #define ID_NEXTPANE                         257
 #define ID_PREVPANE                         258

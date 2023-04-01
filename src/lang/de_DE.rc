@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Use Microsoft Message &Table", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "&Codierung des Ressourcenelements...", ID_ENCODING
-        MENUITEM "Dialogschriftarten ersetzen...", ID_REPLACE_DIALOG_FONTS
+        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "Aktualisierung", ID_REFRESHALL
     }
