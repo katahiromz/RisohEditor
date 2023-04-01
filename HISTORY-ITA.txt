@@ -273,7 +273,7 @@
     - Memorizzazione focus finestra principale.
 - v.5.7.2 (07.06.2022)
     - Supportate risorse BARRA STRUMENTI.
-- v.5.7.3 (YY.XX.2022)
+- v.5.7.3 (01.04.2022)
     - Miglioramenti minori delle prestazioni.
     - Miglioramento "Copia in più lingue".
     - Fixed FILESUBTYPE of VERSIONINFO.
