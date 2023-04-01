@@ -69,7 +69,7 @@
 #define IDD_MODIFYENC                       160
 #define IDD_CONSTANT                        161
 #define IDD_EGA                             162
-#define IDD_REPLACEFONTS                    163
+#define IDD_FONTSUBST                    163
 #define IDD_DROPDOWNPOPUP                   164
 #define IDD_DFMSETTINGS                     165
 #define IDD_UILANG                          166

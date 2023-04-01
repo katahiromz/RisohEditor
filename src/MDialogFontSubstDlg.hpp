@@ -36,7 +36,7 @@ public:
     MComboBoxAutoComplete m_cmb5;
     MComboBoxAutoComplete m_cmb6;
 
-    MDialogFontSubstDlg() : MDialogBase(IDD_REPLACEFONTS)
+    MDialogFontSubstDlg() : MDialogBase(IDD_FONTSUBST)
     {
     }
 
