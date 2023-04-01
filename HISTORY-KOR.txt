@@ -275,10 +275,10 @@
 - v.5.7.2 (2022-06-07)
     - 지원되는 도구 모음 리소스입니다.
 - v.5.7.3 (2023-04-01)
-    - Minor performance improvements.
-    - Improved "Copy to multiple languages".
-    - Fixed FILESUBTYPE of VERSIONINFO.
-    - Made "~" the backup suffix rather than "-old".
-    - Renamed "Replacing Dialog Fonts..." as "Dialog font substitutes..."
+    - 약간의 성능 향상입니다.
+    - "다국어로 복사" 기능이 향상되었습니다.
+    - VERSIONINFO의 고정 FILESUBTYPE입니다.
+    - "-old"가 아닌 "~" 백업 접미사를 만들었습니다.
+    - 이름이 "대화 상자 글꼴 바꾸기..." "Dialog 글꼴 대체...""
 - v.5.7.4 (2023-XX-YY)
-    - Added version numbers to IDS_NOTICE.
+    - IDS_NOTICE에 버전 번호가 추가되었습니다.
