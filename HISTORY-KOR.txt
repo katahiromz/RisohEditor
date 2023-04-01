@@ -278,3 +278,4 @@
     - Minor performance improvements.
     - Improved "Copy to multiple languages".
     - Fixed FILESUBTYPE of VERSIONINFO.
+    - Made "~" the backup suffix rather than "-old".

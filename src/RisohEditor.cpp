@@ -13785,7 +13785,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.bWordWrap = FALSE;
 
     g_settings.bBackup = TRUE;
-    g_settings.strBackupSuffix = L"-old";
+    g_settings.strBackupSuffix = L"~";
 
     g_settings.bRedundantComments = TRUE;
     g_settings.bWrapManifest = FALSE;

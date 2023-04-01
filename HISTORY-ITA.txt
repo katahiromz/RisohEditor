@@ -277,3 +277,4 @@
     - Miglioramenti minori delle prestazioni.
     - Miglioramento "Copia in più lingue".
     - Fixed FILESUBTYPE of VERSIONINFO.
+    - Made "~" the backup suffix rather than "-old".
