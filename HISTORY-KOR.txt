@@ -283,3 +283,4 @@
 - v.5.7.4 (2023-XX-YY)
     - IDS_NOTICE에 버전 번호가 추가되었습니다.
     - Improved EGA console.
+    - Fixed half-broken installer.
