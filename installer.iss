@@ -83,6 +83,7 @@ Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-TR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -233,13 +234,13 @@ german.AssociateResFiles=Verknüpfen Sie *.res-Dateien
 greek.ReadmeEnglish=ReadMe (Αγγλικά)
 greek.ReadmeJapanese=ReadMe (Ιαπωνικά)
 greek.LicenseEnglish=Αδεια
-greek.AssociateRcFiles=Συσχετίστε αρχεία *.rc
-greek.AssociateResFiles=Συσχετίστε αρχεία *.res
+greek.AssociateRcFiles=ΣρE�ρE�ρE�σρE� αρE�E�ία *.rc
+greek.AssociateResFiles=ΣρE�ρE�ρE�σρE� αρE�E�ία *.res
 hebrew.ReadmeEnglish=ReadMe (אנגלית)
 hebrew.ReadmeJapanese=ReadMe (יפנית)
-hebrew.LicenseEnglish=רישיון
-hebrew.AssociateRcFiles=לשייך קבצי *.rc
-hebrew.AssociateResFiles=שיוך קבצי *.res
+hebrew.LicenseEnglish=רישיוׁE
+hebrew.AssociateRcFiles=לשייׁEקבצׁE*.rc
+hebrew.AssociateResFiles=שיוׁEקבצׁE*.res
 hungarian.ReadmeEnglish=ReadMe (angol)
 hungarian.ReadmeJapanese=ReadMe (japán)
 hungarian.LicenseEnglish=Engedély
@@ -250,11 +251,11 @@ italian.ReadmeJapanese=Leggimi (Giapponese)
 italian.LicenseEnglish=Licenza (Inglese)
 italian.AssociateRcFiles=Associa file *.rc
 italian.AssociateResFiles=Associa file *.res
-japanese.ReadmeEnglish=ReadMe (英語)
-japanese.ReadmeJapanese=読んでね (日本語)
-japanese.LicenseEnglish=ライセンス (英語)
-japanese.AssociateRcFiles=*.rc ファイルを関連付ける
-japanese.AssociateResFiles=*.res ファイルを関連付ける
+japanese.ReadmeEnglish=ReadMe (英誁E
+japanese.ReadmeJapanese=読んでね (日本誁E
+japanese.LicenseEnglish=ライセンス (英誁E
+japanese.AssociateRcFiles=*.rc ファイルを関連付けめE
+japanese.AssociateResFiles=*.res ファイルを関連付けめE
 norwegian.ReadmeEnglish=ReadMe (engelsk)
 norwegian.ReadmeJapanese=ReadMe (japansk)
 norwegian.LicenseEnglish=Tillatelse
@@ -270,11 +271,11 @@ portuguese.ReadmeJapanese=ReadMe (japonês)
 portuguese.LicenseEnglish=Licença
 portuguese.AssociateRcFiles=Associar arquivos *.rc
 portuguese.AssociateResFiles=Associar arquivos *.res
-russian.ReadmeEnglish=ReadMe (английский)
-russian.ReadmeJapanese=ReadMe (японский)
-russian.LicenseEnglish=Лицензия
-russian.AssociateRcFiles=Связать с файлами *.rc
-russian.AssociateResFiles=Связать с файлами *.res
+russian.ReadmeEnglish=ReadMe (английсE�ий)
+russian.ReadmeJapanese=ReadMe (японсE�ий)
+russian.LicenseEnglish=ЛисE�нзисE
+russian.AssociateRcFiles=СвязатсEсEсE�йлами *.rc
+russian.AssociateResFiles=СвязатсEсEсE�йлами *.res
 scottishgaelic.ReadmeEnglish=ReadMe (English)
 scottishgaelic.ReadmeJapanese=ReadMe (Japanese)
 scottishgaelic.LicenseEnglish=License
@@ -305,8 +306,8 @@ turkish.ReadmeJapanese=ReadMe (Japonca)
 turkish.LicenseEnglish=Lisans
 turkish.AssociateRcFiles=*.rc dosyalarını ilişkilendirin
 turkish.AssociateResFiles=*.res dosyalarını ilişkilendirin
-ukrainian.ReadmeEnglish=ReadMe (англійська)
-ukrainian.ReadmeJapanese=ReadMe (японська)
-ukrainian.LicenseEnglish=Ліцензія
-ukrainian.AssociateRcFiles=Пов’язати *.rc файли
-ukrainian.AssociateResFiles=Приєднати *.res файли
+ukrainian.ReadmeEnglish=ReadMe (англійсE�ка)
+ukrainian.ReadmeJapanese=ReadMe (японсE�ка)
+ukrainian.LicenseEnglish=ЛісE�нзісE
+ukrainian.AssociateRcFiles=Пов’язати *.rc сE�йли
+ukrainian.AssociateResFiles=Приєднати *.res сE�йли
