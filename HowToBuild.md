@@ -15,6 +15,7 @@ ATL support is for Visual C++ only.
 
 ## Build task
 
+- Open Visual Studio or MSYS2 and go to `RisohEditor` directory by `cd` command.
 - Execute a `cmake` command line using CMake.
     - Please specify `-G "(generator)"`. To get the generator list, please specify `-G` only.
     - If ATL support is needed, then add `-DATL_SUPPORT=ON`.
