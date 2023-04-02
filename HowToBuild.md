@@ -20,7 +20,7 @@ ATL support is for Visual C++ only.
     - If ATL support is needed, then add `-DATL_SUPPORT=ON`.
     - If you want XP support, use Visual C++ and `v141_xp` toolset.
     - `-A "Win32"` might be needed if your VS uses `x64` as default.
-- Build it by the solution file, Makefile or Ninja.
+- Build it by using the solution file, Makefile or Ninja.
 - Execute `pack.sh` shell script.
 - Execute `packportable.sh` shell script.
 
