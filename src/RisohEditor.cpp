@@ -23,6 +23,11 @@
 #include "MLangAutoComplete.hpp"
 #include "MChooseLangDlg.hpp"
 #include "ToolbarRes.hpp"
+#ifdef PORTABLE
+    #include "MRegKeyPortable.hpp"
+#else
+    #include "MRegKey.hpp"
+#endif
 
 BOOL g_bNoGuiMode = FALSE; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;

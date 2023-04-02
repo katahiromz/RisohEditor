@@ -101,11 +101,6 @@ static inline LANGID RE_SetThreadUILanguage(LANGID LangID)
 #include "MWindowBase.hpp"
 #include "MEditCtrl.hpp"
 #include "MSplitterWnd.hpp"
-#ifdef PORTABLE
-    #include "MRegKeyPortable.hpp"
-#else
-    #include "MRegKey.hpp"
-#endif
 #include "MBitmapDx.hpp"
 #include "Res.hpp"
 #include "ConstantsDB.hpp"

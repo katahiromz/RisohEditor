@@ -20,7 +20,6 @@
 #pragma once
 
 #include "resource.h"
-#include "MComboBoxAutoComplete.hpp"
 #include "MResizable.hpp"
 #include "RisohSettings.hpp"
 #include "../EGA/ega.hpp"
@@ -41,22 +40,19 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
         return false;
 
     WCHAR szTextW[260];
-    GetDlgItemTextW(s_hwndEga, cmb1, szTextW, ARRAYSIZE(szTextW));
+    GetDlgItemTextW(s_hwndEga, edt2, szTextW, ARRAYSIZE(szTextW));
 
     char szTextA[260];
     WideCharToMultiByte(CP_UTF8, 0, szTextW, -1, szTextA, ARRAYSIZE(szTextA), NULL, NULL);
 
     StringCchCopyA(buf, buflen, szTextA);
-    SetDlgItemTextA(s_hwndEga, cmb1, NULL);
+    SetDlgItemTextA(s_hwndEga, edt2, NULL);
     s_bEnter = FALSE;
 
     if (lstrcmpA(szTextA, "exit") == 0 || lstrcmpA(szTextA, "exit;") == 0)
         PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
 
     mstr_trim(szTextW);
-    INT iItem = (INT)SendDlgItemMessageW(s_hwndEga, cmb1, CB_FINDSTRINGEXACT, -1, (LPARAM)szTextW);
-    if (iItem == CB_ERR)
-        SendDlgItemMessageW(s_hwndEga, cmb1, CB_ADDSTRING, 0, (LPARAM)szTextW);
 
     return true;
 }
@@ -131,23 +127,16 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
+        s_hwndEga = hwnd;
         m_resizable.OnParentCreate(hwnd);
 
         m_resizable.SetLayoutAnchor(grp1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(edt1, mzcLA_TOP_LEFT, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(stc1, mzcLA_BOTTOM_LEFT);
-        m_resizable.SetLayoutAnchor(cmb1, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
+        m_resizable.SetLayoutAnchor(edt2, mzcLA_BOTTOM_LEFT, mzcLA_BOTTOM_RIGHT);
         m_resizable.SetLayoutAnchor(IDOK, mzcLA_BOTTOM_RIGHT);
-
-        s_hwndEga = hwnd;
-        SubclassChildDx(m_cmb1, cmb1);
-
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
-
-        m_cmb1.AddString(L"help");
-        m_cmb1.AddString(L"help print");
-        m_cmb1.AddString(L"print(+(1, 2));");
 
         LOGFONTW lf;
         ZeroMemory(&lf, sizeof(lf));
@@ -213,12 +202,6 @@ public:
         case psh1:
             OnPsh1(hwnd);
             break;
-        case cmb1:
-            if (codeNotify == CBN_EDITCHANGE)
-            {
-                m_cmb1.OnEditChange();
-            }
-            break;
         }
     }
 
@@ -231,14 +214,10 @@ public:
         case CTLCOLOR_STATIC:
         case CTLCOLOR_BTN:
             id = GetDlgCtrlID(hwndChild);
-            if (GetParent(hwndChild) == m_cmb1)
-            {
-                id = cmb1;
-            }
             switch (id)
             {
-            case cmb1:
             case edt1:
+            case edt2:
                 SetTextColor(hdc, RGB(0, 255, 0));
                 SetBkColor(hdc, RGB(0, 0, 0));
                 return GetStockBrush(BLACK_BRUSH);
@@ -292,6 +271,5 @@ protected:
     HICON m_hIcon;
     HICON m_hIconSm;
     std::wstring m_filename;
-    MComboBoxAutoComplete m_cmb1;
     MResizable m_resizable;
 };

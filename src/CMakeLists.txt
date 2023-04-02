@@ -8,8 +8,8 @@ cmake_policy(SET CMP0003 NEW)
 # EGA
 subdirs(../EGA)
 
-# RisohEditor.exe
-add_executable(RisohEditor WIN32
+# libRisohEditor.a
+add_library(libRisohEditor STATIC
     AccelRes.cpp
     DialogRes.cpp
     DlgInitRes.cpp
@@ -21,33 +21,29 @@ add_executable(RisohEditor WIN32
     ResToText.cpp
     StringRes.cpp
     ToolbarRes.cpp
-    VersionRes.cpp
+    VersionRes.cpp)
+set_target_properties(libRisohEditor PROPERTIES PREFIX "")
+
+# RisohEditor.exe
+add_executable(RisohEditor WIN32
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditor libega comctl32 msimg32 winmm gdiplus vfw32 wininet
-                                  oledlg msimg32 advapi32 shlwapi version urlmon LineNumEdit_static)
+target_link_libraries(RisohEditor
+    LineNumEdit_static libRisohEditor
+    libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
+    oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
-    AccelRes.cpp
-    DialogRes.cpp
-    DlgInitRes.cpp
-    IconRes.cpp
-    MenuRes.cpp
-    MOleHost.cpp
-    PackedDIB.cpp
-    Res.cpp
-    ResToText.cpp
-    StringRes.cpp
-    ToolbarRes.cpp
-    VersionRes.cpp
     RisohEditor.cpp
     RisohEditor_res.rc
     res/Manifest_1.manifest)
-target_link_libraries(RisohEditorPortable libega comctl32 msimg32 winmm gdiplus vfw32 wininet
-                                          oledlg msimg32 advapi32 shlwapi version urlmon LineNumEdit_static)
+target_link_libraries(RisohEditorPortable
+    LineNumEdit_static libRisohEditor
+    libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
+    oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
 
 option(ATL_SUPPORT "Add ATL support" OFF)
