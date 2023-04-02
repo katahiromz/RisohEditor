@@ -2,10 +2,10 @@
 
 ## Requirements
 
-- Visual Studio
+- Visual Studio 2017 or 2019
 - MSYS2
 - CMake
-- Inno Setup
+- Inno Setup 5.6.1 (u)
 
 ATL support is for Visual C++ only.
 
