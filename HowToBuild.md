@@ -21,8 +21,8 @@ ATL support is for Visual C++ only.
     - If you want XP support, use `v141_xp` toolset (`-T v141_xp`).
     - `-A Win32` might be needed if your VS uses `x64` as default.
 - Build it by using the solution file, Makefile or Ninja.
-- Execute `pack.sh` shell script.
-- Execute `packportable.sh` shell script.
+- Execute `pack.sh` shell script on MSYS2.
+- Execute `packportable.sh` shell script on MSYS2.
 
 ## Making an installer
 
