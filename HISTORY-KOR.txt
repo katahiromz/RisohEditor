@@ -280,7 +280,7 @@
     - VERSIONINFO의 고정 FILESUBTYPE입니다.
     - "-old"가 아닌 "~" 백업 접미사를 만들었습니다.
     - 이름이 "대화 상자 글꼴 바꾸기..." "Dialog 글꼴 대체...""
-- v.5.7.4 (2023-XX-YY)
+- v.5.7.4 (2023-04-02)
     - IDS_NOTICE에 버전 번호가 추가되었습니다.
     - Improved EGA console.
     - Fixed half-broken installer.
