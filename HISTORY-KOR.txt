@@ -282,5 +282,5 @@
     - 이름이 "대화 상자 글꼴 바꾸기..." "Dialog 글꼴 대체...""
 - v.5.7.4 (2023-04-02)
     - IDS_NOTICE에 버전 번호가 추가되었습니다.
-    - Improved EGA console.
-    - Fixed half-broken installer.
+    - 개선된 EGA 콘솔입니다.
+    - 고장난 설치 프로그램을 수정했습니다.
