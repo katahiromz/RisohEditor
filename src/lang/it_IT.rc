@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Usa &tabella messaggi Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "Codifica &elementi risorse...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "Sostituzione &font finestra...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "A&ggiorna", ID_REFRESHALL
     }
@@ -1247,7 +1247,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_FONTSUBST DIALOG 0, 0, 185, 180
-CAPTION "Dialog Font Substitutes"
+CAPTION "Sostituzione font finestra"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1368,7 +1368,7 @@ FILESUBTYPE     0x0
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.7.4\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ e bovirus. Tutti i diritti riservati.\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ e R.B. Tutti i diritti riservati.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.7.4\0"
         }
@@ -1657,7 +1657,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER, "Dati TYPELIB (*.tlb)|*.tlb|Risorse binarie (*.res)|*.res|File testo (*.txt)|*.txt|File MIDL (*.idl)|*.idl|Tutti i file (*.*)|*.*|"
     IDS_USAGE, "Uso: RisohEditor [opzioni | ""file""]\n\nOpzioni:\n--help  visualizza questo messaggio.\n--version  visualizza informazioni sulla versione.\n--load ""your-file.rc""  Carica il file (senza GUI)\n--save ""your-file.res""  Salva il file (senza GUI)\n--log-file ""log-file.txt""  specifica il file registro.\n--load-options OPZIONI  imposta le opzioni di caricamento.\n--save-options OPZIONI  imposta le opzioni di salvataggio.\n\nOpzioni caricamento: (no-load-res-h)\nOpzioni salvataggio: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Non c'è selezione."
-    IDS_TRANSLATORS, "[Translators]\r\nCinese semplificato: 林鸿湘\r\nCoreano: VenusGirl (비너스걸)\r\nGiapponese: Katayama Hirofumi MZ\r\nInglese: Katayama Hirofumi MZ\r\nFinlandese: Veikko Muurikainen\r\nIndonesiano: Mas Ahmad Muhammad\r\nItaliano: bovirus\r\nPolacco: Piotr Hetnarowicz\r\nPortoghese: JNylson\r\nRusso: Dmitry Yerokhin\r\n"
+    IDS_TRANSLATORS, "[Translators]\r\nCinese semplificato: 林鸿湘\r\nCoreano: VenusGirl (비너스걸)\r\nGiapponese: Katayama Hirofumi MZ\r\nInglese: Katayama Hirofumi MZ\r\nFinlandese: Veikko Muurikainen\r\nIndonesiano: Mas Ahmad Muhammad\r\nItaliano: R.B.\r\nPolacco: Piotr Hetnarowicz\r\nPortoghese: JNylson\r\nRusso: Dmitry Yerokhin\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
