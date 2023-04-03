@@ -13,7 +13,7 @@ The translators of RisohEditor are listed below:
  * Indonesian:
     - Mas Ahmad Muhammad <m.charly81@gmail.com>
  * Italian:
-    - bovirus <bovirus@gmail.com>
+    - R.B. <bovirus@gmail.com>
  * Japanese:
     - Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
  * Polish:
