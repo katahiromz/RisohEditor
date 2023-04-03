@@ -87,7 +87,7 @@ IDR_MAINMENU MENU
         MENUITEM "글꼴 설정(&F)...", ID_FONTS
         MENUITEM "경로 설정(&P)...", ID_SETPATHS
         MENUITEM SEPARATOR
-        MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
+        MENUITEM "&UI Language Select (UI 언어 선택)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM 설정(&S)...", ID_DFMSETTINGS
         MENUITEM "구성(&C)...", ID_CONFIG
@@ -121,7 +121,7 @@ IDR_MAINMENU MENU
         MENUITEM "Microsoft 메시지 테이블 사용(&T)", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
         MENUITEM "리소스 항목의 인코딩(&E)...", ID_ENCODING
-        MENUITEM "Dialog &font substitutes...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "대화 상자 글꼴 대체(&F)...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
         MENUITEM "새로 고침(&F)", ID_REFRESHALL
     }
