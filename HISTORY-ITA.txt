@@ -138,7 +138,7 @@
 - v.5.4.0 (13.06.2020)
     - Corretto output RT_ACCELERATOR` (16bit non firmato).
     - Rimossa opzione "salva nella cartella res".
-    - Corretto problema crash uso GUI Edit.
+    - Corretto problema crash uso modifica GUI.
     - Potenziata funzione estrazione risorse.
     - Corretto problema sostituzione-font-finestra.
     - Nella barra del titolo viene ora visualizzato il percorso completo del file in modifica.
@@ -180,7 +180,7 @@
     - Aggiunto supporto Dati internazionali DFM Delphi.
     - Inserita voce di menu "Impostazioni DFM Delphi" nel menu "Modifica".
     - Corretta impostazione checksum a zero durante il salvataggio del file.
-    - Corretto problema per cui un controllo è shiftato di 1 pixel.
+    - Corretto problema per cui un controllo è spostato di 1 pixel.
     - Aggiunte alcuni cicli di attesa nel salvataggio del file, utili per il controllo antivirus.
     - Aggiunto un collegamento "Guida a RisohEditor" nel menu "?" (Aiuto).
 - v.5.4.5 (03.08.2020)
@@ -276,10 +276,10 @@
 - v.5.7.3 (01.04.2022)
     - Miglioramenti minori delle prestazioni.
     - Miglioramento "Copia in più lingue".
-    - Fixed FILESUBTYPE of VERSIONINFO.
-    - Made "~" the backup suffix rather than "-old".
-    - Renamed "Replacing Dialog Fonts..." as "Dialog font substitutes..."
-- v.5.7.4 (2023-04-02)
-    - Added version numbers to IDS_NOTICE.
-    - Improved EGA console.
-    - Fixed half-broken installer.
+    - Corretto FILESUBTYPE di VERSIONINFO.
+    - Modificato il suffisso del backup da  "-old" a "~".
+    - Rinominata "Sostituzione font finestra..." in "Sostituzione font finestra..."
+- v.5.7.4 (02.04.2023)
+    - Aggiunti numeri di versione a IDS_NOTICE.
+    - Console EGA migliorata.
+    - Risolto problema programma di installazione danneggiato.
