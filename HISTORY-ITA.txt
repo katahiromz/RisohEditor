@@ -284,5 +284,5 @@
     - Console EGA migliorata.
     - Risolto problema programma di installazione danneggiato.
 - v.5.7.5 (YY.XX.2023)
-    - Improved IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
-    - Added Korean installer.
+    - Migliorato IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
+    - Aggiunto programma di installazione coreano.
