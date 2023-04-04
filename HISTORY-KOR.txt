@@ -286,3 +286,4 @@
     - 고장난 설치 프로그램을 수정했습니다.
 - v.5.7.5 (2023-XX-YY)
     - IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL 대화 상자가 개선되었습니다.
+    - Added Korean installer.
