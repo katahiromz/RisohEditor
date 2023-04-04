@@ -284,3 +284,5 @@
     - IDS_NOTICE에 버전 번호가 추가되었습니다.
     - 개선된 EGA 콘솔입니다.
     - 고장난 설치 프로그램을 수정했습니다.
+- v.5.7.5 (2023-XX-YY)
+    - Improved IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.

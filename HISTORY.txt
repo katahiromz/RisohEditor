@@ -283,3 +283,5 @@
     - Added version numbers to IDS_NOTICE.
     - Improved EGA console.
     - Fixed half-broken installer.
+- v.5.7.5 (2023-XX-YY)
+    - Improved IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
