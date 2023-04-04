@@ -674,6 +674,7 @@ FONT 9, "MS Shell Dlg"
 IDD_CTRLPROP DIALOG 0, 0, 235, 330
 CAPTION "Proprietà controllo"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Ctrl predefinito:", -1, 5, 7, 68, 12
     COMBOBOX cmb1, 75, 5, 120, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -797,28 +798,28 @@ CAPTION "Impostazioni"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Visuali&zza percorso completo file nella barra del titolo", chx1, 5, 5, 175, 15
-    AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 175, 14
-    AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 175, 15
-    AUTOCHECKBOX "Carica automaticamente '&resource.h' vicino", chx4, 5, 65, 175, 14
-    AUTOCHECKBOX "Visualizza automaticamente e&lenco ID risorse", chx5, 5, 85, 175, 15
-    AUTOCHECKBOX "Visualizza &punti nella finestra modifica", chx6, 5, 105, 175, 14
+    AUTOCHECKBOX "Visuali&zza percorso completo file nella barra del titolo", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "Non usare ID &macro", chx2, 5, 25, 200, 14
+    AUTOCHECKBOX "Riprendi posizione finestra &precedente", chx3, 5, 45, 200, 14
+    AUTOCHECKBOX "Carica automaticamente '&resource.h' vicino", chx4, 5, 65, 200, 14
+    AUTOCHECKBOX "Visualizza automaticamente e&lenco ID risorse", chx5, 5, 85, 200, 14
+    AUTOCHECKBOX "Visualizza &punti nella finestra modifica", chx6, 5, 105, 200, 14
     RTEXT "Altezza combo&box:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&A capo automatico", chx9, 135, 125, 95, 15
-    AUTOCHECKBOX "Chiedi per aggiornamento '&resource.h'", chx7, 5, 145, 175, 14
-    AUTOCHECKBOX "Comprimi EXE con &UPX al salvataggio", chx8, 5, 165, 175, 15
-    PUSHBUTTON "&Font...", psh4, 5, 185, 225, 14
-    PUSHBUTTON "&Macro predefinite...", psh1, 5, 204, 110, 15
-    PUSHBUTTON "Impos&ta percorsi...", psh2, 120, 204, 110, 15
+    AUTOCHECKBOX "&A capo automatico", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "Chiedi per aggiornamento '&resource.h'", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "Comprimi EXE con &UPX al salvataggio", chx8, 5, 165, 200, 14
+    PUSHBUTTON "&Font...", psh4, 5, 185, 200, 14
+    PUSHBUTTON "&Macro predefinite...", psh1, 5, 205, 93, 14
+    PUSHBUTTON "Impos&ta percorsi...", psh2, 107, 205, 98, 14
     RTEXT "Nome controlli &OLE:", -1, 5, 227, 80, 12
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Crea &backup", chx10, 5, 245, 67, 15, BS_LEFT | NOT WS_TABSTOP
-    RTEXT "Suffisso backup:", -1, 78, 247, 63, 14
-    COMBOBOX cmb2, 145, 245, 50, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON "OK", IDOK, 125, 265, 50, 14
-    PUSHBUTTON "Annulla", IDCANCEL, 180, 265, 50, 14
+    AUTOCHECKBOX "Crea &backup", chx10, 5, 245, 75, 15
+    RTEXT "Suffisso backup:", -1, 90, 245, 60, 15
+    COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON "OK", IDOK, 100, 265, 50, 14
+    PUSHBUTTON "Annulla", IDCANCEL, 155, 265, 50, 14
     PUSHBUTTON "Ripri&stina tutto", psh3, 5, 265, 75, 14
 }
 
