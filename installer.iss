@@ -2,8 +2,6 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 ; !!! This file must be UTF-8 with BOM !!!
 
-; See also: ./Languages/Korean.isl
-
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -63,7 +61,7 @@ Name: "greek"; MessagesFile:  "compiler:Languages\Greek.isl"
 Name: "hebrew"; MessagesFile:  "compiler:Languages\Hebrew.isl"
 Name: "hungarian"; MessagesFile:  "compiler:Languages\Hungarian.isl"
 Name: "italian"; MessagesFile:  "compiler:Languages\Italian.isl"
-Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
+Name: "korean"; MessagesFile: ".\Languages\Korean.isl"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "norwegian"; MessagesFile: "compiler:Languages\Norwegian.isl"
 Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
