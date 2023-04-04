@@ -712,7 +712,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Cancel", IDCANCEL, 170, 309, 60, 14
     PUSHBUTTON "&Data...", psh1, 5, 293, 90, 14
     PUSHBUTTON "The string l&ist...", psh3, 5, 309, 90, 14
-}}
+}
 
 IDD_ADDCTRL DIALOG 0, 0, 235, 330
 CAPTION "Add Control"
