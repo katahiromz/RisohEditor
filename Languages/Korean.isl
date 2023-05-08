@@ -12,7 +12,7 @@
 [LangOptions]
 ; 다음 세 항목은 매우 중요합니다. 도움말 파일의
 ; '[LangOptions] 섹션' 항목을 읽고 이해하십시오.
-LanguageName=<D55C><AD6D><C778>
+LanguageName=<D55C><AD6D><C5B4>
 LanguageID=$0412
 LanguageCodePage=65001
 ; 번역할 언어가 특수 글꼴 또는 크기를 필요로 하는 경우
