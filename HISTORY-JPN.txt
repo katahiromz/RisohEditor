@@ -626,7 +626,7 @@
         バージョン番号をIDS_NOTICEに追加。
         EGAコンソールを改良。
         半分壊れたインストーラを修正。
-    v.5.7.5 (2023-XX-YY)
+    v.5.7.5 (2023-05-08)
         IDD_DLGPROP、IDD_CTRLPROP、IDD_ADDCTRLダイアログを改良。
         韓国語インストーラを追加。
         MENUEXの区分線を修正。
