@@ -464,7 +464,7 @@ MenuRes::Dump(const MIdOrString& name) const
         else
         {
             ret += string_type((item.wDepth + 1) * 4, L' ');
-            if (item.wMenuID == 0 && item.text.empty())
+            if (item.text.empty())
             {
                 ret += L"MENUITEM SEPARATOR\r\n";
             }
@@ -588,40 +588,33 @@ MenuRes::DumpEx(const MIdOrString& name) const
         else
         {
             ret += string_type((item.wDepth + 1) * 4, L' ');
-            if (item.menuId == 0 && item.text.empty())
+            ret += L"MENUITEM ";
+            ret += mstr_quote(item.text);
+            if (item.menuId || item.dwType || item.dwState)
             {
-                ret += L"MENUITEM SEPARATOR\r\n";
+                ret += L", ";
+                if (0)
+                {
+                    ret += mstr_dec_dword(item.menuId);
+                }
+                else
+                {
+                    ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId, true);
+                }
             }
-            else
+            if (item.dwType || item.dwState)
             {
-                ret += L"MENUITEM ";
-                ret += mstr_quote(item.text);
-                if (item.menuId || item.dwType || item.dwState)
-                {
-                    ret += L", ";
-                    if (0)
-                    {
-                        ret += mstr_dec_dword(item.menuId);
-                    }
-                    else
-                    {
-                        ret += g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, item.menuId, true);
-                    }
-                }
-                if (item.dwType || item.dwState)
-                {
-                    ret += L", ";
-                    DWORD value = item.dwType;
-                    ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
-                }
-                if (item.dwState)
-                {
-                    ret += L", ";
-                    DWORD value = item.dwState;
-                    ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
-                }
-                ret += L"\r\n";
+                ret += L", ";
+                DWORD value = item.dwType;
+                ret += g_db.DumpBitFieldOrZero(L"MFT_", value);
             }
+            if (item.dwState)
+            {
+                ret += L", ";
+                DWORD value = item.dwState;
+                ret += g_db.DumpBitFieldOrZero(L"MFS_", value);
+            }
+            ret += L"\r\n";
         }
     }
     while (0 < wDepth)

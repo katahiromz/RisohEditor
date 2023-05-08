@@ -286,3 +286,4 @@
 - v.5.7.5 (YY.XX.2023)
     - Migliorato IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
     - Aggiunto programma di installazione coreano.
+    - Fixed MENUEX separator.

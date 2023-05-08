@@ -629,3 +629,4 @@
     v.5.7.5 (2023-XX-YY)
         IDD_DLGPROP、IDD_CTRLPROP、IDD_ADDCTRLダイアログを改良。
         韓国語インストーラを追加。
+        MENUEXの区分線を修正。
