@@ -286,5 +286,5 @@
     - 고장난 설치 프로그램을 수정했습니다.
 - v.5.7.5 (2023-05-08)
     - IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL 대화 상자가 개선되었습니다.
-    - Added Korean installer.
-    - Fixed MENUEX separator.
+    - 한국어 설치 프로그램이 추가되었습니다.
+    - 고정된 MEENEX 구분 기호입니다.
