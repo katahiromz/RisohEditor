@@ -2407,17 +2407,18 @@ public:
     bool DoResLoad(const MStringW& filename, const MStringW& options = L"");
     bool DoResSave(const MStringW& filename, const MStringW& options = L"");
 
-    EGA::arg_t DoEgaResLoad(const EGA::args_t& args);
-    EGA::arg_t DoEgaResSave(const EGA::args_t& args);
-    EGA::arg_t DoEgaResSearch(const EGA::args_t& args);
-    EGA::arg_t DoEgaResDelete(const EGA::args_t& args);
-    EGA::arg_t DoEgaResCloneByName(const EGA::args_t& args);
-    EGA::arg_t DoEgaResCloneByLang(const EGA::args_t& args);
-    EGA::arg_t DoEgaResUnloadResH(const EGA::args_t& args);
-    EGA::arg_t DoEgaResSelect(const EGA::args_t& args);
-    EGA::arg_t DoEgaResGetBinary(const EGA::args_t& args);
-    EGA::arg_t DoEgaResSetBinary(const EGA::args_t& args);
-    EGA::arg_t DoEgaResConst(const EGA::args_t& args);
+    EGA::arg_t RES_load(const EGA::args_t& args);
+    EGA::arg_t RES_save(const EGA::args_t& args);
+    EGA::arg_t RES_search(const EGA::args_t& args);
+    EGA::arg_t RES_delete(const EGA::args_t& args);
+    EGA::arg_t RES_clone_by_name(const EGA::args_t& args);
+    EGA::arg_t RES_clone_by_lang(const EGA::args_t& args);
+    EGA::arg_t RES_unload_resh(const EGA::args_t& args);
+    EGA::arg_t RES_select(const EGA::args_t& args);
+    EGA::arg_t RES_get_binary(const EGA::args_t& args);
+    EGA::arg_t RES_set_binary(const EGA::args_t& args);
+    EGA::arg_t RES_const(const EGA::args_t& args);
+    EGA::arg_t RES_str_get(const EGA::args_t& args);
 
     LRESULT CALLBACK TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -16117,57 +16118,62 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 
 EGA::arg_t EGA_FN EGA_RES_load(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResLoad(args);
+    return s_pMainWnd->RES_load(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_save(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResSave(args);
+    return s_pMainWnd->RES_save(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_search(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResSearch(args);
+    return s_pMainWnd->RES_search(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_delete(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResDelete(args);
+    return s_pMainWnd->RES_delete(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_clone_by_name(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResCloneByName(args);
+    return s_pMainWnd->RES_clone_by_name(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_clone_by_lang(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResCloneByLang(args);
+    return s_pMainWnd->RES_clone_by_lang(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_unload_resh(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResUnloadResH(args);
+    return s_pMainWnd->RES_unload_resh(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_select(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResSelect(args);
+    return s_pMainWnd->RES_select(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_get_binary(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResGetBinary(args);
+    return s_pMainWnd->RES_get_binary(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_set_binary(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResSetBinary(args);
+    return s_pMainWnd->RES_set_binary(args);
 }
 
 EGA::arg_t EGA_FN EGA_RES_const(const EGA::args_t& args)
 {
-    return s_pMainWnd->DoEgaResConst(args);
+    return s_pMainWnd->RES_const(args);
+}
+
+EGA::arg_t EGA_FN EGA_RES_str_get(const EGA::args_t& args)
+{
+    return s_pMainWnd->RES_str_get(args);
 }
 
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
@@ -16201,7 +16207,7 @@ EGA::arg_t EGA_set_id_or_str(const MIdOrString& id)
     }
 }
 
-EGA::arg_t MMainWnd::DoEgaResLoad(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_load(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1;
@@ -16226,7 +16232,7 @@ EGA::arg_t MMainWnd::DoEgaResLoad(const EGA::args_t& args)
     return make_arg<AstInt>(ret);
 }
 
-EGA::arg_t MMainWnd::DoEgaResSave(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_save(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1;
@@ -16251,7 +16257,7 @@ EGA::arg_t MMainWnd::DoEgaResSave(const EGA::args_t& args)
     return make_arg<AstInt>(ret);
 }
 
-EGA::arg_t MMainWnd::DoEgaResSearch(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_search(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2;
@@ -16288,7 +16294,7 @@ EGA::arg_t MMainWnd::DoEgaResSearch(const EGA::args_t& args)
     return array;
 }
 
-EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2;
@@ -16325,7 +16331,7 @@ EGA::arg_t MMainWnd::DoEgaResDelete(const EGA::args_t& args)
     return make_arg<AstInt>(ret);
 }
 
-EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2;
@@ -16382,7 +16388,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByName(const EGA::args_t& args)
     return make_arg<AstInt>(!found.empty());
 }
 
-EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2, arg3;
@@ -16485,7 +16491,7 @@ EGA::arg_t MMainWnd::DoEgaResCloneByLang(const EGA::args_t& args)
     return make_arg<AstInt>(!found2.empty());
 }
 
-EGA::arg_t MMainWnd::DoEgaResConst(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_const(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0 = EGA_eval_arg(args[0], true);
@@ -16510,7 +16516,7 @@ EGA::arg_t MMainWnd::DoEgaResConst(const EGA::args_t& args)
     return make_arg<AstInt>(bOK ? value : 0);
 }
 
-EGA::arg_t MMainWnd::DoEgaResSetBinary(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2, arg3;
@@ -16543,7 +16549,7 @@ EGA::arg_t MMainWnd::DoEgaResSetBinary(const EGA::args_t& args)
     return make_arg<AstInt>(ret);
 }
 
-EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2;
@@ -16582,7 +16588,69 @@ EGA::arg_t MMainWnd::DoEgaResGetBinary(const EGA::args_t& args)
     return make_arg<AstStr>(ret);
 }
 
-EGA::arg_t MMainWnd::DoEgaResSelect(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_str_get(const EGA::args_t& args)
+{
+    using namespace EGA;
+
+    WORD lang = 0;
+    int index = -1;
+
+    arg_t arg0 = EGA_eval_arg(args[0], true);
+    arg_t arg1;
+    if (args.size() >= 2)
+    {
+        arg1 = EGA_eval_arg(args[1], true);
+        index = EGA_get_int(arg1);
+    }
+
+    lang = EGA_get_int(arg0);
+    if (lang == 0)
+        return make_arg<AstInt>(0); // not found
+    
+
+    EntrySet found;
+    g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
+    if (found.empty())
+        return make_arg<AstInt>(0); // not found
+
+    // found --> str_res
+    StringRes str_res;
+    for (auto e : found)
+    {
+        MByteStreamEx stream(e->m_data);
+        if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+            return make_arg<AstInt>(0); // error
+    }
+
+    if (index >= 0)
+    {
+        for (auto& pair : str_res.map())
+        {
+            if (pair.first == static_cast<WORD>(index))
+            {
+                MWideToAnsi ansi(CP_UTF8, pair.second.c_str());
+                return make_arg<AstStr>(ansi.c_str());
+            }
+        }
+        return make_arg<AstInt>(0); // error
+    }
+
+    auto array1 = make_arg<AstContainer>(AST_ARRAY);
+    for (auto& pair : str_res.map())
+    {
+        MWideToAnsi ansi(CP_UTF8, pair.second.c_str());
+
+        auto array2 = make_arg<AstContainer>(AST_ARRAY);
+        array2->add(make_arg<AstInt>(pair.first));
+        array2->add(make_arg<AstStr>(ansi.c_str()));
+
+        array1->add(array2);
+    }
+
+    return array1;
+}
+
+EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 {
     using namespace EGA;
     arg_t arg0, arg1, arg2;
@@ -16619,7 +16687,7 @@ EGA::arg_t MMainWnd::DoEgaResSelect(const EGA::args_t& args)
     return make_arg<AstInt>(!found.empty());
 }
 
-EGA::arg_t MMainWnd::DoEgaResUnloadResH(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_unload_resh(const EGA::args_t& args)
 {
     using namespace EGA;
 
@@ -16643,7 +16711,8 @@ void EGA_extension(void)
     EGA_add_fn("RES_save", 1, 2, EGA_RES_save, "RES_save(filename[, options])");
     EGA_add_fn("RES_search", 0, 3, EGA_RES_search, "RES_search([type[, name[, lang]]])");
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
-    EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "EGA_RES_unload_resh()");
+    EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
+    EGA_add_fn("RES_str_get", 1, 2, EGA_RES_str_get, "RES_str_get(lang[, str_id])");
 }
 
 ////////////////////////////////////////////////////////////////////////////

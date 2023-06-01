@@ -289,3 +289,4 @@
     - Fixed MENUEX separator.
 - v.5.7.6 (2023-XX-YY)
     - Localized the Help menu.
+    - Added RES_str_get function to EGA.
