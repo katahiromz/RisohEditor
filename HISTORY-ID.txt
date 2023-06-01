@@ -1,0 +1,289 @@
+## SEJARAH
+
+- v.0.6 (31-08-2017)
+    - Rilisan pertama.
+- v.5.0.8 (2018-09-12)
+    - Peningkatan ikon bilah alat.
+    - Perbaikan jenis file pada ekstraksi.
+    - Tulis belati ke file sumber untuk membantu deteksi UTF-8.
+    - Perbaikan ikon tampilan pohon.
+    - Pemisahan templat sumber daya RT_DIALOG dan RT_MENU dalam bahasa.
+- v.5.0.9 (27-09-2018)
+    - Peningkatan keluaran resource.h.
+    - Peningkatan ikon file treeview.
+    - Meningkatkan impor.
+- v.5.1.0 (2018-10-08)
+    - Peningkatan dialog "Entri String" (multiline).
+    - Perbaikan perilaku Ctrl+A.
+    - Periksa kunci file saat menyimpan file.
+    - Jadikan ID sumber daya peka huruf besar-kecil.
+    - Dukungan pengkodean item sumber daya.
+    - Perbaikan penghentian abnormal pada dialog "Bahasa".
+- v.5.1.1 (2018-11-08)
+    - Terima spasi di kotak teks keterangan.
+    - Terima ruang di kotak teks bahasa.
+- v.5.1.2 (2018-12-08)
+    - Terima ruang di kotak teks nama kelas jendela.
+    - Terima literal string C di kotak teks nama kelas jendela.
+    - Peningkatan sistem templat.
+    - Aktifkan templat manifes.
+    - Perbaikan pembaruan bilah alat UI.
+    - Menampilkan jenis ID "Daftar ID Sumber Daya" dengan benar.
+    - Mengurutkan bahasa dengan benar saat keluar.
+- v.5.1.3 (2019-01-01)
+    - Perbaikan "Daftar ID Sumber Daya".
+- v.5.1.4 (13-01-2019)
+    - Tambahkan penginstal bahasa Inggris.
+    - Tambahkan penginstal Italia.
+    - Tambahkan terjemahan Italia.
+    - Tambahkan beberapa penginstal bahasa.
+- v.5.1.5 (27-01-2019)
+    - Jangan gunakan gaya diperpanjang WS_EX_MDICHILD.
+    - Mendukung ReactOS.
+- v.5.1.6 (24-02-2019)
+    - Peningkatan terjemahan bahasa Italia.
+    - Penyesuaian GUI.
+    - Perbaikan "Kloning Dalam Bahasa Baru".
+- v.5.1.7 (20-03-2019)
+    - Tambahkan gaya PBS_MARQUEE dan PBS_SMOOTHREVERSE.
+    - Perbaikan proses kesalahan kompilasi.
+- v.5.1.8 (2019-05-14)
+    - Tambahkan cek kompilasi ulang setelah kloning.
+    - Perbaikan pilihan setelah kloning.
+    - Benar gagal pada kesalahan kompilasi tabel string dan tabel pesan.
+- v.5.1.9 (2019-07-14)
+    - Input/output sumber UTF-16 yang didukung.
+- v.5.2.0 (26-07-2019)
+    - Perlakukan nilai `DIALOG STYLE` dengan benar (`WS_CAPTION` adalah nilai default dari `DIALOG STYLE`).
+    - Memperbaiki bug yang aplikasi tiba-tiba menghapus file saat membuka file EXE terkompresi tanpa memperluas.
+- v.5.2.1 (04-08-2019)
+    - "Bahasa Inggris (Amerika Serikat)" akan dipilih jika Anda memasukkan `"En"` untuk nama bahasa.
+    - Tambahkan fitur "Permintaan Konstan".
+    - Perbaikan "Tutup Semua".
+    - `WS_POPUPWINDOW | WS_BORDER` harus `WS_POPUPWINDOW | WS_CAPTION`.
+    - dukungan `RT_FONT`.
+    - Dialog "Tambah Sumber Daya" yang ditingkatkan.
+- v.5.2.2 (2019-08-14)
+    - Perbarui terjemahan Italia.
+    - Mendukung tipe sumber daya XML, XSLT, SCHEMA dan REGISTRY.
+    - Peningkatan interpretasi ketika bahasa `RT_ICON`/`RT_CURSOR` dan `RT_GROUP_ICON`/`RT_GROUP_CURSOR` tidak cocok.
+    - Peningkatan interpretasi saat ketidakcocokan bahasa `RT_DLGINIT` dan `RT_DIALOG`.
+- v.5.2.3 (2019-09-14)
+    - Perbaikan `AUTORADIOBUTTON` `GAYA`.
+    - v.5.2.4 (2019-09-15)
+    - Dukungan XP.
+- v.5.2.5 (2019-09-19)
+    - Memperbaiki bug `WS_CHILDWINDOW` di kotak daftar gaya dialog.
+    - Mengubah nama file rilis (`RisohEditor-XXXexe` dan `RisohEditor-XXXzip`).
+    - Menambahkan `TRANSLATORS.txt`.
+    - Membuat kontrol yang ditarik pemilik terlihat.
+- v.5.2.6 (23-09-2019)
+    - Peningkatan dialog Bahasa.
+    - Tambahkan terjemahan Rusia.
+    - Tampilkan pesan kesalahan jika lokasi yang dipasang memiliki karakter spasi.
+    - Tambahkan opsi `--use-temp-file` dalam menjalankan `windres` untuk memperbaiki masalah `popen`.
+- v.5.2.7 (20-10-2019)
+    - Dialog Bahasa yang ditingkatkan lagi.
+    - Perbaikan posisi tanda item dialog.
+- v.5.2.8 (2020-01-30)
+    - Perbaikan terjemahan bahasa Rusia.
+    - Mampu menampilkan kontrol yang tidak terdefinisi.
+    - Menambahkan opsi "Gunakan BEGIN/END".
+    - Memperbaiki bug yang DLL tidak dapat disimpan sebagai nama lain.
+- v.5.2.9 (2020-02-01)
+    - Dukungan XP untuk 5.2.8 dilupakan. Sekarang diaktifkan.
+    - Memperbaiki pemrosesan penyimpanan file.
+    - Mampu menyimpan file EXE/DLL tanpa executable milik pengguna.
+    - Memperbaiki cara membuat cadangan.
+- v.5.3.0 (2020-02-06)
+    - Menambahkan `ES_AUTOHSCROLL` ke beberapa kotak teks.
+    - Memperbaiki kesalahan logis saat menimpa file.
+- v.5.3.1 (23-02-2020)
+    - Perbaikan dan Peningkatan pembacaan/penampilan sumber daya menu.
+    - Peningkatan penanganan `IDC_STATIC`.
+    - Jendela "Daftar ID Sumber Daya" yang ditingkatkan.
+- v.5.3.2 (2020-03-02)
+    - Dapat menyimpan dengan `Ctrl+S` tanpa menanyakan lokasi.
+    - Jadikan opsi "Output RC files as UTF-16" non-volatile.
+    - Bawa jendela "Daftar ID Sumber Daya" ke atas.
+- v.5.3.3 (2020-03-03)
+    - Mengurangi ukuran file dari 9MB menjadi 3MB.
+- v.5.3.4 (2020-03-19)
+    - Mengubah perilaku tombol penyimpanan bilah alat.
+    - Memperkenalkan otomatisasi dengan menggunakan bahasa pemrograman EGA.
+    - Menambahkan konfirmasi untuk menyimpan perubahan file.
+- v.5.3.5 (26-03-2020)
+    - Peningkatan terjemahan bahasa Italia.
+    - Perbaikan konfirmasi simpan yang tidak perlu.
+- v.5.3.6 (15-04-2020)
+    - Loop tak terbatas dihindari dengan mengubah variabel loop menjadi 32-bit.
+    - Dukungan data Delphi DFM.
+    - Menu konteks yang ditingkatkan.
+- v.5.3.7 (28-04-2020)
+    - Bendera perubahan file yang diperbarui saat file jatuh.
+    - Memperbaiki nama file saat mengekstraksi.
+    - EGA yang diperkuat.
+    - Peningkatan terjemahan bahasa Rusia.
+- v.5.3.8 (22-05-2020)
+    - Menambahkan item "Buka Manual EGA" ke menu "Otomasi".
+    - Mengontrol bendera perubahan file dengan ketat.
+- v.5.3.9 (2020-06-01)
+    - Menambahkan fitur "mengganti-dialog-font".
+    - Memindahkan beberapa item menu ke menu "Edit".
+    - Menambahkan nilai-nol-periksa nama sumber daya dan jenis sumber daya.
+    - Menambahkan gaya `DS_CENTER` ke dialog sumber daya sampel.
+    - Mengaktifkan tombol fungsi F1, F3, F5 dan F6.
+    - Menambahkan versi Portable.
+    - Fitur pencarian yang ditingkatkan.
+- v.5.4.0 (2020-06-13)
+    - Memperbaiki output `RT_ACCELERATOR` (unsigned 16-bit).
+    - Menghapus opsi "Simpan ke folder res".
+    - Memperbaiki kerusakan saat mengedit GUI.
+    - Fitur ekstraksi yang diperkuat.
+    - Memperbaiki fitur mengganti-dialog-font.
+    - Menggunakan jalur lengkap untuk bilah judul.
+    - Menambahkan panah bahasa drop-down.
+    - Memperbaiki dialog "Permintaan Konstan".
+    - Memperbaiki dialog "Encoding of Resource Item".
+    - Dialog "Asosiasi ID" yang ditingkatkan.
+    - Peningkatan dialog "Makro yang Ditentukan Sebelumnya".
+    - Dialog "Konfigurasi" yang ditingkatkan.
+    - Memperbaiki dialog "Cari".
+    - Pesan status yang ditingkatkan.
+    - Peningkatan penanganan bendera yang dimodifikasi.
+- v.5.4.1 (14-06-2020)
+    - Memperbaiki bug yang gagal disimpan oleh penimpaan kedua.
+    - Memperbaiki teks bilah judul.
+    - Memperbaiki pesan bilah status.
+    - Menambahkan terjemahan bahasa Jerman.
+    - Menambahkan terjemahan bahasa Prancis.
+- v.5.4.2 (2020-06-18)
+    - Menambahkan kontrol tab untuk memilih "Editor Kode" atau "Penampil Hex".
+    - Peningkatan terjemahan Jerman dan Prancis.
+    - Memperbaiki panah drop-down bahasa.
+    - Memperbaiki pemrosesan pengkodean Unicode.
+    - Peningkatan ekspor dan ekstraksi.
+    - Dialog EGA yang ditingkatkan.
+- v.5.4.3 (2020-07-03)
+    - Peningkatan nama file ekstraksi.
+    - Mengurutkan item treeview setelah mengubah nama/bahasa sumber daya.
+    - Ekstraksi ikon/kursor yang ditingkatkan.
+    - Peningkatan kode baris baru dari teks yang disandikan.
+    - Memperbaiki dialog "Tambah Sumber Daya".
+    - Membuat HTML/Manifest dapat diimpor.
+    - Menambahkan fitur pemeriksaan pembaruan di menu "Bantuan".
+    - Memperbaiki judul kotak pesan.
+    - Santai batas karakter dan mendukung data besar.
+    - Atur ulang checksum ke nol saat menyimpan file.
+- v.5.4.4 (2020-07-09)
+    - Membersihkan isi file sebelum menggunakannya.
+    - Mendukung data Delphi DFM internasional.
+    - Memasukkan item menu "Delphi DFM Settings" ke dalam menu "Edit".
+    - Atur ulang checksum dengan benar ke nol saat menyimpan file.
+    - Memperbaiki bug di mana kontrol digeser sebesar 1 piksel.
+    - Menambahkan beberapa menunggu saat menyimpan file, untuk pemeriksa virus.
+    - Menambahkan tautan "Panduan untuk RisohEditor" ke menu "Bantuan".
+- v.5.4.5 (2020-08-03)
+    - Menambahkan terjemahan bahasa Indonesia.
+    - Menambahkan pelengkapan otomatis untuk kotak kombo bahasa.
+- v.5.4.6 (2020-10-03)
+    - Cache yang dihapus dalam pemeriksaan versi.
+    - Memperbaiki posisi dialog uji.
+    - Memperbaiki bug yang `RT_DLGINIT` menghilang tanpa izin.
+- v.5.4.7 (2020-10-18)
+    - Downgrade Inno Setup ke 5.6.1 untuk dukungan XP.
+    - Dukungan awal kelas jendela ActiveX "AtlAxWin140" pada dialog pengujian.
+- v.5.4.8 (2020-11-12)
+    - Menambahkan terjemahan bahasa Finlandia.
+    - Menambahkan asosiasi file *.rc dan *.res.
+    - Dukungan awal dari kontrol OLE.
+    - Menghapus MOleCtrl dan menambahkan MOleHost.
+    - Data REGINST yang didukung.
+- v.5.4.9 (21-01-2021)
+    - Segarkan Daftar ID setelah mengganti nama item treeview.
+- v.5.5.0 (26-01-2021)
+    - Tambahkan terjemahan Korea.
+- v.5.5.1 (2021-02-02)
+    - Windres yang ditingkatkan menjadi 2.36.
+    - Item menu BITMAP atau OWNERDRAW dapat dikompilasi.
+- v.5.5.2 (27-02-2021)
+    - Memperbaiki Ctrl+A pada kotak teks Win2k3.
+    - Menambahkan program tlb2idl untuk memproses jenis sumber daya TYPELIB.
+    - Pratinjau TYPELIB yang didukung.
+    - Menambahkan terjemahan bahasa Polandia.
+    - Nonaktifkan fitur "Bungkus pernyataan manifes" sebagai default.
+- v.5.5.3 (30-03-2021)
+    - Upgrade windres.exe ke 2.36.1.
+    - Menggunakan nama jalur pendek untuk menelurkan subproses mcpp.exe dan windres.exe.
+- v.5.5.4 (2021-04-13)
+    - Perbaikan mengimpor ikon Vista.
+- v.5.5.5 (23-04-2021)
+    - Program tlb2idl yang dihapus.
+    - Menambahkan program OleBow untuk memproses jenis sumber daya TYPELIB.
+    - Mengkompilasi TYPELIB jika kompiler MIDL tersedia.
+- v.5.5.6 (29-04-2021)
+    - Membuat file *.rc dapat diimpor.
+    - Memperbaiki tampilan panah bahasa TreeView.
+- v.5.5.7 (2021-06-12)
+    - Menambahkan nomor baris.
+- v.5.5.8 (2021-06-15)
+    - Menandai garis saat terjadi kesalahan.
+    - Memperbaiki Ctrl+A.
+    - Diperbarui mcpp.exe dan dfmsc.exe.
+- v.5.5.9 (16-06-2021)
+    - Memperbaiki pemuatan resource.h makro.
+- v.5.6.0 (2021-06-19)
+    - Jangan kompres dfmsc.exe (untuk keamanan).
+    - Didukung baris perintah.
+    - Menambahkan fungsi RES_load dan RES_save ke bahasa EGA.
+- v.5.6.1 (2021-07-01)
+    - Memperbaiki nilai pengembalian proses.
+    - Penanganan tabel pesan yang ditingkatkan.
+    - Jangan ubah huruf besar-kecil nama saat mengganti namanya di TreeView.
+- v.5.6.2 (2021-08-15)
+    - Lebar dialog "Simpan Opsi" dan "Opsi Ekspor" yang diperbesar.
+    - Menambahkan solusi untuk menambahkan tabel pesan pada mode yang kompatibel dengan Microsoft.
+- v.5.6.3 (2021-12-12)
+    - Menambahkan sampel win32.
+    - Menambahkan "Pilihan Bahasa UI".
+- v.5.6.4 (2021-12-16)
+    - Meminta kompilasi sebelum membuka edit GUI.
+- v.5.6.5 (2021-12-18)
+    - Tombol BS_OWNERDRAW adalah PUSHBUTTON.
+    - Menambahkan fitur "Salin ke beberapa bahasa".
+    - Memperbaiki bug jendela RAD (Kritis).
+- v.5.6.6 (25-12-2021)
+    - Mengklik dua kali jendela RAD akan membuka properti kontrol/dialog.
+    - Peningkatan dukungan kursor ANI.
+- v.5.6.7 (13-01-2022)
+    - Menambahkan terjemahan Portugis.
+    - Dukungan WinXP lagi (jangan gunakan GetThreadUILanguage() di XP).
+- v.5.6.8 (2022-01-17)
+    - Mengubah fokus awal IDD_CTRLPROP.
+    - Memperbaiki beberapa info versi.
+- v.5.6.9 (2022-03-09)
+    - Membagi teks sejarah.
+    - Berganti nama menjadi README.
+    - Menambahkan WS_CLIPCHILDREN untuk jendela RAD untuk mengurangi kedipan.
+- v.5.7.0 (2022-03-18)
+    - Memperbaiki kompilasi ulang dalam pengelolaan ID sumber daya.
+- v.5.7.1 (28-03-2022)
+    - Dialog info versi yang ditingkatkan.
+    - Didukung ke metode berkedip karena tampilan kontrol yang salah.
+    - Mengingat fokus jendela utama.
+- v.5.7.2 (2022-06-07)
+    - Didukung sumber daya TOOLBAR.
+- v.5.7.3 (2023-04-01)
+    - Peningkatan kinerja kecil.
+    - Peningkatan "Salin ke beberapa bahasa".
+    - Memperbaiki FILESUBTYPE dari VERSIONINFO.
+    - Membuat "~" akhiran cadangan daripada "-lama".
+    - Mengganti nama "Mengganti Font Dialog..." sebagai "Pengganti font dialog..."
+- v.5.7.4 (2023-04-02)
+    - Menambahkan nomor versi ke IDS_NOTICE.
+    - Konsol EGA yang ditingkatkan.
+    - Memperbaiki penginstal yang setengah rusak.
+- v.5.7.5 (2023-05-08)
+    - Peningkatan dialog IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
+    - Menambahkan penginstal Korea.
+    - Memperbaiki pemisah MENUEX.

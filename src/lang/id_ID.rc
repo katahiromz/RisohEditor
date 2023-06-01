@@ -1246,7 +1246,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_FONTSUBST DIALOG 0, 0, 185, 180
-CAPTION "Dialog Font Substitutes"
+CAPTION "Penggantian Fon Dialog"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1521,12 +1521,12 @@ STRINGTABLE
     IDS_CANTWRITERESH, "Tidak bisa menulis ""resource.h""."
     IDS_SAVERESH, "Simpan Berkas ""resource.h"""
     IDS_DLLFILTER, "Berkas DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Semua Berkas (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc)|*.rc|Semua Berkas (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc)|*.rc|Semua Berkas (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "Tidak dapat menguji dialog karena ini adalah anak jendela."
     IDS_CANTTESTCLASSDLG, "Tidak dapat menguji dialog karena telah digolongkan."
     IDS_FILEISUPXED, "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak memperluasnya, berkas mungkin akan gagal terbaca."
     IDS_CANTUPXEXTRACT, "Tidak bisa mengekstrak dengan UPX."
-    IDS_CANTSAVEUPXED, "Tidak bisa menyimpan berkas karena berupa kompresan oleh UPX."
+    IDS_CANTSAVEUPXED, "Tidak bisa menyimpan berkas karena berupa berkas kompres oleh UPX."
     IDS_MESSAGEID, "ID Pesan"
     IDS_MESSAGEVALUE, "Nilai Pesan"
     IDS_RCFILTER, "Berkas RC (*.rc)|*.rc|"
@@ -1559,7 +1559,7 @@ STRINGTABLE
     IDS_DLGINIT3, "Mohon tentukan daftar strings karakter yang dipisah oleh line break untuk RT_DLGINIT."
     IDS_SAMELANG, "Ini adalah bahasa yang sama."
     IDS_SAMENAME, "Ini adalah sumber daya yang sama."
-    IDS_CANTSAVETOEXE, "Tidak bisa menyimpan EXE dari berkas non-eksekutabel."
+    IDS_CANTSAVETOEXE, "Tidak bisa menyimpan EXE dari berkas yang tidak bisa dieksekusi."
     IDS_CANTSTARTSEARCH, "Tidak bisa memulai pencarian."
     IDS_AMERICA, "Amerika"
     IDS_ENGLISH, "Inggris"
@@ -1568,7 +1568,7 @@ STRINGTABLE
     IDS_RUSSIA, "Rusia"
     IDS_RUSSIAN, "Rusia"
     IDS_WANNAGENRESH, "Anda ingin membuat 'resource.h'?"
-    IDS_EXEFILTER, "Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Semua Berkas (*.*)|*.*|"
+    IDS_EXEFILTER, "Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Semua Berkas (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "Simpan Dengan Kompresi"
     IDS_TOOL_NEW, "Baru"
     IDS_TOOL_OPEN, "Buka..."
