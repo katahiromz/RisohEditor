@@ -2582,18 +2582,7 @@ protected:
     void OnFonts(HWND hwnd);
     void OnAbout(HWND hwnd);
     void OnConfig(HWND hwnd);
-    void OnOpenDocument(HWND hwnd, LPCWSTR filename);
-    void OnOpenReadMe(HWND hwnd);
-    void OnOpenReadMeIt(HWND hwnd);
-    void OnOpenReadMeJp(HWND hwnd);
-    void OnOpenReadMeKo(HWND hwnd);
-    void OnOpenEgaManual(HWND hwnd);
-    void OnOpenLicense(HWND hwnd);
-    void OnOpenHistory(HWND hwnd);
-    void OnOpenHistoryIta(HWND hwnd);
-    void OnOpenHistoryJpn(HWND hwnd);
-    void OnOpenHistoryKor(HWND hwnd);
-    void OnOpenHyojunka(HWND hwnd);
+    void OnOpenLocalFile(HWND hwnd, LPCWSTR filename);
     void OnDebugTreeNode(HWND hwnd);
     void OnAdviceResH(HWND hwnd);
     void OnUnloadResH(HWND hwnd);
@@ -5087,7 +5076,7 @@ void MMainWnd::OnEdit(HWND hwnd)
     SelectTV(entry, TRUE);
 }
 
-void MMainWnd::OnOpenDocument(HWND hwnd, LPCWSTR filename)
+void MMainWnd::OnOpenLocalFile(HWND hwnd, LPCWSTR filename)
 {
     // compile if necessary
     if (!CompileIfNecessary(::IsWindowVisible(m_rad_window)))
@@ -5115,68 +5104,6 @@ void MMainWnd::OnOpenDocument(HWND hwnd, LPCWSTR filename)
             return;
         }
     }
-}
-
-// open README (English)
-void MMainWnd::OnOpenReadMe(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"README.txt");
-}
-
-// Open README (Japanese)
-void MMainWnd::OnOpenReadMeJp(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"README-JPN.txt");
-}
-
-// Open README (Italian)
-void MMainWnd::OnOpenReadMeIt(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"README-ITA.txt");
-}
-
-// Open README (Korean)
-void MMainWnd::OnOpenReadMeKo(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"README-KOR.txt");
-}
-
-// Open HYOJUNKA.txt (Japanese)
-void MMainWnd::OnOpenHyojunka(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"HYOJUNKA.txt");
-}
-
-// Open EGA Manual
-void MMainWnd::OnOpenEgaManual(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"EGA\\EGA-Manual.pdf");
-}
-
-// open the license text file
-void MMainWnd::OnOpenLicense(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"LICENSE.txt");
-}
-
-void MMainWnd::OnOpenHistory(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"HISTORY.txt");
-}
-
-void MMainWnd::OnOpenHistoryIta(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"HISTORY-ITA.txt");
-}
-
-void MMainWnd::OnOpenHistoryJpn(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"HISTORY-JPN.txt");
-}
-
-void MMainWnd::OnOpenHistoryKor(HWND hwnd)
-{
-    OnOpenDocument(hwnd, L"HISTORY-KOR.txt");
 }
 
 // do UPX test to check whether the file is compressed or not
@@ -11696,10 +11623,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         UpdateNames();
         break;
     case ID_OPENREADME:
-        OnOpenReadMe(hwnd);
+        OnOpenLocalFile(hwnd, L"README.txt");
         break;
     case ID_OPENREADMEJP:
-        OnOpenReadMeJp(hwnd);
+        OnOpenLocalFile(hwnd, L"README-JPN.txt");
         break;
     case ID_LOADWCLIB:
         OnLoadWCLib(hwnd);
@@ -11758,22 +11685,22 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnUpdateResHBang(hwnd);
         break;
     case ID_OPENLICENSE:
-        OnOpenLicense(hwnd);
+        OnOpenLocalFile(hwnd, L"LICENSE.txt");
         break;
     case ID_OPENHISTORY:
-        OnOpenHistory(hwnd);
+        OnOpenLocalFile(hwnd, L"HISTORY.txt");
         break;
     case ID_OPENHISTORYITA:
-        OnOpenHistoryIta(hwnd);
+        OnOpenLocalFile(hwnd, L"HISTORY-ITA.txt");
         break;
     case ID_OPENHISTORYJPN:
-        OnOpenHistoryJpn(hwnd);
+        OnOpenLocalFile(hwnd, L"HISTORY-JPN.txt");
         break;
     case ID_OPENHISTORYKOR:
-        OnOpenHistoryKor(hwnd);
+        OnOpenLocalFile(hwnd, L"HISTORY-KOR.txt");
         break;
     case ID_OPENHYOJUNKA:
-        OnOpenHyojunka(hwnd);
+        OnOpenLocalFile(hwnd, L"HYOJUNKA.txt");
         break;
     case ID_DEBUGTREENODE:
         OnDebugTreeNode(hwnd);
@@ -11859,10 +11786,10 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         OnEgaProgram(hwnd);
         break;
     case ID_OPENREADMEIT:
-        OnOpenReadMeIt(hwnd);
+        OnOpenLocalFile(hwnd, L"README-ITA.txt");
         break;
     case ID_OPEN_EGA_MANUAL:
-        OnOpenEgaManual(hwnd);
+        OnOpenLocalFile(hwnd, L"EGA\\EGA-Manual.pdf");
         break;
     case ID_DIALOG_FONT_SUBSTITUTES:
         OnDialogFontSubst(hwnd);
@@ -11898,7 +11825,7 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         DoLangEditAutoCompleteRelease(hwnd);
         break;
     case ID_OPENREADMEKO:
-        OnOpenReadMeKo(hwnd);
+        OnOpenLocalFile(hwnd, L"README-KOR.txt");
         break;
     case ID_CHOOSEUILANG:
         {
@@ -11906,6 +11833,15 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
             if (dialog.DialogBoxDx(hwnd) == IDOK)
                 s_ui_lang = dialog.m_langid;
         }
+        break;
+    case ID_OPENREADMETR:
+        OnOpenLocalFile(hwnd, L"README-TR.txt");
+        break;
+    case ID_OPENREADMEID:
+        OnOpenLocalFile(hwnd, L"README-ID.txt");
+        break;
+    case ID_OPENHISTORYID:
+        OnOpenLocalFile(hwnd, L"HISTORY-ID.txt");
         break;
     default:
         bUpdateStatus = FALSE;

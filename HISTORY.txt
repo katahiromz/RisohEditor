@@ -288,3 +288,4 @@
     - Added Korean installer.
     - Fixed MENUEX separator.
 - v.5.7.6 (2023-XX-YY)
+    - Localized the Help menu.

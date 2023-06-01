@@ -289,3 +289,4 @@
     - 한국어 설치 프로그램이 추가되었습니다.
     - 고정된 MEENEX 구분 기호입니다.
 - v.5.7.6 (2023-XX-YY)
+    - Localized the Help menu.

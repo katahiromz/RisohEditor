@@ -288,3 +288,4 @@
     - Menambahkan penginstal Korea.
     - Memperbaiki pemisah MENUEX.
 - v.5.7.6 (2023-XX-YY)
+    - Localized the Help menu.

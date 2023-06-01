@@ -134,8 +134,6 @@ IDR_MAINMENU MENU
     POPUP "&Справка"
     {
         MENUITEM "О&ткрыть файл README.txt (английский)", ID_OPENREADME
-        MENUITEM "О&ткрыть файл READMEI&T.txt (итальянский)", ID_OPENREADMEIT
-        MENUITEM "От&крыть файл READMEJP.txt (японский)", ID_OPENREADMEJP
         MENUITEM "Отк&рыть файл LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Руководство пользователя RisohEditor", ID_GUIDE

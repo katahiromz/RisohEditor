@@ -134,8 +134,6 @@ IDR_MAINMENU MENU
     POPUP "A&juda"
     {
         MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
-        MENUITEM "Abrir README-I&TA.txt (Italiano)", ID_OPENREADME
-        MENUITEM "Abrir README-&JPN.txt (Japonês)", ID_OPENREADMEJP
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "Um &Guia do RisohEditor", ID_GUIDE
