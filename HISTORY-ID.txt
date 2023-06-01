@@ -287,3 +287,4 @@
     - Peningkatan dialog IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
     - Menambahkan penginstal Korea.
     - Memperbaiki pemisah MENUEX.
+- v.5.7.6 (2023-XX-YY)
