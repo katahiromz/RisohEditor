@@ -56,9 +56,14 @@ public:
         return m_map;
     }
 
-    void GetIdRange(WORD name, WORD& first, WORD& last) const
+    void IdRangeFromName(WORD name, WORD& first, WORD& last) const
     {
         first = (name - 1) * 16;
         last = first + 16 - 1;
+    }
+
+    WORD NameFromId(WORD id) const
+    {
+        return (id / 16) + 1;
     }
 };

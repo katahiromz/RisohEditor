@@ -51,7 +51,7 @@ bool
 StringRes::SaveToStream(MByteStreamEx& stream, WORD wName)
 {
     WORD first, last;
-    GetIdRange(wName, first, last);
+    IdRangeFromName(wName, first, last);
 
     for (UINT i = first; i <= last; ++i)
     {
@@ -77,7 +77,7 @@ StringRes::Dump(WORD wName)
         ret += L"{\r\n";
 
     WORD first, last;
-    GetIdRange(wName, first, last);
+    IdRangeFromName(wName, first, last);
     for (UINT i = first; i <= last; ++i)
     {
         if (m_map[i].empty())
