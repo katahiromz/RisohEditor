@@ -290,3 +290,4 @@
 - v.5.7.6 (2023-06-02)
     - Localized the Help menu.
     - Added RES_str_get and RES_str_set functions to EGA.
+- v.5.7.7 (2023-XX-YY)
