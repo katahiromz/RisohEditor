@@ -289,8 +289,8 @@
     - 한국어 설치 프로그램이 추가되었습니다.
     - 고정된 MEENEX 구분 기호입니다.
 - v.5.7.6 (2023-06-02)
-    - Localized the Help menu.
-    - Added RES_str_get and RES_str_set functions to EGA.
+    - 도움말 메뉴를 현지화했습니다.
+    - EGA에 RES_str_get 및 RES_str_set 함수를 추가했습니다.
 - v.5.7.7 (2023-XX-YY)
-    - Commonized IDD_ADDDLGINIT and IDD_MODIFYDLGINIT.
+    - 공통화된 IDD_ADDLGINIT 및 IDD_MODIFYDLGINIT.
     - Changed the design of RES_str_get and RES_str_set.
