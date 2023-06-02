@@ -287,6 +287,6 @@
     - Improved IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
     - Added Korean installer.
     - Fixed MENUEX separator.
-- v.5.7.6 (2023-XX-YY)
+- v.5.7.6 (2023-06-02)
     - Localized the Help menu.
     - Added RES_str_get and RES_str_set functions to EGA.
