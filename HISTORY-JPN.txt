@@ -636,3 +636,4 @@
     - EGA に RES_str_get と RES_str_set 関数を追加。
 - v.5.7.7 (2023-XX-YY)
     - IDD_ADDDLGINIT と IDD_MODIFYDLGINIT を共通化。
+    - Changed the design of RES_str_get and RES_str_set.

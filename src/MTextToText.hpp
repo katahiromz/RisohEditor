@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MTEXTTOTEXT_HPP_
-#define MZC4_MTEXTTOTEXT_HPP_       5       /* Version 5 */
+#define MZC4_MTEXTTOTEXT_HPP_       6       /* Version 6 */
 
 class MAnsiToWide;
 class MWideToAnsi;
@@ -67,6 +67,16 @@ public:
         return c_str();
     }
 
+    const MStringW& str() const
+    {
+        return m_str;
+    }
+
+    MStringW& str()
+    {
+        return m_str;
+    }
+
 protected:
     MStringW m_str;
     void do_it(int codepage, const char *str, size_t count);
@@ -123,6 +133,16 @@ public:
     operator const char *() const
     {
         return c_str();
+    }
+
+    const MStringA& str() const
+    {
+        return m_str;
+    }
+
+    MStringA& str()
+    {
+        return m_str;
     }
 
 protected:

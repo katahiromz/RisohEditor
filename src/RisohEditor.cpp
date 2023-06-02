@@ -1086,7 +1086,7 @@ void InitConstantComboBox(HWND hCmb)
 
     for (auto& pair : g_settings.id_map)
     {
-        MAnsiToWide wide(CP_ACP, pair.first.c_str());
+        MAnsiToWide wide(CP_ACP, pair.first);
 
         if (ComboBox_FindStringExact(hCmb, -1, wide.c_str()) != CB_ERR)
             continue;
@@ -2418,7 +2418,8 @@ public:
     EGA::arg_t RES_get_binary(const EGA::args_t& args);
     EGA::arg_t RES_set_binary(const EGA::args_t& args);
     EGA::arg_t RES_const(const EGA::args_t& args);
-    EGA::arg_t RES_str_get(const EGA::args_t& args);
+    EGA::arg_t RES_str_get(EGA::arg_t arg0);
+    EGA::arg_t RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1);
     EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1);
     EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2);
 
@@ -2876,14 +2877,14 @@ std::wstring MMainWnd::ParseVersionFile(LPCWSTR pszFile, std::wstring& url) cons
             {
                 str = str.substr(8);
                 mstr_trim(str, " \t\r\n");
-                MAnsiToWide a2w(CP_ACP, str.c_str());
+                MAnsiToWide a2w(CP_ACP, str);
                 ret = a2w.c_str();
             }
             else if (str.find("URL:") == 0)
             {
                 str = str.substr(4);
                 mstr_trim(str, " \t\r\n");
-                MAnsiToWide a2w(CP_ACP, str.c_str());
+                MAnsiToWide a2w(CP_ACP, str);
                 url = a2w.c_str();
             }
         }
@@ -4663,7 +4664,7 @@ void MMainWnd::SetErrorMessage(const MStringA& strOutput, BOOL bBox)
     }
     else
     {
-        MAnsiToWide wide(CP_ACP, strOutput.c_str());
+        MAnsiToWide wide(CP_ACP, strOutput);
         MsgBoxDx(wide.c_str(), MB_ICONERROR);
     }
 }
@@ -6893,7 +6894,7 @@ BOOL MMainWnd::CompileRCData(MStringA& strOutput, const MIdOrString& name, WORD 
     if (!entry || !entry->is_delphi_dfm())
         return FALSE;
 
-    MWideToAnsi w2a(CP_UTF8, strWide.c_str());
+    MWideToAnsi w2a(CP_UTF8, strWide);
     MStringA ansi(w2a.c_str());
 
     // remove "//-" ... "-//"
@@ -8013,7 +8014,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
         }
         else
         {
-            MAnsiToWide a2w(CP_ACP, strOutput.c_str());
+            MAnsiToWide a2w(CP_ACP, strOutput);
             ErrorBoxDx(a2w.c_str());
         }
     }
@@ -8073,7 +8074,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
     // dump a comment and a LANGUAGE statement
     MString strLang = ::GetLanguageStatement(lang, TRUE);
     strLang += L"\r\n";
-    file.WriteSzA(MWideToAnsi(CP_ACP, strLang.c_str()).c_str());
+    file.WriteSzA(MWideToAnsi(CP_ACP, strLang).c_str());
 
     // search the language entries
     EntrySet found;
@@ -8114,7 +8115,7 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
             {
                 file.WriteSzA(comment_sep.c_str());
                 MStringW strType = res2text.GetResTypeName(type);
-                MWideToAnsi utf8(CP_UTF8, strType.c_str());
+                MWideToAnsi utf8(CP_UTF8, strType);
                 file.WriteSzA("// ");
                 file.WriteSzA(utf8.c_str());
                 file.WriteSzA("\r\n\r\n");
@@ -8698,13 +8699,13 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 {
                     // write "#ifdef LANGUAGE_...\r\n"
                     file.WriteSzA("#ifdef LANGUAGE_");
-                    MWideToAnsi lang2_w2a(CP_ACP, lang_name2.c_str());
+                    MWideToAnsi lang2_w2a(CP_ACP, lang_name2);
                     file.WriteSzA(lang2_w2a.c_str());
                     file.WriteSzA("\r\n");
 
                     // write "#define \"lang/....rc\"\r\n"
                     file.WriteSzA("    #include \"lang/");
-                    MWideToAnsi lang1_w2a(CP_ACP, lang_name1.c_str());
+                    MWideToAnsi lang1_w2a(CP_ACP, lang_name1);
                     file.WriteSzA(lang1_w2a.c_str());
                     file.WriteSzA(".rc\"\r\n");
 
@@ -8735,7 +8736,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                 {
                     // write "#include \"lang/....rc\"\r\n"
                     file.WriteSzA("#include \"lang/");
-                    file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1.c_str()).c_str());
+                    file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1).c_str());
                     file.WriteSzA(".rc\"\r\n");
                 }
             }
@@ -14699,7 +14700,7 @@ LRESULT MMainWnd::OnTLB2IDL(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     std::string ansi;
     ansi = tlb_text_from_binary(m_szOleBow, entry.ptr(), entry.size());
-    MAnsiToWide a2w(CP_UTF8, ansi.c_str());
+    MAnsiToWide a2w(CP_UTF8, ansi);
     str = a2w.c_str();
     return 0;
 }
@@ -14712,7 +14713,7 @@ LRESULT MMainWnd::OnDelphiDFMB2T(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     auto ansi = dfm_text_from_binary(m_szDFMSC, entry.ptr(), entry.size(),
                                      g_settings.nDfmCodePage, g_settings.bDfmRawTextComments);
-    MAnsiToWide a2w(CP_UTF8, ansi.c_str());
+    MAnsiToWide a2w(CP_UTF8, ansi);
     str = a2w.c_str();
     return 0;
 }
@@ -16181,7 +16182,10 @@ EGA::arg_t EGA_FN EGA_RES_const(const EGA::args_t& args)
 
 EGA::arg_t EGA_FN EGA_RES_str_get(const EGA::args_t& args)
 {
-    return s_pMainWnd->RES_str_get(args);
+    if (args.size() == 1)
+        return s_pMainWnd->RES_str_get(args[0]);
+    else
+        return s_pMainWnd->RES_str_get(args[0], args[1]);
 }
 
 EGA::arg_t EGA_FN EGA_RES_str_set(const EGA::args_t& args)
@@ -16203,7 +16207,7 @@ MIdOrString EGA_get_id_or_str(const arg_t& arg0)
     else
     {
         std::string str = EGA_get_str(arg0);
-        MAnsiToWide wide(CP_UTF8, str.c_str());
+        MAnsiToWide wide(CP_UTF8, str);
         ret = wide.c_str();
     }
 
@@ -16214,8 +16218,8 @@ EGA::arg_t EGA_set_id_or_str(const MIdOrString& id)
 {
     if (id.is_str())
     {
-        MWideToAnsi ansi(CP_UTF8, id.m_str.c_str());
-        return EGA::make_arg<AstStr>(ansi.c_str());
+        MWideToAnsi ansi(CP_UTF8, id.m_str);
+        return EGA::make_arg<AstStr>(ansi.str());
     }
     else
     {
@@ -16604,29 +16608,17 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
     return make_arg<AstStr>(ret);
 }
 
-EGA::arg_t MMainWnd::RES_str_get(const EGA::args_t& args)
+EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 {
     using namespace EGA;
 
-    WORD lang = 0;
-    int index = -1;
-
-    arg_t arg0 = EGA_eval_arg(args[0], true);
-    arg_t arg1;
-    if (args.size() >= 2)
-    {
-        arg1 = EGA_eval_arg(args[1], true);
-        index = EGA_get_int(arg1);
-    }
-
-    lang = EGA_get_int(arg0);
-    if (lang == 0)
-        return make_arg<AstInt>(0); // not found
+    arg0 = EGA_eval_arg(arg0, true);
+    WORD lang = static_cast<WORD>(EGA_get_int(arg0));
 
     EntrySet found;
     g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
     if (found.empty())
-        return make_arg<AstInt>(0); // not found
+        return make_arg<AstContainer>(); // error
 
     // found --> str_res
     StringRes str_res;
@@ -16634,35 +16626,59 @@ EGA::arg_t MMainWnd::RES_str_get(const EGA::args_t& args)
     {
         MByteStreamEx stream(e->m_data);
         if (!str_res.LoadFromStream(stream, e->m_name.m_id))
-            return make_arg<AstInt>(0); // error
+            return make_arg<AstContainer>(); // error
     }
 
-    if (index >= 0)
-    {
-        for (auto& pair : str_res.map())
-        {
-            if (pair.first == static_cast<WORD>(index))
-            {
-                MWideToAnsi ansi(CP_UTF8, pair.second.c_str());
-                return make_arg<AstStr>(ansi.c_str());
-            }
-        }
-        return make_arg<AstInt>(0); // error
-    }
-
-    auto array1 = make_arg<AstContainer>(AST_ARRAY);
+    auto array1 = make_arg<AstContainer>();
     for (auto& pair : str_res.map())
     {
-        MWideToAnsi ansi(CP_UTF8, pair.second.c_str());
+        MWideToAnsi ansi(CP_UTF8, pair.second);
 
-        auto array2 = make_arg<AstContainer>(AST_ARRAY);
+        auto array2 = make_arg<AstContainer>();
         array2->add(make_arg<AstInt>(pair.first));
-        array2->add(make_arg<AstStr>(ansi.c_str()));
+        array2->add(make_arg<AstStr>(ansi.str()));
 
         array1->add(array2);
     }
 
     return array1;
+}
+
+EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1)
+{
+    using namespace EGA;
+
+    arg0 = EGA_eval_arg(arg0, true);
+    arg1 = EGA_eval_arg(arg1, true);
+    WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+    int index = EGA_get_int(arg1);
+    if (index < 0)
+        return make_arg<AstStr>(); // error
+
+    EntrySet found;
+    g_res.search(found, ET_LANG, RT_STRING, static_cast<WORD>(0), lang);
+    if (found.empty())
+        return make_arg<AstStr>(); // error
+
+    // found --> str_res
+    StringRes str_res;
+    for (auto e : found)
+    {
+        MByteStreamEx stream(e->m_data);
+        if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+            return make_arg<AstStr>(); // error
+    }
+
+    for (auto& pair : str_res.map())
+    {
+        if (pair.first == static_cast<WORD>(index))
+        {
+            MWideToAnsi ansi(CP_UTF8, pair.second);
+            return make_arg<AstStr>(ansi.str());
+        }
+    }
+
+    return make_arg<AstStr>(); // error
 }
 
 EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
@@ -16673,10 +16689,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
     WORD lang = static_cast<WORD>(EGA_get_int(arg0));
     auto array1 = EGA_get_array(arg1);
 
-    g_res.search_and_delete(ET_ANY, RT_STRING, (WORD)0, lang);
-
     StringRes str_res;
-
     for (size_t i = 0; i < array1->size(); ++i)
     {
         auto ary2 = (*array1)[i];
@@ -16687,9 +16700,11 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
         WORD str_id = static_cast<WORD>(EGA_get_int(array2[0]));
         auto str = EGA_get_str(array2[1]);
 
-        MAnsiToWide wide(CP_UTF8, str.c_str());
+        MAnsiToWide wide(CP_UTF8, str);
         str_res.map()[str_id] = wide.c_str();
     }
+
+    g_res.search_and_delete(ET_ANY, RT_STRING, (WORD)0, lang);
 
     std::set<WORD> names;
     for (auto& pair : str_res.map())
@@ -16734,7 +16749,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
     }
 
     std::string str = EGA_get_str(arg2);
-    MAnsiToWide wide(CP_UTF8, str.c_str());
+    MAnsiToWide wide(CP_UTF8, str);
 
     WORD str_id = static_cast<WORD>(EGA_get_int(arg1));
     str_res.map()[str_id] = wide;
