@@ -632,4 +632,4 @@
         MENUEXの区分線を修正。
     v.5.7.6 (2023-XX-YY)
         ヘルプメニューをローカライズ。
-        EGA に RES_str_get 関数を追加。
+        EGA に RES_str_get と RES_str_set 関数を追加。

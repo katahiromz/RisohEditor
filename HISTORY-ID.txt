@@ -289,4 +289,4 @@
     - Memperbaiki pemisah MENUEX.
 - v.5.7.6 (2023-XX-YY)
     - Localized the Help menu.
-    - Added RES_str_get function to EGA.
+    - Added RES_str_get and RES_str_set functions to EGA.
