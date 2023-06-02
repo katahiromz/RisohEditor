@@ -16705,7 +16705,8 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
             MByteStreamEx stream;
             str_res.SaveToStream(stream, name);
 
-            g_res.add_lang_entry(RT_STRING, name, lang, stream.data());
+            if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
+                return make_arg<AstInt>(0); // failed
         }
     }
 

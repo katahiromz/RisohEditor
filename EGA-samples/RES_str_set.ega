@@ -1,0 +1,8 @@
+@ Set the strings of an Japanese (1041) RT_STRING string table.
+RES_str_set(1041, {
+	{ 100, "おはようございます" },
+	{ 999, "さよなら" },
+});
+
+@ Set the string 100 to an Japanese (1041) RT_STRING string table.
+RES_str_set(1041, 100, "こんにちは!");

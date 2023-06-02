@@ -1,0 +1,5 @@
+@ Get the strings of an Japanese (1041) RT_STRING string table.
+println(RES_str_get(1041));
+
+@ Get the string 100 of an Japanese (1041) RT_STRING string table.
+println(RES_str_get(1041, 100));
