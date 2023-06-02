@@ -2419,6 +2419,8 @@ public:
     EGA::arg_t RES_set_binary(const EGA::args_t& args);
     EGA::arg_t RES_const(const EGA::args_t& args);
     EGA::arg_t RES_str_get(const EGA::args_t& args);
+    EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1);
+    EGA::arg_t RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2);
 
     LRESULT CALLBACK TreeViewWndProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -3860,6 +3862,8 @@ void MMainWnd::OnEga(HWND hwnd)
 
     MEgaDlg dialog(NULL);
     dialog.DialogBoxDx(hwnd);
+
+    PostMessageW(hwnd, WM_COMMAND, ID_REFRESHALL, 0);
 }
 
 void MMainWnd::OnEgaProgram(HWND hwnd)
@@ -3909,6 +3913,8 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
         MEgaDlg dialog(szFile);
         dialog.DialogBoxDx(hwnd);
     }
+
+    PostMessageW(hwnd, WM_COMMAND, ID_REFRESHALL, 0);
 }
 
 BOOL MMainWnd::OnSave(HWND hwnd)
@@ -11354,6 +11360,8 @@ void MMainWnd::OnRefreshAll(HWND hwnd)
     BOOL bModifiedOld = s_bModified;
     DoRefreshTV(hwnd);
     DoRefreshIDList(hwnd);
+    SelectTV(g_res.get_entry(), FALSE);
+
     s_bModified = bModifiedOld;
 
     PostUpdateLangArrow(hwnd);
@@ -16176,6 +16184,14 @@ EGA::arg_t EGA_FN EGA_RES_str_get(const EGA::args_t& args)
     return s_pMainWnd->RES_str_get(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_str_set(const EGA::args_t& args)
+{
+    if (args.size() == 2)
+        return s_pMainWnd->RES_str_set(args[0], args[1]);
+    else
+        return s_pMainWnd->RES_str_set(args[0], args[1], args[2]);
+}
+
 MIdOrString EGA_get_id_or_str(const arg_t& arg0)
 {
     MIdOrString ret;
@@ -16606,7 +16622,6 @@ EGA::arg_t MMainWnd::RES_str_get(const EGA::args_t& args)
     lang = EGA_get_int(arg0);
     if (lang == 0)
         return make_arg<AstInt>(0); // not found
-    
 
     EntrySet found;
     g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
@@ -16648,6 +16663,59 @@ EGA::arg_t MMainWnd::RES_str_get(const EGA::args_t& args)
     }
 
     return array1;
+}
+
+EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
+{
+    arg0 = EGA_eval_arg(arg0, true);
+    arg1 = EGA_eval_arg(arg1, true);
+    return make_arg<AstInt>(0); // error
+}
+
+EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
+{
+    arg0 = EGA_eval_arg(arg0, true);
+    arg1 = EGA_eval_arg(arg1, true);
+    arg2 = EGA_eval_arg(arg2, true);
+
+    WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+
+    EntrySet found;
+    g_res.search(found, ET_LANG, RT_STRING, WORD(0), lang);
+
+    // found --> str_res
+    StringRes str_res;
+    for (auto e : found)
+    {
+        MByteStreamEx stream(e->m_data);
+        if (!str_res.LoadFromStream(stream, e->m_name.m_id))
+            return make_arg<AstInt>(0); // error
+    }
+
+    std::string str = EGA_get_str(arg2);
+    MAnsiToWide wide(CP_UTF8, str.c_str());
+
+    WORD str_id = static_cast<WORD>(EGA_get_int(arg1));
+    str_res.map()[str_id] = wide;
+
+    WORD name = str_res.NameFromId(str_id);
+
+    if (str_res.HasAnyValues(name))
+    {
+        MByteStreamEx stream;
+        str_res.SaveToStream(stream, name);
+
+        if (!g_res.add_lang_entry(RT_STRING, name, lang, stream.data()))
+            return make_arg<AstInt>(0); // error
+    }
+    else
+    {
+        g_res.search_and_delete(ET_ANY, RT_STRING, name, lang);
+    }
+
+    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
+
+    return make_arg<AstInt>(1); // success
 }
 
 EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
@@ -16713,6 +16781,7 @@ void EGA_extension(void)
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
     EGA_add_fn("RES_str_get", 1, 2, EGA_RES_str_get, "RES_str_get(lang[, str_id])");
+    EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, array)");
 }
 
 ////////////////////////////////////////////////////////////////////////////

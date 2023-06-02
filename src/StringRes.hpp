@@ -66,4 +66,24 @@ public:
     {
         return (id / 16) + 1;
     }
+
+    bool HasAnyValues() const
+    {
+        for (auto& pair : m_map)
+        {
+            if (pair.second.size())
+                return true;
+        }
+        return false;
+    }
+
+    bool HasAnyValues(WORD name) const
+    {
+        for (auto& pair : m_map)
+        {
+            if (NameFromId(pair.first) == name && pair.second.size())
+                return true;
+        }
+        return false;
+    }
 };
