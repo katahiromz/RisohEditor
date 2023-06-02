@@ -7,7 +7,7 @@ RisohEditor는 Win32 개발을 위한 무료 리소스 편집기입니다.
 RC/RES/EXE/DLL 파일의 리소스 데이터를 편집/추출/복제/삭제
 할 수 있습니다.
 
-바이너리 다운로드: https://katahiromz.web.fc2.com/re/en
+바이너리 다운로드: https://katahiromz.web.fc2.com/re/ko/
 
 Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
@@ -48,8 +48,8 @@ Windows XP/2003/Vista/7/8.1/10 및 ReactOS에서 작동합니다.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-Webpage (English):  https://katahiromz.web.fc2.com/re/en
 Webpage (Korean):   https://katahiromz.web.fc2.com/re/ko
+Webpage (English):  https://katahiromz.web.fc2.com/re/en
 Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
 Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
 Webpage (Italian):  https://katahiromz.web.fc2.com/re/it

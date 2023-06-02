@@ -293,3 +293,4 @@
     - EGA에 RES_str_get 및 RES_str_set 함수를 추가했습니다.
 - v.5.7.7 (2023-XX-YY)
     - 공통화된 IDD_ADDLGINIT 및 IDD_MODIFYDLGINIT.
+    - Changed the design of RES_str_get and RES_str_set.
