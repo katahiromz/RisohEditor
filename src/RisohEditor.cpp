@@ -16669,7 +16669,47 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1)
 {
     arg0 = EGA_eval_arg(arg0, true);
     arg1 = EGA_eval_arg(arg1, true);
-    return make_arg<AstInt>(0); // error
+
+    WORD lang = static_cast<WORD>(EGA_get_int(arg0));
+    auto array1 = EGA_get_array(arg1);
+
+    g_res.search_and_delete(ET_ANY, RT_STRING, (WORD)0, lang);
+
+    StringRes str_res;
+
+    for (size_t i = 0; i < array1->size(); ++i)
+    {
+        auto ary2 = (*array1)[i];
+        auto& array2 = *EGA_get_array(ary2);
+        if (array2.size() != 2)
+            throw EGA_index_out_of_range(array2.get_lineno());
+
+        WORD str_id = static_cast<WORD>(EGA_get_int(array2[0]));
+        auto str = EGA_get_str(array2[1]);
+
+        MAnsiToWide wide(CP_UTF8, str.c_str());
+        str_res.map()[str_id] = wide.c_str();
+    }
+
+    std::set<WORD> names;
+    for (auto& pair : str_res.map())
+    {
+        auto str_id = pair.first;
+        WORD name = str_res.NameFromId(str_id);
+        if (names.count(name) > 0)
+            continue;
+        names.insert(name);
+
+        if (str_res.HasAnyValues(name))
+        {
+            MByteStreamEx stream;
+            str_res.SaveToStream(stream, name);
+
+            g_res.add_lang_entry(RT_STRING, name, lang, stream.data());
+        }
+    }
+
+    return make_arg<AstInt>(1); // success
 }
 
 EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
@@ -16781,7 +16821,7 @@ void EGA_extension(void)
     EGA_add_fn("RES_select", 0, 3, EGA_RES_select, "RES_select([type[, name[, lang]]])");
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
     EGA_add_fn("RES_str_get", 1, 2, EGA_RES_str_get, "RES_str_get(lang[, str_id])");
-    EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, array)");
+    EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, ary)");
 }
 
 ////////////////////////////////////////////////////////////////////////////
