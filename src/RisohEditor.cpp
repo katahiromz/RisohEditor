@@ -29,7 +29,7 @@
     #include "MRegKey.hpp"
 #endif
 
-BOOL g_bNoGuiMode = FALSE; // No-GUI mode
+INT g_bNoGuiMode = 0; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
@@ -16064,23 +16064,21 @@ static MMainWnd *s_pMainWnd = NULL;
 bool MMainWnd::DoResLoad(const MStringW& filename, const MStringW& options)
 {
     bool bOK;
-    BOOL bNoGuiMode = g_bNoGuiMode;
-    g_bNoGuiMode = TRUE;
+    ++g_bNoGuiMode;
     BOOL bAutoLoadNearbyResH = g_settings.bAutoLoadNearbyResH;
     g_settings.bAutoLoadNearbyResH = options.find(L"(no-load-res-h)") != options.npos;
     {
         bOK = !!DoLoadFile(m_hwnd, filename.c_str(), 0, TRUE);
     }
     g_settings.bAutoLoadNearbyResH = bAutoLoadNearbyResH;
-    g_bNoGuiMode = bNoGuiMode;
+    --g_bNoGuiMode;
     return bOK;
 }
 
 bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
 {
     bool bOK;
-    BOOL bNoGuiMode = g_bNoGuiMode;
-    g_bNoGuiMode = TRUE;
+    ++g_bNoGuiMode;
     BOOL bUseIDC_STATIC = g_settings.bUseIDC_STATIC;
     BOOL bAskUpdateResH = g_settings.bAskUpdateResH;
     BOOL bCompressByUPX = g_settings.bCompressByUPX;
@@ -16121,7 +16119,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
     g_settings.bBackup = bBackup;
     g_settings.bUseMSMSGTABLE = bUseMSMSGTABLE;
 
-    g_bNoGuiMode = bNoGuiMode;
+    --g_bNoGuiMode;
     return bOK;
 }
 
@@ -16933,7 +16931,7 @@ BOOL MMainWnd::ParseCommandLine(HWND hwnd, INT argc, WCHAR **targv)
     }
     else if (bNoGUI)
     {
-        g_bNoGuiMode = bNoGUI;
+        ++g_bNoGuiMode;
         return TRUE;
     }
 
