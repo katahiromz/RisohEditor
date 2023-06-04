@@ -2417,6 +2417,7 @@ public:
     EGA::arg_t RES_select(const EGA::args_t& args);
     EGA::arg_t RES_get_binary(const EGA::args_t& args);
     EGA::arg_t RES_set_binary(const EGA::args_t& args);
+    EGA::arg_t RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2);
     EGA::arg_t RES_const(const EGA::args_t& args);
     EGA::arg_t RES_str_get(EGA::arg_t arg0);
     EGA::arg_t RES_str_get(EGA::arg_t arg0, EGA::arg_t arg1);
@@ -16173,6 +16174,11 @@ EGA::arg_t EGA_FN EGA_RES_set_binary(const EGA::args_t& args)
     return s_pMainWnd->RES_set_binary(args);
 }
 
+EGA::arg_t EGA_FN EGA_RES_get_text(const EGA::args_t& args)
+{
+    return s_pMainWnd->RES_get_text(args[0], args[1], args[2]);
+}
+
 EGA::arg_t EGA_FN EGA_RES_const(const EGA::args_t& args)
 {
     return s_pMainWnd->RES_const(args);
@@ -16606,6 +16612,31 @@ EGA::arg_t MMainWnd::RES_get_binary(const EGA::args_t& args)
     return make_arg<AstStr>(ret);
 }
 
+EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t arg2)
+{
+    using namespace EGA;
+
+    arg0 = EGA_eval_arg(arg0, true);
+    arg1 = EGA_eval_arg(arg1, true);
+    arg2 = EGA_eval_arg(arg2, true);
+
+    MIdOrString type = EGA_get_id_or_str(arg0);
+    MIdOrString name = EGA_get_id_or_str(arg1);
+    WORD lang = static_cast<WORD>(EGA_get_int(arg2));
+
+    std::wstring ret;
+    auto entry = g_res.find(ET_LANG, type, name, lang);
+    if (entry)
+    {
+        ResToText res2text;
+        ret = res2text.DumpEntry(*entry);
+    }
+
+    MWideToAnsi ansi(CP_UTF8, ret);
+
+    return make_arg<AstStr>(ansi.str());
+}
+
 EGA::arg_t MMainWnd::RES_str_get(EGA::arg_t arg0)
 {
     using namespace EGA;
@@ -16836,6 +16867,7 @@ void EGA_extension(void)
     EGA_add_fn("RES_unload_resh", 0, 0, EGA_RES_unload_resh, "RES_unload_resh()");
     EGA_add_fn("RES_str_get", 1, 2, EGA_RES_str_get, "RES_str_get(lang[, str_id])");
     EGA_add_fn("RES_str_set", 2, 3, EGA_RES_str_set, "RES_str_set(lang, str_id, str) or RES_str_set(lang, ary)");
+    EGA_add_fn("RES_get_text", 3, 3, EGA_RES_get_text, "RES_get_text(type, name, lang)");
 }
 
 ////////////////////////////////////////////////////////////////////////////

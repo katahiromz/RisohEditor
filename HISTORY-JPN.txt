@@ -637,3 +637,4 @@
 - v.5.7.7 (2023-XX-YY)
     - IDD_ADDDLGINIT と IDD_MODIFYDLGINIT を共通化。
     - Changed the design of RES_str_get and RES_str_set.
+    - Added RES_get_text function to EGA.
