@@ -16567,13 +16567,12 @@ EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
     if (type.empty() || name.empty() || lang == BAD_LANG || contents.empty())
         return make_arg<AstInt>(0);
 
-    DoSetFileModified(TRUE);
-
     int ret = 0;
     EntryBase::data_type data(contents.begin(), contents.end());
     if (g_res.add_lang_entry(type, name, lang, data))
         ret = 1;
 
+    DoSetFileModified(TRUE);
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(ret);
@@ -16630,6 +16629,9 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
     MIdOrString name = EGA_get_id_or_str(arg1);
     WORD lang = static_cast<WORD>(EGA_get_int(arg2));
 
+    auto bHideID = g_settings.bHideID; // Save old value
+    g_settings.bHideID = TRUE;
+
     std::wstring ret;
     auto entry = g_res.find(ET_LANG, type, name, lang);
     if (entry)
@@ -16638,8 +16640,9 @@ EGA::arg_t MMainWnd::RES_get_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
         ret = res2text.DumpEntry(*entry);
     }
 
-    MWideToAnsi ansi(CP_UTF8, ret);
+    g_settings.bHideID = bHideID;
 
+    MWideToAnsi ansi(CP_UTF8, ret);
     return make_arg<AstStr>(ansi.str());
 }
 
@@ -16830,6 +16833,7 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
         g_res.search_and_delete(ET_ANY, RT_STRING, name, lang);
     }
 
+    DoSetFileModified(TRUE);
     PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(1); // success
