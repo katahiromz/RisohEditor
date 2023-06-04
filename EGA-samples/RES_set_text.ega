@@ -1,0 +1,5 @@
+@ Set resource item of type 4 (RT_MENU), name 2, and language 1041 (Japanese) with text
+println(RES_set_text(4, 2, 1041, "2 MENU { POPUP ""FILE"" { MENUITEM ""EXIT"", 100 } }"))
+
+@ Get resource item of type 4 (RT_MENU), name 2, and language 1041 (Japanese)
+print(RES_get_text(4, 2, 1041))

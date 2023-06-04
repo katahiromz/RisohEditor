@@ -293,4 +293,4 @@
 - v.5.7.7 (2023-XX-YY)
     - Commonized IDD_ADDDLGINIT and IDD_MODIFYDLGINIT.
     - Changed the design of RES_str_get and RES_str_set.
-    - Added RES_get_text function to EGA.
+    - Added RES_get_text and RES_set_text functions to EGA.
