@@ -7,3 +7,6 @@
 [submodule "LineNumEdit"]
 	path = LineNumEdit
 	url = https://github.com/katahiromz/LineNumEdit
+[submodule "WonSetThreadUILanguage"]
+	path = WonSetThreadUILanguage
+	url = https://github.com/katahiromz/WonSetThreadUILanguage.git

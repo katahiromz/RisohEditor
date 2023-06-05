@@ -8,6 +8,9 @@ cmake_policy(SET CMP0003 NEW)
 # EGA
 subdirs(../EGA)
 
+# include directories
+include_directories(.)
+
 # libRisohEditor.a
 add_library(libRisohEditor STATIC
     AccelRes.cpp
