@@ -634,7 +634,7 @@
 - v.5.7.6 (2023-06-02)
     - ヘルプメニューをローカライズ。
     - EGA に RES_str_get と RES_str_set 関数を追加。
-- v.5.7.7 (2023-XX-YY)
+- v.5.7.7 (2023-06-05)
     - IDD_ADDDLGINIT と IDD_MODIFYDLGINIT を共通化。
     - RES_str_get と RES_str_set の設計を変更。
     - RES_get_text と RES_set_text 関数をEGAに追加。

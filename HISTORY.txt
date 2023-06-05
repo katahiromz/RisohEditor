@@ -290,7 +290,7 @@
 - v.5.7.6 (2023-06-02)
     - Localized the Help menu.
     - Added RES_str_get and RES_str_set functions to EGA.
-- v.5.7.7 (2023-XX-YY)
+- v.5.7.7 (2023-06-05)
     - Commonized IDD_ADDDLGINIT and IDD_MODIFYDLGINIT.
     - Changed the design of RES_str_get and RES_str_set.
     - Added RES_get_text and RES_set_text functions to EGA.
