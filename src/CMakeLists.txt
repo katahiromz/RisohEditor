@@ -1,16 +1,3 @@
-# CMake minimum version
-cmake_minimum_required(VERSION 2.9)
-
-# use new policy
-cmake_policy(SET CMP0046 NEW)
-cmake_policy(SET CMP0003 NEW)
-
-# EGA
-subdirs(../EGA)
-
-# include directories
-include_directories(.)
-
 # libRisohEditor.a
 add_library(libRisohEditor STATIC
     AccelRes.cpp

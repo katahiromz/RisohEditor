@@ -53,7 +53,7 @@
 
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType);
 
-#include "../WonSetThreadUILanguage/WonSetThreadUILanguage.h"
+#include "WonSetThreadUILanguage.h"
 
 #include "resource.h"
 #include "MWindowBase.hpp"

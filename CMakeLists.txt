@@ -68,8 +68,13 @@ endif()
 
 ##############################################################################
 
+include_directories(WonSetThreadUILanguage)
+
 add_definitions(-DMZC4_HANDLE_MAP=1 -DUSE_GLOBALS=1)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NON_CONFORMING_WCSTOK -D_SCL_SECURE_NO_WARNINGS)
+
+include_directories(EGA)
+add_subdirectory(EGA)
 
 include_directories(LineNumEdit)
 add_subdirectory(LineNumEdit)
