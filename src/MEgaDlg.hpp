@@ -32,12 +32,11 @@ static BOOL s_bEnter = FALSE;
 
 static bool EGA_dialog_input(char *buf, size_t buflen)
 {
-    while (!s_bEnter && IsWindow(s_hwndEga))
+    while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
     {
         Sleep(100);
     }
-    if (!IsWindow(s_hwndEga))
-        return false;
+    s_bEnter = FALSE;
 
     WCHAR szTextW[260];
     GetDlgItemTextW(s_hwndEga, edt2, szTextW, ARRAYSIZE(szTextW));
@@ -47,7 +46,6 @@ static bool EGA_dialog_input(char *buf, size_t buflen)
 
     StringCchCopyA(buf, buflen, szTextA);
     SetDlgItemTextA(s_hwndEga, edt2, NULL);
-    s_bEnter = FALSE;
 
     if (lstrcmpA(szTextA, "exit") == 0 || lstrcmpA(szTextA, "exit;") == 0)
         PostMessageW(s_hwndEga, WM_COMMAND, IDCANCEL, 0);
@@ -80,19 +78,9 @@ static void EGA_dialog_print(const char *fmt, va_list va)
     SendDlgItemMessageW(s_hwndEga, edt1, EM_SCROLLCARET, 0, 0);
 }
 
-static DWORD WINAPI EgaThreadFunc(LPVOID args)
+static inline DWORD WINAPI EgaThreadFunc(LPVOID args)
 {
-    LPCWSTR filename = (LPCWSTR)args;
-    char szFileName[MAX_PATH];
-    if (filename && filename[0])
-    {
-        WideCharToMultiByte(CP_ACP, 0, filename, -1, szFileName, MAX_PATH, NULL, NULL);
-        EGA_interactive(szFileName, true);
-    }
-    else
-    {
-        EGA_interactive(NULL, true);
-    }
+    EGA_interactive(NULL, true);
     return 0;
 }
 
@@ -103,12 +91,14 @@ void EGA_extension(void);
 class MEgaDlg : public MDialogBase
 {
 public:
-    MEgaDlg(LPCWSTR filename = NULL) : MDialogBase(IDD_EGA)
+    std::wstring m_filename;
+
+    DECLARE_DYNAMIC(MEgaDlg)
+
+    MEgaDlg() : MDialogBase(IDD_EGA)
     {
         m_hIcon = LoadIconDx(IDI_SMILY);
         m_hIconSm = LoadSmallIconDx(IDI_SMILY);
-        if (filename)
-            m_filename = filename;
 
         EGA_init();
         EGA_set_input_fn(EGA_dialog_input);
@@ -123,6 +113,17 @@ public:
 
         DestroyIcon(m_hIcon);
         DestroyIcon(m_hIconSm);
+    }
+
+    void Run(LPCWSTR filename)
+    {
+        char szFileName[MAX_PATH];
+        if (filename && filename[0])
+        {
+            WideCharToMultiByte(CP_ACP, 0, filename, -1, szFileName, _countof(szFileName), NULL, NULL);
+            s_bEnter = TRUE;
+            EGA_file_input(szFileName);
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -146,9 +147,8 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        HANDLE hThread = CreateThread(NULL, 0, EgaThreadFunc,
-                                      (LPWSTR)m_filename.c_str(), 0, NULL);
-        CloseHandle(hThread);
+        HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
+        ::CloseHandle(hThread);
 
         if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
         {
@@ -195,9 +195,8 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            s_hwndEga = NULL;
             s_bEnter = FALSE;
-            EndDialog(IDCANCEL);
+            ::ShowWindow(hwnd, SW_HIDE);
             break;
         case psh1:
             OnPsh1(hwnd);
@@ -270,6 +269,5 @@ protected:
     HFONT m_hFont;
     HICON m_hIcon;
     HICON m_hIconSm;
-    std::wstring m_filename;
     MResizable m_resizable;
 };

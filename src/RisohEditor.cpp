@@ -32,6 +32,8 @@
 INT g_bNoGuiMode = 0; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
 
+IMPLEMENT_DYNAMIC(MEgaDlg)
+
 INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
 {
     if (g_bNoGuiMode)
@@ -2578,7 +2580,7 @@ protected:
     void OnOpen(HWND hwnd);
     BOOL OnSave(HWND hwnd);
     BOOL OnSaveAs(HWND hwnd);
-    void OnEga(HWND hwnd);
+    void OnEga(HWND hwnd, LPCWSTR file = NULL);
     void OnEgaProgram(HWND hwnd);
     void OnImport(HWND hwnd);
     void OnLoadResH(HWND hwnd);
@@ -3857,16 +3859,28 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
     return FALSE;
 }
 
-void MMainWnd::OnEga(HWND hwnd)
+void MMainWnd::OnEga(HWND hwnd, LPCWSTR file)
 {
+    if (s_hwndEga && ::IsWindow(s_hwndEga))
+    {
+        ::ShowWindow(s_hwndEga, SW_SHOWNORMAL);
+        ::SetForegroundWindow(s_hwndEga);
+        auto pDialog = dynamic_cast<MEgaDlg*>(MDialogBase::GetUserData(s_hwndEga));
+        assert(pDialog);
+        if (pDialog)
+            pDialog->Run(file);
+        return;
+    }
+
     // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
 
-    MEgaDlg dialog(NULL);
-    dialog.DialogBoxDx(hwnd);
-
-    PostMessageW(hwnd, WM_COMMAND, ID_REFRESHALL, 0);
+    auto pDialog = dynamic_cast<MEgaDlg*>(MEgaDlg::CreateInstanceDx());
+    assert(pDialog);
+    pDialog->CreateDialogDx(hwnd);
+    ::ShowWindow(*pDialog, SW_SHOWNORMAL);
+    pDialog->Run(file);
 }
 
 void MMainWnd::OnEgaProgram(HWND hwnd)
@@ -3913,11 +3927,8 @@ void MMainWnd::OnEgaProgram(HWND hwnd)
     ofn.lpstrDefExt = L"ega";
     if (GetOpenFileNameW(&ofn))
     {
-        MEgaDlg dialog(szFile);
-        dialog.DialogBoxDx(hwnd);
+        OnEga(hwnd, szFile);
     }
-
-    PostMessageW(hwnd, WM_COMMAND, ID_REFRESHALL, 0);
 }
 
 BOOL MMainWnd::OnSave(HWND hwnd)
@@ -10293,6 +10304,9 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_hBmpView);
     DestroyWindow(m_id_list_dlg);
 
+    DestroyWindow(s_hwndEga);
+    s_hwndEga = NULL;
+
     DestroyWindow(m_hwndTV);
     DestroyWindow(m_hToolBar);
     DestroyWindow(m_hStatusBar);
@@ -14973,6 +14987,9 @@ INT_PTR MMainWnd::RunDx()
             DebugBreak();
             return -1;
         }
+
+        if (::IsWindow(s_hwndEga) && ::IsDialogMessage(s_hwndEga, &msg))
+            continue;
 
         // do messaging
         DoMsg(msg);
