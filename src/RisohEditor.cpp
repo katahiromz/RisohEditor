@@ -3861,6 +3861,10 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnEga(HWND hwnd, LPCWSTR file)
 {
+    // compile if necessary
+    if (!CompileIfNecessary(TRUE))
+        return;
+
     if (s_hwndEga && ::IsWindow(s_hwndEga))
     {
         ::ShowWindow(s_hwndEga, SW_SHOWNORMAL);
@@ -3871,10 +3875,6 @@ void MMainWnd::OnEga(HWND hwnd, LPCWSTR file)
             pDialog->Run(file);
         return;
     }
-
-    // compile if necessary
-    if (!CompileIfNecessary(TRUE))
-        return;
 
     auto pDialog = dynamic_cast<MEgaDlg*>(MEgaDlg::CreateInstanceDx());
     assert(pDialog);
@@ -4760,7 +4760,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             // show the dialog
             MEditAccelDlg dialog(accel_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
-            if (nID == IDOK)
+            if (nID == IDOK && entry == g_res.get_entry())
             {
                 DoSetFileModified(TRUE);
 
@@ -4776,7 +4776,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
-        SelectTV(entry, FALSE);
+        if (entry == g_res.get_entry())
+            SelectTV(entry, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -4794,7 +4795,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             // show the dialog
             MEditMenuDlg dialog(menu_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
-            if (nID == IDOK)
+            if (nID == IDOK && entry == g_res.get_entry())
             {
                 DoSetFileModified(TRUE);
 
@@ -4810,7 +4811,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
-        SelectTV(entry, FALSE);
+        if (entry == g_res.get_entry())
+            SelectTV(entry, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -4828,7 +4830,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             // show the dialog
             MEditToolbarDlg dialog(toolbar_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
-            if (nID == IDOK)
+            if (nID == IDOK && entry == g_res.get_entry())
             {
                 DoSetFileModified(TRUE);
 
@@ -4841,7 +4843,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
-        SelectTV(entry, FALSE);
+        if (entry == g_res.get_entry())
+            SelectTV(entry, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
@@ -4898,7 +4901,7 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
             // show the dialog
             MDlgInitDlg dialog(dlginit_res);
             INT nID = (INT)dialog.DialogBoxDx(hwnd);
-            if (nID == IDOK)
+            if (nID == IDOK && entry == g_res.get_entry())
             {
                 DoSetFileModified(TRUE);
 
@@ -4911,7 +4914,8 @@ void MMainWnd::OnGuiEdit(HWND hwnd)
         Edit_SetReadOnly(m_hCodeEditor, FALSE);
 
         // select the entry
-        SelectTV(entry, FALSE);
+        if (entry == g_res.get_entry())
+            SelectTV(entry, FALSE);
 
         // ready
         ChangeStatusText(IDS_READY);
