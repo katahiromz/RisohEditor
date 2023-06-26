@@ -48,10 +48,11 @@ Pergunta 6. Os arquivos de 64 bits são suportados?
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
-Página Web (Inglês):   https://katahiromz.web.fc2.com/re/en
-Página Web (Chinês):   https://katahiromz.web.fc2.com/re/ch
-Página Web (Japonês):  https://katahiromz.web.fc2.com/re/ja
-Página Web (Italiano): https://katahiromz.web.fc2.com/re/it
-Página Web (Russo):    https://katahiromz.web.fc2.com/re/ru
-Email                  katayama.hirofumi.mz@gmail.com
+Página Web (Inglês):    https://katahiromz.web.fc2.com/re/en
+Página Web (Chinês):    https://katahiromz.web.fc2.com/re/ch
+Página Web (Japonês):   https://katahiromz.web.fc2.com/re/ja
+Página Web (Italiano):  https://katahiromz.web.fc2.com/re/it
+Página Web (Russo):     https://katahiromz.web.fc2.com/re/ru
+Página Web (Português): https://katahiromz.web.fc2.com/re/pt
+Email                   katayama.hirofumi.mz@gmail.com
 /////////////////////////////////////////////////////////////////////
