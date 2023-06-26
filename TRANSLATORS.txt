@@ -19,7 +19,7 @@ The translators of RisohEditor are listed below:
  * Polish:
     - Piotr Hetnarowicz <piotrhwz@gmail.com>
  * Portuguese:
-    - JNylson
+    - JNylson <nylsinho_ba@hotmail.com>
  * Russian:
     - Dmitry Yerokhin <erodim@mail.ru>
  * Simplified Chinese:
