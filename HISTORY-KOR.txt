@@ -296,4 +296,4 @@
     - RES_str_get 및 RES_str_set의 설계를 변경했습니다.
     - EGA에 RES_get_text 및 RES_set_text 함수를 추가했습니다.
 - v.5.7.8 (2023-XX-YY)
-    - Improved Portuguese (Brazilian) translation.
+    - 포르투갈어(브라질) 번역이 개선되었습니다.
