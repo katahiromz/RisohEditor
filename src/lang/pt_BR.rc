@@ -134,7 +134,9 @@ IDR_MAINMENU MENU
     POPUP "A&juda"
     {
         MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
+        MENUITEM "Abrir README-&PTB.txt", ID_OPENREADMEPTB
         MENUITEM "Abrir &HISTORY.txt", ID_OPENHISTORY
+        MENUITEM "Abrir HISTORY-P&TB.txt", ID_OPENHISTORYPTB
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
         MENUITEM "&Guia do RisohEditor", ID_GUIDE

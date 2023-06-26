@@ -11873,6 +11873,12 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_OPENHISTORYID:
         OnOpenLocalFile(hwnd, L"HISTORY-ID.txt");
         break;
+    case ID_OPENREADMEPTB:
+        OnOpenLocalFile(hwnd, L"README-PTB.txt");
+        break;
+    case ID_OPENHISTORYPTB:
+        OnOpenLocalFile(hwnd, L"HISTORY-PTB.txt");
+        break;
     default:
         bUpdateStatus = FALSE;
         break;

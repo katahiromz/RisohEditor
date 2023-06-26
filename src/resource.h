@@ -520,6 +520,8 @@
 #define ID_OPENREADMETR                     274
 #define ID_OPENREADMEID                     275
 #define ID_OPENHISTORYID                    276
+#define ID_OPENREADMEPTB                    277
+#define ID_OPENHISTORYPTB                   278
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102

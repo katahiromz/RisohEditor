@@ -294,3 +294,5 @@
     - Comunizado IDD_ADDDLGINIT e IDD_MODIFYDLGINIT.
     - Alterou o design de RES_str_get e RES_str_set.
     - Adicionou as funções RES_get_text e RES_set_text ao EGA.
+- v.5.7.8 (2023-XX-YY)
+    - Improved Portuguese (Brazilian) translation.
