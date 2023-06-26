@@ -1,0 +1,296 @@
+﻿## HISTÓRICO
+
+- v.0.6 (2017-08-31)
+    - Primeiro versão.
+- v.5.0.8 (2018-09-12)
+    - Melhorias nos ícones da barra de ferramentas.
+    - Correção no tipo de arquivo ao extrair.
+    - Grava punhal no arquivo de origem para ajudar na detecção UTF-8.
+    - Correção nos ícones da visualização em árvore.
+    - Divide os modelos de recursos RT_DIALOG e RT_MENU em idiomas.
+- v.5.0.9 (2018-09-27)
+    - Melhoria na saída de resource.h.
+    - Melhoria no ícone do arquivo de visualização em árvore.
+    - Melhorias na importação.
+- v.5.1.0 (2018-10-08)
+    - Melhorias nas caixas de diálogo "Entrada de string" (multilinha).
+    - Correção no comportamento de Ctrl+A.
+    - Verifica o bloqueio do arquivo ao salvar um arquivo.
+    - Torna os IDs de recursos sensíveis a maiúsculas e minúsculas.
+    - Suporte a codificação de itens de recursos.
+    - Correção no encerramento anormal da caixa de diálogo de "Idiomas".
+- v.5.1.1 (2018-11-08)
+    - Aceita espaço na caixa de texto da legenda.
+    - Aceita espaço na caixa de texto de idioma.
+- v.5.1.2 (2018-12-08)
+    - Aceita espaço na caixa de texto do nome da classe da janela.
+    - Aceita o literal de string C na caixa de texto do nome da classe da janela.
+    - Melhorias nos modelos do sistema.
+    - Ativado modelo de manifesto.
+    - Corrigida a atualização da interface do usuário da barra de ferramentas.
+    - Exibir corretamente os tipos de ID da "Lista de IDs de Recursos".
+    - Classificar corretamente os idiomas na saída.
+- v.5.1.3 (2019-01-01)
+    - Correção na "Lista de IDs de Recursos".
+- v.5.1.4 (2019-01-13)
+    - Adicionou instalador em Inglês.
+    - Adicionou instalador em Italiano.
+    - Adicionou tradução Italiana.
+    - Adicionou alguns idiomas do instalador.
+- v.5.1.5 (2019-01-27)
+    - Não use o estilo estendido WS_EX_MDICHILD.
+    - Suporte ao ReactOS.
+- v.5.1.6 (2019-02-24)
+    - Melhorias na tradução Italiana.
+    - Ajuste de GUI.
+    - Correção em "Clonar Para Um Novo Idioma".
+- v.5.1.7 (2019-03-20)
+    - Adicionou estilos PBS_MARQUEE e PBS_SMOOTHREVERSE.
+    - Corrigido o processo de erro de compilação.
+- v.5.1.8 (2019-05-14)
+    - Adicionada verificação de recompilação após a clonagem.
+    - Corrigida a seleção após a clonagem.
+    - Falha corretamente após erro de compilação da tabela de strings e da tabela de mensagens.
+- v.5.1.9 (2019-07-14)
+    - Entrada/saída de fonte UTF-16 suportada.
+- v.5.2.0 (2019-07-26)
+    - Tratar corretamente os valores de `DIALOG STYLE` (`WS_CAPTION` é o valor padrão de `DIALOG STYLE`).
+    - Corrigido um bug em que o aplicativo exclui inesperadamente o arquivo ao abrir um arquivo EXE compactado sem expandir.
+- v.5.2.1 (2019-08-04)
+    - "Inglês (Estados Unidos)" será selecionado se você inserir `"En"` para o nome do idioma.
+    - Adicionou o recurso "Consultar Constante".
+    - Corrigido "Recolher Todos".
+    - `WS_POPUPWINDOW | WS_BORDER` deve ser `WS_POPUPWINDOW | WS_CAPTION`.
+    - Suporte `RT_FONT`.
+    - Melhorias na caixa de diálogo "Adicionar Recurso".
+- v.5.2.2 (2019-08-14)
+    - Atualizou a tradução Italiana.
+    - Suporte a tipos de recursos XML, XSLT, SCHEMA e REGISTRY.
+    - Interpretação aprimorada quando o idioma é incompatível com `RT_ICON`/`RT_CURSOR` e `RT_GROUP_ICON`/`RT_GROUP_CURSOR`.
+    - Interpretação aprimorada quando há incompatibilidade de idioma de `RT_DLGINIT` e `RT_DIALOG`.
+- v.5.2.3 (2019-09-14)
+    - Corrigido `AUTORADIOBUTTON` `STYLE`.
+- v.5.2.4 (2019-09-15)
+    - Suporte ao XP.
+- v.5.2.5 (2019-09-19)
+    - Corrigido um bug `WS_CHILDWINDOW` na caixa de listagem de estilo de diálogo.
+    - Alterou o nome do arquivo da versão (`RisohEditor-X.X.X.exe` e `RisohEditor-X.X.X.zip`).
+    - Adicionou `TRANSLATORS.txt`.
+    - Tornou os controles desenhados pelo proprietário visíveis.
+- v.5.2.6 (2019-09-23)
+    - Melhorias no diálogo de Idiomas.
+    - Adicionou a tradução Russa.
+    - Mostra mensagem de erro se o local instalado tiver caracteres de espaço.
+    - Adicionou a opção `--use-temp-file` ao invocar `windres` para corrigir o problema `popen`.
+- v.5.2.7 (2019-10-20)
+    - Melhorias no diálogo de Idiomas novamente.
+    - Corrigida as posições das marcações de item de diálogo.
+- v.5.2.8 (2020-01-30)
+    - Corrigida tradução Russa.
+    - Capacidade de exibir controles indefinidos.
+    - Adicionou a opção "Usar BEGIN/END".
+    - Corrigido um bug em que a DLL não podia ser salva com outro nome.
+- v.5.2.9 (2020-02-01)
+    - O suporte ao XP de 5.2.8 foi esquecido. Agora ativado.
+    - Corrigido o processamento ao salvar um arquivo.
+    - Capacidade de salvar arquivos EXE/DLL sem executável de propriedade do usuário.
+    - Correção como fazer backup.
+- v.5.3.0 (2020-02-06)
+    - Adicionou `ES_AUTOHSCROLL` a algumas caixas de texto.
+    - Corrigido o erro lógico ao substituir o arquivo.
+- v.5.3.1 (2020-02-23)
+    - Corrigir e melhorar a leitura/exibição dos recursos do menu.
+    - Melhorias no manuseio `IDC_STATIC`.
+    - Melhorias na janela "Lista de IDs de Recursos".
+- v.5.3.2 (2020-03-02)
+    - Capacidade de salvar com `Ctrl+S` sem consultar o local.
+    - Tornou a opção de saída de "Arquivos RC como UTF-16" não volátil.
+    - Trouxe a janela "Lista de IDs de Recursos" para sempre visível.
+- v.5.3.3 (2020-03-03)
+    - Tamanho do arquivo reduzido de 9MB para 3MB.
+- v.5.3.4 (2020-03-19)
+    - Alterado o comportamento do botão salvar na barra de ferramentas.
+    - Introdução da automação usando a linguagem de programação EGA.
+    - Adicionou confirmação ao salvar alterações no arquivo.
+- v.5.3.5 (2020-03-26)
+    - Melhorias na tradução Italiana.
+    - Correção na confirmação de salvamento desnecessária.
+- v.5.3.6 (2020-04-15)
+    - O loop infinito é evitado alterando as variáveis ​​do loop para 32-bits.
+    - Suporte a dados DFM do Delphi.
+    - Melhorias no menu de contexto.
+- v.5.3.7 (2020-04-28)
+    - Atualizou sinalizador de alteração de arquivo quando o arquivo é arrastado.
+    - Melhorias no nome do arquivo ao extrair.
+    - EGA reforçado.
+    - Melhorias na tradução Russa.
+- v.5.3.8 (2020-05-22)
+    - Adicionado o item "Abrir Manual do EGA" no menu "Automação".
+    - Controlou estritamente o sinalizador de alteração de arquivo.
+- v.5.3.9 (2020-06-01)
+    - Adicionado o recurso "Substituir Fontes de Diálogo".
+    - Alguns itens do menu foram movidos para o menu "Editar".
+    - Verificação de valor zero adicionado ao nome e tipo de recurso.
+    - Adicionado o estilo `DS_CENTER` à caixa de diálogo de recurso de modelo.
+    - Teclas de função F1, F3, F5 e F6 habilitadas.
+    - Adicionou a versão portátil.
+    - Melhorias no recurso de pesquisa.
+- v.5.4.0 (2020-06-13)
+    - Corrigida a saída `RT_ACCELERATOR` (16-bit não assinada).
+    - Removida a opção "Armazenar na pasta res".
+    - Corrigida a falha na edição da GUI.
+    - Função de extração reforçada.
+    - Corrigido recurso de substituição de fontes de diálogo.
+    - Usar o caminho completo para a barra de título.
+    - Adicionou seta de idioma suspensa.
+    - Corrigida caixa de diálogo "Consultar Constante".
+    - Corrigida a caixa de diálogo "Codificação do Item de Recurso".
+    - Corrigida caixa de diálogo "Associação de ID".
+    - Corrigida caixa de diálogo "Macros Predefinidas".
+    - Corrigida caixa de diálogo "Configuração".
+    - Corrigida caixa de diálogo "Pesquisar".
+    - Corrigida mensagem de status.
+    - Corrigida a manipulação de sinalizador modificado.
+- v.5.4.1 (2020-06-14)
+    - Corrigido o bug que falha no segundo salvamento e substituição.
+    - Corrigido texto da barra de título.
+    - Corrigida a mensagem da barra de status.
+    - Adicionou a tradução em Alemão.
+    - Adicionou a tradução Francesa.
+- v.5.4.2 (2020-06-18)
+    - Adicionado controle da aba para escolher "Editor de Código" ou "Visualizador Hex".
+    - Traduções aprimoradas de alemão e francês.
+    - Corrigida a seta suspensa de idioma.
+    - Corrigido o processamento de codificação Unicode.
+    - Melhorias na exportação e extração.
+    - Melhorias na caixa de diálogo do EGA.
+- v.5.4.3 (2020-07-03)
+    - Melhorias no nome do arquivo de extração.
+    - Classificar os itens de visualização em árvore após a alteração do nome/idioma do recurso.
+    - Melhorias na extração de ícone/cursor.
+    - Melhorias nos códigos de nova linha de texto codificado.
+    - Corrigida caixa de diálogo "Adicionar Recurso".
+    - Tornou HTML/Manifest importável.
+    - Adicionou o recurso de verificação de atualização no menu "Ajuda".
+    - Corrigido o título da caixa de mensagem.
+    - Relaxou o limite de caracteres e deu suporte a dados grandes.
+    - Redefiniu a soma de verificação para zero ao salvar arquivo.
+- v.5.4.4 (2020-07-09)
+    - Conteúdo do arquivo liberado antes de usá-lo.
+    - Suporte a dados DFM do Delphi internacionais.
+    - Item do menu "Configurações DFM do Delphi" inserido no menu "Editar".
+    - Redefiniu corretamente a soma de verificação para zero ao salvar arquivo.
+    - Corrigido um bug em que um controle é deslocado em 1 pixel.
+    - Adicionado algumas esperas ao salvar arquivos, para verificação de vírus.
+    - Adicionou o link "Guia do RisohEditor" no menu "Ajuda".
+- v.5.4.5 (2020-08-03)
+    - Adicionou a tradução Indonésia.
+    - Adicionou preenchimento automático para caixas de idiomas.
+- v.5.4.6 (2020-10-03)
+    - Excluir cache na verificação da versão.
+    - Corrigido posição da caixa de diálogo e teste.
+    - Corrigido um bug que `RT_DLGINIT` desaparece sem permissão.
+- v.5.4.7 (2020-10-18)
+    - Downgrade do Inno Setup 5.6.1 para suporte o XP.
+    - Suporte inicial da classe de janela ActiveX "AtlAxWin140" na caixa de diálogo de teste.
+- v.5.4.8 (2020-11-12)
+    - Adicionou a tradução Finlandesa.
+    - Adicionada associação de arquivos *.rc e *.res.
+    - Suporte inicial de controles OLE.
+    - Excluído MOleCtrl e adicionou MOleHost.
+    - Suporte a dados REGINST.
+- v.5.4.9 (2021-01-21)
+    - Atualizou a Lista de IDs ao renomear o item de visualização em árvore.
+- v.5.5.0 (2021-01-26)
+    - Adicionou a tradução Coreana.
+- v.5.5.1 (2021-02-02)
+    - Atualizou windres para 2.36.
+    - Os itens de menu BITMAP ou OWNERDRAW podem ser compilados.
+- v.5.5.2 (2021-02-27)
+    - Corrigido Ctrl+A nas caixas de texto do Win2k3.
+    - Adicionados programas tlb2idl para processar o tipo de recurso TYPELIB.
+    - Suporte a pré-visualização TYPELIB.
+    - Adicionada tradução Polonesa.
+    - Desativado o recurso "Agrupar as instruções do manifesto" como padrão.
+- v.5.5.3 (2021-03-30)
+    - Windres.exe atualizado para 2.36.1.
+    - Nome de caminho curto usado para gerar subprocessos de mcpp.exe e windres.exe.
+- v.5.5.4 (2021-04-13)
+    - Correção na importação de ícones do Vista.
+- v.5.5.5 (2021-04-23)
+    - Programas tlb2idl excluídos.
+    - Adicionado o programa OleBow para processar o tipo de recurso TYPELIB.
+    - Compilando TYPELIB se o compilador MIDL estiver disponível.
+- v.5.5.6 (2021-04-29)
+    - Tornou os arquivos *.rc importáveis.
+    - Corrigida a exibição da seta de idiomas na visualização em árvore.
+- v.5.5.7 (2021-06-12)
+    - Adicionou números de linha.
+- v.5.5.8 (2021-06-15)
+    - Marca a linha ao ocorrer um erro.
+    - Corrigido Ctrl+A.
+    - Atualizou mcpp.exe e dfmsc.exe.
+- v.5.5.9 (2021-06-16)
+    - Correção do carregamento de macros resource.h.
+- v.5.6.0 (2021-06-19)
+    - Não comprimir dfmsc.exe (por segurança).
+    - Suporte a linha de comando.
+    - Adicionou as funções RES_load e RES_save à linguagem EGA.
+- v.5.6.1 (2021-07-01)
+    - Corrigido o valor de retorno do processo.
+    - Melhorias no manuseio da tabela de mensagens.
+    - Não alterar nome para maiúscula/minúscula ao renomear na visualização em árvore.
+- v.5.6.2 (2021-08-15)
+    - Largura ampliada das caixas de diálogo "Opções de Salvar" e "Opções de Exportar".
+    - Adicionou solução alternativa para adicionar tabelas de mensagens no modo compatível com Microsoft.
+- v.5.6.3 (2021-12-12)
+    - Adicionou exemplos win32.
+    - Adicionado "UI Language Select".
+- v.5.6.4 (2021-12-16)
+    - Pedindo para compilar antes de abrir a edição da GUI.
+- v.5.6.5 (2021-12-18)
+    - Um botão BS_OWNERDRAW é um PUSHBUTTON.
+    - Adicionado o recurso "Copiar para vários idiomas".
+    - Corrigido o bug da janela do RAD (Crítico).
+- v.5.6.6 (2021-12-25)
+    - Clicar duas vezes na janela RAD abre as propriedades de controle/diálogo.
+    - Melhorias no suporte de cursor ANI.
+- v.5.6.7 (2022-01-13)
+    - Adicionou a tradução em Português.
+    - Suporte WinXP novamente (não use GetThreadUILanguage() no XP).
+- v.5.6.8 (2022-01-17)
+    - Alterou o foco inicial de IDD_CTRLPROP.
+    - Corrigida algumas informações da versão.
+- v.5.6.9 (2022-03-09)
+    - Dividiu o texto do histórico.
+    - READMEs renomeado.
+    - Adicionado WS_CLIPCHILDREN para a janela RAD para reduzir a cintilação.
+- v.5.7.0 (2022-03-18)
+    - Correção na recompilação no gerenciamento de IDs de recursos.
+- v.5.7.1 (2022-03-28)
+    - Melhorias na caixa de diálogo de informações da versão.
+    - Voltou para um método de cintilação devido à exibição de controle errado.
+    - Lembrar foco da janela principal.
+- v.5.7.2 (2022-06-07)
+    - Recursos suportados da BARRA DE FERRAMENTAS.
+- v.5.7.3 (2023-04-01)
+    - Pequenas melhorias de desempenho.
+    - Melhorias em "Copiar Para Vários Idiomas".
+    - Corrigido FILESUBTYPE de VERSIONINFO.
+    - Tornou "~" o sufixo de backup em vez de "-old".
+    - Renomeado "Substituindo Fontes de diálogo..." como "Substituir Fontes de Diálogo..."
+- v.5.7.4 (2023-04-02)
+    - Adicionou números de versão a IDS_NOTICE.
+    - Melhorias no console do EGA.
+    - Corrigido instalador meio quebrado.
+- v.5.7.5 (2023-05-08)
+    - Melhorias nos diálogos IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
+    - Adicionou instalador Coreano.
+    - Corrigido o separador MENUEX.
+- v.5.7.6 (2023-06-02)
+    - Tradução do menu Ajuda.
+    - Adicionou as funções RES_str_get e RES_str_set ao EGA.
+- v.5.7.7 (2023-06-05)
+    - Comunizado IDD_ADDDLGINIT e IDD_MODIFYDLGINIT.
+    - Alterou o design de RES_str_get e RES_str_set.
+    - Adicionou as funções RES_get_text e RES_set_text ao EGA.
