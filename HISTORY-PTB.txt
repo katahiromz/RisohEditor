@@ -296,3 +296,4 @@
     - Adicionou as funções RES_get_text e RES_set_text ao EGA.
 - v.5.7.8 (2023-XX-YY)
     - Melhorias na tradução Português do Brasil.
+    - Relaxed font selection requirements.

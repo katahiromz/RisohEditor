@@ -171,8 +171,7 @@ public:
         cf.lStructSize = sizeof(cf);
         cf.hwndOwner = hwnd;
         cf.lpLogFont = &lf;
-        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL |
-                   CF_NOVERTFONTS | CF_SCREENFONTS | CF_FIXEDPITCHONLY;
+        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_NOVERTFONTS | CF_SCREENFONTS;
         if (ChooseFont(&cf))
         {
             INT nPointSize = (cf.iPointSize + 5) / 10;
@@ -216,8 +215,7 @@ public:
         cf.lStructSize = sizeof(cf);
         cf.hwndOwner = hwnd;
         cf.lpLogFont = &lf;
-        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL |
-                   CF_NOVERTFONTS | CF_SCREENFONTS | CF_FIXEDPITCHONLY;
+        cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_NOVERTFONTS | CF_SCREENFONTS;
         if (ChooseFont(&cf))
         {
             INT nPointSize = (cf.iPointSize + 5) / 10;
