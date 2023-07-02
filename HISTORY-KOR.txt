@@ -297,4 +297,4 @@
     - EGA에 RES_get_text 및 RES_set_text 함수를 추가했습니다.
 - v.5.7.8 (2023-XX-YY)
     - 포르투갈어(브라질) 번역이 개선되었습니다.
-    - Relaxed font selection requirements.
+    - 글꼴 선택 요구사항이 완화되었습니다.
