@@ -133,13 +133,11 @@ IDR_MAINMENU MENU
     }
     POPUP "&?"
     {
-        MENUITEM "Apri file Leggimi (in &Inglese)", ID_OPENREADME
-        MENUITEM "Apri file Leggimi (in I&taliano)", ID_OPENREADMEIT
-        MENUITEM "Apri file cronologia programma (in Inglese)", ID_OPENHISTORY
-        MENUITEM "Apri file cronologia programma (in Italiano)", ID_OPENHISTORYITA
-        MENUITEM "Apri file &licenza (in Inglese)", ID_OPENLICENSE
+        MENUITEM "Apri file Leggimi (i&taliano)", ID_OPENREADMEIT
+        MENUITEM "Apri file cronologia programma (italiano)", ID_OPENHISTORYITA
+        MENUITEM "Apri file Leggimi (&inglese)", ID_OPENREADME
         MENUITEM SEPARATOR
-        MENUITEM "&Guida a RisohEditor", ID_GUIDE
+        MENUITEM "&Guida in linea RisohEditor", ID_GUIDE
         MENUITEM "&Controlla aggiornamenti RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
         MENUITEM "&Info sul programma...", ID_ABOUT
