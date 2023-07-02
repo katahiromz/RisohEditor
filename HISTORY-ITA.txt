@@ -288,12 +288,12 @@
     - Aggiunto programma di installazione coreano.
     - Corretto problema separatore MENUEX.
 - v.5.7.6 (02.06.2023)
-    - Localized the Help menu.
-    - Added RES_str_get and RES_str_set functions to EGA.
+    - Localizzato il menu Aiuto.
+    - Aggiunte le funzioni RES_str_get e RES_str_set a EGA.
 - v.5.7.7 (05.06.2023)
-    - Commonized IDD_ADDDLGINIT and IDD_MODIFYDLGINIT.
-    - Changed the design of RES_str_get and RES_str_set.
-    - Added RES_get_text and RES_set_text functions to EGA.
+    - IDD_ADDDLGINIT e IDD_MODIFYDLGINIT comuni.
+    - Modificato il design di RES_str_get e RES_str_set.
+    - Aggiunte le funzioni RES_get_text e RES_set_text a EGA.
 - v.5.7.8 (2023-XX-YY)
-    - Improved Portuguese (Brazilian) translation.
-    - Relaxed font selection requirements.
+    - Traduzione portoghese (brasiliano) migliorata.
+    - Requisiti rilassati selezione font.
