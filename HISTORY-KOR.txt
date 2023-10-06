@@ -295,7 +295,7 @@
     - 공통화된 IDD_ADDLGINIT 및 IDD_MODIFYDLGINIT.
     - RES_str_get 및 RES_str_set의 설계를 변경했습니다.
     - EGA에 RES_get_text 및 RES_set_text 함수를 추가했습니다.
-- v.5.7.8 (2023-XX-YY)
+- v.5.7.8 (2023-10-06)
     - 포르투갈어(브라질) 번역이 개선되었습니다.
     - 글꼴 선택 요구사항이 완화되었습니다.
     - Added Traditional Chinese translation.

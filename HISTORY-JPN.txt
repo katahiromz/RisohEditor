@@ -638,7 +638,7 @@
     - IDD_ADDDLGINIT と IDD_MODIFYDLGINIT を共通化。
     - RES_str_get と RES_str_set の設計を変更。
     - RES_get_text と RES_set_text 関数をEGAに追加。
-- v.5.7.8 (2023-XX-YY)
+- v.5.7.8 (2023-10-06)
     - ポルトガル語（ブラジル）の翻訳を改良。
     - フォント選択条件を緩和。
     - 繁体字中国語を追加。
