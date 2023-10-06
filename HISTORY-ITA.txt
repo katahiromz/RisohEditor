@@ -297,3 +297,4 @@
 - v.5.7.8 (2023-XX-YY)
     - Traduzione portoghese (brasiliano) migliorata.
     - Requisiti rilassati selezione font.
+    - Added Traditional Chinese translation.
