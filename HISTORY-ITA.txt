@@ -295,6 +295,6 @@
     - Modificato il design di RES_str_get e RES_str_set.
     - Aggiunte le funzioni RES_get_text e RES_set_text a EGA.
 - v.5.7.8 (06.10.2023)
-    - Traduzione portoghese (brasiliano) migliorata.
+    - Revisione traduzione portoghese (brasiliano).
     - Requisiti rilassati selezione font.
-    - Added Traditional Chinese translation.
+    - Aggiunta traduzione Cinese tradizionale.
