@@ -1613,7 +1613,7 @@ STRINGTABLE
     IDS_INTEGERORIDENTIFIER, "(整形或标识符)"
     IDS_NOTEXT, " "
     IDS_NOUPDATE, "您正使用最新版本。"
-    IDS_THEREISUPDATE, "更新できる RisohEditor %s があります。今すぐ更新をダウンロードしますか？"
+    IDS_THEREISUPDATE, "有一个可以更新的 RisohEditor %s。 您想立即下载更新吗？"
     IDS_CANTCHECKUPDATE, "检查更新失败。"
     IDS_CODEPAGE1252, "1252 (拉丁1)"
     IDS_CODEPAGE1250, "1250 (拉丁2)"
