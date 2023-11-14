@@ -3861,6 +3861,9 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 
 void MMainWnd::OnEga(HWND hwnd, LPCWSTR file)
 {
+    // Hide ID list
+    ShowIDList(hwnd, FALSE);
+
     // compile if necessary
     if (!CompileIfNecessary(TRUE))
         return;
