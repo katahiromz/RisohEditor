@@ -299,6 +299,6 @@
     - 포르투갈어(브라질) 번역이 개선되었습니다.
     - 글꼴 선택 요구사항이 완화되었습니다.
     - 중국어 번체 번역이 추가되었습니다.
-- v.5.7.9 (2023-XX-YY)
+- v.5.7.9 (2023-11-14)
     - Added EGA sample DeleteNonEnglish.ega.
     - Fixed IDS_THEREISUPDATE translation.

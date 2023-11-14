@@ -298,6 +298,6 @@
     - Improved Portuguese (Brazilian) translation.
     - Relaxed font selection requirements.
     - Added Traditional Chinese translation.
-- v.5.7.9 (2023-XX-YY)
+- v.5.7.9 (2023-11-14)
     - Added EGA sample DeleteNonEnglish.ega.
     - Fixed IDS_THEREISUPDATE translation.

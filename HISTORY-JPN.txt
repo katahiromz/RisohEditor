@@ -642,6 +642,6 @@
     - ポルトガル語（ブラジル）の翻訳を改良。
     - フォント選択条件を緩和。
     - 繁体字中国語を追加。
-- v.5.7.9 (2023-XX-YY)
+- v.5.7.9 (2023-11-14)
     - Added EGA sample DeleteNonEnglish.ega.
     - Fixed IDS_THEREISUPDATE translation.
