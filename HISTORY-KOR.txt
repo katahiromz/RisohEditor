@@ -300,5 +300,5 @@
     - 글꼴 선택 요구사항이 완화되었습니다.
     - 중국어 번체 번역이 추가되었습니다.
 - v.5.7.9 (2023-11-14)
-    - Added EGA sample DeleteNonEnglish.ega.
-    - Fixed IDS_THEREISUPDATE translation.
+    - EGA 샘플 DeleteNonEnglish.ega를 추가했습니다.
+    - IDS_THEREISUPDATE 번역을 수정했습니다.
