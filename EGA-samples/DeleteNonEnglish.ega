@@ -1,0 +1,10 @@
+@ Delete non-Neutral (0) and non-English (1033) resources.
+=(res, RES_search());
+foreach(item, res, (
+    =(type, [](item, 0)),
+    =(name, [](item, 1)),
+    =(lang, [](item, 2)),
+    if(&&(!=(lang, 0), !=(lang, 1033)), (
+        RES_delete(type, name, lang)
+    ))
+));
