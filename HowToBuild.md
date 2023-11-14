@@ -23,8 +23,6 @@ ATL support is for Visual C++ only.
     - `-A Win32` might be needed if your VS uses `x64` as default.
 - Build it by using the solution file, Makefile or Ninja.
 - Copy the contents of `build/Debug` or `build/Release` into `build/`.
-- Execute `pack.sh` shell script on MSYS2.
-- Execute `packportable.sh` shell script on MSYS2.
 
 ## Making an installer
 
