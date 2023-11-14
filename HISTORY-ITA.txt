@@ -299,5 +299,5 @@
     - Requisiti rilassati selezione font.
     - Aggiunta traduzione Cinese tradizionale.
 - v.5.7.9 (14.11.2023)
-    - Added EGA sample DeleteNonEnglish.ega.
-    - Fixed IDS_THEREISUPDATE translation.
+    - Aggiunto esempio EGA DeleteNonEnglish.ega.
+    - Corretta traduzione IDS_THEREISUPDATE.
