@@ -303,4 +303,4 @@
     - EGA 샘플 DeleteNonEnglish.ega를 추가했습니다.
     - IDS_THEREISUPDATE 번역을 수정했습니다.
 - v.5.8.0 (2024-03-03)
-    - Works well with security scan when generating EXE files.
+    - Coping with security scan when generating EXE files.
