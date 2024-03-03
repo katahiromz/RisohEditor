@@ -9550,18 +9550,47 @@ BOOL DoResetCheckSum(LPCWSTR pszExeFile)
     return stream.SaveToFile(pszExeFile);
 }
 
+static BOOL IsFileWritable(LPCWSTR pszFileName)
+{
+    HANDLE hFile = CreateFileW(pszFileName, GENERIC_WRITE, 0, NULL,
+                               OPEN_EXISTING, 0, NULL);
+    CloseHandle(hFile);
+    return hFile != INVALID_HANDLE_VALUE;
+}
+
+// Wait before file operation for virus checker
+static BOOL WaitForVirusScan(LPCWSTR pszFileName, DWORD dwTimeout)
+{
+    ::Sleep(300);
+
+    const INT cRetry = 10;
+    for (INT i = 0; i < cRetry; ++i)
+    {
+        if (IsFileWritable(pszFileName))
+        {
+            ::Sleep(300);
+            return TRUE;
+        }
+
+        ::Sleep(dwTimeout / cRetry);
+    }
+
+    return FALSE;
+}
+
 BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
 {
+    // File might be updated. Wait for virus scan
+    WaitForVirusScan(pszExeFile, 10 * 1000);
+
     // src is not exe and dest exe is respected
     DoResetCheckSum(pszExeFile);
 
-    // Now the executable is updated. Wait a little for virus checker.
-    Sleep(300);
+    // The executable is updated. Wait for virus scan
+    WaitForVirusScan(pszExeFile, 10 * 1000);
 
     if (!g_res.update_exe(pszExeFile))
-    {
         return FALSE;
-    }
 
     // Now the executable is updated. Wait a little for virus checker.
     Sleep(300);
@@ -9647,9 +9676,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         if (lstrcmpiW(src, dest) == 0 ||
             CopyFileW(src, dest, FALSE))
         {
-            // Now the executable is updated. Wait a little for virus checker.
-            Sleep(300);
-
             return DoSaveInner(dest, bCompression);
         }
     }
@@ -9664,9 +9690,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         {
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE))
             {
-                // Now the executable is updated. Wait a little for virus checker.
-                Sleep(300);
-
                 return DoSaveInner(dest, bCompression);
             }
         }
@@ -9674,9 +9697,6 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         {
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL))
             {
-                // Now the executable is updated. Wait a little for virus checker.
-                Sleep(300);
-
                 return DoSaveInner(dest, bCompression);
             }
         }

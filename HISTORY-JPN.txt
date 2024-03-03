@@ -643,5 +643,7 @@
     - フォント選択条件を緩和。
     - 繁体字中国語を追加。
 - v.5.7.9 (2023-11-14)
-    - Added EGA sample DeleteNonEnglish.ega.
-    - Fixed IDS_THEREISUPDATE translation.
+    - EGA サンプル「DeleteNonEnglish.ega」を追加。
+    - IDS_THEREISUPDATE の翻訳を修正。
+- v.5.8.0 (2024-03-03)
+    - EXEファイル生成時にセキュリティスキャンとうまく連携する。

@@ -301,3 +301,5 @@
 - v.5.7.9 (14.11.2023)
     - Aggiunto esempio EGA DeleteNonEnglish.ega.
     - Corretta traduzione IDS_THEREISUPDATE.
+- v.5.8.0 (2024-03-03)
+    - Works well with security scan when generating EXE files.
