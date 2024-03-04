@@ -303,7 +303,7 @@
     - Corretta traduzione IDS_THEREISUPDATE.
 - v.5.8.0 (03.03.2024)
     - Gestione scansione sicurezza durante la generazione di file EXE.
-- v.5.8.1 (2024-03-04)
-    - Improved IDD_ADDCTRL and IDD_CTRLPROP dialogs.
+- v.5.8.1 (04.03.2024)
+    - Finestre di dialogo IDD_ADDCTRL e IDD_CTRLPROP migliorate.
 - v.5.8.2 (2024-XX-YY)
-    - Added ES_AUTOHSCROLL style to some text boxes.
+    - Aggiunto lo stile ES_AUTOHSCROLL ad alcune caselle di testo.
