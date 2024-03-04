@@ -4,7 +4,7 @@
 ##############################################################################
 
 # CMake minimum version
-cmake_minimum_required(VERSION 2.9)
+cmake_minimum_required(VERSION 3.5)
 
 # Enable C/C++
 ENABLE_LANGUAGE(C)
