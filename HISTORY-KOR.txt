@@ -306,3 +306,5 @@
     - EXE 파일을 생성할 때 보안 검색에 대처합니다.
 - v.5.8.1 (2024-03-04)
     - IDD_ADDCTRL 및 IDD_CTRLPROP 대화 상자가 개선되었습니다.
+- v.5.8.2 (2024-XX-YY)
+    - Added ES_AUTOHSCROLL style to some text boxes.

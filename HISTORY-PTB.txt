@@ -305,3 +305,5 @@
     - Coping with security scan when generating EXE files.
 - v.5.8.1 (2024-03-04)
     - Improved IDD_ADDCTRL and IDD_CTRLPROP dialogs.
+- v.5.8.2 (2024-XX-YY)
+    - Added ES_AUTOHSCROLL style to some text boxes.
