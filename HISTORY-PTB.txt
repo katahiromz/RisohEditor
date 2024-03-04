@@ -303,3 +303,4 @@
     - Fixed IDS_THEREISUPDATE translation.
 - v.5.8.0 (2024-03-03)
     - Coping with security scan when generating EXE files.
+- v.5.8.1 (2024-03-04)
