@@ -2370,8 +2370,9 @@ public:
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
-    BOOL DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
-    BOOL DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found);
+    BOOL DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
+    BOOL DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found);
+    BOOL DoExportRes(LPCWSTR pszResFile);
     void DoIDStat(UINT anValues[5]);
     BOOL DoBackupFile(LPCWSTR pszFileName, UINT nCount = 0);
     BOOL DoBackupFolder(LPCWSTR pszFileName, UINT nCount = 0);
@@ -3207,7 +3208,7 @@ void MMainWnd::OnExtractRC(HWND hwnd)
         if (dialog.DialogBoxDx(hwnd) != IDOK)
             return;
 
-        if (!DoExport(szFile, NULL, found))
+        if (!DoExportRC(szFile, NULL, found))
         {
             ErrorBoxDx(IDS_CANTEXPORT);
         }
@@ -3466,7 +3467,7 @@ void MMainWnd::OnExport(HWND hwnd)
     // initialize OPENFILENAME structure
     WCHAR file[MAX_PATH] = TEXT("");
     OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400W, hwnd };
-    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_RCFILTER));
+    ofn.lpstrFilter = MakeFilterDx(LoadStringDx(IDS_EXPORTFILTER));
     ofn.lpstrFile = file;
     ofn.nMaxFile = _countof(file);
     ofn.lpstrTitle = LoadStringDx(IDS_EXPORT);
@@ -3477,15 +3478,25 @@ void MMainWnd::OnExport(HWND hwnd)
     // let the user choose the path
     if (GetSaveFileNameW(&ofn))
     {
-        // show the "export options" dialog
-        MExportOptionsDlg dialog;
-        if (dialog.DialogBoxDx(hwnd) != IDOK)
-            return;
-
         // do export!
-        if (!DoExport(file))
+        if (ofn.nFilterIndex == 2) // .res
         {
-            ErrorBoxDx(IDS_CANTEXPORT);
+            if (!DoExportRes(file))
+            {
+                ErrorBoxDx(IDS_CANTEXPORT);
+            }
+        }
+        else // .rc
+        {
+            // show the "export options" dialog
+            MExportOptionsDlg dialog;
+            if (dialog.DialogBoxDx(hwnd) != IDOK)
+                return;
+
+            if (!DoExportRC(file))
+            {
+                ErrorBoxDx(IDS_CANTEXPORT);
+            }
         }
     }
 }
@@ -3822,7 +3833,7 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
 
                 // export
                 WCHAR szResH[MAX_PATH] = L"";
-                if (DoExport(szFile, szResH))   // succeeded
+                if (DoExportRC(szFile, szResH))   // succeeded
                 {
                     // save the resource.h path
                     StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
@@ -3981,7 +3992,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
 
             // export
             WCHAR szResH[MAX_PATH] = L"";
-            if (DoExport(m_szFile, szResH))   // succeeded
+            if (DoExportRC(m_szFile, szResH))   // succeeded
             {
                 // save the resource.h path
                 StringCchCopyW(m_szResourceH, _countof(m_szResourceH), szResH);
@@ -9273,17 +9284,33 @@ inline BOOL MMainWnd::DoExtract(const EntryBase *entry, BOOL bExporting)
 }
 
 // do export the resource data to an RC file and related files
-BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile)
+BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile)
 {
     // search the language entries
     EntrySet found;
     g_res.search(found, ET_LANG);
 
-    return DoExport(pszRCFile, pszResHFile, found);
+    return DoExportRC(pszRCFile, pszResHFile, found);
+}
+
+BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
+{
+    // search the language entries
+    EntrySet found;
+    g_res.search(found, ET_LANG);
+
+    if (found.empty())
+    {
+        // unable to export the empty data
+        ErrorBoxDx(IDS_DATAISEMPTY);
+        return FALSE;
+    }
+
+    return g_res.extract_res(pszResFile, g_res);
 }
 
 // do export the resource data to an RC file and related files
-BOOL MMainWnd::DoExport(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
+BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
 {
     if (found.empty())
     {
@@ -9415,7 +9442,7 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
     if (lstrcmpiW(pchDotExt, L".exe") == 0)
         return DoSaveExeAs(pszFile);
     if (lstrcmpiW(pchDotExt, L".rc") == 0)
-        return DoExport(pszFile, NULL);
+        return DoExportRC(pszFile, NULL);
     if (lstrcmpiW(pchDotExt, L".res") == 0)
         return DoSaveResAs(pszFile);
     if (*pchDotExt == 0)
@@ -9423,7 +9450,7 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
         WCHAR szPath[MAX_PATH];
         StringCbCopyW(szPath, sizeof(szPath), pszFile);
         PathAddExtensionW(szPath, L".rc");
-        return DoExport(szPath, NULL);
+        return DoExportRC(szPath, NULL);
     }
     return FALSE;
 }

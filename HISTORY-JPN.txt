@@ -653,3 +653,4 @@
     - Added ES_AUTOHSCROLL style to some text boxes.
     - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
     - Centering "Edit Dialog" window.
+    - Supported exporting RES file.

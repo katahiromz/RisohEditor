@@ -1398,7 +1398,7 @@ STRINGTABLE
     IDS_ENTERLANG, "請輸入資源語言類型。"
     IDS_FILENOTFOUND, "未找到文件。"
     IDS_CANNOTREPLACE, "替換失敗。"
-    IDS_EXERESFILTER, "資源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC文件 (*.rc)|*.rc|二進位制資源文件 (*.res)|*.res|全部文件 (*.*)|*.*|"
+    IDS_EXERESFILTER, "資源配置文件 (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC 文件 (*.rc)|*.rc|二進位制資源文件 (*.res)|*.res|全部文件 (*.*)|*.*|"
     IDS_SAVEAS, "另存為"
     IDS_CANNOTADDICON, "載入圖示失敗。"
     IDS_ADDICON, "加圖示"
@@ -1634,6 +1634,7 @@ STRINGTABLE
     IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "沒有選擇。"
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鴻湘\r\n"
+    IDS_EXPORTFILTER, "RC 文件 (*.rc)|*.rc|二進位制資源文件 (*.res)|*.res|"
 }
 
 //////////////////////////////////////////////////////////////////////////////

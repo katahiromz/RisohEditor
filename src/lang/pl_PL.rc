@@ -1400,7 +1400,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Wprowadź język zasobu."
     IDS_FILENOTFOUND, "Nie można odnaleźć pliku."
     IDS_CANNOTREPLACE, "Nie można zamienić."
-    IDS_EXERESFILTER, "Wykonywalne (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|Wszystkie pliki (*.*)|*.*|"
+    IDS_EXERESFILTER, "Wykonywalne (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Pliki zasobów (*.rc)|*.rc|Binary Resources (*.res)|*.res|Wszystkie pliki (*.*)|*.*|"
     IDS_SAVEAS, "Zapisz jako"
     IDS_CANNOTADDICON, "Nie można dodać ikony."
     IDS_ADDICON, "Dodaj ikonę"
@@ -1636,6 +1636,7 @@ STRINGTABLE
     IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Nie ma wyboru."
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n"
+    IDS_EXPORTFILTER, "Pliki RC (*.rc)|*.rc|Zasoby binarne (*.res)|*.res|"
 }
 
 //////////////////////////////////////////////////////////////////////////////

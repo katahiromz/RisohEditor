@@ -1632,10 +1632,11 @@ STRINGTABLE
     IDS_CODEPAGE65001, "65001 (UTF-8)"
     IDS_EXTRACTTLB, "Extract TYPELIB data"
     IDS_CANTEXTRACTTLB, "Unable to extract the TYPELIB data."
-    IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Binary Resources (*.res)|*.res|Text Files (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
+    IDS_TLBRESBINFILTER, "TYPELIB data (*.tlb)|*.tlb|Ressources binaires (*.res)|*.res|Fichiers texte (*.txt)|*.txt|MIDL Files (*.idl)|*.idl|All Files (*.*)|*.*|"
     IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Il n'y a pas de sélection."
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n"
+    IDS_EXPORTFILTER, "Fichiers RC (*.rc)|*.rc|Ressources binaires (*.res)|*.res|"
 }
 
 //////////////////////////////////////////////////////////////////////////////
