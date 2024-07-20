@@ -284,7 +284,7 @@
     - Console EGA migliorata.
     - Risolto problema programma di installazione danneggiato.
 - v.5.7.5 (08.05.2023)
-    - Migliorato IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL dialogs.
+    - Migliorato supprto finestre IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
     - Aggiunto programma di installazione coreano.
     - Corretto problema separatore MENUEX.
 - v.5.7.6 (02.06.2023)
@@ -307,6 +307,6 @@
     - Finestre di dialogo IDD_ADDCTRL e IDD_CTRLPROP migliorate.
 - v.5.8.2 (07.20.2024)
     - Aggiunto lo stile ES_AUTOHSCROLL ad alcune caselle di testo.
-    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
-    - Centering "Edit Dialog" window.
-    - Supported exporting RES file.
+    - Risolto problema caricamento Win2k3 ieframe.dll BITMAP 214.
+    - Centratura finestra "Modifica finestra di dialogo".
+    - Supporto esportazione file RES.
