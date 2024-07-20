@@ -651,3 +651,4 @@
     - IDD_ADDCTRL と IDD_CTRLPROP ダイアログを改良。
 - v.5.8.2 (2024-XX-YY)
     - Added ES_AUTOHSCROLL style to some text boxes.
+    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.

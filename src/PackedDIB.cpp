@@ -192,10 +192,21 @@ PackedDIB_CreateBitmap(const void *pPackedDIB, DWORD dwSize)
     hbm = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS, &pBits, NULL, 0);
     DeleteDC(hDC);
 
-    // FIXME: BI_RLE4 and BI_RLE8
     if (hbm)
     {
+#ifdef _MSC_VER
+        // Win2k3 ieframe.dll BITMAP 214 causes exception
+        __try
+        {
+            CopyMemory(pBits, pb, dwSize);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            ;
+        }
+#else
         CopyMemory(pBits, pb, dwSize);
+#endif
     }
 
     return hbm;

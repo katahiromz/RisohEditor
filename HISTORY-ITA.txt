@@ -307,3 +307,4 @@
     - Finestre di dialogo IDD_ADDCTRL e IDD_CTRLPROP migliorate.
 - v.5.8.2 (2024-XX-YY)
     - Aggiunto lo stile ES_AUTOHSCROLL ad alcune caselle di testo.
+    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
