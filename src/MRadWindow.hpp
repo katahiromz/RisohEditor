@@ -1646,6 +1646,7 @@ public:
         if (CreateWindowDx(hwndParent, MAKEINTRESOURCE(IDS_RADWINDOW), style))
         {
             // show it
+            CenterWindowDx();
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
 
