@@ -307,7 +307,7 @@
 - v.5.8.1 (2024-03-04)
     - IDD_ADDCTRL 및 IDD_CTRLPROP 대화 상자가 개선되었습니다.
 - v.5.8.2 (2024-07-20)
-    - Added ES_AUTOHSCROLL style to some text boxes.
-    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
-    - Centering "Edit Dialog" window.
-    - Supported exporting RES file.
+    - 일부 텍스트 상자에 ES_AUTOHSCROLL 스타일을 추가했습니다.
+    - Win2k3 ieframe.dll 비트맵 214의 로딩 실패를 수정했습니다.
+    - “편집 대화 상자” 창을 중앙 배치합니다.
+    - RES 파일 내보내기가 지원됩니다.
