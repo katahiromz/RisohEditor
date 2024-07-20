@@ -650,7 +650,7 @@
 - v.5.8.1 (2024-03-04)
     - IDD_ADDCTRL と IDD_CTRLPROP ダイアログを改良。
 - v.5.8.2 (2024-07-20)
-    - Added ES_AUTOHSCROLL style to some text boxes.
-    - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
-    - Centering "Edit Dialog" window.
-    - Supported exporting RES file.
+    - いくつかのテキストボックスに ES_AUTOHSCROLL スタイルを追加。
+    - Win2k3 ieframe.dll BITMAP 214 の読み込み失敗を修正。
+    - 「ダイアログの編集」ウィンドウを中央寄せ。
+    - RESファイルのエクスポートをサポート。
