@@ -7675,8 +7675,8 @@ BOOL InitLangListBox(HWND hwnd)
 {
     for (auto& lang : g_langs)
     {
-        INT index = (INT)SendMessageW(hwnd, LB_ADDSTRING, 0, (LPARAM)lang.str.c_str());
-        SendMessageW(hwnd, LB_SETITEMDATA, index, (LPARAM)lang.LangID);
+        INT index = ListBox_AddString(hwnd, lang.str.c_str());
+        ListBox_SetItemData(hwnd, index, lang.LangID);
     }
     return TRUE;
 }

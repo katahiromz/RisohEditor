@@ -199,16 +199,15 @@ public:
             if (id != 0)
             {
                 std::wstring str = g_db.GetNameOfResID(IDTYPE_COMMAND, IDTYPE_NEWCOMMAND, id, true);
-                SendMessageW(m_hLst1, LB_ADDSTRING, 0, (LPARAM)str.c_str());
+                ListBox_AddString(m_hLst1, str.c_str());
             }
             else
             {
-                SendMessageW(m_hLst1, LB_ADDSTRING, 0, (LPARAM)L"---");
+                ListBox_AddString(m_hLst1, L"---");
             }
         }
-        SendMessageW(m_hLst1, LB_SETCURSEL, 0, 0);
-
-        SendMessageW(m_hLst1, LB_SETITEMHEIGHT, 0, GetItemHeight(hwnd));
+        ListBox_SetCurSel(m_hLst1, 0);
+        ListBox_SetItemHeight(m_hLst1, 0, GetItemHeight(hwnd));
 
         SendMessageDx(WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
         SendMessageDx(WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
@@ -238,20 +237,20 @@ public:
             auto& str = dialog.m_str;
             if (str.empty() || str[0] == L'-')
                 str = L"---";
-            INT iItem = (INT)SendMessageW(m_hLst1, LB_INSERTSTRING, -1, (LPARAM)str.c_str());
-            SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
+            INT iItem = ListBox_InsertString(m_hLst1, -1, str.c_str());
+            ListBox_SetCurSel(m_hLst1, iItem);
         }
     }
 
     void OnModify(HWND hwnd)
     {
-        INT iItem = (INT)SendMessageW(m_hLst1, LB_GETCURSEL, 0, 0);
+        INT iItem = ListBox_GetCurSel(m_hLst1);
         if (iItem < 0)
             return;
 
         WCHAR sz1[MAX_PATH];
         sz1[0] = 0;
-        SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+        ListBox_GetText(m_hLst1, iItem, sz1);
 
         MModifyTBBtnDlg dialog(IDD_MODIFYTBBTN, sz1);
         if (dialog.DialogBoxDx(hwnd) == IDOK)
@@ -259,64 +258,64 @@ public:
             auto& str = dialog.m_str;
             if (str.empty() || str[0] == L'-')
                 str = L"---";
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem, (LPARAM)str.c_str());
-            SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
+            ListBox_DeleteString(m_hLst1, iItem);
+            ListBox_InsertString(m_hLst1, iItem, str.c_str());
+            ListBox_SetCurSel(m_hLst1, iItem);
         }
     }
 
     void OnDelete(HWND hwnd)
     {
-        INT iItem = (INT)SendMessageW(m_hLst1, LB_GETCURSEL, 0, 0);
+        INT iItem = ListBox_GetCurSel(m_hLst1);
         if (iItem >= 0)
         {
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            INT nCount = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
+            ListBox_DeleteString(m_hLst1, iItem);
+            INT nCount = ListBox_GetCount(m_hLst1);
             if (nCount == iItem)
-                SendMessageW(m_hLst1, LB_SETCURSEL, iItem - 1, 0);
+                ListBox_SetCurSel(m_hLst1, iItem - 1);
             else
-                SendMessageW(m_hLst1, LB_SETCURSEL, iItem, 0);
+                ListBox_SetCurSel(m_hLst1, iItem);
         }
     }
 
     void OnUp(HWND hwnd)
     {
-        INT iItem = (INT)SendMessageW(m_hLst1, LB_GETCURSEL, 0, 0);
+        INT iItem = ListBox_GetCurSel(m_hLst1);
         if (iItem > 0)
         {
             WCHAR sz1[MAX_PATH], sz2[MAX_PATH];
             sz1[0] = sz2[0] = 0;
-            SendMessageW(m_hLst1, LB_GETTEXT, iItem - 1, (LPARAM)sz1);
-            SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz2);
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem - 1, 0);
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem - 1, 0);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem - 1, (LPARAM)sz1);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem - 1, (LPARAM)sz2);
-            SendMessageW(m_hLst1, LB_SETCURSEL, iItem - 1, 0);
+            ListBox_GetText(m_hLst1, iItem - 1, sz1);
+            ListBox_GetText(m_hLst1, iItem, sz2);
+            ListBox_DeleteString(m_hLst1, iItem - 1);
+            ListBox_DeleteString(m_hLst1, iItem - 1);
+            ListBox_InsertString(m_hLst1, iItem - 1, sz1);
+            ListBox_InsertString(m_hLst1, iItem - 1, sz2);
+            ListBox_SetCurSel(m_hLst1, iItem - 1);
         }
     }
 
     void OnDown(HWND hwnd)
     {
-        INT iItem = (INT)SendMessageW(m_hLst1, LB_GETCURSEL, 0, 0);
-        INT cItems = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
+        INT iItem = ListBox_GetCurSel(m_hLst1);
+        INT cItems = ListBox_GetCount(m_hLst1);
         if (iItem + 1 < cItems)
         {
             WCHAR sz1[MAX_PATH], sz2[MAX_PATH];
             sz1[0] = sz2[0] = 0;
-            SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
-            SendMessageW(m_hLst1, LB_GETTEXT, iItem + 1, (LPARAM)sz2);
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            SendMessageW(m_hLst1, LB_DELETESTRING, iItem, 0);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem, (LPARAM)sz1);
-            SendMessageW(m_hLst1, LB_INSERTSTRING, iItem, (LPARAM)sz2);
-            SendMessageW(m_hLst1, LB_SETCURSEL, iItem + 1, 0);
+            ListBox_GetText(m_hLst1, iItem, sz1);
+            ListBox_GetText(m_hLst1, iItem + 1, sz2);
+            ListBox_DeleteString(m_hLst1, iItem);
+            ListBox_DeleteString(m_hLst1, iItem);
+            ListBox_InsertString(m_hLst1, iItem, sz1);
+            ListBox_InsertString(m_hLst1, iItem, sz2);
+            ListBox_SetCurSel(m_hLst1, iItem + 1);
         }
     }
 
     void OnOK(HWND hwnd)
     {
-        INT nCount = (INT)SendMessageW(m_hLst1, LB_GETCOUNT, 0, 0);
+        INT nCount = ListBox_GetCount(m_hLst1);
 
         m_toolbar_res.clear();
 
@@ -345,7 +344,7 @@ public:
         {
             WCHAR sz1[MAX_PATH];
             sz1[0] = 0;
-            SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+            ListBox_GetText(m_hLst1, iItem, sz1);
 
             if (!sz1[0] || sz1[0] == L'-')
             {
@@ -410,7 +409,7 @@ public:
 
         WCHAR sz1[MAX_PATH];
         sz1[0] = 0;
-        SendMessageW(m_hLst1, LB_GETTEXT, iItem, (LPARAM)sz1);
+        ListBox_GetText(m_hLst1, iItem, sz1);
 
         if (lpDrawItem->itemState & ODS_SELECTED)
         {

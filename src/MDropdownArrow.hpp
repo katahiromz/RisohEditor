@@ -49,10 +49,10 @@ public:
     {
         InitLangListBox(m_lst1);
 
-        INT nCount = (INT)SendMessageW(m_lst1, LB_GETCOUNT, 0, 0);
+        INT nCount = ListBox_GetCount(m_lst1);
 
         RECT rc;
-        SendMessageW(m_lst1, LB_GETITEMRECT, 0, (LPARAM)&rc);
+        ListBox_GetItemRect(m_lst1, 0, &rc);
         LONG cy = rc.bottom - rc.top;
 
         if (nCount > 10)
@@ -156,7 +156,7 @@ public:
 
     BOOL DoComplement(HWND hwnd, WPARAM wParam)
     {
-        INT nIndex = (INT)SendMessage(m_dialog.m_lst1, LB_GETCURSEL, 0, 0);
+        INT nIndex = ListBox_GetCurSel(m_dialog.m_lst1);
         switch (wParam)
         {
         case VK_RETURN:
