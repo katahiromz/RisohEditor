@@ -24,6 +24,9 @@ target_link_libraries(RisohEditor
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
     oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditor PRIVATE -DUNICODE -D_UNICODE)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set_target_properties(RisohEditor PROPERTIES OUTPUT_NAME "RisohEditor64")
+endif()
 
 # RisohEditorPortable.exe
 add_executable(RisohEditorPortable WIN32
@@ -35,6 +38,9 @@ target_link_libraries(RisohEditorPortable
     libega gdi32 comctl32 msimg32 winmm gdiplus vfw32 wininet
     oledlg msimg32 advapi32 shlwapi version urlmon)
 target_compile_definitions(RisohEditorPortable PRIVATE -DPORTABLE -DUNICODE -D_UNICODE)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set_target_properties(RisohEditorPortable PROPERTIES OUTPUT_NAME "RisohEditorPortable64")
+endif()
 
 option(ATL_SUPPORT "Add ATL support" OFF)
 

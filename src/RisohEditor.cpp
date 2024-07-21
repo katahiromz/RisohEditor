@@ -9729,14 +9729,22 @@ BOOL MMainWnd::DoSaveExeAs(LPCWSTR pszExeFile, BOOL bCompression)
         // if src and dest are non-executable, then dump tiny exe or dll to dest
         if (IsDotExe(dest))
         {
+#ifdef _WIN64
+            if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE64))
+#else
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYEXE))
+#endif
             {
                 return DoSaveInner(dest, bCompression);
             }
         }
         else
         {
+#ifdef _WIN64
+            if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL64))
+#else
             if (DumpTinyExeOrDll(m_hInst, dest, IDR_TINYDLL))
+#endif
             {
                 return DoSaveInner(dest, bCompression);
             }

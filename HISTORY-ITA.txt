@@ -314,3 +314,4 @@
     - Auto filling resource name from filename.
     - Added resource language setting.
     - Fixed freeze on Enter key.
+    - Supported x64.

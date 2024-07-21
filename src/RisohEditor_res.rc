@@ -83,6 +83,10 @@ IDR_TINYEXE RCDATA "res/RCData_106.bin"
 
 IDR_TINYDLL RCDATA "res/RCData_107.bin"
 
+IDR_TINYEXE64 RCDATA "res/RCData_108.bin"
+
+IDR_TINYDLL64 RCDATA "res/RCData_109.bin"
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_GROUP_CURSOR
 

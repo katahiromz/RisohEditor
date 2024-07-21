@@ -99,6 +99,8 @@
 #define IDR_UNKNOWNRESID                    105
 #define IDR_TINYEXE                         106
 #define IDR_TINYDLL                         107
+#define IDR_TINYEXE64                       108
+#define IDR_TINYDLL64                       109
 
 #define IDS_APPNAME                         101
 #define IDS_TITLEWITHFILE                   102
