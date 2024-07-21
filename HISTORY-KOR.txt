@@ -311,3 +311,5 @@
     - Win2k3 ieframe.dll 비트맵 214의 로딩 실패를 수정했습니다.
     - “편집 대화 상자” 창을 중앙 배치합니다.
     - RES 파일 내보내기가 지원됩니다.
+- v.5.8.3 (2024-XX-YY)
+    - Auto filling resource name from filename.

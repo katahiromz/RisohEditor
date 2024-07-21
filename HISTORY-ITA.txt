@@ -310,3 +310,5 @@
     - Risolto problema caricamento Win2k3 ieframe.dll BITMAP 214.
     - Centratura finestra "Modifica finestra di dialogo".
     - Supporto esportazione file RES.
+- v.5.8.3 (2024-XX-YY)
+    - Auto filling resource name from filename.
