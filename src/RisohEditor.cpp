@@ -12222,7 +12222,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
     else if (pnmhdr->code == NM_RETURN)
     {
         MWaitCursor wait;
-        if (pnmhdr->hwndFrom == m_hwndTV)
+        if (pnmhdr->hwndFrom == m_hwndTV && entry)
         {
             switch (entry->m_et)
             {

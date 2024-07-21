@@ -313,3 +313,4 @@
 - v.5.8.3 (2024-XX-YY)
     - Auto filling resource name from filename.
     - Added resource language setting.
+    - Fixed freeze on Enter key.
