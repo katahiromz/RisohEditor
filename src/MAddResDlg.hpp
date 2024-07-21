@@ -311,6 +311,16 @@ public:
         {
             // set the file path
             SetDlgItemTextW(hwnd, edt1, szFile);
+
+            // If name was empty, use file title
+            WCHAR szText[MAX_PATH];
+            ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
+            if (!szText[0])
+            {
+                StringCchCopyW(szText, _countof(szText), szFile);
+                PathRemoveExtensionW(szText);
+                ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
+            }
         }
     }
 
@@ -396,6 +406,7 @@ public:
             return;
 
         // prefix --> m_cmb2
+        ComboBox_GetText(m_cmb2, szText, _countof(szText));
         ComboBox_ResetContent(m_cmb2);
         if (type != RT_STRING && type != RT_MESSAGETABLE)
         {
@@ -405,6 +416,7 @@ public:
                 ComboBox_AddString(m_cmb2, table_entry.name.c_str());
             }
         }
+        ComboBox_SetText(m_cmb2, szText);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)

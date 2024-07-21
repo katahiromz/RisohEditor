@@ -112,6 +112,16 @@ public:
         if (GetOpenFileNameW(&ofn))
         {
             SetDlgItemTextW(hwnd, edt1, szFile);
+
+            // If name was empty, use file title
+            WCHAR szText[MAX_PATH];
+            ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
+            if (!szText[0])
+            {
+                StringCchCopyW(szText, _countof(szText), szFile);
+                PathRemoveExtensionW(szText);
+                ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
+            }
         }
     }
 
