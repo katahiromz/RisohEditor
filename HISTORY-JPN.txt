@@ -655,4 +655,4 @@
     - 「ダイアログの編集」ウィンドウを中央寄せ。
     - RESファイルのエクスポートをサポート。
 - v.5.8.3 (2024-XX-YY)
-    - Auto filling resource name from filename.
+    - ファイル名からリソース名を埋める。
