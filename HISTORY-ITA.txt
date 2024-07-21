@@ -306,12 +306,12 @@
 - v.5.8.1 (04.03.2024)
     - Finestre di dialogo IDD_ADDCTRL e IDD_CTRLPROP migliorate.
 - v.5.8.2 (07.20.2024)
-    - Aggiunto lo stile ES_AUTOHSCROLL ad alcune caselle di testo.
+    - Aggiunto stile ES_AUTOHSCROLL ad alcune caselle di testo.
     - Risolto problema caricamento Win2k3 ieframe.dll BITMAP 214.
     - Centratura finestra "Modifica finestra di dialogo".
     - Supporto esportazione file RES.
 - v.5.8.3 (2024-XX-YY)
-    - Auto filling resource name from filename.
-    - Added resource language setting.
-    - Fixed freeze on Enter key.
-    - Supported x64.
+    - Compilazione automatica nome della risorsa dal nome file.
+    - Aggiunta impostazione lingua risorse.
+    - Risolto problema blocco con il tasto Invio.
+    - Supportato sistema 64bit.
