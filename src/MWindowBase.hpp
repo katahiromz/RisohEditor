@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #ifndef MZC4_MWINDOWBASE_HPP_
-#define MZC4_MWINDOWBASE_HPP_    171     /* Version 171 */
+#define MZC4_MWINDOWBASE_HPP_    172     /* Version 172 */
 
 class MWindowBase;
 class MDialogBase;
@@ -109,8 +109,25 @@ class MDialogBase;
     #define MZCAPIV     WINAPIV
 #endif
 
-VOID MZCAPIV DebugPrintDx(const char *format, ...);
-VOID MZCAPIV DebugPrintDx(const WCHAR *format, ...);
+VOID MZCAPIV DebugPrintDxA(const char *file, int line, const char *format, ...);
+VOID MZCAPIV DebugPrintDxW(const char *file, int line, const WCHAR *format, ...);
+
+#ifdef NDEBUG
+    #define MTRACEA(fmt, ...)
+    #define MTRACEW(fmt, ...)
+#else
+    #define MTRACEA(fmt, ...) \
+        DebugPrintDxA(__FILE__, __LINE__, fmt, ## __VA_ARGS__)
+    #define MTRACEW(fmt, ...) \
+        DebugPrintDxW(__FILE__, __LINE__, fmt, ## __VA_ARGS__)
+#endif
+
+#ifdef UNICODE
+    #define MTRACE MTRACEW
+#else
+    #define MTRACE MTRACEA
+#endif
+
 RECT MZCAPI GetVirtualScreenRectDx();
 VOID MZCAPI RepositionPointDx(LPPOINT ppt, SIZE siz, LPCRECT prc);
 RECT MZCAPI WorkAreaFromWindowDx(HWND hwnd);
@@ -758,32 +775,38 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 // public inline functions
 
-inline VOID MZCAPIV DebugPrintDx(const char *format, ...)
+inline VOID MZCAPIV DebugPrintDxA(const char* file, int line, const char *format, ...)
 {
     #ifndef NDEBUG
         char szBuff[512];
         va_list va;
         va_start(va, format);
 #ifdef NO_STRSAFE
-        wsprintfA(szBuff, format, va);
+        int n = wsprintfA(szBuff, "%hs (%d): ", file, line);
+        wvsprintfA(&szBuff[n], format, va);
 #else
-        StringCchVPrintfA(szBuff, _countof(szBuff), format, va);
+        StringCchPrintfA(szBuff, _countof(szBuff), "%hs (%d): ", file, line);
+        int n = lstrlenA(szBuff);
+        StringCchVPrintfA(&szBuff[n], _countof(szBuff) - n, format, va);
 #endif
         va_end(va);
         OutputDebugStringA(szBuff);
     #endif
 }
 
-inline VOID MZCAPIV DebugPrintDx(const WCHAR *format, ...)
+inline VOID MZCAPIV DebugPrintDxW(const char* file, int line, const WCHAR *format, ...)
 {
     #ifndef NDEBUG
         WCHAR szBuff[512];
         va_list va;
         va_start(va, format);
 #ifdef NO_STRSAFE
-        wsprintfW(szBuff, format, va);
+        int n = wsprintfW(szBuff, L"%hs (%d): ", file, line);
+        wvsprintfW(&szBuff[n], format, va);
 #else
-        StringCchVPrintfW(szBuff, _countof(szBuff), format, va);
+        StringCchPrintfW(szBuff, _countof(szBuff), L"%hs (%d): ", file, line);
+        int n = lstrlenW(szBuff);
+        StringCchVPrintfW(&szBuff[n], _countof(szBuff) - n, format, va);
 #endif
         va_end(va);
         OutputDebugStringW(szBuff);

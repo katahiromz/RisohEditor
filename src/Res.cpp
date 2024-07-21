@@ -1278,7 +1278,7 @@ MStringW EntrySet::get_label(const EntryBase *entry)
 
 EntryBase *EntrySet::on_insert_entry(EntryBase *entry)
 {
-    DebugPrintDx(L"on_insert_entry: %p, %s, %s, %u, %s\n",
+    MTRACEW(L"on_insert_entry: %p, %s, %s, %u, %s\n",
         entry, entry->m_type.c_str(), entry->m_name.c_str(),
         entry->m_lang, entry->m_strLabel.c_str());
 

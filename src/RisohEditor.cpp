@@ -5216,7 +5216,7 @@ BOOL MMainWnd::DoUpxDecompress(LPCWSTR pszUpx, LPCWSTR pszFile)
 
         if (pmaker.GetExitCode() == 0 && bOK)
         {
-            DebugPrintDx("%s\n", strOutput.c_str());
+            MTRACEA("%s\n", strOutput.c_str());
             bOK = (strOutput.find("Unpacked") != MStringA::npos);
         }
     }
@@ -12308,7 +12308,8 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
             auto pInfo = (TV_DISPINFO *)pnmhdr;
             LPARAM lParam = pInfo->item.lParam;
             LPWSTR pszOldText = pInfo->item.pszText;
-            //MessageBoxW(NULL, pszOldText, NULL, 0);
+
+            MTRACEW(L"TVN_BEGINLABELEDIT: %s\n", pszOldText);
 
             if (IsWindow(m_arrow.m_dialog))
             {
@@ -14486,7 +14487,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
     if (m_himlTools == NULL)
     {
         DWORD dwError = GetLastError();
-        DebugPrintDx(L"GetLastError(): %ld\n", dwError);
+        MTRACE(TEXT("GetLastError(): %ld\n"), dwError);
         return FALSE;
     }
 
@@ -15043,7 +15044,7 @@ INT_PTR MMainWnd::RunDx()
     {
         if (bGot < 0)   // fatal error
         {
-            DebugPrintDx(TEXT("Application fatal error: %ld\n"), GetLastError());
+            MTRACE(TEXT("Application fatal error: %ld\n"), GetLastError());
             DebugBreak();
             return -1;
         }
@@ -17194,10 +17195,8 @@ wWinMain(HINSTANCE   hInstance,
 
 #if (WINVER >= 0x0500)
     HANDLE hProcess = GetCurrentProcess();
-    DebugPrintDx(TEXT("Count of GDI objects: %ld\n"),
-                 GetGuiResources(hProcess, GR_GDIOBJECTS));
-    DebugPrintDx(TEXT("Count of USER objects: %ld\n"),
-                 GetGuiResources(hProcess, GR_USEROBJECTS));
+    MTRACEA("Count of GDI objects: %ld\n", GetGuiResources(hProcess, GR_GDIOBJECTS));
+    MTRACEA("Count of USER objects: %ld\n", GetGuiResources(hProcess, GR_USEROBJECTS));
 #endif
 
 #if defined(_MSC_VER) && !defined(NDEBUG)

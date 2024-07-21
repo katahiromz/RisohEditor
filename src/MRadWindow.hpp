@@ -846,7 +846,7 @@ public:
     {
         if (m_bTopCtrl)
         {
-            DebugPrintDx("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
+            MTRACEA("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
         }
         MWindowBase::PostNcDestroy();
 
@@ -1404,7 +1404,7 @@ public:
 
 #ifndef NDEBUG
         MString text = GetWindowText(hCtrl);
-        DebugPrintDx(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
+        MTRACE(TEXT("MRadCtrl::DoSubclass: %p, %d, '%s'\n"), hCtrl, nIndex, text.c_str());
 #endif
 
         // do subclassing its children
@@ -2224,7 +2224,7 @@ public:
         if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
             return 0;   // invalid
 
-        DebugPrintDx("OnCtrlMove: %d\n", pCtrl->m_nIndex);
+        MTRACEA("OnCtrlMove: %d\n", pCtrl->m_nIndex);
 
         // get the rectangle of the control in dialog coordinates
         RECT rc;
@@ -2264,7 +2264,7 @@ public:
         if (pCtrl->m_nIndex < 0 || m_dialog_res.m_cItems <= pCtrl->m_nIndex)
             return 0;   // invalid
 
-        DebugPrintDx("OnCtrlSize: %d\n", pCtrl->m_nIndex);
+        MTRACEA("OnCtrlSize: %d\n", pCtrl->m_nIndex);
 
         // get the rectangle of the control in dialog coordinates
         RECT rc;
@@ -3135,7 +3135,7 @@ public:
             // get the position and size in client coordinates
             POINT pt = item.m_pt;
             SIZE siz = item.m_siz;
-            DebugPrintDx("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
+            MTRACEA("PTSIZ: %d, %d, %d, %d\n", pt.x, pt.y, siz.cx, siz.cy);
             DialogToClient(&pt);
             DialogToClient(&siz);
 
