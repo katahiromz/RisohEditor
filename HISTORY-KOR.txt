@@ -313,3 +313,4 @@
     - RES 파일 내보내기가 지원됩니다.
 - v.5.8.3 (2024-XX-YY)
     - Auto filling resource name from filename.
+    - Added resource language setting.

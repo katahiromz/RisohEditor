@@ -1,9 +1,16 @@
 #pragma once
 
+enum LANG_TYPE
+{
+    LANG_TYPE_0,
+    LANG_TYPE_1,
+    LANG_TYPE_2
+};
+
 BOOL CheckCommand(MString strCommand);
 BOOL CheckCommand(MString& strCommand);
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang);
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage);
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type);
 BOOL CheckNameComboBox(HWND hCmb2, MIdOrString& name);
 BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
@@ -29,8 +36,8 @@ void InitComboBoxPlaceholder(HWND hCmb, UINT nStringID);
 void InitConstantComboBox(HWND hCmb);
 void InitCtrlIDComboBox(HWND hCmb);
 void InitFontComboBox(HWND hCmb);
-void InitLangComboBox(HWND hCmb3, LANGID langid);
-void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage);
+void InitLangComboBox(HWND hCmb3, DWORD langid);
+void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage);
 void InitLangListView(HWND hLst1, LPCTSTR pszText);
 void InitMessageComboBox(HWND hCmb, const MString& strString);
 void InitResNameComboBox(HWND hCmb, const MIdOrString& id, IDTYPE_ nIDTYPE_);
@@ -41,3 +48,4 @@ void InitStyleListBox(HWND hLst, ConstantsDB::TableType& table);
 void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
 void ReplaceFullWithHalf(LPWSTR pszText);
 void ReplaceFullWithHalf(MStringW& strText);
+DWORD GetDefaultResLanguage(VOID);

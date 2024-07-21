@@ -46,14 +46,16 @@ public:
           m_pAutoComplete(new MLangAutoComplete())
     {
         m_cmb3.m_bAcceptSpace = TRUE;
-        m_pAutoComplete->AddRef();
     }
 
     ~MCopyToMultiLangDlg()
     {
-        m_pAutoComplete->unbind();
-        m_pAutoComplete->Release();
-        m_pAutoComplete = NULL;
+        if (m_pAutoComplete)
+        {
+            m_pAutoComplete->unbind();
+            m_pAutoComplete->Release();
+            m_pAutoComplete = NULL;
+        }
     }
 
     virtual INT_PTR CALLBACK

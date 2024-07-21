@@ -46,7 +46,6 @@ public:
         , m_pAutoComplete(new MLangAutoComplete())
     {
         m_cmb3.m_bAcceptSpace = TRUE;
-        m_pAutoComplete->AddRef();
     }
 
     ~MAddBitmapDlg()
@@ -70,7 +69,7 @@ public:
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, GetThreadUILanguage());
+        InitLangComboBox(hCmb3, GetDefaultResLanguage());
         SubclassChildDx(m_cmb3, cmb3);
 
         CenterWindowDx();

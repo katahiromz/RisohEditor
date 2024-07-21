@@ -26,14 +26,31 @@
 #include "MMacrosDlg.hpp"
 #include "MPathsDlg.hpp"
 #include "MFontsDlg.hpp"
+#include "MLangAutoComplete.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 
 class MConfigDlg : public MDialogBase
 {
 public:
-    MConfigDlg() : MDialogBase(IDD_CONFIG)
+    MComboBoxAutoComplete m_cmb3;
+    MLangAutoComplete *m_pAutoComplete;
+
+    MConfigDlg()
+        : MDialogBase(IDD_CONFIG)
+        , m_pAutoComplete(new MLangAutoComplete())
     {
+        m_cmb3.m_bAcceptSpace = TRUE;
+    }
+
+    ~MConfigDlg()
+    {
+        if (m_pAutoComplete)
+        {
+            m_pAutoComplete->unbind();
+            m_pAutoComplete->Release();
+            m_pAutoComplete = NULL;
+        }
     }
 
     void Reload(HWND hwnd)
@@ -78,6 +95,19 @@ public:
         Cmb1_AddString(hwnd, TEXT(ATLAXWIN_CLASS));
 #endif
 
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        InitLangComboBox(hCmb3, g_settings.nDefResLangID);
+        SubclassChildDx(m_cmb3, cmb3);
+
+        // auto complete
+        if (m_pAutoComplete)
+        {
+            COMBOBOXINFO info = { sizeof(info) };
+            GetComboBoxInfo(m_cmb3, &info);
+            HWND hwndEdit = info.hwndItem;
+            m_pAutoComplete->bind(hwndEdit);
+        }
+
         Reload(hwnd);
         CenterWindowDx();
         return TRUE;
@@ -85,6 +115,13 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        HWND hCmb3 = GetDlgItem(hwnd, cmb3);
+        WORD lang;
+        if (CheckLangComboBox(hCmb3, lang, LANG_TYPE_2))
+            g_settings.nDefResLangID = lang;
+        else
+            g_settings.nDefResLangID = BAD_LANG;
+
         BOOL bTranslated = FALSE;
         INT nHeight = GetDlgItemInt(hwnd, edt1, &bTranslated, FALSE);
         if (!bTranslated)
@@ -170,6 +207,12 @@ public:
             break;
         case psh4:
             OnPsh4(hwnd);
+            break;
+        case cmb3:
+            if (codeNotify == CBN_EDITCHANGE)
+            {
+                m_cmb3.OnEditChange();  // input completion
+            }
             break;
         }
     }

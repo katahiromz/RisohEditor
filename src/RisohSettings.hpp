@@ -110,6 +110,7 @@ struct RisohSettings
     MString             strFontReplaceTo1;
     MString             strFontReplaceTo2;
     MString             strFontReplaceTo3;
+    DWORD               nDefResLangID;
 
     RisohSettings()
     {

@@ -46,7 +46,6 @@ public:
         , m_file(NULL)
         , m_pAutoComplete(new MLangAutoComplete())
     {
-        m_pAutoComplete->AddRef();
         m_hCursor = NULL;
         m_cmb3.m_bAcceptSpace = TRUE;
     }
@@ -77,7 +76,7 @@ public:
 
         // for Langs
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
-        InitLangComboBox(hCmb3, GetThreadUILanguage());
+        InitLangComboBox(hCmb3, GetDefaultResLanguage());
         SubclassChildDx(m_cmb3, cmb3);
 
         // auto complete

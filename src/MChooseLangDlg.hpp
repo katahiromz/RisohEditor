@@ -43,14 +43,16 @@ public:
         , m_pAutoComplete(new MLangAutoComplete(TRUE))
     {
         m_cmb3.m_bAcceptSpace = TRUE;
-        m_pAutoComplete->AddRef();
     }
 
     ~MChooseLangDlg()
     {
-        m_pAutoComplete->unbind();
-        m_pAutoComplete->Release();
-        m_pAutoComplete = NULL;
+        if (m_pAutoComplete)
+        {
+            m_pAutoComplete->unbind();
+            m_pAutoComplete->Release();
+            m_pAutoComplete = NULL;
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -74,7 +76,7 @@ public:
     {
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         WORD lang;
-        if (!CheckLangComboBox(hCmb3, lang, TRUE))
+        if (!CheckLangComboBox(hCmb3, lang, LANG_TYPE_1))
             return;
 
         m_langid = lang;

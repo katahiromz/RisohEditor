@@ -247,6 +247,13 @@ void ReplaceFullWithHalf(MStringW& strText)
     ReplaceFullWithHalf(&strText[0]);
 }
 
+DWORD GetDefaultResLanguage(VOID)
+{
+    if (g_settings.nDefResLangID == BAD_LANG)
+        return ::GetThreadUILanguage();
+    return g_settings.nDefResLangID;
+}
+
 // get the path of a shortcut file
 BOOL GetPathOfShortcutDx(HWND hwnd, LPCWSTR pszLnkFile, LPWSTR pszPath)
 {
@@ -1218,7 +1225,7 @@ BOOL IsValidUILang(LANGID langid)
 MLangAutoComplete::MLangAutoComplete(BOOL bUILanguage)
 {
     m_nCurrentElement = 0;
-    m_nRefCount = 0;
+    m_nRefCount = 1;
     m_fBound = FALSE;
     m_pAC = NULL;
 
@@ -1232,7 +1239,7 @@ MLangAutoComplete::MLangAutoComplete(BOOL bUILanguage)
 }
 
 // initialize the language combobox
-void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
+void InitLangComboBox(HWND hCmb3, DWORD langid, BOOL bUILanguage)
 {
     InitComboBoxPlaceholder(hCmb3, IDS_INTEGERORIDENTIFIER);
 
@@ -1275,10 +1282,13 @@ void InitLangComboBox(HWND hCmb3, LANGID langid, BOOL bUILanguage)
         // add the text as a new item to combobox
         ComboBox_AddString(hCmb3, sz);
     }
+
+    if (langid == (DWORD)-1)
+        ComboBox_SetText(hCmb3, L"");
 }
 
 // initialize the language combobox
-void InitLangComboBox(HWND hCmb3, LANGID langid)
+void InitLangComboBox(HWND hCmb3, DWORD langid)
 {
     InitLangComboBox(hCmb3, langid, FALSE);
 }
@@ -1595,7 +1605,7 @@ WORD LangFromText(LPWSTR pszLang)
 }
 
 // verify the language combobox
-BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage)
+BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, LANG_TYPE type)
 {
     // get the text from combobox
     WCHAR szLang[MAX_PATH];
@@ -1603,21 +1613,25 @@ BOOL CheckLangComboBox(HWND hCmb3, WORD& lang, BOOL bUILanguage)
 
     // get the language ID from texts
     lang = LangFromText(szLang);
-    if ((!bUILanguage || IsValidUILang(lang)) && lang != BAD_LANG)
+    if ((type != LANG_TYPE_1 || IsValidUILang(lang)) && lang != BAD_LANG)
         return TRUE;    // success
 
-    // error
-    ComboBox_SetEditSel(hCmb3, 0, -1);
-    SetFocus(hCmb3);
-    LogMessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
-                   NULL, MB_ICONERROR);
+    if (type != LANG_TYPE_2)
+    {
+        // error
+        ComboBox_SetEditSel(hCmb3, 0, -1);
+        SetFocus(hCmb3);
+        LogMessageBoxW(GetParent(hCmb3), LoadStringDx(IDS_ENTERLANG),
+                       NULL, MB_ICONERROR);
+    }
+
     return FALSE;   // failure
 }
 
 // verify the language combobox
 BOOL CheckLangComboBox(HWND hCmb3, WORD& lang)
 {
-    return CheckLangComboBox(hCmb3, lang, FALSE);
+    return CheckLangComboBox(hCmb3, lang, LANG_TYPE_0);
 }
 
 // callback function for MMainWnd::DoLoadLangInfo
@@ -12091,7 +12105,6 @@ void MMainWnd::DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit)
     if (!m_pAutoComplete)
         return;
 
-    m_pAutoComplete->AddRef();
     m_pAutoComplete->bind(hwndEdit);
     m_auto_comp_edit.hook(hwndEdit, m_hwndTV);
     m_auto_comp_edit.m_bAdjustSize = TRUE;
@@ -13693,6 +13706,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nEgaY = CW_USEDEFAULT;
     g_settings.nEgaWidth = CW_USEDEFAULT;
     g_settings.nEgaHeight = CW_USEDEFAULT;
+    g_settings.nDefResLangID = BAD_LANG;
 
     HFONT hFont;
     LOGFONTW lf, lfBin, lfSrc;
@@ -13908,6 +13922,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nEgaY"), (DWORD&)g_settings.nEgaY);
     keyRisoh.QueryDword(TEXT("nEgaWidth"), (DWORD&)g_settings.nEgaWidth);
     keyRisoh.QueryDword(TEXT("nEgaHeight"), (DWORD&)g_settings.nEgaHeight);
+    keyRisoh.QueryDword(TEXT("nDefResLangID"), (DWORD&)g_settings.nDefResLangID);
 
     TCHAR szText[128];
     TCHAR szValueName[128];
@@ -14230,6 +14245,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nEgaY"), g_settings.nEgaY);
     keyRisoh.SetDword(TEXT("nEgaWidth"), g_settings.nEgaWidth);
     keyRisoh.SetDword(TEXT("nEgaHeight"), g_settings.nEgaHeight);
+    keyRisoh.SetDword(TEXT("nDefResLangID"), g_settings.nDefResLangID);
     keyRisoh.SetSz(TEXT("strSrcFont"), g_settings.strSrcFont.c_str());
     keyRisoh.SetDword(TEXT("nSrcFontSize"), g_settings.nSrcFontSize);
     keyRisoh.SetSz(TEXT("strBinFont"), g_settings.strBinFont.c_str());
