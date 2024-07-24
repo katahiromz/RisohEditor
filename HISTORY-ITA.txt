@@ -298,7 +298,7 @@
     - Revisione traduzione portoghese (brasiliano).
     - Requisiti rilassati selezione font.
     - Aggiunta traduzione Cinese tradizionale.
-- v.5.7.9 (14.11.2023)
+- v.5.7.9 (11.14.2023)
     - Aggiunto esempio EGA DeleteNonEnglish.ega.
     - Corretta traduzione IDS_THEREISUPDATE.
 - v.5.8.0 (03.03.2024)
@@ -310,7 +310,7 @@
     - Risolto problema caricamento Win2k3 ieframe.dll BITMAP 214.
     - Centratura finestra "Modifica finestra di dialogo".
     - Supporto esportazione file RES.
-- v.5.8.3 (2024-XX-YY)
+- v.5.8.3 (07.24.2024)
     - Compilazione automatica nome della risorsa dal nome file.
     - Aggiunta impostazione lingua risorse.
     - Risolto problema blocco con il tasto Invio.

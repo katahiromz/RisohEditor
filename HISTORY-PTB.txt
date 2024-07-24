@@ -310,7 +310,7 @@
     - Fixed loading failure of Win2k3 ieframe.dll BITMAP 214.
     - Centering "Edit Dialog" window.
     - Supported exporting RES file.
-- v.5.8.3 (2024-XX-YY)
+- v.5.8.3 (2024-07-24)
     - Auto filling resource name from filename.
     - Added resource language setting.
     - Fixed freeze on Enter key.
