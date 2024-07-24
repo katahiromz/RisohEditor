@@ -13882,10 +13882,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     SetDefaultSettings(hwnd);
 
 #ifdef PORTABLE
-    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #ifdef _WIN64
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor64"), NULL);
+    #else
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #endif
 #else
-    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor" key
-    MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
+    #ifdef _WIN64
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor64"));
+    #else
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
+    #endif
     if (!keyRisoh)
         return FALSE;
 #endif
@@ -14192,20 +14199,17 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
 BOOL MMainWnd::SaveSettings(HWND hwnd)
 {
 #ifdef PORTABLE
-    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #ifdef _WIN64
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor64"), NULL);
+    #else
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #endif
 #else
-    // open HKEY_CURRENT_USER\Software
-    MRegKey key(HKCU, TEXT("Software"), TRUE);
-    if (!key)
-        return FALSE;
-
-    // create HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ
-    MRegKey keySoftware(key, TEXT("Katayama Hirofumi MZ"), TRUE);
-    if (!keySoftware)
-        return FALSE;
-
-    // create HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor
-    MRegKey keyRisoh(keySoftware, TEXT("RisohEditor"), TRUE);
+    #ifdef _WIN64
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor64"), TRUE);
+    #else
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"), TRUE);
+    #endif
     if (!keyRisoh)
         return FALSE;
 #endif
@@ -17114,10 +17118,17 @@ LANGID GetUILang(void)
     DWORD langid = ::GetThreadUILanguage();
 
 #ifdef PORTABLE
-    MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #ifdef _WIN64
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor64"), NULL);
+    #else
+        MRegKeyPortable keyRisoh(TEXT("RisohEditor"), NULL);
+    #endif
 #else
-    // open the "HKEY_CURRENT_USER\Software\Katayama Hirofumi MZ\RisohEditor" key
-    MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
+    #ifdef _WIN64
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor64"));
+    #else
+        MRegKey keyRisoh(HKCU, TEXT("Software\\Katayama Hirofumi MZ\\RisohEditor"));
+    #endif
     if (!keyRisoh)
         return LANGID(langid);
 #endif
