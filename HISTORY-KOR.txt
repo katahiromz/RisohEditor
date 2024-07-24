@@ -312,9 +312,9 @@
     - “편집 대화 상자” 창을 중앙 배치합니다.
     - RES 파일 내보내기가 지원됩니다.
 - v.5.8.3 (2024-07-24)
-    - Auto filling resource name from filename.
-    - Added resource language setting.
-    - Fixed freeze on Enter key.
-    - Supported x64.
+    - 파일 이름에서 리소스 이름을 자동으로 채웁니다.
+    - 리소스 언어 설정을 추가했습니다.
+    - Enter 키에에서 멈추는 현상을 수정했습니다.
+    - x64 지원입니다.
 - v.5.8.4 (2024-XX-YY)
-    - Separated x86 and x64 settings.
+    - x86 및 x64 설정을 분리합니다.
