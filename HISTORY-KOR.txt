@@ -316,3 +316,5 @@
     - Added resource language setting.
     - Fixed freeze on Enter key.
     - Supported x64.
+- v.5.8.4 (2024-XX-YY)
+    - Separated x86 and x64 settings.

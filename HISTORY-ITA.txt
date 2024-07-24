@@ -315,3 +315,5 @@
     - Aggiunta impostazione lingua risorse.
     - Risolto problema blocco con il tasto Invio.
     - Supportato sistema 64bit.
+- v.5.8.4 (2024-XX-YY)
+    - Separated x86 and x64 settings.
