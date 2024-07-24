@@ -166,13 +166,13 @@ Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\To
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\RisohEditor"; Filename: "{app}\RisohEditor64.exe"
+Name: "{group}\RisohEditor64"; Filename: "{app}\RisohEditor64.exe"
 Name: "{group}\{cm:ReadmeEnglish}"; Filename: "{app}\README.txt"
 Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
 Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
 Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor64.exe"; Tasks: desktopicon
+Name: "{commondesktop}\RisohEditor64"; Filename: "{app}\RisohEditor64.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\RisohEditor64.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
