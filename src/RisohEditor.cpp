@@ -7941,10 +7941,11 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     };
 
     // if it was a shortcut file, then resolve it.
-    // pszFileName --> szPath
+    // szPath <-- pszFileName
     if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
     {
         GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
+        nFilterIndex = LFI_NONE;
     }
     else
     {
@@ -7953,29 +7954,33 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
 
     // find the dot extension
     LPWSTR pch = PathFindExtensionW(szPath);
-    if (pch && (nFilterIndex == LFI_NONE || nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE))
+    if (pch)
     {
-        if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
-        else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
-        else if (lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
-                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
-                 lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
+        switch (nFilterIndex)
         {
-            nFilterIndex = LFI_EXECUTABLE;
-        }
-        else
-        {
+        case LFI_NONE: case LFI_ALL: case LFI_LOADABLE:
             nFilterIndex = LFI_NONE;
+            if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
+            else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
+            else if (
+                lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
+                lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
+                lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
+            {
+                nFilterIndex = LFI_EXECUTABLE;
+            }
         }
     }
 
-    if (nFilterIndex == LFI_RES)     // .res files
+    switch (nFilterIndex)
+    {
+    case LFI_RES:
         return DoLoadRES(hwnd, szPath);
-
-    if (nFilterIndex == LFI_RC)  // .rc files
+    case LFI_RC: 
         return DoLoadRC2(hwnd, szPath);
-
-    return DoLoadEXE(hwnd, szPath, bForceDecompress);
+    default: 
+        return DoLoadEXE(hwnd, szPath, bForceDecompress);
+    }
 }
 
 // unload resource.h
