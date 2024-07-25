@@ -7711,9 +7711,6 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         LFI_ALL = 5
     };
 
-    if (nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE)
-        nFilterIndex = LFI_NONE;
-
     // if it was a shortcut file, then resolve it.
     // pszFileName --> szPath
     if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
@@ -7726,13 +7723,21 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     }
 
     // find the dot extension
-    LPWSTR pch = wcsrchr(szPath, L'.');
-    if (nFilterIndex == LFI_NONE || nFilterIndex == LFI_EXECUTABLE)
+    LPWSTR pch = PathFindExtensionW(szPath);
+    if (pch && (nFilterIndex == LFI_NONE || nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE))
     {
-        if (pch && lstrcmpiW(pch, L".res") == 0)
-            nFilterIndex = LFI_RES;
-        else if (pch && lstrcmpiW(pch, L".rc") == 0)
-            nFilterIndex = LFI_RC;
+        if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
+        else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
+        else if (lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
+                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
+                 lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
+        {
+            nFilterIndex = LFI_EXECUTABLE;
+        }
+        else
+        {
+            nFilterIndex = LFI_NONE;
+        }
     }
 
     if (nFilterIndex == LFI_RES)     // .res files
