@@ -22,6 +22,9 @@
 #include <initguid.h>
 #include <windows.h>
 #include <windowsx.h>
+#ifdef __GNUC__ // Workaround
+    #define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
+#endif
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <dlgs.h>
