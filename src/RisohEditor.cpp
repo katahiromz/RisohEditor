@@ -2383,6 +2383,9 @@ public:
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
+    BOOL DoLoadRES(HWND hwnd, LPCWSTR szPath);
+    BOOL DoLoadRC2(HWND hwnd, LPCWSTR szPath);
+    BOOL DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
     BOOL DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
     BOOL DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found);
@@ -7695,142 +7698,99 @@ BOOL InitLangListBox(HWND hwnd)
     return TRUE;
 }
 
-// load a file
-BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BOOL bForceDecompress)
+BOOL MMainWnd::DoLoadRC2(HWND hwnd, LPCWSTR szPath)
 {
-    MWaitCursor wait;
-    WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
+    // reload the resource.h if necessary
+    UnloadResourceH(hwnd);
+    if (g_settings.bAutoLoadNearbyResH)
+        CheckResourceH(hwnd, szPath);
 
-    enum LoadFilterIndex        // see also: IDS_EXERESRCFILTER
+    // load the RC file to the res variable
+    EntrySet res;
+    if (!DoLoadRC(hwnd, szPath, res))
     {
-        LFI_NONE = 0,
-        LFI_LOADABLE = 1,
-        LFI_EXECUTABLE = 2,
-        LFI_RES = 3,
-        LFI_RC = 4,
-        LFI_ALL = 5
-    };
-
-    // if it was a shortcut file, then resolve it.
-    // pszFileName --> szPath
-    if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
-    {
-        GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
-    }
-    else
-    {
-        GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pchPart);
+        ErrorBoxDx(IDS_CANNOTOPEN);
+        return FALSE;
     }
 
-    // find the dot extension
-    LPWSTR pch = PathFindExtensionW(szPath);
-    if (pch && (nFilterIndex == LFI_NONE || nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE))
+    // load it now
+    m_bLoading = TRUE;
     {
-        if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
-        else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
-        else if (lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
-                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
-                 lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
-        {
-            nFilterIndex = LFI_EXECUTABLE;
-        }
-        else
-        {
-            nFilterIndex = LFI_NONE;
-        }
+        ShowLangArrow(FALSE);
+
+        // renewal
+        g_res.delete_all();
+        g_res.merge(res);
+
+        // clean up
+        res.delete_all();
+    }
+    m_bLoading = FALSE;
+
+    // update the file info
+    UpdateFileInfo(FT_RC, szPath, FALSE);
+
+    // show ID list if necessary
+    if (m_szResourceH[0] && g_settings.bAutoShowIDList)
+    {
+        ShowIDList(hwnd, TRUE);
     }
 
-    if (nFilterIndex == LFI_RES)     // .res files
+    // select none
+    SelectTV(NULL, FALSE);
+
+    DoSetFileModified(FALSE);
+    return TRUE;
+}
+
+BOOL MMainWnd::DoLoadRES(HWND hwnd, LPCWSTR szPath)
+{
+    // reload the resource.h if necessary
+    UnloadResourceH(hwnd);
+    if (g_settings.bAutoLoadNearbyResH)
+        CheckResourceH(hwnd, szPath);
+
+    // do import to the res variable
+    EntrySet res;
+    if (!res.import_res(szPath))
     {
-        // reload the resource.h if necessary
-        UnloadResourceH(hwnd);
-        if (g_settings.bAutoLoadNearbyResH)
-            CheckResourceH(hwnd, szPath);
-
-        // do import to the res variable
-        EntrySet res;
-        if (!res.import_res(szPath))
-        {
-            ErrorBoxDx(IDS_CANNOTOPEN);
-            return FALSE;
-        }
-
-        // load it now
-        m_bLoading = TRUE;
-        {
-            ShowLangArrow(FALSE);
-
-            // renewal
-            g_res.delete_all();
-            g_res.merge(res);
-
-            // clean up
-            res.delete_all();
-        }
-        m_bLoading = FALSE;
-
-        // update the file info
-        UpdateFileInfo(FT_RES, szPath, FALSE);
-
-        // show ID list if necessary
-        if (m_szResourceH[0] && g_settings.bAutoShowIDList)
-        {
-            ShowIDList(hwnd, TRUE);
-        }
-
-        // select none
-        SelectTV(NULL, FALSE);
-
-        DoSetFileModified(FALSE);
-        return TRUE;
+        ErrorBoxDx(IDS_CANNOTOPEN);
+        return FALSE;
     }
 
-    if (nFilterIndex == LFI_RC)  // .rc files
+    // load it now
+    m_bLoading = TRUE;
     {
-        // reload the resource.h if necessary
-        UnloadResourceH(hwnd);
-        if (g_settings.bAutoLoadNearbyResH)
-            CheckResourceH(hwnd, szPath);
+        ShowLangArrow(FALSE);
 
-        // load the RC file to the res variable
-        EntrySet res;
-        if (!DoLoadRC(hwnd, szPath, res))
-        {
-            ErrorBoxDx(IDS_CANNOTOPEN);
-            return FALSE;
-        }
+        // renewal
+        g_res.delete_all();
+        g_res.merge(res);
 
-        // load it now
-        m_bLoading = TRUE;
-        {
-            ShowLangArrow(FALSE);
+        // clean up
+        res.delete_all();
+    }
+    m_bLoading = FALSE;
 
-            // renewal
-            g_res.delete_all();
-            g_res.merge(res);
+    // update the file info
+    UpdateFileInfo(FT_RES, szPath, FALSE);
 
-            // clean up
-            res.delete_all();
-        }
-        m_bLoading = FALSE;
-
-        // update the file info
-        UpdateFileInfo(FT_RC, szPath, FALSE);
-
-        // show ID list if necessary
-        if (m_szResourceH[0] && g_settings.bAutoShowIDList)
-        {
-            ShowIDList(hwnd, TRUE);
-        }
-
-        // select none
-        SelectTV(NULL, FALSE);
-
-        DoSetFileModified(FALSE);
-        return TRUE;
+    // show ID list if necessary
+    if (m_szResourceH[0] && g_settings.bAutoShowIDList)
+    {
+        ShowIDList(hwnd, TRUE);
     }
 
-    LPWSTR pszPath = szPath;        // the real path
+    // select none
+    SelectTV(NULL, FALSE);
+
+    DoSetFileModified(FALSE);
+    return TRUE;
+}
+
+BOOL MMainWnd::DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress)
+{
+    WCHAR szPath[MAX_PATH];
 
     // check whether it was compressed
     MStringW strToOpen = pszPath;
@@ -7899,7 +7859,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         if (hMod)
         {
             // ok, succeeded
-            StringCchCopy(pszPath, _countof(szPath), strToOpen.c_str());
+            StringCchCopyW(szPath, _countof(szPath), strToOpen.c_str());
+            pszPath = szPath;
         }
         else
         {
@@ -7960,7 +7921,61 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     // update language arrow
     PostUpdateLangArrow(m_hwnd);
 
-    return TRUE;    // success
+    return TRUE; // success
+}
+
+// load a file
+BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BOOL bForceDecompress)
+{
+    MWaitCursor wait;
+    WCHAR szPath[MAX_PATH], szResolvedPath[MAX_PATH], *pchPart;
+
+    enum LoadFilterIndex        // see also: IDS_EXERESRCFILTER
+    {
+        LFI_NONE = 0,
+        LFI_LOADABLE = 1,
+        LFI_EXECUTABLE = 2,
+        LFI_RES = 3,
+        LFI_RC = 4,
+        LFI_ALL = 5
+    };
+
+    // if it was a shortcut file, then resolve it.
+    // pszFileName --> szPath
+    if (GetPathOfShortcutDx(hwnd, pszFileName, szResolvedPath))
+    {
+        GetFullPathNameW(szResolvedPath, _countof(szPath), szPath, &pchPart);
+    }
+    else
+    {
+        GetFullPathNameW(pszFileName, _countof(szPath), szPath, &pchPart);
+    }
+
+    // find the dot extension
+    LPWSTR pch = PathFindExtensionW(szPath);
+    if (pch && (nFilterIndex == LFI_NONE || nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE))
+    {
+        if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
+        else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
+        else if (lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
+                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
+                 lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
+        {
+            nFilterIndex = LFI_EXECUTABLE;
+        }
+        else
+        {
+            nFilterIndex = LFI_NONE;
+        }
+    }
+
+    if (nFilterIndex == LFI_RES)     // .res files
+        return DoLoadRES(hwnd, szPath);
+
+    if (nFilterIndex == LFI_RC)  // .rc files
+        return DoLoadRC2(hwnd, szPath);
+
+    return DoLoadEXE(hwnd, szPath, bForceDecompress);
 }
 
 // unload resource.h
