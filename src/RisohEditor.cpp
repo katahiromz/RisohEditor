@@ -7704,13 +7704,14 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     enum LoadFilterIndex        // see also: IDS_EXERESRCFILTER
     {
         LFI_NONE = 0,
-        LFI_EXECUTABLE = 1,
-        LFI_RES = 2,
-        LFI_RC = 3,
-        LFI_ALL = 4
+        LFI_LOADABLE = 1,
+        LFI_EXECUTABLE = 2,
+        LFI_RES = 3,
+        LFI_RC = 4,
+        LFI_ALL = 5
     };
 
-    if (nFilterIndex == LFI_ALL)
+    if (nFilterIndex == LFI_ALL || nFilterIndex == LFI_LOADABLE)
         nFilterIndex = LFI_NONE;
 
     // if it was a shortcut file, then resolve it.
