@@ -318,3 +318,4 @@
     - x64 지원입니다.
 - v.5.8.4 (2024-XX-YY)
     - x86 및 x64 설정을 분리합니다.
+    - Fixed misinterpretation of open filter index.

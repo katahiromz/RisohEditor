@@ -317,3 +317,4 @@
     - Supportato sistema 64bit.
 - v.5.8.4 (DD.MM.2024)
     - Impostazioni x86 e x64 separate.
+    - Fixed misinterpretation of open filter index.
