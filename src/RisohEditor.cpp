@@ -2382,9 +2382,9 @@ public:
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
-    BOOL DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
+    BOOL DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
     BOOL DoLoadRES(HWND hwnd, LPCWSTR szPath);
-    BOOL DoLoadRC2(HWND hwnd, LPCWSTR szPath);
+    BOOL DoLoadRC(HWND hwnd, LPCWSTR szPath);
     BOOL DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress);
     BOOL DoExtract(const EntryBase *entry, BOOL bExporting);
     BOOL DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile = NULL);
@@ -7698,7 +7698,7 @@ BOOL InitLangListBox(HWND hwnd)
     return TRUE;
 }
 
-BOOL MMainWnd::DoLoadRC2(HWND hwnd, LPCWSTR szPath)
+BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 {
     // reload the resource.h if necessary
     UnloadResourceH(hwnd);
@@ -7707,7 +7707,7 @@ BOOL MMainWnd::DoLoadRC2(HWND hwnd, LPCWSTR szPath)
 
     // load the RC file to the res variable
     EntrySet res;
-    if (!DoLoadRC(hwnd, szPath, res))
+    if (!DoLoadRCEx(hwnd, szPath, res))
     {
         ErrorBoxDx(IDS_CANNOTOPEN);
         return FALSE;
@@ -7977,7 +7977,7 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
     case LFI_RES:
         return DoLoadRES(hwnd, szPath);
     case LFI_RC: 
-        return DoLoadRC2(hwnd, szPath);
+        return DoLoadRC(hwnd, szPath);
     default: 
         return DoLoadEXE(hwnd, szPath, bForceDecompress);
     }
@@ -8069,7 +8069,7 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 }
 
 // load an RC file
-BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
+BOOL MMainWnd::DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
 {
     // load the RC file to the res variable
     MStringA strOutput;
@@ -9823,7 +9823,7 @@ IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
 
     // load the RC file to the res variable
     EntrySet res;
-    if (!DoLoadRC(hwnd, pszFile, res))
+    if (!DoLoadRCEx(hwnd, pszFile, res))
     {
         ErrorBoxDx(IDS_CANNOTIMPORT);
         return IMPORT_FAILED;
