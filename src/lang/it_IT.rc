@@ -1368,7 +1368,7 @@ FILESUBTYPE     0x0
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.8.4\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2020 Katayama Hirofumi MZ e R.B. Tutti i diritti riservati.\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2024 Katayama Hirofumi MZ e R.B. Tutti i diritti riservati.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.8.4\0"
         }
