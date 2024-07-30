@@ -110,17 +110,22 @@ public:
         ofn.lpstrDefExt = L"bmp";
         if (GetOpenFileNameW(&ofn))
         {
-            SetDlgItemTextW(hwnd, edt1, szFile);
+            DoFile(hwnd, szFile);
+        }
+    }
 
-            // If name was empty, use file title
-            WCHAR szText[MAX_PATH];
-            ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
-            if (!szText[0])
-            {
-                StringCchCopyW(szText, _countof(szText), szFile);
-                PathRemoveExtensionW(szText);
-                ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
-            }
+    void DoFile(HWND hwnd, LPWSTR szFile)
+    {
+        SetDlgItemTextW(hwnd, edt1, szFile);
+
+        // If name was empty, use file title
+        WCHAR szText[MAX_PATH];
+        ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
+        if (!szText[0])
+        {
+            StringCchCopyW(szText, _countof(szText), szFile);
+            PathRemoveExtensionW(szText);
+            ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
         }
     }
 
@@ -215,7 +220,7 @@ public:
     {
         WCHAR file[MAX_PATH];
         DragQueryFileW(hdrop, 0, file, _countof(file));
-        SetDlgItemTextW(hwnd, edt1, file);
+        DoFile(hwnd, file);
     }
 
     virtual INT_PTR CALLBACK

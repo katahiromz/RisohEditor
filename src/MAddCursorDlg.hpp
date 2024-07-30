@@ -196,21 +196,26 @@ public:
         ofn.lpstrDefExt = L"cur";
         if (GetOpenFileNameW(&ofn))
         {
-            SetDlgItemTextW(hwnd, edt1, szFile);
-            if (m_hCursor)
-                DestroyCursor(m_hCursor);
-            m_hCursor = LoadCursorFromFile(szFile);
-            SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
+            DoFile(hwnd, szFile);
+        }
+    }
 
-            // If name was empty, use file title
-            WCHAR szText[MAX_PATH];
-            ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
-            if (!szText[0])
-            {
-                StringCchCopyW(szText, _countof(szText), szFile);
-                PathRemoveExtensionW(szText);
-                ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
-            }
+    void DoFile(HWND hwnd, LPCWSTR szFile)
+    {
+        SetDlgItemTextW(hwnd, edt1, szFile);
+        if (m_hCursor)
+            DestroyCursor(m_hCursor);
+        m_hCursor = LoadCursorFromFile(szFile);
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
+
+        // If name was empty, use file title
+        WCHAR szText[MAX_PATH];
+        ComboBox_GetText(GetDlgItem(hwnd, cmb2), szText, _countof(szText));
+        if (!szText[0])
+        {
+            StringCchCopyW(szText, _countof(szText), szFile);
+            PathRemoveExtensionW(szText);
+            ComboBox_SetText(GetDlgItem(hwnd, cmb2), PathFindFileNameW(szText));
         }
     }
 
@@ -254,12 +259,7 @@ public:
     {
         WCHAR file[MAX_PATH];
         DragQueryFileW(hdrop, 0, file, _countof(file));
-        SetDlgItemTextW(hwnd, edt1, file);
-
-        if (m_hCursor)
-            DestroyCursor(m_hCursor);
-        m_hCursor = LoadCursorFromFile(file);
-        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
+        DoFile(hwnd, file);
     }
 
     virtual INT_PTR CALLBACK
