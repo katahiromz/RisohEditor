@@ -29,6 +29,7 @@ using namespace EGA;
 class MEgaDlg;
 static HWND s_hwndEga = NULL;
 static BOOL s_bEnter = FALSE;
+static LONG s_nEgaRunning = 0;
 extern HWND g_hMainWnd;
 extern MIdOrString g_RES_select_type;
 extern MIdOrString g_RES_select_name;
@@ -90,7 +91,11 @@ static void EGA_dialog_print(const char *fmt, va_list va)
 
 static inline DWORD WINAPI EgaThreadFunc(LPVOID args)
 {
-    EGA_interactive(NULL, true);
+    if (InterlockedIncrement(&s_nEgaRunning) == 1)
+    {
+        EGA_interactive(NULL, true);
+        InterlockedDecrement(&s_nEgaRunning);
+    }
     return 0;
 }
 
@@ -159,8 +164,11 @@ public:
         m_hFont = CreateFontIndirectW(&lf);
         SendDlgItemMessageW(hwnd, edt1, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-        HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
-        ::CloseHandle(hThread);
+        if (!s_nEgaRunning)
+        {
+            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
+            ::CloseHandle(hThread);
+        }
 
         if (g_settings.nEgaX != CW_USEDEFAULT && g_settings.nEgaWidth != CW_USEDEFAULT)
         {
@@ -210,12 +218,21 @@ public:
             OnOK(hwnd);
             break;
         case IDCANCEL:
-            s_bEnter = FALSE;
             ::ShowWindow(hwnd, SW_HIDE);
             break;
         case psh1:
             OnPsh1(hwnd);
             break;
+        }
+    }
+
+    void OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
+    {
+        if (fShow && !s_nEgaRunning)
+        {
+            HANDLE hThread = ::CreateThread(NULL, 0, EgaThreadFunc, NULL, 0, NULL);
+            ::CloseHandle(hThread);
+            ::SetFocus(::GetDlgItem(hwnd, edt2));
         }
     }
 
@@ -275,6 +292,7 @@ public:
         HANDLE_MSG(hwnd, WM_CTLCOLORSTATIC, OnCtlColor);
         HANDLE_MSG(hwnd, WM_MOVE, OnMove);
         HANDLE_MSG(hwnd, WM_SIZE, OnSize);
+        HANDLE_MSG(hwnd, WM_SHOWWINDOW, OnShowWindow);
         default:
             return DefaultProcDx();
         }
