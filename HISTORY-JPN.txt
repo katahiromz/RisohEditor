@@ -663,3 +663,4 @@
     - x86とx64の設定を分離。
     - 「開く」フィルターの解釈間違いを修正。
 - v.5.8.5 (2024-XX-YY)
+    - Improved EGA console usability.

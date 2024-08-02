@@ -29,19 +29,26 @@ using namespace EGA;
 class MEgaDlg;
 static HWND s_hwndEga = NULL;
 static BOOL s_bEnter = FALSE;
+extern HWND g_hMainWnd;
 
 static bool EGA_dialog_input(char *buf, size_t buflen)
 {
+    if (buf == NULL && buflen == 0)
+    {
+        SendMessageW(s_hwndEga, WM_COMMAND, IDCONTINUE, 0);
+        return true;
+    }
+
     while (!s_bEnter || !::IsWindowVisible(s_hwndEga))
     {
         Sleep(100);
     }
     s_bEnter = FALSE;
 
-    WCHAR szTextW[260];
+    WCHAR szTextW[512];
     GetDlgItemTextW(s_hwndEga, edt2, szTextW, ARRAYSIZE(szTextW));
 
-    char szTextA[260];
+    char szTextA[512];
     WideCharToMultiByte(CP_UTF8, 0, szTextW, -1, szTextA, ARRAYSIZE(szTextA), NULL, NULL);
 
     StringCchCopyA(buf, buflen, szTextA);
@@ -197,6 +204,9 @@ public:
         case IDCANCEL:
             s_bEnter = FALSE;
             ::ShowWindow(hwnd, SW_HIDE);
+            break;
+        case IDCONTINUE:
+            SendMessageW(g_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
             break;
         case psh1:
             OnPsh1(hwnd);

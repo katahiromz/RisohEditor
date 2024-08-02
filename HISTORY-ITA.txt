@@ -319,3 +319,4 @@
     - Impostazioni x86 e x64 separate.
     - Risolta errata interpretazione apertura indice filtro.
 - v.5.8.5 (DD.MM.2024)
+    - Improved EGA console usability.

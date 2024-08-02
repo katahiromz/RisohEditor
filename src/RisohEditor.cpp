@@ -85,7 +85,7 @@ void DoSetFileModified(BOOL bModified)
     s_bModified = bModified;
 }
 
-static HWND s_hMainWnd = NULL;
+HWND g_hMainWnd = NULL;
 static INT s_ret = 0;
 
 enum IMPORT_RESULT
@@ -10417,7 +10417,7 @@ void MMainWnd::OnDestroy(HWND hwnd)
     DestroyWindow(m_splitter1);
     DestroyWindow(m_splitter2);
 
-    s_hMainWnd = NULL;
+    g_hMainWnd = NULL;
 
     // post WM_QUIT message to quit the application
     PostQuitMessage(0);
@@ -14494,7 +14494,7 @@ BOOL MMainWnd::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
     m_id_list_dlg.m_hMainWnd = hwnd;    // set the main window to the ID list window
 
-    s_hMainWnd = hwnd;
+    g_hMainWnd = hwnd;
     m_nShowMode = SHOW_CODEONLY;
 
     DoLoadLangInfo();   // load the language information
@@ -16488,8 +16488,6 @@ EGA::arg_t MMainWnd::RES_delete(const EGA::args_t& args)
         SelectTV(NULL, FALSE);
     }
 
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
-
     return make_arg<AstInt>(ret);
 }
 
@@ -16544,8 +16542,6 @@ EGA::arg_t MMainWnd::RES_clone_by_name(const EGA::args_t& args)
 
     if (!found.empty())
         DoSetFileModified(TRUE);
-
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(!found.empty());
 }
@@ -16648,8 +16644,6 @@ EGA::arg_t MMainWnd::RES_clone_by_lang(const EGA::args_t& args)
     if (!found2.empty())
         DoSetFileModified(TRUE);
 
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
-
     return make_arg<AstInt>(!found2.empty());
 }
 
@@ -16705,7 +16699,6 @@ EGA::arg_t MMainWnd::RES_set_binary(const EGA::args_t& args)
         ret = 1;
 
     DoSetFileModified(TRUE);
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(ret);
 }
@@ -16799,7 +16792,6 @@ EGA::arg_t MMainWnd::RES_set_text(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t a
     --g_bNoGuiMode;
 
     DoSetFileModified(TRUE);
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(ret);
 }
@@ -16966,7 +16958,6 @@ EGA::arg_t MMainWnd::RES_str_set(EGA::arg_t arg0, EGA::arg_t arg1, EGA::arg_t ar
     }
 
     DoSetFileModified(TRUE);
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(1); // success
 }
@@ -17015,7 +17006,6 @@ EGA::arg_t MMainWnd::RES_unload_resh(const EGA::args_t& args)
     UnloadResourceH(m_hwnd);
 
     DoSetFileModified(TRUE);
-    PostMessageW(s_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
 
     return make_arg<AstInt>(1);
 }
