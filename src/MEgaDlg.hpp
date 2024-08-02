@@ -30,12 +30,15 @@ class MEgaDlg;
 static HWND s_hwndEga = NULL;
 static BOOL s_bEnter = FALSE;
 extern HWND g_hMainWnd;
+extern MIdOrString g_RES_select_type;
+extern MIdOrString g_RES_select_name;
+extern WORD g_RES_select_lang;
 
 static bool EGA_dialog_input(char *buf, size_t buflen)
 {
     if (buf == NULL && buflen == 0)
     {
-        SendMessageW(s_hwndEga, WM_COMMAND, IDCONTINUE, 0);
+        SendMessageW(g_hMainWnd, WM_COMMAND, ID_EGAFINISH, 0);
         return true;
     }
 
@@ -128,7 +131,9 @@ public:
         if (filename && filename[0])
         {
             WideCharToMultiByte(CP_ACP, 0, filename, -1, szFileName, _countof(szFileName), NULL, NULL);
-            s_bEnter = TRUE;
+            g_RES_select_type = (WORD)0;
+            g_RES_select_name = (WORD)0;
+            g_RES_select_lang = BAD_LANG;
             EGA_file_input(szFileName);
         }
     }
@@ -187,6 +192,9 @@ public:
 
     void OnOK(HWND hwnd)
     {
+        g_RES_select_type = (WORD)0;
+        g_RES_select_name = (WORD)0;
+        g_RES_select_lang = BAD_LANG;
         s_bEnter = TRUE;
     }
 
@@ -204,9 +212,6 @@ public:
         case IDCANCEL:
             s_bEnter = FALSE;
             ::ShowWindow(hwnd, SW_HIDE);
-            break;
-        case IDCONTINUE:
-            SendMessageW(g_hMainWnd, WM_COMMAND, ID_REFRESHALL, 0);
             break;
         case psh1:
             OnPsh1(hwnd);

@@ -96,6 +96,10 @@ enum IMPORT_RESULT
     NOT_IMPORTABLE
 };
 
+MIdOrString g_RES_select_type = (WORD)0;
+MIdOrString g_RES_select_name = (WORD)0;
+WORD g_RES_select_lang = BAD_LANG;
+
 WORD GetMachineOfBinary(LPCWSTR pszExeFile)
 {
     WORD wMachine = IMAGE_FILE_MACHINE_UNKNOWN;
@@ -11977,6 +11981,32 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_OPENHISTORYPTB:
         OnOpenLocalFile(hwnd, L"HISTORY-PTB.txt");
         break;
+    case ID_EGAFINISH:
+        {
+            BOOL bModifiedOld = s_bModified;
+            DoRefreshTV(hwnd);
+            DoRefreshIDList(hwnd);
+            s_bModified = bModifiedOld;
+        }
+        if (!g_RES_select_type.is_zero() ||
+            !g_RES_select_name.is_zero() || 
+            g_RES_select_lang != BAD_LANG)
+        {
+            EntrySet found;
+            g_res.search(found, ET_LANG, g_RES_select_type, g_RES_select_name, g_RES_select_lang);
+
+            for (auto e : found)
+            {
+                SelectTV(e, FALSE);
+                break;
+            }
+
+            g_RES_select_type = (WORD)0;
+            g_RES_select_name = (WORD)0;
+            g_RES_select_lang = BAD_LANG;
+        }
+        PostUpdateLangArrow(hwnd);
+        break;
     default:
         bUpdateStatus = FALSE;
         break;
@@ -16989,11 +17019,9 @@ EGA::arg_t MMainWnd::RES_select(const EGA::args_t& args)
 
     if (found.size())
     {
-        for (auto e : found)
-        {
-            SelectTV(e, FALSE);
-            break;
-        }
+        g_RES_select_type = type;
+        g_RES_select_name = name;
+        g_RES_select_lang = lang;
     }
 
     return make_arg<AstInt>(!found.empty());

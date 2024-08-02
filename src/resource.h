@@ -525,6 +525,7 @@
 #define ID_OPENHISTORYID                    276
 #define ID_OPENREADMEPTB                    277
 #define ID_OPENHISTORYPTB                   278
+#define ID_EGAFINISH                        279
 
 #define MSGID_HELLO                         101
 #define MSGID_SAMPLE                        102
@@ -535,7 +536,7 @@
     #ifndef APSTUDIO_READONLY_SYMBOLS
         #define _APS_NO_MFC                 1
         #define _APS_NEXT_RESOURCE_VALUE    108
-        #define _APS_NEXT_COMMAND_VALUE     279
+        #define _APS_NEXT_COMMAND_VALUE     280
         #define _APS_NEXT_CONTROL_VALUE     1002
         #define _APS_NEXT_SYMED_VALUE       300
     #endif
