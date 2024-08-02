@@ -315,6 +315,6 @@
     - Aggiunta impostazione lingua risorse.
     - Risolto problema blocco con il tasto Invio.
     - Supportato sistema 64bit.
-- v.5.8.4 (DD.MM.2024)
+- v.5.8.4 (02.08.2024)
     - Impostazioni x86 e x64 separate.
     - Risolta errata interpretazione apertura indice filtro.
