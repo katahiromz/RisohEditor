@@ -318,3 +318,4 @@
 - v.5.8.4 (02.08.2024)
     - Impostazioni x86 e x64 separate.
     - Risolta errata interpretazione apertura indice filtro.
+- v.5.8.5 (DD.MM.2024)

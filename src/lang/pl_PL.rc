@@ -1354,8 +1354,8 @@ FONT 9, "MS Shell Dlg"
 // RT_VERSION
 
 1 VERSIONINFO
-FILEVERSION     5, 8, 4, 0
-PRODUCTVERSION  5, 8, 4, 0
+FILEVERSION     5, 8, 5, 0
+PRODUCTVERSION  5, 8, 5, 0
 FILEOS          0x40004
 FILETYPE        0x1
 FILESUBTYPE     0x0
@@ -1366,10 +1366,10 @@ FILESUBTYPE     0x0
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
-            VALUE "FileVersion", "5.8.4\0"
+            VALUE "FileVersion", "5.8.5\0"
             VALUE "LegalCopyright", "Copyright (C) 2017-2024 Katayama Hirofumi MZ. Wszelkie prawa zastrzeżone.\0"
             VALUE "ProductName", "RisohEditor\0"
-            VALUE "ProductVersion", "5.8.4\0"
+            VALUE "ProductVersion", "5.8.5\0"
         }
     }
     BLOCK "VarFileInfo"
@@ -1390,8 +1390,8 @@ FILESUBTYPE     0x0
 
 STRINGTABLE
 {
-    IDS_APPNAME, "RisohEditor 5.8.4 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.8.4 - Plik: %s"
+    IDS_APPNAME, "RisohEditor 5.8.5 by Katayama Hirofumi MZ"
+    IDS_TITLEWITHFILE, "RisohEditor 5.8.5 - Plik: %s"
     IDS_EXTRACTRES, "Wypakuj zasób"
     IDS_RESBINFILTER, "Zasoby binarne (*.res)|*.res|Pliki Binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_CANNOTSAVE, "Nie można zapisać."
@@ -1417,7 +1417,7 @@ STRINGTABLE
     IDS_CANTREPLACEBMP, "Nie można zamienić bitmapy."
     IDS_REPLACEBMP, "Zamień Bitmapę"
     IDS_ERRORCODE, "Kod błędu %d"
-    IDS_VERSIONINFO, "RisohEditor Wersja 5.8.4\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencja: GPLv3 (free software)"
+    IDS_VERSIONINFO, "RisohEditor Wersja 5.8.5\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencja: GPLv3 (free software)"
     IDS_ADDRES, "Dodaj zasób"
     IDS_CANNOTADDRES, "Nie można dodać zasobu."
     IDS_CANTADDBMP, "Nie można dodać bitmapy."
@@ -1584,7 +1584,7 @@ STRINGTABLE
     IDS_WAVERESBINFILTER, "Dźwięk typu WAVE (*.wav)|*.wav|Zasoby binarne (*.res)|*.res|Pliki binarne (*.bin)|*.bin|Wszystkie pliki (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
     IDS_NEWLINE, "\r\n"
-    IDS_NOTICE, "// Ten plik jest automatycznie generowany przez RisohEditor 5.8.4.\r\n"
+    IDS_NOTICE, "// Ten plik jest automatycznie generowany przez RisohEditor 5.8.5.\r\n"
     IDS_DAGGER, "// † <-- Ten sztylet (dagger), pomaga w wykrywaniu UTF-8.\r\n"
     IDS_IMPORTFILTER, "Pliki importowane |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Pliki RC (*.rc)|*.rc|Zasoby binarne (*.res)|*.res|Pliki obrazów|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Pliki kursorów (*.cur;*.ani)|*.cur;*.ani|Pliki ikon (*.ico)|*.ico|Pliki dźwiękowe WAVE (*.wav)|*.wav|Pliki HTML (*.html;*.htm)|*.html;*.htm|Pliki Manifest (*.manifest)|*.manifest|Pliki Delphi DFM (*.dfm)|*.dfm|Pliki TYPELIB (*.tlb)|*.tlb|Wszystkie pliki (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Nie można zapisać pliku, ponieważ następujący plik jest zablokowany.\r\n\r\n%s"

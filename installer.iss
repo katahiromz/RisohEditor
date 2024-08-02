@@ -12,7 +12,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #define MyAppName        "RisohEditor"
-#define MyAppVersion     "5.8.4"
+#define MyAppVersion     "5.8.5"
 #define MyAppCompanyName "Katayama Hirofumi MZ"
 #define MyAppCopyright   "(C) 2017-2024 Katayama Hirofumi MZ."
 #define MyAppURL         "http://katahiromz.web.fc2.com/"

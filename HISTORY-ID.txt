@@ -318,3 +318,4 @@
 - v.5.8.4 (2024-08-02)
     - Separated x86 and x64 settings.
     - Fixed misinterpretation of open filter index.
+- v.5.8.5 (2024-XX-YY)
