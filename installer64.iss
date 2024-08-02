@@ -123,7 +123,6 @@ Source: "data\bin\olebow.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\midlwrap.bat"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "EGA\EGA-Manual.pdf"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA\samples\plus.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA\samples\break.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\Censorship.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
 Source: "EGA-samples\DeleteNonEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
