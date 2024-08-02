@@ -204,6 +204,7 @@ public:
         g_RES_select_name = (WORD)0;
         g_RES_select_lang = BAD_LANG;
         s_bEnter = TRUE;
+        ::SetFocus(::GetDlgItem(hwnd, edt2));
     }
 
     void OnPsh1(HWND hwnd)
