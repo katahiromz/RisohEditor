@@ -320,3 +320,4 @@
     - Fixed misinterpretation of open filter index.
 - v.5.8.5 (2024-XX-YY)
     - Improved EGA console usability.
+    - Abolished EGA input function.

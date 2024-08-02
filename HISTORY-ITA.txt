@@ -320,3 +320,4 @@
     - Risolta errata interpretazione apertura indice filtro.
 - v.5.8.5 (DD.MM.2024)
     - Improved EGA console usability.
+    - Abolished EGA input function.

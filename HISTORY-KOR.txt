@@ -321,3 +321,4 @@
     - 열린 필터 인덱스의 잘못된 해석을 수정했습니다.
 - v.5.8.5 (2024-XX-YY)
     - Improved EGA console usability.
+    - Abolished EGA input function.
