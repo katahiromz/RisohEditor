@@ -319,6 +319,6 @@
 - v.5.8.4 (2024-08-02)
     - x86 및 x64 설정을 분리합니다.
     - 열린 필터 인덱스의 잘못된 해석을 수정했습니다.
-- v.5.8.5 (2024-XX-YY)
+- v.5.8.5 (2024-08-21)
     - Improved EGA console usability.
     - Abolished EGA input function.
