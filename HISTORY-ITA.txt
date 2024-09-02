@@ -1,5 +1,4 @@
-﻿/////////////////////////////////////////////////////
-// CRONOLOGIA VERSIONI PROGRAMMA
+﻿## CRONOLOGIA VERSIONI PROGRAMMA
 
 - v.0.6 (31.08.2017)
     - Prima versione.
@@ -88,6 +87,7 @@
     - Corrette posizioni dei segni degli elementi della finestra di dialogo.
 - v.5.2.8 (30.01.2020)
     - Abilitata visualizzazione controlli indefiniti.
+    - Abilitata visualizzazione controlli non definiti.
     - Aggiunta opzione "Usa BEGIN / END".
     - Risolto un bug per cui la DLL non poteva essere salvata con un altro nome.
 - v.5.2.9 (01.02.2020)
