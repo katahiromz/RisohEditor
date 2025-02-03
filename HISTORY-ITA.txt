@@ -321,3 +321,5 @@
 - v.5.8.5 (21.08.2024)
     - Migliorata usabilità console EGA.
     - Abolita funzione input EGA.
+- v.5.8.6 (2025-XX-YY)
+    - Added Spanish translation.

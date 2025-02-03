@@ -665,3 +665,5 @@
 - v.5.8.5 (2024-08-21)
     - EGAコンソールの使い勝手を向上。
     - EGA input関数を廃止した。
+- v.5.8.6 (2025-XX-YY)
+    - Added Spanish translation.
