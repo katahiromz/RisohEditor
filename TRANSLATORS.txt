@@ -26,6 +26,8 @@ The translators of RisohEditor are listed below:
     - 林鸿湘 (Linhong Xiang) <lhxy24@163.com>
  * Traditional Chinese:
     - 嚕拉 <xyz321763@gmail.com>
+ * Spanish:
+    - Cristobal Prieto <c_p_a@hotmail.es>
 
 # How to translate?
 
