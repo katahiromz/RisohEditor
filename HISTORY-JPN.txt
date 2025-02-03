@@ -665,6 +665,7 @@
 - v.5.8.5 (2024-08-21)
     - EGAコンソールの使い勝手を向上。
     - EGA input関数を廃止した。
-- v.5.8.6 (2025-XX-YY)
-    - Added Spanish translation.
-    - Fixed RES_save function for saving *.dll.
+- v.5.8.6 (2025-02-04)
+    - スペイン語翻訳を追加。
+    - *.dllの保存用にRES_save 関数を修正。
+    - 下位互換性のために、SUBLANG_CUSTOM_DEFAULT、SUBLANG_CUSTOM_UNSPECIFIED、SUBLANG_UI_CUSTOM_DEFAULTを使わない。

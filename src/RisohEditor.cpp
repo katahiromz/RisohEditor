@@ -2929,7 +2929,6 @@ std::wstring MMainWnd::GetRisohEditorVersion() const
     DWORD dwSize = GetFileVersionInfoSizeW(szFile, &dwHandle);
     if (!dwSize)
     {
-        assert(0);
         return L"";
     }
 
@@ -2937,7 +2936,6 @@ std::wstring MMainWnd::GetRisohEditorVersion() const
     data.resize(dwSize);
     if (!GetFileVersionInfoW(szFile, dwHandle, dwSize, &data[0]))
     {
-        assert(0);
         return L"";
     }
 
@@ -2947,7 +2945,6 @@ std::wstring MMainWnd::GetRisohEditorVersion() const
     if (!VerQueryValueW(&data[0], L"\\VarFileInfo\\Translation",
                         &pValue, &uLen))
     {
-        assert(0);
         return L"";
     }
 
@@ -2960,7 +2957,6 @@ std::wstring MMainWnd::GetRisohEditorVersion() const
     key += L"\\ProductVersion";
     if (!VerQueryValueW(&data[0], key.c_str(), &pValue, &uLen))
     {
-        assert(0);
         return L"";
     }
 
@@ -11767,6 +11763,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
     case ID_OPENREADMEJP:
         OnOpenLocalFile(hwnd, L"README-JPN.txt");
         break;
+    case ID_OPENREADMEES:
+        OnOpenLocalFile(hwnd, L"README-ES.txt");
+        break;
     case ID_LOADWCLIB:
         OnLoadWCLib(hwnd);
         break;
@@ -11837,6 +11836,9 @@ void MMainWnd::OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
         break;
     case ID_OPENHISTORYKOR:
         OnOpenLocalFile(hwnd, L"HISTORY-KOR.txt");
+        break;
+    case ID_OPENHISTORYES:
+        OnOpenLocalFile(hwnd, L"HISTORY-ES.txt");
         break;
     case ID_OPENHYOJUNKA:
         OnOpenLocalFile(hwnd, L"HYOJUNKA.txt");
@@ -14378,7 +14380,9 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     // always use old style
     keyRisoh.SetDword(TEXT("bOldStyle"), TRUE);
 
-    keyRisoh.SetSz(TEXT("strPrevVersion"), GetRisohEditorVersion().c_str());
+    auto version = GetRisohEditorVersion();
+    if (version.size())
+        keyRisoh.SetSz(TEXT("strPrevVersion"), version.c_str());
 
     keyRisoh.SetDword(TEXT("bSepFilesByLang"), g_settings.bSepFilesByLang);
     keyRisoh.SetDword(TEXT("bStoreToResFolder"), TRUE);

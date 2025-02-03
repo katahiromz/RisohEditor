@@ -321,6 +321,7 @@
 - v.5.8.5 (2024-08-21)
     - Improved EGA console usability.
     - Abolished EGA input function.
-- v.5.8.6 (2025-XX-YY)
+- v.5.8.6 (2025-02-04)
     - Added Spanish translation.
     - Fixed RES_save function for saving *.dll.
+    - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
