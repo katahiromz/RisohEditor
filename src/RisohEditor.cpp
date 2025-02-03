@@ -9483,8 +9483,15 @@ BOOL MMainWnd::DoSaveResAs(LPCWSTR pszResFile)
 BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
 {
     LPWSTR pchDotExt = PathFindExtensionW(pszFile);
-    if (lstrcmpiW(pchDotExt, L".exe") == 0)
+    if (lstrcmpiW(pchDotExt, L".exe") == 0 ||
+        lstrcmpiW(pchDotExt, L".dll") == 0 ||
+        lstrcmpiW(pchDotExt, L".ocx") == 0 ||
+        lstrcmpiW(pchDotExt, L".cpl") == 0 ||
+        lstrcmpiW(pchDotExt, L".scr") == 0 ||
+        lstrcmpiW(pchDotExt, L".mui") == 0)
+    {
         return DoSaveExeAs(pszFile);
+    }
     if (lstrcmpiW(pchDotExt, L".rc") == 0)
         return DoExportRC(pszFile, NULL);
     if (lstrcmpiW(pchDotExt, L".res") == 0)

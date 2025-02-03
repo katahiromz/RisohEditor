@@ -324,3 +324,4 @@
     - EGA 입력 기능이 폐지되었습니다.
 - v.5.8.6 (2025-XX-YY)
     - Added Spanish translation.
+    - Fixed RES_save function for saving *.dll.

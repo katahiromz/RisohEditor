@@ -667,3 +667,4 @@
     - EGA input関数を廃止した。
 - v.5.8.6 (2025-XX-YY)
     - Added Spanish translation.
+    - Fixed RES_save function for saving *.dll.
