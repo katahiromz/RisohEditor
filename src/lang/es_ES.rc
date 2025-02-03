@@ -3,146 +3,144 @@
 
 #pragma code_page(65001) // UTF-8
 
-LANGUAGE LANG_PORTUGUESE, SUBLANG_DEFAULT
+LANGUAGE LANG_SPANISH, SUBLANG_CUSTOM_DEFAULT
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_MENU
 
 IDR_MAINMENU MENU
 {
-    POPUP "&Arquivo"
+    POPUP "&Archivo"
     {
-        MENUITEM "&Novo\tCtrl+N", ID_NEW
+        MENUITEM "&Nuevo\tCtrl+N", ID_NEW
         MENUITEM SEPARATOR
         MENUITEM "&Abrir...\tCtrl+O", ID_OPEN
-        MENUITEM "&Salvar...\tCtrl+S", ID_SAVE
-        MENUITEM "Salvar &Como...\tShift+Ctrl+S", ID_SAVEAS
-        MENUITEM "Salvar com Co&mpressão...", ID_SAVEASCOMPRESS
+        MENUITEM "&Guardar...\tCtrl+S", ID_SAVE
+        MENUITEM "Guardar &como...\tShift+Ctrl+S", ID_SAVEAS
+        MENUITEM "Guardar con co&mpresión...", ID_SAVEASCOMPRESS
         MENUITEM SEPARATOR
-        MENUITEM "Im&portar...\tCtrl+I", ID_IMPORT
+        MENUITEM "&Importar...\tCtrl+I", ID_IMPORT
         MENUITEM "&Exportar...\tCtrl+P", ID_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "&Recarregar resource.h...\tCtrl+R", ID_LOADRESH
-        MENUITEM "Salvar reso&urce.h...", ID_UPDATERESHBANG
-        MENUITEM "C&onselho de Modificação em resource.h...", ID_ADVICERESH
-        MENUITEM "&Descarregar resource.h", ID_UNLOADRESH
+        MENUITEM "Recargar &resource.h...\tCtrl+R", ID_LOADRESH
+        MENUITEM "Guardar re&source.h...", ID_UPDATERESHBANG
+        MENUITEM "Con&sejo sobre modificación de resource.h...", ID_ADVICERESH
+        MENUITEM "&Descargar resource.h", ID_UNLOADRESH
         MENUITEM SEPARATOR
-        MENUITEM "Carregar Biblioteca de Classes do &Windows...", ID_LOADWCLIB
+        MENUITEM "Cargar librería de clases de &ventana...", ID_LOADWCLIB
         MENUITEM SEPARATOR
-        POPUP "Arquivos Usados Recentemente"
+        POPUP "Archivos usados recientemente"
         {
-            MENUITEM "(Nenhum)", -1, GRAYED
+            MENUITEM "(Nada)", -1, GRAYED
         }
         MENUITEM SEPARATOR
-        MENUITEM "Sa&ir\tAlt+F4", ID_EXIT
+        MENUITEM "S&alir\tAlt+F4", ID_EXIT
     }
     POPUP "&Editar"
     {
-        MENUITEM "Editar via &GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Editar vía &GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
-        POPUP "&Adicionar"
+        POPUP "&Añadir"
         {
-            MENUITEM "Adicionar Íc&one...", ID_ADDICON
-            MENUITEM "Adicionar &Cursor...", ID_ADDCURSOR
-            MENUITEM "Adicionar &Bitmap...", ID_ADDBITMAP
-            MENUITEM "Adicionar &Diálogo...", ID_ADDDIALOG
-            MENUITEM "Adicionar &Menu...", ID_ADDMENU
-            MENUITEM "Adicionar Tabela de &String...", ID_ADDSTRINGTABLE
-            MENUITEM "Adicionar Tabela de M&ensagem...", ID_ADDMESSAGETABLE
-            MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar &Aceleradores...", ID_ADDACCEL
-            MENUITEM "Adicionar Informação da &Versão...", ID_ADDVERINFO
-            MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
-            MENUITEM "Adicionar Barra de Ferramen&tas...", ID_ADDTOOLBAR
-            MENUITEM "Adicionar Item de &Recurso...", ID_ADDRES
+            MENUITEM "Añadir &Icono...", ID_ADDICON
+            MENUITEM "Añadir &Cursor...", ID_ADDCURSOR
+            MENUITEM "Añadir &Bitmap...", ID_ADDBITMAP
+            MENUITEM "Añadir &Diálogo...", ID_ADDDIALOG
+            MENUITEM "Añadir &Menú...", ID_ADDMENU
+            MENUITEM "Añadir &Tabla de cadenas...", ID_ADDSTRINGTABLE
+            MENUITEM "Añadir Tabla de m&ensajes...", ID_ADDMESSAGETABLE
+            MENUITEM "Añadir &HTML...", ID_ADDHTML
+            MENUITEM "Añadir &Aceleradores...", ID_ADDACCEL
+            MENUITEM "Añadir Información de la &Versión...", ID_ADDVERINFO
+            MENUITEM "Añadir Mani&fiesto...", ID_ADDMANIFEST
+            MENUITEM "Añadir Barra de Herramien&tas", ID_ADDTOOLBAR
+            MENUITEM "Añadir elemento de &Recurso...", ID_ADDRES
         }
-        POPUP "&Substituir"
+        POPUP "&Reemplazar"
         {
-            MENUITEM "Substituir Íc&one...", ID_REPLACEICON
-            MENUITEM "Substituir &Cursor...", ID_REPLACECURSOR
-            MENUITEM "Substituir &Bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Substituir Item de &Recurso Binário...", ID_REPLACEBIN
+            MENUITEM "Reemplazar &Icono...", ID_REPLACEICON
+            MENUITEM "Reemplazar &Cursor...", ID_REPLACECURSOR
+            MENUITEM "Reemplazar &Bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Reemplazar un elemento de &Recurso binario...", ID_REPLACEBIN
         }
-        POPUP "&Extrair"
+        POPUP "&Extrer"
         {
-            MENUITEM "Extrair Íc&one...", ID_EXTRACTICON
-            MENUITEM "Extrair &Cursor...", ID_EXTRACTCURSOR
-            MENUITEM "Extrair &Bitmap...", ID_EXTRACTBITMAP
-            MENUITEM "Extrair como &Arquivo RC...", ID_EXTRACTRC
-            MENUITEM "Extrair Item de &Recurso Binário...", ID_EXTRACTBIN
+            MENUITEM "Extraer &Icono...", ID_EXTRACTICON
+            MENUITEM "Extraer &Cursor...", ID_EXTRACTCURSOR
+            MENUITEM "Extraer &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extraer como &archivo RC...", ID_EXTRACTRC
+            MENUITEM "Extraer elemento de &Recurso binario...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "A&lterar Nome/Idioma\tF2", ID_EDITLABEL
+        MENUITEM "C&ambiar Nombre/Idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clonar Para Um Novo &Nome...", ID_COPYASNEWNAME
-        MENUITEM "Clonar Para Um Novo &Idioma...", ID_COPYASNEWLANG
-        MENUITEM "Copiar Para Vários Idiomas...", ID_COPYTOMULTILANG
+        MENUITEM "Clonar con nuevo &Nombre...", ID_COPYASNEWNAME
+        MENUITEM "Clonar en nuevo &Idioma...", ID_COPYASNEWLANG
+        MENUITEM "Copiar en varios idiomas...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "&Testar", ID_TEST
+        MENUITEM "Hacer &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "E&xcluir\tDel", ID_DELETERES
+        MENUITEM "&Eliminar\tDel", ID_DELETERES
         MENUITEM SEPARATOR
-        MENUITEM "ID de Ass&ociação...", ID_IDASSOC
-        MENUITEM "&Macros Predefinidas...", ID_PREDEFMACROS
-        MENUITEM "Configurações de &Fonte...", ID_FONTS
-        MENUITEM "Definir Camin&hos...", ID_SETPATHS
+        MENUITEM "&ID de Asociación...", ID_IDASSOC
+        MENUITEM "&Macros predefinidas...", ID_PREDEFMACROS
+        MENUITEM "Configuración de &Fuente...", ID_FONTS
+        MENUITEM "Establecer &Rutas...", ID_SETPATHS
         MENUITEM SEPARATOR
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
-        MENUITEM "Configurações DFM do &Delphi...", ID_DFMSETTINGS
-        MENUITEM "&Configuração...", ID_CONFIG
+        MENUITEM "&Parámetros DFM de Delphi...", ID_DFMSETTINGS
+        MENUITEM "&Configuración...", ID_CONFIG
     }
-    POPUP "&Pesquisar"
+    POPUP "&Buscar"
     {
-        MENUITEM "&Localizar...\tCtrl+F", ID_FIND
+        MENUITEM "&Buscar...\tCtrl+F", ID_FIND
         MENUITEM SEPARATOR
-        MENUITEM "Pesquisar &Acima\tShift+F3", ID_FINDUPWARD
-        MENUITEM "Pesquisar A&baixo\tF3", ID_FINDDOWNWARD
+        MENUITEM "Buscar &Anterior\tShift+F3", ID_FINDUPWARD
+        MENUITEM "Buscar &Siguiente\tF3", ID_FINDDOWNWARD
         MENUITEM SEPARATOR
         MENUITEM "&Consultar Constante...", ID_QUERYCONSTANT
     }
-    POPUP "E&xibir"
+    POPUP "&Ver"
     {
-        MENUITEM "Barra de &Status", ID_STATUSBAR
-        MENUITEM "Barra de &Ferramentas", ID_SHOWHIDETOOLBAR
-        MENUITEM "&Binário", ID_BINARYPANE
+        MENUITEM "&Barra de estado", ID_STATUSBAR
+        MENUITEM "&Barra de herramientas", ID_SHOWHIDETOOLBAR
+        MENUITEM "&Binario", ID_BINARYPANE
         MENUITEM SEPARATOR
-        MENUITEM "E&xpandir Todos\tCtrl+K", ID_EXPAND_ALL
-        MENUITEM "Rec&olher Todos\tCtrl+L", ID_COLLAPSE_ALL
+        MENUITEM "E&xpandir todo\tCtrl+K", ID_EXPAND_ALL
+        MENUITEM "C&ontraer todo\tCtrl+L", ID_COLLAPSE_ALL
         MENUITEM SEPARATOR
         MENUITEM "Lista de IDs de &Recursos", ID_IDLIST
         MENUITEM "Lista de &Idiomas...", ID_SHOWLANGS
         MENUITEM SEPARATOR
-        MENUITEM "Sempre Declarar &CONTROLE", ID_ALWAYSCONTROL
-        MENUITEM "Não Usar &ID de Macros", ID_HIDEIDMACROS
+        MENUITEM "Siempre sentencias de &CONTROL", ID_ALWAYSCONTROL
+        MENUITEM "No usar &ID de Macros", ID_HIDEIDMACROS
         MENUITEM "Usar IDC_ST&ATIC", ID_USEIDC_STATIC
-        MENUITEM "Quebra de &Palavra", ID_WORD_WRAP
+        MENUITEM "&Ajuste de línea", ID_WORD_WRAP
         MENUITEM "Usar BE&GIN/END", ID_USEBEGINEND
-        MENUITEM "Usar &Tabela de Mensagem da Microsoft", ID_USEMSMSGTBL
+        MENUITEM "Usar &Tabla de Mensajes de Microsoft", ID_USEMSMSGTBL
         MENUITEM SEPARATOR
-        MENUITEM "&Codificação do Item de Recurso...", ID_ENCODING
-        MENUITEM "Substituir &Fontes de Diálogo...", ID_DIALOG_FONT_SUBSTITUTES
+        MENUITEM "&Codificación del elemento de Recurso...", ID_ENCODING
+        MENUITEM "Sustituir &fuentes del Diálogo...", ID_DIALOG_FONT_SUBSTITUTES
         MENUITEM SEPARATOR
-        MENUITEM "&Atualizar", ID_REFRESHALL
+        MENUITEM "&Actualizar", ID_REFRESHALL
     }
-    POPUP "A&utomação"
+    POPUP "&Automatización"
     {
-        MENUITEM "Linguagem de Programação E&GA...", ID_EGA
-        MENUITEM "&Executar Programa EGA...", ID_EGA_PROGRAM
-        MENUITEM "Abrir &Manual do EGA", ID_OPEN_EGA_MANUAL
+        MENUITEM "Lenguaje de programación &EGA...", ID_EGA
+        MENUITEM "&Ejecutar programa EGA...", ID_EGA_PROGRAM
+        MENUITEM "Abrir &Manual de EGA", ID_OPEN_EGA_MANUAL
     }
-    POPUP "A&juda"
+    POPUP "&Ayuda"
     {
-        MENUITEM "Abrir &README.txt (Inglês)", ID_OPENREADME
-        MENUITEM "Abrir README-&PTB.txt", ID_OPENREADMEPTB
-        MENUITEM "Abrir &HISTORY.txt", ID_OPENHISTORY
-        MENUITEM "Abrir HISTORY-P&TB.txt", ID_OPENHISTORYPTB
+        MENUITEM "Abrir &README.txt (English)", ID_OPENREADME
+        MENUITEM "Abrir HISTORY.txt", ID_OPENHISTORY
         MENUITEM "Abrir &LICENSE.txt", ID_OPENLICENSE
         MENUITEM SEPARATOR
-        MENUITEM "&Guia do RisohEditor", ID_GUIDE
-        MENUITEM "Verificar por &Atualização do RisohEditor...", ID_CHECKUPDATE
+        MENUITEM "Una &guía de RisohEditor", ID_GUIDE
+        MENUITEM "Comprobar &actualización de RisohEditor...", ID_CHECKUPDATE
         MENUITEM SEPARATOR
-        MENUITEM "&Sobre...", ID_ABOUT
+        MENUITEM "&Acerca de...", ID_ABOUT
     }
 }
 
@@ -150,84 +148,84 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Popup #0"
     {
-        MENUITEM "Editar via &GUI...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Editar vía &GUI...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
-        POPUP "&Adicionar"
+        POPUP "&Añadir"
         {
-            MENUITEM "Adicionar Íc&one...", ID_ADDICON
-            MENUITEM "Adicionar &Cursor...", ID_ADDCURSOR
-            MENUITEM "Adicionar &Bitmap...", ID_ADDBITMAP
-            MENUITEM "Adicionar &Diálogo...", ID_ADDDIALOG
-            MENUITEM "Adicionar &Menu...", ID_ADDMENU
-            MENUITEM "Adicionar Tabela de &String...", ID_ADDSTRINGTABLE
-            MENUITEM "Adicionar Tabela de M&ensagem...", ID_ADDMESSAGETABLE
-            MENUITEM "Adicionar &HTML...", ID_ADDHTML
-            MENUITEM "Adicionar &Aceleradores...", ID_ADDACCEL
-            MENUITEM "Adicionar Informação da &Versão...", ID_ADDVERINFO
-            MENUITEM "Adicionar Mani&festo...", ID_ADDMANIFEST
-            MENUITEM "Adicionar Barra de Ferramen&tas...", ID_ADDTOOLBAR
-            MENUITEM "Adicionar Item de &Recurso...", ID_ADDRES
+            MENUITEM "Añadir &Icono...", ID_ADDICON
+            MENUITEM "Añadir &Cursor...", ID_ADDCURSOR
+            MENUITEM "Añadir &Bitmap...", ID_ADDBITMAP
+            MENUITEM "Añadir &Diálogo...", ID_ADDDIALOG
+            MENUITEM "Añadir &Menu...", ID_ADDMENU
+            MENUITEM "Añadir Tabla de &Cadena...", ID_ADDSTRINGTABLE
+            MENUITEM "Añadir Tabla de M&ensaje...", ID_ADDMESSAGETABLE
+            MENUITEM "Añadir &HTML...", ID_ADDHTML
+            MENUITEM "Añadir &Aceleradores...", ID_ADDACCEL
+            MENUITEM "Añadir Información de la &Versión...", ID_ADDVERINFO
+            MENUITEM "Añadir Mani&fiesto...", ID_ADDMANIFEST
+            MENUITEM "Añadir Barra de &Herramientas", ID_ADDTOOLBAR
+            MENUITEM "Añadir elemento de &Recurso...", ID_ADDRES
         }
-        POPUP "&Substituir"
+        POPUP "&Reemplazar"
         {
-            MENUITEM "Substituir Íc&one...", ID_REPLACEICON
-            MENUITEM "Substituir &Cursor...", ID_REPLACECURSOR
-            MENUITEM "Substituir &Bitmap...", ID_REPLACEBITMAP
-            MENUITEM "Substituir Item de &Recurso Binário...", ID_REPLACEBIN
+            MENUITEM "Reemplazar &Icono...", ID_REPLACEICON
+            MENUITEM "Reemplazar &Cursor...", ID_REPLACECURSOR
+            MENUITEM "Reemplazar &Bitmap...", ID_REPLACEBITMAP
+            MENUITEM "Reemplazar elemento de &Recurso binario...", ID_REPLACEBIN
         }
-        POPUP "&Extrair"
+        POPUP "&Extraer"
         {
-            MENUITEM "Extrair Íc&one...", ID_EXTRACTICON
-            MENUITEM "Extrair &Cursor...", ID_EXTRACTCURSOR
-            MENUITEM "Extrair &Bitmap...", ID_EXTRACTBITMAP
-            MENUITEM "Extrair Como &Arquivo RC...", ID_EXTRACTRC
-            MENUITEM "Extrair Item de &Recurso Binário...", ID_EXTRACTBIN
+            MENUITEM "Extraer &Icono...", ID_EXTRACTICON
+            MENUITEM "Extraer &Cursor...", ID_EXTRACTCURSOR
+            MENUITEM "Extraer &Bitmap...", ID_EXTRACTBITMAP
+            MENUITEM "Extraer como &archivo RC...", ID_EXTRACTRC
+            MENUITEM "Extraer elemento de &Recurso binario...", ID_EXTRACTBIN
         }
         MENUITEM SEPARATOR
-        MENUITEM "A&lterar Nome/Idioma\tF2", ID_EDITLABEL
+        MENUITEM "C&ambiar Nombre/Idioma\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
-        MENUITEM "Clonar Para Um Novo &Nome...", ID_COPYASNEWNAME
-        MENUITEM "Clonar Para Um Novo &Idioma...", ID_COPYASNEWLANG
-        MENUITEM "Copiar Para Vários Idiomas...", ID_COPYTOMULTILANG
+        MENUITEM "Clonar con nuevo &Nombre...", ID_COPYASNEWNAME
+        MENUITEM "Cloar en nuevo &Idioma...", ID_COPYASNEWLANG
+        MENUITEM "Copiar en varios idiomas...", ID_COPYTOMULTILANG
         MENUITEM SEPARATOR
-        MENUITEM "&Testar", ID_TEST
+        MENUITEM "Hacer &Test", ID_TEST
         MENUITEM SEPARATOR
-        MENUITEM "E&xcluir\tDel", ID_DELETERES
+        MENUITEM "&Eliminar\tDel", ID_DELETERES
     }
     POPUP "Popup #1"
     {
-        MENUITEM "A&dicionar Controle...", ID_ADDCTRL
+        MENUITEM "&Añadir Control...", ID_ADDCTRL
         MENUITEM SEPARATOR
-        MENUITEM "Recor&tar\tCtrl+X", ID_CUT
+        MENUITEM "Cor&tar\tCtrl+X", ID_CUT
         MENUITEM "&Copiar\tCtrl+C", ID_COPY
-        MENUITEM "C&olar\tCtrl+V", ID_PASTE
-        MENUITEM "&Excluir\tDel", ID_DELCTRL
+        MENUITEM "&Pegar\tCtrl+V", ID_PASTE
+        MENUITEM "&Eliminar\tDel", ID_DELCTRL
         MENUITEM SEPARATOR
-        POPUP "Í&ndice"
+        POPUP "&Índice"
         {
-            MENUITEM "Ir para &Topo", ID_CTRLINDEXTOP
+            MENUITEM "Ir &Arriba", ID_CTRLINDEXTOP
             MENUITEM SEPARATOR
-            MENUITEM "&Decrementar Índice", ID_CTRLINDEXMINUS
+            MENUITEM "&Disminuir Índice", ID_CTRLINDEXMINUS
             MENUITEM "&Incrementar Índice", ID_CTRLINDEXPLUS
             MENUITEM SEPARATOR
-            MENUITEM "Ir para I&nferior", ID_CTRLINDEXBOTTOM
+            MENUITEM "Ir &Abajo", ID_CTRLINDEXBOTTOM
             MENUITEM SEPARATOR
             MENUITEM "Mostrar/Ocultar Índices\tCtrl+D", ID_SHOWHIDEINDEX
         }
-        POPUP "&Alinhamento"
+        POPUP "&Alineación"
         {
-            MENUITEM "Alinhamento &Superior", ID_TOPALIGN
-            MENUITEM "Alinhamento &Inferior", ID_BOTTOMALIGN
-            MENUITEM "Alinhar a &Esquerda", ID_LEFTALIGN
-            MENUITEM "Alinhar a &Direita", ID_RIGHTALIGN
+            MENUITEM "Alineación &Superior", ID_TOPALIGN
+            MENUITEM "Alineación &Inferior", ID_BOTTOMALIGN
+            MENUITEM "Alinear a la &Izquierda", ID_LEFTALIGN
+            MENUITEM "Alinear a la &Derecha", ID_RIGHTALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Ajustar à &Grade", ID_FITTOGRID
+            MENUITEM "Ajustar a la &cuadrícula", ID_FITTOGRID
         }
         MENUITEM SEPARATOR
-        MENUITEM "A&tualizar", ID_REFRESHDIALOG
+        MENUITEM "&Actualizar", ID_REFRESHDIALOG
         MENUITEM SEPARATOR
-        MENUITEM "&Propriedades do Controle...", ID_CTRLPROP
-        MENUITEM "Prop&riedades do Diálogo...", ID_DLGPROP
+        MENUITEM "&Propiedades para Control...", ID_CTRLPROP
+        MENUITEM "Pr&opiedades para Diálogo...", ID_DLGPROP
     }
     POPUP "Popup #2"
     {
@@ -235,63 +233,63 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Popup #3"
     {
-        MENUITEM "&Pular!", ID_IDJUMP
+        MENUITEM "&Ir a!", ID_IDJUMP
         MENUITEM SEPARATOR
-        MENUITEM "&Adicionar ID...", ID_ADDRESID
+        MENUITEM "&Añadir ID...", ID_ADDRESID
         MENUITEM "&Modificar ID...", ID_MODIFYRESID
         MENUITEM SEPARATOR
-        MENUITEM "Copiar &Nome", ID_COPYRESIDNAME
+        MENUITEM "Copiar &Nombre", ID_COPYRESIDNAME
         MENUITEM "Copiar &Valor", ID_COPYRESIDVALUE
-        MENUITEM "Copiar De&finição\tCtrl+C", ID_COPYIDDEF
+        MENUITEM "Copiar &Definición\tCtrl+C", ID_COPYIDDEF
         MENUITEM SEPARATOR
-        MENUITEM "&Excluir ID\tDel", ID_DELETERESID
+        MENUITEM "&Eliminar ID\tDel", ID_DELETERESID
         MENUITEM SEPARATOR
-        MENUITEM "Números &Decimais", ID_BASE10
-        MENUITEM "Números &Hexadecimal", ID_BASE16
+        MENUITEM "Números &Decimales", ID_BASE10
+        MENUITEM "Números &Hexadecimales", ID_BASE16
         MENUITEM SEPARATOR
-        MENUITEM "&Recarregar", ID_LOADRESH
+        MENUITEM "&Recargar", ID_LOADRESH
     }
     POPUP "Popup #4"
     {
-        MENUITEM "&Adicionar...", ID_ADD
+        MENUITEM "&Añadir...", ID_ADD
         MENUITEM SEPARATOR
-        MENUITEM "Alterar &Nome...\tF2", ID_RENAME
-        MENUITEM "Alterar &Valor...", ID_MODIFY
+        MENUITEM "Cambiar &Nombre...\tF2", ID_RENAME
+        MENUITEM "Cambiar &Valor...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "&Excluir\tDel", ID_DELETE
+        MENUITEM "&Eliminar\tDel", ID_DELETE
     }
     POPUP "Popup #5"
     {
-        MENUITEM "&Copiar Valor Inteiro", ID_COPY
+        MENUITEM "&Copiar Valor Entero", ID_COPY
     }
     POPUP "Popup #6"
     {
-        MENUITEM "&Adicionar...", psh1
+        MENUITEM "&Añadir...", psh1
         MENUITEM "&Modificar...", psh2
         MENUITEM SEPARATOR
-        MENUITEM "A&cima", psh4
-        MENUITEM "A&baixo", psh5
-        MENUITEM "&Esquerda", psh6
-        MENUITEM "D&ireita", psh7
+        MENUITEM "&Arriba", psh4
+        MENUITEM "&Abajo", psh5
+        MENUITEM "&Izquierda", psh6
+        MENUITEM "&Derecha", psh7
         MENUITEM SEPARATOR
-        MENUITEM "E&xcluir\tDel", psh3
+        MENUITEM "E&liminar\tDel", psh3
     }
     POPUP "Popup #7"
     {
-        MENUITEM "&Adicionar...", psh1
+        MENUITEM "&Añadir...", psh1
         MENUITEM "&Modificar...", psh2
         MENUITEM SEPARATOR
-        MENUITEM "A&cima", psh4
-        MENUITEM "A&baixo", psh5
+        MENUITEM "&Arriba", psh4
+        MENUITEM "&Abajo", psh5
         MENUITEM SEPARATOR
-        MENUITEM "E&xcluir\tDel", psh3
+        MENUITEM "E&liminar\tDel", psh3
     }
     POPUP "Popup #8"
     {
-        MENUITEM "&Adicionar...", ID_ADD
+        MENUITEM "&Añadir...", ID_ADD
         MENUITEM "&Modificar...", ID_MODIFY
         MENUITEM SEPARATOR
-        MENUITEM "&Excluir\tDel", ID_DELETE
+        MENUITEM "&Eliminar\tDel", ID_DELETE
     }
 }
 
@@ -299,19 +297,19 @@ IDR_POPUPMENUS MENU
 // RT_DIALOG
 
 IDD_REPLACERES DIALOGEX 0, 0, 215, 170
-CAPTION "Substituir Recurso"
+CAPTION "Reemplazar Recurso"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg", 0, 0, 1
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Nome do Recurso:", -1, 5, 32, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma do Recurso:", -1, 5, 57, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Arquivo Binário:", -1, 5, 85, 100, 12
+    LTEXT "&Archivo Binario:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 115, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 115, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 150, 60, 14
     {
@@ -320,144 +318,144 @@ FONT 9, "MS Shell Dlg", 0, 0, 1
 }
 
 IDD_ADDICON DIALOG 0, 0, 215, 135
-CAPTION "Adicionar Ícone"
+CAPTION "Añadir Icono"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Arquivo de Ícone:", -1, 5, 7, 100, 12
+    LTEXT "Archivo de &Icono:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_REPLACEICON DIALOG 0, 0, 215, 135
-CAPTION "Substituir Ícone"
+CAPTION "Reemplazar Icono"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Arquivo de Ícone:", -1, 5, 7, 100, 12
+    LTEXT "Archivo de &Icono:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 13, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_ADDBITMAP DIALOG 0, 0, 215, 135
-CAPTION "Adicionar Bitmap"
+CAPTION "Añadir Bitmap"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Arquivo &Bitmap:", -1, 5, 7, 100, 12
+    LTEXT "Archivo &Bitmap:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_REPLACEBMP DIALOG 0, 0, 215, 135
-CAPTION "Substituir Bitmap"
+CAPTION "Reemplazar Bitmap"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Arquivo &Bitmap:", -1, 5, 7, 100, 12
+    LTEXT "Archivo &Bitmap:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_ADDRES DIALOG 0, 0, 215, 170
-CAPTION "Adicionar Recurso"
+CAPTION "Añadir Recurso"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Nome do Recurso:", -1, 5, 32, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 30, 15, 14
     LTEXT "", stc1, 75, 43, 115, 10
-    LTEXT "&Idioma do Recurso:", -1, 5, 57, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Arquivo Binário:", -1, 5, 85, 100, 12
+    LTEXT "&Archivo Binario:", -1, 5, 85, 100, 12
     EDITTEXT edt1, 5, 97, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 115, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 115, 60, 14
     LTEXT "", stc2, 5, 112, 100, 10
     DEFPUSHBUTTON "OK", IDOK, 35, 150, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 150, 60, 14
 }
 
 IDD_ADDCURSOR DIALOG 0, 0, 215, 135
-CAPTION "Adicionar Cursor"
+CAPTION "Añadir Cursor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Arquivo de &Cursor:", -1, 5, 7, 100, 12
+    LTEXT "Archivo de &Cursor:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh2, 195, 65, 15, 14
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_REPLACECUR DIALOG 0, 0, 215, 135
-CAPTION "Substituir Cursor"
+CAPTION "Reemplazar Cursor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Arquivo de &Cursor:", -1, 5, 7, 100, 12
+    LTEXT "Archivo de &Cursor:", -1, 5, 7, 100, 12
     EDITTEXT edt1, 5, 18, 205, 14, ES_AUTOHSCROLL
-    PUSHBUTTON "&Procurar...", psh1, 150, 35, 60, 14
+    PUSHBUTTON "&Buscar...", psh1, 150, 35, 60, 14
     ICON 0, ico1, 5, 35, 0, 0
-    LTEXT "&Nome do Recurso:", -1, 5, 67, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 67, 70, 12
     COMBOBOX cmb2, 75, 65, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma do Recurso:", -1, 5, 92, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 92, 70, 12
     COMBOBOX cmb3, 75, 90, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 115, 60, 14
 }
 
 IDD_MENUTEST DIALOG 0, 0, 215, 135
-CAPTION "Testar Menu"
+CAPTION "Test de Menú"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
 }
 
 IDD_ADDKEY DIALOG 0, 0, 190, 120
-CAPTION "Adicionar Chave"
+CAPTION "Añadir Clave"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Chave:", -1, 5, 12, 60, 14
+    RTEXT "&Clave:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&ID do Comando:", -1, 5, 37, 60, 14
+    RTEXT "&ID de Comando:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 95, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 165, 35, 15, 14
     AUTOCHECKBOX "&VIRTKEY", chx1, 5, 60, 60, 14
@@ -470,13 +468,13 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_MODIFYKEY DIALOG 0, 0, 190, 120
-CAPTION "Modificar Chave"
+CAPTION "Modificar Clave"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Chave:", -1, 5, 12, 60, 14
+    RTEXT "&Clave:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&ID do Comando:", -1, 5, 37, 60, 14
+    RTEXT "&ID de Comando:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 95, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 165, 35, 15, 14
     AUTOCHECKBOX "&VIRTKEY", chx1, 5, 60, 60, 14
@@ -493,71 +491,71 @@ CAPTION "Editar Aceleradores"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Lista de Chaves:", -1, 5, 7, 100, 12
+    LTEXT "&Lista de Claves:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 210, 120
-    PUSHBUTTON "&Adicionar...", psh1, 220, 20, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 220, 20, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 220, 40, 60, 14
-    PUSHBUTTON "&Excluir", psh3, 220, 60, 60, 14
-    PUSHBUTTON "A&cima", psh4, 220, 100, 60, 14
-    PUSHBUTTON "A&baixo", psh5, 220, 120, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 220, 60, 60, 14
+    PUSHBUTTON "&Arriba", psh4, 220, 100, 60, 14
+    PUSHBUTTON "Abaj&o", psh5, 220, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 155, 145, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 220, 145, 60, 14
-    PUSHBUTTON "Excluir T&odos", psh6, 5, 145, 79, 14
+    PUSHBUTTON "Eliminar T&odo", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDSTR DIALOG 0, 0, 255, 115
-CAPTION "Adicionar Entrada de String"
+CAPTION "Añadir Entrada de Cadena"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID da String:", -1, 5, 7, 50, 12
+    LTEXT "&ID de Cadena:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "&Valor da String:", -1, 5, 27, 54, 12
+    LTEXT "&Valor de Cadena:", -1, 5, 27, 54, 17
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Substituir ""\\r\\n"" com ""\\n""", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Reemplazar ""\\r\\n"" con ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 190, 95, 60, 14
 }
 
 IDD_MODIFYSTR DIALOG 0, 0, 255, 115
-CAPTION "Modificar Entrada de String"
+CAPTION "Modificar Entrada de Cadena"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID da String:", -1, 5, 7, 50, 12
+    LTEXT "&ID de Cadena:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 60, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 5, 15, 14
-    LTEXT "&Valor da String:", -1, 5, 27, 54, 12
+    LTEXT "&Valor de Cadena:", -1, 5, 27, 54, 17
     EDITTEXT edt1, 60, 25, 190, 45, ES_WANTRETURN | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    AUTOCHECKBOX "&Substituir ""\\r\\n"" com ""\\n""", chx1, 60, 75, 190, 14
+    AUTOCHECKBOX "&Reemplazar ""\\r\\n"" con ""\\n""", chx1, 60, 75, 190, 14
     DEFPUSHBUTTON "OK", IDOK, 125, 95, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 190, 95, 60, 14
 }
 
 IDD_STRINGS DIALOG 0, 0, 325, 160
-CAPTION "Tabela de Strings"
+CAPTION "Tabla de Cadenas"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Entradas de String:", -1, 5, 7, 100, 12
+    LTEXT "&Entradas de Cadena:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
-    PUSHBUTTON "&Adicionar...", psh1, 130, 3, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 195, 3, 60, 14
-    PUSHBUTTON "&Excluir", psh3, 260, 3, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Excluir T&odos", psh4, 5, 140, 75, 14
+    PUSHBUTTON "Eliminar To&do", psh4, 5, 140, 75, 14
 }
 
 IDD_ADDMITEM DIALOG 0, 0, 210, 200
-CAPTION "Adicionar Item de Menu"
+CAPTION "Añadir Elemento de Menú"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Legend&a", -1, 5, 7, 55, 12
+    LTEXT "L&eyenda:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&ID do Comando:", -1, 5, 32, 55, 12
+    LTEXT "ID de Co&mando:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
@@ -572,24 +570,24 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "ID de Aj&uda:", -1, 5, 162, 45, 12
+    LTEXT "ID de Ay&uda:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 145, 180, 60, 14
 }
 
 IDD_MODIFYMITEM DIALOG 0, 0, 210, 200
-CAPTION "Modificar Item de Menu"
+CAPTION "Modificar Elemento de Menú"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Legend&a", -1, 5, 7, 55, 12
+    LTEXT "Leyend&a:", -1, 5, 7, 55, 12
     COMBOBOX cmb1, 65, 6, 140, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&ID do Comando:", -1, 5, 32, 55, 12
+    LTEXT "ID de Co&mando:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 125, 200, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 190, 30, 15, 14
     AUTOCHECKBOX "&GRAYED", chx1, 5, 60, 60, 14
-    AUTOCHECKBOX "BIT&MAP", chx3, 135, 60, 60, 14
+    AUTOCHECKBOX "&BITMAP", chx3, 135, 60, 60, 14
     AUTOCHECKBOX "&OWNERDRAW", chx4, 5, 80, 65, 14
     AUTOCHECKBOX "&CHECKED", chx5, 75, 80, 60, 14
     AUTOCHECKBOX "SE&PARATOR", chx6, 140, 80, 60, 14
@@ -600,66 +598,66 @@ FONT 9, "MS Shell Dlg"
     AUTOCHECKBOX "RADIOCHEC&K", chx11, 135, 120, 60, 14
     AUTOCHECKBOX "RIGH&TORDER", chx12, 5, 139, 60, 14
     AUTOCHECKBOX "RIGHT&JUSTIFY", chx13, 70, 140, 70, 14
-    LTEXT "ID de Aj&uda:", -1, 5, 162, 45, 12
+    LTEXT "ID de Ay&uda:", -1, 5, 162, 45, 12
     COMBOBOX cmb3, 55, 160, 100, 300, CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 80, 180, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 145, 180, 60, 14
 }
 
 IDD_EDITMENU DIALOG 0, 0, 325, 160
-CAPTION "Editar Recurso do Menu"
+CAPTION "Editar Recurso de Menú"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Recur&so de Menu:", -1, 5, 7, 85, 12
+    LTEXT "Re&curso de Menú:", -1, 5, 7, 85, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
-    PUSHBUTTON "&Adicionar...", psh1, 95, 3, 50, 14
+    PUSHBUTTON "&Añadir...", psh1, 95, 3, 50, 14
     PUSHBUTTON "&Modificar...", psh2, 150, 3, 50, 14
-    PUSHBUTTON "E&xcluir", psh3, 205, 3, 50, 14
-    PUSHBUTTON "A&cima", psh4, 5, 140, 40, 14
-    PUSHBUTTON "A&baixo", psh5, 50, 140, 40, 14
-    PUSHBUTTON "&Esquerda", psh6, 95, 140, 40, 14
-    PUSHBUTTON "&Direita", psh7, 140, 140, 41, 14
-    AUTOCHECKBOX "Es&tendido", chx1, 260, 3, 60, 14
+    PUSHBUTTON "E&liminar", psh3, 205, 3, 50, 14
+    PUSHBUTTON "&Ariba", psh4, 5, 140, 40, 14
+    PUSHBUTTON "&Abajo", psh5, 50, 140, 40, 14
+    PUSHBUTTON "&Izquierda", psh6, 95, 140, 40, 14
+    PUSHBUTTON "&Derecha", psh7, 140, 140, 41, 14
+    AUTOCHECKBOX "E&xtendido", chx1, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 260, 140, 60, 14
 }
 
 IDD_DLGPROP DIALOG 0, 0, 235, 315
-CAPTION "Propriedades do Diálogo"
+CAPTION "Propiedades del Diálogo"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Legend&a", -1, 5, 7, 85, 11
+    LTEXT "Leyend&a:", -1, 5, 7, 85, 11
     COMBOBOX cmb1, 5, 20, 225, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Diálogo Este&ndido", chx1, 100, 5, 86, 14
-    LTEXT "&Esquerda:", -1, 5, 40, 33, 10
+    AUTOCHECKBOX "Diálogo E&xtendido", chx1, 100, 5, 86, 14
+    LTEXT "&Izquierdo:", -1, 5, 40, 33, 10
     EDITTEXT edt1, 5, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 23, 53, 12, 20
-    LTEXT "T&opo:", -1, 50, 40, 33, 10
+    LTEXT "S&uperior:", -1, 50, 40, 33, 10
     EDITTEXT edt2, 50, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 53, 53, 12, 20
-    LTEXT "Lar&gura:", -1, 95, 40, 33, 10
+    LTEXT "&Anchura:", -1, 95, 40, 33, 10
     EDITTEXT edt3, 95, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 56, 12, 20
     LTEXT "&Altura:", -1, 142, 40, 33, 10
     EDITTEXT edt4, 142, 53, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 162, 53, 12, 20
-    LTEXT "Nome da Cla&sse:", -1, 5, 73, 85, 11
+    LTEXT "Nombre de Cla&se:", -1, 5, 73, 85, 11
     COMBOBOX cmb2, 5, 88, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID de Aj&uda:", -1, 125, 73, 64, 11
+    LTEXT "ID de Ay&uda:", -1, 125, 73, 64, 11
     COMBOBOX cmb3, 125, 88, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Nome da &Fonte:", -1, 5, 105, 80, 11
+    LTEXT "Nombre de &Fuente:", -1, 5, 105, 80, 11
     COMBOBOX cmb4, 6, 118, 100, 200, CBS_HASSTRINGS | CBS_SORT | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Tamanho:", -1, 110, 105, 38, 12
+    LTEXT "&Tamaño:", -1, 110, 105, 38, 12
     EDITTEXT edt5, 110, 118, 25, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     AUTOCHECKBOX "&B", chx2, 140, 118, 20, 14
     AUTOCHECKBOX "&I", chx3, 165, 118, 20, 14
-    LTEXT "Cha&rSet:", -1, 5, 138, 80, 11
+    LTEXT "Juego de Ca&racteres:", -1, 5, 138, 80, 11
     COMBOBOX cmb5, 5, 148, 100, 100, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Nome do &Menu:", -1, 110, 138, 55, 11
+    LTEXT "Nombre del &Menú:", -1, 110, 138, 62, 11
     COMBOBOX cmb6, 110, 148, 99, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Esti&lo:", -1, 5, 168, 45, 11
+    LTEXT "Es&tilo:", -1, 5, 168, 45, 11
     RTEXT "0x", -1, 52, 169, 10, 11
     EDITTEXT edt6, 67, 165, 45, 14, ES_AUTOHSCROLL
     LISTBOX lst1, 5, 183, 110, 110, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
@@ -672,23 +670,23 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CTRLPROP DIALOG 0, 0, 235, 330
-CAPTION "Propriedades do Controle"
+CAPTION "Propiedades del Control"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Predef. &Ctrl:", -1, 5, 7, 68, 12
+    LTEXT "&Ctrl. Predefinido:", -1, 5, 7, 68, 12
     COMBOBOX cmb1, 75, 5, 120, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "Legend&a", -1, 5, 55, 75, 12
+    LTEXT "Leyend&a:", -1, 5, 55, 75, 12
     COMBOBOX cmb2, 5, 65, 195, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 205, 65, 25, 14
-    LTEXT "&Esquerda:", -1, 5, 85, 33, 11
+    LTEXT "&Izquierdo:", -1, 5, 85, 33, 11
     EDITTEXT edt1, 5, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 20, 99, 12, 20
-    LTEXT "T&opo:", -1, 40, 85, 33, 11
+    LTEXT "S&uperior:", -1, 40, 85, 33, 11
     EDITTEXT edt2, 40, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 55, 99, 12, 20
-    LTEXT "&Largura:", -1, 75, 85, 33, 11
+    LTEXT "&Anchura:", -1, 75, 85, 33, 11
     EDITTEXT edt3, 75, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 90, 99, 12, 20
     LTEXT "&Altura:", -1, 111, 85, 33, 11
@@ -696,9 +694,9 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 125, 99, 12, 20
     LTEXT "&ID:", -1, 150, 85, 70, 12
     COMBOBOX cmb3, 150, 99, 80, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Nome da Cla&sse do Windows:", -1, 5, 119, 100, 12
+    LTEXT "Nombre de Cla&se de Ventana:", -1, 5, 119, 100, 12
     COMBOBOX cmb4, 5, 133, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID de Aj&uda:", -1, 125, 119, 70, 12
+    LTEXT "ID de Ay&uda:", -1, 125, 119, 70, 12
     COMBOBOX cmb5, 125, 133, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Es&tilo:", -1, 5, 153, 45, 12
     RTEXT "0x", -1, 54, 153, 10, 12
@@ -710,28 +708,28 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 120, 167, 110, 120, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 170, 293, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 170, 309, 60, 14
-    PUSHBUTTON "&Dados...", psh1, 5, 293, 90, 14
-    PUSHBUTTON "A l&ista de string...", psh3, 5, 309, 90, 14
+    PUSHBUTTON "&Datos...", psh1, 5, 293, 90, 14
+    PUSHBUTTON "La L&ista de cadenas...", psh3, 5, 309, 90, 14
 }
 
 IDD_ADDCTRL DIALOG 0, 0, 235, 330
-CAPTION "Adicionar Controle"
+CAPTION "Añadir Control"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Predef. &Ctrl:", -1, 5, 7, 68, 12
+    LTEXT "&Ctrl. Predefinido:", -1, 5, 7, 68, 12
     COMBOBOX cmb1, 75, 5, 120, 55, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     CONTROL "", ctl1, "ToolbarWindow32", TBSTYLE_FLAT | TBSTYLE_WRAPABLE | TBSTYLE_TOOLTIPS | CCS_NODIVIDER | CCS_NORESIZE, 5, 22, 185, 30
-    LTEXT "Legend&a", -1, 5, 55, 75, 12
+    LTEXT "Leyend&a:", -1, 5, 55, 75, 12
     COMBOBOX cmb2, 5, 65, 195, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&OLE...", psh2, 205, 65, 25, 14
-    LTEXT "&Esquerda:", -1, 5, 85, 33, 11
+    LTEXT "&Izquierdo:", -1, 5, 85, 33, 11
     EDITTEXT edt1, 5, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 20, 99, 12, 20
-    LTEXT "T&opo:", -1, 40, 85, 33, 11
+    LTEXT "S&uperior:", -1, 40, 85, 33, 11
     EDITTEXT edt2, 40, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 55, 99, 12, 20
-    LTEXT "&Largura:", -1, 75, 85, 33, 11
+    LTEXT "&Anchura:", -1, 75, 85, 33, 11
     EDITTEXT edt3, 75, 99, 30, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr3, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 90, 99, 12, 20
     LTEXT "&Altura:", -1, 111, 85, 33, 11
@@ -739,9 +737,9 @@ FONT 9, "MS Shell Dlg"
     CONTROL "", scr4, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 125, 99, 12, 20
     LTEXT "&ID:", -1, 150, 85, 70, 12
     COMBOBOX cmb3, 150, 99, 80, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Nome da Cla&sse do Windows:", -1, 5, 119, 100, 12
+    LTEXT "Nombre de Cla&se de Ventana:", -1, 5, 119, 100, 12
     COMBOBOX cmb4, 5, 133, 115, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "ID de Aj&uda:", -1, 125, 119, 70, 12
+    LTEXT "ID de Ay&uda:", -1, 125, 119, 70, 12
     COMBOBOX cmb5, 125, 133, 65, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     LTEXT "Es&tilo:", -1, 5, 153, 45, 12
     RTEXT "0x", -1, 54, 153, 10, 12
@@ -753,31 +751,31 @@ FONT 9, "MS Shell Dlg"
     LISTBOX lst2, 120, 167, 110, 120, LBS_DISABLENOSCROLL | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 170, 293, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 170, 309, 60, 14
-    PUSHBUTTON "&Dados...", psh1, 5, 293, 90, 14
-    PUSHBUTTON "A l&ista de string...", psh3, 5, 309, 90, 14
+    PUSHBUTTON "&Datos...", psh1, 5, 293, 90, 14
+    PUSHBUTTON "La L&ista de cadenas...", psh3, 5, 309, 90, 14
 }
 
 IDD_IDASSOC DIALOG 0, 0, 200, 220
-CAPTION "ID de Associação"
+CAPTION "ID Association"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "ID de &Associação:", -1, 5, 5, 116, 12
+    LTEXT "ID de &Assciación:", -1, 5, 5, 116, 12
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 20, 190, 150
-    PUSHBUTTON "&Redefinir Todos", psh2, 5, 175, 85, 14
+    PUSHBUTTON "&Restablecer todo", psh2, 5, 175, 85, 14
     PUSHBUTTON "&Modificar", psh1, 135, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 200, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 135, 200, 60, 14
 }
 
 IDD_MODIFYASSOC DIALOG 0, 0, 165, 68
-CAPTION "Modificar ID de Associação"
+CAPTION "Modifcar ID de Asociación"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     RTEXT "&Tipo de ID:", -1, 5, 7, 65, 12
     EDITTEXT edt1, 80, 5, 80, 14, WS_DISABLED
-    RTEXT "&Prefixo de ID:", -1, 5, 32, 65, 12
+    RTEXT "&Prefijo de ID:", -1, 5, 32, 65, 12
     EDITTEXT edt2, 80, 28, 80, 14, ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 35, 50, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 100, 50, 60, 14
@@ -794,47 +792,47 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CONFIG DIALOG 0, 0, 210, 305
-CAPTION "Configuração"
+CAPTION "Configuración"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    AUTOCHECKBOX "Mostrar &caminho completo do arquivo na barra de título", chx1, 5, 5, 200, 14
-    AUTOCHECKBOX "&Não usar macros de ID", chx2, 5, 25, 200, 14
-    AUTOCHECKBOX "Re&tomar a posição da janela anterior", chx3, 5, 45, 200, 14
-    AUTOCHECKBOX "Carre&gar ""resource.h"" perto automaticamente", chx4, 5, 65, 200, 14
-    AUTOCHECKBOX "Mostrar automaticamente a &lista de IDs de recursos", chx5, 5, 85, 200, 14
-    AUTOCHECKBOX "Mostrar &pontos na edição de diálogo", chx6, 5, 105, 200, 14
-    RTEXT "Altura do Combo&Box:", -1, 10, 127, 75, 12
+    AUTOCHECKBOX "Mostrar la ruta &completa del archivo en la barra de título", chx1, 5, 5, 200, 14
+    AUTOCHECKBOX "No usar &macros de ID", chx2, 5, 25, 200, 14
+    AUTOCHECKBOX "Reanudar la &posición previa de la ventana", chx3, 5, 45, 200, 14
+    AUTOCHECKBOX "Cargar automáticamente ""&resource.h"" adyacente", chx4, 5, 65, 200, 14
+    AUTOCHECKBOX "Mostrar automáticamente la &lista de IDs de recursos", chx5, 5, 85, 200, 14
+    AUTOCHECKBOX "Mostrar &puntos en la edición del dialogo", chx6, 5, 105, 200, 14
+    RTEXT "Altura de Combo&Box:", -1, 10, 127, 75, 12
     EDITTEXT edt1, 90, 125, 34, 14, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
-    AUTOCHECKBOX "&Quebra de palavras", chx9, 128, 125, 75, 14
-    AUTOCHECKBOX "Perguntar ao atuali&zar ""resource.h""'s", chx7, 5, 145, 200, 14
-    AUTOCHECKBOX "Comprimir EXE com &UPX ao salva-lo", chx8, 5, 165, 200, 14
-    PUSHBUTTON "&Fontes...", psh4, 5, 185, 200, 14
+    AUTOCHECKBOX "&Ajuste de línea", chx9, 135, 125, 70, 14
+    AUTOCHECKBOX "Preguntar al actualizar ""&resource.h""", chx7, 5, 145, 200, 14
+    AUTOCHECKBOX "Comprimir EXE por &UPX al guardarlo", chx8, 5, 165, 200, 14
+    PUSHBUTTON "&Fuentes...", psh4, 5, 185, 200, 14
     PUSHBUTTON "&Macros predefinidas...", psh1, 5, 205, 93, 14
-    PUSHBUTTON "Definir camin&hos...", psh2, 107, 205, 98, 14
-    RTEXT "Nome de controles &OLE:", -1, 5, 227, 80, 12
+    PUSHBUTTON "Establecer ru&tas...", psh2, 107, 205, 98, 14
+    RTEXT "Nombre de controles &OLE:", -1, 5, 224, 80, 16
     COMBOBOX cmb1, 90, 225, 75, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Criar bac&kup", chx10, 5, 245, 75, 15
-    RTEXT "Sufixo de backup:", -1, 90, 245, 60, 15
+    AUTOCHECKBOX "Crear &copia de seguridad", chx10, 5, 245, 90, 15
+    RTEXT "Sufijo de la copia de seguridad:", -1, 101, 243, 54, 17
     COMBOBOX cmb2, 158, 244, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Idiom&a do recurso:", -1, 5, 265, 110, 10
+    LTEXT "Idiom&a del recurso:", -1, 5, 265, 110, 10
     COMBOBOX cmb3, 120, 265, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 100, 285, 50, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 155, 285, 50, 14
-    PUSHBUTTON "&Redefinir Todos", psh3, 5, 285, 75, 14
+    PUSHBUTTON "Re&stablecer todo", psh3, 5, 285, 75, 14
 }
 
 IDD_ADDRESID DIALOG 0, 0, 165, 90
-CAPTION "Adicionar ID de Recurso"
+CAPTION "Añadir ID de Recurso"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     RTEXT "&Tipo de ID:", -1, 10, 7, 50, 14
     COMBOBOX cmb1, 65, 5, 95, 300, CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT "&Nome do ID:", -1, 10, 27, 50, 14
+    RTEXT "&Nombre de ID:", -1, 10, 27, 50, 14
     EDITTEXT edt1, 65, 25, 75, 14, ES_AUTOHSCROLL
-    RTEXT "Valor &Inteiro:", -1, 10, 47, 50, 14
+    RTEXT "&Valor Entero:", -1, 10, 47, 50, 14
     EDITTEXT edt2, 65, 45, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     PUSHBUTTON "&Auto", psh1, 115, 45, 45, 14
@@ -847,11 +845,11 @@ CAPTION "Modificar ID de Recurso"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Nome do ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
+    RTEXT "&Nombre de ID:", -1, 10, 12, 50, 14, SS_REALSIZEIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 10, 95, 14, ES_AUTOHSCROLL
     RTEXT "&Tipo de ID:", -1, 10, 32, 50, 14
     EDITTEXT edt2, 65, 30, 95, 14, ES_READONLY
-    RTEXT "Valor &Inteiro:", -1, 10, 52, 50, 14
+    RTEXT "&Valor Entero:", -1, 10, 52, 50, 14
     EDITTEXT edt3, 65, 50, 48, 14, ES_AUTOHSCROLL
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 129, 49, 12, 20
     DEFPUSHBUTTON "OK", IDOK, 20, 70, 60, 14
@@ -859,24 +857,24 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_ADVICERESH DIALOG 0, 0, 209, 184
-CAPTION "Conselho de modificação do arquivo ""resource.h"""
+CAPTION "Consejo de modificación del archivo ""resource.h"""
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Por favor, modifique o arquivo ""resource.h"" Da seguinte forma:", -1, 10, 10, 195, 20
+    LTEXT "Por favor, modifique el archivo ""resource.h"" tal como sigue:", -1, 10, 10, 195, 20
     EDITTEXT edt1, 10, 30, 190, 130, ES_READONLY | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 140, 165, 60, 14
-    PUSHBUTTON "&Limpar Modificação", psh1, 10, 165, 90, 14
+    PUSHBUTTON "&Limpiar modificación", psh1, 10, 165, 90, 14
 }
 
 IDD_CLONEINNEWNAME DIALOG 0, 0, 215, 75
-CAPTION "Clonar Para Um Novo Nome"
+CAPTION "Clonar con un Nombre Nuevo"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Nome do Recurso:", -1, 5, 32, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 195, 30, 15, 14
     DEFPUSHBUTTON "OK", IDOK, 35, 55, 60, 14
@@ -884,37 +882,37 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CLONEINNEWLANG DIALOG 0, 0, 215, 105
-CAPTION "Clonar Para Um Novo Idioma"
+CAPTION "Clonar en Nuevo Idioma"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Nome do Recurso:", -1, 5, 32, 70, 12
+    LTEXT "&Nombre del Recurso:", -1, 5, 32, 70, 12
     COMBOBOX cmb2, 75, 30, 120, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Idioma do Recurso:", -1, 5, 57, 70, 12
+    LTEXT "&Idioma del Recurso:", -1, 5, 57, 70, 12
     COMBOBOX cmb3, 75, 55, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 35, 85, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 115, 85, 60, 14
 }
 
 IDD_ITEMSEARCH DIALOG 0, 0, 171, 135
-CAPTION "Pesquisar"
+CAPTION "Buscar"
 STYLE WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&String para pesquisar:", -1, 4, 10, 100, 14
+    LTEXT "&Cadena a buscar:", -1, 4, 10, 100, 14
     EDITTEXT edt1, 5, 25, 160, 15, ES_AUTOHSCROLL
-    AUTOCHECKBOX "Diferenciar &maiúscula/minúscula", chx1, 5, 45, 120, 18
-    GROUPBOX "Direção", -1, 5, 65, 160, 42
-    AUTORADIOBUTTON "&Acima", rad1, 15, 80, 60, 14, WS_TABSTOP
-    AUTORADIOBUTTON "A&baixo", rad2, 90, 80, 60, 14, WS_TABSTOP
-    DEFPUSHBUTTON "&Localizar", IDOK, 40, 115, 60, 14
+    AUTOCHECKBOX "&Distinguir Mayúscula/minúscula", chx1, 5, 45, 120, 18
+    GROUPBOX "Dirección", -1, 5, 65, 160, 42
+    AUTORADIOBUTTON "&Anterior", rad1, 15, 80, 60, 14, WS_TABSTOP
+    AUTORADIOBUTTON "&Siguiente", rad2, 90, 80, 60, 14, WS_TABSTOP
+    DEFPUSHBUTTON "&Buscar", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 105, 115, 60, 14
 }
 
 IDD_VERSIONINFO DIALOG 0, 0, 174, 150
-CAPTION "Sobre RisohEditor"
+CAPTION "Acerca de RisohEditor"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 12, "MS Shell Dlg"
 {
@@ -926,61 +924,61 @@ FONT 12, "MS Shell Dlg"
 }
 
 IDD_ADDMSG DIALOG 0, 0, 255, 105
-CAPTION "Adicionar Entrada de Mensagem"
+CAPTION "Añadir Entrada de Mensaje"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID da Mensagem:", -1, 5, 7, 50, 12
+    LTEXT "&ID de Mensaje:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON "&...", psh1, 200, 5, 15, 14
-    LTEXT "&Valor da Mensagem:", -1, 5, 27, 80, 12
+    LTEXT "&Valor del Mensaje:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 190, 85, 60, 14
 }
 
 IDD_MODIFYMSG DIALOG 0, 0, 255, 105
-CAPTION "Modificar Entrada de Mensagem"
+CAPTION "Modifcar Entrada de Mensaje"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID da Mensagem:", -1, 5, 7, 50, 12
+    LTEXT "&ID del Mensaje:", -1, 5, 7, 50, 12
     COMBOBOX cmb1, 65, 5, 134, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Valor da Mensagem:", -1, 5, 27, 80, 12
+    LTEXT "&Valor del Mensaje:", -1, 5, 27, 80, 12
     EDITTEXT edt1, 5, 40, 245, 35, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
     DEFPUSHBUTTON "OK", IDOK, 125, 85, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 190, 85, 60, 14
 }
 
 IDD_MESSAGES DIALOG 0, 0, 325, 160
-CAPTION "Tabela de Mensagens"
+CAPTION "Tabla de Mensajes"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "E&ntradas de Mensagem:", -1, 5, 7, 80, 12
+    LTEXT "&Entradas de Mensaje:", -1, 5, 7, 80, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 315, 115
-    PUSHBUTTON "&Adicionar...", psh1, 130, 3, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 130, 3, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 195, 3, 60, 14
-    PUSHBUTTON "&Excluir", psh3, 260, 3, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 260, 3, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 140, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 260, 140, 60, 14
-    PUSHBUTTON "Excluir T&odos", psh4, 5, 140, 75, 14
+    PUSHBUTTON "Eliminar T&odo", psh4, 5, 140, 75, 14
 }
 
 IDD_FONTS DIALOG 0, 0, 195, 110
-CAPTION "Configurações de Fonte"
+CAPTION "Configuración de Fuente"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Origem:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Origen:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh1, 170, 5, 19, 14
-    RTEXT "&Binário:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Binario:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 65, 25, 100, 14, ES_READONLY | ES_AUTOHSCROLL
     PUSHBUTTON "...", psh2, 170, 25, 19, 14
-    GROUPBOX "Visualizar", -1, 5, 45, 185, 39
-    CTEXT "Origem", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
-    CTEXT "Binário", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
+    GROUPBOX "Vista previa", -1, 5, 45, 185, 39
+    CTEXT "Origen", stc1, 15, 55, 80, 25, SS_CENTERIMAGE | NOT WS_GROUP
+    CTEXT "Binario", stc2, 100, 55, 85, 25, SS_CENTERIMAGE | NOT WS_GROUP
     DEFPUSHBUTTON "OK", IDOK, 65, 90, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 130, 90, 60, 14
 }
@@ -992,21 +990,21 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Macros Predefinidas:", -1, 5, 0, 100, 15, SS_CENTERIMAGE | NOT WS_GROUP
     CONTROL "", lst1, "SysListView32", LVS_EDITLABELS | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 15, 190, 125
-    PUSHBUTTON "&Adicionar...", psh1, 200, 15, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 200, 15, 60, 14
     PUSHBUTTON "&Editar...", psh2, 200, 35, 60, 14
-    PUSHBUTTON "E&xcluir", psh3, 200, 55, 60, 14
-    PUSHBUTTON "Excluir T&odos", psh7, 200, 105, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 200, 55, 60, 14
+    PUSHBUTTON "Eliminar T&odo", psh7, 200, 105, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 135, 145, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 200, 145, 60, 14
-    PUSHBUTTON "&Redefinir Todos", psh6, 5, 145, 60, 14
+    PUSHBUTTON "&Restablecer Todo", psh6, 5, 145, 60, 14
 }
 
 IDD_ADDMACRO DIALOG 0, 0, 190, 80
-CAPTION "Adicionar Macro Predefinida"
+CAPTION "Añadir Macro Predefinida"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Chave:", -1, 5, 12, 60, 14
+    RTEXT "&Clave:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     RTEXT "&Valor:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -1019,7 +1017,7 @@ CAPTION "Editar Macro Predefinida"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Chave:", -1, 5, 12, 60, 14
+    RTEXT "&Clave:", -1, 5, 12, 60, 14
     COMBOBOX cmb1, 70, 10, 110, 200, CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     RTEXT "&Valor:", -1, 5, 37, 60, 14
     COMBOBOX cmb2, 70, 35, 110, 300, CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -1028,58 +1026,58 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CTRLDATA DIALOG 0, 0, 190, 130
-CAPTION "Editar Dados de Controle"
+CAPTION "Editar Datos de Control"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Dados &Binários:", -1, 5, 2, 87, 12
+    LTEXT "Datos &Binarios:", -1, 5, 2, 87, 12
     EDITTEXT edt1, 5, 15, 180, 60, ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
-    LTEXT "Você pode definir os dados de controle por inteiros de 16 bits separados por espaço.", -1, 5, 80, 180, 25
+    LTEXT "Puede configurar los datos de control mediante números enteros de 16 bits separados por espacios.", -1, 5, 80, 180, 25
     DEFPUSHBUTTON "OK", IDOK, 60, 110, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 125, 110, 60, 14
 }
 
 IDD_PATHS DIALOG 0, 0, 295, 220
-CAPTION "Definir Caminhos"
+CAPTION "Configurar Rutas"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Diretórios &Incluídos:", -1, 5, 5, 102, 12
+    LTEXT "&Incluir Directorios:", -1, 5, 5, 102, 12
     LISTBOX lst1, 5, 20, 220, 105, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_SORT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Adicionar...", psh1, 230, 20, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 230, 20, 60, 14
     PUSHBUTTON "&Editar...", psh2, 230, 40, 60, 14
-    PUSHBUTTON "E&xcluir", psh3, 230, 60, 60, 14
-    PUSHBUTTON "Aci&ma", psh4, 230, 80, 60, 14
-    PUSHBUTTON "A&baixo", psh5, 230, 100, 60, 14
-    PUSHBUTTON "Excluir T&odos", psh6, 5, 130, 95, 14
+    PUSHBUTTON "&Eliminar", psh3, 230, 60, 60, 14
+    PUSHBUTTON "&Arriba", psh4, 230, 80, 60, 14
+    PUSHBUTTON "A&ajo", psh5, 230, 100, 60, 14
+    PUSHBUTTON "Eliminar T&odo", psh6, 5, 130, 95, 14
     RTEXT "&windres.exe:", stc1, 5, 157, 55, 12
     COMBOBOX cmb1, 70, 155, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Procurar...", psh7, 230, 155, 60, 14
+    PUSHBUTTON "&Buscar...", psh7, 230, 155, 60, 14
     RTEXT "&cpp.exe:", stc2, 5, 177, 55, 12
     COMBOBOX cmb2, 70, 175, 155, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "P&rocurar...", psh8, 230, 175, 60, 14
+    PUSHBUTTON "B&uscar...", psh8, 230, 175, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 165, 200, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 230, 200, 60, 14
-    PUSHBUTTON "Redefinir &Todos", psh9, 5, 200, 95, 14
+    PUSHBUTTON "Re&stablecer Todo", psh9, 5, 200, 95, 14
 }
 
 IDD_EXP_OPTIONS DIALOG 0, 0, 250, 225
-CAPTION "Opções de Exportação"
+CAPTION "Opciones de Exportación"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Exportar um arquivo RC gerará alguns arquivos relacionados. Você pode escolher as seguintes opções:", -1, 35, 5, 210, 29
+    LTEXT "Al exportar un archivo RC se generarán algunos archivos relacionados. Puede elegir las siguientes opciones:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Usar Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
-    AUTOCHECKBOX "Arquivos de recursos separados por &idioma", chx1, 5, 60, 240, 14
-    AUTOCHECKBOX "Usar palavras chaves B&EGIN/END", chx2, 5, 80, 240, 14
-    AUTOCHECKBOX "Tornar a linguagem selecionável por LANGUAGE_* macro", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Criar &backup", chx4, 5, 120, 110, 14
-    RTEXT "Sufixo de backup:", -1, 120, 122, 75, 12
+    AUTOCHECKBOX "Separar archivos de recursos por &idioma", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Usar palabras clave B&EGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Permitir seleccionar el idioma por la macro LANGUAGE_*", chx3, 5, 100, 240, 14
+    AUTOCHECKBOX "Crear &copia de seguridad", chx4, 5, 120, 110, 14
+    RTEXT "Sufijo de la copia de seguridad:", -1, 120, 119, 75, 16
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Saída redundante e &comentários", chx5, 5, 140, 240, 14
-    AUTOCHECKBOX "Quebrar as declarações de ma&nifesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "Saída de arquivo RC como &UTF-16", chx7, 5, 180, 240, 14
+    AUTOCHECKBOX "Salida de &comentarios redundantes", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Ajustar las declaraciones de ma&nifiesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Salida de archivos RC como &UTF-16", chx7, 5, 180, 240, 14
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 185, 205, 60, 14
 }
@@ -1090,13 +1088,13 @@ STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_TABSTOP, 5, 5, 240, 179
-    RTEXT "&Pesquisar:", stc1, 5, 192, 45, 12
+    RTEXT "&Buscar:", stc1, 5, 192, 45, 12
     COMBOBOX cmb1, 55, 190, 85, 300, CBS_SORT | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     EDITTEXT edt1, 4, 209, 240, 20, ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
 }
 
 IDD_CHILD DIALOG 0, 0, 215, 135
-CAPTION "Diálogo Filho"
+CAPTION "Diálogo Hijo"
 STYLE WS_CHILD | WS_OVERLAPPEDWINDOW
 FONT 9, "MS Shell Dlg"
 {
@@ -1109,50 +1107,50 @@ CAPTION "Editar DLGINIT"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "E&ntradas de Mensagem:", -1, 5, 7, 100, 12
+    LTEXT "&Entradas de Mensaje:", -1, 5, 7, 100, 12
     CONTROL "", lst1, "SysListView32", LVS_NOSORTHEADER | LVS_AUTOARRANGE | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP, 5, 20, 250, 120
-    PUSHBUTTON "&Adicionar...", psh1, 260, 20, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 260, 20, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 260, 40, 60, 14
-    PUSHBUTTON "&Excluir", psh3, 260, 60, 60, 14
-    PUSHBUTTON "A&cima", psh4, 260, 100, 60, 14
-    PUSHBUTTON "A&baixo", psh5, 260, 120, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 260, 60, 60, 14
+    PUSHBUTTON "&Arriba", psh4, 260, 100, 60, 14
+    PUSHBUTTON "A&bajo", psh5, 260, 120, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 195, 145, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 260, 145, 60, 14
-    PUSHBUTTON "Excluir &Todos", psh6, 5, 145, 79, 14
+    PUSHBUTTON "Eliminar T&odo", psh6, 5, 145, 79, 14
 }
 
 IDD_ADDDLGINIT DIALOG 0, 0, 184, 137
-CAPTION "Adicionar Dados DLGINIT"
+CAPTION "Añadir datos DLGINIT"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID do Controle:", -1, 5, 7, 56, 12
+    LTEXT "&ID del Control:", -1, 5, 7, 56, 12
     COMBOBOX cmb1, 65, 5, 115, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Mensagem:", -1, 5, 32, 55, 12
+    LTEXT "&Mensaje:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&String:", -1, 5, 52, 55, 12
+    LTEXT "&Cadena:", -1, 5, 52, 55, 12
     EDITTEXT edt1, 5, 65, 175, 50, ES_WANTRETURN | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 55, 120, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 120, 120, 60, 14
 }
 
 IDD_MODIFYDLGINIT DIALOG 0, 0, 184, 137
-CAPTION "Modificar Dados DLGINIT"
+CAPTION "Modificar datos DLGINIT"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID do Controle:", -1, 5, 7, 56, 12
+    LTEXT "&ID del Control:", -1, 5, 7, 56, 12
     COMBOBOX cmb1, 65, 5, 115, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Mensagem:", -1, 5, 32, 55, 12
+    LTEXT "&Mensaje:", -1, 5, 32, 55, 12
     COMBOBOX cmb2, 65, 30, 95, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&String:", -1, 5, 52, 55, 12
+    LTEXT "&Cadena:", -1, 5, 52, 55, 12
     EDITTEXT edt1, 5, 65, 175, 50, ES_WANTRETURN | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL
     DEFPUSHBUTTON "OK", IDOK, 55, 120, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 120, 120, 60, 14
 }
 
 IDD_STRINGLIST DIALOG 0, 0, 205, 220
-CAPTION "Lista de String de Controle"
+CAPTION "Lista de cadenas de control"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
@@ -1163,61 +1161,61 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_SAVE_OPTIONS DIALOG 0, 0, 250, 225
-CAPTION "Opções ao Salvar"
+CAPTION "Opciones de Guardado"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     ICON IDI_MAIN, -1, 5, 10, 0, 0
-    LTEXT "Salvar um arquivo RC gerará alguns arquivos relacionados. Você pode escolher as seguintes opções:", -1, 35, 5, 210, 29
+    LTEXT "Al guardar un archivo RC se generarán algunos archivos relacionados. Puede elegir las siguientes opciones:", -1, 35, 5, 210, 29
     AUTOCHECKBOX "Usar Microsoft MESSAGE&TABLE", chx8, 5, 40, 240, 14
-    AUTOCHECKBOX "Arquivos de recursos separados por &idioma", chx1, 5, 60, 240, 14
-    AUTOCHECKBOX "Usar palavras chaves B&EGIN/END", chx2, 5, 80, 240, 14
-    AUTOCHECKBOX "Tornar a linguagem selecionável por LANGUAGE_* macro", chx3, 5, 100, 240, 14
-    AUTOCHECKBOX "Criar &backup", chx4, 5, 120, 110, 14
-    RTEXT "Sufixo de backup:", -1, 120, 122, 75, 12
+    AUTOCHECKBOX "Separar archivos de recursos por &idioma", chx1, 5, 60, 240, 14
+    AUTOCHECKBOX "Usar palabras clave B&EGIN/END", chx2, 5, 80, 240, 14
+    AUTOCHECKBOX "Permitir seleccionar el idioma por la macro LANGUAGE_*", chx3, 5, 100, 240, 14
+    AUTOCHECKBOX "Crear &copia de seguridad", chx4, 5, 120, 110, 14
+    RTEXT "Sufijo de la copia de seguridad:", -1, 120, 119, 75, 16
     COMBOBOX cmb1, 200, 120, 45, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "Saída redundante e &comentários", chx5, 5, 140, 240, 14
-    AUTOCHECKBOX "Quebrar as declarações de ma&nifesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
-    AUTOCHECKBOX "Saída de arquivo RC como &UTF-16", chx7, 5, 180, 240, 14
+    AUTOCHECKBOX "Salida de &comentarios redundantes", chx5, 5, 140, 240, 14
+    AUTOCHECKBOX "Ajustar las declaraciones de ma&nifiesto por #ifndef MSVC ... #endif", chx6, 5, 160, 240, 14
+    AUTOCHECKBOX "Salida de archivos RC como &UTF-16", chx7, 5, 180, 240, 14
     DEFPUSHBUTTON "OK", IDOK, 120, 205, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 185, 205, 60, 14
 }
 
 IDD_ENCODING DIALOG 0, 0, 200, 170
-CAPTION "Codificação do Item de Recurso"
+CAPTION "Codificación de Elemento de Recurso"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     CONTROL "", lst1, "SysListView32", LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_REPORT | WS_BORDER, 5, 5, 190, 115
-    PUSHBUTTON "&Adicionar...", psh1, 5, 125, 60, 14
+    PUSHBUTTON "&Añadir...", psh1, 5, 125, 60, 14
     PUSHBUTTON "&Modificar...", psh2, 70, 125, 60, 14
-    PUSHBUTTON "&Excluir", psh3, 135, 125, 60, 14
+    PUSHBUTTON "&Eliminar", psh3, 135, 125, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 70, 150, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 135, 150, 60, 14
-    PUSHBUTTON "&Redefinir", psh5, 5, 149, 60, 14
+    PUSHBUTTON "&Restablecer", psh5, 5, 149, 60, 14
 }
 
 IDD_ADDENC DIALOG 0, 0, 215, 80
-CAPTION "Adicionar Codificação de Recursos"
+CAPTION "Añadir Codificación de Recursos"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Codificação:", -1, 5, 30, 70, 12
+    LTEXT "&Codificación:", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 86, 60, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 150, 60, 60, 14
 }
 
 IDD_MODIFYENC DIALOG 0, 0, 215, 80
-CAPTION "Modificar Codificação de Recursos"
+CAPTION "Modificar Codificación de Recursos"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
     LTEXT "&Tipo de Recurso:", -1, 5, 7, 70, 12
     COMBOBOX cmb1, 75, 5, 135, 200, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_DISABLED | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Codificação:", -1, 5, 30, 70, 12
+    LTEXT "&Codificación:", -1, 5, 30, 70, 12
     COMBOBOX cmb2, 75, 30, 85, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 86, 60, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 150, 60, 60, 14
@@ -1228,46 +1226,46 @@ CAPTION "Consultar Constante"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&Nome da Constante:", -1, 5, 7, 80, 12
+    LTEXT "&Nombre de la Constante:", -1, 5, 7, 80, 12
     COMBOBOX cmb1, 94, 7, 105, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "&Valor da Constante:", -1, 5, 32, 80, 12
+    LTEXT "&Valor de la Constante:", -1, 5, 32, 80, 12
     EDITTEXT edt2, 95, 30, 50, 14, ES_READONLY
     EDITTEXT edt3, 150, 30, 50, 14, ES_READONLY
     DEFPUSHBUTTON "OK", IDOK, 70, 55, 60, 14
 }
 
 IDD_EGA DIALOG 0, 0, 400, 225
-CAPTION "Linguagem de Programação EGA"
+CAPTION "Lenguaje de programación EGA"
 STYLE WS_POPUPWINDOW | WS_CAPTION | WS_THICKFRAME
 FONT 9, "MS Shell Dlg"
 {
-    GROUPBOX "Console do EGA", grp1, 5, 5, 390, 195
+    GROUPBOX "Consola EGA", grp1, 5, 5, 390, 195
     EDITTEXT edt1, 10, 20, 380, 170, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | NOT WS_TABSTOP
     RTEXT "EGA>", stc1, 10, 208, 20, 10
     EDITTEXT edt2, 35, 205, 300, 15, ES_WANTRETURN | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE
-    PUSHBUTTON "&Inserir", IDOK, 345, 205, 50, 15
+    PUSHBUTTON "&Intro", IDOK, 345, 205, 50, 15
 }
 
 IDD_FONTSUBST DIALOG 0, 0, 185, 180
-CAPTION "Substituir Fontes de Diálogo"
+CAPTION "Sustituir Fuentes del Diálogo"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Fonte #&1:", -1, 5, 7, 44, 12
+    LTEXT "Fuente #&1:", -1, 5, 7, 44, 12
     COMBOBOX cmb1, 55, 5, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 25, 0, 0
     COMBOBOX cmb2, 55, 30, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Fonte #&2:", -1, 5, 57, 44, 12
+    LTEXT "Fuente #&2:", -1, 5, 57, 44, 12
     COMBOBOX cmb3, 55, 55, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 75, 0, 0
     COMBOBOX cmb4, 55, 80, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    LTEXT "Fonte #&3:", -1, 5, 105, 44, 12
+    LTEXT "Fuente #&3:", -1, 5, 105, 44, 12
     COMBOBOX cmb5, 55, 105, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     ICON IDI_ARROW, -1, 30, 125, 0, 0
     COMBOBOX cmb6, 55, 130, 125, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON "OK", IDOK, 75, 160, 50, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 130, 160, 50, 14
-    PUSHBUTTON "&Redefinir", psh1, 5, 160, 55, 14
+    PUSHBUTTON "&Restablecer", psh1, 5, 160, 55, 14
 }
 
 IDD_DROPDOWNPOPUP DIALOG 0, 0, 120, 150
@@ -1279,62 +1277,62 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_DFMSETTINGS DIALOG 0, 0, 210, 135
-CAPTION "Configurações DFM do Delphi"
+CAPTION "Parámetros DFM de Delphi"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "As seguintes configurações são relevantes para o DFM do Delphi:", -1, 35, 5, 171, 20
+    LTEXT "Los siguientes ajustes son relevantes para DFM de Delphi:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
-    RTEXT "Código de &Página:", -1, 6, 32, 70, 12
+    RTEXT "&Código de Página:", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    AUTOCHECKBOX "&Inserir comentários de string bruta", chx1, 5, 50, 200, 14
-    AUTOCHECKBOX "Não usar &Unicode e UTF-8", chx2, 5, 70, 200, 14
+    AUTOCHECKBOX "&Insertar comentarios de cadena sin formato (raw)", chx1, 5, 50, 200, 14
+    AUTOCHECKBOX "No usar &Unicode ni UTF-8", chx2, 5, 70, 200, 14
     DEFPUSHBUTTON "OK", IDOK, 80, 115, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 145, 115, 60, 14
 }
 
 IDD_COPYTOMULTILANG DIALOG 0, 0, 200, 195
-CAPTION "Copiar Para Vários Idiomas"
+CAPTION "Copiar en varios idiomas"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Adicione os idiomas para os quais você deseja copiar o recurso:", -1, 5, 5, 190, 22
+    LTEXT "Añada los idiomas para los que desea copiar el recurso:", -1, 5, 5, 190, 22
     LTEXT "&Idiomas:", -1, 5, 35, 82, 12
     LISTBOX lst1, 5, 50, 190, 100, LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
     COMBOBOX cmb3, 5, 155, 126, 14, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_BORDER | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Adicionar", psh1, 135, 155, 60, 14
+    PUSHBUTTON "&Añadir", psh1, 135, 155, 60, 14
     DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 14
     PUSHBUTTON "Cancelar", IDCANCEL, 70, 175, 60, 14
 }
 
 IDD_TOOLBARRES DIALOG 0, 0, 230, 195
-CAPTION "Recurso da Barra de Ferramentas"
+CAPTION "Recurso de la barra de herramientas"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    RTEXT "&Largura do ícone:", -1, 5, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Anchura del icono:", -1, 5, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 70, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr1, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 80, 5, 30, 15
-    RTEXT "&Altura do ícone:", -1, 110, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT "&Altura del icono:", -1, 110, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt2, 180, 5, 30, 15, ES_NUMBER | ES_AUTOHSCROLL | ES_RIGHT
     CONTROL "", scr2, "msctls_updown32", UDS_NOTHOUSANDS | UDS_ARROWKEYS | UDS_AUTOBUDDY | UDS_ALIGNRIGHT | UDS_SETBUDDYINT, 190, 5, 30, 15
-    LTEXT "&Botões da barra de ferramentas:", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "&Botones de la barra de herramientas:", -1, 5, 25, 140, 15, SS_CENTERIMAGE | NOT WS_GROUP
     LISTBOX lst1, 5, 40, 140, 130, LBS_DISABLENOSCROLL | LBS_WANTKEYBOARDINPUT | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_OWNERDRAWFIXED | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON "&Adicionar...", psh1, 150, 40, 75, 15
+    PUSHBUTTON "&Añadir...", psh1, 150, 40, 75, 15
     PUSHBUTTON "&Modificar...", psh2, 150, 60, 75, 15
-    PUSHBUTTON "&Excluir", psh3, 150, 80, 75, 15
-    PUSHBUTTON "&Acima", psh4, 150, 135, 75, 15
-    PUSHBUTTON "&Baixo", psh5, 150, 155, 75, 15
+    PUSHBUTTON "&Eliminar", psh3, 150, 80, 75, 15
+    PUSHBUTTON "&Arriba", psh4, 150, 135, 75, 15
+    PUSHBUTTON "Abaj&o", psh5, 150, 155, 75, 15
     DEFPUSHBUTTON "OK", IDOK, 5, 175, 60, 15
     PUSHBUTTON "Cancelar", IDCANCEL, 70, 175, 60, 15
 }
 
 IDD_ADDTBBTN DIALOG 0, 0, 177, 92
-CAPTION "Botão Adicionar Barra de Ferramentas"
+CAPTION "Añadir botón a la barra de herramientas"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID do comando do botão da barra de ferramentas:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "ID de &comando del botón de la barra de herramientas:", -1, 5, 5, 167, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Separador", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
@@ -1342,11 +1340,11 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_MODIFYTBBTN DIALOG 0, 0, 177, 92
-CAPTION "Modificar Botão da Barra de Ferramentas"
+CAPTION "Modificar botón de la barra de herramientas"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "&ID do comando do botão da barra de ferramentas:", -1, 5, 5, 160, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "ID de &comando del botón de la barra de herramientas:", -1, 5, 5, 167, 15, SS_CENTERIMAGE | NOT WS_GROUP
     COMBOBOX cmb1, 5, 25, 150, 150, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     AUTOCHECKBOX "&Separador", chx1, 5, 45, 90, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 70, 60, 15
@@ -1365,28 +1363,28 @@ FILESUBTYPE     0x0
 {
     BLOCK "StringFileInfo"
     {
-        BLOCK "081604E4"
+        BLOCK "040904E4"
         {
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.8.5\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2024 Katayama Hirofumi MZ. Todos os direitos reservados.\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2024 Katayama Hirofumi MZ. All rights reserved.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.8.5\0"
         }
     }
     BLOCK "VarFileInfo"
     {
-        VALUE "Translation", 0x0816, 0x04E4
+        VALUE "Translation", 0x0C0A, 0x04E4
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1046_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/3082_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1046_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/3082_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
@@ -1394,254 +1392,254 @@ FILESUBTYPE     0x0
 STRINGTABLE
 {
     IDS_APPNAME, "RisohEditor 5.8.5 by Katayama Hirofumi MZ"
-    IDS_TITLEWITHFILE, "RisohEditor 5.8.5 - Arquivo: %s"
-    IDS_EXTRACTRES, "Extrair Recurso"
-    IDS_RESBINFILTER, "Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_CANNOTSAVE, "Impossível salvar."
-    IDS_REPLACERES, "Substituir Recurso"
-    IDS_ALLFILES, "Todos os Arquivos (*.*)|*.*|"
-    IDS_ENTERTYPE, "Por favor, insira um tipo de recurso."
-    IDS_ENTERNAME, "Por favor, insira um nome de recurso."
-    IDS_ENTERLANG, "Por favor, insira um idioma de recurso."
-    IDS_FILENOTFOUND, "O arquivo não pôde ser encontrado."
-    IDS_CANNOTREPLACE, "Não é possível substituir."
-    IDS_EXERESFILTER, "Executável (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Arquivos RC (*.rc)|*.rc|Recursos Binários (*.res)|*.res|Todos os Arquivos (*.*)|*.*|"
-    IDS_SAVEAS, "Salvar Como"
-    IDS_CANNOTADDICON, "Não é possível adicionar o ícone."
-    IDS_ADDICON, "Adicionar Ícone"
-    IDS_ICOFILTER, "Arquivos de Ícone (*.ico)|*.ico|Todos os Arquivos (*.*)|*.*|"
-    IDS_REPLACEICO, "Substituir Ícone"
-    IDS_CANTREPLACEICO, "Não é possível substituir o ícone."
-    IDS_EXISTSOVERWRITE, "O item já existe. Sobrescrever?"
+    IDS_TITLEWITHFILE, "RisohEditor 5.8.5 - File: %s"
+    IDS_EXTRACTRES, "Extraer Recurso"
+    IDS_RESBINFILTER, "Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_CANNOTSAVE, "No se puede guardar."
+    IDS_REPLACERES, "Reemplazar Recurso"
+    IDS_ALLFILES, "Todos los Archivos (*.*)|*.*|"
+    IDS_ENTERTYPE, "Por favor, introduzca un tipo de recurso."
+    IDS_ENTERNAME, "Por favor, introduzca un nombre de recurso."
+    IDS_ENTERLANG, "Por favor, introduzca un idioma de recurso."
+    IDS_FILENOTFOUND, "No se ha podido encontrar el archivo."
+    IDS_CANNOTREPLACE, "No se puede reemplazar."
+    IDS_EXERESFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Archivos RC (*.rc)|*.rc|Recursos Binarios (*.res)|*.res|Todos los Archivos (*.*)|*.*|"
+    IDS_SAVEAS, "Guardar como"
+    IDS_CANNOTADDICON, "No se puede añadir el icono."
+    IDS_ADDICON, "Añadir Icono"
+    IDS_ICOFILTER, "Archivos de Icono (*.ico)|*.ico|All Files (*.*)|*.*|"
+    IDS_REPLACEICO, "Reemplazar Icono"
+    IDS_CANTREPLACEICO, "No se puede reemplazar el icono."
+    IDS_EXISTSOVERWRITE, "El elemento ya existe. ¿Sobreecribir?"
     IDS_OPEN, "Abrir"
-    IDS_CANNOTOPEN, "Não é possível abrir o arquivo."
-    IDS_ADDBMP, "Adicionar Bitmap"
-    IDS_BMPFILTER, "Arquivos Bitmap (*.bmp)|*.bmp|Imagens PNG (*.png)|*.png|Todos os Arquivos (*.*)|*.*|"
-    IDS_CANTREPLACEBMP, "Não é possível substituir o bitmap."
-    IDS_REPLACEBMP, "Substituir Bitmap"
-    IDS_ERRORCODE, "Código de Erro %d"
-    IDS_VERSIONINFO, "RisohEditor Versão 5.8.5\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicença: GPLv3 (free software)"
-    IDS_ADDRES, "Adicionar Recurso"
-    IDS_CANNOTADDRES, "Não é possível adicionar o recurso."
-    IDS_CANTADDBMP, "Não é possível adicionar o bitmap."
-    IDS_EXTRACTBMP, "Extrair Bitmap"
-    IDS_CANTEXTRACTBMP, "Não é possível extrair o bitmap."
-    IDS_CANTREPLACECUR, "Não é possível substituir o cursor."
-    IDS_CANNOTADDCUR, "Não é possível adicionar o cursor."
-    IDS_CURFILTER, "Arquivos de Cursor (*.cur)|*.cur|Cursor Animado (*.ani)|*.ani|Todos os Arquivos (*.*)|*.*|"
-    IDS_ADDCUR, "Adicionar Cursor"
-    IDS_REPLACECUR, "Substituir Cursor"
-    IDS_EXTRACTICO, "Extrair Ícone"
-    IDS_CANTEXTRACTICO, "Não é possível extrair o ícone."
-    IDS_EXTRACTCUR, "Extrair Cursor"
-    IDS_CANTEXTRACTCUR, "Não é possível extrair o cursor."
-    IDS_RESFILTER, "Recursos Binários (*.res)|*.res|Todos os Arquivos (*.*)|*.*|"
+    IDS_CANNOTOPEN, "No se puede abrir el archivo."
+    IDS_ADDBMP, "Añadir Bitmap"
+    IDS_BMPFILTER, "Archivos Bitmap (*.bmp)|*.bmp|Imágenes PNG (*.png)|*.png|Todos los Archivos (*.*)|*.*|"
+    IDS_CANTREPLACEBMP, "No se puede reemplazar el bitmap."
+    IDS_REPLACEBMP, "Reemplazar Bitmap"
+    IDS_ERRORCODE, "Código de Error %d"
+    IDS_VERSIONINFO, "RisohEditor Versión 5.8.5\r\n\r\nKatayama Hirofumi MZ\r\n\r\nLicencia: GPLv3 (free software)"
+    IDS_ADDRES, "Añadir Recurso"
+    IDS_CANNOTADDRES, "No se puede añadir el recurso."
+    IDS_CANTADDBMP, "No se puede añadir el bitmap."
+    IDS_EXTRACTBMP, "Extraer Bitmap"
+    IDS_CANTEXTRACTBMP, "No se puede extraer el bitmap."
+    IDS_CANTREPLACECUR, "No se puede reemplazar el cursor."
+    IDS_CANNOTADDCUR, "No se puede añadir el cursor."
+    IDS_CURFILTER, "Archivos de Cursor (*.cur)|*.cur|Cursor Animado (*.ani)|*.ani|Todos los Archivos (*.*)|*.*|"
+    IDS_ADDCUR, "Añadir Cursor"
+    IDS_REPLACECUR, "Reemplazar Cursor"
+    IDS_EXTRACTICO, "Extraer Icono"
+    IDS_CANTEXTRACTICO, "No se puede extraer el icono."
+    IDS_EXTRACTCUR, "Extraer Cursor"
+    IDS_CANTEXTRACTCUR, "No se puede extraer el cursor."
+    IDS_RESFILTER, "Recursos Binarios (*.res)|*.res|Todos los Archivos (*.*)|*.*|"
     IDS_NEUTRAL, "Neutro"
     IDS_IMPORTRES, "Importar"
-    IDS_CANNOTIMPORT, "Não é possível importar o recurso."
+    IDS_CANNOTIMPORT, "No se puede importar el recurso."
     IDS_COMPILE, "Compilar (F8)"
-    IDS_CANCELEDIT, "Cancelar Edição (Ctrl+E)"
-    IDS_GUIEDIT, "Editar via GUI (Ctrl+G)"
-    IDS_CANNOTSTARTUP, "Não é possível iniciar o compilador de recursos."
-    IDS_RESMISMATCH, "O tipo de recurso era incompatível."
-    IDS_SAMPLETEXT, "Isto é uma amostra."
-    IDS_ALREADYEXISTS, "Já existe."
-    IDS_KEY, "Chave"
-    IDS_FLAGS, "Sinalizadores"
-    IDS_COMMANDID, "ID do Comando"
-    IDS_INVALIDKEY, "Chave inválida."
-    IDS_COMPILEERROR, "Falha ao compilar."
-    IDS_STRINGID, "ID da String"
-    IDS_STRINGVALUE, "Valor da String"
-    IDS_CAPTION, "Legenda"
-    IDS_HELPID, "ID de Ajuda"
+    IDS_CANCELEDIT, "Cancelar Edición (Ctrl+E)"
+    IDS_GUIEDIT, "Editar vía GUI (Ctrl+G)"
+    IDS_CANNOTSTARTUP, "No se puede iniciar el compilador de recursos."
+    IDS_RESMISMATCH, "El tipo de recurso no era compatible."
+    IDS_SAMPLETEXT, "Esta es una muestra."
+    IDS_ALREADYEXISTS, "Ya existe."
+    IDS_KEY, "Clave"
+    IDS_FLAGS, "Banderas (Flags)"
+    IDS_COMMANDID, "ID del Comando"
+    IDS_INVALIDKEY, "Clave no váilda."
+    IDS_COMPILEERROR, "Error al compilar."
+    IDS_STRINGID, "ID de Cadena"
+    IDS_STRINGVALUE, "Valor de Cadena"
+    IDS_CAPTION, "Leyenda"
+    IDS_HELPID, "ID de Ayuda"
     IDS_INDENT, "» "
-    IDS_DATAISEMPTY, "Os dados estão vazios."
-    IDS_TEST, "Testar"
+    IDS_DATAISEMPTY, "Los datos están vacíos."
+    IDS_TEST, "Hacer Test"
     IDS_SEPARATOR, "---"
-    IDS_COMPILENOW, "Os dados foram alterados. Compilar agora?"
+    IDS_COMPILENOW, "Los datos han sido modificados. ¿Desea compilar ahora?"
     IDS_RADWINDOW, "Editar Diálogo"
-    IDS_ENTERCLASS, "Por favor, insira um nome de classe do windows válida."
+    IDS_ENTERCLASS, "Por favor, introduzca un nombre de clase de ventana válido."
     IDS_TEXTEDIT, "Editar por Texto (Ctrl+T)"
-    IDS_CURSORINFO, "Imagem #%u: Largura %u, Altura %u, BitCount %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
-    IDS_IMAGECOUNT, "ImageCount: %u\r\n"
-    IDS_ICONINFO, "Imagem #%u: Largura %u, Altura %u, BitCount %u, ID %u\r\n"
-    IDS_READY, "Pronto"
-    IDS_EXECUTINGCMD, "Executando comando..."
-    IDS_EDITINGBYGUI, "Editando via GUI..."
+    IDS_CURSORINFO, "Imagen #%u: Anchura %u, Altura %u, Bits por Píxel %u, xHotSpot %u, yHotSpot %u, ID %u\r\n"
+    IDS_IMAGECOUNT, "Nº de imágenes %u\r\n"
+    IDS_ICONINFO, "Imagen #%u: Anchura %u, Altura %u, Bits por Píxel %u, ID %u\r\n"
+    IDS_READY, "Preparado"
+    IDS_EXECUTINGCMD, "Ejecutando comando..."
+    IDS_EDITINGBYGUI, "Editando vía GUI..."
     IDS_COORD, "%d, %d, %d, %d"
     IDS_STARTING, "Iniciando..."
     IDS_COMPILING, "Compilando..."
-    IDS_CANNOTLOAD, "Incapaz de carregar."
-    IDS_NONE, "(Nenhum)"
-    IDS_WAVESOUND, "(Som WAVE)\r\n"
+    IDS_CANNOTLOAD, "No se puede cargar."
+    IDS_NONE, "(Nada)"
+    IDS_WAVESOUND, "(Audio WAVE)\r\n"
     IDS_IDTYPE, "Tipo de ID"
-    IDS_IDPREFIX, "Prefixo de ID"
-    IDS_EMPTYSTR, "Por favor, digite uma string."
+    IDS_IDPREFIX, "Prefijo de ID"
+    IDS_EMPTYSTR, "Por favor, introduzca una cadena."
     IDS_ANICURSOR, "(Cursor Animado)\r\n"
-    IDS_ANIICON, "(Ícone Animado)\r\n"
-    IDS_HEADFILTER, "Arquivos de Cabeçalho (*.h)|*.h|Todos os Arquivos (*.*)|*.*|"
-    IDS_LOADRESH, "Carregar Arquivo ""resource.h"""
-    IDS_NAME, "Nome"
+    IDS_ANIICON, "(Icono Animado)\r\n"
+    IDS_HEADFILTER, "Archivos de Cabecera (*.h)|*.h|Todos los archivos (*.*)|*.*|"
+    IDS_LOADRESH, "Cargar Archivo ""resource.h"""
+    IDS_NAME, "Nombre"
     IDS_VALUE, "Valor"
-    IDS_NOSUCHID, "Nenhum ID desse tipo."
-    IDS_IMAGEINFO, "Largura %u, Altura %u, BitsPixel %u\r\n"
-    IDS_ENTERINT, "Por favor, insira um inteiro válido."
-    IDS_ENTERTEXT, "Por favor, insira um texto válido."
-    IDS_ENTERID, "Por favor, insira um ID válido."
-    IDS_ADDNEXTIDS, "Por favor, adicione os seguintes IDs para ""resource.h"":\r\n\r\n"
-    IDS_DELETENEXTIDS, "Por favor, exclua os seguintes IDs de ""resource.h"":\r\n\r\n"
-    IDS_NOCHANGE, "Não há alteração de IDs de Recursos."
-    IDS_DLGFAIL, "Opa, falhei em criar uma caixa de diálogo RAD."
-    IDS_LOADWCLIB, "Carregar uma Biblioteca de Classe do Windows"
-    IDS_AVIMOVIE, "(Filme AVI)\r\n"
-    IDS_ADDDIALOG, "Adicionar Diálogo"
-    IDS_ADDMENU, "Adicionar Menu"
-    IDS_ADDVERINFO, "Adicionar Informação da Versão"
-    IDS_ADDCURSOR, "Adicionar Cursor"
-    IDS_NOMOREITEM, "Não há mais itens."
-    IDS_INVALIDDATA, "(dados inválidos)\r\n"
-    IDS_UPDATERESH, "Atualizar ""resource.h""?"
-    IDS_CANTWRITERESH, "Não é possível gravar ""resource.h""."
-    IDS_SAVERESH, "Salvar Arquivo ""resource.h"""
-    IDS_DLLFILTER, "Arquivos de DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Todos os Arquivos (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "Arquivos Carregáveis (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|Executáveis (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Recursos Binários (*.res)|*.res|Arquivos de Recursos (*.rc)|*.rc|Todos os Arquivos (*.*)|*.*|"
-    IDS_CANTTESTCHILDWND, "Não é possível testar o diálogo porque é uma janela filha."
-    IDS_CANTTESTCLASSDLG, "Não é possível testar o diálogo porque é classificado."
-    IDS_FILEISUPXED, "Arquivo\r\n\r\n'%s'\r\n\r\né comprimido por UPX. Você quer extraí-lo usando um arquivo temporário?\r\n\r\nSe não extraí-lo, a leitura pode falhar."
-    IDS_CANTUPXEXTRACT, "Não é possível extrair por UPX."
-    IDS_CANTSAVEUPXED, "Não é possível salvar o arquivo porque ele foi comprimido por UPX."
-    IDS_MESSAGEID, "ID de Mensagem"
-    IDS_MESSAGEVALUE, "Valor da Mensagem"
-    IDS_RCFILTER, "Arquivos RC (*.rc)|*.rc|"
+    IDS_NOSUCHID, "No se ha encontrado dicho ID."
+    IDS_IMAGEINFO, "Anchura %u, Altura %u, Bits por Píxel %u\r\n"
+    IDS_ENTERINT, "Por favor, introduzca un valor entero válido."
+    IDS_ENTERTEXT, "Por favor, introduzca un texto válido."
+    IDS_ENTERID, "Por favor, introduzca un ID válido."
+    IDS_ADDNEXTIDS, "Por favor, añada los siguientes IDs a ""resource.h"":\r\n\r\n"
+    IDS_DELETENEXTIDS, "Por favor, elimine los siguientes IDs de ""resource.h"":\r\n\r\n"
+    IDS_NOCHANGE, "No hay cambios de IDs de Recursos."
+    IDS_DLGFAIL, "Ups, no pude crear un cuadro de diálogo RAD."
+    IDS_LOADWCLIB, "Cargar una Librería de Clases de Ventana"
+    IDS_AVIMOVIE, "(Video AVI)\r\n"
+    IDS_ADDDIALOG, "Añadir Diálogo"
+    IDS_ADDMENU, "Añadir Menú"
+    IDS_ADDVERINFO, "Añadir Información de Versión"
+    IDS_ADDCURSOR, "Añadir Cursor"
+    IDS_NOMOREITEM, "No hay mas elementos."
+    IDS_INVALIDDATA, "(datos inválidos)\r\n"
+    IDS_UPDATERESH, "Actualizar ""resource.h""?"
+    IDS_CANTWRITERESH, "No se puede escribir ""resource.h""."
+    IDS_SAVERESH, "Guardar Archivo ""resource.h"""
+    IDS_DLLFILTER, "Archivos DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Todos los Archivos (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "Archivos Cargables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.res;*.rc|Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Recursos Binarios (*.res)|*.res|Archivos de Recursos (*.rc)|*.rc|Todos los Archivos (*.*)|*.*|"
+    IDS_CANTTESTCHILDWND, "No se puede testear el diálogo porque es una ventana hija."
+    IDS_CANTTESTCLASSDLG, "No se puede testear el diálogo porque tiene clases (classed)."
+    IDS_FILEISUPXED, "Archivo\r\n\r\n'%s'\r\n\r\nestá comprimido por UPX. ¿Quiere extraerlo utilizando un archivo temporal?\r\n\r\nSi no lo extrae, la lectura puede fallar."
+    IDS_CANTUPXEXTRACT, "No se puede extraer por UPX."
+    IDS_CANTSAVEUPXED, "No se puede guardar el archivo porque fue comprimido por UPX."
+    IDS_MESSAGEID, "ID de Mensaje"
+    IDS_MESSAGEVALUE, "Valor del Mensaje"
+    IDS_RCFILTER, "Archivos RC (*.rc)|*.rc|"
     IDS_EXPORT, "Exportar"
-    IDS_CANTEXPORT, "Exportação falhou."
-    IDS_MUSTBEEMPTYDIR, "Se houver algum arquivo externo, o destino de exportação deve ser uma pasta vazia."
+    IDS_CANTEXPORT, "Exportación fallida."
+    IDS_MUSTBEEMPTYDIR, "Si hay algún archivo externo, entonces el destino de exportación debe ser una carpeta vacía."
     IDS_FULLWIDTH, "０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－＿（）．　"
     IDS_HALFWIDTH, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_(). "
-    IDS_MACRONAME, "Nome da Macro"
-    IDS_MACROVALUE, "Valor da Macro"
+    IDS_MACRONAME, "Nombre de la Macro"
+    IDS_MACROVALUE, "Valor de la Macro"
     IDS_OPTIONAL, "(Opcional)"
-    IDS_ADDINCLUDE, "Adicionar Diretório Incluído"
-    IDS_EDITINCLUDE, "Editar Diretório Incluído"
+    IDS_ADDINCLUDE, "Añadir Directorio de Inclusión"
+    IDS_EDITINCLUDE, "Editar Directorio de Inclusión"
     IDS_WINDRESEXE, "windres.exe|windres.exe|"
     IDS_CPPEXE, "cpp.exe|cpp.exe|"
-    IDS_INVALIDPATH, "Caminho inválido."
-    IDS_DATATOOLONG, "Data is too long."
-    IDS_ALL, "(Todos)"
-    IDS_UNKNOWNFORMAT, "(Formato de Dados Desconhecido)\r\n"
-    IDS_LANGUAGE, "Idiomas"
-    IDS_INTVALUE, "Valor Inteiro"
-    IDS_PARENTWND, "Janela de Teste Pai"
-    IDS_CHOOSE_OLE_CLSID, "Escolher OLE CLSID."
-    IDS_CONTROL, "Controle"
-    IDS_MESSAGE, "Mensagem"
-    IDS_STRING, "String"
-    IDS_DATAISINVALID, "Os dados são inválidos."
-    IDS_DLGINIT1, "Você pode especificar a inicialização de caixas combo e caixas de lista definindo dados de inicialização no RT_DLGINIT dados de recursos de mesmo nome do recurso de diálogo. "
-    IDS_DLGINIT2, "Quando a mensagem WM_INITDIALOG chegar, o aplicativo pode inicializar a caixa de diálogo chamando a função ExecuteDlgInitDx do arquivo anexado ""DlgInit/DlgInit.h"".\r\n\r\n"
-    IDS_DLGINIT3, "Por favor, especifique uma lista de caracteres de string separadas por quebras de linha para RT_DLGINIT."
-    IDS_SAMELANG, "É o mesmo idioma."
-    IDS_SAMENAME, "É o mesmo nome de recurso."
-    IDS_CANTSAVETOEXE, "Não é possível salvar como EXE de um arquivo não executável."
-    IDS_CANTSTARTSEARCH, "Não é possível iniciar a pesquisa."
+    IDS_INVALIDPATH, "Ruta no válida."
+    IDS_DATATOOLONG, "Los datos son demasiado largos."
+    IDS_ALL, "(Todo)"
+    IDS_UNKNOWNFORMAT, "(Formato de Datos Desconocido)\r\n"
+    IDS_LANGUAGE, "Idioma"
+    IDS_INTVALUE, "Valor Entero"
+    IDS_PARENTWND, "Ventana de Prueba Principal"
+    IDS_CHOOSE_OLE_CLSID, "Elegir OLE CLSID"
+    IDS_CONTROL, "Control"
+    IDS_MESSAGE, "Mensaje"
+    IDS_STRING, "Cadena"
+    IDS_DATAISINVALID, "Los datos no son válidos."
+    IDS_DLGINIT1, "Puede especificar la inicialización de los cuadros combinados y los cuadros de lista estableciendo los datos de inicialización en los datos del recurso RT_DLGINIT del mismo nombre que el recurso de diálogo. "
+    IDS_DLGINIT2, "Cuando aparece el mensaje WM_INITDIALOG, la aplicación puede inicializar el diálogo llamando a la función ExecuteDlgInitDx del fichero adjunto ""DlgInit/DlgInit.h"".\r\n\r\n"
+    IDS_DLGINIT3, "Por favor, especifique una lista de cadenas de caracteres separadas por saltos de línea en RT_DLGINIT."
+    IDS_SAMELANG, "Es el mismo idioma."
+    IDS_SAMENAME, "Es el mismo nombre de recurso."
+    IDS_CANTSAVETOEXE, "No se puede guardar como EXE a partir de un archivo no-ejecutable."
+    IDS_CANTSTARTSEARCH, "No se puede iniciar la búsqueda."
     IDS_AMERICA, "América"
-    IDS_ENGLISH, "Inglês"
+    IDS_ENGLISH, "Inglés"
     IDS_CHINA, "China"
-    IDS_CHINESE, "Chinês"
-    IDS_RUSSIA, "Rússia"
-    IDS_RUSSIAN, "Russo"
-    IDS_WANNAGENRESH, "Deseja gerar o arquivo 'resource.h'?"
-    IDS_EXEFILTER, "Executáveis (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Todos os Arquivos (*.*)|*.*|"
-    IDS_SAVEASCOMPRESS, "Salvar Com Compressão"
-    IDS_TOOL_NEW, "Novo"
+    IDS_CHINESE, "Chino"
+    IDS_RUSSIA, "Rusia"
+    IDS_RUSSIAN, "Ruso"
+    IDS_WANNAGENRESH, "¿Quiere generar el archivo 'resource.h'?"
+    IDS_EXEFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui|Todos los Archivos (*.*)|*.*|"
+    IDS_SAVEASCOMPRESS, "Guardar con Compresión"
+    IDS_TOOL_NEW, "Nuevo"
     IDS_TOOL_OPEN, "Abrir..."
-    IDS_TOOL_SAVE, "Salvar Como..."
-    IDS_TOOL_EXPAND, "Expandir Todos"
-    IDS_TOOL_COLLAPSE, "Recolher Todos"
-    IDS_TOOL_PLUS, "Adicionar Item..."
-    IDS_TOOL_MINUS, "Excluir Item"
-    IDS_TOOL_CHANGE, "Alterar Nome/Idioma"
-    IDS_TOOL_CLONE, "Clonar Para Um Outro Nome/Idioma"
+    IDS_TOOL_SAVE, "Guardar como..."
+    IDS_TOOL_EXPAND, "Expandir Todo"
+    IDS_TOOL_COLLAPSE, "Contraer Todo"
+    IDS_TOOL_PLUS, "Añadir Elemento..."
+    IDS_TOOL_MINUS, "Eliminar Elemento"
+    IDS_TOOL_CHANGE, "Cambiar Nombre/Idioma"
+    IDS_TOOL_CLONE, "Clonar en otro Nombre/Idioma"
     IDS_TOOL_RECOMPILE, "Recompilar"
-    IDS_TOOL_CANCELEDIT, "Cancelar Edição"
+    IDS_TOOL_CANCELEDIT, "Cancelar Edición"
     IDS_TOOL_IMPORT, "Importar..."
-    IDS_TOOL_EXTRACT, "Extrair..."
-    IDS_TOOL_GUIEDIT, "Editar via GUI"
+    IDS_TOOL_EXTRACT, "Extraer..."
+    IDS_TOOL_GUIEDIT, "Editar vía GUI"
     IDS_UNITEDKINGDOM, "Reino Unido"
-    IDS_GREATBRITAIN, "Grã-Bretanha"
-    IDS_BRITISH, "Britânico"
-    IDS_FRANCE, "França"
-    IDS_FRENCH, "Francês"
-    IDS_GERMANY, "Alemanha"
-    IDS_GERMAN, "Alemão"
-    IDS_SPAIN, "Espanha"
-    IDS_SPANISH, "Espanhol"
-    IDS_INVALIDLANG, "Idioma irreconhecível."
-    IDS_INVALIDNAME, "Nome de recurso inválido."
-    IDS_PNGRESBINFILTER, "Imagem PNG (*.png)|*.png|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER, "Imagem JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_GIFRESBINFILTER, "Imagem GIF (*.gif)|*.gif|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER, "Imagem TIFF (*.tif;*.tiff)|*.tif;*.tiff|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_AVIRESBINFILTER, "Filme AVI (*.avi)|*.avi|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_WAVERESBINFILTER, "Som WAVE (*.wav)|*.wav|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
+    IDS_GREATBRITAIN, "Gran Bretaña"
+    IDS_BRITISH, "Británico"
+    IDS_FRANCE, "Francia"
+    IDS_FRENCH, "Francés"
+    IDS_GERMANY, "Alemania"
+    IDS_GERMAN, "Alemán"
+    IDS_SPAIN, "España"
+    IDS_SPANISH, "Español"
+    IDS_INVALIDLANG, "Idioma irreconocible."
+    IDS_INVALIDNAME, "Nombre de recurso inválido."
+    IDS_PNGRESBINFILTER, "Imagen PNG (*.png)|*.png|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "Imagen JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_GIFRESBINFILTER, "Imagen GIF (*.gif)|*.gif|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER, "Imagen TIFF (*.tif;*.tiff)|*.tif;*.tiff|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_AVIRESBINFILTER, "Video AVI (*.avi)|*.avi|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_WAVERESBINFILTER, "Audio WAVE (*.wav)|*.wav|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
     IDS_NEWLINE, "\r\n"
-    IDS_NOTICE, "// Este arquivo é gerado automaticamente por RisohEditor 5.8.5.\r\n"
-    IDS_DAGGER, "// † <-- Esta adaga ajuda na detecção de UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Arquivos Importados|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|Arquivos RC (*.rc)|*.rc|Recursos Binários (*.res)|*.res|Arquivos de Imagem |*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Arquivos de Cursor (*.cur;*.ani)|*.cur;*.ani|Arquivos de Ícone (*.ico)|*.ico|Arquivos de Som WAVE (*.wav)|*.wav|Arquivos HTML (*.html;*.htm)|*.html;*.htm|Arquivos de Manifest (*.manifest)|*.manifest|Arquivos DFM do Delphi (*.dfm)|*.dfm|Arquivos TYPELIB (*.tlb)|*.tlb|Todos os Arquivos (*.*)|*.*|"
-    IDS_CANTWRITEBYLOCK, "Não é possível escrever o arquivo porque o arquivo a seguir está bloqueado.\r\n\r\n%s"
+    IDS_NOTICE, "// This file is automatically generated by RisohEditor 5.8.5.\r\n"
+    IDS_DAGGER, "// † <-- This dagger helps UTF-8 detection.\r\n"
+    IDS_IMPORTFILTER, "Archivos importables|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|Image Files|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Cursor Files (*.cur;*.ani)|*.cur;*.ani|Icon Files (*.ico)|*.ico|WAVE Sound Files (*.wav)|*.wav|HTML Files (*.html;*.htm)|*.html;*.htm|Manifest Files (*.manifest)|*.manifest|Delphi DFM Files (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|All Files (*.*)|*.*|"
+    IDS_CANTWRITEBYLOCK, "No se puede escribir el archivo porque el siguiente archivo está bloqueado.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
-    IDS_UTF8, "UTF-8 (com BOM)"
-    IDS_UTF8N, "UTF-8 (sem BOM)"
+    IDS_UTF8, "UTF-8 (con BOM)"
+    IDS_UTF8N, "UTF-8 (sin BOM)"
     IDS_SJIS, "Shift_JIS"
-    IDS_BINARY, "(dados binários)"
+    IDS_BINARY, "(datos binarios)"
     IDS_RESTYPE, "Tipo de Recurso"
-    IDS_ENCODING, "Codificação"
-    IDS_INVALIDRESTYPE, "Tipo de recurso inválido."
-    IDS_PATHSPACEERROR, "Você erroneamente instalou no local com caracteres de espaço! O compilador de recursos não pode aceitar espaço.\n\nPor favor, evite ""C:\\Program Files""."
-    IDS_LOADEGAPROGRAM, "Carregar Programa EGA..."
-    IDS_EGAFILTER, "Programa do EGA (*.ega)|*.ega|Todos os Arquivos (*.*)|*.*|"
-    IDS_QUERYSAVECHANGE, "O arquivo foi modificado. Quer salvar as alterações agora?"
-    IDS_DFMFILTER, "Arquivo DFM (*.dfm)|*.dfm|Arquivos de Texto (*.txt)|*.txt|Todos os Arquivos (*.*)|*.*|"
-    IDS_CANTEXTRACTDFM, "Não é possível extrair os dados do DFM."
-    IDS_EXTRACTDFM, "Extrair dados do DFM"
-    IDS_ENTERNONZERONAME, "Por favor, insira um nome de recurso diferente de zero."
-    IDS_ENTERNONZEROTYPE, "Por favor, insira um tipo de recurso diferente de zero."
+    IDS_ENCODING, "Codificación"
+    IDS_INVALIDRESTYPE, "Tipo de recurso no válido."
+    IDS_PATHSPACEERROR, "!Ha instalado equivocadamente en una ubicación con caracteres de espacio.! El compilador de recursos no puede aceptar espacio.\n\nPor vavor, evite ""C:\\Program Files""."
+    IDS_LOADEGAPROGRAM, "Cargar programa EGA..."
+    IDS_EGAFILTER, "Programa EGA (*.ega)|*.ega|Todos los Archivos (*.*)|*.*|"
+    IDS_QUERYSAVECHANGE, "El achivo ha sido modificado. ¿Quiere guardar los cambios ahora?"
+    IDS_DFMFILTER, "Archivo DFM (*.dfm)|*.dfm|Archivos de Texto (*.txt)|*.txt|Todos los Archivos (*.*)|*.*|"
+    IDS_CANTEXTRACTDFM, "No se pueden extraer los datos de DFM."
+    IDS_EXTRACTDFM, "Extraer datos de DFM"
+    IDS_ENTERNONZERONAME, "Por favor, introduzca un nombre de recurso distinto de cero."
+    IDS_ENTERNONZEROTYPE, "Por favor, introduzca un tipo de recurso distinto de cero."
     IDS_HOMEPAGE, "https://katahiromz.web.fc2.com/re/en/"
-    IDS_FILESAVED, "Arquivo salvo."
-    IDS_RECOMPILEOK, "Recompilação concluída."
-    IDS_RECOMPILEFAILED, "Falha de recompilação (erro de sintaxe)."
+    IDS_FILESAVED, "Archivo guardado."
+    IDS_RECOMPILEOK, "Recompilación efectuada."
+    IDS_RECOMPILEFAILED, "Recompilación fallida (error de sintaxis)."
     IDS_TOOL_EXPORT, "Exportar..."
     IDS_CODEEDITOR, "Editor de Código"
-    IDS_HEXVIEWER, "Visualizador Hex"
-    IDS_INTEGERORIDENTIFIER, "(inteiro ou identificador)"
+    IDS_HEXVIEWER, "Visor Hex"
+    IDS_INTEGERORIDENTIFIER, "(entero o identificador)"
     IDS_NOTEXT, " "
-    IDS_NOUPDATE, "Você está usando o RisohEditor mais recente."
-    IDS_THEREISUPDATE, "RisohEditor %s está disponível. Baixe agora?"
-    IDS_CANTCHECKUPDATE, "Falha ao verificar a atualização do RisohEditor."
-    IDS_CODEPAGE1252, "1252 (Latim 1)"
-    IDS_CODEPAGE1250, "1250 (Latim 2)"
+    IDS_NOUPDATE, "Está utilizando la última versión de RisohEditor."
+    IDS_THEREISUPDATE, "RisohEditor %s está disponible. ¿Descargar ahora?"
+    IDS_CANTCHECKUPDATE, "Error al comprobar la actualización de RisohEditor."
+    IDS_CODEPAGE1252, "1252 (Latin 1)"
+    IDS_CODEPAGE1250, "1250 (Latin 2)"
     IDS_CODEPAGE1251, "1251 (Cirílico)"
-    IDS_CODEPAGE1253, "1253 (Grego)"
+    IDS_CODEPAGE1253, "1253 (Griego)"
     IDS_CODEPAGE1254, "1254 (Turco)"
-    IDS_CODEPAGE1255, "1255 (Hebraico)"
-    IDS_CODEPAGE1256, "1256 (Árabe)"
+    IDS_CODEPAGE1255, "1255 (Hebreo)"
+    IDS_CODEPAGE1256, "1256 (Arabe)"
     IDS_CODEPAGE1257, "1257 (Báltico)"
-    IDS_CODEPAGE874, "874 (Tailandês)"
-    IDS_CODEPAGE932, "932 (Japonês)"
-    IDS_CODEPAGE936, "936 (Chinês Simplificado)"
+    IDS_CODEPAGE874, "874 (Tailandés)"
+    IDS_CODEPAGE932, "932 (Japonés)"
+    IDS_CODEPAGE936, "936 (Chino Simplificado)"
     IDS_CODEPAGE949, "949 (Coreano)"
-    IDS_CODEPAGE950, "950 (Chinês Tradicional)"
+    IDS_CODEPAGE950, "950 (Chino Tradicional)"
     IDS_CODEPAGE65001, "65001 (UTF-8)"
-    IDS_EXTRACTTLB, "Extrair dados TYPELIB"
-    IDS_CANTEXTRACTTLB, "Não é possível extrair os dados TYPELIB."
-    IDS_TLBRESBINFILTER, "Dados TYPELIB (*.tlb)|*.tlb|Recursos Binários (*.res)|*.res|Arquivos de Texto (*.txt)|*.txt|Arquivos MIDL (*.idl)|*.idl|Todos os Arquivos (*.*)|*.*|"
-    IDS_USAGE, "Use: RisohEditor [opções | ""arquivo""]\n\nOpções:\n--help  Mostra esta mensagem.\n--version  Mostra informações da versão.\n--load ""seu-arquivo.rc""  Carrega o arquivo (sem GUI)\n--save ""seu-arquivo.res""  Salva o arquivo (sem GUI)\n--log-file ""arquivo-log.txt""  Especifica o arquivo de log.\n--load-options OPÇÕES  Define opções de carregamento.\n--save-options OPÇÕES  Define opções de salvamento.\n\nOpções de carregamento: (no-load-res-h)\nOpções de salvamento: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
-    IDS_NOSELECTION, "Não há seleção."
+    IDS_EXTRACTTLB, "Extraer datos TYPELIB"
+    IDS_CANTEXTRACTTLB, "No se pueden extraer los datos TYPELIB."
+    IDS_TLBRESBINFILTER, "Datos TYPELIB (*.tlb)|*.tlb|Recursos Binarios (*.res)|*.res|Archivos de Texto (*.txt)|*.txt|Archivos MIDL (*.idl)|*.idl|Todos los Archivos (*.*)|*.*|"
+    IDS_USAGE, "Uso: RisohEditor [opciones | ""archivo""]\n\nOpciones:\n--help  Muestra este mensaje.\n--version  Muestra información de la versión.\n--load ""su-archivo.rc""  Carga el archivo (sin GUI)\n--save ""su-archivo.res""  Guarda el archivo (sin GUI)\n--log-file ""archivo-log.txt""  Especifica el archivo log.\n--load-options OPCIONES  Establece opciones de carga.\n--save-options OPCIONES  Establece opciones de guardado.\n\nOpciones de carga: (no-load-res-h)\nOpciones de guardado: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_NOSELECTION, "No hay ninguna selección."
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\n"
-    IDS_EXPORTFILTER, "Arquivos RC (*.rc)|*.rc|Recursos Binários (*.res)|*.res|"
+    IDS_EXPORTFILTER, "Archivos RC (*.rc)|*.rc|Recursos Binarios (*.res)|*.res|"
 }
 
 //////////////////////////////////////////////////////////////////////////////

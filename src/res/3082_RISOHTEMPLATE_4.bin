@@ -1,0 +1,7 @@
+﻿1 MENU
+{
+    POPUP "&Archivo"
+    {
+        MENUITEM "Sa&lir\tAlt+F4", 100
+    }
+}
