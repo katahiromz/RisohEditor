@@ -88,6 +88,7 @@ Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-TR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -95,6 +96,7 @@ Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HISTORY-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
