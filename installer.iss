@@ -12,20 +12,37 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #define MyAppName        "RisohEditor"
-#define MyAppVersion     "5.8.6"
+#define MyAppVersion     GetStringFileInfo('build\RisohEditor.exe',"FileVersion")
 #define MyAppCompanyName "Katayama Hirofumi MZ"
-#define MyAppCopyright   "(C) 2017-2025 Katayama Hirofumi MZ."
+#define CurrentYear      GetDateTimeString('yyyy','','')
+#define MyAppCopyright   "(c) 2017-" + CurrentYear + " " + MyAppCompanyName
 #define MyAppURL         "http://katahiromz.web.fc2.com/"
-#define MyAppDescription "Resource Editor (32bit)"
+#define MyAppDescription "RisohEditor (32bit)"
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
+
+VersionInfoCompany={#MyAppCompanyName}
+VersionInfoCopyright={#MyAppCopyright}
+VersionInfoDescription={#MyAppDescription} installer
+VersionInfoProductName={#MyAppName}
+VersionInfoProductTextVersion={#MyAppVersion}
+VersionInfoProductVersion={#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
+
+UninstallDisplayIcon={app}\{#MyAppName}.exe
 AppPublisher={#MyAppCompanyName}
+
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+
+ShowLanguageDialog=yes
+UsePreviousLanguage=no
+LanguageDetectionMethod=uilanguage
+
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableDirPage=no
@@ -36,159 +53,36 @@ OutputBaseFilename={#MyAppName}-{#MyAppVersion}-setup
 SetupIconFile=src\res\Icon_100.ico
 Compression=lzma
 SolidCompression=yes
-UninstallDisplayIcon={app}\{#MyAppName}.exe
 UsePreviousAppDir=yes
-VersionInfoCompany={#MyAppCompanyName}
-VersionInfoCopyright={#MyAppCopyright}
-VersionInfoDescription={#MyAppDescription}
-VersionInfoProductName={#MyAppName}
-VersionInfoProductTextVersion={#MyAppVersion}
-VersionInfoProductVersion={#MyAppVersion}
-VersionInfoVersion={#MyAppVersion}
 
 [Languages]
-Name: "brazilianportuguese"; MessagesFile:  "compiler:Languages\BrazilianPortuguese.isl"
-Name: "catalan"; MessagesFile:  "compiler:Languages\Catalan.isl"
-Name: "corsican"; MessagesFile:  "compiler:Languages\Corsican.isl"
-Name: "czech"; MessagesFile:  "compiler:Languages\Czech.isl"
-Name: "danish"; MessagesFile:  "compiler:Languages\Danish.isl"
-Name: "dutch"; MessagesFile:  "compiler:Languages\Dutch.isl"
-Name: "english"; MessagesFile:  "compiler:Default.isl"
-Name: "finnish"; MessagesFile:  "compiler:Languages\Finnish.isl"
-Name: "french"; MessagesFile:  "compiler:Languages\French.isl"
-Name: "german"; MessagesFile:  "compiler:Languages\German.isl"
-Name: "greek"; MessagesFile:  "compiler:Languages\Greek.isl"
-Name: "hebrew"; MessagesFile:  "compiler:Languages\Hebrew.isl"
-Name: "hungarian"; MessagesFile:  "compiler:Languages\Hungarian.isl"
-Name: "italian"; MessagesFile:  "compiler:Languages\Italian.isl"
-Name: "korean"; MessagesFile: ".\Languages\Korean.isl"
-Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
-Name: "norwegian"; MessagesFile: "compiler:Languages\Norwegian.isl"
-Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
-Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
-Name: "scottishgaelic"; MessagesFile: "compiler:Languages\ScottishGaelic.isl"
-Name: "serbiancyrillic"; MessagesFile: "compiler:Languages\SerbianCyrillic.isl"
-Name: "serbianlatin"; MessagesFile: "compiler:Languages\SerbianLatin.isl"
-Name: "slovenian"; MessagesFile: "compiler:Languages\Slovenian.isl"
-Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
-Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
-Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
-
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "rc_association"; Description: "{cm:AssociateRcFiles}"
-Name: "res_association"; Description: "{cm:AssociateResFiles}"
-
-[Files]
-Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-TR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "README-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HISTORY-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "mcdx\MESSAGETABLEDX.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
-Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
-Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "src\MOleHost.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
-Source: "src\MOleHost.cpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
-Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
-Source: "src\DlgInit.h"; DestDir: "{app}\DlgInit"; Flags: ignoreversion
-Source: "src\Toolbar.h"; DestDir: "{app}\Toolbar"; Flags: ignoreversion
-Source: "MyWndCtrl\MWindowBase.hpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
-Source: "MyWndCtrl\MyWndCtrl.cpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
-Source: "MyWndCtrl\CMakeLists.txt"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
-Source: "build\MyWndCtrl.dll"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
-Source: "data\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\upx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\mcpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\dfmsc.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\olebow.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "data\bin\midlwrap.bat"; DestDir: "{app}\data\bin"; Flags: ignoreversion
-Source: "EGA\EGA-Manual.pdf"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA\samples\break.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\Censorship.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\DeleteNonEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\NeutralToEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_clone_by_lang.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_delete.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_select.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_set_binary.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_set_text.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_str_get.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "EGA-samples\RES_str_set.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\.gitignore"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\CMakeLists.txt"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\DialogBox.cpp"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\DialogBox_res.rc"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\resource.h"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
-Source: "win32-samples\DialogBox\lang\en_US.rc"; DestDir: "{app}\win32-samples\DialogBox\lang"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\.gitignore"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\CMakeLists.txt"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\MainWnd.cpp"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\MainWnd_res.rc"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\resource.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\lang\en_US.rc"; DestDir: "{app}\win32-samples\MainWnd\lang"; Flags: ignoreversion
-Source: "win32-samples\MainWnd\res\Icon_100.ico"; DestDir: "{app}\win32-samples\MainWnd\res"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\CMakeLists.txt"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\ToolbarTest.cpp"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\ToolbarTest_res.rc"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\lang\en_US.rc"; DestDir: "{app}\win32-samples\ToolbarTest\lang"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\res\Bitmap_100.bmp"; DestDir: "{app}\win32-samples\ToolbarTest\res"; Flags: ignoreversion
-Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-
-[Icons]
-Name: "{group}\RisohEditor"; Filename: "{app}\RisohEditor.exe"
-Name: "{group}\{cm:ReadmeEnglish}"; Filename: "{app}\README.txt"
-Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
-Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
-Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
-Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
-
-[Run]
-Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
-
-[Registry]
-Root: HKCU; Subkey: "Software\Katayama Hirofumi MZ\RisohEditor"; Flags: deletekey uninsdeletekey
-; .rc
-Root: HKCR; Subkey: ".rc"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.ResourceFile"; Flags: uninsdeletevalue; Tasks: "rc_association"
-Root: HKCR; Subkey: "RisohEditor.ResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Resource File"; Flags: uninsdeletekey; Tasks: "rc_association"
-Root: HKCR; Subkey: "RisohEditor.ResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "rc_association"
-Root: HKCR; Subkey: "RisohEditor.ResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "rc_association"
-; .res
-Root: HKCR; Subkey: ".res"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.BinaryResourceFile"; Flags: uninsdeletevalue; Tasks: "res_association"
-Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Binary Resource File"; Flags: uninsdeletekey; Tasks: "res_association"
-Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "res_association"
-Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "res_association"
+Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "catalan";             MessagesFile: "compiler:Languages\Catalan.isl"
+Name: "corsican";            MessagesFile: "compiler:Languages\Corsican.isl"
+Name: "czech";               MessagesFile: "compiler:Languages\Czech.isl"
+Name: "danish";              MessagesFile: "compiler:Languages\Danish.isl"
+Name: "dutch";               MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "english";             MessagesFile: "compiler:Default.isl"
+Name: "finnish";             MessagesFile: "compiler:Languages\Finnish.isl"
+Name: "french";              MessagesFile: "compiler:Languages\French.isl"
+Name: "german";              MessagesFile: "compiler:Languages\German.isl"
+Name: "greek";               MessagesFile: "compiler:Languages\Greek.isl"
+Name: "hebrew";              MessagesFile: "compiler:Languages\Hebrew.isl"
+Name: "hungarian";           MessagesFile: "compiler:Languages\Hungarian.isl"
+Name: "italian";             MessagesFile: "compiler:Languages\Italian.isl"
+Name: "korean";              MessagesFile: ".\Languages\Korean.isl"
+Name: "japanese";            MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "norwegian";           MessagesFile: "compiler:Languages\Norwegian.isl"
+Name: "polish";              MessagesFile: "compiler:Languages\Polish.isl"
+Name: "portuguese";          MessagesFile: "compiler:Languages\Portuguese.isl"
+Name: "russian";             MessagesFile: "compiler:Languages\Russian.isl"
+Name: "scottishgaelic";      MessagesFile: "compiler:Languages\ScottishGaelic.isl"
+Name: "serbiancyrillic";     MessagesFile: "compiler:Languages\SerbianCyrillic.isl"
+Name: "serbianlatin";        MessagesFile: "compiler:Languages\SerbianLatin.isl"
+Name: "slovenian";           MessagesFile: "compiler:Languages\Slovenian.isl"
+Name: "spanish";             MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "turkish";             MessagesFile: "compiler:Languages\Turkish.isl"
+Name: "ukrainian";           MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [CustomMessages]
 brazilianportuguese.ReadmeEnglish=ReadMe (inglês)
@@ -326,3 +220,118 @@ ukrainian.ReadmeJapanese=ReadMe (японська)
 ukrainian.LicenseEnglish=Ліцензія
 ukrainian.AssociateRcFiles=Пов’язати *.rc файли
 ukrainian.AssociateResFiles=Приєднати *.res файли
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "rc_association"; Description: "{cm:AssociateRcFiles}"
+Name: "res_association"; Description: "{cm:AssociateResFiles}"
+
+[Files]
+Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-TR.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ID.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ITA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-JPN.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-KOR.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-PTB.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HISTORY-ES.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "mcdx\MESSAGETABLEDX.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
+Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
+Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "src\MOleHost.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
+Source: "src\MOleHost.cpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
+Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
+Source: "src\DlgInit.h"; DestDir: "{app}\DlgInit"; Flags: ignoreversion
+Source: "src\Toolbar.h"; DestDir: "{app}\Toolbar"; Flags: ignoreversion
+Source: "MyWndCtrl\MWindowBase.hpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
+Source: "MyWndCtrl\MyWndCtrl.cpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
+Source: "MyWndCtrl\CMakeLists.txt"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
+Source: "build\MyWndCtrl.dll"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
+Source: "data\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\upx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\mcpp.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\dfmsc.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\olebow.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "data\bin\midlwrap.bat"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "EGA\EGA-Manual.pdf"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA\samples\fact.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA\samples\break.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\Censorship.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\DeleteNonEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\NeutralToEnglish.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_clone_by_lang.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_delete.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_select.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_set_binary.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_set_text.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_str_get.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "EGA-samples\RES_str_set.ega"; DestDir: "{app}\EGA"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\commctrl.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\dlgs.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windef.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\windows.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winnt.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winresrc.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winuser.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\winver.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "data\lib\gcc\i686-w64-mingw32\10.2.0\include\afxres.h"; DestDir: "{app}\data\lib\gcc\i686-w64-mingw32\10.2.0\include"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\.gitignore"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\CMakeLists.txt"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\DialogBox.cpp"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\DialogBox_res.rc"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\resource.h"; DestDir: "{app}\win32-samples\DialogBox"; Flags: ignoreversion
+Source: "win32-samples\DialogBox\lang\en_US.rc"; DestDir: "{app}\win32-samples\DialogBox\lang"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\.gitignore"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\CMakeLists.txt"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\MainWnd.cpp"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\MainWnd_res.rc"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\resource.h"; DestDir: "{app}\win32-samples\MainWnd"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\lang\en_US.rc"; DestDir: "{app}\win32-samples\MainWnd\lang"; Flags: ignoreversion
+Source: "win32-samples\MainWnd\res\Icon_100.ico"; DestDir: "{app}\win32-samples\MainWnd\res"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\CMakeLists.txt"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\ToolbarTest.cpp"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\ToolbarTest_res.rc"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\lang\en_US.rc"; DestDir: "{app}\win32-samples\ToolbarTest\lang"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\res\Bitmap_100.bmp"; DestDir: "{app}\win32-samples\ToolbarTest\res"; Flags: ignoreversion
+Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\ToolbarTest"; Flags: ignoreversion
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Icons]
+Name: "{group}\RisohEditor"; Filename: "{app}\RisohEditor.exe"
+Name: "{group}\{cm:ReadmeEnglish}"; Filename: "{app}\README.txt"
+Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
+Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
+Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
+Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent
+
+[Registry]
+Root: HKCU; Subkey: "Software\Katayama Hirofumi MZ\RisohEditor"; Flags: deletekey uninsdeletekey
+; .rc
+Root: HKCR; Subkey: ".rc"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.ResourceFile"; Flags: uninsdeletevalue; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Resource File"; Flags: uninsdeletekey; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "rc_association"
+Root: HKCR; Subkey: "RisohEditor.ResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "rc_association"
+; .res
+Root: HKCR; Subkey: ".res"; ValueType: string; ValueName: ""; ValueData: "RisohEditor.BinaryResourceFile"; Flags: uninsdeletevalue; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile"; ValueType: string; ValueName: ""; ValueData: "RisohEditor Binary Resource File"; Flags: uninsdeletekey; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\RisohEditor.exe,0"; Tasks: "res_association"
+Root: HKCR; Subkey: "RisohEditor.BinaryResourceFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\RisohEditor.exe"" ""%1"""; Tasks: "res_association"
