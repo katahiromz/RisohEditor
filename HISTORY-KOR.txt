@@ -323,6 +323,6 @@
     - EGA 콘솔 사용성이 향상되었습니다.
     - EGA 입력 기능이 폐지되었습니다.
 - v.5.8.6 (2025-02-04)
-    - Added Spanish translation.
-    - Fixed RES_save function for saving *.dll.
-    - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
+    - 스페인어 번역을 추가했습니다.
+    - .dll 저장을 위한 RES_save 함수를 수정했습니다.
+    - 이전 버전과의 호환성을 위해 SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, 및 SUBLANG_UI_CUSTOM_DEFAULT를 사용하지 마세요.
