@@ -296,7 +296,9 @@ inline HBITMAP MBitmapDx::GetHBITMAP32(LONG& cx, LONG& cy)
     bmi.bmiHeader.biBitCount = 32;
     LPVOID pvBits;
     HBITMAP hbm;
-    hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    HDC hdc = CreateCompatibleDC(NULL);
+    hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    DeleteDC(hdc);
     if (hbm == NULL)
         return NULL;
 
