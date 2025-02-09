@@ -85,13 +85,6 @@ public:
         return m_hwndTarget;
     }
 
-    // called after WM_NCDESTROY
-    virtual void PostNcDestroy()
-    {
-        MWindowBase::PostNcDestroy();
-        delete this;
-    }
-
     // the window procedure of MRubberBand
     virtual LRESULT CALLBACK
     WindowProcDx(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

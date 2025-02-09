@@ -835,19 +835,6 @@ public:
         return HTTRANSPARENT;
     }
 
-    // called in WM_NCDESTROY
-    virtual void PostNcDestroy()
-    {
-        if (m_bTopCtrl)
-        {
-            MTRACEA("MRadCtrl::PostNcDestroy: %p\n", m_hwnd);
-        }
-        MWindowBase::PostNcDestroy();
-
-        // delete the MRadCtrl instance
-        delete this;
-    }
-
     void DoTest()
     {
         WCHAR szText[256];
@@ -877,6 +864,7 @@ public:
     INT             m_xDialogBaseUnit;      // the X dialog base unit
     INT             m_yDialogBaseUnit;      // the Y dialog base unit
     HBRUSH          m_hbrBack;              // the background brush
+    std::vector<std::shared_ptr<MRadCtrl>> m_rad_ctrls;
 
     // contructor
     MRadDialog() : m_index_visible(FALSE), m_bMovingSizing(FALSE)
@@ -1383,10 +1371,11 @@ public:
     void DoSubclass(HWND hCtrl, INT nIndex)
     {
         // make it an MRadCtrl
-        MRadCtrl *pCtrl = new MRadCtrl();
+        auto pCtrl = std::make_shared<MRadCtrl>();
         pCtrl->SubclassDx(hCtrl);
         pCtrl->m_bTopCtrl = (nIndex != -1);
         pCtrl->m_nIndex = nIndex;
+        m_rad_ctrls.push_back(pCtrl);
 
         if (nIndex != -1)   // a top control?
         {
@@ -1554,12 +1543,11 @@ public:
     MTitleToBitmap  m_title_to_bitmap;      // a title-to-bitmap mapping
     MTitleToIcon    m_title_to_icon;        // a title-to-icon mapping
     DialogItemClipboard m_clipboard;        // a clipboard manager
-    MOleHost *m_pOleHost;
+    std::shared_ptr<MOleHost> m_pOleHost;
 
     // constructor
     MRadWindow() : m_xDialogBaseUnit(0), m_yDialogBaseUnit(0),
-        m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res),
-        m_pOleHost(NULL)
+        m_hIcon(NULL), m_hIconSm(NULL), m_clipboard(m_dialog_res)
     {
     }
 
@@ -1774,14 +1762,8 @@ public:
             ::DestroyWindow(m_rad_dialog);
         }
 
-        if (m_pOleHost)
-        {
-            delete m_pOleHost;
-            m_pOleHost = NULL;
-        }
-
-        m_pOleHost = new MOleHost();
-        DoSetActiveOleHost(m_pOleHost);
+        m_pOleHost = std::make_shared<MOleHost>();
+        DoSetActiveOleHost(m_pOleHost.get());
 
         // get the resource data
         m_dialog_res.FixupForRad(false);
@@ -1955,12 +1937,6 @@ public:
     // MRadWindow WM_DESTROY
     void OnDestroy(HWND hwnd)
     {
-        if (m_pOleHost)
-        {
-            delete m_pOleHost;
-            m_pOleHost = NULL;
-        }
-
         // send ID_DESTROYRAD to the owner
         HWND hwndOwner = GetWindow(hwnd, GW_OWNER);
         DoSendMessage(hwndOwner, WM_COMMAND, ID_DESTROYRAD, 0);
