@@ -2238,7 +2238,7 @@ protected:
 
     // auto completion
     MLangAutoCompleteEdit   m_auto_comp_edit;
-    std::shared_ptr<MLangAutoComplete> m_pAutoComplete;
+    MLangAutoComplete *m_pAutoComplete;
 
 public:
     MDropdownArrow  m_arrow;                    // the language drop-down arrow
@@ -10369,6 +10369,9 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // release auto complete
+    DoLangEditAutoCompleteRelease(hwnd);
+
     // close preview
     HidePreview();
 
@@ -12164,6 +12167,7 @@ void MMainWnd::DoLangEditAutoCompleteRelease(HWND hwnd)
     if (m_pAutoComplete)
     {
         m_pAutoComplete->unbind();
+        m_pAutoComplete->Release();
         m_pAutoComplete = NULL;
     }
 
@@ -12174,7 +12178,7 @@ void MMainWnd::DoLangEditAutoComplete(HWND hwnd, HWND hwndEdit)
 {
     DoLangEditAutoCompleteRelease(hwnd);
 
-    m_pAutoComplete = std::make_shared<MLangAutoComplete>();
+    m_pAutoComplete = new MLangAutoComplete();
     if (!m_pAutoComplete)
         return;
 
