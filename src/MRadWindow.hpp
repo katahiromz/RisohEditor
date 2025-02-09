@@ -70,7 +70,7 @@ class MRadCtrl : public MWindowBase
 public:
     DWORD           m_dwMagic;          // magic number to verify the instance
     BOOL            m_bTopCtrl;         // is it a top control?
-    HWND            m_hwndRubberBand;   // the rubber band window
+    MRubberBand     m_hwndRubberBand;   // the rubber band window
     BOOL            m_bMoving;          // is it moving?
     BOOL            m_bSizing;          // is it resizing?
     BOOL            m_bLocking;         // is it locked?
@@ -79,7 +79,7 @@ public:
     INT             m_nImageType;       // the image type
 
     // constructor
-    MRadCtrl() : m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE), m_hwndRubberBand(NULL),
+    MRadCtrl() : m_dwMagic(0xDEADFACE), m_bTopCtrl(FALSE),
                  m_bMoving(FALSE), m_bSizing(FALSE), m_bLocking(FALSE), m_nIndex(-1)
     {
         m_pt.x = m_pt.y = -1;
@@ -182,12 +182,7 @@ public:
     // get the rubber band that is associated to the MRadCtrl
     MRubberBand *GetRubberBand()
     {
-        MWindowBase *base = GetUserData(m_hwndRubberBand);
-        if (base)
-        {
-            return static_cast<MRubberBand *>(base);
-        }
-        return NULL;
+        return m_hwndRubberBand.m_hwnd ? &m_hwndRubberBand : NULL;
     }
 
     // get the MRadCtrl from a window handle
@@ -224,7 +219,7 @@ public:
 
                 // destroy the rubber band of the control
                 DestroyWindow(pCtrl->m_hwndRubberBand);
-                pCtrl->m_hwndRubberBand = NULL;
+                pCtrl->m_hwndRubberBand.m_hwnd = NULL;
             }
         }
 
@@ -260,7 +255,7 @@ public:
         MRubberBand *band = GetRubberBand();
         if (band)
             DestroyWindow(*band);
-        m_hwndRubberBand = NULL;
+        m_hwndRubberBand.m_hwnd = NULL;
 
         // remove the control from targets
         GetTargets().erase(m_hwnd);
@@ -284,9 +279,8 @@ public:
             return;
 
         // create the rubber band for the control
-        auto band = new MRubberBand;
-        band->CreateDx(GetParent(hwnd), hwnd, TRUE);
-        pCtrl->m_hwndRubberBand = *band;
+        ::DestroyWindow(pCtrl->m_hwndRubberBand);
+        pCtrl->m_hwndRubberBand.CreateDx(GetParent(hwnd), hwnd, TRUE);
 
         // if not group box
         if (!MRadCtrl::IsGroupBox(hwnd))
