@@ -326,3 +326,4 @@
     - Fixed RES_save function for saving *.dll.
     - Don't use SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT for backward compatibility.
 - v.5.8.7 (2025-XX-YY)
+    - Reduced memory leaks and handle leaks.
