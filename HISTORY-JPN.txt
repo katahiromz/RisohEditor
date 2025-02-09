@@ -670,4 +670,3 @@
     - *.dllの保存用にRES_save 関数を修正。
     - 下位互換性のために、SUBLANG_CUSTOM_DEFAULT、SUBLANG_CUSTOM_UNSPECIFIED、SUBLANG_UI_CUSTOM_DEFAULTを使わない。
 - v.5.8.7 (2025-XX-YY)
-    - メモリーリークを修正。

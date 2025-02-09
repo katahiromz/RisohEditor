@@ -327,4 +327,3 @@
     - .dll 저장을 위한 RES_save 함수를 수정했습니다.
     - 이전 버전과의 호환성을 위해 SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, 및 SUBLANG_UI_CUSTOM_DEFAULT를 사용하지 마세요.
 - v.5.8.7 (2025-XX-YY)
-    - Fixed memory leaks.
