@@ -1060,7 +1060,6 @@ inline void MZCAPI FillBitmapDx(HBITMAP hbm, HBRUSH hbr)
             RECT rc;
             SetRect(&rc, 0, 0, bm.bmWidth, bm.bmHeight);
             FillRect(hDC, &rc, hbr);
-            DeleteObject(hbr);
         }
         SelectObject(hDC, hbmOld);
     }

@@ -1300,15 +1300,16 @@ CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
         assert(0);
         return NULL;
     }
-    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
+    HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
+    FillBitmapDx(hbm, hbr);
 
     HDC hDC = CreateCompatibleDC(NULL);
     HGDIOBJ hbmOld = SelectObject(hDC, hbm);
     {
-        HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
         DrawIconEx(hDC, 0, 0, hIcon, width, height, 0, hbr, DI_NORMAL);
     }
     SelectObject(hDC, hbmOld);
+    DeleteObject(hbr);
     DeleteDC(hDC);
 
     return hbm;
@@ -1556,8 +1557,11 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
         assert(0);
         return NULL;
     }
-    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
-    
+
+    HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
+    FillBitmapDx(hbm, hbr);
+    DeleteObject(hbr);
+
     BITMAP bm;
     GetObject(hbm, sizeof(bm), &bm);
 
@@ -1577,8 +1581,9 @@ CreateBitmapFromIconsDx(HWND hwnd, const EntryBase& entry)
         auto icon_entry = (EntryBase&)*e;
 
         HBITMAP hbmIcon = CreateBitmapFromIconOrPngDx(hwnd, icon_entry, bm);
-
         DrawBitmapDx(hbm, hbmIcon, 0, y);
+        DeleteObject(hbmIcon);
+
         y += bm.bmHeight;
     }
 
@@ -1662,7 +1667,10 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
         assert(0);
         return NULL;
     }
-    FillBitmapDx(hbm, GetStockBrush(LTGRAY_BRUSH));
+
+    HBRUSH hbr = GetStockBrush(LTGRAY_BRUSH);
+    FillBitmapDx(hbm, hbr);
+    DeleteObject(hbr);
 
     HDC hDC = CreateCompatibleDC(NULL);
     HDC hDC2 = CreateCompatibleDC(NULL);
