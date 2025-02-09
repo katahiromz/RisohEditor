@@ -10368,6 +10368,9 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // release auto complete
+    DoLangEditAutoCompleteRelease(hwnd);
+
     // close preview
     HidePreview();
 
