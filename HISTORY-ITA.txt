@@ -321,9 +321,9 @@
 - v.5.8.5 (21.08.2024)
     - Migliorata usabilità console EGA.
     - Abolita funzione input EGA.
-- v.5.8.6 (2025-02-04)
+- v.5.8.6 (04.02.2025)
     - Aggiunta traduzione spagnola.
     - Corretta funzione RES_save salvataggio *.dll.
     - Per compatibilità con vecchie versioni rimosso uso SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT.
-- v.5.8.7 (2025-XX-YY)
-    - Reduced memory leaks and handle leaks.
+- v.5.8.7 (YY.XX.2025)
+    - Ridotte perdite di memoria e di gestione.
