@@ -1680,7 +1680,8 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
             {
                 assert(0);
                 DeleteObject(hbm);
-                return NULL;
+                hbm = NULL;
+                break;
             }
             auto& cursor_entry = (EntryBase&)*e;
 
