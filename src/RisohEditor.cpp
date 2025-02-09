@@ -4466,8 +4466,9 @@ void MMainWnd::OnItemSearch(HWND hwnd)
     }
 
     // create dialog
-    MItemSearchDlg *pDialog = new MItemSearchDlg(m_search);
+    auto pDialog = std::make_shared<MItemSearchDlg>(m_search);
     pDialog->CreateDialogDx(hwnd);
+    MItemSearchDlg::Dialogs().insert(pDialog);
 
     // set the window handles to m_search.res2text
     m_search.res2text.m_hwnd = hwnd;

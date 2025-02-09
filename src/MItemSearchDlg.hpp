@@ -74,19 +74,12 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    typedef std::unordered_set<MItemSearchDlg *> dialogs_type;
+    typedef std::unordered_set<std::shared_ptr<MItemSearchDlg>> dialogs_type;
 
     static dialogs_type& Dialogs()
     {
         static dialogs_type s_dialogs;
         return s_dialogs;
-    }
-
-    virtual void PostNcDestroy()
-    {
-        Dialogs().erase(this);
-        MDialogBase::PostNcDestroy();
-        delete this;
     }
 
     void Done()
@@ -95,10 +88,20 @@ public:
         EnableWindow(GetDlgItem(m_hwnd, IDOK), TRUE);
     }
 
+    void OnDestroy(HWND hwnd)
+    {
+        for (auto pItem : Dialogs()) 
+        {
+            if (pItem->m_hwnd == hwnd)
+            {
+                pItem->m_hwnd = NULL;
+                break;
+            }
+        }
+    }
+
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        Dialogs().insert(this);
-
         SetDlgItemText(hwnd, edt1, m_search.strText.c_str());
 
         if (m_search.bDownward)
@@ -163,6 +166,7 @@ public:
         {
             HANDLE_MSG(hwnd, WM_INITDIALOG, OnInitDialog);
             HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);
+            HANDLE_MSG(hwnd, WM_DESTROY, OnDestroy);
         }
         return 0;
     }
