@@ -14,6 +14,8 @@ It can read/write resource data in RC/RES/EXE/DLL files. UTF-16 resource files a
 - Web page (Russian): https://katahiromz.web.fc2.com/re/ru
 - Web page (Portuguese): https://katahiromz.web.fc2.com/re/pt
 
+More information can be found at https://github.com/katahiromz/risoheditor-doc .
+
 ## Supported Platforms
 
 It works on Windows XP/2003/Vista/7/8.1/10 and ReactOS.
