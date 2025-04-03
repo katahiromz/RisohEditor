@@ -51,7 +51,7 @@ Domanda 6. I file a 64 bit sono supportati?
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 // Sito web (inglese):    https://katahiromz.web.fc2.com/re/en
 // Sito web (cinese):     https://katahiromz.web.fc2.com/re/ch
-// Sito web (giapponese): https://katahiromz.web.fc2.com/re/ja
+// Sito web (giapponese): https://katahiromz.fc2.page/risoheditor/
 // Sito web (italiano):   https://katahiromz.web.fc2.com/re/it
 // Sito web (russo):      https://katahiromz.web.fc2.com/re/ru
 // Sito web (portoghese): https://katahiromz.web.fc2.com/re/pt

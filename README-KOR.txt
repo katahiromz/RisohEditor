@@ -51,7 +51,7 @@ Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Webpage (Korean):   https://katahiromz.web.fc2.com/re/ko
 Webpage (English):  https://katahiromz.web.fc2.com/re/en
 Webpage (Chinese):  https://katahiromz.web.fc2.com/re/ch
-Webpage (Japanese): https://katahiromz.web.fc2.com/re/ja
+Webpage (Japanese): https://katahiromz.fc2.page/risoheditor/
 Webpage (Italian):  https://katahiromz.web.fc2.com/re/it
 Webpage (Russian):  https://katahiromz.web.fc2.com/re/ru
 Email               katayama.hirofumi.mz@gmail.com

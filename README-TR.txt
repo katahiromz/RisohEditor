@@ -52,7 +52,7 @@ Soru 6. 64-bit dosyaları destekliyor mu?
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Web sitesi (İngilizce): https://katahiromz.web.fc2.com/re/en
 Web sitesi (Çince):     https://katahiromz.web.fc2.com/re/ch
-Web sitesi (Japonca):   https://katahiromz.web.fc2.com/re/ja
+Web sitesi (Japonca):   https://katahiromz.fc2.page/risoheditor/
 Web sitesi (İtalyanca): https://katahiromz.web.fc2.com/re/it
 Web sitesi (Rusça):     https://katahiromz.web.fc2.com/re/ru
 Email                   katayama.hirofumi.mz@gmail.com

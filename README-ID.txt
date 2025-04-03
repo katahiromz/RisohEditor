@@ -50,7 +50,7 @@ Pertanyaan 6. Apakah berkas 64-bit didukung?
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
 Laman web (Inggris): https://katahiromz.web.fc2.com/re/en
 Laman web (Cina):    https://katahiromz.web.fc2.com/re/ch
-Laman web (Jepang):  https://katahiromz.web.fc2.com/re/ja
+Laman web (Jepang):  https://katahiromz.fc2.page/risoheditor/
 Laman web (Italia):  https://katahiromz.web.fc2.com/re/it
 Laman web (Rusia):   https://katahiromz.web.fc2.com/re/ru
 Email                katayama.hirofumi.mz@gmail.com
