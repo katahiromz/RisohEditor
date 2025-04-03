@@ -329,3 +329,4 @@
     - Ridotte perdite di memoria e di gestione.
     - Reduced memory leaks and handle leaks.
     - Improved main icon.
+    - Improved adding icon/cursor/bitmap/resource UI/UX.

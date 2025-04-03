@@ -114,6 +114,8 @@ public:
         HWND hwndEdit = info.hwndItem;
         m_pAutoComplete->bind(hwndEdit);
 
+        DoFile(hwnd, m_file);
+
         return FALSE;
     }
 

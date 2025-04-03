@@ -57,9 +57,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, m_file);
-
-        DragAcceptFiles(hwnd, TRUE);
+        ::DragAcceptFiles(hwnd, TRUE);
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -72,6 +70,14 @@ public:
         InitLangComboBox(hCmb3, GetDefaultResLanguage());
         SubclassChildDx(m_cmb3, cmb3);
 
+        // auto complete
+        COMBOBOXINFO info = { sizeof(info) };
+        GetComboBoxInfo(m_cmb3, &info);
+        HWND hwndEdit = info.hwndItem;
+        m_pAutoComplete->bind(hwndEdit);
+
+        DoFile(hwnd, m_file);
+
         CenterWindowDx();
 
         if (m_file)
@@ -79,13 +85,6 @@ public:
             SetFocus(hCmb2);
             return FALSE;
         }
-
-        // auto complete
-        COMBOBOXINFO info = { sizeof(info) };
-        GetComboBoxInfo(m_cmb3, &info);
-        HWND hwndEdit = info.hwndItem;
-        m_pAutoComplete->bind(hwndEdit);
-
         return TRUE;
     }
 
@@ -114,7 +113,7 @@ public:
         }
     }
 
-    void DoFile(HWND hwnd, LPWSTR szFile)
+    void DoFile(HWND hwnd, LPCWSTR szFile)
     {
         SetDlgItemTextW(hwnd, edt1, szFile);
 

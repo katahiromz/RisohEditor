@@ -60,13 +60,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, m_file);
-        if (m_hCursor)
-            DestroyCursor(m_hCursor);
-        m_hCursor = LoadCursorFromFile(m_file);
-        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, LPARAM(m_hCursor));
-
-        DragAcceptFiles(hwnd, TRUE);
+        ::DragAcceptFiles(hwnd, TRUE);
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -86,6 +80,8 @@ public:
         m_pAutoComplete->bind(hwndEdit);
 
         CenterWindowDx();
+
+        DoFile(hwnd, m_file);
 
         if (m_file)
         {

@@ -328,3 +328,4 @@
 - v.5.8.7 (2025-XX-YY)
     - Reduced memory leaks and handle leaks.
     - Improved main icon.
+    - Improved adding icon/cursor/bitmap/resource UI/UX.

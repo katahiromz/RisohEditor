@@ -60,13 +60,7 @@ public:
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
     {
-        SetDlgItemTextW(hwnd, edt1, m_file);
-        if (m_hIcon)
-            DestroyIcon(m_hIcon);
-        m_hIcon = ExtractIcon(GetModuleHandle(NULL), m_file, 0);
-        Static_SetIcon(GetDlgItem(hwnd, ico1), m_hIcon);
-
-        DragAcceptFiles(hwnd, TRUE);
+        ::DragAcceptFiles(hwnd, TRUE);
 
         // for Names
         HWND hCmb2 = GetDlgItem(hwnd, cmb2);
@@ -79,13 +73,15 @@ public:
         InitLangComboBox(hCmb3, GetDefaultResLanguage());
         SubclassChildDx(m_cmb3, cmb3);
 
-        CenterWindowDx();
-
         // auto complete
         COMBOBOXINFO info = { sizeof(info) };
         GetComboBoxInfo(m_cmb3, &info);
         HWND hwndEdit = info.hwndItem;
         m_pAutoComplete->bind(hwndEdit);
+
+        CenterWindowDx();
+
+        DoFile(hwnd, m_file);
 
         if (m_file)
         {
