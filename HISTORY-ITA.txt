@@ -284,7 +284,7 @@
     - Console EGA migliorata.
     - Risolto problema programma di installazione danneggiato.
 - v.5.7.5 (08.05.2023)
-    - Migliorato supprto finestre IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
+    - Migliorato supporto finestre IDD_DLGPROP, IDD_CTRLPROP, IDD_ADDCTRL.
     - Aggiunto programma di installazione coreano.
     - Corretto problema separatore MENUEX.
 - v.5.7.6 (02.06.2023)
@@ -327,6 +327,5 @@
     - Per compatibilità con vecchie versioni rimosso uso SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT.
 - v.5.8.7 (YY.XX.2025)
     - Ridotte perdite di memoria e di gestione.
-    - Reduced memory leaks and handle leaks.
-    - Improved main icon.
-    - Improved adding icon/cursor/bitmap/resource UI/UX.
+    - Migliorata icona principale.
+    - Migliorati aggiunta icona/cursore/bitmap/risorsa UI/UX.
