@@ -11,7 +11,7 @@
 ; TODO: Update the version numbers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#define MyAppName        "RisohEditor"
+#define MyAppName        "RisohEditor64"
 #define MyAppVersion     GetStringFileInfo('build\RisohEditor64.exe',"FileVersion")
 #define MyAppCompanyName "Katayama Hirofumi MZ"
 #define CurrentYear      GetDateTimeString('yyyy','','')
