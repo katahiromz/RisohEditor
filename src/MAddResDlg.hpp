@@ -90,6 +90,7 @@ public:
         if (m_file)
         {
             SetDlgItemTextW(hwnd, edt1, m_file);
+            DoFile(hwnd, m_file);
         }
 
         // do centering the dialog
@@ -113,8 +114,6 @@ public:
         GetComboBoxInfo(m_cmb3, &info);
         HWND hwndEdit = info.hwndItem;
         m_pAutoComplete->bind(hwndEdit);
-
-        DoFile(hwnd, m_file);
 
         return FALSE;
     }

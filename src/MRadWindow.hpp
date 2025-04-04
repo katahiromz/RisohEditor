@@ -31,6 +31,7 @@
 #include "Res.hpp"
 #include "IconRes.hpp"
 #include <map>
+#include <memory>
 #include <unordered_set>     // for std::unordered_set
 #include <climits>
 #include "MOleHost.hpp"

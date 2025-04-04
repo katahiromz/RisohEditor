@@ -76,15 +76,15 @@ public:
         HWND hwndEdit = info.hwndItem;
         m_pAutoComplete->bind(hwndEdit);
 
-        DoFile(hwnd, m_file);
-
         CenterWindowDx();
 
         if (m_file)
         {
+            DoFile(hwnd, m_file);
             SetFocus(hCmb2);
             return FALSE;
         }
+
         return TRUE;
     }
 

@@ -81,13 +81,13 @@ public:
 
         CenterWindowDx();
 
-        DoFile(hwnd, m_file);
-
         if (m_file)
         {
+            DoFile(hwnd, m_file);
             SetFocus(hCmb2);
             return FALSE;
         }
+
         return TRUE;
     }
 
