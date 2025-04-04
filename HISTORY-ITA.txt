@@ -325,7 +325,7 @@
     - Aggiunta traduzione spagnola.
     - Corretta funzione RES_save salvataggio *.dll.
     - Per compatibilità con vecchie versioni rimosso uso SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT.
-- v.5.8.7 (YY.XX.2025)
+- v.5.8.7 (04.04.2025)
     - Ridotte perdite di memoria e di gestione.
     - Migliorata icona principale.
     - Migliorati aggiunta icona/cursore/bitmap/risorsa UI/UX.
