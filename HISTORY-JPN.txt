@@ -674,3 +674,4 @@
     - メインアイコンを改良。
     - アイコン／カーソル／ビットマップ／リソース追加のUI/UXを改良。
 - v.5.8.8 (2025-XX-YY)
+    - Added digital sign to EXE files.
