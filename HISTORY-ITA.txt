@@ -329,5 +329,5 @@
     - Ridotte perdite di memoria e di gestione.
     - Migliorata icona principale.
     - Migliorati aggiunta icona/cursore/bitmap/risorsa UI/UX.
-- v.5.8.8 (2025-XX-YY)
-    - Added digital sign to EXE files.
+- v.5.8.8 (DD.MM-2025)
+    - Aggiunta firma digitale ai file EXE.
