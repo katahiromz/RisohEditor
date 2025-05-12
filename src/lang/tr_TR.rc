@@ -1371,14 +1371,14 @@ FILESUBTYPE     0x0
             VALUE "CompanyName", "Katayama Hirofumi MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.8.8\0"
-            VALUE "LegalCopyright", "Telif Hakkı (C) 2017-2024 Katayama Hirofumi MZ. Tüm hakları saklıdır.\0"
+            VALUE "LegalCopyright", "Telif Hakkı (C) 2017-2025 Katayama Hirofumi MZ. Tüm hakları saklıdır.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.8.8\0"
         }
     }
     BLOCK "VarFileInfo"
     {
-        VALUE "Translation", 0x0409, 0x04E4
+        VALUE "Translation", 0x041F, 0x04E6
     }
 }
 

@@ -1366,7 +1366,7 @@ FILESUBTYPE     0x0
             VALUE "CompanyName", "片山博文MZ\0"
             VALUE "FileDescription", "RisohEditor\0"
             VALUE "FileVersion", "5.8.8\0"
-            VALUE "LegalCopyright", "Copyright (C) 2017-2024 片山博文MZ and 林鸿湘. 版权所有.\0"
+            VALUE "LegalCopyright", "Copyright (C) 2017-2025 片山博文MZ and 林鸿湘. 版权所有.\0"
             VALUE "ProductName", "RisohEditor\0"
             VALUE "ProductVersion", "5.8.8\0"
         }
