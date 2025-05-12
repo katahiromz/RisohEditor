@@ -1640,7 +1640,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER, "Dados TYPELIB (*.tlb)|*.tlb|Recursos Binários (*.res)|*.res|Arquivos de Texto (*.txt)|*.txt|Arquivos MIDL (*.idl)|*.idl|Todos os Arquivos (*.*)|*.*|"
     IDS_USAGE, "Use: RisohEditor [opções | ""arquivo""]\n\nOpções:\n--help  Mostra esta mensagem.\n--version  Mostra informações da versão.\n--load ""seu-arquivo.rc""  Carrega o arquivo (sem GUI)\n--save ""seu-arquivo.res""  Salva o arquivo (sem GUI)\n--log-file ""arquivo-log.txt""  Especifica o arquivo de log.\n--load-options OPÇÕES  Define opções de carregamento.\n--save-options OPÇÕES  Define opções de salvamento.\n\nOpções de carregamento: (no-load-res-h)\nOpções de salvamento: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Não há seleção."
-    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto"
+    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "Arquivos RC (*.rc)|*.rc|Recursos Binários (*.res)|*.res|"
 }
 

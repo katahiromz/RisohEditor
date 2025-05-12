@@ -1641,7 +1641,7 @@ STRINGTABLE
     IDS_TLBRESBINFILTER, "TYPELIB データ (*.tlb)|*.tlb|バイナリー リソース (*.res)|*.res|テキストファイル (*.txt)|*.txt|MIDL ファイル (*.idl)|*.idl|すべてのファイル (*.*)|*.*|"
     IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "選択がありません。"
-    IDS_TRANSLATORS, "[翻訳者]\r\n英語: 片山博文MZ\r\nフィンランド語: Veikko Muurikainen\r\nインドネシア語: Mas Ahmad Muhammad\r\nイタリア語: R.B.\r\n日本語: 片山博文MZ\r\n韓国語: VenusGirl (비너스걸)\r\nポーランド語: Piotr Hetnarowicz\r\nポルトガル語: JNylson\r\nロシア語: Dmitry Yerokhin\r\n中国語（簡体字）: 林鸿湘\r\nスペイン語: Cristobal Prieto"
+    IDS_TRANSLATORS, "[翻訳者]\r\n英語: 片山博文MZ\r\nフィンランド語: Veikko Muurikainen\r\nインドネシア語: Mas Ahmad Muhammad\r\nイタリア語: R.B.\r\n日本語: 片山博文MZ\r\n韓国語: VenusGirl (비너스걸)\r\nポーランド語: Piotr Hetnarowicz\r\nポルトガル語: JNylson\r\nロシア語: Dmitry Yerokhin\r\n中国語（簡体字）: 林鸿湘\r\nスペイン語: Cristobal Prieto\r\nトルコ語: OnurGVNGL"
     IDS_EXPORTFILTER, "RC ファイル (*.rc)|*.rc|バイナリー リソース (*.res)|*.res|"
 }
 

@@ -28,6 +28,8 @@ The translators of RisohEditor are listed below:
     - 嚕拉 <xyz321763@gmail.com>
  * Spanish:
     - Cristobal Prieto <c_p_a@hotmail.es>
+ * Turkish:
+    - OnurGVNGL <ibadeath@yahoo.com>
 
 # How to translate?
 
