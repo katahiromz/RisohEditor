@@ -46,6 +46,8 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry);
 
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
 
+MStringW DumpTextInclude(const EntryBase& entry);
+
 //////////////////////////////////////////////////////////////////////////////
 
 class ResToText
@@ -98,6 +100,7 @@ public:
     MString DoTypeLib(const EntryBase& entry);
     MString DoDlgInit(const EntryBase& entry);
     MString DoRCData(const EntryBase& entry);
+    MString DoTextInclude(const EntryBase& entry);
     MString DoUnknown(const EntryBase& entry);
     MString DoFont(const EntryBase& entry);
     MString DoFontDir(const EntryBase& entry);

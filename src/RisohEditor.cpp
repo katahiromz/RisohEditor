@@ -8177,6 +8177,8 @@ BOOL MMainWnd::DoWriteRCLangUTF8(MFile& file, ResToText& res2text, WORD lang, co
             continue;
         if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
             continue;
+        if (type == L"TEXTINCLUDE")
+            continue;
 
         // dump the entry
         MString str = res2text.DumpEntry(*entry);
@@ -8331,6 +8333,8 @@ BOOL MMainWnd::DoWriteRCLangUTF16(MFile& file, ResToText& res2text, WORD lang, c
         if (type == RT_STRING || type == RT_FONTDIR)
             continue;
         if (type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
+            continue;
+        if (type == L"TEXTINCLUDE")
             continue;
 
         // dump the entry

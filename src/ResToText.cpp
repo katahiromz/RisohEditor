@@ -32,6 +32,15 @@
 #include "MessageRes.hpp"
 #include "ToolbarRes.hpp"
 
+static inline MStringW generate_begin(void)
+{
+    return g_settings.bUseBeginEnd ? L"BEGIN" : L"{";
+}
+static inline MStringW generate_end(void)
+{
+    return g_settings.bUseBeginEnd ? L"END" : L"}";
+}
+
 MString
 ResToText::GetEntryFileName(const EntryBase& entry)
 {
@@ -292,6 +301,10 @@ ResToText::GetEntryFileName(const EntryBase& entry)
             ret += L"TYPELIB_";
             ret += DumpEscapedName(entry.m_name);
             ret += L".tlb";
+        }
+        else if (entry.m_type == L"TEXTINCLUDE")
+        {
+            // No output file
         }
         else if (entry.m_type == L"IMAGE")
         {
@@ -932,6 +945,10 @@ ResToText::DumpEntry(const EntryBase& entry)
         {
             return DoTypeLib(entry);
         }
+        else if (entry.m_type == L"TEXTINCLUDE")
+        {
+            return DoTextInclude(entry);
+        }
     }
     return DoUnknown(entry);
 }
@@ -1009,6 +1026,16 @@ MString ResToText::DoAVI(const EntryBase& entry)
     str += L" AVI \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
+
+    return str;
+}
+
+MString ResToText::DoTextInclude(const EntryBase& entry)
+{
+    MStringW str;
+
+    str += GetLanguageStatement(entry.m_lang);
+    str += DumpTextInclude(entry);
 
     return str;
 }
@@ -1713,4 +1740,55 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
     DeleteDC(hDC);
 
     return hbm;
+}
+
+MStringW DumpTextInclude(const EntryBase& entry)
+{
+    MStringW str;
+    MStringW data(entry.m_data.begin(), entry.m_data.end());
+
+    while (data.size() && data[data.size() - 1] == 0)
+    {
+        data = data.substr(0, data.size() - 1);
+    }
+
+    MStringW nul;
+    nul.append(1, 0);
+
+    switch (entry.m_name.m_id)
+    {
+    case 1:
+        str += entry.m_name.str();
+        str += L" TEXTINCLUDE\r\n";
+        str += generate_begin() + L"\r\n";
+        str += L"    ";
+        data += nul;
+        str += mstr_quote(data);
+        str += L"\r\n";
+        str += generate_end() + L"\r\n";
+        break;
+    default:
+        str += entry.m_name.str();
+        str += L" TEXTINCLUDE\r\n";
+        str += generate_begin() + L"\r\n";
+        {
+            std::vector<MStringW> lines;
+            mstr_split(lines, data, L"\n");
+            if (lines.size() && lines[lines.size() - 1].empty())
+            {
+                lines.resize(lines.size() - 1);
+            }
+            for (auto& line : lines)
+            {
+                str += L"    ";
+                str += mstr_quote(line + L"\n");
+                str += L"\r\n";
+            }
+        }
+        str += L"    \"\\0\"\r\n";
+        str += generate_end() + L"\r\n";
+        break;
+    }
+
+    return str;
 }
