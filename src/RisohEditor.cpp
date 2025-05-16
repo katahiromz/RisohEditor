@@ -8615,8 +8615,6 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     res2text.m_bHumanReadable = FALSE;  // it's not human-friendly
     res2text.m_bNoLanguage = TRUE;      // no LANGUAGE statements generated
 
-    MWideToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
-
     // check not locking
     if (IsFileLockedDx(pszFileName))
     {
@@ -8631,10 +8629,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     if (p_textinclude1)
     {
         std::string str(p_textinclude1->m_data.begin(), p_textinclude1->m_data.end());
-        if (str.find("< ") != str.npos)
+        if (str.find("< ") != str.npos) // write protected?
         {
-            if (ErrorBoxDx(LoadStringDx(IDS_TEXTINCLUDEREADONLY), MB_ICONWARNING | MB_YESNOCANCEL) != IDYES)
-                return FALSE;
+            // Same file?
+            WCHAR szPath1[MAX_PATH], szPath2[MAX_PATH];
+            GetFullPathNameW(pszFileName, _countof(szPath1), szPath1, NULL);
+            GetFullPathNameW(m_szFile, _countof(szPath2), szPath2, NULL);
+            if (lstrcmpiW(szPath1, szPath2) == 0)
+            {
+                // Warn read-only
+                if (ErrorBoxDx(LoadStringDx(IDS_TEXTINCLUDEREADONLY), MB_ICONWARNING | MB_YESNOCANCEL) != IDYES)
+                    return FALSE;
+            }
         }
     }
 
@@ -8675,6 +8681,8 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     if (p_textinclude3)
         textinclude3_a = p_textinclude3->to_string();
     MAnsiToWide textinclude3_w(CP_UTF8, textinclude3_a.c_str());
+
+    MWideToAnsi comment_sep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
 
     // dump heading
     if (bRCFileUTF16)
