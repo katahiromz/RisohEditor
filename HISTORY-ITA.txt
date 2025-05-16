@@ -332,6 +332,6 @@
 - v.5.8.8 (DD.MM.2025)
     - Aggiunta firma digitale ai file EXE.
     - Aggiunta traduzione turca.
-    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
-    - Fixed MRadWindow crash.
-    - Updated installers.
+    - Supportato TEXTINCLUDE 2 e TEXTINCLUDE 3.
+    - Corretto MRadWindow crash.
+    - Aggiornati installer.
