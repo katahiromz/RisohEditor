@@ -16,18 +16,18 @@
 #define MyAppCompanyName "Katayama Hirofumi MZ"
 #define CurrentYear      GetDateTimeString('yyyy','','')
 #define MyAppCopyright   "(c) 2017-" + CurrentYear + " " + MyAppCompanyName
-#define MyAppURL         "http://katahiromz.web.fc2.com/"
-#define MyAppDescription "RisohEditor (32bit)"
+#define MyAppURL         "https://katahiromz.fc2.page/risoheditor/"
+#define MyAppDescription "RisohEditor 32-bit"
 
 AppId={{AF7494D1-406F-4D04-A8FE-8F9DAB97F611}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppVerName={#MyAppName} {#MyAppVersion}
+AppVerName={#MyAppName} {#MyAppVersion} 32-bit
 
 VersionInfoCompany={#MyAppCompanyName}
 VersionInfoCopyright={#MyAppCopyright}
 VersionInfoDescription={#MyAppDescription} installer
-VersionInfoProductName={#MyAppName}
+VersionInfoProductName={#MyAppName} 32-bit
 VersionInfoProductTextVersion={#MyAppVersion}
 VersionInfoProductVersion={#MyAppVersion}
 VersionInfoVersion={#MyAppVersion}
@@ -44,12 +44,12 @@ UsePreviousLanguage=no
 LanguageDetectionMethod=uilanguage
 
 DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName={#MyAppName}
+DefaultGroupName={#MyAppName} 32-bit
 DisableDirPage=no
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
 OutputDir=.
-OutputBaseFilename={#MyAppName}-{#MyAppVersion}-setup
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-x86-setup
 SetupIconFile=src\res\Icon_100.ico
 Compression=lzma
 SolidCompression=yes
@@ -312,13 +312,13 @@ Source: "win32-samples\ToolbarTest\resource.h"; DestDir: "{app}\win32-samples\To
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\RisohEditor"; Filename: "{app}\RisohEditor.exe"
+Name: "{group}\RisohEditor 32-bit"; Filename: "{app}\RisohEditor.exe"
 Name: "{group}\{cm:ReadmeEnglish}"; Filename: "{app}\README.txt"
 Name: "{group}\{cm:ReadmeJapanese}"; Filename: "{app}\READMEJP.txt"
 Name: "{group}\{cm:LicenseEnglish}"; Filename: "{app}\LICENSE.txt"
 Name: "{group}\{cm:ProgramOnTheWeb,RisohEditor}"; Filename: "http://katahiromz.web.fc2.com"
 Name: "{group}\{cm:UninstallProgram,RisohEditor}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\RisohEditor"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
+Name: "{commondesktop}\RisohEditor 32-bit"; Filename: "{app}\RisohEditor.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\RisohEditor.exe"; Description: "{cm:LaunchProgram,RisohEditor}"; Flags: nowait postinstall skipifsilent

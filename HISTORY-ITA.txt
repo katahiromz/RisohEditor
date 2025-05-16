@@ -334,3 +334,4 @@
     - Aggiunta traduzione turca.
     - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
     - Fixed MRadWindow crash.
+    - Updated installers.
