@@ -7788,7 +7788,7 @@ retry:
         res1.merge(found);
     }
 
-    // TEXTINCLUDE must be MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
+    // TEXTINCLUDE should be MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
     for (auto& entry : res1)
     {
         if (entry->m_type == L"TEXTINCLUDE")
