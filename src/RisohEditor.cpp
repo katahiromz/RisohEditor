@@ -9658,7 +9658,8 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
         lstrcmpiW(pchDotExt, L".ocx") == 0 ||
         lstrcmpiW(pchDotExt, L".cpl") == 0 ||
         lstrcmpiW(pchDotExt, L".scr") == 0 ||
-        lstrcmpiW(pchDotExt, L".mui") == 0)
+        lstrcmpiW(pchDotExt, L".mui") == 0 ||
+        lstrcmpiW(pchDotExt, L".ime") == 0)
     {
         return DoSaveExeAs(pszFile);
     }

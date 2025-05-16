@@ -585,6 +585,9 @@ BOOL EntrySet::update_exe(LPCWSTR ExeFile) const
         if (entry->m_et != ET_LANG)
             continue;
 
+        if (entry->m_type == L"TEXTINCLUDE")
+            continue;
+
         // get the pointer and size
         void *pv = NULL;
         DWORD size = 0;
@@ -1637,6 +1640,8 @@ BOOL EntrySet::extract_res(LPCWSTR pszFileName, const EntrySet& res) const
     for (auto entry : res)
     {
         if (entry->m_et != ET_LANG)
+            continue;
+        if (entry->m_type == L"TEXTINCLUDE")
             continue;
 
         header.DataSize = entry->size();
