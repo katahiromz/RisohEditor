@@ -7752,11 +7752,17 @@ retry:
             {
                 INT id = ErrorBoxDx(IDS_INCLUDETEXTINCLUDE3, MB_YESNOCANCEL);
                 if (id == IDYES)
+                {
                     include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_YES;
+                }
                 else if (id == IDNO)
+                {
                     include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_NO;
+                }
                 else if (id == IDCANCEL)
+                {
                     return FALSE;
+                }
             }
 
             // 取り込まない場合は、該当項目を削除してやり直し。
@@ -7787,6 +7793,16 @@ retry:
     {
         if (entry->m_type == L"TEXTINCLUDE")
             entry->m_lang = 0;
+    }
+
+    // TEXTINCLUDE 3 を取り込んだら、TEXTINCLUDE 3 をリセット。
+    if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_YES)
+    {
+        res1.search_and_delete(ET_LANG, L"TEXTINCLUDE", WORD(3));
+
+        std::string str = "\r\n";
+        EntryBase::data_type data(str.begin(), str.end());
+        res1.add_lang_entry(L"TEXTINCLUDE", WORD(3), 0, data);
     }
 
     // load it now
