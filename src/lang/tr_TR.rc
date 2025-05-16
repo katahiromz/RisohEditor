@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC Dosyaları (*.rc)|*.rc|İkili Kaynaklar (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Bu dosya TEXTINCLUDE tarafından yazmaya karşı korumalıdır.\r\n\r\nDosyaya hala yazmak istiyor musunuz?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 düzenlenemeyen öğeler içeriyor. TEXTINCLUDE 3'ü dahil etmek istiyor musunuz?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

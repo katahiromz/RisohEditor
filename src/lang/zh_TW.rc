@@ -1639,6 +1639,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC 文件 (*.rc)|*.rc|二進位制資源文件 (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "該文件受 TEXTINCLUDE 寫入保護。 \r\n\r\n您仍要寫入該檔案嗎？"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 包含無法編輯的項目。您想包含 TEXTINCLUDE 3 嗎？"
 }
 
 //////////////////////////////////////////////////////////////////////////////

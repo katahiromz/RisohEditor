@@ -353,6 +353,7 @@
 #define IDS_EXPORTFILTER                    350
 #define IDS_GENERATEDFROM                   351
 #define IDS_TEXTINCLUDEREADONLY             352
+#define IDS_INCLUDETEXTINCLUDE3             353
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

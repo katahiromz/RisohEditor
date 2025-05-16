@@ -1644,6 +1644,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "리소스 파일 (*.rc)|*.rc|바이너리 리소스 (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "이 파일은 TEXTINCLUDE로 쓰기 보호되어 있습니다.\r\n\r\n그래도 파일에 쓰시겠습니까?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3에는 편집할 수 없는 항목이 포함되어 있지만 TEXTINCLUDE 3의 항목도 로드하시겠습니까?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

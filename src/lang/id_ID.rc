@@ -1644,6 +1644,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "Berkas RC (*.rc)|*.rc|Sumber Daya Binary (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Berkas ini dilindungi dari penulisan oleh TEXTINCLUDE.\r\n\r\nApakah Anda masih ingin menulis ke berkas ini?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 berisi item yang tidak dapat diedit. Apakah Anda ingin menyertakan TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

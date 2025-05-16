@@ -1641,6 +1641,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Tämä tiedosto on kirjoitussuojattu tekstillä TEXTINCLUDE.\r\n\r\nHaluatko silti kirjoittaa tiedostoon?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 sisältää kohteita, joita ei voi muokata. Haluatko sisällyttää tekstin TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

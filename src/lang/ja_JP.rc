@@ -1645,6 +1645,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC ファイル (*.rc)|*.rc|バイナリー リソース (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "このファイルは TEXTINCLUDE により書き込み禁止になっています。\r\n\r\nそれでもファイルに書き込みますか？"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 に編集できない項目が含まれています。TEXTINCLUDE 3 の項目も読み込みますか？"
 }
 
 //////////////////////////////////////////////////////////////////////////////
