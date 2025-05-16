@@ -71,7 +71,6 @@ IDR_MAINMENU MENU
             MENUITEM "RC dosyası olarak &Çıkart...", ID_EXTRACTRC
             MENUITEM "İkili &Kaynak Öğesini Çıkart...", ID_EXTRACTBIN
         }
-
         MENUITEM "Adı/Dili &Değiştir\tF2", ID_EDITLABEL
         MENUITEM SEPARATOR
         MENUITEM "Yeni &Adla Klonla...", ID_COPYASNEWNAME
@@ -148,84 +147,84 @@ IDR_POPUPMENUS MENU
 {
     POPUP "Açılır Pencere #0"
     {
-    MENUITEM "Grafik Arayüzü ile &Düzenle...\tCtrl+G", ID_GUIEDIT
+        MENUITEM "Grafik Arayüzü ile &Düzenle...\tCtrl+G", ID_GUIEDIT
         MENUITEM SEPARATOR
         POPUP "&Ekle"
         {
-        MENUITEM "Simge &Ekle...", ID_ADDICON  
-        MENUITEM "İmleç &Ekle...", ID_ADDCURSOR  
-        MENUITEM "Bitmap &Ekle...", ID_ADDBITMAP  
-        MENUITEM "&Diyalog Ekle...", ID_ADDDIALOG  
-        MENUITEM "&Menü Ekle...", ID_ADDMENU  
-        MENUITEM "Karakter Dizisi &Tablosu Ekle...", ID_ADDSTRINGTABLE  
-        MENUITEM "M&esaj Tablosu Ekle...", ID_ADDMESSAGETABLE  
-        MENUITEM "&HTML Ekle...", ID_ADDHTML  
-        MENUITEM "&Kısayol Tuşları Ekle...", ID_ADDACCEL  
-        MENUITEM "Sürüm &Bilgisi Ekle...", ID_ADDVERINFO  
-        MENUITEM "Mani&fest Ekle...", ID_ADDMANIFEST  
-        MENUITEM "&Araç Çubuğu Ekle", ID_ADDTOOLBAR  
-        MENUITEM "&Kaynak Ögesi Ekle...", ID_ADDRES
+            MENUITEM "Simge &Ekle...", ID_ADDICON
+            MENUITEM "İmleç &Ekle...", ID_ADDCURSOR
+            MENUITEM "Bitmap &Ekle...", ID_ADDBITMAP
+            MENUITEM "&Diyalog Ekle...", ID_ADDDIALOG
+            MENUITEM "&Menü Ekle...", ID_ADDMENU
+            MENUITEM "Karakter Dizisi &Tablosu Ekle...", ID_ADDSTRINGTABLE
+            MENUITEM "M&esaj Tablosu Ekle...", ID_ADDMESSAGETABLE
+            MENUITEM "&HTML Ekle...", ID_ADDHTML
+            MENUITEM "&Kısayol Tuşları Ekle...", ID_ADDACCEL
+            MENUITEM "Sürüm &Bilgisi Ekle...", ID_ADDVERINFO
+            MENUITEM "Mani&fest Ekle...", ID_ADDMANIFEST
+            MENUITEM "&Araç Çubuğu Ekle", ID_ADDTOOLBAR
+            MENUITEM "&Kaynak Ögesi Ekle...", ID_ADDRES
         }
         POPUP "&Değiştir"
         {
-        MENUITEM "Simgeyi &Değiştir...", ID_REPLACEICON  
-        MENUITEM "İmleci &Değiştir...", ID_REPLACECURSOR  
-        MENUITEM "Bitmap'i &Değiştir...", ID_REPLACEBITMAP  
-        MENUITEM "İkili &Kaynak Ögesini Değiştir...", ID_REPLACEBIN
+            MENUITEM "Simgeyi &Değiştir...", ID_REPLACEICON
+            MENUITEM "İmleci &Değiştir...", ID_REPLACECURSOR
+            MENUITEM "Bitmap'i &Değiştir...", ID_REPLACEBITMAP
+            MENUITEM "İkili &Kaynak Ögesini Değiştir...", ID_REPLACEBIN
         }
         POPUP "&Çıkart"
         {
-        MENUITEM "Simgeyi &Çıkart...", ID_EXTRACTICON  
-        MENUITEM "İmleci &Çıkart...", ID_EXTRACTCURSOR  
-        MENUITEM "Bitmap'i &Çıkart...", ID_EXTRACTBITMAP  
-        MENUITEM "RC dosyası olarak &Çıkart...", ID_EXTRACTRC  
-        MENUITEM "İkili &Kaynak Ögesini Çıkart...", ID_EXTRACTBIN
+            MENUITEM "Simgeyi &Çıkart...", ID_EXTRACTICON
+            MENUITEM "İmleci &Çıkart...", ID_EXTRACTCURSOR
+            MENUITEM "Bitmap'i &Çıkart...", ID_EXTRACTBITMAP
+            MENUITEM "RC dosyası olarak &Çıkart...", ID_EXTRACTRC
+            MENUITEM "İkili &Kaynak Ögesini Çıkart...", ID_EXTRACTBIN
         }
-    MENUITEM SEPARATOR  
-    MENUITEM "Adı/Dili &Değiştir\tF2", ID_EDITLABEL  
-    MENUITEM SEPARATOR  
-    MENUITEM "Yeni &İsimle Klonla...", ID_COPYASNEWNAME  
-    MENUITEM "Yeni &Dil ile Klonla...", ID_COPYASNEWLANG  
-    MENUITEM "Birden Fazla Dile &Kopyala...", ID_COPYTOMULTILANG  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Test Yap", ID_TEST  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Sil\tDel", ID_DELETERES  
+        MENUITEM SEPARATOR
+        MENUITEM "Adı/Dili &Değiştir\tF2", ID_EDITLABEL
+        MENUITEM SEPARATOR
+        MENUITEM "Yeni &İsimle Klonla...", ID_COPYASNEWNAME
+        MENUITEM "Yeni &Dil ile Klonla...", ID_COPYASNEWLANG
+        MENUITEM "Birden Fazla Dile &Kopyala...", ID_COPYTOMULTILANG
+        MENUITEM SEPARATOR
+        MENUITEM "&Test Yap", ID_TEST
+        MENUITEM SEPARATOR
+        MENUITEM "&Sil\tDel", ID_DELETERES
     }
     POPUP "Açılır Pencere #1"
     {
-    MENUITEM "&Kontrol Ekle...", ID_ADDCTRL  
-    MENUITEM SEPARATOR  
-    MENUITEM "Kes\tCtrl+X", ID_CUT  
-    MENUITEM "&Kopyala\tCtrl+C", ID_COPY  
-    MENUITEM "&Yapıştır\tCtrl+V", ID_PASTE  
-    MENUITEM "&Sil\tDel", ID_DELCTRL  
-    MENUITEM SEPARATOR  
-    POPUP "&İndeks"  
+        MENUITEM "&Kontrol Ekle...", ID_ADDCTRL
+        MENUITEM SEPARATOR
+        MENUITEM "Kes\tCtrl+X", ID_CUT
+        MENUITEM "&Kopyala\tCtrl+C", ID_COPY
+        MENUITEM "&Yapıştır\tCtrl+V", ID_PASTE
+        MENUITEM "&Sil\tDel", ID_DELCTRL
+        MENUITEM SEPARATOR
+        POPUP "&İndeks"
         {
-        MENUITEM "En Üst'e &Git", ID_CTRLINDEXTOP  
-        MENUITEM SEPARATOR  
-        MENUITEM "&İndeksi Azalt", ID_CTRLINDEXMINUS  
-        MENUITEM "&İndeksi Artır", ID_CTRLINDEXPLUS  
-        MENUITEM SEPARATOR  
-        MENUITEM "En Alt'a &Git", ID_CTRLINDEXBOTTOM  
-        MENUITEM SEPARATOR  
-        MENUITEM "İndeksleri Göster/Gizle\tCtrl+D", ID_SHOWHIDEINDEX
+            MENUITEM "En Üst'e &Git", ID_CTRLINDEXTOP
+            MENUITEM SEPARATOR
+            MENUITEM "&İndeksi Azalt", ID_CTRLINDEXMINUS
+            MENUITEM "&İndeksi Artır", ID_CTRLINDEXPLUS
+            MENUITEM SEPARATOR
+            MENUITEM "En Alt'a &Git", ID_CTRLINDEXBOTTOM
+            MENUITEM SEPARATOR
+            MENUITEM "İndeksleri Göster/Gizle\tCtrl+D", ID_SHOWHIDEINDEX
         }
         POPUP "&Hizalama"
         {
-        MENUITEM "&Üste-Hizala", ID_TOPALIGN  
-        MENUITEM "&Alta-Hizala", ID_BOTTOMALIGN  
-        MENUITEM "&Sola-Hizala", ID_LEFTALIGN  
-        MENUITEM "&Sağa-Hizala", ID_RIGHTALIGN  
-        MENUITEM SEPARATOR  
-        MENUITEM "Izgara'ya &Uydur", ID_FITTOGRID
+            MENUITEM "&Üste-Hizala", ID_TOPALIGN
+            MENUITEM "&Alta-Hizala", ID_BOTTOMALIGN
+            MENUITEM "&Sola-Hizala", ID_LEFTALIGN
+            MENUITEM "&Sağa-Hizala", ID_RIGHTALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Izgara'ya &Uydur", ID_FITTOGRID
         }
-    MENUITEM SEPARATOR  
-    MENUITEM "&Yenile", ID_REFRESHDIALOG  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Kontrol Özellikleri...", ID_CTRLPROP  
-    MENUITEM "D&iyalog Özellikleri...", ID_DLGPROP
+        MENUITEM SEPARATOR
+        MENUITEM "&Yenile", ID_REFRESHDIALOG
+        MENUITEM SEPARATOR
+        MENUITEM "&Kontrol Özellikleri...", ID_CTRLPROP
+        MENUITEM "D&iyalog Özellikleri...", ID_DLGPROP
     }
     POPUP "Açılır Pencere #2"
     {
@@ -233,31 +232,30 @@ IDR_POPUPMENUS MENU
     }
     POPUP "Açılır Pencere #3"
     {
-    MENUITEM "&Atla!", ID_IDJUMP  
-    MENUITEM SEPARATOR  
-    MENUITEM "&ID Ekle...", ID_ADDRESID  
-    MENUITEM "&ID Düzenle...", ID_MODIFYRESID  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Adı Kopyala", ID_COPYRESIDNAME  
-    MENUITEM "&Değeri Kopyala", ID_COPYRESIDVALUE  
-    MENUITEM "&Tanımı Kopyala\tCtrl+C", ID_COPYIDDEF  
-    MENUITEM SEPARATOR  
-    MENUITEM "&ID Sil\tDel", ID_DELETERESID  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Ondalık Sayılar", ID_BASE10  
-    MENUITEM "&Onaltılık Sayılar", ID_BASE16  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Yeniden Yükle", ID_LOADRESH
+        MENUITEM "&Atla!", ID_IDJUMP
+        MENUITEM SEPARATOR
+        MENUITEM "&ID Ekle...", ID_ADDRESID
+        MENUITEM "&ID Düzenle...", ID_MODIFYRESID
+        MENUITEM SEPARATOR
+        MENUITEM "&Adı Kopyala", ID_COPYRESIDNAME
+        MENUITEM "&Değeri Kopyala", ID_COPYRESIDVALUE
+        MENUITEM "&Tanımı Kopyala\tCtrl+C", ID_COPYIDDEF
+        MENUITEM SEPARATOR
+        MENUITEM "&ID Sil\tDel", ID_DELETERESID
+        MENUITEM SEPARATOR
+        MENUITEM "&Ondalık Sayılar", ID_BASE10
+        MENUITEM "&Onaltılık Sayılar", ID_BASE16
+        MENUITEM SEPARATOR
+        MENUITEM "&Yeniden Yükle", ID_LOADRESH
     }
     POPUP "Açılır Pencere #4"
     {
-    MENUITEM "&Ekle...", ID_ADD  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Adı Değiştir...\tF2", ID_RENAME  
-    MENUITEM "&Değeri Değiştir...", ID_MODIFY  
-    MENUITEM SEPARATOR  
-    MENUITEM "&Sil\tDel", ID_DELETE
-
+        MENUITEM "&Ekle...", ID_ADD
+        MENUITEM SEPARATOR
+        MENUITEM "&Adı Değiştir...\tF2", ID_RENAME
+        MENUITEM "&Değeri Değiştir...", ID_MODIFY
+        MENUITEM SEPARATOR
+        MENUITEM "&Sil\tDel", ID_DELETE
     }
     POPUP "Açılır Pencere #5"
     {
@@ -1002,7 +1000,6 @@ FONT 9, "MS Shell Dlg"
 
 IDD_ADDMACRO DIALOG 0, 0, 190, 80
 CAPTION "Öntanımlı Makro Ekle"
-
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1119,7 +1116,6 @@ FONT 9, "MS Shell Dlg"
     DEFPUSHBUTTON "Tamam", IDOK, 195, 145, 60, 14
     PUSHBUTTON "İptal", IDCANCEL, 260, 145, 60, 14
     PUSHBUTTON "Tümünü &Sil", psh6, 5, 145, 79, 14
-
 }
 
 IDD_ADDDLGINIT DIALOG 0, 0, 184, 137
@@ -1385,9 +1381,9 @@ FILESUBTYPE     0x0
 //////////////////////////////////////////////////////////////////////////////
 // RISOHTEMPLATE
 
-4 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_4.bin"
+4 RISOHTEMPLATE "res/1055_RISOHTEMPLATE_4.bin"
 
-5 RISOHTEMPLATE "res/1033_RISOHTEMPLATE_5.bin"
+5 RISOHTEMPLATE "res/1055_RISOHTEMPLATE_5.bin"
 
 //////////////////////////////////////////////////////////////////////////////
 // RT_STRING
