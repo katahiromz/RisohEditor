@@ -8585,6 +8585,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         return FALSE;
     }
 
+    // Check TEXTINCLUDE write protect
+    auto p_textinclude1 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+    if (p_textinclude1)
+    {
+        std::string str(p_textinclude1->m_data.begin(), p_textinclude1->m_data.end());
+        if (str.find("< ") != str.npos)
+        {
+            if (ErrorBoxDx(LoadStringDx(IDS_TEXTINCLUDEREADONLY), MB_ICONWARNING | MB_YESNOCANCEL) != IDYES)
+                return FALSE;
+        }
+    }
+
     // at first, backup it
     if (g_settings.bBackup)
         DoBackupFile(pszFileName);
@@ -8603,7 +8615,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     EntrySet textinclude;
     textinclude.add_default_TEXTINCLUDE();
 
-    auto p_textinclude1 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+    p_textinclude1 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
 
     auto p_textinclude2 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(2));
     if (!p_textinclude2)

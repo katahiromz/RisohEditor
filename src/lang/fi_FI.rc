@@ -1640,6 +1640,7 @@ STRINGTABLE
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
+    IDS_TEXTINCLUDEREADONLY, "Tämä tiedosto on kirjoitussuojattu tekstillä TEXTINCLUDE.\r\n\r\nHaluatko silti kirjoittaa tiedostoon?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1644,6 +1644,7 @@ STRINGTABLE
     IDS_TRANSLATORS, "[Çevirmenler]\r\nİngilizce: Katayama Hirofumi MZ\r\nFince: Veikko Muurikainen\r\nEndonezce: Mas Ahmad Muhammad\r\nİtalyanca: R.B.\r\nJaponca: Katayama Hirofumi MZ\r\nKorece: VenusGirl (비너스걸)\r\nLehçe: Piotr Hetnarowicz\r\nPortekizce: JNylson\r\nRusça: Dmitry Yerokhin\r\nBasitleştirilmiş Çince: 林鸿湘\r\nİspanyolca: Cristobal Prieto\r\nTürkçe: OnurGVNGL"
     IDS_EXPORTFILTER, "RC Dosyaları (*.rc)|*.rc|İkili Kaynaklar (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
+    IDS_TEXTINCLUDEREADONLY, "Bu dosya TEXTINCLUDE tarafından yazmaya karşı korumalıdır.\r\n\r\nDosyaya hala yazmak istiyor musunuz?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

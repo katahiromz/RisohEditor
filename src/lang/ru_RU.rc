@@ -1640,6 +1640,7 @@ STRINGTABLE
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "RC-файлы (*.rc)|*.rc|Двоичные ресурсы (*.res)|*.res|"
     IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
+    IDS_TEXTINCLUDEREADONLY, "Этот файл защищен от записи TEXTINCLUDE.\r\n\r\nВы все еще хотите записать в файл?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
