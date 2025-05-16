@@ -1783,10 +1783,19 @@ MStringW DumpTextInclude(const EntryBase& entry)
             }
             for (auto& line : lines)
             {
+                // Remove trailing NUL, '\r', '\n'
+                while (line.size() &&
+                    (line[line.size() - 1] == 0 ||
+                     line[line.size() - 1] == '\r' ||
+                     line[line.size() - 1] == '\n'))
+                {
+                    line = line.substr(0, line.size() - 1);
+                }
+
                 str += L"    ";
                 {
                     MAnsiToWide a2w(CP_UTF8, line.c_str(), line.size());
-                    str += mstr_quote(a2w.str() + L"\n");
+                    str += mstr_quote(a2w.str() + L"\r\n");
                 }
                 str += L"\r\n";
             }
