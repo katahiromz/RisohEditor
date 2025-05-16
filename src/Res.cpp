@@ -116,6 +116,8 @@ BOOL EntryBase::is_editable(LPCWSTR pszVCBat) const
         }
         if (type == L"TYPELIB" && PathFileExistsW(pszVCBat))
             return TRUE;
+        if (type == L"TEXTINCLUDE" && (m_name.m_id != 1))
+            return TRUE;
         return FALSE;
     case ET_STRING:
         return TRUE;
