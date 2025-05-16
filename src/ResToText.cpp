@@ -1745,14 +1745,14 @@ CreateBitmapFromCursorsDx(HWND hwnd, const EntryBase& entry)
 MStringW DumpTextInclude(const EntryBase& entry)
 {
     MStringW str;
-    MStringW data(entry.m_data.begin(), entry.m_data.end());
+    MStringA data(entry.m_data.begin(), entry.m_data.end());
 
     while (data.size() && data[data.size() - 1] == 0)
     {
         data = data.substr(0, data.size() - 1);
     }
 
-    MStringW nul;
+    MStringA nul;
     nul.append(1, 0);
 
     switch (entry.m_name.m_id)
@@ -1763,7 +1763,10 @@ MStringW DumpTextInclude(const EntryBase& entry)
         str += generate_begin() + L"\r\n";
         str += L"    ";
         data += nul;
-        str += mstr_quote(data);
+        {
+            MAnsiToWide a2w(CP_UTF8, data.c_str(), data.size());
+            str += mstr_quote(a2w.str());
+        }
         str += L"\r\n";
         str += generate_end() + L"\r\n";
         break;
@@ -1772,8 +1775,8 @@ MStringW DumpTextInclude(const EntryBase& entry)
         str += L" TEXTINCLUDE\r\n";
         str += generate_begin() + L"\r\n";
         {
-            std::vector<MStringW> lines;
-            mstr_split(lines, data, L"\n");
+            std::vector<MStringA> lines;
+            mstr_split(lines, data, "\n");
             if (lines.size() && lines[lines.size() - 1].empty())
             {
                 lines.resize(lines.size() - 1);
@@ -1781,7 +1784,10 @@ MStringW DumpTextInclude(const EntryBase& entry)
             for (auto& line : lines)
             {
                 str += L"    ";
-                str += mstr_quote(line + L"\n");
+                {
+                    MAnsiToWide a2w(CP_UTF8, line.c_str(), line.size());
+                    str += mstr_quote(a2w.str() + L"\n");
+                }
                 str += L"\r\n";
             }
         }
