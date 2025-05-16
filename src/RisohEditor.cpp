@@ -8016,7 +8016,8 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
             else if (
                 lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
-                lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0)
+                lstrcmpiW(pch, L".scr") == 0 || lstrcmpiW(pch, L".mui") == 0 ||
+                lstrcmpiW(pch, L".ime") == 0)
             {
                 nFilterIndex = LFI_EXECUTABLE;
             }
@@ -9674,7 +9675,7 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
         PathAddExtensionW(szPath, L".rc");
         return DoExportRC(szPath, NULL);
     }
-    return FALSE;
+    return DoSaveExeAs(pszFile);
 }
 
 // save the file
