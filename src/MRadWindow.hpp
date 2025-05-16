@@ -167,7 +167,8 @@ public:
         for (auto target : targets)
         {
             auto pCtrl = MRadCtrl::GetRadCtrl(target);
-            indeces.insert(pCtrl->m_nIndex);
+            if (pCtrl)
+                indeces.insert(pCtrl->m_nIndex);
         }
         return indeces;
     }

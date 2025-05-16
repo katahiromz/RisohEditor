@@ -677,3 +677,4 @@
     - EXEファイルにデジタル署名を追加。
     - トルコ語翻訳を追加。
     - TEXTINCLUDE 2 と TEXTINCLUDE 3 をサポート。
+    - MRadWindow のクラッシュを修正。
