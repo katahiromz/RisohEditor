@@ -1,4 +1,4 @@
-// RisohEditor.cpp --- RisohEditor
+﻿// RisohEditor.cpp --- RisohEditor
 //////////////////////////////////////////////////////////////////////////////
 // RisohEditor --- Another free Win32 resource editor
 // Copyright (C) 2017-2021 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
@@ -7722,7 +7722,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
     EntrySet res2;
     DoLoadRCEx(hwnd, szPath, res2, TRUE);
 
-    // TEXTINCLUDE 3 �̍��ڂ�����΁ATEXTINCLUDE 3 �̍��ڂ��������A�����Ȃ����A�����ꂩ�̏������s���B
+    // TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
     enum {
         INCLUDE_TEXTINCLUDE3_YES = 1,
         INCLUDE_TEXTINCLUDE3_NO = 0,
@@ -7731,7 +7731,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 retry:
     for (auto& entry1 : res1)
     {
-        // res2 �̒��� res1 �ƈ�v���鍀�ڂ����邩�m�F����B
+        // res2 の中に res1 と一致する項目があるか確認する。
         bool exists_in_res2 = false;
         for (auto& entry2 : res2)
         {
@@ -7744,10 +7744,10 @@ retry:
             }
         }
 
-        // ���݂��Ȃ��A���� TEXTINCLUDE�ł͂Ȃ��ꍇ�A
+        // 存在しない、かつ TEXTINCLUDEではない場合、
         if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
         {
-            // ���[�U�[�� TEXTINCLUDE 3 ����荞�ނ��₢�������B
+            // ユーザーに TEXTINCLUDE 3 を取り込むか問いただす。
             if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_UNKNOWN)
             {
                 INT id = ErrorBoxDx(IDS_INCLUDETEXTINCLUDE3, MB_YESNOCANCEL);
@@ -7759,7 +7759,7 @@ retry:
                     return FALSE;
             }
 
-            // ��荞�܂Ȃ��ꍇ�́A�Y�����ڂ��폜���Ă�蒼���B
+            // 取り込まない場合は、該当項目を削除してやり直し。
             if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
             {
                 res1.erase(entry1);
