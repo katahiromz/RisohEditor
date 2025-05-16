@@ -351,6 +351,7 @@
 #define IDS_NOSELECTION                     348
 #define IDS_TRANSLATORS                     349
 #define IDS_EXPORTFILTER                    350
+#define IDS_GENERATEDFROM                   351
 
 #define ID_NEW                              100
 #define ID_OPEN                             101

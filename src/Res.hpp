@@ -289,6 +289,16 @@ struct EntryBase
     {
         return &m_data[index];
     }
+    std::string to_string() const
+    {
+        std::string str((const char *)ptr(), size());
+        return str;
+    }
+    std::wstring to_wstring() const
+    {
+        std::wstring str((const wchar_t *)ptr(), size() / sizeof(WCHAR));
+        return str;
+    }
 
     // assign the data
     void assign(const data_type& data)
@@ -788,6 +798,8 @@ public:
         const MString& strWindresExe, const MString& strCppExe,
         const MString& strMcdxExe, const MStringW& strMacrosDump,
         const MStringW& strIncludesDump);
+
+    void add_default_TEXTINCLUDE();
 };
 
 // g_res

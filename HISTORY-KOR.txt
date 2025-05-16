@@ -333,3 +333,4 @@
 - v.5.8.8 (2025-XX-YY)
     - Added digital sign to EXE files.
     - Added Turkish translation.
+    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.

@@ -1925,3 +1925,32 @@ BOOL EntrySet::load_rc(LPCWSTR pszRCFile, MStringA& strOutput,
 
     return bSuccess;
 }
+
+void EntrySet::add_default_TEXTINCLUDE()
+{
+    EntryBase::data_type data;
+
+    MStringA str1 =
+        "resource.h"
+        "\0";
+    data.resize(str1.size());
+    std::memcpy(data.data(), str1.data(), str1.size());
+    add_lang_entry(L"TEXTINCLUDE", 1, 0, data);
+
+    MStringA str2 =
+        "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+        "#include <windows.h>\r\n"
+        "#include <commctrl.h>\r\n"
+        "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+        "\0";
+    data.resize(str2.size());
+    std::memcpy(data.data(), str2.data(), str2.size());
+    add_lang_entry(L"TEXTINCLUDE", 2, 0, data);
+
+    MStringA str3 =
+        "\r\n"
+        "\0";
+    data.resize(str3.size());
+    std::memcpy(data.data(), str3.data(), str3.size());
+    add_lang_entry(L"TEXTINCLUDE", 3, 0, data);
+}

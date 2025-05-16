@@ -2386,7 +2386,7 @@ public:
     BOOL DoLoadResH(HWND hwnd, LPCTSTR pszFile);
     void DoLoadLangInfo(VOID);
     BOOL DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex = 0, BOOL bForceDecompress = FALSE);
-    BOOL DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res);
+    BOOL DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res, BOOL bApStudio = FALSE);
     BOOL DoLoadRES(HWND hwnd, LPCWSTR szPath);
     BOOL DoLoadRC(HWND hwnd, LPCWSTR szPath);
     BOOL DoLoadEXE(HWND hwnd, LPCWSTR pszPath, BOOL bForceDecompress);
@@ -2464,7 +2464,7 @@ protected:
     BOOL ParseMacros(HWND hwnd, LPCTSTR pszFile, const std::vector<MStringA>& macros, MStringA& str);
     BOOL UnloadResourceH(HWND hwnd);
     void SetErrorMessage(const MStringA& strOutput, BOOL bBox = FALSE);
-    MStringW GetMacroDump() const;
+    MStringW GetMacroDump(BOOL bApStudio = FALSE) const;
     MStringW GetIncludesDump() const;
     MStringW GetIncludesDumpForWindres() const;
     void ReadResHLines(FILE *fp, std::vector<MStringA>& lines);
@@ -6678,7 +6678,7 @@ void MMainWnd::SelectTV(EntryBase *entry, BOOL bDoubleClick, STV stv)
 }
 
 // dump all the macros
-MStringW MMainWnd::GetMacroDump() const
+MStringW MMainWnd::GetMacroDump(BOOL bApStudio) const
 {
     MStringW ret;
     for (auto& macro : g_settings.macros)   // for each predefined macros
@@ -6692,6 +6692,10 @@ MStringW MMainWnd::GetMacroDump() const
             ret += macro.second;
         }
     }
+
+    if (bApStudio)
+        ret += L" -DAPSTUDIO_INVOKED=1";
+
     ret += L" ";
     return ret;
 }
@@ -7706,12 +7710,58 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
     if (g_settings.bAutoLoadNearbyResH)
         CheckResourceH(hwnd, szPath);
 
-    // load the RC file to the res variable
-    EntrySet res;
-    if (!DoLoadRCEx(hwnd, szPath, res))
+    // load the RC file to the res1 variable
+    EntrySet res1;
+    if (!DoLoadRCEx(hwnd, szPath, res1, FALSE))
     {
         ErrorBoxDx(IDS_CANNOTOPEN);
         return FALSE;
+    }
+
+    // load the RC file with APSTUDIO_INVOKED
+    EntrySet res2;
+    DoLoadRCEx(hwnd, szPath, res2, TRUE);
+
+retry:
+    for (auto& entry1 : res1)
+    {
+        bool exists_in_res2 = false;
+        for (auto& entry2 : res2)
+        {
+            if (entry2->m_type == entry1->m_type &&
+                entry2->m_name == entry1->m_name &&
+                entry2->m_lang == entry1->m_lang)
+            {
+                exists_in_res2 = true;
+                break;
+            }
+        }
+        if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
+        {
+            res1.erase(entry1);
+            goto retry;
+        }
+    }
+
+    // Merge TEXTINCLUDE
+    EntrySet found;
+    res2.search(found, ET_LANG, L"TEXTINCLUDE");
+    if (found.size())
+    {
+        // TEXTINCLUDE should be MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
+        for (auto& entry : found)
+        {
+            if (entry->m_type == L"TEXTINCLUDE")
+                entry->m_lang = 0;
+        }
+        res1.merge(found);
+    }
+
+    // TEXTINCLUDE must be MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
+    for (auto& entry : res1)
+    {
+        if (entry->m_type == L"TEXTINCLUDE")
+            entry->m_lang = 0;
     }
 
     // load it now
@@ -7721,10 +7771,10 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 
         // renewal
         g_res.delete_all();
-        g_res.merge(res);
+        g_res.merge(res1);
 
         // clean up
-        res.delete_all();
+        res1.delete_all();
     }
     m_bLoading = FALSE;
 
@@ -8070,14 +8120,14 @@ BOOL MMainWnd::CheckResourceH(HWND hwnd, LPCTSTR pszPath)
 }
 
 // load an RC file
-BOOL MMainWnd::DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res)
+BOOL MMainWnd::DoLoadRCEx(HWND hwnd, LPCWSTR szRCFile, EntrySet& res, BOOL bApStudio)
 {
     // load the RC file to the res variable
     MStringA strOutput;
     BOOL bOK = res.load_rc(szRCFile, strOutput, m_szWindresExe,
-                           m_szMCppExe, m_szMcdxExe, GetMacroDump(),
+                           m_szMCppExe, m_szMcdxExe, GetMacroDump(bApStudio),
                            GetIncludesDump());
-    if (!bOK)
+    if (!bOK && !bApStudio)
     {
         // failed. show error message
         if (strOutput.empty())
@@ -8509,6 +8559,13 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
     return DoWriteRC(pszFileName, pszResH, found);
 }
 
+std::wstring generated_from(INT n)
+{
+    WCHAR szText[MAX_PATH];
+    StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_GENERATEDFROM), n);
+    return szText;
+}
+
 // write a RC file
 BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& found)
 {
@@ -8541,6 +8598,30 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     WCHAR szTitle[MAX_PATH];
     GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
 
+    // Merge TEXTINCLUDE data
+    EntrySet textinclude;
+    textinclude.add_default_TEXTINCLUDE();
+
+    auto p_textinclude1 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(1));
+
+    auto p_textinclude2 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(2));
+    if (!p_textinclude2)
+        p_textinclude2 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(2));
+
+    auto p_textinclude3 = found.find(ET_LANG, L"TEXTINCLUDE", WORD(3));
+    if (!p_textinclude3)
+        p_textinclude3 = textinclude.find(ET_LANG, L"TEXTINCLUDE", WORD(3));
+
+    std::string textinclude2_a;
+    if (p_textinclude2)
+        textinclude2_a = p_textinclude2->to_string();
+    MAnsiToWide textinclude2_w(CP_UTF8, textinclude2_a.c_str());
+
+    std::string textinclude3_a;
+    if (p_textinclude3)
+        textinclude3_a = p_textinclude3->to_string();
+    MAnsiToWide textinclude3_w(CP_UTF8, textinclude3_a.c_str());
+
     // dump heading
     if (bRCFileUTF16)
     {
@@ -8548,14 +8629,35 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 
         file.WriteSzW(LoadStringDx(IDS_NOTICE));
         file.WriteSzW(LoadStringDx(IDS_DAGGER));
-        file.WriteSzW(L"\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(L"\r\n");
+        }
 
         if (pszResH && pszResH[0])
+        {
             file.WriteSzW(L"#include \"resource.h\"\r\n");
-        file.WriteSzW(L"#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
-        file.WriteSzW(L"#include <windows.h>\r\n");
-        file.WriteSzW(L"#include <commctrl.h>\r\n");
-        file.WriteSzW(L"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        }
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(L"\r\n");
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(generated_from(2).c_str());
+            file.WriteSzW(L"\r\n");
+        }
+
+        file.WriteSzW(textinclude2_w.c_str());
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(L"\r\n");
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(L"\r\n");
+        }
+
         file.WriteSzW(L"#pragma code_page(65001) // UTF-8\r\n\r\n");
 
         if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
@@ -8572,16 +8674,39 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 
         MWideToAnsi utf8Notice(CP_UTF8, LoadStringDx(IDS_NOTICE));
         MWideToAnsi utf8Dagger(CP_UTF8, LoadStringDx(IDS_DAGGER));
+        MWideToAnsi utf8CommentSep(CP_UTF8, LoadStringDx(IDS_COMMENT_SEP));
         file.WriteSzA(utf8Notice.c_str());
         file.WriteSzA(utf8Dagger.c_str());
-        file.WriteSzA("\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzA(utf8CommentSep.c_str());
+            file.WriteSzA("\r\n");
+        }
 
         if (pszResH && pszResH[0])
+        {
             file.WriteSzA("#include \"resource.h\"\r\n");
-        file.WriteSzA("#define APSTUDIO_HIDDEN_SYMBOLS\r\n");
-        file.WriteSzA("#include <windows.h>\r\n");
-        file.WriteSzA("#include <commctrl.h>\r\n");
-        file.WriteSzA("#undef APSTUDIO_HIDDEN_SYMBOLS\r\n");
+        }
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzA("\r\n");
+            file.WriteSzA(utf8CommentSep.c_str());
+            MWideToAnsi w2a(CP_UTF8, generated_from(2).c_str());
+            file.WriteSzA(w2a.c_str());
+            file.WriteSzA("\r\n");
+        }
+
+        file.WriteSzA(textinclude2_a.c_str());
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzA("\r\n");
+            file.WriteSzA(utf8CommentSep.c_str());
+            file.WriteSzA("\r\n");
+        }
+
         file.WriteSzA("#pragma code_page(65001) // UTF-8\r\n\r\n");
 
         if (g_settings.bUseIDC_STATIC && !g_settings.bHideID)
@@ -8723,8 +8848,18 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
         }
     }
 
+    bool bHasNonNeutral = false;
+    for (auto& entry : found)
+    {
+        if (entry->m_lang != 0)
+        {
+            bHasNonNeutral = true;
+            break;
+        }
+    }
+
     // dump language includes
-    if (g_settings.bSepFilesByLang)
+    if (g_settings.bSepFilesByLang && bHasNonNeutral)
     {
         // write a C++ comment to make a section
         if (g_settings.bRedundantComments)
@@ -8840,30 +8975,43 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 
     if (bRCFileUTF16)
     {
+        file.WriteSzW(L"LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL\r\n\r\n");
         file.WriteSzW(L"#ifdef APSTUDIO_INVOKED\r\n\r\n");
 
-        // write three TEXTINCLUDE's
-        file.WriteSzW(L"1 TEXTINCLUDE\r\n");
-        file.WriteSzW(L"BEGIN\r\n");
-        file.WriteSzW(L"    \"resource.h\\0\"\r\n");
-        file.WriteSzW(L"END\r\n\r\n");
+        if (p_textinclude1)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude1);
+            file.WriteSzW(str.c_str());
+            file.WriteSzW(L"\r\n");
+        }
 
-        file.WriteSzW(L"2 TEXTINCLUDE\r\n");
-        file.WriteSzW(L"BEGIN\r\n");
-        file.WriteSzW(L"    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-        file.WriteSzW(L"    \"#include <windows.h>\\r\\n\"\r\n");
-        file.WriteSzW(L"    \"#include <commctrl.h>\\r\\n\"\r\n");
-        file.WriteSzW(L"    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-        file.WriteSzW(L"    \"\\0\"\r\n");
-        file.WriteSzW(L"END\r\n\r\n");
+        if (p_textinclude2)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude2);
+            file.WriteSzW(str.c_str());
+            file.WriteSzW(L"\r\n");
+        }
 
-        file.WriteSzW(L"3 TEXTINCLUDE\r\n");
-        file.WriteSzW(L"BEGIN\r\n");
-        file.WriteSzW(L"    \"\\r\\n\"\r\n");
-        file.WriteSzW(L"    \"\\0\"\r\n");
-        file.WriteSzW(L"END\r\n\r\n");
+        if (p_textinclude3)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude3);
+            file.WriteSzW(str.c_str());
+            file.WriteSzW(L"\r\n");
+        }
 
-        file.WriteSzW(L"#endif    // APSTUDIO_INVOKED\r\n");
+        file.WriteSzW(L"#endif // def APSTUDIO_INVOKED\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzW(L"\r\n");
+            file.WriteSzW(LoadStringDx(IDS_COMMENT_SEP));
+            file.WriteSzW(generated_from(3).c_str());
+            file.WriteSzW(L"\r\n");
+        }
+
+        file.WriteSzW(L"#ifndef APSTUDIO_INVOKED\r\n");
+        file.WriteSzW(textinclude3_w.c_str());
+        file.WriteSzW(L"#endif // ndef APSTUDIO_INVOKED\r\n");
 
         if (g_settings.bRedundantComments)
         {
@@ -8873,30 +9021,49 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     }
     else
     {
+        file.WriteSzA("LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL\r\n\r\n");
         file.WriteSzA("#ifdef APSTUDIO_INVOKED\r\n\r\n");
 
-        // write three TEXTINCLUDE's
-        file.WriteSzA("1 TEXTINCLUDE\r\n");
-        file.WriteSzA("BEGIN\r\n");
-        file.WriteSzA("    \"resource.h\\0\"\r\n");
-        file.WriteSzA("END\r\n\r\n");
+        if (p_textinclude1)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude1);
+            MWideToAnsi strA(CP_UTF8, str.c_str());
+            file.WriteSzA(strA.c_str());
+            file.WriteSzA("\r\n");
+        }
 
-        file.WriteSzA("2 TEXTINCLUDE\r\n");
-        file.WriteSzA("BEGIN\r\n");
-        file.WriteSzA("    \"#define APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-        file.WriteSzA("    \"#include <windows.h>\\r\\n\"\r\n");
-        file.WriteSzA("    \"#include <commctrl.h>\\r\\n\"\r\n");
-        file.WriteSzA("    \"#undef APSTUDIO_HIDDEN_SYMBOLS\\r\\n\"\r\n");
-        file.WriteSzA("    \"\\0\"\r\n");
-        file.WriteSzA("END\r\n\r\n");
+        if (p_textinclude2)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude2);
+            MWideToAnsi strA(CP_UTF8, str.c_str());
+            file.WriteSzA(strA.c_str());
+            file.WriteSzA("\r\n");
+        }
 
-        file.WriteSzA("3 TEXTINCLUDE\r\n");
-        file.WriteSzA("BEGIN\r\n");
-        file.WriteSzA("    \"\\r\\n\"\r\n");
-        file.WriteSzA("    \"\\0\"\r\n");
-        file.WriteSzA("END\r\n\r\n");
+        if (p_textinclude3)
+        {
+            auto str = res2text.DumpEntry(*p_textinclude3);
+            MWideToAnsi strA(CP_UTF8, str.c_str());
+            file.WriteSzA(strA.c_str());
+            file.WriteSzA("\r\n");
+        }
 
-        file.WriteSzA("#endif    // APSTUDIO_INVOKED\r\n");
+        file.WriteSzA("#endif // def APSTUDIO_INVOKED\r\n");
+
+        if (g_settings.bRedundantComments)
+        {
+            file.WriteSzA("\r\n");
+            file.WriteSzA(comment_sep.c_str());
+
+            MWideToAnsi w2a(CP_UTF8, generated_from(3).c_str());
+            file.WriteSzA(w2a.c_str());
+
+            file.WriteSzA("\r\n");
+        }
+
+        file.WriteSzA("#ifndef APSTUDIO_INVOKED\r\n");
+        file.WriteSzA(textinclude3_a.c_str());
+        file.WriteSzA("#endif // ndef APSTUDIO_INVOKED\r\n");
 
         if (g_settings.bRedundantComments)
         {
@@ -9427,6 +9594,8 @@ BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet&
                 continue;
             if (e->m_type == RT_MESSAGETABLE && !g_settings.bUseMSMSGTABLE)
                 continue;
+            if (e->m_type == L"TEXTINCLUDE")
+                continue;
             if (!DoExtract(e, TRUE))
                 return FALSE;
         }
@@ -9835,7 +10004,7 @@ IMPORT_RESULT MMainWnd::DoImportRC(HWND hwnd, LPCWSTR pszFile)
 
     // load the RC file to the res variable
     EntrySet res;
-    if (!DoLoadRCEx(hwnd, pszFile, res))
+    if (!DoLoadRCEx(hwnd, pszFile, res, FALSE))
     {
         ErrorBoxDx(IDS_CANNOTIMPORT);
         return IMPORT_FAILED;

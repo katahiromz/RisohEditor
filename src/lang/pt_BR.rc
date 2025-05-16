@@ -1585,7 +1585,7 @@ STRINGTABLE
     IDS_TIFFRESBINFILTER, "Imagem TIFF (*.tif;*.tiff)|*.tif;*.tiff|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
     IDS_AVIRESBINFILTER, "Filme AVI (*.avi)|*.avi|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
     IDS_WAVERESBINFILTER, "Som WAVE (*.wav)|*.wav|Recursos Binários (*.res)|*.res|Arquivos Binários (*.bin)|*.bin|Todos os Arquivos (*.*)|*.*|"
-    IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
+    IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Este arquivo é gerado automaticamente por RisohEditor 5.8.8.\r\n"
     IDS_DAGGER, "// † <-- Esta adaga ajuda na detecção de UTF-8.\r\n"
@@ -1642,6 +1642,7 @@ STRINGTABLE
     IDS_NOSELECTION, "Não há seleção."
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "Arquivos RC (*.rc)|*.rc|Recursos Binários (*.res)|*.res|"
+    IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////

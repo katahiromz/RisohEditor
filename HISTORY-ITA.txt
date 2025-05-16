@@ -332,3 +332,4 @@
 - v.5.8.8 (DD.MM.2025)
     - Aggiunta firma digitale ai file EXE.
     - Aggiunta traduzione turca.
+    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.

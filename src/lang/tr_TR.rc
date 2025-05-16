@@ -1586,7 +1586,7 @@ STRINGTABLE
     IDS_TIFFRESBINFILTER, "TIFF Görseli (*.tif;*.tiff)|*.tif;*.tiff|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_AVIRESBINFILTER, "AVI Filmi (*.avi)|*.avi|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
     IDS_WAVERESBINFILTER, "WAVE Sesi (*.wav)|*.wav|İkili Kaynaklar (*.res)|*.res|İkili Dosyalar (*.bin)|*.bin|Tüm Dosyalar (*.*)|*.*|"
-    IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n\r\n"
+    IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Bu dosya RisohEditor 5.8.8 tarafından otomatik olarak oluşturulmuştur.\r\n"
     IDS_DAGGER, "// † <-- Bu haç işareti UTF-8 tespiti için yardımcı olur.\r\n"
@@ -1643,6 +1643,7 @@ STRINGTABLE
     IDS_NOSELECTION, "Seçim yok."
     IDS_TRANSLATORS, "[Çevirmenler]\r\nİngilizce: Katayama Hirofumi MZ\r\nFince: Veikko Muurikainen\r\nEndonezce: Mas Ahmad Muhammad\r\nİtalyanca: R.B.\r\nJaponca: Katayama Hirofumi MZ\r\nKorece: VenusGirl (비너스걸)\r\nLehçe: Piotr Hetnarowicz\r\nPortekizce: JNylson\r\nRusça: Dmitry Yerokhin\r\nBasitleştirilmiş Çince: 林鸿湘\r\nİspanyolca: Cristobal Prieto\r\nTürkçe: OnurGVNGL"
     IDS_EXPORTFILTER, "RC Dosyaları (*.rc)|*.rc|İkili Kaynaklar (*.res)|*.res|"
+    IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
 }
 
 //////////////////////////////////////////////////////////////////////////////
