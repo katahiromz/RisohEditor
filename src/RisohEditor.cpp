@@ -16365,7 +16365,7 @@ MString GetLanguageStatement(WORD langid, BOOL bOldStyle)
 }
 
 // get the RISOHTEMPLATE text
-MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
+MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang)
 {
     // get this application module
     HINSTANCE hInst = GetModuleHandle(NULL);
@@ -16375,23 +16375,24 @@ MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang)
         return L"";    // failure
     }
 
+    MIdOrString name0 = type;
+    if (type == L"TEXTINCLUDE")
+        name0 = (L"TEXTINCLUDE" + name.str()).c_str();
+
     // try to find the RISOHTEMPLATE resource
     WORD LangID = PRIMARYLANGID(wLang);
     HRSRC hRsrc = NULL;
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), wLang);
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), wLang);
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LangID, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+    if (hRsrc == NULL)        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
+        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", name0.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
     if (hRsrc == NULL)
-        hRsrc = FindResourceExW(hInst, L"RISOHTEMPLATE", type.ptr(), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
-    if (hRsrc == NULL)
-    {
         return L"";
-    }
 
     // get the pointer and byte size
     HGLOBAL hGlobal = LoadResource(hInst, hRsrc);

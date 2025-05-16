@@ -21,7 +21,7 @@ BYTE GetCharSetFromComboBox(HWND hCmb);
 DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
 MString GetAssoc(const MString& name);
 MString GetLanguageStatement(WORD langid, BOOL bOldStyle);
-MStringW GetRisohTemplate(const MIdOrString& type, WORD wLang);
+MStringW GetRisohTemplate(const MIdOrString& type, const MIdOrString& name, WORD wLang);
 MStringW TextFromLang(WORD lang);
 WORD LangFromText(LPWSTR pszLang);
 std::vector<INT> GetPrefixIndexes(const MString& prefix);

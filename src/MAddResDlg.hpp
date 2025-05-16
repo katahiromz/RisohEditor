@@ -118,9 +118,9 @@ public:
         return FALSE;
     }
 
-    bool HasSample(const MIdOrString& type, WORD wLang) const
+    bool HasSample(const MIdOrString& type, const MIdOrString& name, WORD wLang) const
     {
-        return !GetRisohTemplate(type, wLang).empty();
+        return !GetRisohTemplate(type, name, wLang).empty();
     }
 
     void OnOK(HWND hwnd)
@@ -188,7 +188,7 @@ public:
         HWND hEdt1 = GetDlgItem(hwnd, edt1);
 
         // if there is no sample for the type, check if the file path exists
-        if (!Edt1_CheckFile(hEdt1, file) && !HasSample(type, lang))
+        if (!Edt1_CheckFile(hEdt1, file) && !HasSample(type, name, lang))
         {
             Edit_SetSel(hEdt1, 0, -1);  // select all
             SetFocus(hEdt1);    // set focus
@@ -218,7 +218,7 @@ public:
         bool bAdded = false;
 
         // if there is sample and no file was specified, then
-        if (file.empty() && HasSample(type, lang))
+        if (file.empty() && HasSample(type, name, lang))
         {
             bTemplateToAdd = true;     // assume OK
 
@@ -228,10 +228,10 @@ public:
                 g_res.search_and_delete(ET_NAME, type, (WORD)0, lang);
             }
 
-            if (HasSample(type, lang))
+            if (HasSample(type, name, lang))
             {
                 // if the type has sample, then store the template text
-                m_strText = GetRisohTemplate(type, lang);
+                m_strText = GetRisohTemplate(type, name, lang);
             }
             else
             {
@@ -243,6 +243,12 @@ public:
             if (type == RT_STRING || type == RT_MESSAGETABLE)
             {
                 name = 1;   // it will be fixed later
+            }
+
+            // TEXTINCLUDE should be neutral
+            if (type == L"TEXTINCLUDE")
+            {
+                lang = 0;
             }
 
             if (bTemplateToAdd)    // it's OK
@@ -381,7 +387,7 @@ public:
             type.m_str = std::move(strIDType);
         }
 
-        if (HasSample(type, m_lang))
+        if (HasSample(type, m_name, m_lang))
         {
             // if there is a sample for this type, the file path is optional
             SetDlgItemText(hwnd, stc2, LoadStringDx(IDS_OPTIONAL));
