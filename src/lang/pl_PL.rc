@@ -1639,7 +1639,7 @@ STRINGTABLE
     IDS_NOSELECTION, "Nie ma wyboru."
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "Pliki RC (*.rc)|*.rc|Zasoby binarne (*.res)|*.res|"
-    IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
+    IDS_GENERATEDFROMTEXTINCLUDE, "// Wygenerowano z TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Ten plik jest chroniony przed zapisem za pomocą TEXTINCLUDE.\r\n\r\nCzy nadal chcesz zapisać coś w pliku?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 zawiera elementy, których nie można edytować. Czy chcesz dodać TEXTINCLUDE 3?"
 }

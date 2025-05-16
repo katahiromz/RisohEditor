@@ -1642,7 +1642,7 @@ STRINGTABLE
     IDS_NOSELECTION, "선택 항목이 없습니다."
     IDS_TRANSLATORS, "[번역]\r\n한국어: VenusGirl-비너스걸❤\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "리소스 파일 (*.rc)|*.rc|바이너리 리소스 (*.res)|*.res|"
-    IDS_GENERATEDFROM, "// Generated from TEXTINCLUDE %u\r\n"
+    IDS_GENERATEDFROMTEXTINCLUDE, "// TEXTINCLUDE %u 에서 생성됨\r\n"
     IDS_TEXTINCLUDEREADONLY, "이 파일은 TEXTINCLUDE로 쓰기 보호되어 있습니다.\r\n\r\n그래도 파일에 쓰시겠습니까?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3에는 편집할 수 없는 항목이 포함되어 있지만 TEXTINCLUDE 3의 항목도 로드하시겠습니까?"
 }

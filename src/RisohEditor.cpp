@@ -8582,7 +8582,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH)
 std::wstring generated_from(INT n)
 {
     WCHAR szText[MAX_PATH];
-    StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_GENERATEDFROM), n);
+    StringCchPrintfW(szText, _countof(szText), LoadStringDx(IDS_GENERATEDFROMTEXTINCLUDE), n);
     return szText;
 }
 
