@@ -7722,7 +7722,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
     EntrySet res2;
     DoLoadRCEx(hwnd, szPath, res2, TRUE);
 
-    // TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
+    // TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
     enum {
         INCLUDE_TEXTINCLUDE3_YES = 1,
         INCLUDE_TEXTINCLUDE3_NO = 0,
@@ -7731,6 +7731,7 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
 retry:
     for (auto& entry1 : res1)
     {
+        // res2 の中に res1 と一致する項目があるか確認する。
         bool exists_in_res2 = false;
         for (auto& entry2 : res2)
         {
@@ -7742,8 +7743,11 @@ retry:
                 break;
             }
         }
+
+        // 存在しない、かつ TEXTINCLUDEではない場合、
         if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
         {
+            // ユーザーに TEXTINCLUDE 3 を取り込むか問いただす。
             if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_UNKNOWN)
             {
                 INT id = ErrorBoxDx(IDS_INCLUDETEXTINCLUDE3, MB_YESNOCANCEL);
@@ -7754,6 +7758,8 @@ retry:
                 else if (id == IDCANCEL)
                     return FALSE;
             }
+
+            // 取り込まない場合は、該当項目を削除してやり直し。
             if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
             {
                 res1.erase(entry1);

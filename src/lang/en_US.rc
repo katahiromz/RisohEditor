@@ -1641,7 +1641,7 @@ STRINGTABLE
     IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "RC Files (*.rc)|*.rc|Binary Resources (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generated from TEXTINCLUDE %u\r\n"
-    IDS_TEXTINCLUDEREADONLY, "This file is write protected by TEXTINCLUDE.\r\n\r\nDo you still want to write to the file?"
+    IDS_TEXTINCLUDEREADONLY, "This file is write protected by TEXTINCLUDE 1.\r\n\r\nDo you still want to write to the file?"
     IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contains items that cannot be edited. Do you want to load items in TEXTINCLUDE 3 as well?"
 }
 
