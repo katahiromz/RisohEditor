@@ -1641,7 +1641,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC-файлы (*.rc)|*.rc|Двоичные ресурсы (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Сгенерировано из TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Этот файл защищен от записи TEXTINCLUDE 1.\r\n\r\nВы все еще хотите записать в файл?"
-    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 содержит элементы, которые нельзя редактировать. Хотите ли вы включить TEXTINCLUDE 3?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 содержит элементы ресурсов, которые нельзя редактировать.\r\n\r\nХотите включить элементы в TEXTINCLUDE 3 как редактируемые элементы и сбросить TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

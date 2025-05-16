@@ -1641,7 +1641,7 @@ STRINGTABLE
     IDS_EXPORTFILTER, "RC-Dateien (*.rc)|*.rc|Binäre Ressourcen (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generiert aus TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Diese Datei ist durch TEXTINCLUDE 1 schreibgeschützt.\r\n\r\nMöchten Sie trotzdem in die Datei schreiben?"
-    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 enthält Elemente, die nicht bearbeitet werden können. Möchten Sie TEXTINCLUDE 3 einbinden?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 enthält Ressourcenelemente, die nicht bearbeitet werden können.\r\n\r\nMöchten Sie die Elemente in TEXTINCLUDE 3 als bearbeitbare Elemente einschließen und TEXTINCLUDE 3 zurücksetzen?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
