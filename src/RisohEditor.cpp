@@ -8611,7 +8611,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     WCHAR szTitle[MAX_PATH];
     GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
 
-    // Merge TEXTINCLUDE data
+    // Treat TEXTINCLUDE info
     EntrySet textinclude;
     textinclude.add_default_TEXTINCLUDE();
 
