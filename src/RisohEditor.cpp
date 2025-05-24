@@ -7718,58 +7718,60 @@ BOOL MMainWnd::DoLoadRC(HWND hwnd, LPCWSTR szPath)
         return FALSE;
     }
 
-    // load the RC file with APSTUDIO_INVOKED
-    EntrySet res2;
-    DoLoadRCEx(hwnd, szPath, res2, TRUE);
-
-    // TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
     enum {
         INCLUDE_TEXTINCLUDE3_YES = 1,
         INCLUDE_TEXTINCLUDE3_NO = 0,
         INCLUDE_TEXTINCLUDE3_UNKNOWN = -1,
     } include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_UNKNOWN;
-retry:
-    for (auto& entry1 : res1)
+
+    // Load the RC file with APSTUDIO_INVOKED
+    EntrySet res2;
+    if (DoLoadRCEx(hwnd, szPath, res2, TRUE))
     {
-        // res2 の中に res1 と一致する項目があるか確認する。
-        bool exists_in_res2 = false;
-        for (auto& entry2 : res2)
+        // TEXTINCLUDE 3 の項目があれば、TEXTINCLUDE 3 の項目を消すか、消さないか、いずれかの処理を行う。
+retry:
+        for (auto& entry1 : res1)
         {
-            if (entry2->m_type == entry1->m_type &&
-                entry2->m_name == entry1->m_name &&
-                entry2->m_lang == entry1->m_lang)
+            // res2 の中に res1 と一致する項目があるか確認する。
+            bool exists_in_res2 = false;
+            for (auto& entry2 : res2)
             {
-                exists_in_res2 = true;
-                break;
-            }
-        }
-
-        // 存在しない、かつ TEXTINCLUDEではない場合、
-        if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
-        {
-            // ユーザーに TEXTINCLUDE 3 を取り込むか問いただす。
-            if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_UNKNOWN)
-            {
-                INT id = ErrorBoxDx(IDS_INCLUDETEXTINCLUDE3, MB_YESNOCANCEL);
-                if (id == IDYES)
+                if (entry2->m_type == entry1->m_type &&
+                    entry2->m_name == entry1->m_name &&
+                    entry2->m_lang == entry1->m_lang)
                 {
-                    include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_YES;
-                }
-                else if (id == IDNO)
-                {
-                    include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_NO;
-                }
-                else if (id == IDCANCEL)
-                {
-                    return FALSE;
+                    exists_in_res2 = true;
+                    break;
                 }
             }
 
-            // 取り込まない場合は、該当項目を削除してやり直し。
-            if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
+            // 存在しない、かつ TEXTINCLUDEではない場合、
+            if (!exists_in_res2 && entry1->m_type != L"TEXTINCLUDE")
             {
-                res1.erase(entry1);
-                goto retry;
+                // ユーザーに TEXTINCLUDE 3 を取り込むか問いただす。
+                if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_UNKNOWN)
+                {
+                    INT id = ErrorBoxDx(IDS_INCLUDETEXTINCLUDE3, MB_YESNOCANCEL);
+                    if (id == IDYES)
+                    {
+                        include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_YES;
+                    }
+                    else if (id == IDNO)
+                    {
+                        include_textinclude3_flag = INCLUDE_TEXTINCLUDE3_NO;
+                    }
+                    else if (id == IDCANCEL)
+                    {
+                        return FALSE;
+                    }
+                }
+
+                // 取り込まない場合は、該当項目を削除してやり直し。
+                if (include_textinclude3_flag == INCLUDE_TEXTINCLUDE3_NO)
+                {
+                    res1.erase(entry1);
+                    goto retry;
+                }
             }
         }
     }
