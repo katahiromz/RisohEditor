@@ -43,7 +43,7 @@ ShowLanguageDialog=yes
 UsePreviousLanguage=no
 LanguageDetectionMethod=uilanguage
 
-DefaultDirName={pf}\{#MyAppName}64
+DefaultDirName={pf64}\{#MyAppName}64
 DefaultGroupName={#MyAppName} 64-bit
 DisableDirPage=no
 AllowNoIcons=yes
