@@ -331,8 +331,8 @@
     - 메인 아이콘이 개선되었습니다.
     - 아이콘/커서/비트맵/리소스 UI/UX 추가 기능이 개선되었습니다.
 - v.5.8.8 (2025-06-03)
-    - Added digital signature to EXE files.
-    - Added Turkish translation.
-    - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
-    - Fixed MRadWindow crash.
-    - Updated installers.
+    - EXE 파일에 디지털 서명을 추가했습니다.
+    - 튀르키예어 번역이 추가되었습니다.
+    - TEXTINCLUDE 2 및 TEXTINCLUDE 3을 지원합니다.
+    - MRadWindow 충돌을 수정했습니다.
+    - 설치 프로그램이 업데이트되었습니다.
