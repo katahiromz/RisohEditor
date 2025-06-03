@@ -330,7 +330,7 @@
     - 메모리 누수 및 핸들 누수를 감소합니다.
     - 메인 아이콘이 개선되었습니다.
     - 아이콘/커서/비트맵/리소스 UI/UX 추가 기능이 개선되었습니다.
-- v.5.8.8 (2025-XX-YY)
+- v.5.8.8 (2025-06-03)
     - Added digital signature to EXE files.
     - Added Turkish translation.
     - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.

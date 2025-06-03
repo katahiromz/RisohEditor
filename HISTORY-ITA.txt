@@ -329,7 +329,7 @@
     - Ridotte perdite di memoria e di gestione.
     - Migliorata icona principale.
     - Migliorati aggiunta icona/cursore/bitmap/risorsa UI/UX.
-- v.5.8.8 (DD.MM.2025)
+- v.5.8.8 (03.06.2025)
     - Aggiunta firma digitale ai file EXE.
     - Aggiunta traduzione turca.
     - Supportato TEXTINCLUDE 2 e TEXTINCLUDE 3.

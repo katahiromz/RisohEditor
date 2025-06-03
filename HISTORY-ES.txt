@@ -329,7 +329,7 @@
     - Reduced memory leaks and handle leaks.
     - Improved main icon.
     - Improved adding icon/cursor/bitmap/resource UI/UX.
-- v.5.8.8 (2025-XX-YY)
+- v.5.8.8 (2025-06-03)
     - Added digital signature to EXE files.
     - Added Turkish translation.
     - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
