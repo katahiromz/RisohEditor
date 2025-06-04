@@ -336,3 +336,4 @@
     - Fixed MRadWindow crash.
     - Updated installers.
 - v.5.8.9 (2025-XX-YY)
+    - Notified icon change on saving EXE file by SHChangeNotify.

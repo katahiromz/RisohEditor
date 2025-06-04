@@ -9917,6 +9917,10 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
         DoUpxCompress(m_szUpxExe, pszExeFile);
     }
 
+    // Notify change of file icon
+    SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATHW, pszExeFile, NULL);
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+
     // is there any resource ID?
     if (m_szResourceH[0] || !g_settings.id_map.empty())
     {

@@ -337,3 +337,4 @@
     - MRadWindow 충돌을 수정했습니다.
     - 설치 프로그램이 업데이트되었습니다.
 - v.5.8.9 (2025-XX-YY)
+    - Notified icon change on saving EXE file by SHChangeNotify.
