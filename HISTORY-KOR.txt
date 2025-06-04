@@ -336,3 +336,4 @@
     - TEXTINCLUDE 2 및 TEXTINCLUDE 3을 지원합니다.
     - MRadWindow 충돌을 수정했습니다.
     - 설치 프로그램이 업데이트되었습니다.
+- v.5.8.9 (2025-XX-YY)

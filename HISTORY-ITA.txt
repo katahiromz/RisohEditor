@@ -335,3 +335,4 @@
     - Supportati TEXTINCLUDE 2 e TEXTINCLUDE 3.
     - Corretto crash MRadWindow.
     - Aggiornati installer.
+- v.5.8.9 (2025-XX-YY)
