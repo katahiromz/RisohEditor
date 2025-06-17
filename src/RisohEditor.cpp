@@ -1191,18 +1191,6 @@ void InitMessageComboBox(HWND hCmb, const MString& strString)
 //////////////////////////////////////////////////////////////////////////////
 // languages
 
-// structure for language information
-struct LANG_ENTRY
-{
-    WORD LangID;    // language ID
-    MStringW str;   // string
-
-    // for sorting
-    bool operator<(const LANG_ENTRY& ent) const
-    {
-        return str < ent.str;
-    }
-};
 std::vector<LANG_ENTRY> g_langs;
 
 static BOOL CALLBACK
@@ -7685,12 +7673,37 @@ void MMainWnd::DoLoadLangInfo(VOID)
     {
         LANG_ENTRY entry;
         entry.LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
+        entry.str = L"Neutral";
+        g_langs.push_back(entry);
+
         entry.str = LoadStringDx(IDS_NEUTRAL);
         g_langs.push_back(entry);
     }
 
     // sort
     std::sort(g_langs.begin(), g_langs.end());
+}
+
+BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId)
+{
+    INT index = 0;
+    for (auto& lang : g_langs)
+    {
+        if (lang.LangID == wLangId)
+            break;
+        ++index;
+    }
+
+    if (index >= (INT)g_langs.size())
+        return FALSE;
+
+    index = ListBox_FindStringExact(hwnd, -1, g_langs[index].str.c_str());
+    if (index < 0)
+        return FALSE;
+
+    ListBox_SetCurSel(hwnd, index);
+    ListBox_SetTopIndex(hwnd, index);
+    return TRUE;
 }
 
 BOOL InitLangListBox(HWND hwnd)
@@ -12391,6 +12404,7 @@ BOOL MMainWnd::ShowLangArrow(BOOL bShow, HTREEITEM hItem)
         m_arrow.m_hwndMain = m_hwnd;
         m_arrow.SendMessageDx(MYWM_SETITEMRECT, 0, (LPARAM)&rc);
         ShowWindowAsync(m_arrow, SW_SHOWNOACTIVATE);
+        m_arrow.ChooseLang(entry->m_lang);
     }
     else
     {
@@ -12786,6 +12800,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
+                m_arrow.ChooseLang(new_lang);
                 DoSetFileModified(TRUE);
 
                 return TRUE;   // accept
@@ -12816,6 +12831,7 @@ LRESULT MMainWnd::OnNotify(HWND hwnd, int idFrom, NMHDR *pnmhdr)
                 }
 
                 DoRelangEntry(pszNewText, entry, old_lang, new_lang);
+                m_arrow.ChooseLang(new_lang);
                 DoSetFileModified(TRUE);
                 return TRUE;   // accept
             }

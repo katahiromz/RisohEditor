@@ -121,6 +121,20 @@ HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor)
 #include "MString.hpp"
 #include "MByteStream.hpp"
 
+// structure for language information
+struct LANG_ENTRY
+{
+    WORD LangID;    // language ID
+    MStringW str;   // string
+
+    // for sorting
+    bool operator<(const LANG_ENTRY& ent) const
+    {
+        return str < ent.str;
+    }
+};
+extern std::vector<LANG_ENTRY> g_langs;
+
 #include "AccelRes.hpp"
 #include "IconRes.hpp"
 #include "MenuRes.hpp"

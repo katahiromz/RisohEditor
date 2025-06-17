@@ -144,14 +144,21 @@ public:
     RECT m_rcItem;
     MDropdownListDlg m_dialog;
     HWND m_hwndMain;
+    LANGID m_wLangId;
 
-    MDropdownArrow()
+    MDropdownArrow() : m_wLangId(0)
     {
     }
 
     virtual LPCTSTR GetWndClassNameDx() const
     {
         return TEXT("MZC4 Dropdown Arrow");
+    }
+
+    BOOL ChooseLang(LANGID wLangId)
+    {
+        m_wLangId = wLangId;
+        return TRUE;
     }
 
     BOOL DoComplement(HWND hwnd, WPARAM wParam)
@@ -229,6 +236,8 @@ public:
 
             SetWindowPos(m_dialog, NULL, rcItem.left, y, 0, 0,
                 SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
+
+            ChooseLangListBoxLang(m_dialog.m_lst1, m_wLangId);
         }
 
         m_bDown = bShow;

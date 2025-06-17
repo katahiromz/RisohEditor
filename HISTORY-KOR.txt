@@ -338,3 +338,5 @@
     - 설치 프로그램이 업데이트되었습니다.
 - v.5.8.9 (2025-XX-YY)
     - Notified icon change on saving EXE file by SHChangeNotify.
+    - Added English "Neutral" entry to the language list.
+    - Fixed initial language list box selection.

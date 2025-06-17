@@ -16,6 +16,7 @@ BOOL CheckTypeComboBox(HWND hCmb1, MIdOrString& type);
 BOOL Cmb1_CheckKey(HWND hwnd, HWND hCmb1, BOOL bVirtKey, std::wstring& str);
 BOOL Edt1_CheckFile(HWND hEdt1, std::wstring& file);
 BOOL InitLangListBox(HWND hwnd);
+BOOL ChooseLangListBoxLang(HWND hwnd, LANGID wLangId);
 BOOL IsThereWndClass(const WCHAR *pszName);
 BYTE GetCharSetFromComboBox(HWND hCmb);
 DWORD AnalyseStyleDiff(DWORD dwValue, ConstantsDB::TableType& table, std::vector<BYTE>& old_sel, std::vector<BYTE>& new_sel);
