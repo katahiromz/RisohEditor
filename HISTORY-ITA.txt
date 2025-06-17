@@ -337,5 +337,5 @@
     - Aggiornati installer.
 - v.5.8.9 (2025-XX-YY)
     - Notifica modifica icona nel salvataggio del file EXE da SHChangeNotify.
-    - Added English "Neutral" entry to the language list.
-    - Fixed initial language list box selection.
+    - Aggiunta all'elenco lingue la voce "Neutral" inglese.
+    - Corretta selezione iniziale elenco lingue.
