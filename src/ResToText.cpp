@@ -392,12 +392,13 @@ ResToText::DoCursor(const EntryBase& entry)
 MString
 ResToText::DoBitmap(const EntryBase& entry)
 {
-    HBITMAP hbm = PackedDIB_CreateBitmap(&entry[0], entry.size());
+    BITMAP bm;
+    PackedDIB_GetInfo(&entry[0], entry.size(), bm);
     MString str;
 
     if (m_bHumanReadable)
     {
-        str += DumpBitmapInfo(hbm);
+        str += DumpBitmapInfo(bm);
         str += L"\r\n";
     }
 
@@ -409,7 +410,6 @@ ResToText::DoBitmap(const EntryBase& entry)
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
 
-    DeleteObject(hbm);
     return str;
 }
 
@@ -1351,6 +1351,13 @@ DumpBitmapInfo(HBITMAP hbm)
         return ret;
 
     ret = LoadStringPrintfDx(IDS_IMAGEINFO, bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
+    return ret;
+}
+
+MStringW
+DumpBitmapInfo(const BITMAP& bm)
+{
+    MStringW ret = LoadStringPrintfDx(IDS_IMAGEINFO, bm.bmWidth, bm.bmHeight, bm.bmBitsPixel);
     return ret;
 }
 

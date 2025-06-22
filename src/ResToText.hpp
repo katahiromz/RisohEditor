@@ -29,6 +29,7 @@
 HBITMAP CreateBitmapFromIconDx(HICON hIcon, INT width, INT height, BOOL bCursor);
 MStringW DumpIconInfo(const BITMAP& bm, BOOL bIcon = TRUE);
 MStringW DumpBitmapInfo(HBITMAP hbm);
+MStringW DumpBitmapInfo(const BITMAP& bm);
 MStringW DumpGroupIconInfo(const std::vector<BYTE>& data);
 MStringW DumpGroupCursorInfo(const std::vector<BYTE>& data);
 
