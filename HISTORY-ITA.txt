@@ -339,4 +339,4 @@
     - Notifica modifica icona nel salvataggio del file EXE da SHChangeNotify.
     - Aggiunta all'elenco lingue la voce "Neutral" inglese.
     - Corretta selezione iniziale elenco lingue.
-    - Correctly retrieving info of RLE Bitmap.
+    - Recupera correttamente le informazioni su bitmap RLE.
