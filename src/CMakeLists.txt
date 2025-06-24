@@ -6,6 +6,7 @@ add_library(libRisohEditor STATIC
     IconRes.cpp
     MenuRes.cpp
     MOleHost.cpp
+    MSplitterWnd.cpp
     PackedDIB.cpp
     Res.cpp
     ResToText.cpp

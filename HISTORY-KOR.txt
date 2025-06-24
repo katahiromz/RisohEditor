@@ -341,3 +341,4 @@
     - Added English "Neutral" entry to the language list.
     - Fixed initial language list box selection.
     - Correctly retrieving info of RLE Bitmap.
+    - Reduced flickering when moving the splitter.
