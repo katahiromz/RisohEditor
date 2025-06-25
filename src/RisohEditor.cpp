@@ -17457,13 +17457,12 @@ LANGID GetUILang(void)
     return LANGID(langid);
 }
 
-// the main function of the windows application
-extern "C"
-INT WINAPI
-wWinMain(HINSTANCE   hInstance,
-         HINSTANCE   hPrevInstance,
-         LPWSTR       lpCmdLine,
-         INT         nCmdShow)
+INT
+RisohEditor_Main(
+    HINSTANCE   hInstance,
+    HINSTANCE   hPrevInstance,
+    LPWSTR      lpCmdLine,
+    INT         nCmdShow)
 {
     SetEnvironmentVariableW(L"LANG", L"en_US");
     setlocale(LC_CTYPE, "");
@@ -17559,6 +17558,27 @@ wWinMain(HINSTANCE   hInstance,
 #endif
 
     return s_ret;
+}
+
+#include "WowFsRedirection.h"
+
+// the main function of the windows application
+extern "C"
+INT WINAPI
+wWinMain(HINSTANCE   hInstance,
+         HINSTANCE   hPrevInstance,
+         LPWSTR      lpCmdLine,
+         INT         nCmdShow)
+{
+    PVOID OldValue;
+    BOOL bWowFsDisabled = DisableWow64FsRedirection(&OldValue);
+
+    INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+
+    if (bWowFsDisabled)
+        RevertWow64FsRedirection(OldValue);
+
+    return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -341,3 +341,4 @@
     - Fixed initial language list box selection.
     - Correctly retrieving info of RLE Bitmap.
     - Reduced flickering when moving the splitter.
+    - Disabled WoW filesystem redirection.
