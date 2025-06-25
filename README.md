@@ -1,6 +1,6 @@
 ![CMake](https://github.com/katahiromz/RisohEditor/workflows/CMake/badge.svg)
 
-# ![](re-icon.png "") RisohEditor by katahiromz
+# ![](img/re-icon.png "") RisohEditor by katahiromz
 
 RisohEditor is a free resource editor for Win32 development, created by Katayama Hirofumi MZ.
 
