@@ -40,11 +40,9 @@ Pergunta 5. Qual é a diferença entre instalador e versão portátil?
 
   Resposta. A versão portátil não usa registro, mas um arquivo ini.
 
-Pergunta 6. Os arquivos de 64 bits são suportados?
+Questão 6. Suporta 64 bits?
 
-  Resposta. Sim no Windows 64 bits. No entanto, a camada de emulação WoW64 impede o 
-            carregamento disso "C:\Program Files" ou "C:\Windows\system32".
-            Você precisa copiar o arquivo de 64 bits para outro local antes de carregar.
+  Resposta. Sim, suporta.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

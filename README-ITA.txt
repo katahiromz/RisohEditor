@@ -41,11 +41,9 @@ Domanda 5. Qual è la differenza tra nessuna versione di installazione e portati
 
     Risposta. La versione portatile non utilizza il registro ma un file ini.
 
-Domanda 6. I file a 64 bit sono supportati?
+Domanda 6. Supporta i 64 bit?
 
-    Risposta. Sì in Windows a 64 bit. Tuttavia, il livello di emulazione WoW64 impedisce
-              il caricamento da "C:\Program Files" o "C:\Windows\system32".
-              Devi copiare il file a 64 bit in un altro posto prima di caricarlo.
+    Risposta. Sì, li supporta.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

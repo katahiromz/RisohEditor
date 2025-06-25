@@ -40,11 +40,9 @@ Pregunta 5. ¿Cuál es la diferencia entre la versión sin instalador y la versi
 
  Respuesta. La versión portable no utiliza el registro sino un archivo ini.
 
-Pregunta 6. ¿Están soportados los archivos de 64 bits?
+Pregunta 6. ¿Es compatible con 64 bits?
 
- Respuesta. Sí, en Windows de 64 bits. Sin embargo, la capa de emulación de WoW64
-            impide que se cargue desde "C:\Archivos de programa" o "C:\Windows\system32".
-            Usted debe copiar el archivo de 64 bits en otro lugar antes de cargarlo.
+ Respuesta. Sí.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

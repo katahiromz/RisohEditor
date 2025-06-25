@@ -42,11 +42,9 @@ Soru 5. Kurulumsuz(no installer) ve taşınabilir(portable) versiyon arasındaki
     Cevap. Taşınabilir(portable) versiyon kayıt defterini(registry)' i kullanmaz 
 	onun yerine bir ini dosyasını kullanır.
 
-Soru 6. 64-bit dosyaları destekliyor mu?
+Soru 6. 64-bit'i destekliyor mu?
 
-    Cevap. 64-bit destekleyen Windows sürümünde destekler. Ancak Wow64 emülasyon katmanı
-           "C:\Program Files" veya "C:\Windows\system32" dizinlerinden dosya yüklenmesini engelliyor
-           bu yüzden 64-bit dosyayınızı yüklemeden önce başka bir dizine kopyalamanız gerekiyor. 
+    Cevap. Evet, destekliyor.
  
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]

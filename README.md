@@ -52,11 +52,9 @@ Use UTF-16 (but UTF-16 is not supported in GNU windres).
 
 The portable version doesn't use registry but an ini file.
 
-### Question 6. Are the 64-bit files supported?
+### Question 6. Does it support 64-bit?
 
-Yes on 64-bit Windows. However WoW64 emulation layer prevents it
-loading from `"C:\Program Files"` or `"C:\Windows\system32"`.
-You have to copy the 64-bit file into another place before loading.
+Yes, it does.
 
 ## Contact Us
 

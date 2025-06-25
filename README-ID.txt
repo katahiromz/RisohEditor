@@ -40,11 +40,9 @@ Pertanyaan 5. Apa perbedaan dari versi "no installer" dan portabel?
 
      Jawaban. Versi portabel tidak menggunakan registri, tetapi mengunakan berkas "*.ini".
 
-Pertanyaan 6. Apakah berkas 64-bit didukung?
+Pertanyaan 6. Apakah mendukung 64-bit?
 
-    Jawaban. Ya, pada Windows 64-bit. Bagaimanapun layar emulasi WoW64 mencegah
-             pemuatan dari "C:\Program Files" atau "C:\Windows\system32".
-             Kamu harus menyalin berkas 64-bit di tempat lain sebelum memuatnya.
+     Jawaban. Ya, mendukung.
 
 /////////////////////////////////////////////////////////////////////
 Katayama Hirofumi MZ (katahiromz) [A.N.T.]
