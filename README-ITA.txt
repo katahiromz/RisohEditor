@@ -4,15 +4,14 @@ RisohEditor di katahiromz
 /////////////////////////////////////////////////////
 
 RisohEditor è un editor di risorse gratuito per Windows, 
-creato da Katayama Hirofumi MZ.
+Può modificare/estrarre/clonare/eliminare i dati 
+delle risorse in file RC/RES/EXE/DLL.
 
 Link download: https://katahiromz.web.fc2.com/re/en
 
 Funziona con Windows XP/2003/Vista/7/8.1/10 e ReactOS.
 
-Per la standardizzazione degli ID risorse vedi file "Standardize.md".
-
-per dettagli sul copyright e sull'accordo di licenza vedi il 
+Per dettagli sul copyright e sull'accordo di licenza vedi il 
 file "LICENSE.txt".
 
 /////////////////////////////////////////////////////
@@ -41,9 +40,9 @@ Domanda 5. Qual è la differenza tra nessuna versione di installazione e portati
 
     Risposta. La versione portatile non utilizza il registro ma un file ini.
 
-Domanda 6. Supporta i 64 bit?
+Domanda 6. Supporta sistemi a 64 bit?
 
-    Risposta. Sì, li supporta.
+    Risposta. Sì, supporta sistemi a 64bit.
 
 /////////////////////////////////////////////////////////////////////
 // Katayama Hirofumi MZ (katahiromz) [A.N.T.]

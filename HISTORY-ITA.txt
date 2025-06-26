@@ -340,5 +340,5 @@
     - Aggiunta all'elenco lingue la voce "Neutral" inglese.
     - Corretta selezione iniziale elenco lingue.
     - Recupera correttamente le informazioni su bitmap RLE.
-    - Reduced flickering when moving the splitter.
-    - Disabled WoW filesystem redirection.
+    - Ridotto sfarfallio quando si sposta lo splitter.
+    - Disabilitato reindirizzamento filesystem WoW.
