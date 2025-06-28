@@ -76,6 +76,8 @@ public:
         HWND hwndEdit = info.hwndItem;
         m_pAutoComplete->bind(hwndEdit);
 
+        FileSystemAutoComplete(GetDlgItem(hwnd, cmb2));
+
         CenterWindowDx();
 
         if (m_file)

@@ -54,6 +54,23 @@ INT LogMessageBoxW(HWND hwnd, LPCWSTR text, LPCWSTR title, UINT uType)
     }
 }
 
+HRESULT FileSystemAutoComplete(HWND hwnd)
+{
+    WCHAR szClass[64];
+    if (!GetClassNameW(hwnd, szClass, _countof(szClass)))
+        return E_FAIL;
+
+    if (lstrcmpiW(szClass, L"COMBOBOX") == 0 ||
+        lstrcmpiW(szClass, WC_COMBOBOXEX) == 0)
+    {
+        COMBOBOXINFO info = { sizeof(info) };
+        if (GetComboBoxInfo(hwnd, &info))
+            hwnd = info.hwndItem;
+    }
+
+    return SHAutoComplete(hwnd, SHACF_AUTOSUGGEST_FORCE_ON | SHACF_FILESYSTEM | SHACF_FILESYS_ONLY);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
@@ -17573,10 +17590,15 @@ wWinMain(HINSTANCE   hInstance,
     PVOID OldValue;
     BOOL bWowFsDisabled = DisableWow64FsRedirection(&OldValue);
 
+    HRESULT hrCoInit = CoInitialize(NULL);
+
     INT ret = RisohEditor_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
     if (bWowFsDisabled)
         RevertWow64FsRedirection(OldValue);
+
+    if (SUCCEEDED(hrCoInit))
+        CoUninitialize();
 
     return ret;
 }

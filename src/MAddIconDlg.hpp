@@ -81,6 +81,8 @@ public:
 
         CenterWindowDx();
 
+        FileSystemAutoComplete(GetDlgItem(hwnd, cmb2));
+
         if (m_file)
         {
             DoFile(hwnd, m_file);

@@ -50,3 +50,4 @@ void InitWndClassComboBox(HWND hCmb, LPCTSTR pszWndClass);
 void ReplaceFullWithHalf(LPWSTR pszText);
 void ReplaceFullWithHalf(MStringW& strText);
 DWORD GetDefaultResLanguage(VOID);
+HRESULT FileSystemAutoComplete(HWND hwnd);

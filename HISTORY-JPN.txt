@@ -686,3 +686,4 @@
     - 正しくRLEビットマップの情報を取得します。
     - 区分線を動かすときのちらつきを軽減した。
     - WoW ファイルシステム リダイレクションを無効化。
+    - Enabled filesystem auto-completion.

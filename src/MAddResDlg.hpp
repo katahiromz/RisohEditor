@@ -92,6 +92,7 @@ public:
             SetDlgItemTextW(hwnd, edt1, m_file);
             DoFile(hwnd, m_file);
         }
+        FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
 
         // do centering the dialog
         CenterWindowDx();
