@@ -342,4 +342,4 @@
     - Recupera correttamente le informazioni su bitmap RLE.
     - Ridotto sfarfallio quando si sposta lo splitter.
     - Disabilitato reindirizzamento filesystem WoW.
-    - Enabled filesystem auto-completion.
+    - Abilitato completamento automatica del filesystem.
