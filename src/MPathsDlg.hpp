@@ -67,7 +67,7 @@ public:
         ZeroMemory(&bi, sizeof(bi));
         bi.hwndOwner = hwnd;
         bi.lpszTitle = LoadStringDx(IDS_ADDINCLUDE);
-        bi.ulFlags = BIF_RETURNONLYFSDIRS;
+        bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
         if (LPITEMIDLIST pidl = SHBrowseForFolder(&bi))
         {
             SHGetPathFromIDList(pidl, szPath);
@@ -424,6 +424,9 @@ public:
 
         SetDlgItemText(hwnd, cmb1, g_settings.strWindResExe.c_str());
         SetDlgItemText(hwnd, cmb2, g_settings.strCppExe.c_str());
+
+        FileSystemAutoComplete(GetDlgItem(hwnd, cmb1));
+        FileSystemAutoComplete(GetDlgItem(hwnd, cmb2));
 
         m_resizable.OnParentCreate(hwnd);
 

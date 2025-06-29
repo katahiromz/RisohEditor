@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Ustawienia Delphi D&FM...", ID_DFMSETTINGS
-        MENUITEM "Konfi&guracja...", ID_CONFIG
+        MENUITEM "Konfi&guracja...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Szukaj"
     {

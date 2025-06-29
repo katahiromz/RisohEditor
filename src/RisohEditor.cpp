@@ -68,7 +68,8 @@ HRESULT FileSystemAutoComplete(HWND hwnd)
             hwnd = info.hwndItem;
     }
 
-    return SHAutoComplete(hwnd, SHACF_AUTOSUGGEST_FORCE_ON | SHACF_FILESYSTEM | SHACF_FILESYS_ONLY);
+    return SHAutoComplete(hwnd, SHACF_AUTOSUGGEST_FORCE_ON | SHACF_FILESYSTEM |
+                                SHACF_AUTOAPPEND_FORCE_ON | SHACF_FILESYS_ONLY);
 }
 
 //////////////////////////////////////////////////////////////////////////////

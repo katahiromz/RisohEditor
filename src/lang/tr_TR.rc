@@ -89,7 +89,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Dili Seç (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM &Ayarları...", ID_DFMSETTINGS
-        MENUITEM "&Yapılandırma...", ID_CONFIG
+        MENUITEM "&Yapılandırma...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Ara"
     {

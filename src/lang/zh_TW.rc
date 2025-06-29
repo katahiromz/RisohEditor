@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI語言選擇)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM 設置...", ID_DFMSETTINGS
-        MENUITEM "設置(&C)...", ID_CONFIG
+        MENUITEM "設置(&C)...\tAlt+Enter", ID_CONFIG
     }
     POPUP "搜索(&S)"
     {

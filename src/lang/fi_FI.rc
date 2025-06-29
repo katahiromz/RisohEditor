@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Delphi DFM &asetukset...", ID_DFMSETTINGS
-        MENUITEM "&Konfiguraatio...", ID_CONFIG
+        MENUITEM "&Konfiguraatio...\tAlt+Enter", ID_CONFIG
     }
     POPUP "&Haku"
     {
