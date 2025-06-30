@@ -335,7 +335,7 @@
     - Supported TEXTINCLUDE 2 and TEXTINCLUDE 3.
     - Fixed MRadWindow crash.
     - Updated installers.
-- v.5.8.9 (2025-XX-YY)
+- v.5.8.9 (2025-07-01)
     - Notified icon change on saving EXE file by SHChangeNotify.
     - Added English "Neutral" entry to the language list.
     - Fixed initial language list box selection.
