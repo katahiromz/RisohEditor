@@ -54,6 +54,8 @@ public:
         HWND hCmb3 = GetDlgItem(hwnd, cmb3);
         InitLangComboBox(hCmb3, m_entry.m_lang);
 
+        FileSystemAutoComplete(GetDlgItem(hwnd, edt1));
+
         CenterWindowDx();
         return TRUE;
     }
