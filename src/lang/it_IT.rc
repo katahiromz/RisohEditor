@@ -90,7 +90,7 @@ IDR_MAINMENU MENU
         MENUITEM "&UI Language Select (UI语言选择)...", ID_CHOOSEUILANG
         MENUITEM SEPARATOR
         MENUITEM "Impostazioni DFM &Delphi...", ID_DFMSETTINGS
-        MENUITEM "&Impostazioni...\tAlt+Enter", ID_CONFIG
+        MENUITEM "&Impostazioni...\tAlt+Invio", ID_CONFIG
     }
     POPUP "&Cerca"
     {
@@ -882,7 +882,7 @@ FONT 9, "MS Shell Dlg"
 }
 
 IDD_CLONEINNEWLANG DIALOG 0, 0, 215, 105
-CAPTION "Clona in una nuova lingua"
+CAPTION "Clona con una nuova lingua"
 STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
@@ -1281,7 +1281,7 @@ CAPTION "Impostazioni DFM Delphi"
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
 FONT 9, "MS Shell Dlg"
 {
-    LTEXT "Le seguenti impostazioni sono rilevanti per DFM Delphi:", -1, 35, 5, 171, 20
+    LTEXT "Per DFM Delphi  sono rilevanti le seguenti impostazioni:", -1, 35, 5, 171, 20
     ICON IDI_DFMICON, -1, 5, 5, 0, 0
     RTEXT "Pagina &codice:", -1, 6, 32, 70, 12
     COMBOBOX cmb1, 85, 30, 120, 300, CBS_HASSTRINGS | CBS_AUTOHSCROLL | CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
