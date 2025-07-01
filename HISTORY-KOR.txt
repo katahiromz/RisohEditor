@@ -337,10 +337,10 @@
     - MRadWindow 충돌을 수정했습니다.
     - 설치 프로그램이 업데이트되었습니다.
 - v.5.8.9 (2025-07-01)
-    - Notified icon change on saving EXE file by SHChangeNotify.
-    - Added English "Neutral" entry to the language list.
-    - Fixed initial language list box selection.
-    - Correctly retrieving info of RLE Bitmap.
-    - Reduced flickering when moving the splitter.
-    - Disabled WoW filesystem redirection.
-    - Enabled filesystem auto-completion.
+    - SHChangeNotify에 의해 EXE 파일 저장 시 알림 아이콘이 변경되었습니다.
+    - 언어 목록에 영어 “중립” 항목을 추가했습니다.
+    - 초기 언어 목록 상자 선택이 수정되었습니다.
+    - RLE 비트맵의 정보를 올바르게 검색합니다.
+    - 스플리터 이동 시 깜박임이 감소했습니다.
+    - WoW 파일 시스템 리디렉션을 비활성화했습니다.
+    - 파일 시스템 자동 완성을 활성화했습니다.
