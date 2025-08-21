@@ -72,6 +72,13 @@ HRESULT FileSystemAutoComplete(HWND hwnd)
                                 SHACF_AUTOAPPEND_FORCE_ON | SHACF_FILESYS_ONLY);
 }
 
+void MyChangeNotify(LPCWSTR pszFileName)
+{
+    // Notify change of file icon
+    SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATHW, pszFileName, NULL);
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // constants
 
@@ -3163,6 +3170,11 @@ void MMainWnd::OnExtractBin(HWND hwnd)
             {
                 ErrorBoxDx(IDS_CANNOTSAVE);
             }
+            else
+            {
+                // Notify change of file icon
+                MyChangeNotify(ofn.lpstrFile);
+            }
         }
     }
 }
@@ -3317,6 +3329,11 @@ void MMainWnd::OnExtractIcon(HWND hwnd)
         {
             ErrorBoxDx(IDS_CANTEXTRACTICO);
         }
+        else
+        {
+            // Notify change of file icon
+            MyChangeNotify(ofn.lpstrFile);
+        }
     }
 }
 
@@ -3377,6 +3394,11 @@ void MMainWnd::OnExtractCursor(HWND hwnd)
         {
             ErrorBoxDx(IDS_CANTEXTRACTCUR);
         }
+        else
+        {
+            // Notify change of file icon
+            MyChangeNotify(ofn.lpstrFile);
+        }
     }
 }
 
@@ -3418,6 +3440,11 @@ void MMainWnd::OnExtractBitmap(HWND hwnd)
         if (!PackedDIB_Extract(ofn.lpstrFile, &(*entry)[0], (*entry).size(), bPNG))
         {
             ErrorBoxDx(IDS_CANTEXTRACTBMP);
+        }
+        else
+        {
+            // Notify change of file icon
+            MyChangeNotify(ofn.lpstrFile);
         }
     }
 }
@@ -9957,8 +9984,7 @@ BOOL MMainWnd::DoSaveInner(LPCWSTR pszExeFile, BOOL bCompression)
     }
 
     // Notify change of file icon
-    SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATHW, pszExeFile, NULL);
-    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+    MyChangeNotify(pszExeFile);
 
     // is there any resource ID?
     if (m_szResourceH[0] || !g_settings.id_map.empty())
