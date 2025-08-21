@@ -343,3 +343,4 @@
     - Ridotto sfarfallio quando si sposta lo splitter.
     - Disabilitato reindirizzamento filesystem WoW.
     - Abilitato completamento automatica del filesystem.
+- v.5.9.0 (2025-XX-YY)
