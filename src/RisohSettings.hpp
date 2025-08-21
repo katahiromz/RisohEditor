@@ -67,6 +67,7 @@ struct RisohSettings
     INT         nRadTop;                // the RAD window Y coordinate
     BOOL        bAskUpdateResH;         // ask update the resource.h file?
     BOOL        bCompressByUPX;         // compress the file by UPX?
+    BOOL        bAddBomToRC;            // add Byte Order Mark (BOM) on RC files?
     MString     strSrcFont;             // the source view font name
     INT         nSrcFontSize;           // the source view font size in points
     MString     strBinFont;             // the binary view font name

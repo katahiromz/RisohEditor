@@ -31,6 +31,7 @@
 
 INT g_bNoGuiMode = 0; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
+bool g_wrap_enabled = false;
 
 IMPLEMENT_DYNAMIC(MEgaDlg)
 
@@ -8717,6 +8718,16 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 
     BOOL bRCFileUTF16 = g_settings.bRCFileUTF16;
 
+    // Add Byte Order Mark (BOM)
+    if (g_settings.bAddBomToRC)
+    {
+        DWORD cbWritten;
+        if (bRCFileUTF16)
+            file.WriteFile("\xFF\xFE", 2, &cbWritten);
+        else
+            file.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
+    }
+
     WCHAR szTitle[MAX_PATH];
     GetFileTitleW(pszFileName, szTitle, _countof(szTitle));
 
@@ -8929,6 +8940,17 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
 
             // dump to lang/XX_XX.rc file
             MFile lang_file(szLangFile, TRUE);
+
+            // Add Byte Order Mark (BOM)
+            if (g_settings.bAddBomToRC)
+            {
+                DWORD cbWritten;
+                if (bRCFileUTF16)
+                    lang_file.WriteFile("\xFF\xFE", 2, &cbWritten);
+                else
+                    lang_file.WriteFile("\xEF\xBB\xBF", 3, &cbWritten);
+            }
+
             if (bRCFileUTF16)
             {
                 lang_file.WriteSzW(LoadStringDx(IDS_NOTICE));
@@ -9651,9 +9673,23 @@ BOOL MMainWnd::DoExportRes(LPCWSTR pszResFile)
     return g_res.extract_res(pszResFile, g_res);
 }
 
+struct AutoWrapEnable
+{
+    AutoWrapEnable()
+    {
+        g_wrap_enabled = true;
+    }
+    ~AutoWrapEnable()
+    {
+        g_wrap_enabled = false;
+    }
+};
+
 // do export the resource data to an RC file and related files
 BOOL MMainWnd::DoExportRC(LPCWSTR pszRCFile, LPWSTR pszResHFile, const EntrySet& found)
 {
+    AutoWrapEnable auto_wrap_enable;
+
     if (found.empty())
     {
         // unable to export the empty data
@@ -14083,6 +14119,7 @@ void MMainWnd::SetDefaultSettings(HWND hwnd)
     g_settings.nRadTop = CW_USEDEFAULT;
     g_settings.bAskUpdateResH = FALSE;
     g_settings.bCompressByUPX = FALSE;
+    g_settings.bAddBomToRC = FALSE;
     g_settings.bUseBeginEnd = FALSE;
     g_settings.bShowFullPath = TRUE;
     g_settings.nDfmCodePage = 0;
@@ -14306,6 +14343,7 @@ BOOL MMainWnd::LoadSettings(HWND hwnd)
     keyRisoh.QueryDword(TEXT("nRadTop"), (DWORD&)g_settings.nRadTop);
     keyRisoh.QueryDword(TEXT("bAskUpdateResH"), (DWORD&)g_settings.bAskUpdateResH);
     keyRisoh.QueryDword(TEXT("bCompressByUPX"), (DWORD&)g_settings.bCompressByUPX);
+    keyRisoh.QueryDword(TEXT("bAddBomToRC"), (DWORD&)g_settings.bAddBomToRC);
     keyRisoh.QueryDword(TEXT("bUseBeginEnd"), (DWORD&)g_settings.bUseBeginEnd);
     keyRisoh.QueryDword(TEXT("bShowFullPath"), (DWORD&)g_settings.bShowFullPath);
     keyRisoh.QueryDword(TEXT("nDfmCodePage"), (DWORD&)g_settings.nDfmCodePage);
@@ -14626,6 +14664,7 @@ BOOL MMainWnd::SaveSettings(HWND hwnd)
     keyRisoh.SetDword(TEXT("nRadTop"), g_settings.nRadTop);
     keyRisoh.SetDword(TEXT("bAskUpdateResH"), g_settings.bAskUpdateResH);
     keyRisoh.SetDword(TEXT("bCompressByUPX"), g_settings.bCompressByUPX);
+    keyRisoh.SetDword(TEXT("bAddBomToRC"), g_settings.bAddBomToRC);
     keyRisoh.SetDword(TEXT("bUseBeginEnd"), g_settings.bUseBeginEnd);
     keyRisoh.SetDword(TEXT("bShowFullPath"), g_settings.bShowFullPath);
     keyRisoh.SetDword(TEXT("nDfmCodePage"), g_settings.nDfmCodePage);

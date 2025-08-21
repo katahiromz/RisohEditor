@@ -94,7 +94,7 @@ StringRes::Dump(WORD wName)
         }
 
         ret += L", \"";
-        ret += mstr_escape(m_map[i]);
+        ret += mstr_escape_with_wrap(m_map[i]);
         ret += L"\"\r\n";
     }
 
@@ -133,7 +133,7 @@ StringRes::Dump()
         }
 
         ret += L", \"";
-        ret += mstr_escape(pair.second);
+        ret += mstr_escape_with_wrap(pair.second);
         ret += L"\"\r\n";
     }
 

@@ -451,7 +451,7 @@ MenuRes::Dump(const MIdOrString& name) const
         {
             ret += string_type((item.wDepth + 1) * 4, L' ');
             ret += L"POPUP \"";
-            ret += mstr_escape(item.text);
+            ret += mstr_escape_with_wrap(item.text);
             ret += L"\"";
             ret += DumpFlags(item.fItemFlags);
             ret += L"\r\n";
@@ -471,7 +471,7 @@ MenuRes::Dump(const MIdOrString& name) const
             else
             {
                 ret += L"MENUITEM \"";
-                ret += mstr_escape(item.text);
+                ret += mstr_escape_with_wrap(item.text);
                 ret += L"\", ";
                 if (0)
                 {
@@ -541,7 +541,7 @@ MenuRes::DumpEx(const MIdOrString& name) const
         {
             ret += string_type((item.wDepth + 1) * 4, L' ');
             ret += L"POPUP ";
-            ret += mstr_quote(item.text);
+            ret += mstr_quote_with_wrap(item.text);
             if (item.menuId || item.dwType || item.dwState || item.dwHelpId)
             {
                 ret += L", ";
@@ -589,7 +589,7 @@ MenuRes::DumpEx(const MIdOrString& name) const
         {
             ret += string_type((item.wDepth + 1) * 4, L' ');
             ret += L"MENUITEM ";
-            ret += mstr_quote(item.text);
+            ret += mstr_quote_with_wrap(item.text);
             if (item.menuId || item.dwType || item.dwState)
             {
                 ret += L", ";

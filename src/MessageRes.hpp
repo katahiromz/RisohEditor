@@ -240,7 +240,7 @@ public:
                 ret += str;
             }
             ret += WIDE(", \"");
-            ret += mstr_escape(it->second);
+            ret += mstr_escape_with_wrap(it->second);
             ret += WIDE("\"\r\n");
         }
 
@@ -264,7 +264,7 @@ public:
             ret += WIDE("    ");
             ret += g_db.GetNameOfResID(IDTYPE_MESSAGE, it->first);
             ret += WIDE(", \"");
-            ret += mstr_escape(it->second);
+            ret += mstr_escape_with_wrap(it->second);
             ret += WIDE("\"\r\n");
         }
 

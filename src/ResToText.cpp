@@ -1312,8 +1312,7 @@ MString ResToText::DumpName(const MIdOrString& type, const MIdOrString& name)
 MString ResToText::DumpEscapedName(const MIdOrString& name)
 {
     MString ret = name.str(true);
-    mstr_escape(ret);
-    return ret;
+    return mstr_escape(ret);
 }
 
 //////////////////////////////////////////////////////////////////////////////

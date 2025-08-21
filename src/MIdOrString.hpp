@@ -306,6 +306,23 @@ struct MIdOrString
         }
         return ret;
     }
+
+    MString quoted_wstr_with_wrap() const
+    {
+        MString ret;
+        if (m_id == 0)
+        {
+            if (m_str.size())
+                ret += mstr_quote_with_wrap(m_str);
+            else
+                ret += TEXT("\"\"");
+        }
+        else
+        {
+            ret = mstr_dec_short(m_id);
+        }
+        return ret;
+    }
 };
 
 inline bool guts_escape(std::string& str, const char*& pch)

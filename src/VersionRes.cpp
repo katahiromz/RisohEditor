@@ -83,7 +83,7 @@ VersionRes::DumpValue(WORD wType, const Var& value, int depth) const
 {
     MStringW ret = MStringW(depth * 4, L' ');
     ret += L"VALUE ";
-    ret += mstr_quote(value.key);
+    ret += mstr_quote_with_wrap(value.key);
 
     if (value.value.size() >= 2)
     {
@@ -102,7 +102,7 @@ VersionRes::DumpValue(WORD wType, const Var& value, int depth) const
             const WCHAR *pch = reinterpret_cast<const WCHAR *>(&value.value[0]);
             MStringW str(pch, value.value.size() / 2);
             ret += L", ";
-            ret += mstr_quote(str);
+            ret += mstr_quote_with_wrap(str);
         }
     }
     else

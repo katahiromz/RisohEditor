@@ -217,6 +217,10 @@ template <typename T_CHAR>
 std::basic_string<T_CHAR>
 mstr_escape(const std::basic_string<T_CHAR>& str);
 
+template <typename T_CHAR>
+std::basic_string<T_CHAR>
+mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str);
+
 template <typename T_STR>
 bool mstr_replace_all(T_STR& str, const T_STR& from, const T_STR& to);
 template <typename T_STR>
@@ -231,6 +235,14 @@ mstr_quote(const std::basic_string<T_CHAR>& str);
 template <typename T_CHAR>
 std::basic_string<T_CHAR>
 mstr_quote(const T_CHAR *str);
+
+template <typename T_CHAR>
+std::basic_string<T_CHAR>
+mstr_quote_with_wrap(const std::basic_string<T_CHAR>& str);
+
+template <typename T_CHAR>
+std::basic_string<T_CHAR>
+mstr_quote_with_wrap(const T_CHAR *str);
 
 template <typename T_STR_CONTAINER>
 void mstr_split(T_STR_CONTAINER& container,
@@ -697,6 +709,51 @@ mstr_escape(const std::basic_string<T_CHAR>& str)
     return ret;
 }
 
+template <typename T_CHAR>
+inline std::basic_string<T_CHAR>
+mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str)
+{
+    std::basic_string<T_CHAR> ret;
+
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        extern bool g_wrap_enabled;
+        if (g_wrap_enabled && i % 120 == 120 - 1)
+        {
+            ret += T_CHAR('\\');
+            ret += T_CHAR('\r');
+            ret += T_CHAR('\n');
+        }
+        T_CHAR ch = str[i];
+        switch (ch)
+        {
+        case T_CHAR('\"'): ret += T_CHAR('\"'); ret += T_CHAR('\"'); break;
+        case T_CHAR('\\'): ret += T_CHAR('\\'); ret += T_CHAR('\\'); break;
+        case T_CHAR('\0'): ret += T_CHAR('\\'); ret += T_CHAR('0'); break;
+        case T_CHAR('\a'): ret += T_CHAR('\\'); ret += T_CHAR('a'); break;
+        case T_CHAR('\b'): ret += T_CHAR('\\'); ret += T_CHAR('b'); break;
+        case T_CHAR('\f'): ret += T_CHAR('\\'); ret += T_CHAR('f'); break;
+        case T_CHAR('\n'): ret += T_CHAR('\\'); ret += T_CHAR('n'); break;
+        case T_CHAR('\r'): ret += T_CHAR('\\'); ret += T_CHAR('r'); break;
+        case T_CHAR('\t'): ret += T_CHAR('\\'); ret += T_CHAR('t'); break;
+        case T_CHAR('\v'): ret += T_CHAR('\\'); ret += T_CHAR('v'); break;
+        default:
+            if (ch < 0x20)
+            {
+                ret += T_CHAR('\\');
+                ret += T_CHAR('x');
+                ret += mchr_to_hex(ch);
+            }
+            else
+            {
+                ret += ch;
+            }
+        }
+    }
+
+    return ret;
+}
+
 template <typename T_STR>
 inline bool
 mstr_replace_all(T_STR& str, const T_STR& from, const T_STR& to)
@@ -953,6 +1010,25 @@ mstr_quote(const T_CHAR *str)
 {
     std::basic_string<T_CHAR> ret = str;
     return mstr_quote(ret);
+}
+
+template <typename T_CHAR>
+inline std::basic_string<T_CHAR>
+mstr_quote_with_wrap(const std::basic_string<T_CHAR>& str)
+{
+    std::basic_string<T_CHAR> ret;
+    ret += T_CHAR('\"');
+    ret += mstr_escape_with_wrap(str);
+    ret += T_CHAR('\"');
+    return ret;
+}
+
+template <typename T_CHAR>
+inline std::basic_string<T_CHAR>
+mstr_quote_with_wrap(const T_CHAR *str)
+{
+    std::basic_string<T_CHAR> ret = str;
+    return mstr_quote_with_wrap(ret);
 }
 
 template <typename T_STR_CONTAINER>

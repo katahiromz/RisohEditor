@@ -355,7 +355,7 @@ MStringW DialogItem::DumpControl(MStringW& cls) const
     }
     else
     {
-        ret += m_title.quoted_wstr();
+        ret += m_title.quoted_wstr_with_wrap();
     }
 
     ret += L", ";
@@ -364,7 +364,7 @@ MStringW DialogItem::DumpControl(MStringW& cls) const
     if (m_class.is_int())
     {
         if (IDToPredefClass(m_class.m_id, cls))
-            ret += mstr_quote(cls);
+            ret += mstr_quote_with_wrap(cls);
         else
             ret += mstr_dec_short(m_class.m_id);
     }
@@ -372,7 +372,7 @@ MStringW DialogItem::DumpControl(MStringW& cls) const
     {
         cls = m_class.str();
         FixClassName(cls);
-        ret += mstr_quote(cls);
+        ret += mstr_quote_with_wrap(cls);
     }
 
     ret += L", ";
@@ -439,7 +439,7 @@ DialogItem::_do_CONTROL(bool bNeedsText,
         }
         else
         {
-            ret += m_title.quoted_wstr();
+            ret += m_title.quoted_wstr_with_wrap();
         }
         ret += L", ";
     }
@@ -878,13 +878,13 @@ MStringW DialogRes::Dump(const MIdOrString& id_or_str, bool bAlwaysControl)
     if (!m_title.empty())
     {
         ret += L"CAPTION ";
-        ret += m_title.quoted_wstr();
+        ret += m_title.quoted_wstr_with_wrap();
         ret += L"\r\n";
     }
     if (!m_class.empty())
     {
         ret += L"CLASS ";
-        ret += m_class.quoted_wstr();
+        ret += m_class.quoted_wstr_with_wrap();
         ret += L"\r\n";
     }
     if (IsExtended() && !m_menu.empty())
@@ -963,7 +963,7 @@ MStringW DialogRes::Dump(const MIdOrString& id_or_str, bool bAlwaysControl)
         ret += L"FONT ";
         ret += mstr_dec_short(m_point_size);
         ret += L", ";
-        ret += m_type_face.quoted_wstr();
+        ret += m_type_face.quoted_wstr_with_wrap();
         if (IsExtended())
         {
             ret += L", ";

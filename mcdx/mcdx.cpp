@@ -37,6 +37,8 @@
     #define RT_MESSAGETABLE     MAKEINTRESOURCE(11)
 #endif
 
+bool g_wrap_enabled = false;
+
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef _countof
