@@ -344,3 +344,4 @@
     - Disabilitato reindirizzamento filesystem WoW.
     - Abilitato completamento automatica del filesystem.
 - v.5.9.0 (2025-XX-YY)
+    - Supported rc2 filename extension.

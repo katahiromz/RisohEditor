@@ -345,3 +345,4 @@
     - WoW 파일 시스템 리디렉션을 비활성화했습니다.
     - 파일 시스템 자동 완성을 활성화했습니다.
 - v.5.9.0 (2025-XX-YY)
+    - Supported rc2 filename extension.

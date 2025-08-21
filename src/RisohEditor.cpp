@@ -3509,7 +3509,7 @@ void MMainWnd::OnExport(HWND hwnd)
                 ErrorBoxDx(IDS_CANTEXPORT);
             }
         }
-        else // .rc
+        else // .rc or .rc2
         {
             // show the "export options" dialog
             MExportOptionsDlg dialog;
@@ -3738,7 +3738,7 @@ enum ResFileFilterIndex     // see also: IDS_EXERESFILTER
     RFFI_EXECUTABLE = 1,
     RFFI_RC = 2,
     RFFI_RES = 3,
-    RFFI_ALL = 4
+    RFFI_ALL = 4,
 };
 
 // save as a file or files
@@ -3764,7 +3764,7 @@ BOOL MMainWnd::OnSaveAs(HWND hwnd)
     LPWSTR pch = wcsrchr(szFile, L'.');
     static const LPCWSTR s_DotExts[] =
     {
-        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".res"
+        L".exe", L".dll", L".ocx", L".cpl", L".scr", L".mui", L".rc", L".rc2", L".res"
     };
     for (auto ext : s_DotExts)
     {
@@ -3984,7 +3984,7 @@ BOOL MMainWnd::OnSave(HWND hwnd)
     {
         g_settings.nSaveFilterIndex = RFFI_RES;
     }
-    else if (lstrcmpiW(pchDotExt, L".rc") == 0)
+    else if (lstrcmpiW(pchDotExt, L".rc") == 0 || lstrcmpiW(pchDotExt, L".rc2") == 0)
     {
         g_settings.nSaveFilterIndex = RFFI_RC;
     }
@@ -8085,8 +8085,10 @@ BOOL MMainWnd::DoLoadFile(HWND hwnd, LPCWSTR pszFileName, DWORD nFilterIndex, BO
         {
         case LFI_NONE: case LFI_ALL: case LFI_LOADABLE:
             nFilterIndex = LFI_NONE;
-            if (lstrcmpiW(pch, L".res") == 0) nFilterIndex = LFI_RES;
-            else if (lstrcmpiW(pch, L".rc") == 0) nFilterIndex = LFI_RC;
+            if (lstrcmpiW(pch, L".res") == 0)
+                nFilterIndex = LFI_RES;
+            else if (lstrcmpiW(pch, L".rc") == 0 || lstrcmpiW(pch, L".rc2") == 0)
+                nFilterIndex = LFI_RC;
             else if (
                 lstrcmpiW(pch, L".exe") == 0 || lstrcmpiW(pch, L".dll") == 0 ||
                 lstrcmpiW(pch, L".ocx") == 0 || lstrcmpiW(pch, L".cpl") == 0 ||
@@ -8838,6 +8840,9 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
     if (g_settings.bStoreToResFolder)
         res2text.m_strFilePrefix = L"res/";
 
+    // Is the RC file a rc2?
+    BOOL bIsRC2 = (lstrcmpiW(PathFindExtensionW(pszFileName), L".rc2") == 0);
+
     // use the "lang" folder?
     if (g_settings.bSepFilesByLang)
     {
@@ -8889,7 +8894,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
             StringCchCatW(szLangFile, _countof(szLangFile), TEXT("/"));
             MStringW lang_name = lang_pair.second;
             StringCchCatW(szLangFile, _countof(szLangFile), lang_name.c_str());
-            StringCchCatW(szLangFile, _countof(szLangFile), TEXT(".rc"));
+            StringCchCatW(szLangFile, _countof(szLangFile), (bIsRC2 ? TEXT(".rc2") : TEXT(".rc")));
             //MessageBox(NULL, szLangFile, NULL, 0);
 
             if (g_settings.bBackup)
@@ -8996,7 +9001,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                     // write "#define \"lang/....rc\"\r\n"
                     file.WriteSzW(L"    #include \"lang/");
                     file.WriteSzW(lang_name1.c_str());
-                    file.WriteSzW(L".rc\"\r\n");
+                    file.WriteSzW(bIsRC2 ? L".rc2\"\r\n" : L".rc\"\r\n");
 
                     // write "#endif\r\n"
                     file.WriteSzW(L"#endif\r\n");
@@ -9013,7 +9018,7 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                     file.WriteSzA("    #include \"lang/");
                     MWideToAnsi lang1_w2a(CP_ACP, lang_name1);
                     file.WriteSzA(lang1_w2a.c_str());
-                    file.WriteSzA(".rc\"\r\n");
+                    file.WriteSzA(bIsRC2 ? ".rc2\"\r\n" : ".rc\"\r\n");
 
                     // write "#endif\r\n"
                     file.WriteSzA("#endif\r\n");
@@ -9036,14 +9041,14 @@ BOOL MMainWnd::DoWriteRC(LPCWSTR pszFileName, LPCWSTR pszResH, const EntrySet& f
                     // write "#include \"lang/....rc\"\r\n"
                     file.WriteSzW(L"#include \"lang/");
                     file.WriteSzW(lang_name1.c_str());
-                    file.WriteSzW(L".rc\"\r\n");
+                    file.WriteSzW(bIsRC2 ? L".rc2\"\r\n" : L".rc\"\r\n");
                 }
                 else
                 {
                     // write "#include \"lang/....rc\"\r\n"
                     file.WriteSzA("#include \"lang/");
                     file.WriteSzA(MWideToAnsi(CP_ACP, lang_name1).c_str());
-                    file.WriteSzA(".rc\"\r\n");
+                    file.WriteSzA(bIsRC2 ? ".rc2\"\r\n" : ".rc\"\r\n");
                 }
             }
         }
@@ -9222,12 +9227,15 @@ BOOL MMainWnd::DoWriteResH(LPCWSTR pszResH, LPCWSTR pszRCFile)
         TCHAR szFileTitle[64];
         GetFileTitle(pszRCFile, szFileTitle, _countof(szFileTitle));
 
-        // change extension to .rc
+        // change extension to .rc or .rc2
         LPTSTR pch = mstrrchr(szFileTitle, TEXT('.'));
         if (pch)
         {
             *pch = 0;
-            StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
+            if (lstrcmpiW(PathFindExtensionW(pszRCFile), L".rc2") == 0)
+                StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc2"));
+            else
+                StringCchCatW(szFileTitle, _countof(szFileTitle), TEXT(".rc"));
         }
 
         // write file title
@@ -9758,7 +9766,7 @@ BOOL MMainWnd::DoSaveFile(HWND hwnd, LPCWSTR pszFile)
     {
         return DoSaveExeAs(pszFile);
     }
-    if (lstrcmpiW(pchDotExt, L".rc") == 0)
+    if (lstrcmpiW(pchDotExt, L".rc") == 0 || lstrcmpiW(pchDotExt, L".rc2") == 0)
         return DoExportRC(pszFile, NULL);
     if (lstrcmpiW(pchDotExt, L".res") == 0)
         return DoSaveResAs(pszFile);
@@ -10214,7 +10222,7 @@ IMPORT_RESULT MMainWnd::DoImport(HWND hwnd, LPCWSTR pszFile, LPCWSTR pchDotExt)
     if (!pchDotExt)
         return NOT_IMPORTABLE;
 
-    if (lstrcmpiW(pchDotExt, L".rc") == 0)
+    if (lstrcmpiW(pchDotExt, L".rc") == 0 || lstrcmpiW(pchDotExt, L".rc2") == 0)
     {
         return DoImportRC(hwnd, pszFile);
     }
@@ -10519,7 +10527,7 @@ void MMainWnd::OnDropFiles(HWND hwnd, HDROP hdrop)
     pch = PathFindExtensionW(file);
 
     IMPORT_RESULT result = NOT_IMPORTABLE;
-    if (pch && lstrcmpiW(pch, L".rc") != 0)
+    if (pch && (lstrcmpiW(pch, L".rc") != 0 && lstrcmpiW(pch, L".rc2") != 0))
     {
         result = DoImport(hwnd, file, pch);
     }
