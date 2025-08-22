@@ -1080,7 +1080,7 @@ FONT 9, "Gulim"
     AUTOCHECKBOX "중복 주석 출력(&C)", chx5, 5, 140, 240, 14
     AUTOCHECKBOX "#ifndef MSVC ... #endif로 매니페스트 문을 래핑(&N)", chx6, 5, 160, 240, 14
     AUTOCHECKBOX "RC 파일을 UTF-16으로 출력(&U)", chx7, 5, 180, 240, 14
-    AUTOCHECKBOX "Byte Order Mark (BOM)", chx9, 5, 200, 100, 15
+    AUTOCHECKBOX "바이트 순서 표시 (BOM)", chx9, 5, 200, 100, 15
     DEFPUSHBUTTON "확인", IDOK, 120, 205, 60, 14
     PUSHBUTTON "취소", IDCANCEL, 185, 205, 60, 14
 }
@@ -1627,7 +1627,7 @@ STRINGTABLE
     IDS_CODEPAGE1250, "1250 (라틴 2)"
     IDS_CODEPAGE1251, "1251 (키릴 문자)"
     IDS_CODEPAGE1253, "1253 (그리스어)"
-    IDS_CODEPAGE1254, "1254 (터키어)"
+    IDS_CODEPAGE1254, "1254 (튀르키예어)"
     IDS_CODEPAGE1255, "1255 (히브리어)"
     IDS_CODEPAGE1256, "1256 (아랍어)"
     IDS_CODEPAGE1257, "1257 (발트어)"
