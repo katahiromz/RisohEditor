@@ -348,3 +348,4 @@
     - Notified icon change on extracting file by SHChangeNotify.
     - Enabled wrapping of excessively long string literals.
     - It is now possible to add a Byte Order Mark (BOM) when outputting an RC file.
+- v.5.9.1 (2025-XX-YY)
