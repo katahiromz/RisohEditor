@@ -343,7 +343,7 @@
     - Reduced flickering when moving the splitter.
     - Disabled WoW filesystem redirection.
     - Enabled filesystem auto-completion.
-- v.5.9.0 (2025-XX-YY)
+- v.5.9.0 (2025-09-01)
     - Supported rc2 filename extension.
     - Notified icon change on extracting file by SHChangeNotify.
     - Enabled wrapping of excessively long string literals.

@@ -343,7 +343,7 @@
     - Ridotto sfarfallio quando si sposta lo splitter.
     - Disabilitato reindirizzamento filesystem WoW.
     - Abilitato completamento automatica del filesystem.
-- v.5.9.0 (2025-XX-YY)
+- v.5.9.0 (2025-09-01)
     - Supporto estensione noem file RC2.
     - Modifica icona notifica per estrazione di SHChangeNotify.
     - Abiltazione a capo automatico string letterali troppo lunghe.
