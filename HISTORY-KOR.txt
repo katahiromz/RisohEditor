@@ -350,5 +350,5 @@
     - 너무 긴 문자열 리터럴의 줄 바꿈을 활성화했습니다.
     - 이제 RC 파일을 출력할 때 바이트 순서 표시(BOM)를 추가할 수 있습니다.
 - v.5.9.1 (2025-XX-YY)
-    - Now, the maximum length of a non-wrapped string literal is 200.
+    - Now, the maximum length of a non-wrapped string literal is 400.
     - Wrap string literals only in UTF-16 RC.

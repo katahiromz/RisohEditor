@@ -718,7 +718,7 @@ mstr_escape_with_wrap(const std::basic_string<T_CHAR>& str)
     for (size_t i = 0; i < str.size(); ++i)
     {
         extern bool g_wrap_enabled;
-        if (g_wrap_enabled && i % 200 == 200 - 1)
+        if (g_wrap_enabled && i % 400 == 400 - 1)
         {
             ret += T_CHAR('\\');
             ret += T_CHAR('\r');

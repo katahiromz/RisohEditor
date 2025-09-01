@@ -349,5 +349,5 @@
     - Abiltazione a capo automatico string letterali troppo lunghe.
     - È possibile aggiungere un BOM (Byte Order Mark) nell'output di un file RC.
 - v.5.9.1 (2025-XX-YY)
-    - Now, the maximum length of a non-wrapped string literal is 200.
+    - Now, the maximum length of a non-wrapped string literal is 400.
     - Wrap string literals only in UTF-16 RC.
