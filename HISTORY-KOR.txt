@@ -351,3 +351,4 @@
     - 이제 RC 파일을 출력할 때 바이트 순서 표시(BOM)를 추가할 수 있습니다.
 - v.5.9.1 (2025-XX-YY)
     - Now, the maximum length of a non-wrapped string literal is 200.
+    - Wrap string literals only in UTF-16 RC.

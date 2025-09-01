@@ -9677,7 +9677,8 @@ struct AutoWrapEnable
 {
     AutoWrapEnable()
     {
-        g_wrap_enabled = true;
+        // Wrap string literals only in UTF-16 RC. See Issue #302.
+        g_wrap_enabled = g_settings.bRCFileUTF16;
     }
     ~AutoWrapEnable()
     {
