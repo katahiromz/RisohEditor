@@ -324,7 +324,7 @@
 - v.5.8.6 (04.02.2025)
     - Aggiunta traduzione spagnola.
     - Corretta funzione RES_save salvataggio *.dll.
-    - Per compatibilità con vecchie versioni rimosso uso SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, and SUBLANG_UI_CUSTOM_DEFAULT.
+    - Per compatibilità con vecchie versioni rimosso uso SUBLANG_CUSTOM_DEFAULT, SUBLANG_CUSTOM_UNSPECIFIED, e SUBLANG_UI_CUSTOM_DEFAULT.
 - v.5.8.7 (04.04.2025)
     - Ridotte perdite di memoria e di gestione.
     - Migliorata icona principale.
@@ -341,13 +341,13 @@
     - Corretta selezione iniziale elenco lingue.
     - Recupera correttamente le informazioni su bitmap RLE.
     - Ridotto sfarfallio quando si sposta lo splitter.
-    - Disabilitato reindirizzamento filesystem WoW.
-    - Abilitato completamento automatica del filesystem.
+    - Disabilitato re-indirizzamento file system WoW.
+    - Abilitato completamento automatica del file system.
 - v.5.9.0 (2025-09-01)
-    - Supporto estensione noem file RC2.
+    - Supporto estensione nome file RC2.
     - Modifica icona notifica per estrazione di SHChangeNotify.
-    - Abiltazione a capo automatico string letterali troppo lunghe.
+    - Abilitazione a capo automatico stringhe letterali troppo lunghe.
     - È possibile aggiungere un BOM (Byte Order Mark) nell'output di un file RC.
 - v.5.9.1 (2025-XX-YY)
-    - Now, the maximum length of a non-wrapped string literal is 400.
-    - Wrap string literals only in UTF-16 RC.
+    - La lunghezza massima di una stringa senza a capo automatico è 400.
+    - A capo automatico stringa solo in RC UTF-16.
