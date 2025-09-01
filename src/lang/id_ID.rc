@@ -1407,8 +1407,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Mohon masukkan bahasa sumber daya."
     IDS_FILENOTFOUND, "Berkas tidak bisa ditemukan."
     IDS_CANNOTREPLACE, "Tidak bisa mengganti."
-    IDS_EXERESFILTER, "Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Berkas RC (*.rc;*.rc2\
-)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Semua Berkas (*.*)|*.*|"
+    IDS_EXERESFILTER, "Eksekutabel (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Semua Berkas (*.*)|*.*|"
     IDS_SAVEAS, "Simpan Sebagai"
     IDS_CANNOTADDICON, "Tidak bisa menambahkan ikon."
     IDS_ADDICON, "Tambah ikon"
@@ -1508,13 +1507,10 @@ STRINGTABLE
     IDS_CANTWRITERESH, "Tidak bisa menulis ""resource.h""."
     IDS_SAVERESH, "Simpan Berkas ""resource.h"""
     IDS_DLLFILTER, "Berkas DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Semua Berkas (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mu\
-i;*.ime;*.res;*.rc;*.rc2|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui\
-;*.ime|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc;*.rc2)|*.rc;*.rc2|Semua Berkas (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "Berkas yang Bisa Dimuat (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Sumber Daya Binary (*.res)|*.res|Berkas Sumber Daya (*.rc;*.rc2)|*.rc;*.rc2|Semua Berkas (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "Tidak dapat menguji dialog karena ini adalah anak jendela."
     IDS_CANTTESTCLASSDLG, "Tidak dapat menguji dialog karena telah digolongkan."
-    IDS_FILEISUPXED, "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak m\
-emperluasnya, berkas mungkin akan gagal terbaca."
+    IDS_FILEISUPXED, "Berkas\r\n\r\n'%s'\r\n\r\nterkompresi oleh UPX. Apakah anda ingin mengekstraknya melalui berkas sementara?\r\n\r\nJika anda tidak memperluasnya, berkas mungkin akan gagal terbaca."
     IDS_CANTUPXEXTRACT, "Tidak bisa mengekstrak dengan UPX."
     IDS_CANTSAVEUPXED, "Tidak bisa menyimpan berkas karena berupa berkas kompres oleh UPX."
     IDS_MESSAGEID, "ID Pesan"
@@ -1544,10 +1540,8 @@ emperluasnya, berkas mungkin akan gagal terbaca."
     IDS_MESSAGE, "Pesan"
     IDS_STRING, "String"
     IDS_DATAISINVALID, "Data tidak sah."
-    IDS_DLGINIT1, "Anda bisa menentukan inisialisasi kotak kombo dan kotak daftar dengan mengatur data inisialisasi dalam data sumber daya\
- RT_DLGINIT dengan nama yang sama pada sumber daya dialog. "
-    IDS_DLGINIT2, "Ketika pesan WM_INITDIALOG muncul, aplikasi bisa memulai dialog dengan memanggil fungsi ExecuteDlgInitDx dari berkas ya\
-ng terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
+    IDS_DLGINIT1, "Anda bisa menentukan inisialisasi kotak kombo dan kotak daftar dengan mengatur data inisialisasi dalam data sumber daya RT_DLGINIT dengan nama yang sama pada sumber daya dialog. "
+    IDS_DLGINIT2, "Ketika pesan WM_INITDIALOG muncul, aplikasi bisa memulai dialog dengan memanggil fungsi ExecuteDlgInitDx dari berkas yang terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3, "Mohon tentukan daftar strings karakter yang dipisah oleh line break untuk RT_DLGINIT."
     IDS_SAMELANG, "Ini adalah bahasa yang sama."
     IDS_SAMENAME, "Ini adalah sumber daya yang sama."
@@ -1560,8 +1554,7 @@ ng terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_RUSSIA, "Rusia"
     IDS_RUSSIAN, "Rusia"
     IDS_WANNAGENRESH, "Anda ingin membuat 'resource.h'?"
-    IDS_EXEFILTER, "Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Semua Berkas (*.*\
-)|*.*|"
+    IDS_EXEFILTER, "Bisa Dieksekusi (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Semua Berkas (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "Simpan Dengan Kompresi"
     IDS_TOOL_NEW, "Baru"
     IDS_TOOL_OPEN, "Buka..."
@@ -1589,22 +1582,16 @@ ng terlampir ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_INVALIDLANG, "Bahasa tidak dikenal."
     IDS_INVALIDNAME, "Nama sumber daya tidak sah."
     IDS_PNGRESBINFILTER, "Citra PNG (*.png)|*.png|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER, "Citra JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)\
-|*.bin|Semua Berkas (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "Citra JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_GIFRESBINFILTER, "Citra GIF (*.gif)|*.gif|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER, "Citra TIFF (*.tif;*.tiff)|*.tif;*.tiff|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|\
-*.*|"
+    IDS_TIFFRESBINFILTER, "Citra TIFF (*.tif;*.tiff)|*.tif;*.tiff|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_AVIRESBINFILTER, "Film AVI (*.avi)|*.avi|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_WAVERESBINFILTER, "Suara WAVE (*.wav)|*.wav|Sumber Daya Binary (*.res)|*.res|Berkas Binary (*.bin)|*.bin|Semua Berkas (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Berkas ini secara otomatis dibuat oleh RisohEditor 5.9.1.\r\n"
     IDS_DAGGER, "// † <-- Salib ini membantu mendeteksi UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg\
-;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|B\
-erkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)\
-|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Ma\
-nifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Berkas yang bisa diimpor|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|Berkas Citra|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Berkas Kursor (*.cur;*.ani)|*.cur;*.ani|Berkas Ikon (*.ico)|*.ico|Berkas Suara WAVE (*.wav)|*.wav|Berkas HTML (*.html;*.htm)|*.html;*.htm|Berkas Manifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|Semua Berkas (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Tidak bisa menulis berkas karena berkas tersebut terkunci.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unikode"
@@ -1615,8 +1602,7 @@ nifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.
     IDS_RESTYPE, "Jenis Sumber Daya"
     IDS_ENCODING, "Enkoding"
     IDS_INVALIDRESTYPE, "Jenis sumber daya tidak sah."
-    IDS_PATHSPACEERROR, "Anda memasang dengan salah pada lokasi dengan karakter spasi! Pensuyun sumber daya tidak menerima spasi.\nMohon hindari \
-""C:\\Program Files""."
+    IDS_PATHSPACEERROR, "Anda memasang dengan salah pada lokasi dengan karakter spasi! Pensuyun sumber daya tidak menerima spasi.\nMohon hindari ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Muat Program EGA..."
     IDS_EGAFILTER, "Program EGA (*.ega)|*.ega|Semua Berkas (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "Berkas telah diubah. Anda ingin menyimpan perubahannya sekarang?"
@@ -1653,22 +1639,14 @@ nifest (*.manifest)|*.manifest|Berkas Delphi DFM (*.dfm)|*.dfm|TYPELIB Files (*.
     IDS_CODEPAGE65001, "65001 (UTF-8)"
     IDS_EXTRACTTLB, "Ekstrak data TYPELIB"
     IDS_CANTEXTRACTTLB, "Tidak bisa mengekstrak data TYPELIB."
-    IDS_TLBRESBINFILTER, "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|Berkas Teks (*.txt)|*.txt|Berkas MIDL (*.idl)|*.idl|All File\
-s (*.*)|*.*|"
-    IDS_USAGE, "Penggunaan: RisohEditor [pilihan | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""y\
-our-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt"" \
- Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options\
-: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest\
-)(begin-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_TLBRESBINFILTER, "Data TYPELIB (*.tlb)|*.tlb|Sumber Daya Biner (*.res)|*.res|Berkas Teks (*.txt)|*.txt|Berkas MIDL (*.idl)|*.idl|All Files (*.*)|*.*|"
+    IDS_USAGE, "Penggunaan: RisohEditor [pilihan | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Tidak ada pilihan."
-    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B\
-.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dm\
-itry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
+    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "Berkas RC (*.rc;*.rc2)|*.rc;*.rc2|Sumber Daya Binary (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Dihasilkan dari TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Berkas ini dilindungi dari penulisan oleh TEXTINCLUDE 1.\r\n\r\nApakah Anda masih ingin menulis ke berkas ini?"
-    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 berisi item sumber daya yang tidak dapat diedit.\r\n\r\nApakah Anda ingin menyertakan item dalam TEXTINCLUDE \
-3 sebagai item yang dapat diedit dan mengatur ulang TEXTINCLUDE 3?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 berisi item sumber daya yang tidak dapat diedit.\r\n\r\nApakah Anda ingin menyertakan item dalam TEXTINCLUDE 3 sebagai item yang dapat diedit dan mengatur ulang TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

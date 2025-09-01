@@ -1404,8 +1404,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Укажите язык ресурса."
     IDS_FILENOTFOUND, "Файл не найден."
     IDS_CANNOTREPLACE, "Невозможно заменить."
-    IDS_EXERESFILTER, "Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|RC-файлы (*.rc;\
-*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Все файлы (*.*)|*.*|"
+    IDS_EXERESFILTER, "Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Все файлы (*.*)|*.*|"
     IDS_SAVEAS, "Сохранить как"
     IDS_CANNOTADDICON, "Невозможно добавить значок."
     IDS_ADDICON, "Добавить значок"
@@ -1505,13 +1504,10 @@ STRINGTABLE
     IDS_CANTWRITERESH, "Невозможно записать ""resource.h""."
     IDS_SAVERESH, "Сохранить файл ""resource.h"""
     IDS_DLLFILTER, "Файлы DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Все файлы (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "Загружаемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.im\
-e;*.res;*.rc;*.rc2|Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.i\
-me|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.rc;*.rc2)|*.rc;*.rc2|Все файлы (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "Загружаемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.rc;*.rc2)|*.rc;*.rc2|Все файлы (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "Невозможно протестировать диалог, так как это дочернее окно."
     IDS_CANTTESTCLASSDLG, "Невозможно протестировать диалог из-за его класса."
-    IDS_FILEISUPXED, "Файл\r\n\r\n'%s'\r\n\r\nсжат с помощью UPX. Распаковать его во временный файл?\r\n\r\nЕсли этого не сделать, возможна ошибка при чт\
-ении."
+    IDS_FILEISUPXED, "Файл\r\n\r\n'%s'\r\n\r\nсжат с помощью UPX. Распаковать его во временный файл?\r\n\r\nЕсли этого не сделать, возможна ошибка при чтении."
     IDS_CANTUPXEXTRACT, "Невозможно распаковать с помощью UPX."
     IDS_CANTSAVEUPXED, "Невозможно сохранить файл, так как он сжат с помощью UPX."
     IDS_MESSAGEID, "ID сообщения"
@@ -1541,10 +1537,8 @@ me|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.
     IDS_MESSAGE, "Сообщение"
     IDS_STRING, "Строка"
     IDS_DATAISINVALID, "Неверные данные."
-    IDS_DLGINIT1, "Можно указать инициализацию комбобоксов и списков, задав данные инициализации в RT_DLGINIT с тем же именем, что и у рес\
-урса диалога. "
-    IDS_DLGINIT2, "При поступлении сообщения WM_INITDIALOG приложение может инициализировать диалог вызовом функции ExecuteDlgInitDx у при\
-креплённого файла ""DlgInit/DlgInit.h"".\r\n\r\n"
+    IDS_DLGINIT1, "Можно указать инициализацию комбобоксов и списков, задав данные инициализации в RT_DLGINIT с тем же именем, что и у ресурса диалога. "
+    IDS_DLGINIT2, "При поступлении сообщения WM_INITDIALOG приложение может инициализировать диалог вызовом функции ExecuteDlgInitDx у прикреплённого файла ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3, "Укажите для RT_DLGINIT список строк символов, разделённых переводами строки."
     IDS_SAMELANG, "Это тот же язык."
     IDS_SAMENAME, "Это то же имя ресурса."
@@ -1557,8 +1551,7 @@ me|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.
     IDS_RUSSIA, "Россия"
     IDS_RUSSIAN, "Русский"
     IDS_WANNAGENRESH, "Хотите создать файл 'resource.h'?"
-    IDS_EXEFILTER, "Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Все файлы (*.*)\
-|*.*|"
+    IDS_EXEFILTER, "Исполняемые файлы (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Все файлы (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "Сохранить со сжатием"
     IDS_TOOL_NEW, "Создать"
     IDS_TOOL_OPEN, "Открыть..."
@@ -1586,22 +1579,16 @@ me|Двоичные ресурсы (*.res)|*.res|Файлы ресурсов (*.
     IDS_INVALIDLANG, "Нераспознанный язык."
     IDS_INVALIDNAME, "Неверное имя ресурса."
     IDS_PNGRESBINFILTER, "Изображения PNG (*.png)|*.png|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER, "Изображения JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*\
-.bin)|*.bin|Все файлы (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "Изображения JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_GIFRESBINFILTER, "Изображения GIF (*.gif)|*.gif|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER, "Изображения TIFF (*.tif;*.tiff)|*.tif;*.tiff|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*\
-)|*.*|"
+    IDS_TIFFRESBINFILTER, "Изображения TIFF (*.tif;*.tiff)|*.tif;*.tiff|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_AVIRESBINFILTER, "Видеофайлы AVI (*.avi)|*.avi|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_WAVERESBINFILTER, "Аудиофайлы WAVE (*.wav)|*.wav|Двоичные ресурсы (*.res)|*.res|Двоичные файлы (*.bin)|*.bin|Все файлы (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// Этот файл был автоматически создан RisohEditor 5.9.1.\r\n"
     IDS_DAGGER, "// † <-- Этот крестик помогает определять UTF-8.\r\n"
-    IDS_IMPORTFILTER, "Файлы импорта |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.\
-jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Изображения|*.\
-bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки \
-(*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manife\
-st|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Файлы импорта |*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf|RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|Изображения|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf;*.tlb|Курсоры (*.cur;*.ani)|*.cur;*.ani|Значки (*.ico)|*.ico|Аудиофайлы WAVE (*.wav)|*.wav|HTML-файлы (*.html;*.htm)|*.html;*.htm|Файлы манифеста (*.manifest)|*.manifest|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все файлы (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "Невозможно записать файл, так как заблокирован следующий файл:\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Юникод"
@@ -1612,8 +1599,7 @@ st|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все �
     IDS_RESTYPE, "Тип ресурса"
     IDS_ENCODING, "Кодировка"
     IDS_INVALIDRESTYPE, "Неверный тип ресурса."
-    IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте\
- программу в папку ""C:\\Program Files"" и подобные."
+    IDS_PATHSPACEERROR, "Неверная установка программы - в пути содержатся пробелы! Компилятор ресурсов не допускает пробелов.\n\nНе устанавливайте программу в папку ""C:\\Program Files"" и подобные."
     IDS_LOADEGAPROGRAM, "Загрузить программу EGA..."
     IDS_EGAFILTER, "Программа EGA (*.ega)|*.ega|Все файлы (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "Файл был изменён. Хотите сохранить изменения?"
@@ -1650,22 +1636,14 @@ st|Delphi DFM файлы (*.dfm)|*.dfm|Файлы TYPELIB (*.tlb)|*.tlb|Все �
     IDS_CODEPAGE65001, "65001 (UTF-8)"
     IDS_EXTRACTTLB, "Извлечь данные TYPELIB"
     IDS_CANTEXTRACTTLB, "Невозможно извлечь данные TYPELIB."
-    IDS_TLBRESBINFILTER, "Данные TYPELIB (*.tlb)|*.tlb|Двоичные ресурсы (*.res)|*.res|Текстовые файлы (*.txt)|*.txt|Файлы MIDL (*.idl)|*.idl|Все \
-файлы (*.*)|*.*|"
-    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-f\
-ile.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Spec\
-ify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no\
--load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(beg\
-in-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_TLBRESBINFILTER, "Данные TYPELIB (*.tlb)|*.tlb|Двоичные ресурсы (*.res)|*.res|Текстовые файлы (*.txt)|*.txt|Файлы MIDL (*.idl)|*.idl|Все файлы (*.*)|*.*|"
+    IDS_USAGE, "Usage: RisohEditor [options | ""file""]\n\nOptions:\n--help  Show this message.\n--version  Show version info.\n--load ""your-file.rc""  Load the file (without GUI)\n--save ""your-file.res""  Save the file (without GUI)\n--log-file ""log-file.txt""  Specify the log file.\n--load-options OPTIONS  Set load options.\n--save-options OPTIONS  Set save options.\n\nLoad options: (no-load-res-h)\nSave options: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "Нет выбора."
-    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B\
-.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dm\
-itry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
+    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "RC-файлы (*.rc;*.rc2)|*.rc;*.rc2|Двоичные ресурсы (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Сгенерировано из TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Этот файл защищен от записи TEXTINCLUDE 1.\r\n\r\nВы все еще хотите записать в файл?"
-    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 содержит элементы ресурсов, которые нельзя редактировать.\r\n\r\nХотите включить элементы в TEXTINCLUDE 3 как\
- редактируемые элементы и сбросить TEXTINCLUDE 3?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 содержит элементы ресурсов, которые нельзя редактировать.\r\n\r\nХотите включить элементы в TEXTINCLUDE 3 как редактируемые элементы и сбросить TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////

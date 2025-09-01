@@ -1407,8 +1407,7 @@ STRINGTABLE
     IDS_ENTERLANG, "Por favor, introduzca un idioma de recurso."
     IDS_FILENOTFOUND, "No se ha podido encontrar el archivo."
     IDS_CANNOTREPLACE, "No se puede reemplazar."
-    IDS_EXERESFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Archivos RC (*.rc;*.r\
-c2)|*.rc;*.rc2|Recursos Binarios (*.res)|*.res|Todos los Archivos (*.*)|*.*|"
+    IDS_EXERESFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Archivos RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos Binarios (*.res)|*.res|Todos los Archivos (*.*)|*.*|"
     IDS_SAVEAS, "Guardar como"
     IDS_CANNOTADDICON, "No se puede añadir el icono."
     IDS_ADDICON, "Añadir Icono"
@@ -1508,13 +1507,10 @@ c2)|*.rc;*.rc2|Recursos Binarios (*.res)|*.res|Todos los Archivos (*.*)|*.*|"
     IDS_CANTWRITERESH, "No se puede escribir ""resource.h""."
     IDS_SAVERESH, "Guardar Archivo ""resource.h"""
     IDS_DLLFILTER, "Archivos DLL (*.dll;*.ocx;*.mui)|*.dll;*.ocx;*.mui|Todos los Archivos (*.*)|*.*|"
-    IDS_EXERESRCFILTER, "Archivos Cargables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.i\
-me;*.res;*.rc;*.rc2|Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Re\
-cursos Binarios (*.res)|*.res|Archivos de Recursos (*.rc;*.rc2)|*.rc;*.rc2|Todos los Archivos (*.*)|*.*|"
+    IDS_EXERESRCFILTER, "Archivos Cargables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime;*.res;*.rc;*.rc2|Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Recursos Binarios (*.res)|*.res|Archivos de Recursos (*.rc;*.rc2)|*.rc;*.rc2|Todos los Archivos (*.*)|*.*|"
     IDS_CANTTESTCHILDWND, "No se puede testear el diálogo porque es una ventana hija."
     IDS_CANTTESTCLASSDLG, "No se puede testear el diálogo porque tiene clases (classed)."
-    IDS_FILEISUPXED, "Archivo\r\n\r\n'%s'\r\n\r\nestá comprimido por UPX. ¿Quiere extraerlo utilizando un archivo temporal?\r\n\r\nSi no lo extrae, la le\
-ctura puede fallar."
+    IDS_FILEISUPXED, "Archivo\r\n\r\n'%s'\r\n\r\nestá comprimido por UPX. ¿Quiere extraerlo utilizando un archivo temporal?\r\n\r\nSi no lo extrae, la lectura puede fallar."
     IDS_CANTUPXEXTRACT, "No se puede extraer por UPX."
     IDS_CANTSAVEUPXED, "No se puede guardar el archivo porque fue comprimido por UPX."
     IDS_MESSAGEID, "ID de Mensaje"
@@ -1544,10 +1540,8 @@ ctura puede fallar."
     IDS_MESSAGE, "Mensaje"
     IDS_STRING, "Cadena"
     IDS_DATAISINVALID, "Los datos no son válidos."
-    IDS_DLGINIT1, "Puede especificar la inicialización de los cuadros combinados y los cuadros de lista estableciendo los datos de inicial\
-ización en los datos del recurso RT_DLGINIT del mismo nombre que el recurso de diálogo. "
-    IDS_DLGINIT2, "Cuando aparece el mensaje WM_INITDIALOG, la aplicación puede inicializar el diálogo llamando a la función ExecuteDlgIni\
-tDx del fichero adjunto ""DlgInit/DlgInit.h"".\r\n\r\n"
+    IDS_DLGINIT1, "Puede especificar la inicialización de los cuadros combinados y los cuadros de lista estableciendo los datos de inicialización en los datos del recurso RT_DLGINIT del mismo nombre que el recurso de diálogo. "
+    IDS_DLGINIT2, "Cuando aparece el mensaje WM_INITDIALOG, la aplicación puede inicializar el diálogo llamando a la función ExecuteDlgInitDx del fichero adjunto ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_DLGINIT3, "Por favor, especifique una lista de cadenas de caracteres separadas por saltos de línea en RT_DLGINIT."
     IDS_SAMELANG, "Es el mismo idioma."
     IDS_SAMENAME, "Es el mismo nombre de recurso."
@@ -1560,8 +1554,7 @@ tDx del fichero adjunto ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_RUSSIA, "Rusia"
     IDS_RUSSIAN, "Ruso"
     IDS_WANNAGENRESH, "¿Quiere generar el archivo 'resource.h'?"
-    IDS_EXEFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Todos los Archivos (*\
-.*)|*.*|"
+    IDS_EXEFILTER, "Ejecutables (*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime)|*.exe;*.dll;*.ocx;*.cpl;*.scr;*.mui;*.ime|Todos los Archivos (*.*)|*.*|"
     IDS_SAVEASCOMPRESS, "Guardar con Compresión"
     IDS_TOOL_NEW, "Nuevo"
     IDS_TOOL_OPEN, "Abrir..."
@@ -1589,22 +1582,16 @@ tDx del fichero adjunto ""DlgInit/DlgInit.h"".\r\n\r\n"
     IDS_INVALIDLANG, "Idioma irreconocible."
     IDS_INVALIDNAME, "Nombre de recurso inválido."
     IDS_PNGRESBINFILTER, "Imagen PNG (*.png)|*.png|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
-    IDS_JPEGRESBINFILTER, "Imagen JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.\
-bin)|*.bin|Todos los Archivos (*.*)|*.*|"
+    IDS_JPEGRESBINFILTER, "Imagen JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
     IDS_GIFRESBINFILTER, "Imagen GIF (*.gif)|*.gif|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
-    IDS_TIFFRESBINFILTER, "Imagen TIFF (*.tif;*.tiff)|*.tif;*.tiff|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archi\
-vos (*.*)|*.*|"
+    IDS_TIFFRESBINFILTER, "Imagen TIFF (*.tif;*.tiff)|*.tif;*.tiff|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
     IDS_AVIRESBINFILTER, "Video AVI (*.avi)|*.avi|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
     IDS_WAVERESBINFILTER, "Audio WAVE (*.wav)|*.wav|Recursos Binarios (*.res)|*.res|Archivos Binarios (*.bin)|*.bin|Todos los Archivos (*.*)|*.*|"
     IDS_COMMENT_SEP, "//////////////////////////////////////////////////////////////////////////////\r\n"
     IDS_NEWLINE, "\r\n"
     IDS_NOTICE, "// This file is automatically generated by RisohEditor 5.9.1.\r\n"
     IDS_DAGGER, "// † <-- This dagger helps UTF-8 detection.\r\n"
-    IDS_IMPORTFILTER, "Archivos importables|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.j\
-peg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC Files (*.rc;*.rc2)|*.rc;*.rc2|Binary Resources (*.res)|*.res|Im\
-age Files|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Cursor Files (*.cur;*.ani)|*.cur;*.\
-ani|Icon Files (*.ico)|*.ico|WAVE Sound Files (*.wav)|*.wav|HTML Files (*.html;*.htm)|*.html;*.htm|Manifest Files (*.man\
-ifest)|*.manifest|Delphi DFM Files (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|All Files (*.*)|*.*|"
+    IDS_IMPORTFILTER, "Archivos importables|*.rc;*.res;*.dfm;*.html;*.htm;*.manifest;*.ico;*.cur;*.ani;*.wav;*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.avi;*.wmf;*.emf;*.tlb|RC Files (*.rc;*.rc2)|*.rc;*.rc2|Binary Resources (*.res)|*.res|Image Files|*.bmp;*.dib;*.png;*.gif;*.jpg;*.jpeg;*.jpe;*.jfif;*.tif;*.tiff;*.wmf;*.emf|Cursor Files (*.cur;*.ani)|*.cur;*.ani|Icon Files (*.ico)|*.ico|WAVE Sound Files (*.wav)|*.wav|HTML Files (*.html;*.htm)|*.html;*.htm|Manifest Files (*.manifest)|*.manifest|Delphi DFM Files (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|All Files (*.*)|*.*|"
     IDS_CANTWRITEBYLOCK, "No se puede escribir el archivo porque el siguiente archivo está bloqueado.\r\n\r\n%s"
     IDS_ANSI, "ANSI"
     IDS_WIDE, "Unicode"
@@ -1615,8 +1602,7 @@ ifest)|*.manifest|Delphi DFM Files (*.dfm)|*.dfm|TYPELIB Files (*.tlb)|*.tlb|All
     IDS_RESTYPE, "Tipo de Recurso"
     IDS_ENCODING, "Codificación"
     IDS_INVALIDRESTYPE, "Tipo de recurso no válido."
-    IDS_PATHSPACEERROR, "!Ha instalado equivocadamente en una ubicación con caracteres de espacio.! El compilador de recursos no puede aceptar e\
-spacio.\n\nPor vavor, evite ""C:\\Program Files""."
+    IDS_PATHSPACEERROR, "!Ha instalado equivocadamente en una ubicación con caracteres de espacio.! El compilador de recursos no puede aceptar espacio.\n\nPor vavor, evite ""C:\\Program Files""."
     IDS_LOADEGAPROGRAM, "Cargar programa EGA..."
     IDS_EGAFILTER, "Programa EGA (*.ega)|*.ega|Todos los Archivos (*.*)|*.*|"
     IDS_QUERYSAVECHANGE, "El achivo ha sido modificado. ¿Quiere guardar los cambios ahora?"
@@ -1653,22 +1639,14 @@ spacio.\n\nPor vavor, evite ""C:\\Program Files""."
     IDS_CODEPAGE65001, "65001 (UTF-8)"
     IDS_EXTRACTTLB, "Extraer datos TYPELIB"
     IDS_CANTEXTRACTTLB, "No se pueden extraer los datos TYPELIB."
-    IDS_TLBRESBINFILTER, "Datos TYPELIB (*.tlb)|*.tlb|Recursos Binarios (*.res)|*.res|Archivos de Texto (*.txt)|*.txt|Archivos MIDL (*.idl)|*.idl\
-|Todos los Archivos (*.*)|*.*|"
-    IDS_USAGE, "Uso: RisohEditor [opciones | ""archivo""]\n\nOpciones:\n--help  Muestra este mensaje.\n--version  Muestra información de la v\
-ersión.\n--load ""su-archivo.rc""  Carga el archivo (sin GUI)\n--save ""su-archivo.res""  Guarda el archivo (sin GUI)\n--log-fi\
-le ""archivo-log.txt""  Especifica el archivo log.\n--load-options OPCIONES  Establece opciones de carga.\n--save-options OP\
-CIONES  Establece opciones de guardado.\n\nOpciones de carga: (no-load-res-h)\nOpciones de guardado: (idc-static)(compress)\
-(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
+    IDS_TLBRESBINFILTER, "Datos TYPELIB (*.tlb)|*.tlb|Recursos Binarios (*.res)|*.res|Archivos de Texto (*.txt)|*.txt|Archivos MIDL (*.idl)|*.idl|Todos los Archivos (*.*)|*.*|"
+    IDS_USAGE, "Uso: RisohEditor [opciones | ""archivo""]\n\nOpciones:\n--help  Muestra este mensaje.\n--version  Muestra información de la versión.\n--load ""su-archivo.rc""  Carga el archivo (sin GUI)\n--save ""su-archivo.res""  Guarda el archivo (sin GUI)\n--log-file ""archivo-log.txt""  Especifica el archivo log.\n--load-options OPCIONES  Establece opciones de carga.\n--save-options OPCIONES  Establece opciones de guardado.\n\nOpciones de carga: (no-load-res-h)\nOpciones de guardado: (idc-static)(compress)(sep-lang)(no-res-folder)(lang-macro)(less-comments)(wrap-manifest)(begin-end)(utf-16)(backup)(ms-msgtbl)"
     IDS_NOSELECTION, "No hay ninguna selección."
-    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B\
-.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dm\
-itry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
+    IDS_TRANSLATORS, "[Translators]\r\nEnglish: Katayama Hirofumi MZ\r\nFinnish: Veikko Muurikainen\r\nIndonesian: Mas Ahmad Muhammad\r\nItalian: R.B.\r\nJapanese: Katayama Hirofumi MZ\r\nKorean: VenusGirl (비너스걸)\r\nPolish: Piotr Hetnarowicz\r\nPortuguese: JNylson\r\nRussian: Dmitry Yerokhin\r\nSimplified Chinese: 林鸿湘\r\nSpanish: Cristobal Prieto\r\nTurkish: OnurGVNGL"
     IDS_EXPORTFILTER, "Archivos RC (*.rc;*.rc2)|*.rc;*.rc2|Recursos Binarios (*.res)|*.res|"
     IDS_GENERATEDFROMTEXTINCLUDE, "// Generado a partir de TEXTINCLUDE %u\r\n"
     IDS_TEXTINCLUDEREADONLY, "Este archivo está protegido contra escritura mediante TEXTINCLUDE 1.\r\n\r\n¿Aún desea escribir en el archivo?"
-    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contiene elementos de recursos que no se pueden editar.\r\n\r\n¿Desea incluir los elementos en TEXTINCLUDE 3 \
-como elementos editables y restablecer TEXTINCLUDE 3?"
+    IDS_INCLUDETEXTINCLUDE3, "TEXTINCLUDE 3 contiene elementos de recursos que no se pueden editar.\r\n\r\n¿Desea incluir los elementos en TEXTINCLUDE 3 como elementos editables y restablecer TEXTINCLUDE 3?"
 }
 
 //////////////////////////////////////////////////////////////////////////////
