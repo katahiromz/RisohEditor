@@ -4492,11 +4492,19 @@ void MMainWnd::OnItemSearch(HWND hwnd)
     // is there "item search" dialogs?
     if (!MItemSearchDlg::Dialogs().empty())
     {
-        // bring it to the top
         HWND hDlg = **MItemSearchDlg::Dialogs().begin();
-        SetForegroundWindow(hDlg);
-        SetFocus(hDlg);
-        return;
+        if (::IsWindow(hDlg))
+        {
+            // bring it to the top
+            SetForegroundWindow(hDlg);
+            SetFocus(hDlg);
+            return;
+        }
+        else
+        {
+            // erase from dialogs
+            MItemSearchDlg::Dialogs().erase(MItemSearchDlg::Dialogs().begin());
+        }
     }
 
     // create dialog

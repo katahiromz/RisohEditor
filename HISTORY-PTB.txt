@@ -351,3 +351,4 @@
 - v.5.9.1 (2025-XX-YY)
     - Now, the maximum length of a non-wrapped string literal is 400.
     - Wrap string literals only in UTF-16 RC.
+    - Fixed Search (Ctrl+F).

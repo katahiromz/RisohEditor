@@ -351,3 +351,4 @@
 - v.5.9.1 (2025-XX-YY)
     - La lunghezza massima di una stringa senza a capo automatico è 400.
     - A capo automatico stringa solo in RC UTF-16.
+    - Fixed Search (Ctrl+F).
