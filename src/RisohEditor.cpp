@@ -4490,7 +4490,7 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
     // is there "item search" dialogs?
-    if (!MItemSearchDlg::Dialogs().empty())
+    while (!MItemSearchDlg::Dialogs().empty())
     {
         HWND hDlg = **MItemSearchDlg::Dialogs().begin();
         if (::IsWindow(hDlg))
@@ -4500,11 +4500,8 @@ void MMainWnd::OnItemSearch(HWND hwnd)
             SetFocus(hDlg);
             return;
         }
-        else
-        {
-            // erase from dialogs
-            MItemSearchDlg::Dialogs().erase(MItemSearchDlg::Dialogs().begin());
-        }
+        // erase hDlg from dialogs
+        MItemSearchDlg::Dialogs().erase(MItemSearchDlg::Dialogs().begin());
     }
 
     // create dialog
