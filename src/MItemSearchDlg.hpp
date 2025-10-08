@@ -61,7 +61,7 @@ public:
     ITEM_SEARCH& m_search;
     HICON m_hIcon;
     HICON m_hIconSm;
-    static std::shared_ptr<MItemSearchDlg> m_static_dialog;
+    typedef std::shared_ptr<MItemSearchDlg> dialog_ptr_t;
 
     MItemSearchDlg(ITEM_SEARCH& search)
         : MDialogBase(IDD_ITEMSEARCH), m_search(search),
@@ -75,9 +75,10 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    static dialog_type& Dialog()
+    static dialog_ptr_t& Dialog()
     {
-        return m_static_dialog;
+        static dialog_ptr_t s_static_dialog;
+        return s_static_dialog;
     }
 
     void Done()
