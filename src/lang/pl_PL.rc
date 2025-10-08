@@ -906,6 +906,7 @@ FONT 9, "MS Shell Dlg"
     GROUPBOX "Kierunek", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Góra", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "&Dół", rad2, 90, 80, 60, 14, WS_TABSTOP
+    ICON 0, ico1, 10, 110, 0, 0
     DEFPUSHBUTTON "&Znajdź", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Anuluj", IDCANCEL, 105, 115, 60, 14
 }

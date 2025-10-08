@@ -904,6 +904,7 @@ FONT 9, "宋體"
     GROUPBOX "方向", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "向上(&U)", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "向下(&D)", rad2, 90, 80, 60, 14, WS_TABSTOP
+    ICON 0, ico1, 10, 110, 0, 0
     DEFPUSHBUTTON "查找(&F)", IDOK, 40, 115, 60, 14
     PUSHBUTTON "取消", IDCANCEL, 105, 115, 60, 14
 }

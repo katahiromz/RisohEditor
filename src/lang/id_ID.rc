@@ -909,6 +909,7 @@ FONT 9, "MS Shell Dlg"
     GROUPBOX "jalur", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "Ke &Atas", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "Ke &bawah", rad2, 90, 80, 60, 14, WS_TABSTOP
+    ICON 0, ico1, 10, 110, 0, 0
     DEFPUSHBUTTON "&Temukan", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Batal", IDCANCEL, 105, 115, 60, 14
 }

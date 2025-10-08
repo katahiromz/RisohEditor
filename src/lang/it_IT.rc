@@ -907,6 +907,7 @@ FONT 9, "MS Shell Dlg"
     GROUPBOX "Direzione ricerca", -1, 5, 65, 160, 42
     AUTORADIOBUTTON "&Indietro", rad1, 15, 80, 60, 14, WS_TABSTOP
     AUTORADIOBUTTON "&Avanti", rad2, 90, 80, 60, 14, WS_TABSTOP
+    ICON 0, ico1, 10, 110, 0, 0
     DEFPUSHBUTTON "&Cerca", IDOK, 40, 115, 60, 14
     PUSHBUTTON "Annulla", IDCANCEL, 105, 115, 60, 14
 }
