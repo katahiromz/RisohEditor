@@ -4490,9 +4490,9 @@ void MMainWnd::OnCopyToMultiLang(HWND hwnd)
 void MMainWnd::OnItemSearch(HWND hwnd)
 {
     // is there "item search" dialogs?
-    while (!MItemSearchDlg::Dialogs().empty())
+    if (MItemSearchDlg::Dialog())
     {
-        HWND hDlg = **MItemSearchDlg::Dialogs().begin();
+        HWND hDlg = *MItemSearchDlg::Dialog();
         if (::IsWindow(hDlg))
         {
             // bring it to the top
@@ -4501,13 +4501,13 @@ void MMainWnd::OnItemSearch(HWND hwnd)
             return;
         }
         // erase hDlg from dialogs
-        MItemSearchDlg::Dialogs().erase(MItemSearchDlg::Dialogs().begin());
+        MItemSearchDlg::Dialog() = nullptr;
     }
 
     // create dialog
     auto pDialog = std::make_shared<MItemSearchDlg>(m_search);
     pDialog->CreateDialogDx(hwnd);
-    MItemSearchDlg::Dialogs().insert(pDialog);
+    MItemSearchDlg::Dialog() = pDialog;
 
     // set the window handles to m_search.res2text
     m_search.res2text.m_hwnd = hwnd;
@@ -15468,20 +15468,12 @@ void MMainWnd::DoMsg(MSG& msg)
             return;
     }
 
-    // do the item search dialogs
-    if (MItemSearchDlg::Dialogs().size())
+    // do the item search dialog
+    if (MItemSearchDlg::Dialog())
     {
-        BOOL bProcessed = FALSE;
-        for (auto& item : MItemSearchDlg::Dialogs())
-        {
-            if (IsDialogMessage(*item, &msg))
-            {
-                bProcessed = TRUE;
-                break;
-            }
-        }
-        if (bProcessed)
-            return;
+        HWND hDlg = *MItemSearchDlg::Dialog();
+        if (::IsDialogMessage(hDlg, &msg))
+            return; // processed
     }
 
     // the default processing

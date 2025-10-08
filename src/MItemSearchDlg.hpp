@@ -74,12 +74,12 @@ public:
         DestroyIcon(m_hIconSm);
     }
 
-    typedef std::unordered_set<std::shared_ptr<MItemSearchDlg>> dialogs_type;
+    typedef std::shared_ptr<MItemSearchDlg> dialog_type;
 
-    static dialogs_type& Dialogs()
+    static dialog_type& Dialog()
     {
-        static dialogs_type s_dialogs;
-        return s_dialogs;
+        static dialog_type s_dialog;
+        return s_dialog;
     }
 
     void Done()
@@ -90,14 +90,8 @@ public:
 
     void OnDestroy(HWND hwnd)
     {
-        for (auto pItem : Dialogs()) 
-        {
-            if (pItem->m_hwnd == hwnd)
-            {
-                pItem->m_hwnd = NULL;
-                break;
-            }
-        }
+        if (Dialog() && Dialog()->m_hwnd == hwnd)
+            Dialog()->m_hwnd = NULL;
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
