@@ -4548,6 +4548,9 @@ LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDNO: // Not found
         DoEnableControls(TRUE);
         break;
+    default:
+        assert(0);
+        break;
     }
     return 0;
 }
