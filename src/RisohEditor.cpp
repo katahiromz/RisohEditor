@@ -28,6 +28,7 @@
 #else
     #include "MRegKey.hpp"
 #endif
+#include <thread>
 
 INT g_bNoGuiMode = 0; // No-GUI mode
 LPWSTR g_pszLogFile = NULL;
@@ -2441,6 +2442,7 @@ public:
     void ReSetPaths(HWND hwnd);
     BOOL DoItemSearch(ITEM_SEARCH& search);
     BOOL DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
+    void search_worker_thread(HWND hwnd, MItemSearchDlg* pDialog);
 
     bool DoResLoad(const MStringW& filename, const MStringW& options = L"");
     bool DoResSave(const MStringW& filename, const MStringW& options = L"");
@@ -4600,14 +4602,13 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
     return FALSE;
 }
 
-BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
+void search_worker_thread(MMainWnd* pThis, HWND hwnd, MItemSearchDlg* pDialog)
 {
-    // is it visible?
-    if (pDialog == NULL || !IsWindowVisible(pDialog->m_hwnd))
-    {
-        pDialog = NULL;
-    }
+    pThis->search_worker_thread(hwnd, pDialog);
+}
 
+void MMainWnd::search_worker_thread(HWND hwnd, MItemSearchDlg* pDialog)
+{
     // get the selected entry
     auto entry = g_res.get_entry();
 
@@ -4629,7 +4630,7 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         if (pDialog)
             pDialog->Done();    // uninitialize
 
-        return TRUE;
+        return;
     }
 
     if (DoItemSearch(m_search) && m_search.pFound)
@@ -4644,7 +4645,7 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
         TreeView_EnsureVisible(m_hwndTV, m_search.pFound->m_hItem);
 
         DoInnerSearch(hwnd);
-        return TRUE;
+        return;
     }
 
     m_search.bRunning = FALSE;
@@ -4666,6 +4667,18 @@ BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
     // set focus to the dialog
     if (pDialog)
         SetFocus(*pDialog);
+}
+
+BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)
+{
+    // is it visible?
+    if (pDialog == NULL || !IsWindowVisible(pDialog->m_hwnd))
+    {
+        pDialog = NULL;
+    }
+
+    std::thread t1(::search_worker_thread, this, hwnd, pDialog);
+    t1.detach();
 
     return FALSE;
 }

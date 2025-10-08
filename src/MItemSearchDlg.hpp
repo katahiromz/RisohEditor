@@ -81,16 +81,39 @@ public:
         return s_static_dialog;
     }
 
+    static HCURSOR LoadAnimatedCursor(HINSTANCE hInst, LPCTSTR name)
+    {
+        HRSRC hRsrc = FindResource(hInst, name, RT_ANICURSOR);
+        DWORD cbData = SizeofResource(hInst, hRsrc);
+        HGLOBAL hGlobal = LoadResource(hInst, hRsrc);
+        LPVOID pvData = LockResource(hGlobal);
+        return (HCURSOR)CreateIconFromResource((PBYTE)pvData, cbData, FALSE, 0x00030000);
+    }
+
+    static HCURSOR& GetWaitAniCursor()
+    {
+        static HCURSOR s_hCursor = nullptr;
+        if (s_hCursor)
+            return s_hCursor;
+        s_hCursor = LoadAnimatedCursor(::GetModuleHandle(NULL), MAKEINTRESOURCEW(IDR_SEARCHINGANICUR));
+        return s_hCursor;
+    }
+
     void Done()
     {
         m_search.bRunning = FALSE;
         EnableWindow(GetDlgItem(m_hwnd, IDOK), TRUE);
+        SendDlgItemMessage(m_hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, 0);
     }
 
     void OnDestroy(HWND hwnd)
     {
         if (Dialog() && Dialog()->m_hwnd == hwnd)
+        {
             Dialog()->m_hwnd = NULL;
+            DestroyCursor(GetWaitAniCursor());
+            GetWaitAniCursor() = nullptr;
+        }
     }
 
     BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
@@ -121,6 +144,8 @@ public:
         if (m_search.strText.empty())
             return;
 
+        SendDlgItemMessage(hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, (WPARAM)GetWaitAniCursor());
+
         m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
         m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
         m_search.bRunning = TRUE;
@@ -142,7 +167,7 @@ public:
             }
             else if (!m_search.bCancelled)
             {
-                m_search.bRunning = FALSE;
+                Done();
                 m_search.bCancelled = TRUE;
             }
             break;
