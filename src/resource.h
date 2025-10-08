@@ -101,6 +101,7 @@
 #define IDR_TINYDLL                         107
 #define IDR_TINYEXE64                       108
 #define IDR_TINYDLL64                       109
+#define IDR_SEARCHINGANICUR                 110
 
 #define IDS_APPNAME                         101
 #define IDS_TITLEWITHFILE                   102
