@@ -32,6 +32,8 @@
 #include "MessageRes.hpp"
 #include "ToolbarRes.hpp"
 
+#define SUPPORT_OLD_ENVIRONMENTS TRUE // Borland C++ is still alive in some places
+
 static inline MStringW generate_begin(void)
 {
     return g_settings.bUseBeginEnd ? L"BEGIN" : L"{";
@@ -634,7 +636,9 @@ ResToText::DoAniCursor(const EntryBase& entry)
     str += GetLanguageStatement(entry.m_lang);
 
     str += DumpName(entry.m_type, entry.m_name);
-    str += L" ANICURSOR \"";
+    str += L' ';
+    str += (SUPPORT_OLD_ENVIRONMENTS ? L"21" : L"ANICURSOR");
+    str += L" \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
 
@@ -656,7 +660,9 @@ ResToText::DoAniIcon(const EntryBase& entry)
     str += GetLanguageStatement(entry.m_lang);
 
     str += DumpName(entry.m_type, entry.m_name);
-    str += L" ANIICON \"";
+    str += L' ';
+    str += (SUPPORT_OLD_ENVIRONMENTS ? L"22" : L"ANIICON");
+    str += L" \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
 
@@ -710,8 +716,8 @@ ResToText::DoManifest(const EntryBase& entry)
         }
         str += GetLanguageStatement(entry.m_lang);
         str += DumpName(entry.m_type, entry.m_name);
-        str += L" ";
-        str += DumpEscapedName(entry.m_type);
+        str += L' ';
+        str += (SUPPORT_OLD_ENVIRONMENTS ? L"24" : L"MANIFEST");
         str += L" \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n";
