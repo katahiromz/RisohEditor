@@ -638,6 +638,7 @@ ResToText::DoAniCursor(const EntryBase& entry)
     str += DumpName(entry.m_type, entry.m_name);
     str += L' ';
     str += (SUPPORT_OLD_ENVIRONMENTS ? L"21" : L"ANICURSOR");
+    static_assert((INT_PTR)RT_ANICURSOR == 21, "");
     str += L" \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -662,6 +663,7 @@ ResToText::DoAniIcon(const EntryBase& entry)
     str += DumpName(entry.m_type, entry.m_name);
     str += L' ';
     str += (SUPPORT_OLD_ENVIRONMENTS ? L"22" : L"ANIICON");
+    static_assert((INT_PTR)RT_ANIICON == 22, "");
     str += L" \"";
     str += GetEntryFileName(entry);
     str += L"\"\r\n\r\n";
@@ -718,6 +720,7 @@ ResToText::DoManifest(const EntryBase& entry)
         str += DumpName(entry.m_type, entry.m_name);
         str += L' ';
         str += (SUPPORT_OLD_ENVIRONMENTS ? L"24" : L"MANIFEST");
+        static_assert((INT_PTR)RT_MANIFEST == 24, "");
         str += L" \"";
         str += GetEntryFileName(entry);
         str += L"\"\r\n";
