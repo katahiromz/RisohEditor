@@ -4661,10 +4661,8 @@ void MMainWnd::search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog)
     auto entry = g_res.get_entry();
 
     if (m_search.bIgnoreCases)
-    {
         CharUpperW(&m_search.strText[0]);
-    }
-
+ 
     // initialize
     m_search.bCancelled = FALSE;
     m_search.pFound = NULL;
@@ -4711,10 +4709,6 @@ void MMainWnd::search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog)
         if (pDialog)
             EnableWindow(*pDialog, TRUE);
     }
-
-    // set focus to the dialog
-    if (pDialog)
-        SetFocus(*pDialog);
 }
 
 BOOL MMainWnd::DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog)

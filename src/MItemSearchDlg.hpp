@@ -101,18 +101,26 @@ public:
 
     void EnableControls(BOOL bEnable)
     {
+        if (!bEnable)
+            ::SetFocus(m_hwnd); // Don't disable focused control
+
         EnableWindow(GetDlgItem(m_hwnd, IDOK), bEnable);
         EnableWindow(GetDlgItem(m_hwnd, edt1), bEnable);
         EnableWindow(GetDlgItem(m_hwnd, rad1), bEnable);
         EnableWindow(GetDlgItem(m_hwnd, rad2), bEnable);
         EnableWindow(GetDlgItem(m_hwnd, chx1), bEnable);
+
+        if (bEnable)
+        {
+            ::SetFocus(::GetDlgItem(m_hwnd, edt1));
+        }
     }
 
     void Done()
     {
         m_search.bRunning = FALSE;
-        EnableControls(TRUE);
         SendDlgItemMessage(m_hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, 0);
+        EnableControls(TRUE);
     }
 
     void OnDestroy(HWND hwnd)
