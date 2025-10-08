@@ -353,3 +353,4 @@
     - A capo automatico stringa solo in RC UTF-16.
     - Corretta ricerca (Ctrl+F).
     - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
+    - Improved Search UI/UX.
