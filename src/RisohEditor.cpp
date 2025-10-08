@@ -2442,7 +2442,9 @@ public:
     void ReSetPaths(HWND hwnd);
     BOOL DoItemSearch(ITEM_SEARCH& search);
     BOOL DoItemSearchBang(HWND hwnd, MItemSearchDlg *pDialog);
-    void search_worker_thread(HWND hwnd, MItemSearchDlg* pDialog);
+    void search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog);
+    void search_worker_thread_outer(HWND hwnd, MItemSearchDlg* pDialog);
+    void DoEnableControls(BOOL bEnable);
 
     bool DoResLoad(const MStringW& filename, const MStringW& options = L"");
     bool DoResSave(const MStringW& filename, const MStringW& options = L"");
@@ -4186,10 +4188,14 @@ search_proc(void *arg)
     auto pSearch = (ITEM_SEARCH *)arg;
     MString text;
 
+    BOOL bFound = FALSE;
     for (auto entry : g_res)
     {
         if (!entry->valid())
             continue;
+
+        if (pSearch->bCancelled)
+            break;
 
         EntryBase e = *entry;
 
@@ -4197,8 +4203,10 @@ search_proc(void *arg)
         text = e.m_strLabel;
         if (CheckTextForSearch(pSearch, entry, text))
         {
+            bFound = TRUE;
+            ::PostMessage(g_hMainWnd, MYWM_ITEMSEARCH, IDYES, (WPARAM)pSearch);
             //MessageBoxW(NULL, e.m_strLabel.c_str(), L"OK", 0);
-            continue;
+            break;
         }
 
         // check internal text
@@ -4217,10 +4225,16 @@ search_proc(void *arg)
         text = pSearch->res2text.DumpEntry(e);
         if (CheckTextForSearch(pSearch, entry, text))
         {
+            // found
+            bFound = TRUE;
+            ::PostMessage(g_hMainWnd, MYWM_ITEMSEARCH, IDYES, (WPARAM)pSearch);
             //MessageBoxW(NULL, (e.m_strLabel + L"<>" + text).c_str(), NULL, 0);
-            continue;
+            break;
         }
     }
+
+    if (!bFound)
+        ::PostMessage(g_hMainWnd, MYWM_ITEMSEARCH, IDNO, (WPARAM)pSearch);
 
     pSearch->bRunning = FALSE;  // finish
     return 0;
@@ -4523,7 +4537,18 @@ void MMainWnd::OnItemSearch(HWND hwnd)
 // MYWM_ITEMSEARCH: do item search
 LRESULT MMainWnd::OnItemSearchBang(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    DoItemSearchBang(hwnd, (MItemSearchDlg *)lParam);
+    UINT nID = (UINT)wParam;
+    switch (nID)
+    {
+    case IDOK: // Start search
+        DoItemSearchBang(hwnd, (MItemSearchDlg *)lParam);
+        break;
+    case IDCANCEL: // Canceled
+    case IDYES: // Found
+    case IDNO: // Not found
+        DoEnableControls(TRUE);
+        break;
+    }
     return 0;
 }
 
@@ -4604,10 +4629,30 @@ BOOL MMainWnd::DoInnerSearch(HWND hwnd)
 
 void search_worker_thread(MMainWnd* pThis, HWND hwnd, MItemSearchDlg* pDialog)
 {
-    pThis->search_worker_thread(hwnd, pDialog);
+    pThis->search_worker_thread_outer(hwnd, pDialog);
 }
 
-void MMainWnd::search_worker_thread(HWND hwnd, MItemSearchDlg* pDialog)
+void MMainWnd::DoEnableControls(BOOL bEnable)
+{
+    ::EnableWindow(m_hwnd, bEnable);
+    ::EnableWindow(m_hCodeEditor, bEnable);
+    ::EnableWindow(m_hBmpView, bEnable);
+    ::EnableWindow(m_hHexViewer, bEnable);
+    ::EnableWindow(m_hToolBar, bEnable);
+    ::EnableWindow(m_id_list_dlg, bEnable);
+    ::EnableWindow(m_hwndTV, bEnable);
+}
+
+void MMainWnd::search_worker_thread_outer(HWND hwnd, MItemSearchDlg* pDialog)
+{
+    DoEnableControls(FALSE);
+
+    search_worker_thread_inner(hwnd, pDialog);
+
+    DoEnableControls(TRUE);
+}
+
+void MMainWnd::search_worker_thread_inner(HWND hwnd, MItemSearchDlg* pDialog)
 {
     // get the selected entry
     auto entry = g_res.get_entry();
@@ -10731,6 +10776,10 @@ void MMainWnd::OnClose(HWND hwnd)
 // WM_DESTROY: the main window has been destroyed
 void MMainWnd::OnDestroy(HWND hwnd)
 {
+    // Try to cancel searching
+    m_search.bCancelled = FALSE;
+    ::Sleep(100);
+
     // release auto complete
     DoLangEditAutoCompleteRelease(hwnd);
 

@@ -99,10 +99,19 @@ public:
         return s_hCursor;
     }
 
+    void EnableControls(BOOL bEnable)
+    {
+        EnableWindow(GetDlgItem(m_hwnd, IDOK), bEnable);
+        EnableWindow(GetDlgItem(m_hwnd, edt1), bEnable);
+        EnableWindow(GetDlgItem(m_hwnd, rad1), bEnable);
+        EnableWindow(GetDlgItem(m_hwnd, rad2), bEnable);
+        EnableWindow(GetDlgItem(m_hwnd, chx1), bEnable);
+    }
+
     void Done()
     {
         m_search.bRunning = FALSE;
-        EnableWindow(GetDlgItem(m_hwnd, IDOK), TRUE);
+        EnableControls(TRUE);
         SendDlgItemMessage(m_hwnd, ico1, STM_SETIMAGE, IMAGE_CURSOR, 0);
     }
 
@@ -134,7 +143,7 @@ public:
         CenterWindowDx();
         return TRUE;
     }
-
+ 
     void OnOK(HWND hwnd)
     {
         if (m_search.bRunning)
@@ -149,8 +158,10 @@ public:
         m_search.bIgnoreCases = IsDlgButtonChecked(hwnd, chx1) == BST_UNCHECKED;
         m_search.bDownward = IsDlgButtonChecked(hwnd, rad2) == BST_CHECKED;
         m_search.bRunning = TRUE;
-        EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
-        SendMessage(GetParent(hwnd), MYWM_ITEMSEARCH, 0, (LPARAM)this);
+
+        EnableControls(FALSE);
+
+        SendMessage(GetParent(hwnd), MYWM_ITEMSEARCH, IDOK, (LPARAM)this);
     }
 
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
@@ -169,6 +180,7 @@ public:
             {
                 Done();
                 m_search.bCancelled = TRUE;
+                SendMessage(GetParent(hwnd), MYWM_ITEMSEARCH, IDCANCEL, (LPARAM)this);
             }
             break;
         case 999:
