@@ -94,7 +94,6 @@
 #define IDR_MAINFRAME                       100
 #define IDR_MAINMENU                        101
 #define IDR_POPUPMENUS                      102
-#define IDR_BOUNCEANICUR                    103
 #define IDR_MAINACCEL                       104
 #define IDR_UNKNOWNRESID                    105
 #define IDR_TINYEXE                         106
