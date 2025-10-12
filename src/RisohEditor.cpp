@@ -16688,6 +16688,7 @@ bool MMainWnd::DoResSave(const MStringW& filename, const MStringW& options)
     g_settings.bWrapManifest = options.find(L"(wrap-manifest)") != options.npos;
     g_settings.bUseBeginEnd = options.find(L"(begin-end)") != options.npos;
     g_settings.bRCFileUTF16 = options.find(L"(utf-16)") != options.npos;
+    g_settings.bAddBomToRC = options.find(L"(bom)") != options.npos;
     g_settings.bBackup = options.find(L"(backup)") != options.npos;
     g_settings.bUseMSMSGTABLE = options.find(L"(ms-msgtbl)") != options.npos;
     {

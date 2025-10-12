@@ -354,3 +354,4 @@
     - Corretta ricerca (Ctrl+F).
     - Le parole chiave ANICURSOR e ANIICON non sono disponibili nei vecchi ambienti. Usa al loro posto i numerici.
     - Migliorata ricerca UI/UX.
+    - Add "(bom)" option to EGA RES_save function.

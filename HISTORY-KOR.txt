@@ -355,3 +355,4 @@
     - Fixed Search (Ctrl+F).
     - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
     - Improved Search UI/UX.
+    - Add "(bom)" option to EGA RES_save function.
