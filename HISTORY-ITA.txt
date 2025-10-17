@@ -355,3 +355,4 @@
     - Le parole chiave ANICURSOR e ANIICON non sono disponibili nei vecchi ambienti. Usa al loro posto i numerici.
     - Migliorata ricerca UI/UX.
     - Aggiunta alla funzione EGA RES_save l'opzione "(bom)".
+    - Added High DPI support.
