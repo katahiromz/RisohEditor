@@ -352,8 +352,8 @@
 - v.5.9.1 (2025-XX-YY)
     - 이제 줄바꿈되지 않은 문자열 리터럴의 최대 길이는 400입니다.
     - 문자열 리터럴은 UTF-16 RC에서만 줄바꿈됩니다.
-    - Fixed Search (Ctrl+F).
-    - ANICURSOR and ANIICON keywords are not available on old environments. Use numeric instead of them.
-    - Improved Search UI/UX.
-    - Added "(bom)" option to EGA RES_save function.
-    - Added High DPI support.
+    - 검색(Ctrl+F)이 수정되었습니다.
+    - ANICURSOR 및 ANICON 키워드는 이전 환경에서는 사용할 수 없습니다. 대신 숫자를 사용하세요.
+    - 검색 UI/UX가 개선되었습니다.
+    - EGA RES_save 기능에 "(bom)" 옵션이 추가되었습니다.
+    - 높은 DPI 지원이 추가되었습니다.
