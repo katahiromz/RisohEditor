@@ -343,12 +343,12 @@
     - Ridotto sfarfallio quando si sposta lo splitter.
     - Disabilitato re-indirizzamento file system WoW.
     - Abilitato completamento automatica del file system.
-- v.5.9.0 (2025-09-01)
+- v.5.9.0 (01.09.2025)
     - Supporto estensione nome file RC2.
     - Modifica icona notifica per estrazione di SHChangeNotify.
     - Abilitazione a capo automatico stringhe letterali troppo lunghe.
     - È possibile aggiungere un BOM (Byte Order Mark) nell'output di un file RC.
-- v.5.9.1 (2025-10-23)
+- v.5.9.1 (23.10.2025)
     - La lunghezza massima di una stringa senza a capo automatico è 400.
     - A capo automatico stringa solo in RC UTF-16.
     - Corretta ricerca (Ctrl+F).
@@ -356,5 +356,5 @@
     - Migliorata ricerca UI/UX.
     - Aggiunta alla funzione EGA RES_save l'opzione "(bom)".
     - Aggiunto supporto DPI elevati.
-- v.5.9.2 (2025-10-23)
-    - Fixed double signature problem.
+- v.5.9.2 (23.10.2025)
+    - Risolto il problema della doppia firma.
