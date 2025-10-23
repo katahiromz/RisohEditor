@@ -12,7 +12,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #define MyAppName        "RisohEditor"
-#define MyAppVersion     GetStringFileInfo('build\RisohEditor.exe',"FileVersion")
+#define MyAppVersion     GetStringFileInfo('build\Release\RisohEditor.exe',"FileVersion")
 #define MyAppCompanyName "Katayama Hirofumi MZ"
 #define CurrentYear      GetDateTimeString('yyyy','','')
 #define MyAppCopyright   "(c) 2017-" + CurrentYear + " " + MyAppCompanyName
@@ -247,10 +247,10 @@ Source: "Standardize.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HYOJUNKA.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "TRANSLATORS.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "mcdx\MESSAGETABLEDX.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\Release\RisohEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "src\resource.h"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\Constants.txt"; DestDir: "{app}\data"; Flags: ignoreversion
-Source: "build\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
+Source: "build\Release\mcdx.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "src\MOleHost.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MOleHost.cpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
 Source: "src\MWindowBase.hpp"; DestDir: "{app}\OLE"; Flags: ignoreversion
@@ -259,7 +259,7 @@ Source: "src\Toolbar.h"; DestDir: "{app}\Toolbar"; Flags: ignoreversion
 Source: "MyWndCtrl\MWindowBase.hpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\MyWndCtrl.cpp"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "MyWndCtrl\CMakeLists.txt"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
-Source: "build\MyWndCtrl.dll"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
+Source: "build\Release\MyWndCtrl.dll"; DestDir: "{app}\MyWndCtrl"; Flags: ignoreversion
 Source: "data\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\libwinpthread-1.dll"; DestDir: "{app}\data\bin"; Flags: ignoreversion
 Source: "data\bin\windres.exe"; DestDir: "{app}\data\bin"; Flags: ignoreversion
