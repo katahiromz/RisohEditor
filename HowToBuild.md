@@ -22,6 +22,7 @@ ATL support is for Visual C++ only.
     - If you want XP support, use `v141_xp` toolset (`-T v141_xp`).
     - `-A Win32` might be needed if your VS uses `x64` as default.
 - Build it by using the solution file, Makefile or Ninja.
+- Execute do_sign_all.bat .
 - Copy the contents of `build/Debug` or `build/Release` into `build/`.
 
 ## Making an installer
