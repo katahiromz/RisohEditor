@@ -356,5 +356,5 @@
     - Improved Search UI/UX.
     - Added "(bom)" option to EGA RES_save function.
     - Added High DPI support.
-- v.5.9.2 (2025-XX-YY)
+- v.5.9.2 (2025-10-23)
     - Fixed double signature problem.
