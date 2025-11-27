@@ -55,8 +55,9 @@ class MComboBoxAutoComplete : public MComboBox
 {
 public:
     BOOL m_bAcceptSpace;
+    BOOL m_bIgnoreCase;
 
-    MComboBoxAutoComplete() : m_bAcceptSpace(FALSE)
+    MComboBoxAutoComplete() : m_bAcceptSpace(FALSE), m_bIgnoreCase(FALSE)
     {
     }
 
@@ -93,40 +94,73 @@ public:
         if (!m_bAcceptSpace)
             mstr_trim(strInput);
 
-        // Case-sensitive search for matching item
         INT iItem = CB_ERR;
         INT nCount = GetCount();
         TCHAR szText[128];
-        for (INT i = 0; i < nCount; ++i)
-        {
-            GetLBText(i, szText);
-            MString strText = szText;
-            if (strText.find(strInput) == 0)
-            {
-                iItem = i;
-                break;
-            }
-        }
-        if (iItem == CB_ERR)
-            return;
 
-        GetLBText(iItem, szText);
-        MString strCandidate = szText;
-
-        for (INT i = iItem + 1; i < nCount; ++i)
+        if (m_bIgnoreCase)
         {
-            GetLBText(i, szText);
-            MString strText = szText;
-            if (strText.find(strInput) == 0)
-            {
+            // Case-insensitive search for matching item
+            MString strInputUpper = strInput;
+            CharUpperW(&strInputUpper[0]);
+
+            iItem = FindString(-1, strInput.c_str());
+            if (iItem == CB_ERR)
                 return;
-            }
-        }
 
-        m_edit.m_bAutoComplete = FALSE;
-        SetWindowText(strCandidate.c_str());
-        SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
-        dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
+            GetLBText(iItem, szText);
+            MString strCandidate = szText;
+
+            for (INT i = iItem + 1; i < nCount; ++i)
+            {
+                GetLBText(i, szText);
+                MString strText = szText;
+                CharUpperW(&strText[0]);
+                if (strText.find(strInputUpper) == 0)
+                {
+                    return;
+                }
+            }
+
+            m_edit.m_bAutoComplete = FALSE;
+            SetWindowText(strCandidate.c_str());
+            SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
+            dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
+        }
+        else
+        {
+            // Case-sensitive search for matching item
+            for (INT i = 0; i < nCount; ++i)
+            {
+                GetLBText(i, szText);
+                MString strText = szText;
+                if (strText.find(strInput) == 0)
+                {
+                    iItem = i;
+                    break;
+                }
+            }
+            if (iItem == CB_ERR)
+                return;
+
+            GetLBText(iItem, szText);
+            MString strCandidate = szText;
+
+            for (INT i = iItem + 1; i < nCount; ++i)
+            {
+                GetLBText(i, szText);
+                MString strText = szText;
+                if (strText.find(strInput) == 0)
+                {
+                    return;
+                }
+            }
+
+            m_edit.m_bAutoComplete = FALSE;
+            SetWindowText(strCandidate.c_str());
+            SetEditSel(INT(strInput.size()), INT(strCandidate.size()));
+            dwPos = MAKELONG(INT(strInput.size()), INT(strCandidate.size()));
+        }
     }
 
 public:

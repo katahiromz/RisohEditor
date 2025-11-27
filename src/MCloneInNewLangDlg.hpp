@@ -42,6 +42,7 @@ public:
           m_type(entry->m_type), m_name(entry->m_name), m_lang(entry->m_lang)
     {
         m_cmb3.m_bAcceptSpace = TRUE;
+        m_cmb3.m_bIgnoreCase = TRUE;
     }
 
     virtual INT_PTR CALLBACK

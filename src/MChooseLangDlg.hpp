@@ -43,6 +43,7 @@ public:
         , m_pAutoComplete(new MLangAutoComplete(TRUE))
     {
         m_cmb3.m_bAcceptSpace = TRUE;
+        m_cmb3.m_bIgnoreCase = TRUE;
     }
 
     ~MChooseLangDlg()
