@@ -93,24 +93,31 @@ public:
         if (!m_bAcceptSpace)
             mstr_trim(strInput);
 
-        MString strInputUpper = strInput;
-        CharUpperW(&strInputUpper[0]);
-
-        INT iItem = FindString(-1, strInput.c_str());
+        // Case-sensitive search for matching item
+        INT iItem = CB_ERR;
+        INT nCount = GetCount();
+        TCHAR szText[128];
+        for (INT i = 0; i < nCount; ++i)
+        {
+            GetLBText(i, szText);
+            MString strText = szText;
+            if (strText.find(strInput) == 0)
+            {
+                iItem = i;
+                break;
+            }
+        }
         if (iItem == CB_ERR)
             return;
 
-        TCHAR szText[128];
         GetLBText(iItem, szText);
         MString strCandidate = szText;
 
-        INT nCount = GetCount();
         for (INT i = iItem + 1; i < nCount; ++i)
         {
             GetLBText(i, szText);
             MString strText = szText;
-            CharUpperW(&strText[0]);
-            if (strText.find(strInputUpper) == 0)
+            if (strText.find(strInput) == 0)
             {
                 return;
             }
